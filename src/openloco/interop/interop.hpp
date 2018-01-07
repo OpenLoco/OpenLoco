@@ -130,3 +130,36 @@ struct loco_global
         return LOCO_GLOBAL(TAddress, T);
     }
 };
+
+template<typename T, size_t TSize, uint32_t TAddress>
+struct loco_global_array
+{
+    operator T*()
+    {
+        return get();
+    }
+
+    T* get()
+    {
+        return LOCO_ADDRESS(TAddress, T);
+    }
+
+    size_t size()
+    {
+        return TSize;
+    }
+};
+
+enum
+{
+    X86_FLAG_CARRY = 1 << 0,
+    X86_FLAG_PARITY = 1 << 2,
+    X86_FLAG_ADJUST = 1 << 4,
+    X86_FLAG_ZERO = 1 << 6,
+    X86_FLAG_SIGN = 1 << 7,
+};
+
+using hook_function = uint8_t(*)(const registers &regs);
+
+void register_hook(uintptr_t address, hook_function function);
+void write_nop(uint32_t address, size_t count);

@@ -1,7 +1,16 @@
+#include <iostream>
 #include <string>
-#define WIN32_LEAN_AND_MEAN
+#include <vector>
+#include <setjmp.h>
+
+// timeGetTime is unavailable if we use lean and mean
+// #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <objbase.h>
+
 #include "interop\interop.hpp"
+
+#pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 namespace openloco
 {
@@ -11,6 +20,8 @@ namespace openloco
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
     loco_global<HWND, 0x00525320> gMainHWND;
+    loco_global_array<char, 256, 0x005060D0> gCDKey;
+    loco_global<void *, 0x0050C1A6> gTickESP;
 
     // 0x00405409
     HWND create_game_window()
@@ -70,15 +81,219 @@ namespace openloco
         LOCO_CALLPROC_X(0x00404B40);
     }
 
-    // 0x00406386
-    void openloco_run()
+    void sub_4062D1()
     {
-        LOCO_CALLPROC_X(0x00406386);
+        LOCO_CALLPROC_X(0x004062D1);
+    }
+
+    void sub_406417()
+    {
+        ((void(*)())0x00406417)();
+    }
+
+    bool process_messages()
+    {
+        return ((bool(*)())0x0040726D)();
+    }
+
+    void sub_40567E()
+    {
+        LOCO_CALLPROC_X(0x0040567E);
+    }
+
+    void sub_4058F5()
+    {
+        LOCO_CALLPROC_X(0x004058F5);
+    }
+
+    void sub_4062E0()
+    {
+        LOCO_CALLPROC_X(0x004062E0);
+    }
+
+    namespace progressbar
+    {
+        // 0x004CF5C5
+        // eax: maximum
+        void begin(int32_t maximum, int32_t edx)
+        {
+            registers regs;
+            regs.eax = maximum;
+            regs.edx = edx;
+            LOCO_CALLPROC_X(0x004CF5C5, regs);
+        }
+
+        // 0x004CF621
+        // eax: value
+        void increment(int32_t value)
+        {
+            registers regs;
+            regs.eax = value;
+            LOCO_CALLPROC_X(0x004CF621, regs);
+        }
+
+        // 0x004CF60B
+        void end()
+        {
+            LOCO_CALLPROC_X(0x004CF60B);
+        }
+    }
+
+    void sub_44452F(int8_t al)
+    {
+        registers regs;
+        regs.al = al;
+        LOCO_CALLPROC_X(0x0044452F, regs);
+    }
+
+    // 0x0044733C
+    void load_g1()
+    {
+        LOCO_CALLPROC_X(0x0044733C);
+    }
+
+    void sub_447485(void * edi, uint32_t ebp)
+    {
+        registers regs;
+        regs.edi = (int32_t)edi;
+        regs.ebp = (int32_t)ebp;
+        LOCO_CALLPROC_X(0x00447485, regs);
+    }
+
+    // 0x0046A794
+    void tick()
+    {
+        static bool isInitialised = false;
+
+        // Locomotion has several routines that will prematurely end the current tick.
+        // This usually happens when switching game mode. It does this by jumping to
+        // the end of the original routine and resetting esp back to an initial value
+        // stored at the beginning of tick. Until those routines are re-written, we
+        // must simulate it using 'setjmp'.
+        static jmp_buf tickJump;
+
+        // When Locomotion wants to jump to the end of a tick, it sets ESP
+        // to some static memory that we define
+        static uint8_t spareStackMemory[2048];
+        gTickESP = spareStackMemory + sizeof(spareStackMemory);
+
+        LOCO_GLOBAL(0x00113E87C, int32_t) = 0;
+        LOCO_GLOBAL(0x0005252E0, int32_t) = 0;
+        if (!isInitialised)
+        {
+            isInitialised = true;
+            LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
+            LOCO_CALLPROC_X(0x004078BE);
+            LOCO_CALLPROC_X(0x004BF476);
+            LOCO_CALLPROC_X(0x004412CE);
+            progressbar::begin(0x440, 0);
+            progressbar::increment(0x1E);
+            LOCO_CALLPROC_X(0x00441400); // double instance check is in here
+            progressbar::increment(0x28);
+            LOCO_CALLPROC_X(0x004BE5DE);
+            progressbar::end();
+            LOCO_CALLPROC_X(0x00441A6C);
+            LOCO_CALLPROC_X(0x00470F3C);
+            sub_44452F(0);
+            progressbar::begin(0x440, 0);
+            progressbar::increment(0x3C);
+            load_g1();
+            progressbar::increment(0xDC);
+            LOCO_CALLPROC_X(0x004949BC);
+            progressbar::increment(0xEB);
+            progressbar::increment(0xFA);
+            LOCO_CALLPROC_X(0x00452001);
+            progressbar::end();
+            LOCO_CALLPROC_X(0x0045235D); // update the display mode
+            LOCO_CALLPROC_X(0x004899E4);
+            LOCO_CALLPROC_X(0x004C57C0);
+            LOCO_CALLPROC_X(0x004284C8);
+            LOCO_CALLPROC_X(0x004969DA);
+            LOCO_CALLPROC_X(0x0043C88C);
+            LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
+            LOCO_GLOBAL(0x0050C195, int8_t) = 1;
+            LOCO_CALLPROC_X(0x0046AD7D);
+            LOCO_CALLPROC_X(0x00438A6C);
+            sub_447485(LOCO_ADDRESS(0x0050B884, void), 0x0A0A0A0A);
+            LOCO_GLOBAL(0x0050C19E, int32_t) = timeGetTime();
+        }
+
+        // CONTINUE FUNCTION
+        static bool registeredHooks = false;
+        if (!registeredHooks)
+        {
+            registeredHooks = true;
+
+            // Jump from vanilla back to us before the end of the routine
+            register_hook(0x0046AD4D,
+                [](const registers &regs) -> uint8_t
+                {
+                    // Idle loop for a 40 FPS
+                    do
+                    {
+                    }
+                    while (timeGetTime() - LOCO_GLOBAL(0x0050C19E, uint32_t) < 25);
+                    return 0;
+                });
+
+            // This address is where those routines jump back to to end the tick prematurely
+            register_hook(0x0046AD71,
+                [](const registers &regs) -> uint8_t
+                {
+                    longjmp(tickJump, 1);
+                });
+
+        }
+
+        if (!setjmp(tickJump))
+        {
+            // Execute vanilla chunk of tick()
+            LOCO_CALLPROC_X(0x0046A8DD);
+        }
+        else
+        {
+            // Premature end of current tick
+            std::cout << "tick prematurely ended" << std::endl;
+        }
+    }
+
+    // 0x00406386
+    void run()
+    {
+        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        sub_4062D1();
+        sub_406417();
+
+#if _READ_REGISTRY_
+        constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
+
+        HKEY key;
+        if (RegOpenKeyA(HKEY_LOCAL_MACHINE, INSTALL_REG_KEY, &key) == ERROR_SUCCESS)
+        {
+            DWORD type;
+            DWORD dataSize = gCDKey.size();
+            RegQueryValueExA(key, "CDKey", nullptr, &type, (LPBYTE)gCDKey.get(), &dataSize);
+            RegCloseKey(key);
+        }
+#endif
+
+        while (process_messages())
+        {
+            if (LOCO_GLOBAL(0x005252AC, uint32_t) != 0)
+            {
+                sub_4058F5();
+            }
+            sub_4062E0();
+            tick();
+        }
+        sub_40567E();
+        CoUninitialize();
     }
 
     // 0x00406D13
     void main()
     {
+        std::cout << "OpenLoco v0.1" << std::endl;
         if (sub_4054B9())
         {
             gMainHWND = create_game_window();
@@ -86,7 +301,7 @@ namespace openloco
             LOCO_CALLPROC_X(0x00407B26);
             LOCO_CALLPROC_X(0x0040447F);
             LOCO_CALLPROC_X(0x00404E53);
-            openloco_run();
+            run();
             LOCO_CALLPROC_X(0x00404E58);
             LOCO_CALLPROC_X(0x004045C2);
 
