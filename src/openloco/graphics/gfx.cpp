@@ -1,3 +1,4 @@
+#include "../ui.h"
 #include "gfx.h"
 
 namespace openloco::gfx
@@ -13,5 +14,22 @@ namespace openloco::gfx
         regs.edi = (int32_t)&dpi;
         regs.ebp = (int32_t)fill;
         LOCO_CALLPROC_X(0x00447485, regs);
+    }
+
+    // 0x004CD406
+    void invalidate_screen()
+    {
+        set_dirty_blocks(0, 0, ui::width(), ui::height());
+    }
+
+    // 0x004C5C69
+    void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    {
+        registers regs;
+        regs.ax = left;
+        regs.bx = top;
+        regs.dx = right;
+        regs.bp = bottom;
+        LOCO_CALLPROC_X(0x004C5C69, regs);
     }
 }

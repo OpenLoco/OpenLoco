@@ -129,6 +129,11 @@ struct loco_global
     {
         return LOCO_GLOBAL(TAddress, T);
     }
+
+    T* operator ->()
+    {
+        return LOCO_ADDRESS(TAddress, T);
+    }
 };
 
 template<typename T, size_t TSize, uint32_t TAddress>

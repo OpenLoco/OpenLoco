@@ -96,7 +96,7 @@
 
   <PropertyGroup>
     <IncludePath>$(SolutionDir)src;$(SolutionDir)lib\include;$(SolutionDir)lib\include\sdl2;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental />
   </PropertyGroup>
 

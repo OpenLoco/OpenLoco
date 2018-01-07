@@ -8,9 +8,11 @@
 #include <windows.h>
 #include <objbase.h>
 
+#include "audio/audio.h"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "progressbar.h"
+#include "ui.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -21,11 +23,20 @@ namespace openloco
 
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
-    loco_global<HWND, 0x00525320> gMainHWND;
     loco_global_array<char, 256, 0x005060D0> gCDKey;
     loco_global<void *, 0x0050C1A6> gTickESP;
 
     loco_global<uint8_t, 0x0050C195> gIntroState;
+
+    void * hInstance()
+    {
+        return ghInstance;
+    }
+
+    const char * lpCmdLine()
+    {
+        return glpCmdLine;
+    }
 
     // 0x00405409
     HWND create_game_window()
@@ -93,11 +104,6 @@ namespace openloco
     void sub_406417()
     {
         ((void(*)())0x00406417)();
-    }
-
-    bool process_messages()
-    {
-        return ((bool(*)())0x0040726D)();
     }
 
     void sub_40567E()
@@ -228,14 +234,18 @@ namespace openloco
             progressbar::increment(0xFA);
             LOCO_CALLPROC_X(0x00452001);
             progressbar::end();
-            sub_45235D();
-            LOCO_CALLPROC_X(0x004899E4);
+            ui::initialise();
+            audio::initialise();
             LOCO_CALLPROC_X(0x004C57C0);
             LOCO_CALLPROC_X(0x004284C8);
             LOCO_CALLPROC_X(0x004969DA);
             LOCO_CALLPROC_X(0x0043C88C);
             LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
+#ifdef _SHOW_INTRO_
             gIntroState = 1;
+#else
+            gIntroState = 254;
+#endif
             LOCO_CALLPROC_X(0x0046AD7D);
             LOCO_CALLPROC_X(0x00438A6C);
             gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
@@ -301,7 +311,7 @@ namespace openloco
         }
 #endif
 
-        while (process_messages())
+        while (ui::process_messages())
         {
             if (LOCO_GLOBAL(0x005252AC, uint32_t) != 0)
             {
@@ -309,27 +319,46 @@ namespace openloco
             }
             sub_4062E0();
             tick();
+            ui::render();
         }
         sub_40567E();
         CoUninitialize();
+    }
+
+    void register_hooks()
+    {
+        register_hook(0x004524C1,
+            [](const registers &regs) -> uint8_t
+            {
+                ui::update();
+                return 0;
+            });
     }
 
     // 0x00406D13
     void main()
     {
         std::cout << "OpenLoco v0.1" << std::endl;
-        if (sub_4054B9())
+        try
         {
-            gMainHWND = create_game_window();
-            LOCO_CALLPROC_X(0x004078FE);
-            LOCO_CALLPROC_X(0x00407B26);
-            LOCO_CALLPROC_X(0x0040447F);
-            LOCO_CALLPROC_X(0x00404E53);
-            run();
-            LOCO_CALLPROC_X(0x00404E58);
-            LOCO_CALLPROC_X(0x004045C2);
+            register_hooks();
+            if (sub_4054B9())
+            {
+                ui::create_window();
+                LOCO_CALLPROC_X(0x004078FE);
+                LOCO_CALLPROC_X(0x00407B26);
+                LOCO_CALLPROC_X(0x0040447F);
+                LOCO_CALLPROC_X(0x00404E53);
+                run();
+                LOCO_CALLPROC_X(0x00404E58);
+                LOCO_CALLPROC_X(0x004045C2);
 
-            // TODO extra clean up code
+                // TODO extra clean up code
+            }
+        }
+        catch (const std::exception &ex)
+        {
+            std::cerr << ex.what() << std::endl;
         }
     }
 }

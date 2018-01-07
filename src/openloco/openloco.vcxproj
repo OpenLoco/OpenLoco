@@ -14,14 +14,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="audio\audio.cpp" />
+    <ClCompile Include="windowmgr.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
+    <ClCompile Include="ui.cpp" />
     <ClCompile Include="progressbar.cpp" />
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio\audio.h" />
+    <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />
+    <ClInclude Include="openloco.h" />
+    <ClInclude Include="ui.h" />
     <ClInclude Include="progressbar.h" />
     <ClInclude Include="interop\interop.hpp" />
   </ItemGroup>
@@ -36,6 +43,7 @@
   <Import Project="..\..\openloco.common.props" />
   <ItemDefinitionGroup>
     <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\%(RelativeDir)</ObjectFileName>
       <AdditionalOptions>$(OPENLOCO_CL_ADDITIONALOPTIONS) %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
