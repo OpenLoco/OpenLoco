@@ -14,11 +14,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="graphics\gfx.cpp" />
+    <ClCompile Include="progressbar.cpp" />
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphics\gfx.h" />
+    <ClInclude Include="progressbar.h" />
     <ClInclude Include="interop\interop.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

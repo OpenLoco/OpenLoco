@@ -8,7 +8,9 @@
 #include <windows.h>
 #include <objbase.h>
 
-#include "interop\interop.hpp"
+#include "graphics/gfx.h"
+#include "interop/interop.hpp"
+#include "progressbar.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -22,6 +24,8 @@ namespace openloco
     loco_global<HWND, 0x00525320> gMainHWND;
     loco_global_array<char, 256, 0x005060D0> gCDKey;
     loco_global<void *, 0x0050C1A6> gTickESP;
+
+    loco_global<uint8_t, 0x0050C195> gIntroState;
 
     // 0x00405409
     HWND create_game_window()
@@ -111,34 +115,6 @@ namespace openloco
         LOCO_CALLPROC_X(0x004062E0);
     }
 
-    namespace progressbar
-    {
-        // 0x004CF5C5
-        // eax: maximum
-        void begin(int32_t maximum, int32_t edx)
-        {
-            registers regs;
-            regs.eax = maximum;
-            regs.edx = edx;
-            LOCO_CALLPROC_X(0x004CF5C5, regs);
-        }
-
-        // 0x004CF621
-        // eax: value
-        void increment(int32_t value)
-        {
-            registers regs;
-            regs.eax = value;
-            LOCO_CALLPROC_X(0x004CF621, regs);
-        }
-
-        // 0x004CF60B
-        void end()
-        {
-            LOCO_CALLPROC_X(0x004CF60B);
-        }
-    }
-
     void sub_44452F(int8_t al)
     {
         registers regs;
@@ -152,12 +128,60 @@ namespace openloco
         LOCO_CALLPROC_X(0x0044733C);
     }
 
-    void sub_447485(void * edi, uint32_t ebp)
+    // eax: width
+    // ebx: height
+    bool sub_451F0B(int32_t width, int32_t height)
     {
         registers regs;
-        regs.edi = (int32_t)edi;
-        regs.ebp = (int32_t)ebp;
-        LOCO_CALLPROC_X(0x00447485, regs);
+        regs.eax = width;
+        regs.ebx = height;
+        LOCO_CALLFUNC_X(0x00451F0B, regs);
+        return regs.al != 0;
+    }
+
+    void sub_4BE621(int32_t eax, int32_t ebx)
+    {
+        registers regs;
+        regs.eax = eax;
+        regs.ebx = ebx;
+        LOCO_CALLPROC_X(0x004BE621, regs);
+    }
+
+    void sub_45235D()
+    {
+        LOCO_CALLPROC_X(0x00452336);
+        int32_t width = LOCO_GLOBAL(0x0050AEB8, int16_t);
+        int32_t height = LOCO_GLOBAL(0x0050AEBA, int16_t);
+        if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF || width == -1)
+        {
+            // int32_t screenWidth = LOCO_GLOBAL(0x00113E2C8, int32_t);
+            int32_t screenHeight = LOCO_GLOBAL(0x00113E2CC, int32_t);
+            width = 1024;
+            height = 768;
+            if (screenHeight < 1200)
+            {
+                width = 800;
+                height = 600;
+            }
+        }
+        if (sub_451F0B(width, height))
+        {
+            LOCO_GLOBAL(0x0052533C, int32_t) = 0;
+            if (LOCO_GLOBAL(0x0052532C, int32_t) == 0 &&
+                LOCO_GLOBAL(0x00113E2E4, int32_t) >= 64)
+            {
+                LOCO_CALLPROC_X(0x004524C1);
+                LOCO_CALLPROC_X(0x004523F4);
+            }
+            else
+            {
+                sub_4BE621(61, 62);
+            }
+        }
+        else
+        {
+            sub_4BE621(61, 63);
+        }
     }
 
     // 0x0046A794
@@ -204,17 +228,17 @@ namespace openloco
             progressbar::increment(0xFA);
             LOCO_CALLPROC_X(0x00452001);
             progressbar::end();
-            LOCO_CALLPROC_X(0x0045235D); // update the display mode
+            sub_45235D();
             LOCO_CALLPROC_X(0x004899E4);
             LOCO_CALLPROC_X(0x004C57C0);
             LOCO_CALLPROC_X(0x004284C8);
             LOCO_CALLPROC_X(0x004969DA);
             LOCO_CALLPROC_X(0x0043C88C);
             LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
-            LOCO_GLOBAL(0x0050C195, int8_t) = 1;
+            gIntroState = 1;
             LOCO_CALLPROC_X(0x0046AD7D);
             LOCO_CALLPROC_X(0x00438A6C);
-            sub_447485(LOCO_ADDRESS(0x0050B884, void), 0x0A0A0A0A);
+            gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
             LOCO_GLOBAL(0x0050C19E, int32_t) = timeGetTime();
         }
 

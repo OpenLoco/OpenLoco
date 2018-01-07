@@ -125,7 +125,7 @@ struct loco_global
         LOCO_GLOBAL(TAddress, T) = rhs;
     }
 
-    operator T()
+    operator T&()
     {
         return LOCO_GLOBAL(TAddress, T);
     }
