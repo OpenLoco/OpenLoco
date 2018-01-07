@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="windowmgr.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
     <ClCompile Include="ui.cpp" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />
     <ClInclude Include="openloco.h" />

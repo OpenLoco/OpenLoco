@@ -12,6 +12,7 @@
     #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
 
+#include "input.h"
 #include "interop/interop.hpp"
 #include "graphics/gfx.h"
 #include "openloco.h"
@@ -237,11 +238,14 @@ namespace openloco::ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
+    // 0x0040726D
     bool process_messages()
     {
 #ifdef _LOCO_WIN32_
         return ((bool(*)())0x0040726D)();
 #else
+        using namespace input;
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
@@ -249,11 +253,47 @@ namespace openloco::ui
             {
                 case SDL_QUIT:
                     return false;
-                    break;
                 case SDL_WINDOWEVENT:
                     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     {
                         resize(e.window.data1, e.window.data2);
+                    }
+                    break;
+                case SDL_MOUSEMOTION:
+                    LOCO_GLOBAL(0x0113E72C, int32_t) = e.motion.x;
+                    LOCO_GLOBAL(0x0113E730, int32_t) = e.motion.y;
+                    break;
+                case SDL_MOUSEWHEEL:
+                    LOCO_GLOBAL(0x00525330, int32_t) += e.wheel.y * 128;
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    LOCO_GLOBAL(0x0113E9D4, int32_t) = e.button.x;
+                    LOCO_GLOBAL(0x0113E9D8, int32_t) = e.button.y;
+                    LOCO_GLOBAL(0x00525324, int32_t) = 1;
+                    switch (e.button.button) {
+                    case SDL_BUTTON_LEFT:
+                        input::enqueue_mouse_button(mouse_button::left_down);
+                        LOCO_GLOBAL(0x0113E8A0, int32_t) = 1;
+                        break;
+                    case SDL_BUTTON_RIGHT:
+                        input::enqueue_mouse_button(mouse_button::right_down);
+                        LOCO_GLOBAL(0x0113E0C0, int32_t) = 1;
+                        break;
+                    }
+                    break;
+                case SDL_MOUSEBUTTONUP:
+                    LOCO_GLOBAL(0x0113E9D4, int32_t) = e.button.x;
+                    LOCO_GLOBAL(0x0113E9D8, int32_t) = e.button.y;
+                    LOCO_GLOBAL(0x00525324, int32_t) = 1;
+                    switch (e.button.button) {
+                    case SDL_BUTTON_LEFT:
+                        input::enqueue_mouse_button(mouse_button::left_up);
+                        LOCO_GLOBAL(0x0113E8A0, int32_t) = 0;
+                        break;
+                    case SDL_BUTTON_RIGHT:
+                        input::enqueue_mouse_button(mouse_button::right_up);
+                        LOCO_GLOBAL(0x0113E0C0, int32_t) = 0;
+                        break;
                     }
                     break;
             }
