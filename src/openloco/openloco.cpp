@@ -220,6 +220,47 @@ namespace openloco
         LOCO_CALLPROC_X(0x00431A8A, regs);
     }
 
+    void initialise()
+    {
+        LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
+        LOCO_CALLPROC_X(0x004078BE);
+        LOCO_CALLPROC_X(0x004BF476);
+        LOCO_CALLPROC_X(0x004412CE);
+        progressbar::begin(0x440, 0);
+        progressbar::increment(0x1E);
+        LOCO_CALLPROC_X(0x00441400); // double instance check is in here
+        progressbar::increment(0x28);
+        LOCO_CALLPROC_X(0x004BE5DE);
+        progressbar::end();
+        LOCO_CALLPROC_X(0x00441A6C);
+        LOCO_CALLPROC_X(0x00470F3C);
+        sub_44452F(0);
+        progressbar::begin(0x440, 0);
+        progressbar::increment(0x3C);
+        gfx::load_g1();
+        progressbar::increment(0xDC);
+        LOCO_CALLPROC_X(0x004949BC);
+        progressbar::increment(0xEB);
+        progressbar::increment(0xFA);
+        LOCO_CALLPROC_X(0x00452001);
+        progressbar::end();
+        ui::initialise();
+        audio::initialise();
+        LOCO_CALLPROC_X(0x004C57C0);
+        LOCO_CALLPROC_X(0x004284C8);
+        LOCO_CALLPROC_X(0x004969DA);
+        LOCO_CALLPROC_X(0x0043C88C);
+        LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
+#ifdef _SHOW_INTRO_
+        intro::state(intro::intro_state::begin);
+#else
+        intro::state(intro::intro_state::end);
+#endif
+        LOCO_CALLPROC_X(0x0046AD7D);
+        LOCO_CALLPROC_X(0x00438A6C);
+        gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
+    }
+
     // 0x0046A794
     void tick()
     {
@@ -258,43 +299,7 @@ namespace openloco
                     longjmp(tickJump, 1);
                 });
 
-            LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
-            LOCO_CALLPROC_X(0x004078BE);
-            LOCO_CALLPROC_X(0x004BF476);
-            LOCO_CALLPROC_X(0x004412CE);
-            progressbar::begin(0x440, 0);
-            progressbar::increment(0x1E);
-            LOCO_CALLPROC_X(0x00441400); // double instance check is in here
-            progressbar::increment(0x28);
-            LOCO_CALLPROC_X(0x004BE5DE);
-            progressbar::end();
-            LOCO_CALLPROC_X(0x00441A6C);
-            LOCO_CALLPROC_X(0x00470F3C);
-            sub_44452F(0);
-            progressbar::begin(0x440, 0);
-            progressbar::increment(0x3C);
-            gfx::load_g1();
-            progressbar::increment(0xDC);
-            LOCO_CALLPROC_X(0x004949BC);
-            progressbar::increment(0xEB);
-            progressbar::increment(0xFA);
-            LOCO_CALLPROC_X(0x00452001);
-            progressbar::end();
-            ui::initialise();
-            audio::initialise();
-            LOCO_CALLPROC_X(0x004C57C0);
-            LOCO_CALLPROC_X(0x004284C8);
-            LOCO_CALLPROC_X(0x004969DA);
-            LOCO_CALLPROC_X(0x0043C88C);
-            LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
-#ifdef _SHOW_INTRO_
-            intro::state(intro::intro_state::begin);
-#else
-            intro::state(intro::intro_state::end);
-#endif
-            LOCO_CALLPROC_X(0x0046AD7D);
-            LOCO_CALLPROC_X(0x00438A6C);
-            gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
+            initialise();
             last_tick_time = timeGetTime();
         }
 
