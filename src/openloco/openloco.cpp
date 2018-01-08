@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -5,6 +6,7 @@
 
 // timeGetTime is unavailable if we use lean and mean
 // #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
 #include <objbase.h>
 
@@ -28,6 +30,12 @@ namespace openloco
 
     loco_global<uint8_t, 0x0050C195> gIntroState;
 
+    loco_global<uint32_t, 0x0050C19C> time_since_last_tick;
+    loco_global<uint32_t, 0x0050C19E> last_tick_time;
+    loco_global<uint8_t, 0x00508F17> paused_state;
+    loco_global<uint8_t, 0x00508F19> tutorial_state;
+    loco_global<uint8_t, 0x00508F08> game_command_nest_level;
+
     void * hInstance()
     {
         return ghInstance;
@@ -36,6 +44,11 @@ namespace openloco
     const char * lpCmdLine()
     {
         return glpCmdLine;
+    }
+
+    bool is_paused()
+    {
+        return paused_state;
     }
 
     // 0x00405409
@@ -249,10 +262,27 @@ namespace openloco
             LOCO_CALLPROC_X(0x0046AD7D);
             LOCO_CALLPROC_X(0x00438A6C);
             gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
-            LOCO_GLOBAL(0x0050C19E, int32_t) = timeGetTime();
+            last_tick_time = timeGetTime();
         }
 
-        // CONTINUE FUNCTION
+        uint32_t time = timeGetTime();
+        time_since_last_tick = std::min(time - last_tick_time, 500U);
+        last_tick_time = time;
+
+        if (!is_paused())
+        {
+            LOCO_GLOBAL(0x0050C1A2, uint32_t) += time_since_last_tick;
+        }
+        if (tutorial_state != 0)
+        {
+            time_since_last_tick = 31;
+        }
+        game_command_nest_level = 0;
+        ui::update();
+
+        // CONTINUE FUNCTION...
+        constexpr uint32_t continueAddress = 0x0046A941;
+
         static bool registeredHooks = false;
         if (!registeredHooks)
         {
@@ -266,7 +296,7 @@ namespace openloco
                     do
                     {
                     }
-                    while (timeGetTime() - LOCO_GLOBAL(0x0050C19E, uint32_t) < 25);
+                    while (timeGetTime() - last_tick_time < 25);
                     return 0;
                 });
 
@@ -282,7 +312,7 @@ namespace openloco
         if (!setjmp(tickJump))
         {
             // Execute vanilla chunk of tick()
-            LOCO_CALLPROC_X(0x0046A8DD);
+            LOCO_CALLPROC_X(continueAddress);
         }
         else
         {
