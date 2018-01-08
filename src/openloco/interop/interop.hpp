@@ -130,6 +130,11 @@ struct loco_global
         return LOCO_GLOBAL(TAddress, T);
     }
 
+    T& operator *()
+    {
+        return LOCO_GLOBAL(TAddress, T);
+    }
+
     T* operator ->()
     {
         return LOCO_ADDRESS(TAddress, T);

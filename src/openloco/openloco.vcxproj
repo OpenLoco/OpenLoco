@@ -16,6 +16,8 @@
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="intro.cpp" />
+    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="windowmgr.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
     <ClCompile Include="ui.cpp" />
@@ -27,6 +29,9 @@
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="intro.h" />
+    <ClInclude Include="tutorial.h" />
+    <ClInclude Include="window.h" />
     <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />
     <ClInclude Include="openloco.h" />
