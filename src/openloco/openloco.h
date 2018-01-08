@@ -1,7 +1,11 @@
 #pragma once
 
+#include <cstdint>
+
 namespace openloco
 {
+    using string_id = uint32_t;
+
     namespace screen_flags
     {
         constexpr uint8_t title = 1 << 0;

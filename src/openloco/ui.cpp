@@ -140,6 +140,12 @@ namespace openloco::ui
 #endif
     }
 
+    // 0x00452001
+    void initialise_cursors()
+    {
+        LOCO_CALLPROC_X(0x00452001);
+    }
+
     // 0x004524C1
     void update()
     {

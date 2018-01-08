@@ -15,8 +15,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="intro.cpp" />
+    <ClCompile Include="objects\objectmgr.cpp" />
+    <ClCompile Include="scenariomgr.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="windowmgr.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
@@ -28,8 +31,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
+    <ClInclude Include="objects\objectmgr.h" />
+    <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windowmgr.h" />

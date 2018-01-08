@@ -11,11 +11,14 @@
 #include <objbase.h>
 
 #include "audio/audio.h"
+#include "config.h"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "intro.h"
+#include "objects/objectmgr.h"
 #include "openloco.h"
 #include "progressbar.h"
+#include "scenariomgr.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "windowmgr.h"
@@ -128,13 +131,6 @@ namespace openloco
         LOCO_CALLPROC_X(0x004062E0);
     }
 
-    void sub_44452F(int8_t al)
-    {
-        registers regs;
-        regs.al = al;
-        LOCO_CALLPROC_X(0x0044452F, regs);
-    }
-
     // eax: width
     // ebx: height
     bool sub_451F0B(int32_t width, int32_t height)
@@ -220,21 +216,81 @@ namespace openloco
         LOCO_CALLPROC_X(0x00431A8A, regs);
     }
 
+    // 0x004412CE
+    void resolve_paths()
+    {
+        LOCO_CALLPROC_X(0x004412CE);
+    }
+
+    // 0x00407FFD
+    bool is_already_running(const char * mutexName)
+    {
+        auto result = ((int32_t(*)(const char *))(0x004034FC))(mutexName);
+        return result != 0;
+    }
+
+    // 0x004BE621
+    void exit_with_error(string_id eax, string_id ebx)
+    {
+        registers regs;
+        regs.eax = eax;
+        regs.ebx = ebx;
+        LOCO_CALLPROC_X(0x004BE621, regs);
+    }
+
+    // 0x0044154B
+    void check_game_files_exist()
+    {
+        LOCO_CALLPROC_X(0x0044154B);
+    }
+
+    // 0x004414C5
+    void check_game_files_are_valid()
+    {
+        LOCO_CALLPROC_X(0x004414C5);
+    }
+
+    void sub_441444()
+    {
+        LOCO_CALLPROC_X(0x00441444);
+    }
+
+    // 0x00441400
+    void startup_checks()
+    {
+        if (is_already_running("Locomotion"))
+        {
+            exit_with_error(61, 1016);
+        }
+        else
+        {
+            check_game_files_exist();
+            check_game_files_are_valid();
+            sub_441444();
+        }
+    }
+
+    // 0x004C57C0
+    void initialise_viewports()
+    {
+        LOCO_CALLPROC_X(0x004C57C0);
+    }
+
     void initialise()
     {
         LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
         LOCO_CALLPROC_X(0x004078BE);
         LOCO_CALLPROC_X(0x004BF476);
-        LOCO_CALLPROC_X(0x004412CE);
+        resolve_paths();
         progressbar::begin(0x440, 0);
         progressbar::increment(0x1E);
-        LOCO_CALLPROC_X(0x00441400); // double instance check is in here
+        startup_checks();
         progressbar::increment(0x28);
         LOCO_CALLPROC_X(0x004BE5DE);
         progressbar::end();
-        LOCO_CALLPROC_X(0x00441A6C);
-        LOCO_CALLPROC_X(0x00470F3C);
-        sub_44452F(0);
+        config::read();
+        objectmgr::load_index();
+        scenariomgr::load_index(0);
         progressbar::begin(0x440, 0);
         progressbar::increment(0x3C);
         gfx::load_g1();
@@ -242,11 +298,11 @@ namespace openloco
         LOCO_CALLPROC_X(0x004949BC);
         progressbar::increment(0xEB);
         progressbar::increment(0xFA);
-        LOCO_CALLPROC_X(0x00452001);
+        ui::initialise_cursors();
         progressbar::end();
         ui::initialise();
         audio::initialise();
-        LOCO_CALLPROC_X(0x004C57C0);
+        initialise_viewports();
         LOCO_CALLPROC_X(0x004284C8);
         LOCO_CALLPROC_X(0x004969DA);
         LOCO_CALLPROC_X(0x0043C88C);
@@ -322,7 +378,14 @@ namespace openloco
         LOCO_GLOBAL(0x005233B2, int32_t) += LOCO_GLOBAL(0x01140840, int32_t);
         LOCO_GLOBAL(0x0114084C, int32_t) = 0;
         LOCO_GLOBAL(0x01140840, int32_t) = 0;
-        if (byte_50AF26 != 0)
+        if (byte_50AF26 == 0)
+        {
+            byte_50AF26 = 16;
+            gfx::clear(gfx::screen_dpi, 0);
+            get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
+            LOCO_GLOBAL(0x00F2539C, int32_t) = 0;
+        }
+        else
         {
             if (byte_50AF26 >= 16)
             {
@@ -454,13 +517,6 @@ namespace openloco
                 get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
                 set_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
             }
-        }
-        else
-        {
-            byte_50AF26 = 16;
-            gfx::clear(gfx::screen_dpi, 0);
-            get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
-            LOCO_GLOBAL(0x00F2539C, int32_t) = 0;
         }
 
         tick_wait();

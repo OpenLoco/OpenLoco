@@ -11,6 +11,7 @@ namespace openloco::ui
 
     void create_window();
     void initialise();
+    void initialise_cursors();
     void update();
     void render();
     bool process_messages();
