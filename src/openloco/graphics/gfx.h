@@ -20,6 +20,7 @@ namespace openloco::gfx
 
     #pragma pack(pop)
 
+    void load_g1();
     void clear(drawpixelinfo_t &dpi, uint32_t fill);
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);

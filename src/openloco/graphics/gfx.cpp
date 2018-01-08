@@ -5,6 +5,12 @@ namespace openloco::gfx
 {
     loco_global<drawpixelinfo_t, 0x0050B884> screen_dpi;
 
+    // 0x0044733C
+    void load_g1()
+    {
+        LOCO_CALLPROC_X(0x0044733C);
+    }
+
     // 0x00447485
     // edi: dpi
     // ebp: fill

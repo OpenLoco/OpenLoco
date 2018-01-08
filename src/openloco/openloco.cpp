@@ -135,12 +135,6 @@ namespace openloco
         LOCO_CALLPROC_X(0x0044452F, regs);
     }
 
-    // 0x0044733C
-    void load_g1()
-    {
-        LOCO_CALLPROC_X(0x0044733C);
-    }
-
     // eax: width
     // ebx: height
     bool sub_451F0B(int32_t width, int32_t height)
@@ -279,7 +273,7 @@ namespace openloco
             sub_44452F(0);
             progressbar::begin(0x440, 0);
             progressbar::increment(0x3C);
-            load_g1();
+            gfx::load_g1();
             progressbar::increment(0xDC);
             LOCO_CALLPROC_X(0x004949BC);
             progressbar::increment(0xEB);
