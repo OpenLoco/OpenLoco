@@ -63,24 +63,6 @@ namespace openloco
         return paused_state;
     }
 
-    // 0x00405409
-    HWND create_game_window()
-    {
-        return CreateWindowExA(
-            WS_EX_TOPMOST,
-            WINDOW_CLASS_NAME,
-            WINDOW_TITLE,
-            WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_CLIPCHILDREN | WS_MAXIMIZE | WS_CLIPSIBLINGS,
-            0,
-            0,
-            GetSystemMetrics(SM_CXSCREEN),
-            GetSystemMetrics(SM_CYSCREEN),
-            nullptr,
-            nullptr,
-            ghInstance,
-            nullptr);
-    }
-
     bool sub_4054B9()
     {
         registers regs;
