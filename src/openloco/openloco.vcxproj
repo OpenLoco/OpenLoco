@@ -17,6 +17,8 @@
     <ClCompile Include="audio\audio.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="interop\hooks.cpp" />
+    <ClCompile Include="window.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />
     <ClCompile Include="scenariomgr.cpp" />
@@ -28,6 +30,8 @@
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
+    <ClCompile Include="windows\loadgamewnd.cpp" />
+    <ClCompile Include="windows\textinputwnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />

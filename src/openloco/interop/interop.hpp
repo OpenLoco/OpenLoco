@@ -169,8 +169,10 @@ enum
     X86_FLAG_SIGN = 1 << 7,
 };
 
-using hook_function = uint8_t(*)(const registers &regs);
+using hook_function = uint8_t(*)(registers &regs);
 
 void register_hook(uintptr_t address, hook_function function);
 void write_ret(uint32_t address);
 void write_nop(uint32_t address, size_t count);
+
+void register_hooks();

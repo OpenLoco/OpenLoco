@@ -26,7 +26,7 @@
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 namespace windowmgr = openloco::ui::windowmgr;
-using window_type = windowmgr::window_type;
+using window_type = openloco::ui::window_type;
 
 namespace openloco
 {
@@ -349,7 +349,7 @@ namespace openloco
 
             // This address is where those routines jump back to to end the tick prematurely
             register_hook(0x0046AD71,
-                [](const registers &regs) -> uint8_t
+                [](registers &regs) -> uint8_t
                 {
                     longjmp(tickJump, 1);
                 });
@@ -426,8 +426,8 @@ namespace openloco
                 LOCO_GLOBAL(0x00508F10, uint16_t) |= (1 << 1);
             }
 
-            LOCO_CALLPROC_X(0x004BE92A);
-            LOCO_CALLPROC_X(0x0048A18C);
+            sub_4BE92A();
+            sub_48A18C();
 
             LOCO_GLOBAL(0x0050C1AE, int32_t)++;
             if (intro::is_active())
@@ -575,7 +575,37 @@ namespace openloco
         do
         {
             // Idle loop for a 40 FPS
-        } while (timeGetTime() - last_tick_time < 25);
+        }
+        while (timeGetTime() - last_tick_time < 25);
+    }
+
+    void prompt_tick_loop(std::function<bool()> tickAction)
+    {
+        while (true)
+        {
+            auto startTime = timeGetTime();
+            time_since_last_tick = 31;
+            if (!ui::process_messages() || !tickAction())
+            {
+                break;
+            }
+            ui::render();
+            do
+            {
+                // Idle loop for a 40 FPS
+            }
+            while (timeGetTime() - startTime < 25);
+        }
+    }
+
+    void sub_4BE92A()
+    {
+        LOCO_CALLPROC_X(0x004BE92A);
+    }
+
+    void sub_48A18C()
+    {
+        LOCO_CALLPROC_X(0x0048A18C);
     }
 
     // 0x00406386
@@ -610,22 +640,6 @@ namespace openloco
         }
         sub_40567E();
         CoUninitialize();
-    }
-
-    void register_hooks()
-    {
-        // Replace ui::update() with our own
-        register_hook(0x004524C1,
-            [](const registers &regs) -> uint8_t
-            {
-                ui::update();
-                return 0;
-            });
-
-        // Remove the set window pos function, we do not want it as it
-        // keeps moving the process window to 0, 0
-        // Can be removed when windowmgr:update() is hooked
-        write_ret(0x00406520);
     }
 
     // 0x00406D13
