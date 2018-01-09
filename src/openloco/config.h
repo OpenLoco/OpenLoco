@@ -17,4 +17,5 @@ namespace openloco::config
     config_t& get();
 
     void read();
+    void write();
 }

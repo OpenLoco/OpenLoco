@@ -15,4 +15,10 @@ namespace openloco::config
     {
         LOCO_CALLPROC_X(0x00441A6C);
     }
+
+    // 0x00441BB8
+    void write()
+    {
+        LOCO_CALLPROC_X(0x00441BB8);
+    }
 }

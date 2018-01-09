@@ -39,13 +39,12 @@ namespace openloco
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> last_tick_time;
+    loco_global<uint8_t, 0x00508F08> game_command_nest_level;
+    loco_global<uint16_t, 0x00508F12> _screen_age;
     loco_global<uint8_t, 0x00508F14> _screen_flags;
     loco_global<uint8_t, 0x00508F17> paused_state;
-    loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    loco_global<uint8_t, 0x0050AF26> byte_50AF26;
-
     loco_global<uint8_t, 0x00508F1A> game_speed;
-    
+    loco_global<uint8_t, 0x0050AF26> byte_50AF26;
 
     void tick_logic(int32_t count);
     void tick_logic();
@@ -415,7 +414,7 @@ namespace openloco
                 {
                     byte_50AF26 = 2;
                 }
-                LOCO_CALLPROC_X(0x00441BB8);
+                config::write();
             }
 
             LOCO_CALLPROC_X(0x00452D1A);
@@ -470,7 +469,7 @@ namespace openloco
                     numUpdates = 0;
                 }
                 LOCO_GLOBAL(0x00F253A0, uint16_t) = std::max<uint16_t>(1, numUpdates);
-                LOCO_GLOBAL(0x00508F12, int16_t) = std::min(0xFFFF, (int32_t)LOCO_GLOBAL(0x00508F12, int16_t) + LOCO_GLOBAL(0x00F253A0, int16_t));
+                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + LOCO_GLOBAL(0x00F253A0, int16_t));
                 if (game_speed != 0)
                 {
                     numUpdates *= 3;
@@ -506,7 +505,7 @@ namespace openloco
                     LOCO_GLOBAL(0x0050AEC0, uint8_t)++;
                     if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF)
                     {
-                        LOCO_CALLPROC_X(0x00441BB8);
+                        config::write();
                     }
                 }
             }
