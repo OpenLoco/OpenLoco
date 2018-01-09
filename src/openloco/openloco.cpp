@@ -224,7 +224,7 @@ namespace openloco
     // 0x00407FFD
     bool is_already_running(const char * mutexName)
     {
-        auto result = ((int32_t(*)(const char *))(0x004034FC))(mutexName);
+        auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
