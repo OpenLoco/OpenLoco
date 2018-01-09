@@ -172,4 +172,5 @@ enum
 using hook_function = uint8_t(*)(const registers &regs);
 
 void register_hook(uintptr_t address, hook_function function);
+void write_ret(uint32_t address);
 void write_nop(uint32_t address, size_t count);

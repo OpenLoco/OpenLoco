@@ -192,12 +192,22 @@ void register_hook(uintptr_t address, hook_function function)
     _hookTableOffset++;
 }
 
-void write_nop(uint32_t address, size_t count)
+static void write_memory(uint32_t address, const void * data, size_t size)
 {
-    std::vector<uint8_t> buffer(count, 0x90);
-    SIZE_T bytesWritten;
-    if (WriteProcessMemory(GetCurrentProcess(), (LPVOID)0x46AD7B, buffer.data(), buffer.size(), &bytesWritten) != TRUE)
+    if (WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr) != TRUE)
     {
         std::cerr << "Unable to write to " << address << std::endl;
     }
+}
+
+void write_ret(uint32_t address)
+{
+    uint8_t opcode = 0xC3;
+    write_memory(address, &opcode, sizeof(opcode));
+}
+
+void write_nop(uint32_t address, size_t count)
+{
+    std::vector<uint8_t> buffer(count, 0x90);
+    write_memory(address, buffer.data(), buffer.size());
 }

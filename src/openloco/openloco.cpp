@@ -614,12 +614,18 @@ namespace openloco
 
     void register_hooks()
     {
+        // Replace ui::update() with our own
         register_hook(0x004524C1,
             [](const registers &regs) -> uint8_t
             {
                 ui::update();
                 return 0;
             });
+
+        // Remove the set window pos function, we do not want it as it
+        // keeps moving the process window to 0, 0
+        // Can be removed when windowmgr:update() is hooked
+        write_ret(0x00406520);
     }
 
     // 0x00406D13
