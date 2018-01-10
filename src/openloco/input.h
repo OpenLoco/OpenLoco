@@ -36,4 +36,6 @@ namespace openloco::input
 
     void handle_keyboard();
     void enqueue_mouse_button(mouse_button button);
+    void sub_407218();
+    void sub_407231();
 }

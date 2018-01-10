@@ -1,7 +1,7 @@
+#include "../input.h"
 #include "../ui.h"
 #include "../windowmgr.h"
 #include "interop.hpp"
-
 
 void register_hooks()
 {
@@ -24,6 +24,19 @@ void register_hooks()
                 (const char *)regs.edx,
                 (const char *)regs.ebx);
             regs.eax = result ? 1 : 0;
+            return 0;
+        });
+
+    register_hook(0x00407218,
+        [](registers &regs) -> uint8_t
+        {
+            openloco::input::sub_407218();
+            return 0;
+        });
+    register_hook(0x00407231,
+        [](registers &regs) -> uint8_t
+        {
+            openloco::input::sub_407231();
             return 0;
         });
 

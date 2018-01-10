@@ -391,6 +391,8 @@ namespace openloco::ui
                 case SDL_MOUSEMOTION:
                     LOCO_GLOBAL(0x0113E72C, int32_t) = e.motion.x;
                     LOCO_GLOBAL(0x0113E730, int32_t) = e.motion.y;
+                    LOCO_GLOBAL(0x0114084C, int32_t) = e.motion.xrel;
+                    LOCO_GLOBAL(0x01140840, int32_t) = e.motion.yrel;
                     break;
                 case SDL_MOUSEWHEEL:
                     LOCO_GLOBAL(0x00525330, int32_t) += e.wheel.y * 128;
@@ -407,6 +409,8 @@ namespace openloco::ui
                     case SDL_BUTTON_RIGHT:
                         input::enqueue_mouse_button(mouse_button::right_down);
                         LOCO_GLOBAL(0x0113E0C0, int32_t) = 1;
+                        LOCO_GLOBAL(0x005251C8, int32_t) = 1;
+                        LOCO_GLOBAL(0x01140845, uint8_t) = 0x80;
                         break;
                     }
                     break;
@@ -422,6 +426,8 @@ namespace openloco::ui
                     case SDL_BUTTON_RIGHT:
                         input::enqueue_mouse_button(mouse_button::right_up);
                         LOCO_GLOBAL(0x0113E0C0, int32_t) = 0;
+                        LOCO_GLOBAL(0x005251C8, int32_t) = 0;
+                        LOCO_GLOBAL(0x01140845, uint8_t) = 0;
                         break;
                     }
                     break;
