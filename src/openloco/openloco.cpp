@@ -534,6 +534,24 @@ namespace openloco
         }
     }
 
+    // 0x004A8826
+    void update_vehicles()
+    {
+        LOCO_CALLPROC_X(0x004A8826);
+    }
+
+    // 0x004402F4
+    void update_misc_things()
+    {
+        LOCO_CALLPROC_X(0x004402F4);
+    }
+
+    // 0x004612EC
+    void invalidate_map_animations()
+    {
+        LOCO_CALLPROC_X(0x004612EC);
+    }
+
     // 0x0046ABCB
     void tick_logic()
     {
@@ -548,13 +566,13 @@ namespace openloco
         LOCO_CALLPROC_X(0x004C56F6);
         LOCO_CALLPROC_X(0x00496B6D);
         LOCO_CALLPROC_X(0x00453234);
-        LOCO_CALLPROC_X(0x004A8826);
+        update_vehicles();
         LOCO_CALLPROC_X(0x0046FFCA);
         LOCO_CALLPROC_X(0x0048B1FA);
-        LOCO_CALLPROC_X(0x004402F4);
+        update_misc_things();
         LOCO_CALLPROC_X(0x0046FFCA);
         LOCO_CALLPROC_X(0x00430319);
-        LOCO_CALLPROC_X(0x004612EC);
+        invalidate_map_animations();
         LOCO_CALLPROC_X(0x0048A73B);
         LOCO_CALLPROC_X(0x0048ACFD);
         LOCO_CALLPROC_X(0x00444387);
