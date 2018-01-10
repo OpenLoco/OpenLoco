@@ -27,6 +27,8 @@
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 namespace windowmgr = openloco::ui::windowmgr;
+using input_flags = openloco::input::input_flags;
+using input_state = openloco::input::input_state;
 using window_type = openloco::ui::window_type;
 
 namespace openloco
@@ -453,15 +455,17 @@ namespace openloco
                 }
                 else
                 {
-                    if (LOCO_GLOBAL(0x0052336D, int8_t) == 5 ||
-                        LOCO_GLOBAL(0x0052336D, int8_t) == 0 ||
-                        LOCO_GLOBAL(0x0052336D, int8_t) == 1)
+                    switch (input::state())
                     {
-                        if (LOCO_GLOBAL(0x00523368, int32_t) & (1 << 7))
-                        {
-                            LOCO_GLOBAL(0x00523368, int32_t) &= ~(1 << 7);
-                            numUpdates = 1;
-                        }
+                        case input_state::reset:
+                        case input_state::normal:
+                        case input_state::dropdown_active:
+                            if (input::has_flag(input_flags::viewport_scrolling))
+                            {
+                                input::reset_flag(input_flags::viewport_scrolling);
+                                numUpdates = 1;
+                            }
+                            break;
                     }
                 }
                 LOCO_GLOBAL(0x0052622E, int16_t) += numUpdates;
