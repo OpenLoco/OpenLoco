@@ -13,6 +13,7 @@
 #include "audio/audio.h"
 #include "config.h"
 #include "graphics/gfx.h"
+#include "input.h"
 #include "interop/interop.hpp"
 #include "intro.h"
 #include "objects/objectmgr.h"
@@ -426,7 +427,7 @@ namespace openloco
                 LOCO_GLOBAL(0x00508F10, uint16_t) |= (1 << 1);
             }
 
-            sub_4BE92A();
+            input::handle_keyboard();
             sub_48A18C();
 
             LOCO_GLOBAL(0x0050C1AE, int32_t)++;
@@ -598,11 +599,6 @@ namespace openloco
         }
     }
 
-    void sub_4BE92A()
-    {
-        LOCO_CALLPROC_X(0x004BE92A);
-    }
-
     void sub_48A18C()
     {
         LOCO_CALLPROC_X(0x0048A18C);
@@ -654,11 +650,11 @@ namespace openloco
                 ui::create_window();
                 LOCO_CALLPROC_X(0x004078FE);
                 LOCO_CALLPROC_X(0x00407B26);
-                LOCO_CALLPROC_X(0x0040447F);
-                LOCO_CALLPROC_X(0x00404E53);
+                ui::initialise_input();
+                audio::initialise_dsound();
                 run();
-                LOCO_CALLPROC_X(0x00404E58);
-                LOCO_CALLPROC_X(0x004045C2);
+                audio::dispose_dsound();
+                ui::dispose_input();
 
                 // TODO extra clean up code
             }

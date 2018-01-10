@@ -2,6 +2,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <filesystem>
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
@@ -79,7 +80,7 @@ namespace openloco::ui::windows
             prompt_tick_loop(
                 []()
                 {
-                    sub_4BE92A();
+                    input::handle_keyboard();
                     sub_48A18C();
                     LOCO_CALLPROC_X(0x004CD3D0);
                     LOCO_CALLPROC_X(0x004BEC5B);

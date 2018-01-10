@@ -10,5 +10,6 @@ namespace openloco::input
         right_up,
     };
 
+    void handle_keyboard();
     void enqueue_mouse_button(mouse_button button);
 }

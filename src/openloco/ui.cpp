@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
@@ -8,6 +9,7 @@
 #else
     #include <SDL2/SDL.h>
     #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
+    #define NOMINMAX
     #include <SDL2/SDL_syswm.h>
     #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
@@ -56,6 +58,7 @@ namespace openloco::ui
     loco_global<void *, 0x00525320> hwnd;
     loco_global<screen_info_t, 0x0050B884> screen_info;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
+    loco_global_array<uint8_t, 256, 0x01140740> _keyboard_state;
 
     static SDL_Window * window;
     static SDL_Surface * surface;
@@ -144,6 +147,18 @@ namespace openloco::ui
     void initialise_cursors()
     {
         LOCO_CALLPROC_X(0x00452001);
+    }
+
+    // 0x0040447F
+    void initialise_input()
+    {
+        LOCO_CALLPROC_X(0x0040447F);
+    }
+
+    // 0x004045C2
+    void dispose_input()
+    {
+        LOCO_CALLPROC_X(0x004045C2);
     }
 
     // 0x004524C1
@@ -244,6 +259,54 @@ namespace openloco::ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
+    // 0x00406FBA
+    void enqueue_key(uint32_t keycode)
+    {
+        ((void(*)(uint32_t))(0x00406FBA))(keycode);
+    }
+
+    static int32_t convert_sdl_scancode_to_dinput(int32_t scancode)
+    {
+        switch (scancode)
+        {
+            case SDL_SCANCODE_UP: return 0xC8;
+            case SDL_SCANCODE_LEFT: return 0xCB;
+            case SDL_SCANCODE_RIGHT: return 0xCD;
+            case SDL_SCANCODE_DOWN: return 0xD0;
+            case SDL_SCANCODE_LSHIFT: return 0x2A;
+            case SDL_SCANCODE_RSHIFT: return 0x36;
+            case SDL_SCANCODE_LCTRL: return 0x1D;
+            case SDL_SCANCODE_RCTRL: return 0x9D;
+            default: return 0;
+        }
+    }
+
+    // 0x0040477F
+    static void read_keyboard_state()
+    {
+        auto dstSize = _keyboard_state.size();
+        auto dst = _keyboard_state.get();
+
+        int numKeys;
+        auto keyboardState = SDL_GetKeyboardState(&numKeys);
+        if (keyboardState != nullptr)
+        {
+            for (int scanCode = 0; scanCode < numKeys; scanCode++)
+            {
+                bool isDown = keyboardState[scanCode] != 0;
+                auto dinputCode = convert_sdl_scancode_to_dinput(scanCode);
+                if (dinputCode != 0)
+                {
+                    dst[dinputCode] = (isDown ? 0x80 : 0);
+                }
+            }
+        }
+        else
+        {
+            std::fill_n(dst, dstSize, 0);
+        }
+    }
+
     // 0x0040726D
     bool process_messages()
     {
@@ -302,8 +365,22 @@ namespace openloco::ui
                         break;
                     }
                     break;
+                case SDL_KEYDOWN:
+                {
+                    auto keycode = e.key.keysym.sym;
+                    if (!(keycode & SDLK_SCANCODE_MASK))
+                    {
+                        // TODO convert to Microsoft VK codes
+                        //      https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
+                        enqueue_key(keycode);
+                    }
+                    break;
+                }
+                case SDL_KEYUP:
+                    break;
             }
         }
+        read_keyboard_state();
         return true;
 #endif
     }

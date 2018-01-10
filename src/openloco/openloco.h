@@ -18,6 +18,5 @@ namespace openloco
     const char * lpCmdLine();
 
     void prompt_tick_loop(std::function<bool()> tickAction);
-    void sub_4BE92A();
     void sub_48A18C();
 }
