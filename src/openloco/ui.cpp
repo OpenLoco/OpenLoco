@@ -64,8 +64,9 @@ namespace openloco::ui
     static SDL_Surface * surface;
     static SDL_Palette * palette;
 
-    void update(int32_t width, int32_t height);
-    void resize(int32_t width, int32_t height);
+    static void update(int32_t width, int32_t height);
+    static void resize(int32_t width, int32_t height);
+    static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
 
     int32_t width()
     {
@@ -259,10 +260,39 @@ namespace openloco::ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
+    void enqueue_text(const char * text)
+    {
+        if (text != nullptr && text[0] != '\0')
+        {
+            #pragma pack(push, 1)
+            struct key_queue_item_t
+            {
+                uint32_t a;
+                uint32_t b;
+            };
+            #pragma pack(pop, 1)
+            auto queue = (key_queue_item_t *)0x0113E300;
+            auto index = LOCO_GLOBAL(0x00525388, uint32_t);
+            queue[index].b = text[0];
+        }
+    }
+
     // 0x00406FBA
     void enqueue_key(uint32_t keycode)
     {
         ((void(*)(uint32_t))(0x00406FBA))(keycode);
+
+        switch (keycode)
+        {
+            case SDLK_RETURN:
+            case SDLK_BACKSPACE:
+            case SDLK_DELETE:
+            {
+                char c[] = { (char)keycode, '\0' };
+                enqueue_text(c);
+                break;
+            }
+        }
     }
 
     static int32_t convert_sdl_scancode_to_dinput(int32_t scancode)
@@ -290,6 +320,10 @@ namespace openloco::ui
             case SDLK_PAGEDOWN: return VK_NEXT;
             case SDLK_END: return VK_END;
             case SDLK_HOME: return VK_HOME;
+            case SDLK_LEFT: return VK_LEFT;
+            case SDLK_UP: return VK_UP;
+            case SDLK_RIGHT: return VK_RIGHT;
+            case SDLK_DOWN: return VK_DOWN;
             case SDLK_SELECT: return VK_SELECT;
             case SDLK_EXECUTE: return VK_EXECUTE;
             case SDLK_PRINTSCREEN: return VK_SNAPSHOT;
@@ -442,6 +476,9 @@ namespace openloco::ui
                     break;
                 }
                 case SDL_KEYUP:
+                    break;
+                case SDL_TEXTINPUT:
+                    enqueue_text(e.text.text);
                     break;
             }
         }
