@@ -281,6 +281,44 @@ namespace openloco::ui
         }
     }
 
+    static int32_t convert_sdl_keycode_to_windows(int32_t keyCode)
+    {
+        switch (keyCode)
+        {
+            case SDLK_PAGEUP: return VK_PRIOR;
+            case SDLK_PAGEDOWN: return VK_NEXT;
+            case SDLK_END: return VK_END;
+            case SDLK_HOME: return VK_HOME;
+            case SDLK_INSERT: return VK_INSERT;
+            case SDLK_DELETE: return VK_DELETE;
+            case SDLK_SEMICOLON: return VK_OEM_1;
+            case SDLK_EQUALS: return VK_OEM_PLUS;
+            case SDLK_COMMA: return VK_OEM_COMMA;
+            case SDLK_MINUS: return VK_OEM_MINUS;
+            case SDLK_PERIOD: return VK_OEM_PERIOD;
+            case SDLK_SLASH: return VK_OEM_2;
+            case SDLK_QUOTE: return VK_OEM_3;
+            case SDLK_LEFTBRACKET: return VK_OEM_4;
+            case SDLK_BACKSLASH: return VK_OEM_5;
+            case SDLK_RIGHTBRACKET: return VK_OEM_6;
+            case SDLK_QUOTEDBL: return VK_OEM_7;
+            default:
+                if (keyCode >= SDLK_a && keyCode <= SDLK_z)
+                {
+                    return 'A' + (keyCode - SDLK_a);
+                }
+                else if (keyCode >= SDLK_F1 && keyCode <= SDLK_F12)
+                {
+                    return VK_F1 + (keyCode - SDLK_F1);
+                }
+                else if (keyCode <= 127)
+                {
+                    return keyCode;
+                }
+                return 0;
+        }
+    }
+
     // 0x0040477F
     static void read_keyboard_state()
     {
@@ -368,11 +406,10 @@ namespace openloco::ui
                 case SDL_KEYDOWN:
                 {
                     auto keycode = e.key.keysym.sym;
-                    if (!(keycode & SDLK_SCANCODE_MASK))
+                    auto locokey = convert_sdl_keycode_to_windows(keycode);
+                    if (locokey != 0)
                     {
-                        // TODO convert to Microsoft VK codes
-                        //      https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
-                        enqueue_key(keycode);
+                        enqueue_key(locokey);
                     }
                     break;
                 }
