@@ -285,10 +285,14 @@ namespace openloco::ui
     {
         switch (keyCode)
         {
+            case SDLK_PAUSE: return VK_PAUSE;
             case SDLK_PAGEUP: return VK_PRIOR;
             case SDLK_PAGEDOWN: return VK_NEXT;
             case SDLK_END: return VK_END;
             case SDLK_HOME: return VK_HOME;
+            case SDLK_SELECT: return VK_SELECT;
+            case SDLK_EXECUTE: return VK_EXECUTE;
+            case SDLK_PRINTSCREEN: return VK_SNAPSHOT;
             case SDLK_INSERT: return VK_INSERT;
             case SDLK_DELETE: return VK_DELETE;
             case SDLK_SEMICOLON: return VK_OEM_1;
@@ -301,7 +305,25 @@ namespace openloco::ui
             case SDLK_LEFTBRACKET: return VK_OEM_4;
             case SDLK_BACKSLASH: return VK_OEM_5;
             case SDLK_RIGHTBRACKET: return VK_OEM_6;
-            case SDLK_QUOTEDBL: return VK_OEM_7;
+            case SDLK_HASH: return VK_OEM_7;
+            case SDLK_BACKQUOTE: return VK_OEM_8;
+            case SDLK_APPLICATION: return VK_APPS;
+            case SDLK_KP_0: return VK_NUMPAD0;
+            case SDLK_KP_1: return VK_NUMPAD1;
+            case SDLK_KP_2: return VK_NUMPAD2;
+            case SDLK_KP_3: return VK_NUMPAD3;
+            case SDLK_KP_4: return VK_NUMPAD4;
+            case SDLK_KP_5: return VK_NUMPAD5;
+            case SDLK_KP_6: return VK_NUMPAD6;
+            case SDLK_KP_7: return VK_NUMPAD7;
+            case SDLK_KP_8: return VK_NUMPAD8;
+            case SDLK_KP_9: return VK_NUMPAD9;
+            case SDLK_KP_MULTIPLY: return VK_MULTIPLY;
+            case SDLK_KP_PLUS: return VK_ADD;
+            case SDLK_KP_ENTER: return VK_SEPARATOR;
+            case SDLK_KP_MINUS: return VK_SUBTRACT;
+            case SDLK_KP_PERIOD: return VK_DECIMAL;
+            case SDLK_KP_DIVIDE: return VK_DIVIDE;
             default:
                 if (keyCode >= SDLK_a && keyCode <= SDLK_z)
                 {
