@@ -1,5 +1,6 @@
 #pragma once
 
+#include "openloco.h"
 #include "window.h"
 
 namespace openloco::ui
@@ -9,12 +10,16 @@ namespace openloco::ui
         window_39 = 39,
         text_input = 51,
         load_game = 52,
-        save_game = 54,
+        prompt_ok_cancel = 54,
+        undefined = 255
     };
 }
 
 namespace openloco::ui::windowmgr
 {
+    window_type current_modal_type();
+    void current_modal_type(window_type type);
+
     void update();
     void resize();
     window * find(window_type type);
@@ -28,6 +33,7 @@ namespace openloco::ui::windowmgr
 namespace openloco::ui::windows
 {
     bool prompt_load_game(uint8_t al, char * path, const char * filter, const char * title);
+    bool prompt_ok_cancel(string_id okButtonStringId);
 }
 
 namespace openloco::ui::textinput

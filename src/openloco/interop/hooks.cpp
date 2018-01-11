@@ -27,6 +27,14 @@ void register_hooks()
             return 0;
         });
 
+    register_hook(0x00446F6B,
+        [](registers &regs) -> uint8_t
+        {
+            auto result = prompt_ok_cancel(regs.eax);
+            regs.eax = result ? 1 : 0;
+            return 0;
+        });
+
     register_hook(0x00407218,
         [](registers &regs) -> uint8_t
         {

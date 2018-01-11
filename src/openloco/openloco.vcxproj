@@ -31,11 +31,13 @@
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
     <ClCompile Include="windows\loadgamewnd.cpp" />
+    <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="graphics\colours.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
     <ClInclude Include="objects\objectmgr.h" />

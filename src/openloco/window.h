@@ -22,13 +22,14 @@ namespace openloco::ui
                 uint32_t enabled_widgets;   // 0x0C
                 uint8_t pad_10[0x2C - 0x10];
                 widget * widgets;           // 0x2C
-                uint8_t pad_30[0x83E - 0x30];
+                uint8_t pad_30[0x42 - 0x30];
+                uint32_t var_42;
+                uint8_t pad_46[0x83E - 0x46];
                 uint16_t var_83E;
                 uint8_t pad_840[0x85A - 0x840];
                 uint16_t var_85A;
                 uint8_t pad_85C[0x886 - 0x85C];
-                uint8_t var_886;
-                uint8_t var_887;
+                uint8_t colours[2];
             };
         };
 

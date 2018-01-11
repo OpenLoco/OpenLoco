@@ -10,6 +10,18 @@ namespace openloco::ui::windowmgr
         constexpr uint16_t by_type = 1 << 7;
     }
 
+    loco_global<uint8_t, 0x005233B6> _current_modal_type;
+
+    window_type current_modal_type()
+    {
+        return (window_type)*_current_modal_type;
+    }
+
+    void current_modal_type(window_type type)
+    {
+        _current_modal_type = (uint8_t)type;
+    }
+
     // 0x004C6118
     void update()
     {

@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <cstring>
-#include <stdexcept>
 #include <filesystem>
+#include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
@@ -73,10 +73,9 @@ namespace openloco::ui::windows
             window->var_85A = 0xFFFF;
             LOCO_GLOBAL(0x009DA285, uint8_t) = 0;
             sub_4CEB67(LOCO_GLOBAL(0x0050ADAC, int16_t) - LOCO_GLOBAL(0x0050ADAA, int16_t));
-            window->var_886 = 0;
-            window->var_887 = 11;
-            LOCO_GLOBAL(0x005233B6, uint8_t) = 52;
-
+            window->colours[0] = colour::black;
+            window->colours[1] = colour::saturated_green;
+            windowmgr::current_modal_type(window_type::load_game);
             prompt_tick_loop(
                 []()
                 {
@@ -89,8 +88,7 @@ namespace openloco::ui::windows
                     LOCO_CALLPROC_X(0x004CF63B);
                     return windowmgr::find(window_type::load_game) != nullptr;
                 });
-
-            LOCO_GLOBAL(0x005233B6, uint8_t) = 0xFF;
+            windowmgr::current_modal_type(window_type::undefined);
             std::strcpy(path, byte_9D9E84);
             if (path[0] != '\0')
             {
