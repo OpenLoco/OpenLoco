@@ -30,7 +30,7 @@
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
-    <ClCompile Include="windows\loadgamewnd.cpp" />
+    <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
   </ItemGroup>
@@ -43,6 +43,7 @@
     <ClInclude Include="objects\objectmgr.h" />
     <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="utility\string.hpp" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />

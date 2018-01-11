@@ -32,7 +32,13 @@ namespace openloco::ui::windowmgr
 
 namespace openloco::ui::windows
 {
-    bool prompt_load_game(uint8_t al, char * path, const char * filter, const char * title);
+    enum class browse_type
+    {
+        load = 1,
+        save = 2
+    };
+
+    bool prompt_browse(browse_type type, char * path, const char * filter, const char * title);
     bool prompt_ok_cancel(string_id okButtonStringId);
 }
 

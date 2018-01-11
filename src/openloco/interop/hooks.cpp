@@ -18,8 +18,8 @@ void register_hooks()
     register_hook(0x00445AB9,
         [](registers &regs) -> uint8_t
         {
-            auto result = prompt_load_game(
-                regs.al,
+            auto result = prompt_browse(
+                (browse_type)regs.al,
                 (char *)regs.ecx,
                 (const char *)regs.edx,
                 (const char *)regs.ebx);
