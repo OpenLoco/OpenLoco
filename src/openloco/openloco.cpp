@@ -20,6 +20,7 @@
 #include "openloco.h"
 #include "progressbar.h"
 #include "scenariomgr.h"
+#include "things/thingmgr.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "windowmgr.h"
@@ -539,18 +540,6 @@ namespace openloco
         }
     }
 
-    // 0x004A8826
-    void update_vehicles()
-    {
-        LOCO_CALLPROC_X(0x004A8826);
-    }
-
-    // 0x004402F4
-    void update_misc_things()
-    {
-        LOCO_CALLPROC_X(0x004402F4);
-    }
-
     // 0x004612EC
     void invalidate_map_animations()
     {
@@ -571,10 +560,10 @@ namespace openloco
         LOCO_CALLPROC_X(0x004C56F6);
         LOCO_CALLPROC_X(0x00496B6D);
         LOCO_CALLPROC_X(0x00453234);
-        update_vehicles();
+        thingmgr::update_vehicles();
         LOCO_CALLPROC_X(0x0046FFCA);
         LOCO_CALLPROC_X(0x0048B1FA);
-        update_misc_things();
+        thingmgr::update_misc_things();
         LOCO_CALLPROC_X(0x0046FFCA);
         LOCO_CALLPROC_X(0x00430319);
         invalidate_map_animations();
