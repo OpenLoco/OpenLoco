@@ -48,6 +48,13 @@ void register_hooks()
             return 0;
         });
 
+    register_hook(0x00498E9B,
+        [](registers &regs) -> uint8_t
+        {
+            openloco::ui::windows::sub_498E9B((openloco::ui::window *)regs.esi);
+            return 0;
+        });
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
     // Can be removed when windowmgr:update() is hooked

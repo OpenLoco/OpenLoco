@@ -33,6 +33,7 @@
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
+    <ClCompile Include="windows\townwnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />

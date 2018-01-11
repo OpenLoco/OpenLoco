@@ -63,6 +63,11 @@ namespace openloco
         return glpCmdLine;
     }
 
+    bool is_editor_mode()
+    {
+        return (_screen_flags & screen_flags::editor) != 0;
+    }
+
     bool is_paused()
     {
         return paused_state;

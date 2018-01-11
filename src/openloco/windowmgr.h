@@ -42,8 +42,12 @@ namespace openloco::ui::windows
         save = 2
     };
 
+    window * open_town_window(uint16_t townId);
+    void sub_498E9B(window * w);
+
     bool prompt_browse(browse_type type, char * path, const char * filter, const char * title);
     bool prompt_ok_cancel(string_id okButtonStringId);
+
 }
 
 namespace openloco::ui::textinput
