@@ -11,6 +11,18 @@ namespace openloco::ui::windowmgr
     }
 
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
+    loco_global_array<window, 12, 0x011370AC> _windows;
+    loco_global<window *, 0x0113D754> _windows_end;
+
+    window * get(size_t index)
+    {
+        return &_windows.get()[index];
+    }
+
+    size_t num_windows()
+    {
+        return ((uintptr_t)*_windows_end - (uintptr_t)_windows.get()) / sizeof(window);
+    }
 
     window_type current_modal_type()
     {

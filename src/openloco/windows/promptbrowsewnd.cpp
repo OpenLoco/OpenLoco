@@ -66,7 +66,7 @@ namespace openloco::ui::windows
         std::strcpy(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
-        auto window = windowmgr::create_window_centred(window_type::load_game, 500, 380, 0x1202, (void *)0x004FB308);
+        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, 0x1202, (void *)0x004FB308);
         if (window != nullptr)
         {
             window->widgets = (widget *)0x0050AD58;
@@ -81,7 +81,7 @@ namespace openloco::ui::windows
             sub_4CEB67(LOCO_GLOBAL(0x0050ADAC, int16_t) - LOCO_GLOBAL(0x0050ADAA, int16_t));
             window->colours[0] = colour::black;
             window->colours[1] = colour::saturated_green;
-            windowmgr::current_modal_type(window_type::load_game);
+            windowmgr::current_modal_type(window_type::prompt_browse);
             prompt_tick_loop(
                 []()
                 {
@@ -92,7 +92,7 @@ namespace openloco::ui::windows
                     windowmgr::update();
                     LOCO_CALLPROC_X(0x004C98CF);
                     LOCO_CALLPROC_X(0x004CF63B);
-                    return windowmgr::find(window_type::load_game) != nullptr;
+                    return windowmgr::find(window_type::prompt_browse) != nullptr;
                 });
             windowmgr::current_modal_type(window_type::undefined);
             std::strcpy(szPath, _directory);

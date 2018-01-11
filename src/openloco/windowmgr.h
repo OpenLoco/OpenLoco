@@ -7,9 +7,11 @@ namespace openloco::ui
 {
     enum class window_type
     {
+        town = 33,
+        industry = 34,
         window_39 = 39,
         text_input = 51,
-        load_game = 52,
+        prompt_browse = 52,
         prompt_ok_cancel = 54,
         undefined = 255
     };
@@ -19,6 +21,8 @@ namespace openloco::ui::windowmgr
 {
     window_type current_modal_type();
     void current_modal_type(window_type type);
+    window * get(size_t index);
+    size_t num_windows();
 
     void update();
     void resize();

@@ -28,7 +28,9 @@ namespace openloco::ui
                 uint16_t var_83E;
                 uint8_t pad_840[0x85A - 0x840];
                 uint16_t var_85A;
-                uint8_t pad_85C[0x886 - 0x85C];
+                uint8_t pad_85C[0x882 - 0x85C];
+                uint8_t type;               // 0x882
+                uint8_t pad_883[0x886 - 0x883];
                 uint8_t colours[2];
             };
         };
