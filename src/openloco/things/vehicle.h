@@ -7,6 +7,7 @@ namespace openloco
     namespace flags_5f
     {
         constexpr uint8_t can_breakdown = 1 << 1;
+        constexpr uint8_t flag_2 = 1 << 2;
     }
 
 #pragma pack(push, 1)
@@ -20,6 +21,7 @@ namespace openloco
 
     private:
         bool update();
+        void sub_4BAA76();
     };
 #pragma pack(pop)
 }

@@ -18,6 +18,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
+    <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
     <ClCompile Include="window.cpp" />
@@ -49,7 +50,9 @@
     <ClInclude Include="things\thingmgr.h" />
     <ClInclude Include="things\vehicle.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="utility\numeric.hpp" />
     <ClInclude Include="utility\string.hpp" />
+    <ClInclude Include="types.hpp" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />
