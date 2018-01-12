@@ -16,7 +16,7 @@ namespace openloco::config
 
     struct new_config
     {
-        bool breakdowns_disabled = true;
+        bool breakdowns_disabled = false;
     };
 
     #pragma pack(pop)
