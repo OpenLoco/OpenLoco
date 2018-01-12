@@ -1,4 +1,6 @@
+#include "../config.h"
 #include "../interop/interop.hpp"
+#include "../openloco.h"
 #include "thingmgr.h"
 #include "vehicle.h"
 
@@ -55,4 +57,60 @@ bool vehicle::update()
             break;
     }
     return (result & (1 << 8)) != 0;
+}
+
+// 0x004BA8D4
+void vehicle::sub_4BA8D4()
+{
+    switch (var_5D)
+    {
+        case 0:
+        case 1:
+        case 3:
+        case 5:
+        case 6:
+        case 8:
+        case 9:
+            return;
+    }
+
+    auto v = next_car()->next_car()->next_car();
+    if (v->type == 6)
+    {
+        return;
+    }
+
+    while (true)
+    {
+        if (v->var_5F != 4)
+        {
+            if (!(LOCO_GLOBAL(0x00525F5E, uint32_t) & 3))
+            {
+                v = v->next_car()->next_car();
+                // sub_440BEB(v->x, v->y, v->z + 4);
+            }
+        }
+
+        if ((var_5F & flags_5f::can_breakdown) && !is_title_mode())
+        {
+            auto newConfig = config::get_new();
+            if (!newConfig.breakdowns_disabled)
+            {
+
+            }
+        }
+
+        v = v->next_car()->next_car();
+        vehicle * u;
+        do
+        {
+            v = v->next_car();
+            if (v->type == 6)
+            {
+                return;
+            }
+            u = v->next_car()->next_car();
+        }
+        while (u->type != 4);
+    }
 }

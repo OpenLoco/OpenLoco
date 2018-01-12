@@ -17,6 +17,7 @@ namespace openloco
     void * hInstance();
     const char * lpCmdLine();
     bool is_editor_mode();
+    bool is_title_mode();
     bool is_paused();
 
     void prompt_tick_loop(std::function<bool()> tickAction);

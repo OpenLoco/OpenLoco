@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace openloco::config
 {
     #pragma pack(push, 1)
@@ -12,9 +14,15 @@ namespace openloco::config
         uint8_t pad_06[526];
     };
 
+    struct new_config
+    {
+        bool breakdowns_disabled = true;
+    };
+
     #pragma pack(pop)
 
     config_t& get();
+    new_config& get_new();
 
     void read();
     void write();

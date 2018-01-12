@@ -69,6 +69,11 @@ namespace openloco
         return (_screen_flags & screen_flags::editor) != 0;
     }
 
+    bool is_title_mode()
+    {
+        return (_screen_flags & screen_flags::title) != 0;
+    }
+
     bool is_paused()
     {
         return paused_state;
