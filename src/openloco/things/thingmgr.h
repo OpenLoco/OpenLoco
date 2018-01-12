@@ -27,6 +27,8 @@ namespace openloco::thingmgr
     template<typename T>
     T * first();
 
+    thing * create_thing();
+
     void update_vehicles();
     void update_misc_things();
 }

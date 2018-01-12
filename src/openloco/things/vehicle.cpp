@@ -1,4 +1,8 @@
+#include "../audio/audio.h"
+#include "../config.h"
 #include "../interop/interop.hpp"
+#include "../openloco.h"
+#include "../utility/numeric.hpp"
 #include "thingmgr.h"
 #include "vehicle.h"
 
@@ -55,4 +59,89 @@ bool vehicle::update()
             break;
     }
     return (result & (1 << 8)) != 0;
+}
+
+// 0x00440BEB
+static thing * create_black_smoke(loc16 loc)
+{
+    auto t = thingmgr::create_thing();
+    if (t != nullptr)
+    {
+        t->var_14 = 44;
+        t->var_09 = 32;
+        t->var_15 = 34;
+        t->var_00 = 1;
+        t->move_to(loc);
+        t->type = 8;
+        t->var_28 = 0;
+    }
+    return t;
+}
+
+// 0x004BA8D4
+void vehicle::sub_4BA8D4()
+{
+    switch (var_5D)
+    {
+        case 0:
+        case 1:
+        case 3:
+        case 5:
+        case 6:
+        case 8:
+        case 9:
+            return;
+    }
+
+    auto v = next_car()->next_car()->next_car();
+    if (v->type != 6)
+    {
+        while (true)
+        {
+            if (v->var_5F & flags_5f::broken_down)
+            {
+                if ((scenario_ticks() & 3) == 0)
+                {
+                    auto v2 = v->next_car()->next_car();
+                    create_black_smoke(loc16(v2->x, v2->y, v2->z + 4));
+                }
+            }
+
+            if ((v->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
+            {
+                auto newConfig = config::get_new();
+                if (!newConfig.breakdowns_disabled)
+                {
+                    v->var_5F &= ~flags_5f::breakdown_pending;
+                    v->var_5F |= flags_5f::broken_down;
+                    v->var_6A = 5;
+                    sub_4BAA76();
+
+                    auto v2 = v->next_car()->next_car();
+                    auto soundId = (audio::sound_id)rand_next(26, 26 + 6);
+                    audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
+                }
+            }
+
+            v = v->next_car()->next_car();
+            vehicle * u;
+            do
+            {
+                v = v->next_car();
+                if (v->type == 6)
+                {
+                    return;
+                }
+                u = v->next_car()->next_car();
+            }
+            while (u->type != 4);
+        }
+    }
+}
+
+void vehicle::sub_4BAA76()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    LOCO_CALLPROC_X(0x004BAA76, regs);
 }

@@ -7,6 +7,7 @@ namespace openloco::ui
 {
     enum class window_type
     {
+        vehicle = 23,
         town = 33,
         industry = 34,
         window_39 = 39,

@@ -29,6 +29,14 @@ namespace openloco::thingmgr
         return result;
     }
 
+    // 0x004700A5
+    thing * create_thing()
+    {
+        registers regs;
+        LOCO_CALLFUNC_X(0x004700A5, regs);
+        return (thing *)regs.esi;
+    }
+
     // 0x004A8826
     void update_vehicles()
     {

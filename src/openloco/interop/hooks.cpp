@@ -1,4 +1,5 @@
 #include "../input.h"
+#include "../things/vehicle.h"
 #include "../ui.h"
 #include "../windowmgr.h"
 #include "interop.hpp"
@@ -52,6 +53,14 @@ void register_hooks()
         [](registers &regs) -> uint8_t
         {
             openloco::ui::windows::sub_498E9B((openloco::ui::window *)regs.esi);
+            return 0;
+        });
+
+    register_hook(0x004BA8D4,
+        [](registers &regs) -> uint8_t
+        {
+            auto v = (openloco::vehicle *)regs.esi;
+            v->sub_4BA8D4();
             return 0;
         });
 

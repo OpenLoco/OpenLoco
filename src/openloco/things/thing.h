@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <limits>
+#include "../types.hpp"
 
 namespace openloco
 {
@@ -20,15 +21,35 @@ namespace openloco
             uint8_t pad_all[128];
             struct
             {
-                uint8_t pad_00;
+                uint8_t var_00;
                 uint8_t type;
                 uint8_t pad_02;
                 uint8_t pad_03;
                 thing_id_t next_thing_id;   // 0x04
-                uint8_t pad_06[0x3A - 0x06];
+                uint8_t pad_06[0x09 - 0x06];
+                uint8_t var_09;
+                uint8_t pad_0A[0x0E - 0x0A];
+                int16_t x;                  // 0x0E
+                int16_t y;                  // 0x10
+                int16_t z;                  // 0x12
+                uint8_t var_14;
+                uint8_t var_15;
+                uint8_t pad_16[0x28 - 0x16];
+                uint16_t var_28;
+                uint8_t pad_2A[0x3A - 0x2A];
                 thing_id_t next_car_id;     // 0x3A
+                uint8_t pad_3C[0x5D - 0x3C];
+                uint8_t var_5D;
+                uint8_t pad_5E;
+                uint8_t var_5F;             // 0x5F (bit 1 = can break down)
+                uint8_t pad_60[0x6A - 0x60];
+                uint8_t var_6A;
+                uint8_t pad_6B[0x73 - 0x6B];
+                uint8_t var_73;             // 0x73 (bit 0 = broken down)
             };
         };
+
+        void move_to(loc16 loc);
     };
 #pragma pack(pop)
 }

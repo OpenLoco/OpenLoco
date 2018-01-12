@@ -23,6 +23,7 @@
 #include "things/thingmgr.h"
 #include "tutorial.h"
 #include "ui.h"
+#include "utility/numeric.hpp"
 #include "windowmgr.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
@@ -49,6 +50,9 @@ namespace openloco
     loco_global<uint8_t, 0x00508F17> paused_state;
     loco_global<uint8_t, 0x00508F1A> game_speed;
     loco_global<uint8_t, 0x0050AF26> byte_50AF26;
+    loco_global<uint32_t, 0x00525E18> _srand0;
+    loco_global<uint32_t, 0x00525E1C> _srand1;
+    loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
     void tick_logic(int32_t count);
     void tick_logic();
@@ -69,9 +73,19 @@ namespace openloco
         return (_screen_flags & screen_flags::editor) != 0;
     }
 
+    bool is_title_mode()
+    {
+        return (_screen_flags & screen_flags::title) != 0;
+    }
+
     bool is_paused()
     {
         return paused_state;
+    }
+
+    uint32_t scenario_ticks()
+    {
+        return _scenario_ticks;
     }
 
     bool sub_4054B9()
@@ -549,10 +563,10 @@ namespace openloco
     // 0x0046ABCB
     void tick_logic()
     {
-        LOCO_GLOBAL(0x00525F5E, int32_t)++;
+        _scenario_ticks++;
         LOCO_GLOBAL(0x00525F64, int32_t)++;
-        LOCO_GLOBAL(0x00525FCC, int32_t) = LOCO_GLOBAL(0x00525E18, int32_t);
-        LOCO_GLOBAL(0x00525FD0, int32_t) = LOCO_GLOBAL(0x00525E1C, int32_t);
+        LOCO_GLOBAL(0x00525FCC, int32_t) = _srand0;
+        LOCO_GLOBAL(0x00525FD0, int32_t) = _srand1;
         LOCO_CALLPROC_X(0x004613F0);
         LOCO_GLOBAL(0x00F25374, uint8_t) = LOCO_GLOBAL(0x009C871C, uint8_t);
         LOCO_CALLPROC_X(0x004968C7);
@@ -618,6 +632,21 @@ namespace openloco
     void sub_48A18C()
     {
         LOCO_CALLPROC_X(0x0048A18C);
+    }
+
+    uint32_t rand_next()
+    {
+        auto srand0 = _srand0;
+        auto srand1 = _srand1;
+        _srand0 = utility::ror<uint32_t>(srand1 ^ 0x1234567F, 7);
+        _srand1 = utility::ror<uint32_t>(srand0, 3);
+        return _srand1;
+    }
+
+    int32_t rand_next(int32_t low, int32_t high)
+    {
+        int32_t positive = rand_next() & 0x7FFFFFFF;
+        return low + (positive % (high - low));
     }
 
     // 0x00406386
