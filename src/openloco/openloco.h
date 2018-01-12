@@ -19,7 +19,10 @@ namespace openloco
     bool is_editor_mode();
     bool is_title_mode();
     bool is_paused();
+    uint32_t scenario_ticks();
 
     void prompt_tick_loop(std::function<bool()> tickAction);
     void sub_48A18C();
+    uint32_t rand_next();
+    int32_t rand_next(int32_t low, int32_t high);
 }

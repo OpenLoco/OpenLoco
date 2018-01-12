@@ -6,8 +6,8 @@ namespace openloco
 {
     namespace flags_5f
     {
-        constexpr uint8_t can_breakdown = 1 << 1;
-        constexpr uint8_t flag_2 = 1 << 2;
+        constexpr uint8_t breakdown_pending = 1 << 1;
+        constexpr uint8_t broken_down = 1 << 2;
     }
 
 #pragma pack(push, 1)

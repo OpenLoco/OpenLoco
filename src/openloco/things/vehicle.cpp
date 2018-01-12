@@ -61,7 +61,8 @@ bool vehicle::update()
     return (result & (1 << 8)) != 0;
 }
 
-static thing * sub_440BEB(loc16 loc)
+// 0x00440BEB
+static thing * create_black_smoke(loc16 loc)
 {
     auto t = thingmgr::create_thing();
     if (t != nullptr)
@@ -93,58 +94,48 @@ void vehicle::sub_4BA8D4()
     }
 
     auto v = next_car()->next_car()->next_car();
-    if (v->type == 6)
+    if (v->type != 6)
     {
-        return;
-    }
-
-    while (true)
-    {
-        if (v->var_5F != 4)
+        while (true)
         {
-            if (!(LOCO_GLOBAL(0x00525F5E, uint32_t) & 3))
+            if (v->var_5F & flags_5f::broken_down)
             {
-                v = v->next_car()->next_car();
-                sub_440BEB(loc16(v->x, v->y, v->z + 4));
+                if ((scenario_ticks() & 3) == 0)
+                {
+                    auto v2 = v->next_car()->next_car();
+                    create_black_smoke(loc16(v2->x, v2->y, v2->z + 4));
+                }
             }
-        }
 
-        if ((v->var_5F & flags_5f::can_breakdown) && !is_title_mode())
-        {
-            auto newConfig = config::get_new();
-            if (!newConfig.breakdowns_disabled)
+            if ((v->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
             {
-                v->var_5F &= ~flags_5f::can_breakdown;
-                v->var_5F |= flags_5f::flag_2;
-                v->var_6A = 5;
-                v->sub_4BAA76();
+                auto newConfig = config::get_new();
+                if (!newConfig.breakdowns_disabled)
+                {
+                    v->var_5F &= ~flags_5f::breakdown_pending;
+                    v->var_5F |= flags_5f::broken_down;
+                    v->var_6A = 5;
+                    sub_4BAA76();
 
-                auto v2 = v->next_car()->next_car();
-
-                // rand_next()
-                auto unk18 = LOCO_GLOBAL(0x00525E18, uint32_t);
-                auto unk1C = LOCO_GLOBAL(0x00525E1C, uint32_t);
-                LOCO_GLOBAL(0x00525E18, uint32_t) = utility::ror(unk1C ^ 0x1234567F, 7);
-                LOCO_GLOBAL(0x00525E1C, uint32_t) = utility::ror(unk18, 3);
-
-                auto al = LOCO_GLOBAL(0x00525E1C, uint32_t) & 0xFF;
-                auto eax = (audio::sound_id)(26 + (((al * 6) >> 8) & 0xFF));
-                audio::play_sound(eax, location<int16_t>(v2->x, v2->y, v2->z + 22));
+                    auto v2 = v->next_car()->next_car();
+                    auto soundId = (audio::sound_id)rand_next(26, 26 + 6);
+                    audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
+                }
             }
-        }
 
-        v = v->next_car()->next_car();
-        vehicle * u;
-        do
-        {
-            v = v->next_car();
-            if (v->type == 6)
+            v = v->next_car()->next_car();
+            vehicle * u;
+            do
             {
-                return;
+                v = v->next_car();
+                if (v->type == 6)
+                {
+                    return;
+                }
+                u = v->next_car()->next_car();
             }
-            u = v->next_car()->next_car();
+            while (u->type != 4);
         }
-        while (u->type != 4);
     }
 }
 
