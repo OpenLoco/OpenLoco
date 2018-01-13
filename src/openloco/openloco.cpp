@@ -12,6 +12,7 @@
 
 #include "audio/audio.h"
 #include "config.h"
+#include "environment.h"
 #include "graphics/gfx.h"
 #include "input.h"
 #include "interop/interop.hpp"
@@ -238,12 +239,6 @@ namespace openloco
         LOCO_CALLPROC_X(0x00431A8A, regs);
     }
 
-    // 0x004412CE
-    void resolve_paths()
-    {
-        LOCO_CALLPROC_X(0x004412CE);
-    }
-
     // 0x00407FFD
     bool is_already_running(const char * mutexName)
     {
@@ -260,10 +255,21 @@ namespace openloco
         LOCO_CALLPROC_X(0x004BE621, regs);
     }
 
+    // 0x0044155B
+    void check_game_file_exists(int i)
+    {
+        registers regs;
+        regs.ebx = i;
+        LOCO_CALLPROC_X(0x0044155B, regs);
+    }
+
     // 0x0044154B
     void check_game_files_exist()
     {
-        LOCO_CALLPROC_X(0x0044154B);
+        for (int i = 0; i < 48; i++)
+        {
+            check_game_file_exists(i);
+        }
     }
 
     // 0x004414C5
@@ -303,7 +309,7 @@ namespace openloco
         LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
         LOCO_CALLPROC_X(0x004078BE);
         LOCO_CALLPROC_X(0x004BF476);
-        resolve_paths();
+        environment::resolve_paths();
         progressbar::begin(0x440, 0);
         progressbar::increment(0x1E);
         startup_checks();

@@ -1,3 +1,4 @@
+#include "../environment.h"
 #include "../input.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
@@ -7,6 +8,18 @@
 void register_hooks()
 {
     using namespace openloco::ui::windows;
+
+    register_hook(0x004416B5,
+        [](registers &regs) -> uint8_t
+        {
+            using namespace openloco::environment;
+
+            auto buffer = (char *)0x009D0D72;
+            auto path = get_path((path_id)regs.ebx);
+            std::strcpy(buffer, path.make_preferred().u8string().c_str());
+            regs.ebx = (int32_t)buffer;
+            return 0;
+        });
 
     // Replace ui::update() with our own
     register_hook(0x004524C1,
