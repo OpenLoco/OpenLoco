@@ -68,17 +68,17 @@ namespace openloco::interop
         \n\
         push %%ebx \n\
         push %%ebp \n\
-        push %[address] 	\n\
-        mov %[eax], %%eax 	\n\
-        mov %[ebx], %%ebx 	\n\
-        mov %[ecx], %%ecx 	\n\
-        mov %[edx], %%edx 	\n\
-        mov %[esi], %%esi 	\n\
-        mov %[edi], %%edi 	\n\
-        mov %[ebp], %%ebp 	\n\
-        call *(%%esp) 	\n\
+        push %[address] \n\
+        mov %[eax], %%eax \n\
+        mov %[ebx], %%ebx \n\
+        mov %[ecx], %%ecx \n\
+        mov %[edx], %%edx \n\
+        mov %[esi], %%esi \n\
+        mov %[edi], %%edi \n\
+        mov %[ebp], %%ebp \n\
+        call *(%%esp) \n\
         lahf \n\
-        add $4, %%esp 	\n\
+        add $4, %%esp \n\
         pop %%ebp \n\
         pop %%ebx \n\
         /* Load result with flags */ \n\
@@ -215,7 +215,7 @@ namespace openloco::interop
         mov %[_ecx], %%eax      \n\
         mov %%ecx, (%%eax)  \n\
         /* Pop ebx reg into ecx*/ \n\
-        pop %%ecx		\n\
+        pop %%ecx\n\
         mov %[_ebx], %%eax \n\
         mov %%ecx, (%%eax) \n\
         \n\
