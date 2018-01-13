@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -66,6 +67,7 @@ namespace openloco::ui
     static SDL_Window * window;
     static SDL_Surface * surface;
     static SDL_Palette * palette;
+    static std::vector<SDL_Cursor *> _cursors;
 
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
@@ -150,7 +152,45 @@ namespace openloco::ui
     // 0x00452001
     void initialise_cursors()
     {
-        LOCO_CALLPROC_X(0x00452001);
+        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
+        _cursors.push_back(nullptr);
+        _cursors.push_back(nullptr);
+        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS));
+        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));
+        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT));
+        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE));
+    }
+
+    void dispose_cursors()
+    {
+        for (auto cursor : _cursors)
+        {
+            SDL_FreeCursor(cursor);
+        }
+        _cursors.clear();
+    }
+
+    // 0x00407BA3
+    // edx: cusor_id
+    void set_cursor(cursor_id id)
+    {
+        if (_cursors.size() >= 0)
+        {
+            auto index = (size_t)id;
+            if (index >= _cursors.size())
+            {
+                // Default to cursor 0
+                index = 0;
+            }
+
+            auto cursor = _cursors[index];
+            if (cursor == nullptr && index != 0)
+            {
+                // Default to cursor 0
+                cursor = _cursors[0];
+            }
+            SDL_SetCursor(cursor);
+        }
     }
 
     // 0x0040447F

@@ -29,6 +29,20 @@ void register_hooks()
             return 0;
         });
 
+    register_hook(0x00407BA3,
+        [](registers &regs) -> uint8_t
+        {
+            auto cursor = (openloco::ui::cursor_id)regs.edx;
+            openloco::ui::set_cursor(cursor);
+            return 0;
+        });
+    register_hook(0x004CF142,
+        [](registers &regs) -> uint8_t
+        {
+            openloco::ui::set_cursor(openloco::ui::cursor_id::blank);
+            return 0;
+        });
+
     register_hook(0x00445AB9,
         [](registers &regs) -> uint8_t
         {

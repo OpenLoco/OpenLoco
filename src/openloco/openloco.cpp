@@ -705,6 +705,7 @@ namespace openloco
                 audio::initialise_dsound();
                 run();
                 audio::dispose_dsound();
+                ui::dispose_cursors();
                 ui::dispose_input();
 
                 // TODO extra clean up code
