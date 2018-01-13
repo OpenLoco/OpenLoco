@@ -195,6 +195,28 @@ namespace openloco::ui
         }
     }
 
+    // 0x00407FCD
+    void get_cursor_pos(int32_t &x, int32_t &y)
+    {
+        SDL_GetMouseState(&x, &y);
+    }
+
+    // 0x00407FEE
+    void set_cursor_pos(int32_t x, int32_t y)
+    {
+        SDL_WarpMouseInWindow(window, x, y);
+    }
+
+    void hide_cursor()
+    {
+        SDL_ShowCursor(0);
+    }
+
+    void show_cursor()
+    {
+        SDL_ShowCursor(1);
+    }
+
     // 0x0040447F
     void initialise_input()
     {
@@ -468,10 +490,7 @@ namespace openloco::ui
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    addr<0x0113E72C, int32_t>() = e.motion.x;
-                    addr<0x0113E730, int32_t>() = e.motion.y;
-                    addr<0x0114084C, int32_t>() = e.motion.xrel;
-                    addr<0x01140840, int32_t>() = e.motion.yrel;
+                    input::move_mouse(e.motion.x, e.motion.y, e.motion.xrel, e.motion.yrel);
                     break;
                 case SDL_MOUSEWHEEL:
                     addr<0x00525330, int32_t>() += e.wheel.y * 128;

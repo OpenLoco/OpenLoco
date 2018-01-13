@@ -25,6 +25,10 @@ namespace openloco::ui
     void dispose_input();
     void dispose_cursors();
     void set_cursor(cursor_id id);
+    void get_cursor_pos(int32_t &x, int32_t &y);
+    void set_cursor_pos(int32_t x, int32_t y);
+    void hide_cursor();
+    void show_cursor();
     void update();
     void render();
     bool process_messages();

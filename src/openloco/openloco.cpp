@@ -211,21 +211,6 @@ namespace openloco
         }
     }
 
-    // 0x00407FCD
-    void get_cursor_pos(int32_t &x, int32_t &y)
-    {
-        POINT point;
-        GetCursorPos(&point);
-        x = point.x;
-        y = point.y;
-    }
-
-    // 0x00407FEE
-    void set_cursor_pos(int32_t x, int32_t y)
-    {
-        SetCursorPos(x, y);
-    }
-
     bool sub_4034FC(int32_t &a, int32_t &b)
     {
         auto result = ((int32_t(*)(int32_t &, int32_t &))(0x004034FC))(a, b);
@@ -411,7 +396,7 @@ namespace openloco
         {
             byte_50AF26 = 16;
             gfx::clear(gfx::screen_dpi(), 0);
-            get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
@@ -432,7 +417,7 @@ namespace openloco
                         call(0x00403575);
                     }
                 }
-                set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 gfx::invalidate_screen();
                 if (byte_50AF26 != 96)
                 {
@@ -545,8 +530,8 @@ namespace openloco
             if (byte_50AF26 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
-                get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
 

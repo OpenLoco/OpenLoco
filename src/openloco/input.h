@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace openloco::input
 {
     enum class mouse_button
@@ -36,6 +38,7 @@ namespace openloco::input
 
     void handle_keyboard();
     void enqueue_mouse_button(mouse_button button);
+    void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
 }

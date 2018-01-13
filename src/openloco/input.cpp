@@ -1,9 +1,6 @@
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include "input.h"
 #include "interop/interop.hpp"
+#include "ui.h"
 
 using namespace openloco::interop;
 
@@ -11,8 +8,8 @@ namespace openloco::input
 {
     loco_global<uint32_t, 0x00523368> _flags;
     loco_global<uint8_t, 0x0052336D> _state;
-    loco_global<uint32_t, 0x005251C0> _cursor_drag_start_x;
-    loco_global<uint32_t, 0x005251C4> _cursor_drag_start_y;
+    static int32_t _cursor_drag_start_x;
+    static int32_t _cursor_drag_start_y;
     loco_global<uint32_t, 0x00525374> _cursor_drag_state;
 
     bool has_flag(input_flags value)
@@ -47,18 +44,21 @@ namespace openloco::input
         ((void(*)(int))0x00406FEC)((int32_t)button);
     }
 
+    void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
+    {
+        addr<0x0113E72C, int32_t>() = x;
+        addr<0x0113E730, int32_t>() = y;
+        addr<0x0114084C, int32_t>() = relX;
+        addr<0x01140840, int32_t>() = relY;
+    }
+
     void sub_407218()
     {
         if (_cursor_drag_state == 0)
         {
             _cursor_drag_state = 1;
-
-            POINT p;
-            GetCursorPos(&p);
-            _cursor_drag_start_x = p.x;
-            _cursor_drag_start_y = p.y;
-
-            ShowCursor(FALSE);
+            ui::get_cursor_pos(_cursor_drag_start_x, _cursor_drag_start_y);
+            ui::hide_cursor();
         }
     }
 
@@ -67,8 +67,8 @@ namespace openloco::input
         if (_cursor_drag_state != 0)
         {
             _cursor_drag_state = 0;
-            SetCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
-            ShowCursor(TRUE);
+            ui::set_cursor_pos(_cursor_drag_start_x, _cursor_drag_start_y);
+            ui::show_cursor();
         }
     }
 }
