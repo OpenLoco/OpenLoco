@@ -22,6 +22,7 @@
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
+    <ClCompile Include="utility\string.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />

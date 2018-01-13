@@ -5,7 +5,10 @@
 
 namespace openloco::utility
 {
-    bool iequals(const std::string_view &a, const std::string_view &b)
+    std::string to_utf8(const std::wstring_view &src);
+    std::wstring to_utf16(const std::string_view &src);
+
+    static inline bool iequals(const std::string_view &a, const std::string_view &b)
     {
         if (a.size() != b.size())
         {

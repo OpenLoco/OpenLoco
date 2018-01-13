@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "interop/interop.hpp"
 
 namespace openloco::ui
@@ -17,4 +18,6 @@ namespace openloco::ui
     void update();
     void render();
     bool process_messages();
+    void show_message_box(const std::string &title, const std::string &message);
+    std::string prompt_directory(const std::string &title);
 }

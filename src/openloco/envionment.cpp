@@ -1,5 +1,8 @@
+#include <iostream>
+#include "config.h"
 #include "environment.h"
 #include "interop/interop.hpp"
+#include "ui.h"
 #include "utility/collection.hpp"
 
 namespace openloco::environment
@@ -14,9 +17,79 @@ namespace openloco::environment
 
     static fs::path get_sub_path(path_id id);
 
+    static bool validate_loco_install_path(const fs::path &path)
+    {
+        if (path.empty())
+        {
+            return false;
+        }
+        else
+        {
+            auto g1Path = path / get_sub_path(path_id::g1);
+            return fs::exists(g1Path);
+        }
+    }
+
+    fs::path auto_detect_loco_install_path()
+    {
+        static constexpr const char * searchPaths[] =
+        {
+            "C:/Program Files (x86)/Atari/Locomotion"
+        };
+
+        std::cout << "Searching for Locomotion install path..." << std::endl;
+        for (auto path : searchPaths)
+        {
+            if (validate_loco_install_path(path))
+            {
+                std::cout << "  found: " << path << std::endl;
+                return path;
+            }
+        }
+        return fs::path();
+    }
+
+    fs::path resolve_loco_install_path()
+    {
+        auto &cfg = config::read_new_config();
+        auto path = fs::path(cfg.loco_install_path);
+        if (!path.empty())
+        {
+            if (validate_loco_install_path(path))
+            {
+                config::write_new_config();
+                return path;
+            }
+            std::cerr << "Configured install path for Locomotion is missing data/g1.dat." << std::endl;
+        }
+
+        path = auto_detect_loco_install_path();
+        if (!path.empty())
+        {
+            cfg.loco_install_path = path.make_preferred().u8string();
+            config::write_new_config();
+            return path;
+        }
+        else
+        {
+            std::cerr << "Unable to find install path for Locomotion." << std::endl <<
+                         "You will need to manually provide it." << std::endl;
+            ui::show_message_box("OpenLoco", "Select your Locomotion install path.");
+            path = ui::prompt_directory("Select your Locomotion install path.");
+            if (validate_loco_install_path(path))
+            {
+                return path;
+            }
+            
+            std::cerr << "Path is missing g1.dat." << std::endl;
+            ui::show_message_box("OpenLoco", "Path is missing data/g1.dat.");
+            std::exit(-1);
+        }
+    }
+
     fs::path get_loco_install_path()
     {
-        return "C:/Program Files (x86)/Atari/Locomotion";
+        return _path_install.get();
     }
 
     // 0x004416B5
@@ -36,7 +109,7 @@ namespace openloco::environment
     // 0x004412CE
     void resolve_paths()
     {
-        auto basePath = get_loco_install_path();
+        auto basePath = resolve_loco_install_path();
         set_directory(_path_install, basePath);
         set_directory(_path_saves_single_player, basePath / "Single Player Saved Games/");
         set_directory(_path_saves_two_player, basePath / "Two Player Saved Games/");

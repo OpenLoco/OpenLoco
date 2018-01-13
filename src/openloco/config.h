@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace openloco::config
 {
@@ -16,6 +17,7 @@ namespace openloco::config
 
     struct new_config
     {
+        std::string loco_install_path;
         bool breakdowns_disabled = false;
     };
 
@@ -24,6 +26,8 @@ namespace openloco::config
     config_t& get();
     new_config& get_new();
 
-    void read();
+    config_t& read();
+    new_config& read_new_config();
     void write();
+    void write_new_config();
 }
