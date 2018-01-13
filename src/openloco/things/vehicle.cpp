@@ -7,6 +7,7 @@
 #include "vehicle.h"
 
 using namespace openloco;
+using namespace openloco::interop;
 
 vehicle * vehicle::next_vehicle()
 {
@@ -39,23 +40,23 @@ bool vehicle::update()
     switch (type)
     {
         case 0:
-            result = LOCO_CALLPROC_X(0x004A8B81, regs);
+            result = call(0x004A8B81, regs);
             break;
         case 1:
-            result = LOCO_CALLPROC_X(0x004A9788, regs);
+            result = call(0x004A9788, regs);
             break;
         case 2:
-            result = LOCO_CALLPROC_X(0x004A9B0B, regs);
+            result = call(0x004A9B0B, regs);
             break;
         case 3:
-            result = LOCO_CALLPROC_X(0x004AA008, regs);
+            result = call(0x004AA008, regs);
             break;
         case 4:
         case 5:
-            result = LOCO_CALLPROC_X(0x004AA1D0, regs);
+            result = call(0x004AA1D0, regs);
             break;
         case 6:
-            result = LOCO_CALLPROC_X(0x004AA24A, regs);
+            result = call(0x004AA24A, regs);
             break;
     }
     return (result & (1 << 8)) != 0;
@@ -143,5 +144,5 @@ void vehicle::sub_4BAA76()
 {
     registers regs;
     regs.esi = (int32_t)this;
-    LOCO_CALLPROC_X(0x004BAA76, regs);
+    call(0x004BAA76, regs);
 }

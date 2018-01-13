@@ -1,12 +1,5 @@
-#include <memory>
+#include <cstring>
 #include "interop.hpp"
-
-registers::registers()
-{
-    // We set registers to known undefined values so we are easily aware when
-    // code is attempting to use undefined registers.
-    std::memset(this, 0xCC, sizeof(registers));
-}
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
 #define PLATFORM_X86
@@ -21,35 +14,45 @@ registers::registers()
 #define DISABLE_OPT
 #endif // defined(__GNUC__)
 
-// This variable serves a purpose of identifying a crash if it has happened inside original code.
-// When switching to original code, stack frame pointer is modified and prevents breakpad from providing stack trace.
-volatile int32_t _originalAddress = 0;
-
-int32_t DISABLE_OPT LOCO_CALLPROC_X(int32_t address, int32_t _eax, int32_t _ebx, int32_t _ecx, int32_t _edx, int32_t _esi, int32_t _edi, int32_t _ebp)
+namespace openloco::interop
 {
-    int32_t result = 0;
-    _originalAddress = address;
+    registers::registers()
+    {
+        // We set registers to known undefined values so we are easily aware when
+        // code is attempting to use undefined registers.
+        std::memset(this, 0xCC, sizeof(registers));
+    }
+
+    // This variable serves a purpose of identifying a crash if it has happened inside original code.
+    // When switching to original code, stack frame pointer is modified and prevents breakpad from providing stack trace.
+    volatile int32_t _originalAddress = 0;
+
+#ifdef _ENABLE_CALL_BYVALUE_
+    static int32_t DISABLE_OPT call_byval(int32_t address, int32_t _eax, int32_t _ebx, int32_t _ecx, int32_t _edx, int32_t _esi, int32_t _edi, int32_t _ebp)
+    {
+        int32_t result = 0;
+        _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
-    __asm {
-        push ebp
-        push address
-        mov eax, _eax
-        mov ebx, _ebx
-        mov ecx, _ecx
-        mov edx, _edx
-        mov esi, _esi
-        mov edi, _edi
-        mov ebp, _ebp
-        call[esp]
-        lahf
-        pop ebp
-        pop ebp
-        /* Load result with flags */
-        mov result, eax
-    }
+        __asm {
+            push ebp
+            push address
+            mov eax, _eax
+            mov ebx, _ebx
+            mov ecx, _ecx
+            mov edx, _edx
+            mov esi, _esi
+            mov edi, _edi
+            mov ebp, _ebp
+            call[esp]
+            lahf
+            pop ebp
+            pop ebp
+            /* Load result with flags */
+            mov result, eax
+        }
 #else
-    __asm__ volatile ("\
+        __asm__ volatile ("\
         \n\
         push %%ebx \n\
         push %%ebp \n\
@@ -69,93 +72,94 @@ int32_t DISABLE_OPT LOCO_CALLPROC_X(int32_t address, int32_t _eax, int32_t _ebx,
         /* Load result with flags */ \n\
         mov %%eax, %[result] \n\
         " : [address] "+m" (address), [eax] "+m" (_eax), [ebx] "+m" (_ebx), [ecx] "+m" (_ecx), [edx] "+m" (_edx), [esi] "+m" (_esi), [edi] "+m" (_edi), [ebp] "+m" (_ebp), [result] "+m" (result)
-        :
-        : "eax", "ecx", "edx", "esi", "edi", "memory"
-        );
+            :
+            : "eax", "ecx", "edx", "esi", "edi", "memory"
+            );
 #endif
 #endif // PLATFORM_X86
-    _originalAddress = 0;
-    // lahf only modifies ah, zero out the rest
-    return result & 0xFF00;
-}
+        _originalAddress = 0;
+        // lahf only modifies ah, zero out the rest
+        return result & 0xFF00;
+    }
+#endif
 
-int32_t DISABLE_OPT LOCO_CALLFUNC_X(int32_t address, int32_t *_eax, int32_t *_ebx, int32_t *_ecx, int32_t *_edx, int32_t *_esi, int32_t *_edi, int32_t *_ebp)
-{
-    int32_t result = 0;
-    _originalAddress = address;
+    static int32_t DISABLE_OPT call_byref(int32_t address, int32_t *_eax, int32_t *_ebx, int32_t *_ecx, int32_t *_edx, int32_t *_esi, int32_t *_edi, int32_t *_ebp)
+    {
+        int32_t result = 0;
+        _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
-    __asm {
-        // Store C's base pointer
-        push ebp
-        push ebx
-        // Store address to call
-        push address
+        __asm {
+            // Store C's base pointer
+            push ebp
+            push ebx
+            // Store address to call
+            push address
 
-        // Set all registers to the input values
-        mov eax, [_eax]
-        mov eax, [eax]
-        mov ebx, [_ebx]
-        mov ebx, [ebx]
-        mov ecx, [_ecx]
-        mov ecx, [ecx]
-        mov edx, [_edx]
-        mov edx, [edx]
-        mov esi, [_esi]
-        mov esi, [esi]
-        mov edi, [_edi]
-        mov edi, [edi]
-        mov ebp, [_ebp]
-        mov ebp, [ebp]
+            // Set all registers to the input values
+            mov eax, [_eax]
+            mov eax, [eax]
+            mov ebx, [_ebx]
+            mov ebx, [ebx]
+            mov ecx, [_ecx]
+            mov ecx, [ecx]
+            mov edx, [_edx]
+            mov edx, [edx]
+            mov esi, [_esi]
+            mov esi, [esi]
+            mov edi, [_edi]
+            mov edi, [edi]
+            mov ebp, [_ebp]
+            mov ebp, [ebp]
 
-        // Call function
-        call[esp]
+            // Call function
+            call[esp]
 
-        // Store output eax
-        push eax
-        push ebp
-        push ebx
-        mov ebp, [esp + 20]
-        mov ebx, [esp + 16]
+            // Store output eax
+            push eax
+            push ebp
+            push ebx
+            mov ebp, [esp + 20]
+            mov ebx, [esp + 16]
 
-        // Get resulting ecx, edx, esi, edi registers
+            // Get resulting ecx, edx, esi, edi registers
 
-        mov eax, [_edi]
-        mov[eax], edi
-        mov eax, [_esi]
-        mov[eax], esi
-        mov eax, [_edx]
-        mov[eax], edx
-        mov eax, [_ecx]
-        mov[eax], ecx
+            mov eax, [_edi]
+            mov[eax], edi
+            mov eax, [_esi]
+            mov[eax], esi
+            mov eax, [_edx]
+            mov[eax], edx
+            mov eax, [_ecx]
+            mov[eax], ecx
 
-        // Pop ebx reg into ecx
-        pop ecx
-        mov eax, [_ebx]
-        mov[eax], ecx
+            // Pop ebx reg into ecx
+            pop ecx
+            mov eax, [_ebx]
+            mov[eax], ecx
 
-        // Pop ebp reg into ecx
-        pop ecx
-        mov eax, [_ebp]
-        mov[eax], ecx
+            // Pop ebp reg into ecx
+            pop ecx
+            mov eax, [_ebp]
+            mov[eax], ecx
 
-        pop eax
-        // Get resulting eax register
-        mov ecx, [_eax]
-        mov[ecx], eax
+            pop eax
+            // Get resulting eax register
+            mov ecx, [_eax]
+            mov[ecx], eax
 
-        // Save flags as return in eax
-        lahf
-        // Pop address
-        pop ebp
+            // Save flags as return in eax
+            lahf
+            // Pop address
+            pop ebp
 
-        pop ebx
-        pop ebp
-        /* Load result with flags */
-        mov result, eax
-    }
+            pop ebx
+            pop ebp
+            /* Load result with flags */
+            mov result, eax
+        }
 #else
-    __asm__ volatile ("\
+        __asm__ volatile ("\
         \n\
         /* Store C's base pointer*/     \n\
         push %%ebp        \n\
@@ -224,43 +228,47 @@ int32_t DISABLE_OPT LOCO_CALLFUNC_X(int32_t address, int32_t *_eax, int32_t *_eb
         mov %%eax, %[result] \n\
         " : [address] "+m" (address), [_eax] "+m" (_eax), [_ebx] "+m" (_ebx), [_ecx] "+m" (_ecx), [_edx] "+m" (_edx), [_esi] "+m" (_esi), [_edi] "+m" (_edi), [_ebp] "+m" (_ebp), [result] "+m" (result)
 
-        :
-        : "eax", "ecx", "edx", "esi", "edi", "memory"
-        );
+            :
+            : "eax", "ecx", "edx", "esi", "edi", "memory"
+            );
 #endif
 #endif // PLATFORM_X86
-    _originalAddress = 0;
-    // lahf only modifies ah, zero out the rest
-    return result & 0xFF00;
-}
+        _originalAddress = 0;
+        // lahf only modifies ah, zero out the rest
+        return result & 0xFF00;
+    }
 
-int32_t LOCO_CALLPROC_X(int32_t address, const registers &registers)
-{
-    return LOCO_CALLPROC_X(
-        address,
-        registers.eax,
-        registers.ebx,
-        registers.ecx,
-        registers.edx,
-        registers.esi,
-        registers.edi,
-        registers.ebp);
-}
+#ifdef _ENABLE_CALL_BYVALUE_
+    static int32_t call_byval(int32_t address, const registers &registers)
+    {
+        return call_byval(
+            address,
+            registers.eax,
+            registers.ebx,
+            registers.ecx,
+            registers.edx,
+            registers.esi,
+            registers.edi,
+            registers.ebp);
+    }
+#endif
 
-int32_t LOCO_CALLPROC_X(int32_t address)
-{
-    return LOCO_CALLPROC_X(address, registers());
-}
+    int32_t call(int32_t address)
+    {
+        registers regs;
+        return call(address, regs);
+    }
 
-int32_t LOCO_CALLFUNC_X(int32_t address, registers &registers)
-{
-    return LOCO_CALLFUNC_X(
-        address,
-        &registers.eax,
-        &registers.ebx,
-        &registers.ecx,
-        &registers.edx,
-        &registers.esi,
-        &registers.edi,
-        &registers.ebp);
+    int32_t call(int32_t address, registers &registers)
+    {
+        return call_byref(
+            address,
+            &registers.eax,
+            &registers.ebx,
+            &registers.ecx,
+            &registers.edx,
+            &registers.esi,
+            &registers.edi,
+            &registers.ebp);
+    }
 }

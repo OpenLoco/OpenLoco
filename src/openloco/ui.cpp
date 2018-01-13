@@ -25,6 +25,8 @@
 #include "windowmgr.h"
 #include "utility/string.hpp"
 
+using namespace openloco::interop;
+
 namespace openloco::ui
 {
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
@@ -145,7 +147,7 @@ namespace openloco::ui
     void initialise()
     {
 #ifdef _LOCO_WIN32_
-        LOCO_CALLPROC_X(0x0045235D);
+        call(0x0045235D);
 #endif
     }
 
@@ -196,20 +198,20 @@ namespace openloco::ui
     // 0x0040447F
     void initialise_input()
     {
-        LOCO_CALLPROC_X(0x0040447F);
+        call(0x0040447F);
     }
 
     // 0x004045C2
     void dispose_input()
     {
-        LOCO_CALLPROC_X(0x004045C2);
+        call(0x004045C2);
     }
 
     // 0x004524C1
     void update()
     {
 #ifdef _LOCO_WIN32_
-        LOCO_CALLPROC_X(0x004524C1);
+        call(0x004524C1);
 #endif
     }
 
@@ -270,7 +272,7 @@ namespace openloco::ui
             }
 
             // Copy pixels from the virtual screen buffer to the surface
-            gfx::drawpixelinfo_t &dpi = gfx::screen_dpi;
+            auto &dpi = gfx::screen_dpi();
             if (dpi.bits != nullptr)
             {
                 std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);

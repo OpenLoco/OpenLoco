@@ -1,6 +1,8 @@
 #include "interop/interop.hpp"
 #include "progressbar.h"
 
+using namespace openloco::interop;
+
 namespace openloco::progressbar
 {
     // 0x004CF5C5
@@ -10,7 +12,7 @@ namespace openloco::progressbar
         registers regs;
         regs.eax = maximum;
         regs.edx = edx;
-        LOCO_CALLPROC_X(0x004CF5C5, regs);
+        call(0x004CF5C5, regs);
     }
 
     // 0x004CF621
@@ -19,12 +21,12 @@ namespace openloco::progressbar
     {
         registers regs;
         regs.eax = value;
-        LOCO_CALLPROC_X(0x004CF621, regs);
+        call(0x004CF621, regs);
     }
 
     // 0x004CF60B
     void end()
     {
-        LOCO_CALLPROC_X(0x004CF60B);
+        call(0x004CF60B);
     }
 }

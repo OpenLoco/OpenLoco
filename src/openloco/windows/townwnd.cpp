@@ -2,6 +2,8 @@
 #include "../openloco.h"
 #include "../windowmgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::ui::windows
 {
     // 0x00498E9B
@@ -23,7 +25,7 @@ namespace openloco::ui::windows
     {
         registers regs;
         regs.dx = townId;
-        LOCO_CALLPROC_X(0x00446F6B, regs);
+        call(0x00446F6B, regs);
         return (window *)regs.esi;
     }
 }

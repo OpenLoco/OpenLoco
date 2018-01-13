@@ -5,6 +5,7 @@
 #include "interop/interop.hpp"
 #include "config.h"
 
+using namespace openloco::interop;
 namespace fs = std::experimental::filesystem;
 
 namespace openloco::config
@@ -28,14 +29,14 @@ namespace openloco::config
     // 0x00441A6C
     config_t& read()
     {
-        LOCO_CALLPROC_X(0x00441A6C);
+        call(0x00441A6C);
         return _config;
     }
 
     // 0x00441BB8
     void write()
     {
-        LOCO_CALLPROC_X(0x00441BB8);
+        call(0x00441BB8);
         write_new_config();
     }
 

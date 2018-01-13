@@ -1,6 +1,8 @@
 #include "interop/interop.hpp"
 #include "scenariomgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::scenariomgr
 {
     // 0x0044452F
@@ -8,6 +10,6 @@ namespace openloco::scenariomgr
     {
         registers regs;
         regs.al = al;
-        LOCO_CALLPROC_X(0x0044452F, regs);
+        call(0x0044452F, regs);
     }
 }

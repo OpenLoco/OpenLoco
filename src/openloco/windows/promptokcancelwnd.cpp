@@ -6,6 +6,8 @@
 #include "../ui.h"
 #include "../windowmgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::ui::windows
 {
 #pragma pack (push, 1)
@@ -52,11 +54,11 @@ namespace openloco::ui::windows
                 {
                     input::handle_keyboard();
                     sub_48A18C();
-                    LOCO_CALLPROC_X(0x004CD3D0);
-                    LOCO_CALLPROC_X(0x004BEC5B);
+                    call(0x004CD3D0);
+                    call(0x004BEC5B);
                     windowmgr::update();
-                    LOCO_CALLPROC_X(0x004C98CF);
-                    LOCO_CALLPROC_X(0x004CF63B);
+                    call(0x004C98CF);
+                    call(0x004CF63B);
                     return windowmgr::find(window_type::prompt_ok_cancel) != nullptr;
                 });
             windowmgr::current_modal_type(originalModal);

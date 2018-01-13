@@ -5,6 +5,8 @@
 #include "ui.h"
 #include "utility/collection.hpp"
 
+using namespace openloco::interop;
+
 namespace openloco::environment
 {
     loco_global_array<char, 260, 0x009D118E> _path_buffer;

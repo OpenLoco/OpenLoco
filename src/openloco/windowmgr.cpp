@@ -3,6 +3,8 @@
 #include "ui.h"
 #include "windowmgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::ui::windowmgr
 {
     namespace find_flag
@@ -37,13 +39,13 @@ namespace openloco::ui::windowmgr
     // 0x004C6118
     void update()
     {
-        LOCO_CALLPROC_X(0x004C6118);
+        call(0x004C6118);
     }
 
     // 0x004392BD
     void resize()
     {
-        LOCO_CALLPROC_X(0x004392BD);
+        call(0x004392BD);
     }
 
     // 0x004C9B56
@@ -51,7 +53,7 @@ namespace openloco::ui::windowmgr
     {
         registers regs;
         regs.cx = (uint8_t)type | find_flag::by_type;
-        LOCO_CALLFUNC_X(0x004C9B56, regs);
+        call(0x004C9B56, regs);
         return (window *)regs.esi;
     }
 
@@ -61,7 +63,7 @@ namespace openloco::ui::windowmgr
         registers regs;
         regs.cl = (uint8_t)type;
         regs.dx = id;
-        LOCO_CALLFUNC_X(0x004C9B56, regs);
+        call(0x004C9B56, regs);
         return (window *)regs.esi;
     }
 
@@ -70,7 +72,7 @@ namespace openloco::ui::windowmgr
     {
         registers regs;
         regs.cx = (uint8_t)type | find_flag::by_type;
-        LOCO_CALLFUNC_X(0x004CC692, regs);
+        call(0x004CC692, regs);
     }
 
     // 0x004CC692
@@ -79,7 +81,7 @@ namespace openloco::ui::windowmgr
         registers regs;
         regs.cl = (uint8_t)type;
         regs.dx = id;
-        LOCO_CALLFUNC_X(0x004CC692, regs);
+        call(0x004CC692, regs);
     }
 
     // 0x004C9F5D
@@ -97,7 +99,7 @@ namespace openloco::ui::windowmgr
         regs.ebx = (height << 16) | (width & 0xFFFF);
         regs.ecx = (uint8_t)type | (flags << 8);
         regs.edx = (int32_t)events;
-        LOCO_CALLFUNC_X(0x004C9F5D, regs);
+        call(0x004C9F5D, regs);
         return (window *)regs.esi;
     }
 

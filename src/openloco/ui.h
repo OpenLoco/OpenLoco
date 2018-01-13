@@ -1,12 +1,9 @@
 #pragma once
 
 #include <string>
-#include "interop/interop.hpp"
 
 namespace openloco::ui
 {
-    extern loco_global<void *, 0x00525320> hwnd;
-
     enum class cursor_id
     {
         pointer,

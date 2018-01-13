@@ -2,6 +2,8 @@
 #include "../openloco.h"
 #include "thingmgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::thingmgr
 {
     loco_global_array<thing_id_t, num_thing_lists, 0x00525E40> _heads;
@@ -33,7 +35,7 @@ namespace openloco::thingmgr
     thing * create_thing()
     {
         registers regs;
-        LOCO_CALLFUNC_X(0x004700A5, regs);
+        call(0x004700A5, regs);
         return (thing *)regs.esi;
     }
 
@@ -55,6 +57,6 @@ namespace openloco::thingmgr
     // 0x004402F4
     void update_misc_things()
     {
-        LOCO_CALLPROC_X(0x004402F4);
+        call(0x004402F4);
     }
 }

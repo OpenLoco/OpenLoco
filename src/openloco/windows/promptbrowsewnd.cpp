@@ -9,6 +9,7 @@
 #include "../utility/string.hpp"
 #include "../windowmgr.h"
 
+using namespace openloco::interop;
 namespace fs = std::experimental::filesystem;
 
 namespace openloco::ui::windows
@@ -27,14 +28,14 @@ namespace openloco::ui::windows
 
     void sub_446A93()
     {
-        LOCO_CALLPROC_X(0x00446A93);
+        call(0x00446A93);
     }
 
     void sub_4CEB67(int16_t dx)
     {
         registers regs;
         regs.dx = dx;
-        LOCO_CALLPROC_X(0x004CEB67, regs);
+        call(0x004CEB67, regs);
     }
 
     // 0x00445AB9
@@ -87,11 +88,11 @@ namespace openloco::ui::windows
                 {
                     input::handle_keyboard();
                     sub_48A18C();
-                    LOCO_CALLPROC_X(0x004CD3D0);
-                    LOCO_CALLPROC_X(0x004BEC5B);
+                    call(0x004CD3D0);
+                    call(0x004BEC5B);
                     windowmgr::update();
-                    LOCO_CALLPROC_X(0x004C98CF);
-                    LOCO_CALLPROC_X(0x004CF63B);
+                    call(0x004C98CF);
+                    call(0x004CF63B);
                     return windowmgr::find(window_type::prompt_browse) != nullptr;
                 });
             windowmgr::current_modal_type(window_type::undefined);

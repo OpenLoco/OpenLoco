@@ -5,6 +5,8 @@
 #include "input.h"
 #include "interop/interop.hpp"
 
+using namespace openloco::interop;
+
 namespace openloco::input
 {
     loco_global<uint32_t, 0x00523368> _flags;
@@ -36,7 +38,7 @@ namespace openloco::input
     // 0x004BE92A
     void handle_keyboard()
     {
-        LOCO_CALLPROC_X(0x004BE92A);
+        call(0x004BE92A);
     }
 
     // 0x00406FEC

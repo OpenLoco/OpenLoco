@@ -29,6 +29,7 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
+using namespace openloco::interop;
 namespace windowmgr = openloco::ui::windowmgr;
 using input_flags = openloco::input::input_flags;
 using input_state = openloco::input::input_state;
@@ -92,7 +93,7 @@ namespace openloco
     bool sub_4054B9()
     {
         registers regs;
-        LOCO_CALLFUNC_X(0x004054B9, regs);
+        call(0x004054B9, regs);
         return regs.eax != 0;
     }
 
@@ -125,13 +126,13 @@ namespace openloco
         free(LOCO_GLOBAL(0x005251F4, void *));
         LOCO_GLOBAL(0x005251F4, void *) = nullptr;
         LOCO_GLOBAL(0x005251F0, void *) = nullptr;
-        LOCO_CALLPROC_X(0x00404ACD);
-        LOCO_CALLPROC_X(0x00404B40);
+        call(0x00404ACD);
+        call(0x00404B40);
     }
 
     void sub_4062D1()
     {
-        LOCO_CALLPROC_X(0x004062D1);
+        call(0x004062D1);
     }
 
     void sub_406417()
@@ -141,17 +142,17 @@ namespace openloco
 
     void sub_40567E()
     {
-        LOCO_CALLPROC_X(0x0040567E);
+        call(0x0040567E);
     }
 
     void sub_4058F5()
     {
-        LOCO_CALLPROC_X(0x004058F5);
+        call(0x004058F5);
     }
 
     void sub_4062E0()
     {
-        LOCO_CALLPROC_X(0x004062E0);
+        call(0x004062E0);
     }
 
     // eax: width
@@ -161,7 +162,7 @@ namespace openloco
         registers regs;
         regs.eax = width;
         regs.ebx = height;
-        LOCO_CALLFUNC_X(0x00451F0B, regs);
+        call(0x00451F0B, regs);
         return regs.al != 0;
     }
 
@@ -170,12 +171,12 @@ namespace openloco
         registers regs;
         regs.eax = eax;
         regs.ebx = ebx;
-        LOCO_CALLPROC_X(0x004BE621, regs);
+        call(0x004BE621, regs);
     }
 
     void sub_45235D()
     {
-        LOCO_CALLPROC_X(0x00452336);
+        call(0x00452336);
         int32_t width = LOCO_GLOBAL(0x0050AEB8, int16_t);
         int32_t height = LOCO_GLOBAL(0x0050AEBA, int16_t);
         if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF || width == -1)
@@ -196,8 +197,8 @@ namespace openloco
             if (LOCO_GLOBAL(0x0052532C, int32_t) == 0 &&
                 LOCO_GLOBAL(0x00113E2E4, int32_t) >= 64)
             {
-                LOCO_CALLPROC_X(0x004524C1);
-                LOCO_CALLPROC_X(0x004523F4);
+                call(0x004524C1);
+                call(0x004523F4);
             }
             else
             {
@@ -236,7 +237,7 @@ namespace openloco
         registers regs;
         regs.bx = bx;
         regs.dx = dx;
-        LOCO_CALLPROC_X(0x00431A8A, regs);
+        call(0x00431A8A, regs);
     }
 
     // 0x00407FFD
@@ -252,7 +253,7 @@ namespace openloco
         registers regs;
         regs.eax = eax;
         regs.ebx = ebx;
-        LOCO_CALLPROC_X(0x004BE621, regs);
+        call(0x004BE621, regs);
     }
 
     // 0x0044155B
@@ -260,7 +261,7 @@ namespace openloco
     {
         registers regs;
         regs.ebx = i;
-        LOCO_CALLPROC_X(0x0044155B, regs);
+        call(0x0044155B, regs);
     }
 
     // 0x0044154B
@@ -275,12 +276,12 @@ namespace openloco
     // 0x004414C5
     void check_game_files_are_valid()
     {
-        LOCO_CALLPROC_X(0x004414C5);
+        call(0x004414C5);
     }
 
     void sub_441444()
     {
-        LOCO_CALLPROC_X(0x00441444);
+        call(0x00441444);
     }
 
     // 0x00441400
@@ -301,20 +302,20 @@ namespace openloco
     // 0x004C57C0
     void initialise_viewports()
     {
-        LOCO_CALLPROC_X(0x004C57C0);
+        call(0x004C57C0);
     }
 
     void initialise()
     {
         LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
-        LOCO_CALLPROC_X(0x004078BE);
-        LOCO_CALLPROC_X(0x004BF476);
+        call(0x004078BE);
+        call(0x004BF476);
         environment::resolve_paths();
         progressbar::begin(0x440, 0);
         progressbar::increment(0x1E);
         startup_checks();
         progressbar::increment(0x28);
-        LOCO_CALLPROC_X(0x004BE5DE);
+        call(0x004BE5DE);
         progressbar::end();
         config::read();
         objectmgr::load_index();
@@ -323,7 +324,7 @@ namespace openloco
         progressbar::increment(0x3C);
         gfx::load_g1();
         progressbar::increment(0xDC);
-        LOCO_CALLPROC_X(0x004949BC);
+        call(0x004949BC);
         progressbar::increment(0xEB);
         progressbar::increment(0xFA);
         ui::initialise_cursors();
@@ -331,18 +332,18 @@ namespace openloco
         ui::initialise();
         audio::initialise();
         initialise_viewports();
-        LOCO_CALLPROC_X(0x004284C8);
-        LOCO_CALLPROC_X(0x004969DA);
-        LOCO_CALLPROC_X(0x0043C88C);
+        call(0x004284C8);
+        call(0x004969DA);
+        call(0x0043C88C);
         LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
 #ifdef _SHOW_INTRO_
         intro::state(intro::intro_state::begin);
 #else
         intro::state(intro::intro_state::end);
 #endif
-        LOCO_CALLPROC_X(0x0046AD7D);
-        LOCO_CALLPROC_X(0x00438A6C);
-        gfx::clear(gfx::screen_dpi, 0x0A0A0A0A);
+        call(0x0046AD7D);
+        call(0x00438A6C);
+        gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
     // 0x0046A794
@@ -409,7 +410,7 @@ namespace openloco
         if (byte_50AF26 == 0)
         {
             byte_50AF26 = 16;
-            gfx::clear(gfx::screen_dpi, 0);
+            gfx::clear(gfx::screen_dpi(), 0);
             get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
             LOCO_GLOBAL(0x00F2539C, int32_t) = 0;
         }
@@ -428,7 +429,7 @@ namespace openloco
                         esi += 2;
                         esi += LOCO_GLOBAL(0x00F25394, int32_t);
                         LOCO_GLOBAL(0x00F2539C, int32_t) |= *((int32_t *)esi);
-                        LOCO_CALLPROC_X(0x00403575);
+                        call(0x00403575);
                     }
                 }
                 set_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
@@ -446,8 +447,8 @@ namespace openloco
                 config::write();
             }
 
-            LOCO_CALLPROC_X(0x00452D1A);
-            LOCO_CALLPROC_X(0x00440DEC);
+            call(0x00452D1A);
+            call(0x00440DEC);
 
             if (LOCO_GLOBAL(0x00525340, int32_t) == 1)
             {
@@ -510,13 +511,13 @@ namespace openloco
                     }
                 }
 
-                LOCO_CALLPROC_X(0x0046FFCA);
+                call(0x0046FFCA);
                 tick_logic(numUpdates);
 
                 LOCO_GLOBAL(0x00525F62, int16_t)++;
-                LOCO_CALLPROC_X(0x0043D9D4);
-                LOCO_CALLPROC_X(0x0048A78D);
-                LOCO_CALLPROC_X(0x0048AC66);
+                call(0x0043D9D4);
+                call(0x0048A78D);
+                call(0x0048AC66);
                 if (tutorial::state() != tutorial::tutorial_state::none &&
                     LOCO_GLOBAL(0x0052532C, int32_t) == 0 &&
                     LOCO_GLOBAL(0x0113E2E4, int32_t) < 0x40)
@@ -524,13 +525,13 @@ namespace openloco
                     tutorial::stop();
 
                     // This ends with a premature tick termination
-                    LOCO_CALLPROC_X(0x0043C0FD);
+                    call(0x0043C0FD);
                     return; // won't be reached
                 }
 
-                LOCO_CALLPROC_X(0x00431695);
-                LOCO_CALLPROC_X(0x00452B5F);
-                LOCO_CALLPROC_X(0x0046FFCA);
+                call(0x00431695);
+                call(0x00452B5F);
+                call(0x0046FFCA);
                 if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF)
                 {
                     LOCO_GLOBAL(0x0050AEC0, uint8_t)++;
@@ -563,7 +564,7 @@ namespace openloco
     // 0x004612EC
     void invalidate_map_animations()
     {
-        LOCO_CALLPROC_X(0x004612EC);
+        call(0x004612EC);
     }
 
     // 0x0046ABCB
@@ -573,23 +574,23 @@ namespace openloco
         LOCO_GLOBAL(0x00525F64, int32_t)++;
         LOCO_GLOBAL(0x00525FCC, int32_t) = _srand0;
         LOCO_GLOBAL(0x00525FD0, int32_t) = _srand1;
-        LOCO_CALLPROC_X(0x004613F0);
+        call(0x004613F0);
         LOCO_GLOBAL(0x00F25374, uint8_t) = LOCO_GLOBAL(0x009C871C, uint8_t);
-        LOCO_CALLPROC_X(0x004968C7);
-        LOCO_CALLPROC_X(0x00463ABA);
-        LOCO_CALLPROC_X(0x004C56F6);
-        LOCO_CALLPROC_X(0x00496B6D);
-        LOCO_CALLPROC_X(0x00453234);
+        call(0x004968C7);
+        call(0x00463ABA);
+        call(0x004C56F6);
+        call(0x00496B6D);
+        call(0x00453234);
         thingmgr::update_vehicles();
-        LOCO_CALLPROC_X(0x0046FFCA);
-        LOCO_CALLPROC_X(0x0048B1FA);
+        call(0x0046FFCA);
+        call(0x0048B1FA);
         thingmgr::update_misc_things();
-        LOCO_CALLPROC_X(0x0046FFCA);
-        LOCO_CALLPROC_X(0x00430319);
+        call(0x0046FFCA);
+        call(0x00430319);
         invalidate_map_animations();
-        LOCO_CALLPROC_X(0x0048A73B);
-        LOCO_CALLPROC_X(0x0048ACFD);
-        LOCO_CALLPROC_X(0x00444387);
+        call(0x0048A73B);
+        call(0x0048ACFD);
+        call(0x00444387);
 
         LOCO_GLOBAL(0x009C871C, uint8_t) = LOCO_GLOBAL(0x00F25374, uint8_t);
         if (LOCO_GLOBAL(0x0050C197, uint8_t) != 0)
@@ -637,7 +638,7 @@ namespace openloco
 
     void sub_48A18C()
     {
-        LOCO_CALLPROC_X(0x0048A18C);
+        call(0x0048A18C);
     }
 
     uint32_t rand_next()
@@ -699,8 +700,8 @@ namespace openloco
             if (sub_4054B9())
             {
                 ui::create_window();
-                LOCO_CALLPROC_X(0x004078FE);
-                LOCO_CALLPROC_X(0x00407B26);
+                call(0x004078FE);
+                call(0x00407B26);
                 ui::initialise_input();
                 audio::initialise_dsound();
                 run();

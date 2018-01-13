@@ -5,7 +5,9 @@
 #include "../windowmgr.h"
 #include "interop.hpp"
 
-void register_hooks()
+using namespace openloco;
+
+void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
 
@@ -25,21 +27,21 @@ void register_hooks()
     register_hook(0x004524C1,
         [](registers &regs) -> uint8_t
         {
-            openloco::ui::update();
+            ui::update();
             return 0;
         });
 
     register_hook(0x00407BA3,
         [](registers &regs) -> uint8_t
         {
-            auto cursor = (openloco::ui::cursor_id)regs.edx;
-            openloco::ui::set_cursor(cursor);
+            auto cursor = (ui::cursor_id)regs.edx;
+            ui::set_cursor(cursor);
             return 0;
         });
     register_hook(0x004CF142,
         [](registers &regs) -> uint8_t
         {
-            openloco::ui::set_cursor(openloco::ui::cursor_id::blank);
+            ui::set_cursor(ui::cursor_id::blank);
             return 0;
         });
 

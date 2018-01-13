@@ -1,14 +1,22 @@
+#include "../interop/interop.hpp"
 #include "../ui.h"
 #include "gfx.h"
 
+using namespace openloco::interop;
+
 namespace openloco::gfx
 {
-    loco_global<drawpixelinfo_t, 0x0050B884> screen_dpi;
+    loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+
+    drawpixelinfo_t& screen_dpi()
+    {
+        return _screen_dpi;
+    }
 
     // 0x0044733C
     void load_g1()
     {
-        LOCO_CALLPROC_X(0x0044733C);
+        call(0x0044733C);
     }
 
     // 0x00447485
@@ -19,7 +27,7 @@ namespace openloco::gfx
         registers regs;
         regs.edi = (int32_t)&dpi;
         regs.ebp = (int32_t)fill;
-        LOCO_CALLPROC_X(0x00447485, regs);
+        call(0x00447485, regs);
     }
 
     // 0x004CD406
@@ -36,6 +44,6 @@ namespace openloco::gfx
         regs.bx = top;
         regs.dx = right;
         regs.bp = bottom;
-        LOCO_CALLPROC_X(0x004C5C69, regs);
+        call(0x004C5C69, regs);
     }
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include "../interop/interop.hpp"
 
 namespace openloco::gfx
 {
@@ -20,10 +19,10 @@ namespace openloco::gfx
 
     #pragma pack(pop)
 
+    drawpixelinfo_t& screen_dpi();
+
     void load_g1();
     void clear(drawpixelinfo_t &dpi, uint32_t fill);
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
-
-    extern loco_global<drawpixelinfo_t, 0x0050B884> screen_dpi;
 }

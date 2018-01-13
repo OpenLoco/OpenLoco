@@ -1,6 +1,8 @@
 #include "interop/interop.hpp"
 #include "tutorial.h"
 
+using namespace openloco::interop;
+
 namespace openloco::tutorial
 {
     static loco_global<uint8_t, 0x00508F19> _state;
@@ -13,6 +15,6 @@ namespace openloco::tutorial
     // 0x0043C70E
     void stop()
     {
-        LOCO_CALLPROC_X(0x0043C70E);
+        call(0x0043C70E);
     }
 }

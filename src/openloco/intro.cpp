@@ -1,6 +1,8 @@
 #include "interop/interop.hpp"
 #include "intro.h"
 
+using namespace openloco::interop;
+
 namespace openloco::intro
 {
     loco_global<uint8_t, 0x0050C195> _state;
@@ -23,6 +25,6 @@ namespace openloco::intro
     // 0x0046AE0C
     void update()
     {
-        LOCO_CALLPROC_X(0x0046AE0C);
+        call(0x0046AE0C);
     }
 }

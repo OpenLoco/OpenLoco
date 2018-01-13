@@ -1,11 +1,13 @@
 #include "../interop/interop.hpp"
 #include "objectmgr.h"
 
+using namespace openloco::interop;
+
 namespace openloco::objectmgr
 {
     // 0x00470F3C
     void load_index()
     {
-        LOCO_CALLPROC_X(0x00470F3C);
+        call(0x00470F3C);
     }
 }
