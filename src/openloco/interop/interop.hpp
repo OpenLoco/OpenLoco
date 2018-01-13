@@ -73,20 +73,13 @@ namespace openloco::interop
     assert_struct_size(registers, 7 * 4);
 #pragma pack(pop)
 
-#ifdef USE_MMAP
-#if defined(PLATFORM_64BIT)
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x200000000)
-#elif defined(PLATFORM_32BIT)
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x09000000)
-#else
-#error "Unknown platform"
-#endif
-#else
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x8A4000)
-#endif
+    uintptr_t remap_address(uintptr_t locoAddress);
 
-#define LOCO_ADDRESS(address, type)     ((type*)(GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + (address)))
-#define LOCO_GLOBAL(address, type)      (*((type*)(GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + (address))))
+    template<uint32_t TAddress, typename T>
+    T& addr()
+    {
+        return *((T *)remap_address(TAddress));
+    }
 
     /**
     * Returns the flags register
@@ -108,22 +101,22 @@ namespace openloco::interop
     {
         void operator=(T rhs)
         {
-            LOCO_GLOBAL(TAddress, T) = rhs;
+            addr<TAddress, T>() = rhs;
         }
 
         operator T&()
         {
-            return LOCO_GLOBAL(TAddress, T);
+            return addr<TAddress, T>();
         }
 
         T& operator *()
         {
-            return LOCO_GLOBAL(TAddress, T);
+            return addr<TAddress, T>();
         }
 
         T* operator ->()
         {
-            return LOCO_ADDRESS(TAddress, T);
+            return &(addr<TAddress, T>());
         }
     };
 
@@ -137,7 +130,7 @@ namespace openloco::interop
 
         T* get()
         {
-            return LOCO_ADDRESS(TAddress, T);
+            return &(addr<TAddress, T>());
         }
 
         size_t size()

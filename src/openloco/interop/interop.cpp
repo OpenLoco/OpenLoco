@@ -14,6 +14,18 @@
 #define DISABLE_OPT
 #endif // defined(__GNUC__)
 
+#ifdef USE_MMAP
+#if defined(PLATFORM_64BIT)
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x200000000)
+#elif defined(PLATFORM_32BIT)
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x09000000)
+#else
+#error "Unknown platform"
+#endif
+#else
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x8A4000)
+#endif
+
 namespace openloco::interop
 {
     registers::registers()
@@ -270,5 +282,10 @@ namespace openloco::interop
             &registers.esi,
             &registers.edi,
             &registers.ebp);
+    }
+
+    uintptr_t remap_address(uintptr_t locoAddress)
+    {
+        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
     }
 }

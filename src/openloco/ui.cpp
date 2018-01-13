@@ -317,7 +317,7 @@ namespace openloco::ui
             };
             #pragma pack(pop, 1)
             auto queue = (key_queue_item_t *)0x0113E300;
-            auto index = LOCO_GLOBAL(0x00525388, uint32_t);
+            auto index = addr<0x00525388, uint32_t>();
             queue[index].b = text[0];
         }
     }
@@ -468,45 +468,45 @@ namespace openloco::ui
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    LOCO_GLOBAL(0x0113E72C, int32_t) = e.motion.x;
-                    LOCO_GLOBAL(0x0113E730, int32_t) = e.motion.y;
-                    LOCO_GLOBAL(0x0114084C, int32_t) = e.motion.xrel;
-                    LOCO_GLOBAL(0x01140840, int32_t) = e.motion.yrel;
+                    addr<0x0113E72C, int32_t>() = e.motion.x;
+                    addr<0x0113E730, int32_t>() = e.motion.y;
+                    addr<0x0114084C, int32_t>() = e.motion.xrel;
+                    addr<0x01140840, int32_t>() = e.motion.yrel;
                     break;
                 case SDL_MOUSEWHEEL:
-                    LOCO_GLOBAL(0x00525330, int32_t) += e.wheel.y * 128;
+                    addr<0x00525330, int32_t>() += e.wheel.y * 128;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    LOCO_GLOBAL(0x0113E9D4, int32_t) = e.button.x;
-                    LOCO_GLOBAL(0x0113E9D8, int32_t) = e.button.y;
-                    LOCO_GLOBAL(0x00525324, int32_t) = 1;
+                    addr<0x0113E9D4, int32_t>() = e.button.x;
+                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                    addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
                         input::enqueue_mouse_button(mouse_button::left_down);
-                        LOCO_GLOBAL(0x0113E8A0, int32_t) = 1;
+                        addr<0x0113E8A0, int32_t>() = 1;
                         break;
                     case SDL_BUTTON_RIGHT:
                         input::enqueue_mouse_button(mouse_button::right_down);
-                        LOCO_GLOBAL(0x0113E0C0, int32_t) = 1;
-                        LOCO_GLOBAL(0x005251C8, int32_t) = 1;
-                        LOCO_GLOBAL(0x01140845, uint8_t) = 0x80;
+                        addr<0x0113E0C0, int32_t>() = 1;
+                        addr<0x005251C8, int32_t>() = 1;
+                        addr<0x01140845, uint8_t>() = 0x80;
                         break;
                     }
                     break;
                 case SDL_MOUSEBUTTONUP:
-                    LOCO_GLOBAL(0x0113E9D4, int32_t) = e.button.x;
-                    LOCO_GLOBAL(0x0113E9D8, int32_t) = e.button.y;
-                    LOCO_GLOBAL(0x00525324, int32_t) = 1;
+                    addr<0x0113E9D4, int32_t>() = e.button.x;
+                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                    addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
                         input::enqueue_mouse_button(mouse_button::left_up);
-                        LOCO_GLOBAL(0x0113E8A0, int32_t) = 0;
+                        addr<0x0113E8A0, int32_t>() = 0;
                         break;
                     case SDL_BUTTON_RIGHT:
                         input::enqueue_mouse_button(mouse_button::right_up);
-                        LOCO_GLOBAL(0x0113E0C0, int32_t) = 0;
-                        LOCO_GLOBAL(0x005251C8, int32_t) = 0;
-                        LOCO_GLOBAL(0x01140845, uint8_t) = 0;
+                        addr<0x0113E0C0, int32_t>() = 0;
+                        addr<0x005251C8, int32_t>() = 0;
+                        addr<0x01140845, uint8_t>() = 0;
                         break;
                     }
                     break;

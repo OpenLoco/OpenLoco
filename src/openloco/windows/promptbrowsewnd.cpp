@@ -73,13 +73,13 @@ namespace openloco::ui::windows
             window->widgets = (widget *)0x0050AD58;
             window->enabled_widgets = 4 | 0x10 | 0x40;
             window->sub_4CA17F();
-            LOCO_GLOBAL(0x01136FA2, int16_t) = -1;
-            LOCO_GLOBAL(0x011370A9, uint8_t) = 0;
-            LOCO_GLOBAL(0x01136FA4, int16_t) = 0;
+            addr<0x01136FA2, int16_t>() = -1;
+            addr<0x011370A9, uint8_t>() = 0;
+            addr<0x01136FA4, int16_t>() = 0;
             window->var_83E = 11;
             window->var_85A = 0xFFFF;
-            LOCO_GLOBAL(0x009DA285, uint8_t) = 0;
-            sub_4CEB67(LOCO_GLOBAL(0x0050ADAC, int16_t) - LOCO_GLOBAL(0x0050ADAA, int16_t));
+            addr<0x009DA285, uint8_t>() = 0;
+            sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
             window->colours[0] = colour::black;
             window->colours[1] = colour::saturated_green;
             windowmgr::current_modal_type(window_type::prompt_browse);

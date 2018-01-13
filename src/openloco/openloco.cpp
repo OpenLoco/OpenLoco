@@ -123,9 +123,9 @@ namespace openloco
 
     void sub_404E58()
     {
-        free(LOCO_GLOBAL(0x005251F4, void *));
-        LOCO_GLOBAL(0x005251F4, void *) = nullptr;
-        LOCO_GLOBAL(0x005251F0, void *) = nullptr;
+        free(addr<0x005251F4, void *>());
+        addr<0x005251F4, void *>() = nullptr;
+        addr<0x005251F0, void *>() = nullptr;
         call(0x00404ACD);
         call(0x00404B40);
     }
@@ -177,12 +177,12 @@ namespace openloco
     void sub_45235D()
     {
         call(0x00452336);
-        int32_t width = LOCO_GLOBAL(0x0050AEB8, int16_t);
-        int32_t height = LOCO_GLOBAL(0x0050AEBA, int16_t);
-        if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF || width == -1)
+        int32_t width = addr<0x0050AEB8, int16_t>();
+        int32_t height = addr<0x0050AEBA, int16_t>();
+        if (addr<0x0050AEC0, uint8_t>() != 0xFF || width == -1)
         {
-            // int32_t screenWidth = LOCO_GLOBAL(0x00113E2C8, int32_t);
-            int32_t screenHeight = LOCO_GLOBAL(0x00113E2CC, int32_t);
+            // int32_t screenWidth = addr<0x00113E2C8, int32_t>();
+            int32_t screenHeight = addr<0x00113E2CC, int32_t>();
             width = 1024;
             height = 768;
             if (screenHeight < 1200)
@@ -193,9 +193,9 @@ namespace openloco
         }
         if (sub_451F0B(width, height))
         {
-            LOCO_GLOBAL(0x0052533C, int32_t) = 0;
-            if (LOCO_GLOBAL(0x0052532C, int32_t) == 0 &&
-                LOCO_GLOBAL(0x00113E2E4, int32_t) >= 64)
+            addr<0x0052533C, int32_t>() = 0;
+            if (addr<0x0052532C, int32_t>() == 0 &&
+                addr<0x00113E2E4, int32_t>() >= 64)
             {
                 call(0x004524C1);
                 call(0x004523F4);
@@ -307,7 +307,7 @@ namespace openloco
 
     void initialise()
     {
-        LOCO_GLOBAL(0x0050C18C, int32_t) = LOCO_GLOBAL(0x00525348, int32_t);
+        addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
         environment::resolve_paths();
@@ -335,7 +335,7 @@ namespace openloco
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        LOCO_GLOBAL(0x00508F14, int16_t) |= 0x20;
+        addr<0x00508F14, int16_t>() |= 0x20;
 #ifdef _SHOW_INTRO_
         intro::state(intro::intro_state::begin);
 #else
@@ -371,8 +371,8 @@ namespace openloco
             return;
         }
 
-        LOCO_GLOBAL(0x00113E87C, int32_t) = 0;
-        LOCO_GLOBAL(0x0005252E0, int32_t) = 0;
+        addr<0x00113E87C, int32_t>() = 0;
+        addr<0x0005252E0, int32_t>() = 0;
         if (!isInitialised)
         {
             isInitialised = true;
@@ -394,7 +394,7 @@ namespace openloco
 
         if (!is_paused())
         {
-            LOCO_GLOBAL(0x0050C1A2, uint32_t) += time_since_last_tick;
+            addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
         }
         if (tutorial::state() != tutorial::tutorial_state::none)
         {
@@ -403,16 +403,16 @@ namespace openloco
         game_command_nest_level = 0;
         ui::update();
 
-        LOCO_GLOBAL(0x005233AE, int32_t) += LOCO_GLOBAL(0x0114084C, int32_t);
-        LOCO_GLOBAL(0x005233B2, int32_t) += LOCO_GLOBAL(0x01140840, int32_t);
-        LOCO_GLOBAL(0x0114084C, int32_t) = 0;
-        LOCO_GLOBAL(0x01140840, int32_t) = 0;
+        addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
+        addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
+        addr<0x0114084C, int32_t>() = 0;
+        addr<0x01140840, int32_t>() = 0;
         if (byte_50AF26 == 0)
         {
             byte_50AF26 = 16;
             gfx::clear(gfx::screen_dpi(), 0);
-            get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
-            LOCO_GLOBAL(0x00F2539C, int32_t) = 0;
+            get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            addr<0x00F2539C, int32_t>() = 0;
         }
         else
         {
@@ -421,18 +421,18 @@ namespace openloco
                 byte_50AF26++;
                 if (byte_50AF26 >= 48)
                 {
-                    if (sub_4034FC(LOCO_GLOBAL(0x00F25394, int32_t), LOCO_GLOBAL(0x00F25398, int32_t)))
+                    if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
                     {
-                        uintptr_t esi = LOCO_GLOBAL(0x00F25390, int32_t) + 4;
-                        esi *= LOCO_GLOBAL(0x00F25398, int32_t);
-                        esi += LOCO_GLOBAL(0x00F2538C, int32_t);
+                        uintptr_t esi = addr<0x00F25390, int32_t>() + 4;
+                        esi *= addr<0x00F25398, int32_t>();
+                        esi += addr<0x00F2538C, int32_t>();
                         esi += 2;
-                        esi += LOCO_GLOBAL(0x00F25394, int32_t);
-                        LOCO_GLOBAL(0x00F2539C, int32_t) |= *((int32_t *)esi);
+                        esi += addr<0x00F25394, int32_t>();
+                        addr<0x00F2539C, int32_t>() |= *((int32_t *)esi);
                         call(0x00403575);
                     }
                 }
-                set_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
+                set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 gfx::invalidate_screen();
                 if (byte_50AF26 != 96)
                 {
@@ -440,7 +440,7 @@ namespace openloco
                     return;
                 }
                 byte_50AF26 = 1;
-                if (LOCO_GLOBAL(0x00F2539C, int32_t) != 0)
+                if (addr<0x00F2539C, int32_t>() != 0)
                 {
                     byte_50AF26 = 2;
                 }
@@ -450,16 +450,16 @@ namespace openloco
             call(0x00452D1A);
             call(0x00440DEC);
 
-            if (LOCO_GLOBAL(0x00525340, int32_t) == 1)
+            if (addr<0x00525340, int32_t>() == 1)
             {
-                LOCO_GLOBAL(0x00525340, int32_t) = 0;
-                LOCO_GLOBAL(0x00508F10, uint16_t) |= (1 << 1);
+                addr<0x00525340, int32_t>() = 0;
+                addr<0x00508F10, uint16_t>() |= (1 << 1);
             }
 
             input::handle_keyboard();
             sub_48A18C();
 
-            LOCO_GLOBAL(0x0050C1AE, int32_t)++;
+            addr<0x0050C1AE, int32_t>()++;
             if (intro::is_active())
             {
                 intro::update();
@@ -475,9 +475,9 @@ namespace openloco
                 {
                     numUpdates = 1;
                 }
-                if (LOCO_GLOBAL(0x00525324, int32_t) == 1)
+                if (addr<0x00525324, int32_t>() == 1)
                 {
-                    LOCO_GLOBAL(0x00525324, int32_t) = 0;
+                    addr<0x00525324, int32_t>() = 0;
                     numUpdates = 1;
                 }
                 else
@@ -495,13 +495,13 @@ namespace openloco
                             break;
                     }
                 }
-                LOCO_GLOBAL(0x0052622E, int16_t) += numUpdates;
+                addr<0x0052622E, int16_t>() += numUpdates;
                 if (is_paused())
                 {
                     numUpdates = 0;
                 }
-                LOCO_GLOBAL(0x00F253A0, uint16_t) = std::max<uint16_t>(1, numUpdates);
-                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + LOCO_GLOBAL(0x00F253A0, int16_t));
+                addr<0x00F253A0, uint16_t>() = std::max<uint16_t>(1, numUpdates);
+                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + addr<0x00F253A0, int16_t>());
                 if (game_speed != 0)
                 {
                     numUpdates *= 3;
@@ -514,13 +514,13 @@ namespace openloco
                 call(0x0046FFCA);
                 tick_logic(numUpdates);
 
-                LOCO_GLOBAL(0x00525F62, int16_t)++;
+                addr<0x00525F62, int16_t>()++;
                 call(0x0043D9D4);
                 call(0x0048A78D);
                 call(0x0048AC66);
                 if (tutorial::state() != tutorial::tutorial_state::none &&
-                    LOCO_GLOBAL(0x0052532C, int32_t) == 0 &&
-                    LOCO_GLOBAL(0x0113E2E4, int32_t) < 0x40)
+                    addr<0x0052532C, int32_t>() == 0 &&
+                    addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
 
@@ -532,10 +532,10 @@ namespace openloco
                 call(0x00431695);
                 call(0x00452B5F);
                 call(0x0046FFCA);
-                if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF)
+                if (addr<0x0050AEC0, uint8_t>() != 0xFF)
                 {
-                    LOCO_GLOBAL(0x0050AEC0, uint8_t)++;
-                    if (LOCO_GLOBAL(0x0050AEC0, uint8_t) != 0xFF)
+                    addr<0x0050AEC0, uint8_t>()++;
+                    if (addr<0x0050AEC0, uint8_t>() != 0xFF)
                     {
                         config::write();
                     }
@@ -544,9 +544,9 @@ namespace openloco
 
             if (byte_50AF26 == 2)
             {
-                LOCO_GLOBAL(0x005252DC, int32_t) = 1;
-                get_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
-                set_cursor_pos(LOCO_GLOBAL(0x00F2538C, int32_t), LOCO_GLOBAL(0x00F25390, int32_t));
+                addr<0x005252DC, int32_t>() = 1;
+                get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
 
@@ -571,11 +571,11 @@ namespace openloco
     void tick_logic()
     {
         _scenario_ticks++;
-        LOCO_GLOBAL(0x00525F64, int32_t)++;
-        LOCO_GLOBAL(0x00525FCC, int32_t) = _srand0;
-        LOCO_GLOBAL(0x00525FD0, int32_t) = _srand1;
+        addr<0x00525F64, int32_t>()++;
+        addr<0x00525FCC, int32_t>() = _srand0;
+        addr<0x00525FD0, int32_t>() = _srand1;
         call(0x004613F0);
-        LOCO_GLOBAL(0x00F25374, uint8_t) = LOCO_GLOBAL(0x009C871C, uint8_t);
+        addr<0x00F25374, uint8_t>() = addr<0x009C871C, uint8_t>();
         call(0x004968C7);
         call(0x00463ABA);
         call(0x004C56F6);
@@ -592,17 +592,17 @@ namespace openloco
         call(0x0048ACFD);
         call(0x00444387);
 
-        LOCO_GLOBAL(0x009C871C, uint8_t) = LOCO_GLOBAL(0x00F25374, uint8_t);
-        if (LOCO_GLOBAL(0x0050C197, uint8_t) != 0)
+        addr<0x009C871C, uint8_t>() = addr<0x00F25374, uint8_t>();
+        if (addr<0x0050C197, uint8_t>() != 0)
         {
             uint16_t bx = 0x043A;
-            uint16_t dx = LOCO_GLOBAL(0x0050C198, uint16_t);
-            if (LOCO_GLOBAL(0x0050C197, uint8_t) == 0xFE)
+            uint16_t dx = addr<0x0050C198, uint16_t>();
+            if (addr<0x0050C197, uint8_t>() == 0xFE)
             {
-                bx = LOCO_GLOBAL(0x0050C198, uint16_t);
+                bx = addr<0x0050C198, uint16_t>();
                 dx = 0xFFFF;
             }
-            LOCO_GLOBAL(0x0050C197, uint8_t) = 0;
+            addr<0x0050C197, uint8_t>() = 0;
             sub_431A8A(bx, dx);
         }
     }
@@ -678,7 +678,7 @@ namespace openloco
 
         while (ui::process_messages())
         {
-            if (LOCO_GLOBAL(0x005252AC, uint32_t) != 0)
+            if (addr<0x005252AC, uint32_t>() != 0)
             {
                 sub_4058F5();
             }

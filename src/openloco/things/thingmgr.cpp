@@ -42,7 +42,7 @@ namespace openloco::thingmgr
     // 0x004A8826
     void update_vehicles()
     {
-        if ((LOCO_GLOBAL(0x00525E28, uint32_t) & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
             auto v = first<vehicle>();
             while (v != nullptr)
