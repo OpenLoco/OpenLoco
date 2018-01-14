@@ -97,4 +97,9 @@ void openloco::interop::register_hooks()
     // keeps moving the process window to 0, 0
     // Can be removed when windowmgr:update() is hooked
     write_ret(0x00406520);
+
+    // Remove check for is road in use when removing roads. It is
+    // quite annoying when it's sometimes only the player's own
+    // vehicles that are using it.
+    write_nop(0x004776DD, 6);
 }
