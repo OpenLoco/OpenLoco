@@ -4,3 +4,4 @@
 - Feature: Towns can now always be renamed (As seen in OpenTTD).
 - Feature: Vehicle breakdowns can now be disabled (As seen in OpenTTD).
 - Feature: Playable in a resizable window.
+- Feature: Click (while holding shift) track / road construction will place 10 pieces in a row.

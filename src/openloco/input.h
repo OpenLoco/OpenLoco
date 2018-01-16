@@ -31,10 +31,17 @@ namespace openloco::input
         viewport_scrolling = 1 << 7
     };
 
+    enum class key_modifier
+    {
+        shift = 1 << 0,
+    };
+
     bool has_flag(input_flags value);
     void set_flag(input_flags value);
     void reset_flag(input_flags value);
     input_state state();
+
+    bool has_key_modifier(key_modifier modifier);
 
     void handle_keyboard();
     void enqueue_mouse_button(mouse_button button);

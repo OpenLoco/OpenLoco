@@ -49,8 +49,8 @@ namespace openloco::ui::windows
         save = 2
     };
 
+    void construction_mouse_up(window &w, uint16_t widgetIndex);
     void station_2_scroll_paint(window &w, gfx::drawpixelinfo_t &dpi);
-
     window * open_town_window(uint16_t townId);
     void sub_498E9B(window * w);
 

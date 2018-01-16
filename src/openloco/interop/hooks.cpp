@@ -79,6 +79,13 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(0x0049D3F6,
+        [](registers &regs) -> uint8_t
+        {
+            ui::windows::construction_mouse_up(*((ui::window *)regs.esi), regs.dx);
+            return 0;
+        });
+
     register_hook(0x0048ED2F,
         [](registers &regs) -> uint8_t
         {
