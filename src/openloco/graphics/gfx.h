@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include "../localisation/stringmgr.h"
+#include "../openloco.h"
 
 namespace openloco::gfx
 {
@@ -23,6 +25,22 @@ namespace openloco::gfx
 
     void load_g1();
     void clear(drawpixelinfo_t &dpi, uint32_t fill);
+    void clear_single(drawpixelinfo_t &dpi, uint8_t paletteId);
+    void draw_string_494B3F(
+        drawpixelinfo_t &dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void * args);
+    void draw_string_494BBF(
+        drawpixelinfo_t &dpi,
+        int16_t x,
+        int16_t y,
+        int16_t width,
+        uint8_t colour,
+        string_id stringId,
+        const void * args);
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
 }

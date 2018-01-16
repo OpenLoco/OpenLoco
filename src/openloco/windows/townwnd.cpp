@@ -18,14 +18,14 @@ namespace openloco::ui::windows
 #endif
     }
 
-    // 0x00446F6B
+    // 0x00499B7E
     // dx: townId
     // esi: {return}
     window * open_town_window(uint16_t townId)
     {
         registers regs;
         regs.dx = townId;
-        call(0x00446F6B, regs);
+        call(0x00499B7E, regs);
         return (window *)regs.esi;
     }
 }

@@ -19,6 +19,8 @@
     <ClCompile Include="envionment.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
+    <ClCompile Include="localisation\stringmgr.cpp" />
+    <ClCompile Include="stationmgr.cpp" />
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
@@ -37,6 +39,7 @@
     <ClCompile Include="openloco.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
+    <ClCompile Include="windows\stationwnd.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
     <ClCompile Include="windows\townwnd.cpp" />
   </ItemGroup>
@@ -47,8 +50,11 @@
     <ClInclude Include="graphics\colours.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
+    <ClInclude Include="localisation\stringmgr.h" />
+    <ClInclude Include="localisation\string_ids.h" />
     <ClInclude Include="objects\objectmgr.h" />
     <ClInclude Include="scenariomgr.h" />
+    <ClInclude Include="stationmgr.h" />
     <ClInclude Include="things\thing.h" />
     <ClInclude Include="things\thingmgr.h" />
     <ClInclude Include="things\vehicle.h" />
@@ -64,6 +70,7 @@
     <ClInclude Include="ui.h" />
     <ClInclude Include="progressbar.h" />
     <ClInclude Include="interop\interop.hpp" />
+    <ClInclude Include="station.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42A6B551-4EC5-4B66-A130-628622CD98C4}</ProjectGuid>

@@ -1,13 +1,19 @@
 #pragma once
 
-#include "openloco.h"
+#include "localisation/stringmgr.h"
 #include "window.h"
+
+namespace openloco::gfx
+{
+    struct drawpixelinfo_t;
+}
 
 namespace openloco::ui
 {
     enum class window_type
     {
         vehicle = 23,
+        station = 24,
         town = 33,
         industry = 34,
         window_39 = 39,
@@ -42,6 +48,8 @@ namespace openloco::ui::windows
         load = 1,
         save = 2
     };
+
+    void station_2_scroll_paint(window &w, gfx::drawpixelinfo_t &dpi);
 
     window * open_town_window(uint16_t townId);
     void sub_498E9B(window * w);

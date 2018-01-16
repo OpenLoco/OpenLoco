@@ -1,4 +1,5 @@
 #include "../environment.h"
+#include "../graphics/gfx.h"
 #include "../input.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
@@ -77,6 +78,16 @@ void openloco::interop::register_hooks()
             openloco::input::sub_407231();
             return 0;
         });
+
+    register_hook(0x0048ED2F,
+        [](registers &regs) -> uint8_t
+        {
+            ui::windows::station_2_scroll_paint(
+                *((ui::window *)regs.esi),
+                *((gfx::drawpixelinfo_t *)regs.edi));
+            return 0;
+        });
+
 
     register_hook(0x00498E9B,
         [](registers &regs) -> uint8_t
