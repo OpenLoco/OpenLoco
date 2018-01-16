@@ -4,7 +4,7 @@
 
 namespace openloco
 {
-    using string_id = uint32_t;
+    using string_id = uint16_t;
 }
 
 namespace openloco::stringmgr

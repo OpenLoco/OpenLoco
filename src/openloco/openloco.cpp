@@ -635,10 +635,15 @@ namespace openloco
         return _srand1;
     }
 
+    int32_t rand_next(int32_t high)
+    {
+        return rand_next(0, high);
+    }
+
     int32_t rand_next(int32_t low, int32_t high)
     {
         int32_t positive = rand_next() & 0x7FFFFFFF;
-        return low + (positive % (high - low));
+        return low + (positive % ((high + 1) - low));
     }
 
     // 0x00406386

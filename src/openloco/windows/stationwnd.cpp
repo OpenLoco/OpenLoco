@@ -2,6 +2,8 @@
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/cargo_object.h"
+#include "../objects/objectmgr.h"
 #include "../stationmgr.h"
 #include "../windowmgr.h"
 
@@ -21,13 +23,8 @@ namespace openloco::ui::windows
         return *(stationmgr::get(get_station_id(w)));
     }
 
-    static string_id get_cargo_string_id(uint32_t cargoId)
-    {
-        auto stringIdPtrs = (uint16_t * *)0x0050C700;
-        auto stringIdPtr = stringIdPtrs[cargoId];
-        auto stringId = *stringIdPtr;
-        return stringId;
-    }
+
+
 
     // 0x0048EF02
     static void draw_rating_bar(window &w, gfx::drawpixelinfo_t &dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
@@ -52,11 +49,11 @@ namespace openloco::ui::windows
         int16_t y = 0;
         for (int i = 0; i < 32; i++)
         {
-            auto &cargo = station.cargo[i];
+            auto &cargo = station.cargo_stats[i];
             if (!cargo.empty())
             {
-                auto cargoStringId = get_cargo_string_id(i);
-                gfx::draw_string_494BBF(dpi, 1, y, 98, 0, string_ids::wcolour2_stringid2, &cargoStringId);
+                auto cargoObj = objectmgr::get_cargo_object(i);
+                gfx::draw_string_494BBF(dpi, 1, y, 98, 0, string_ids::wcolour2_stringid2, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = colour::moss_green;

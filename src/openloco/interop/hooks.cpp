@@ -1,6 +1,7 @@
 #include "../environment.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
+#include "../station.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
 #include "../windowmgr.h"
@@ -76,6 +77,14 @@ void openloco::interop::register_hooks()
         [](registers &regs) -> uint8_t
         {
             openloco::input::sub_407231();
+            return 0;
+        });
+
+    register_hook(0x00492793,
+        [](registers &regs) -> uint8_t
+        {
+            auto station = (openloco::station *)regs.esi;
+            regs.al = (station->update_cargo() != 0);
             return 0;
         });
 

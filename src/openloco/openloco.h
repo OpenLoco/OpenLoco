@@ -22,5 +22,6 @@ namespace openloco
     void prompt_tick_loop(std::function<bool()> tickAction);
     void sub_48A18C();
     uint32_t rand_next();
+    int32_t rand_next(int32_t high);
     int32_t rand_next(int32_t low, int32_t high);
 }
