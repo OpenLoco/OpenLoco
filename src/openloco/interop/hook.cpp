@@ -186,7 +186,7 @@ namespace openloco::interop
     static void write_memory(uint32_t address, const void * data, size_t size)
     {
 #ifdef _WIN32
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
+        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, 0);
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
         int32_t err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE);
@@ -195,7 +195,7 @@ namespace openloco::interop
             perror("mprotect");
         }
 
-        memcpy((void *)address, data,size);
+        memcpy((void *)address, data, size);
 
         err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_EXEC);
         if (err != 0)
