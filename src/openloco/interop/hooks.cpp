@@ -12,7 +12,7 @@
 using namespace openloco;
 
 __attribute__((stdcall))
-void
+static void
 fn_40447f()
 {
     printf("%s\n", __FUNCTION__);
@@ -20,7 +20,7 @@ fn_40447f()
 }
 
 __attribute__((stdcall))
-void
+static void
 fn_404e8c()
 {
     printf("%s\n", __FUNCTION__);
@@ -28,7 +28,7 @@ fn_404e8c()
 }
 
 __attribute__((stdcall))
-void
+static void
 fn_404eac(int i1, int i2, int i3, int i4)
 {
     printf("%s\n", __FUNCTION__);
@@ -36,7 +36,7 @@ fn_404eac(int i1, int i2, int i3, int i4)
 }
 
 __attribute__((stdcall))
-void
+static void
 fn_4054b9()
 {
     printf("%s\n", __FUNCTION__);
@@ -44,7 +44,7 @@ fn_4054b9()
 }
 
 __attribute__((stdcall))
-long
+static long
 fn_timeGetTime()
 {
     printf("%s\n", __FUNCTION__);
@@ -53,7 +53,7 @@ fn_timeGetTime()
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
 __attribute__((stdcall))
-long
+static long
 fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
 {
     printf("%s\n", __FUNCTION__);
@@ -61,14 +61,15 @@ fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
 }
 
 __attribute__((stdcall))
-void
+static void
 fn_4078be()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
+
 __attribute__((stdcall))
-void
+static void
 fn_4078fe()
 {
     printf("%s\n", __FUNCTION__);
@@ -76,7 +77,7 @@ fn_4078fe()
 }
 
 __attribute__((stdcall))
-void
+static void
 fn_407b26()
 {
     printf("%s\n", __FUNCTION__);
@@ -86,21 +87,21 @@ fn_407b26()
 ///region Progress bar
 
 __attribute__((cdecl))
-void
+static void
 fn_4080bb(char *lpWindowName, uint32_t a1)
 {
     printf("Create progress bar\n");
 }
 
 __attribute__((cdecl))
-void
+static void
 fn_408163()
 {
     printf("Destroy progress bar\n");
 }
 
 __attribute__((cdecl))
-void
+static void
 fn_40817b(uint16_t arg0)
 {
     printf("SendMessage(PBM_SETRANGE, %d)\n", arg0);
@@ -108,7 +109,7 @@ fn_40817b(uint16_t arg0)
 }
 
 __attribute__((cdecl))
-void
+static void
 fn_4081ad(int32_t wParam)
 {
     printf("SendMessage(PBM_SETPOS, %d)\n", wParam);
@@ -118,7 +119,7 @@ fn_4081ad(int32_t wParam)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-void
+static void
 fn_FileSeekFromEnd(FILE *a0, int32_t distance)
 {
     printf("seek %d bytes from end\n", distance);
@@ -127,7 +128,7 @@ fn_FileSeekFromEnd(FILE *a0, int32_t distance)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-int32_t
+static int32_t
 fn_FileRead(FILE *a0, char *buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
@@ -138,7 +139,7 @@ fn_FileRead(FILE *a0, char *buffer, int32_t size)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-int
+static int
 fn_CloseHandle(FILE *file)
 {
     printf("%s\n", __FUNCTION__);
@@ -152,7 +153,7 @@ fn_CloseHandle(FILE *file)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-FILE *
+static FILE *
 fn_CreateFile(char *lpFileName)
 {
     printf("%s %s\n", __FUNCTION__, lpFileName);
@@ -182,7 +183,7 @@ public:
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-Session *
+static Session *
 fn_FindFirstFile(char *lpFileName, FindFileData *out)
 {
     printf("%s (%s)\n", __FUNCTION__,lpFileName );
@@ -215,7 +216,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
 }
 
 __attribute__((cdecl))
-bool
+static bool
 fn_FindNextFile(Session *data, FindFileData *out)
 {
     printf("%s\n", __FUNCTION__);
@@ -236,7 +237,7 @@ fn_FindNextFile(Session *data, FindFileData *out)
 }
 
 __attribute__((cdecl))
-void
+static void
 fn_FindClose(Session *data)
 {
     printf("%s\n", __FUNCTION__);
@@ -246,7 +247,7 @@ fn_FindClose(Session *data)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-void *
+static void *
 fn_406bf7(int arg0)
 {
     printf("%s %d\n", __FUNCTION__, arg0);
@@ -255,49 +256,49 @@ fn_406bf7(int arg0)
 }
 
 __attribute__((cdecl))
-void
+static void
 fn_4078b5(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
 __attribute__((cdecl))
-void
+static void
 fnc0(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
 __attribute__((cdecl))
-void
+static void
 fnc1(int i1)
 {
     printf("%s\n", __FUNCTION__);
 }
 
 __attribute__((cdecl))
-void
+static void
 fnc2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
 __attribute__((stdcall))
-void
+static void
 fn0()
 {
     return;
 }
 
 __attribute__((stdcall))
-void
+static void
 fn1(int i1)
 {
     return;
 }
 
 __attribute__((stdcall))
-void
+static void
 fn2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
@@ -305,7 +306,7 @@ fn2(int i1, int i2)
 
 __attribute__((stdcall))
 __attribute__ ((force_align_arg_pointer))
-void *
+static void *
 fn_malloc(uint32_t size)
 {
     //printf("malloc %x\n", (uint32_t)size);
@@ -315,7 +316,7 @@ fn_malloc(uint32_t size)
 
 __attribute__((stdcall))
 __attribute__ ((force_align_arg_pointer))
-void *
+static void *
 fn_realloc(void *src, uint32_t size)
 {
     //printf("malloc %x\n", (uint32_t)size);
