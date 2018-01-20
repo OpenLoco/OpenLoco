@@ -66,9 +66,10 @@ if (UNIX)
             GENERATED true
         )
         # can't use GLOB here, as the files don't exist yet at cmake-time
-		set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-		set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${ROOT_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
+        set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
+        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/ld_script_i386.xc\"")
     endif ()
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LOCO_SEGMENT_LINKER_FLAGS}")
 endif (UNIX)
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
