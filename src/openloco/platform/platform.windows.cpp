@@ -1,25 +1,35 @@
 #ifdef _WIN32
 
+#include <iostream>
+
+#define NOMINMAX
+// We can't use lean and mean if we want timeGetTime
+// #define WIN32_LEAN_AND_MEAN
+#include <shlobj.h>
+#include <windows.h>
+
+#include "../ui.h"
+#include "../utility/string.hpp"
 #include "platform.h"
 
-
-uint32_t openloco::platform::get_time() {
-    return timeGetTime();
-}
-
-
-fs::path  openloco::platform::get_user_directory()
+namespace openloco::platform
 {
-    auto result = fs::path();
-    PWSTR path = nullptr;
-    if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
+    uint32_t openloco::platform::get_time()
     {
-        result = fs::path(path) / "OpenLoco";
+        return timeGetTime();
     }
-    CoTaskMemFree(path);
-    return result;
-}
 
+    fs::path openloco::platform::get_user_directory()
+    {
+        auto result = fs::path();
+        PWSTR path = nullptr;
+        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
+        {
+            result = fs::path(path) / "OpenLoco";
+        }
+        CoTaskMemFree(path);
+        return result;
+    }
 
     static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
     {
@@ -36,38 +46,39 @@ fs::path  openloco::platform::get_user_directory()
         return pszPath;
     }
 
-std::string prompt_directory(const std::string &title)
-{
-    std::string result;
-
-    // Initialize COM and get a pointer to the shell memory allocator
-    LPMALLOC lpMalloc;
-    if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
-        SUCCEEDED(SHGetMalloc(&lpMalloc)))
+    std::string prompt_directory(const std::string &title)
     {
-        auto titleW = utility::to_utf16(title);
-        BROWSEINFOW bi = { 0 };
-        bi.lpszTitle = titleW.c_str();
-        bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
+        std::string result;
 
-        LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
-        if (pidl != nullptr)
+        // Initialize COM and get a pointer to the shell memory allocator
+        LPMALLOC lpMalloc;
+        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
+            SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
-            result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
+            auto titleW = utility::to_utf16(title);
+            BROWSEINFOW bi = { 0 };
+            bi.lpszTitle = titleW.c_str();
+            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
+
+            LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
+            if (pidl != nullptr)
+            {
+                result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
+            }
+            CoTaskMemFree(pidl);
         }
-        CoTaskMemFree(pidl);
-    }
-    else
-    {
-        std::cerr << "Error opening directory browse window";
-    }
-    CoUninitialize();
+        else
+        {
+            std::cerr << "Error opening directory browse window";
+        }
+        CoUninitialize();
 
-    // SHBrowseForFolderW might minimize the main window,
-    // so make sure that it's visible again.
-    ShowWindow((HWND)*hwnd, SW_RESTORE);
+        // SHBrowseForFolderW might minimize the main window,
+        // so make sure that it's visible again.
+        ShowWindow((HWND)ui::hwnd(), SW_RESTORE);
 
-    return result;
+        return result;
+    }
 }
 
 #endif

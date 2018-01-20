@@ -64,7 +64,7 @@ namespace openloco::ui
 
     using set_palette_func = void(*)(const palette_entry_t * palette, int32_t index, int32_t count);
 
-    loco_global<void *, 0x00525320> hwnd;
+    loco_global<void *, 0x00525320> _hwnd;
     loco_global<screen_info_t, 0x0050B884> screen_info;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     loco_global_array<uint8_t, 256, 0x01140740> _keyboard_state;
@@ -77,6 +77,11 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
+
+    void * hwnd()
+    {
+        return _hwnd;
+    }
 
     int32_t width()
     {
@@ -94,7 +99,7 @@ namespace openloco::ui
     void create_window()
     {
 #ifdef _LOCO_WIN32_
-        hwnd = CreateWindowExA(
+        _hwnd = CreateWindowExA(
             WS_EX_TOPMOST,
             WINDOW_CLASS_NAME,
             WINDOW_TITLE,
@@ -129,6 +134,7 @@ namespace openloco::ui
             throw std::runtime_error("Unable to create SDL2 window.");
         }
 
+#ifdef _WIN32
         // Grab the HWND
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
@@ -136,9 +142,7 @@ namespace openloco::ui
         {
             throw std::runtime_error("Unable to fetch SDL2 window system handle.");
         }
-
-#ifdef _WIN32
-        hwnd = wmInfo.info.win.window;
+        _hwnd = wmInfo.info.win.window;
 #endif
 
         // Create a palette for the window
