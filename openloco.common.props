@@ -95,7 +95,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 
   <PropertyGroup>
-    <IncludePath>$(SolutionDir)src;$(SolutionDir)lib\include;$(SolutionDir)lib\include\sdl2;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)src;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental />
   </PropertyGroup>
