@@ -113,7 +113,7 @@ find_package(Boost COMPONENTS filesystem REQUIRED)
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
 
 add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-target_compile_definitions(${PROJECT} PRIVATE -DOPENLOCO_USE_BOOST_FS)
+target_compile_definitions(${PROJECT} PRIVATE -D_OPENLOCO_USE_BOOST_FS_)
 add_dependencies(${PROJECT} segfiles)
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
