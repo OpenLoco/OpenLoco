@@ -14,6 +14,7 @@ namespace openloco
 
     void* hInstance();
     const char* lpCmdLine();
+    void lpCmdLine(const char* path);
     bool is_editor_mode();
     bool is_title_mode();
     bool is_paused();
