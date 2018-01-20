@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdio>
 #include <cstdint>
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
