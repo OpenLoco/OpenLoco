@@ -91,7 +91,7 @@ namespace openloco
         return _scenario_ticks;
     }
 
-    bool sub_4054B9()
+    static bool sub_4054B9()
     {
         registers regs;
         call(0x004054B9, regs);
@@ -101,7 +101,7 @@ namespace openloco
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * malloc(size_t size)
+    static void * malloc(size_t size)
     {
         return ((void *(*)(size_t))0x004D1401)(size);
     }
@@ -109,7 +109,7 @@ namespace openloco
     /**
      * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * realloc(void * address, size_t size)
+    static void * realloc(void * address, size_t size)
     {
         return ((void *(*)(void *, size_t))0x004D1B28)(address, size);
     }
@@ -117,12 +117,12 @@ namespace openloco
     /**
      * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
      */
-    void free(void * address)
+    static void free(void * address)
     {
         ((void(*)(void *))0x004D1355)(address);
     }
 
-    void sub_404E58()
+    static void sub_404E58()
     {
         free(addr<0x005251F4, void *>());
         addr<0x005251F4, void *>() = nullptr;
@@ -131,34 +131,34 @@ namespace openloco
         call(0x00404B40);
     }
 
-    void sub_4062D1()
+    static void sub_4062D1()
     {
         call(0x004062D1);
     }
 
-    void sub_406417()
+    static void sub_406417()
     {
         ((void(*)())0x00406417)();
     }
 
-    void sub_40567E()
+    static void sub_40567E()
     {
         call(0x0040567E);
     }
 
-    void sub_4058F5()
+    static void sub_4058F5()
     {
         call(0x004058F5);
     }
 
-    void sub_4062E0()
+    static void sub_4062E0()
     {
         call(0x004062E0);
     }
 
     // eax: width
     // ebx: height
-    bool sub_451F0B(int32_t width, int32_t height)
+    static bool sub_451F0B(int32_t width, int32_t height)
     {
         registers regs;
         regs.eax = width;
@@ -167,7 +167,7 @@ namespace openloco
         return regs.al != 0;
     }
 
-    void sub_4BE621(int32_t eax, int32_t ebx)
+    static void sub_4BE621(int32_t eax, int32_t ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -175,7 +175,7 @@ namespace openloco
         call(0x004BE621, regs);
     }
 
-    void sub_45235D()
+    static void sub_45235D()
     {
         call(0x00452336);
         int32_t width = addr<0x0050AEB8, int16_t>();
@@ -212,13 +212,13 @@ namespace openloco
         }
     }
 
-    bool sub_4034FC(int32_t &a, int32_t &b)
+    static bool sub_4034FC(int32_t &a, int32_t &b)
     {
         auto result = ((int32_t(*)(int32_t &, int32_t &))(0x004034FC))(a, b);
         return result != 0;
     }
 
-    void sub_431A8A(uint16_t bx, uint16_t dx)
+    static void sub_431A8A(uint16_t bx, uint16_t dx)
     {
         registers regs;
         regs.bx = bx;
@@ -227,14 +227,14 @@ namespace openloco
     }
 
     // 0x00407FFD
-    bool is_already_running(const char * mutexName)
+    static bool is_already_running(const char * mutexName)
     {
         auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
     // 0x004BE621
-    void exit_with_error(string_id eax, string_id ebx)
+    static void exit_with_error(string_id eax, string_id ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -243,7 +243,7 @@ namespace openloco
     }
 
     // 0x0044155B
-    void check_game_file_exists(int i)
+    static void check_game_file_exists(int i)
     {
         registers regs;
         regs.ebx = i;
@@ -251,7 +251,7 @@ namespace openloco
     }
 
     // 0x0044154B
-    void check_game_files_exist()
+    static void check_game_files_exist()
     {
         for (int i = 0; i < 48; i++)
         {
@@ -260,18 +260,18 @@ namespace openloco
     }
 
     // 0x004414C5
-    void check_game_files_are_valid()
+    static void check_game_files_are_valid()
     {
         call(0x004414C5);
     }
 
-    void sub_441444()
+    static void sub_441444()
     {
         call(0x00441444);
     }
 
     // 0x00441400
-    void startup_checks()
+    static void startup_checks()
     {
         if (is_already_running("Locomotion"))
         {
@@ -286,12 +286,12 @@ namespace openloco
     }
 
     // 0x004C57C0
-    void initialise_viewports()
+    static void initialise_viewports()
     {
         call(0x004C57C0);
     }
 
-    void initialise()
+    static void initialise()
     {
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
@@ -333,7 +333,7 @@ namespace openloco
     }
 
     // 0x0046A794
-    void tick()
+    static void tick()
     {
         static bool isInitialised = false;
 
@@ -548,7 +548,7 @@ namespace openloco
     }
 
     // 0x004612EC
-    void invalidate_map_animations()
+    static void invalidate_map_animations()
     {
         call(0x004612EC);
     }
@@ -648,7 +648,7 @@ namespace openloco
     }
 
     // 0x00406386
-    void run()
+    static void run()
     {
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         sub_4062D1();
@@ -682,7 +682,7 @@ namespace openloco
     }
 
     // 0x00406D13
-    void main()
+    static void main()
     {
         std::cout << "OpenLoco v0.1" << std::endl;
         try

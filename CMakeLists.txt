@@ -30,13 +30,13 @@ if (UNIX)
 
     add_custom_command(
             OUTPUT openrct2_text
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=0x1 count=0xD6
+            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=1 count=214
             DEPENDS ${OLOCO_EXE}
     )
     add_custom_command(
             OUTPUT openrct2_data
-            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=0xD7 count=0x4E
-            COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=0x4E count=3133 conv=notrunc
+            COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=215 count=78
+            COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=78 count=3133 conv=notrunc
             DEPENDS ${OLOCO_EXE}
     )
     add_custom_target(segfiles DEPENDS openrct2_text openrct2_data)
