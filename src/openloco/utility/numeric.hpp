@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits.h>
 #include <cstdint>
 #include <type_traits>
 
