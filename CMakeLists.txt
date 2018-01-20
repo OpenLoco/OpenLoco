@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.8)
 
 set (PROJECT openloco)
 
@@ -16,8 +16,8 @@ endif (APPLE)
 
 set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wundef -Wmissing-declarations -Winit-self -Warray-bounds -Waddress -Wchar-subscripts -Wenum-compare")
 
-    set(OBJ_FORMAT "elf32-i386")
-    set(LINKER_SCRIPT "ld_script_i386.xc")
+set(OBJ_FORMAT "elf32-i386")
+set(LINKER_SCRIPT "ld_script_i386.xc")
 
 
 # Handle creating the rct2 text and data files on OS X and Linux
@@ -96,7 +96,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 
 # set necessary flags to compile code as is
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} -std=gnu++11 ${COMMON_COMPILE_OPTIONS} -Wnon-virtual-dtor -std=c++1z")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -Wnon-virtual-dtor")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${PIE_FLAG}")
 
@@ -112,6 +112,8 @@ set(OPENLOCO_COMPILE_DEFINITIONS ${OPENLOCO_COMPILE_DEFINITIONS} -D_OPENLOCO_USE
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
+
+set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
 target_compile_definitions(${PROJECT} PRIVATE ${OPENLOCO_COMPILE_DEFINITIONS})
