@@ -32,7 +32,7 @@ namespace openloco::environment
         }
     }
 
-    fs::path auto_detect_loco_install_path()
+    static fs::path auto_detect_loco_install_path()
     {
         static constexpr const char * searchPaths[] =
         {
@@ -52,7 +52,7 @@ namespace openloco::environment
         return fs::path();
     }
 
-    fs::path resolve_loco_install_path()
+    static fs::path resolve_loco_install_path()
     {
         auto &cfg = config::read_new_config();
         auto path = fs::path(cfg.loco_install_path);
@@ -90,7 +90,7 @@ namespace openloco::environment
         }
     }
 
-    fs::path get_loco_install_path()
+    static fs::path get_loco_install_path()
     {
         return _path_install.get();
     }

@@ -9,5 +9,5 @@ namespace openloco
 
 namespace openloco::stringmgr
 {
-    const char * get(string_id id);
+    const char * get_string(string_id id);
 }

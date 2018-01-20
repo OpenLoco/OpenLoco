@@ -38,7 +38,7 @@ using window_type = openloco::ui::window_type;
 namespace openloco
 {
 
-long timeGetTime() {
+static long timeGetTime() {
     struct timespec spec;
 
     clock_gettime(CLOCK_REALTIME, &spec);
@@ -99,7 +99,7 @@ long timeGetTime() {
         return _scenario_ticks;
     }
 
-    bool sub_4054B9()
+    static bool sub_4054B9()
     {
         registers regs;
         call(0x004054B9, regs);
@@ -109,7 +109,7 @@ long timeGetTime() {
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * malloc(size_t size)
+    static void * malloc(size_t size)
     {
         return ((void *(*)(size_t))0x004D1401)(size);
     }
@@ -117,7 +117,7 @@ long timeGetTime() {
     /**
      * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * realloc(void * address, size_t size)
+    static void * realloc(void * address, size_t size)
     {
         return ((void *(*)(void *, size_t))0x004D1B28)(address, size);
     }
@@ -125,12 +125,12 @@ long timeGetTime() {
     /**
      * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
      */
-    void free(void * address)
+    static void free(void * address)
     {
         ((void(*)(void *))0x004D1355)(address);
     }
 
-    void sub_404E58()
+    static void sub_404E58()
     {
         free(addr<0x005251F4, void *>());
         addr<0x005251F4, void *>() = nullptr;
@@ -139,34 +139,34 @@ long timeGetTime() {
         call(0x00404B40);
     }
 
-    void sub_4062D1()
+    static void sub_4062D1()
     {
         call(0x004062D1);
     }
 
-    void sub_406417()
+    static void sub_406417()
     {
         //((void(*)())0x00406417)();
     }
 
-    void sub_40567E()
+    static void sub_40567E()
     {
         call(0x0040567E);
     }
 
-    void sub_4058F5()
+    static void sub_4058F5()
     {
         call(0x004058F5);
     }
 
-    void sub_4062E0()
+    static void sub_4062E0()
     {
         call(0x004062E0);
     }
 
     // eax: width
     // ebx: height
-    bool sub_451F0B(int32_t width, int32_t height)
+    static bool sub_451F0B(int32_t width, int32_t height)
     {
         registers regs;
         regs.eax = width;
@@ -175,7 +175,7 @@ long timeGetTime() {
         return regs.al != 0;
     }
 
-    void sub_4BE621(int32_t eax, int32_t ebx)
+    static void sub_4BE621(int32_t eax, int32_t ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -183,7 +183,7 @@ long timeGetTime() {
         call(0x004BE621, regs);
     }
 
-    void sub_45235D()
+    static void sub_45235D()
     {
         call(0x00452336);
         int32_t width = addr<0x0050AEB8, int16_t>();
@@ -220,13 +220,13 @@ long timeGetTime() {
         }
     }
 
-    bool sub_4034FC(int32_t &a, int32_t &b)
+    static bool sub_4034FC(int32_t &a, int32_t &b)
     {
         auto result = ((int32_t(*)(int32_t &, int32_t &))(0x004034FC))(a, b);
         return result != 0;
     }
 
-    void sub_431A8A(uint16_t bx, uint16_t dx)
+    static void sub_431A8A(uint16_t bx, uint16_t dx)
     {
         registers regs;
         regs.bx = bx;
@@ -235,7 +235,7 @@ long timeGetTime() {
     }
 
     // 0x00407FFD
-    bool is_already_running(const char * mutexName)
+    static bool is_already_running(const char * mutexName)
     {
         return false;
         auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
@@ -243,7 +243,7 @@ long timeGetTime() {
     }
 
     // 0x004BE621
-    void exit_with_error(string_id eax, string_id ebx)
+    static void exit_with_error(string_id eax, string_id ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -252,7 +252,7 @@ long timeGetTime() {
     }
 
     // 0x0044155B
-    void check_game_file_exists(int i)
+    static void check_game_file_exists(int i)
     {
         registers regs;
         regs.ebx = i;
@@ -260,7 +260,7 @@ long timeGetTime() {
     }
 
     // 0x0044154B
-    void check_game_files_exist()
+    static void check_game_files_exist()
     {
         for (int i = 0; i < 48; i++)
         {
@@ -269,18 +269,18 @@ long timeGetTime() {
     }
 
     // 0x004414C5
-    void check_game_files_are_valid()
+    static void check_game_files_are_valid()
     {
         call(0x004414C5);
     }
 
-    void sub_441444()
+    static void sub_441444()
     {
         //call(0x00441444);
     }
 
     // 0x00441400
-    void startup_checks()
+    static void startup_checks()
     {
         if (is_already_running("Locomotion"))
         {
@@ -295,12 +295,12 @@ long timeGetTime() {
     }
 
     // 0x004C57C0
-    void initialise_viewports()
+    static void initialise_viewports()
     {
         call(0x004C57C0);
     }
 
-    void initialise()
+    static void initialise()
     {
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
@@ -342,7 +342,7 @@ long timeGetTime() {
     }
 
     // 0x0046A794
-    void tick()
+    static void tick()
     {
         static bool isInitialised = false;
 
@@ -564,7 +564,7 @@ long timeGetTime() {
     }
 
     // 0x004612EC
-    void invalidate_map_animations()
+    static void invalidate_map_animations()
     {
         call(0x004612EC);
     }
@@ -664,7 +664,7 @@ long timeGetTime() {
     }
 
     // 0x00406386
-    void run()
+    static void run()
     {
 //        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         sub_4062D1();
@@ -697,160 +697,8 @@ long timeGetTime() {
 //        CoUninitialize();
     }
 
-/**
- * Loads RCT2's data model and remaps the addresses.
- * @returns true if the data integrity check succeeded, otherwise false.
- */
-bool openrct2_setup_rct2_segment()
-{
-    // OpenRCT2 on Linux and macOS is wired to have the original Windows PE sections loaded
-    // necessary. Windows does not need to do this as OpenRCT2 runs as a DLL loaded from the Windows PE.
-    int len = 0x01429000 - 0x8a4000; // 0xB85000, 12079104 bytes or around 11.5MB
-    int err = 0;
-#if defined(USE_MMAP) && (defined(__unix__) || defined(__MACOSX__))
-    #define RDATA_OFFSET 0x004A4000
-	#define DATASEG_OFFSET 0x005E2000
-
-	// Using PE-bear I was able to figure out all the needed addresses to be filled.
-	// There are three sections to be loaded: .rdata, .data and .text, plus another
-	// one to be mapped: DATASEG.
-	// Out of the three, two can simply be mmapped into memory, while the third one,
-	// .data has a virtual size which is much completely different to its file size
-	// (even when taking page-alignment into consideration)
-	//
-	// The sections are as follows (dump from gdb)
-	// [0]     0x401000->0x6f7000 at 0x00001000: .text ALLOC LOAD READONLY CODE HAS_CONTENTS
-	// [1]     0x6f7000->0x8a325d at 0x002f7000: CODESEG ALLOC LOAD READONLY CODE HAS_CONTENTS
-	// [2]     0x8a4000->0x9a5894 at 0x004a4000: .rdata ALLOC LOAD DATA HAS_CONTENTS
-	// [3]     0x9a6000->0x9e2000 at 0x005a6000: .data ALLOC LOAD DATA HAS_CONTENTS
-	// [4]     0x1428000->0x14282bc at 0x005e2000: DATASEG ALLOC LOAD DATA HAS_CONTENTS
-	// [5]     0x1429000->0x1452000 at 0x005e3000: .cms_t ALLOC LOAD READONLY CODE HAS_CONTENTS
-	// [6]     0x1452000->0x14aaf3e at 0x0060c000: .cms_d ALLOC LOAD DATA HAS_CONTENTS
-	// [7]     0x14ab000->0x14ac58a at 0x00665000: .idata ALLOC LOAD READONLY DATA HAS_CONTENTS
-	// [8]     0x14ad000->0x14b512f at 0x00667000: .rsrc ALLOC LOAD DATA HAS_CONTENTS
-	//
-	// .data section, however, has virtual size of 0xA81C3C, and so
-	// 0x9a6000 + 0xA81C3C = 0x1427C3C, which after alignment to page size becomes
-	// 0x1428000, which can be seen as next section, DATASEG
-	//
-	// The data is now loaded into memory with a linker script, which proves to
-	// be more reliable, as mallocs that happen before we reach segment setup
-	// could have already taken the space we need.
-
-	// TODO: UGLY, UGLY HACK!
-	//off_t file_size = 6750208;
-
-	utf8 segmentDataPath[MAX_PATH];
-	openrct2_get_segment_data_path(segmentDataPath, sizeof(segmentDataPath));
-	fdData = open(segmentDataPath, O_RDONLY);
-	if (fdData < 0)
-	{
-		log_fatal("failed to load openrct2_data");
-		exit(1);
-	}
-	log_warning("%p", GOOD_PLACE_FOR_DATA_SEGMENT);
-	segments = mmap((void *)(GOOD_PLACE_FOR_DATA_SEGMENT), len, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE, fdData, 0);
-	log_warning("%p", segments);
-	if ((uintptr_t)segments != GOOD_PLACE_FOR_DATA_SEGMENT) {
-		perror("mmap");
-		return false;
-	}
-#endif // defined(USE_MMAP) && (defined(__unix__) || defined(__MACOSX__))
-
-#if defined(__unix__)
-    int pageSize = getpagesize();
-	int numPages = (len + pageSize - 1) / pageSize;
-	unsigned char *dummy = malloc(numPages);
-
-	err = mincore((void *)segments, len, dummy);
-	bool pagesMissing = false;
-	if (err != 0)
-	{
-		err = errno;
-#ifdef __LINUX__
-		// On Linux ENOMEM means all requested range is unmapped
-		if (err != ENOMEM)
-		{
-			pagesMissing = true;
-			perror("mincore");
-		}
-#else
-		pagesMissing = true;
-		perror("mincore");
-#endif // __LINUX__
-	} else {
-		for (int i = 0; i < numPages; i++)
-		{
-			if (dummy[i] != 1)
-			{
-				pagesMissing = true;
-				void *start = (void *)segments + i * pageSize;
-				void *end = (void *)segments + (i + 1) * pageSize - 1;
-				log_warning("required page %p - %p is not in memory!", start, end);
-			}
-		}
-	}
-	free(dummy);
-	if (pagesMissing)
-	{
-		log_error("At least one of required pages was not found in memory. This can cause segfaults later on.");
-	}
-#if !defined(USE_MMAP)
-	// section: text
-	err = mprotect((void *)0x401000, 0x8a4000 - 0x401000, PROT_READ | PROT_EXEC | PROT_WRITE);
-	if (err != 0)
-	{
-		perror("mprotect");
-	}
-#endif // !defined(USE_MMAP)
-	// section: rw data
-	err = mprotect((void *)segments, 0x01429000 - 0x8a4000, PROT_READ | PROT_WRITE);
-	if (err != 0)
-	{
-		perror("mprotect");
-	}
-#endif // defined(__unix__)
-
-#if defined(USE_MMAP) && defined(__WINDOWS__)
-    segments = VirtualAlloc((void *)(GOOD_PLACE_FOR_DATA_SEGMENT), len, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-	if ((uintptr_t)segments != GOOD_PLACE_FOR_DATA_SEGMENT) {
-		log_error("VirtualAlloc, segments = %p, GetLastError = 0x%x", segments, GetLastError());
-		return false;
-	}
-
-	utf8 segmentDataPath[MAX_PATH];
-	openrct2_get_segment_data_path(segmentDataPath, sizeof(segmentDataPath));
-	SDL_RWops * rw = SDL_RWFromFile(segmentDataPath, "rb");
-	if (rw == NULL)
-	{
-		log_error("failed to load file");
-		return false;
-	}
-	if (SDL_RWread(rw, segments, len, 1) != 1) {
-		log_error("Unable to read chunk header!");
-		return false;
-	}
-	SDL_RWclose(rw);
-#endif // defined(USE_MMAP) && defined(__WINDOWS__)
-
-    // Check that the expected data is at various addresses.
-    // Start at 0x9a6000, which is start of .data, to skip the region containing addresses to DLL
-    // calls, which can be changed by windows/wine loader.
-//    const uint32_t c1 = sawyercoding_calculate_checksum((const uint8*)(segments + (uintptr_t)(0x009A6000 - 0x8a4000)), 0x009E0000 - 0x009A6000);
-//    const uint32_t c2 = sawyercoding_calculate_checksum((const uint8*)(segments + (uintptr_t)(0x01428000 - 0x8a4000)), 0x014282BC - 0x01428000);
-//    const uint32_t exp_c1 = 10114815;
-//    const uint32_t exp_c2 = 23564;
-//    if (c1 != exp_c1 || c2 != exp_c2) {
-//        printf("c1 = %u, expected %u, match %d", c1, exp_c1, c1 == exp_c1);
-//        printf("c2 = %u, expected %u, match %d", c2, exp_c2, c2 == exp_c2);
-//        return false;
-//    }
-
-    return true;
-}
-
     // 0x00406D13
-    void main()
+    static void main()
     {
         std::cout << "OpenLoco v0.1" << std::endl;
         try
