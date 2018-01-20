@@ -6,6 +6,7 @@
 #include "../environment.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
+#include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
@@ -47,16 +48,33 @@ static void STDCALL fn_404eac(int i1, int i2, int i3, int i4)
     return;
 }
 
-static void STDCALL fn_4054b9()
+#pragma pack(push, 1)
+
+struct palette_entry_t
 {
-    printf("%s\n", __FUNCTION__);
-    return;
+    uint8_t b, g, r, a;
+};
+#pragma pack(pop)
+using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
+static interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
+
+FORCE_ALIGN_ARG_POINTER
+static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32_t count)
+{
+    (*set_palette_callback)(palette, index, count);
 }
 
-static long STDCALL fn_timeGetTime()
+static bool STDCALL fn_4054b9()
 {
     printf("%s\n", __FUNCTION__);
-    return 0;
+    return true;
+}
+
+FORCE_ALIGN_ARG_POINTER
+static uint32_t STDCALL lib_timeGetTime()
+{
+    printf("%s\n", __FUNCTION__);
+    return platform::get_time();
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
@@ -128,20 +146,22 @@ static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 FORCE_ALIGN_ARG_POINTER
 static int CDECL fn_CloseHandle(FILE* file)
 {
-    printf("%s\n", __FUNCTION__);
+    // printf("%s\n", __FUNCTION__);
     if (file == nullptr)
     {
         return 1;
     }
 
-    return fclose(file);
+    fclose(file);
+    return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static FILE* CDECL fn_CreateFile(char* lpFileName)
 {
-    printf("%s %s\n", __FUNCTION__, lpFileName);
-    return fopen(lpFileName, "r");
+    //printf("%s %s\n", __FUNCTION__, lpFileName);
+    FILE* pFILE = fopen(lpFileName, "r");
+    return pFILE;
     // return CreateFile(lpFileName, 0x80000000, FILE_SHARE_READ,NULL, OPEN_EXISTING, 0x10000080, 0);
 }
 
@@ -276,24 +296,138 @@ static void CDECL fn_free(void* block)
     return free(block);
 }
 
+STDCALL
+void fn_dump(uint32_t address)
+{
+    printf("Missing hook: 0x%x\n", address);
+}
+
+enum
+{
+    DS_OK = 0,
+    DSERR_NODRIVER = 0x88780078,
+};
+
+uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
+{
+    printf("lib_DirectSoundCreate(%lx, %lx, %lx)\n", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
+
+    return DSERR_NODRIVER;
+}
+
+uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
+{
+    printf("CreateRectRgn(%d, %d, %d, %d)\n", x1, y1, x2, y2);
+    return 0;
+}
+
+uint STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
+{
+    printf("GetUpdateRgn(%lx, %lx, %d)\n", hWnd, hRgn, bErase);
+    return 0;
+}
+
+void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
+{
+    printf("OpenMutexA(0x%x, %d, %s)\n", dwDesiredAccess, bInheritHandle, lpName);
+
+    return nullptr;
+}
+
+bool STDCALL lib_DeleteFileA(char* lpFileName)
+{
+    printf("DeleteFileA(%s)\n", lpFileName);
+
+    return false;
+}
+
+bool STDCALL lib_WriteFile(
+    FILE* hFile,
+    char* buffer,
+    size_t nNumberOfBytesToWrite,
+    uint32_t* lpNumberOfBytesWritten,
+    uintptr_t lpOverlapped)
+{
+    printf("WriteFile(%s)\n", buffer);
+
+    return true;
+}
+
+void* STDCALL FORCE_ALIGN_ARG_POINTER
+lib_CreateFileA(
+    char* lpFileName,
+    uint32_t dwDesiredAccess,
+    uint32_t dwShareMode,
+    uintptr_t lpSecurityAttributes,
+    uint32_t dwCreationDisposition,
+    uint32_t dwFlagsAndAttributes,
+    uintptr_t hTemplateFile)
+{
+    printf("CreateFile(%s, %x)\n", lpFileName, dwDesiredAccess);
+
+    return fopen(lpFileName, "r");
+}
+
+FORCE_ALIGN_ARG_POINTER
+bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
+{
+    // FILE_ATTRIBUTE_NORMAL = 0x80
+    assert(dwFileAttributes == 0x80);
+    printf("SetFileAttributes(%s, %x)\n", lpFileName, dwFileAttributes);
+
+    if (access(lpFileName, R_OK | W_OK) != -1)
+    {
+        // File exists
+        return true;
+    }
+
+    // FIXME: create file if doesnt exist
+    assert(false);
+    return false;
+}
+
+void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
+{
+    printf("CreateMutexA(0x%lx, %d, %s)\n", lmMutexAttributes, bInitialOwner, lpName);
+
+    return nullptr;
+}
+
+void STDCALL lib_CloseHandle(int a0)
+{
+    printf("CloseHandle(%d)\n", a0);
+}
+
+FORCE_ALIGN_ARG_POINTER
+void STDCALL lib_PostQuitMessage(int32_t exitCode)
+{
+    printf("lib_PostQuitMessage(%d)\n", exitCode);
+    exit(exitCode);
+}
+
+void STDCALL lib_4(int div, int addr, int a0, int a1, int a2, int a3)
+{
+    printf("::::::::::::::::::: %x: %x %x %x %x\n", addr, a0, a1, a2, a3);
+}
+
 static void register_no_win32_hooks()
 {
     using namespace openloco::interop;
 
     write_jmp(0x40447f, (void*)&fn_40447f);
-    write_jmp(0x404cd3, (void*)&fnc1);
+    //write_jmp(0x404cd3, (void*)&fnc1);
     write_jmp(0x404e8c, (void*)&fn_404e8c);
-    write_jmp(0x404eac, (void*)&fn_404eac);
+    //    write_jmp(0x404eac, (void*)&fn_404eac);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
     write_jmp(0x4d1401, (void*)&fn_malloc);
     write_jmp(0x4D1B28, (void*)&fn_realloc);
     write_jmp(0x4D1355, (void*)&fn_free);
+    //    write_jmp(0x4054a3, (void*)&fn_4054a3);
     write_jmp(0x4072ec, (void*)&fn0);
-    write_jmp(0x4072ec, (void*)&fn0);
-    write_jmp(0x4078b5, (void*)&fn_4078b5);
+    //write_jmp(0x4078b5, (void*)&fn_4078b5);
     write_jmp(0x4078be, (void*)&fn_4078be);
-    write_jmp(0x4078f8, (void*)&fn_timeGetTime);
+    //    write_jmp(0x4078f8, (void*)&fn_timeGetTime);
     write_jmp(0x4078fe, (void*)&fn_4078fe);
     write_jmp(0x407b26, (void*)&fn_407b26);
     write_jmp(0x4080bb, (void*)&fn_4080bb);
@@ -304,17 +438,38 @@ static void register_no_win32_hooks()
     write_jmp(0x4081fe, (void*)&fn_FileRead);
     write_jmp(0x408297, (void*)&fn_CloseHandle);
     write_jmp(0x4082ad, (void*)&fn_CreateFile);
-    write_jmp(0x4082e6, (void*)&fnc1);
-    write_jmp(0x4082f8, (void*)&fnc2);
+    //write_jmp(0x4082e6, (void*)&fnc1);
+    //write_jmp(0x4082f8, (void*)&fnc2);
     write_jmp(0x40830e, (void*)&fn_FindFirstFile);
     write_jmp(0x40831d, (void*)&fn_FindNextFile);
     write_jmp(0x40832c, (void*)&fn_FindClose);
     write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
-    // Stubs
-    register_hook_stub(0x00431695);
-    register_hook_stub(0x00473a95);
-    register_hook_stub(0x004Cf456);
+    // fill DLL hooks for ease of debugging
+    for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
+    {
+        hook_dump(i, (void*)&fn_dump);
+    }
+
+    // dsound.dll
+    hook_lib(0x4d7024, (void*)&lib_DirectSoundCreate);
+
+    // gdi32.dll
+    hook_lib(0x4d7078, (void*)&lib_CreateRectRgn);
+
+    // kernel32.dll
+    hook_lib(0x4d70e0, (void*)&lib_CreateMutexA);
+    hook_lib(0x4d70e4, (void*)&lib_OpenMutexA);
+    hook_lib(0x4d70f0, (void*)&lib_WriteFile);
+    hook_lib(0x4d70f4, (void*)&lib_DeleteFileA);
+    hook_lib(0x4d70f8, (void*)&lib_SetFileAttributesA);
+    hook_lib(0x4d70fC, (void*)&lib_CreateFileA);
+
+    // user32.dll
+    hook_lib(0x4d71e8, (void*)&lib_PostQuitMessage);
+    hook_lib(0x4d714c, (void*)&lib_CloseHandle);
+    hook_lib(0x4d7248, (void*)&lib_GetUpdateRgn);
+    hook_lib(0x4d72b0, (void*)&lib_timeGetTime);
 }
 
 void openloco::interop::register_hooks()
