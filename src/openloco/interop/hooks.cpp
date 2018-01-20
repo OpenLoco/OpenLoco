@@ -205,7 +205,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
     Session *data = new Session;
 
     openloco::environment::fs::path path = lpFileName;
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     std::string format = path.filename().string();
 #else
     std::string format = path.filename().u8string();
@@ -220,7 +220,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
         ++iter;
     }
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
 #else
     strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
@@ -240,7 +240,7 @@ fn_FindNextFile(Session *data, FindFileData *out)
         return false;
     }
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
 #else
     strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
