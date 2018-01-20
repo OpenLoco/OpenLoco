@@ -1,4 +1,3 @@
-#include <dirent.h>
 #include <cstring>
 #include "../environment.h"
 #include "../graphics/gfx.h"
