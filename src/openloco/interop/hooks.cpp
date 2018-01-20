@@ -1,5 +1,8 @@
 #include <cstring>
 #include <cstdio>
+#ifndef _WIN32
+#include <sys/mman.h>
+#endif
 #include "../environment.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
@@ -376,6 +379,20 @@ static void register_no_win32_hooks()
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
+
+#ifndef _WIN32
+    int32_t err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
+    if (err != 0)
+    {
+        perror("mprotect");
+    }
+
+    err = mprotect((void *)0x4d7000, 0x1199000 - 0x4d7000, PROT_READ | PROT_WRITE);
+    if (err != 0)
+    {
+        perror("mprotect");
+    }
+#endif
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
