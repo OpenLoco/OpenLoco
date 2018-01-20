@@ -5,6 +5,11 @@
 #include "platform.h"
 #include "../openloco.h"
 
+#ifdef __linux__
+#include <unistd.h>
+#include <sys/types.h>
+#endif
+
 int main(int argc, const char * * argv)
 {
     openloco::main();
