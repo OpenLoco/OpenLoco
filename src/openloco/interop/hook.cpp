@@ -192,7 +192,7 @@ namespace openloco::interop
         register_hook(address,
             [](registers &regs)->uint8_t
             {
-                std::printf("                    fn %lu\n", passAddress);
+                std::printf("                    fn %u\n", passAddress);
                 return 0;
             });
     }
