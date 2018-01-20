@@ -70,7 +70,7 @@ namespace openloco::environment
         path = auto_detect_loco_install_path();
         if (!path.empty())
         {
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
             cfg.loco_install_path = path.make_preferred().string();
 #else
             cfg.loco_install_path = path.make_preferred().u8string();
@@ -111,7 +111,7 @@ namespace openloco::environment
 
     static void set_directory(char * buffer, fs::path path)
     {
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
         std::strcpy(buffer, path.make_preferred().string().c_str());
 #else
         std::strcpy(buffer, path.make_preferred().u8string().c_str());

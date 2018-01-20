@@ -1,5 +1,5 @@
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     #include <boost/filesystem.hpp>
 #else
     #include <filesystem>
@@ -17,7 +17,7 @@
 
 using namespace openloco::interop;
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;
@@ -58,7 +58,7 @@ namespace openloco::config
     new_config& read_new_config()
     {
         auto configPath = get_new_config_path();
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
         std::ifstream stream(configPath.string());
 #else
         std::ifstream stream(configPath);
@@ -83,7 +83,7 @@ namespace openloco::config
                                  fs::perms::others_read);
         }
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
         std::ofstream stream(configPath.string());
 #else
         std::ofstream stream(configPath);

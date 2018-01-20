@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cstring>
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     #include <boost/filesystem.hpp>
 #else
     #include <filesystem>
@@ -15,7 +15,7 @@
 
 using namespace openloco::interop;
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
     namespace fs = boost::filesystem;
 #else
     namespace fs = std::experimental::filesystem;
@@ -73,7 +73,7 @@ namespace openloco::ui::windows
         std::strcpy(_title, title);
         std::strcpy(_filter, filter);
 
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
         std::strcpy(_directory, directory.make_preferred().string().c_str());
 #else
         std::strcpy(_directory, directory.make_preferred().u8string().c_str());
@@ -123,7 +123,7 @@ namespace openloco::ui::windows
     {
         if (path.has_extension())
         {
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
             return path.parent_path();
 #else
             return path.parent_path().concat(fs::path::preferred_separator);
@@ -146,7 +146,7 @@ namespace openloco::ui::windows
 
     static std::string get_basename(const fs::path &path)
     {
-#ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
         auto baseName = path.stem().string();
 #else
         auto baseName = path.stem().u8string();
