@@ -1,10 +1,18 @@
 #pragma once
 
-#include <filesystem>
+#ifdef OPENLOCO_USE_BOOST_FS
+    #include <boost/filesystem/path.hpp>
+#else
+    #include <experimental/filesystem>
+#endif
 
 namespace openloco::environment
 {
-    namespace fs = std::experimental::filesystem;
+    #ifdef OPENLOCO_USE_BOOST_FS
+        namespace fs = boost::filesystem;
+    #else
+        namespace fs = std::experimental::filesystem;
+    #endif
 
     enum class path_id
     {

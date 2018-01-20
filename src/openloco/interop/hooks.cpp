@@ -1,5 +1,5 @@
 #include <dirent.h>
-#include <boost/filesystem/path.hpp>
+#include <cstring>
 #include "../environment.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
@@ -177,7 +177,7 @@ typedef struct FindFileData
 class Session
 {
 public:
-    std::vector<boost::filesystem::path> fileList;
+    std::vector<openloco::environment::fs::path> fileList;
 };
 
 __attribute__((cdecl))
@@ -189,11 +189,15 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
 
     Session *data = new Session;
 
-    boost::filesystem::path path = lpFileName;
+    openloco::environment::fs::path path = lpFileName;
+#ifdef OPENLOCO_USE_BOOST_FS
     std::string format = path.filename().string();
+#else
+    std::string format = path.filename().u8string();
+#endif
     path.remove_filename();
 
-    boost::filesystem::directory_iterator iter(path), end;
+    openloco::environment::fs::directory_iterator iter(path), end;
 
     while (iter!=end)
     {
@@ -201,7 +205,11 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
         ++iter;
     }
 
+#ifdef OPENLOCO_USE_BOOST_FS
     strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
+#else
+    strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
+#endif
     data->fileList.erase(data->fileList.begin());
     return data;
 }
@@ -217,7 +225,11 @@ fn_FindNextFile(Session *data, FindFileData *out)
         return false;
     }
 
+#ifdef OPENLOCO_USE_BOOST_FS
     strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
+#else
+    strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
+#endif
     data->fileList.erase(data->fileList.begin());
 
     return true;
@@ -323,7 +335,11 @@ void openloco::interop::register_hooks()
 
                       auto buffer = (char *)0x009D0D72;
                       auto path = get_path((path_id)regs.ebx);
+#ifdef OPENLOCO_USE_BOOST_FS
                       std::strcpy(buffer, path.make_preferred().string().c_str());
+#else
+                      std::strcpy(buffer, path.make_preferred().u8string().c_str());
+#endif
                       regs.ebx = (int32_t)buffer;
                       return 0;
                   });
