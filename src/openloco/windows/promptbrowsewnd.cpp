@@ -26,12 +26,12 @@ namespace openloco::ui::windows
     loco_global_array<char, 512, 0x009D9E84> _directory;
     loco_global_array<char, 512, 0x011369A0> _text_input_buffer;
 
-    void sub_446A93()
+    static void sub_446A93()
     {
         call(0x00446A93);
     }
 
-    void sub_4CEB67(int16_t dx)
+    static void sub_4CEB67(int16_t dx)
     {
         registers regs;
         regs.dx = dx;
