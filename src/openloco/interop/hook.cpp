@@ -18,6 +18,8 @@ namespace openloco::interop
 
     static registers _hookRegisters;
 
+    static void write_memory(uint32_t address, const void * data, size_t size);
+
     // This macro writes a little-endian 4-byte long value into *data
     // It is used to avoid type punning.
     #define write_address_strictalias(data, addr) \
@@ -172,34 +174,34 @@ namespace openloco::interop
         i += 4;
 
         data[i++] = 0xC3; // retn
-    #ifdef _WIN32
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
-    #else
-                          // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        sint32 err = mprotect((void *)0x401000, 0x8a4000 - 0x401000, PROT_READ | PROT_WRITE);
-        if (err != 0)
-        {
-            perror("mprotect");
-        }
 
-        memcpy((void *)address, data, i);
+        write_memory(address, data, i);
 
-        err = mprotect((void *)0x401000, 0x8a4000 - 0x401000, PROT_READ | PROT_EXEC);
-        if (err != 0)
-        {
-            perror("mprotect");
-        }
-    #endif // _WIN32
+
         hookfunc(hookaddress, (uintptr_t)function, 0);
         _hookTableOffset++;
     }
 
     static void write_memory(uint32_t address, const void * data, size_t size)
     {
-        if (WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr) != TRUE)
+#ifdef _WIN32
+        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
+#else
+        // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
+        int32_t err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE);
+        if (err != 0)
         {
-            std::cerr << "Unable to write to " << address << std::endl;
+            perror("mprotect");
         }
+
+        memcpy((void *)address, data,size);
+
+        err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_EXEC);
+        if (err != 0)
+        {
+            perror("mprotect");
+        }
+#endif // _WIN32
     }
 
     void write_ret(uint32_t address)
@@ -207,6 +209,19 @@ namespace openloco::interop
         uint8_t opcode = 0xC3;
         write_memory(address, &opcode, sizeof(opcode));
     }
+
+void
+hook_stdcall(uint32_t address, void *fn)
+{
+    uint8_t data[5] = {0};
+    data[0] = 0xE9; // JMP
+
+    uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
+
+    write_address_strictalias(&data[1], addr-address - 5);
+
+    write_memory(address, data, sizeof(data));
+}
 
     void write_nop(uint32_t address, size_t count)
     {
