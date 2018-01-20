@@ -106,6 +106,7 @@ namespace openloco
         return regs.eax != 0;
     }
 
+    #ifdef _NO_LOCO_WIN32_
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
@@ -129,6 +130,7 @@ namespace openloco
     {
         ((void(*)(void *))0x004D1355)(address);
     }
+    #endif // _NO_LOCO_WIN32_
 
     static void sub_404E58()
     {
