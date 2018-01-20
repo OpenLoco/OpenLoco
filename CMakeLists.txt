@@ -120,6 +120,10 @@ target_compile_definitions(${PROJECT} PRIVATE ${OPENLOCO_COMPILE_DEFINITIONS})
 add_dependencies(${PROJECT} segfiles)
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
+if (MINGW)
+	target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600)
+endif()
+
 if (APPLE)
     target_link_libraries(${PROJECT} "-framework Cocoa")
 endif ()
