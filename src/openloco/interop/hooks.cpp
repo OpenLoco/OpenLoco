@@ -11,11 +11,13 @@
 using namespace openloco;
 
 #ifdef _MSC_VER
-#define STDCALL __stdcall
-#define CDECL   __cdecl
+#define STDCALL                  __stdcall
+#define CDECL                    __cdecl
+#define FORCE_ALIGN_ARG_POINTER
 #elif defined(__GNUC__)
-#define STDCALL __attribute__((stdcall))
-#define CDECL   __attribute__((cdecl))
+#define STDCALL                  __attribute__((stdcall))
+#define CDECL                    __attribute__((cdecl))
+#define FORCE_ALIGN_ARG_POINTER  __attribute__((force_align_arg_pointer))
 #else
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
@@ -126,7 +128,7 @@ fn_4081ad(int32_t wParam)
 
 ///endregion
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static void
 CDECL
 fn_FileSeekFromEnd(FILE *a0, int32_t distance)
@@ -135,7 +137,7 @@ fn_FileSeekFromEnd(FILE *a0, int32_t distance)
     fseek(a0, distance, SEEK_END);
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static int32_t
 CDECL
 fn_FileRead(FILE *a0, char *buffer, int32_t size)
@@ -146,7 +148,7 @@ fn_FileRead(FILE *a0, char *buffer, int32_t size)
     return size;
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static int
 CDECL
 fn_CloseHandle(FILE *file)
@@ -160,7 +162,7 @@ fn_CloseHandle(FILE *file)
     return fclose(file);
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static FILE *
 CDECL
 fn_CreateFile(char *lpFileName)
@@ -190,7 +192,7 @@ public:
     std::vector<openloco::environment::fs::path> fileList;
 };
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static Session *
 CDECL
 fn_FindFirstFile(char *lpFileName, FindFileData *out)
@@ -254,7 +256,7 @@ fn_FindClose(Session *data)
     delete data;
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static void *
 CDECL
 fn_406bf7(int arg0)
@@ -313,7 +315,7 @@ fn2(int i1, int i2)
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static void *
 STDCALL
 fn_malloc(uint32_t size)
@@ -323,7 +325,7 @@ fn_malloc(uint32_t size)
     return ptr;
 }
 
-__attribute__ ((force_align_arg_pointer))
+FORCE_ALIGN_ARG_POINTER
 static void *
 STDCALL
 fn_realloc(void *src, uint32_t size)
