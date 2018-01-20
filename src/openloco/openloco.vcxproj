@@ -94,6 +94,9 @@
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Lib>
+    <Link>
+      <AdditionalDependencies>sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
