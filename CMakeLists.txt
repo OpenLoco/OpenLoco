@@ -86,7 +86,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 # include lib
 include_directories("lib/")
 # add source files
-file(GLOB_RECURSE ORCT2_SOURCES "src/*.c" "src/*.cpp" "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
 
 
 if (APPLE)
@@ -123,7 +123,7 @@ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/in
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
 add_dependencies(${PROJECT} segfiles)
 target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
