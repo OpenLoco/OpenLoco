@@ -1,4 +1,9 @@
-#include <filesystem>
+
+#ifdef OPENLOCO_USE_BOOST_FS
+    #include <boost/filesystem.hpp>
+#else
+    #include <filesystem>
+#endif
 #include <fstream>
 #include <shlobj.h>
 #include <windows.h>
@@ -6,7 +11,12 @@
 #include "config.h"
 
 using namespace openloco::interop;
+
+#ifdef OPENLOCO_USE_BOOST_FS
+namespace fs = boost::filesystem;
+#else
 namespace fs = std::experimental::filesystem;
+#endif
 
 namespace openloco::config
 {
@@ -43,7 +53,11 @@ namespace openloco::config
     new_config& read_new_config()
     {
         auto configPath = get_new_config_path();
+#ifdef OPENLOCO_USE_BOOST_FS
+        std::ifstream stream(configPath.string());
+#else
         std::ifstream stream(configPath);
+#endif
         if (stream.is_open())
         {
             std::getline(stream, _new_config.loco_install_path);
@@ -64,7 +78,11 @@ namespace openloco::config
                                  fs::perms::others_read);
         }
 
+#ifdef OPENLOCO_USE_BOOST_FS
+        std::ofstream stream(configPath.string());
+#else
         std::ofstream stream(configPath);
+#endif
         if (stream.is_open())
         {
             stream << _new_config.loco_install_path << std::endl;
