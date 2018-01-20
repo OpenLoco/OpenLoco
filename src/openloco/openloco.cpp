@@ -487,6 +487,13 @@ namespace openloco
                                 numUpdates = 1;
                             }
                             break;
+                        case input_state::widget_pressed:break;
+                        case input_state::positioning_window:break;
+                        case input_state::viewport_right:break;
+                        case input_state::viewport_left:break;
+                        case input_state::scroll_left:break;
+                        case input_state::resizing:break;
+                        case input_state::scroll_right:break;
                     }
                 }
                 addr<0x0052622E, int16_t>() += numUpdates;
@@ -664,7 +671,7 @@ namespace openloco
         sub_4062D1();
         sub_406417();
 
-#if _READ_REGISTRY_
+#ifdef _READ_REGISTRY_
         constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
 
         HKEY key;

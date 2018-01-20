@@ -182,7 +182,7 @@ namespace openloco::ui
     // edx: cusor_id
     void set_cursor(cursor_id id)
     {
-        if (_cursors.size() >= 0)
+        if (_cursors.size() > 0)
         {
             auto index = (size_t)id;
             if (index >= _cursors.size())
