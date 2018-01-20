@@ -5,10 +5,15 @@
     #include <filesystem>
 #endif
 #include <fstream>
+
+#ifdef _WIN32
 #include <shlobj.h>
 #include <windows.h>
+#endif
+
 #include "interop/interop.hpp"
 #include "config.h"
+#include "platform/platform.h"
 
 using namespace openloco::interop;
 
@@ -92,18 +97,6 @@ namespace openloco::config
 
     static fs::path get_new_config_path()
     {
-        return get_user_directory() / "openloco.cfg";
-    }
-
-    static fs::path get_user_directory()
-    {
-        auto result = fs::path();
-        PWSTR path = nullptr;
-        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
-        {
-            result = fs::path(path) / "OpenLoco";
-        }
-        CoTaskMemFree(path);
-        return result;
+        return platform::get_user_directory() / "openloco.cfg";
     }
 }

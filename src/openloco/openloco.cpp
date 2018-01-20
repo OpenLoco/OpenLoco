@@ -4,11 +4,13 @@
 #include <vector>
 #include <setjmp.h>
 
-// timeGetTime is unavailable if we use lean and mean
-// #define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#include <objbase.h>
+#ifdef _WIN32
+    // timeGetTime is unavailable if we use lean and mean
+    // #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX
+    #include <windows.h>
+    #include <objbase.h>
+#endif
 
 #include "audio/audio.h"
 #include "config.h"
@@ -27,6 +29,7 @@
 #include "ui.h"
 #include "utility/numeric.hpp"
 #include "windowmgr.h"
+#include "platform/platform.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -41,8 +44,11 @@ namespace openloco
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
     constexpr auto WINDOW_TITLE = "OpenLoco";
 
+#ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
+#endif
+
     loco_global_array<char, 256, 0x005060D0> gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
@@ -61,6 +67,7 @@ namespace openloco
     void tick_logic();
     void tick_wait();
 
+#ifdef _WIN32
     void * hInstance()
     {
         return ghInstance;
@@ -70,6 +77,7 @@ namespace openloco
     {
         return glpCmdLine;
     }
+#endif
 
     bool is_editor_mode()
     {
@@ -371,10 +379,10 @@ namespace openloco
                 });
 
             initialise();
-            last_tick_time = timeGetTime();
+            last_tick_time = platform::get_time();
         }
 
-        uint32_t time = timeGetTime();
+        uint32_t time = platform::get_time();
         time_since_last_tick = std::min(time - last_tick_time, 500U);
         last_tick_time = time;
 
@@ -600,14 +608,14 @@ namespace openloco
         {
             // Idle loop for a 40 FPS
         }
-        while (timeGetTime() - last_tick_time < 25);
+        while (platform::get_time() - last_tick_time < 25);
     }
 
     void prompt_tick_loop(std::function<bool()> tickAction)
     {
         while (true)
         {
-            auto startTime = timeGetTime();
+            auto startTime = platform::get_time();
             time_since_last_tick = 31;
             if (!ui::process_messages() || !tickAction())
             {
@@ -618,7 +626,7 @@ namespace openloco
             {
                 // Idle loop for a 40 FPS
             }
-            while (timeGetTime() - startTime < 25);
+            while (platform::get_time() - startTime < 25);
         }
     }
 
@@ -650,7 +658,9 @@ namespace openloco
     // 0x00406386
     static void run()
     {
+#ifdef _WIN32
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+#endif
         sub_4062D1();
         sub_406417();
 
@@ -678,7 +688,10 @@ namespace openloco
             ui::render();
         }
         sub_40567E();
+
+#ifdef _WIN32
         CoUninitialize();
+#endif
     }
 
     // 0x00406D13
@@ -712,6 +725,8 @@ namespace openloco
 
 extern "C"
 {
+
+#ifdef _WIN32
     /**
      * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
      * be built as a stand alone application.
@@ -723,4 +738,5 @@ extern "C"
         openloco::main();
         return 0;
     }
+#endif
 }
