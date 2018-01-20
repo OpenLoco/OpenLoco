@@ -123,11 +123,8 @@ namespace openloco::ui::windows
     {
         if (path.has_extension())
         {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-            return path.parent_path();
-#else
-            return path.parent_path().concat(fs::path::preferred_separator);
-#endif
+            // Concatenate with empty dir to ensure path ends with separator
+            return path.parent_path() / "";
         }
         else
         {
