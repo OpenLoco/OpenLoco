@@ -107,13 +107,14 @@ set(Boost_USE_STATIC_LIBS ON)
 set(BOOST_INCLUDEDIR "/Users/Marijn/Downloads/boost_1_66_0")
 set(BOOST_LIBRARYDIR "/Users/Marijn/Downloads/boost_1_66_0/stage/lib")
 find_package(Boost COMPONENTS filesystem REQUIRED)
+set(OPENLOCO_COMPILE_DEFINITIONS ${OPENLOCO_COMPILE_DEFINITIONS} -D_OPENLOCO_USE_BOOST_FS_=1)
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
 
 add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-target_compile_definitions(${PROJECT} PRIVATE -D_OPENLOCO_USE_BOOST_FS_)
+target_compile_definitions(${PROJECT} PRIVATE ${OPENLOCO_COMPILE_DEFINITIONS})
 add_dependencies(${PROJECT} segfiles)
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
