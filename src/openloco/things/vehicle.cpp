@@ -3,11 +3,15 @@
 #include "../config.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
+#include "../objects/objectmgr.h"
 #include "../utility/numeric.hpp"
 #include "thingmgr.h"
 
 using namespace openloco;
 using namespace openloco::interop;
+using namespace openloco::objectmgr;
+
+loco_global<vehicle, 0x01136118> vehicle_1136118;
 
 vehicle* vehicle::next_vehicle()
 {
@@ -53,7 +57,7 @@ bool vehicle::update()
             break;
         case 4:
         case 5:
-            result = call(0x004AA1D0, regs);
+            result = sub_4AA1D0();
             break;
         case 6:
             result = call(0x004AA24A, regs);
@@ -145,4 +149,36 @@ void vehicle::sub_4BAA76()
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004BAA76, regs);
+}
+
+// 0x004AA1D0
+int32_t openloco::vehicle::sub_4AA1D0()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+
+    if (var_42 == 2 || var_42 == 3)
+    {
+        call(0x004AAC4E, regs);
+        return 0;
+    }
+    //0x4AA1DC
+}
+
+void openloco::vehicle::sub_4AAC4E()
+{
+    if (var_38 & (1 << 4))
+        return;
+
+    if ((vehicle_1136118->var_5D == 8) || (vehicle_1136118->var_5D == 9))
+        return;
+
+    vehicle_object * vehicleObject = get_vehicle_object(var_40);
+
+    if ((vehicleObject + var_54 * 6 + 41) == 0)
+    {
+        call(0x004AB655, regs);
+        return;
+    }
+    //0x4AAC91
 }
