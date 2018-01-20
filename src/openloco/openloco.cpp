@@ -132,15 +132,6 @@ namespace openloco
     }
     #endif // _NO_LOCO_WIN32_
 
-    static void sub_404E58()
-    {
-        free(addr<0x005251F4, void *>());
-        addr<0x005251F4, void *>() = nullptr;
-        addr<0x005251F0, void *>() = nullptr;
-        call(0x00404ACD);
-        call(0x00404B40);
-    }
-
     static void sub_4062D1()
     {
         call(0x004062D1);
@@ -164,62 +155,6 @@ namespace openloco
     static void sub_4062E0()
     {
         call(0x004062E0);
-    }
-
-    // eax: width
-    // ebx: height
-    static bool sub_451F0B(int32_t width, int32_t height)
-    {
-        registers regs;
-        regs.eax = width;
-        regs.ebx = height;
-        call(0x00451F0B, regs);
-        return regs.al != 0;
-    }
-
-    static void sub_4BE621(int32_t eax, int32_t ebx)
-    {
-        registers regs;
-        regs.eax = eax;
-        regs.ebx = ebx;
-        call(0x004BE621, regs);
-    }
-
-    static void sub_45235D()
-    {
-        call(0x00452336);
-        int32_t width = addr<0x0050AEB8, int16_t>();
-        int32_t height = addr<0x0050AEBA, int16_t>();
-        if (addr<0x0050AEC0, uint8_t>() != 0xFF || width == -1)
-        {
-            // int32_t screenWidth = addr<0x00113E2C8, int32_t>();
-            int32_t screenHeight = addr<0x00113E2CC, int32_t>();
-            width = 1024;
-            height = 768;
-            if (screenHeight < 1200)
-            {
-                width = 800;
-                height = 600;
-            }
-        }
-        if (sub_451F0B(width, height))
-        {
-            addr<0x0052533C, int32_t>() = 0;
-            if (addr<0x0052532C, int32_t>() == 0 &&
-                addr<0x00113E2E4, int32_t>() >= 64)
-            {
-                call(0x004524C1);
-                call(0x004523F4);
-            }
-            else
-            {
-                sub_4BE621(61, 62);
-            }
-        }
-        else
-        {
-            sub_4BE621(61, 63);
-        }
     }
 
     static bool sub_4034FC(int32_t &a, int32_t &b)
