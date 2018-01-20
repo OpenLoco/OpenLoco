@@ -19,6 +19,16 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 |-------------|---------|-------------|----------|
 | **master**  |         |             | [![GitHub release](https://img.shields.io/github/release/OpenRCT2/OpenLoco.svg)](https://github.com/OpenRCT2/OpenLoco/releases) |
 
+### Chat
+You only need a GitHub or Twitter account to access these channels.
+
+If you want to help *make* the game, join the developer channel.
+
+If you need help, want to talk to the developers, or just want to stay up to date then join the non-developer channel for your language.
+
+| Language | Non Developer | Developer |
+|----------|---------------|-----------|
+| English | [![Gitter](https://img.shields.io/badge/gitter-general-blue.svg)](https://gitter.im/OpenRCT2/OpenRCT2/non-dev) | [![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenRCT2/OpenLoco) |
 ---
 
 # 1 Introduction
