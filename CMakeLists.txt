@@ -48,20 +48,20 @@ if (UNIX)
     )
     add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
     if (APPLE)
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text ${OLOCO_TEXT} -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
     else ()
         # For Linux we have to use objcopy to wrap regular binaries into a linkable
         # format. We use specific section names which are then referenced in a
         # bespoke linker script so they can be placed at predefined VMAs.
         add_custom_command(
             OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 ${OLOCO_TEXT} openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
+            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
         add_custom_command(
             OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 ${OLOCO_DATA} openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
+            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
