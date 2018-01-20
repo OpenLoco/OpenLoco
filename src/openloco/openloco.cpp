@@ -336,7 +336,7 @@ long timeGetTime() {
 //#else
 //        intro::state(intro::intro_state::end);
 //#endif
-       // call(0x0046AD7D);
+        call(0x0046AD7D);
         call(0x00438A6C);
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
