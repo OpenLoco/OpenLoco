@@ -190,7 +190,7 @@ namespace openloco::interop
         register_hook(
             address,
             [](registers& regs) -> uint8_t {
-                std::printf("                    fn %u\n", passAddress);
+                std::printf("                    fn %lx\n", passAddress);
                 return 0;
             });
     }
@@ -208,6 +208,75 @@ namespace openloco::interop
 
         auto addr = reinterpret_cast<uintptr_t>(fn);
         write_address_strictalias(&data[1], addr - address - 5);
+
+        write_memory(address, data, sizeof(data));
+    }
+
+    static void* _smallHooks;
+    static uint8_t* _offset;
+
+    static void* makeJump(uint32_t address, void* fn)
+    {
+
+        if (!_smallHooks)
+        {
+            size_t size = 20 * 500;
+#ifdef _WIN32
+            _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+#else
+            _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+            if (_smallHooks == MAP_FAILED)
+            {
+                perror("mmap");
+                exit(1);
+            }
+            _offset = static_cast<uint8_t*>(_smallHooks);
+#endif // _WIN32
+        }
+
+        int i = 0;
+
+        _offset[i++] = 0x58; // POP EAX
+
+        _offset[i++] = 0x68; // PUSH
+        write_address_strictalias(&_offset[i], address);
+        i += 4;
+
+        _offset[i++] = 0x50; // PUSH EAX
+
+        uintptr_t base = reinterpret_cast<uintptr_t>(_offset);
+        uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
+
+        _offset[i++] = 0xE9; // JMP
+        write_address_strictalias(&_offset[i], addr - base - 12);
+        i += 4;
+
+        uint8_t* ptr = _offset;
+
+        _offset += i;
+        return ptr;
+    }
+
+    void hook_dump(uint32_t address, void* fn)
+    {
+        uint8_t data[4] = { 0 };
+
+        void* hook = makeJump(address, fn);
+
+        uintptr_t addr = reinterpret_cast<uintptr_t>(hook);
+
+        write_address_strictalias(&data[0], addr);
+
+        write_memory(address, data, sizeof(data));
+    }
+
+    void hook_lib(uint32_t address, void* fn)
+    {
+        uint8_t data[4] = { 0 };
+
+        uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
+
+        write_address_strictalias(&data[0], addr);
 
         write_memory(address, data, sizeof(data));
     }
