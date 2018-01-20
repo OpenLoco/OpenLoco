@@ -119,7 +119,7 @@ fn_4081ad(int32_t wParam)
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
 void
-fn_4081eb(FILE *a0, int32_t distance)
+fn_FileSeekFromEnd(FILE *a0, int32_t distance)
 {
     printf("seek %d bytes from end\n", distance);
     fseek(a0, distance, SEEK_END);
@@ -128,7 +128,7 @@ fn_4081eb(FILE *a0, int32_t distance)
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
 int32_t
-fn_4081fe(FILE *a0, char *buffer, int32_t size)
+fn_FileRead(FILE *a0, char *buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
     fread(buffer, 1, size, a0);
@@ -138,15 +138,16 @@ fn_4081fe(FILE *a0, char *buffer, int32_t size)
 
 __attribute__((cdecl))
 __attribute__ ((force_align_arg_pointer))
-void
+int
 fn_CloseHandle(FILE *file)
 {
     printf("%s\n", __FUNCTION__);
     if (file==nullptr)
     {
-        return;
+        return 1;
     }
-    fclose(file);
+
+    return fclose(file);
 }
 
 __attribute__((cdecl))
@@ -162,9 +163,9 @@ fn_CreateFile(char *lpFileName)
 typedef struct FindFileData
 {
     uint32_t dwFileAttributes;
-    uint32_t ftCreationTime;
-    uint32_t ftLastAccessTime;
-    uint32_t ftLastWriteTime;
+    uint32_t ftCreationTime[2];
+    uint32_t ftLastAccessTime[2];
+    uint32_t ftLastWriteTime[2];
     uint32_t nFileSizeHigh;
     uint32_t nFileSizeLow;
     uint32_t r0;
@@ -184,7 +185,7 @@ __attribute__ ((force_align_arg_pointer))
 Session *
 fn_FindFirstFile(char *lpFileName, FindFileData *out)
 {
-    printf("%s\n", __FUNCTION__);
+    printf("%s (%s)\n", __FUNCTION__,lpFileName );
 
     Session *data = new Session;
 
@@ -200,7 +201,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
         ++iter;
     }
 
-    strcpy(out->cFilename, data->fileList[0].c_str());
+    strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
     data->fileList.erase(data->fileList.begin());
     return data;
 }
@@ -216,7 +217,7 @@ fn_FindNextFile(Session *data, FindFileData *out)
         return false;
     }
 
-    strcpy(out->cFilename, data->fileList[0].c_str());
+    strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
     data->fileList.erase(data->fileList.begin());
 
     return true;
@@ -300,6 +301,17 @@ fn_malloc(uint32_t size)
     return ptr;
 }
 
+__attribute__((stdcall))
+__attribute__ ((force_align_arg_pointer))
+void *
+fn_realloc(void *src, uint32_t size)
+{
+    //printf("malloc %x\n", (uint32_t)size);
+    void *ptr = realloc(src, size);
+    return ptr;
+}
+
+
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
@@ -316,38 +328,46 @@ void openloco::interop::register_hooks()
                       return 0;
                   });
 
-    hook_stdcall(0x404eac, (void *) &fn_404eac);
     hook_stdcall(0x40447f, (void *) &fn_40447f);
+    hook_stdcall(0x404cd3, (void *) &fnc1);
     hook_stdcall(0x404e8c, (void *) &fn_404e8c);
+    hook_stdcall(0x404eac, (void *) &fn_404eac);
     hook_stdcall(0x4054b9, (void *) &fn_4054b9);
+    hook_stdcall(0x4064fa, (void *) &fn0);
+    hook_stdcall(0x406bf7, (void *) &fn_406bf7);
+    hook_stdcall(0x406c02, (void *) &fn_realloc);
+    hook_stdcall(0x4072ec, (void *) &fn0);
+    hook_stdcall(0x4072ec, (void *) &fn0);
+    hook_stdcall(0x4078b5, (void *) &fn_4078b5);
     hook_stdcall(0x4078be, (void *) &fn_4078be);
     hook_stdcall(0x4078f8, (void *) &fn_timeGetTime);
     hook_stdcall(0x4078fe, (void *) &fn_4078fe);
     hook_stdcall(0x407b26, (void *) &fn_407b26);
     hook_stdcall(0x4080bb, (void *) &fn_4080bb);
+    hook_stdcall(0x408163, (void *) &fn_408163);
     hook_stdcall(0x40817b, (void *) &fn_40817b);
     hook_stdcall(0x4081ad, (void *) &fn_4081ad);
-
-    hook_stdcall(0x4081eb, (void *) &fn_4081eb);
-    hook_stdcall(0x4081fe, (void *) &fn_4081fe);
+    hook_stdcall(0x4081eb, (void *) &fn_FileSeekFromEnd);
+    hook_stdcall(0x4081fe, (void *) &fn_FileRead);
     hook_stdcall(0x408297, (void *) &fn_CloseHandle);
     hook_stdcall(0x4082ad, (void *) &fn_CreateFile);
     hook_stdcall(0x4082e6, (void *) &fnc1);
     hook_stdcall(0x4082f8, (void *) &fnc2);
-    hook_stdcall(0x408163, (void *) &fn_408163);
-    hook_stdcall(0x4078b5, (void *) &fn_4078b5);
-
     hook_stdcall(0x40830e, (void *) &fn_FindFirstFile);
     hook_stdcall(0x40831d, (void *) &fn_FindNextFile);
     hook_stdcall(0x40832c, (void *) &fn_FindClose);
 
-    hook_stdcall(0x4072ec, (void *) &fn0);
-    hook_stdcall(0x406bf7, (void *) &fn_406bf7);
 
-    hook_stdcall(0x4064fa, (void *) &fn0);
-    hook_stdcall(0x404cd3, (void *) &fnc1);
-    hook_stdcall(0x447485, (void *) &fnc0);
-    hook_stdcall(0x431695, (void *) &fnc0);
+#define REG(x)    register_hook(x, \
+                  [](registers &regs) -> uint8_t \
+                  { \
+                      printf("                    fn %x\n", x); \
+                      return 0; \
+                  })
+
+    REG(0x431695);
+    REG(0x473a95);
+    REG(0x4Cf456);
 
     hook_stdcall(0x4d0fac, (void *) &fn_DirectSoundEnumerateA);
     hook_stdcall(0x4d1401, (void *) &fn_malloc);
