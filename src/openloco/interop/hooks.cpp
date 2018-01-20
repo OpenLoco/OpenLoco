@@ -258,16 +258,6 @@ fn_FindClose(Session *data)
     delete data;
 }
 
-FORCE_ALIGN_ARG_POINTER
-static void *
-CDECL
-fn_406bf7(int arg0)
-{
-    printf("%s %d\n", __FUNCTION__, arg0);
-
-    return malloc(arg0);
-}
-
 static void
 CDECL
 fn_4078b5(void)
@@ -319,90 +309,92 @@ fn2(int i1, int i2)
 
 FORCE_ALIGN_ARG_POINTER
 static void *
-STDCALL
+CDECL
 fn_malloc(uint32_t size)
 {
-    //printf("malloc %x\n", (uint32_t)size);
-    void *ptr = malloc(size);
-    return ptr;
+    return malloc(size);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void *
-STDCALL
-fn_realloc(void *src, uint32_t size)
+CDECL
+fn_realloc(void * block, uint32_t size)
 {
-    //printf("malloc %x\n", (uint32_t)size);
-    void *ptr = realloc(src, size);
-    return ptr;
+    return realloc(block, size);
 }
 
+FORCE_ALIGN_ARG_POINTER
+static void
+CDECL
+fn_free(void * block)
+{
+    return free(block);
+}
+
+static void register_no_win32_hooks()
+{
+    using namespace openloco::interop;
+
+    hook_stdcall(0x40447f, (void *)&fn_40447f);
+    hook_stdcall(0x404cd3, (void *)&fnc1);
+    hook_stdcall(0x404e8c, (void *)&fn_404e8c);
+    hook_stdcall(0x404eac, (void *)&fn_404eac);
+    hook_stdcall(0x4054b9, (void *)&fn_4054b9);
+    hook_stdcall(0x4064fa, (void *)&fn0);
+    hook_stdcall(0x4d1401, (void *)&fn_malloc);
+    hook_stdcall(0x4D1B28, (void *)&fn_realloc);
+    hook_stdcall(0x4D1355, (void *)&fn_free);
+    hook_stdcall(0x4072ec, (void *)&fn0);
+    hook_stdcall(0x4072ec, (void *)&fn0);
+    hook_stdcall(0x4078b5, (void *)&fn_4078b5);
+    hook_stdcall(0x4078be, (void *)&fn_4078be);
+    hook_stdcall(0x4078f8, (void *)&fn_timeGetTime);
+    hook_stdcall(0x4078fe, (void *)&fn_4078fe);
+    hook_stdcall(0x407b26, (void *)&fn_407b26);
+    hook_stdcall(0x4080bb, (void *)&fn_4080bb);
+    hook_stdcall(0x408163, (void *)&fn_408163);
+    hook_stdcall(0x40817b, (void *)&fn_40817b);
+    hook_stdcall(0x4081ad, (void *)&fn_4081ad);
+    hook_stdcall(0x4081eb, (void *)&fn_FileSeekFromEnd);
+    hook_stdcall(0x4081fe, (void *)&fn_FileRead);
+    hook_stdcall(0x408297, (void *)&fn_CloseHandle);
+    hook_stdcall(0x4082ad, (void *)&fn_CreateFile);
+    hook_stdcall(0x4082e6, (void *)&fnc1);
+    hook_stdcall(0x4082f8, (void *)&fnc2);
+    hook_stdcall(0x40830e, (void *)&fn_FindFirstFile);
+    hook_stdcall(0x40831d, (void *)&fn_FindNextFile);
+    hook_stdcall(0x40832c, (void *)&fn_FindClose);
+    hook_stdcall(0x4d0fac, (void *)&fn_DirectSoundEnumerateA);
+
+    // Stubs
+    register_hook_stub(0x00431695);
+    register_hook_stub(0x00473a95);
+    register_hook_stub(0x004Cf456);
+}
 
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
 
-    register_hook(0x004416B5,
-                  [](registers &regs) -> uint8_t
-                  {
-                      using namespace openloco::environment;
-
-                      auto buffer = (char *)0x009D0D72;
-                      auto path = get_path((path_id)regs.ebx);
-#ifdef OPENLOCO_USE_BOOST_FS
-                      std::strcpy(buffer, path.make_preferred().string().c_str());
-#else
-                      std::strcpy(buffer, path.make_preferred().u8string().c_str());
+#ifdef _NO_LOCO_WIN32_
+    register_no_win32_hooks();
 #endif
-                      regs.ebx = (int32_t)buffer;
-                      return 0;
-                  });
 
-    hook_stdcall(0x40447f, (void *) &fn_40447f);
-    hook_stdcall(0x404cd3, (void *) &fnc1);
-    hook_stdcall(0x404e8c, (void *) &fn_404e8c);
-    hook_stdcall(0x404eac, (void *) &fn_404eac);
-    hook_stdcall(0x4054b9, (void *) &fn_4054b9);
-    hook_stdcall(0x4064fa, (void *) &fn0);
-    hook_stdcall(0x406bf7, (void *) &fn_406bf7);
-    hook_stdcall(0x406c02, (void *) &fn_realloc);
-    hook_stdcall(0x4072ec, (void *) &fn0);
-    hook_stdcall(0x4072ec, (void *) &fn0);
-    hook_stdcall(0x4078b5, (void *) &fn_4078b5);
-    hook_stdcall(0x4078be, (void *) &fn_4078be);
-    hook_stdcall(0x4078f8, (void *) &fn_timeGetTime);
-    hook_stdcall(0x4078fe, (void *) &fn_4078fe);
-    hook_stdcall(0x407b26, (void *) &fn_407b26);
-    hook_stdcall(0x4080bb, (void *) &fn_4080bb);
-    hook_stdcall(0x408163, (void *) &fn_408163);
-    hook_stdcall(0x40817b, (void *) &fn_40817b);
-    hook_stdcall(0x4081ad, (void *) &fn_4081ad);
-    hook_stdcall(0x4081eb, (void *) &fn_FileSeekFromEnd);
-    hook_stdcall(0x4081fe, (void *) &fn_FileRead);
-    hook_stdcall(0x408297, (void *) &fn_CloseHandle);
-    hook_stdcall(0x4082ad, (void *) &fn_CreateFile);
-    hook_stdcall(0x4082e6, (void *) &fnc1);
-    hook_stdcall(0x4082f8, (void *) &fnc2);
-    hook_stdcall(0x40830e, (void *) &fn_FindFirstFile);
-    hook_stdcall(0x40831d, (void *) &fn_FindNextFile);
-    hook_stdcall(0x40832c, (void *) &fn_FindClose);
+    register_hook(0x004416B5,
+        [](registers &regs) -> uint8_t
+        {
+            using namespace openloco::environment;
 
-
-#define REG(x)    register_hook(x, \
-                  [](registers &regs) -> uint8_t \
-                  { \
-                      printf("                    fn %x\n", x); \
-                      return 0; \
-                  })
-
-    REG(0x431695);
-    REG(0x473a95);
-    REG(0x4Cf456);
-
-    hook_stdcall(0x4d0fac, (void *) &fn_DirectSoundEnumerateA);
-    hook_stdcall(0x4d1401, (void *) &fn_malloc);
-
-
+            auto buffer = (char *)0x009D0D72;
+            auto path = get_path((path_id)regs.ebx);
+    #ifdef OPENLOCO_USE_BOOST_FS
+            std::strcpy(buffer, path.make_preferred().string().c_str());
+    #else
+            std::strcpy(buffer, path.make_preferred().u8string().c_str());
+    #endif
+            regs.ebx = (int32_t)buffer;
+            return 0;
+        });
 
     // Replace ui::update() with our own
     register_hook(0x004524C1,

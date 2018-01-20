@@ -183,6 +183,18 @@ namespace openloco::interop
         _hookTableOffset++;
     }
 
+    void register_hook_stub(uintptr_t address)
+    {
+        static uintptr_t passAddress;
+        passAddress = address;
+        register_hook(address,
+            [](registers &regs)->uint8_t
+            {
+                std::printf("                    fn %x\n", passAddress);
+                return 0;
+            });
+    }
+
     static void write_memory(uint32_t address, const void * data, size_t size)
     {
 #ifdef _WIN32
