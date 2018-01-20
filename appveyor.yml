@@ -1,0 +1,25 @@
+version: 0.1.0.{build}
+image: Visual Studio 2017
+install:
+- ps: >-
+    New-Item -ItemType Directory lib
+
+    Set-Location lib
+
+    New-Item -ItemType Directory bin,lib,include
+
+    Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip -OutFile sdl2.zip
+
+    7z x sdl2.zip
+
+    Copy-Item .\SDL2-2.0.7\include\ -Recurse -Destination include\sdl2
+
+    Copy-Item .\SDL2-2.0.7\lib\x86\*.dll -Destination bin
+
+    Copy-Item .\SDL2-2.0.7\lib\x86\*.lib -Destination lib
+
+    Remove-Item .\sdl2.zip
+
+    Remove-Item -Recurse .\SDL2-2.0.7
+build:
+  verbosity: minimal
