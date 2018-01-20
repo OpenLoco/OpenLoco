@@ -702,7 +702,7 @@ namespace openloco
     }
 
     // 0x00406D13
-    static void main()
+    void main()
     {
         std::cout << "OpenLoco v0.1" << std::endl;
         try
