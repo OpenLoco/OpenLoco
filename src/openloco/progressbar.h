@@ -1,10 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include "localisation/stringmgr.h"
 
 namespace openloco::progressbar
 {
-    void begin(int32_t maximum, int32_t edx);
-    void increment(int32_t value);
+    void begin(string_id stringId, int32_t edx);
+    void set_progress(int32_t value);
     void end();
 }
