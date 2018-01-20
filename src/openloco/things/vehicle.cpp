@@ -3,6 +3,7 @@
 #include "../config.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
+#include "../objects/vehicle_object.h"
 #include "../objects/objectmgr.h"
 #include "../utility/numeric.hpp"
 #include "thingmgr.h"
@@ -175,7 +176,7 @@ void openloco::vehicle::sub_4AAC4E()
 
     vehicle_object * vehicleObject = get_vehicle_object(var_40);
 
-    if ((vehicleObject + var_54 * 6 + 41) == 0)
+    if (vehicleObject->var_24[var_54].var_05 == 0)
     {
         call(0x004AB655, regs);
         return;
