@@ -1,8 +1,13 @@
 #include <time.h>
 #include <pwd.h>
 #include "platform.h"
+#include "../openloco.h"
 
-
+int main(int argc, const char * * argv)
+{
+    openloco::main();
+    return 0;
+}
 
 static std::string GetEnvironmentVariable(const std::string &name)
 {
@@ -35,3 +40,10 @@ fs::path openloco::platform::get_user_directory()
     }
     return path;
 }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+std::string openloco::platform::prompt_directory(const std::string &title)
+{
+    return "/";
+}
+#endif

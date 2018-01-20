@@ -18,6 +18,7 @@ namespace openloco
     bool is_title_mode();
     bool is_paused();
     uint32_t scenario_ticks();
+    void main();
 
     void prompt_tick_loop(std::function<bool()> tickAction);
     void sub_48A18C();

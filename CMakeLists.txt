@@ -81,6 +81,12 @@ include_directories("lib/")
 # add source files
 file(GLOB_RECURSE ORCT2_SOURCES "src/*.c" "src/*.cpp" "src/*.h" "src/*.hpp")
 
+
+if (APPLE)
+    file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
+    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++ -fmodules")
+endif ()
+
 set(PIE_FLAG "-fno-pie")
 
 set(TARGET_M "-m32")
@@ -106,10 +112,15 @@ find_package(Boost COMPONENTS filesystem REQUIRED)
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
 
-add_executable(${PROJECT} ${ORCT2_SOURCES} ${ORCT2_MM_SOURCES} ${LOCO_SECTIONS})
+add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
 target_compile_definitions(${PROJECT} PRIVATE -DOPENLOCO_USE_BOOST_FS)
 add_dependencies(${PROJECT} segfiles)
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+
+if (APPLE)
+    target_link_libraries(${PROJECT} "-framework Cocoa")
+endif ()
+
 if(EXISTS /Users/Marijn/Downloads/SDL2-2.0.7/build/libSDL2.dylib)
 	target_link_libraries(${PROJECT} /Users/Marijn/Downloads/SDL2-2.0.7/build/libSDL2.dylib "/Users/Marijn/Downloads/boost_1_66_0/stage/lib/libboost_filesystem.a")
 endif()

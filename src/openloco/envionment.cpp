@@ -4,6 +4,7 @@
 #include "interop/interop.hpp"
 #include "ui.h"
 #include "utility/collection.hpp"
+#include "platform/platform.h"
 
 using namespace openloco::interop;
 
@@ -82,7 +83,7 @@ namespace openloco::environment
             std::cerr << "Unable to find install path for Locomotion." << std::endl <<
                          "You will need to manually provide it." << std::endl;
             ui::show_message_box("OpenLoco", "Select your Locomotion install path.");
-            path = ui::prompt_directory("Select your Locomotion install path.");
+            path = platform::prompt_directory("Select your Locomotion install path.");
             if (validate_loco_install_path(path))
             {
                 return path;
