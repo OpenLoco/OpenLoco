@@ -23,7 +23,7 @@
 #error "Unknown platform"
 #endif
 #else
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x8A4000)
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x4D7000)
 #endif
 
 namespace openloco::interop
@@ -97,6 +97,7 @@ namespace openloco::interop
 
     static int32_t DISABLE_OPT call_byref(int32_t address, int32_t *_eax, int32_t *_ebx, int32_t *_ecx, int32_t *_edx, int32_t *_esi, int32_t *_edi, int32_t *_ebp)
     {
+        printf("%s %x\n", __FUNCTION__, address);
         int32_t result = 0;
         _originalAddress = address;
 #if defined(PLATFORM_X86)
@@ -286,6 +287,6 @@ namespace openloco::interop
 
     uintptr_t remap_address(uintptr_t locoAddress)
     {
-        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
+        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x4d7000 + locoAddress;
     }
 }

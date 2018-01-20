@@ -23,7 +23,7 @@ namespace openloco::audio
     // 0x004899E4
     void initialise()
     {
-        call(0x004899E4);
+       // call(0x004899E4);
     }
 
     // 0x00489CB5

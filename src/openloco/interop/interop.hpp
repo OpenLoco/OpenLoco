@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdio>
 #include <cstdint>
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
@@ -153,6 +154,7 @@ namespace openloco::interop
     void register_hook(uintptr_t address, hook_function function);
     void write_ret(uint32_t address);
     void write_nop(uint32_t address, size_t count);
+void hook_stdcall(uint32_t address, void *fn);
 
     void register_hooks();
 }

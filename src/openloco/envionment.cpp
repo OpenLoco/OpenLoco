@@ -32,11 +32,13 @@ namespace openloco::environment
         }
     }
 
-    fs::path auto_detect_loco_install_path()
+    static fs::path auto_detect_loco_install_path()
     {
         static constexpr const char * searchPaths[] =
         {
-            "C:/Program Files (x86)/Atari/Locomotion"
+            "C:/Program Files (x86)/Atari/Locomotion",
+            "/Users/Marijn/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/steamapps/content/app_356430/depot_356431",
+            "/home/janisozaur/games/Locomotion",
         };
 
         std::cout << "Searching for Locomotion install path..." << std::endl;
@@ -51,7 +53,7 @@ namespace openloco::environment
         return fs::path();
     }
 
-    fs::path resolve_loco_install_path()
+    static fs::path resolve_loco_install_path()
     {
         auto &cfg = config::read_new_config();
         auto path = fs::path(cfg.loco_install_path);
@@ -68,7 +70,7 @@ namespace openloco::environment
         path = auto_detect_loco_install_path();
         if (!path.empty())
         {
-            cfg.loco_install_path = path.make_preferred().u8string();
+            cfg.loco_install_path = path.make_preferred().string();
             config::write_new_config();
             return path;
         }
@@ -89,7 +91,7 @@ namespace openloco::environment
         }
     }
 
-    fs::path get_loco_install_path()
+    static fs::path get_loco_install_path()
     {
         return _path_install.get();
     }
@@ -105,7 +107,8 @@ namespace openloco::environment
 
     static void set_directory(char * buffer, fs::path path)
     {
-        std::strcpy(buffer, path.make_preferred().u8string().c_str());
+        printf("%s", path.make_preferred().string().c_str());
+        std::strcpy(buffer, path.make_preferred().string().c_str());
     }
 
     // 0x004412CE
@@ -124,7 +127,7 @@ namespace openloco::environment
     {
         static constexpr const char * paths[] =
         {
-            "Data/G1.DAT",
+            "Data/g1.DAT",
             "Data/PLUGIN.DAT",
             "Data/PLUGIN2.DAT",
             "Data/CSS1.DAT",

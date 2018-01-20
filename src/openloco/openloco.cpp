@@ -7,8 +7,8 @@
 // timeGetTime is unavailable if we use lean and mean
 // #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
-#include <windows.h>
-#include <objbase.h>
+//#include <windows.h>
+//#include <objbase.h>
 
 #include "audio/audio.h"
 #include "config.h"
@@ -37,11 +37,20 @@ using window_type = openloco::ui::window_type;
 
 namespace openloco
 {
+
+static long timeGetTime() {
+    struct timespec spec;
+
+    clock_gettime(CLOCK_REALTIME, &spec);
+
+    return spec.tv_nsec / 1000000;
+}
+
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
     constexpr auto WINDOW_TITLE = "OpenLoco";
 
-    loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
-    loco_global<LPSTR, 0x00525348> glpCmdLine;
+//    loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
+//    loco_global<LPSTR, 0x00525348> glpCmdLine;
     loco_global_array<char, 256, 0x005060D0> gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
@@ -62,12 +71,12 @@ namespace openloco
 
     void * hInstance()
     {
-        return ghInstance;
+        return nullptr;
     }
 
     const char * lpCmdLine()
     {
-        return glpCmdLine;
+        return nullptr;
     }
 
     bool is_editor_mode()
@@ -90,7 +99,7 @@ namespace openloco
         return _scenario_ticks;
     }
 
-    bool sub_4054B9()
+    static bool sub_4054B9()
     {
         registers regs;
         call(0x004054B9, regs);
@@ -100,7 +109,7 @@ namespace openloco
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * malloc(size_t size)
+    static void * malloc(size_t size)
     {
         return ((void *(*)(size_t))0x004D1401)(size);
     }
@@ -108,7 +117,7 @@ namespace openloco
     /**
      * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
      */
-    void * realloc(void * address, size_t size)
+    static void * realloc(void * address, size_t size)
     {
         return ((void *(*)(void *, size_t))0x004D1B28)(address, size);
     }
@@ -116,12 +125,12 @@ namespace openloco
     /**
      * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
      */
-    void free(void * address)
+    static void free(void * address)
     {
         ((void(*)(void *))0x004D1355)(address);
     }
 
-    void sub_404E58()
+    static void sub_404E58()
     {
         free(addr<0x005251F4, void *>());
         addr<0x005251F4, void *>() = nullptr;
@@ -130,34 +139,34 @@ namespace openloco
         call(0x00404B40);
     }
 
-    void sub_4062D1()
+    static void sub_4062D1()
     {
         call(0x004062D1);
     }
 
-    void sub_406417()
+    static void sub_406417()
     {
-        ((void(*)())0x00406417)();
+        //((void(*)())0x00406417)();
     }
 
-    void sub_40567E()
+    static void sub_40567E()
     {
         call(0x0040567E);
     }
 
-    void sub_4058F5()
+    static void sub_4058F5()
     {
         call(0x004058F5);
     }
 
-    void sub_4062E0()
+    static void sub_4062E0()
     {
         call(0x004062E0);
     }
 
     // eax: width
     // ebx: height
-    bool sub_451F0B(int32_t width, int32_t height)
+    static bool sub_451F0B(int32_t width, int32_t height)
     {
         registers regs;
         regs.eax = width;
@@ -166,7 +175,7 @@ namespace openloco
         return regs.al != 0;
     }
 
-    void sub_4BE621(int32_t eax, int32_t ebx)
+    static void sub_4BE621(int32_t eax, int32_t ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -174,7 +183,7 @@ namespace openloco
         call(0x004BE621, regs);
     }
 
-    void sub_45235D()
+    static void sub_45235D()
     {
         call(0x00452336);
         int32_t width = addr<0x0050AEB8, int16_t>();
@@ -211,13 +220,13 @@ namespace openloco
         }
     }
 
-    bool sub_4034FC(int32_t &a, int32_t &b)
+    static bool sub_4034FC(int32_t &a, int32_t &b)
     {
         auto result = ((int32_t(*)(int32_t &, int32_t &))(0x004034FC))(a, b);
         return result != 0;
     }
 
-    void sub_431A8A(uint16_t bx, uint16_t dx)
+    static void sub_431A8A(uint16_t bx, uint16_t dx)
     {
         registers regs;
         regs.bx = bx;
@@ -226,14 +235,15 @@ namespace openloco
     }
 
     // 0x00407FFD
-    bool is_already_running(const char * mutexName)
+    static bool is_already_running(const char * mutexName)
     {
+        return false;
         auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
     // 0x004BE621
-    void exit_with_error(string_id eax, string_id ebx)
+    static void exit_with_error(string_id eax, string_id ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -242,7 +252,7 @@ namespace openloco
     }
 
     // 0x0044155B
-    void check_game_file_exists(int i)
+    static void check_game_file_exists(int i)
     {
         registers regs;
         regs.ebx = i;
@@ -250,7 +260,7 @@ namespace openloco
     }
 
     // 0x0044154B
-    void check_game_files_exist()
+    static void check_game_files_exist()
     {
         for (int i = 0; i < 48; i++)
         {
@@ -259,18 +269,18 @@ namespace openloco
     }
 
     // 0x004414C5
-    void check_game_files_are_valid()
+    static void check_game_files_are_valid()
     {
         call(0x004414C5);
     }
 
-    void sub_441444()
+    static void sub_441444()
     {
-        call(0x00441444);
+        //call(0x00441444);
     }
 
     // 0x00441400
-    void startup_checks()
+    static void startup_checks()
     {
         if (is_already_running("Locomotion"))
         {
@@ -285,33 +295,33 @@ namespace openloco
     }
 
     // 0x004C57C0
-    void initialise_viewports()
+    static void initialise_viewports()
     {
         call(0x004C57C0);
     }
 
-    void initialise()
+    static void initialise()
     {
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
-        call(0x004BF476);
+        //call(0x004BF476);
         environment::resolve_paths();
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x1E);
+        progressbar::begin(1088, 0);
+        progressbar::increment(30);
         startup_checks();
-        progressbar::increment(0x28);
+        progressbar::increment(40);
         call(0x004BE5DE);
         progressbar::end();
         config::read();
-        objectmgr::load_index();
+        //objectmgr::load_index();
         scenariomgr::load_index(0);
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x3C);
+        progressbar::begin(1088, 0);
+        progressbar::increment(60);
         gfx::load_g1();
-        progressbar::increment(0xDC);
+        progressbar::increment(220);
         call(0x004949BC);
-        progressbar::increment(0xEB);
-        progressbar::increment(0xFA);
+        progressbar::increment(235);
+        progressbar::increment(250);
         ui::initialise_cursors();
         progressbar::end();
         ui::initialise();
@@ -321,18 +331,18 @@ namespace openloco
         call(0x004969DA);
         call(0x0043C88C);
         addr<0x00508F14, int16_t>() |= 0x20;
-#ifdef _SHOW_INTRO_
+//#ifdef _SHOW_INTRO_
         intro::state(intro::intro_state::begin);
-#else
-        intro::state(intro::intro_state::end);
-#endif
+//#else
+//        intro::state(intro::intro_state::end);
+//#endif
         call(0x0046AD7D);
         call(0x00438A6C);
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
     // 0x0046A794
-    void tick()
+    static void tick()
     {
         static bool isInitialised = false;
 
@@ -433,7 +443,7 @@ namespace openloco
             }
 
             call(0x00452D1A);
-            call(0x00440DEC);
+            //call(0x00440DEC);
 
             if (addr<0x00525340, int32_t>() == 1)
             {
@@ -478,6 +488,13 @@ namespace openloco
                                 numUpdates = 1;
                             }
                             break;
+                        case input_state::widget_pressed:break;
+                        case input_state::positioning_window:break;
+                        case input_state::viewport_right:break;
+                        case input_state::viewport_left:break;
+                        case input_state::scroll_left:break;
+                        case input_state::resizing:break;
+                        case input_state::scroll_right:break;
                     }
                 }
                 addr<0x0052622E, int16_t>() += numUpdates;
@@ -547,7 +564,7 @@ namespace openloco
     }
 
     // 0x004612EC
-    void invalidate_map_animations()
+    static void invalidate_map_animations()
     {
         call(0x004612EC);
     }
@@ -647,13 +664,13 @@ namespace openloco
     }
 
     // 0x00406386
-    void run()
+    static void run()
     {
-        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+//        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         sub_4062D1();
         sub_406417();
 
-#if _READ_REGISTRY_
+#ifdef _READ_REGISTRY_
         constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
 
         HKEY key;
@@ -677,11 +694,11 @@ namespace openloco
             ui::render();
         }
         sub_40567E();
-        CoUninitialize();
+//        CoUninitialize();
     }
 
     // 0x00406D13
-    void main()
+    static void main()
     {
         std::cout << "OpenLoco v0.1" << std::endl;
         try
@@ -693,9 +710,9 @@ namespace openloco
                 call(0x004078FE);
                 call(0x00407B26);
                 ui::initialise_input();
-                audio::initialise_dsound();
+             //   audio::initialise_dsound();
                 run();
-                audio::dispose_dsound();
+            //    audio::dispose_dsound();
                 ui::dispose_cursors();
                 ui::dispose_input();
 
@@ -711,15 +728,20 @@ namespace openloco
 
 extern "C"
 {
-    /**
-     * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
-     * be built as a stand alone application.
-     */
-    __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-    {
-        openloco::glpCmdLine = lpCmdLine;
-        openloco::ghInstance = hInstance;
-        openloco::main();
+//    /**
+//     * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
+//     * be built as a stand alone application.
+//     */
+//    __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//    {
+//        openloco::glpCmdLine = lpCmdLine;
+//        openloco::ghInstance = hInstance;
+//        openloco::main();
+//        return 0;
+//    }
+
+int main() {
+    openloco::main();
         return 0;
-    }
+}
 }
