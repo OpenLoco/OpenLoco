@@ -145,7 +145,7 @@ namespace openloco::interop
     #ifdef _WIN32
         WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
     #else
-                          // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
+        // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
         memcpy((void *)address, data, i);
     #endif // _WIN32
     }
