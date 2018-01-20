@@ -10,6 +10,13 @@ endif()
 
 INCLUDE(FindPkgConfig)
 
+set(USE_BOOST_FS_DEFAULT OFF)
+if(APPLE)
+	set(USE_BOOST_FS_DEFAULT ON)
+endif()
+
+option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
+
 if (APPLE)
     set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/opt/openssl/lib/pkgconfig")
 endif (APPLE)
@@ -103,11 +110,12 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAG
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 SET(SDL2LIBS ${SDL2_DEFINITIONS})
 
-set(Boost_USE_STATIC_LIBS ON)
-set(BOOST_INCLUDEDIR "/Users/Marijn/Downloads/boost_1_66_0")
-set(BOOST_LIBRARYDIR "/Users/Marijn/Downloads/boost_1_66_0/stage/lib")
-find_package(Boost COMPONENTS filesystem REQUIRED)
-set(OPENLOCO_COMPILE_DEFINITIONS ${OPENLOCO_COMPILE_DEFINITIONS} -D_OPENLOCO_USE_BOOST_FS_=1)
+if (USE_BOOST_FILESYSTEM)
+    set(Boost_USE_STATIC_LIBS ON)
+    set(BOOST_INCLUDEDIR "/Users/Marijn/Downloads/boost_1_66_0")
+    set(BOOST_LIBRARYDIR "/Users/Marijn/Downloads/boost_1_66_0/stage/lib")
+    find_package(Boost COMPONENTS filesystem REQUIRED)
+endif()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
@@ -116,9 +124,14 @@ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/in
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT} ${ORCT2_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-target_compile_definitions(${PROJECT} PRIVATE ${OPENLOCO_COMPILE_DEFINITIONS})
+target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
 add_dependencies(${PROJECT} segfiles)
-target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+if (USE_BOOST_FILESYSTEM)
+    target_link_libraries(${PROJECT} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+    target_compile_definitions(${PROJECT} PRIVATE _OPENLOCO_USE_BOOST_FS_=1)
+else()
+	target_link_libraries(${PROJECT} stdc++fs)
+endif()
 
 if (MINGW)
 	target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600)
