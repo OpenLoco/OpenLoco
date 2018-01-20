@@ -149,7 +149,7 @@ CDECL
 fn_FileRead(FILE *a0, char *buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
-    fread(buffer, 1, size, a0);
+    size = fread(buffer, 1, size, a0);
 
     return size;
 }
