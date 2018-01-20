@@ -17,6 +17,7 @@
 #include "input.h"
 #include "interop/interop.hpp"
 #include "intro.h"
+#include "localisation/string_ids.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "progressbar.h"
@@ -296,22 +297,22 @@ namespace openloco
         call(0x004078BE);
         call(0x004BF476);
         environment::resolve_paths();
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x1E);
+        progressbar::begin(string_ids::loading, 0);
+        progressbar::set_progress(30);
         startup_checks();
-        progressbar::increment(0x28);
+        progressbar::set_progress(40);
         call(0x004BE5DE);
         progressbar::end();
         config::read();
         objectmgr::load_index();
         scenariomgr::load_index(0);
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x3C);
+        progressbar::begin(string_ids::loading, 0);
+        progressbar::set_progress(60);
         gfx::load_g1();
-        progressbar::increment(0xDC);
+        progressbar::set_progress(220);
         call(0x004949BC);
-        progressbar::increment(0xEB);
-        progressbar::increment(0xFA);
+        progressbar::set_progress(235);
+        progressbar::set_progress(250);
         ui::initialise_cursors();
         progressbar::end();
         ui::initialise();
