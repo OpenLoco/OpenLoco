@@ -8,6 +8,7 @@
 #include <windows.h>
 #endif // _WIN32
 
+#include "../log.h"
 #include "interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
@@ -110,7 +111,7 @@ namespace openloco::interop
 
     static int32_t DISABLE_OPT call_byref(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
-        printf("-> 0x%x\n", address);
+        openloco::console::group("0x%x", address);
         int32_t result = 0;
         _originalAddress = address;
 #if defined(PLATFORM_X86)
@@ -265,7 +266,7 @@ namespace openloco::interop
 #endif // PLATFORM_X86
         _originalAddress = 0;
 
-        printf("<- 0x%x\n", address);
+        openloco::console::group_end();
         // lahf only modifies ah, zero out the rest
         return result & 0xFF00;
     }
