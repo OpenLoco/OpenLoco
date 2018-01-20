@@ -22,6 +22,8 @@ using namespace openloco;
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
 
+#pragma warning(disable : 4505) // unreferenced local function has been removed.
+
 static void
 STDCALL
 fn_40447f()
