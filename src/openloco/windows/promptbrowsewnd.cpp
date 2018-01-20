@@ -1,6 +1,6 @@
 #include <algorithm>
+#include <boost/filesystem.hpp>
 #include <cstring>
-#include <filesystem>
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -10,7 +10,7 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
-namespace fs = std::experimental::filesystem;
+namespace fs = boost::filesystem;
 
 namespace openloco::ui::windows
 {
@@ -63,7 +63,7 @@ namespace openloco::ui::windows
         }
         std::strcpy(_title, title);
         std::strcpy(_filter, filter);
-        std::strcpy(_directory, directory.make_preferred().u8string().c_str());
+        std::strcpy(_directory, directory.make_preferred().string().c_str());
         std::strcpy(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
@@ -109,7 +109,7 @@ namespace openloco::ui::windows
     {
         if (path.has_extension())
         {
-            return path.parent_path().concat(fs::path::preferred_separator);
+//            return path.parent_path().concat(fs::path::preferred_separator);
         }
         else
         {
@@ -124,11 +124,13 @@ namespace openloco::ui::windows
             }
             return fs::path();
         }
+
+        return "";
     }
 
     static std::string get_basename(const fs::path &path)
     {
-        auto baseName = path.stem().u8string();
+        auto baseName = path.stem().string();
         if (baseName == ".")
         {
             baseName = "";

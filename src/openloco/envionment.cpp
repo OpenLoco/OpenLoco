@@ -36,7 +36,8 @@ namespace openloco::environment
     {
         static constexpr const char * searchPaths[] =
         {
-            "C:/Program Files (x86)/Atari/Locomotion"
+            "C:/Program Files (x86)/Atari/Locomotion",
+            "/Users/Marijn/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/steamapps/content/app_356430/depot_356431"
         };
 
         std::cout << "Searching for Locomotion install path..." << std::endl;
@@ -68,7 +69,7 @@ namespace openloco::environment
         path = auto_detect_loco_install_path();
         if (!path.empty())
         {
-            cfg.loco_install_path = path.make_preferred().u8string();
+            cfg.loco_install_path = path.make_preferred().string();
             config::write_new_config();
             return path;
         }
@@ -105,7 +106,8 @@ namespace openloco::environment
 
     static void set_directory(char * buffer, fs::path path)
     {
-        std::strcpy(buffer, path.make_preferred().u8string().c_str());
+        printf("%s", path.make_preferred().string().c_str());
+        std::strcpy(buffer, path.make_preferred().string().c_str());
     }
 
     // 0x004412CE

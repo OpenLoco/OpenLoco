@@ -10,6 +10,6 @@ namespace openloco::scenariomgr
     {
         registers regs;
         regs.al = al;
-        call(0x0044452F, regs);
+        //call(0x0044452F, regs);
     }
 }

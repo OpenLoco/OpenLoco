@@ -1,12 +1,12 @@
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <fstream>
-#include <shlobj.h>
-#include <windows.h>
+//#include <shlobj.h>
+//#include <windows.h>
 #include "interop/interop.hpp"
 #include "config.h"
 
 using namespace openloco::interop;
-namespace fs = std::experimental::filesystem;
+namespace fs = boost::filesystem;
 
 namespace openloco::config
 {
@@ -43,12 +43,12 @@ namespace openloco::config
     new_config& read_new_config()
     {
         auto configPath = get_new_config_path();
-        std::ifstream stream(configPath);
-        if (stream.is_open())
-        {
-            std::getline(stream, _new_config.loco_install_path);
-            stream >> _new_config.breakdowns_disabled;
-        }
+//        std::ifstream stream(configPath);
+//        if (stream.is_open())
+//        {
+//            std::getline(stream, _new_config.loco_install_path);
+//            stream >> _new_config.breakdowns_disabled;
+//        }
         return _new_config;
     }
 
@@ -64,12 +64,12 @@ namespace openloco::config
                                  fs::perms::others_read);
         }
 
-        std::ofstream stream(configPath);
-        if (stream.is_open())
-        {
-            stream << _new_config.loco_install_path << std::endl;
-            stream << _new_config.breakdowns_disabled << std::endl;
-        }
+//        std::ofstream stream(configPath);
+//        if (stream.is_open())
+//        {
+//            stream << _new_config.loco_install_path << std::endl;
+//            stream << _new_config.breakdowns_disabled << std::endl;
+//        }
     }
 
     static fs::path get_new_config_path()
@@ -80,12 +80,12 @@ namespace openloco::config
     static fs::path get_user_directory()
     {
         auto result = fs::path();
-        PWSTR path = nullptr;
-        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
-        {
-            result = fs::path(path) / "OpenLoco";
-        }
-        CoTaskMemFree(path);
-        return result;
+//        PWSTR path = nullptr;
+//        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
+//        {
+//            result = fs::path(path) / "OpenLoco";
+//        }
+//        CoTaskMemFree(path);
+        return "~";
     }
 }

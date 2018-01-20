@@ -7,8 +7,8 @@
 // timeGetTime is unavailable if we use lean and mean
 // #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
-#include <windows.h>
-#include <objbase.h>
+//#include <windows.h>
+//#include <objbase.h>
 
 #include "audio/audio.h"
 #include "config.h"
@@ -37,11 +37,20 @@ using window_type = openloco::ui::window_type;
 
 namespace openloco
 {
+
+long timeGetTime() {
+    struct timespec spec;
+
+    clock_gettime(CLOCK_REALTIME, &spec);
+
+    return spec.tv_nsec / 1000000;
+}
+
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
     constexpr auto WINDOW_TITLE = "OpenLoco";
 
-    loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
-    loco_global<LPSTR, 0x00525348> glpCmdLine;
+//    loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
+//    loco_global<LPSTR, 0x00525348> glpCmdLine;
     loco_global_array<char, 256, 0x005060D0> gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
@@ -62,12 +71,12 @@ namespace openloco
 
     void * hInstance()
     {
-        return ghInstance;
+        return nullptr;
     }
 
     const char * lpCmdLine()
     {
-        return glpCmdLine;
+        return nullptr;
     }
 
     bool is_editor_mode()
@@ -137,7 +146,7 @@ namespace openloco
 
     void sub_406417()
     {
-        ((void(*)())0x00406417)();
+        //((void(*)())0x00406417)();
     }
 
     void sub_40567E()
@@ -228,6 +237,7 @@ namespace openloco
     // 0x00407FFD
     bool is_already_running(const char * mutexName)
     {
+        return false;
         auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
         return result != 0;
     }
@@ -266,7 +276,7 @@ namespace openloco
 
     void sub_441444()
     {
-        call(0x00441444);
+        //call(0x00441444);
     }
 
     // 0x00441400
@@ -294,24 +304,24 @@ namespace openloco
     {
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
-        call(0x004BF476);
+        //call(0x004BF476);
         environment::resolve_paths();
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x1E);
+        progressbar::begin(1088, 0);
+        progressbar::increment(30);
         startup_checks();
-        progressbar::increment(0x28);
+        progressbar::increment(40);
         call(0x004BE5DE);
         progressbar::end();
         config::read();
-        objectmgr::load_index();
+        //objectmgr::load_index();
         scenariomgr::load_index(0);
-        progressbar::begin(0x440, 0);
-        progressbar::increment(0x3C);
+        progressbar::begin(1088, 0);
+        progressbar::increment(60);
         gfx::load_g1();
-        progressbar::increment(0xDC);
+        progressbar::increment(220);
         call(0x004949BC);
-        progressbar::increment(0xEB);
-        progressbar::increment(0xFA);
+        progressbar::increment(235);
+        progressbar::increment(250);
         ui::initialise_cursors();
         progressbar::end();
         ui::initialise();
@@ -321,12 +331,12 @@ namespace openloco
         call(0x004969DA);
         call(0x0043C88C);
         addr<0x00508F14, int16_t>() |= 0x20;
-#ifdef _SHOW_INTRO_
+//#ifdef _SHOW_INTRO_
         intro::state(intro::intro_state::begin);
-#else
-        intro::state(intro::intro_state::end);
-#endif
-        call(0x0046AD7D);
+//#else
+//        intro::state(intro::intro_state::end);
+//#endif
+       // call(0x0046AD7D);
         call(0x00438A6C);
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
@@ -433,7 +443,7 @@ namespace openloco
             }
 
             call(0x00452D1A);
-            call(0x00440DEC);
+            //call(0x00440DEC);
 
             if (addr<0x00525340, int32_t>() == 1)
             {
@@ -478,6 +488,13 @@ namespace openloco
                                 numUpdates = 1;
                             }
                             break;
+                        case input_state::widget_pressed:break;
+                        case input_state::positioning_window:break;
+                        case input_state::viewport_right:break;
+                        case input_state::viewport_left:break;
+                        case input_state::scroll_left:break;
+                        case input_state::resizing:break;
+                        case input_state::scroll_right:break;
                     }
                 }
                 addr<0x0052622E, int16_t>() += numUpdates;
@@ -649,11 +666,11 @@ namespace openloco
     // 0x00406386
     void run()
     {
-        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+//        CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         sub_4062D1();
         sub_406417();
 
-#if _READ_REGISTRY_
+#ifdef _READ_REGISTRY_
         constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
 
         HKEY key;
@@ -677,8 +694,160 @@ namespace openloco
             ui::render();
         }
         sub_40567E();
-        CoUninitialize();
+//        CoUninitialize();
     }
+
+/**
+ * Loads RCT2's data model and remaps the addresses.
+ * @returns true if the data integrity check succeeded, otherwise false.
+ */
+bool openrct2_setup_rct2_segment()
+{
+    // OpenRCT2 on Linux and macOS is wired to have the original Windows PE sections loaded
+    // necessary. Windows does not need to do this as OpenRCT2 runs as a DLL loaded from the Windows PE.
+    int len = 0x01429000 - 0x8a4000; // 0xB85000, 12079104 bytes or around 11.5MB
+    int err = 0;
+#if defined(USE_MMAP) && (defined(__unix__) || defined(__MACOSX__))
+    #define RDATA_OFFSET 0x004A4000
+	#define DATASEG_OFFSET 0x005E2000
+
+	// Using PE-bear I was able to figure out all the needed addresses to be filled.
+	// There are three sections to be loaded: .rdata, .data and .text, plus another
+	// one to be mapped: DATASEG.
+	// Out of the three, two can simply be mmapped into memory, while the third one,
+	// .data has a virtual size which is much completely different to its file size
+	// (even when taking page-alignment into consideration)
+	//
+	// The sections are as follows (dump from gdb)
+	// [0]     0x401000->0x6f7000 at 0x00001000: .text ALLOC LOAD READONLY CODE HAS_CONTENTS
+	// [1]     0x6f7000->0x8a325d at 0x002f7000: CODESEG ALLOC LOAD READONLY CODE HAS_CONTENTS
+	// [2]     0x8a4000->0x9a5894 at 0x004a4000: .rdata ALLOC LOAD DATA HAS_CONTENTS
+	// [3]     0x9a6000->0x9e2000 at 0x005a6000: .data ALLOC LOAD DATA HAS_CONTENTS
+	// [4]     0x1428000->0x14282bc at 0x005e2000: DATASEG ALLOC LOAD DATA HAS_CONTENTS
+	// [5]     0x1429000->0x1452000 at 0x005e3000: .cms_t ALLOC LOAD READONLY CODE HAS_CONTENTS
+	// [6]     0x1452000->0x14aaf3e at 0x0060c000: .cms_d ALLOC LOAD DATA HAS_CONTENTS
+	// [7]     0x14ab000->0x14ac58a at 0x00665000: .idata ALLOC LOAD READONLY DATA HAS_CONTENTS
+	// [8]     0x14ad000->0x14b512f at 0x00667000: .rsrc ALLOC LOAD DATA HAS_CONTENTS
+	//
+	// .data section, however, has virtual size of 0xA81C3C, and so
+	// 0x9a6000 + 0xA81C3C = 0x1427C3C, which after alignment to page size becomes
+	// 0x1428000, which can be seen as next section, DATASEG
+	//
+	// The data is now loaded into memory with a linker script, which proves to
+	// be more reliable, as mallocs that happen before we reach segment setup
+	// could have already taken the space we need.
+
+	// TODO: UGLY, UGLY HACK!
+	//off_t file_size = 6750208;
+
+	utf8 segmentDataPath[MAX_PATH];
+	openrct2_get_segment_data_path(segmentDataPath, sizeof(segmentDataPath));
+	fdData = open(segmentDataPath, O_RDONLY);
+	if (fdData < 0)
+	{
+		log_fatal("failed to load openrct2_data");
+		exit(1);
+	}
+	log_warning("%p", GOOD_PLACE_FOR_DATA_SEGMENT);
+	segments = mmap((void *)(GOOD_PLACE_FOR_DATA_SEGMENT), len, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE, fdData, 0);
+	log_warning("%p", segments);
+	if ((uintptr_t)segments != GOOD_PLACE_FOR_DATA_SEGMENT) {
+		perror("mmap");
+		return false;
+	}
+#endif // defined(USE_MMAP) && (defined(__unix__) || defined(__MACOSX__))
+
+#if defined(__unix__)
+    int pageSize = getpagesize();
+	int numPages = (len + pageSize - 1) / pageSize;
+	unsigned char *dummy = malloc(numPages);
+
+	err = mincore((void *)segments, len, dummy);
+	bool pagesMissing = false;
+	if (err != 0)
+	{
+		err = errno;
+#ifdef __LINUX__
+		// On Linux ENOMEM means all requested range is unmapped
+		if (err != ENOMEM)
+		{
+			pagesMissing = true;
+			perror("mincore");
+		}
+#else
+		pagesMissing = true;
+		perror("mincore");
+#endif // __LINUX__
+	} else {
+		for (int i = 0; i < numPages; i++)
+		{
+			if (dummy[i] != 1)
+			{
+				pagesMissing = true;
+				void *start = (void *)segments + i * pageSize;
+				void *end = (void *)segments + (i + 1) * pageSize - 1;
+				log_warning("required page %p - %p is not in memory!", start, end);
+			}
+		}
+	}
+	free(dummy);
+	if (pagesMissing)
+	{
+		log_error("At least one of required pages was not found in memory. This can cause segfaults later on.");
+	}
+#if !defined(USE_MMAP)
+	// section: text
+	err = mprotect((void *)0x401000, 0x8a4000 - 0x401000, PROT_READ | PROT_EXEC | PROT_WRITE);
+	if (err != 0)
+	{
+		perror("mprotect");
+	}
+#endif // !defined(USE_MMAP)
+	// section: rw data
+	err = mprotect((void *)segments, 0x01429000 - 0x8a4000, PROT_READ | PROT_WRITE);
+	if (err != 0)
+	{
+		perror("mprotect");
+	}
+#endif // defined(__unix__)
+
+#if defined(USE_MMAP) && defined(__WINDOWS__)
+    segments = VirtualAlloc((void *)(GOOD_PLACE_FOR_DATA_SEGMENT), len, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+	if ((uintptr_t)segments != GOOD_PLACE_FOR_DATA_SEGMENT) {
+		log_error("VirtualAlloc, segments = %p, GetLastError = 0x%x", segments, GetLastError());
+		return false;
+	}
+
+	utf8 segmentDataPath[MAX_PATH];
+	openrct2_get_segment_data_path(segmentDataPath, sizeof(segmentDataPath));
+	SDL_RWops * rw = SDL_RWFromFile(segmentDataPath, "rb");
+	if (rw == NULL)
+	{
+		log_error("failed to load file");
+		return false;
+	}
+	if (SDL_RWread(rw, segments, len, 1) != 1) {
+		log_error("Unable to read chunk header!");
+		return false;
+	}
+	SDL_RWclose(rw);
+#endif // defined(USE_MMAP) && defined(__WINDOWS__)
+
+    // Check that the expected data is at various addresses.
+    // Start at 0x9a6000, which is start of .data, to skip the region containing addresses to DLL
+    // calls, which can be changed by windows/wine loader.
+//    const uint32_t c1 = sawyercoding_calculate_checksum((const uint8*)(segments + (uintptr_t)(0x009A6000 - 0x8a4000)), 0x009E0000 - 0x009A6000);
+//    const uint32_t c2 = sawyercoding_calculate_checksum((const uint8*)(segments + (uintptr_t)(0x01428000 - 0x8a4000)), 0x014282BC - 0x01428000);
+//    const uint32_t exp_c1 = 10114815;
+//    const uint32_t exp_c2 = 23564;
+//    if (c1 != exp_c1 || c2 != exp_c2) {
+//        printf("c1 = %u, expected %u, match %d", c1, exp_c1, c1 == exp_c1);
+//        printf("c2 = %u, expected %u, match %d", c2, exp_c2, c2 == exp_c2);
+//        return false;
+//    }
+
+    return true;
+}
 
     // 0x00406D13
     void main()
@@ -693,9 +862,9 @@ namespace openloco
                 call(0x004078FE);
                 call(0x00407B26);
                 ui::initialise_input();
-                audio::initialise_dsound();
+             //   audio::initialise_dsound();
                 run();
-                audio::dispose_dsound();
+            //    audio::dispose_dsound();
                 ui::dispose_cursors();
                 ui::dispose_input();
 
@@ -711,15 +880,20 @@ namespace openloco
 
 extern "C"
 {
-    /**
-     * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
-     * be built as a stand alone application.
-     */
-    __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-    {
-        openloco::glpCmdLine = lpCmdLine;
-        openloco::ghInstance = hInstance;
-        openloco::main();
+//    /**
+//     * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
+//     * be built as a stand alone application.
+//     */
+//    __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//    {
+//        openloco::glpCmdLine = lpCmdLine;
+//        openloco::ghInstance = hInstance;
+//        openloco::main();
+//        return 0;
+//    }
+
+int main() {
+    openloco::main();
         return 0;
-    }
+}
 }

@@ -7,8 +7,8 @@
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
+//#include <shlobj.h>
+//#include <windows.h>
 
 #ifndef _LOCO_WIN32_
     #include <SDL2/SDL.h>
@@ -26,6 +26,53 @@
 #include "utility/string.hpp"
 
 using namespace openloco::interop;
+
+enum {
+    VK_PAUSE,
+    VK_PRIOR,
+    VK_NEXT,
+    VK_END,
+    VK_HOME,
+    VK_LEFT,
+    VK_UP,
+    VK_RIGHT,
+    VK_DOWN,
+    VK_SELECT,
+    VK_EXECUTE,
+    VK_SNAPSHOT,
+    VK_INSERT,
+    VK_DELETE,
+    VK_OEM_1,
+    VK_OEM_PLUS,
+    VK_OEM_COMMA,
+    VK_OEM_MINUS,
+    VK_OEM_PERIOD,
+    VK_OEM_2,
+    VK_OEM_3,
+    VK_OEM_4,
+    VK_OEM_5,
+    VK_OEM_6,
+    VK_OEM_7,
+    VK_OEM_8,
+    VK_APPS,
+    VK_NUMPAD0,
+    VK_NUMPAD1,
+    VK_NUMPAD2,
+    VK_NUMPAD3,
+    VK_NUMPAD4,
+    VK_NUMPAD5,
+    VK_NUMPAD6,
+    VK_NUMPAD7,
+    VK_NUMPAD8,
+    VK_NUMPAD9,
+    VK_MULTIPLY,
+    VK_ADD,
+    VK_SEPARATOR,
+    VK_SUBTRACT,
+    VK_DECIMAL,
+    VK_DIVIDE,
+    VK_F1,
+};
 
 namespace openloco::ui
 {
@@ -133,13 +180,14 @@ namespace openloco::ui
         {
             throw std::runtime_error("Unable to fetch SDL2 window system handle.");
         }
-        hwnd = wmInfo.info.win.window;
+//        hwnd = wmInfo.info.win.window;
 
         // Create a palette for the window
         palette = SDL_AllocPalette(256);
         set_palette_callback = update_palette;
 
         update(initialWidth, initialHeight);
+
 #endif
     }
 
@@ -176,7 +224,7 @@ namespace openloco::ui
     // edx: cusor_id
     void set_cursor(cursor_id id)
     {
-        if (_cursors.size() >= 0)
+        if (_cursors.size() > 0)
         {
             auto index = (size_t)id;
             if (index >= _cursors.size())
@@ -551,20 +599,20 @@ namespace openloco::ui
 #endif
     }
 
-    static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
-    {
-        std::wstring pszPath(MAX_PATH, 0);
-        while (!SHGetPathFromIDListEx(pidl, &pszPath[0], (DWORD)pszPath.size(), 0))
-        {
-            if (pszPath.size() >= SHRT_MAX)
-            {
-                // Clearly not succeeding at all, bail
-                return std::wstring();
-            }
-            pszPath.resize(pszPath.size() * 2);
-        }
-        return pszPath;
-    }
+//    static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
+//    {
+//        std::wstring pszPath(MAX_PATH, 0);
+//        while (!SHGetPathFromIDListEx(pidl, &pszPath[0], (DWORD)pszPath.size(), 0))
+//        {
+//            if (pszPath.size() >= SHRT_MAX)
+//            {
+//                // Clearly not succeeding at all, bail
+//                return std::wstring();
+//            }
+//            pszPath.resize(pszPath.size() * 2);
+//        }
+//        return pszPath;
+//    }
 
     void show_message_box(const std::string &title, const std::string &message)
     {
@@ -573,35 +621,35 @@ namespace openloco::ui
 
     std::string prompt_directory(const std::string &title)
     {
-        std::string result;
+//        std::string result;
+//
+//        // Initialize COM and get a pointer to the shell memory allocator
+//        LPMALLOC lpMalloc;
+//        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
+//            SUCCEEDED(SHGetMalloc(&lpMalloc)))
+//        {
+//            auto titleW = utility::to_utf16(title);
+//            BROWSEINFOW bi = { 0 };
+//            bi.lpszTitle = titleW.c_str();
+//            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
+//
+//            LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
+//            if (pidl != nullptr)
+//            {
+//                result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
+//            }
+//            CoTaskMemFree(pidl);
+//        }
+//        else
+//        {
+//            std::cerr << "Error opening directory browse window";
+//        }
+//        CoUninitialize();
+//
+//        // SHBrowseForFolderW might minimize the main window,
+//        // so make sure that it's visible again.
+//        ShowWindow((HWND)*hwnd, SW_RESTORE);
 
-        // Initialize COM and get a pointer to the shell memory allocator
-        LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
-            SUCCEEDED(SHGetMalloc(&lpMalloc)))
-        {
-            auto titleW = utility::to_utf16(title);
-            BROWSEINFOW bi = { 0 };
-            bi.lpszTitle = titleW.c_str();
-            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
-
-            LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
-            if (pidl != nullptr)
-            {
-                result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
-            }
-            CoTaskMemFree(pidl);
-        }
-        else
-        {
-            std::cerr << "Error opening directory browse window";
-        }
-        CoUninitialize();
-
-        // SHBrowseForFolderW might minimize the main window,
-        // so make sure that it's visible again.
-        ShowWindow((HWND)*hwnd, SW_RESTORE);
-
-        return result;
+        return "";
     }
 }
