@@ -20,6 +20,8 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
     <ClCompile Include="localisation\stringmgr.cpp" />
+    <ClCompile Include="platform\platform.posix.cpp" />
+    <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
     <ClCompile Include="things\thing.cpp" />
@@ -56,6 +58,7 @@
     <ClInclude Include="localisation\string_ids.h" />
     <ClInclude Include="objects\cargo_object.h" />
     <ClInclude Include="objects\objectmgr.h" />
+    <ClInclude Include="platform\platform.h" />
     <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="stationmgr.h" />
     <ClInclude Include="things\thing.h" />
