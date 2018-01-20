@@ -13,7 +13,7 @@ SEARCH_DIR("/usr/i386-pc-linux-gnu/lib32"); SEARCH_DIR("/usr/x86_64-pc-linux-gnu
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */
-  PROVIDE (__executable_start = SEGMENT_START("text-segment", 0x08048000)); . = SEGMENT_START("text-segment", 0x08048000) + SIZEOF_HEADERS;
+  PROVIDE (__executable_start = SEGMENT_START("text-segment", 0x010000)); . = SEGMENT_START("text-segment", 0x010000) + SIZEOF_HEADERS;
   .interp         : { *(.interp) }
   .note.gnu.build-id : { *(.note.gnu.build-id) }
   .hash           : { *(.hash) }
@@ -53,6 +53,8 @@ SECTIONS
   .plt            : { *(.plt) *(.iplt) }
 .plt.got        : { *(.plt.got) }
 .plt.sec        : { *(.plt.sec) }
+  .loco_text      0x401000 : { *(.loco_text) }
+  .loco_data               : { *(.loco_data) }
   .text           :
   {
     *(.text.unlikely .text.*_unlikely .text.unlikely.*)
