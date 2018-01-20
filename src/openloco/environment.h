@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef OPENLOCO_USE_BOOST_FS
-    #include <boost/filesystem/path.hpp>
+    #include <boost/filesystem.hpp>
 #else
     #include <experimental/filesystem>
 #endif
