@@ -389,11 +389,11 @@ void openloco::interop::register_hooks()
 
             auto buffer = (char *)0x009D0D72;
             auto path = get_path((path_id)regs.ebx);
-    #ifdef OPENLOCO_USE_BOOST_FS
+#ifdef _OPENLOCO_USE_BOOST_FS_
             std::strcpy(buffer, path.make_preferred().string().c_str());
-    #else
+#else
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
-    #endif
+#endif
             regs.ebx = (int32_t)buffer;
             return 0;
         });
