@@ -37,7 +37,8 @@ namespace openloco::environment
         static constexpr const char * searchPaths[] =
         {
             "C:/Program Files (x86)/Atari/Locomotion",
-            "/Users/Marijn/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/steamapps/content/app_356430/depot_356431"
+            "/Users/Marijn/Library/Application Support/Steam/Steam.AppBundle/Steam/Contents/MacOS/steamapps/content/app_356430/depot_356431",
+            "/home/janisozaur/games/Locomotion",
         };
 
         std::cout << "Searching for Locomotion install path..." << std::endl;
@@ -126,7 +127,7 @@ namespace openloco::environment
     {
         static constexpr const char * paths[] =
         {
-            "Data/G1.DAT",
+            "Data/g1.DAT",
             "Data/PLUGIN.DAT",
             "Data/PLUGIN2.DAT",
             "Data/CSS1.DAT",
