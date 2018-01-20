@@ -12,6 +12,7 @@
 
 int main(int argc, const char** argv)
 {
+    openloco::lpCmdLine((char*)argv[0]);
     openloco::main();
     return 0;
 }

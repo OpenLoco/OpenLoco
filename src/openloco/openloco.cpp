@@ -47,6 +47,8 @@ namespace openloco
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
+#else
+    loco_global<char*, 0x00525348> glpCmdLine;
 #endif
 
     loco_global_array<char, 256, 0x005060D0> gCDKey;
@@ -72,12 +74,17 @@ namespace openloco
     {
         return ghInstance;
     }
+#endif
 
     const char* lpCmdLine()
     {
         return glpCmdLine;
     }
-#endif
+
+    void lpCmdLine(const char* path)
+    {
+        glpCmdLine = strdup(path);
+    }
 
     bool is_editor_mode()
     {
