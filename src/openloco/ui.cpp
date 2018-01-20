@@ -64,7 +64,9 @@ namespace openloco::ui
 
     using set_palette_func = void(*)(const palette_entry_t * palette, int32_t index, int32_t count);
 
+#ifdef _WIN32
     loco_global<void *, 0x00525320> _hwnd;
+#endif // _WIN32
     loco_global<screen_info_t, 0x0050B884> screen_info;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     loco_global_array<uint8_t, 256, 0x01140740> _keyboard_state;
@@ -78,10 +80,12 @@ namespace openloco::ui
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
 
+#ifdef _WIN32
     void * hwnd()
     {
         return _hwnd;
     }
+#endif // _WIN32
 
     int32_t width()
     {
