@@ -387,7 +387,7 @@ void openloco::interop::register_hooks()
         perror("mprotect");
     }
 
-    err = mprotect((void *)0x4d7000, 0x1199000 - 0x4d7000, PROT_READ | PROT_WRITE);
+    err = mprotect((void *)0x4d7000, 0x1162000 - 0x4d7000, PROT_READ | PROT_WRITE);
     if (err != 0)
     {
         perror("mprotect");
