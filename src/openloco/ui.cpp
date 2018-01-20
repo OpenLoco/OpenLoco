@@ -5,10 +5,13 @@
 #include <stdexcept>
 #include <vector>
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
+
+#ifdef _WIN32
+    #define NOMINMAX
+    #define WIN32_LEAN_AND_MEAN
+    #include <shlobj.h>
+    #include <windows.h>
+#endif
 
 #ifndef _LOCO_WIN32_
     #include <SDL2/SDL.h>
@@ -133,7 +136,10 @@ namespace openloco::ui
         {
             throw std::runtime_error("Unable to fetch SDL2 window system handle.");
         }
+
+#ifdef _WIN32
         hwnd = wmInfo.info.win.window;
+#endif
 
         // Create a palette for the window
         palette = SDL_AllocPalette(256);
@@ -380,6 +386,7 @@ namespace openloco::ui
 
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode)
     {
+#ifdef _WIN32
         switch (keyCode)
         {
             case SDLK_PAUSE: return VK_PAUSE;
@@ -440,6 +447,9 @@ namespace openloco::ui
                 }
                 return 0;
         }
+#else
+        return 0;
+#endif
     }
 
     // 0x0040477F
