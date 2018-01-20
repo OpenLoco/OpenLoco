@@ -1,0 +1,19 @@
+language: c
+
+before_install:
+    - docker build -t ubuntu --file distribution/Dockerfile .
+
+sudo: required
+dist: trusty
+
+matrix:
+    include:
+        - os: linux
+          services:
+            - docker
+          env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+
+script:
+    - mkdir build
+    - docker run -v $(pwd):/openloco -w /openloco/build -i -t ubuntu bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja"
