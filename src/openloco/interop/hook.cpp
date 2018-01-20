@@ -223,18 +223,16 @@ namespace openloco::interop
         write_memory(address, &opcode, sizeof(opcode));
     }
 
-void
-hook_stdcall(uint32_t address, void *fn)
-{
-    uint8_t data[5] = {0};
-    data[0] = 0xE9; // JMP
+    void write_jmp(uint32_t address, void * fn)
+    {
+        uint8_t data[5] = { 0 };
+        data[0] = 0xE9; // JMP
 
-    uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
+        auto addr = reinterpret_cast<uintptr_t>(fn);
+        write_address_strictalias(&data[1], addr - address - 5);
 
-    write_address_strictalias(&data[1], addr-address - 5);
-
-    write_memory(address, data, sizeof(data));
-}
+        write_memory(address, data, sizeof(data));
+    }
 
     void write_nop(uint32_t address, size_t count)
     {

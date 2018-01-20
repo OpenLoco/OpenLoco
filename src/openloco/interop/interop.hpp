@@ -154,8 +154,8 @@ namespace openloco::interop
     void register_hook(uintptr_t address, hook_function function);
     void register_hook_stub(uintptr_t address);
     void write_ret(uint32_t address);
+    void write_jmp(uint32_t address, void * fn);
     void write_nop(uint32_t address, size_t count);
 
     void register_hooks();
-    void hook_stdcall(uint32_t address, void *fn);
 }
