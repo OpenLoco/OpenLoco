@@ -13,6 +13,11 @@ matrix:
             - docker
           env:
             - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+        - os: linux
+          services:
+            - docker
+          env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=RelWithDebInfo"
 
 script:
     - mkdir build
