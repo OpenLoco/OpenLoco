@@ -10,7 +10,17 @@
 
 using namespace openloco;
 
-__attribute__((stdcall))
+#ifdef _MSC_VER
+#define STDCALL __stdcall
+#define CDECL   __cdecl
+#elif defined(__GNUC__)
+#define STDCALL __attribute__((stdcall))
+#define CDECL   __attribute__((cdecl))
+#else
+#error Unknown compiler, please define STDCALL and CDECL
+#endif
+
+STDCALL
 static void
 fn_40447f()
 {
@@ -18,7 +28,7 @@ fn_40447f()
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_404e8c()
 {
@@ -26,7 +36,7 @@ fn_404e8c()
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_404eac(int i1, int i2, int i3, int i4)
 {
@@ -34,7 +44,7 @@ fn_404eac(int i1, int i2, int i3, int i4)
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_4054b9()
 {
@@ -42,7 +52,7 @@ fn_4054b9()
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static long
 fn_timeGetTime()
 {
@@ -51,7 +61,7 @@ fn_timeGetTime()
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
-__attribute__((stdcall))
+STDCALL
 static long
 fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
 {
@@ -59,7 +69,7 @@ fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
     return 0;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_4078be()
 {
@@ -67,7 +77,7 @@ fn_4078be()
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_4078fe()
 {
@@ -75,7 +85,7 @@ fn_4078fe()
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn_407b26()
 {
@@ -85,21 +95,21 @@ fn_407b26()
 
 ///region Progress bar
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_4080bb(char *lpWindowName, uint32_t a1)
 {
     printf("Create progress bar\n");
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_408163()
 {
     printf("Destroy progress bar\n");
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_40817b(uint16_t arg0)
 {
@@ -107,7 +117,7 @@ fn_40817b(uint16_t arg0)
     printf("SendMessage(PBM_SETSTEP, %d)\n", 1);
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_4081ad(int32_t wParam)
 {
@@ -116,7 +126,7 @@ fn_4081ad(int32_t wParam)
 
 ///endregion
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static void
 fn_FileSeekFromEnd(FILE *a0, int32_t distance)
@@ -125,7 +135,7 @@ fn_FileSeekFromEnd(FILE *a0, int32_t distance)
     fseek(a0, distance, SEEK_END);
 }
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static int32_t
 fn_FileRead(FILE *a0, char *buffer, int32_t size)
@@ -136,7 +146,7 @@ fn_FileRead(FILE *a0, char *buffer, int32_t size)
     return size;
 }
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static int
 fn_CloseHandle(FILE *file)
@@ -150,7 +160,7 @@ fn_CloseHandle(FILE *file)
     return fclose(file);
 }
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static FILE *
 fn_CreateFile(char *lpFileName)
@@ -180,7 +190,7 @@ public:
     std::vector<openloco::environment::fs::path> fileList;
 };
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static Session *
 fn_FindFirstFile(char *lpFileName, FindFileData *out)
@@ -214,7 +224,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
     return data;
 }
 
-__attribute__((cdecl))
+CDECL
 static bool
 fn_FindNextFile(Session *data, FindFileData *out)
 {
@@ -235,7 +245,7 @@ fn_FindNextFile(Session *data, FindFileData *out)
     return true;
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_FindClose(Session *data)
 {
@@ -244,7 +254,7 @@ fn_FindClose(Session *data)
     delete data;
 }
 
-__attribute__((cdecl))
+CDECL
 __attribute__ ((force_align_arg_pointer))
 static void *
 fn_406bf7(int arg0)
@@ -254,56 +264,56 @@ fn_406bf7(int arg0)
     return malloc(arg0);
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fn_4078b5(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fnc0(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fnc1(int i1)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__((cdecl))
+CDECL
 static void
 fnc2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn0()
 {
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn1(int i1)
 {
     return;
 }
 
-__attribute__((stdcall))
+STDCALL
 static void
 fn2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-__attribute__((stdcall))
+STDCALL
 __attribute__ ((force_align_arg_pointer))
 static void *
 fn_malloc(uint32_t size)
@@ -313,7 +323,7 @@ fn_malloc(uint32_t size)
     return ptr;
 }
 
-__attribute__((stdcall))
+STDCALL
 __attribute__ ((force_align_arg_pointer))
 static void *
 fn_realloc(void *src, uint32_t size)
