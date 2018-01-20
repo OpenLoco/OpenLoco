@@ -36,17 +36,17 @@ if (UNIX)
     set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
 
     add_custom_command(
-            OUTPUT openloco_text
+            OUTPUT ${OLOCO_TEXT}
             COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_TEXT}" bs=4096 skip=1 count=214
             DEPENDS ${OLOCO_EXE}
     )
     add_custom_command(
-            OUTPUT openloco_data
+            OUTPUT ${OLOCO_DATA}
             COMMAND dd if="${OLOCO_EXE}" of="${OLOCO_DATA}" bs=4096 skip=215 count=78
             COMMAND dd if=/dev/zero of="${OLOCO_DATA}" bs=4096 seek=78 count=3133 conv=notrunc
             DEPENDS ${OLOCO_EXE}
     )
-    add_custom_target(segfiles DEPENDS openloco_text openloco_data)
+    add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
     if (APPLE)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text ${OLOCO_TEXT} -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
     else ()
@@ -55,13 +55,13 @@ if (UNIX)
         # bespoke linker script so they can be placed at predefined VMAs.
         add_custom_command(
             OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 openloco_text openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
+            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 ${OLOCO_TEXT} openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
         add_custom_command(
             OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 openloco_data openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
+            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 ${OLOCO_DATA} openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
