@@ -20,40 +20,40 @@ using namespace openloco;
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
 
-STDCALL
 static void
+STDCALL
 fn_40447f()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn_404e8c()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn_404eac(int i1, int i2, int i3, int i4)
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn_4054b9()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static long
+STDCALL
 fn_timeGetTime()
 {
     printf("%s\n", __FUNCTION__);
@@ -61,32 +61,32 @@ fn_timeGetTime()
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
-STDCALL
 static long
+STDCALL
 fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
 {
     printf("%s\n", __FUNCTION__);
     return 0;
 }
 
-STDCALL
 static void
+STDCALL
 fn_4078be()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn_4078fe()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn_407b26()
 {
     printf("%s\n", __FUNCTION__);
@@ -95,30 +95,30 @@ fn_407b26()
 
 ///region Progress bar
 
-CDECL
 static void
+CDECL
 fn_4080bb(char *lpWindowName, uint32_t a1)
 {
     printf("Create progress bar\n");
 }
 
-CDECL
 static void
+CDECL
 fn_408163()
 {
     printf("Destroy progress bar\n");
 }
 
-CDECL
 static void
+CDECL
 fn_40817b(uint16_t arg0)
 {
     printf("SendMessage(PBM_SETRANGE, %d)\n", arg0);
     printf("SendMessage(PBM_SETSTEP, %d)\n", 1);
 }
 
-CDECL
 static void
+CDECL
 fn_4081ad(int32_t wParam)
 {
     printf("SendMessage(PBM_SETPOS, %d)\n", wParam);
@@ -126,18 +126,18 @@ fn_4081ad(int32_t wParam)
 
 ///endregion
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static void
+CDECL
 fn_FileSeekFromEnd(FILE *a0, int32_t distance)
 {
     printf("seek %d bytes from end\n", distance);
     fseek(a0, distance, SEEK_END);
 }
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static int32_t
+CDECL
 fn_FileRead(FILE *a0, char *buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
@@ -146,9 +146,9 @@ fn_FileRead(FILE *a0, char *buffer, int32_t size)
     return size;
 }
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static int
+CDECL
 fn_CloseHandle(FILE *file)
 {
     printf("%s\n", __FUNCTION__);
@@ -160,9 +160,9 @@ fn_CloseHandle(FILE *file)
     return fclose(file);
 }
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static FILE *
+CDECL
 fn_CreateFile(char *lpFileName)
 {
     printf("%s %s\n", __FUNCTION__, lpFileName);
@@ -190,9 +190,9 @@ public:
     std::vector<openloco::environment::fs::path> fileList;
 };
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static Session *
+CDECL
 fn_FindFirstFile(char *lpFileName, FindFileData *out)
 {
     printf("%s (%s)\n", __FUNCTION__,lpFileName );
@@ -224,8 +224,8 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
     return data;
 }
 
-CDECL
 static bool
+CDECL
 fn_FindNextFile(Session *data, FindFileData *out)
 {
     printf("%s\n", __FUNCTION__);
@@ -245,8 +245,8 @@ fn_FindNextFile(Session *data, FindFileData *out)
     return true;
 }
 
-CDECL
 static void
+CDECL
 fn_FindClose(Session *data)
 {
     printf("%s\n", __FUNCTION__);
@@ -254,9 +254,9 @@ fn_FindClose(Session *data)
     delete data;
 }
 
-CDECL
 __attribute__ ((force_align_arg_pointer))
 static void *
+CDECL
 fn_406bf7(int arg0)
 {
     printf("%s %d\n", __FUNCTION__, arg0);
@@ -264,58 +264,58 @@ fn_406bf7(int arg0)
     return malloc(arg0);
 }
 
-CDECL
 static void
+CDECL
 fn_4078b5(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-CDECL
 static void
+CDECL
 fnc0(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-CDECL
 static void
+CDECL
 fnc1(int i1)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-CDECL
 static void
+CDECL
 fnc2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-STDCALL
 static void
+STDCALL
 fn0()
 {
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn1(int i1)
 {
     return;
 }
 
-STDCALL
 static void
+STDCALL
 fn2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-STDCALL
 __attribute__ ((force_align_arg_pointer))
 static void *
+STDCALL
 fn_malloc(uint32_t size)
 {
     //printf("malloc %x\n", (uint32_t)size);
@@ -323,9 +323,9 @@ fn_malloc(uint32_t size)
     return ptr;
 }
 
-STDCALL
 __attribute__ ((force_align_arg_pointer))
 static void *
+STDCALL
 fn_realloc(void *src, uint32_t size)
 {
     //printf("malloc %x\n", (uint32_t)size);
