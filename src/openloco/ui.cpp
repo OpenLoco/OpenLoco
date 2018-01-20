@@ -561,57 +561,8 @@ namespace openloco::ui
 #endif
     }
 
-    static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
-    {
-        std::wstring pszPath(MAX_PATH, 0);
-        while (!SHGetPathFromIDListEx(pidl, &pszPath[0], (DWORD)pszPath.size(), 0))
-        {
-            if (pszPath.size() >= SHRT_MAX)
-            {
-                // Clearly not succeeding at all, bail
-                return std::wstring();
-            }
-            pszPath.resize(pszPath.size() * 2);
-        }
-        return pszPath;
-    }
-
     void show_message_box(const std::string &title, const std::string &message)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
-    }
-
-    std::string prompt_directory(const std::string &title)
-    {
-        std::string result;
-
-        // Initialize COM and get a pointer to the shell memory allocator
-        LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
-            SUCCEEDED(SHGetMalloc(&lpMalloc)))
-        {
-            auto titleW = utility::to_utf16(title);
-            BROWSEINFOW bi = { 0 };
-            bi.lpszTitle = titleW.c_str();
-            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
-
-            LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
-            if (pidl != nullptr)
-            {
-                result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
-            }
-            CoTaskMemFree(pidl);
-        }
-        else
-        {
-            std::cerr << "Error opening directory browse window";
-        }
-        CoUninitialize();
-
-        // SHBrowseForFolderW might minimize the main window,
-        // so make sure that it's visible again.
-        ShowWindow((HWND)*hwnd, SW_RESTORE);
-
-        return result;
     }
 }

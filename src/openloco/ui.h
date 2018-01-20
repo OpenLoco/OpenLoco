@@ -33,5 +33,4 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string &title, const std::string &message);
-    std::string prompt_directory(const std::string &title);
 }
