@@ -41,7 +41,7 @@ namespace openloco
                 uint8_t pad_39;
                 thing_id_t next_car_id;     // 0x3A
                 uint8_t pad_3C[0x40 - 0x3C];
-                uint16_t var_40;
+                uint16_t object_type;
                 uint8_t var_42;
                 uint8_t pad_43[0x4C - 0x43];
                 uint8_t cargo_type;         // 0x4C
@@ -53,8 +53,8 @@ namespace openloco
                 uint8_t var_54;
                 uint8_t pad_55[0x5D - 0x55];
                 uint8_t var_5D;
-                uint8_t pad_5E;
-                uint8_t var_5F; // 0x5F (bit 1 = can break down)
+                uint8_t var_5E;
+                uint8_t var_5F;             // 0x5F (bit 1 = can break down)
                 uint8_t pad_60[0x6A - 0x60];
                 uint8_t var_6A;
                 uint8_t pad_6B[0x73 - 0x6B];

@@ -12,7 +12,12 @@ using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::objectmgr;
 
-loco_global<vehicle, 0x01136118> vehicle_1136118;
+loco_global<vehicle *, 0x01136118> vehicle_1136118;
+loco_global<vehicle *, 0x01136124> vehicle_1136124;
+loco_global<vehicle *, 0x01136128> vehicle_1136128;
+loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
+loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
+loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
 
 vehicle* vehicle::next_vehicle()
 {
@@ -160,10 +165,35 @@ int32_t openloco::vehicle::sub_4AA1D0()
 
     if (var_42 == 2 || var_42 == 3)
     {
-        call(0x004AAC4E, regs);
+        sub_4AAC4E();
         return 0;
     }
-    //0x4AA1DC
+
+    if (vehicle_var_1136237 | vehicle_var_1136238)
+    {
+        call(0x004CBB01, regs);
+        vehicle * veh = vehicle_1136124;
+        regs.ebx = (int32_t)veh;
+        veh = vehicle_1136128;
+        regs.edi = (int32_t)veh;
+        call(0x004AC255, regs);
+        call(0x004CBB01, regs);
+    }
+    uint32_t backup1136130 = vehicle_var_1136130;
+    if (var_5E != 0)
+    {
+        uint32_t var_1136130 = var_5E;
+        if (var_5E > 32)
+        {
+            var_1136130 = 64 - var_1136130;
+        }
+
+        vehicle_var_1136130 += var_1136130 * 320 + 500;
+    }
+    sub_4AAC4E();
+    call(0x004AAB0B, regs);
+    vehicle_var_1136130 = backup1136130;
+    return 0;
 }
 
 void openloco::vehicle::sub_4AAC4E()
@@ -171,15 +201,45 @@ void openloco::vehicle::sub_4AAC4E()
     if (var_38 & (1 << 4))
         return;
 
-    if ((vehicle_1136118->var_5D == 8) || (vehicle_1136118->var_5D == 9))
+    vehicle * veh = vehicle_1136118;
+    if ((veh->var_5D == 8) || (veh->var_5D == 9))
         return;
 
-    vehicle_object * vehicleObject = get_vehicle_object(var_40);
-
+    vehicle_object * vehicleObject = get_vehicle_object(object_type);
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.bl = vehicleObject->var_24[var_54].var_05;
     if (vehicleObject->var_24[var_54].var_05 == 0)
     {
         call(0x004AB655, regs);
         return;
     }
-    //0x4AAC91
+
+    regs.ebx -= 0x80;
+    switch (vehicleObject->vis_fx_type)
+    {
+    case 0:
+        call(0x004AB655, regs);
+        break;
+    case 1:
+    case 2:
+    case 3:
+        call(0x004AACA5, regs);
+        break;
+    case 4:
+        call(0x004AAFFA, regs);
+        break;
+    case 5:
+        call(0x004AB3CA, regs);
+        break;
+    case 6:
+        call(0x004AB4E0, regs);
+        break;
+    case 7:
+        call(0x004AB177, regs);
+        break;
+    case 8:
+        call(0x004AB2A7, regs);
+        break;
+    }
 }
