@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "../interop/interop.hpp"
+#include "../environment.h"
 #include "../ui.h"
 
 using namespace openloco::interop;
@@ -7,6 +8,7 @@ using namespace openloco::interop;
 namespace openloco::gfx
 {
     loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    loco_global_array<loco_g1_element, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
 
     drawpixelinfo_t& screen_dpi()
     {
@@ -16,7 +18,39 @@ namespace openloco::gfx
     // 0x0044733C
     void load_g1()
     {
-        call(0x0044733C);
+        auto g1Path = environment::get_path(environment::path_id::g1);
+
+        FILE * file;
+        gfx::loco_g1_header header;
+        void * g1Buffer;
+
+        file = fopen(g1Path.make_preferred().u8string().c_str(), "rb");
+
+        if (file != NULL) {
+            if (fread(&header, 8, 1, file) == 1) {
+
+                // Read element headers
+                fread(_g1Elements, header.num_entries * sizeof(loco_g1_element), 1, file);
+
+                // Read element data
+                g1Buffer = malloc(header.total_size);
+                fread(g1Buffer, header.total_size, 1, file);
+
+                fclose(file);
+
+                // Adjust memory offsets
+                for (uint32_t i = 0; i < header.num_entries; i++)
+                {
+                    _g1Elements[i].offset += (int)g1Buffer;
+                }
+            }
+            fclose(file);
+            return;
+        }
+        else
+        {
+            throw std::exception("Unable to load g1.dat");
+        }
     }
 
     // 0x00447485

@@ -4,6 +4,8 @@
 #include "../openloco.h"
 #include <cstdint>
 
+#define LOCO_G1_ELEMENT_COUNT 0x1A10
+
 namespace openloco::gfx
 {
 #pragma pack(push, 1)
@@ -22,6 +24,23 @@ namespace openloco::gfx
 #pragma pack(pop)
 
     drawpixelinfo_t& screen_dpi();
+
+    struct loco_g1_header
+    {
+        uint32_t num_entries;
+        uint32_t total_size;
+    };
+
+     struct loco_g1_element
+    {
+        uint8_t * offset;       // 0x00
+        int16_t width;          // 0x04
+        int16_t height;         // 0x06
+        int16_t x_offset;       // 0x08
+        int16_t y_offset;       // 0x0A
+        uint16_t flags;         // 0x0C
+        int16_t unused;         // 0x0E
+    };
 
     void load_g1();
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
