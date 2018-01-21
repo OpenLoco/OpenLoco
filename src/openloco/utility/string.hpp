@@ -89,4 +89,10 @@ namespace openloco::utility
     {
         (void)strlcat(dest, src, N);
     }
+
+    template<size_t N, typename... Args>
+    inline int sprintf_safe(char (&dest)[N], const char *fmt, Args&&... args)
+    {
+        return snprintf(dest, N, fmt, std::forward<Args>(args)...);
+    }
 }
