@@ -229,21 +229,21 @@ STR_0227    :Airport
 STR_0228    :Ship Port
 STR_0229    :Landscape Generation Options
 STR_0230    :
-STR_0231    :±
-STR_0232    :¶
-STR_0233    :±¶
-STR_0234    :·
-STR_0235    :±·
-STR_0236    :¶·
-STR_0237    :±¶·
+STR_0231    :{SYMBOL_RAILWAY}
+STR_0232    :{SYMBOL_ROAD}
+STR_0233    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}
+STR_0234    :{SYMBOL_FLAG}
+STR_0235    :{SYMBOL_RAILWAY}{SYMBOL_FLAG}
+STR_0236    :{SYMBOL_ROAD}{SYMBOL_FLAG}
+STR_0237    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{SYMBOL_FLAG}
 STR_0238    :{APPROX}
-STR_0239    :±{APPROX}
-STR_0240    :¶{APPROX}
-STR_0241    :±¶{APPROX}
-STR_0242    :·{APPROX}
-STR_0243    :±·{APPROX}
-STR_0244    :¶·{APPROX}
-STR_0245    :±¶·{APPROX}
+STR_0239    :{SYMBOL_RAILWAY}{APPROX}
+STR_0240    :{SYMBOL_ROAD}{APPROX}
+STR_0241    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{APPROX}
+STR_0242    :{SYMBOL_FLAG}{APPROX}
+STR_0243    :{SYMBOL_RAILWAY}{SYMBOL_FLAG}{APPROX}
+STR_0244    :{SYMBOL_ROAD}{SYMBOL_FLAG}{APPROX}
+STR_0245    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{SYMBOL_FLAG}{APPROX}
 STR_0246    :{STRINGID2}
 STR_0247    :{STRINGID2} - Details
 STR_0248    :{STRINGID2} - Finances
@@ -994,7 +994,7 @@ STR_0992    :???
 STR_0993    :???
 STR_0994    :???
 STR_0995    :???
-STR_0996    :{STRINGID2}:{MOVE_X}×{STRINGID2}{STRINGID2}
+STR_0996    :{STRINGID2}:{MOVE_X}Ã—{STRINGID2}{STRINGID2}
 STR_0997    :SHIFT + 
 STR_0998    :CTRL + 
 STR_0999    :Change Keyboard Shortcut
@@ -1959,7 +1959,7 @@ STR_1957    :{WINDOW_COLOUR_2}I.T. Manager/Western Region:  Ken Ford
 STR_1958    :{WINDOW_COLOUR_2}Manager of Technical Support:  Michael Vetsch
 STR_1959    :{WINDOW_COLOUR_2}Lead Tester:  Marshall Clevesy
 STR_1960    :{WINDOW_COLOUR_2}Assistant Lead Tester:  Sean McLaren
-STR_1961    :{WINDOW_COLOUR_2}Testers:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria
+STR_1961    :{WINDOW_COLOUR_2}Testers:  Randy Alfonso, Leticia DueÃ±as, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria
 STR_1962    :{WINDOW_COLOUR_2}Compatibility Lab Supervisor:  Dave Strang 
 STR_1963    :{WINDOW_COLOUR_2}Compatibility Test Lead:  Cuong Vu
 STR_1964    :{WINDOW_COLOUR_2}Compatibility Analysts:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody
