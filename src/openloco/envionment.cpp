@@ -98,6 +98,12 @@ namespace openloco::environment
             path = platform::prompt_directory("Select your Locomotion install path.");
             if (validate_loco_install_path(path))
             {
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                cfg.loco_install_path = path.make_preferred().string();
+#else
+                cfg.loco_install_path = path.make_preferred().u8string();
+#endif
+                config::write_new_config();
                 return path;
             }
 
