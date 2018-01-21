@@ -1,6 +1,8 @@
 #include "vehicle.h"
+#include <algorithm>
 #include "../audio/audio.h"
 #include "../config.h"
+#include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../objects/vehicle_object.h"
@@ -18,8 +20,10 @@ loco_global<vehicle *, 0x01136128> vehicle_1136128;
 loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
+loco_global<unk_113D758 *, 0x0113D820> vehicle_var_113D820;
+loco_global<uint8_t, 0x0050AF25> vehicle_var_50AF25;
 
-vehicle* vehicle::next_vehicle()
+vehicle * vehicle::next_vehicle()
 {
     return thingmgr::get<vehicle>(next_thing_id);
 }
@@ -171,13 +175,13 @@ int32_t openloco::vehicle::sub_4AA1D0()
 
     if (vehicle_var_1136237 | vehicle_var_1136238)
     {
-        call(0x004CBB01, regs);
+        invalidate_sprite();
         vehicle * veh = vehicle_1136124;
         regs.ebx = (int32_t)veh;
         veh = vehicle_1136128;
         regs.edi = (int32_t)veh;
         call(0x004AC255, regs);
-        call(0x004CBB01, regs);
+        invalidate_sprite();
     }
     uint32_t backup1136130 = vehicle_var_1136130;
     if (var_5E != 0)
@@ -242,4 +246,61 @@ void openloco::vehicle::sub_4AAC4E()
         call(0x004AB2A7, regs);
         break;
     }
+}
+
+// 0x4CBB01
+void openloco::vehicle::invalidate_sprite()
+{
+    if (sprite_left == 0x8000)
+    {
+        return;
+    }
+
+    int16_t left = sprite_left;
+    int16_t top = sprite_top;
+    int16_t right = sprite_right;
+    int16_t bottom = sprite_bottom;
+    for (unk_113D758 * unk = vehicle_var_113D820;
+        unk != nullptr;
+        unk++)
+    {
+        if (unk->zoom_level > vehicle_var_50AF25)
+            continue;
+
+        if (sprite_right <= unk->x)
+            continue;
+
+        if (sprite_bottom <= unk->y)
+            continue;
+
+        if (sprite_left >= unk->x + unk->width)
+            continue;
+
+        left = std::max(sprite_left, unk->x);
+        right = std::min<int16_t>(sprite_right, unk->x + unk->width);
+
+        if (sprite_top >= unk->y + unk->height)
+            continue;
+
+        bottom = std::max(sprite_bottom, unk->y);
+        top = std::min<int16_t>(sprite_top, unk->y + unk->height);
+
+        left -= unk->x;
+        bottom -= unk->y;
+        right -= unk->x;
+        top -= unk->y;
+
+        left >>= unk->zoom_level;
+        bottom >>= unk->zoom_level;
+        right >>= unk->zoom_level;
+        top >>= unk->zoom_level;
+
+        left += unk->var_04;
+        bottom += unk->var_06;
+        right += unk->var_04;
+        top += unk->var_06;
+
+        openloco::gfx::set_dirty_blocks(left, top, right, bottom);
+    }
+
 }

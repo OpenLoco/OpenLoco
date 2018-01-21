@@ -34,7 +34,11 @@ namespace openloco
                 int16_t z; // 0x12
                 uint8_t var_14;
                 uint8_t var_15;
-                uint8_t pad_16[0x28 - 0x16];
+                int16_t sprite_left;       // 0x16
+                int16_t sprite_top;        // 0x18
+                int16_t sprite_right;      // 0x1A
+                int16_t sprite_bottom;     // 0x1C
+                uint8_t pad_1E[0x28 - 0x1E];
                 uint16_t var_28;
                 uint8_t pad_2A[0x38 - 0x2A];
                 uint8_t var_38;
