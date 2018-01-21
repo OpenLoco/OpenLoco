@@ -95,4 +95,20 @@ namespace openloco::utility
     {
         return snprintf(dest, N, fmt, std::forward<Args>(args)...);
     }
+
+    // intended for use with e.g. loco_global_array<char, N, A>
+    template<typename T>
+    inline auto strcpy_safe(T& dest, const char *src)
+        -> std::enable_if_t<std::is_convertible_v<T, char *> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
+    {
+        (void)strlcpy(dest, src, dest.size());
+    }
+
+    // intended for use with e.g. loco_global_array<char, N, A>
+    template<typename T>
+    inline auto strcat_safe(T& dest, const char *src)
+        -> std::enable_if_t<std::is_convertible_v<T, char *> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
+    {
+        (void)strlcat(dest, src, dest.size());
+    }
 }
