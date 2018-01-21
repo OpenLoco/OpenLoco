@@ -49,7 +49,7 @@ namespace openloco::gfx
         }
         else
         {
-            throw std::exception("Unable to load g1.dat");
+            throw std::runtime_error("Unable to load g1.dat");
         }
     }
 
