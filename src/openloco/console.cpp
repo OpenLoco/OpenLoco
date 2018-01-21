@@ -1,22 +1,36 @@
-#include "log.h"
+#include "console.h"
 #include "utility/string.hpp"
+#include <stdarg.h>
 
 namespace openloco::console
 {
     static int _group = 0;
 
-    void log(const char* format, ...)
+    static void vwrite(FILE* buffer, const char* format, va_list args)
     {
         for (int i = 0; i < _group; i++)
         {
-            printf("  ");
+            fprintf(buffer, "  ");
         }
 
+        vprintf(format, args);
+        fprintf(buffer, "\n");
+    }
+
+    void log(const char* format, ...)
+    {
         va_list args;
         va_start(args, format);
-        vprintf(format, args);
+        vwrite(stdout, format, args);
         va_end(args);
-        printf("\n");
+    }
+
+    void error(const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        vwrite(stderr, format, args);
+        va_end(args);
     }
 
     void group(const char* format, ...)

@@ -1,12 +1,14 @@
+#include <assert.h>
 #include <cstdio>
 #include <cstring>
 #ifndef _WIN32
 #include <sys/mman.h>
+#include <unistd.h>
 #endif
+#include "../console.h"
 #include "../environment.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
-#include "../log.h"
 #include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
@@ -323,8 +325,7 @@ static void CDECL fn_free(void* block)
     return free(block);
 }
 
-STDCALL
-void fn_dump(uint32_t address)
+static void STDCALL fn_dump(uint32_t address)
 {
     console::log("Missing hook: 0x%x", address);
 }
@@ -335,40 +336,40 @@ enum
     DSERR_NODRIVER = 0x88780078,
 };
 
-uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
+static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
 {
     console::log("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
 
     return DSERR_NODRIVER;
 }
 
-uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
+static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
 {
     console::log("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
     return 0;
 }
 
-uint STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
+static uint STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
 {
     console::log("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
     return 0;
 }
 
-void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
+static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
 {
     console::log("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
 
     return nullptr;
 }
 
-bool STDCALL lib_DeleteFileA(char* lpFileName)
+static bool STDCALL lib_DeleteFileA(char* lpFileName)
 {
     console::log("DeleteFileA(%s)", lpFileName);
 
     return false;
 }
 
-bool STDCALL lib_WriteFile(
+static bool STDCALL lib_WriteFile(
     FILE* hFile,
     char* buffer,
     size_t nNumberOfBytesToWrite,
@@ -380,8 +381,8 @@ bool STDCALL lib_WriteFile(
     return true;
 }
 
-void* STDCALL FORCE_ALIGN_ARG_POINTER
-lib_CreateFileA(
+FORCE_ALIGN_ARG_POINTER
+static void* STDCALL lib_CreateFileA(
     char* lpFileName,
     uint32_t dwDesiredAccess,
     uint32_t dwShareMode,
@@ -396,7 +397,7 @@ lib_CreateFileA(
 }
 
 FORCE_ALIGN_ARG_POINTER
-bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
+static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
 {
     // FILE_ATTRIBUTE_NORMAL = 0x80
     assert(dwFileAttributes == 0x80);
@@ -413,28 +414,23 @@ bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
     return false;
 }
 
-void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
+static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
 {
     console::log("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
 
     return nullptr;
 }
 
-void STDCALL lib_CloseHandle(int a0)
+static void STDCALL lib_CloseHandle(int a0)
 {
     console::log("CloseHandle(%d)", a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
-void STDCALL lib_PostQuitMessage(int32_t exitCode)
+static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 {
     console::log("lib_PostQuitMessage(%d)", exitCode);
     exit(exitCode);
-}
-
-void STDCALL lib_4(int div, int addr, int a0, int a1, int a2, int a3)
-{
-    console::log("::::::::::::::::::: %x: %x %x %x %x", addr, a0, a1, a2, a3);
 }
 
 static void register_no_win32_hooks()
