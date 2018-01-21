@@ -77,4 +77,16 @@ namespace openloco::utility
 
         return (dest_len + src_len);
     }
+
+    template<size_t N>
+    inline void strcpy_safe(char (&dest)[N], const char *src)
+    {
+        (void)strlcpy(dest, src, N);
+    }
+
+    template<size_t N>
+    inline void strcat_safe(char (&dest)[N], const char *src)
+    {
+        (void)strlcat(dest, src, N);
+    }
 }
