@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "gfx.h"
 #include "../interop/interop.hpp"
 #include "../environment.h"
@@ -20,36 +22,34 @@ namespace openloco::gfx
     {
         auto g1Path = environment::get_path(environment::path_id::g1);
 
-        FILE * file;
+        std::ifstream stream(g1Path.make_preferred().u8string().c_str(), std::ios::in | std::ios::binary);
         gfx::g1_header_t header;
         void * g1Buffer;
 
-        file = fopen(g1Path.make_preferred().u8string().c_str(), "rb");
-
         try
         {
-            if (file == nullptr)
+            if (!stream)
             {
-                throw std::exception("Opening g1 file failed.");
+                throw std::runtime_error("Opening g1 file failed.");
             }
 
-            if (fread(&header, 8, 1, file) != 1)
+            if (!stream.read((char *)&header, 8))
             {
-                throw std::exception("Reading g1 file header failed.");
+                throw std::runtime_error("Reading g1 file header failed.");
             }
 
             // Read element headers
-            if (fread(_g1Elements, header.num_entries * sizeof(g1_element_t), 1, file) != 1)
+            if (!stream.read((char *)&_g1Elements, header.num_entries * sizeof(g1_element_t)))
             {
-                throw std::exception("Reading g1 element headers failed.");
+                throw std::runtime_error("Reading g1 element headers failed.");
             }
 
             // Read element data
             g1Buffer = malloc(header.total_size);
-            if (fread(g1Buffer, header.total_size, 1, file) != 1)
+            if(!stream.read((char *)g1Buffer, header.total_size))
             {
                 free(g1Buffer);
-                throw std::exception("Reading g1 elements failed.");
+                throw std::runtime_error("Reading g1 elements failed.");
             }
 
             // Adjust memory offsets
@@ -57,14 +57,11 @@ namespace openloco::gfx
             {
                 _g1Elements[i].offset += (int32_t)g1Buffer;
             }
-            fclose(file);
+            stream.close();
         }
         catch (const std::exception &e)
         {
-            if (file != nullptr)
-            {
-                fclose(file);
-            }
+            stream.close();
             throw std::runtime_error(e.what());
         }
     }
