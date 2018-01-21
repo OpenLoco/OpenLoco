@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cctype>
+#include <cstring>
 #include <string>
 
 namespace openloco::utility
@@ -22,5 +24,57 @@ namespace openloco::utility
             }
         }
         return true;
+    }
+
+    inline size_t strlcpy(char *dest, const char *src, size_t size)
+    {
+        size_t src_len = std::strlen(src);
+
+        if (src_len < size)
+        {
+            std::memcpy(dest, src, src_len + 1);
+        }
+        else
+        {
+            std::memcpy(dest, src, size);
+            dest[size - 1] = '\0';
+        }
+
+        return src_len;
+    }
+
+    inline size_t strlcat(char *dest, const char *src, size_t size)
+    {
+        size_t src_len = std::strlen(src);
+
+        if (size == 0)
+        {
+            return src_len;
+        }
+
+        // this lambda is essentially a reimplementation of strnlen, which isn't standard
+        size_t dest_len = [=]
+        {
+            auto dest_end = reinterpret_cast<const char *>(std::memchr(dest, '\0', size));
+            if (dest_end != nullptr)
+            {
+                return static_cast<size_t>(dest_end - dest);
+            }
+            else
+            {
+                return size;
+            }
+        }();
+
+        if (dest_len < size)
+        {
+            size_t copy_count = std::min<size_t>((size - dest_len) - 1, src_len);
+            char  *copy_ptr   = (dest + dest_len);
+
+            std::memcpy(copy_ptr, src, copy_count);
+            copy_ptr[copy_count] = '\0';
+        }
+
+        return (dest_len + src_len);
     }
 }
