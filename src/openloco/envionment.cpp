@@ -5,6 +5,7 @@
 #include "interop/interop.hpp"
 #include "ui.h"
 #include "utility/collection.hpp"
+#include "utility/string.hpp"
 #include "platform/platform.h"
 
 using namespace openloco::interop;
@@ -110,12 +111,13 @@ namespace openloco::environment
         return result;
     }
 
-    static void set_directory(char * buffer, fs::path path)
+    template<size_t TSize, uint32_t TAddress>
+    static void set_directory(loco_global_array<char, TSize, TAddress> buffer, fs::path path)
     {
 #ifdef _OPENLOCO_USE_BOOST_FS_
-        std::strcpy(buffer, path.make_preferred().string().c_str());
+        utility::strcpy_safe(buffer, path.make_preferred().string().c_str());
 #else
-        std::strcpy(buffer, path.make_preferred().u8string().c_str());
+        utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
 #endif
     }
 

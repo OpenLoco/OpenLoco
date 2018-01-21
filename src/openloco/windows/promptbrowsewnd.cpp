@@ -70,15 +70,15 @@ namespace openloco::ui::windows
         {
             _fileType = (uint8_t)browse_file_type::landscape;
         }
-        std::strcpy(_title, title);
-        std::strcpy(_filter, filter);
+        utility::strcpy_safe(_title, title);
+        utility::strcpy_safe(_filter, filter);
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-        std::strcpy(_directory, directory.make_preferred().string().c_str());
+        utility::strcpy_safe(_directory, directory.make_preferred().string().c_str());
 #else
-        std::strcpy(_directory, directory.make_preferred().u8string().c_str());
+        utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
 #endif
-        std::strcpy(_text_input_buffer, baseName.c_str());
+        utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
         auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, 0x1202, (void *)0x004FB308);
@@ -110,6 +110,7 @@ namespace openloco::ui::windows
                     return windowmgr::find(window_type::prompt_browse) != nullptr;
                 });
             windowmgr::current_modal_type(window_type::undefined);
+            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(szPath, _directory);
             if (szPath[0] != '\0')
             {

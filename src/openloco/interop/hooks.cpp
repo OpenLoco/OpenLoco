@@ -9,6 +9,7 @@
 #include "../station.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
+#include "../utility/string.hpp"
 #include "../windowmgr.h"
 #include "interop.hpp"
 
@@ -224,9 +225,9 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
     }
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-    strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
+    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().string().c_str());
 #else
-    strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
     data->fileList.erase(data->fileList.begin());
     return data;
@@ -244,9 +245,9 @@ fn_FindNextFile(Session *data, FindFileData *out)
     }
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-    strcpy(out->cFilename, data->fileList[0].filename().string().c_str());
+    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().string().c_str());
 #else
-    strcpy(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
     data->fileList.erase(data->fileList.begin());
 
@@ -407,8 +408,10 @@ void openloco::interop::register_hooks()
             auto buffer = (char *)0x009D0D72;
             auto path = get_path((path_id)regs.ebx);
 #ifdef _OPENLOCO_USE_BOOST_FS_
+            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().string().c_str());
 #else
+            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 #endif
             regs.ebx = (int32_t)buffer;
