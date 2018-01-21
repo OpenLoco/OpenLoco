@@ -45,13 +45,13 @@ namespace openloco
     struct object;
     struct object_entry_extended;
     struct cargo_object;
-    struct interface_object;
+    struct interface_skin_object;
     struct sound_object;
     struct currency_object;
     struct steam_object;
-    struct rocks_object;
+    struct rock_object;
     struct water_object;
-    struct surface_object;
+    struct land_object;
     struct town_name_object;
     struct wall_object; 
     struct train_signal_object;
