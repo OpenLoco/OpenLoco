@@ -30,6 +30,7 @@
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
     <ClCompile Include="utility\string.cpp" />
+    <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="utility\numeric.hpp" />
     <ClInclude Include="utility\string.hpp" />
     <ClInclude Include="types.hpp" />
+    <ClInclude Include="viewportmgr.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windowmgr.h" />
     <ClInclude Include="graphics\gfx.h" />

@@ -8,6 +8,7 @@
 #include "../objects/vehicle_object.h"
 #include "../objects/objectmgr.h"
 #include "../utility/numeric.hpp"
+#include "../viewportmgr.h"
 #include "thingmgr.h"
 
 using namespace openloco;
@@ -20,8 +21,13 @@ loco_global<vehicle *, 0x01136128> vehicle_1136128;
 loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
+<<<<<<< a292391919882a169ee318fdd348add509376bb3
 loco_global<unk_113D758 *, 0x0113D820> vehicle_var_113D820;
 loco_global<uint8_t, 0x0050AF25> vehicle_var_50AF25;
+=======
+
+loco_global<uint8_t, 0x0050AF25> vehicle_zoom_max;
+>>>>>>> Use OpenRCT2 viewport names
 
 vehicle * vehicle::next_vehicle()
 {
@@ -260,45 +266,45 @@ void openloco::vehicle::invalidate_sprite()
     int16_t top = sprite_top;
     int16_t right = sprite_right;
     int16_t bottom = sprite_bottom;
-    for (unk_113D758 * unk = vehicle_var_113D820;
-        unk != nullptr;
-        unk++)
+    for (auto viewport = openloco::ui::viewportmgr::begin();
+        viewport != nullptr;
+        viewport++)
     {
-        if (unk->zoom_level > vehicle_var_50AF25)
+        if (viewport->zoom > vehicle_zoom_max)
             continue;
 
-        if (sprite_right <= unk->x)
+        if (sprite_right <= viewport->view_x)
             continue;
 
-        if (sprite_bottom <= unk->y)
+        if (sprite_bottom <= viewport->view_y)
             continue;
 
-        if (sprite_left >= unk->x + unk->width)
+        if (sprite_left >= viewport->view_x + viewport->view_width)
             continue;
 
-        left = std::max(sprite_left, unk->x);
-        right = std::min<int16_t>(sprite_right, unk->x + unk->width);
+        left = std::max(sprite_left, viewport->view_x);
+        right = std::min<int16_t>(sprite_right, viewport->view_x + viewport->view_width);
 
-        if (sprite_top >= unk->y + unk->height)
+        if (sprite_top >= viewport->view_y + viewport->view_height)
             continue;
 
-        bottom = std::max(sprite_bottom, unk->y);
-        top = std::min<int16_t>(sprite_top, unk->y + unk->height);
+        bottom = std::max(sprite_bottom, viewport->view_y);
+        top = std::min<int16_t>(sprite_top, viewport->view_y + viewport->view_height);
 
-        left -= unk->x;
-        bottom -= unk->y;
-        right -= unk->x;
-        top -= unk->y;
+        left -= viewport->view_x;
+        bottom -= viewport->view_y;
+        right -= viewport->view_x;
+        top -= viewport->view_y;
 
-        left >>= unk->zoom_level;
-        bottom >>= unk->zoom_level;
-        right >>= unk->zoom_level;
-        top >>= unk->zoom_level;
+        left >>= viewport->zoom;
+        bottom >>= viewport->zoom;
+        right >>= viewport->zoom;
+        top >>= viewport->zoom;
 
-        left += unk->var_04;
-        bottom += unk->var_06;
-        right += unk->var_04;
-        top += unk->var_06;
+        left += viewport->x;
+        bottom += viewport->y;
+        right += viewport->x;
+        top += viewport->y;
 
         openloco::gfx::set_dirty_blocks(left, top, right, bottom);
     }
