@@ -571,7 +571,7 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x00445AB9,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto result = prompt_browse(
                 (browse_type)regs.al,
                 (char*)regs.ecx,
