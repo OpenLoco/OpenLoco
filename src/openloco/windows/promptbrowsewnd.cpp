@@ -110,6 +110,7 @@ namespace openloco::ui::windows
                     return windowmgr::find(window_type::prompt_browse) != nullptr;
                 });
             windowmgr::current_modal_type(window_type::undefined);
+            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(szPath, _directory);
             if (szPath[0] != '\0')
             {
