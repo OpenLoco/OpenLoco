@@ -29,74 +29,56 @@ using namespace openloco;
 
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
-static void
-STDCALL
-fn_40447f()
+static void STDCALL fn_40447f()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static void
-STDCALL
-fn_404e8c()
+static void STDCALL fn_404e8c()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static void
-STDCALL
-fn_404eac(int i1, int i2, int i3, int i4)
+static void STDCALL fn_404eac(int i1, int i2, int i3, int i4)
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static void
-STDCALL
-fn_4054b9()
+static void STDCALL fn_4054b9()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static long
-STDCALL
-fn_timeGetTime()
+static long STDCALL fn_timeGetTime()
 {
     printf("%s\n", __FUNCTION__);
     return 0;
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
-static long
-STDCALL
-fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
+static long STDCALL fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
 {
     printf("%s\n", __FUNCTION__);
     return 0;
 }
 
-static void
-STDCALL
-fn_4078be()
+static void STDCALL fn_4078be()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static void
-STDCALL
-fn_4078fe()
+static void STDCALL fn_4078fe()
 {
     printf("%s\n", __FUNCTION__);
     return;
 }
 
-static void
-STDCALL
-fn_407b26()
+static void STDCALL fn_407b26()
 {
     printf("%s\n", __FUNCTION__);
     return;
@@ -104,31 +86,23 @@ fn_407b26()
 
 ///region Progress bar
 
-static void
-CDECL
-fn_4080bb(char *lpWindowName, uint32_t a1)
+static void CDECL fn_4080bb(char *lpWindowName, uint32_t a1)
 {
     printf("Create progress bar\n");
 }
 
-static void
-CDECL
-fn_408163()
+static void CDECL fn_408163()
 {
     printf("Destroy progress bar\n");
 }
 
-static void
-CDECL
-fn_40817b(uint16_t arg0)
+static void CDECL fn_40817b(uint16_t arg0)
 {
     printf("SendMessage(PBM_SETRANGE, %d)\n", arg0);
     printf("SendMessage(PBM_SETSTEP, %d)\n", 1);
 }
 
-static void
-CDECL
-fn_4081ad(int32_t wParam)
+static void CDECL fn_4081ad(int32_t wParam)
 {
     printf("SendMessage(PBM_SETPOS, %d)\n", wParam);
 }
@@ -136,18 +110,14 @@ fn_4081ad(int32_t wParam)
 ///endregion
 
 FORCE_ALIGN_ARG_POINTER
-static void
-CDECL
-fn_FileSeekFromEnd(FILE *a0, int32_t distance)
+static void CDECL fn_FileSeekFromEnd(FILE *a0, int32_t distance)
 {
     printf("seek %d bytes from end\n", distance);
     fseek(a0, distance, SEEK_END);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t
-CDECL
-fn_FileRead(FILE *a0, char *buffer, int32_t size)
+static int32_t CDECL fn_FileRead(FILE *a0, char *buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
     size = fread(buffer, 1, size, a0);
@@ -156,9 +126,7 @@ fn_FileRead(FILE *a0, char *buffer, int32_t size)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int
-CDECL
-fn_CloseHandle(FILE *file)
+static int CDECL fn_CloseHandle(FILE *file)
 {
     printf("%s\n", __FUNCTION__);
     if (file==nullptr)
@@ -170,9 +138,7 @@ fn_CloseHandle(FILE *file)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static FILE *
-CDECL
-fn_CreateFile(char *lpFileName)
+static FILE * CDECL fn_CreateFile(char *lpFileName)
 {
     printf("%s %s\n", __FUNCTION__, lpFileName);
     return fopen(lpFileName, "r");
@@ -200,9 +166,7 @@ public:
 };
 
 FORCE_ALIGN_ARG_POINTER
-static Session *
-CDECL
-fn_FindFirstFile(char *lpFileName, FindFileData *out)
+static Session * CDECL fn_FindFirstFile(char *lpFileName, FindFileData *out)
 {
     printf("%s (%s)\n", __FUNCTION__,lpFileName );
 
@@ -233,9 +197,7 @@ fn_FindFirstFile(char *lpFileName, FindFileData *out)
     return data;
 }
 
-static bool
-CDECL
-fn_FindNextFile(Session *data, FindFileData *out)
+static bool CDECL fn_FindNextFile(Session *data, FindFileData *out)
 {
     printf("%s\n", __FUNCTION__);
 
@@ -254,84 +216,62 @@ fn_FindNextFile(Session *data, FindFileData *out)
     return true;
 }
 
-static void
-CDECL
-fn_FindClose(Session *data)
+static void CDECL fn_FindClose(Session *data)
 {
     printf("%s\n", __FUNCTION__);
 
     delete data;
 }
 
-static void
-CDECL
-fn_4078b5(void)
+static void CDECL fn_4078b5(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-static void
-CDECL
-fnc0(void)
+static void CDECL fnc0(void)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-static void
-CDECL
-fnc1(int i1)
+static void CDECL fnc1(int i1)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-static void
-CDECL
-fnc2(int i1, int i2)
+static void CDECL fnc2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
-static void
-STDCALL
-fn0()
+static void STDCALL fn0()
 {
     return;
 }
 
-static void
-STDCALL
-fn1(int i1)
+static void STDCALL fn1(int i1)
 {
     return;
 }
 
-static void
-STDCALL
-fn2(int i1, int i2)
+static void STDCALL fn2(int i1, int i2)
 {
     printf("%s\n", __FUNCTION__);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void *
-CDECL
-fn_malloc(uint32_t size)
+static void * CDECL fn_malloc(uint32_t size)
 {
     return malloc(size);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void *
-CDECL
-fn_realloc(void * block, uint32_t size)
+static void * CDECL fn_realloc(void * block, uint32_t size)
 {
     return realloc(block, size);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void
-CDECL
-fn_free(void * block)
+static void CDECL fn_free(void * block)
 {
     return free(block);
 }
