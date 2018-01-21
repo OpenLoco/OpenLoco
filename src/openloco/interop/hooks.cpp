@@ -503,10 +503,8 @@ static void register_no_win32_hooks()
     hook_lib(0x4d72b0, (void*)&lib_timeGetTime);
 }
 
-void openloco::interop::register_hooks()
+void openloco::interop::load_sections()
 {
-    using namespace openloco::ui::windows;
-
 #ifndef _WIN32
     int32_t err = mprotect((void*)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
     if (err != 0)
@@ -520,6 +518,11 @@ void openloco::interop::register_hooks()
         perror("mprotect");
     }
 #endif
+}
+
+void openloco::interop::register_hooks()
+{
+    using namespace openloco::ui::windows;
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();

@@ -1,5 +1,6 @@
 #ifndef _WIN32
 
+#include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "platform.h"
 #include <pwd.h>
@@ -12,6 +13,7 @@
 
 int main(int argc, const char** argv)
 {
+    openloco::interop::load_sections();
     openloco::lpCmdLine((char*)argv[0]);
     openloco::main();
     return 0;
