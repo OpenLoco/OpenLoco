@@ -191,7 +191,7 @@ namespace openloco::interop
         register_hook(
             address,
             [](registers& regs) -> uint8_t {
-                std::printf("                    fn %" PRIuPTR "\n", passAddress);
+                std::printf("                    fn %08" PRIXPTR "\n", passAddress);
                 return 0;
             });
     }
