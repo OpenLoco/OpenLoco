@@ -25,13 +25,13 @@ namespace openloco::gfx
 
     drawpixelinfo_t& screen_dpi();
 
-    struct loco_g1_header
+    struct g1_header_t
     {
         uint32_t num_entries;
         uint32_t total_size;
     };
 
-     struct loco_g1_element
+     struct g1_element_t
     {
         uint8_t * offset;       // 0x00
         int16_t width;          // 0x04

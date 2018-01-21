@@ -8,7 +8,7 @@ using namespace openloco::interop;
 namespace openloco::gfx
 {
     loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    loco_global_array<loco_g1_element, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
+    loco_global_array<g1_element_t, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
 
     drawpixelinfo_t& screen_dpi()
     {
@@ -21,35 +21,51 @@ namespace openloco::gfx
         auto g1Path = environment::get_path(environment::path_id::g1);
 
         FILE * file;
-        gfx::loco_g1_header header;
+        gfx::g1_header_t header;
         void * g1Buffer;
 
         file = fopen(g1Path.make_preferred().u8string().c_str(), "rb");
 
-        if (file != NULL) {
-            if (fread(&header, 8, 1, file) == 1) {
+        try
+        {
+            if (file == nullptr)
+            {
+                throw std::exception("Opening g1 file failed.");
+            }
 
-                // Read element headers
-                fread(_g1Elements, header.num_entries * sizeof(loco_g1_element), 1, file);
+            if (fread(&header, 8, 1, file) != 1)
+            {
+                throw std::exception("Reading g1 file header failed.");
+            }
 
-                // Read element data
-                g1Buffer = malloc(header.total_size);
-                fread(g1Buffer, header.total_size, 1, file);
+            // Read element headers
+            if (fread(_g1Elements, header.num_entries * sizeof(g1_element_t), 1, file) != 1)
+            {
+                throw std::exception("Reading g1 element headers failed.");
+            }
 
-                fclose(file);
+            // Read element data
+            g1Buffer = malloc(header.total_size);
+            if (fread(g1Buffer, header.total_size, 1, file) != 1)
+            {
+                free(g1Buffer);
+                throw std::exception("Reading g1 elements failed.");
+            }
 
-                // Adjust memory offsets
-                for (uint32_t i = 0; i < header.num_entries; i++)
-                {
-                    _g1Elements[i].offset += (int)g1Buffer;
-                }
+            // Adjust memory offsets
+            for (uint32_t i = 0; i < header.num_entries; i++)
+            {
+                _g1Elements[i].offset += (int32_t)g1Buffer;
             }
             fclose(file);
-            return;
         }
-        else
+        catch (const std::exception &e)
         {
-            throw std::runtime_error("Unable to load g1.dat");
+            if (file != nullptr)
+            {
+                fclose(file);
+            }
+            throw std::runtime_error(e.what());
         }
     }
 
