@@ -39,6 +39,12 @@ static void STDCALL fn_40447f()
     return;
 }
 
+static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
+{
+    STUB();
+    return;
+}
+
 static void STDCALL fn_404e8c()
 {
     STUB();
@@ -132,16 +138,33 @@ static void CDECL fn_4081ad(int32_t wParam)
 ///endregion
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
+{
+    console::log("seek %d bytes from current", distance);
+    fseek(a0, distance, SEEK_SET);
+    return ftell(a0);
+}
+
+FORCE_ALIGN_ARG_POINTER
+static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
+{
+    console::log("seek %d bytes from current", distance);
+    fseek(a0, distance, SEEK_CUR);
+    return ftell(a0);
+}
+
+FORCE_ALIGN_ARG_POINTER
+static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 {
     console::log("seek %d bytes from end", distance);
     fseek(a0, distance, SEEK_END);
+    return ftell(a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 {
-    console::log("read %d bytes", size);
+    console::log("read %d bytes (%d)", size, fileno(a0));
     size = fread(buffer, 1, size, a0);
 
     return size;
@@ -163,8 +186,8 @@ static int CDECL fn_CloseHandle(FILE* file)
 FORCE_ALIGN_ARG_POINTER
 static FILE* CDECL fn_CreateFile(char* lpFileName)
 {
-    //console::log("%s %s", __FUNCTION__, lpFileName);
     FILE* pFILE = fopen(lpFileName, "r");
+    console::log("%s %s (%d)", __FUNCTION__, lpFileName, fileno(pFILE));
     return pFILE;
     // return CreateFile(lpFileName, 0x80000000, FILE_SHARE_READ,NULL, OPEN_EXISTING, 0x10000080, 0);
 }
@@ -419,7 +442,8 @@ static void register_no_win32_hooks()
     using namespace openloco::interop;
 
     write_jmp(0x40447f, (void*)&fn_40447f);
-    //write_jmp(0x404cd3, (void*)&fnc1);
+    register_hook_stub(0x40726d);
+    write_jmp(0x404b68, (void*)&fn_404b68);
     write_jmp(0x404e8c, (void*)&fn_404e8c);
     //    write_jmp(0x404eac, (void*)&fn_404eac);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
@@ -427,7 +451,7 @@ static void register_no_win32_hooks()
     write_jmp(0x4d1401, (void*)&fn_malloc);
     write_jmp(0x4D1B28, (void*)&fn_realloc);
     write_jmp(0x4D1355, (void*)&fn_free);
-    //    write_jmp(0x4054a3, (void*)&fn_4054a3);
+    write_jmp(0x4054a3, (void*)&fn_4054a3);
     write_jmp(0x4072ec, (void*)&fn0);
     //write_jmp(0x4078b5, (void*)&fn_4078b5);
     write_jmp(0x4078be, (void*)&fn_4078be);
@@ -438,6 +462,8 @@ static void register_no_win32_hooks()
     write_jmp(0x408163, (void*)&fn_408163);
     write_jmp(0x40817b, (void*)&fn_40817b);
     write_jmp(0x4081ad, (void*)&fn_4081ad);
+    write_jmp(0x4081c5, (void*)&fn_FileSeekSet);
+    write_jmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
     write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
     write_jmp(0x4081fe, (void*)&fn_FileRead);
     write_jmp(0x408297, (void*)&fn_CloseHandle);
@@ -448,6 +474,11 @@ static void register_no_win32_hooks()
     write_jmp(0x40831d, (void*)&fn_FindNextFile);
     write_jmp(0x40832c, (void*)&fn_FindClose);
     write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
+
+    // sound
+    register_hook_stub(0x489cb5);
+    register_hook_stub(0x489f1b);
+    register_hook_stub(0x48a4bf);
 
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
@@ -526,7 +557,7 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x00407BA3,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto cursor = (ui::cursor_id)regs.edx;
             ui::set_cursor(cursor);
             return 0;
