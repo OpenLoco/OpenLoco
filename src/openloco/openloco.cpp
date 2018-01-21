@@ -398,7 +398,7 @@ namespace openloco
             else
             {
                 uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
-                if (windowmgr::find(window_type::window_39, 0) != nullptr)
+                if (windowmgr::find(window_type::multiplayer, 0) != nullptr)
                 {
                     numUpdates = 1;
                 }
