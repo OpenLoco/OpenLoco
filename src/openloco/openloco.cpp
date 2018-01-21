@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 #include <setjmp.h>
 #include <string>
@@ -81,10 +82,12 @@ namespace openloco
         return glpCmdLine;
     }
 
+#ifndef _WIN32
     void lpCmdLine(const char* path)
     {
         glpCmdLine = strdup(path);
     }
+#endif
 
     bool is_editor_mode()
     {
