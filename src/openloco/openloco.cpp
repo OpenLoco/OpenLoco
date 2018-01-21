@@ -277,6 +277,12 @@ namespace openloco
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
+    // 0x0048AC66
+    static void play_title_screen_music()
+    {
+        call(0x0048AC66);
+    }
+
     // 0x0046A794
     static void tick()
     {
@@ -455,7 +461,7 @@ namespace openloco
                 addr<0x00525F62, int16_t>()++;
                 call(0x0043D9D4);
                 call(0x0048A78D);
-                call(0x0048AC66);
+                play_title_screen_music();
                 if (tutorial::state() != tutorial::tutorial_state::none &&
                     addr<0x0052532C, int32_t>() == 0 &&
                     addr<0x0113E2E4, int32_t>() < 0x40)
