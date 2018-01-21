@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdio>
+
 namespace openloco
 {
     enum class object_type

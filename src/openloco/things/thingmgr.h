@@ -2,6 +2,7 @@
 
 #include "thing.h"
 #include "vehicle.h"
+#include <cstdio>
 
 namespace openloco::thingmgr
 {

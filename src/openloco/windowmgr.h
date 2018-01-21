@@ -2,6 +2,7 @@
 
 #include "localisation/stringmgr.h"
 #include "window.h"
+#include <cstddef>
 
 namespace openloco::gfx
 {
