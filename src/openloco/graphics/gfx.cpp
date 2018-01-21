@@ -39,7 +39,7 @@ namespace openloco::gfx
             }
 
             // Read element headers
-            if (!stream.read((char *)&_g1Elements, header.num_entries * sizeof(g1_element_t)))
+            if (!stream.read((char *)_g1Elements.get(), header.num_entries * sizeof(g1_element_t)))
             {
                 throw std::runtime_error("Reading g1 element headers failed.");
             }
