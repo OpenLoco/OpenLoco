@@ -95,10 +95,14 @@ void vehicle::sub_4BA8D4()
     }
 
     auto v = next_car()->next_car()->next_car();
-    if (v->type != 6)
+    if (v != nullptr && v->type != 6)
     {
         while (true)
         {
+            if (v == nullptr)
+            {
+                break;
+            }
             if (v->var_5F & flags_5f::broken_down)
             {
                 if ((scenario_ticks() & 3) == 0)
@@ -128,6 +132,10 @@ void vehicle::sub_4BA8D4()
             vehicle * u;
             do
             {
+                if (v == nullptr)
+                {
+                    break;
+                }
                 v = v->next_car();
                 if (v->type == 6)
                 {
@@ -135,7 +143,7 @@ void vehicle::sub_4BA8D4()
                 }
                 u = v->next_car()->next_car();
             }
-            while (u->type != 4);
+            while (u != nullptr && u->type != 4);
         }
     }
 }
