@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <stdexcept>
 #include <vector>
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
@@ -154,6 +155,18 @@ namespace openloco::interop
         operator T*()
         {
             return get();
+        }
+
+        T& operator[](int idx)
+        {
+#ifndef NDEBUG
+            if (idx < 0 || static_cast<size_t>(idx) >= size())
+            {
+                throw std::out_of_range("loco_global_array: bounds check violation!");
+            }
+#endif
+
+            return (get())[idx];
         }
 
         T* get()
