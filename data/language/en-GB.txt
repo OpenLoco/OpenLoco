@@ -67,7 +67,7 @@ STR_0065    :{CURRENCY2DP} x {CURRENCY2DP}
 STR_0066    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{CURRENCY2DP} x {CURRENCY2DP}
 STR_0067    :About 'Chris Sawyer's Locomotion'
 STR_0068    :Chris Sawyer's Locomotion
-STR_0069    :{WINDOW_COLOUR_2}Version 4.02.169 (UK English)
+STR_0069    :{WINDOW_COLOUR_2}Version 4.02.176 (UK English)
 STR_0070    :{WINDOW_COLOUR_2}Copyright {COPYRIGHT} 2004 Chris Sawyer, All Rights Reserved
 STR_0071    :{WINDOW_COLOUR_2}Designed & Programmed by Chris Sawyer
 STR_0072    :{WINDOW_COLOUR_2}Graphics by Simon Foster
