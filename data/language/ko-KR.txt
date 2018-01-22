@@ -1,0 +1,2113 @@
+STR_0000    :
+STR_0001    :{POP16}
+STR_0002    :새 회사{POP16}
+STR_0003    :이름 없음{POP16}
+STR_0004    :열차 {UINT16}
+STR_0005    :버스 {UINT16}
+STR_0006    :트럭 {UINT16}
+STR_0007    :전차 {UINT16}
+STR_0008    :항공기 {UINT16}
+STR_0009    :선박 {UINT16}
+STR_0010    :1일
+STR_0011    :2일
+STR_0012    :3일
+STR_0013    :4일
+STR_0014    :5일
+STR_0015    :6일
+STR_0016    :7일
+STR_0017    :8일
+STR_0018    :9일
+STR_0019    :10일
+STR_0020    :11일
+STR_0021    :12일
+STR_0022    :13일
+STR_0023    :14일
+STR_0024    :15일
+STR_0025    :16일
+STR_0026    :17일
+STR_0027    :18일
+STR_0028    :19일
+STR_0029    :20일
+STR_0030    :21일
+STR_0031    :22일
+STR_0032    :23일
+STR_0033    :24일
+STR_0034    :25일
+STR_0035    :26일
+STR_0036    :27일
+STR_0037    :28일
+STR_0038    :29일
+STR_0039    :30일
+STR_0040    :31일
+STR_0041    :1월
+STR_0042    :2월
+STR_0043    :3월
+STR_0044    :4월
+STR_0045    :5월
+STR_0046    :6월
+STR_0047    :7월
+STR_0048    :8월
+STR_0049    :9월
+STR_0050    :10월
+STR_0051    :11월
+STR_0052    :12월
+STR_0053    :그래픽 데이터 파일에 접근할 수 없습니다
+STR_0054    :데이터 파일이 없거나 파일에 접근할 수 없습니다
+STR_0055    :충분한 메모리를 할당할 수 없습니다
+STR_0056    :{WHITE}{CROSS}
+STR_0057    :이미 사용 중인 이름입니다
+STR_0058    :이름이 너무 많이 지정되었습니다
+STR_0059    :돈이 충분하지 않습니다 - {CURRENCY} 이 필요합니다.
+STR_0060    :{SMALLFONT}{WHITE}창 닫기
+STR_0061    :게임 초기화 실패
+STR_0062    :최소화된 상태에서 게임을 시작할 수 없습니다
+STR_0063    :그래픽 시스템을 초기화할 수 없습니다
+STR_0064    :시디키 코드 {INT32}는 이 로코모션 CD에 맞는 코드가 아닙니다!{WINDOW_COLOUR_1}{WINDOW_COLOUR_1}크리스 소이어의 로코모션을 제거한 뒤에 올바른 시디키 코드를 이용해서 재설치하시기 바랍니다.
+STR_0065    :{CURRENCY2DP} x {CURRENCY2DP}
+STR_0066    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{CURRENCY2DP} x {CURRENCY2DP}
+STR_0067    :'크리스 소이어의 로코모션'에 대하여
+STR_0068    :크리스 소이어의 로코모션
+STR_0069    :{WINDOW_COLOUR_2}버전 4.02.176 (한국어)
+STR_0070    :{WINDOW_COLOUR_2}Copyright {COPYRIGHT} 2004 Chris Sawyer, All Rights Reserved
+STR_0071    :{WINDOW_COLOUR_2}디자인 & 프로그램: Chris Sawyer
+STR_0072    :{WINDOW_COLOUR_2}그래픽: Simon Foster
+STR_0073    :{WINDOW_COLOUR_2}사운드 & 음악: Allister Brimble
+STR_0074    :{WINDOW_COLOUR_2}타이틀 음악: John Broomhall
+STR_0075    :{WINDOW_COLOUR_2}재구현: Jacqui Lyons at Marjacq Ltd.
+STR_0076    :{WINDOW_COLOUR_2}감사한 분들: -
+STR_0077    :{WINDOW_COLOUR_2}Katrina Morrin, Natasha Morrin, Jim Wills
+STR_0078    :
+STR_0079    :
+STR_0080    :
+STR_0081    :
+STR_0082    :
+STR_0083    :
+STR_0084    :
+STR_0085    :{STRINGID2}
+STR_0086    :{POP16}{STRINGID2}
+STR_0087    :{POP16}{POP16}{STRINGID2}
+STR_0088    :{POP16}{POP16}{POP16}{STRINGID2}
+STR_0089    :{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0090    :{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0091    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0092    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0093    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0094    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0095    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}
+STR_0096    :{WHITE}{DOWN}
+STR_0097    :{SMALLFONT}{WHITE}{STRINGID2}
+STR_0098    :너무 낮습니다!
+STR_0099    :너무 높습니다!
+STR_0100    :땅을 내릴 수 없습니다...
+STR_0101    :땅을 올릴 수 없습니다...
+STR_0102    :오브젝트가 중간에 있습니다
+STR_0103    :게임 불러오기
+STR_0104    :게임 저장하기
+STR_0105    :시나리오 에디터 종료
+STR_0106    :게임 종료
+STR_0107    :Screenshot{UINT16}.BMP
+STR_0108    :스크린 샷
+STR_0109    :스크린 샷이 디스크에 '{STRINGID2}'(으)로 저장되었습니다.
+STR_0110    :스크린 샷 저장 실패!
+STR_0111    :풍경 데이터 영역이 가득 찼습니다!
+STR_0112    :일부분만 땅 위로 나오고 일부분만 지하에 들어가게 지을 수 없습니다
+STR_0113    :{STRINGID2}
+STR_0114    :{SMALLFONT}{WHITE}왼쪽 커브
+STR_0115    :{SMALLFONT}{WHITE}오른쪽 커브
+STR_0116    :{SMALLFONT}{WHITE}왼쪽 커브 (작은 반경)
+STR_0117    :{SMALLFONT}{WHITE}오른쪽 커브 (작은 반경)
+STR_0118    :{SMALLFONT}{WHITE}왼쪽 커브 (매우 작은 반경)
+STR_0119    :{SMALLFONT}{WHITE}오른쪽 커브 (매우 작은 반경)
+STR_0120    :{SMALLFONT}{WHITE}왼쪽 커브 (큰 반경)
+STR_0121    :{SMALLFONT}{WHITE}오른쪽 커브 (큰 반경)
+STR_0122    :{SMALLFONT}{WHITE}직진
+STR_0123    :{SMALLFONT}{WHITE}왼쪽 'S'자 커브
+STR_0124    :{SMALLFONT}{WHITE}오른쪽 'S'자 커브
+STR_0125    :{SMALLFONT}{WHITE}복선 좌측 선로로 'S'자 커브
+STR_0126    :{SMALLFONT}{WHITE}복선 우측 선로로 'S'자 커브
+STR_0127    :{SMALLFONT}{WHITE}단선으로 'S'자 커브
+STR_0128    :{SMALLFONT}{WHITE}회차선
+STR_0129    :{SMALLFONT}{WHITE}(건설을 시작하려면 지형을 클릭하세요)
+STR_0130    :{SMALLFONT}{WHITE}이 선로 조각을 건설
+STR_0131    :{SMALLFONT}{WHITE}이전 선로 조각을 제거
+STR_0132    :{SMALLFONT}{WHITE}급경사로 내려가기
+STR_0133    :{SMALLFONT}{WHITE}내려가기
+STR_0134    :{SMALLFONT}{WHITE}평지로
+STR_0135    :{SMALLFONT}{WHITE}올라가기
+STR_0136    :{SMALLFONT}{WHITE}급경사로 올라가기
+STR_0137    :{WINDOW_COLOUR_2}이 조각 짓기...
+STR_0138    :{WINDOW_COLOUR_2}가격: {WHITE}{CURRENCY}
+STR_0139    :여기에 신호기를 지을 수 없습니다...
+STR_0140    :여기에 신호기를 지을 수 없습니다...
+STR_0141    :신호기를 제거할 수 없습니다...
+STR_0142    :{POP16}{POP16}{POP16}{STRINGID2}(을)를 제거할 수 없습니다...
+STR_0143    :{POP16}{POP16}{POP16}{STRINGID2}(을)를 지을 수 없습니다...
+STR_0144    :땅을 먼저 올리거나 내리세요
+STR_0145    :지하 시점
+STR_0146    :선로 & 도로 감추기
+STR_0147    :정류장은 도로 끝에만 지을 수 있습니다
+STR_0148    :{STRINGID2}에 사용할 수 없는 역 종류입니다
+STR_0149    :역이 {STRINGID2}와 호환되지 않습니다
+STR_0150    :건널목이 중간에 있습니다
+STR_0151    :건널목은 같은 높이의 직진 도로에만 지을 수 있습니다
+STR_0152    :분기를 만들 수 없습니다
+STR_0153    :분기는 전체가 평지 위에 있어야 합니다
+STR_0154    :{STRINGID2}(이)가 중간에 있습니다 / 분기에 적절하지 않은 높이입니다
+STR_0155    :이미 여기에 지어져 있습니다
+STR_0156    :{STRINGID2}에 분기를 만들거나 지나갈 수 없습니다
+STR_0157    :분기를 만들 수 없습니다
+STR_0158    :신호기
+STR_0159    :역
+STR_0160    :공항
+STR_0161    :항구
+STR_0162    :역이 중간에 있습니다
+STR_0163    :신호기가 중간에 있습니다
+STR_0164    :공항을 제거할 수 없습니다...
+STR_0165    :항구를 제거할 수 없습니다...
+STR_0166    :역을 제거할 수 없습니다...
+STR_0167    :선로/도로의 종류가 잘못되었습니다!
+STR_0168    :다리 종류가 일치해야 합니다
+STR_0169    :이 분기에 쓸 수 없는 다리입니다!
+STR_0170    :불가능한 선로 조합입니다
+STR_0171    :게임에 오브젝트가 너무 많습니다
+STR_0172    :시계 방향으로 회전
+STR_0173    :반시계 방향으로 회전
+STR_0174    :로코모션: 처음으로 실행 중입니다...
+STR_0175    :로코모션: 오브젝트 파일 체크 중...
+STR_0176    :게임 불러오기
+STR_0177    :게임 종료
+STR_0178    :게임 종료
+STR_0179    :시나리오 에디터 종료
+STR_0180    :풍경 불러오기
+STR_0181    :불러오기 전에 저장하시겠습니까?
+STR_0182    :종료하기 전에 저장하시겠습니까?
+STR_0183    :종료하기 전에 저장하시겠습니까?
+STR_0184    :저장
+STR_0185    :저장 안 함
+STR_0186    :취소
+STR_0187    :확인
+STR_0188    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 왼쪽으로 스크롤
+STR_0189    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 오른쪽으로 스크롤
+STR_0190    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 왼쪽으로 빠르게 스크롤
+STR_0191    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 오른쪽으로 빠르게 스크롤
+STR_0192    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 좌/우로 스크롤
+STR_0193    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 위로 스크롤
+STR_0194    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 아래로 스크롤
+STR_0195    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 위로 빠르게 스크롤
+STR_0196    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 아래로 빠르게 스크롤
+STR_0197    :{SMALLFONT}{WHITE}{STRINGID2}(을)를 위/아래로 스크롤
+STR_0198    :지도
+STR_0199    :자동차 목록
+STR_0200    :새 자동차 목록
+STR_0201    :목록
+STR_0202    :나무 목록
+STR_0203    :경로 목록
+STR_0204    :역 목록
+STR_0205    :도시 목록
+STR_0206    :산업 시설 목록
+STR_0207    :새 산업 시설 목록
+STR_0208    :건물 목록
+STR_0209    :벽 목록
+STR_0210    :등급 목록
+STR_0211    :화물 목록
+STR_0212    :메시지 목록
+STR_0213    :회사 목록
+STR_0214    :시나리오 목록
+STR_0215    :크레딧 목록
+STR_0216    :{WINDOW_COLOUR_2}{UP}{WHITE}  {CURRENCY}
+STR_0217    :{WINDOW_COLOUR_2}{DOWN}{WHITE}  {CURRENCY}
+STR_0218    :선택한 모드로 바꿀 수 없습니다
+STR_0219    :{WINDOW_COLOUR_2}가격: {WHITE}{CURRENCY}
+STR_0220    :(플레이어 1)
+STR_0221    :(플레이어 2)
+STR_0222    :색상을 변경할 수 없습니다...
+STR_0223    :확대
+STR_0224    :축소
+STR_0225    :도시
+STR_0226    :산업 시설
+STR_0227    :공항
+STR_0228    :항구
+STR_0229    :지형 생성 설정
+STR_0230    :
+STR_0231    :{SYMBOL_RAILWAY}
+STR_0232    :{SYMBOL_ROAD}
+STR_0233    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}
+STR_0234    :{SYMBOL_FLAG}
+STR_0235    :{SYMBOL_RAILWAY}{SYMBOL_FLAG}
+STR_0236    :{SYMBOL_ROAD}{SYMBOL_FLAG}
+STR_0237    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{SYMBOL_FLAG}
+STR_0238    :{APPROX}
+STR_0239    :{SYMBOL_RAILWAY}{APPROX}
+STR_0240    :{SYMBOL_ROAD}{APPROX}
+STR_0241    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{APPROX}
+STR_0242    :{SYMBOL_FLAG}{APPROX}
+STR_0243    :{SYMBOL_RAILWAY}{SYMBOL_FLAG}{APPROX}
+STR_0244    :{SYMBOL_ROAD}{SYMBOL_FLAG}{APPROX}
+STR_0245    :{SYMBOL_RAILWAY}{SYMBOL_ROAD}{SYMBOL_FLAG}{APPROX}
+STR_0246    :{STRINGID2}
+STR_0247    :{STRINGID2} - 상세 정보
+STR_0248    :{STRINGID2} - 재정
+STR_0249    :{STRINGID2} - 수송된 화물
+STR_0250    :{STRINGID2} - 색상표
+STR_0251    :{STRINGID2} - 목표
+STR_0252    :{SMALLFONT}{WHITE}방향 변경
+STR_0253    :{SMALLFONT}{WHITE}정지 신호 무시
+STR_0254    :{SMALLFONT}{WHITE}선로/도로에서 {POP16}{STRINGID2} 제거
+STR_0255    :{SMALLFONT}{WHITE}선로/도로에 {POP16}{STRINGID2} 놓기
+STR_0256    :{SMALLFONT}{WHITE}공항에서 {POP16}{STRINGID2} 제거
+STR_0257    :{SMALLFONT}{WHITE}공항에 {POP16}{STRINGID2} 놓기
+STR_0258    :{SMALLFONT}{WHITE}물에서 {POP16}{STRINGID2} 제거하기
+STR_0259    :{SMALLFONT}{WHITE}항구에 {POP16}{STRINGID2} 놓기
+STR_0260    :{POP16}{POP16}{POP16}{STRINGID2} - 출발시킬 수 없습니다...
+STR_0261    :{POP16}{POP16}{POP16}{STRINGID2} - 수동 운전 모드를 시작할 수 없습니다...
+STR_0262    :{POP16}{POP16}{POP16}{STRINGID2} - 멈출 수 없습니다...
+STR_0263    :{VELOCITY}
+STR_0264    :무제한{POP16}
+STR_0265    :정지
+STR_0266    :출발
+STR_0267    :수동 운전
+STR_0268    :{SMALLFONT}{WHITE}업그레이드할 선로/도로를 선택하세요
+STR_0269    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 출발/멈춤
+STR_0270    :{WHITE}{STRINGID2}
+STR_0271    :{SMALLFONT}{WHITE}선로/도로 건설
+STR_0272    :{SMALLFONT}{WHITE}역 건설
+STR_0273    :{SMALLFONT}{WHITE}신호기 건설
+STR_0274    :{SMALLFONT}{WHITE}선로 전기 설비 및 기타 시설
+STR_0275    :{SMALLFONT}{WHITE}신호기 종류 선택
+STR_0276    :{SMALLFONT}{WHITE}신호기를 양쪽에 건설
+STR_0277    :{SMALLFONT}{WHITE}신호기를 한 쪽에만 건설 (열차가 반대 편에서 진입할 수 없게 됩니다)
+STR_0278    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}{NEWLINE}최고 속력:  {STRINGID2}{NEWLINE}최대 건설 높이:  {SPRITE}
+STR_0279    :{SMALLFONT}{WHITE}역 종류 선택
+STR_0280    :역 {UINT16}
+STR_0281    :{STRINGID2}
+STR_0282    :북{STRINGID2}
+STR_0283    :남{STRINGID2}
+STR_0284    :동{STRINGID2}
+STR_0285    :서{STRINGID2}
+STR_0286    :{STRINGID2}중앙
+STR_0287    :{STRINGID2} 환승
+STR_0288    :{STRINGID2} 정류장
+STR_0289    :{STRINGID2} 계곡
+STR_0290    :{STRINGID2} 언덕
+STR_0291    :{STRINGID2} 숲
+STR_0292    :{STRINGID2} 호숫가
+STR_0293    :{STRINGID2} 교환
+STR_0294    :{STRINGID2} 공항
+STR_0295    :{STRINGID2} 유전
+STR_0296    :{STRINGID2} 광산
+STR_0297    :{STRINGID2} 항구
+STR_0298    :{STRINGID2} 별관
+STR_0299    :{STRINGID2} 측선
+STR_0300    :{STRINGID2} 지선
+STR_0301    :상부 {STRINGID2}
+STR_0302    :하부 {STRINGID2}
+STR_0303    :{STRINGID2} 헬리포트
+STR_0304    :{STRINGID2} 삼림
+STR_0305    :{STRINGID2} 분기
+STR_0306    :{STRINGID2} 교차
+STR_0307    :{STRINGID2} 경관
+STR_0308    :{STRINGID2} 1
+STR_0309    :{STRINGID2} 2
+STR_0310    :{STRINGID2} 3
+STR_0311    :{STRINGID2} 4
+STR_0312    :{STRINGID2} 5
+STR_0313    :{STRINGID2} 6
+STR_0314    :{STRINGID2} 7
+STR_0315    :{STRINGID2} 8
+STR_0316    :{STRINGID2} 9
+STR_0317    :{STRINGID2} 10
+STR_0318    :{STRINGID2} 11
+STR_0319    :{STRINGID2} 12
+STR_0320    :{STRINGID2} 13
+STR_0321    :{STRINGID2} 14
+STR_0322    :{STRINGID2} 15
+STR_0323    :{STRINGID2} 16
+STR_0324    :{STRINGID2} 17
+STR_0325    :{STRINGID2} 18
+STR_0326    :{STRINGID2} 19
+STR_0327    :{STRINGID2} 20
+STR_0328    :{WINDOW_COLOUR_2}{POP16}무게: {WHITE}{COMMA32}t
+STR_0329    :{WINDOW_COLOUR_2}힘: {WHITE}{BLACK}{WINDOW_COLOUR_2} 무게: {WHITE}{COMMA32}t
+STR_0330    :{WINDOW_COLOUR_2}최고 속력: {WHITE}{VELOCITY}{POP16}{WINDOW_COLOUR_2} 신뢰도: {WHITE}{UINT16}%
+STR_0331    :{WINDOW_COLOUR_2}최고 속력: {WHITE}{VELOCITY} / {VELOCITY}{WINDOW_COLOUR_2} 신뢰도: {WHITE}{UINT16}%
+STR_0332    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 판매{NEWLINE}(또는 여기로 각 차량을 드래그해서 판매)
+STR_0333    :{SMALLFONT}{WHITE}이 {POP16}{STRINGID2}(을)를 위해 새 차량 만들기
+STR_0334    :{WHITE}({STRINGID2}(을)를 시작 지점으로 설정해서 보려면 클릭하세요)
+STR_0335    :차량이 호환되지 않습니다
+STR_0336    :게임에 차량이 너무 많습니다
+STR_0337    :
+STR_0338    :
+STR_0339    :{SMALLFONT}{WHITE}{STRINGID2}
+STR_0340    :{NEWLINE}건설:  {MONTH}
+STR_0341    :{NEWLINE}가치:  {CURRENCY}
+STR_0342    :{NEWLINE}힘:  {BLACK}
+STR_0343    :{NEWLINE}무게:  {UINT16}t
+STR_0344    :{NEWLINE}최고 속력:  {VELOCITY}
+STR_0345    : ({VELOCITY} / {STRINGID2})
+STR_0346    :{NEWLINE}신뢰도:  {UINT16}%
+STR_0347    :{STRINGID2} {STRINGID2}
+STR_0348    :단일 섹션
+STR_0349    :블록 섹션
+STR_0350    :전부 연결된 선로
+STR_0351    :경고: 선로가 너무 많습니다!{NEWLINE}선택한 선로 중 일부는 업그레이드되지 않을 수도 있습니다
+STR_0352    :{SMALLFONT}{WHITE}이 설비가 있는 선로로 업그레이드
+STR_0353    :{SMALLFONT}{WHITE}(선택한 선로에 이 아이템을 추가하려면 클릭하세요)
+STR_0354    :{SMALLFONT}{WHITE}선로에 추가할 아이템을 선택하세요
+STR_0355    :{SMALLFONT}{WHITE}이 아이템이 있는 위치로 메인 화면을 이동합니다
+STR_0356    :맵 가장자리를 벗어납니다!
+STR_0357    :일부분만 물 위로 나오고 일부분만 물 아래로 들어가게 지을 수 없습니다!
+STR_0358    :수면에 너무 가깝습니다!
+STR_0359    :수면 아래에 지을 수 없습니다!
+STR_0360    :땅 위에만 지을 수 있습니다!
+STR_0361    :평지에만 지을 수 있습니다
+STR_0362    :게임 불러오기
+STR_0363    :풍경 불러오기
+STR_0364    :풍경 저장하기
+STR_0365    :게임 저장하기
+STR_0366    :시나리오 저장하기
+STR_0367    :로코모션 게임 저장 파일
+STR_0368    :로코모션 시나리오 파일
+STR_0369    :로코모션 풍경 파일
+STR_0370    :게임 저장 실패!
+STR_0371    :게임 저장 파일을 불러오는 데 실패하였습니다...{NEWLINE}파일이 잘못된 데이터를 포함하고 있습니다!
+STR_0372    :풍경 & 건물 감추기
+STR_0373    :물 위에만 지을 수 있습니다!
+STR_0374    :수상 산업 시설이 옆에 있는 경우에만 물 위에 지을 수 있습니다!
+STR_0375    :{STRINGID2} - 이름 바꾸기
+STR_0376    :이 {STRINGID2}의 이름을 입력하세요:
+STR_0377    :이 차량의 이름을 바꿀 수 없습니다...
+STR_0378    :다리가 필요합니다
+STR_0379    :이 다리 종류로는 더 높게 지을 수 없습니다
+STR_0380    :다리가 이미 지면 위 최대 높이까지 지어졌습니다
+STR_0381    :{STRINGID2} - 다리가 필요합니다
+STR_0382    :다리 종류가 이 설정에 적합하지 않습니다
+STR_0383    :역 이름 바꾸기
+STR_0384    :{STRINGID2} 역의 이름을 입력하세요:
+STR_0385    :역 이름을 바꿀 수 없습니다...
+STR_0386    :올바르지 않은 역 이름입니다
+STR_0387    :차량을 옮길 수 없습니다...
+STR_0388    :열차를 돌릴 수 없습니다...
+STR_0389    :차량을 팔 수 없습니다...
+STR_0390    :{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}(을)를 팔 수 없습니다...
+STR_0391    :{STRINGID2}
+STR_0392    :{STRINGID2}
+STR_0393    :{STRINGID2} 역 승강장
+STR_0394    :{STRINGID2} 역 건물 / 버스 정류장
+STR_0395    :{SMALLFONT}{WHITE}이 역의 역세권 보여주기
+STR_0396    :음소거
+STR_0397    :배경음 재생
+STR_0398    :{YELLOW}파산!
+STR_0399    :{STRINGID2} - {STRINGID2}에서 가득 싣도록 대기시킬 수 없습니다
+STR_0400    :{STRINGID2} - 경사로에서 멈춰섰습니다
+STR_0401    :{STRINGID2}에서 이제 {STRINGID2}(을)를 받습니다
+STR_0402    :{STRINGID2}에서 이제 {STRINGID2}(을)를 받지 않습니다
+STR_0403    :새로운 운송 회사 등장!{NEWLINE}{STRINGID2}(이)가 {STRINGID2} 근처에서 건설을 시작했습니다!
+STR_0404    :{STRINGID2} - {STRINGID2} 공항에 적합하지 않아서 착륙할 수 없습니다
+STR_0405    :시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID2}(이)가 {STRINGID2}에 도착했습니다!
+STR_0406    :시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID2} 배송이 {STRINGID2}에 도착했습니다!
+STR_0407    :근로자들이 축하하고 있습니다!{NEWLINE}{STRINGID2}(이)가 처음으로 {STRINGID2}에 배송되었습니다!
+STR_0408    :새로운 차량이 개발되었습니다 -{NEWLINE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}!
+STR_0409    :{STRINGID2} - {OPENQUOTES}{STRINGID2}{ENDQUOTES}에서 {OPENQUOTES}{STRINGID2}{ENDQUOTES}으로 승격되었습니다!
+STR_0410    :새로운 {STRINGID2}(이)가 {STRINGID2} 근처에서 건설 중입니다!
+STR_0411    :축하합니다!{NEWLINE}성공적으로 목표를 달성하셨습니다!
+STR_0412    :실패!{NEWLINE}목표 달성에 실패하셨습니다!
+STR_0413    :패배!{NEWLINE}{STRINGID2}(이)가 목표를 먼저 달성했습니다!
+STR_0414    :파산 경고!{NEWLINE}{STRINGID2}(은)는 성취도를 올리지 않는다면 6개월 이내에 문이 닫힐 것입니다!
+STR_0415    :마지막 경고!{NEWLINE}{STRINGID2}(은)는 성취도를 올리지 않는다면 3개월 이내에 문이 닫힐 것입니다!
+STR_0416    :파산!{NEWLINE}{STRINGID2} - 파산이 선고되어 문을 닫았습니다!
+STR_0417    :파산!{NEWLINE}{STRINGID2} - 파산이 선고되어 문을 닫았습니다!
+STR_0418    :{STRINGID2} - 충돌하였습니다!
+STR_0419    :기업 비리!{NEWLINE}{STRINGID2} - 뇌물 수수 시도로 감옥에 갔습니다
+STR_0420    :신규 {STRINGID2} 최고 속력 기록!{NEWLINE}{STRINGID2}(이)가 {VELOCITY}의 역간 평균 속력을 달성하였습니다!
+STR_0421    :{MOVE_X}{SMALLFONT}{STRINGID2}
+STR_0422    :{RIGHTGUILLEMET}{MOVE_X}{SMALLFONT}{STRINGID2}
+STR_0423    :{NEWLINE_X_Y}{MOVE_X}{ADJUST_PALETTE}{GREY}{NEWLINE_X_Y}{BIGFONT}{STRINGID2}
+STR_0424    :{MOVE_X}{SMALLFONT}{MONTHYEAR}
+STR_0425    :{RIGHTGUILLEMET}{MOVE_X}{SMALLFONT}{MONTHYEAR}
+STR_0426    :선로 & 도로에 높이 표시
+STR_0427    :땅에 높이 표시
+STR_0428    :일방통행 화살표
+STR_0429    :도시 이름 표시
+STR_0430    :역 이름 표시
+STR_0431    :{NEWLINE}{WINDOW_COLOUR_3}받음
+STR_0432    :1/8
+STR_0433    :1/4
+STR_0434    :3/8
+STR_0435    :1/2
+STR_0436    :5/8
+STR_0437    :3/4
+STR_0438    :7/8
+STR_0439    :,
+STR_0440    :{NEWLINE}{WINDOW_COLOUR_3}생산
+STR_0441    :{NEWLINE}{WINDOW_COLOUR_3}건설 중
+STR_0442    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}{STRINGID2} 소유
+STR_0443    :{MOVE_X}{SMALLFONT}{STRINGID2}
+STR_0444    :{TICK}{MOVE_X}{SMALLFONT}{STRINGID2}
+STR_0445    :제거할 수 없습니다...
+STR_0446    :벽 & 울타리
+STR_0447    :나무 심기
+STR_0448    :여기에 놓을 수 없습니다...
+STR_0449    :여기에 심을 수 없습니다...
+STR_0450    :{OUTLINE}{WINDOW_COLOUR_2}{STRINGID2}
+STR_0451    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}수정하려면 오른쪽 클릭
+STR_0452    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}제거하려면 오른쪽 클릭
+STR_0453    :{TINYFONT}{WHITE}{STRINGID2}
+STR_0454    :{YELLOW}{STRINGID2}
+STR_0455    :{WHITE}{STRINGID2}
+STR_0456    :{WHITE}{STRINGID2} {STRINGID2}
+STR_0457    :{WINDOW_COLOUR_2}{STRINGID2}
+STR_0458    :{GREEN}{STRINGID2}
+STR_0459    :멈추는 중{POP16}{POP16}
+STR_0460    :/ 신호 대기중{POP16}{POP16}
+STR_0461    :{VELOCITY}{POP16}
+STR_0462    :{YELLOW}충돌!{POP16}{POP16}
+STR_0463    :{YELLOW}끼임!{POP16}{POP16}
+STR_0464    :{YELLOW}고장남{POP16}{POP16}
+STR_0465    :멈춤{POP16}{POP16}
+STR_0466    :{STRINGID2}에서 적재 중
+STR_0467    :{STRINGID2}에서 하차 중
+STR_0468    :{STRINGID2} 접근 중
+STR_0469    :{STRINGID2}에 착륙 중
+STR_0470    :{STRINGID2} 지상 주행 중
+STR_0471    :{STRINGID2}에서 이륙 중
+STR_0472    :목적지: {STRINGID2}
+STR_0473    :목적지 없음{POP16}{POP16}
+STR_0474    :운행 중{POP16}{POP16}
+STR_0475    :{STRINGID2} - {STRINGID2}
+STR_0476    :{POP16}{POP16}{STRINGID2}
+STR_0477    :물을 내릴 수 없습니다...
+STR_0478    :물을 올릴 수 없습니다...
+STR_0479    :(없음)
+STR_0480    :{MONTHYEAR}
+STR_0481    :{YELLOW}닫힘 - -
+STR_0482    :{CELADON}{STRINGID2} - -
+STR_0483    :지면의 경사가 적절하지 않습니다
+STR_0484    :물 아래에 지을 수 없습니다!
+STR_0485    :지면의 종류가 적절하지 않습니다
+STR_0486    :{WHITE}{SMALLUP}
+STR_0487    :{WHITE}{SMALLDOWN}
+STR_0488    :열차
+STR_0489    :열차
+STR_0490    :열차
+STR_0491    :열차
+STR_0492    :{UINT16} 열차
+STR_0493    :{UINT16} 열차
+STR_0494    :열차 {UINT16}
+STR_0495    :선박
+STR_0496    :선박
+STR_0497    :선박
+STR_0498    :선박
+STR_0499    :{UINT16} 선박
+STR_0500    :{UINT16} 선박
+STR_0501    :선박 {UINT16}
+STR_0502    :선로
+STR_0503    :선로
+STR_0504    :선로
+STR_0505    :선로
+STR_0506    :{UINT16} 선로
+STR_0507    :{UINT16} 선로
+STR_0508    :선로 {UINT16}
+STR_0509    :항구
+STR_0510    :항구
+STR_0511    :항구
+STR_0512    :항구
+STR_0513    :{UINT16} 항구
+STR_0514    :{UINT16} 항구
+STR_0515    :항구 {UINT16}
+STR_0516    :역
+STR_0517    :역
+STR_0518    :역
+STR_0519    :역
+STR_0520    :{UINT16} 역
+STR_0521    :{UINT16} 역
+STR_0522    :역 {UINT16}
+STR_0523    :자동차
+STR_0524    :자동차
+STR_0525    :자동차
+STR_0526    :자동차
+STR_0527    :{UINT16} 자동차
+STR_0528    :{UINT16} 자동차
+STR_0529    :자동차 {UINT16}
+STR_0530    :건물
+STR_0531    :건물
+STR_0532    :건물
+STR_0533    :건물
+STR_0534    :{UINT16} 건물
+STR_0535    :{UINT16} 건물
+STR_0536    :건물 {UINT16}
+STR_0537    :구조물
+STR_0538    :구조물
+STR_0539    :구조물
+STR_0540    :구조물
+STR_0541    :{UINT16} 구조물
+STR_0542    :{UINT16} 구조물
+STR_0543    :구조물 {UINT16}
+STR_0544    :선박
+STR_0545    :선박
+STR_0546    :선박
+STR_0547    :선박
+STR_0548    :{UINT16} 선박
+STR_0549    :{UINT16} 선박
+STR_0550    :선박 {UINT16}
+STR_0551    :도시
+STR_0552    :도시
+STR_0553    :도시
+STR_0554    :도시
+STR_0555    :{UINT16} 도시
+STR_0556    :{UINT16} 도시
+STR_0557    :도시 {UINT16}
+STR_0558    :산업 시설
+STR_0559    :산업 시설
+STR_0560    :산업 시설
+STR_0561    :산업 시설
+STR_0562    :{UINT16} 산업 시설
+STR_0563    :{UINT16} 산업 시설
+STR_0564    :산업 시설 {UINT16}
+STR_0565    :{SMALLFONT}{WHITE}오브젝트를 90{DEGREE} 회전
+STR_0566    :평지가 필요합니다
+STR_0567    :지형 종류를 변경할 수 없습니다...
+STR_0568    :{OUTLINE}{TOPAZ}+ {CURRENCY}
+STR_0569    :{OUTLINE}{YELLOW}- {CURRENCY}
+STR_0570    :{OUTLINE}{WINDOW_COLOUR_1}+ {CURRENCY}
+STR_0571    :{OUTLINE}{WINDOW_COLOUR_1}- {CURRENCY}
+STR_0572    :{STRINGID}
+STR_0573    :{YELLOW}{STRINGID}
+STR_0574    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}의 전경 보기
+STR_0575    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 디자인과 설정 상세 보기
+STR_0576    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 안의 화물/승객 보기
+STR_0577    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 경로 상세 보기
+STR_0578    :{SMALLFONT}{WHITE}{POP16}{STRINGID2} 유지비와 수익 보기
+STR_0579    :{SMALLFONT}{WHITE}새 건설 지점을 선택하세요
+STR_0580    :{SMALLFONT}{WHITE}90{DEGREE} 회전
+STR_0581    :{STRINGID2}(이)가 중간에 있습니다
+STR_0582    :{CURRENCY}
+STR_0583    :여기에 지을 수 없습니다...
+STR_0584    :{MONTH}
+STR_0585    :크리스 소이어의 로코모션
+STR_0586    :다음 드라이브에 로코모션 CD를 넣어주세요:-
+STR_0587    :{WINDOW_COLOUR_2}수익/지출
+STR_0588    :열차 수익
+STR_0589    :열차 유지비
+STR_0590    :버스 수익
+STR_0591    :버스 유지비
+STR_0592    :트럭 수익
+STR_0593    :트럭 유지비
+STR_0594    :전차 수익
+STR_0595    :전차 유지비
+STR_0596    :항공기 수익
+STR_0597    :항공기 유지비
+STR_0598    :선박 수익
+STR_0599    :선박 유지비
+STR_0600    :건설
+STR_0601    :차량 구입
+STR_0602    :차량 판매
+STR_0603    :대출 이자
+STR_0604    :기타
+STR_0605    :{CURRENCY2DP}
+STR_0606    :+{STRINGID}
+STR_0607    :{STRINGID}
+STR_0608    :{WINDOW_COLOUR_2}대출:
+STR_0609    :{POP16}{POP16}{POP16}{POP16}{CURRENCY}
+STR_0610    :더 이상 대출을 받을 수 없습니다!
+STR_0611    :돈이 부족합니다!
+STR_0612    :대출을 갚을 수 없습니다!
+STR_0613    :{SMALLFONT}{WHITE}새 게임 시작하기
+STR_0614    :{SMALLFONT}{WHITE}저장된 게임 불러오기
+STR_0615    :{SMALLFONT}{WHITE}튜토리얼 보기
+STR_0616    :{SMALLFONT}{WHITE}게임 종료하기
+STR_0617    :촌락
+STR_0618    :마을
+STR_0619    :도시
+STR_0620    :대도시
+STR_0621    :거대도시
+STR_0622    :선로/도로가 적합하지 않습니다
+STR_0623    :선로/도로가 역에 적합하지 않습니다
+STR_0624    :교차로에 역을 지을 수 없습니다
+STR_0625    :교차로에 신호기를 지을 수 없습니다
+STR_0626    :역 안에 신호기를 지을 수 없습니다
+STR_0627    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}{STRINGID2}
+STR_0628    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}{STRINGID2}
+STR_0629    :{STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}{STRINGID2} {STRINGID2}
+STR_0630    :{WINDOW_COLOUR_2}재정:  {MOVE_X}Q{YELLOW}파산!
+STR_0631    :{WINDOW_COLOUR_2}재정:  {MOVE_X}Q{WHITE}{STRINGID}
+STR_0632    :{WINDOW_COLOUR_2}재정:  {MOVE_X}Q{YELLOW}{STRINGID}
+STR_0633    :{WINDOW_COLOUR_2}회사 가치: {WHITE}{STRINGID}
+STR_0634    :{WINDOW_COLOUR_2}차량 수익: {WHITE}{STRINGID}/월
+STR_0635    :1월
+STR_0636    :2월
+STR_0637    :3월
+STR_0638    :4월
+STR_0639    :5월
+STR_0640    :6월
+STR_0641    :7월
+STR_0642    :8월
+STR_0643    :9월
+STR_0644    :10월
+STR_0645    :11월
+STR_0646    :12월
+STR_0647    :{SMALLFONT}{WHITE}{MONTH}
+STR_0648    :시나리오로 새 게임 시작하기
+STR_0649    :
+STR_0650    :{WINDOW_COLOUR_2}사운드 품질:
+STR_0651    :낮음
+STR_0652    :중간
+STR_0653    :높음
+STR_0654    :설정
+STR_0655    :{WINDOW_COLOUR_2}화폐 단위:
+STR_0656    :{WINDOW_COLOUR_2}거리와 속력:
+STR_0657    :{WINDOW_COLOUR_2}높이:
+STR_0658    :임페리얼법
+STR_0659    :미터법
+STR_0660    :유닛
+STR_0661    :실제 값
+STR_0662    :{WINDOW_COLOUR_2}디스플레이 해상도:
+STR_0663    :지면 부드럽게
+STR_0664    :{SMALLFONT}{WHITE}지형 가장자리를 부드럽게 보여줍니다
+STR_0665    :지면에 그리드 라인 표시
+STR_0666    :{SMALLFONT}{WHITE}지면에 그리드 라인을 표시합니다
+STR_0667    :은행이 추가 대출을 거절하였습니다.
+STR_0668    :{SMALLFONT}{WHITE}나무와 건물을 제거하려면 지면을 클릭하세요
+STR_0669    :{SMALLFONT}{WHITE}초기화 영역 크기 축소
+STR_0670    :{SMALLFONT}{WHITE}초기화 영역 크기 확대
+STR_0671    :{SMALLFONT}{WHITE}지형 편집 크기 축소
+STR_0672    :{SMALLFONT}{WHITE}지형 편집 크기 확대
+STR_0673    :{SMALLFONT}{WHITE}물 편집 크기 축소
+STR_0674    :{SMALLFONT}{WHITE}물 편집 크기 확대
+STR_0675    :지형 편집
+STR_0676    :물 편집
+STR_0677    :{SMALLFONT}{WHITE}수면을 올리거나 내리려면 지면을 클릭하고 위/아래로 드래그하세요
+STR_0678    :{SMALLFONT}{WHITE}땅을 올리거나 내리려면 지면을 클릭하고 위/아래로 드래그하세요
+STR_0679    :영역 초기화
+STR_0680    :영역 초기화
+STR_0681    :땅 편집
+STR_0682    :물 편집
+STR_0683    :나무 심기
+STR_0684    :벽 세우기
+STR_0685    :{STRINGID2} - 차량 상세 정보
+STR_0686    :{STRINGID2} - 화물
+STR_0687    :{STRINGID2} - 경로
+STR_0688    :{STRINGID2} - 재정
+STR_0689    :{WINDOW_COLOUR_2}열차: {WHITE}{UINT16}
+STR_0690    :{WINDOW_COLOUR_2}버스: {WHITE}{UINT16}
+STR_0691    :{WINDOW_COLOUR_2}트럭: {WHITE}{UINT16}
+STR_0692    :{WINDOW_COLOUR_2}전차: {WHITE}{UINT16}
+STR_0693    :{WINDOW_COLOUR_2}항공기: {WHITE}{UINT16}
+STR_0694    :{WINDOW_COLOUR_2}선박: {WHITE}{UINT16}
+STR_0695    :{NEWLINE}목표 실패!
+STR_0696    :{NEWLINE}목표 달성!
+STR_0697    :{SMALLFONT}{WHITE}성취도 지표: {COMMA2DP32}% {OPENQUOTES}{STRINGID2}{ENDQUOTES}
+STR_0698    :{SMALLFONT}{WHITE}회사 가치: {STRINGID}{NEWLINE}차량 수익: {STRINGID}/월
+STR_0699    :{NEWLINE}목표 달성률: {UINT16}%{STRINGID2}
+STR_0700    :{NEWLINE}남은 시간: {WHITE}{UINT16}년 {UINT16}개월
+STR_0701    :단축키 설정...
+STR_0702    :키보드 단축키
+STR_0703    :단축키 설정 초기화
+STR_0704    :{SMALLFONT}{WHITE}모든 키보드 단축키를 기본 설정으로 되돌립니다
+STR_0705    :최상단 창 닫기
+STR_0706    :모든 창 닫기
+STR_0707    :건설 모드 취소
+STR_0708    :게임 일시정지/해제
+STR_0709    :화면 축소
+STR_0710    :화면 확대
+STR_0711    :화면 회전
+STR_0712    :건설할 오브젝트 회전
+STR_0713    :지하 보기
+STR_0714    :선로 & 도로 숨기기
+STR_0715    :풍경 숨기기
+STR_0716    :표시 숨기기
+STR_0717    :선로 & 도로 고도 표시 숨기기
+STR_0718    :선로 & 도로 방향 화살표 숨기기
+STR_0719    :땅 편집
+STR_0720    :물 편집
+STR_0721    :나무 심기
+STR_0722    :영역 초기화
+STR_0723    :선로 건설
+STR_0724    :도로 건설
+STR_0725    :공항 건설
+STR_0726    :항만 건설
+STR_0727    :새 차량 만들기
+STR_0728    :차량 목록 보기
+STR_0729    :역 목록 보기
+STR_0730    :도시 목록 보기
+STR_0731    :산업 시설 목록 보기
+STR_0732    :지도 보기
+STR_0733    :회사 목록 보기
+STR_0734    :회사 정보 보기
+STR_0735    :재정 보기
+STR_0736    :알림 목록 보기
+STR_0737    :스크린 샷
+STR_0738    :마지막 알림 보기 또는 취소
+STR_0739    :메시지 보내기 (1:1 플레이 모드)
+STR_0740    :???
+STR_0741    :???
+STR_0742    :???
+STR_0743    :???
+STR_0744    :???
+STR_0745    :???
+STR_0746    :???
+STR_0747    :???
+STR_0748    :Backspace
+STR_0749    :Tab
+STR_0750    :???
+STR_0751    :???
+STR_0752    :Clear
+STR_0753    :ENTER
+STR_0754    :???
+STR_0755    :???
+STR_0756    :???
+STR_0757    :???
+STR_0758    :Alt/Menu
+STR_0759    :Pause
+STR_0760    :Caps
+STR_0761    :???
+STR_0762    :???
+STR_0763    :???
+STR_0764    :???
+STR_0765    :???
+STR_0766    :???
+STR_0767    :ESC
+STR_0768    :???
+STR_0769    :???
+STR_0770    :???
+STR_0771    :???
+STR_0772    :스페이스바
+STR_0773    :PgUp
+STR_0774    :PgDn
+STR_0775    :End
+STR_0776    :Home
+STR_0777    :Left
+STR_0778    :Up
+STR_0779    :Right
+STR_0780    :Down
+STR_0781    :Select
+STR_0782    :Print
+STR_0783    :Execute
+STR_0784    :Snapshot
+STR_0785    :Insert
+STR_0786    :Delete
+STR_0787    :Help
+STR_0788    :0
+STR_0789    :1
+STR_0790    :2
+STR_0791    :3
+STR_0792    :4
+STR_0793    :5
+STR_0794    :6
+STR_0795    :7
+STR_0796    :8
+STR_0797    :9
+STR_0798    :???
+STR_0799    :???
+STR_0800    :???
+STR_0801    :???
+STR_0802    :???
+STR_0803    :???
+STR_0804    :???
+STR_0805    :A
+STR_0806    :B
+STR_0807    :C
+STR_0808    :D
+STR_0809    :E
+STR_0810    :F
+STR_0811    :G
+STR_0812    :H
+STR_0813    :I
+STR_0814    :J
+STR_0815    :K
+STR_0816    :L
+STR_0817    :M
+STR_0818    :N
+STR_0819    :O
+STR_0820    :P
+STR_0821    :Q
+STR_0822    :R
+STR_0823    :S
+STR_0824    :T
+STR_0825    :U
+STR_0826    :V
+STR_0827    :W
+STR_0828    :X
+STR_0829    :Y
+STR_0830    :Z
+STR_0831    :???
+STR_0832    :???
+STR_0833    :Menu
+STR_0834    :???
+STR_0835    :???
+STR_0836    :NumPad 0
+STR_0837    :NumPad 1
+STR_0838    :NumPad 2
+STR_0839    :NumPad 3
+STR_0840    :NumPad 4
+STR_0841    :NumPad 5
+STR_0842    :NumPad 6
+STR_0843    :NumPad 7
+STR_0844    :NumPad 8
+STR_0845    :NumPad 9
+STR_0846    :NumPad *
+STR_0847    :NumPad +
+STR_0848    :???
+STR_0849    :NumPad -
+STR_0850    :NumPad .
+STR_0851    :NumPad /
+STR_0852    :F1
+STR_0853    :F2
+STR_0854    :F3
+STR_0855    :F4
+STR_0856    :F5
+STR_0857    :F6
+STR_0858    :F7
+STR_0859    :F8
+STR_0860    :F9
+STR_0861    :F10
+STR_0862    :F11
+STR_0863    :F12
+STR_0864    :F13
+STR_0865    :F14
+STR_0866    :F15
+STR_0867    :F16
+STR_0868    :F17
+STR_0869    :F18
+STR_0870    :F19
+STR_0871    :F20
+STR_0872    :F21
+STR_0873    :F22
+STR_0874    :F23
+STR_0875    :F24
+STR_0876    :???
+STR_0877    :???
+STR_0878    :???
+STR_0879    :???
+STR_0880    :???
+STR_0881    :???
+STR_0882    :???
+STR_0883    :???
+STR_0884    :NumLock
+STR_0885    :Scroll
+STR_0886    :???
+STR_0887    :???
+STR_0888    :???
+STR_0889    :???
+STR_0890    :???
+STR_0891    :???
+STR_0892    :???
+STR_0893    :???
+STR_0894    :???
+STR_0895    :???
+STR_0896    :???
+STR_0897    :???
+STR_0898    :???
+STR_0899    :???
+STR_0900    :???
+STR_0901    :???
+STR_0902    :???
+STR_0903    :???
+STR_0904    :???
+STR_0905    :???
+STR_0906    :???
+STR_0907    :???
+STR_0908    :???
+STR_0909    :???
+STR_0910    :???
+STR_0911    :???
+STR_0912    :???
+STR_0913    :???
+STR_0914    :???
+STR_0915    :???
+STR_0916    :???
+STR_0917    :???
+STR_0918    :???
+STR_0919    :???
+STR_0920    :???
+STR_0921    :???
+STR_0922    :???
+STR_0923    :???
+STR_0924    :???
+STR_0925    :???
+STR_0926    :;
+STR_0927    :=
+STR_0928    :,
+STR_0929    :-
+STR_0930    :.
+STR_0931    :/
+STR_0932    :'
+STR_0933    :???
+STR_0934    :???
+STR_0935    :???
+STR_0936    :???
+STR_0937    :???
+STR_0938    :???
+STR_0939    :???
+STR_0940    :???
+STR_0941    :???
+STR_0942    :???
+STR_0943    :???
+STR_0944    :???
+STR_0945    :???
+STR_0946    :???
+STR_0947    :???
+STR_0948    :???
+STR_0949    :???
+STR_0950    :???
+STR_0951    :???
+STR_0952    :???
+STR_0953    :???
+STR_0954    :???
+STR_0955    :???
+STR_0956    :???
+STR_0957    :???
+STR_0958    :???
+STR_0959    :[
+STR_0960    :\
+STR_0961    :]
+STR_0962    :{ENDQUOTES}
+STR_0963    :Bar
+STR_0964    :???
+STR_0965    :???
+STR_0966    :???
+STR_0967    :???
+STR_0968    :???
+STR_0969    :???
+STR_0970    :???
+STR_0971    :???
+STR_0972    :???
+STR_0973    :???
+STR_0974    :???
+STR_0975    :???
+STR_0976    :???
+STR_0977    :???
+STR_0978    :???
+STR_0979    :???
+STR_0980    :???
+STR_0981    :???
+STR_0982    :???
+STR_0983    :???
+STR_0984    :???
+STR_0985    :???
+STR_0986    :???
+STR_0987    :???
+STR_0988    :???
+STR_0989    :???
+STR_0990    :???
+STR_0991    :???
+STR_0992    :???
+STR_0993    :???
+STR_0994    :???
+STR_0995    :???
+STR_0996    :{STRINGID2}:{MOVE_X}×{STRINGID2}{STRINGID2}
+STR_0997    :SHIFT +
+STR_0998    :CTRL +
+STR_0999    :키보드 단축키 변경
+STR_1000    :{WINDOW_COLOUR_2}아래 기능에 지정할 새로운 단축키를 입력하세요:{NEWLINE}{NEWLINE_SMALLER}{WHITE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}
+STR_1001    :{SMALLFONT}{WHITE}새 단축키를 지정할 단축키 설명을 클릭하세요
+STR_1002    :화면 가장자리에 마우스 커서를 가져가면 화면 스크롤
+STR_1003    :{SMALLFONT}{WHITE}마우스 커서가 화면 가장자리에 가까이 가면 맵 화면을 스크롤할지 선택합니다
+STR_1004    :{SMALLFONT}{WHITE}단축키 설정을 보거나 변경합니다
+STR_1005    :지도
+STR_1006    :지도 - 차량
+STR_1007    :지도 - 산업 시설
+STR_1008    :지도 - 운송 경로
+STR_1009    :지도 - 회사
+STR_1010    :강제 소프트웨어 버퍼 믹싱
+STR_1011    :{SMALLFONT}{WHITE}만약 소리 시작이나 간섭이 들릴 때 게임이 살짝 멈춘다면 이 설정을 켜서 성능을 향상시킬 수 있습니다
+STR_1012    :시나리오가 성공적으로 설치되었습니다
+STR_1013    :시나리오가 이미 설치되어 있습니다
+STR_1014    :{OUTLINE}{WINDOW_COLOUR_1}{STRINGID2}
+STR_1015    :{OUTLINE}{WINDOW_COLOUR_2}(직접 컨트롤하려면 키보드나 마우스를 누르세요)
+STR_1016    :크리스 소이어의 로코모션이 이미 실행 중입니다
+STR_1017    :음악 저작권...
+STR_1018    :음악 저작권
+STR_1019    :{WHITE}Copyright {COPYRIGHT} Chris Sawyer
+STR_1020    :{WINDOW_COLOUR_2}로코모션 타이틀 음악
+STR_1021    :{WHITE}John Broomhall (Guitar played by Keith Thompson)
+STR_1022    :{WINDOW_COLOUR_2}Long Dusty Road
+STR_1023    :{WHITE}Allister Brimble (Trumpet played by Brian Moore)
+STR_1024    :{WINDOW_COLOUR_2}Flying High
+STR_1025    :{WHITE}Allister Brimble
+STR_1026    :{WINDOW_COLOUR_2}Gettin' On The Gas
+STR_1027    :{WHITE}Allister Brimble
+STR_1028    :{WINDOW_COLOUR_2}Jumpin' The Rails
+STR_1029    :{WHITE}Allister Brimble
+STR_1030    :{WINDOW_COLOUR_2}Smooth Running
+STR_1031    :{WHITE}Allister Brimble
+STR_1032    :{WINDOW_COLOUR_2}Traffic Jam
+STR_1033    :{WHITE}Allister Brimble
+STR_1034    :{WINDOW_COLOUR_2}Never Stop 'til You Get There
+STR_1035    :{WHITE}Allister Brimble
+STR_1036    :{WINDOW_COLOUR_2}Soaring Away
+STR_1037    :{WHITE}Allister Brimble
+STR_1038    :{WINDOW_COLOUR_2}Techno Torture
+STR_1039    :{WHITE}Allister Brimble
+STR_1040    :{WINDOW_COLOUR_2}Everlasting High-Rise
+STR_1041    :{WHITE}Allister Brimble
+STR_1042    :{WINDOW_COLOUR_2}Solace
+STR_1043    :{WHITE}Scott Joplin (Peter James Adcock 연주)
+STR_1044    :{WINDOW_COLOUR_2}Chrysanthemum
+STR_1045    :{WHITE}Scott Joplin (Peter James Adcock 연주)
+STR_1046    :{WINDOW_COLOUR_2}Eugenia
+STR_1047    :{WHITE}Scott Joplin (Peter James Adcock 연주)
+STR_1048    :{WINDOW_COLOUR_2}The Ragtime Dance
+STR_1049    :{WHITE}Scott Joplin (Peter James Adcock 연주)
+STR_1050    :{WINDOW_COLOUR_2}Easy Winners
+STR_1051    :{WHITE}Scott Joplin (Peter James Adcock 연주)
+STR_1052    :{WINDOW_COLOUR_2}Setting Off
+STR_1053    :{WHITE}Allister Brimble (트럼펫 연주: Brian Moore, 클라리넷 연주: John Glanfield)
+STR_1054    :{WINDOW_COLOUR_2}A Traveller's Seranade
+STR_1055    :{WHITE}David Punshon
+STR_1056    :{WINDOW_COLOUR_2}Latino Trip
+STR_1057    :{WHITE}David Punshon
+STR_1058    :{WINDOW_COLOUR_2}A Good Head Of Steam
+STR_1059    :{WHITE}Allister Brimble
+STR_1060    :{WINDOW_COLOUR_2}Hop To The Bop
+STR_1061    :{WHITE}David Punshon
+STR_1062    :{WINDOW_COLOUR_2}The City Lights
+STR_1063    :{WHITE}Allister Brimble
+STR_1064    :{WINDOW_COLOUR_2}Steamin' Down Town
+STR_1065    :{WHITE}David Punshon
+STR_1066    :{WINDOW_COLOUR_2}Bright Expectations
+STR_1067    :{WHITE}Allister Brimble
+STR_1068    :{WINDOW_COLOUR_2}Mo' 역
+STR_1069    :{WHITE}John Broomhall
+STR_1070    :{WINDOW_COLOUR_2}Far Out
+STR_1071    :{WHITE}John Broomhall
+STR_1072    :{WINDOW_COLOUR_2}Running On Time
+STR_1073    :{WHITE}Allister Brimble
+STR_1074    :{WINDOW_COLOUR_2}Get Me To Gladstone Bay
+STR_1075    :{WHITE}Allister Brimble
+STR_1076    :{WINDOW_COLOUR_2}Chuggin' Along
+STR_1077    :{WHITE}Allister Brimble (트럼펫 연주: Brian Moore)
+STR_1078    :{WINDOW_COLOUR_2}Don't Lose Your Rag
+STR_1079    :{WHITE}Allister Brimble
+STR_1080    :{WINDOW_COLOUR_2}Sandy Track Blues
+STR_1081    :{WHITE}Allister Brimble
+STR_1082    :저장된 게임을 불러올 수 업습니다...
+STR_1083    :파일이 잘못된 데이터를 포함하고 있습니다
+STR_1084    :싱글 플레이에서 저장한 게임이 아닙니다
+STR_1085    :1:1 플레이에서 저장한 게임이 아닙니다
+STR_1086    :잠시 기다려주세요...
+STR_1087    :초기화 중...
+STR_1088    :불러오는 중...
+STR_1089    :새로운 데이터 설치 중:
+STR_1090    :흰색
+STR_1091    :반투명
+STR_1092    :{WINDOW_COLOUR_2}건설 표시:
+STR_1093    :{WINDOW_COLOUR_2}차량을 표시할 최소 화면 크기:
+STR_1094    :{WINDOW_COLOUR_2}역 이름을 표시할 최소 화면 크기:
+STR_1095    :전체
+STR_1096    :절반
+STR_1097    :1/4
+STR_1098    :1/8
+STR_1099    :{SMALLFONT}{WHITE}차량을 표시할 최소 화면 크기를 선택하세요
+STR_1100    :{SMALLFONT}{WHITE}역 이름을 표시할 최소 화면 크기를 선택하세요
+STR_1101    :{WINDOW_COLOUR_2}메인 색상:
+STR_1102    :{WHITE}증기 기관차:
+STR_1103    :{WHITE}디젤 기관차:
+STR_1104    :{WHITE}전기 기관차:
+STR_1105    :{WHITE}중련:
+STR_1106    :{WHITE}승객 차량:
+STR_1107    :{WHITE}화물 차량:
+STR_1108    :{WHITE}버스:
+STR_1109    :{WHITE}트럭:
+STR_1110    :{WHITE}항공기:
+STR_1111    :{WHITE}선박:
+STR_1112    :{SMALLFONT}{WHITE}회사 본사 및 상세 정보
+STR_1113    :{SMALLFONT}{WHITE}회사 소유주 및 상태
+STR_1114    :{SMALLFONT}{WHITE}회사 재정 상태
+STR_1115    :{SMALLFONT}{WHITE}화물 배송
+STR_1116    :{SMALLFONT}{WHITE}회사 색상표
+STR_1117    :{SMALLFONT}{WHITE}이 게임에서의 회사 목표
+STR_1118    :{WINDOW_COLOUR_2}특수 색상표:
+STR_1119    :{SMALLFONT}{WHITE}메인 색상을 선택하세요
+STR_1120    :{SMALLFONT}{WHITE}부 색상을 선택하세요 (일부 차량 종류에만 사용)
+STR_1121    :{SMALLFONT}{WHITE}이 차량 종류에 다른 색상표를 사용할지 선택하세요
+STR_1122    :{STRINGID2} - 열차
+STR_1123    :{STRINGID2} - 버스
+STR_1124    :{STRINGID2} - 트럭
+STR_1125    :{STRINGID2} - 전차
+STR_1126    :{STRINGID2} - 항공기
+STR_1127    :{STRINGID2} - 선박
+STR_1128    :{STRINGID2} - 모든 역
+STR_1129    :{STRINGID2} - 철도 역
+STR_1130    :{STRINGID2} - 도로 정류장 역
+STR_1131    :{STRINGID2} - 공항
+STR_1132    :{STRINGID2} - 항구
+STR_1133    :모든 역
+STR_1134    :철도 역
+STR_1135    :도로 정류장 역
+STR_1136    :공항
+STR_1137    :항구
+STR_1138    :{WINDOW_COLOUR_2}{STRINGID2} - {STRINGID2}
+STR_1139    :{WINDOW_COLOUR_2}{STRINGID2} - {STRINGID2} {STRINGID2}
+STR_1140    :{WINDOW_COLOUR_2}{CURRENCY}
+STR_1141    :{YELLOW}-{CURRENCY}
+STR_1142    :{WINDOW_COLOUR_2}{UINT16}년
+STR_1143    :{WINDOW_COLOUR_2}{UINT16}년
+STR_1144    :{WINDOW_COLOUR_2}{UINT16}%
+STR_1145    :{WHITE}이름
+STR_1146    :{WHITE}이름 {DOWN}
+STR_1147    :{WHITE}월 수익
+STR_1148    :{WHITE}월 수익 {DOWN}
+STR_1149    :{WHITE}연식
+STR_1150    :{WHITE}연식 {DOWN}
+STR_1151    :{WHITE}신뢰도
+STR_1152    :{WHITE}신뢰도 {DOWN}
+STR_1153    :{SMALLFONT}{WHITE}이름 순으로 목록을 정렬
+STR_1154    :{SMALLFONT}{WHITE}수익 순으로 목록을 정렬
+STR_1155    :{SMALLFONT}{WHITE}연식 순으로 목록을 정렬
+STR_1156    :{SMALLFONT}{WHITE}신뢰도 순으로 목록을 정렬
+STR_1157    :먼저 차량을 멈춰야 합니다!
+STR_1158    :차량이 충돌하였습니다!
+STR_1159    :차량이 고장났습니다!
+STR_1160    :차량이 끼었습니다!
+STR_1161    :공간이 부족하거나 차량이 중간에 있습니다
+STR_1162    :차량이 접근 중이거나 중간에 있습니다
+STR_1163    :여기에 {POP16}{POP16}{POP16}{STRINGID2}(을)를 놓을 수 없습니다...
+STR_1164    :{POP16}{POP16}{POP16}{STRINGID2}(을)를 제거할 수 없습니다...
+STR_1165    :정지 신호를 무시할 수 없습니다...
+STR_1166    :이 차량은 {STRINGID2}(이)가 필요합니다
+STR_1167    :열차에 차량이 없습니다!
+STR_1168    :열차에 운전실이 없습니다
+STR_1169    :열차에 기관차나 발전차가 필요합니다
+STR_1170    :도착: {STRINGID2} / 출발: {STRINGID2}
+STR_1171    :비어 있음
+STR_1172    :{SMALLFONT}{WHITE}{STRINGID2}
+STR_1173    :{NEWLINE}수용량:  {STRINGID2}
+STR_1174    :{NEWLINE}+ {STRINGID2}
+STR_1175    :겡미에 역이 너무 많습니다!
+STR_1176    :역이 너무 큽니다!
+STR_1177    :도시를 먼저 지어야 합니다!
+STR_1178    :{SMALLFONT}{WHITE}지도 전체 보기
+STR_1179    :{SMALLFONT}{WHITE}지도에 차량 종류 표시
+STR_1180    :{SMALLFONT}{WHITE}지도에 산업 시설 종류 표시
+STR_1181    :{SMALLFONT}{WHITE}지도에 차량 경로 표시
+STR_1182    :{SMALLFONT}{WHITE}지도에 회사 소유주 표시
+STR_1183    :역이 너무 넓게 퍼져있습니다!
+STR_1184    :{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}(을)를 {STRINGID2}에 추가할 수 없습니다...
+STR_1185    :{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID2}(을)를 지을 수 없습니다...
+STR_1186    :{WHITE}새 차량을 선택하세요
+STR_1187    :{WHITE}{STRINGID2}에 추가할 차량을 선택하세요
+STR_1188    :{SMALLFONT}{WHITE}새로운 철도 차량 만들기
+STR_1189    :{SMALLFONT}{WHITE}새로운 버스 만들기
+STR_1190    :{SMALLFONT}{WHITE}새로운 트럭 만들기
+STR_1191    :{SMALLFONT}{WHITE}새로운 전차 만들기
+STR_1192    :{SMALLFONT}{WHITE}새로운 항공기 만들기
+STR_1193    :{SMALLFONT}{WHITE}새로운 선박 만들기
+STR_1194    :{SMALLFONT}{WHITE}열차
+STR_1195    :{SMALLFONT}{WHITE}버스
+STR_1196    :{SMALLFONT}{WHITE}트럭
+STR_1197    :{SMALLFONT}{WHITE}전차
+STR_1198    :{SMALLFONT}{WHITE}항공기
+STR_1199    :{SMALLFONT}{WHITE}선박
+STR_1200    :{SMALLFONT}{WHITE}모든 역
+STR_1201    :{SMALLFONT}{WHITE}철도 역
+STR_1202    :{SMALLFONT}{WHITE}도로 정류장
+STR_1203    :{SMALLFONT}{WHITE}공항
+STR_1204    :{SMALLFONT}{WHITE}항구
+STR_1205    :{SMALLFONT}{WHITE}지형 초기화
+STR_1206    :{SMALLFONT}{WHITE}나무
+STR_1207    :{SMALLFONT}{WHITE}지형을 만들거나 조정
+STR_1208    :{SMALLFONT}{WHITE}물을 만들거나 조정
+STR_1209    :{SMALLFONT}{WHITE}벽과 울타리
+STR_1210    :{SMALLFONT}{WHITE}오브젝트 색상 선택
+STR_1211    :{WINDOW_COLOUR_2}{STRINGID2}
+STR_1212    :{WINDOW_COLOUR_2}{STRINGID2} (출발:
+STR_1213    :{WINDOW_COLOUR_2}{STRINGID2})
+STR_1214    :차량 경로를 지정할 공간이 더 이상 없습니다!
+STR_1215    :이 차량에 경로가 너무 많습니다!
+STR_1216    :- - 완행 - -
+STR_1217    :- - 급행 - -
+STR_1218    :{WHITE}- - 경로 없음 - -
+STR_1219    :{WHITE}- - 경로 목록 끝 - -
+STR_1220    :{STRINGID2} 정차 중
+STR_1221    :{STRINGID2} 통과 중
+STR_1222    :경유지 통과 중
+STR_1223    :{STRINGID2}에서 모두 하차 중 {GREY}
+STR_1224    :{STRINGID2}에서 모무 적재 중 {GREY}
+STR_1225    :{STRINGID2}에서 모두 하차 중 {GREY}
+STR_1226    :{STRINGID2}에서 모무 적재 중 {GREY}
+STR_1227    :{WINDOW_COLOUR_2}{RIGHT}
+STR_1228    :경로를 삽입할 수 없습니다...
+STR_1229    :{WINDOW_COLOUR_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요
+STR_1230    :{WINDOW_COLOUR_3}{STRINGID2}에 정차하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요
+STR_1231    :{WINDOW_COLOUR_3}마지막 경로를 {STRINGID2}(을)를 통과하는{NEWLINE}경로로 바꾸려면 클릭하세요
+STR_1232    :{SMALLFONT}{WHITE}Insert an order to wait for a full load of cargo
+STR_1233    :{SMALLFONT}{WHITE}Insert an order to force unloading of cargo, even if cargo is not accepted by 역
+STR_1234    :{SMALLFONT}{WHITE}Skip to next order in 목록
+STR_1235    :{SMALLFONT}{WHITE}Delete the last or selected order
+STR_1236    :{WHITE}Click on 역 or waypoint position to set route
+STR_1237    :{SMALLFONT}{WHITE}Click on order to select it, click twice to move view to show 역/waypoint
+STR_1238    :{SMALLFONT}{WHITE}Click on order to copy it to selected 차량
+STR_1239    :{STRINGID2} {STRINGID2}{NEWLINE}{WINDOW_COLOUR_3}{STRINGID2}
+STR_1240    :열차 만들기
+STR_1241    :버스 만들기
+STR_1242    :트럭 만들기
+STR_1243    :전차 만들기
+STR_1244    :항공기 만들기
+STR_1245    :선박 만들기
+STR_1246    :{STRINGID2}에만 놓을 수 있습니다...
+STR_1247    :도로
+STR_1248    :{WHITE}사용할 수 있는 차량이 없습니다
+STR_1249    :{WHITE}{STRINGID2}에 추가할 수 있는 적합한 차량이 없습니다
+STR_1250    :
+STR_1251    :{WINDOW_COLOUR_2} 가격: {WHITE}{CURRENCY}
+STR_1252    :{NEWLINE}{WINDOW_COLOUR_2} 필요: {WHITE}
+STR_1253    :{NEWLINE}{WINDOW_COLOUR_2} 힘: {WHITE}{BLACK}
+STR_1254    :{NEWLINE}{WINDOW_COLOUR_2} 무게: {WHITE}{UINT16}t
+STR_1255    :{NEWLINE}{WINDOW_COLOUR_2} 최고 속력: {WHITE}{VELOCITY}
+STR_1256    :{NEWLINE}{WINDOW_COLOUR_2} 개발: {WHITE}{CURRENCY2DP}
+STR_1257    :{NEWLINE}{WINDOW_COLOUR_2} 수송량: {WHITE}{STRINGID2}
+STR_1258    : + {STRINGID2}
+STR_1259    : (경사로에 + {STRINGID2})
+STR_1260    : ({VELOCITY} on {STRINGID2})
+STR_1261    :또는 {STRINGID2}
+STR_1262    :{NEWLINE}{WINDOW_COLOUR_2} 유지비: {WHITE}{CURRENCY}/월
+STR_1263    : (개조 가능)
+STR_1264    :열차 {UINT16}대
+STR_1265    :버스 {UINT16}대
+STR_1266    :트럭 {UINT16}대
+STR_1267    :전차 {UINT16}대
+STR_1268    :항공기 {UINT16}대
+STR_1269    :선박 {UINT16}대
+STR_1270    :열차 {UINT16}대
+STR_1271    :버스 {UINT16}대
+STR_1272    :트럭 {UINT16}대
+STR_1273    :전차 {UINT16}대
+STR_1274    :항공기 {UINT16}대
+STR_1275    :선박 {UINT16}대
+STR_1276    :열차
+STR_1277    :버스
+STR_1278    :트럭
+STR_1279    :전차
+STR_1280    :항공기
+STR_1281    :선박
+STR_1282    :{WINDOW_COLOUR_2}전체: {WHITE}{STRINGID2}
+STR_1283    :비어있음
+STR_1284    :{SMALLFONT}{WHITE}적재:
+STR_1285    :{STRINGID2}(이)가 추가로 필요
+STR_1286    :{SMALLFONT}{WHITE}{STRINGID2}용 차량
+STR_1287    :{GREY}{NEWLINE_X_Y}{BIGFONT} {STRINGID2}
+STR_1288    :{POP16}{POP16}{NEWLINE_X_Y}{BIGFONT} {STRINGID2}
+STR_1289    :{GREY}{NEWLINE_X_Y}{BIGFONT} {STRINGID2} 건설
+STR_1290    :{STRINGID2} 지역 당국이 그 행동을 거절하였습니다
+STR_1291    :Towns
+STR_1292    :Build New Towns
+STR_1293    :Build Individual Town Buildings
+STR_1294    :Build Miscellaneous Buildings
+STR_1295    :{WHITE}Population
+STR_1296    :{WHITE}Population {DOWN}
+STR_1297    :{SMALLFONT}{WHITE}Sort 목록 by population
+STR_1298    :{COMMA32}
+STR_1299    :{WHITE}역
+STR_1300    :{WHITE}역 {DOWN}
+STR_1301    :{SMALLFONT}{WHITE}역 개수 순으로 목록 정렬
+STR_1302    :{WHITE}도시
+STR_1303    :{WHITE}도시 {DOWN}
+STR_1304    :{STRINGID2} 인구 {COMMA32}
+STR_1305    :{SMALLFONT}{WHITE}도시 종류 순으로 목록 정렬
+STR_1306    :{WHITE}종류
+STR_1307    :{WHITE}종류 {DOWN}
+STR_1308    :도시 이름
+STR_1309    :{STRINGID2}의 새 도시 이름을 입력하세요:
+STR_1310    :{WHITE}{STRINGID2} 인구 {COMMA32}
+STR_1311    :도시 이름을 바꿀 수 없습니다...
+STR_1312    :새 역
+STR_1313    :{WHITE}({STRINGID2})
+STR_1314    :{WINDOW_COLOUR_2}역세권{NEWLINE}  받음:
+STR_1315    :{WINDOW_COLOUR_2}  생산:
+STR_1316    :{WHITE}없음
+STR_1317    :산업 시설이 너무 많습니다
+STR_1318    :산업 시설
+STR_1319    :새 산업 시설에 투자
+STR_1320    :산업 시설 건설
+STR_1321    :{SMALLFONT}{WHITE}Towns 목록
+STR_1322    :{SMALLFONT}{WHITE}Build towns
+STR_1323    :{SMALLFONT}{WHITE}Build individual town buildings
+STR_1324    :{SMALLFONT}{WHITE}Build miscellaneous buildings
+STR_1325    :{SMALLFONT}{WHITE}산업 시설 목록
+STR_1326    :{SMALLFONT}{WHITE}Fund new 산업 시설
+STR_1327    :{SMALLFONT}{WHITE}Build 산업 시설
+STR_1328    :Ebony
+STR_1329    :Silver
+STR_1330    :Ivory
+STR_1331    :Indigo
+STR_1332    :Sapphire
+STR_1333    :Emerald
+STR_1334    :Golden
+STR_1335    :Amber
+STR_1336    :Bronze
+STR_1337    :Burgundy
+STR_1338    :Scarlet
+STR_1339    :{STRINGID2}
+STR_1340    :{POP16}{STRINGID2}
+STR_1341    :{STRINGID2} Transport
+STR_1342    :{STRINGID2} Express
+STR_1343    :{STRINGID2} Lines
+STR_1344    :{STRINGID2} 선로s
+STR_1345    :{STRINGID2} Coaches
+STR_1346    :{STRINGID2} Air
+STR_1347    :{STRINGID2} Rail
+STR_1348    :{STRINGID2} Carts
+STR_1349    :{STRINGID2} Trains
+STR_1350    :{STRINGID2} Haulage
+STR_1351    :{STRINGID2} 선박ping
+STR_1352    :{STRINGID2} Freight
+STR_1353    :{STRINGID2} 트럭s
+STR_1354    :{WINDOW_COLOUR_2}Headquarters
+STR_1355    :{WINDOW_COLOUR_2}Owner
+STR_1356    :{WHITE}@ {UINT16}% interest per year
+STR_1357    :{WHITE}{SMALLFONT}{COMMA32}
+STR_1358    :{WHITE}{SMALLFONT}{CURRENCY2DP}
+STR_1359    :{STRINGID2}
+STR_1360    :{STRINGID2} - Population
+STR_1361    :{STRINGID2} Local Authority
+STR_1362    :{STRINGID2} - Monthly Production
+STR_1363    :{STRINGID2} - Statistics
+STR_1364    :{STRINGID2} {STRINGID2}
+STR_1365    :{SMALLFONT}{WHITE}이 산업 시설 파괴
+STR_1366    :건설 중
+STR_1367    :생산 중
+STR_1368    :생산
+STR_1369    :생산
+STR_1370    : to produce
+STR_1371    :필요
+STR_1372    :필요
+STR_1373    : 그리고
+STR_1374    : 또는
+STR_1375    :,
+STR_1376    :{SMALLFONT}{WHITE}Sort 목록 by industry status
+STR_1377    :{SMALLFONT}{WHITE}Sort 목록 by production percentage transported
+STR_1378    :{WHITE}Status
+STR_1379    :{WHITE}Status {DOWN}
+STR_1380    :{WHITE}Production Transported
+STR_1381    :{WHITE}Production Transported {DOWN}
+STR_1382    :{SMALLFONT}{WHITE}Sort 목록 by industry name
+STR_1383    :{WHITE}Industry
+STR_1384    :{WHITE}Industry {DOWN}
+STR_1385    :{WHITE}No 산업 시설 available
+STR_1386    :{SMALLFONT}{WHITE}Town
+STR_1387    :{SMALLFONT}{WHITE}Population graph
+STR_1388    :{SMALLFONT}{WHITE}Town's ratings of each company
+STR_1389    :{SMALLFONT}{WHITE}Industry
+STR_1390    :{SMALLFONT}{WHITE}Production graph
+STR_1391    :{WHITE}{SMALLFONT}({STRINGID2})
+STR_1392    :{SMALLFONT}{WHITE}Completely demolish this town (and any nearby 산업 시설)
+STR_1393    :Can't remove town...
+STR_1394    :All 역 near this town must be removed first
+STR_1395    :Too close to another town
+STR_1396    :Too many towns
+STR_1397    :Too close to another town, or position is unsuitable
+STR_1398    :{SMALLFONT}{WHITE}Select size of town to construct
+STR_1399    :1 (small)
+STR_1400    :2
+STR_1401    :3 (medium)
+STR_1402    :4
+STR_1403    :5
+STR_1404    :6 (large)
+STR_1405    :7
+STR_1406    :8 (gigantic)
+STR_1407    :{WHITE}Town size:
+STR_1408    :{WHITE}(Click on landscape to build new town)
+STR_1409    :{SMALLFONT}{WHITE}Expand this town
+STR_1410    :Too close to another industry
+STR_1411    :Town must be built nearby first
+STR_1412    :{SMALLFONT}{WHITE}Plant a cluster of the selected tree type
+STR_1413    :{SMALLFONT}{WHITE}Plant a random cluster of trees
+STR_1414    :{SMALLFONT}{WHITE}Statistics
+STR_1415    :{WINDOW_COLOUR_2}Received last month:
+STR_1416    :{WINDOW_COLOUR_2}Produced last month:
+STR_1417    :{WHITE}{STRINGID2} ({UINT16}% transported)
+STR_1418    :{WHITE}{UINT16}%
+STR_1419    :Closing down
+STR_1420    :Belongs to {STRINGID2}
+STR_1421    :{STRINGID2} belongs to {STRINGID2}
+STR_1422    :신호기 belongs to {STRINGID2}
+STR_1423    :{WHITE}{UINT16}%
+STR_1424    :{WHITE}{TINYFONT}{MONTH}
+STR_1425    :Messages
+STR_1426    :{SMALLFONT}{WHITE}Show recent messages
+STR_1427    :{SMALLFONT}{WHITE}Message options
+STR_1428    :Message Options
+STR_1429    :{TINYFONT}{MONTH}
+STR_1430    : +
+STR_1431    : waiting
+STR_1432    :Nothing waiting
+STR_1433    :{WHITE}Status
+STR_1434    :{WHITE}Status {DOWN}
+STR_1435    :{WHITE}Total waiting
+STR_1436    :{WHITE}Total waiting {DOWN}
+STR_1437    :{WHITE}Accepts
+STR_1438    :{WHITE}Accepts {DOWN}
+STR_1439    :{SMALLFONT}{WHITE}Sort 목록 by 역 status
+STR_1440    :{SMALLFONT}{WHITE}Sort 목록 by total units waiting
+STR_1441    :{SMALLFONT}{WHITE}Sort 목록 by cargo accepted
+STR_1442    :{COMMA32} units
+STR_1443    :,
+STR_1444    :{NEWLINE}Accepts
+STR_1445    :{WHITE}Accepts:
+STR_1446    :Nothing
+STR_1447    :{SMALLFONT}{WHITE}역
+STR_1448    :{SMALLFONT}{WHITE}Cargo waiting and accepted
+STR_1449    :{SMALLFONT}{WHITE}Cargo ratings
+STR_1450    :Demolition not allowed
+STR_1451    :Another company is about to build here
+STR_1452    :Too long!
+STR_1453    :{SMALLFONT}{WHITE}Build or move headquarters
+STR_1454    :{SMALLFONT}{WHITE}Change owner name
+STR_1455    :{WHITE}(not yet constructed)
+STR_1456    :Name Company
+STR_1457    :Enter new company name:
+STR_1458    :Can't rename this company...
+STR_1459    :Name Owner
+STR_1460    :Enter new name for owner:
+STR_1461    :Can't change owner name...
+STR_1462    :Headquarters
+STR_1463    :{STRINGID2} Headquarters
+STR_1464    :{STRINGID2} local authority won't allow removal of roads currently in use
+STR_1465    :{SMALLFONT}{WHITE}Select company
+STR_1466    :Two Player Game
+STR_1467    :Two Player Game - Options
+STR_1468    :{WHITE}To set up a two player game, one computer should be set up as a host and then the other should connect to it.{NEWLINE}{NEWLINE}Please select :
+STR_1469    :
+STR_1470    :{WHITE}Setting this computer up as a host...
+STR_1471    :{WHITE}Error: Unable to set up this computer as a host
+STR_1472    :{WHITE}Host setup completed - Waiting for the other computer to connect...
+STR_1473    :
+STR_1474    :
+STR_1475    :
+STR_1476    :{WHITE}Attempting to connect...
+STR_1477    :{WHITE}Error: Unable to locate or connect to host
+STR_1478    :{WHITE}Success!{NEWLINE}You are now connected to: {STRINGID2}
+STR_1479    :{WHITE}Currently connected to: {STRINGID2}{NEWLINE}{NEWLINE}Click below to disconnect and return to single player mode
+STR_1480    :{WINDOW_COLOUR_2}Set this computer up as a host
+STR_1481    :{WINDOW_COLOUR_2}Connect to host
+STR_1482    :{WINDOW_COLOUR_2}Disconnect
+STR_1483    :Enter Host Address
+STR_1484    :Enter the IP address or computer name of the host to connect to, or leave blank to search the local network:
+STR_1485    :{YELLOW}Warning: You are connected to a different version of Chris Sawyer's Locomotion and two player game performance may not be reliable
+STR_1486    :{SMALLFONT}{WHITE}Display options
+STR_1487    :{SMALLFONT}{WHITE}Sound options
+STR_1488    :{SMALLFONT}{WHITE}Music options
+STR_1489    :{SMALLFONT}{WHITE}Regional options
+STR_1490    :{SMALLFONT}{WHITE}Control options
+STR_1491    :{SMALLFONT}{WHITE}Miscellaneous options
+STR_1492    :Options - Display
+STR_1493    :Options - Sound
+STR_1494    :Options - Music
+STR_1495    :Options - Regional
+STR_1496    :Options - Controls
+STR_1497    :Options - Miscellaneous
+STR_1498    :Use preferred currency always
+STR_1499    :{SMALLFONT}{WHITE}Always use the preferred currency
+STR_1500    :Use preferred currency when starting new game
+STR_1501    :{SMALLFONT}{WHITE}Select this option to override the default currency in a scenario
+STR_1502    :{SMALLFONT}{WHITE}Select the currency for the current game
+STR_1503    :{SMALLFONT}{WHITE}Select the default currency for creating new scenarios
+STR_1504    :{WINDOW_COLOUR_2}Current currency:
+STR_1505    :{WINDOW_COLOUR_2}Preferred currency:
+STR_1506    :
+STR_1507    :Own company major news:
+STR_1508    :Other company major news:
+STR_1509    :Own company minor news:
+STR_1510    :Other company minor news:
+STR_1511    :General news:
+STR_1512    :Advice:
+STR_1513    :Off
+STR_1514    :Ticker Message
+STR_1515    :News Window
+STR_1516    :{WINDOW_COLOUR_2}Monthly Running Cost: {WHITE}{CURRENCY}
+STR_1517    :{WINDOW_COLOUR_2}Monthly Profit: {WHITE}{CURRENCY}
+STR_1518    :Trains
+STR_1519    :버스es
+STR_1520    :트럭s
+STR_1521    :전차s
+STR_1522    :항공기
+STR_1523    :선박s
+STR_1524    :공항
+STR_1525    :항구
+STR_1526    :Order type not valid for 항공기
+STR_1527    :Order type not valid for 선박s
+STR_1528    :역 owned by another company
+STR_1529    :No water!
+STR_1530    :Water channel is currently needed by 선박s
+STR_1531    :Currently in use by at least one 차량
+STR_1532    :{SMALLFONT}{WHITE}Refit 차량 to carry a different type of cargo
+STR_1533    :Can't refit this 차량 to carry a different type of cargo
+STR_1534    :Requires water in front of dock
+STR_1535    :{WINDOW_COLOUR_2}Currently playing:
+STR_1536    :{SMALLFONT}{WHITE}Stop music
+STR_1537    :{SMALLFONT}{WHITE}Play music
+STR_1538    :{SMALLFONT}{WHITE}Next music 선로
+STR_1539    :Play only music for current era
+STR_1540    :Play all music
+STR_1541    :Play customized selection of music
+STR_1542    :Edit selection...
+STR_1543    :{SMALLFONT}{WHITE}Edit the music 선로 selection 목록
+STR_1544    :Edit Music Selection
+STR_1545    :{SMALLFONT}{WHITE}Click on music 선로 to toggle selection on/off
+STR_1546    :{TICK}
+STR_1547    :{WINDOW_COLOUR_2}Volume:
+STR_1548    :{SMALLFONT}{WHITE}Set music volume
+STR_1549    :Music Options
+STR_1550    :Select Owner's Face for {STRINGID2}
+STR_1551    :{SMALLFONT}{WHITE}Click to select company/owner face
+STR_1552    :이미 selected for another company
+STR_1553    :Can't select face...
+STR_1554    :공항s
+STR_1555    :docks
+STR_1556    :{WINDOW_COLOUR_2}Company started: {WHITE}{MONTH}
+STR_1557    :{WINDOW_COLOUR_2}Performance Index: {WHITE}{COMMA2DP32}% {NEWLINE}  {OPENQUOTES}{STRINGID2}{ENDQUOTES}
+STR_1558    :{WINDOW_COLOUR_2}Performance Index: {WHITE}{COMMA2DP32}%{INLINE_SPRITE}{MEDIUMFONT}
+STR_1559    :{WINDOW_COLOUR_2}Performance Index: {WHITE}{COMMA2DP32}%{INLINE_SPRITE}{MEDIUMFONT}
+STR_1560    :{WINDOW_COLOUR_2}Owner: {WHITE}{STRINGID2}
+STR_1561    :low
+STR_1562    :medium
+STR_1563    :high
+STR_1564    :{WINDOW_COLOUR_2}Intelligence: {WHITE}{UINT16} ({STRINGID2})
+STR_1565    :{WINDOW_COLOUR_2}Aggressiveness: {WHITE}{UINT16} ({STRINGID2})
+STR_1566    :{WINDOW_COLOUR_2}Competitiveness: {WHITE}{UINT16} ({STRINGID2})
+STR_1567    :{SMALLFONT}{WHITE}Toggle between single player and two player mode
+STR_1568    :{OUTLINE}{WINDOW_COLOUR_2}Single Player Mode
+STR_1569    :{OUTLINE}{WINDOW_COLOUR_2}Two Player Mode: Connected to {STRINGID2}
+STR_1570    :Beginner
+STR_1571    :Easy
+STR_1572    :Medium
+STR_1573    :Challenging
+STR_1574    :Expert
+STR_1575    :Region / Object Selection
+STR_1576    :Landscape Editor
+STR_1577    :Scenario Options
+STR_1578    :Save Scenario
+STR_1579    :Back to Previous Step:
+STR_1580    :Forward to Next Step:
+STR_1581    :Load Landscape
+STR_1582    :Save Landscape
+STR_1583    :Generating landscape...
+STR_1584    :Can't clear entire area...
+STR_1585    :Landscape Generation - Options
+STR_1586    :Landscape Generation - Land
+STR_1587    :Landscape Generation - Forests
+STR_1588    :Landscape Generation - Towns
+STR_1589    :Landscape Generation - 산업 시설
+STR_1590    :{SMALLFONT}{WHITE}Landscape generation general options
+STR_1591    :{SMALLFONT}{WHITE}Land generation options
+STR_1592    :{SMALLFONT}{WHITE}Forest generation options
+STR_1593    :{SMALLFONT}{WHITE}Town generation options
+STR_1594    :{SMALLFONT}{WHITE}Industry generation options
+STR_1595    :[None]
+STR_1596    :Chuggin' Along
+STR_1597    :Long Dusty Road
+STR_1598    :Flying High
+STR_1599    :Gettin' On The Gas
+STR_1600    :Jumpin' The Rails
+STR_1601    :Smooth Running
+STR_1602    :Traffic Jam
+STR_1603    :Never Stop 'til You Get There
+STR_1604    :Soaring Away
+STR_1605    :Techno Torture
+STR_1606    :Everlasting High-Rise
+STR_1607    :Solace
+STR_1608    :Chrysanthemum
+STR_1609    :Eugenia
+STR_1610    :The Ragtime Dance
+STR_1611    :Easy Winners
+STR_1612    :Setting Off
+STR_1613    :A Traveller's Seranade
+STR_1614    :Latino Trip
+STR_1615    :A Good Head Of Steam
+STR_1616    :Hop To The Bop
+STR_1617    :The City Lights
+STR_1618    :Steamin' Down Town
+STR_1619    :Bright Expectations
+STR_1620    :Mo' 역
+STR_1621    :Far Out
+STR_1622    :Running On Time
+STR_1623    :Get Me To Gladstone Bay
+STR_1624    :Sandy 선로 Blues
+STR_1625    :{CURRENCY2DP}
+STR_1626    :{WINDOW_COLOUR_2}Start year:
+STR_1627    :Only generate random landscape when game starts
+STR_1628    :{SMALLFONT}{WHITE}Generate random landscape each time a new game is started
+STR_1629    :Generate new landscape
+STR_1630    :{SMALLFONT}{WHITE}Generate a new random landscape (the current landscape will be lost)
+STR_1631    :확인
+STR_1632    :Generate New Landscape
+STR_1633    :Random Landscape Option
+STR_1634    :Are you sure you want to generate a new landscape, losing your current one ?
+STR_1635    :Are you sure you want to generate a new landscape at the start of each game ?{NEWLINE}Choosing this option will mean you lose your current landscape
+STR_1636    :{WINDOW_COLOUR_2}Sea level:
+STR_1637    :+{UINT16} units
+STR_1638    :{WINDOW_COLOUR_2}No. of forests:
+STR_1639    :{UINT16}
+STR_1640    :{WINDOW_COLOUR_2}Minimum forest radius:
+STR_1641    :{POP16}{UINT16} blocks
+STR_1642    :{WINDOW_COLOUR_2}Maximum forest radius:
+STR_1643    :{POP16}{POP16}{UINT16} blocks
+STR_1644    :{WINDOW_COLOUR_2}Minimum forest density:
+STR_1645    :{POP16}{POP16}{POP16}{UINT16}%
+STR_1646    :{WINDOW_COLOUR_2}Maximum forest density:
+STR_1647    :{POP16}{POP16}{POP16}{POP16}{UINT16}%
+STR_1648    :{WINDOW_COLOUR_2}No. of random individual trees:
+STR_1649    :{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16}
+STR_1650    :{WINDOW_COLOUR_2}Minimum altitude for trees:
+STR_1651    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{SPRITE}
+STR_1652    :{WINDOW_COLOUR_2}Maximum altitude for trees:
+STR_1653    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{SPRITE}
+STR_1654    :{WINDOW_COLOUR_2}Minimum land height:
+STR_1655    :{POP16}{UINT16} units
+STR_1656    :{WINDOW_COLOUR_2}Topography style:
+STR_1657    :Flat Land
+STR_1658    :Small Hills
+STR_1659    :Mountains
+STR_1660    :Half Mountains, Half Hills
+STR_1661    :Half Mountains, Half Flat
+STR_1662    :{WINDOW_COLOUR_2}Hill density:
+STR_1663    :{POP16}{POP16}{UINT16}%
+STR_1664    :{WINDOW_COLOUR_2}No. of towns:
+STR_1665    :{UINT16}
+STR_1666    :{WINDOW_COLOUR_2}Maximum town size:
+STR_1667    :Low
+STR_1668    :Medium
+STR_1669    :High
+STR_1670    :{WINDOW_COLOUR_2}No. of 산업 시설:
+STR_1671    :At least one town needs to be built
+STR_1672    :Can't advance to next editor stage...
+STR_1673    :Can't save scenario yet...
+STR_1674    :{SMALLFONT}{WHITE}Scenario options
+STR_1675    :{SMALLFONT}{WHITE}Scenario challenge
+STR_1676    :{SMALLFONT}{WHITE}Company options
+STR_1677    :{SMALLFONT}{WHITE}Financial options
+STR_1678    :Scenario Options
+STR_1679    :Scenario Challenge
+STR_1680    :Company Options
+STR_1681    :Financial Options
+STR_1682    :{WINDOW_COLOUR_2}Maximum competing companies:
+STR_1683    :{UINT16}
+STR_1684    :{WINDOW_COLOUR_2}Delay before competing companies start:
+STR_1685    :{POP16}{UINT16} months
+STR_1686    :{WINDOW_COLOUR_2}Selection of competing companies:
+STR_1687    :{WINDOW_COLOUR_2}Preferred Intelligence:
+STR_1688    :{WINDOW_COLOUR_2}Preferred Aggressiveness:
+STR_1689    :{WINDOW_COLOUR_2}Preferred Competitiveness:
+STR_1690    :Any
+STR_1691    :Low
+STR_1692    :Medium
+STR_1693    :High
+STR_1694    :{WINDOW_COLOUR_2}Starting loan:
+STR_1695    :{CURRENCY}
+STR_1696    :{WINDOW_COLOUR_2}Maximum loan size:
+STR_1697    :{POP16}{POP16}{CURRENCY}
+STR_1698    :{WINDOW_COLOUR_2}Loan interest rate:
+STR_1699    :{POP16}{POP16}{POP16}{POP16}{UINT16}%
+STR_1700    :Change...
+STR_1701    :{WINDOW_COLOUR_2}Scenario Name: {WHITE}{STRINGID2}
+STR_1702    :{WINDOW_COLOUR_2}Scenario Group:
+STR_1703    :{WINDOW_COLOUR_2}Scenario Details:
+STR_1704    :Scenario Name
+STR_1705    :Enter name for scenario:-
+STR_1706    :Scenario Details
+STR_1707    :Enter description of this scenario:-
+STR_1708    :No details yet
+STR_1709    :Unnamed
+STR_1710    :Landscape save failed!
+STR_1711    :Scenario save failed!
+STR_1712    :Transferring data to other player...
+STR_1713    :Receiving data from other player...
+STR_1714    :Please wait - Game is being saved by the other player...
+STR_1715    :Please wait - Game is being loaded by the other player...
+STR_1716    :Send Message
+STR_1717    :Send Message
+STR_1718    :Enter message to be sent to {STRINGID2}:
+STR_1719    :
+STR_1720    :{WINDOW_COLOUR_2}Connection time-out:
+STR_1721    :{UINT16} secs.
+STR_1722    :Two-player data connection failed!
+STR_1723    :{WINDOW_COLOUR_2} Designed in: {WHITE}{CURRENCY2DP}
+STR_1724    :{WINDOW_COLOUR_2} Obsolete from: {WHITE}{CURRENCY2DP}
+STR_1725    :{WINDOW_COLOUR_2} Power: {WHITE}{BLACK}
+STR_1726    :{WINDOW_COLOUR_2} Weight: {WHITE}{UINT16}t
+STR_1727    :{WINDOW_COLOUR_2} Max. Speed: {WHITE}{VELOCITY}
+STR_1728    :{WINDOW_COLOUR_2} Capacity: {WHITE}{STRINGID2}
+STR_1729    :Establishing connection...
+STR_1730    :Everywhere
+STR_1731    :Nowhere
+STR_1732    :Far from water
+STR_1733    :Near water
+STR_1734    :On mountains
+STR_1735    :Far from mountains
+STR_1736    :In small random areas
+STR_1737    :In large random areas
+STR_1738    :Around cliffs
+STR_1739    :Create hills right up to edge of map
+STR_1740    :{SMALLFONT}{WHITE}Scenario Editor
+STR_1741    :{STRINGID2} Transport
+STR_1742    :Map
+STR_1743    :{NEWLINE_X_Y}{MOVE_X}{ADJUST_PALETTE}{GREY}{NEWLINE_X_Y}!{BIGFONT}Companies 목록
+STR_1744    :{NEWLINE_X_Y}
+STR_1745    :Companies
+STR_1746    :Company Performance Indexes
+STR_1747    :Units of Cargo Delivered per Month
+STR_1748    :Company Values
+STR_1749    :Cargo Payment Rates
+STR_1750    :{SMALLFONT}{WHITE}Compare companies
+STR_1751    :{SMALLFONT}{WHITE}Company performance index graphs
+STR_1752    :{SMALLFONT}{WHITE}Graphs of cargo delivered by each company
+STR_1753    :{SMALLFONT}{WHITE}Company value graphs
+STR_1754    :{SMALLFONT}{WHITE}Cargo payment rates
+STR_1755    :{SMALLFONT}{WHITE}Sort 목록 by company name
+STR_1756    :{SMALLFONT}{WHITE}Sort 목록 by company status
+STR_1757    :{SMALLFONT}{WHITE}Sort 목록 by performance index
+STR_1758    :{SMALLFONT}{WHITE}Sort 목록 by company value
+STR_1759    :{WHITE}Company
+STR_1760    :{WHITE}Company {DOWN}
+STR_1761    :{WHITE}Status
+STR_1762    :{WHITE}Status {DOWN}
+STR_1763    :{WHITE}Performance Index
+STR_1764    :{WHITE}Performance Index {DOWN}
+STR_1765    :{WHITE}Company Value
+STR_1766    :{WHITE}Company Value {DOWN}
+STR_1767    :{NEWLINE_X_Y}{MOVE_X}{ADJUST_PALETTE}{GREY}{NEWLINE_X_Y}{BIGFONT}{STRINGID2}
+STR_1768    :{NEWLINE_X_Y}
+STR_1769    :{NEWLINE_X_Y}
+STR_1770    :{NEWLINE_X_Y}
+STR_1771    :{NEWLINE_X_Y}
+STR_1772    :Platelayer
+STR_1773    :Engineer
+STR_1774    :Traffic Manager
+STR_1775    :Transport Coordinator
+STR_1776    :Route Supervisor
+STR_1777    :Director
+STR_1778    :Chief Executive
+STR_1779    :Chairman
+STR_1780    :President
+STR_1781    :Tycoon
+STR_1782    :{UINT16} company
+STR_1783    :{UINT16} companies
+STR_1784    :{MONTH}{BIGFONT}
+STR_1785    :{COMMA2DP32}%
+STR_1786    :{SMALLFONT}{WHITE}{STRINGID2}
+STR_1787    :{COMMA32}
+STR_1788    :{COMMA2DP32}%
+STR_1789    :         {COMMA2DP32}% {INLINE_SPRITE}{MEDIUMFONT}
+STR_1790    :         {COMMA2DP32}% {INLINE_SPRITE}{MEDIUMFONT}
+STR_1791    :{SMALLFONT}{WHITE}{STRINGID}
+STR_1792    :{SMALLFONT}{WHITE}{STRINGID2}
+STR_1793    :{SMALLFONT}{GREEN}{STRINGID2}
+STR_1794    :공항 type is not suitable for this 항공기
+STR_1795    :{WHITE}{POUND}
+STR_1796    :{UINT16} days
+STR_1797    :{CURRENCY}
+STR_1798    :{SMALLFONT}{WHITE}Payment for transporting {UINT16} units of cargo a distance of {UINT16} blocks
+STR_1799    :{SMALLFONT}{WHITE}Transit time
+STR_1800    :*  Paused  *
+STR_1801    :Town authority won't allow another 공항 to be constructed here
+STR_1802    :Towns
+STR_1803    :산업 시설
+STR_1804    :Roads
+STR_1805    :Railroads
+STR_1806    :역
+STR_1807    :Vegetation
+STR_1808    :항공기 Routes
+STR_1809    :선박 Routes
+STR_1810    :
+STR_1811    :Building {STRINGID2} near {STRINGID2}
+STR_1812    :Building {STRINGID2} near {STRINGID2}
+STR_1813    :Building {STRINGID2} near {STRINGID2}
+STR_1814    :Checking services near {STRINGID2}
+STR_1815    :Surveying landscape near {STRINGID2}
+STR_1816    :{YELLOW}Bankrupt!
+STR_1817    :{SMALLFONT}{WHITE}Pause game
+STR_1818    :{SMALLFONT}{WHITE}Normal speed
+STR_1819    :{SMALLFONT}{WHITE}Fast forward
+STR_1820    :{SMALLFONT}{WHITE}Extra fast forward
+STR_1821    :{WHITE}Randomly Generated Landscape
+STR_1822    :{WINDOW_COLOUR_2}Start date: {WHITE}{CURRENCY2DP}
+STR_1823    :{WINDOW_COLOUR_2}Competing companies: {WHITE}None
+STR_1824    :{WINDOW_COLOUR_2}Competing companies: {WHITE}Up to {UINT16}
+STR_1825    :{WHITE}{MOVE_X}{SMALLFONT}(not starting for {UINT16} month)
+STR_1826    :{WHITE}{MOVE_X}{SMALLFONT}(not starting for {UINT16} months)
+STR_1827    :{WINDOW_COLOUR_2}Sale value of 차량: {WHITE}{CURRENCY}
+STR_1828    :{WINDOW_COLOUR_2}Last 수익: {WHITE}N/A
+STR_1829    :{WINDOW_COLOUR_2}Last 수익 on: {WHITE}{MONTH}
+STR_1830    :{WHITE}{STRINGID2} transported {UINT16} blocks in {UINT16} days = {CURRENCY}
+STR_1831    :{WINDOW_COLOUR_2} Earliest 건설 year: {WHITE}{CURRENCY2DP}
+STR_1832    :{WINDOW_COLOUR_2} Latest 건설 year: {WHITE}{CURRENCY2DP}
+STR_1833    :{WINDOW_COLOUR_2}Local authority's ratings of transport companies:
+STR_1834    :Appalling
+STR_1835    :Poor
+STR_1836    :Average
+STR_1837    :Good
+STR_1838    :Excellent
+STR_1839    :{WINDOW_COLOUR_2}{STRINGID2}: {WHITE}{UINT16}% ({STRINGID2})
+STR_1840    :Achieve a company value of {CURRENCY}{STRINGID2}{STRINGID2}
+STR_1841    :Achieve a monthly profit from 차량s of {CURRENCY}{STRINGID2}{STRINGID2}
+STR_1842    :Achieve a performance index of {COMMA2DP32}% ({OPENQUOTES}{STRINGID2}{ENDQUOTES}){STRINGID2}{STRINGID2}
+STR_1843    :Deliver {STRINGID2}{STRINGID2}{STRINGID2}
+STR_1844    : and be the top performing company
+STR_1845    : and be one of the top 3 performing companies
+STR_1846    : within {UINT16} years
+STR_1847    : by the end of {CURRENCY2DP}
+STR_1848    :...and be the top company
+STR_1849    :...and be within the top 3 companies
+STR_1850    :...with a time limit of:
+STR_1851    :{WINDOW_COLOUR_2}Challenge:
+STR_1852    :{WHITE}  {STRINGID2}
+STR_1853    :Achieve a certain company value
+STR_1854    :Achieve a certain monthly profit from 차량s
+STR_1855    :Achieve a certain performance index
+STR_1856    :Deliver a certain amount of cargo
+STR_1857    :{CURRENCY}
+STR_1858    :{COMMA2DP32}%
+STR_1859    :{COMMA32}
+STR_1860    :{POP16}{POP16}{POP16}{UINT16} years
+STR_1861    :{SMALLFONT}(Completed by {STRINGID2} in {UINT16} years {UINT16} months)
+STR_1862    :{WINDOW_COLOUR_2}Success!{NEWLINE}{WHITE}  You completed the challenge in {UINT16} years {UINT16} months
+STR_1863    :{WINDOW_COLOUR_2}Failed!{NEWLINE}{WHITE}  You failed to complete the challenge
+STR_1864    :{WINDOW_COLOUR_2}You have been beaten by the other player!{NEWLINE}{WHITE}  Challenge completed by {STRINGID2} in {UINT16} years {UINT16} months
+STR_1865    :{WINDOW_COLOUR_2}Progress towards completing challenge: {WHITE}{UINT16}%
+STR_1866    :{WINDOW_COLOUR_2}Time remaining: {WHITE}{UINT16} years {UINT16} months
+STR_1867    :{WINDOW_COLOUR_2}Cargo delivered:
+STR_1868    :{WHITE}None
+STR_1869    :{OUTLINE}{WINDOW_COLOUR_2}Exit{NEWLINE}Game
+STR_1870    :Company is bankrupt!
+STR_1871    :Allow 산업 시설 to close down during game
+STR_1872    :Allow new 산업 시설 to start up during game
+STR_1873    :Share additional companies/owner faces
+STR_1874    :{SMALLFONT}{WHITE}Select this option to send any customized companies/owner face data files to the other computer during the connection process
+STR_1875    :{WINDOW_COLOUR_2}Forbid competing companies from using:
+STR_1876    :{WINDOW_COLOUR_2}Forbid player companies from using:
+STR_1877    :{NEWLINE}Stops at: {STRINGID2}
+STR_1878    :, {STRINGID2}
+STR_1879    :Tutorial 1: Starting a 버스 service within a town
+STR_1880    :Tutorial 2: Building a 버스 service between two towns
+STR_1881    :Tutorial 3: Building a rail service between two towns
+STR_1882    :{SMALLFONT}{WHITE}We're going to build a 버스 service to transport passengers within a town, so the first step is to choose a town...
+STR_1883    :{SMALLFONT}{WHITE}Move the mouse with the right mouse button held down to scroll the view to take a lo확인 at the towns...
+STR_1884    :{SMALLFONT}{WHITE}Boulders Bay is the largest town, so will produce the most passengers. Zoom in using the mouse scroll wheel or the zoom icon...
+STR_1885    :{SMALLFONT}{WHITE}All road-based 건설 is done using the road 건설 window...
+STR_1886    :{SMALLFONT}{WHITE}We don't need any new roads in the town for our 버스 service, just 버스 stop 역...
+STR_1887    :{SMALLFONT}{WHITE}Our 버스 service will go from one side of town to the other...
+STR_1888    :{SMALLFONT}{WHITE}The area highlighted in blue is the catchment area of the 역. The more buildings in the catchment area the more passengers will use your 역...
+STR_1889    :{SMALLFONT}{WHITE}Check the 역 position accepts passengers otherwise you won't be able to unload them and won't be paid. Watch the {OPENQUOTES}Catchment Area{ENDQUOTES} text at the bottom of the 건설 window...
+STR_1890    :{SMALLFONT}{WHITE}When you're happy with the location, click the left mouse button to build the 역...
+STR_1891    :{SMALLFONT}{WHITE}We'll build the second 역 at the opposite side of town...
+STR_1892    :{SMALLFONT}{WHITE}Now we need to purchase a 버스...
+STR_1893    :{SMALLFONT}{WHITE}We have a choice of two 버스 types. Let's choose the newer design which carries more passengers...
+STR_1894    :{SMALLFONT}{WHITE}Move the mouse cursor to position the 버스 on a road and click the left mouse button to place it...
+STR_1895    :{SMALLFONT}{WHITE}Before we set the 버스 going it needs to know where to go to. Select the route details tab on the 차량 window...
+STR_1896    :{SMALLFONT}{WHITE}To set the route, just click on the 역 in the view...
+STR_1897    :{SMALLFONT}{WHITE}Now we can set the 버스 going...
+STR_1898    :{SMALLFONT}{WHITE}Let's watch it pick up its first passengers...
+STR_1899    :{SMALLFONT}{WHITE}We're going to build a 버스 service to transport passengers between Boulder Bay and Breakers Bridge. As there are no roads linking the towns, we'll need to build one...
+STR_1900    :{SMALLFONT}{WHITE}Select the orientation of the new section of road, and click on the view to start 건설...
+STR_1901    :{SMALLFONT}{WHITE}Clicking the 'build this' icon will add more road sections of the same type...
+STR_1902    :{SMALLFONT}{WHITE}Before continuing, here's a quicker way of starting road 건설...
+STR_1903    :{SMALLFONT}{WHITE}Just click the right mouse button on the end of the road you want to extend...
+STR_1904    :{SMALLFONT}{WHITE}We need to turn left here, so select a left hand curve...
+STR_1905    :{SMALLFONT}{WHITE}And now back to building straight again...
+STR_1906    :{SMALLFONT}{WHITE}That's the road built, now for the 역...
+STR_1907    :{SMALLFONT}{WHITE}And finally we'll purchase a 버스 and set it going...
+STR_1908    :{SMALLFONT}{WHITE}This could be quite a 버스y route, so we'll buy a second 버스 as well...
+STR_1909    :{SMALLFONT}{WHITE}To quickly copy 버스 1's entire route to 버스 2, just click on 버스 1's 'end of route 목록' text...
+STR_1910    :{SMALLFONT}{WHITE}Let's start by building a rail passenger service between the two largest towns...
+STR_1911    :{SMALLFONT}{WHITE}Rail 역 can only be built on straight 선로 and need to be long enough for our train - This is where we'll build one 역 in a few minutes...
+STR_1912    :{SMALLFONT}{WHITE}Now to build the 역...
+STR_1913    :{SMALLFONT}{WHITE}Now to build the train. We will need a locomotive to pull the train and carriages to carry the passengers...
+STR_1914    :{SMALLFONT}{WHITE}Because the 선로 is just a single line, there's no need to set up a route - Just start the train...
+STR_1915    :{SMALLFONT}{WHITE}Let's extend the 선로 to create a junction and spur to the third town. Right-clicking the 선로 opens the 선로 건설 window ready to build a junction...
+STR_1916    :{SMALLFONT}{WHITE}Because the 선로 layout is no longer simple we need to give our train a route...
+STR_1917    :{SMALLFONT}{WHITE}We could now add a second train, but first we need to build 신호기s to prevent train collisions...
+STR_1918    :{SMALLFONT}{WHITE}The 신호기s divide the 선로 into 3 separate 'block sections' and only one train will be allowed to enter each section at once...
+STR_1919    :Use preferred owner name when starting a new game
+STR_1920    :{SMALLFONT}{WHITE}Select this option to use the same company owner name every time you start a new game
+STR_1921    :{WINDOW_COLOUR_2}Preferred owner name: {WHITE}{STRINGID2}
+STR_1922    :Preferred Owner Name
+STR_1923    :Enter the preferred owner name:
+STR_1924    :{WHITE}{TINYFONT}Power
+STR_1925    :{WHITE}{TINYFONT}Brake
+STR_1926    :{SMALLFONT}{WHITE}Move the selected order up in the 목록
+STR_1927    :{SMALLFONT}{WHITE}Move the selected order down in the 목록
+STR_1928    :Unable to run the game directly from read-only media
+STR_1929    :Atari Inc. Credits...
+STR_1930    :{WINDOW_COLOUR_2}Licensed to Atari Inc.
+STR_1931    :Atari Inc. Credits
+STR_1932    :Game versions are incompatible - Unable to connect!
+STR_1933    :{SMALLFONT}{WHITE}Send a short text message to the other player
+STR_1934    :the other player
+STR_1935    :The other player has exited the game: Two player mode has been disconnected
+STR_1936    :{CELADON}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's {OPENQUOTES}ReadMe{ENDQUOTES} file and in the manual
+STR_1937    :{CELADON}ESRB Notice: Game experience may change during online play
+STR_1938    :{BABYBLUE}Some forms of transport in this game have names that may be similar to those of real 차량s.
+STR_1939    :{BABYBLUE}This is a device to help players relate to the fictional universe of the game.
+STR_1940    :{BABYBLUE}The qualities (including speed, capacity, reliability, and cost) that have been attributed to various
+STR_1941    :{BABYBLUE}차량s are for game purposes only and are not intended to represent those of real
+STR_1942    :{BABYBLUE}commercially available machines whether similarly named or not.
+STR_1943    :{WINDOW_COLOUR_2}Senior Producer:  Thomas J. Zahorik
+STR_1944    :{WINDOW_COLOUR_2}Senior Brand Manager:  Jeff Foley
+STR_1945    :{WINDOW_COLOUR_2}Executive Producer:  Bob Welch
+STR_1946    :{WINDOW_COLOUR_2}Director of Technology:  Paul Hellier
+STR_1947    :{WINDOW_COLOUR_2}Director of Marketing:  Peter Matiss
+STR_1948    :{WINDOW_COLOUR_2}Director of Creative Services:  Steve Martin
+STR_1949    :{WINDOW_COLOUR_2}Graphic Designer:  Rod Tilley
+STR_1950    :{WINDOW_COLOUR_2}Director of Editorial & Documentation Services:  Elizabeth Mackney
+STR_1951    :{WINDOW_COLOUR_2}Documentation Specia목록:  Kurt Carlson
+STR_1952    :{WINDOW_COLOUR_2}Copywriter:  Paul Collin
+STR_1953    :{WINDOW_COLOUR_2}Manual Writer:  David Ellis
+STR_1954    :{WINDOW_COLOUR_2}Director of Publishing Support:  Michael Gilmartin
+STR_1955    :{WINDOW_COLOUR_2}Q.A. Managers:  Bill Carroll, Dave Strang
+STR_1956    :{WINDOW_COLOUR_2}Q.A. Supervisor:  Jason Cordero
+STR_1957    :{WINDOW_COLOUR_2}I.T. Manager/Western Region:  Ken Ford
+STR_1958    :{WINDOW_COLOUR_2}Manager of Technical Support:  Michael Vetsch
+STR_1959    :{WINDOW_COLOUR_2}Lead Tester:  Marshall Clevesy
+STR_1960    :{WINDOW_COLOUR_2}Assistant Lead Tester:  Sean McLaren
+STR_1961    :{WINDOW_COLOUR_2}Testers:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria
+STR_1962    :{WINDOW_COLOUR_2}Compatibility Lab Supervisor:  Dave Strang
+STR_1963    :{WINDOW_COLOUR_2}Compatibility Test Lead:  Cuong Vu
+STR_1964    :{WINDOW_COLOUR_2}Compatibility Analysts:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody
+STR_1965    :{WINDOW_COLOUR_2}Engineering Services Specia목록:  Ken Edwards
+STR_1966    :{WINDOW_COLOUR_2}Engineering Services Technicians:  Eugene Lai, Dan Burkhead
+STR_1967    :{WINDOW_COLOUR_2}Special Thanks:  John Billington, Cecelia Hernandez
+STR_1968    :{WINDOW_COLOUR_2}
+STR_1969    :{WINDOW_COLOUR_2}
+STR_1970    :{WINDOW_COLOUR_2}
+STR_1971    :{WINDOW_COLOUR_2}
+STR_1972    :{WINDOW_COLOUR_2}
+STR_1973    :{WINDOW_COLOUR_2}
+STR_1974    :{WINDOW_COLOUR_2}
+STR_1975    :{WINDOW_COLOUR_2}
+STR_1976    :{WINDOW_COLOUR_2}
+STR_1977    :{WINDOW_COLOUR_2}
+STR_1978    :{WINDOW_COLOUR_2}
+STR_1979    :{WINDOW_COLOUR_2}
+STR_1980    :{WINDOW_COLOUR_2}
+STR_1981    :{WINDOW_COLOUR_2}
+STR_1982    :{WINDOW_COLOUR_2}
+STR_1983    :Distance x Units of Cargo Delivered per Month
+STR_1984    :{SMALLFONT}{WHITE}Graphs of distance cargo delivered by each company
+STR_1985    :{WINDOW_COLOUR_2}Last journey average speed: {WHITE}{VELOCITY}
+STR_1986    :land
+STR_1987    :air
+STR_1988    :water
+STR_1989    :Train
+STR_1990    :버스
+STR_1991    :트럭
+STR_1992    :전차
+STR_1993    :항공기
+STR_1994    :선박
+STR_1995    :{SMALLFONT}{WHITE}Speed records
+STR_1996    :Speed Records
+STR_1997    :{WINDOW_COLOUR_2}Land service speed record: {WHITE}{VELOCITY}
+STR_1998    :{WINDOW_COLOUR_2}Air service speed record: {WHITE}{VELOCITY}
+STR_1999    :{WINDOW_COLOUR_2}Water service speed record: {WHITE}{VELOCITY}
+STR_2000    :{WHITE}Achieved by {STRINGID2} on {MONTH}
+STR_2001    :Confirm Display Mode Change
+STR_2002    :{WINDOW_COLOUR_2}Display resolution changed to {CURRENCY2DP} x {CURRENCY2DP}
+STR_2003    :{WINDOW_COLOUR_2}_
+STR_2004    :{WINDOW_COLOUR_2}File name:
+STR_2005    :{WINDOW_COLOUR_2}Folder:  {WHITE}{STRINGID2}
+STR_2006    :{SMALLFONT}{WHITE}Up one level to parent folder
+STR_2007    :{WINDOW_COLOUR_2}Company: {WHITE}{STRINGID2}
+STR_2008    :{WINDOW_COLOUR_2}Date: {WHITE}{MONTH}
+STR_2009    :{WINDOW_COLOUR_2}Challenge progress: {WHITE}{UINT16}%
+STR_2010    :{WINDOW_COLOUR_2}Challenge: {WHITE}Completed
+STR_2011    :{WINDOW_COLOUR_2}Challenge: {WHITE}Failed
+STR_2012    :Replace existing file: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
+STR_2013    :Replace
+STR_2014    :Delete file: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
+STR_2015    :Delete
+STR_2016    :Error: Invalid filename
+STR_2017    :Industry Name
+STR_2018    :Enter new name for {STRINGID2}:
+STR_2019    :Can't rename industry...
+STR_2020    :{NEWLINE_X_Y}
+STR_2021    :Duplicate CD Keys found - Unable to connect!
+STR_2022    :{WHITE}{SMALLFONT}(Computer Name = {STRINGID2})
+STR_2023    :1st
+STR_2024    :2nd
+STR_2025    :3rd
+STR_2026    :4th
+STR_2027    :5th
+STR_2028    :6th
+STR_2029    :7th
+STR_2030    :8th
+STR_2031    :9th
+STR_2032    :10th
+STR_2033    :11th
+STR_2034    :12th
+STR_2035    :13th
+STR_2036    :14th
+STR_2037    :15th
+STR_2038    :{WHITE}{UINT16} selected (maximum {UINT16})
+STR_2039    :
+STR_2040    :
+STR_2041    :{WHITE}(ID:
+STR_2042    :Data for the following object not found:
+STR_2043    :Not enough space for graphics
+STR_2044    :Too many objects of this type selected
+STR_2045    :The following object must be selected first:
+STR_2046    :This object is currently in use
+STR_2047    :This object is required by another object
+STR_2048    :This object is always required
+STR_2049    :Unable to select this object
+STR_2050    :Unable to deselect this object
+STR_2051    :Invalid selection of objects
+STR_2052    :Object Selection - {STRINGID2}
+STR_2053    :Interface Styles
+STR_2054    :Sounds
+STR_2055    :Currency
+STR_2056    :Animation Effects
+STR_2057    :Land Vertical Faces
+STR_2058    :Water
+STR_2059    :Land
+STR_2060    :Town Names
+STR_2061    :Cargo
+STR_2062    :Walls
+STR_2063    :신호기s
+STR_2064    :Level Crossings
+STR_2065    :Street Lights
+STR_2066    :Tunnels
+STR_2067    :다리
+STR_2068    :선로 역
+STR_2069    :선로 기타
+STR_2070    :선로
+STR_2071    :도로 정류장
+STR_2072    :도로 기타
+STR_2073    :도로
+STR_2074    :공항
+STR_2075    :항구
+STR_2076    :차량
+STR_2077    :나무
+STR_2078    :눈
+STR_2079    :기후
+STR_2080    :Map Generation Data
+STR_2081    :Buildings
+STR_2082    :Scaffolding
+STR_2083    :산업 시설
+STR_2084    :World Region
+STR_2085    :Company Owners
+STR_2086    :Scenario Descriptions
+STR_2087    :목록 of objects
+STR_2088    :Missing object data, ID:
+STR_2089    :Export plug-in objects with saved games
+STR_2090    :{SMALLFONT}{WHITE}Select whether to save any additional plug-in object data required (add-in data not supplied with the main product) in saved game or scenario files, allowing them to be loaded by someone who doesn't have the additional object data
+STR_2091    :At least one generic dual direction road type must be selected
+STR_2092    :A scaffolding type must be selected
+STR_2093    :Advanced
+STR_2094    :{SMALLFONT}{WHITE}Allow more advanced selection of individual items
+STR_2095    :{GREEN}{BIGFONT}{POUND}
+STR_2096    :New objects installed successfully
+STR_2097    :At least one industry must be selected
+STR_2098    :At least one town building must be selected
+STR_2099    :An company headquarters building type must be selected
+STR_2100    :Only one company headquarters building type must be selected
+STR_2101    :An interface type must be selected
+STR_2102    :At least one 차량 type must be selected
+STR_2103    :At least one land type must be selected
+STR_2104    :A currency type must be selected
+STR_2105    :A water type must be selected
+STR_2106    :A town name style must be selected
+STR_2107    :At least one level crossing type must be selected
+STR_2108    :A street light type must be selected
+STR_2109    :A snow type must be selected (even if not needed)
+STR_2110    :A climate type must be selected
+STR_2111    :A map generation data type must be selected
+STR_2112    :A region type must be selected
