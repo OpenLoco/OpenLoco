@@ -16,6 +16,18 @@ namespace std
 }
 #endif
 
+#ifdef USE_MMAP
+#if defined(PLATFORM_64BIT)
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x200000000)
+#elif defined(PLATFORM_32BIT)
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x09000000)
+#else
+#error "Unknown platform"
+#endif
+#else
+#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x8A4000)
+#endif
+
 namespace openloco::interop
 {
 
@@ -86,10 +98,13 @@ namespace openloco::interop
     assert_struct_size(registers, 7 * 4);
 #pragma pack(pop)
 
-    uintptr_t remap_address(uintptr_t locoAddress);
+    constexpr uintptr_t remap_address(uintptr_t locoAddress)
+    {
+        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
+    }
 
     template<uint32_t TAddress, typename T>
-    T& addr()
+    constexpr T& addr()
     {
         return *((T*)remap_address(TAddress));
     }
@@ -146,7 +161,7 @@ namespace openloco::interop
             return &(addr<TAddress, T>());
         }
 
-        size_t size()
+        constexpr size_t size()
         {
             return TSize;
         }
