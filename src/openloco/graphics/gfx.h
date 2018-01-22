@@ -4,7 +4,8 @@
 #include "../openloco.h"
 #include <cstdint>
 
-#define LOCO_G1_ELEMENT_COUNT 0x1A10
+#define LOCO_G1_ELEMENT_COUNT       0x101A
+#define LOCO_G1_ELEMENT_COUNT_STEAM 0x0F38
 
 namespace openloco::gfx
 {

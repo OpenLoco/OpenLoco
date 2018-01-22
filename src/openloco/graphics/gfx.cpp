@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 #include "gfx.h"
 #include "../interop/interop.hpp"
@@ -22,7 +23,7 @@ namespace openloco::gfx
     {
         auto g1Path = environment::get_path(environment::path_id::g1);
 
-        std::ifstream stream(g1Path.make_preferred().u8string().c_str(), std::ios::in | std::ios::binary);
+        std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
         gfx::g1_header_t header;
         void * g1Buffer;
 
@@ -36,6 +37,16 @@ namespace openloco::gfx
             if (!stream.read((char *)&header, 8))
             {
                 throw std::runtime_error("Reading g1 file header failed.");
+            }
+
+            if (header.num_entries != LOCO_G1_ELEMENT_COUNT)
+            {
+                std::cout << "G1 element count doesn't match expected value: ";
+                std::cout << "Expected " << LOCO_G1_ELEMENT_COUNT << "; Got " << header.num_entries << std::endl;
+                if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
+                {
+                    std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
+                }
             }
 
             // Read element headers
@@ -52,12 +63,27 @@ namespace openloco::gfx
                 throw std::runtime_error("Reading g1 elements failed.");
             }
 
+            stream.close();
+
             // Adjust memory offsets
             for (uint32_t i = 0; i < header.num_entries; i++)
             {
                 _g1Elements[i].offset += (int32_t)g1Buffer;
             }
-            stream.close();
+
+            // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
+            // This code copies the closest variants into their place, and moves other elements accordingly
+            if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
+            {
+                // Extra two tutorial images
+                memmove(&_g1Elements[3551], &_g1Elements[3549], sizeof(g1_element_t) * (header.num_entries - 3549)); 
+                memcpy(&_g1Elements[3549], &_g1Elements[3551], sizeof(g1_element_t));
+                memcpy(&_g1Elements[3550], &_g1Elements[3551], sizeof(g1_element_t));
+
+                // Extra font variant
+                memcpy(&_g1Elements[3898], &_g1Elements[1788], sizeof(g1_element_t) * 223);
+
+            }
         }
         catch (const std::exception &e)
         {
