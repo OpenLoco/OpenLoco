@@ -349,7 +349,7 @@ static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
     return 0;
 }
 
-static uint STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
+static uint32_t STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
 {
     console::log("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
     return 0;
