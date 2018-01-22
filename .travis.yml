@@ -18,6 +18,18 @@ matrix:
             - docker
           env:
             - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+        - os: linux
+          before_install: []
+          language: cpp
+          sudo: false 
+          addons:
+            apt:
+              sources:
+                - llvm-toolchain-trusty-5.0
+              packages:
+                - clang-format-5.0
+          script:
+            - ./scripts/run-clang-format.py -r src
 
 script:
     - mkdir build
