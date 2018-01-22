@@ -1,3 +1,4 @@
+#include <cinttypes>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -190,7 +191,7 @@ namespace openloco::interop
         register_hook(
             address,
             [](registers& regs) -> uint8_t {
-                std::printf("                    fn %lx\n", passAddress);
+                std::printf("                    fn %" PRIuPTR "\n", passAddress);
                 return 0;
             });
     }
