@@ -108,6 +108,10 @@ namespace openloco::environment
         auto basePath = get_loco_install_path();
         auto subPath = get_sub_path(id);
         auto result = basePath / subPath;
+        if (!fs::exists(result))
+        {
+            std::cerr << "File not found: " << result << std::endl;
+        }
         return result;
     }
 
