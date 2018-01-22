@@ -226,4 +226,5 @@ namespace openloco::interop
 
     void register_hooks();
     void load_sections();
+    void apply_patches();
 }

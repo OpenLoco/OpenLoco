@@ -659,6 +659,8 @@ namespace openloco
         try
         {
             register_hooks();
+            apply_patches();
+
             if (sub_4054B9())
             {
                 ui::create_window();

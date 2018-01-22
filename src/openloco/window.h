@@ -42,5 +42,10 @@ namespace openloco::ui
         void sub_4CA17F();
     };
 
+    struct viewport
+    {
+        uint8_t pad_00[0x14];
+    };
+
 #pragma pack(pop)
 }

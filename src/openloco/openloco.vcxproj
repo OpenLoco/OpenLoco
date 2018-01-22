@@ -20,6 +20,7 @@
     <ClCompile Include="envionment.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
+    <ClCompile Include="interop\patches.cpp" />
     <ClCompile Include="localisation\stringmgr.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
