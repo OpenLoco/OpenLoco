@@ -9,10 +9,11 @@
 
 namespace openloco::interop
 {
+
+#pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.
     */
-#pragma pack(push, 1)
     struct registers
     {
         union
