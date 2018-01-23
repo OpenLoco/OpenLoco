@@ -187,7 +187,8 @@ namespace openloco::interop
     {
         static uintptr_t passAddress;
         passAddress = address;
-        register_hook(address,
+        register_hook(
+            address,
             [](registers &regs)->uint8_t
             {
                 std::printf("                    fn %u\n", passAddress);
