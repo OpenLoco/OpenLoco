@@ -54,6 +54,7 @@ namespace openloco::interop
         _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
+// clang-format off
         __asm {
             push ebp
             push address
@@ -71,7 +72,9 @@ namespace openloco::interop
             /* Load result with flags */
             mov result, eax
         }
+// clang-format on
 #else
+// clang-format off
         __asm__ volatile ("\
         \n\
         push %%ebx \n\
@@ -95,6 +98,7 @@ namespace openloco::interop
             :
             : "eax", "ecx", "edx", "esi", "edi", "memory"
             );
+// clang-format on
 #endif
 #endif // PLATFORM_X86
         _originalAddress = 0;
@@ -109,6 +113,7 @@ namespace openloco::interop
         _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
+// clang-format off
         __asm {
             // Store C's base pointer
             push ebp
@@ -178,7 +183,9 @@ namespace openloco::interop
             /* Load result with flags */
             mov result, eax
         }
+// clang-format on
 #else
+// clang-format off
         __asm__ volatile ("\
         \n\
         /* Store C's base pointer*/     \n\
@@ -251,6 +258,7 @@ namespace openloco::interop
             :
             : "eax", "ecx", "edx", "esi", "edi", "memory"
             );
+// clang-format on
 #endif
 #endif // PLATFORM_X86
         _originalAddress = 0;
