@@ -1,5 +1,7 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 #include "gfx.h"
 #include "../interop/interop.hpp"
@@ -10,8 +12,10 @@ using namespace openloco::interop;
 
 namespace openloco::gfx
 {
-    loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    loco_global_array<g1_element_t, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
+    static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    static loco_global_array<g1_element_t, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
+
+    static std::unique_ptr<std::byte[]> _g1Buffer;
 
     drawpixelinfo_t& screen_dpi()
     {
@@ -22,74 +26,64 @@ namespace openloco::gfx
     void load_g1()
     {
         auto g1Path = environment::get_path(environment::path_id::g1);
-
         std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
-        gfx::g1_header_t header;
-        void * g1Buffer;
-
-        try
+        if (!stream)
         {
-            if (!stream)
-            {
-                throw std::runtime_error("Opening g1 file failed.");
-            }
+            throw std::runtime_error("Opening g1 file failed.");
+        }
 
-            if (!stream.read((char *)&header, 8))
-            {
-                throw std::runtime_error("Reading g1 file header failed.");
-            }
+        g1_header_t header;
+        if (!stream.read((char *)&header, sizeof(header)))
+        {
+            throw std::runtime_error("Reading g1 file header failed.");
+        }
 
-            if (header.num_entries != LOCO_G1_ELEMENT_COUNT)
-            {
-                std::cout << "G1 element count doesn't match expected value: ";
-                std::cout << "Expected " << LOCO_G1_ELEMENT_COUNT << "; Got " << header.num_entries << std::endl;
-                if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
-                {
-                    std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
-                }
-            }
-
-            // Read element headers
-            if (!stream.read((char *)_g1Elements.get(), header.num_entries * sizeof(g1_element_t)))
-            {
-                throw std::runtime_error("Reading g1 element headers failed.");
-            }
-
-            // Read element data
-            g1Buffer = malloc(header.total_size);
-            if(!stream.read((char *)g1Buffer, header.total_size))
-            {
-                free(g1Buffer);
-                throw std::runtime_error("Reading g1 elements failed.");
-            }
-
-            stream.close();
-
-            // Adjust memory offsets
-            for (uint32_t i = 0; i < header.num_entries; i++)
-            {
-                _g1Elements[i].offset += (int32_t)g1Buffer;
-            }
-
-            // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
-            // This code copies the closest variants into their place, and moves other elements accordingly
+        if (header.num_entries != LOCO_G1_ELEMENT_COUNT)
+        {
+            std::cout << "G1 element count doesn't match expected value: ";
+            std::cout << "Expected " << LOCO_G1_ELEMENT_COUNT << "; Got " << header.num_entries << std::endl;
             if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
             {
-                // Extra two tutorial images
-                memmove(&_g1Elements[3551], &_g1Elements[3549], sizeof(g1_element_t) * (header.num_entries - 3549)); 
-                memcpy(&_g1Elements[3549], &_g1Elements[3551], sizeof(g1_element_t));
-                memcpy(&_g1Elements[3550], &_g1Elements[3551], sizeof(g1_element_t));
-
-                // Extra font variant
-                memcpy(&_g1Elements[3898], &_g1Elements[1788], sizeof(g1_element_t) * 223);
-
+                std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
             }
         }
-        catch (const std::exception &e)
+
+        // Read element headers
+        auto elements = std::vector<g1_element_t>(header.num_entries);
+        if (!stream.read((char *)elements.data(), header.num_entries * sizeof(g1_element_t)))
         {
-            stream.close();
-            throw std::runtime_error(e.what());
+            throw std::runtime_error("Reading g1 element headers failed.");
         }
+
+        // Read element data
+        auto elementData = std::make_unique<std::byte[]>(header.total_size);
+        if (!stream.read((char *)elementData.get(), header.total_size))
+        {
+            throw std::runtime_error("Reading g1 elements failed.");
+        }
+        stream.close();
+
+        // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
+        // This code copies the closest variants into their place, and moves other elements accordingly
+        if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
+        {
+            // Extra two tutorial images
+            std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
+            std::copy_n(&elements[3551], 1, &elements[3549]);
+            std::copy_n(&elements[3551], 1, &elements[3550]);
+
+            // Extra font variant
+            std::copy_n(&elements[1788], 223, &elements[3898]);
+        }
+
+        // Adjust memory offsets
+        for (auto &element : elements)
+        {
+            element.offset += (uintptr_t)elementData.get();
+        }
+
+        _g1Buffer = std::move(elementData);
+        std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
     // 0x00447485

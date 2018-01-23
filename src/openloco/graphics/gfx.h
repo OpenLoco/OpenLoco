@@ -21,10 +21,10 @@ namespace openloco::gfx
         int16_t pitch;       // 0x0C note: this is actually (pitch - width)
         uint16_t zoom_level; // 0x0E
     };
-
 #pragma pack(pop)
 
     drawpixelinfo_t& screen_dpi();
+
 
     struct g1_header_t
     {
@@ -32,7 +32,7 @@ namespace openloco::gfx
         uint32_t total_size;
     };
 
-     struct g1_element_t
+    struct g1_element_t
     {
         uint8_t * offset;       // 0x00
         int16_t width;          // 0x04
@@ -42,6 +42,10 @@ namespace openloco::gfx
         uint16_t flags;         // 0x0C
         int16_t unused;         // 0x0E
     };
+
+    #pragma pack(pop)
+
+    drawpixelinfo_t& screen_dpi();
 
     void load_g1();
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
