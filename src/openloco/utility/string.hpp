@@ -7,10 +7,10 @@
 
 namespace openloco::utility
 {
-    std::string to_utf8(const std::wstring_view &src);
-    std::wstring to_utf16(const std::string_view &src);
+    std::string to_utf8(const std::wstring_view& src);
+    std::wstring to_utf16(const std::string_view& src);
 
-    static inline bool iequals(const std::string_view &a, const std::string_view &b)
+    static inline bool iequals(const std::string_view& a, const std::string_view& b)
     {
         if (a.size() != b.size())
         {
@@ -26,7 +26,7 @@ namespace openloco::utility
         return true;
     }
 
-    inline size_t strlcpy(char *dest, const char *src, size_t size)
+    inline size_t strlcpy(char* dest, const char* src, size_t size)
     {
         size_t src_len = std::strlen(src);
 
@@ -43,7 +43,7 @@ namespace openloco::utility
         return src_len;
     }
 
-    inline size_t strlcat(char *dest, const char *src, size_t size)
+    inline size_t strlcat(char* dest, const char* src, size_t size)
     {
         size_t src_len = std::strlen(src);
 
@@ -53,9 +53,8 @@ namespace openloco::utility
         }
 
         // this lambda is essentially a reimplementation of strnlen, which isn't standard
-        size_t dest_len = [=]
-        {
-            auto dest_end = reinterpret_cast<const char *>(std::memchr(dest, '\0', size));
+        size_t dest_len = [=] {
+            auto dest_end = reinterpret_cast<const char*>(std::memchr(dest, '\0', size));
             if (dest_end != nullptr)
             {
                 return static_cast<size_t>(dest_end - dest);
@@ -69,7 +68,7 @@ namespace openloco::utility
         if (dest_len < size)
         {
             size_t copy_count = std::min<size_t>((size - dest_len) - 1, src_len);
-            char  *copy_ptr   = (dest + dest_len);
+            char* copy_ptr = (dest + dest_len);
 
             std::memcpy(copy_ptr, src, copy_count);
             copy_ptr[copy_count] = '\0';
@@ -79,35 +78,35 @@ namespace openloco::utility
     }
 
     template<size_t N>
-    inline void strcpy_safe(char (&dest)[N], const char *src)
+    inline void strcpy_safe(char (&dest)[N], const char* src)
     {
         (void)strlcpy(dest, src, N);
     }
 
     template<size_t N>
-    inline void strcat_safe(char (&dest)[N], const char *src)
+    inline void strcat_safe(char (&dest)[N], const char* src)
     {
         (void)strlcat(dest, src, N);
     }
 
     template<size_t N, typename... Args>
-    inline int sprintf_safe(char (&dest)[N], const char *fmt, Args&&... args)
+    inline int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
     {
         return snprintf(dest, N, fmt, std::forward<Args>(args)...);
     }
 
     // intended for use with e.g. loco_global_array<char, N, A>
     template<typename T>
-    inline auto strcpy_safe(T& dest, const char *src)
-        -> std::enable_if_t<std::is_convertible_v<T, char *> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
+    inline auto strcpy_safe(T& dest, const char* src)
+        -> std::enable_if_t<std::is_convertible_v<T, char*> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
     {
         (void)strlcpy(dest, src, dest.size());
     }
 
     // intended for use with e.g. loco_global_array<char, N, A>
     template<typename T>
-    inline auto strcat_safe(T& dest, const char *src)
-        -> std::enable_if_t<std::is_convertible_v<T, char *> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
+    inline auto strcat_safe(T& dest, const char* src)
+        -> std::enable_if_t<std::is_convertible_v<T, char*> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
     {
         (void)strlcat(dest, src, dest.size());
     }

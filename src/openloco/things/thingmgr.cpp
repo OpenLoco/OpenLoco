@@ -1,6 +1,6 @@
+#include "thingmgr.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
-#include "thingmgr.h"
 
 using namespace openloco::interop;
 
@@ -15,15 +15,15 @@ namespace openloco::thingmgr
     }
 
     template<>
-    vehicle * first()
+    vehicle* first()
     {
         return get<vehicle>(first_id(thing_list::vehicle));
     }
 
     template<>
-    thing * get(thing_id_t id)
+    thing* get(thing_id_t id)
     {
-        thing * result = nullptr;
+        thing* result = nullptr;
         if (id < max_things)
         {
             return &_things.get()[id];
@@ -32,11 +32,11 @@ namespace openloco::thingmgr
     }
 
     // 0x004700A5
-    thing * create_thing()
+    thing* create_thing()
     {
         registers regs;
         call(0x004700A5, regs);
-        return (thing *)regs.esi;
+        return (thing*)regs.esi;
     }
 
     // 0x004A8826

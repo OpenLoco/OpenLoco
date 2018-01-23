@@ -1,6 +1,6 @@
+#include "gfx.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
-#include "gfx.h"
 
 using namespace openloco::interop;
 
@@ -22,7 +22,7 @@ namespace openloco::gfx
     // 0x00447485
     // edi: dpi
     // ebp: fill
-    void clear(drawpixelinfo_t &dpi, uint32_t fill)
+    void clear(drawpixelinfo_t& dpi, uint32_t fill)
     {
         registers regs;
         regs.edi = (int32_t)&dpi;
@@ -30,7 +30,7 @@ namespace openloco::gfx
         call(0x00447485, regs);
     }
 
-    void clear_single(drawpixelinfo_t &dpi, uint8_t paletteId)
+    void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId)
     {
         auto fill = (paletteId << 24) | (paletteId << 16) | (paletteId << 8) | paletteId;
         clear(dpi, fill);
@@ -44,12 +44,12 @@ namespace openloco::gfx
     // esi: args
     // edi: dpi
     void draw_string_494B3F(
-        drawpixelinfo_t &dpi,
+        drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
         string_id stringId,
-        const void * args)
+        const void* args)
     {
         registers regs;
         regs.al = colour;
@@ -70,13 +70,13 @@ namespace openloco::gfx
     // edi: dpi
     // bp: width
     void draw_string_494BBF(
-        drawpixelinfo_t &dpi,
+        drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
         int16_t width,
         uint8_t colour,
         string_id stringId,
-        const void * args)
+        const void* args)
     {
         registers regs;
         regs.al = colour;

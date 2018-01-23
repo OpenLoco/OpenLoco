@@ -1,5 +1,5 @@
-#include "../interop/interop.hpp"
 #include "thing.h"
+#include "../interop/interop.hpp"
 
 using namespace openloco;
 using namespace openloco::interop;

@@ -13,8 +13,8 @@ namespace openloco
 #pragma pack(push, 1)
     struct vehicle : thing
     {
-        vehicle * next_vehicle();
-        vehicle * next_car();
+        vehicle* next_vehicle();
+        vehicle* next_car();
 
         void update_head();
         void sub_4BA8D4();

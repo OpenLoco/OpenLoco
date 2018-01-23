@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include "localisation/stringmgr.h"
+#include <cstdint>
 
 namespace openloco::progressbar
 {

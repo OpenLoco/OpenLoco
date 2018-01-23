@@ -13,21 +13,18 @@ namespace openloco::ui::windows
 {
     static loco_global_array<uint8_t, 256, 0x001136BA4> byte_1136BA4;
 
-    static station_id_t get_station_id(const window &w)
+    static station_id_t get_station_id(const window& w)
     {
         return w.var_40;
     }
 
-    static station& get_station(const window &w)
+    static station& get_station(const window& w)
     {
         return *(stationmgr::get(get_station_id(w)));
     }
 
-
-
-
     // 0x0048EF02
-    static void draw_rating_bar(window &w, gfx::drawpixelinfo_t &dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
+    static void draw_rating_bar(window& w, gfx::drawpixelinfo_t& dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
     {
         registers regs;
         regs.al = amount;
@@ -40,16 +37,16 @@ namespace openloco::ui::windows
     }
 
     // 0x0048ED2F
-    void station_2_scroll_paint(window &w, gfx::drawpixelinfo_t &dpi)
+    void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi)
     {
         auto paletteId = byte_1136BA4[w.colours[1] * 8];
         gfx::clear_single(dpi, paletteId);
 
-        const auto &station = get_station(w);
+        const auto& station = get_station(w);
         int16_t y = 0;
         for (int i = 0; i < 32; i++)
         {
-            auto &cargo = station.cargo_stats[i];
+            auto& cargo = station.cargo_stats[i];
             if (!cargo.empty())
             {
                 auto cargoObj = objectmgr::get_cargo_object(i);

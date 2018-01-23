@@ -1,18 +1,18 @@
 #include "string.hpp"
 
 #ifdef _WIN32
-    #include <windows.h>
+#include <windows.h>
 #else
-    #include <iconv.h>
-    #include <errno.h>
-    #include <iostream>
-    #include <codecvt>
-    #include <locale>
+#include <codecvt>
+#include <errno.h>
+#include <iconv.h>
+#include <iostream>
+#include <locale>
 #endif
 
 namespace openloco::utility
 {
-    std::string to_utf8(const std::wstring_view &src)
+    std::string to_utf8(const std::wstring_view& src)
     {
 #ifdef _WIN32
         int srcLen = src.size();
@@ -30,7 +30,7 @@ namespace openloco::utility
 #endif
     }
 
-    std::wstring to_utf16(const std::string_view &src)
+    std::wstring to_utf16(const std::string_view& src)
     {
 #ifdef _WIN32
         int srcLen = src.size();

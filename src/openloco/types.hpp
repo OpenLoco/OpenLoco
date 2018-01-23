@@ -12,14 +12,13 @@ namespace openloco
         T z = 0;
 
         location() = default;
-        location(T locX, T locY, T locZ) :
-            x(locX),
-            y(locY),
-            z(locZ)
+        location(T locX, T locY, T locZ)
+            : x(locX)
+            , y(locY)
+            , z(locZ)
         {
         }
     };
 
     using loc16 = location<int16_t>;
 }
-

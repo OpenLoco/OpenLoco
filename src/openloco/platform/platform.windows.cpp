@@ -46,14 +46,13 @@ namespace openloco::platform
         return pszPath;
     }
 
-    std::string prompt_directory(const std::string &title)
+    std::string prompt_directory(const std::string& title)
     {
         std::string result;
 
         // Initialize COM and get a pointer to the shell memory allocator
         LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) &&
-            SUCCEEDED(SHGetMalloc(&lpMalloc)))
+        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
             auto titleW = utility::to_utf16(title);
             BROWSEINFOW bi = { 0 };

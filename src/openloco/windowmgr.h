@@ -61,17 +61,17 @@ namespace openloco::ui::windowmgr
 {
     window_type current_modal_type();
     void current_modal_type(window_type type);
-    window * get(size_t index);
+    window* get(size_t index);
     size_t num_windows();
 
     void update();
     void resize();
-    window * find(window_type type);
-    window * find(window_type type, uint16_t id);
+    window* find(window_type type);
+    window* find(window_type type, uint16_t id);
     void close(window_type type);
     void close(window_type type, uint16_t id);
-    window * create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void * events);
-    window * create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void * events);
+    window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
+    window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
 }
 
 namespace openloco::ui::windows
@@ -82,14 +82,13 @@ namespace openloco::ui::windows
         save = 2
     };
 
-    void construction_mouse_up(window &w, uint16_t widgetIndex);
-    void station_2_scroll_paint(window &w, gfx::drawpixelinfo_t &dpi);
-    window * open_town_window(uint16_t townId);
-    void sub_498E9B(window * w);
+    void construction_mouse_up(window& w, uint16_t widgetIndex);
+    void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
+    window* open_town_window(uint16_t townId);
+    void sub_498E9B(window* w);
 
-    bool prompt_browse(browse_type type, char * path, const char * filter, const char * title);
+    bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);
     bool prompt_ok_cancel(string_id okButtonStringId);
-
 }
 
 namespace openloco::ui::textinput
