@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <cstdio>
 #include <cstring>
+#include <system_error>
 #ifndef _WIN32
 #include <sys/mman.h>
 #include <unistd.h>
@@ -403,15 +404,9 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
     assert(dwFileAttributes == 0x80);
     console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
-    if (access(lpFileName, R_OK | W_OK) != -1)
-    {
-        // File exists
-        return true;
-    }
-
-    // FIXME: create file if doesnt exist
-    assert(false);
-    return false;
+    std::error_code ec;
+    fs::permissions(fs::path(lpFileName), fs::perms::owner_read | fs::perms::owner_write, ec);
+    return !ec;
 }
 
 static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
