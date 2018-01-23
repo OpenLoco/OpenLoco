@@ -157,10 +157,10 @@ namespace openloco::interop
     private:
         uintptr_t begin = 0;
         uintptr_t end = 0;
-        std::vector<std::byte> state;
+        std::vector<uint8_t> state;
 
     public:
-        const std::vector<std::byte>& get_state() const
+        const std::vector<uint8_t>& get_state() const
         {
             return state;
         }

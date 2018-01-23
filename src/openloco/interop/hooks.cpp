@@ -404,7 +404,11 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
     assert(dwFileAttributes == 0x80);
     console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
+#ifdef _OPENLOCO_USE_BOOST_FS_
+    boost::system::error_code ec;
+#else
     std::error_code ec;
+#endif
     auto path = fs::path(lpFileName);
     auto perms = fs::status(path, ec).permissions();
     if (!ec)
@@ -531,7 +535,7 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x004416B5,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             using namespace openloco::environment;
 
             auto buffer = (char*)0x009D0D72;
