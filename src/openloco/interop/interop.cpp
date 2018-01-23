@@ -1,4 +1,12 @@
+#include <algorithm>
 #include <cstring>
+
+#ifdef _WIN32
+    #define NOMINMAX
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
+#endif // _WIN32
+
 #include "interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
@@ -287,5 +295,75 @@ namespace openloco::interop
     uintptr_t remap_address(uintptr_t locoAddress)
     {
         return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
+    }
+
+    void read_memory(uint32_t address, void * data, size_t size)
+    {
+#ifdef _WIN32
+        if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
+        {
+            throw std::runtime_error("ReadProcessMemory failed");
+        }
+#else
+        // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
+        std::memcpy(data, (void *)address, size);
+#endif // _WIN32
+    }
+
+    void write_memory(uint32_t address, const void * data, size_t size)
+    {
+#ifdef _WIN32
+        if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
+        {
+            throw std::runtime_error("WriteProcessMemory failed");
+        }
+#else
+        // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
+        std::memcpy((void *)address, data, size);
+#endif // _WIN32
+    }
+
+    save_state::save_state(uintptr_t begin, uintptr_t end) :
+        begin(begin),
+        end(end)
+    {
+        state.resize(end - begin);
+        read_memory(begin, state.data(), state.size());
+    }
+
+    void save_state::reset()
+    {
+        interop::write_memory(begin, state.data(), state.size());
+    }
+
+    void save_state::log_diff(const save_state &lhs, const save_state &rhs)
+    {
+        // TODO should we allow different base addresses?
+        //      if so then we need to do extra work for that.
+        auto length = std::min(lhs.state.size(), rhs.state.size());
+        for (size_t i = 0; i < length; i++)
+        {
+            auto left = lhs.state[i];
+            auto right = rhs.state[i];
+            if (left != right)
+            {
+                uint32_t addr = lhs.begin + i;
+                std::printf("0x%06lX: %02hhX  %02hhX\n", addr, left, right);
+            }
+        }
+    }
+
+    bool operator==(const save_state &lhs, const save_state &rhs)
+    {
+        return std::equal(
+            lhs.get_state().begin(),
+            lhs.get_state().end(),
+            rhs.get_state().begin(),
+            rhs.get_state().end());
+    }
+
+    bool operator!=(const save_state &lhs, const save_state &rhs)
+    {
+        return !(lhs == rhs);
     }
 }

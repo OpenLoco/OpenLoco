@@ -21,8 +21,6 @@ namespace openloco::interop
 
     static registers _hookRegisters;
 
-    static void write_memory(uint32_t address, const void * data, size_t size);
-
     // This macro writes a little-endian 4-byte long value into *data
     // It is used to avoid type punning.
     #define write_address_strictalias(data, addr) \
@@ -195,16 +193,6 @@ namespace openloco::interop
                 std::printf("                    fn %u\n", passAddress);
                 return 0;
             });
-    }
-
-    static void write_memory(uint32_t address, const void * data, size_t size)
-    {
-#ifdef _WIN32
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, 0);
-#else
-        // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        memcpy((void *)address, data, size);
-#endif // _WIN32
     }
 
     void write_ret(uint32_t address)

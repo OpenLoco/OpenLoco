@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <vector>
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 
@@ -148,6 +150,31 @@ namespace openloco::interop
         X86_FLAG_ZERO = 1 << 6,
         X86_FLAG_SIGN = 1 << 7,
     };
+
+    class save_state
+    {
+    private:
+        uintptr_t begin = 0;
+        uintptr_t end = 0;
+        std::vector<std::byte> state;
+
+    public:
+        const std::vector<std::byte>& get_state() const
+        {
+            return state;
+        }
+
+        save_state(uintptr_t begin, uintptr_t end);
+        void reset();
+
+        static void log_diff(const save_state &lhs, const save_state &rhs);
+    };
+
+    bool operator==(const save_state &lhs, const save_state &rhs);
+    bool operator!=(const save_state &lhs, const save_state &rhs);
+
+    void read_memory(uint32_t address, void * data, size_t size);
+    void write_memory(uint32_t address, const void * data, size_t size);
 
     using hook_function = uint8_t(*)(registers &regs);
 
