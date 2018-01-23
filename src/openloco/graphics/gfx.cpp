@@ -34,6 +34,18 @@ namespace openloco::gfx
         return elements;
     }
 
+    template<typename T1, typename T2, typename T3>
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2> &stream, T3 * dst, size_t count)
+    {
+        return stream.read((char *)dst, count * sizeof(T3));
+    }
+
+    template<typename T1, typename T2, typename T3>
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2> &stream, T3 &dst)
+    {
+        return read_data(stream, &dst, 1);
+    }
+
     // 0x0044733C
     void load_g1()
     {
@@ -45,7 +57,7 @@ namespace openloco::gfx
         }
 
         g1_header_t header;
-        if (!stream.read((char *)&header, sizeof(header)))
+        if (!read_data(stream, header))
         {
             throw std::runtime_error("Reading g1 file header failed.");
         }
@@ -62,7 +74,7 @@ namespace openloco::gfx
 
         // Read element headers
         auto elements32 = std::vector<g1_element32_t>(header.num_entries);
-        if (!stream.read((char *)elements32.data(), header.num_entries * sizeof(g1_element)))
+        if (!read_data(stream, elements32.data(), header.num_entries))
         {
             throw std::runtime_error("Reading g1 element headers failed.");
         }
@@ -70,7 +82,7 @@ namespace openloco::gfx
 
         // Read element data
         auto elementData = std::make_unique<std::byte[]>(header.total_size);
-        if (!stream.read((char *)elementData.get(), header.total_size))
+        if (!read_data(stream, elementData.get(), header.total_size))
         {
             throw std::runtime_error("Reading g1 elements failed.");
         }
