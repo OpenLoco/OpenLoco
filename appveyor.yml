@@ -23,3 +23,6 @@ install:
     Remove-Item -Recurse .\SDL2-2.0.7
 build:
   verbosity: minimal
+artifacts:
+  - path: '**\*.dll'
+    name: Binary
