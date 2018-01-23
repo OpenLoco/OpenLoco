@@ -98,6 +98,8 @@ namespace openloco::gfx
         // This code copies the closest variants into their place, and moves other elements accordingly
         if (header.num_entries == g1_expected_count::steam)
         {
+            elements.reserve(g1_expected_count::disc);
+
             // Extra two tutorial images
             std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
             std::copy_n(&elements[3551], 1, &elements[3549]);
