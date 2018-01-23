@@ -394,7 +394,7 @@ static void* STDCALL lib_CreateFileA(
 {
     console::log("CreateFile(%s, %x)", lpFileName, dwDesiredAccess);
 
-    return fopen(lpFileName, "r");
+    return fopen(lpFileName, "w");
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -405,7 +405,13 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
     console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
     std::error_code ec;
-    fs::permissions(fs::path(lpFileName), fs::perms::owner_read | fs::perms::owner_write, ec);
+    auto path = fs::path(lpFileName);
+    auto perms = fs::status(path, ec).permissions();
+    if (!ec)
+    {
+        lib_CreateFileA(lpFileName, dwFileAttributes, 0, 0, 0, 0, 0);
+    }
+    fs::permissions(path, fs::perms::owner_read | fs::perms::owner_write | perms, ec);
     return !ec;
 }
 
