@@ -1,12 +1,12 @@
-#include <cstring>
-#include <iostream>
 #include "config.h"
 #include "environment.h"
 #include "interop/interop.hpp"
+#include "platform/platform.h"
 #include "ui.h"
 #include "utility/collection.hpp"
 #include "utility/string.hpp"
-#include "platform/platform.h"
+#include <cstring>
+#include <iostream>
 
 using namespace openloco::interop;
 
@@ -22,7 +22,7 @@ namespace openloco::environment
 
     static fs::path get_sub_path(path_id id);
 
-    static bool validate_loco_install_path(const fs::path &path)
+    static bool validate_loco_install_path(const fs::path& path)
     {
         if (path.empty())
         {
@@ -37,8 +37,7 @@ namespace openloco::environment
 
     static fs::path auto_detect_loco_install_path()
     {
-        static constexpr const char * searchPaths[] =
-        {
+        static constexpr const char* searchPaths[] = {
             "C:/Program Files (x86)/Atari/Locomotion",
             "C:/GOG Games/Chris Sawyer's Locomotion",
         };
@@ -57,7 +56,7 @@ namespace openloco::environment
 
     static fs::path resolve_loco_install_path()
     {
-        auto &cfg = config::read_new_config();
+        auto& cfg = config::read_new_config();
         auto path = fs::path(cfg.loco_install_path);
         if (!path.empty())
         {
@@ -82,15 +81,15 @@ namespace openloco::environment
         }
         else
         {
-            std::cerr << "Unable to find install path for Locomotion." << std::endl <<
-                         "You will need to manually provide it." << std::endl;
+            std::cerr << "Unable to find install path for Locomotion." << std::endl
+                      << "You will need to manually provide it." << std::endl;
             ui::show_message_box("OpenLoco", "Select your Locomotion install path.");
             path = platform::prompt_directory("Select your Locomotion install path.");
             if (validate_loco_install_path(path))
             {
                 return path;
             }
-            
+
             std::cerr << "Path is missing g1.dat." << std::endl;
             ui::show_message_box("OpenLoco", "Path is missing data/g1.dat.");
             std::exit(-1);
@@ -139,8 +138,7 @@ namespace openloco::environment
 
     static fs::path get_sub_path(path_id id)
     {
-        static constexpr const char * paths[] =
-        {
+        static constexpr const char* paths[] = {
             "Data/G1.DAT",
             "Data/PLUGIN.DAT",
             "Data/PLUGIN2.DAT",

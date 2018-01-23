@@ -5,7 +5,7 @@
 
 namespace openloco::config
 {
-    #pragma pack(push, 1)
+#pragma pack(push, 1)
 
     struct config_t
     {
@@ -21,7 +21,7 @@ namespace openloco::config
         bool breakdowns_disabled = false;
     };
 
-    #pragma pack(pop)
+#pragma pack(pop)
 
     config_t& get();
     new_config& get_new();

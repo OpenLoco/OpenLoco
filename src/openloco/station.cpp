@@ -1,8 +1,8 @@
-#include <algorithm>
+#include "station.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
-#include "station.h"
 #include "windowmgr.h"
+#include <algorithm>
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -33,7 +33,7 @@ namespace openloco
 
         for (int i = 0; i < 32; i++)
         {
-            auto &cargo = cargo_stats[i];
+            auto& cargo = cargo_stats[i];
             if (!cargo.empty())
             {
                 if (cargo.quantity != 0 && cargo.origin != id())
@@ -87,7 +87,7 @@ namespace openloco
         return atLeastOneGoodRating;
     }
 
-    int32_t station::calculate_cargo_rating(const station_cargo_stats &cargo) const
+    int32_t station::calculate_cargo_rating(const station_cargo_stats& cargo) const
     {
         int32_t rating = 0;
 
@@ -132,9 +132,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 &&
-            var_28 != addr<0x00525E3C, uint8_t>() &&
-            var_28 != addr<0x00525E3D, uint8_t>())
+        if (var_2A != 384 && var_28 != addr<0x00525E3C, uint8_t>() && var_28 != addr<0x00525E3D, uint8_t>())
         {
             rating += 120;
         }

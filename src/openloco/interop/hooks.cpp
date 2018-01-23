@@ -1,5 +1,5 @@
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 #ifndef _WIN32
 #include <sys/mman.h>
 #endif
@@ -16,13 +16,13 @@
 using namespace openloco;
 
 #ifdef _MSC_VER
-#define STDCALL                  __stdcall
-#define CDECL                    __cdecl
+#define STDCALL __stdcall
+#define CDECL __cdecl
 #define FORCE_ALIGN_ARG_POINTER
 #elif defined(__GNUC__)
-#define STDCALL                  __attribute__((stdcall))
-#define CDECL                    __attribute__((cdecl))
-#define FORCE_ALIGN_ARG_POINTER  __attribute__((force_align_arg_pointer))
+#define STDCALL __attribute__((stdcall))
+#define CDECL __attribute__((cdecl))
+#define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
@@ -60,7 +60,7 @@ static long STDCALL fn_timeGetTime()
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
-static long STDCALL fn_DirectSoundEnumerateA(void *pDSEnumCallback, void *pContext)
+static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
 {
     printf("%s\n", __FUNCTION__);
     return 0;
@@ -86,7 +86,7 @@ static void STDCALL fn_407b26()
 
 ///region Progress bar
 
-static void CDECL fn_4080bb(char *lpWindowName, uint32_t a1)
+static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
 {
     printf("Create progress bar\n");
 }
@@ -110,14 +110,14 @@ static void CDECL fn_4081ad(int32_t wParam)
 ///endregion
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_FileSeekFromEnd(FILE *a0, int32_t distance)
+static void CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 {
     printf("seek %d bytes from end\n", distance);
     fseek(a0, distance, SEEK_END);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL fn_FileRead(FILE *a0, char *buffer, int32_t size)
+static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 {
     printf("read %d bytes\n", size);
     size = fread(buffer, 1, size, a0);
@@ -126,10 +126,10 @@ static int32_t CDECL fn_FileRead(FILE *a0, char *buffer, int32_t size)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int CDECL fn_CloseHandle(FILE *file)
+static int CDECL fn_CloseHandle(FILE* file)
 {
     printf("%s\n", __FUNCTION__);
-    if (file==nullptr)
+    if (file == nullptr)
     {
         return 1;
     }
@@ -138,7 +138,7 @@ static int CDECL fn_CloseHandle(FILE *file)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static FILE * CDECL fn_CreateFile(char *lpFileName)
+static FILE* CDECL fn_CreateFile(char* lpFileName)
 {
     printf("%s %s\n", __FUNCTION__, lpFileName);
     return fopen(lpFileName, "r");
@@ -166,11 +166,11 @@ public:
 };
 
 FORCE_ALIGN_ARG_POINTER
-static Session * CDECL fn_FindFirstFile(char *lpFileName, FindFileData *out)
+static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 {
-    printf("%s (%s)\n", __FUNCTION__,lpFileName );
+    printf("%s (%s)\n", __FUNCTION__, lpFileName);
 
-    Session *data = new Session;
+    Session* data = new Session;
 
     openloco::environment::fs::path path = lpFileName;
 #ifdef _OPENLOCO_USE_BOOST_FS_
@@ -182,7 +182,7 @@ static Session * CDECL fn_FindFirstFile(char *lpFileName, FindFileData *out)
 
     openloco::environment::fs::directory_iterator iter(path), end;
 
-    while (iter!=end)
+    while (iter != end)
     {
         data->fileList.push_back(iter->path());
         ++iter;
@@ -197,11 +197,11 @@ static Session * CDECL fn_FindFirstFile(char *lpFileName, FindFileData *out)
     return data;
 }
 
-static bool CDECL fn_FindNextFile(Session *data, FindFileData *out)
+static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
 {
     printf("%s\n", __FUNCTION__);
 
-    if (data->fileList.size()==0)
+    if (data->fileList.size() == 0)
     {
         return false;
     }
@@ -216,7 +216,7 @@ static bool CDECL fn_FindNextFile(Session *data, FindFileData *out)
     return true;
 }
 
-static void CDECL fn_FindClose(Session *data)
+static void CDECL fn_FindClose(Session* data)
 {
     printf("%s\n", __FUNCTION__);
 
@@ -259,19 +259,19 @@ static void STDCALL fn2(int i1, int i2)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void * CDECL fn_malloc(uint32_t size)
+static void* CDECL fn_malloc(uint32_t size)
 {
     return malloc(size);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void * CDECL fn_realloc(void * block, uint32_t size)
+static void* CDECL fn_realloc(void* block, uint32_t size)
 {
     return realloc(block, size);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_free(void * block)
+static void CDECL fn_free(void* block)
 {
     return free(block);
 }
@@ -280,36 +280,36 @@ static void register_no_win32_hooks()
 {
     using namespace openloco::interop;
 
-    write_jmp(0x40447f, (void *)&fn_40447f);
-    write_jmp(0x404cd3, (void *)&fnc1);
-    write_jmp(0x404e8c, (void *)&fn_404e8c);
-    write_jmp(0x404eac, (void *)&fn_404eac);
-    write_jmp(0x4054b9, (void *)&fn_4054b9);
-    write_jmp(0x4064fa, (void *)&fn0);
-    write_jmp(0x4d1401, (void *)&fn_malloc);
-    write_jmp(0x4D1B28, (void *)&fn_realloc);
-    write_jmp(0x4D1355, (void *)&fn_free);
-    write_jmp(0x4072ec, (void *)&fn0);
-    write_jmp(0x4072ec, (void *)&fn0);
-    write_jmp(0x4078b5, (void *)&fn_4078b5);
-    write_jmp(0x4078be, (void *)&fn_4078be);
-    write_jmp(0x4078f8, (void *)&fn_timeGetTime);
-    write_jmp(0x4078fe, (void *)&fn_4078fe);
-    write_jmp(0x407b26, (void *)&fn_407b26);
-    write_jmp(0x4080bb, (void *)&fn_4080bb);
-    write_jmp(0x408163, (void *)&fn_408163);
-    write_jmp(0x40817b, (void *)&fn_40817b);
-    write_jmp(0x4081ad, (void *)&fn_4081ad);
-    write_jmp(0x4081eb, (void *)&fn_FileSeekFromEnd);
-    write_jmp(0x4081fe, (void *)&fn_FileRead);
-    write_jmp(0x408297, (void *)&fn_CloseHandle);
-    write_jmp(0x4082ad, (void *)&fn_CreateFile);
-    write_jmp(0x4082e6, (void *)&fnc1);
-    write_jmp(0x4082f8, (void *)&fnc2);
-    write_jmp(0x40830e, (void *)&fn_FindFirstFile);
-    write_jmp(0x40831d, (void *)&fn_FindNextFile);
-    write_jmp(0x40832c, (void *)&fn_FindClose);
-    write_jmp(0x4d0fac, (void *)&fn_DirectSoundEnumerateA);
+    write_jmp(0x40447f, (void*)&fn_40447f);
+    write_jmp(0x404cd3, (void*)&fnc1);
+    write_jmp(0x404e8c, (void*)&fn_404e8c);
+    write_jmp(0x404eac, (void*)&fn_404eac);
+    write_jmp(0x4054b9, (void*)&fn_4054b9);
+    write_jmp(0x4064fa, (void*)&fn0);
+    write_jmp(0x4d1401, (void*)&fn_malloc);
+    write_jmp(0x4D1B28, (void*)&fn_realloc);
+    write_jmp(0x4D1355, (void*)&fn_free);
+    write_jmp(0x4072ec, (void*)&fn0);
+    write_jmp(0x4072ec, (void*)&fn0);
+    write_jmp(0x4078b5, (void*)&fn_4078b5);
+    write_jmp(0x4078be, (void*)&fn_4078be);
+    write_jmp(0x4078f8, (void*)&fn_timeGetTime);
+    write_jmp(0x4078fe, (void*)&fn_4078fe);
+    write_jmp(0x407b26, (void*)&fn_407b26);
+    write_jmp(0x4080bb, (void*)&fn_4080bb);
+    write_jmp(0x408163, (void*)&fn_408163);
+    write_jmp(0x40817b, (void*)&fn_40817b);
+    write_jmp(0x4081ad, (void*)&fn_4081ad);
+    write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
+    write_jmp(0x4081fe, (void*)&fn_FileRead);
+    write_jmp(0x408297, (void*)&fn_CloseHandle);
+    write_jmp(0x4082ad, (void*)&fn_CreateFile);
+    write_jmp(0x4082e6, (void*)&fnc1);
+    write_jmp(0x4082f8, (void*)&fnc2);
+    write_jmp(0x40830e, (void*)&fn_FindFirstFile);
+    write_jmp(0x40831d, (void*)&fn_FindNextFile);
+    write_jmp(0x40832c, (void*)&fn_FindClose);
+    write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
     // Stubs
     register_hook_stub(0x00431695);
@@ -322,13 +322,13 @@ void openloco::interop::register_hooks()
     using namespace openloco::ui::windows;
 
 #ifndef _WIN32
-    int32_t err = mprotect((void *)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
+    int32_t err = mprotect((void*)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
     if (err != 0)
     {
         perror("mprotect");
     }
 
-    err = mprotect((void *)0x4d7000, 0x1162000 - 0x4d7000, PROT_READ | PROT_WRITE);
+    err = mprotect((void*)0x4d7000, 0x1162000 - 0x4d7000, PROT_READ | PROT_WRITE);
     if (err != 0)
     {
         perror("mprotect");
@@ -341,11 +341,10 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x004416B5,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             using namespace openloco::environment;
 
-            auto buffer = (char *)0x009D0D72;
+            auto buffer = (char*)0x009D0D72;
             auto path = get_path((path_id)regs.ebx);
 #ifdef _OPENLOCO_USE_BOOST_FS_
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
@@ -361,45 +360,40 @@ void openloco::interop::register_hooks()
     // Replace ui::update() with our own
     register_hook(
         0x004524C1,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             ui::update();
             return 0;
         });
 
     register_hook(
         0x00407BA3,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             auto cursor = (ui::cursor_id)regs.edx;
             ui::set_cursor(cursor);
             return 0;
         });
     register_hook(
         0x004CF142,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             ui::set_cursor(ui::cursor_id::blank);
             return 0;
         });
 
     register_hook(
         0x00445AB9,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             auto result = prompt_browse(
                 (browse_type)regs.al,
-                (char *)regs.ecx,
-                (const char *)regs.edx,
-                (const char *)regs.ebx);
+                (char*)regs.ecx,
+                (const char*)regs.edx,
+                (const char*)regs.ebx);
             regs.eax = result ? 1 : 0;
             return 0;
         });
 
     register_hook(
         0x00446F6B,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             auto result = prompt_ok_cancel(regs.eax);
             regs.eax = result ? 1 : 0;
             return 0;
@@ -407,59 +401,52 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x00407218,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             openloco::input::sub_407218();
             return 0;
         });
     register_hook(
         0x00407231,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             openloco::input::sub_407231();
             return 0;
         });
 
     register_hook(
         0x00492793,
-        [](registers &regs) -> uint8_t
-        {
-            auto station = (openloco::station *)regs.esi;
+        [](registers& regs) -> uint8_t {
+            auto station = (openloco::station*)regs.esi;
             regs.al = (station->update_cargo() != 0);
             return 0;
         });
 
     register_hook(
         0x0049D3F6,
-        [](registers &regs) -> uint8_t
-        {
-            ui::windows::construction_mouse_up(*((ui::window *)regs.esi), regs.dx);
+        [](registers& regs) -> uint8_t {
+            ui::windows::construction_mouse_up(*((ui::window*)regs.esi), regs.dx);
             return 0;
         });
 
     register_hook(
         0x0048ED2F,
-        [](registers &regs) -> uint8_t
-        {
+        [](registers& regs) -> uint8_t {
             ui::windows::station_2_scroll_paint(
-                *((ui::window *)regs.esi),
-                *((gfx::drawpixelinfo_t *)regs.edi));
+                *((ui::window*)regs.esi),
+                *((gfx::drawpixelinfo_t*)regs.edi));
             return 0;
         });
 
     register_hook(
         0x00498E9B,
-        [](registers &regs) -> uint8_t
-        {
-            openloco::ui::windows::sub_498E9B((openloco::ui::window *)regs.esi);
+        [](registers& regs) -> uint8_t {
+            openloco::ui::windows::sub_498E9B((openloco::ui::window*)regs.esi);
             return 0;
         });
 
     register_hook(
         0x004BA8D4,
-        [](registers &regs) -> uint8_t
-        {
-            auto v = (openloco::vehicle *)regs.esi;
+        [](registers& regs) -> uint8_t {
+            auto v = (openloco::vehicle*)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });

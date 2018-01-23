@@ -16,7 +16,7 @@ namespace openloco::ui
     };
 
 #ifdef _WIN32
-    void * hwnd();
+    void* hwnd();
 #endif
     int32_t width();
     int32_t height();
@@ -28,12 +28,12 @@ namespace openloco::ui
     void dispose_input();
     void dispose_cursors();
     void set_cursor(cursor_id id);
-    void get_cursor_pos(int32_t &x, int32_t &y);
+    void get_cursor_pos(int32_t& x, int32_t& y);
     void set_cursor_pos(int32_t x, int32_t y);
     void hide_cursor();
     void show_cursor();
     void update();
     void render();
     bool process_messages();
-    void show_message_box(const std::string &title, const std::string &message);
+    void show_message_box(const std::string& title, const std::string& message);
 }

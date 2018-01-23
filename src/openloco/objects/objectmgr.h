@@ -48,6 +48,6 @@ namespace openloco
 namespace openloco::objectmgr
 {
     void load_index();
-    cargo_object * get_cargo_object(size_t id);
+    cargo_object* get_cargo_object(size_t id);
     size_t get_max_objects(object_type type);
 }

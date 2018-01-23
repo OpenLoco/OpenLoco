@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <cstring>
 #ifdef _OPENLOCO_USE_BOOST_FS_
-    #include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
 #else
-    #include <experimental/filesystem>
+#include <experimental/filesystem>
 #endif
 #include "../graphics/colours.h"
 #include "../input.h"
@@ -16,17 +16,21 @@
 using namespace openloco::interop;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-    namespace fs = boost::filesystem;
+namespace fs = boost::filesystem;
 #else
-    namespace fs = std::experimental::filesystem;
+namespace fs = std::experimental::filesystem;
 #endif
 
 namespace openloco::ui::windows
 {
-    static fs::path get_directory(const fs::path &path);
-    static std::string get_basename(const fs::path &path);
+    static fs::path get_directory(const fs::path& path);
+    static std::string get_basename(const fs::path& path);
 
-    enum class browse_file_type { saved_game, landscape };
+    enum class browse_file_type
+    {
+        saved_game,
+        landscape
+    };
 
     loco_global<uint8_t, 0x009D9D63> _type;
     loco_global<uint8_t, 0x009DA284> _fileType;
@@ -54,9 +58,9 @@ namespace openloco::ui::windows
     // eax: {return}
     bool prompt_browse(
         browse_type type,
-        char * szPath,
-        const char * filter,
-        const char * title)
+        char* szPath,
+        const char* filter,
+        const char* title)
     {
         auto path = fs::path(szPath);
         auto directory = get_directory(path);
@@ -81,10 +85,10 @@ namespace openloco::ui::windows
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
-        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, 0x1202, (void *)0x004FB308);
+        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, 0x1202, (void*)0x004FB308);
         if (window != nullptr)
         {
-            window->widgets = (widget *)0x0050AD58;
+            window->widgets = (widget*)0x0050AD58;
             window->enabled_widgets = 4 | 0x10 | 0x40;
             window->sub_4CA17F();
             addr<0x01136FA2, int16_t>() = -1;
@@ -98,8 +102,7 @@ namespace openloco::ui::windows
             window->colours[1] = colour::saturated_green;
             windowmgr::current_modal_type(window_type::prompt_browse);
             prompt_tick_loop(
-                []()
-                {
+                []() {
                     input::handle_keyboard();
                     sub_48A18C();
                     call(0x004CD3D0);
@@ -120,7 +123,7 @@ namespace openloco::ui::windows
         return false;
     }
 
-    static fs::path get_directory(const fs::path &path)
+    static fs::path get_directory(const fs::path& path)
     {
         if (path.has_extension())
         {
@@ -142,7 +145,7 @@ namespace openloco::ui::windows
         }
     }
 
-    static std::string get_basename(const fs::path &path)
+    static std::string get_basename(const fs::path& path)
     {
 #ifdef _OPENLOCO_USE_BOOST_FS_
         auto baseName = path.stem().string();

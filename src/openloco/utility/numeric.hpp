@@ -1,7 +1,7 @@
 #pragma once
 
-#include <limits.h>
 #include <cstdint>
+#include <limits.h>
 #include <type_traits>
 
 namespace openloco::utility

@@ -82,7 +82,7 @@ namespace openloco::interop
     template<uint32_t TAddress, typename T>
     T& addr()
     {
-        return *((T *)remap_address(TAddress));
+        return *((T*)remap_address(TAddress));
     }
 
     /**
@@ -98,7 +98,7 @@ namespace openloco::interop
     * All other bits are undefined.
     */
     int32_t call(int32_t address);
-    int32_t call(int32_t address, registers &registers);
+    int32_t call(int32_t address, registers& registers);
 
     template<typename T, uint32_t TAddress>
     struct loco_global
@@ -113,12 +113,12 @@ namespace openloco::interop
             return addr<TAddress, T>();
         }
 
-        T& operator *()
+        T& operator*()
         {
             return addr<TAddress, T>();
         }
 
-        T* operator ->()
+        T* operator->()
         {
             return &(addr<TAddress, T>());
         }
@@ -168,21 +168,21 @@ namespace openloco::interop
         save_state(uintptr_t begin, uintptr_t end);
         void reset();
 
-        static void log_diff(const save_state &lhs, const save_state &rhs);
+        static void log_diff(const save_state& lhs, const save_state& rhs);
     };
 
-    bool operator==(const save_state &lhs, const save_state &rhs);
-    bool operator!=(const save_state &lhs, const save_state &rhs);
+    bool operator==(const save_state& lhs, const save_state& rhs);
+    bool operator!=(const save_state& lhs, const save_state& rhs);
 
-    void read_memory(uint32_t address, void * data, size_t size);
-    void write_memory(uint32_t address, const void * data, size_t size);
+    void read_memory(uint32_t address, void* data, size_t size);
+    void write_memory(uint32_t address, const void* data, size_t size);
 
-    using hook_function = uint8_t(*)(registers &regs);
+    using hook_function = uint8_t (*)(registers& regs);
 
     void register_hook(uintptr_t address, hook_function function);
     void register_hook_stub(uintptr_t address);
     void write_ret(uint32_t address);
-    void write_jmp(uint32_t address, void * fn);
+    void write_jmp(uint32_t address, void* fn);
     void write_nop(uint32_t address, size_t count);
 
     void register_hooks();

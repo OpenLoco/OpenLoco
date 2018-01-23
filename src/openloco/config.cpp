@@ -1,8 +1,8 @@
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-    #include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
 #else
-    #include <experimental/filesystem>
+#include <experimental/filesystem>
 #endif
 #include <fstream>
 
@@ -11,8 +11,8 @@
 #include <windows.h>
 #endif
 
-#include "interop/interop.hpp"
 #include "config.h"
+#include "interop/interop.hpp"
 #include "platform/platform.h"
 
 using namespace openloco::interop;
@@ -78,9 +78,7 @@ namespace openloco::config
         if (!fs::is_directory(dir))
         {
             fs::create_directories(configPath.parent_path());
-            fs::permissions(dir, fs::perms::owner_read | fs::perms::owner_write |
-                                 fs::perms::group_read | 
-                                 fs::perms::others_read);
+            fs::permissions(dir, fs::perms::owner_read | fs::perms::owner_write | fs::perms::group_read | fs::perms::others_read);
         }
 
 #ifdef _OPENLOCO_USE_BOOST_FS_

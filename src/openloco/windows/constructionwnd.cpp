@@ -19,7 +19,7 @@ namespace openloco::ui::windows
     }
 
     // 0x0049D3F6
-    void construction_mouse_up(window &w, uint16_t widgetIndex)
+    void construction_mouse_up(window& w, uint16_t widgetIndex)
     {
         // Allow shift key to repeat the action multiple times
         // This is useful for building very long tracks.

@@ -1,5 +1,5 @@
-#include "interop/interop.hpp"
 #include "window.h"
+#include "interop/interop.hpp"
 
 using namespace openloco::interop;
 using namespace openloco::ui;

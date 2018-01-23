@@ -1,5 +1,5 @@
-#include "../interop/interop.hpp"
 #include "audio.h"
+#include "../interop/interop.hpp"
 
 using namespace openloco::interop;
 

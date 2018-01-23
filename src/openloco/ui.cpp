@@ -5,28 +5,27 @@
 #include <stdexcept>
 #include <vector>
 
-
 #ifdef _WIN32
-    #define NOMINMAX
-    #define WIN32_LEAN_AND_MEAN
-    #include <shlobj.h>
-    #include <windows.h>
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <shlobj.h>
+#include <windows.h>
 #endif
 
 #ifndef _LOCO_WIN32_
-    #include <SDL2/SDL.h>
-    #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
-    #include <SDL2/SDL_syswm.h>
-    #pragma warning(default : 4121) // alignment of a member was sensitive to packing
+#include <SDL2/SDL.h>
+#pragma warning(disable : 4121) // alignment of a member was sensitive to packing
+#include <SDL2/SDL_syswm.h>
+#pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
 
+#include "graphics/gfx.h"
 #include "input.h"
 #include "interop/interop.hpp"
-#include "graphics/gfx.h"
 #include "openloco.h"
 #include "ui.h"
-#include "windowmgr.h"
 #include "utility/string.hpp"
+#include "windowmgr.h"
 
 using namespace openloco::interop;
 
@@ -35,7 +34,7 @@ namespace openloco::ui
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
     constexpr auto WINDOW_TITLE = "OpenLoco";
 
-    #pragma pack(push, 1)
+#pragma pack(push, 1)
 
     struct palette_entry_t
     {
@@ -60,28 +59,28 @@ namespace openloco::ui
         int8_t dirty_blocks_initialised;
     };
 
-    #pragma pack(pop)
+#pragma pack(pop)
 
-    using set_palette_func = void(*)(const palette_entry_t * palette, int32_t index, int32_t count);
+    using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
 
 #ifdef _WIN32
-    loco_global<void *, 0x00525320> _hwnd;
+    loco_global<void*, 0x00525320> _hwnd;
 #endif // _WIN32
     loco_global<screen_info_t, 0x0050B884> screen_info;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     loco_global_array<uint8_t, 256, 0x01140740> _keyboard_state;
 
-    static SDL_Window * window;
-    static SDL_Surface * surface;
-    static SDL_Palette * palette;
-    static std::vector<SDL_Cursor *> _cursors;
+    static SDL_Window* window;
+    static SDL_Surface* surface;
+    static SDL_Palette* palette;
+    static std::vector<SDL_Cursor*> _cursors;
 
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
 
 #ifdef _WIN32
-    void * hwnd()
+    void* hwnd()
     {
         return _hwnd;
     }
@@ -97,7 +96,7 @@ namespace openloco::ui
         return screen_info->height;
     }
 
-    void update_palette(const palette_entry_t * entries, int32_t index, int32_t count);
+    void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
 
     // 0x00405409
     void create_window()
@@ -210,7 +209,7 @@ namespace openloco::ui
     }
 
     // 0x00407FCD
-    void get_cursor_pos(int32_t &x, int32_t &y)
+    void get_cursor_pos(int32_t& x, int32_t& y)
     {
         SDL_GetMouseState(&x, &y);
     }
@@ -308,7 +307,7 @@ namespace openloco::ui
             }
 
             // Copy pixels from the virtual screen buffer to the surface
-            auto &dpi = gfx::screen_dpi();
+            auto& dpi = gfx::screen_dpi();
             if (dpi.bits != nullptr)
             {
                 std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
@@ -326,12 +325,12 @@ namespace openloco::ui
         }
     }
 
-    void update_palette(const palette_entry_t * entries, int32_t index, int32_t count)
+    void update_palette(const palette_entry_t* entries, int32_t index, int32_t count)
     {
         SDL_Color base[256];
         for (int i = 0; i < 256; i++)
         {
-            auto &src = entries[i];
+            auto& src = entries[i];
             auto dst = base[i];
             base[i].r = src.r;
             base[i].g = src.g;
@@ -341,18 +340,18 @@ namespace openloco::ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
-    static void enqueue_text(const char * text)
+    static void enqueue_text(const char* text)
     {
         if (text != nullptr && text[0] != '\0')
         {
-            #pragma pack(push, 1)
+#pragma pack(push, 1)
             struct key_queue_item_t
             {
                 uint32_t a;
                 uint32_t b;
             };
-            #pragma pack(pop)
-            auto queue = (key_queue_item_t *)0x0113E300;
+#pragma pack(pop)
+            auto queue = (key_queue_item_t*)0x0113E300;
             auto index = addr<0x00525388, uint32_t>();
             queue[index].b = text[0];
         }
@@ -361,7 +360,7 @@ namespace openloco::ui
     // 0x00406FBA
     static void enqueue_key(uint32_t keycode)
     {
-        ((void(*)(uint32_t))(0x00406FBA))(keycode);
+        ((void (*)(uint32_t))(0x00406FBA))(keycode);
 
         switch (keycode)
         {
@@ -490,7 +489,7 @@ namespace openloco::ui
     bool process_messages()
     {
 #ifdef _LOCO_WIN32_
-        return ((bool(*)())0x0040726D)();
+        return ((bool (*)())0x0040726D)();
 #else
         using namespace input;
 
@@ -517,34 +516,36 @@ namespace openloco::ui
                     addr<0x0113E9D4, int32_t>() = e.button.x;
                     addr<0x0113E9D8, int32_t>() = e.button.y;
                     addr<0x00525324, int32_t>() = 1;
-                    switch (e.button.button) {
-                    case SDL_BUTTON_LEFT:
-                        input::enqueue_mouse_button(mouse_button::left_down);
-                        addr<0x0113E8A0, int32_t>() = 1;
-                        break;
-                    case SDL_BUTTON_RIGHT:
-                        input::enqueue_mouse_button(mouse_button::right_down);
-                        addr<0x0113E0C0, int32_t>() = 1;
-                        addr<0x005251C8, int32_t>() = 1;
-                        addr<0x01140845, uint8_t>() = 0x80;
-                        break;
+                    switch (e.button.button)
+                    {
+                        case SDL_BUTTON_LEFT:
+                            input::enqueue_mouse_button(mouse_button::left_down);
+                            addr<0x0113E8A0, int32_t>() = 1;
+                            break;
+                        case SDL_BUTTON_RIGHT:
+                            input::enqueue_mouse_button(mouse_button::right_down);
+                            addr<0x0113E0C0, int32_t>() = 1;
+                            addr<0x005251C8, int32_t>() = 1;
+                            addr<0x01140845, uint8_t>() = 0x80;
+                            break;
                     }
                     break;
                 case SDL_MOUSEBUTTONUP:
                     addr<0x0113E9D4, int32_t>() = e.button.x;
                     addr<0x0113E9D8, int32_t>() = e.button.y;
                     addr<0x00525324, int32_t>() = 1;
-                    switch (e.button.button) {
-                    case SDL_BUTTON_LEFT:
-                        input::enqueue_mouse_button(mouse_button::left_up);
-                        addr<0x0113E8A0, int32_t>() = 0;
-                        break;
-                    case SDL_BUTTON_RIGHT:
-                        input::enqueue_mouse_button(mouse_button::right_up);
-                        addr<0x0113E0C0, int32_t>() = 0;
-                        addr<0x005251C8, int32_t>() = 0;
-                        addr<0x01140845, uint8_t>() = 0;
-                        break;
+                    switch (e.button.button)
+                    {
+                        case SDL_BUTTON_LEFT:
+                            input::enqueue_mouse_button(mouse_button::left_up);
+                            addr<0x0113E8A0, int32_t>() = 0;
+                            break;
+                        case SDL_BUTTON_RIGHT:
+                            input::enqueue_mouse_button(mouse_button::right_up);
+                            addr<0x0113E0C0, int32_t>() = 0;
+                            addr<0x005251C8, int32_t>() = 0;
+                            addr<0x01140845, uint8_t>() = 0;
+                            break;
                     }
                     break;
                 case SDL_KEYDOWN:
@@ -569,7 +570,7 @@ namespace openloco::ui
 #endif
     }
 
-    void show_message_box(const std::string &title, const std::string &message)
+    void show_message_box(const std::string& title, const std::string& message)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }

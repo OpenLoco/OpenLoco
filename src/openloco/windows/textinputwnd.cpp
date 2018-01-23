@@ -9,4 +9,3 @@ namespace openloco::ui::textinput
         windowmgr::close(window_type::text_input);
     }
 }
-

@@ -2,9 +2,9 @@
 #include <cstring>
 
 #ifdef _WIN32
-    #define NOMINMAX
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif // _WIN32
 
 #include "interop.hpp"
@@ -14,9 +14,9 @@
 
 #if defined(__GNUC__)
 #ifdef __clang__
-#define DISABLE_OPT __attribute__((noinline,optnone))
+#define DISABLE_OPT __attribute__((noinline, optnone))
 #else
-#define DISABLE_OPT __attribute__((noinline,optimize("O0")))
+#define DISABLE_OPT __attribute__((noinline, optimize("O0")))
 #endif // __clang__
 #else
 #define DISABLE_OPT
@@ -54,7 +54,7 @@ namespace openloco::interop
         _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
-// clang-format off
+        // clang-format off
         __asm {
             push ebp
             push address
@@ -74,7 +74,7 @@ namespace openloco::interop
         }
 // clang-format on
 #else
-// clang-format off
+        // clang-format off
         __asm__ volatile ("\
         \n\
         push %%ebx \n\
@@ -107,13 +107,13 @@ namespace openloco::interop
     }
 #endif
 
-    static int32_t DISABLE_OPT call_byref(int32_t address, int32_t *_eax, int32_t *_ebx, int32_t *_ecx, int32_t *_edx, int32_t *_esi, int32_t *_edi, int32_t *_ebp)
+    static int32_t DISABLE_OPT call_byref(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
         int32_t result = 0;
         _originalAddress = address;
 #if defined(PLATFORM_X86)
 #ifdef _MSC_VER
-// clang-format off
+        // clang-format off
         __asm {
             // Store C's base pointer
             push ebp
@@ -185,7 +185,7 @@ namespace openloco::interop
         }
 // clang-format on
 #else
-// clang-format off
+        // clang-format off
         __asm__ volatile ("\
         \n\
         /* Store C's base pointer*/     \n\
@@ -267,7 +267,7 @@ namespace openloco::interop
     }
 
 #ifdef _ENABLE_CALL_BYVALUE_
-    static int32_t call_byval(int32_t address, const registers &registers)
+    static int32_t call_byval(int32_t address, const registers& registers)
     {
         return call_byval(
             address,
@@ -287,7 +287,7 @@ namespace openloco::interop
         return call(address, regs);
     }
 
-    int32_t call(int32_t address, registers &registers)
+    int32_t call(int32_t address, registers& registers)
     {
         return call_byref(
             address,
@@ -305,7 +305,7 @@ namespace openloco::interop
         return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
     }
 
-    void read_memory(uint32_t address, void * data, size_t size)
+    void read_memory(uint32_t address, void* data, size_t size)
     {
 #ifdef _WIN32
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -314,11 +314,11 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy(data, (void *)address, size);
+        std::memcpy(data, (void*)address, size);
 #endif // _WIN32
     }
 
-    void write_memory(uint32_t address, const void * data, size_t size)
+    void write_memory(uint32_t address, const void* data, size_t size)
     {
 #ifdef _WIN32
         if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -327,13 +327,13 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy((void *)address, data, size);
+        std::memcpy((void*)address, data, size);
 #endif // _WIN32
     }
 
-    save_state::save_state(uintptr_t begin, uintptr_t end) :
-        begin(begin),
-        end(end)
+    save_state::save_state(uintptr_t begin, uintptr_t end)
+        : begin(begin)
+        , end(end)
     {
         state.resize(end - begin);
         read_memory(begin, state.data(), state.size());
@@ -344,7 +344,7 @@ namespace openloco::interop
         interop::write_memory(begin, state.data(), state.size());
     }
 
-    void save_state::log_diff(const save_state &lhs, const save_state &rhs)
+    void save_state::log_diff(const save_state& lhs, const save_state& rhs)
     {
         // TODO should we allow different base addresses?
         //      if so then we need to do extra work for that.
@@ -361,7 +361,7 @@ namespace openloco::interop
         }
     }
 
-    bool operator==(const save_state &lhs, const save_state &rhs)
+    bool operator==(const save_state& lhs, const save_state& rhs)
     {
         return std::equal(
             lhs.get_state().begin(),
@@ -370,7 +370,7 @@ namespace openloco::interop
             rhs.get_state().end());
     }
 
-    bool operator!=(const save_state &lhs, const save_state &rhs)
+    bool operator!=(const save_state& lhs, const save_state& rhs)
     {
         return !(lhs == rhs);
     }

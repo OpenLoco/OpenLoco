@@ -1,20 +1,20 @@
+#include "vehicle.h"
 #include "../audio/audio.h"
 #include "../config.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../utility/numeric.hpp"
 #include "thingmgr.h"
-#include "vehicle.h"
 
 using namespace openloco;
 using namespace openloco::interop;
 
-vehicle * vehicle::next_vehicle()
+vehicle* vehicle::next_vehicle()
 {
     return thingmgr::get<vehicle>(next_thing_id);
 }
 
-vehicle * vehicle::next_car()
+vehicle* vehicle::next_car()
 {
     return thingmgr::get<vehicle>(next_car_id);
 }
@@ -63,7 +63,7 @@ bool vehicle::update()
 }
 
 // 0x00440BEB
-static thing * create_black_smoke(loc16 loc)
+static thing* create_black_smoke(loc16 loc)
 {
     auto t = thingmgr::create_thing();
     if (t != nullptr)
@@ -125,7 +125,7 @@ void vehicle::sub_4BA8D4()
             }
 
             v = v->next_car()->next_car()->next_car();
-            vehicle * u;
+            vehicle* u;
             do
             {
                 if (v->type == 6)
@@ -135,8 +135,7 @@ void vehicle::sub_4BA8D4()
                 u = v->next_car()->next_car();
                 if (u->type != 4)
                     v = u->next_car();
-            }
-            while (u->type != 4);
+            } while (u->type != 4);
         }
     }
 }

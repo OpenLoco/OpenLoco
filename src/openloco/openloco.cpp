@@ -1,15 +1,15 @@
 #include <algorithm>
 #include <iostream>
+#include <setjmp.h>
 #include <string>
 #include <vector>
-#include <setjmp.h>
 
 #ifdef _WIN32
-    // timeGetTime is unavailable if we use lean and mean
-    // #define WIN32_LEAN_AND_MEAN
-    #define NOMINMAX
-    #include <windows.h>
-    #include <objbase.h>
+// timeGetTime is unavailable if we use lean and mean
+// #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <objbase.h>
+#include <windows.h>
 #endif
 
 #include "audio/audio.h"
@@ -22,6 +22,7 @@
 #include "localisation/string_ids.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
+#include "platform/platform.h"
 #include "progressbar.h"
 #include "scenariomgr.h"
 #include "things/thingmgr.h"
@@ -29,7 +30,6 @@
 #include "ui.h"
 #include "utility/numeric.hpp"
 #include "windowmgr.h"
-#include "platform/platform.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -68,12 +68,12 @@ namespace openloco
     void tick_wait();
 
 #ifdef _WIN32
-    void * hInstance()
+    void* hInstance()
     {
         return ghInstance;
     }
 
-    const char * lpCmdLine()
+    const char* lpCmdLine()
     {
         return glpCmdLine;
     }
@@ -106,31 +106,31 @@ namespace openloco
         return regs.eax != 0;
     }
 
-    #ifdef _NO_LOCO_WIN32_
+#ifdef _NO_LOCO_WIN32_
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
-    static void * malloc(size_t size)
+    static void* malloc(size_t size)
     {
-        return ((void *(*)(size_t))0x004D1401)(size);
+        return ((void* (*)(size_t))0x004D1401)(size);
     }
 
     /**
      * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
      */
-    static void * realloc(void * address, size_t size)
+    static void* realloc(void* address, size_t size)
     {
-        return ((void *(*)(void *, size_t))0x004D1B28)(address, size);
+        return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
     }
 
     /**
      * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
      */
-    static void free(void * address)
+    static void free(void* address)
     {
-        ((void(*)(void *))0x004D1355)(address);
+        ((void (*)(void*))0x004D1355)(address);
     }
-    #endif // _NO_LOCO_WIN32_
+#endif // _NO_LOCO_WIN32_
 
     static void sub_4062D1()
     {
@@ -139,7 +139,7 @@ namespace openloco
 
     static void sub_406417()
     {
-        ((void(*)())0x00406417)();
+        ((void (*)())0x00406417)();
     }
 
     static void sub_40567E()
@@ -157,9 +157,9 @@ namespace openloco
         call(0x004062E0);
     }
 
-    static bool sub_4034FC(int32_t &a, int32_t &b)
+    static bool sub_4034FC(int32_t& a, int32_t& b)
     {
-        auto result = ((int32_t(*)(int32_t &, int32_t &))(0x004034FC))(a, b);
+        auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
         return result != 0;
     }
 
@@ -172,9 +172,9 @@ namespace openloco
     }
 
     // 0x00407FFD
-    static bool is_already_running(const char * mutexName)
+    static bool is_already_running(const char* mutexName)
     {
-        auto result = ((int32_t(*)(const char *))(0x00407FFD))(mutexName);
+        auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
@@ -297,7 +297,7 @@ namespace openloco
 
         // When Locomotion wants to jump to the end of a tick, it sets ESP
         // to some static memory that we define
-        static loco_global<void *, 0x0050C1A6> tickJumpESP;
+        static loco_global<void*, 0x0050C1A6> tickJumpESP;
         static uint8_t spareStackMemory[2048];
         tickJumpESP = spareStackMemory + sizeof(spareStackMemory);
 
@@ -317,8 +317,7 @@ namespace openloco
             // This address is where those routines jump back to to end the tick prematurely
             register_hook(
                 0x0046AD71,
-                [](registers &regs) -> uint8_t
-                {
+                [](registers& regs) -> uint8_t {
                     longjmp(tickJump, 1);
                 });
 
@@ -366,7 +365,7 @@ namespace openloco
                         esi += addr<0x00F2538C, int32_t>();
                         esi += 2;
                         esi += addr<0x00F25394, int32_t>();
-                        addr<0x00F2539C, int32_t>() |= *((int32_t *)esi);
+                        addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
                         call(0x00403575);
                     }
                 }
@@ -431,13 +430,13 @@ namespace openloco
                                 numUpdates = 1;
                             }
                             break;
-                        case input_state::widget_pressed:break;
-                        case input_state::positioning_window:break;
-                        case input_state::viewport_right:break;
-                        case input_state::viewport_left:break;
-                        case input_state::scroll_left:break;
-                        case input_state::resizing:break;
-                        case input_state::scroll_right:break;
+                        case input_state::widget_pressed: break;
+                        case input_state::positioning_window: break;
+                        case input_state::viewport_right: break;
+                        case input_state::viewport_left: break;
+                        case input_state::scroll_left: break;
+                        case input_state::resizing: break;
+                        case input_state::scroll_right: break;
                     }
                 }
                 addr<0x0052622E, int16_t>() += numUpdates;
@@ -463,9 +462,7 @@ namespace openloco
                 call(0x0043D9D4);
                 call(0x0048A78D);
                 play_title_screen_music();
-                if (tutorial::state() != tutorial::tutorial_state::none &&
-                    addr<0x0052532C, int32_t>() == 0 &&
-                    addr<0x0113E2E4, int32_t>() < 0x40)
+                if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() == 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
 
@@ -558,8 +555,7 @@ namespace openloco
         do
         {
             // Idle loop for a 40 FPS
-        }
-        while (platform::get_time() - last_tick_time < 25);
+        } while (platform::get_time() - last_tick_time < 25);
     }
 
     void prompt_tick_loop(std::function<bool()> tickAction)
@@ -576,8 +572,7 @@ namespace openloco
             do
             {
                 // Idle loop for a 40 FPS
-            }
-            while (platform::get_time() - startTime < 25);
+            } while (platform::get_time() - startTime < 25);
         }
     }
 
@@ -667,27 +662,26 @@ namespace openloco
                 // TODO extra clean up code
             }
         }
-        catch (const std::exception &ex)
+        catch (const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
         }
     }
 }
 
-extern "C"
-{
+extern "C" {
 
 #ifdef _WIN32
-    /**
+/**
      * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
      * be built as a stand alone application.
      */
-    __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-    {
-        openloco::glpCmdLine = lpCmdLine;
-        openloco::ghInstance = hInstance;
-        openloco::main();
-        return 0;
-    }
+__declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    openloco::glpCmdLine = lpCmdLine;
+    openloco::ghInstance = hInstance;
+    openloco::main();
+    return 0;
+}
 #endif
 }

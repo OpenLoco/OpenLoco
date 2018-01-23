@@ -3,31 +3,30 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
-#include <cstring>
 #ifdef _WIN32
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #else
-    #include <sys/mman.h>
+#include <sys/mman.h>
 #endif // _WIN32
 #include "interop.hpp"
 
 namespace openloco::interop
 {
-    static void * _hookTableAddress;
+    static void* _hookTableAddress;
     static int32_t _hookTableOffset;
     static int32_t _maxHooks = 1000;
     constexpr auto HOOK_BYTE_COUNT = 140;
 
     static registers _hookRegisters;
 
-    // This macro writes a little-endian 4-byte long value into *data
-    // It is used to avoid type punning.
-    #define write_address_strictalias(data, addr) \
-        *(data + 0) = ((addr) & 0x000000ff) >> 0; \
-        *(data + 1) = ((addr) & 0x0000ff00) >> 8; \
-        *(data + 2) = ((addr) & 0x00ff0000) >> 16; \
-        *(data + 3) = ((addr) & 0xff000000) >> 24;
+// This macro writes a little-endian 4-byte long value into *data
+// It is used to avoid type punning.
+#define write_address_strictalias(data, addr) \
+    *(data + 0) = ((addr)&0x000000ff) >> 0;   \
+    *(data + 1) = ((addr)&0x0000ff00) >> 8;   \
+    *(data + 2) = ((addr)&0x00ff0000) >> 16;  \
+    *(data + 3) = ((addr)&0xff000000) >> 24;
 
     static void hookfunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
     {
@@ -140,30 +139,32 @@ namespace openloco::interop
 
         data[i++] = 0xC3; // retn
 
-    #ifdef _WIN32
+#ifdef _WIN32
         WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
-    #else
+#else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        memcpy((void *)address, data, i);
-    #endif // _WIN32
+        memcpy((void*)address, data, i);
+#endif // _WIN32
     }
 
     void register_hook(uintptr_t address, hook_function function)
     {
-        if (!_hookTableAddress) {
+        if (!_hookTableAddress)
+        {
             size_t size = _maxHooks * HOOK_BYTE_COUNT;
-    #ifdef _WIN32
+#ifdef _WIN32
             _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    #else
+#else
             _hookTableAddress = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
             if (_hookTableAddress == MAP_FAILED)
             {
                 perror("mmap");
                 exit(1);
             }
-    #endif // _WIN32
+#endif // _WIN32
         }
-        if (_hookTableOffset > _maxHooks) {
+        if (_hookTableOffset > _maxHooks)
+        {
             return;
         }
         uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
@@ -178,7 +179,6 @@ namespace openloco::interop
 
         write_memory(address, data, i);
 
-
         hookfunc(hookaddress, (uintptr_t)function, 0);
         _hookTableOffset++;
     }
@@ -189,8 +189,7 @@ namespace openloco::interop
         passAddress = address;
         register_hook(
             address,
-            [](registers &regs)->uint8_t
-            {
+            [](registers& regs) -> uint8_t {
                 std::printf("                    fn %u\n", passAddress);
                 return 0;
             });
@@ -202,7 +201,7 @@ namespace openloco::interop
         write_memory(address, &opcode, sizeof(opcode));
     }
 
-    void write_jmp(uint32_t address, void * fn)
+    void write_jmp(uint32_t address, void* fn)
     {
         uint8_t data[5] = { 0 };
         data[0] = 0xE9; // JMP

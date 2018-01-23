@@ -12,8 +12,8 @@ namespace openloco
         constexpr uint8_t unknown_2 = 1 << 2;
     }
 
-    void * hInstance();
-    const char * lpCmdLine();
+    void* hInstance();
+    const char* lpCmdLine();
     bool is_editor_mode();
     bool is_title_mode();
     bool is_paused();
