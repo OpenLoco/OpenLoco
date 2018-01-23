@@ -124,16 +124,17 @@ void vehicle::sub_4BA8D4()
                 }
             }
 
-            v = v->next_car()->next_car();
+            v = v->next_car()->next_car()->next_car();
             vehicle * u;
             do
             {
-                v = v->next_car();
                 if (v->type == 6)
                 {
                     return;
                 }
                 u = v->next_car()->next_car();
+                if (u->type != 4)
+                    v = u->next_car();
             }
             while (u->type != 4);
         }
