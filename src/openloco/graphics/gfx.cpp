@@ -13,13 +13,25 @@ using namespace openloco::interop;
 namespace openloco::gfx
 {
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global_array<g1_element_t, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
+    static loco_global_array<g1_element, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
     drawpixelinfo_t& screen_dpi()
     {
         return _screen_dpi;
+    }
+
+    static std::vector<g1_element> convert_elements(const std::vector<g1_element32_t> &elements32)
+    {
+        auto elements = std::vector<g1_element>();
+        elements.reserve(elements32.size());
+        std::transform(
+            elements32.begin(),
+            elements32.end(),
+            std::back_inserter(elements),
+            [](g1_element32_t src) { return g1_element(src); });
+        return elements;
     }
 
     // 0x0044733C
@@ -49,11 +61,12 @@ namespace openloco::gfx
         }
 
         // Read element headers
-        auto elements = std::vector<g1_element_t>(header.num_entries);
-        if (!stream.read((char *)elements.data(), header.num_entries * sizeof(g1_element_t)))
+        auto elements32 = std::vector<g1_element32_t>(header.num_entries);
+        if (!stream.read((char *)elements32.data(), header.num_entries * sizeof(g1_element)))
         {
             throw std::runtime_error("Reading g1 element headers failed.");
         }
+        auto elements = convert_elements(elements32);
 
         // Read element data
         auto elementData = std::make_unique<std::byte[]>(header.total_size);

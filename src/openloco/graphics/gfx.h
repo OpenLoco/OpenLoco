@@ -32,15 +32,38 @@ namespace openloco::gfx
         uint32_t total_size;
     };
 
-    struct g1_element_t
+    struct g1_element32_t
     {
-        uint8_t * offset;       // 0x00
+        uint32_t offset;        // 0x00
         int16_t width;          // 0x04
         int16_t height;         // 0x06
         int16_t x_offset;       // 0x08
         int16_t y_offset;       // 0x0A
         uint16_t flags;         // 0x0C
         int16_t unused;         // 0x0E
+    };
+
+    // A version that can be 64-bit when ready...
+    struct g1_element
+    {
+        uint8_t * offset = nullptr;
+        int16_t width = 0;
+        int16_t height = 0;
+        int16_t x_offset = 0;
+        int16_t y_offset = 0;
+        uint16_t flags = 0;
+        int16_t unused = 0;
+
+        g1_element(const g1_element32_t &src)
+            : offset((uint8_t *)src.offset),
+              width(src.width),
+              height(src.height),
+              x_offset(src.x_offset),
+              y_offset(src.y_offset),
+              flags(src.flags),
+              unused(src.unused)
+        {
+        }
     };
 
     #pragma pack(pop)
