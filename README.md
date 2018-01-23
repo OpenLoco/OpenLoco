@@ -19,8 +19,6 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 |-------------|---------|-------------|----------|
 | **master**  | [![AppVeyor](https://ci.appveyor.com/api/projects/status/fpq6ptmma5d3e389?svg=true)](https://ci.appveyor.com/project/IntelOrca/OpenLoco) | [![Travis CI](https://travis-ci.org/OpenRCT2/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenRCT2/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenRCT2/OpenLoco.svg)](https://github.com/OpenRCT2/OpenLoco/releases) |
 
-| **master**  |         |             | [![GitHub release](https://img.shields.io/github/release/OpenRCT2/OpenLoco.svg)](https://github.com/OpenRCT2/OpenLoco/releases) |
-
 ### Chat
 You only need a GitHub or Twitter account to access these channels.
 
