@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
     <ClCompile Include="config.cpp" />
+    <ClCompile Include="console.cpp" />
     <ClCompile Include="envionment.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
@@ -50,6 +51,7 @@
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="console.h" />
     <ClInclude Include="environment.h" />
     <ClInclude Include="graphics\colours.h" />
     <ClInclude Include="input.h" />
