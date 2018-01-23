@@ -67,6 +67,7 @@ namespace openloco
         };
 
         void move_to(loc16 loc);
+        void invalidate_sprite();
     };
 #pragma pack(pop)
 }

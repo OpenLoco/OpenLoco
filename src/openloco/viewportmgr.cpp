@@ -7,9 +7,9 @@
 using namespace openloco::ui;
 using namespace openloco::interop;
 
-loco_global<viewport *, 0x0113D820> _viewports;
+loco_global_array<viewport *, 10, 0x0113D820> _viewports;
 
-viewport * openloco::ui::viewportmgr::begin()
+viewport ** openloco::ui::viewportmgr::begin()
 {
     return _viewports;
 }

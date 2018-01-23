@@ -21,13 +21,6 @@ loco_global<vehicle *, 0x01136128> vehicle_1136128;
 loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
-<<<<<<< a292391919882a169ee318fdd348add509376bb3
-loco_global<unk_113D758 *, 0x0113D820> vehicle_var_113D820;
-loco_global<uint8_t, 0x0050AF25> vehicle_var_50AF25;
-=======
-
-loco_global<uint8_t, 0x0050AF25> vehicle_zoom_max;
->>>>>>> Use OpenRCT2 viewport names
 
 vehicle * vehicle::next_vehicle()
 {
@@ -252,61 +245,4 @@ void openloco::vehicle::sub_4AAC4E()
         call(0x004AB2A7, regs);
         break;
     }
-}
-
-// 0x4CBB01
-void openloco::vehicle::invalidate_sprite()
-{
-    if (sprite_left == 0x8000)
-    {
-        return;
-    }
-
-    int16_t left = sprite_left;
-    int16_t top = sprite_top;
-    int16_t right = sprite_right;
-    int16_t bottom = sprite_bottom;
-    for (auto viewport = openloco::ui::viewportmgr::begin();
-        viewport != nullptr;
-        viewport++)
-    {
-        if (viewport->zoom > vehicle_zoom_max)
-            continue;
-
-        if (sprite_right <= viewport->view_x)
-            continue;
-
-        if (sprite_bottom <= viewport->view_y)
-            continue;
-
-        if (sprite_left >= viewport->view_x + viewport->view_width)
-            continue;
-
-        left = std::max(sprite_left, viewport->view_x);
-        right = std::min<int16_t>(sprite_right, viewport->view_x + viewport->view_width);
-
-        if (sprite_top >= viewport->view_y + viewport->view_height)
-            continue;
-
-        bottom = std::max(sprite_bottom, viewport->view_y);
-        top = std::min<int16_t>(sprite_top, viewport->view_y + viewport->view_height);
-
-        left -= viewport->view_x;
-        bottom -= viewport->view_y;
-        right -= viewport->view_x;
-        top -= viewport->view_y;
-
-        left >>= viewport->zoom;
-        bottom >>= viewport->zoom;
-        right >>= viewport->zoom;
-        top >>= viewport->zoom;
-
-        left += viewport->x;
-        bottom += viewport->y;
-        right += viewport->x;
-        top += viewport->y;
-
-        openloco::gfx::set_dirty_blocks(left, top, right, bottom);
-    }
-
 }

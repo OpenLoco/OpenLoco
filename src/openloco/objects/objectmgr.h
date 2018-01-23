@@ -52,7 +52,7 @@ namespace openloco
     struct rock_object;
     struct water_object;
     struct land_object;
-    struct town_name_object;
+    struct town_names_object;
     struct wall_object; 
     struct train_signal_object;
     struct level_crossing_object;

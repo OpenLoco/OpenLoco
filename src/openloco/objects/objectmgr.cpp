@@ -14,7 +14,7 @@ namespace openloco::objectmgr
     loco_global_array<rock_object *, 8, 0x0050C658> _rockObjects;
     loco_global_array<water_object *, 1, 0x0050C678> _waterObjects;
     loco_global_array<land_object *, 32, 0x0050C67C> _landObjects;
-    loco_global_array<town_name_object *, 1, 0x0050C6FC> _townNameObjects;
+    loco_global_array<town_names_object *, 1, 0x0050C6FC> _townNamesObjects;
     loco_global_array<cargo_object *, 32, 0x0050C700> _cargoObjects;
     loco_global_array<wall_object *, 32, 0x0050C780> _wallObjects;
     loco_global_array<train_signal_object *, 16, 0x0050C800> _trainSignalObjects;
@@ -60,41 +60,42 @@ namespace openloco::objectmgr
 
     size_t get_max_objects(object_type type)
     {
-        static size_t counts[] = {
-            1,   // interface,
-            128, // sound,
-            1,   // currency,
-            32,  // steam,
-            8,   // rock,
-            1,   // water,
-            32,  // surface,
-            1,   // town_name,
-            32,  // cargo,
-            32,  // wall,
-            16,  // train_signal,
-            4,   // level_crossing,
-            1,   // street_light,
-            16,  // tunnel,
-            8,   // bridge,
-            16,  // train_station,
-            8,   // track_extra,
-            8,   // track,
-            16,  // road_station,
-            4,   // road_extra,
-            8,   // road,
-            8,   // airport,
-            8,   // dock,
-            224, // vehicle,
-            64,  // tree,
-            1,   // snow,
-            1,   // climate,
-            1,   // hill_shapes,
-            128, // building,
-            1,   // scaffolding,
-            16,  // industry,
-            1,   // region,
-            32,  // competitors,
-            1    // scenario_text,
+        static size_t counts[] =
+        {
+            1,      // interface,
+            128,    // sound,
+            1,      // currency,
+            32,     // steam,
+            8,      // rock,
+            1,      // water,
+            32,     // surface,
+            1,      // town_names,
+            32,     // cargo,
+            32,     // wall,
+            16,     // train_signal,
+            4,      // level_crossing,
+            1,      // street_light,
+            16,     // tunnel,
+            8,      // bridge,
+            16,     // train_station,
+            8,      // track_extra,
+            8,      // track,
+            16,     // road_station,
+            4,      // road_extra,
+            8,      // road,
+            8,      // airport,
+            8,      // dock,
+            224,    // vehicle,
+            64,     // tree,
+            1,      // snow,
+            1,      // climate,
+            1,      // hill_shapes,
+            128,    // building,
+            1,      // scaffolding,
+            16,     // industry,
+            1,      // region,
+            32,     // competitors,
+            1       // scenario_text,
         };
         return counts[(size_t)type];
     };

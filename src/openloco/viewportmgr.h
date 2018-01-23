@@ -4,6 +4,6 @@
 
 namespace openloco::ui::viewportmgr
 {
-    viewport * begin();
+    viewport ** begin();
     viewport * end();
 }
