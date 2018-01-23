@@ -12,8 +12,14 @@ using namespace openloco::interop;
 
 namespace openloco::gfx
 {
+    namespace g1_expected_count
+    {
+        constexpr uint32_t disc = 0x101A; // And GOG
+        constexpr uint32_t steam = 0x0F38;
+    }
+
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global_array<g1_element, LOCO_G1_ELEMENT_COUNT, 0x9E2424> _g1Elements;
+    static loco_global_array<g1_element, g1_expected_count::disc, 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
@@ -62,11 +68,11 @@ namespace openloco::gfx
             throw std::runtime_error("Reading g1 file header failed.");
         }
 
-        if (header.num_entries != LOCO_G1_ELEMENT_COUNT)
+        if (header.num_entries != g1_expected_count::disc)
         {
             std::cout << "G1 element count doesn't match expected value: ";
-            std::cout << "Expected " << LOCO_G1_ELEMENT_COUNT << "; Got " << header.num_entries << std::endl;
-            if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
+            std::cout << "Expected " << g1_expected_count::disc << "; Got " << header.num_entries << std::endl;
+            if (header.num_entries == g1_expected_count::steam)
             {
                 std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
             }
@@ -90,7 +96,7 @@ namespace openloco::gfx
 
         // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
         // This code copies the closest variants into their place, and moves other elements accordingly
-        if (header.num_entries == LOCO_G1_ELEMENT_COUNT_STEAM)
+        if (header.num_entries == g1_expected_count::steam)
         {
             // Extra two tutorial images
             std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
