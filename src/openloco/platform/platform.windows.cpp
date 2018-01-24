@@ -14,6 +14,11 @@
 #include "../utility/string.hpp"
 #include "platform.h"
 
+int main(int argc, const char** argv)
+{
+    return 0;
+}
+
 namespace openloco::platform
 {
     uint32_t get_time()

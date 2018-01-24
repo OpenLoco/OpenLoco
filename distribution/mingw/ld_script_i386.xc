@@ -14,9 +14,10 @@ SECTIONS
 {
   /* Make the virtual address and file offset synced if the alignment is
      lower than the target page size. */
-  . = SIZEOF_HEADERS;
+  .loco_text      0x401000 : { *(.loco_text) }
+  .loco_data               : { *(.loco_data) }
   . = ALIGN(__section_alignment__);
-  .text  __image_base__ + ( __section_alignment__ < 0x1000 ? . : __section_alignment__ ) :
+  .text . + ( __section_alignment__ < 0x1000 ? . : __section_alignment__ ) :
   {
      KEEP(*(.init))
     *(.text)
