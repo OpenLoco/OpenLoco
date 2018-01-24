@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cinttypes>
 #include <cstring>
 #include <stdexcept>
 
@@ -346,7 +347,7 @@ namespace openloco::interop
             if (left != right)
             {
                 uint32_t addr = lhs.begin + i;
-                std::printf("0x%06X: %02X  %02X\n", addr, (uint8_t)left, (uint8_t)right);
+                std::printf("0x%06" PRIX32 ": %02" PRIX8 "  %02" PRIX8 "\n", addr, (uint8_t)left, (uint8_t)right);
             }
         }
     }
