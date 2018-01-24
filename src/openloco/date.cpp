@@ -8,7 +8,7 @@ using namespace openloco::interop;
 namespace openloco
 {
     static loco_global<uint32_t, 0x00525E2C> _current_day;
-    static loco_global<uint16_t, 0x00525E30> _day_counter;
+    static loco_global<uint16_t, 0x00525E30> _day_progression;
     static loco_global<int16_t, 0x00525E32> _current_year;
     static loco_global<int8_t, 0x00525E34> _current_month;
     static loco_global<int8_t, 0x00525E35> _current_day_of_month;
@@ -39,13 +39,13 @@ namespace openloco
         constexpr uint16_t increment = 682; // ~17s
 
         // Check if counter is going to wrap
-        if (_day_counter + increment > std::numeric_limits<uint16_t>::max())
+        if (_day_progression + increment > std::numeric_limits<uint16_t>::max())
         {
             _current_day++;
             result = true;
         }
 
-        _day_counter += increment;
+        _day_progression += increment;
         return result;
     }
 
