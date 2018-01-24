@@ -8,7 +8,9 @@
 #ifdef _WIN32
 // timeGetTime is unavailable if we use lean and mean
 // #define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <objbase.h>
 #include <windows.h>
 #endif
