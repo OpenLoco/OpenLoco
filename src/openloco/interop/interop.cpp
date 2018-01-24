@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstring>
+#include <stdexcept>
 
 #ifdef _WIN32
 #define NOMINMAX
