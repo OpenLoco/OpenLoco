@@ -55,7 +55,7 @@ if (UNIX)
         # bespoke linker script so they can be placed at predefined VMAs.
         add_custom_command(
             OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
+            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,code --writable-text
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
