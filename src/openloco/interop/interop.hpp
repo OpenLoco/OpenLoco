@@ -17,21 +17,8 @@ namespace std
 }
 #endif
 
-#ifdef USE_MMAP
-#if defined(PLATFORM_64BIT)
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x200000000)
-#elif defined(PLATFORM_32BIT)
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x09000000)
-#else
-#error "Unknown platform"
-#endif
-#else
-#define GOOD_PLACE_FOR_DATA_SEGMENT ((uintptr_t)0x8A4000)
-#endif
-
 namespace openloco::interop
 {
-
 #pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.
@@ -99,9 +86,21 @@ namespace openloco::interop
     assert_struct_size(registers, 7 * 4);
 #pragma pack(pop)
 
+#ifndef USE_MMAP
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x008A4000;
+#else
+#if defined(PLATFORM_32BIT)
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x09000000;
+#elif defined(PLATFORM_64BIT)
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x200000000;
+#else
+#error "Unknown platform"
+#endif
+#endif
+
     constexpr uintptr_t remap_address(uintptr_t locoAddress)
     {
-        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x8A4000 + locoAddress;
+        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x008A4000 + locoAddress;
     }
 
     template<uint32_t TAddress, typename T>
