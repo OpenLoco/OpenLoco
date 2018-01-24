@@ -141,6 +141,7 @@ endif()
 
 if (APPLE)
     target_link_libraries(${PROJECT} "-framework Cocoa")
+    target_compile_definitions(${PROJECT} PRIVATE COMPAT_STD_BYTE=1)
 endif ()
 
 if(EXISTS /Users/Marijn/Downloads/SDL2-2.0.7/build/libSDL2.dylib)

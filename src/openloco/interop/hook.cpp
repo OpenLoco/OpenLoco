@@ -216,7 +216,7 @@ namespace openloco::interop
     static void* _smallHooks;
     static uint8_t* _offset;
 
-    static void* makeJump(uint32_t address, void* fn)
+    static void* make_jump(uint32_t address, void* fn)
     {
 
         if (!_smallHooks)
@@ -262,7 +262,7 @@ namespace openloco::interop
     {
         uint8_t data[4] = { 0 };
 
-        void* hook = makeJump(address, fn);
+        void* hook = make_jump(address, fn);
 
         uintptr_t addr = reinterpret_cast<uintptr_t>(hook);
 

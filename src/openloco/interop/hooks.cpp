@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <system_error>
