@@ -11,7 +11,7 @@ endif()
 INCLUDE(FindPkgConfig)
 
 set(USE_BOOST_FS_DEFAULT OFF)
-if(APPLE)
+if(APPLE OR MINGW)
 	set(USE_BOOST_FS_DEFAULT ON)
 endif()
 
@@ -124,9 +124,16 @@ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/in
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+if (MINGW)
+    add_library(${PROJECT} ${OLOCO_SOURCES})
+    target_link_libraries(${PROJECT} winmm)
+else ()
+    add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+endif ()
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
-add_dependencies(${PROJECT} segfiles)
+if (NOT MINGW)
+    add_dependencies(${PROJECT} segfiles)
+endif()
 target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 if (USE_BOOST_FILESYSTEM)
     target_link_libraries(${PROJECT} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
