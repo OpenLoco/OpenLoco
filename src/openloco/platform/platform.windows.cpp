@@ -14,12 +14,12 @@
 
 namespace openloco::platform
 {
-    uint32_t openloco::platform::get_time()
+    uint32_t get_time()
     {
         return timeGetTime();
     }
 
-    fs::path openloco::platform::get_user_directory()
+    fs::path get_user_directory()
     {
         auto result = fs::path();
         PWSTR path = nullptr;
