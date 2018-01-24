@@ -116,7 +116,6 @@ if (USE_BOOST_FILESYSTEM)
         set(Boost_USE_STATIC_LIBS ON)
         find_package(Boost COMPONENTS filesystem REQUIRED)
     endif ()
-
 endif()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
