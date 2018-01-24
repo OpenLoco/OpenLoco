@@ -29,6 +29,8 @@
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
+    <ClCompile Include="town.cpp" />
+    <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="utility\string.cpp" />
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
@@ -70,6 +72,8 @@
     <ClInclude Include="things\thing.h" />
     <ClInclude Include="things\thingmgr.h" />
     <ClInclude Include="things\vehicle.h" />
+    <ClInclude Include="town.h" />
+    <ClInclude Include="townmgr.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="utility\collection.hpp" />
     <ClInclude Include="utility\numeric.hpp" />

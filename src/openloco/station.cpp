@@ -22,6 +22,14 @@ namespace openloco
         return (station_id_t)index;
     }
 
+    // 0x0048F7D1
+    void station::sub_48F7D1()
+    {
+        registers regs;
+        regs.ebx = id();
+        call(0x0048F7D1, regs);
+    }
+
     // 0x00492793
     bool station::update_cargo()
     {
@@ -164,5 +172,13 @@ namespace openloco
         registers regs;
         regs.ebp = (int32_t)this;
         call(0x004929DB, regs);
+    }
+
+    // 0x004CBA2D
+    void station::invalidate()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x004CBA2D, regs);
     }
 }

@@ -29,6 +29,7 @@
 #include "platform/platform.h"
 #include "progressbar.h"
 #include "scenariomgr.h"
+#include "stationmgr.h"
 #include "things/thingmgr.h"
 #include "tutorial.h"
 #include "ui.h"
@@ -578,7 +579,7 @@ namespace openloco
         {
             if (update_day_counter())
             {
-                call(0x0048B244);
+                stationmgr::sub_48B244();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
