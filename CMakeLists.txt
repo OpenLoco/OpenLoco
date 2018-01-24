@@ -107,10 +107,15 @@ PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 SET(SDL2LIBS ${SDL2_DEFINITIONS})
 
 if (USE_BOOST_FILESYSTEM)
-    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_LIBS OFF)
     set(BOOST_INCLUDEDIR "/Users/Marijn/Downloads/boost_1_66_0")
     set(BOOST_LIBRARYDIR "/Users/Marijn/Downloads/boost_1_66_0/stage/lib")
-    find_package(Boost COMPONENTS filesystem REQUIRED)
+    find_package(Boost COMPONENTS filesystem)
+    if (NOT Boost_FOUND)
+        message("Dynamic Boost not found, retrying with static")
+        set(Boost_USE_STATIC_LIBS ON)
+        find_package(Boost COMPONENTS filesystem REQUIRED)
+    endif ()
 endif()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
