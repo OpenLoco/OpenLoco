@@ -21,6 +21,9 @@ namespace openloco::environment
     loco_global_array<char, 257, 0x0050B635> _path_objects;
 
     static fs::path get_sub_path(path_id id);
+#ifndef _WIN32
+    static fs::path find_similar_file(const fs::path& path);
+#endif
 
     static bool validate_loco_install_path(const fs::path& path)
     {
@@ -31,7 +34,15 @@ namespace openloco::environment
         else
         {
             auto g1Path = path / get_sub_path(path_id::g1);
-            return fs::exists(g1Path);
+            bool g1Exists = fs::exists(g1Path);
+#ifndef _WIN32
+            if (!g1Exists)
+            {
+                g1Path = find_similar_file(g1Path);
+                g1Exists = !g1Path.empty();
+            }
+#endif
+            return g1Exists;
         }
     }
 
