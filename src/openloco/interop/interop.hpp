@@ -7,6 +7,15 @@
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 
+#ifdef COMPAT_STD_BYTE
+namespace std
+{
+    enum class byte : unsigned char
+    {
+    };
+}
+#endif
+
 namespace openloco::interop
 {
 
@@ -157,10 +166,10 @@ namespace openloco::interop
     private:
         uintptr_t begin = 0;
         uintptr_t end = 0;
-        std::vector<uint8_t> state;
+        std::vector<std::byte> state;
 
     public:
-        const std::vector<uint8_t>& get_state() const
+        const std::vector<std::byte>& get_state() const
         {
             return state;
         }
