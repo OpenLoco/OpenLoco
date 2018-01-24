@@ -101,6 +101,27 @@ namespace openloco::environment
         return _path_install.get();
     }
 
+#ifndef _WIN32
+    /**
+     * Performs a case-insensitive search on the containing directory of
+     * the given file and returns the first match.
+     */
+    static fs::path find_similar_file(const fs::path& path)
+    {
+        auto expectedFilename = path.filename().generic_string();
+        auto directory = path.parent_path();
+        for (auto& item : fs::directory_iterator(directory))
+        {
+            auto& p = item.path();
+            if (utility::iequals(p.filename().generic_string(), expectedFilename))
+            {
+                return p;
+            }
+        }
+        return fs::path();
+    }
+#endif // _WIN32
+
     // 0x004416B5
     fs::path get_path(path_id id)
     {
@@ -109,7 +130,15 @@ namespace openloco::environment
         auto result = basePath / subPath;
         if (!fs::exists(result))
         {
-            std::cerr << "File not found: " << result << std::endl;
+#ifndef _WIN32
+            result = find_similar_file(result);
+            if (result.empty())
+            {
+#endif
+                std::cerr << "File not found: " << result << std::endl;
+#ifndef _WIN32
+            }
+#endif
         }
         return result;
     }
