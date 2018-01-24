@@ -356,7 +356,7 @@ namespace openloco::interop
             if (left != right)
             {
                 uint32_t addr = lhs.begin + i;
-                std::printf("0x%06lX: %02hhX  %02hhX\n", addr, left, right);
+                std::printf("0x%06X: %02hhX  %02hhX\n", addr, left, right);
             }
         }
     }
