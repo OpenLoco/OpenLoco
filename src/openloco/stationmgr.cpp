@@ -1,5 +1,5 @@
 #include "stationmgr.h"
-#include "company.h"
+#include "companymgr.h"
 #include "interop/interop.hpp"
 #include "townmgr.h"
 #include "window.h"
@@ -31,11 +31,11 @@ namespace openloco::stationmgr
     // 0x00437F29
     // arg0: ah
     // arg1: al
-    static void sub_437F29(uint8_t arg0, uint8_t arg1)
+    static void sub_437F29(company_id_t cid, uint8_t arg1)
     {
         constexpr uint8_t byte_4F9462[] = { 0, 31, 10, 7, 31, 10, 31, 31, 11 };
-        static loco_global_array<uint8_t, 9, 0x0053A334> byte_53A334;
-        byte_53A334[(arg0 * 36776) + arg1] = byte_4F9462[arg1];
+        auto company = companymgr::get(cid);
+        company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
     // 0x0048B244
