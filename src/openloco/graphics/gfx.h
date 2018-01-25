@@ -50,6 +50,7 @@ namespace openloco::gfx
         uint16_t flags = 0;
         int16_t unused = 0;
 
+        g1_element() = default;
         g1_element(const g1_element32_t &src)
             : offset((uint8_t *)src.offset),
               width(src.width),
