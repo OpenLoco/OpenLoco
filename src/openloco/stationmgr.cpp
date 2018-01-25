@@ -45,7 +45,7 @@ namespace openloco::stationmgr
         {
             if (!town.empty())
             {
-                town.var_06 &= town_flags::flag_1;
+                town.flags &= town_flags::rating_adjusted;
             }
         }
 
@@ -74,9 +74,9 @@ namespace openloco::stationmgr
                 if (station.update_cargo())
                 {
                     auto town = townmgr::get(station.town);
-                    if (town != nullptr && !(town->var_06 & town_flags::flag_1))
+                    if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
                     {
-                        town->var_06 |= town_flags::flag_1;
+                        town->flags |= town_flags::rating_adjusted;
                         town->adjust_company_rating(station.company, 1);
                     }
                 }
