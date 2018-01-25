@@ -8,6 +8,12 @@
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 
+#if defined(__GNUC__)
+#define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
+#else
+#define FORCE_ALIGN_ARG_POINTER
+#endif
+
 #ifdef COMPAT_STD_BYTE
 namespace std
 {
