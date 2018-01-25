@@ -1,22 +1,121 @@
 #include "gfx.h"
+#include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <memory>
 
 using namespace openloco::interop;
 
 namespace openloco::gfx
 {
-    loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    namespace g1_expected_count
+    {
+        constexpr uint32_t disc = 0x101A; // And GOG
+        constexpr uint32_t steam = 0x0F38;
+    }
+
+    static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    static loco_global_array<g1_element, g1_expected_count::disc, 0x9E2424> _g1Elements;
+
+    static std::unique_ptr<std::byte[]> _g1Buffer;
 
     drawpixelinfo_t& screen_dpi()
     {
         return _screen_dpi;
     }
 
+    static std::vector<g1_element> convert_elements(const std::vector<g1_element32_t>& elements32)
+    {
+        auto elements = std::vector<g1_element>();
+        elements.reserve(elements32.size());
+        std::transform(
+            elements32.begin(),
+            elements32.end(),
+            std::back_inserter(elements),
+            [](g1_element32_t src) { return g1_element(src); });
+        return elements;
+    }
+
+    template<typename T1, typename T2, typename T3>
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2>& stream, T3* dst, size_t count)
+    {
+        return stream.read((char*)dst, count * sizeof(T3));
+    }
+
+    template<typename T1, typename T2, typename T3>
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2>& stream, T3& dst)
+    {
+        return read_data(stream, &dst, 1);
+    }
+
     // 0x0044733C
     void load_g1()
     {
-        call(0x0044733C);
+        auto g1Path = environment::get_path(environment::path_id::g1);
+        std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
+        if (!stream)
+        {
+            throw std::runtime_error("Opening g1 file failed.");
+        }
+
+        g1_header_t header;
+        if (!read_data(stream, header))
+        {
+            throw std::runtime_error("Reading g1 file header failed.");
+        }
+
+        if (header.num_entries != g1_expected_count::disc)
+        {
+            std::cout << "G1 element count doesn't match expected value: ";
+            std::cout << "Expected " << g1_expected_count::disc << "; Got " << header.num_entries << std::endl;
+            if (header.num_entries == g1_expected_count::steam)
+            {
+                std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
+            }
+        }
+
+        // Read element headers
+        auto elements32 = std::vector<g1_element32_t>(header.num_entries);
+        if (!read_data(stream, elements32.data(), header.num_entries))
+        {
+            throw std::runtime_error("Reading g1 element headers failed.");
+        }
+        auto elements = convert_elements(elements32);
+
+        // Read element data
+        auto elementData = std::make_unique<std::byte[]>(header.total_size);
+        if (!read_data(stream, elementData.get(), header.total_size))
+        {
+            throw std::runtime_error("Reading g1 elements failed.");
+        }
+        stream.close();
+
+        // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
+        // This code copies the closest variants into their place, and moves other elements accordingly
+        if (header.num_entries == g1_expected_count::steam)
+        {
+            elements.resize(g1_expected_count::disc);
+
+            // Extra two tutorial images
+            std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
+            std::copy_n(&elements[3551], 1, &elements[3549]);
+            std::copy_n(&elements[3551], 1, &elements[3550]);
+
+            // Extra font variant
+            std::copy_n(&elements[1788], 223, &elements[3898]);
+        }
+
+        // Adjust memory offsets
+        for (auto& element : elements)
+        {
+            element.offset += (uintptr_t)elementData.get();
+        }
+
+        _g1Buffer = std::move(elementData);
+        std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
     // 0x00447485
