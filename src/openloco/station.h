@@ -42,7 +42,7 @@ namespace openloco
     {
         string_id name; // 0x00
         uint8_t pad_02[0x28 - 0x02];
-        uint8_t var_28;
+        uint8_t company; // 0x28
         uint8_t var_29;
         uint16_t var_2A;
         town_id_t town;                      // 0x2C
