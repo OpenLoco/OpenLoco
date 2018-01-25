@@ -6,7 +6,6 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
-#include "../common.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../graphics/gfx.h"

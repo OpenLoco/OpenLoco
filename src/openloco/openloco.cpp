@@ -16,7 +16,6 @@
 #endif
 
 #include "audio/audio.h"
-#include "common.h"
 #include "config.h"
 #include "environment.h"
 #include "graphics/gfx.h"
