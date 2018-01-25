@@ -33,4 +33,4 @@ matrix:
 
 script:
     - mkdir build
-    - docker run -v $(pwd):/openloco -w /openloco/build -i -t ubuntu bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja"
+    - docker run -v $(pwd):/openloco -w /openloco/build -i -t ubuntu bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0"
