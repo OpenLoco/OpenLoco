@@ -17,6 +17,7 @@
 
 #include "audio/audio.h"
 #include "config.h"
+#include "date.h"
 #include "environment.h"
 #include "graphics/gfx.h"
 #include "input.h"
@@ -68,9 +69,10 @@ namespace openloco
     loco_global<uint32_t, 0x00525E1C> _srand1;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    void tick_logic(int32_t count);
-    void tick_logic();
-    void tick_wait();
+    static void tick_logic(int32_t count);
+    static void tick_logic();
+    static void tick_wait();
+    static void date_tick();
 
 #ifdef _WIN32
     void* hInstance()
@@ -507,7 +509,7 @@ namespace openloco
         tick_wait();
     }
 
-    void tick_logic(int32_t count)
+    static void tick_logic(int32_t count)
     {
         for (int32_t i = 0; i < count; i++)
         {
@@ -522,7 +524,7 @@ namespace openloco
     }
 
     // 0x0046ABCB
-    void tick_logic()
+    static void tick_logic()
     {
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
@@ -530,7 +532,7 @@ namespace openloco
         addr<0x00525FD0, int32_t>() = _srand1;
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = addr<0x009C871C, uint8_t>();
-        call(0x004968C7);
+        date_tick();
         call(0x00463ABA);
         call(0x004C56F6);
         call(0x00496B6D);
@@ -558,6 +560,74 @@ namespace openloco
             }
             addr<0x0050C197, uint8_t>() = 0;
             sub_431A8A(bx, dx);
+        }
+    }
+
+    static void sub_496A84(int32_t edx)
+    {
+        // This is responsible for updating the snow line
+        registers regs;
+        regs.edx = edx;
+        call(0x00496A84, regs);
+    }
+
+    // 0x004968C7
+    static void date_tick()
+    {
+        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        {
+            if (update_day_counter())
+            {
+                call(0x0048B244);
+                call(0x004B94CF);
+                call(0x00453487);
+                call(0x004284DB);
+                call(0x004969DA);
+                call(0x00439BA5);
+
+                auto yesterday = calc_date(current_day() - 1);
+                auto today = calc_date(current_day());
+                set_date(today);
+                sub_496A84(today.day_of_olympiad);
+                if (today.month != yesterday.month)
+                {
+                    // End of every month
+                    addr<0x0050A004, uint16_t>() += 2;
+                    addr<0x00526243, uint16_t>()++;
+                    call(0x0049748C);
+                    call(0x0045383B);
+                    call(0x0043037B);
+                    call(0x0042F213);
+                    call(0x004C3C54);
+
+                    if (today.year <= 2029)
+                    {
+                        call(0x0046E239);
+                    }
+
+                    // clang-format off
+                    if (today.month == month_id::january ||
+                        today.month == month_id::april ||
+                        today.month == month_id::july ||
+                        today.month == month_id::october)
+                    // clang-format on
+                    {
+                        // Start of every season?
+                        call(0x00487FC1);
+                    }
+
+                    if (today.year != yesterday.year)
+                    {
+                        // End of every year
+                        call(0x004312C7);
+                        call(0x004796A9);
+                        call(0x004C3A9E);
+                        call(0x0047AB9B);
+                    }
+                }
+
+                call(0x00437FB8);
+            }
         }
     }
 
