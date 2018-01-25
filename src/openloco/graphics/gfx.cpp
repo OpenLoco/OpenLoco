@@ -102,8 +102,7 @@ namespace openloco::gfx
 
             // Extra two tutorial images
             std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
-            std::copy_n(&elements[3551], 1, &elements[3549]);
-            std::copy_n(&elements[3551], 1, &elements[3550]);
+            std::copy_n(&elements[3550], 1, &elements[3549]);
 
             // Extra font variant
             std::copy_n(&elements[1788], 223, &elements[3898]);
