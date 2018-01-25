@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <stdexcept>
 #include <vector>
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
@@ -18,7 +19,6 @@ namespace std
 
 namespace openloco::interop
 {
-
 #pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.
@@ -86,10 +86,25 @@ namespace openloco::interop
     assert_struct_size(registers, 7 * 4);
 #pragma pack(pop)
 
-    uintptr_t remap_address(uintptr_t locoAddress);
+#ifndef USE_MMAP
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x008A4000;
+#else
+#if defined(PLATFORM_32BIT)
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x09000000;
+#elif defined(PLATFORM_64BIT)
+    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x200000000;
+#else
+#error "Unknown platform"
+#endif
+#endif
+
+    constexpr uintptr_t remap_address(uintptr_t locoAddress)
+    {
+        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x008A4000 + locoAddress;
+    }
 
     template<uint32_t TAddress, typename T>
-    T& addr()
+    constexpr T& addr()
     {
         return *((T*)remap_address(TAddress));
     }
@@ -141,12 +156,24 @@ namespace openloco::interop
             return get();
         }
 
+        T& operator[](int idx)
+        {
+#ifndef NDEBUG
+            if (idx < 0 || static_cast<size_t>(idx) >= size())
+            {
+                throw std::out_of_range("loco_global_array: bounds check violation!");
+            }
+#endif
+
+            return (get())[idx];
+        }
+
         T* get()
         {
             return &(addr<TAddress, T>());
         }
 
-        size_t size()
+        constexpr size_t size()
         {
             return TSize;
         }
