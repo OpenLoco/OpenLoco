@@ -1,12 +1,11 @@
+#include "gfx.h"
+#include "../environment.h"
+#include "../interop/interop.hpp"
+#include "../ui.h"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <memory>
-
-#include "gfx.h"
-#include "../interop/interop.hpp"
-#include "../environment.h"
-#include "../ui.h"
 
 using namespace openloco::interop;
 
@@ -28,7 +27,7 @@ namespace openloco::gfx
         return _screen_dpi;
     }
 
-    static std::vector<g1_element> convert_elements(const std::vector<g1_element32_t> &elements32)
+    static std::vector<g1_element> convert_elements(const std::vector<g1_element32_t>& elements32)
     {
         auto elements = std::vector<g1_element>();
         elements.reserve(elements32.size());
@@ -41,13 +40,13 @@ namespace openloco::gfx
     }
 
     template<typename T1, typename T2, typename T3>
-    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2> &stream, T3 * dst, size_t count)
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2>& stream, T3* dst, size_t count)
     {
-        return stream.read((char *)dst, count * sizeof(T3));
+        return stream.read((char*)dst, count * sizeof(T3));
     }
 
     template<typename T1, typename T2, typename T3>
-    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2> &stream, T3 &dst)
+    std::basic_istream<T1, T2>& read_data(std::basic_istream<T1, T2>& stream, T3& dst)
     {
         return read_data(stream, &dst, 1);
     }
@@ -102,14 +101,15 @@ namespace openloco::gfx
 
             // Extra two tutorial images
             std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
-            std::copy_n(&elements[3550], 1, &elements[3549]);
+            std::copy_n(&elements[3551], 1, &elements[3549]);
+            std::copy_n(&elements[3551], 1, &elements[3550]);
 
             // Extra font variant
             std::copy_n(&elements[1788], 223, &elements[3898]);
         }
 
         // Adjust memory offsets
-        for (auto &element : elements)
+        for (auto& element : elements)
         {
             element.offset += (uintptr_t)elementData.get();
         }

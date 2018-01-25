@@ -21,7 +21,6 @@ namespace openloco::gfx
 
     drawpixelinfo_t& screen_dpi();
 
-
     struct g1_header_t
     {
         uint32_t num_entries;
@@ -30,19 +29,19 @@ namespace openloco::gfx
 
     struct g1_element32_t
     {
-        uint32_t offset;        // 0x00
-        int16_t width;          // 0x04
-        int16_t height;         // 0x06
-        int16_t x_offset;       // 0x08
-        int16_t y_offset;       // 0x0A
-        uint16_t flags;         // 0x0C
-        int16_t unused;         // 0x0E
+        uint32_t offset;  // 0x00
+        int16_t width;    // 0x04
+        int16_t height;   // 0x06
+        int16_t x_offset; // 0x08
+        int16_t y_offset; // 0x0A
+        uint16_t flags;   // 0x0C
+        int16_t unused;   // 0x0E
     };
 
     // A version that can be 64-bit when ready...
     struct g1_element
     {
-        uint8_t * offset = nullptr;
+        uint8_t* offset = nullptr;
         int16_t width = 0;
         int16_t height = 0;
         int16_t x_offset = 0;
@@ -51,19 +50,19 @@ namespace openloco::gfx
         int16_t unused = 0;
 
         g1_element() = default;
-        g1_element(const g1_element32_t &src)
-            : offset((uint8_t *)src.offset),
-              width(src.width),
-              height(src.height),
-              x_offset(src.x_offset),
-              y_offset(src.y_offset),
-              flags(src.flags),
-              unused(src.unused)
+        g1_element(const g1_element32_t& src)
+            : offset((uint8_t*)src.offset)
+            , width(src.width)
+            , height(src.height)
+            , x_offset(src.x_offset)
+            , y_offset(src.y_offset)
+            , flags(src.flags)
+            , unused(src.unused)
         {
         }
     };
 
-    #pragma pack(pop)
+#pragma pack(pop)
 
     drawpixelinfo_t& screen_dpi();
 
