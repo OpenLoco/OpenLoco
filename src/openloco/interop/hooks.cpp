@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../common.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../graphics/gfx.h"
@@ -25,11 +26,9 @@ using namespace openloco;
 #ifdef _MSC_VER
 #define STDCALL __stdcall
 #define CDECL __cdecl
-#define FORCE_ALIGN_ARG_POINTER
 #elif defined(__GNUC__)
 #define STDCALL __attribute__((stdcall))
 #define CDECL __attribute__((cdecl))
-#define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #error Unknown compiler, please define STDCALL and CDECL
 #endif

@@ -10,6 +10,7 @@
 #else
 #include <sys/mman.h>
 #endif // _WIN32
+#include "../common.h"
 #include "interop.hpp"
 
 namespace openloco::interop
@@ -190,7 +191,7 @@ namespace openloco::interop
         passAddress = address;
         register_hook(
             address,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 std::printf("                    fn %08" PRIXPTR "\n", passAddress);
                 return 0;
             });
