@@ -1,4 +1,5 @@
 #include "station.h"
+#include "company.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "windowmgr.h"
@@ -140,7 +141,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 && var_28 != addr<0x00525E3C, uint8_t>() && var_28 != addr<0x00525E3D, uint8_t>())
+        if (var_2A != 384 && is_player_company(company))
         {
             rating += 120;
         }

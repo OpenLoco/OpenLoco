@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
+    <ClCompile Include="company.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="date.cpp" />
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
+    <ClInclude Include="company.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="date.h" />

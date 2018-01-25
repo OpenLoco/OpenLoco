@@ -1,5 +1,6 @@
 #pragma once
 
+#include "company.h"
 #include <cstdint>
 #include <limits>
 
@@ -24,12 +25,12 @@ namespace openloco
         uint8_t pad_02[0x06 - 0x02];
         uint16_t var_06;
         uint8_t pad_08[0x3A - 0x08];
-        int16_t var_3A[8]; // guess?
-        uint8_t pad_42[0x58 - 0x42];
-        uint16_t var_58;
+        int16_t company_ratings[15];    // 0x3A
+        uint16_t companies_with_rating; // 0x58
         uint8_t pad_5A[0x270 - 0x5A];
 
         bool empty() const;
+        void adjust_company_rating(company_id_t cid, int amount);
     };
 #pragma pack(pop)
 }

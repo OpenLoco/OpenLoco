@@ -1,4 +1,5 @@
 #include "stationmgr.h"
+#include "company.h"
 #include "interop/interop.hpp"
 #include "townmgr.h"
 #include "window.h"
@@ -55,15 +56,9 @@ namespace openloco::stationmgr
                 if (station.var_1CE == 0)
                 {
                     station.var_29++;
-                    if (station.var_29 != 5)
+                    if (station.var_29 != 5 && is_player_company(station.company))
                     {
-                        // clang-format off
-                        if (station.var_28 == addr<0x00525E3C, uint8_t>() ||
-                            station.var_28 == addr<0x00525E3D, uint8_t>())
-                        // clang-format on
-                        {
-                            sub_437F29(station.var_28, 8);
-                        }
+                        sub_437F29(station.company, 8);
                     }
                     if (station.var_29 >= 10)
                     {
@@ -82,11 +77,7 @@ namespace openloco::stationmgr
                     if (town != nullptr && !(town->var_06 & town_flags::flag_1))
                     {
                         town->var_06 |= town_flags::flag_1;
-                        town->var_58 |= (1 << station.var_28);
-                        if (town->var_3A[station.var_28] < 1000)
-                        {
-                            town->var_3A[station.var_28]++;
-                        }
+                        town->adjust_company_rating(station.company, 1);
                     }
                 }
             }
