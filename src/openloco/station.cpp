@@ -1,4 +1,5 @@
 #include "station.h"
+#include "company.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "windowmgr.h"
@@ -20,6 +21,14 @@ namespace openloco
             index = station_id::null;
         }
         return (station_id_t)index;
+    }
+
+    // 0x0048F7D1
+    void station::sub_48F7D1()
+    {
+        registers regs;
+        regs.ebx = id();
+        call(0x0048F7D1, regs);
     }
 
     // 0x00492793
@@ -132,7 +141,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 && var_28 != addr<0x00525E3C, uint8_t>() && var_28 != addr<0x00525E3D, uint8_t>())
+        if (var_2A != 384 && is_player_company(company))
         {
             rating += 120;
         }
@@ -164,5 +173,13 @@ namespace openloco
         registers regs;
         regs.ebp = (int32_t)this;
         call(0x004929DB, regs);
+    }
+
+    // 0x004CBA2D
+    void station::invalidate()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x004CBA2D, regs);
     }
 }

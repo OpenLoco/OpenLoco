@@ -15,6 +15,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\audio.cpp" />
+    <ClCompile Include="company.cpp" />
+    <ClCompile Include="companymgr.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="date.cpp" />
@@ -29,6 +31,8 @@
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
+    <ClCompile Include="town.cpp" />
+    <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="utility\string.cpp" />
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
@@ -52,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
+    <ClInclude Include="company.h" />
+    <ClInclude Include="companymgr.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="date.h" />
@@ -70,6 +76,8 @@
     <ClInclude Include="things\thing.h" />
     <ClInclude Include="things\thingmgr.h" />
     <ClInclude Include="things\vehicle.h" />
+    <ClInclude Include="town.h" />
+    <ClInclude Include="townmgr.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="utility\collection.hpp" />
     <ClInclude Include="utility\numeric.hpp" />
