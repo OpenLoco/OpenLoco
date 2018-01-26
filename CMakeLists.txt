@@ -67,7 +67,7 @@ if (UNIX OR MINGW)
         )
         add_custom_command(
             OUTPUT openloco_data_section.o
-            COMMAND ${COMPILER_PREFIX}objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
+            COMMAND ${COMPILER_PREFIX}objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,data
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
