@@ -211,6 +211,7 @@ void openloco::vehicle::sub_4AAC4E()
     vehicle_object* vehicleObject = get_vehicle_object(object_type);
     registers regs;
     regs.esi = (int32_t)this;
+    regs.ebp = (int32_t)vehicleObject;
     regs.bl = vehicleObject->var_24[var_54].var_05;
     if (vehicleObject->var_24[var_54].var_05 == 0)
     {
