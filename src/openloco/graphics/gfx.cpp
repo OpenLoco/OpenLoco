@@ -55,7 +55,7 @@ namespace openloco::gfx
     void load_g1()
     {
         auto g1Path = environment::get_path(environment::path_id::g1);
-        std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
+        std::ifstream stream(g1Path.make_preferred().string(), std::ios::in | std::ios::binary);
         if (!stream)
         {
             throw std::runtime_error("Opening g1 file failed.");

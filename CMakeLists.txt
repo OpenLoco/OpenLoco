@@ -23,14 +23,20 @@ endif (APPLE)
 
 set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wundef -Wmissing-declarations -Winit-self -Warray-bounds -Waddress -Wchar-subscripts -Wenum-compare")
 
-set(OBJ_FORMAT "elf32-i386")
+if (MINGW)
+    set(OBJ_FORMAT "pe-i386")
+    set(LINKER_PLATFORM "mingw")
+else ()
+    set(OBJ_FORMAT "elf32-i386")
+    set(LINKER_PLATFORM "linux")
+endif ()
 set(LINKER_SCRIPT "ld_script_i386.xc")
 
 
 # Handle creating the rct2 text and data files on OS X and Linux
 # See details in src/openrct2.c:openrct2_setup_rct2_segment for how the values
 # were derived.
-if (UNIX)
+if (UNIX OR MINGW)
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
     set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
     set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
@@ -55,13 +61,13 @@ if (UNIX)
         # bespoke linker script so they can be placed at predefined VMAs.
         add_custom_command(
             OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
+            COMMAND ${COMPILER_PREFIX}objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,code --writable-text
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
         add_custom_command(
             OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
+            COMMAND ${COMPILER_PREFIX}objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,data
             DEPENDS segfiles
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
@@ -74,10 +80,10 @@ if (UNIX)
         )
         # can't use GLOB here, as the files don't exist yet at cmake-time
         set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/${LINKER_PLATFORM}/${LINKER_SCRIPT}\"")
     endif ()
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LOCO_SEGMENT_LINKER_FLAGS}")
-endif (UNIX)
+endif ()
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LOCO_SEGMENT_LINKER_FLAGS}")
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
@@ -123,25 +129,29 @@ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/in
 set(CMAKE_CXX_STANDARD 17)
 
 if (MINGW)
-    add_library(${PROJECT} ${OLOCO_SOURCES})
-    target_link_libraries(${PROJECT} winmm)
-else ()
-    add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+    add_library(libopenloco ${OLOCO_SOURCES})
+    target_link_libraries(libopenloco winmm)
 endif ()
+add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+target_link_libraries(${PROJECT} winmm)
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
+target_link_libraries(libopenloco SDL2 ${SDL2LIBS})
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
 endif()
 target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 if (USE_BOOST_FILESYSTEM)
     target_link_libraries(${PROJECT} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+    target_link_libraries(libopenloco ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
     target_compile_definitions(${PROJECT} PRIVATE BOOST_SYSTEM_NO_DEPRECATED=1 BOOST_FILESYSTEM_NO_DEPRECATED=1 _OPENLOCO_USE_BOOST_FS_=1)
+    target_compile_definitions(libopenloco PRIVATE BOOST_SYSTEM_NO_DEPRECATED=1 BOOST_FILESYSTEM_NO_DEPRECATED=1 _OPENLOCO_USE_BOOST_FS_=1)
 else()
 	target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
 if (MINGW)
 	target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600)
+    target_compile_definitions(libopenloco PRIVATE _WIN32_WINNT=0x0600)
 endif()
 
 if (APPLE)

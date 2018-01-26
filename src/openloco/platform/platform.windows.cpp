@@ -10,9 +10,16 @@
 #include <shlobj.h>
 #include <windows.h>
 
+#include "../openloco.h"
 #include "../ui.h"
 #include "../utility/string.hpp"
 #include "platform.h"
+
+int main(int argc, const char** argv)
+{
+    openloco::main();
+    return 0;
+}
 
 namespace openloco::platform
 {
