@@ -7,14 +7,13 @@
 using namespace openloco::ui;
 using namespace openloco::interop;
 
-loco_global_array<viewport *, 10, 0x0113D820> _viewports;
-
-viewport ** openloco::ui::viewportmgr::begin()
+namespace openloco::ui::viewportmgr
 {
-    return _viewports;
-}
+    loco_global_array<viewport *, max_viewports, 0x0113D820> _viewports;
 
-viewport * openloco::ui::viewportmgr::end()
-{
-    return nullptr;
+    std::array<viewport*, max_viewports> viewports()
+    {
+        auto arr = (std::array<viewport*, max_viewports>*)_viewports.get();
+        return *arr;
+    }
 }

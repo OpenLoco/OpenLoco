@@ -32,11 +32,8 @@ void openloco::thing::invalidate_sprite()
     int16_t top = sprite_top;
     int16_t right = sprite_right;
     int16_t bottom = sprite_bottom;
-    for (auto viewport_arr = openloco::ui::viewportmgr::begin();
-        *viewport_arr != nullptr;
-        viewport_arr++)
+    for (auto& viewport : openloco::ui::viewportmgr::viewports())
     {
-        auto viewport = *viewport_arr;
         if (viewport->zoom > thing_zoom_max)
             continue;
 
