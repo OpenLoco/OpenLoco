@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 
 namespace openloco
 {
@@ -54,7 +54,7 @@ namespace openloco
     struct water_object;
     struct land_object;
     struct town_names_object;
-    struct wall_object; 
+    struct wall_object;
     struct train_signal_object;
     struct level_crossing_object;
     struct street_light_object;
@@ -82,8 +82,8 @@ namespace openloco
 
     struct object_repository_item
     {
-        object * objects;
-        uint32_t * object_entry_extendeds;
+        object* objects;
+        uint32_t* object_entry_extendeds;
     };
 }
 
@@ -92,5 +92,5 @@ namespace openloco::objectmgr
     void load_index();
     cargo_object* get_cargo_object(size_t id);
     size_t get_max_objects(object_type type);
-    vehicle_object * get_vehicle_object(size_t id);
+    vehicle_object* get_vehicle_object(size_t id);
 }

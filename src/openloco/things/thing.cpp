@@ -1,8 +1,8 @@
-#include <algorithm>
+#include "thing.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"
-#include "thing.h"
+#include <algorithm>
 
 using namespace openloco;
 using namespace openloco::interop;

@@ -44,17 +44,17 @@ namespace openloco::ui
 
     struct viewport
     {
-        int16_t width;                   // 0x00
-        int16_t height;                  // 0x02
-        int16_t x;                       // 0x04
-        int16_t y;                       // 0x06
-        int16_t view_x;                  // 0x08
-        int16_t view_y;                  // 0x0A
-        int16_t view_width;              // 0x0C
-        int16_t view_height;             // 0x0E
-        uint8_t zoom;                    // 0x10
+        int16_t width;       // 0x00
+        int16_t height;      // 0x02
+        int16_t x;           // 0x04
+        int16_t y;           // 0x06
+        int16_t view_x;      // 0x08
+        int16_t view_y;      // 0x0A
+        int16_t view_width;  // 0x0C
+        int16_t view_height; // 0x0E
+        uint8_t zoom;        // 0x10
         uint8_t pad_11;
-        uint16_t var_12;                 // 0x12, maybe flags
+        uint16_t var_12; // 0x12, maybe flags
     };
-    #pragma pack(pop)
+#pragma pack(pop)
 }
