@@ -4,7 +4,6 @@
 #include "townmgr.h"
 #include "window.h"
 #include "windowmgr.h"
-#include <array>
 
 using namespace openloco::interop;
 using namespace openloco::ui;

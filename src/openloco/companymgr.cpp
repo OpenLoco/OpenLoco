@@ -1,6 +1,5 @@
 #include "companymgr.h"
 #include "interop/interop.hpp"
-#include <array>
 
 using namespace openloco::interop;
 
