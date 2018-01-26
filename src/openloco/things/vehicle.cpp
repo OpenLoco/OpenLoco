@@ -19,8 +19,10 @@ loco_global<vehicle*, 0x01136118> vehicle_1136118;
 loco_global<vehicle*, 0x01136124> vehicle_1136124;
 loco_global<vehicle*, 0x01136128> vehicle_1136128;
 loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
-loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
-loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
+loco_global<vehicle*, 0x01136120> vehicle_1136120;
+loco_global<uint8_t, 0x01136237> vehicle_var_1136237;          // var_28 related?
+loco_global<uint8_t, 0x01136238> vehicle_var_1136238;          // var_28 related?
+loco_global_array<uint8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 
 vehicle* vehicle::next_vehicle()
 {
@@ -194,7 +196,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
     sub_4AAC4E();
-    call(0x004AAB0B, regs);
+    sub_4AAB0B();
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
@@ -245,5 +247,103 @@ void openloco::vehicle::sub_4AAC4E()
         case 8:
             call(0x004AB2A7, regs);
             break;
+    }
+}
+
+// 0x004AAB0B
+void openloco::vehicle::sub_4AAB0B()
+{
+    int32_t eax = vehicle_var_1136130 >> 3;
+    if (var_38 & (1 << 1))
+    {
+        eax = -eax;
+    }
+
+    var_44 += eax & 0xFFFF;
+    if (object_sprite_type == 0xFF)
+        return;
+
+    auto vehicle_object = get_vehicle_object(object_type);
+    uint8_t al = 0;
+    if (vehicle_object->sprites[object_sprite_type].flags & (1 << 6))
+    {
+        vehicle* veh3 = vehicle_1136120;
+        al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->sprites[object_sprite_type].var_02);
+        al = std::min(al, vehicle_object->sprites[object_sprite_type].var_02);
+    }
+    else if (vehicle_object->sprites[object_sprite_type].var_05 & (1 << 0))
+    {
+        vehicle* veh2 = vehicle_1136124;
+        vehicle* veh3 = vehicle_1136120;
+        al = var_46;
+        uint8_t ah = 0;
+        if (veh3->var_56 < 0x230000)
+        {
+            ah = 0;
+        }
+        else
+        {
+            ah = vehicle_arr_4F865C[veh2->var_2C >> 2];
+            if (((veh2->var_2C >> 3) == 12) || ((veh2->var_2C >> 3) == 13))
+            {
+                if (veh2->var_2E >= 48)
+                {
+                    ah = -ah;
+                }
+            }
+
+            if (ah < 0)
+            {
+                if (var_38 & (1 << 1))
+                {
+                    ah = 2;
+                    if (al != 0 && al != ah)
+                    {
+                        ah = 0;
+                    }
+                }
+                else
+                {
+                    ah = 1;
+                    if (al != 0 && al != ah)
+                    {
+                        ah = 0;
+                    }
+                }
+            }
+            else if (ah > 0)
+            {
+                if (var_38 & (1 << 1))
+                {
+                    ah = 1;
+                    if (al != 0 && al != ah)
+                    {
+                        ah = 0;
+                    }
+                }
+                else
+                {
+                    ah = 2;
+                    if (al != 0 && al != ah)
+                    {
+                        ah = 0;
+                    }
+                }
+            }
+            else
+            {
+                ah = 0;
+            }
+        }
+        al = ah;
+    }
+    else
+    {
+        al = (var_44 >> 12) & (vehicle_object->sprites[object_sprite_type].var_02 - 1);
+    }
+    if (var_46 != al)
+    {
+        var_46 = al;
+        invalidate_sprite();
     }
 }

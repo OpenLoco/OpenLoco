@@ -40,14 +40,20 @@ namespace openloco
                 int16_t sprite_bottom; // 0x1C
                 uint8_t pad_1E[0x28 - 0x1E];
                 uint16_t var_28;
-                uint8_t pad_2A[0x38 - 0x2A];
+                uint8_t pad_2A[0x2C - 0x2A];
+                uint16_t var_2C;
+                uint16_t var_2E;
+                uint8_t pad_30[0x38 - 0x30];
                 uint8_t var_38;
-                uint8_t pad_39;
-                thing_id_t next_car_id; // 0x3A
+                uint8_t object_sprite_type; // 0x39
+                thing_id_t next_car_id;     // 0x3A
                 uint8_t pad_3C[0x40 - 0x3C];
-                uint16_t object_type;
+                uint16_t object_type; // 0x40
                 uint8_t var_42;
-                uint8_t pad_43[0x4C - 0x43];
+                uint8_t pad_43;
+                int16_t var_44;
+                uint8_t var_46;
+                uint8_t pad_47[0x4C - 0x47];
                 uint8_t cargo_type; // 0x4C
                 uint8_t pad_4D;
                 uint16_t cargo_origin; // 0x4E
@@ -55,7 +61,9 @@ namespace openloco
                 uint8_t cargo_quantity; // 0x51
                 uint8_t pad_52[0x54 - 0x52];
                 uint8_t var_54;
-                uint8_t pad_55[0x5D - 0x55];
+                uint8_t pad_55;
+                uint32_t var_56;
+                uint8_t pad_5A[0x5D - 0x5A];
                 uint8_t var_5D;
                 uint8_t var_5E;
                 uint8_t var_5F; // 0x5F (bit 1 = can break down)
