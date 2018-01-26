@@ -7,7 +7,7 @@ namespace openloco::townmgr
 {
     static loco_global_array<town, 80, 0x005B825C> _towns;
 
-    std::array<town, max_towns> towns()
+    std::array<town, max_towns>& towns()
     {
         auto arr = (std::array<town, max_towns>*)_towns.get();
         return *arr;

@@ -8,7 +8,7 @@ namespace openloco
 
     bool town::empty() const
     {
-        return var_00 != -1;
+        return name == string_ids::null;
     }
 
     void town::adjust_company_rating(company_id_t cid, int amount)
