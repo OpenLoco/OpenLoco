@@ -15,10 +15,11 @@ namespace openloco
     struct vehicle_object_sprite
     {
         uint8_t num_dir; // 0x00
-        uint8_t pad_01[0x03 - 0x01];
+        uint8_t pad_01;
+        uint8_t var_02;
         uint8_t vehicle_type; // 0x03
         uint8_t num_units;    // 0x04
-        uint8_t pad_05;
+        uint8_t var_05;
         uint8_t bogey_position; // 0x06
         uint8_t flags;          // 0x07
         uint8_t pad_08[0x0E - 0x08];
