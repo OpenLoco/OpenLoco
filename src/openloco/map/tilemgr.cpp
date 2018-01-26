@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
-    static loco_global_array<tile_element*, 0x30004, 0x00E40134> _tiles;
+    static loco_global<tile_element*[0x30004], 0x00E40134> _tiles;
 
     tile get(map_pos pos)
     {

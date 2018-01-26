@@ -22,8 +22,8 @@ namespace openloco::ui::windows
     loco_global<text_buffers_t*, 0x009D1078> _text_buffers;
     loco_global<uint8_t, 0x009D1C9A> _result;
 
-    loco_global_array<char, 512, 0x0112CC04> byte_112CC04;
-    loco_global_array<char, 512, 0x0112CE04> byte_112CE04;
+    loco_global<char[512], 0x0112CC04> byte_112CC04;
+    loco_global<char[512], 0x0112CE04> byte_112CE04;
 
     // 0x00446F6B
     // eax: okButtonStringId
