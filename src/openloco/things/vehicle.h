@@ -22,6 +22,8 @@ namespace openloco
     private:
         bool update();
         void sub_4BAA76();
+        int32_t sub_4AA1D0();
+        void sub_4AAC4E();
     };
 #pragma pack(pop)
 }
