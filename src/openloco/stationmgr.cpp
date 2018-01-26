@@ -58,7 +58,7 @@ namespace openloco::stationmgr
         {
             if (!town.empty())
             {
-                town.flags &= town_flags::rating_adjusted;
+                town.flags &= ~town_flags::rating_adjusted;
             }
         }
 
