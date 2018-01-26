@@ -11,7 +11,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-    static loco_global_array<uint8_t, 256, 0x001136BA4> byte_1136BA4;
+    static loco_global<uint8_t[256], 0x001136BA4> byte_1136BA4;
 
     static station_id_t get_station_id(const window& w)
     {

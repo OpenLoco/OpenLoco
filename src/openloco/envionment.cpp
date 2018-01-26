@@ -12,13 +12,13 @@ using namespace openloco::interop;
 
 namespace openloco::environment
 {
-    loco_global_array<char, 260, 0x009D118E> _path_buffer;
-    loco_global_array<char, 257, 0x0050B0CE> _path_install;
-    loco_global_array<char, 257, 0x0050B1CF> _path_saves_single_player;
-    loco_global_array<char, 257, 0x0050B2EC> _path_saves_two_player;
-    loco_global_array<char, 257, 0x0050B406> _path_scenarios;
-    loco_global_array<char, 257, 0x0050B518> _path_landscapes;
-    loco_global_array<char, 257, 0x0050B635> _path_objects;
+    loco_global<char[260], 0x009D118E> _path_buffer;
+    loco_global<char[257], 0x0050B0CE> _path_install;
+    loco_global<char[257], 0x0050B1CF> _path_saves_single_player;
+    loco_global<char[257], 0x0050B2EC> _path_saves_two_player;
+    loco_global<char[257], 0x0050B406> _path_scenarios;
+    loco_global<char[257], 0x0050B518> _path_landscapes;
+    loco_global<char[257], 0x0050B635> _path_objects;
 
     static fs::path get_sub_path(path_id id);
 #ifndef _WIN32
@@ -160,8 +160,8 @@ namespace openloco::environment
         return result;
     }
 
-    template<size_t TSize, uint32_t TAddress>
-    static void set_directory(loco_global_array<char, TSize, TAddress> buffer, fs::path path)
+    template<typename T>
+    static void set_directory(T& buffer, fs::path path)
     {
 #ifdef _OPENLOCO_USE_BOOST_FS_
         utility::strcpy_safe(buffer, path.make_preferred().string().c_str());

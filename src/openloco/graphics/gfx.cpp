@@ -18,7 +18,7 @@ namespace openloco::gfx
     }
 
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global_array<g1_element, g1_expected_count::disc, 0x9E2424> _g1Elements;
+    static loco_global<g1_element[g1_expected_count::disc], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 

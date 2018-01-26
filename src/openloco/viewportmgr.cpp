@@ -9,7 +9,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::viewportmgr
 {
-    loco_global_array<viewport*, max_viewports, 0x0113D820> _viewports;
+    loco_global<viewport * [max_viewports], 0x0113D820> _viewports;
 
     std::array<viewport*, max_viewports> viewports()
     {

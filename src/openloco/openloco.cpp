@@ -56,7 +56,7 @@ namespace openloco
     loco_global<char*, 0x00525348> glpCmdLine;
 #endif
 
-    loco_global_array<char, 256, 0x005060D0> gCDKey;
+    loco_global<char[256], 0x005060D0> gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> last_tick_time;

@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::companymgr
 {
-    static loco_global_array<company, max_companies, 0x00531784> _companies;
+    static loco_global<company[max_companies], 0x00531784> _companies;
 
     std::array<company, max_companies>& companies()
     {
@@ -15,7 +15,7 @@ namespace openloco::companymgr
 
     company* get(company_id_t id)
     {
-        auto index = (size_t)id;
+        auto index = id;
         if (index < _companies.size())
         {
             return &_companies[index];

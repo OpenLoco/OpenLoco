@@ -34,10 +34,10 @@ namespace openloco::ui::windows
 
     loco_global<uint8_t, 0x009D9D63> _type;
     loco_global<uint8_t, 0x009DA284> _fileType;
-    loco_global_array<char, 256, 0x009D9D64> _title;
-    loco_global_array<char, 32, 0x009D9E64> _filter;
-    loco_global_array<char, 512, 0x009D9E84> _directory;
-    loco_global_array<char, 512, 0x011369A0> _text_input_buffer;
+    loco_global<char[256], 0x009D9D64> _title;
+    loco_global<char[32], 0x009D9E64> _filter;
+    loco_global<char[512], 0x009D9E84> _directory;
+    loco_global<char[512], 0x011369A0> _text_input_buffer;
 
     static void sub_446A93()
     {
