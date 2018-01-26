@@ -3,6 +3,7 @@
 #include "interop/interop.hpp"
 #include "townmgr.h"
 #include "window.h"
+#include "windowmgr.h"
 #include <array>
 
 using namespace openloco::interop;
@@ -38,6 +39,19 @@ namespace openloco::stationmgr
         company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
+    static void sub_49E1F1(station_id_t id)
+    {
+        auto w = windowmgr::find(window_type::construction);
+        if (w != nullptr && w->var_870 == 1)
+        {
+            if ((addr<0x00522096, uint8_t>() & 8) && addr<0x01135F70, int32_t>() == id)
+            {
+                addr<0x01135F70, int32_t>() = -1;
+                w->invalidate();
+            }
+        }
+    }
+
     // 0x0048B244
     void sub_48B244()
     {
@@ -62,7 +76,7 @@ namespace openloco::stationmgr
                     }
                     if (station.var_29 >= 10)
                     {
-                        call(0x0049E1F1);
+                        sub_49E1F1(station.id());
                         station.invalidate();
                         station.sub_48F7D1();
                     }
