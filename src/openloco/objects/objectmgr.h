@@ -93,8 +93,13 @@ namespace openloco::objectmgr
     size_t get_max_objects(object_type type);
 
     template<typename T>
+    T* get();
+
+    template<typename T>
     T* get(size_t id);
 
+    template<>
+    interface_skin_object* get();
     template<>
     cargo_object* get(size_t id);
     template<>
