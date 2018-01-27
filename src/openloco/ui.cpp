@@ -22,6 +22,7 @@
 #endif
 
 #include "graphics/gfx.h"
+#include "gui.h"
 #include "input.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
@@ -291,7 +292,7 @@ namespace openloco::ui
     void resize(int32_t width, int32_t height)
     {
         update(width, height);
-        windowmgr::resize();
+        gui::resize();
         gfx::invalidate_screen();
     }
 

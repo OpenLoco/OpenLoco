@@ -3,4 +3,5 @@
 namespace openloco::gui
 {
     void init();
+    void resize();
 }
