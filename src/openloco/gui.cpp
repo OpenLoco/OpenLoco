@@ -5,8 +5,11 @@
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "tutorial.h"
+#include "ui.h"
 #include "viewportmgr.h"
 #include "windowmgr.h"
+
+namespace ui = openloco::ui;
 
 namespace windowmgr = openloco::ui::windowmgr;
 using window_type = openloco::ui::window_type;
@@ -17,13 +20,11 @@ namespace openloco::gui
 
     loco_global_array<openloco::ui::widget, 64, 0x00509c20> _mainWindowWidgets;
 
-    loco_global<uint8_t, 0x00508F14> _screen_flags;
-
     // 0x00438A6C
     void init()
     {
-        const int uiWidth = 288;
-        const int uiHeight = 512;
+        const int32_t uiWidth = ui::width();
+        const int32_t uiHeight = ui::height();
 
         _mainWindowWidgets[0].bottom = uiHeight;
         _mainWindowWidgets[0].right = uiWidth;
