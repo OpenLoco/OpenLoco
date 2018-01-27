@@ -20,6 +20,7 @@
 #include "date.h"
 #include "environment.h"
 #include "graphics/gfx.h"
+#include "industrymgr.h"
 #include "input.h"
 #include "interop/interop.hpp"
 #include "intro.h"
@@ -537,7 +538,7 @@ namespace openloco
         call(0x00463ABA);
         call(0x004C56F6);
         call(0x00496B6D);
-        call(0x00453234);
+        industrymgr::update();
         thingmgr::update_vehicles();
         call(0x0046FFCA);
         call(0x0048B1FA);

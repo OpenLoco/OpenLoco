@@ -21,7 +21,9 @@ namespace openloco
         uint16_t var_D5;
         uint8_t pad_D7[0x453 - 0xD7];
 
+        industry_id_t id() const;
         bool empty() const;
+        void update();
     };
 #pragma pack(pop)
 }
