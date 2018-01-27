@@ -21,7 +21,8 @@ int main(int argc, const char** argv)
 
 static std::string GetEnvironmentVariable(const std::string& name)
 {
-    return getenv(name.c_str());
+    auto result = getenv(name.c_str());
+    return result == nullptr ? std::string() : result;
 }
 
 uint32_t openloco::platform::get_time()
@@ -31,23 +32,35 @@ uint32_t openloco::platform::get_time()
     return spec.tv_nsec / 1000000;
 }
 
-fs::path openloco::platform::get_user_directory()
+static fs::path get_home_directory()
 {
-    std::string path;
     auto pw = getpwuid(getuid());
     if (pw != nullptr)
     {
-        path = pw->pw_dir;
+        return pw->pw_dir;
     }
     else
     {
-        path = GetEnvironmentVariable("HOME");
+        return GetEnvironmentVariable("HOME");
     }
+}
+
+fs::path openloco::platform::get_user_directory()
+{
+    auto path = fs::path(GetEnvironmentVariable("XDG_CONFIG_HOME"));
     if (path.empty())
     {
-        path = "/";
+        path = get_home_directory();
+        if (path.empty())
+        {
+            path = "/";
+        }
+        else
+        {
+            path = path / fs::path(".config");
+        }
     }
-    return path;
+    return path / fs::path("OpenLoco");
 }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
