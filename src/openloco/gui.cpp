@@ -72,7 +72,7 @@ namespace openloco::gui
 
             window->colours[0] = colour::translucent(colour::saturated_green);
             window->colours[1] = colour::translucent(colour::saturated_green);
-            window->pad_all[0x846] = 0;
+            window->var_846 = 0;
 
             window = openloco::ui::windowmgr::create_window(
                 window_type::title_exit,
@@ -142,7 +142,7 @@ namespace openloco::gui
                 (void*)0x4fa024);
             window->widgets = (ui::widget*)0x509d08;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
-            window->pad_all[0x854] = 0;
+            window->var_854 = 0;
             windowmgr::init_scroll_widgets(window);
 
             if (skin != nullptr)
@@ -161,8 +161,8 @@ namespace openloco::gui
                 (void*)0x4fa098);
             window->widgets = (ui::widget*)0x509d5c;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
-            window->pad_all[0x854] = 0;
-            window->pad_all[0x856] = 0;
+            window->var_854 = 0;
+            window->var_856 = 0;
             windowmgr::init_scroll_widgets(window);
 
             if (skin != nullptr)
