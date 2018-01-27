@@ -13,6 +13,7 @@ namespace openloco::ui
 {
     enum class window_type
     {
+        main = 0,
         toolbar_top = 1,
         toolbar_player_info = 2,
         toolbar_time = 3,
@@ -72,6 +73,7 @@ namespace openloco::ui::windowmgr
     void close(window_type type, uint16_t id);
     window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
     window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
+    void init_scroll_widgets(window* window);
 }
 
 namespace openloco::ui::windows

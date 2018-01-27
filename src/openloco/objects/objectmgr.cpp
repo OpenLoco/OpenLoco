@@ -49,6 +49,17 @@ namespace openloco::objectmgr
     }
 
     template<>
+    interface_skin_object* get()
+    {
+        if (_interfaceObjects[0] == (void*)-1)
+        {
+            return nullptr;
+        }
+
+        return _interfaceObjects[0];
+    }
+
+    template<>
     cargo_object* get(size_t id)
     {
         return _cargoObjects[id];

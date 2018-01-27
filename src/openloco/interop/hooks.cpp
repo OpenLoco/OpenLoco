@@ -9,6 +9,7 @@
 #include "../console.h"
 #include "../environment.h"
 #include "../graphics/gfx.h"
+#include "../gui.h"
 #include "../input.h"
 #include "../platform/platform.h"
 #include "../station.h"
@@ -632,6 +633,13 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
             v->sub_4BA8D4();
+            return 0;
+        });
+
+    register_hook(
+        0x00438A6C,
+        [](registers& regs) -> uint8_t {
+            gui::init();
             return 0;
         });
 

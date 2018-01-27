@@ -109,4 +109,11 @@ namespace openloco::ui::windowmgr
         auto y = std::max(28, (ui::height() / 2) - (height / 2));
         return create_window(type, x, y, width, height, flags, events);
     }
+
+    void init_scroll_widgets(window* window)
+    {
+        registers regs;
+        regs.esi = (uint32_t)window;
+        call(0x4ca17f, regs);
+    }
 }
