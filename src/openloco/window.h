@@ -7,6 +7,14 @@ namespace openloco::ui
 {
 #pragma pack(push, 1)
 
+    enum class widget_type
+    {
+        widget_none = 0,
+        widget_9 = 9,
+        widget_scroll = 0x1A,
+        widget_end = 0x1E,
+    };
+
     struct widget
     {
         uint8_t type;   // 0x00
@@ -35,7 +43,9 @@ namespace openloco::ui
                 void* viewport;           // 0x04
                 uint8_t pad_08[0x04];     // 0x08
                 uint32_t enabled_widgets; // 0x0C
-                uint8_t pad_10[0x2C - 0x10];
+                uint8_t pad_10[0x14 - 0x10];
+                uint32_t var_14;
+                uint8_t pad_18[0x2C - 0x18];
                 widget* widgets;     // 0x2C
                 uint16_t x;          // 0x30
                 uint16_t y;          // 0x32
@@ -71,6 +81,7 @@ namespace openloco::ui
         };
 
         void invalidate();
+        void draw_widgets();
         void sub_4CA17F();
     };
 

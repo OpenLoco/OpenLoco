@@ -94,6 +94,11 @@ namespace openloco
     }
 #endif
 
+    uint8_t get_screen_flags()
+    {
+        return _screen_flags;
+    }
+
     bool is_editor_mode()
     {
         return (_screen_flags & screen_flags::editor) != 0;
