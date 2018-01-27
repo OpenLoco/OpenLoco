@@ -49,7 +49,12 @@ namespace openloco::ui
                 uint32_t var_42;
                 uint8_t pad_46[0x83E - 0x46];
                 uint16_t var_83E;
-                uint8_t pad_840[0x85A - 0x840];
+                uint8_t pad_840[0x846 - 0x840];
+                uint16_t var_846;
+                uint8_t pad_848[0x854 - 0x848];
+                uint16_t var_854;
+                uint16_t var_856;
+                uint8_t pad_858[0x85A - 0x858];
                 uint16_t var_85A;
                 uint8_t pad_85C[0x870 - 0x85C];
                 uint16_t var_870;
