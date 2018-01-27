@@ -3,6 +3,7 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "platform.h"
+#include <iostream>
 #include <pwd.h>
 #include <time.h>
 
@@ -66,7 +67,10 @@ fs::path openloco::platform::get_user_directory()
 #if !(defined(__APPLE__) && defined(__MACH__))
 std::string openloco::platform::prompt_directory(const std::string& title)
 {
-    return "/";
+    std::string input;
+    std::cout << "Type your Locomotion path: ";
+    std::cin >> input;
+    return input;
 }
 #endif
 
