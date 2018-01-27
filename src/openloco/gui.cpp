@@ -168,7 +168,7 @@ namespace openloco::gui
             {
 
                 window = openloco::ui::windowmgr::create_window(
-                    window_type::about_atari,
+                    window_type::tutorial,
                     140,
                     uiHeight - 27,
                     uiWidth - 280,
