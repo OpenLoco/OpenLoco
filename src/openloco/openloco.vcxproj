@@ -51,6 +51,7 @@
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="windows\constructionwnd.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="graphics\gfx.h" />
     <ClInclude Include="openloco.h" />
     <ClInclude Include="ui.h" />
+    <ClInclude Include="gui.h" />
     <ClInclude Include="progressbar.h" />
     <ClInclude Include="interop\interop.hpp" />
     <ClInclude Include="station.h" />
