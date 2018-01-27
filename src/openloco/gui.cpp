@@ -5,6 +5,7 @@
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "tutorial.h"
+#include "viewportmgr.h"
 #include "windowmgr.h"
 
 namespace windowmgr = openloco::ui::windowmgr;
@@ -36,15 +37,7 @@ namespace openloco::gui
             (void*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
 
-        // viewport_create
-        registers regs;
-        regs.edx = 0x17FF17FF;
-        regs.eax = (window->y << 16) | window->x;
-        regs.ebx = (window->height << 16) | window->width;
-        regs.ecx = 0x1e00000;
-        regs.esi = (uint32_t)window;
-        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation
-        call(0x004ca2d0, regs);
+        openloco::ui::viewportmgr::create(window, window->x, window->y, window->width, window->height);
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;
@@ -119,8 +112,7 @@ namespace openloco::gui
                 0x32,
                 (void*)0x4fa180);
             window->widgets = (ui::widget*)0x509c34;
-            window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8)
-                | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
+            window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
             windowmgr::init_scroll_widgets(window);
 
             auto skin = openloco::objectmgr::get<interface_skin_object>();
