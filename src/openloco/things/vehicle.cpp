@@ -208,7 +208,7 @@ void openloco::vehicle::sub_4AAC4E()
     if ((veh->var_5D == 8) || (veh->var_5D == 9))
         return;
 
-    vehicle_object* vehicleObject = get_vehicle_object(object_type);
+    auto vehicleObject = get<vehicle_object>(object_type);
     registers regs;
     regs.esi = (int32_t)this;
     regs.ebp = (int32_t)vehicleObject;

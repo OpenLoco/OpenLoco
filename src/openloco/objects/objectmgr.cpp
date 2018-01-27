@@ -48,14 +48,22 @@ namespace openloco::objectmgr
         call(0x00470F3C);
     }
 
-    cargo_object* get_cargo_object(size_t id)
+    template<>
+    cargo_object* get(size_t id)
     {
         return _cargoObjects[id];
     }
 
-    vehicle_object* get_vehicle_object(size_t id)
+    template<>
+    vehicle_object* get(size_t id)
     {
         return _vehicleObjects[id];
+    }
+
+    template<>
+    industry_object* get(size_t id)
+    {
+        return _industryObjects[id];
     }
 
     size_t get_max_objects(object_type type)

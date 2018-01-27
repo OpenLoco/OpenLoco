@@ -1,6 +1,7 @@
 #pragma once
 
 #include "localisation/stringmgr.h"
+#include "objects/industry_object.h"
 #include <cstdint>
 #include <limits>
 
@@ -13,17 +14,29 @@ namespace openloco
         constexpr industry_id_t null = std::numeric_limits<industry_id_t>::max();
     }
 
+    namespace industry_flags
+    {
+        constexpr uint16_t flag_01 = 1 << 0;
+    }
+
 #pragma pack(push, 1)
     struct industry
     {
         string_id name;
-        uint8_t pad_02[0xD5 - 0x02];
+        uint8_t pad_02[0x06 - 0x02];
+        uint16_t flags; // 0x06
+        uint8_t pad_08[0x10 - 0x08];
+        uint8_t object_id; // 0x10
+        uint8_t pad_11[0xD5 - 0x11];
         uint16_t var_D5;
-        uint8_t pad_D7[0x453 - 0xD7];
-
+        int16_t x;
+        int16_t y;
+        uint8_t pad_DB[0x453 - 0xDB];
         industry_id_t id() const;
+        industry_object* object() const;
         bool empty() const;
         void update();
+
     };
 #pragma pack(pop)
 }
