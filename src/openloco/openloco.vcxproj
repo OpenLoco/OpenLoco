@@ -21,6 +21,8 @@
     <ClCompile Include="console.cpp" />
     <ClCompile Include="date.cpp" />
     <ClCompile Include="envionment.cpp" />
+    <ClCompile Include="industry.cpp" />
+    <ClCompile Include="industrymgr.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
     <ClCompile Include="localisation\stringmgr.cpp" />
@@ -63,6 +65,8 @@
     <ClInclude Include="date.h" />
     <ClInclude Include="environment.h" />
     <ClInclude Include="graphics\colours.h" />
+    <ClInclude Include="industry.h" />
+    <ClInclude Include="industrymgr.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
     <ClInclude Include="localisation\stringmgr.h" />
