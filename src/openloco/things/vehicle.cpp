@@ -132,7 +132,7 @@ void vehicle::sub_4BA8D4()
                     sub_4BAA76();
 
                     auto v2 = v->next_car()->next_car();
-                    auto soundId = (audio::sound_id)rand_next(26, 26 + 5);
+                    auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
                     audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
                 }
             }

@@ -80,6 +80,7 @@
     <ClInclude Include="objects\objectmgr.h" />
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="objects\vehicle_object.h" />
+    <ClInclude Include="utility\prng.hpp" />
     <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="stationmgr.h" />
     <ClInclude Include="things\thing.h" />

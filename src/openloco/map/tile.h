@@ -12,6 +12,11 @@ namespace openloco::map
     constexpr coord_t map_columns = 384;
     constexpr coord_t map_size = map_columns * tile_size;
 
+    constexpr coord_t tile_floor(coord_t coord)
+    {
+        return coord & (tile_size - 1);
+    }
+
     enum class element_type
     {
         surface,
@@ -39,7 +44,6 @@ namespace openloco::map
         const uint8_t* data() const;
         element_type type() const;
         bool is_last() const;
-
 
     public:
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }

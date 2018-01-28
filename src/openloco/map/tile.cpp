@@ -18,10 +18,10 @@ bool tile_element::is_last() const
     return (_flags & 0x80) != 0;
 }
 
-tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data) :
-    x(x),
-    y(y),
-    _data(data)
+tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
+    : x(x)
+    , y(y)
+    , _data(data)
 {
 }
 
@@ -46,8 +46,7 @@ tile_element* tile::end()
     do
     {
         el++;
-    }
-    while (!(el - 1)->is_last());
+    } while (!(el - 1)->is_last());
     return el;
 }
 
@@ -72,7 +71,7 @@ tile_element* tile::operator[](size_t i)
 size_t tile::index_of(const tile_element* element) const
 {
     size_t i = 0;
-    for (const auto &tile : *this)
+    for (const auto& tile : *this)
     {
         if (&tile == element)
         {
@@ -86,7 +85,7 @@ size_t tile::index_of(const tile_element* element) const
 surface_element* tile::surface()
 {
     surface_element* result = nullptr;
-    for (auto &tile : *this)
+    for (auto& tile : *this)
     {
         result = tile.as_surface();
         if (result != nullptr)
