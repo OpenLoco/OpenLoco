@@ -48,7 +48,7 @@ namespace openloco
                 uint8_t object_sprite_type; // 0x39
                 thing_id_t next_car_id;     // 0x3A
                 uint8_t pad_3C[0x40 - 0x3C];
-                uint16_t object_type; // 0x40
+                uint16_t object_id; // 0x40
                 uint8_t var_42;
                 uint8_t pad_43;
                 int16_t var_44;
