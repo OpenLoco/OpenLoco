@@ -27,7 +27,7 @@ namespace openloco
         int32_t sub_4AA1D0();
         void sub_4AAC4E();
         void sub_4AAB0B();
-        void sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx);
+        void sub_4AC255(vehicle * back_bogie, vehicle * front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
     };
 #pragma pack(pop)
