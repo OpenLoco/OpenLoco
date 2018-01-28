@@ -1,4 +1,5 @@
 #include "industrymgr.h"
+#include "companymgr.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 
@@ -28,7 +29,7 @@ namespace openloco::industrymgr
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
-            addr<0x009C68EB, uint8_t>() = 15;
+            companymgr::updating_company_id(company_id::neutral);
             for (auto& industry : industries())
             {
                 if (!industry.empty())
@@ -39,5 +40,11 @@ namespace openloco::industrymgr
         }
 
         call(0x00453234);
+    }
+
+    // 0x0045383B
+    void update_monthly()
+    {
+        call(0x0045383B);
     }
 }

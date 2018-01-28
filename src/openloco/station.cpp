@@ -13,7 +13,7 @@ namespace openloco
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;
 
-    station_id_t station::id()
+    station_id_t station::id() const
     {
         // TODO check if this is stored in station structure
         //      otherwise add it when possible
@@ -24,6 +24,14 @@ namespace openloco
             index = station_id::null;
         }
         return (station_id_t)index;
+    }
+
+    // 0x00492640
+    void station::update()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x00492640, regs);
     }
 
     // 0x0048F7D1

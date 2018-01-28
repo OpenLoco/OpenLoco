@@ -9,15 +9,21 @@ namespace openloco
 
     namespace company_id
     {
+        constexpr company_id_t neutral = 15;
         constexpr company_id_t null = std::numeric_limits<company_id_t>::max();
     }
 
 #pragma pack(push, 1)
     struct company
     {
-        uint8_t pad_00[0x8BB0 - 0x00];
+        uint16_t var_00;
+        uint8_t pad_02[0x8BB0 - 0x02];
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8FA8 - 0x8BB9];
+
+        company_id_t id() const;
+        bool empty() const;
+        void ai_think();
     };
 #pragma pack(pop)
 

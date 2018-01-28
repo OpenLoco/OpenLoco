@@ -54,7 +54,8 @@ namespace openloco
         uint8_t pad_3B2[0x3D2 - 0x3B2];
 
         bool empty() const { return name == string_ids::null; }
-        station_id_t id();
+        station_id_t id() const;
+        void update();
         void sub_48F7D1();
         bool update_cargo();
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;

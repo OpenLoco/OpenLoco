@@ -9,4 +9,6 @@ namespace openloco::townmgr
 
     std::array<town, max_towns>& towns();
     town* get(town_id_t id);
+    void update();
+    void update_monthly();
 }
