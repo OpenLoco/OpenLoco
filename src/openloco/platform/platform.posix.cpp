@@ -33,6 +33,7 @@ uint32_t openloco::platform::get_time()
     return spec.tv_nsec / 1000000;
 }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
 static fs::path get_home_directory()
 {
     auto pw = getpwuid(getuid());
@@ -63,6 +64,7 @@ fs::path openloco::platform::get_user_directory()
     }
     return path / fs::path("OpenLoco");
 }
+#endif
 
 #if !(defined(__APPLE__) && defined(__MACH__))
 std::string openloco::platform::prompt_directory(const std::string& title)
