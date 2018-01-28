@@ -20,9 +20,10 @@ loco_global<vehicle*, 0x01136124> vehicle_1136124;
 loco_global<vehicle*, 0x01136128> vehicle_1136128;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<vehicle*, 0x01136120> vehicle_1136120;
-loco_global<uint8_t, 0x01136237> vehicle_var_1136237;          // var_28 related?
-loco_global<uint8_t, 0x01136238> vehicle_var_1136238;          // var_28 related?
+loco_global<uint8_t, 0x01136237> vehicle_var_1136237;         // var_28 related?
+loco_global<uint8_t, 0x01136238> vehicle_var_1136238;         // var_28 related?
 loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
+loco_global_array<uint16_t, 2047, 0x00500B50> vehicle_arr_500B50;
 
 vehicle* vehicle::next_vehicle()
 {
@@ -38,7 +39,6 @@ vehicle_object* vehicle::object() const
 {
     return objectmgr::get<vehicle_object>(object_id);
 }
-
 
 void vehicle::update_head()
 {
@@ -183,11 +183,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
     if (vehicle_var_1136237 | vehicle_var_1136238)
     {
         invalidate_sprite();
-        vehicle* veh = vehicle_1136124;
-        regs.ebx = (int32_t)veh;
-        veh = vehicle_1136128;
-        regs.edi = (int32_t)veh;
-        call(0x004AC255, regs);
+        sub_4AC255(vehicle_1136128, vehicle_1136124);
         invalidate_sprite();
     }
     uint32_t backup1136130 = vehicle_var_1136130;
@@ -352,4 +348,80 @@ void openloco::vehicle::sub_4AAB0B()
         var_46 = al;
         invalidate_sprite();
     }
+}
+
+// 0x004AC255
+void openloco::vehicle::sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx)
+{
+    loc16 loc = {
+        (veh_ebx->x + veh_edi->x) / 2,
+        (veh_ebx->y + veh_edi->y) / 2,
+        (veh_ebx->z + veh_edi->z) / 2
+    };
+    move_to(loc);
+
+    if (object_sprite_type == 0xFF)
+        return;
+
+    auto distance_x = veh_ebx->x - veh_edi->x;
+    auto distance_y = veh_ebx->y - veh_edi->y;
+    
+    auto offset = sub_4BE368(distance_x * distance_x + distance_y * distance_y);
+
+    auto vehicle_object = object();
+
+    registers regs;
+    regs.cx = offset;
+    regs.ax = veh_ebx->x - veh_edi->x;
+    if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
+    {
+        call(0x004BF4DA, regs);
+    }
+    else
+    {
+        call(0x004BF49D, regs);
+    }
+
+    var_1F = regs.al;
+
+    regs.ax = veh_ebx->x - veh_edi->x;
+    regs.cx = veh_ebx->y - veh_edi->y;
+    if (var_1F == 1 || var_1F == 3 || var_1F == 5 ||var_1F == 7)
+    {
+        call(0x004BF5B3, regs);
+    }
+    else
+    {
+        auto sprite = vehicle_object->sprites[object_sprite_type];
+        uint8_t i = var_1F == 0 ? sprite.var_0B : sprite.var_0C;
+        switch (i)
+        {
+        case 0:
+            call(0x004BF52B, regs);
+            break;
+        case 1:
+            call(0x004BF5B3, regs);
+            break;
+        case 2:
+            call(0x004BF5FB, regs);
+            break;
+        case 3:
+            call(0x004BF657, regs);
+            break;
+        case 4:
+            call(0x004BF6DF, regs);
+            break;
+        }
+    }
+
+    var_1E = regs.al;
+}
+
+// 0x004BE368
+uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
+{
+    uint8_t i = 10;
+    for (; distance > 4096; --i, distance >>= 2);
+
+    return vehicle_arr_500B50[distance >> 1] >> i;
 }

@@ -22,7 +22,10 @@ namespace openloco
         uint8_t var_05;
         uint8_t bogey_position; // 0x06
         uint8_t flags;          // 0x07
-        uint8_t pad_08[0x0E - 0x08];
+        uint8_t pad_08[0x0B - 0x08];
+        uint8_t var_0B;
+        uint8_t var_0C;
+        uint8_t pad_0D;
         uint8_t sprite_num; // 0x0E
         uint8_t pad_0F[0x1E - 0xF];
     };
