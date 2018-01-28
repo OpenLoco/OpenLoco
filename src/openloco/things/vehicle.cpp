@@ -372,7 +372,7 @@ void openloco::vehicle::sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx)
 
     registers regs;
     regs.cx = offset;
-    regs.ax = veh_ebx->x - veh_edi->x;
+    regs.ax = veh_ebx->z - veh_edi->z;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
         call(0x004BF4DA, regs);
@@ -384,8 +384,8 @@ void openloco::vehicle::sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx)
 
     var_1F = regs.al;
 
-    regs.ax = veh_ebx->x - veh_edi->x;
-    regs.cx = veh_ebx->y - veh_edi->y;
+    regs.ax = distance_x;
+    regs.cx = distance_y;
     if (var_1F == 1 || var_1F == 3 || var_1F == 5 ||var_1F == 7)
     {
         call(0x004BF5B3, regs);
