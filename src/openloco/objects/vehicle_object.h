@@ -16,7 +16,7 @@ namespace openloco
     {
         uint8_t num_dir; // 0x00
         uint8_t pad_01;
-        uint8_t var_02;
+        int8_t var_02;
         uint8_t vehicle_type; // 0x03
         uint8_t num_units;    // 0x04
         uint8_t var_05;
