@@ -25,7 +25,6 @@ namespace openloco::ui::viewportmgr
         regs.ebx = (height << 16) | width;
         regs.ecx = 0x1e00000;
         regs.esi = (uint32_t)window;
-        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
         call(0x004ca2d0, regs);
     }
 }
