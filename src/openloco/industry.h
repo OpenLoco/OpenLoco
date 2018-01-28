@@ -26,15 +26,16 @@ namespace openloco
     struct industry
     {
         string_id name;
-        int16_t var_02;
-        int16_t var_04;
-        uint16_t flags; // 0x06
-        utility::prng prng;
-        uint8_t object_id; // 0x10
-        uint8_t pad_11[0xD5 - 0x11];
+        coord_t var_02;
+        coord_t var_04;
+        uint16_t flags;     // 0x06
+        utility::prng prng; // 0x08
+        uint8_t object_id;  // 0x10
+        uint8_t var_11;
+        uint8_t pad_12[0xD5 - 0x12];
         uint16_t var_D5;
-        int16_t tile_loop_x; // 0xD7
-        int16_t tile_loop_y; // 0xD9
+        coord_t tile_loop_x; // 0xD7
+        coord_t tile_loop_y; // 0xD9
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;

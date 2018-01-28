@@ -45,18 +45,18 @@ namespace openloco
     {
         if (!(flags & industry_flags::flag_01))
         {
-            auto obj = object();
-            if (obj->var_11 == 0xFF)
+            if (var_11 == 0xFF)
             {
                 // Run tile loop for 100 iterations
+                auto obj = object();
                 for (int i = 0; i < 100; i++)
                 {
-                    auto surface = tilemgr::get(tile_loop_x, tile_loop_y).surface();
+                    const auto& surface = tilemgr::get(tile_loop_x, tile_loop_y).surface();
                     if (surface != nullptr)
                     {
                         if (surface->data()[0] & 0x80)
                         {
-                            if (surface->data()[7] == 0)
+                            if (surface->industry_id() == id())
                             {
                                 uint8_t bl = surface->data()[6] >> 5;
                                 if (bl == 0 || bl != obj->var_EA)
@@ -83,35 +83,39 @@ namespace openloco
                         }
                     }
                 }
-                var_DF = 0xFF;
-                int16_t tmp_a = var_DB >> 4;
-                int16_t tmp_b = std::max(0, var_DD - tmp_a);
-                int16_t tmp_c = var_DB - tmp_b;
-                int16_t tmp_d = std::min(tmp_c / 25, 255);
-                if (tmp_d < obj->var_EB)
-                {
-                    var_DF = tmp_d / obj->var_EB;
-                }
 
-                var_DB = 0;
-                var_DD = 0;
-                if (var_DF < 224)
+                if (tile_loop_x == 0 && tile_loop_y == 0)
                 {
-                    if (var_189 / 8 <= var_1A3 || var_18B / 8 <= var_1A5)
+                    var_DF = 0xFF;
+                    int16_t tmp_a = var_DB >> 4;
+                    int16_t tmp_b = std::max(0, var_DD - tmp_a);
+                    int16_t tmp_c = var_DB - tmp_b;
+                    int16_t tmp_d = std::min(tmp_c / 25, 255);
+                    if (tmp_d < obj->var_EB)
                     {
-                        if (prng.rand_next(255) <= 128)
+                        var_DF = tmp_d / obj->var_EB;
+                    }
+
+                    var_DB = 0;
+                    var_DD = 0;
+                    if (var_DF < 224)
+                    {
+                        if (var_189 / 8 <= var_1A3 || var_18B / 8 <= var_1A5)
                         {
-                            uint8_t x = var_02 + (prng.rand_next(-15, 16) * 32);
-                            uint8_t y = var_04 + (prng.rand_next(-15, 16) * 32);
-                            uint8_t bl = obj->var_ED;
-                            uint8_t bh = obj->var_EE;
-                            uint8_t dl = prng.rand_next(7) * 32;
-                            if (prng.rand_bool() && obj->var_EF != 0xFF)
+                            if (prng.rand_bool())
                             {
-                                bl = obj->var_EF;
-                                bh = obj->var_F0;
+                                coord_t x = var_02 + (prng.rand_next(-15, 16) * 32);
+                                coord_t y = var_04 + (prng.rand_next(-15, 16) * 32);
+                                uint8_t bl = obj->var_ED;
+                                uint8_t bh = obj->var_EE;
+                                uint8_t dl = prng.rand_next(7) * 32;
+                                if (prng.rand_bool() && obj->var_EF != 0xFF)
+                                {
+                                    bl = obj->var_EF;
+                                    bh = obj->var_F0;
+                                }
+                                sub_454A43(x, y, bl, bh, dl);
                             }
-                            sub_454A43(x, y, bl, bh, dl);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 
@@ -55,12 +56,13 @@ namespace openloco::map
         uint8_t _slope;
         uint8_t _water;
         uint8_t _terrain;
-        uint8_t _7;
+        uint8_t _industry;
 
     public:
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
+        uint8_t industry_id() const { return _industry; }
     };
 
     struct tile
