@@ -18,11 +18,11 @@ using namespace openloco::objectmgr;
 loco_global<vehicle*, 0x01136118> vehicle_1136118;
 loco_global<vehicle*, 0x01136124> vehicle_1136124;
 loco_global<vehicle*, 0x01136128> vehicle_1136128;
-loco_global<uint32_t, 0x01136130> vehicle_var_1136130;
+loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<vehicle*, 0x01136120> vehicle_1136120;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;          // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;          // var_28 related?
-loco_global_array<uint8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
+loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 
 vehicle* vehicle::next_vehicle()
 {
@@ -270,19 +270,19 @@ void openloco::vehicle::sub_4AAB0B()
         return;
 
     auto vehicle_object = object();
-    uint8_t al = 0;
+    int8_t al = 0;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 6))
     {
         vehicle* veh3 = vehicle_1136120;
         al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->sprites[object_sprite_type].var_02);
         al = std::min(al, vehicle_object->sprites[object_sprite_type].var_02);
     }
-    else if (vehicle_object->sprites[object_sprite_type].var_05 & (1 << 0))
+    else if (vehicle_object->sprites[object_sprite_type].var_05 != 1)
     {
         vehicle* veh2 = vehicle_1136124;
         vehicle* veh3 = vehicle_1136120;
         al = var_46;
-        uint8_t ah = 0;
+        int8_t ah = 0;
         if (veh3->var_56 < 0x230000)
         {
             ah = 0;
