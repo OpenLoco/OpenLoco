@@ -29,9 +29,11 @@ namespace openloco
         uint8_t object_id; // 0x10
         uint8_t pad_11[0xD5 - 0x11];
         uint16_t var_D5;
-        int16_t x;
-        int16_t y;
-        uint8_t pad_DB[0x453 - 0xDB];
+        int16_t tile_loop_x; // 0xD7
+        int16_t tile_loop_y; // 0xD9
+        int16_t var_DB;
+        int16_t var_DD;
+        uint8_t pad_DF[0x453 - 0xDD];
         industry_id_t id() const;
         industry_object* object() const;
         bool empty() const;

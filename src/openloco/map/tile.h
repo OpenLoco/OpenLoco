@@ -6,11 +6,16 @@
 namespace openloco::map
 {
     using coord_t = int16_t;
-    using tile_coord_t = uint8_t;
+    using tile_coord_t = uint16_t;
+
+    constexpr coord_t tile_size = 32;
+    constexpr coord_t map_columns = 384;
+    constexpr coord_t map_size = map_columns * tile_size;
 
     enum class element_type
     {
         surface,
+        unk_20 = 20,
     };
 
     struct surface_element;
@@ -42,6 +47,16 @@ namespace openloco::map
 
     struct surface_element : public tile_element
     {
+    private:
+        uint8_t _slope;
+        uint8_t _water;
+        uint8_t _terrain;
+        uint8_t _7;
+
+    public:
+        uint8_t slope() const { return _slope & 0x1F; }
+        uint8_t water() const { return _water & 0x1F; }
+        uint8_t terrain() const { return _terrain & 0x1F; }
     };
 
     struct tile
@@ -56,6 +71,7 @@ namespace openloco::map
         const tile_coord_t y;
 
         tile(tile_coord_t x, tile_coord_t y, tile_element* data);
+        bool is_null() const;
         tile_element* begin();
         tile_element* begin() const;
         tile_element* end();

@@ -13,6 +13,11 @@ namespace openloco::map::tilemgr
         tile_coord_t tileY = y / 32;
 
         size_t index = ((y << 9) | x) >> 5;
-        return tile(tileX, tileY, _tiles[index]);
+        auto data = _tiles[index];
+        if (data == (tile_element*)0xFFFFFFFF)
+        {
+            data = nullptr;
+        }
+        return tile(tileX, tileY, data);
     }
 }

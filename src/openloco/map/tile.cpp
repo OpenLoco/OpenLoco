@@ -23,7 +23,11 @@ tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data) :
     y(y),
     _data(data)
 {
-    assert(data != nullptr);
+}
+
+bool tile::is_null() const
+{
+    return _data == nullptr;
 }
 
 tile_element* tile::begin()
