@@ -42,10 +42,18 @@ namespace openloco::ui::windowmgr
         call(0x004C6118);
     }
 
-    // 0x004392BD
-    void resize()
+    // 0x004CE438
+    window* get_main()
     {
-        call(0x004392BD);
+        registers regs;
+        auto flags = call(0x004CE438, regs);
+
+        if (flags & X86_FLAG_CARRY)
+        {
+            return nullptr;
+        }
+
+        return (window*)regs.esi;
     }
 
     // 0x004C9B56
@@ -53,7 +61,8 @@ namespace openloco::ui::windowmgr
     {
         registers regs;
         regs.cx = (uint8_t)type | find_flag::by_type;
-        call(0x004C9B56, regs);
+        auto flags = call(0x004C9B56, regs);
+
         return (window*)regs.esi;
     }
 

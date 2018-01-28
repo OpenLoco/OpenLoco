@@ -67,6 +67,7 @@ namespace openloco::ui::windowmgr
 
     void update();
     void resize();
+    window* get_main();
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
     void close(window_type type);
@@ -87,6 +88,7 @@ namespace openloco::ui::windows
     void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
+    void open_about_window();
     void sub_498E9B(window* w);
 
     bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);

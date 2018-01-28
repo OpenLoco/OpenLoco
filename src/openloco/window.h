@@ -7,6 +7,14 @@ namespace openloco::ui
 {
 #pragma pack(push, 1)
 
+    enum class widget_type
+    {
+        widget_none = 0,
+        widget_9 = 9,
+        widget_scroll = 0x1A,
+        widget_end = 0x1E,
+    };
+
     struct widget
     {
         uint8_t type;   // 0x00
@@ -24,6 +32,21 @@ namespace openloco::ui
         string_id tooltip; // 0x0E
     };
 
+    struct viewport
+    {
+        int16_t width;       // 0x00
+        int16_t height;      // 0x02
+        int16_t x;           // 0x04
+        int16_t y;           // 0x06
+        int16_t view_x;      // 0x08
+        int16_t view_y;      // 0x0A
+        int16_t view_width;  // 0x0C
+        int16_t view_height; // 0x0E
+        uint8_t zoom;        // 0x10
+        uint8_t pad_11;
+        uint16_t var_12; // 0x12, maybe flags
+    };
+
     struct window
     {
         union
@@ -32,10 +55,12 @@ namespace openloco::ui
             struct
             {
                 void* event_handlers;     // 0x00
-                void* viewport;           // 0x04
+                viewport* viewport;       // 0x04
                 uint8_t pad_08[0x04];     // 0x08
                 uint32_t enabled_widgets; // 0x0C
-                uint8_t pad_10[0x2C - 0x10];
+                uint8_t pad_10[0x14 - 0x10];
+                uint32_t var_14;
+                uint8_t pad_18[0x2C - 0x18];
                 widget* widgets;     // 0x2C
                 uint16_t x;          // 0x30
                 uint16_t y;          // 0x32
@@ -71,22 +96,8 @@ namespace openloco::ui
         };
 
         void invalidate();
+        void draw_widgets();
         void sub_4CA17F();
-    };
-
-    struct viewport
-    {
-        int16_t width;       // 0x00
-        int16_t height;      // 0x02
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t view_x;      // 0x08
-        int16_t view_y;      // 0x0A
-        int16_t view_width;  // 0x0C
-        int16_t view_height; // 0x0E
-        uint8_t zoom;        // 0x10
-        uint8_t pad_11;
-        uint16_t var_12; // 0x12, maybe flags
     };
 #pragma pack(pop)
 }

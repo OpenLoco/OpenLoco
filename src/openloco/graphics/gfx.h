@@ -69,6 +69,7 @@ namespace openloco::gfx
     void load_g1();
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
+    void draw_image(int16_t x, int16_t y, uint32_t image);
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,
         int16_t x,

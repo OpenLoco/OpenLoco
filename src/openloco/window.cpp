@@ -18,3 +18,11 @@ void window::sub_4CA17F()
     regs.esi = (int32_t)this;
     call(0x004CA17F, regs);
 }
+
+// 0x004CA4DF
+void window::draw_widgets()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004CA4DF, regs);
+}
