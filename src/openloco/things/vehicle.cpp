@@ -16,8 +16,8 @@ using namespace openloco::interop;
 using namespace openloco::objectmgr;
 
 loco_global<vehicle*, 0x01136118> vehicle_1136118;
-loco_global<vehicle*, 0x01136124> vehicle_1136124;
-loco_global<vehicle*, 0x01136128> vehicle_1136128;
+loco_global<vehicle*, 0x01136124> vehicle_front_bogie;
+loco_global<vehicle*, 0x01136128> vehicle_back_bogie;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<vehicle*, 0x01136120> vehicle_1136120;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;         // var_28 related?
@@ -183,7 +183,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
     if (vehicle_var_1136237 | vehicle_var_1136238)
     {
         invalidate_sprite();
-        sub_4AC255(vehicle_1136128, vehicle_1136124);
+        sub_4AC255(vehicle_back_bogie, vehicle_front_bogie);
         invalidate_sprite();
     }
     uint32_t backup1136130 = vehicle_var_1136130;
@@ -275,7 +275,7 @@ void openloco::vehicle::sub_4AAB0B()
     }
     else if (vehicle_object->sprites[object_sprite_type].var_05 != 1)
     {
-        vehicle* veh2 = vehicle_1136124;
+        vehicle* frontBogie = vehicle_front_bogie;
         vehicle* veh3 = vehicle_1136120;
         al = var_46;
         int8_t ah = 0;
@@ -285,10 +285,10 @@ void openloco::vehicle::sub_4AAB0B()
         }
         else
         {
-            ah = vehicle_arr_4F865C[veh2->var_2C >> 2];
-            if (((veh2->var_2C >> 3) == 12) || ((veh2->var_2C >> 3) == 13))
+            ah = vehicle_arr_4F865C[frontBogie->var_2C >> 2];
+            if (((frontBogie->var_2C >> 3) == 12) || ((frontBogie->var_2C >> 3) == 13))
             {
-                if (veh2->var_2E >= 48)
+                if (frontBogie->var_2E >= 48)
                 {
                     ah = -ah;
                 }
@@ -351,20 +351,20 @@ void openloco::vehicle::sub_4AAB0B()
 }
 
 // 0x004AC255
-void openloco::vehicle::sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx)
+void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
 {
     loc16 loc = {
-        (veh_ebx->x + veh_edi->x) / 2,
-        (veh_ebx->y + veh_edi->y) / 2,
-        (veh_ebx->z + veh_edi->z) / 2
+        (front_bogie->x + back_bogie->x) / 2,
+        (front_bogie->y + back_bogie->y) / 2,
+        (front_bogie->z + back_bogie->z) / 2
     };
     move_to(loc);
 
     if (object_sprite_type == 0xFF)
         return;
 
-    auto distance_x = veh_ebx->x - veh_edi->x;
-    auto distance_y = veh_ebx->y - veh_edi->y;
+    auto distance_x = front_bogie->x - back_bogie->x;
+    auto distance_y = front_bogie->y - back_bogie->y;
     
     auto offset = sub_4BE368(distance_x * distance_x + distance_y * distance_y);
 
@@ -372,7 +372,7 @@ void openloco::vehicle::sub_4AC255(vehicle * veh_edi, vehicle * veh_ebx)
 
     registers regs;
     regs.cx = offset;
-    regs.ax = veh_ebx->z - veh_edi->z;
+    regs.ax = front_bogie->z - back_bogie->z;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
         call(0x004BF4DA, regs);
