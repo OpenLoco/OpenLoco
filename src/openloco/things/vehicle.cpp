@@ -132,7 +132,7 @@ void vehicle::sub_4BA8D4()
                     sub_4BAA76();
 
                     auto v2 = v->next_car()->next_car();
-                    auto soundId = (audio::sound_id)rand_next(26, 26 + 5);
+                    auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
                     audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
                 }
             }
@@ -208,7 +208,7 @@ void openloco::vehicle::sub_4AAC4E()
     if ((veh->var_5D == 8) || (veh->var_5D == 9))
         return;
 
-    vehicle_object* vehicleObject = get_vehicle_object(object_type);
+    auto vehicleObject = get<vehicle_object>(object_type);
     registers regs;
     regs.esi = (int32_t)this;
     regs.ebp = (int32_t)vehicleObject;

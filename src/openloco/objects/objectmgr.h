@@ -90,7 +90,15 @@ namespace openloco
 namespace openloco::objectmgr
 {
     void load_index();
-    cargo_object* get_cargo_object(size_t id);
     size_t get_max_objects(object_type type);
-    vehicle_object* get_vehicle_object(size_t id);
+
+    template<typename T>
+    T* get(size_t id);
+
+    template<>
+    cargo_object* get(size_t id);
+    template<>
+    vehicle_object* get(size_t id);
+    template<>
+    industry_object* get(size_t id);
 }

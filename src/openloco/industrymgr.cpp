@@ -1,5 +1,6 @@
 #include "industrymgr.h"
 #include "interop/interop.hpp"
+#include "openloco.h"
 
 using namespace openloco::interop;
 
@@ -20,5 +21,23 @@ namespace openloco::industrymgr
             return nullptr;
         }
         return &_industries[id];
+    }
+
+    // 0x00453234
+    void update()
+    {
+        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        {
+            addr<0x009C68EB, uint8_t>() = 15;
+            for (auto& industry : industries())
+            {
+                if (!industry.empty())
+                {
+                    industry.update();
+                }
+            }
+        }
+
+        call(0x00453234);
     }
 }
