@@ -34,10 +34,10 @@ namespace openloco::gui
             0,
             uiWidth,
             uiHeight,
-            0x1,
+            (1 << 0),
             (void*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
-
+        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
         openloco::ui::viewportmgr::create(window, window->x, window->y, window->width, window->height);
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
@@ -57,7 +57,7 @@ namespace openloco::gui
                 uiHeight - 117,
                 296,
                 92,
-                0x72,
+                (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
                 (void*)0x004f9ec8);
             window->widgets = (ui::widget*)0x00509df4;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
@@ -74,7 +74,7 @@ namespace openloco::gui
                 uiHeight - 28,
                 40,
                 28,
-                0x72,
+                (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
                 (void*)0x004f9f3c);
             window->widgets = (ui::widget*)0x00509e58;
             window->enabled_widgets = (1 << 0);
@@ -90,7 +90,7 @@ namespace openloco::gui
                 0,
                 298,
                 170,
-                0x2,
+                1 << 1,
                 (void*)0x004f9fb0);
             window->widgets = (ui::widget*)0x00509e6c;
             window->enabled_widgets = (1 << 0);
@@ -110,7 +110,7 @@ namespace openloco::gui
                 0,
                 uiWidth,
                 28,
-                0x32,
+                (1 << 1) | (1 << 4) | (1 << 5),
                 (void*)0x4fa180);
             window->widgets = (ui::widget*)0x509c34;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
@@ -130,8 +130,8 @@ namespace openloco::gui
                 0,
                 uiHeight - 27,
                 140,
-                28,
-                0x32,
+                27,
+                (1 << 1) | (1 << 4) | (1 << 5),
                 (void*)0x4fa024);
             window->widgets = (ui::widget*)0x509d08;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
@@ -149,8 +149,8 @@ namespace openloco::gui
                 uiWidth - 140,
                 uiHeight - 27,
                 140,
-                28,
-                0x32,
+                27,
+                (1 << 1) | (1 << 4) | (1 << 5),
                 (void*)0x4fa098);
             window->widgets = (ui::widget*)0x509d5c;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
@@ -172,8 +172,8 @@ namespace openloco::gui
                     140,
                     uiHeight - 27,
                     uiWidth - 280,
-                    28,
-                    0x32,
+                    27,
+                    (1 << 1) | (1 << 4) | (1 << 5),
                     (void*)0x4fa10c);
                 window->widgets = (ui::widget*)0x509de0;
                 windowmgr::init_scroll_widgets(window);
