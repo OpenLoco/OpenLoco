@@ -74,6 +74,7 @@
     <ClInclude Include="localisation\stringmgr.h" />
     <ClInclude Include="localisation\string_ids.h" />
     <ClInclude Include="map\tile.h" />
+    <ClInclude Include="map\tile_loop.hpp" />
     <ClInclude Include="map\tilemgr.h" />
     <ClInclude Include="objects\cargo_object.h" />
     <ClInclude Include="objects\industry_object.h" />

@@ -2,6 +2,7 @@
 
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
+#include "map/tile_loop.hpp"
 #include "objects/industry_object.h"
 #include "utility/prng.hpp"
 #include <cstdint>
@@ -34,8 +35,7 @@ namespace openloco
         uint8_t var_11;
         uint8_t pad_12[0xD5 - 0x12];
         uint16_t var_D5;
-        coord_t tile_loop_x; // 0xD7
-        coord_t tile_loop_y; // 0xD9
+        map::tile_loop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;

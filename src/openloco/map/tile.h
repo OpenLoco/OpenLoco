@@ -18,6 +18,22 @@ namespace openloco::map
         return coord & (tile_size - 1);
     }
 
+#pragma pack(push, 1)
+    struct map_pos
+    {
+        coord_t x = 0;
+        coord_t y = 0;
+    };
+    constexpr bool operator==(const map_pos& lhs, const map_pos& rhs)
+    {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
+    }
+    constexpr bool operator!=(const map_pos& lhs, const map_pos& rhs)
+    {
+        return !(lhs == rhs);
+    }
+#pragma pack(pop)
+
     enum class element_type
     {
         surface,
