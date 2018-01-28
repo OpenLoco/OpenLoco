@@ -1,6 +1,7 @@
 #pragma once
 
 #include "thing.h"
+#include "../objects/vehicle_object.h"
 
 namespace openloco
 {
@@ -15,6 +16,7 @@ namespace openloco
     {
         vehicle* next_vehicle();
         vehicle* next_car();
+        vehicle_object* object() const;
 
         void update_head();
         void sub_4BA8D4();

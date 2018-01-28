@@ -34,6 +34,12 @@ vehicle* vehicle::next_car()
     return thingmgr::get<vehicle>(next_car_id);
 }
 
+vehicle_object* vehicle::object() const
+{
+    return objectmgr::get<vehicle_object>(object_id);
+}
+
+
 void vehicle::update_head()
 {
     auto v = this;
@@ -210,7 +216,7 @@ void openloco::vehicle::sub_4AAC4E()
     if ((veh->var_5D == 8) || (veh->var_5D == 9))
         return;
 
-    auto vehicleObject = get<vehicle_object>(object_type);
+    auto vehicleObject = object();
     registers regs;
     regs.esi = (int32_t)this;
     regs.ebp = (int32_t)vehicleObject;
@@ -263,7 +269,7 @@ void openloco::vehicle::sub_4AAB0B()
     if (object_sprite_type == 0xFF)
         return;
 
-    auto vehicle_object = get_vehicle_object(object_type);
+    auto vehicle_object = object();
     uint8_t al = 0;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 6))
     {
