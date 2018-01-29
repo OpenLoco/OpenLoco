@@ -29,6 +29,7 @@ namespace openloco
         void sub_4AAB0B();
         void sub_4AC255(vehicle * back_bogie, vehicle * front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
+        uint8_t sub_4BF4DA(uint16_t xy_offset, int16_t z_offset);
     };
 #pragma pack(pop)
 }
