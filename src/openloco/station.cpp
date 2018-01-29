@@ -10,6 +10,9 @@ using namespace openloco::ui;
 
 namespace openloco
 {
+    constexpr uint8_t min_cargo_rating = 0;
+    constexpr uint8_t max_cargo_rating = 200;
+
     station_id_t station::id()
     {
         // TODO check if this is stored in station structure
@@ -166,7 +169,7 @@ namespace openloco
             }
         }
 
-        return std::clamp(0, rating, 200);
+        return std::clamp<int32_t>(rating, min_cargo_rating, max_cargo_rating);
     }
 
     void station::sub_4929DB()
