@@ -25,6 +25,20 @@ loco_global<uint8_t, 0x01136238> vehicle_var_1136238;         // var_28 related?
 loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global_array<uint16_t, 2047, 0x00500B50> vehicle_arr_500B50;
 
+static constexpr uint8_t arr_503E5C[] =
+{
+    0,
+    1,
+    2,
+    3,
+    4,
+    0, // Not a straight number count
+    5,
+    6,
+    7,
+    8
+};
+
 vehicle* vehicle::next_vehicle()
 {
     return thingmgr::get<vehicle>(next_thing_id);
@@ -375,14 +389,13 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
     regs.ax = front_bogie->z - back_bogie->z;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
-        call(0x004BF4DA, regs);
+        var_1F = sub_4BF4DA(offset, front_bogie->z - back_bogie->z);
     }
     else
     {
         call(0x004BF49D, regs);
+        var_1F = regs.al;
     }
-
-    var_1F = regs.al;
 
     regs.ax = distance_x;
     regs.cx = distance_y;
@@ -424,4 +437,44 @@ uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
     for (; distance > 4096; --i, distance >>= 2);
 
     return vehicle_arr_500B50[distance >> 1] >> i;
+}
+
+// 0x004BF4DA
+uint8_t openloco::vehicle::sub_4BF4DA(uint16_t xy_offset, int16_t z_offset)
+{
+    uint32_t i = 0;
+
+    if (z_offset < 0)
+    {
+        i = 5;
+        z_offset = -z_offset;
+    }
+
+    int xyz = -1;
+    if (xy_offset != 0)
+    {
+        xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
+    }
+
+    if (xyz > 10064)
+    {
+        i += 2;
+        if (xyz >= 20500)
+        {
+            i++;
+            if (xyz >= 22000)
+            {
+                i++;
+            }
+        }
+    }
+    else
+    {
+        if (xyz >= 3331)
+        {
+            i++;
+        }
+    }
+
+    return arr_503E5C[i];
 }
