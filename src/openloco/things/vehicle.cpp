@@ -393,8 +393,7 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
     }
     else
     {
-        call(0x004BF49D, regs);
-        var_1F = regs.al;
+        var_1F = sub_4BF49D(offset, front_bogie->z - back_bogie->z);
     }
 
     regs.ax = distance_x;
@@ -471,6 +470,35 @@ uint8_t openloco::vehicle::sub_4BF4DA(uint16_t xy_offset, int16_t z_offset)
     else
     {
         if (xyz >= 3331)
+        {
+            i++;
+        }
+    }
+
+    return arr_503E5C[i];
+}
+
+// 0x004BF49D
+uint8_t openloco::vehicle::sub_4BF49D(uint16_t xy_offset, int16_t z_offset)
+{
+    uint32_t i = 0;
+
+    if (z_offset < 0)
+    {
+        i = 5;
+        z_offset = -z_offset;
+    }
+
+    int xyz = -1;
+    if (xy_offset != 0)
+    {
+        xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
+    }
+
+    if (xyz >= 3331)
+    {
+        i++;
+        if (xyz >= 9000)
         {
             i++;
         }
