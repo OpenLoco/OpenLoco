@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../utility/string.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -357,4 +358,28 @@ namespace openloco::interop
 
     void register_hooks();
     void load_sections();
+}
+
+// these safe string function convenience overloads are located in this header, rather than in utility/string.hpp,
+// so that utility/string.hpp doesn't needlessly have to include this header just for the definition of loco_global
+// (and so that we don't have to use type traits SFINAE template wizardry to get around not having the definition available)
+namespace openloco::utility
+{
+    template<size_t TCount, uintptr_t TAddress>
+    void strcpy_safe(openloco::interop::loco_global<char[TCount], TAddress>& dest, const char* src)
+    {
+        (void)strlcpy(dest, src, dest.size());
+    }
+
+    template<size_t TCount, uintptr_t TAddress>
+    void strcat_safe(openloco::interop::loco_global<char[TCount], TAddress>& dest, const char* src)
+    {
+        (void)strlcat(dest, src, dest.size());
+    }
+
+    template<size_t TCount, uintptr_t TAddress, typename... Args>
+    int sprintf_safe(openloco::interop::loco_global<char[TCount], TAddress>& dest, const char* fmt, Args&&... args)
+    {
+        return std::snprintf(dest, TCount, fmt, std::forward<Args>(args)...);
+    }
 }
