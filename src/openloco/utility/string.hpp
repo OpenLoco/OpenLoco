@@ -78,19 +78,19 @@ namespace openloco::utility
     }
 
     template<size_t N>
-    inline void strcpy_safe(char (&dest)[N], const char* src)
+    void strcpy_safe(char (&dest)[N], const char* src)
     {
         (void)strlcpy(dest, src, N);
     }
 
     template<size_t N>
-    inline void strcat_safe(char (&dest)[N], const char* src)
+    void strcat_safe(char (&dest)[N], const char* src)
     {
         (void)strlcat(dest, src, N);
     }
 
     template<size_t N, typename... Args>
-    inline int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
+    int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
     {
         return std::snprintf(dest, N, fmt, std::forward<Args>(args)...);
     }
