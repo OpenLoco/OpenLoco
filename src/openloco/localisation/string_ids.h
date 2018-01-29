@@ -196,6 +196,8 @@ namespace openloco::string_ids
 
     constexpr string_id station_cargo_rating_percent = 1423;
 
+    constexpr string_id title_exit_game = 1869;
+
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
     constexpr string_id buffer_2039 = 2039;

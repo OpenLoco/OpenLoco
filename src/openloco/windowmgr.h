@@ -112,6 +112,10 @@ namespace openloco::ui::windows
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
     window* open_title_version();
+    window* open_title_exit();
+    window* open_title_menu();
+    window* open_title_logo();
+    void open_about_window();
     void sub_498E9B(window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
