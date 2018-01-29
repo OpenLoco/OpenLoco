@@ -384,28 +384,28 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
 
     auto vehicle_object = object();
 
-    registers regs;
-    regs.cx = offset;
-    regs.ax = front_bogie->z - back_bogie->z;
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
-        var_1F = sub_4BF4DA(offset, front_bogie->z - back_bogie->z);
+        sprite_pitch = vehicle_body_update_sprite_pitch_special(offset, front_bogie->z - back_bogie->z);
     }
     else
     {
-        var_1F = sub_4BF49D(offset, front_bogie->z - back_bogie->z);
+        sprite_pitch = vehicle_body_update_sprite_pitch(offset, front_bogie->z - back_bogie->z);
     }
 
+    registers regs;
     regs.ax = distance_x;
     regs.cx = distance_y;
-    if (var_1F == 1 || var_1F == 3 || var_1F == 5 ||var_1F == 7)
+    
+    // If the sprite_pitch is odd
+    if (sprite_pitch & 1)
     {
         call(0x004BF5B3, regs);
     }
     else
     {
         auto sprite = vehicle_object->sprites[object_sprite_type];
-        uint8_t i = var_1F == 0 ? sprite.var_0B : sprite.var_0C;
+        uint8_t i = sprite_pitch == 0 ? sprite.var_0B : sprite.var_0C;
         switch (i)
         {
         case 0:
@@ -426,7 +426,7 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
         }
     }
 
-    var_1E = regs.al;
+    sprite_yaw = regs.al;
 }
 
 // 0x004BE368
@@ -439,7 +439,7 @@ uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t openloco::vehicle::sub_4BF4DA(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_special(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -479,7 +479,7 @@ uint8_t openloco::vehicle::sub_4BF4DA(uint16_t xy_offset, int16_t z_offset)
 }
 
 // 0x004BF49D
-uint8_t openloco::vehicle::sub_4BF49D(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
