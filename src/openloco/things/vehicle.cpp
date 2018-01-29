@@ -354,9 +354,9 @@ void openloco::vehicle::sub_4AAB0B()
 void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
 {
     loc16 loc = {
-        (front_bogie->x + back_bogie->x) / 2,
-        (front_bogie->y + back_bogie->y) / 2,
-        (front_bogie->z + back_bogie->z) / 2
+        static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
+        static_cast<int16_t>((front_bogie->y + back_bogie->y) / 2),
+        static_cast<int16_t>((front_bogie->z + back_bogie->z) / 2)
     };
     move_to(loc);
 
