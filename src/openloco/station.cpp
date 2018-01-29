@@ -14,7 +14,7 @@ namespace openloco
     {
         // TODO check if this is stored in station structure
         //      otherwise add it when possible
-        static loco_global_array<station, 1024, 0x005E6EDC> _stations;
+        static loco_global<station[1024], 0x005E6EDC> _stations;
         auto index = (size_t)(this - _stations);
         if (index > 1024)
         {

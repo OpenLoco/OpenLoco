@@ -6,8 +6,8 @@ using namespace openloco::interop;
 
 namespace openloco::thingmgr
 {
-    loco_global_array<thing_id_t, num_thing_lists, 0x00525E40> _heads;
-    loco_global_array<thing, max_things, 0x006DB6DC> _things;
+    loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
+    loco_global<thing[max_things], 0x006DB6DC> _things;
 
     thing_id_t first_id(thing_list list)
     {

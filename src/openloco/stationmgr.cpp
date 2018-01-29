@@ -10,7 +10,7 @@ using namespace openloco::ui;
 
 namespace openloco::stationmgr
 {
-    static loco_global_array<station, max_stations, 0x005E6EDC> _stations;
+    static loco_global<station[max_stations], 0x005E6EDC> _stations;
 
     std::array<station, max_stations>& stations()
     {
