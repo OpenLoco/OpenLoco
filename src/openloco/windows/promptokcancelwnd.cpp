@@ -36,11 +36,11 @@ namespace openloco::ui::windows
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
 
-        auto window = windowmgr::create_window_centred(window_type::prompt_ok_cancel, 280, 92, 0x1002, (void*)0x004FB37C);
+        auto window = windowmgr::create_window_centred(window_type::prompt_ok_cancel, 280, 92, (1 << 12) | (1 << 1), (void*)0x004FB37C);
         if (window != nullptr)
         {
             window->widgets = (widget*)0x0050AE00;
-            window->enabled_widgets = 4 | 8 | 0x10;
+            window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->sub_4CA17F();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);

@@ -125,15 +125,23 @@ namespace openloco::environment
      */
     static fs::path find_similar_file(const fs::path& path)
     {
-        auto expectedFilename = path.filename().generic_string();
-        auto directory = path.parent_path();
-        for (auto& item : fs::directory_iterator(directory))
+        try
         {
-            auto& p = item.path();
-            if (utility::iequals(p.filename().generic_string(), expectedFilename))
+            auto expectedFilename = path.filename().generic_string();
+            auto directory = path.parent_path();
+            for (auto& item : fs::directory_iterator(directory))
             {
-                return p;
+                auto& p = item.path();
+                if (utility::iequals(p.filename().generic_string(), expectedFilename))
+                {
+                    return p;
+                }
             }
+        }
+        catch (const std::exception&)
+        {
+            // Ignore errors when searching, most common will be that the
+            // parent directory does not exist
         }
         return fs::path();
     }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utility/prng.hpp"
 #include <cstdint>
 #include <functional>
 
@@ -19,11 +20,9 @@ namespace openloco
     bool is_title_mode();
     bool is_paused();
     uint32_t scenario_ticks();
-    void main();
+    utility::prng& gprng();
 
+    void main();
     void prompt_tick_loop(std::function<bool()> tickAction);
     void sub_48A18C();
-    uint32_t rand_next();
-    int32_t rand_next(int32_t high);
-    int32_t rand_next(int32_t low, int32_t high);
 }

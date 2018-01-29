@@ -78,7 +78,19 @@ namespace openloco::config
         if (!fs::is_directory(dir))
         {
             fs::create_directories(configPath.parent_path());
-            fs::permissions(dir, fs::perms::owner_read | fs::perms::owner_write | fs::perms::group_read | fs::perms::others_read);
+            // clang-format off
+            fs::permissions(
+                dir,
+                fs::perms::owner_all |
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                fs::perms::group_read | fs::perms::group_exe |
+                fs::perms::others_read | fs::perms::others_exe
+#else
+                fs::perms::group_read | fs::perms::group_exec |
+                fs::perms::others_read | fs::perms::others_exec
+#endif
+            );
+            // clang-format on
         }
 
 #ifdef _OPENLOCO_USE_BOOST_FS_

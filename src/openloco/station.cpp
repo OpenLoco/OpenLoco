@@ -40,6 +40,7 @@ namespace openloco
         var_3B0 = std::min(var_3B0 + 1, 255);
         var_3B1 = std::min(var_3B1 + 1, 255);
 
+        auto& rng = gprng();
         for (int i = 0; i < 32; i++)
         {
             auto& cargo = cargo_stats[i];
@@ -61,12 +62,12 @@ namespace openloco
                     // Rating < 25%, decrease cargo
                     if (cargo.quantity >= 400)
                     {
-                        cargo.quantity -= rand_next(1, 32);
+                        cargo.quantity -= rng.rand_next(1, 32);
                         quantityUpdated = true;
                     }
                     else if (cargo.quantity >= 200)
                     {
-                        cargo.quantity -= rand_next(1, 8);
+                        cargo.quantity -= rng.rand_next(1, 8);
                         quantityUpdated = true;
                     }
                 }
@@ -76,9 +77,9 @@ namespace openloco
                 }
                 if (cargo.rating <= 100 && cargo.quantity != 0)
                 {
-                    if (cargo.rating <= rand_next(0, 127))
+                    if (cargo.rating <= rng.rand_next(0, 127))
                     {
-                        cargo.quantity = std::max(0, cargo.quantity - rand_next(1, 4));
+                        cargo.quantity = std::max(0, cargo.quantity - rng.rand_next(1, 4));
                         quantityUpdated = true;
                     }
                 }

@@ -49,7 +49,7 @@ namespace openloco::ui::windows
             auto& cargo = station.cargo_stats[i];
             if (!cargo.empty())
             {
-                auto cargoObj = objectmgr::get_cargo_object(i);
+                auto cargoObj = objectmgr::get<cargo_object>(i);
                 gfx::draw_string_494BBF(dpi, 1, y, 98, 0, string_ids::wcolour2_stringid2, &cargoObj->name);
 
                 auto rating = cargo.rating;

@@ -5,6 +5,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+fs::path openloco::platform::get_user_directory()
+{
+    @autoreleasepool
+    {
+        NSFileManager * filemanager = [NSFileManager defaultManager];
+        NSURL *url = [[filemanager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+        url = [url URLByAppendingPathComponent:@"OpenLoco"];
+        return url.path.UTF8String;
+    }
+}
 
 std::string openloco::platform::prompt_directory(const std::string &title)
 {
