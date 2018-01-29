@@ -92,7 +92,7 @@ namespace openloco::utility
     template<size_t N, typename... Args>
     inline int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
     {
-        return snprintf(dest, N, fmt, std::forward<Args>(args)...);
+        return std::snprintf(dest, N, fmt, std::forward<Args>(args)...);
     }
 
     // intended for use with e.g. loco_global_array<char, N, A>
