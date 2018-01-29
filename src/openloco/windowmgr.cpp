@@ -1,4 +1,5 @@
 #include "windowmgr.h"
+#include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "ui.h"
 #include <algorithm>
@@ -137,5 +138,81 @@ namespace openloco::ui::windowmgr
         registers regs;
         regs.esi = (uint32_t)window;
         call(0x4ca17f, regs);
+    }
+
+    // 0x004C5FC8
+    void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    {
+        // Copy dpi so we can crop it
+        gfx::drawpixelinfo_t copy = *dpi;
+        dpi = &copy;
+
+        // Clamp left to 0
+        int32_t overflow = left - dpi->x;
+        if (overflow > 0)
+        {
+            dpi->x += overflow;
+            dpi->width -= overflow;
+            if (dpi->width <= 0)
+                return;
+            dpi->pitch += overflow;
+            dpi->bits += overflow;
+        }
+
+        // Clamp width to right
+        overflow = dpi->x + dpi->width - right;
+        if (overflow > 0)
+        {
+            dpi->width -= overflow;
+            if (dpi->width <= 0)
+                return;
+            dpi->pitch += overflow;
+        }
+
+        // Clamp top to 0
+        overflow = top - dpi->y;
+        if (overflow > 0)
+        {
+            dpi->y += overflow;
+            dpi->height -= overflow;
+            if (dpi->height <= 0)
+                return;
+            dpi->bits += (dpi->width + dpi->pitch) * overflow;
+        }
+
+        // Clamp height to bottom
+        overflow = dpi->y + dpi->height - bottom;
+        if (overflow > 0)
+        {
+            dpi->height -= overflow;
+            if (dpi->height <= 0)
+                return;
+        }
+
+        if (/*openloco::screen_flags() & (1<<4) && */ w->type == 47)
+        {
+            return;
+        }
+
+        loco_global<uint8_t[32], 0x9C645C> byte9C645C;
+
+        // Company colour?
+        if (w->var_884 != -1)
+        {
+            w->colours[0] = byte9C645C[w->var_884];
+        }
+
+        // Invalidate modifies the window colours so first get the correct
+        // colour before setting the global variables for the string painting
+        w->call_prepare_draw();
+
+        loco_global<uint8_t[4], 0x1136594> windowColours;
+        // Text colouring
+        windowColours[0] = colour::opaque(w->colours[0]);
+        windowColours[1] = colour::opaque(w->colours[1]);
+        windowColours[2] = colour::opaque(w->colours[2]);
+        windowColours[3] = colour::opaque(w->colours[3]);
+
+        w->draw(dpi);
     }
 }

@@ -101,6 +101,8 @@ namespace openloco::gui
             window->flags |= ui::window_flags::flag_4;
             window->colours[0] = colour::translucent(colour::grey);
             window->colours[1] = colour::translucent(colour::grey);
+
+            ui::windows::open_title_version();
         }
         else
         {
@@ -246,6 +248,12 @@ namespace openloco::gui
         {
             window->x = uiWidth - 40;
             window->y = uiHeight - 28;
+        }
+
+        window = windowmgr::find(window_type::openloco_version);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
         }
 
         window = windowmgr::find(window_type::tutorial);

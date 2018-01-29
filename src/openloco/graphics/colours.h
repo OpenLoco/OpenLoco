@@ -47,5 +47,10 @@ namespace openloco
         {
             return c | translucent_flag;
         }
+
+        constexpr colour_t opaque(colour_t c)
+        {
+            return c & ~translucent_flag;
+        }
     }
 }

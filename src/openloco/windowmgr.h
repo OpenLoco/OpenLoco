@@ -1,13 +1,9 @@
 #pragma once
 
+#include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
 #include "window.h"
 #include <cstddef>
-
-namespace openloco::gfx
-{
-    struct drawpixelinfo_t;
-}
 
 namespace openloco::ui
 {
@@ -56,6 +52,7 @@ namespace openloco::ui
         text_input = 51,
         prompt_browse = 52,
         prompt_ok_cancel = 54,
+        openloco_version = 55,
         undefined = 255
     };
 }
@@ -78,6 +75,7 @@ namespace openloco::ui::windowmgr
     window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
     window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
     void init_scroll_widgets(window* window);
+    void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
 }
 
 namespace openloco::ui::windows
@@ -91,6 +89,7 @@ namespace openloco::ui::windows
     void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
+    window* open_title_version();
     void sub_498E9B(window* w);
 
     bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);

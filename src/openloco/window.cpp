@@ -1,6 +1,7 @@
 #include "window.h"
 #include "interop/interop.hpp"
 
+using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::ui;
 
@@ -31,7 +32,37 @@ bool window::call_tooltip(int16_t widget_index)
 
 void window::call_prepare_draw()
 {
-    registers regs;
-    regs.esi = (uint32_t)this;
-    call((uint32_t)this->event_handlers->prepare_draw, regs);
+    if (this->event_handlers->prepare_draw == nullptr)
+    {
+        return;
+    }
+
+    if ((uint32_t)(this->event_handlers->prepare_draw) < 0x4d7000)
+    {
+        registers regs;
+        regs.esi = (uint32_t)this;
+        call((uint32_t)this->event_handlers->prepare_draw, regs);
+        return;
+    }
+
+    this->event_handlers->prepare_draw(this);
+}
+
+void window::draw(gfx::drawpixelinfo_t* dpi)
+{
+    if (this->event_handlers->draw == nullptr)
+    {
+        return;
+    }
+
+    if ((uint32_t)(this->event_handlers->draw) < 0x4d7000)
+    {
+        registers regs;
+        regs.esi = (uint32_t)this;
+        regs.edi = (uint32_t)dpi;
+        call((uint32_t)this->event_handlers->draw, regs);
+        return;
+    }
+
+    this->event_handlers->draw(this, dpi);
 }

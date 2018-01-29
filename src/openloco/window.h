@@ -6,6 +6,8 @@
 
 namespace openloco::ui
 {
+    struct window;
+
 #pragma pack(push, 1)
 
     struct widget
@@ -39,35 +41,42 @@ namespace openloco::ui
 
     struct window_event_list_t
     {
-        uint32_t on_close;
-        uint32_t on_mouse_up;
-        uint32_t on_resize;
-        uint32_t event_03;
-        uint32_t on_mouse_down;
-        uint32_t on_dropdown;
-        uint32_t event_06;
-        uint32_t on_update;
-        uint32_t event_08;
-        uint32_t event_09;
-        uint32_t event_10;
-        uint32_t event_11;
-        uint32_t event_12;
-        uint32_t event_13;
-        uint32_t tool_abort;
-        uint32_t event_15;
-        uint32_t get_scroll_size;
-        uint32_t scroll_mouse_down;
-        uint32_t event_18;
-        uint32_t event_19;
-        uint32_t text_input;
-        uint32_t event_21;
-        uint32_t event_22;
-        uint32_t tooltip;
-        uint32_t cursor;
-        uint32_t event_25;
-        uint32_t prepare_draw;
-        uint32_t draw;
-        uint32_t event_28;
+        union
+        {
+            uint32_t events[29];
+            struct
+            {
+                uint32_t on_close;
+                uint32_t on_mouse_up;
+                uint32_t on_resize;
+                uint32_t event_03;
+                uint32_t on_mouse_down;
+                uint32_t on_dropdown;
+                uint32_t event_06;
+                uint32_t on_update;
+                uint32_t event_08;
+                uint32_t event_09;
+                uint32_t event_10;
+                uint32_t event_11;
+                uint32_t event_12;
+                uint32_t event_13;
+                uint32_t tool_abort;
+                uint32_t event_15;
+                uint32_t get_scroll_size;
+                uint32_t scroll_mouse_down;
+                uint32_t event_18;
+                uint32_t event_19;
+                uint32_t text_input;
+                uint32_t event_21;
+                uint32_t event_22;
+                uint32_t tooltip;
+                uint32_t cursor;
+                uint32_t event_25;
+                void(*prepare_draw)(window*);
+                void(*draw)(window*, gfx::drawpixelinfo_t*);
+                uint32_t event_28;
+            };
+        };
     };
 
     struct viewport
@@ -126,7 +135,9 @@ namespace openloco::ui
                 uint16_t var_87A;
                 uint8_t pad_87C[0x882 - 0x87C];
                 uint8_t type; // 0x882
-                uint8_t pad_883[0x886 - 0x883];
+                uint8_t pad_883[1];
+                int8_t var_884;
+                uint8_t pad_885[1];
                 uint8_t colours[4]; // 0x886
             };
         };
@@ -136,6 +147,7 @@ namespace openloco::ui
 
         bool call_tooltip(int16_t widget_index); // 23
         void call_prepare_draw();                // 26
+        void draw(gfx::drawpixelinfo_t* dpi);
     };
 #pragma pack(pop)
 }
