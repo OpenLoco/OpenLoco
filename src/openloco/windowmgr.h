@@ -68,7 +68,7 @@ namespace openloco::ui::windowmgr
     size_t num_windows();
 
     void update();
-    void resize();
+    window* get_main();
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
     void invalidate(window_type type);

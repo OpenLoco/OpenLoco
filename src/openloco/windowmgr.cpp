@@ -42,10 +42,12 @@ namespace openloco::ui::windowmgr
         call(0x004C6118);
     }
 
-    // 0x004392BD
-    void resize()
+    // 0x004CE438
+    window* get_main()
     {
-        call(0x004392BD);
+        registers regs;
+        call(0x004CE438, regs);
+        return (window*)regs.esi;
     }
 
     // 0x004C9B56
