@@ -25,7 +25,8 @@ loco_global<uint8_t, 0x01136238> vehicle_var_1136238;         // var_28 related?
 loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global_array<uint16_t, 2047, 0x00500B50> vehicle_arr_500B50;
 
-static constexpr uint8_t arr_503E5C[] =
+// 0x00503E5C
+static constexpr uint8_t vehicleBodyIndexToPitch[] =
 {
     0,
     1,
@@ -392,15 +393,11 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
     {
         sprite_pitch = vehicle_body_update_sprite_pitch(offset, front_bogie->z - back_bogie->z);
     }
-
-    registers regs;
-    regs.ax = distance_x;
-    regs.cx = distance_y;
     
     // If the sprite_pitch is odd
     if (sprite_pitch & 1)
     {
-        call(0x004BF5B3, regs);
+        sprite_yaw = vehicle_update_sprite_yaw_1(distance_x, distance_y);
     }
     else
     {
@@ -409,24 +406,22 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
         switch (i)
         {
         case 0:
-            call(0x004BF52B, regs);
+            sprite_yaw = vehicle_update_sprite_yaw_0(distance_x, distance_y);
             break;
         case 1:
-            call(0x004BF5B3, regs);
+            sprite_yaw = vehicle_update_sprite_yaw_1(distance_x, distance_y);
             break;
         case 2:
-            call(0x004BF5FB, regs);
+            sprite_yaw = vehicle_update_sprite_yaw_2(distance_x, distance_y);
             break;
         case 3:
-            call(0x004BF657, regs);
+            sprite_yaw = vehicle_update_sprite_yaw_3(distance_x, distance_y);
             break;
         case 4:
-            call(0x004BF6DF, regs);
+            sprite_yaw = vehicle_update_sprite_yaw_4(distance_x, distance_y);
             break;
         }
     }
-
-    sprite_yaw = regs.al;
 }
 
 // 0x004BE368
@@ -475,7 +470,7 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_special(uint16_t xy_
         }
     }
 
-    return arr_503E5C[i];
+    return vehicleBodyIndexToPitch[i];
 }
 
 // 0x004BF49D
@@ -504,5 +499,464 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch(uint16_t xy_offset, 
         }
     }
 
-    return arr_503E5C[i];
+    return vehicleBodyIndexToPitch[i];
+}
+
+// 0x004BF52B
+uint8_t openloco::vehicle::vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset)
+{
+    uint32_t i = 0;
+
+    if (x_offset < 0)
+    {
+        i += 2;
+        x_offset = -x_offset;
+    }
+
+    if (y_offset < 0)
+    {
+        i += 4;
+        y_offset = -y_offset;
+    }
+
+    int xy = -1;
+    if (y_offset != 0)
+    {
+        xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+    }
+
+    if (xy >= 65536)
+    {
+        i++;
+    }
+
+    // 0x00503E66
+    constexpr uint8_t indexToYaw[] =
+    {
+        16,
+        32,
+        16,
+        0,
+        48,
+        32,
+        48,
+        0
+    };
+    return indexToYaw[i];
+}
+
+// 0x004BF5B3
+uint8_t openloco::vehicle::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset)
+{
+    uint32_t i = 0;
+
+    if (x_offset < 0)
+    {
+        i += 3;
+        x_offset = -x_offset;
+    }
+
+    if (y_offset < 0)
+    {
+        i += 6;
+        y_offset = -y_offset;
+    }
+
+    int xy = -1;
+    if (y_offset != 0)
+    {
+        xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+    }
+
+    if (xy >= 27146)
+    {
+        i++;
+        if (xy >= 158218)
+        {
+            i++;
+        }
+    }
+
+    // 0x00503E6E
+    constexpr uint8_t indexToYaw[] =
+    {
+        16,
+        24,
+        32,
+        16,
+        8,
+        0,
+        48,
+        40,
+        32,
+        48,
+        56,
+        0
+    };
+    return indexToYaw[i];
+}
+
+// 0x004BF5FB
+uint8_t openloco::vehicle::vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset)
+{
+    uint32_t i = 0;
+
+    if (x_offset < 0)
+    {
+        i += 5;
+        x_offset = -x_offset;
+    }
+
+    if (y_offset < 0)
+    {
+        i += 10;
+        y_offset = -y_offset;
+    }
+
+    int xy = -1;
+    if (y_offset != 0)
+    {
+        xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+    }
+
+    if (xy >= 43790)
+    {
+        i += 2;
+        if (xy >= 98082)
+        {
+            i++;
+            if (xy >= 329472)
+            {
+                i++;
+            }
+        }
+    }
+    else
+    {
+        if (xy >= 13036)
+        {
+            i++;
+        }
+    }
+
+    // 0x00503E7A
+    constexpr uint8_t indexToYaw[] =
+    {
+        16,
+        20,
+        24,
+        28,
+        32,
+        16,
+        12,
+        8,
+        4,
+        0,
+        48,
+        44,
+        40,
+        36,
+        32,
+        48,
+        52,
+        56,
+        60,
+        0
+    };
+    return indexToYaw[i];
+}
+
+// 0x004BF657
+uint8_t openloco::vehicle::vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset)
+{
+    uint32_t i = 0;
+
+    if (x_offset < 0)
+    {
+        i += 9;
+        x_offset = -x_offset;
+    }
+
+    if (y_offset < 0)
+    {
+        i += 18;
+        y_offset = -y_offset;
+    }
+
+    int xy = -1;
+    if (y_offset != 0)
+    {
+        xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+    }
+
+    if (xy >= 79856)
+    {
+        if (xy >= 216043)
+        {
+            i += 7;
+            if (xy >= 665398)
+            {
+                i++;
+            }
+        }
+        else
+        {
+            i += 5;
+            if (xy >= 122609)
+            {
+                i++;
+            }
+        }
+    }
+    else
+    {
+        if (xy >= 19880)
+        {
+            if (xy >= 35030)
+            {
+                i += 3;
+                if (xy >= 53784)
+                {
+                    i++;
+                }
+            }
+            else
+            {
+                i += 2;
+            }
+        }
+        else
+        {
+            if (xy >= 6455)
+            {
+                i++;
+            }
+        }
+    }
+
+    // 0x00503E8E
+    constexpr uint8_t indexToYaw[] =
+    {
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        16,
+        14,
+        12,
+        10,
+        8,
+        6,
+        4,
+        2,
+        0,
+        48,
+        46,
+        44,
+        42,
+        40,
+        38,
+        36,
+        34,
+        32,
+        48,
+        50,
+        52,
+        54,
+        56,
+        58,
+        60,
+        62,
+        0
+    };
+    return indexToYaw[i];
+}
+
+// 0x004BF6DF
+uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset)
+{
+    uint32_t i = 0;
+
+    if (x_offset < 0)
+    {
+        i += 17;
+        x_offset = -x_offset;
+    }
+
+    if (y_offset < 0)
+    {
+        i += 34;
+        y_offset = -y_offset;
+    }
+
+    int xy = -1;
+    if (y_offset != 0)
+    {
+        xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+    }
+
+    if (xy >= 72308)
+    {
+        if (xy >= 183161)
+        {
+            if (xy >= 441808)
+            {
+                i += 15;
+                if (xy >= 1334016)
+                {
+                    i++;
+                }
+            }
+            else
+            {
+                i += 13;
+                if (xy >= 261634)
+                {
+                    i++;
+                }
+            }
+        }
+        else
+        {
+            if (xy >= 109340)
+            {
+                i += 11;
+                if (xy >= 138564)
+                {
+                    i++;
+                }
+            }
+            else
+            {
+                i += 9;
+                if (xy >= 88365)
+                {
+                    i++;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (xy >= 23449)
+        {
+            if (xy >= 39281)
+            {
+                i += 6;
+                if (xy >= 48605)
+                {
+                    i++;
+                    if (xy >= 59398)
+                    {
+                        i++;
+                    }
+                }
+            }
+            else
+            {
+                i += 4;
+                if (xy >= 30996)
+                {
+                    i++;
+                }
+            }
+        }
+        else
+        {
+            if (xy >= 9721)
+            {
+                i += 2;
+                if (xy >= 16416)
+                {
+                    i++;
+                }
+            }
+            else
+            {
+                if (xy >= 3220)
+                {
+                    i++;
+                }
+            }
+        }
+    }
+
+    // 0x00503EB2
+    constexpr uint8_t indexToYaw[] =
+    {
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        48,
+        47,
+        46,
+        45,
+        44,
+        43,
+        42,
+        41,
+        40,
+        39,
+        38,
+        37,
+        36,
+        35,
+        34,
+        33,
+        32,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        0
+    };
+    return indexToYaw[i];
 }
