@@ -129,7 +129,6 @@ namespace openloco::ui::windows
         {
             std::basic_string<fs::path::value_type> sep(1, fs::path::preferred_separator);
             return path.parent_path().concat(sep);
-
         }
         else
         {
