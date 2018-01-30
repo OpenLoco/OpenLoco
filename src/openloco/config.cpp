@@ -12,8 +12,8 @@
 #endif
 
 #include "config.h"
+#include "environment.h"
 #include "interop/interop.hpp"
-#include "platform/platform.h"
 
 using namespace openloco::interop;
 
@@ -27,9 +27,6 @@ namespace openloco::config
 {
     static loco_global<config_t, 0x0050AEB4> _config;
     static new_config _new_config;
-
-    static fs::path get_new_config_path();
-    static fs::path get_user_directory();
 
     config_t& get()
     {
@@ -57,7 +54,7 @@ namespace openloco::config
 
     new_config& read_new_config()
     {
-        auto configPath = get_new_config_path();
+        auto configPath = environment::get_path(environment::path_id::openloco_cfg);
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ifstream stream(configPath.string());
 #else
@@ -73,7 +70,7 @@ namespace openloco::config
 
     void write_new_config()
     {
-        auto configPath = get_new_config_path();
+        auto configPath = environment::get_path(environment::path_id::openloco_cfg);
         auto dir = configPath.parent_path();
         if (!fs::is_directory(dir))
         {
@@ -103,10 +100,5 @@ namespace openloco::config
             stream << _new_config.loco_install_path << std::endl;
             stream << _new_config.breakdowns_disabled << std::endl;
         }
-    }
-
-    static fs::path get_new_config_path()
-    {
-        return platform::get_user_directory() / "openloco.cfg";
     }
 }
