@@ -31,6 +31,11 @@ namespace openloco
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_special(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
+        uint8_t vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
+        uint8_t vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset);
+        uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
+        uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
+        uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
     };
 #pragma pack(pop)
 }
