@@ -6,6 +6,7 @@
 #include "utility/collection.hpp"
 #include "utility/string.hpp"
 #include <cstring>
+#include <fstream>
 #include <iostream>
 
 using namespace openloco::interop;
@@ -20,6 +21,7 @@ namespace openloco::environment
     loco_global_array<char, 257, 0x0050B518> _path_landscapes;
     loco_global_array<char, 257, 0x0050B635> _path_objects;
 
+    static fs::path get_base_path(path_id id);
     static fs::path get_sub_path(path_id id);
 #ifndef _WIN32
     static fs::path find_similar_file(const fs::path& path);
@@ -150,7 +152,7 @@ namespace openloco::environment
     // 0x004416B5
     fs::path get_path(path_id id)
     {
-        auto basePath = get_loco_install_path();
+        auto basePath = get_base_path(id);
         auto subPath = get_sub_path(id);
         auto result = basePath / subPath;
         if (!fs::exists(result))
@@ -190,18 +192,33 @@ namespace openloco::environment
         set_directory(_path_objects, basePath / "ObjData/*.DAT");
     }
 
+    static fs::path get_base_path(path_id id)
+    {
+        switch (id)
+        {
+            case path_id::plugin1:
+            case path_id::plugin2:
+            case path_id::gamecfg:
+            case path_id::scores:
+            case path_id::openloco_cfg:
+                return platform::get_user_directory();
+            default:
+                return get_loco_install_path();
+        }
+    }
+
     static fs::path get_sub_path(path_id id)
     {
         static constexpr const char* paths[] = {
             "Data/g1.DAT",
-            "Data/PLUGIN.DAT",
-            "Data/PLUGIN2.DAT",
+            "plugin.dat",
+            "plugin2.dat",
             "Data/CSS1.DAT",
             "Data/CSS2.DAT",
             "Data/CSS3.DAT",
             "Data/CSS4.DAT",
             "Data/CSS5.DAT",
-            "Data/GAME.CFG",
+            "game.cfg",
             "Data/KANJI.DAT",
             "Data/20s1.DAT",
             "Data/20s2.DAT",
@@ -233,14 +250,15 @@ namespace openloco::environment
             "Data/20s5.DAT",
             "Data/20s6.DAT",
             "Data/title.dat",
-            "Data/Scores.DAT",
+            "scores.dat",
             "Scenarios/Boulder Breakers.SC5",
             "Data/TUT1024_1.DAT",
             "Data/TUT1024_2.DAT",
             "Data/TUT1024_3.DAT",
             "Data/TUT800_1.DAT",
             "Data/TUT800_2.DAT",
-            "Data/TUT800_3.DAT"
+            "Data/TUT800_3.DAT",
+            "openloco.cfg"
         };
 
         size_t index = (size_t)id;

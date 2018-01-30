@@ -64,6 +64,7 @@ namespace openloco::environment
         tut800_1,
         tut800_2,
         tut800_3,
+        openloco_cfg,
     };
 
     fs::path get_path(path_id id);
