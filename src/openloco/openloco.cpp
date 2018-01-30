@@ -207,34 +207,6 @@ namespace openloco
         call(0x004BE621, regs);
     }
 
-    // 0x0044155B
-    static void check_game_file_exists(int i)
-    {
-        registers regs;
-        regs.ebx = i;
-        call(0x0044155B, regs);
-    }
-
-    // 0x0044154B
-    static void check_game_files_exist()
-    {
-        for (int i = 0; i < 48; i++)
-        {
-            check_game_file_exists(i);
-        }
-    }
-
-    // 0x004414C5
-    static void check_game_files_are_valid()
-    {
-        call(0x004414C5);
-    }
-
-    static void sub_441444()
-    {
-        call(0x00441444);
-    }
-
     // 0x00441400
     static void startup_checks()
     {
@@ -242,12 +214,11 @@ namespace openloco
         {
             exit_with_error(61, 1016);
         }
-        else
-        {
-            check_game_files_exist();
-            check_game_files_are_valid();
-            sub_441444();
-        }
+
+        // Originally the game would check that all the game
+        // files exist are some have the correct checksum. We
+        // do not need to do this anymore, the game should work
+        // with g1 alone and some objects?
     }
 
     // 0x004C57C0
