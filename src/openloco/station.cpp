@@ -30,7 +30,7 @@ namespace openloco
     void station::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.ebp = (int32_t)this;
         call(0x00492640, regs);
     }
 
