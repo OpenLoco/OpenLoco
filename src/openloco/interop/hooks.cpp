@@ -184,15 +184,6 @@ static int CDECL fn_CloseHandle(FILE* file)
     return 0;
 }
 
-FORCE_ALIGN_ARG_POINTER
-static FILE* CDECL fn_CreateFile(char* lpFileName)
-{
-    FILE* pFILE = fopen(lpFileName, "r");
-    console::log("%s %s (%d)", __FUNCTION__, lpFileName, fileno(pFILE));
-    return pFILE;
-    // return CreateFile(lpFileName, 0x80000000, FILE_SHARE_READ,NULL, OPEN_EXISTING, 0x10000080, 0);
-}
-
 typedef struct FindFileData
 {
     uint32_t dwFileAttributes;
@@ -380,8 +371,17 @@ static bool STDCALL lib_WriteFile(
     return true;
 }
 
+#define GENERIC_READ 0x80000000
+#define GENERIC_WRITE 0x40000000
+
+#define CREATE_NEW 1
+#define CREATE_ALWAYS 2
+#define OPEN_EXISTING 3
+#define OPEN_ALWAYS 4
+#define TRUNCATE_EXISTING 5
+
 FORCE_ALIGN_ARG_POINTER
-static void* STDCALL lib_CreateFileA(
+static int32_t STDCALL lib_CreateFileA(
     char* lpFileName,
     uint32_t dwDesiredAccess,
     uint32_t dwShareMode,
@@ -390,9 +390,28 @@ static void* STDCALL lib_CreateFileA(
     uint32_t dwFlagsAndAttributes,
     uintptr_t hTemplateFile)
 {
-    console::log("CreateFile(%s, %x)", lpFileName, dwDesiredAccess);
+    console::log("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
-    return fopen(lpFileName, "w");
+    FILE* pFILE;
+    if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
+    {
+        pFILE = fopen(lpFileName, "r");
+    }
+    else if (dwDesiredAccess == GENERIC_WRITE && dwCreationDisposition == CREATE_ALWAYS)
+    {
+        pFILE = fopen(lpFileName, "w");
+    }
+    else
+    {
+        assert(false);
+    }
+
+    if (pFILE == nullptr)
+    {
+        return -1;
+    }
+
+    return (int32_t)pFILE;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -444,7 +463,6 @@ static void register_no_win32_hooks()
     register_hook_stub(0x40726d);
     write_jmp(0x404b68, (void*)&fn_404b68);
     write_jmp(0x404e8c, (void*)&fn_404e8c);
-    //    write_jmp(0x404eac, (void*)&fn_404eac);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
     write_jmp(0x4d1401, (void*)&fn_malloc);
@@ -452,9 +470,7 @@ static void register_no_win32_hooks()
     write_jmp(0x4D1355, (void*)&fn_free);
     write_jmp(0x4054a3, (void*)&fn_4054a3);
     write_jmp(0x4072ec, (void*)&fn0);
-    //write_jmp(0x4078b5, (void*)&fn_4078b5);
     write_jmp(0x4078be, (void*)&fn_4078be);
-    //    write_jmp(0x4078f8, (void*)&fn_timeGetTime);
     write_jmp(0x4078fe, (void*)&fn_4078fe);
     write_jmp(0x407b26, (void*)&fn_407b26);
     write_jmp(0x4080bb, (void*)&fn_4080bb);
@@ -466,9 +482,6 @@ static void register_no_win32_hooks()
     write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
     write_jmp(0x4081fe, (void*)&fn_FileRead);
     write_jmp(0x408297, (void*)&fn_CloseHandle);
-    write_jmp(0x4082ad, (void*)&fn_CreateFile);
-    //write_jmp(0x4082e6, (void*)&fnc1);
-    //write_jmp(0x4082f8, (void*)&fnc2);
     write_jmp(0x40830e, (void*)&fn_FindFirstFile);
     write_jmp(0x40831d, (void*)&fn_FindNextFile);
     write_jmp(0x40832c, (void*)&fn_FindClose);
