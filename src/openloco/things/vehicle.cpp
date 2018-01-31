@@ -463,7 +463,7 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_special(uint16_t xy_
         z_offset = -z_offset;
     }
 
-    int xyz = -1;
+    uint32_t xyz = std::numeric_limits<uint32_t>::max();
     if (xy_offset != 0)
     {
         xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
@@ -503,7 +503,7 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch(uint16_t xy_offset, 
         z_offset = -z_offset;
     }
 
-    int xyz = -1;
+    uint32_t xyz = std::numeric_limits<uint32_t>::max();
     if (xy_offset != 0)
     {
         xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
@@ -538,7 +538,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t
         y_offset = -y_offset;
     }
 
-    int xy = -1;
+    uint32_t xy = std::numeric_limits<uint32_t>::max();
     if (y_offset != 0)
     {
         xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
@@ -581,7 +581,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t
         y_offset = -y_offset;
     }
 
-    int xy = -1;
+    uint32_t xy = std::numeric_limits<uint32_t>::max();
     if (y_offset != 0)
     {
         xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
@@ -632,7 +632,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t
         y_offset = -y_offset;
     }
 
-    int xy = -1;
+    uint32_t xy = std::numeric_limits<uint32_t>::max();
     if (y_offset != 0)
     {
         xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
@@ -702,7 +702,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t
         y_offset = -y_offset;
     }
 
-    int xy = -1;
+    uint32_t xy = std::numeric_limits<uint32_t>::max();
     if (y_offset != 0)
     {
         xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
@@ -813,7 +813,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
         y_offset = -y_offset;
     }
 
-    int xy = -1;
+    uint32_t xy = std::numeric_limits<uint32_t>::max();
     if (y_offset != 0)
     {
         xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
