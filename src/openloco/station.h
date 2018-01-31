@@ -92,6 +92,8 @@ namespace openloco
         void invalidate_window();
 
     private:
+        void update_cargo_acceptance();
+        void alert_cargo_acceptance_change(uint32_t oldCargoAcc, uint32_t newCargoAcc);
         void sub_4929DB();
     };
 #pragma pack(pop)
