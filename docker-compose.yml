@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   openloco-gcc32:
     image: openrct2/openloco:ubuntu-i686
