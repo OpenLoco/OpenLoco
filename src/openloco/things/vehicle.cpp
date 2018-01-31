@@ -212,7 +212,7 @@ void openloco::vehicle::sub_4AAC4E()
     registers regs;
     regs.esi = (int32_t)this;
     regs.ebp = (int32_t)vehicleObject;
-    regs.bl = vehicleObject->var_24[var_54].var_05;
+    regs.ebx = vehicleObject->var_24[var_54].var_05;
     if (vehicleObject->var_24[var_54].var_05 == 0)
     {
         call(0x004AB655, regs);
