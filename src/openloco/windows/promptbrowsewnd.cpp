@@ -127,8 +127,8 @@ namespace openloco::ui::windows
     {
         if (path.has_extension())
         {
-            // Concatenate with empty dir to ensure path ends with separator
-            return path.parent_path() / "";
+            std::basic_string<fs::path::value_type> sep(1, fs::path::preferred_separator);
+            return path.parent_path().concat(sep);
         }
         else
         {
