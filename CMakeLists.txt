@@ -21,7 +21,27 @@ if (APPLE)
     set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/opt/openssl/lib/pkgconfig")
 endif (APPLE)
 
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wundef -Wmissing-declarations -Winit-self -Warray-bounds -Waddress -Wchar-subscripts -Wenum-compare")
+# Set some compiler features
+set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror")
+
+# Set warnings common to supported compilers
+set(COMMON_COMPILE_OPTIONS
+    "${COMMON_COMPILE_OPTIONS} \
+    -Waddress \
+    -Warray-bounds \
+    -Wchar-subscripts \
+    -Wenum-compare \
+    -Wformat \
+    -Wignored-qualifiers \
+    -Winit-self \
+    -Wmissing-declarations \
+    -Wnon-virtual-dtor \
+    -Wnull-dereference \
+    -Wstrict-aliasing \
+    -Wstrict-overflow=1 \
+    -Wundef \
+    -Wunreachable-code \
+    ")
 
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
