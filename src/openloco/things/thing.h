@@ -65,7 +65,8 @@ namespace openloco
                 uint8_t var_54;
                 uint8_t pad_55;
                 uint32_t var_56;
-                uint8_t pad_5A[0x5D - 0x5A];
+                uint8_t var_5A;
+                uint8_t pad_5B[0x5D - 0x5B];
                 uint8_t var_5D;
                 uint8_t var_5E;
                 uint8_t var_5F; // 0x5F (bit 1 = can break down)

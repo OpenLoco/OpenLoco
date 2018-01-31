@@ -24,6 +24,7 @@ loco_global<uint8_t, 0x01136237> vehicle_var_1136237;         // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;         // var_28 related?
 loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global_array<uint16_t, 2047, 0x00500B50> vehicle_arr_500B50;
+loco_global_array<int16_t, 128, 0x00503B6A> factorXY503B6A;
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] =
@@ -38,6 +39,23 @@ static constexpr uint8_t vehicleBodyIndexToPitch[] =
     6,
     7,
     8
+};
+
+// 0x00503B50
+constexpr int16_t factor503B50[] = {
+    0,
+    -26,
+    -52,
+    -75,
+    -98,
+    26,
+    52,
+    75,
+    98,
+    -44,
+    44,
+    -84,
+    84
 };
 
 vehicle* vehicle::next_vehicle()
@@ -234,7 +252,8 @@ void openloco::vehicle::sub_4AAC4E()
     regs.ebx = vehicleObject->var_24[var_54].var_05;
     if (vehicleObject->var_24[var_54].var_05 == 0)
     {
-        call(0x004AB655, regs);
+        // Just returns??
+        sub_4AB655(vehicleObject, vehicleObject->var_24[var_54].var_05);
         return;
     }
 
@@ -242,7 +261,7 @@ void openloco::vehicle::sub_4AAC4E()
     switch (vehicleObject->vis_fx_type)
     {
         case 0:
-            call(0x004AB655, regs);
+            sub_4AB655(vehicleObject, vehicleObject->var_24[var_54].var_05);
             break;
         case 1:
         case 2:
@@ -959,4 +978,152 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
         0
     };
     return indexToYaw[i];
+}
+
+// 0x004AB655 
+void openloco::vehicle::sub_4AB655(vehicle_object * veh_object, uint8_t var_05)
+{
+    if (var_05 == 0)
+        return;
+
+    var_05 -= 0x80;
+
+    switch (veh_object->wake_fx_type)
+    {
+    case 0:
+        return;
+    case 1:
+    case 2:
+    case 3:
+        sub_4AB688(veh_object, var_05);
+        break;
+    case 4:
+        // 0x004AB9DD
+        //break;
+    case 5:
+        // 0x004ABDAD
+        //break;
+    case 6:
+        // 0x004ABEC3
+        //break;
+    case 7:
+        // 0x004ABB5A
+        //break;
+    case 8:
+        // 0x004ABC8A
+        break;
+    default:
+        registers regs;
+        regs.esi = (int32_t)this;
+        regs.ebp = (int32_t)veh_object;
+        regs.ebx = var_05 + 0x80;
+        call(0x004AB655, regs);
+        break;
+    }
+}
+
+// 0x004AB688
+void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
+{
+    vehicle * frontBogie = vehicle_front_bogie;
+    if (frontBogie->var_5F & flags_5f::broken_down)
+        return;
+
+    vehicle * veh_3 = vehicle_1136120;
+    if (veh_3->var_5A != 1 && veh_3->var_5A != 4)
+    {
+        bool tickCalc = true;
+        if (veh_3->var_5A != 0 && veh_3->var_56 >= 65536)
+        {
+            tickCalc = false;
+        }
+
+        auto _var_44 = var_44;
+        if (var_38 & (1 << 1))
+        {
+            var_05 = -var_05;
+            _var_44 = -_var_44;
+        }
+
+        if (tickCalc)
+        {
+            if (scenario_ticks() & 7)
+                return;
+        }
+        else
+        {
+            if ((vehicle_var_1136130 + _var_44 * 8) < std::numeric_limits<uint16_t>::max())
+            {
+                return;
+            }
+        }
+
+        var_05 += 64;
+        vehicle * backBogie = vehicle_back_bogie;
+        loc16 loc = {
+            backBogie->x - frontBogie->x,
+            backBogie->y - frontBogie->y,
+            backBogie->z - frontBogie->z,
+        };
+
+        if (loc.x != 0)
+        {
+            loc.x = loc.x * var_05 / 128;
+        }
+
+        if (loc.y != 0)
+        {
+            loc.y = loc.y * var_05 / 128;
+        }
+
+        if (loc.z != 0)
+        {
+            loc.z = loc.z * var_05 / 128;
+        }
+
+        loc.x += frontBogie->x;
+        loc.y += frontBogie->y;
+        loc.z += frontBogie->z;
+
+
+        loc.z += veh_object->var_111;
+
+        auto xyFactor = veh_object->var_111 * factor503B50[sprite_pitch];
+        if (xyFactor != 0)
+        {
+            xyFactor /= 256;
+        }
+
+        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
+        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
+
+        if (xFactor != 0)
+        {
+            xFactor /= 256;
+        }
+
+        if (yFactor != 0)
+        {
+            yFactor /= 256;
+        }
+
+        loc.x += xFactor;
+        loc.y += yFactor;
+
+        registers regs;
+
+        regs.bl = veh_object->var_110 | 0x80;
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.dx = loc.z;
+        call(0x0044080C, regs);
+
+        return;
+    }
+
+    registers reg;
+    reg.esi = (int32_t)this;
+    reg.ebp = (int32_t)veh_object;
+    reg.ebx = var_05;
+    call(0x004AB7A8, reg);
 }

@@ -56,7 +56,8 @@ namespace openloco
         uint8_t pad_E2[0x10E - 0xE2];
         uint8_t vis_fx_height; // 0x10E
         uint8_t vis_fx_type;   // 0x10F
-        uint8_t pad_110[0x112 - 0x110];
+        uint8_t var_110;
+        uint8_t var_111;
         uint8_t wake_fx_type; // 0x112
         uint8_t pad_113;
         uint16_t designed; // 0x114
