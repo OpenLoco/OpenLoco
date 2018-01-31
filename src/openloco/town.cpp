@@ -1,5 +1,8 @@
 #include "town.h"
+#include "interop/interop.hpp"
 #include <algorithm>
+
+using namespace openloco::interop;
 
 namespace openloco
 {
@@ -9,6 +12,14 @@ namespace openloco
     bool town::empty() const
     {
         return name == string_ids::null;
+    }
+
+    // 0x0049742F
+    void town::update()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x0049742F, regs);
     }
 
     void town::adjust_company_rating(company_id_t cid, int amount)

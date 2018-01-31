@@ -1,6 +1,7 @@
 #include "stationmgr.h"
 #include "companymgr.h"
 #include "interop/interop.hpp"
+#include "openloco.h"
 #include "townmgr.h"
 #include "window.h"
 #include "windowmgr.h"
@@ -28,6 +29,20 @@ namespace openloco::stationmgr
         return nullptr;
     }
 
+    // 0x0048B1FA
+    void update()
+    {
+        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        {
+            station_id_t id = scenario_ticks() & 0x3FF;
+            auto station = get(id);
+            if (station != nullptr && !station->empty())
+            {
+                station->update();
+            }
+        }
+    }
+
     // 0x00437F29
     // arg0: ah
     // arg1: al
@@ -52,7 +67,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048B244
-    void sub_48B244()
+    void update_daily()
     {
         for (auto& town : townmgr::towns())
         {

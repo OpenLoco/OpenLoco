@@ -11,4 +11,5 @@ namespace openloco::industrymgr
     std::array<industry, max_industries>& industries();
     industry* get(industry_id_t id);
     void update();
+    void update_monthly();
 }

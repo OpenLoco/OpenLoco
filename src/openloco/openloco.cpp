@@ -16,6 +16,7 @@
 #endif
 
 #include "audio/audio.h"
+#include "companymgr.h"
 #include "config.h"
 #include "date.h"
 #include "environment.h"
@@ -32,6 +33,7 @@
 #include "scenariomgr.h"
 #include "stationmgr.h"
 #include "things/thingmgr.h"
+#include "townmgr.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "utility/numeric.hpp"
@@ -74,6 +76,7 @@ namespace openloco
     static void tick_logic();
     static void tick_wait();
     static void date_tick();
+    static void sub_46FFCA();
 
 #ifdef _WIN32
     void* hInstance()
@@ -446,7 +449,7 @@ namespace openloco
                     }
                 }
 
-                call(0x0046FFCA);
+                sub_46FFCA();
                 tick_logic(numUpdates);
 
                 addr<0x00525F62, int16_t>()++;
@@ -464,7 +467,7 @@ namespace openloco
 
                 call(0x00431695);
                 call(0x00452B5F);
-                call(0x0046FFCA);
+                sub_46FFCA();
                 if (addr<0x0050AEC0, uint8_t>() != 0xFF)
                 {
                     addr<0x0050AEC0, uint8_t>()++;
@@ -500,6 +503,21 @@ namespace openloco
         call(0x004612EC);
     }
 
+    static void sub_46FFCA()
+    {
+        addr<0x010E7D3C, uint32_t>() = 0x2A0015;
+        addr<0x010E7D40, uint32_t>() = 0x210026;
+        addr<0x010E7D44, uint32_t>() = 0x5C2001F;
+        addr<0x010E7D48, uint32_t>() = 0xFFFF0019;
+        addr<0x010E7D4C, uint32_t>() = 0xFFFFFFFF;
+        addr<0x010E7D50, uint32_t>() = 0x1AFFFF;
+        addr<0x010E7D54, uint32_t>() = 0xFFFFFFFF;
+        addr<0x010E7D58, uint32_t>() = 0xFFFF001B;
+        addr<0x010E7D5C, uint32_t>() = 0x64700A3;
+        addr<0x010E7D60, uint32_t>() = 0xCE0481;
+        addr<0x010E7D64, uint32_t>() = 0xD900BF;
+    }
+
     // 0x0046ABCB
     static void tick_logic()
     {
@@ -512,14 +530,14 @@ namespace openloco
         date_tick();
         call(0x00463ABA);
         call(0x004C56F6);
-        call(0x00496B6D);
+        townmgr::update();
         industrymgr::update();
         thingmgr::update_vehicles();
-        call(0x0046FFCA);
-        call(0x0048B1FA);
+        sub_46FFCA();
+        stationmgr::update();
         thingmgr::update_misc_things();
-        call(0x0046FFCA);
-        call(0x00430319);
+        sub_46FFCA();
+        companymgr::update();
         invalidate_map_animations();
         call(0x0048A73B);
         call(0x0048ACFD);
@@ -555,7 +573,7 @@ namespace openloco
         {
             if (update_day_counter())
             {
-                stationmgr::sub_48B244();
+                stationmgr::update_daily();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
@@ -571,7 +589,7 @@ namespace openloco
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    call(0x0049748C);
+                    townmgr::update_monthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);

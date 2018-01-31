@@ -45,6 +45,7 @@ namespace openloco
         uint8_t pad_1A8[0x270 - 0x1A8];
 
         bool empty() const;
+        void update();
         void adjust_company_rating(company_id_t cid, int amount);
     };
 #pragma pack(pop)
