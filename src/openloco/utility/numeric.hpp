@@ -20,4 +20,17 @@ namespace openloco::utility
         static_assert(std::is_unsigned<T>::value, "Rotate Right can only be used on unsigned types.");
         return (val >> len) | ((unsigned)val << (sizeof(T) * CHAR_BIT - len));
     }
+
+    template<typename T>
+    constexpr T set_mask(T x, T mask, bool value)
+    {
+        return (value ? (x | mask) : (x & ~mask));
+    }
+
+    template<typename T>
+    constexpr T set_bit(T x, size_t index, bool value)
+    {
+        constexpr T mask = static_cast<T>(1 << index);
+        return set_mask(mask);
+    }
 }

@@ -2,6 +2,7 @@
 
 #include "localisation/stringmgr.h"
 #include "town.h"
+#include "utility/numeric.hpp"
 #include <cstdint>
 #include <limits>
 
@@ -25,7 +26,8 @@ namespace openloco
         uint8_t enroute_age; // 0x35
         uint16_t var_36;     // 0x36
         uint8_t var_38;
-        uint8_t pad_39[2];
+        uint8_t var_39;
+        uint8_t pad_40;
 
         bool empty() const
         {
@@ -36,17 +38,24 @@ namespace openloco
         {
             return flags & 1;
         }
+
+        void is_accepted(bool value)
+        {
+            flags = utility::set_mask<uint8_t>(flags, 1, value);
+        }
     };
+
+    constexpr size_t max_cargo_stats = 32;
 
     struct station
     {
         string_id name; // 0x00
         uint8_t pad_02[0x28 - 0x02];
-        uint8_t company; // 0x28
+        company_id_t owner; // 0x28
         uint8_t var_29;
         uint16_t var_2A;
-        town_id_t town;                      // 0x2C
-        station_cargo_stats cargo_stats[32]; // 0x2E
+        town_id_t town;                                   // 0x2C
+        station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t var_1CE;
         uint8_t pad_1D0[0x3B0 - 0x1D0];
         uint8_t var_3B0;
@@ -56,10 +65,12 @@ namespace openloco
         bool empty() const { return name == string_ids::null; }
         station_id_t id() const;
         void update();
+        uint32_t calc_accepted_cargo(uint16_t ax = 0xFFFF);
         void sub_48F7D1();
         bool update_cargo();
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
         void invalidate();
+        void invalidate_window();
 
     private:
         void sub_4929DB();

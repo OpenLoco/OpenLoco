@@ -1,6 +1,7 @@
 #include "station.h"
-#include "company.h"
+#include "companymgr.h"
 #include "interop/interop.hpp"
+#include "messagemgr.h"
 #include "openloco.h"
 #include "windowmgr.h"
 #include <algorithm>
@@ -12,6 +13,8 @@ namespace openloco
 {
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;
+
+    static loco_global_array<uint8_t, max_cargo_stats, 0x0112C7D2> _byte_112C7D2;
 
     station_id_t station::id() const
     {
@@ -29,9 +32,59 @@ namespace openloco
     // 0x00492640
     void station::update()
     {
+        uint32_t currentAcceptedCargo = calc_accepted_cargo();
+        uint32_t originallyAcceptedCargo = 0;
+        for (int cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            auto& cs = cargo_stats[cargoId];
+            cs.var_39 = _byte_112C7D2[cargoId];
+            if (cs.is_accepted())
+            {
+                originallyAcceptedCargo |= (1 << cargoId);
+            }
+
+            bool isStillAccepted = (currentAcceptedCargo & (1 << cargoId)) != 0;
+            cs.is_accepted(isStillAccepted);
+        }
+
+        if (originallyAcceptedCargo != currentAcceptedCargo)
+        {
+            if (owner == companymgr::get_controlling_id())
+            {
+                for (int cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+                {
+                    bool acceptedBefore = (originallyAcceptedCargo & (1 << cargoId)) != 0;
+                    bool acceptedNow = (currentAcceptedCargo & (1 << cargoId)) != 0;
+                    if (acceptedBefore && !acceptedNow)
+                    {
+                        messagemgr::post(
+                            message_type::cargo_no_longer_accepted,
+                            owner,
+                            id(),
+                            cargoId);
+                    }
+                    else if (!acceptedBefore && acceptedNow)
+                    {
+                        messagemgr::post(
+                            message_type::cargo_now_accepted,
+                            owner,
+                            id(),
+                            cargoId);
+                    }
+                }
+            }
+            invalidate_window();
+        }
+    }
+
+    // 0x00491FE0
+    uint32_t station::calc_accepted_cargo(uint16_t ax)
+    {
         registers regs;
+        regs.ax = ax;
         regs.ebp = (int32_t)this;
-        call(0x00492640, regs);
+        call(0x00491FE0, regs);
+        return regs.ebx;
     }
 
     // 0x0048F7D1
@@ -153,7 +206,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 && is_player_company(company))
+        if (var_2A != 384 && is_player_company(owner))
         {
             rating += 120;
         }
@@ -193,5 +246,10 @@ namespace openloco
         registers regs;
         regs.esi = (int32_t)this;
         call(0x004CBA2D, regs);
+    }
+
+    void station::invalidate_window()
+    {
+        windowmgr::invalidate(window_type::station, id());
     }
 }

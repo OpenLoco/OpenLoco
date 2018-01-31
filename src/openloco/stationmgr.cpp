@@ -84,9 +84,9 @@ namespace openloco::stationmgr
                 if (station.var_1CE == 0)
                 {
                     station.var_29++;
-                    if (station.var_29 != 5 && is_player_company(station.company))
+                    if (station.var_29 != 5 && is_player_company(station.owner))
                     {
-                        sub_437F29(station.company, 8);
+                        sub_437F29(station.owner, 8);
                     }
                     if (station.var_29 >= 10)
                     {
@@ -105,7 +105,7 @@ namespace openloco::stationmgr
                     if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
                     {
                         town->flags |= town_flags::rating_adjusted;
-                        town->adjust_company_rating(station.company, 1);
+                        town->adjust_company_rating(station.owner, 1);
                     }
                 }
             }
