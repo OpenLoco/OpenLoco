@@ -28,6 +28,7 @@
     <ClCompile Include="localisation\stringmgr.cpp" />
     <ClCompile Include="map\tile.cpp" />
     <ClCompile Include="map\tilemgr.cpp" />
+    <ClCompile Include="messagemgr.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="station.cpp" />
@@ -77,6 +78,7 @@
     <ClInclude Include="map\tile.h" />
     <ClInclude Include="map\tile_loop.hpp" />
     <ClInclude Include="map\tilemgr.h" />
+    <ClInclude Include="messagemgr.h" />
     <ClInclude Include="objects\cargo_object.h" />
     <ClInclude Include="objects\industry_object.h" />
     <ClInclude Include="objects\objectmgr.h" />

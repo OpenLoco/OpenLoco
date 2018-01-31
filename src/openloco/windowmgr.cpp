@@ -67,6 +67,26 @@ namespace openloco::ui::windowmgr
         return (window*)regs.esi;
     }
 
+    // 0x004CB966
+    void invalidate(window_type type)
+    {
+        auto w = find(type);
+        if (w != nullptr)
+        {
+            w->invalidate();
+        }
+    }
+
+    // 0x004CB966
+    void invalidate(window_type type, uint16_t id)
+    {
+        auto w = find(type, id);
+        if (w != nullptr)
+        {
+            w->invalidate();
+        }
+    }
+
     // 0x004CC692
     void close(window_type type)
     {
