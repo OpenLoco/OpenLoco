@@ -4,12 +4,19 @@
 #include <cstdint>
 #include <limits>
 
+namespace openloco
+{
+    struct building_object;
+    struct industry;
+}
+
 namespace openloco::map
 {
     using coord_t = int16_t;
     using tile_coord_t = uint16_t;
 
     constexpr coord_t tile_size = 32;
+    constexpr coord_t map_rows = 384;
     constexpr coord_t map_columns = 384;
     constexpr coord_t map_size = map_columns * tile_size;
 
@@ -23,7 +30,15 @@ namespace openloco::map
     {
         coord_t x = 0;
         coord_t y = 0;
+
+        map_pos() {}
+        map_pos(coord_t x, coord_t y)
+            : x(x)
+            , y(y)
+        {
+        }
     };
+#pragma pack(pop)
     constexpr bool operator==(const map_pos& lhs, const map_pos& rhs)
     {
         return lhs.x == rhs.x && lhs.y == rhs.y;
@@ -32,23 +47,66 @@ namespace openloco::map
     {
         return !(lhs == rhs);
     }
+
+#pragma pack(push, 1)
+    struct map_pos3
+    {
+        coord_t x = 0;
+        coord_t y = 0;
+        coord_t z = 0;
+
+        operator map_pos() const
+        {
+            return map_pos(x, y);
+        }
+    };
 #pragma pack(pop)
 
     enum class element_type
     {
-        surface,
-        unk_20 = 20,
+        surface,      // 0x00
+        station = 2,  // 0x08
+        building = 4, // 0x10
+        industry = 5, // 0x14
+        unk_8 = 8,    // 0x20
     };
 
-    struct surface_element;
-
-    struct tile_element
+    namespace element_flags
     {
-    private:
+        constexpr uint8_t flag_4 = 1 << 4;
+        constexpr uint8_t last = 1 << 7;
+    }
+
+    struct surface_element;
+    struct station_element;
+    struct building_element;
+    struct industry_element;
+
+#pragma pack(push, 1)
+    struct tile_element_base
+    {
+    protected:
         uint8_t _type;
         uint8_t _flags;
         uint8_t _base_z;
         uint8_t _clear_z;
+
+    public:
+        // Temporary, use this to get fields easily before they are defined
+        const uint8_t* data() const;
+        element_type type() const;
+        uint8_t flags() const { return _flags; }
+        uint8_t base_z() const { return _base_z; }
+        uint8_t clear_z() const { return _clear_z; }
+
+        bool is_flag_4() const { return _flags & element_flags::flag_4; }
+        bool is_last() const;
+    };
+
+    struct tile_element : public tile_element_base
+    {
+    private:
+        uint8_t pad[4];
 
         template<typename TType, element_type TClass>
         TType* as() const
@@ -57,16 +115,14 @@ namespace openloco::map
         }
 
     public:
-        // Temporary, use this to get fields easily before they are defined
-        const uint8_t* data() const;
-        element_type type() const;
-        bool is_last() const;
-
-    public:
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
+        station_element* as_station() const { return as<station_element, element_type::station>(); }
+        building_element* as_building() const { return as<building_element, element_type::building>(); }
+        industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
     };
+    static_assert(sizeof(tile_element) == 8);
 
-    struct surface_element : public tile_element
+    struct surface_element : public tile_element_base
     {
     private:
         uint8_t _slope;
@@ -80,6 +136,49 @@ namespace openloco::map
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t industry_id() const { return _industry; }
     };
+
+    struct station_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+
+    public:
+        uint8_t object_id() const { return _5 & 0x1F; }
+        uint8_t unk_5b() const { return _5 >> 5; }
+    };
+
+    struct building_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+
+    public:
+        bool has_40() const { return (_type & 0x40) != 0; }
+        bool has_80() const { return (_type & 0x80) != 0; }
+        uint8_t object_id() const { return _4; }
+        building_object* object() const;
+        uint8_t var_5b() const { return _5 & 3; }
+    };
+
+    struct industry_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+
+    public:
+        uint8_t industry_id() const { return _4; }
+        openloco::industry* industry() const;
+    };
+#pragma pack(pop)
 
     struct tile
     {
@@ -101,7 +200,7 @@ namespace openloco::map
         size_t size();
         tile_element* operator[](size_t i);
 
-        size_t index_of(const tile_element* element) const;
+        size_t index_of(const tile_element_base* element) const;
         surface_element* surface();
     };
 }

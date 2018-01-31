@@ -103,7 +103,11 @@ namespace openloco::objectmgr
     template<>
     cargo_object* get(size_t id);
     template<>
+    road_station_object* get(size_t id);
+    template<>
     vehicle_object* get(size_t id);
+    template<>
+    building_object* get(size_t id);
     template<>
     industry_object* get(size_t id);
 }
