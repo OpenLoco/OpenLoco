@@ -49,7 +49,7 @@ namespace openloco
         uint16_t rack_speed; // 0xDC
         uint16_t weight;     // 0xDE
         uint16_t flags;      // 0xE0
-        uint8_t pad_E1[0x10E - 0xE1];
+        uint8_t pad_E2[0x10E - 0xE2];
         uint8_t vis_fx_height; // 0x10E
         uint8_t vis_fx_type;   // 0x10F
         uint8_t pad_110[0x112 - 0x110];
