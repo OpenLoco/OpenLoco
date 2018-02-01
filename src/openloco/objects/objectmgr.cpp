@@ -59,6 +59,12 @@ namespace openloco::objectmgr
     }
 
     template<>
+    steam_object* get(size_t id)
+    {
+        return _steamObjects[id];
+    }
+
+    template<>
     cargo_object* get(size_t id)
     {
         return _cargoObjects[id];

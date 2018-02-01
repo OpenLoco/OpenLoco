@@ -8,6 +8,7 @@
 #include "../openloco.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
+#include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
 
@@ -116,23 +117,6 @@ bool vehicle::update()
     return (result & (1 << 8)) != 0;
 }
 
-// 0x00440BEB
-static thing* create_black_smoke(loc16 loc)
-{
-    auto t = thingmgr::create_thing();
-    if (t != nullptr)
-    {
-        t->var_14 = 44;
-        t->var_09 = 32;
-        t->var_15 = 34;
-        t->var_00 = 1;
-        t->move_to(loc);
-        t->type = 8;
-        t->var_28 = 0;
-    }
-    return t;
-}
-
 // 0x004BA8D4
 void vehicle::sub_4BA8D4()
 {
@@ -158,7 +142,7 @@ void vehicle::sub_4BA8D4()
                 if ((scenario_ticks() & 3) == 0)
                 {
                     auto v2 = v->next_car()->next_car();
-                    create_black_smoke(loc16(v2->x, v2->y, v2->z + 4));
+                    smoke::create_black_smoke(loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
 
