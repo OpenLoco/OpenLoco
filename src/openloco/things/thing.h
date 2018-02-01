@@ -13,11 +13,23 @@ namespace openloco
         constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
     }
 
+    enum class thing_type : uint8_t
+    {
+        exahust = 0,
+        vehicle_1,
+        vehicle_2,
+        vehicle_bogie,
+        vehicle_body_end,
+        vehicle_body_cont,
+        vehicle_6,
+        smoke = 8
+    };
+
 #pragma pack(push, 1)
-    struct thing
+    struct thing_base
     {
         uint8_t var_00;
-        uint8_t type;
+        thing_type type;
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
@@ -40,10 +52,31 @@ namespace openloco
         void invalidate_sprite();
     };
 
+    struct vehicle_bogie;
+    struct vehicle_body;
+    struct smoke;
+    struct exahust;
     // Max size of a thing. Use when needing to know thing size
-    struct any_thing : thing
+    struct thing : thing_base
     {
+    private:
         uint8_t pad_20[128 - 0x20];
+        template<typename TType, thing_type TClass>
+        TType* as() const
+        {
+            return type == TClass ? (TType*)this : nullptr;
+        }
+
+    public:
+        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, thing_type::vehicle_bogie>(); }
+        vehicle_body* as_vehicle_body() const { 
+            auto vehicle = as<vehicle_body, thing_type::vehicle_body_end>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_body, thing_type::vehicle_body_cont>();
+        }
+        smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
+        exahust* as_exahust() const { return as<exahust, thing_type::exahust>(); }
     };
 #pragma pack(pop)
 }

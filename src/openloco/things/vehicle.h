@@ -12,14 +12,17 @@ namespace openloco
     }
 
 #pragma pack(push, 1)
-    struct vehicle : thing
+    struct vehicle : thing_base
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;
         uint8_t pad_2A[0x2C - 0x2A];
         uint16_t var_2C;
         uint16_t var_2E;
-        uint8_t pad_30[0x38 - 0x30];
+        int16_t tile_x;             // 0x30
+        int16_t tile_y;             // 0x32
+        uint8_t tile_base_z;         // 0x34
+        uint8_t pad_35[0x38 - 0x35];
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
@@ -37,7 +40,7 @@ namespace openloco
         uint8_t cargo_quantity; // 0x51
         uint8_t pad_52[0x54 - 0x52];
         uint8_t var_54;
-        uint8_t pad_55;
+        int8_t var_55;
         uint32_t var_56;
         uint8_t var_5A;
         uint8_t pad_5B[0x5D - 0x5B];
@@ -55,6 +58,7 @@ namespace openloco
 
         void update_head();
         void sub_4BA8D4();
+        void sub_4AB655(uint8_t var_05);
 
     private:
         bool update();
@@ -64,14 +68,13 @@ namespace openloco
         void sub_4AAB0B();
         void sub_4AC255(vehicle * back_bogie, vehicle * front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
-        uint8_t vehicle_body_update_sprite_pitch_special(uint16_t xy_offset, int16_t z_offset);
+        uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void sub_4AB655(vehicle_object * veh_object, uint8_t var_05);
         void sub_4AB688(vehicle_object * veh_object, uint8_t var_05);
     };
 #pragma pack(pop)

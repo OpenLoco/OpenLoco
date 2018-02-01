@@ -7,7 +7,7 @@ using namespace openloco::interop;
 namespace openloco::thingmgr
 {
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
-    loco_global<any_thing[max_things], 0x006DB6DC> _things;
+    loco_global<thing[max_things], 0x006DB6DC> _things;
 
     thing_id_t first_id(thing_list list)
     {
@@ -21,9 +21,9 @@ namespace openloco::thingmgr
     }
 
     template<>
-    thing* get(thing_id_t id)
+    thing_base* get(thing_id_t id)
     {
-        thing* result = nullptr;
+        thing_base* result = nullptr;
         if (id < max_things)
         {
             return &_things.get()[id];
@@ -32,11 +32,11 @@ namespace openloco::thingmgr
     }
 
     // 0x004700A5
-    thing* create_thing()
+    thing_base* create_thing()
     {
         registers regs;
         call(0x004700A5, regs);
-        return (thing*)regs.esi;
+        return (thing_base*)regs.esi;
     }
 
     // 0x004A8826

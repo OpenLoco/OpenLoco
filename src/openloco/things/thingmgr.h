@@ -20,12 +20,12 @@ namespace openloco::thingmgr
     T* get(thing_id_t id);
 
     template<>
-    thing* get(thing_id_t id);
+    thing_base* get(thing_id_t id);
 
     template<typename T>
     T* get(thing_id_t id)
     {
-        return static_cast<T*>(get<thing>(id));
+        return static_cast<T*>(get<thing_base>(id));
     }
 
     thing_id_t first_id(thing_list list);
@@ -33,7 +33,7 @@ namespace openloco::thingmgr
     template<typename T>
     T* first();
 
-    thing* create_thing();
+    thing_base* create_thing();
 
     void update_vehicles();
     void update_misc_things();

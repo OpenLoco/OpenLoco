@@ -12,9 +12,10 @@ steam_object * openloco::exahust::object() const
     return objectmgr::get<steam_object>(object_id & 0x7F);
 }
 
-exahust* openloco::exahust::create_new_exahust(loc16 loc, uint8_t type)
+// 0x0044080C
+exahust* openloco::exahust::create(loc16 loc, uint8_t type)
 {
-    if (loc.x > 12287 || loc.y > 12287)
+    if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
     auto surface = openloco::map::tilemgr::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
@@ -32,7 +33,7 @@ exahust* openloco::exahust::create_new_exahust(loc16 loc, uint8_t type)
         _exahust->var_14 = obj->var_05;
         _exahust->var_09 = obj->var_06;
         _exahust->var_15 = obj->var_07;
-        _exahust->type = 0;
+        _exahust->type = thing_type::exahust;
         _exahust->var_26 = 0;
         _exahust->var_28 = 0;
         _exahust->var_32 = 0;
@@ -44,7 +45,7 @@ exahust* openloco::exahust::create_new_exahust(loc16 loc, uint8_t type)
 
 
 // 0x00440BEB
-smoke* openloco::smoke::create_black_smoke(loc16 loc)
+smoke* openloco::smoke::create(loc16 loc)
 {
     auto t = static_cast<smoke *>(thingmgr::create_thing());
     if (t != nullptr)
@@ -54,7 +55,7 @@ smoke* openloco::smoke::create_black_smoke(loc16 loc)
         t->var_15 = 34;
         t->var_00 = 1;
         t->move_to(loc);
-        t->type = 8;
+        t->type = thing_type::smoke;
         t->var_28 = 0;
     }
     return t;

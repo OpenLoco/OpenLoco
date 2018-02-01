@@ -10,7 +10,7 @@ using namespace openloco::interop;
 loco_global<uint8_t, 0x0050AF25> thing_zoom_max;
 
 // 0x0046FC83
-void thing::move_to(loc16 loc)
+void thing_base::move_to(loc16 loc)
 {
     registers regs;
     regs.ax = loc.x;
@@ -21,7 +21,7 @@ void thing::move_to(loc16 loc)
 }
 
 // 0x004CBB01
-void openloco::thing::invalidate_sprite()
+void openloco::thing_base::invalidate_sprite()
 {
     if (sprite_left == (int16_t)0x8000u)
     {
