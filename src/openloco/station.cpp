@@ -1,15 +1,23 @@
 #include "station.h"
 #include "companymgr.h"
+#include "industrymgr.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
+#include "map/tilemgr.h"
 #include "messagemgr.h"
+#include "objects/building_object.h"
 #include "objects/cargo_object.h"
+#include "objects/industry_object.h"
 #include "objects/objectmgr.h"
+#include "objects/road_station_object.h"
 #include "openloco.h"
 #include "ui/WindowManager.h"
 #include "viewportmgr.h"
+#include <algorithm>
+#include <cassert>
 
 using namespace openloco::interop;
+using namespace openloco::map;
 using namespace openloco::ui;
 
 namespace openloco
@@ -17,7 +25,84 @@ namespace openloco
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;
 
-    static loco_global<uint8_t[max_cargo_stats], 0x0112C7D2> _byte_112C7D2;
+    struct CargoSearchState
+    {
+    private:
+        inline static loco_global<uint8_t[map_size], 0x00F00484> _map;
+        inline static loco_global<uint32_t, 0x0112C68C> _filter;
+        inline static loco_global<uint32_t[max_cargo_stats], 0x0112C690> _score;
+        inline static loco_global<uint32_t, 0x0112C710> _dword_112C710;
+        inline static loco_global<uint8_t[max_cargo_stats], 0x0112C7D2> _industry;
+        inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
+
+    public:
+        bool mapHas2(tile_coord_t x, tile_coord_t y) const
+        {
+            return (_map[y * map_columns + x] & (1 << 1)) != 0;
+        }
+
+        void mapRemove2(tile_coord_t x, tile_coord_t y)
+        {
+            _map[y * map_columns + x] &= ~(1 << 1);
+        }
+
+        uint32_t filter() const
+        {
+            return _filter;
+        }
+
+        void filter(uint32_t value)
+        {
+            _filter = value;
+        }
+
+        void resetScores()
+        {
+            std::fill_n(_score.get(), max_cargo_stats, 0);
+        }
+
+        uint32_t score(int cargo)
+        {
+            return _score[cargo];
+        }
+
+        void addScore(int cargo, int32_t value)
+        {
+            _score[cargo] += value;
+        }
+
+        uint32_t dword_112C710() const
+        {
+            return _dword_112C710;
+        }
+
+        void dword_112C710(uint32_t value)
+        {
+            _dword_112C710 = value;
+        }
+
+        void byte_112C7F2(uint8_t value)
+        {
+            _byte_112C7F2 = value;
+        }
+
+        void resetIndustryMap()
+        {
+            std::fill_n(_industry.get(), max_cargo_stats, 0xFF);
+        }
+
+        industry_id_t getIndustry(int cargo) const
+        {
+            return _industry[cargo];
+        }
+
+        void setIndustry(int cargo, industry_id_t id)
+        {
+            _industry[cargo] = id;
+        }
+    };
+
+    static void sub_491BF5(map_pos pos);
 
     station_id_t station::id() const
     {
@@ -41,12 +126,13 @@ namespace openloco
     // 0x00492640
     void station::update_cargo_acceptance()
     {
-        uint32_t currentAcceptedCargo = calc_accepted_cargo();
+        CargoSearchState cargoSearchState;
+        uint32_t currentAcceptedCargo = calcAcceptedCargo(cargoSearchState);
         uint32_t originallyAcceptedCargo = 0;
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
             auto& cs = cargo_stats[cargoId];
-            cs.var_39 = _byte_112C7D2[cargoId];
+            cs.industry_id = cargoSearchState.getIndustry(cargoId);
             if (cs.is_accepted())
             {
                 originallyAcceptedCargo |= (1 << cargoId);
@@ -92,14 +178,196 @@ namespace openloco
         }
     }
 
+    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState)
+    {
+        return calcAcceptedCargo(cargoSearchState, map_pos(-1, -1), 0);
+    }
+
     // 0x00491FE0
-    uint32_t station::calc_accepted_cargo(uint16_t ax)
+    // WARNING: this may be called with station (ebp) = -1
+    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState, map_pos location, uint32_t ebx)
+    {
+        cargoSearchState.byte_112C7F2(0);
+        cargoSearchState.filter(0);
+        if (location.x != -1)
+        {
+            cargoSearchState.filter(ebx);
+        }
+
+        cargoSearchState.resetIndustryMap();
+
+        setStationCatchmentDisplay(true);
+
+        if (location.x != -1)
+        {
+            sub_491BF5(location);
+        }
+
+        cargoSearchState.resetScores();
+        cargoSearchState.dword_112C710(0);
+        if (this != (station*)0xFFFFFFFF)
+        {
+            for (uint16_t i = 0; i < var_1CE; i++)
+            {
+                auto pos = var_1D0[i];
+                auto baseZ = pos.z / 4;
+                auto tile = tilemgr::get(pos);
+                for (auto& el : tile)
+                {
+                    auto stationEl = el.as_station();
+                    if (stationEl != nullptr && stationEl->base_z() != baseZ && !(stationEl->flags() & (1 << 5)))
+                    {
+                        cargoSearchState.byte_112C7F2(0);
+                        if (stationEl->unk_5b() == 1)
+                        {
+                            auto obj = objectmgr::get<road_station_object>(stationEl->object_id());
+                            if (obj->flags & (1 << 1))
+                            {
+                                cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
+                            }
+                            else if (obj->flags & (1 << 2))
+                            {
+                                cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
+                            }
+                        }
+                        else
+                        {
+                            cargoSearchState.filter(~0);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (cargoSearchState.filter() == 0)
+        {
+            cargoSearchState.filter(~0);
+        }
+
+        for (tile_coord_t ty = 0; ty < map_columns; ty++)
+        {
+            for (tile_coord_t tx = 0; tx < map_rows; tx++)
+            {
+                if (cargoSearchState.mapHas2(tx, ty))
+                {
+                    auto pos = map_pos(tx * tile_size, ty * tile_size);
+                    auto tile = tilemgr::get(pos);
+                    for (auto& el : tile)
+                    {
+                        if (!el.is_flag_4())
+                        {
+                            switch (el.type())
+                            {
+                                case element_type::industry:
+                                {
+                                    auto industryEl = el.as_industry();
+                                    auto industry = industryEl->industry();
+                                    if (industry != nullptr && industry->under_construction == 0xFF)
+                                    {
+                                        auto obj = industry->object();
+                                        if (obj != nullptr)
+                                        {
+                                            for (auto cargoId : obj->required_cargo_type)
+                                            {
+                                                if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
+                                                {
+                                                    cargoSearchState.addScore(cargoId, 8);
+                                                    cargoSearchState.setIndustry(cargoId, industry->id());
+                                                }
+                                            }
+
+                                            for (auto cargoId : obj->produced_cargo_type)
+                                            {
+                                                if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
+                                                {
+                                                    cargoSearchState.dword_112C710(cargoSearchState.dword_112C710() | (1 << cargoId));
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                case element_type::building:
+                                {
+                                    auto buildingEl = el.as_building();
+                                    auto obj = buildingEl->object();
+                                    if (obj != nullptr)
+                                    {
+                                        for (int i = 0; i < 2; i++)
+                                        {
+                                            if (obj->var_A2[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A2[i])))
+                                            {
+                                                cargoSearchState.addScore(obj->var_A2[i], obj->var_A6[i]);
+                                                if (obj->var_A0[i] != 0)
+                                                {
+                                                    cargoSearchState.dword_112C710(cargoSearchState.dword_112C710() | (1 << obj->var_A2[i]));
+                                                }
+                                            }
+                                        }
+
+                                        for (int i = 0; i < 2; i++)
+                                        {
+                                            if (obj->var_A4[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A4[i])))
+                                            {
+                                                cargoSearchState.addScore(obj->var_A4[i], obj->var_A8[i]);
+                                            }
+                                        }
+
+                                        if (obj->flags & (1 << 0))
+                                        {
+                                            static coord_t word_4F9296[] = {
+                                                0,
+                                                0,
+                                                32,
+                                                32,
+                                            };
+
+                                            static coord_t word_4F9298[] = {
+                                                0,
+                                                32,
+                                                32,
+                                                0,
+                                            };
+
+                                            auto rotation = buildingEl->var_5b();
+                                            tile_coord_t x = (pos.x - word_4F9296[rotation]) / tile_size;
+                                            tile_coord_t y = (pos.y - word_4F9298[rotation]) / tile_size;
+                                            cargoSearchState.mapRemove2(x + 0, y + 0);
+                                            cargoSearchState.mapRemove2(x + 0, y + 1);
+                                            cargoSearchState.mapRemove2(x + 1, y + 0);
+                                            cargoSearchState.mapRemove2(x + 1, y + 1);
+                                        }
+                                    }
+                                    break;
+                                }
+                                default:
+                                    continue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        uint32_t acceptedCargos = 0;
+        for (uint8_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            if (cargoSearchState.score(cargoId) >= 8)
+            {
+                acceptedCargos |= (1 << cargoId);
+            }
+        }
+        return acceptedCargos;
+    }
+
+    // 0x00491D70
+    void station::setStationCatchmentDisplay(bool hideCatchment)
     {
         registers regs;
-        regs.ax = ax;
+        regs.dx = (int16_t)hideCatchment;
         regs.ebp = (int32_t)this;
-        call(0x00491FE0, regs);
-        return regs.ebx;
+        call(0x00491D70, regs);
     }
 
     // 0x0048F7D1
@@ -293,5 +561,13 @@ namespace openloco
     void station::invalidate_window()
     {
         WindowManager::invalidate(WindowType::station, id());
+    }
+
+    static void sub_491BF5(map_pos pos)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x00491BF5, regs);
     }
 }

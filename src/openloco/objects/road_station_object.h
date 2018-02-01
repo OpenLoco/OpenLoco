@@ -25,7 +25,8 @@ namespace openloco
         uint8_t mods[7];        // 0x21
         uint16_t designed_year; // 0x28
         uint16_t obsolete_year; // 0x2A
-        uint8_t pad_2C[0x6E - 0x2C];
+        uint8_t var_2C;
+        uint8_t pad_2D[0x6E - 0x2D];
     };
 #pragma pack(pop)
 }

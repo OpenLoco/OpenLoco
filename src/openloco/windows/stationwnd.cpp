@@ -747,15 +747,6 @@ namespace openloco::ui::windows::station
         }
     }
 
-    // 0x00491D70
-    static void setStationCatchmentDisplay(openloco::station* station, uint16_t dx)
-    {
-        registers regs;
-        regs.ebp = uint32_t(station);
-        regs.dx = dx;
-        call(0x00491D70, regs);
-    }
-
     // 0x0049271A
     void showStationCatchment(uint16_t stationId)
     {
@@ -782,7 +773,7 @@ namespace openloco::ui::windows::station
             ui::windows::construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
 
-            setStationCatchmentDisplay(station, 0);
+            station->setStationCatchmentDisplay(false);
             input::setMapSelectionFlags(input::map_selection_flags::catchment_area);
 
             WindowManager::invalidate(WindowType::station, newStationId);
