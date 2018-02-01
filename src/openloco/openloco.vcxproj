@@ -33,6 +33,7 @@
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
+    <ClCompile Include="things\misc.cpp" />
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
@@ -85,8 +86,10 @@
     <ClInclude Include="objects\industry_object.h" />
     <ClInclude Include="objects\objectmgr.h" />
     <ClInclude Include="objects\road_station_object.h" />
+    <ClInclude Include="objects\steam_object.h" />
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="objects\vehicle_object.h" />
+    <ClInclude Include="things\misc.h" />
     <ClInclude Include="utility\prng.hpp" />
     <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="stationmgr.h" />

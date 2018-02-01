@@ -14,6 +14,41 @@ namespace openloco
 #pragma pack(push, 1)
     struct vehicle : thing
     {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t var_28;
+        uint8_t pad_2A[0x2C - 0x2A];
+        uint16_t var_2C;
+        uint16_t var_2E;
+        uint8_t pad_30[0x38 - 0x30];
+        uint8_t var_38;
+        uint8_t object_sprite_type; // 0x39
+        thing_id_t next_car_id;     // 0x3A
+        uint8_t pad_3C[0x40 - 0x3C];
+        uint16_t object_id; // 0x40
+        uint8_t var_42;
+        uint8_t pad_43;
+        int16_t var_44;
+        uint8_t var_46;
+        uint8_t pad_47[0x4C - 0x47];
+        uint8_t cargo_type; // 0x4C
+        uint8_t pad_4D;
+        uint16_t cargo_origin; // 0x4E
+        uint8_t pad_50;
+        uint8_t cargo_quantity; // 0x51
+        uint8_t pad_52[0x54 - 0x52];
+        uint8_t var_54;
+        uint8_t pad_55;
+        uint32_t var_56;
+        uint8_t var_5A;
+        uint8_t pad_5B[0x5D - 0x5B];
+        uint8_t var_5D;
+        uint8_t var_5E;
+        uint8_t var_5F; // 0x5F (bit 1 = can break down)
+        uint8_t pad_60[0x6A - 0x60];
+        uint8_t var_6A;
+        uint8_t pad_6B[0x73 - 0x6B];
+        uint8_t var_73; // 0x73 (bit 0 = broken down)
+
         vehicle* next_vehicle();
         vehicle* next_car();
         vehicle_object* object() const;

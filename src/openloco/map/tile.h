@@ -114,6 +114,7 @@ namespace openloco::map
             return type() == TClass ? (TType*)this : nullptr;
         }
 
+        uint8_t base_z() const { return _base_z; }
     public:
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
         station_element* as_station() const { return as<station_element, element_type::station>(); }
