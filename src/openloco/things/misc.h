@@ -6,7 +6,7 @@
 namespace openloco
 {
 #pragma pack(push, 1)
-    struct exahust : thing
+    struct exahust : thing_base
     {
         uint8_t pad_20[0x26 - 0x20];
         int16_t var_26;
@@ -20,15 +20,15 @@ namespace openloco
 
         steam_object* object() const;
 
-        static exahust* create_new_exahust(loc16 loc, uint8_t type);
+        static exahust* create(loc16 loc, uint8_t type);
     };
 
-    struct smoke : thing
+    struct smoke : thing_base
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;
 
-        static smoke* create_black_smoke(loc16 loc);
+        static smoke* create(loc16 loc);
     };
 #pragma pack(pop)
 }

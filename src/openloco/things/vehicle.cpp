@@ -11,6 +11,7 @@
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
+#include "../map/tilemgr.h"
 
 using namespace openloco;
 using namespace openloco::interop;
@@ -94,23 +95,23 @@ bool vehicle::update()
     regs.esi = (int32_t)this;
     switch (type)
     {
-        case 0:
+    case thing_type::exahust:
             result = call(0x004A8B81, regs);
             break;
-        case 1:
+    case thing_type::vehicle_1:
             result = call(0x004A9788, regs);
             break;
-        case 2:
+    case thing_type::vehicle_2:
             result = call(0x004A9B0B, regs);
             break;
-        case 3:
+    case thing_type::vehicle_bogie:
             result = call(0x004AA008, regs);
             break;
-        case 4:
-        case 5:
+    case thing_type::vehicle_body_end:
+    case thing_type::vehicle_body_cont:
             result = sub_4AA1D0();
             break;
-        case 6:
+    case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
             break;
     }
@@ -133,7 +134,7 @@ void vehicle::sub_4BA8D4()
     }
 
     auto v = next_car()->next_car()->next_car();
-    if (v->type != 6)
+    if (v->type != thing_type::vehicle_6)
     {
         while (true)
         {
@@ -142,7 +143,7 @@ void vehicle::sub_4BA8D4()
                 if ((scenario_ticks() & 3) == 0)
                 {
                     auto v2 = v->next_car()->next_car();
-                    smoke::create_black_smoke(loc16(v2->x, v2->y, v2->z + 4));
+                    smoke::create(loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
 
@@ -166,14 +167,14 @@ void vehicle::sub_4BA8D4()
             vehicle* u;
             do
             {
-                if (v->type == 6)
+                if (v->type == thing_type::vehicle_6)
                 {
                     return;
                 }
                 u = v->next_car()->next_car();
-                if (u->type != 4)
+                if (u->type != thing_type::vehicle_body_end)
                     v = u->next_car();
-            } while (u->type != 4);
+            } while (u->type != thing_type::vehicle_body_end);
         }
     }
 }
@@ -237,7 +238,7 @@ void openloco::vehicle::sub_4AAC4E()
     if (vehicleObject->var_24[var_54].var_05 == 0)
     {
         // Just returns??
-        sub_4AB655(vehicleObject, vehicleObject->var_24[var_54].var_05);
+        sub_4AB655(vehicleObject->var_24[var_54].var_05);
         return;
     }
 
@@ -245,7 +246,7 @@ void openloco::vehicle::sub_4AAC4E()
     switch (vehicleObject->vis_fx_type)
     {
         case 0:
-            sub_4AB655(vehicleObject, vehicleObject->var_24[var_54].var_05);
+            sub_4AB655(vehicleObject->var_24[var_54].var_05);
             break;
         case 1:
         case 2:
@@ -390,7 +391,7 @@ void openloco::vehicle::sub_4AC255(vehicle * back_bogie, vehicle * front_bogie)
 
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
-        sprite_pitch = vehicle_body_update_sprite_pitch_special(offset, front_bogie->z - back_bogie->z);
+        sprite_pitch = vehicle_body_update_sprite_pitch_steep_slopes(offset, front_bogie->z - back_bogie->z);
     }
     else
     {
@@ -437,7 +438,7 @@ uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_special(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -965,8 +966,9 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 }
 
 // 0x004AB655 
-void openloco::vehicle::sub_4AB655(vehicle_object * veh_object, uint8_t var_05)
+void openloco::vehicle::sub_4AB655(uint8_t var_05)
 {
+    auto veh_object = object();
     if (var_05 == 0)
         return;
 
@@ -995,13 +997,15 @@ void openloco::vehicle::sub_4AB655(vehicle_object * veh_object, uint8_t var_05)
         //break;
     case 8:
         // 0x004ABC8A
-        break;
+        //break;
     default:
         registers regs;
         regs.esi = (int32_t)this;
         regs.ebp = (int32_t)veh_object;
-        regs.ebx = var_05 + 0x80;
-        call(0x004AB655, regs);
+        regs.ebx = var_05;
+        regs.ecx = veh_object->wake_fx_type;
+        // Jumps to halfway through the function so should skip our hook
+        call(0x004AB6E0, regs);
         break;
     }
 }
@@ -1010,104 +1014,151 @@ void openloco::vehicle::sub_4AB655(vehicle_object * veh_object, uint8_t var_05)
 void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
 {
     vehicle * frontBogie = vehicle_front_bogie;
+    vehicle * backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
     vehicle * veh_3 = vehicle_1136120;
-    if (veh_3->var_5A != 1 && veh_3->var_5A != 4)
+    bool soundCode = false;
+    if (veh_3->var_5A == 1 || veh_3->var_5A == 4)
     {
-        bool tickCalc = true;
-        if (veh_3->var_5A != 0 && veh_3->var_56 >= 65536)
-        {
-            tickCalc = false;
-        }
-
-        auto _var_44 = var_44;
-        if (var_38 & (1 << 1))
-        {
-            var_05 = -var_05;
-            _var_44 = -_var_44;
-        }
-
-        if (tickCalc)
-        {
-            if (scenario_ticks() & 7)
-                return;
-        }
-        else
-        {
-            if ((vehicle_var_1136130 + _var_44 * 8) < std::numeric_limits<uint16_t>::max())
-            {
-                return;
-            }
-        }
-
-        var_05 += 64;
-        vehicle * backBogie = vehicle_back_bogie;
-        loc16 loc = {
-            backBogie->x - frontBogie->x,
-            backBogie->y - frontBogie->y,
-            backBogie->z - frontBogie->z,
-        };
-
-        if (loc.x != 0)
-        {
-            loc.x = loc.x * var_05 / 128;
-        }
-
-        if (loc.y != 0)
-        {
-            loc.y = loc.y * var_05 / 128;
-        }
-
-        if (loc.z != 0)
-        {
-            loc.z = loc.z * var_05 / 128;
-        }
-
-        loc.x += frontBogie->x;
-        loc.y += frontBogie->y;
-        loc.z += frontBogie->z;
-
-
-        loc.z += veh_object->var_111;
-
-        auto xyFactor = veh_object->var_111 * factor503B50[sprite_pitch];
-        if (xyFactor != 0)
-        {
-            xyFactor /= 256;
-        }
-
-        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-        if (xFactor != 0)
-        {
-            xFactor /= 256;
-        }
-
-        if (yFactor != 0)
-        {
-            yFactor /= 256;
-        }
-
-        loc.x += xFactor;
-        loc.y += yFactor;
-
-        registers regs;
-
-        regs.bl = veh_object->var_110 | 0x80;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dx = loc.z;
-        call(0x0044080C, regs);
-
-        return;
+        soundCode = true;
+    }
+    bool tickCalc = true;
+    if (veh_3->var_5A != 0 && veh_3->var_56 >= 65536)
+    {
+        tickCalc = false;
     }
 
-    registers reg;
-    reg.esi = (int32_t)this;
-    reg.ebp = (int32_t)veh_object;
-    reg.ebx = var_05;
-    call(0x004AB7A8, reg);
+    auto _var_44 = var_44;
+    if (var_38 & (1 << 1))
+    {
+        var_05 = -var_05;
+        _var_44 = -_var_44;
+    }
+
+    if (tickCalc && (soundCode == false))
+    {
+        if (scenario_ticks() & 7)
+            return;
+    }
+    else
+    {
+        if ((vehicle_var_1136130 + _var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        {
+            return;
+        }
+    }
+
+    var_05 += 64;
+    loc16 loc = {
+        backBogie->x - frontBogie->x,
+        backBogie->y - frontBogie->y,
+        backBogie->z - frontBogie->z,
+    };
+
+    if (loc.x != 0)
+    {
+        loc.x = loc.x * var_05 / 128;
+    }
+
+    if (loc.y != 0)
+    {
+        loc.y = loc.y * var_05 / 128;
+    }
+
+    if (loc.z != 0)
+    {
+        loc.z = loc.z * var_05 / 128;
+    }
+
+    loc.x += frontBogie->x;
+    loc.y += frontBogie->y;
+    loc.z += frontBogie->z;
+
+
+    loc.z += veh_object->var_111;
+
+    auto xyFactor = veh_object->var_111 * factor503B50[sprite_pitch];
+    if (xyFactor != 0)
+    {
+        xyFactor /= 256;
+    }
+
+    auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
+    auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
+
+    if (xFactor != 0)
+    {
+        xFactor /= 256;
+    }
+
+    if (yFactor != 0)
+    {
+        yFactor /= 256;
+    }
+
+    loc.x += xFactor;
+    loc.y += yFactor;
+
+    exahust::create(loc, veh_object->var_110 | (soundCode ? 0 : 0x80));
+    if (soundCode == false)
+        return;
+    
+    var_55++;
+    steam_object * steam_obj = objectmgr::get<steam_object>(veh_object->var_110);
+    if (var_55 >= veh_object->wake_fx_type + 1)
+    {
+        var_55 = 0;
+    }
+
+    //eax = var_55
+    bool itemFound = false;
+
+    if (steam_obj->var_08 & (1 << 2))
+    {
+        auto tile = map::tilemgr::get(frontBogie->tile_x, frontBogie->tile_y);
+
+        for (auto &el : tile)
+        {
+            if (itemFound && !(el.flags() & ((1<<5) | (1<<4))))
+            {
+                break;
+            }
+            else
+            {
+                itemFound = false;
+            }
+            if (el.type() == map::element_type::unk_1) {
+
+                auto elUnk1 = el.as_unk1();
+                if (elUnk1->base_z() != frontBogie->tile_base_z)
+                    continue;
+                if (elUnk1->unk_z() != loc.z)
+                    continue;
+
+                if (!elUnk1->has_80())
+                    continue;
+
+                if (!elUnk1->is_last())
+                    itemFound = true;
+            }
+        }
+    }
+
+    if (itemFound)
+    {
+        registers regs;
+
+        regs.eax = steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)];
+        regs.eax |= 1 << 15;
+
+        if (veh_3->var_56 > 983040)
+            return;
+
+    }
+    else
+    {
+
+    }
 }
