@@ -6,7 +6,8 @@ namespace openloco::input
 {
     enum class mouse_button
     {
-        left_down = 1,
+        released,
+        left_down,
         right_down,
         left_up,
         right_up,
@@ -14,22 +15,37 @@ namespace openloco::input
 
     enum class input_state
     {
-        reset,
-        normal,
-        widget_pressed,
-        positioning_window,
-        viewport_right,
-        dropdown_active,
-        viewport_left,
-        scroll_left,
-        resizing,
-        scroll_right,
+        reset,              // 0
+        normal,             // 1
+        widget_pressed,     // 2
+        positioning_window, // 3
+        viewport_right,     // 4
+        dropdown_active,    // 5
+        viewport_left,      // 6
+        scroll_left,        // 7
+        resizing,           // 8
+        scroll_right,       // 9
     };
 
     enum class input_flags
     {
+        flag0 = 1 << 0,
         flag_3 = 1 << 3,
+        flag4 = 1 << 4,
+        flag5 = 1 << 5,
         viewport_scrolling = 1 << 7,
+    };
+
+    enum class scroll_flags
+    {
+        HSCROLLBAR_VISIBLE = (1 << 0),
+        HSCROLLBAR_THUMB_PRESSED = (1 << 1),
+        HSCROLLBAR_LEFT_PRESSED = (1 << 2),
+        HSCROLLBAR_RIGHT_PRESSED = (1 << 3),
+        VSCROLLBAR_VISIBLE = (1 << 4),
+        VSCROLLBAR_THUMB_PRESSED = (1 << 5),
+        VSCROLLBAR_UP_PRESSED = (1 << 6),
+        VSCROLLBAR_DOWN_PRESSED = (1 << 7),
     };
 
     enum class key_modifier
@@ -45,6 +61,7 @@ namespace openloco::input
     bool has_key_modifier(key_modifier modifier);
 
     void handle_keyboard();
+    void handle_mouse(int16_t x, int16_t y, mouse_button button);
     void enqueue_mouse_button(mouse_button button);
     void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();

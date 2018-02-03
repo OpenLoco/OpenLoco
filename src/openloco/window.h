@@ -214,8 +214,12 @@ namespace openloco::ui
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
+        void call_3();                                                                                    // 3
+        void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_update();                                                                               // 7
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
+        void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
+        void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_prepare_draw();                                                                         // 26

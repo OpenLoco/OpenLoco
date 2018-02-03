@@ -93,6 +93,41 @@ namespace openloco::ui
         return (cursor_id)regs.ebx;
     }
 
+    void window::call_3()
+    {
+        registers regs;
+        call((uint32_t)this->event_handlers->event_03, regs);
+    }
+
+    void window::call_on_mouse_down(int8_t widget_index)
+    {
+        registers regs;
+        regs.edx = widget_index;
+        regs.esi = (uint32_t)this;
+        regs.edi = (uint32_t) & this->widgets[widget_index];
+        call((uint32_t)this->event_handlers->on_mouse_down, regs);
+    }
+
+    void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    {
+        registers regs;
+        regs.ax = scroll_index;
+        regs.esi = (int32_t)this;
+        regs.cx = xPos;
+        regs.dx = yPos;
+        call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+    }
+
+    void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    {
+        registers regs;
+        regs.ax = scroll_index;
+        regs.esi = (int32_t)this;
+        regs.cx = xPos;
+        regs.dx = yPos;
+        call((uint32_t)this->event_handlers->event_19, regs);
+    }
+
     bool window::call_tooltip(int16_t widget_index)
     {
         registers regs;

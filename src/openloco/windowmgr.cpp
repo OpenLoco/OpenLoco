@@ -102,6 +102,16 @@ namespace openloco::ui::windowmgr
         }
     }
 
+    // 0x004CB966
+    void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index)
+    {
+        registers regs;
+        regs.ah = widget_index;
+        regs.al = (uint8_t)type | 1 << 7;
+        regs.bx = id;
+        call(0x004CB966, regs);
+    }
+
     // 0x004CC692
     void close(window_type type)
     {
