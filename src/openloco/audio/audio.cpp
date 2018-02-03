@@ -32,6 +32,20 @@ namespace openloco::audio
         play_sound(id, loc, play_at_location);
     }
 
+    // 0x00489F1B
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound)
+    {
+        registers regs;
+        regs.eax = (int32_t)id;
+        regs.eax |= obj_sound ? 0x8000 : 0;
+        regs.ecx = loc.x;
+        regs.edx = loc.y;
+        regs.ebp = loc.z;
+        regs.ebx = frequency;
+        regs.edi = volume;
+        call(0x00489F1B, regs);
+    }
+
     void play_sound(sound_id id, loc16 loc, int32_t pan)
     {
         registers regs;

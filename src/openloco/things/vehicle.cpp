@@ -1101,12 +1101,12 @@ void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exahust::create(loc, veh_object->animation[1].var_01 | (soundCode ? 0 : 0x80));
+    exahust::create(loc, veh_object->animation[1].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
     
     var_55++;
-    steam_object * steam_obj = objectmgr::get<steam_object>(veh_object->animation[1].var_01);
+    steam_object * steam_obj = objectmgr::get<steam_object>(veh_object->animation[1].object_id);
     if (var_55 >= ((uint8_t)veh_object->animation[1].type) + 1)
     {
         var_55 = 0;
@@ -1148,17 +1148,50 @@ void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
 
     if (itemFound)
     {
-        registers regs;
-
-        regs.eax = steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)];
-        regs.eax |= 1 << 15;
+        auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
         if (veh_3->var_56 > 983040)
             return;
 
+        int32_t volume = 0 -(veh_3->var_56 >> 9);
+
+        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+
+        if (loc.z <= height)
+        {
+            volume -= 1500;
+        }
+
+        audio::play_sound(soundId, loc, volume, 22050, true);
     }
     else
     {
+        auto soundModifier = steam_obj->sound_effect >> 1;
+        if (!(steam_obj->var_08 & (1 << 2)))
+        {
+            soundModifier = 0;
+        }
+        auto underSoundId = static_cast<audio::sound_id>(steam_obj->var_1F[soundModifier + var_55]);
+        auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55]);
 
+        if (veh_3->var_56 > 983040)
+            return;
+
+        int32_t volume = 0 - (veh_3->var_56 >> 9);
+
+        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+
+        if (loc.z <= height)
+        {
+            soundId = underSoundId;
+            volume -= 1500;
+        }
+
+        if (volume > -400)
+        {
+            volume = -400;
+        }
+
+        audio::play_sound(soundId, loc, volume, 22050, true);
     }
 }
