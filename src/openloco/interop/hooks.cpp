@@ -654,7 +654,7 @@ void openloco::interop::register_hooks()
         0x004AB655,
         [](registers& regs) -> uint8_t {
         auto v = (openloco::vehicle*)regs.esi;
-        v->sub_4AB655(regs.bl);
+        v->sub_4AB655();
         return 0;
     }
     );

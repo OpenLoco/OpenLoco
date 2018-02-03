@@ -58,7 +58,7 @@ namespace openloco
 
         void update_head();
         void sub_4BA8D4();
-        void sub_4AB655(uint8_t var_05);
+        void sub_4AB655();
 
     private:
         bool update();
@@ -75,7 +75,7 @@ namespace openloco
         uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void sub_4AB688(vehicle_object * veh_object, uint8_t var_05);
+        void sub_4AB688(uint8_t animation, int8_t var_05);
     };
 #pragma pack(pop)
 }
