@@ -58,13 +58,13 @@ namespace openloco
 
         void update_head();
         void sub_4BA8D4();
-        void sub_4AB655();
+        void secondary_animation_update();
 
     private:
         bool update();
         void sub_4BAA76();
         int32_t sub_4AA1D0();
-        void sub_4AAC4E();
+        void animation_update();
         void sub_4AAB0B();
         void sub_4AC255(vehicle * back_bogie, vehicle * front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
@@ -75,7 +75,7 @@ namespace openloco
         uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void sub_4AB688(uint8_t animation, int8_t var_05);
+        void steam_puffs_animation_update(uint8_t animation, int8_t var_05);
     };
 #pragma pack(pop)
 }
