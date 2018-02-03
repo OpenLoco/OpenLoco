@@ -19,9 +19,9 @@ namespace openloco
 
     struct simple_animation
     {
-        uint8_t var_01;
-        uint8_t height;
-        simple_animation_type type;
+        uint8_t object_id;  // 0x00 (object loader fills this in)
+        uint8_t height;     // 0x01
+        simple_animation_type type; // 0x02
     };
 
     struct vehicle_object_unk
