@@ -4,6 +4,26 @@
 
 namespace openloco
 {
+    enum class simple_animation_type : uint8_t
+    {
+        none = 0,
+        steam_puff1,
+        steam_puff2,
+        steam_puff3,
+        diesel_exhaust1,
+        electric_spark1,
+        electric_spark2,
+        diesel_exhaust2,
+        ship_wake
+    };
+
+    struct simple_animation
+    {
+        uint8_t var_01;
+        uint8_t height;
+        simple_animation_type type;
+    };
+
     struct vehicle_object_unk
     {
         uint8_t length; // 0x00
@@ -53,12 +73,8 @@ namespace openloco
         uint16_t rack_speed; // 0xDC
         uint16_t weight;     // 0xDE
         uint16_t flags;      // 0xE0
-        uint8_t pad_E2[0x10E - 0xE2];
-        uint8_t vis_fx_height; // 0x10E
-        uint8_t vis_fx_type;   // 0x10F
-        uint8_t var_110;
-        uint8_t var_111;
-        uint8_t wake_fx_type; // 0x112
+        uint8_t pad_E2[0x10D - 0xE2];
+        simple_animation animation[2]; // 0x10D
         uint8_t pad_113;
         uint16_t designed; // 0x114
         uint16_t obsolete; // 0x116

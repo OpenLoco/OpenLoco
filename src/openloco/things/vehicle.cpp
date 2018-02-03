@@ -243,29 +243,29 @@ void openloco::vehicle::sub_4AAC4E()
     }
 
     regs.ebx -= 0x80;
-    switch (vehicleObject->vis_fx_type)
+    switch (vehicleObject->animation[0].type)
     {
-        case 0:
+    case simple_animation_type::none:
             sub_4AB655(vehicleObject->var_24[var_54].var_05);
             break;
-        case 1:
-        case 2:
-        case 3:
+        case simple_animation_type::steam_puff1:
+        case simple_animation_type::steam_puff2:
+        case simple_animation_type::steam_puff3:
             call(0x004AACA5, regs);
             break;
-        case 4:
+        case simple_animation_type::diesel_exhaust1:
             call(0x004AAFFA, regs);
             break;
-        case 5:
+        case simple_animation_type::electric_spark1:
             call(0x004AB3CA, regs);
             break;
-        case 6:
+        case simple_animation_type::electric_spark2:
             call(0x004AB4E0, regs);
             break;
-        case 7:
+        case simple_animation_type::diesel_exhaust2:
             call(0x004AB177, regs);
             break;
-        case 8:
+        case simple_animation_type::ship_wake:
             call(0x004AB2A7, regs);
             break;
     }
@@ -968,42 +968,42 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 // 0x004AB655 
 void openloco::vehicle::sub_4AB655(uint8_t var_05)
 {
-    auto veh_object = object();
+    auto vehicleObject = object();
     if (var_05 == 0)
         return;
 
     var_05 -= 0x80;
 
-    switch (veh_object->wake_fx_type)
+    switch (vehicleObject->animation[1].type)
     {
-    case 0:
+    case simple_animation_type::none:
         return;
-    case 1:
-    case 2:
-    case 3:
-        sub_4AB688(veh_object, var_05);
+    case simple_animation_type::steam_puff1:
+    case simple_animation_type::steam_puff2:
+    case simple_animation_type::steam_puff3:
+        sub_4AB688(vehicleObject, var_05);
         break;
-    case 4:
+    case simple_animation_type::diesel_exhaust1:
         // 0x004AB9DD
         //break;
-    case 5:
+    case simple_animation_type::electric_spark1:
         // 0x004ABDAD
         //break;
-    case 6:
+    case simple_animation_type::electric_spark2:
         // 0x004ABEC3
         //break;
-    case 7:
+    case simple_animation_type::diesel_exhaust2:
         // 0x004ABB5A
         //break;
-    case 8:
+    case simple_animation_type::ship_wake:
         // 0x004ABC8A
         //break;
     default:
         registers regs;
         regs.esi = (int32_t)this;
-        regs.ebp = (int32_t)veh_object;
+        regs.ebp = (int32_t)vehicleObject;
         regs.ebx = var_05;
-        regs.ecx = veh_object->wake_fx_type;
+        regs.ecx = (uint8_t)vehicleObject->animation[1].type;
         // Jumps to halfway through the function so should skip our hook
         call(0x004AB6E0, regs);
         break;
@@ -1077,9 +1077,9 @@ void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
     loc.z += frontBogie->z;
 
 
-    loc.z += veh_object->var_111;
+    loc.z += veh_object->animation[1].height;
 
-    auto xyFactor = veh_object->var_111 * factor503B50[sprite_pitch];
+    auto xyFactor = veh_object->animation[1].height * factor503B50[sprite_pitch];
     if (xyFactor != 0)
     {
         xyFactor /= 256;
@@ -1101,13 +1101,13 @@ void openloco::vehicle::sub_4AB688(vehicle_object * veh_object, uint8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exahust::create(loc, veh_object->var_110 | (soundCode ? 0 : 0x80));
+    exahust::create(loc, veh_object->animation[1].var_01 | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
     
     var_55++;
-    steam_object * steam_obj = objectmgr::get<steam_object>(veh_object->var_110);
-    if (var_55 >= veh_object->wake_fx_type + 1)
+    steam_object * steam_obj = objectmgr::get<steam_object>(veh_object->animation[1].var_01);
+    if (var_55 >= ((uint8_t)veh_object->animation[1].type) + 1)
     {
         var_55 = 0;
     }
