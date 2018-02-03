@@ -194,7 +194,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
 
     if (var_42 == 2 || var_42 == 3)
     {
-        sub_4AAC4E();
+        animation_update();
         return 0;
     }
 
@@ -215,13 +215,13 @@ int32_t openloco::vehicle::sub_4AA1D0()
 
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
-    sub_4AAC4E();
+    animation_update();
     sub_4AAB0B();
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
 
-void openloco::vehicle::sub_4AAC4E()
+void openloco::vehicle::animation_update()
 {
     if (var_38 & (1 << 4))
         return;
@@ -231,29 +231,27 @@ void openloco::vehicle::sub_4AAC4E()
         return;
 
     auto vehicleObject = object();
+
+    if (vehicleObject->var_24[var_54].var_05 == 0)
+    {
+        return;
+    }
+
     registers regs;
     regs.esi = (int32_t)this;
     regs.ebp = (int32_t)vehicleObject;
     regs.ebx = vehicleObject->var_24[var_54].var_05;
-    if (vehicleObject->var_24[var_54].var_05 == 0)
-    {
-        // Just returns??
-        sub_4AB655();
-        return;
-    }
-
     regs.ebx -= 0x80;
     switch (vehicleObject->animation[0].type)
     {
     case simple_animation_type::none:
-            sub_4AB655();
+            secondary_animation_update();
             break;
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            sub_4AB688(0, vehicleObject->var_24[var_54].var_05 - 0x80);
-            //call(0x004AACA5, regs);
-            // call secondary afterwards
+            steam_puffs_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            secondary_animation_update();
             break;
         case simple_animation_type::diesel_exhaust1:
             call(0x004AAFFA, regs);
@@ -968,7 +966,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 }
 
 // 0x004AB655 
-void openloco::vehicle::sub_4AB655()
+void openloco::vehicle::secondary_animation_update()
 {
     auto vehicleObject = object();
     uint8_t var_05 = vehicleObject->var_24[var_54].var_05;
@@ -984,7 +982,7 @@ void openloco::vehicle::sub_4AB655()
     case simple_animation_type::steam_puff1:
     case simple_animation_type::steam_puff2:
     case simple_animation_type::steam_puff3:
-        sub_4AB688(1, var_05);
+        steam_puffs_animation_update(1, var_05);
         break;
     case simple_animation_type::diesel_exhaust1:
         // 0x004AB9DD
@@ -1013,8 +1011,8 @@ void openloco::vehicle::sub_4AB655()
     }
 }
 
-// 0x004AB688
-void openloco::vehicle::sub_4AB688(uint8_t animation, int8_t var_05)
+// 0x004AB688, 0x004AACA5
+void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
 {
     auto vehicleObject = object();
     vehicle * frontBogie = vehicle_front_bogie;
@@ -1082,9 +1080,9 @@ void openloco::vehicle::sub_4AB688(uint8_t animation, int8_t var_05)
     loc.z += frontBogie->z;
 
 
-    loc.z += vehicleObject->animation[animation].height;
+    loc.z += vehicleObject->animation[num].height;
 
-    auto xyFactor = vehicleObject->animation[animation].height * factor503B50[sprite_pitch];
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
     if (xyFactor != 0)
     {
         xyFactor /= 256;
@@ -1106,18 +1104,17 @@ void openloco::vehicle::sub_4AB688(uint8_t animation, int8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exahust::create(loc, vehicleObject->animation[animation].object_id | (soundCode ? 0 : 0x80));
+    exahust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
     
     var_55++;
-    steam_object * steam_obj = objectmgr::get<steam_object>(vehicleObject->animation[animation].object_id);
-    if (var_55 >= ((uint8_t)vehicleObject->animation[animation].type) + 1)
+    steam_object * steam_obj = objectmgr::get<steam_object>(vehicleObject->animation[num].object_id);
+    if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
     {
         var_55 = 0;
     }
 
-    //eax = var_55
     bool itemFound = false;
 
     // Looking for a bridge? or somthing ontop
