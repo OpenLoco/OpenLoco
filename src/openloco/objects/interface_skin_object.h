@@ -10,7 +10,8 @@ namespace openloco
         string_id name;
         uint32_t img;
         uint8_t colours_06[2];
-        uint8_t pad_08[0x12 - 8];
+        uint8_t colour_08;
+        uint8_t pad_09[0x12 - 9];
         uint8_t colours_12[6];
     };
 #pragma pack(pop)

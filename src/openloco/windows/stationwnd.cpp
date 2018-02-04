@@ -15,7 +15,7 @@ namespace openloco::ui::windows
 
     static station_id_t get_station_id(const window& w)
     {
-        return w.var_40;
+        return w.number;
     }
 
     static station& get_station(const window& w)

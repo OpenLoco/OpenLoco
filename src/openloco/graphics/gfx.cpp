@@ -192,6 +192,25 @@ namespace openloco::gfx
         call(0x00494BBF, regs);
     }
 
+    // 0x004474BA
+    static void draw_rect_impl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color)
+    {
+        registers regs;
+        regs.ax = left;
+        regs.bx = right;
+        regs.cx = top;
+        regs.dx = bottom;
+        regs.ebp = color;
+        regs.edi = (uint32_t)dpi;
+        call(0x004474BA, regs);
+    }
+
+    void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t color)
+    {
+        // This makes the function signature more like a drawing application
+        draw_rect_impl(dpi, x, y, x + dx - 1, y + dy - 1, color);
+    }
+
     // 0x004CD406
     void invalidate_screen()
     {

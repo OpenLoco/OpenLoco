@@ -648,6 +648,8 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    ui::tooltip::register_hooks();
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
     // Can be removed when windowmgr:update() is hooked

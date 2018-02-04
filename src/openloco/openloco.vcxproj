@@ -59,6 +59,7 @@
     <ClCompile Include="windows\stationwnd.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
     <ClCompile Include="windows\townwnd.cpp" />
+    <ClCompile Include="windows\tooltip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />

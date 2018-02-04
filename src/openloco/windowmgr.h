@@ -17,9 +17,11 @@ namespace openloco::ui
         toolbar_top = 1,
         toolbar_player_info = 2,
         toolbar_time = 3,
+        tooltip = 6,
         about = 9,
         about_atari = 10,
         about_music = 11,
+        wt_12 = 12,
         construction = 13,
         prompt_save_game = 14,
         terraform = 15,
@@ -98,4 +100,11 @@ namespace openloco::ui::windows
 namespace openloco::ui::textinput
 {
     void close();
+}
+
+namespace openloco::ui::tooltip
+{
+    void register_hooks();
+    void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
+    void update(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
 }

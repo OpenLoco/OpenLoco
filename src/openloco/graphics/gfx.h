@@ -84,6 +84,7 @@ namespace openloco::gfx
         uint8_t colour,
         string_id stringId,
         const void* args);
+    void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t color);
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
 }
