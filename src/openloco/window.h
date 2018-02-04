@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
 #include <cstdint>
 
@@ -31,9 +32,43 @@ namespace openloco::ui
         constexpr uint16_t flag_4 = 1 << 4;
         constexpr uint16_t flag_5 = 1 << 5;
         constexpr uint16_t flag_6 = 1 << 6;
+        constexpr uint16_t flag_7 = 1 << 7;
         constexpr uint16_t flag_9 = 1 << 9;
         constexpr uint16_t flag_12 = 1 << 12;
     }
+
+    struct window_event_list_t
+    {
+        uint32_t on_close;
+        uint32_t on_mouse_up;
+        uint32_t on_resize;
+        uint32_t event_03;
+        uint32_t on_mouse_down;
+        uint32_t on_dropdown;
+        uint32_t event_06;
+        uint32_t on_update;
+        uint32_t event_08;
+        uint32_t event_09;
+        uint32_t event_10;
+        uint32_t event_11;
+        uint32_t event_12;
+        uint32_t event_13;
+        uint32_t tool_abort;
+        uint32_t event_15;
+        uint32_t get_scroll_size;
+        uint32_t scroll_mouse_down;
+        uint32_t event_18;
+        uint32_t event_19;
+        uint32_t text_input;
+        uint32_t event_21;
+        uint32_t event_22;
+        uint32_t tooltip;
+        uint32_t cursor;
+        uint32_t event_25;
+        uint32_t invalidate;
+        uint32_t draw;
+        uint32_t event_28;
+    };
 
     struct window
     {
@@ -42,10 +77,10 @@ namespace openloco::ui
             uint8_t pad_all[0x88E];
             struct
             {
-                void* event_handlers;     // 0x00
-                void* viewport;           // 0x04
-                uint8_t pad_08[0x04];     // 0x08
-                uint32_t enabled_widgets; // 0x0C
+                window_event_list_t* event_handlers; // 0x00
+                void* viewport;                      // 0x04
+                uint8_t pad_08[0x04];                // 0x08
+                uint32_t enabled_widgets;            // 0x0C
                 uint8_t pad_10[0x2C - 0x10];
                 widget* widgets;     // 0x2C
                 uint16_t x;          // 0x30
@@ -56,7 +91,7 @@ namespace openloco::ui
                 uint16_t max_width;  // 0x3a
                 uint16_t min_height; // 0x3c
                 uint16_t max_height; // 0x3e
-                uint16_t var_40;
+                uint16_t number;
                 uint32_t flags;
                 uint8_t pad_46[0x83E - 0x46];
                 uint16_t var_83E;
@@ -83,6 +118,9 @@ namespace openloco::ui
 
         void invalidate();
         void sub_4CA17F();
+
+        bool call_tooltip(int16_t widget_index); // 23
+        void call_invalidate();                  // 26
     };
 
     struct viewport
