@@ -7,7 +7,7 @@ using namespace openloco::interop;
 
 namespace openloco::industrymgr
 {
-    static loco_global_array<industry, max_industries, 0x005C455C> _industries;
+    static loco_global<industry[max_industries], 0x005C455C> _industries;
 
     std::array<industry, max_industries>& industries()
     {

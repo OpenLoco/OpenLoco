@@ -6,8 +6,8 @@ using namespace openloco::interop;
 
 namespace openloco::companymgr
 {
-    static loco_global_array<company_id_t, 2, 0x00525E3C> _player_company[2];
-    static loco_global_array<company, max_companies, 0x00531784> _companies;
+    static loco_global<company_id_t[2], 0x00525E3C> _player_company;
+    static loco_global<company[max_companies], 0x00531784> _companies;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
@@ -31,7 +31,7 @@ namespace openloco::companymgr
 
     company* get(company_id_t id)
     {
-        auto index = (size_t)id;
+        auto index = id;
         if (index < _companies.size())
         {
             return &_companies[index];
@@ -41,7 +41,7 @@ namespace openloco::companymgr
 
     company_id_t get_controlling_id()
     {
-        return _player_company->get()[0];
+        return _player_company[0];
     }
 
     // 0x00430319

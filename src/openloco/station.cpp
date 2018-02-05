@@ -14,13 +14,13 @@ namespace openloco
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;
 
-    static loco_global_array<uint8_t, max_cargo_stats, 0x0112C7D2> _byte_112C7D2;
+    static loco_global<uint8_t[max_cargo_stats], 0x0112C7D2> _byte_112C7D2;
 
     station_id_t station::id() const
     {
         // TODO check if this is stored in station structure
         //      otherwise add it when possible
-        static loco_global_array<station, 1024, 0x005E6EDC> _stations;
+        static loco_global<station[1024], 0x005E6EDC> _stations;
         auto index = (size_t)(this - _stations);
         if (index > 1024)
         {

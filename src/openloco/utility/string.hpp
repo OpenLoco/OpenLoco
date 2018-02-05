@@ -78,36 +78,20 @@ namespace openloco::utility
     }
 
     template<size_t N>
-    inline void strcpy_safe(char (&dest)[N], const char* src)
+    void strcpy_safe(char (&dest)[N], const char* src)
     {
         (void)strlcpy(dest, src, N);
     }
 
     template<size_t N>
-    inline void strcat_safe(char (&dest)[N], const char* src)
+    void strcat_safe(char (&dest)[N], const char* src)
     {
         (void)strlcat(dest, src, N);
     }
 
     template<size_t N, typename... Args>
-    inline int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
+    int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
     {
-        return snprintf(dest, N, fmt, std::forward<Args>(args)...);
-    }
-
-    // intended for use with e.g. loco_global_array<char, N, A>
-    template<typename T>
-    inline auto strcpy_safe(T& dest, const char* src)
-        -> std::enable_if_t<std::is_convertible_v<T, char*> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
-    {
-        (void)strlcpy(dest, src, dest.size());
-    }
-
-    // intended for use with e.g. loco_global_array<char, N, A>
-    template<typename T>
-    inline auto strcat_safe(T& dest, const char* src)
-        -> std::enable_if_t<std::is_convertible_v<T, char*> && std::is_member_function_pointer_v<decltype(&T::size)>, void>
-    {
-        (void)strlcat(dest, src, dest.size());
+        return std::snprintf(dest, N, fmt, std::forward<Args>(args)...);
     }
 }
