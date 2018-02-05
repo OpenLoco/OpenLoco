@@ -85,7 +85,7 @@ namespace openloco::ui::windows
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
-        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, (1 << 1) | (1 << 9) | (1 << 12), (void*)0x004FB308);
+        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, ui::window_flags::flag_1 | ui::window_flags::flag_9 | ui::window_flags::flag_12, (void*)0x004FB308);
         if (window != nullptr)
         {
             window->widgets = (widget*)0x0050AD58;

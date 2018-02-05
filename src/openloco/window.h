@@ -24,6 +24,17 @@ namespace openloco::ui
         string_id tooltip; // 0x0E
     };
 
+    namespace window_flags
+    {
+        constexpr uint16_t flag_0 = 1 << 0;
+        constexpr uint16_t flag_1 = 1 << 1;
+        constexpr uint16_t flag_4 = 1 << 4;
+        constexpr uint16_t flag_5 = 1 << 5;
+        constexpr uint16_t flag_6 = 1 << 6;
+        constexpr uint16_t flag_9 = 1 << 9;
+        constexpr uint16_t flag_12 = 1 << 12;
+    }
+
     struct window
     {
         union
@@ -46,7 +57,7 @@ namespace openloco::ui
                 uint16_t min_height; // 0x3c
                 uint16_t max_height; // 0x3e
                 uint16_t var_40;
-                uint32_t var_42;
+                uint32_t flags;
                 uint8_t pad_46[0x83E - 0x46];
                 uint16_t var_83E;
                 uint8_t pad_840[0x846 - 0x840];
