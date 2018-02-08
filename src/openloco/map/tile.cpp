@@ -32,9 +32,9 @@ industry* industry_element::industry() const
 }
 
 tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
-    : x(x)
+    : _data(data)
+    , x(x)
     , y(y)
-    , _data(data)
 {
 }
 

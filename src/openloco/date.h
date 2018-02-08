@@ -31,9 +31,9 @@ namespace openloco
 
         date() = default;
         date(int32_t y, month_id m, int32_t d)
-            : year(y)
+            : day(d)
             , month(m)
-            , day(d)
+            , year(y)
         {
         }
     };
