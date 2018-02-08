@@ -379,7 +379,7 @@ static int32_t STDCALL lib_CreateFileA(
 {
     console::log("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
-    FILE* pFILE;
+    FILE* pFILE = nullptr;
     if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
     {
         pFILE = fopen(lpFileName, "r");
