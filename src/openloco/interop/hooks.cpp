@@ -446,6 +446,7 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
     exit(exitCode);
 }
 
+#ifdef _NO_LOCO_WIN32_
 static void register_no_win32_hooks()
 {
     using namespace openloco::interop;
@@ -509,6 +510,7 @@ static void register_no_win32_hooks()
     hook_lib(0x4d7248, (void*)&lib_GetUpdateRgn);
     hook_lib(0x4d72b0, (void*)&lib_timeGetTime);
 }
+#endif // _NO_LOCO_WIN32_
 
 void openloco::interop::load_sections()
 {
@@ -533,7 +535,7 @@ void openloco::interop::register_hooks()
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
-#endif
+#endif // _NO_LOCO_WIN32_
 
     register_hook(
         0x004416B5,
