@@ -130,7 +130,7 @@ namespace openloco
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
      */
-    static void* malloc(size_t size)
+    [[maybe_unused]] static void* malloc(size_t size)
     {
         return ((void* (*)(size_t))0x004D1401)(size);
     }
@@ -138,7 +138,7 @@ namespace openloco
     /**
      * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
      */
-    static void* realloc(void* address, size_t size)
+    [[maybe_unused]] static void* realloc(void* address, size_t size)
     {
         return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
     }
@@ -146,7 +146,7 @@ namespace openloco
     /**
      * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
      */
-    static void free(void* address)
+    [[maybe_unused]] static void free(void* address)
     {
         ((void (*)(void*))0x004D1355)(address);
     }
