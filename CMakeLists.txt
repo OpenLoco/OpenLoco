@@ -22,7 +22,14 @@ if (APPLE)
 endif (APPLE)
 
 # Set some compiler features
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror")
+set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wall")
+
+# Poke some holes in -Wall:
+set(COMMON_COMPILE_OPTIONS
+    "${COMMON_COMPILE_OPTIONS} \
+    -Wno-unknown-pragmas \
+    -Wno-unused-private-field \
+    ")
 
 # Set warnings common to supported compilers
 set(COMMON_COMPILE_OPTIONS
