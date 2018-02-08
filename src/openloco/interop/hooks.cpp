@@ -51,12 +51,6 @@ static void STDCALL fn_404e8c()
     return;
 }
 
-static void STDCALL fn_404eac(int i1, int i2, int i3, int i4)
-{
-    STUB();
-    return;
-}
-
 #pragma pack(push, 1)
 
 struct palette_entry_t
@@ -258,11 +252,6 @@ static void CDECL fn_FindClose(Session* data)
     STUB();
 
     delete data;
-}
-
-static void CDECL fn_4078b5(void)
-{
-    STUB();
 }
 
 [[maybe_unused]] static void CDECL fnc0(void)
