@@ -34,7 +34,7 @@ namespace openloco
     {
         uint32_t currentAcceptedCargo = calc_accepted_cargo();
         uint32_t originallyAcceptedCargo = 0;
-        for (int cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
             auto& cs = cargo_stats[cargoId];
             cs.var_39 = _byte_112C7D2[cargoId];
@@ -51,7 +51,7 @@ namespace openloco
         {
             if (owner == companymgr::get_controlling_id())
             {
-                for (int cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+                for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
                 {
                     bool acceptedBefore = (originallyAcceptedCargo & (1 << cargoId)) != 0;
                     bool acceptedNow = (currentAcceptedCargo & (1 << cargoId)) != 0;
