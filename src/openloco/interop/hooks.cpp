@@ -254,6 +254,9 @@ static void CDECL fn_FindClose(Session* data)
     delete data;
 }
 
+#pragma warning(push)
+// MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
+#pragma warning(disable : 4505) // unreferenced local function has been removed.
 [[maybe_unused]] static void CDECL fnc0(void)
 {
     STUB();
@@ -283,6 +286,7 @@ static void CDECL fn_FindClose(Session* data)
 {
     STUB();
 }
+#pragma warning(pop)
 
 FORCE_ALIGN_ARG_POINTER
 static void* CDECL fn_malloc(uint32_t size)
