@@ -33,8 +33,6 @@ using namespace openloco;
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
 
-#pragma warning(disable : 4505) // unreferenced local function has been removed.
-
 static void STDCALL fn_40447f()
 {
     STUB();
@@ -267,32 +265,32 @@ static void CDECL fn_4078b5(void)
     STUB();
 }
 
-static void CDECL fnc0(void)
+[[maybe_unused]] static void CDECL fnc0(void)
 {
     STUB();
 }
 
-static void CDECL fnc1(int i1)
+[[maybe_unused]] static void CDECL fnc1(int i1)
 {
     STUB();
 }
 
-static void CDECL fnc2(int i1, int i2)
+[[maybe_unused]] static void CDECL fnc2(int i1, int i2)
 {
     STUB();
 }
 
-static void STDCALL fn0()
+[[maybe_unused]] static void STDCALL fn0()
 {
     return;
 }
 
-static void STDCALL fn1(int i1)
+[[maybe_unused]] static void STDCALL fn1(int i1)
 {
     return;
 }
 
-static void STDCALL fn2(int i1, int i2)
+[[maybe_unused]] static void STDCALL fn2(int i1, int i2)
 {
     STUB();
 }
