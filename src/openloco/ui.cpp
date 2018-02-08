@@ -33,8 +33,10 @@ using namespace openloco::interop;
 
 namespace openloco::ui
 {
+#ifdef _LOCO_WIN32_
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
     constexpr auto WINDOW_TITLE = "OpenLoco";
+#endif // _WIN32
 
 #pragma pack(push, 1)
 
@@ -333,7 +335,6 @@ namespace openloco::ui
         for (int i = 0; i < 256; i++)
         {
             auto& src = entries[i];
-            auto dst = base[i];
             base[i].r = src.r;
             base[i].g = src.g;
             base[i].b = src.b;

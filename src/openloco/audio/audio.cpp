@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::audio
 {
-    constexpr int32_t play_at_centre = 0x8000;
+    [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     constexpr int32_t play_at_location = 0x8001;
 
     // 0x00404E53
