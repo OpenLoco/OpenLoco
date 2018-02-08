@@ -49,9 +49,6 @@ using window_type = openloco::ui::window_type;
 
 namespace openloco
 {
-    constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
-    constexpr auto WINDOW_TITLE = "OpenLoco";
-
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
