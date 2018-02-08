@@ -126,6 +126,32 @@ namespace openloco
         return regs.eax != 0;
     }
 
+#ifdef _NO_LOCO_WIN32_
+    /**
+     * Use this to allocate memory that will be freed in vanilla code or via loco_free.
+     */
+    static void* malloc(size_t size)
+    {
+        return ((void* (*)(size_t))0x004D1401)(size);
+    }
+
+    /**
+     * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
+     */
+    static void* realloc(void* address, size_t size)
+    {
+        return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
+    }
+
+    /**
+     * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
+     */
+    static void free(void* address)
+    {
+        ((void (*)(void*))0x004D1355)(address);
+    }
+#endif // _NO_LOCO_WIN32_
+
     static void sub_4062D1()
     {
         call(0x004062D1);
