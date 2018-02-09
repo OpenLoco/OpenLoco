@@ -69,6 +69,7 @@ namespace openloco::ui::windowmgr
     window* get_main();
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
+    window* find_at(int16_t x, int16_t y);
     void invalidate(window_type type);
     void invalidate(window_type type, uint16_t id);
     void close(window_type type);

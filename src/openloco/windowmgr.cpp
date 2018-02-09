@@ -70,6 +70,16 @@ namespace openloco::ui::windowmgr
         return (window*)regs.esi;
     }
 
+    // 0x004C9A95
+    window* find_at(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        call(0x004C9A95, regs);
+        return (window*)regs.esi;
+    }
+
     // 0x004CB966
     void invalidate(window_type type)
     {

@@ -33,6 +33,52 @@ namespace openloco::ui
         call(0x004CA17F, regs);
     }
 
+    // 0x004C9513
+    int16_t window::find_widget_at(int16_t xPos, int16_t yPos)
+    {
+        registers regs;
+        regs.ax = xPos;
+        regs.bx = yPos;
+        regs.esi = (int32_t)this;
+        call(0x004C9513, regs);
+
+        return regs.dx;
+    }
+
+    ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
+    {
+        registers regs;
+        regs.ax = xPos;
+        regs.bl = *out;
+        regs.cx = yPos;
+        regs.edi = (int32_t)fallback;
+        regs.esi = (int32_t)this;
+        call(this->event_handlers->event_15, regs);
+
+        *out = regs.bl;
+
+        return (cursor_id)regs.edi;
+    }
+
+    ui::cursor_id window::call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    {
+        registers regs;
+        regs.cx = xPos;
+        regs.dx = yPos;
+        regs.ax = widgetIdx;
+        regs.ebx = -1;
+        regs.edi = (int32_t) & this->widgets[widgetIdx];
+        regs.esi = (int32_t)this;
+        call(this->event_handlers->cursor, regs);
+
+        if (regs.ebx == -1)
+        {
+            return fallback;
+        }
+
+        return (cursor_id)regs.ebx;
+    }
+
     bool window::call_tooltip(int16_t widget_index)
     {
         registers regs;
