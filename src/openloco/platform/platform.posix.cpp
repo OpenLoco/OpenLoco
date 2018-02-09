@@ -20,12 +20,6 @@ int main(int argc, const char** argv)
     return 0;
 }
 
-static std::string GetEnvironmentVariable(const std::string& name)
-{
-    auto result = getenv(name.c_str());
-    return result == nullptr ? std::string() : result;
-}
-
 uint32_t openloco::platform::get_time()
 {
     struct timespec spec;
@@ -34,6 +28,12 @@ uint32_t openloco::platform::get_time()
 }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
+static std::string GetEnvironmentVariable(const std::string& name)
+{
+    auto result = getenv(name.c_str());
+    return result == nullptr ? std::string() : result;
+}
+
 static fs::path get_home_directory()
 {
     auto pw = getpwuid(getuid());
