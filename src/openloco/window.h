@@ -65,7 +65,7 @@ namespace openloco::ui
         uint32_t tooltip;
         uint32_t cursor;
         uint32_t event_25;
-        uint32_t invalidate;
+        uint32_t prepare_draw;
         uint32_t draw;
         uint32_t event_28;
     };
@@ -120,7 +120,7 @@ namespace openloco::ui
         void sub_4CA17F();
 
         bool call_tooltip(int16_t widget_index); // 23
-        void call_invalidate();                  // 26
+        void call_prepare_draw();                // 26
     };
 
     struct viewport
