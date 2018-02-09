@@ -95,7 +95,7 @@ bool vehicle::update()
     regs.esi = (int32_t)this;
     switch (type)
     {
-    case thing_type::exahust:
+    case thing_type::exhaust:
             result = call(0x004A8B81, regs);
             break;
     case thing_type::vehicle_1:
@@ -254,7 +254,8 @@ void openloco::vehicle::animation_update()
             secondary_animation_update();
             break;
         case simple_animation_type::diesel_exhaust1:
-            call(0x004AAFFA, regs);
+            diesel_exahust1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            secondary_animation_update();
             break;
         case simple_animation_type::electric_spark1:
             call(0x004AB3CA, regs);
@@ -985,8 +986,8 @@ void openloco::vehicle::secondary_animation_update()
         steam_puffs_animation_update(1, var_05);
         break;
     case simple_animation_type::diesel_exhaust1:
-        // 0x004AB9DD
-        //break;
+        diesel_exahust1_animation_update(1, var_05);
+        break;
     case simple_animation_type::electric_spark1:
         // 0x004ABDAD
         //break;
@@ -1073,10 +1074,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
     loc.z += vehicleObject->animation[num].height;
 
     auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
-    if (xyFactor != 0)
-    {
-        xyFactor /= 256;
-    }
+    xyFactor /= 256;
 
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
     auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
@@ -1087,7 +1085,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exahust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
+    exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
     
@@ -1179,5 +1177,93 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
         }
 
         audio::play_sound(soundId, loc, volume, 22050, true);
+    }
+}
+
+// 0x004AB9DD & 0x004AAFFA
+void openloco::vehicle::diesel_exahust1_animation_update(uint8_t num, int8_t var_05)
+{
+    vehicle * frontBogie = vehicle_front_bogie;
+    vehicle * backBogie = vehicle_back_bogie;
+    if (frontBogie->var_5F & flags_5f::broken_down)
+        return;
+
+    vehicle* veh = vehicle_1136118;
+    vehicle * veh_3 = vehicle_1136120;
+    auto vehicleObject = object();
+
+    if (veh->var_5E == 5)
+    {
+        if (veh_3->var_56 == 0)
+            return;
+
+        if (var_38 & (1 << 1))
+        {
+            var_05 = -var_05;
+        }
+
+        if (scenario_ticks() & 3)
+            return;
+
+        auto positionFactor = vehicleObject->sprites[0].bogey_position * var_05 / 256;
+        auto invertedDirection = sprite_yaw ^ (1 << 5);
+        auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 512;
+        auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 512;
+        
+        loc16 loc = {
+            static_cast<int16_t>(x + xFactor),
+            static_cast<int16_t>(y + yFactor),
+            z + vehicleObject->animation[num].height
+        };
+        exhaust::create(loc, vehicleObject->animation[num].object_id);
+    }
+    else
+    {
+        if (veh_3->var_5A != 1)
+            return;
+
+        if (var_38 & (1 << 1))
+        {
+            var_05 = -var_05;
+        }
+
+        if (scenario_ticks() & 3)
+            return;
+
+        if (var_5E != 0)
+            return;
+
+        var_05 += 64;
+        loc16 loc = {
+            backBogie->x - frontBogie->x,
+            backBogie->y - frontBogie->y,
+            backBogie->z - frontBogie->z,
+        };
+
+        loc.x = loc.x * var_05 / 128;
+        loc.y = loc.y * var_05 / 128;
+        loc.z = loc.z * var_05 / 128;
+
+
+        loc.x += frontBogie->x;
+        loc.y += frontBogie->y;
+        loc.z += frontBogie->z;
+
+
+        loc.z += vehicleObject->animation[num].height;
+
+        auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+        xyFactor /= 256;
+
+        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
+        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
+
+        xFactor /= 256;
+        yFactor /= 256;
+
+        loc.x += xFactor;
+        loc.y += yFactor;
+
+        exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 }
