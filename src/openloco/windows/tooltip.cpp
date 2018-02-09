@@ -140,7 +140,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        window->call_invalidate();
+        window->call_prepare_draw();
         if (window->widgets[widgetIndex].tooltip == string_ids::null)
         {
             return;

@@ -29,9 +29,9 @@ bool window::call_tooltip(int16_t widget_index)
     return regs.ax != (int16_t)string_ids::null;
 }
 
-void window::call_invalidate()
+void window::call_prepare_draw()
 {
     registers regs;
     regs.esi = (uint32_t)this;
-    call((uint32_t)this->event_handlers->invalidate, regs);
+    call((uint32_t)this->event_handlers->prepare_draw, regs);
 }
