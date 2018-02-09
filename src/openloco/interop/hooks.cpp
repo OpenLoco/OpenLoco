@@ -655,6 +655,13 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004CD47A,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            input::process_mouse_over(regs.ax, regs.bx);
+            return 0;
+        });
+
+    register_hook(
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto window = (ui::window*)regs.esi;

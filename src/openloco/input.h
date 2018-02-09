@@ -28,7 +28,8 @@ namespace openloco::input
 
     enum class input_flags
     {
-        viewport_scrolling = 1 << 7
+        flag_3 = 1 << 3,
+        viewport_scrolling = 1 << 7,
     };
 
     enum class key_modifier
@@ -48,4 +49,5 @@ namespace openloco::input
     void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
+    void process_mouse_over(int16_t x, int16_t y);
 }
