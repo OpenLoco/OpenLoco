@@ -15,7 +15,7 @@ namespace openloco
 
     enum class thing_type : uint8_t
     {
-        exahust = 0,
+        exhaust = 0,
         vehicle_1,
         vehicle_2,
         vehicle_bogie,
@@ -55,7 +55,7 @@ namespace openloco
     struct vehicle_bogie;
     struct vehicle_body;
     struct smoke;
-    struct exahust;
+    struct exhaust;
     // Max size of a thing. Use when needing to know thing size
     struct thing : thing_base
     {
@@ -76,7 +76,7 @@ namespace openloco
             return as<vehicle_body, thing_type::vehicle_body_cont>();
         }
         smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
-        exahust* as_exahust() const { return as<exahust, thing_type::exahust>(); }
+        exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
     };
 #pragma pack(pop)
 }
