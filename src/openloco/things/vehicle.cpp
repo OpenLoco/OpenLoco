@@ -24,9 +24,9 @@ loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<vehicle*, 0x01136120> vehicle_1136120;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;         // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;         // var_28 related?
-loco_global_array<int8_t, 88, 0x004F865C> vehicle_arr_4F865C; // var_2C related?
-loco_global_array<uint16_t, 2047, 0x00500B50> vehicle_arr_500B50;
-loco_global_array<int16_t, 128, 0x00503B6A> factorXY503B6A;
+loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
+loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
+loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] =
@@ -207,7 +207,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
     uint32_t backup1136130 = vehicle_var_1136130;
     if (var_5E != 0)
     {
-        uint32_t var_1136130 = var_5E;
+        int32_t var_1136130 = var_5E;
         if (var_5E > 32)
         {
             var_1136130 = 64 - var_1136130;
@@ -1060,20 +1060,10 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
         backBogie->z - frontBogie->z,
     };
 
-    if (loc.x != 0)
-    {
-        loc.x = loc.x * var_05 / 128;
-    }
+    loc.x = loc.x * var_05 / 128;
+    loc.y = loc.y * var_05 / 128;
+    loc.z = loc.z * var_05 / 128;
 
-    if (loc.y != 0)
-    {
-        loc.y = loc.y * var_05 / 128;
-    }
-
-    if (loc.z != 0)
-    {
-        loc.z = loc.z * var_05 / 128;
-    }
 
     loc.x += frontBogie->x;
     loc.y += frontBogie->y;
@@ -1091,15 +1081,8 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
     auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
 
-    if (xFactor != 0)
-    {
-        xFactor /= 256;
-    }
-
-    if (yFactor != 0)
-    {
-        yFactor /= 256;
-    }
+    xFactor /= 256;
+    yFactor /= 256;
 
     loc.x += xFactor;
     loc.y += yFactor;
