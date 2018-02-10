@@ -28,6 +28,7 @@ loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
+loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE; // boolean
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] =
@@ -255,7 +256,7 @@ void openloco::vehicle::animation_update()
             secondary_animation_update();
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exahust1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            diesel_exhaust1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
             secondary_animation_update();
             break;
         case simple_animation_type::electric_spark1:
@@ -267,7 +268,8 @@ void openloco::vehicle::animation_update()
             secondary_animation_update();
             break;
         case simple_animation_type::diesel_exhaust2:
-            call(0x004AB177, regs);
+            diesel_exhaust2_animation_update(0, vehicleObject->var_24[var_54].var_05);
+            secondary_animation_update();
             break;
         case simple_animation_type::ship_wake:
             call(0x004AB2A7, regs);
@@ -989,7 +991,7 @@ void openloco::vehicle::secondary_animation_update()
         steam_puffs_animation_update(1, var_05);
         break;
     case simple_animation_type::diesel_exhaust1:
-        diesel_exahust1_animation_update(1, var_05);
+        diesel_exhaust1_animation_update(1, var_05);
         break;
     case simple_animation_type::electric_spark1:
         electric_spark1_animation_update(1, var_05);
@@ -998,8 +1000,8 @@ void openloco::vehicle::secondary_animation_update()
         electric_spark2_animation_update(1, var_05);
         break;
     case simple_animation_type::diesel_exhaust2:
-        // 0x004ABB5A
-        //break;
+        diesel_exhaust2_animation_update(1, var_05);
+        break;
     case simple_animation_type::ship_wake:
         // 0x004ABC8A
         //break;
@@ -1184,7 +1186,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle::diesel_exahust1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var_05)
 {
     vehicle * frontBogie = vehicle_front_bogie;
     vehicle * backBogie = vehicle_back_bogie;
@@ -1272,8 +1274,83 @@ void openloco::vehicle::diesel_exahust1_animation_update(uint8_t num, int8_t var
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle::diesel_exahust2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust2_animation_update(uint8_t num, int8_t var_05)
 {
+    vehicle * frontBogie = vehicle_front_bogie;
+    vehicle * backBogie = vehicle_back_bogie;
+    if (frontBogie->var_5F & flags_5f::broken_down)
+        return;
+
+    vehicle * veh_3 = vehicle_1136120;
+    auto vehicleObject = object();
+
+    if (veh_3->var_5A != 1)
+        return;
+
+    if (veh_3->var_56 > 917504)
+        return;
+
+    // not used??
+    auto _var_44 = var_44;
+    if (var_38 & (1 << 1))
+    {
+        var_05 = -var_05;
+        _var_44 = -var_44;
+    }
+
+    if (scenario_ticks() & 7)
+        return;
+
+    var_05 += 64;
+
+    loc16 loc = {
+        backBogie->x - frontBogie->x,
+        backBogie->y - frontBogie->y,
+        backBogie->z - frontBogie->z,
+    };
+
+    loc.x = loc.x * var_05 / 128;
+    loc.y = loc.y * var_05 / 128;
+    loc.z = loc.z * var_05 / 128;
+
+
+    loc.x += frontBogie->x;
+    loc.y += frontBogie->y;
+    loc.z += frontBogie->z;
+
+
+    loc.z += vehicleObject->animation[num].height;
+
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+    xyFactor /= 256;
+
+    auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
+    auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
+
+    xFactor /= 256;
+    yFactor /= 256;
+
+    loc.x += xFactor;
+    loc.y += yFactor;
+
+    auto yaw = (sprite_yaw + 16) & 0x3F;
+
+    xyFactor = 5;
+    if (vehicle_var_525FAE != 0)
+    {
+        xyFactor = -5;
+    }
+
+    xFactor = xyFactor * factorXY503B6A[yaw * 2];
+    yFactor = xyFactor * factorXY503B6A[yaw * 2 + 1];
+
+    xFactor /= 256;
+    yFactor /= 256;
+
+    loc.x += xFactor;
+    loc.y += yFactor;
+
+    exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABDAD & 0x004AB3CA
