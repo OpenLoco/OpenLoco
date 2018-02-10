@@ -1,13 +1,13 @@
+#include "misc.h"
+#include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/steam_object.h"
-#include "../map/tilemgr.h"
 #include "thingmgr.h"
-#include "misc.h"
 
 using namespace openloco;
 using namespace openloco::objectmgr;
 
-steam_object * openloco::exhaust::object() const
+steam_object* openloco::exhaust::object() const
 {
     return objectmgr::get<steam_object>(object_id & 0x7F);
 }
@@ -19,10 +19,13 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
         return nullptr;
     auto surface = openloco::map::tilemgr::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
+    if (surface == nullptr)
+        return nullptr;
+
     if (loc.z <= surface->base_z() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<exhaust *>(thingmgr::create_thing());
+    auto _exhaust = static_cast<exhaust*>(thingmgr::create_thing());
 
     if (_exhaust != nullptr)
     {
@@ -43,11 +46,10 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
     return _exhaust;
 }
 
-
 // 0x00440BEB
 smoke* openloco::smoke::create(loc16 loc)
 {
-    auto t = static_cast<smoke *>(thingmgr::create_thing());
+    auto t = static_cast<smoke*>(thingmgr::create_thing());
     if (t != nullptr)
     {
         t->var_14 = 44;

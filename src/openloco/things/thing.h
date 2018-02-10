@@ -69,7 +69,8 @@ namespace openloco
 
     public:
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, thing_type::vehicle_bogie>(); }
-        vehicle_body* as_vehicle_body() const { 
+        vehicle_body* as_vehicle_body() const
+        {
             auto vehicle = as<vehicle_body, thing_type::vehicle_body_end>();
             if (vehicle != nullptr)
                 return vehicle;

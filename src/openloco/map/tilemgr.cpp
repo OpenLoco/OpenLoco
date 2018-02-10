@@ -1,6 +1,5 @@
 #include "tilemgr.h"
 #include "../interop/interop.hpp"
-#include <tuple>
 
 using namespace openloco::interop;
 
@@ -47,9 +46,10 @@ namespace openloco::map::tilemgr
         auto yTile = y & 0xFFE0;
 
         // Get the surface element for the tile
-        auto surfaceEl = get(xTile,yTile).surface();
+        auto surfaceEl = get(xTile, yTile).surface();
 
-        if (surfaceEl == nullptr) {
+        if (surfaceEl == nullptr)
+        {
             return std::make_tuple(16, 0);
         }
 
@@ -58,7 +58,7 @@ namespace openloco::map::tilemgr
 
         auto slope = surfaceEl->slope_corners();
         int8_t quad = 0, quad_extra = 0; // which quadrant the element is in?
-                                        // quad_extra is for extra height tiles
+                                         // quad_extra is for extra height tiles
 
         uint8_t TILE_SIZE = 31;
 
@@ -74,73 +74,73 @@ namespace openloco::map::tilemgr
         // We arbitrarily take the SW corner to be closest to the viewer
 
         // One corner up
-        if (slope == surface_slope::N_CORNER_UP ||
-            slope == surface_slope::E_CORNER_UP ||
-            slope == surface_slope::S_CORNER_UP ||
-            slope == surface_slope::W_CORNER_UP)
+        if (slope == surface_slope::n_corner_up || slope == surface_slope::e_corner_up || slope == surface_slope::s_corner_up || slope == surface_slope::w_corner_up)
         {
-            switch (slope) {
-            case surface_slope::N_CORNER_UP:
-                quad = xl + yl - TILE_SIZE;
-                break;
-            case surface_slope::E_CORNER_UP:
-                quad = xl - yl;
-                break;
-            case surface_slope::S_CORNER_UP:
-                quad = TILE_SIZE - yl - xl;
-                break;
-            case surface_slope::W_CORNER_UP:
-                quad = yl - xl;
-                break;
+            switch (slope)
+            {
+                case surface_slope::n_corner_up:
+                    quad = xl + yl - TILE_SIZE;
+                    break;
+                case surface_slope::e_corner_up:
+                    quad = xl - yl;
+                    break;
+                case surface_slope::s_corner_up:
+                    quad = TILE_SIZE - yl - xl;
+                    break;
+                case surface_slope::w_corner_up:
+                    quad = yl - xl;
+                    break;
             }
             // If the element is in the quadrant with the slope, raise its height
-            if (quad > 0) {
+            if (quad > 0)
+            {
                 height += quad / 2;
             }
         }
 
         // One side up
-        switch (slope) {
-        case surface_slope::NE_SIDE_UP:
-            height += xl / 2 + 1;
-            break;
-        case surface_slope::SE_SIDE_UP:
-            height += (TILE_SIZE - yl) / 2;
-            break;
-        case surface_slope::NW_SIDE_UP:
-            height += yl / 2;
-            height++;
-            break;
-        case surface_slope::SW_SIDE_UP:
-            height += (TILE_SIZE - xl) / 2;
-            break;
+        switch (slope)
+        {
+            case surface_slope::ne_side_up:
+                height += xl / 2 + 1;
+                break;
+            case surface_slope::se_side_up:
+                height += (TILE_SIZE - yl) / 2;
+                break;
+            case surface_slope::nw_side_up:
+                height += yl / 2;
+                height++;
+                break;
+            case surface_slope::sw_side_up:
+                height += (TILE_SIZE - xl) / 2;
+                break;
         }
 
         // One corner down
-        if ((slope == surface_slope::W_CORNER_DN) ||
-            (slope == surface_slope::S_CORNER_DN) ||
-            (slope == surface_slope::E_CORNER_DN) ||
-            (slope == surface_slope::N_CORNER_DN)) {
-            switch (slope) {
-            case surface_slope::W_CORNER_DN:
-                quad_extra = xl + TILE_SIZE - yl;
-                quad = xl - yl;
-                break;
-            case surface_slope::S_CORNER_DN:
-                quad_extra = xl + yl;
-                quad = xl + yl - TILE_SIZE - 1;
-                break;
-            case surface_slope::E_CORNER_DN:
-                quad_extra = TILE_SIZE - xl + yl;
-                quad = yl - xl;
-                break;
-            case surface_slope::N_CORNER_DN:
-                quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
-                quad = TILE_SIZE - yl - xl - 1;
-                break;
+        if ((slope == surface_slope::w_corner_dn) || (slope == surface_slope::s_corner_dn) || (slope == surface_slope::e_corner_dn) || (slope == surface_slope::n_corner_dn))
+        {
+            switch (slope)
+            {
+                case surface_slope::w_corner_dn:
+                    quad_extra = xl + TILE_SIZE - yl;
+                    quad = xl - yl;
+                    break;
+                case surface_slope::s_corner_dn:
+                    quad_extra = xl + yl;
+                    quad = xl + yl - TILE_SIZE - 1;
+                    break;
+                case surface_slope::e_corner_dn:
+                    quad_extra = TILE_SIZE - xl + yl;
+                    quad = yl - xl;
+                    break;
+                case surface_slope::n_corner_dn:
+                    quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
+                    quad = TILE_SIZE - yl - xl - 1;
+                    break;
             }
 
-            if (surfaceEl->is_slope_dbl_height()) {
+            if (surfaceEl->is_slope_dbl_height())
+            {
                 height += quad_extra / 2;
                 height++;
                 return std::make_tuple(height, waterHeight);
@@ -148,26 +148,30 @@ namespace openloco::map::tilemgr
             // This tile is essentially at the next height level
             height += 0x10;
             // so we move *down* the slope
-            if (quad < 0) {
+            if (quad < 0)
+            {
                 height += quad / 2;
             }
         }
 
         // Valleys
-        if ((slope == surface_slope::W_E_VALLEY) ||
-            (slope == surface_slope::N_S_VALLEY)) {
-            switch (slope) {
-            case surface_slope::W_E_VALLEY:
-                if (xl + yl <= TILE_SIZE + 1) {
-                    return std::make_tuple(height, waterHeight);
-                }
-                quad = TILE_SIZE - xl - yl;
-                break;
-            case surface_slope::N_S_VALLEY:
-                quad = xl - yl;
-                break;
+        if ((slope == surface_slope::w_e_valley) || (slope == surface_slope::n_s_valley))
+        {
+            switch (slope)
+            {
+                case surface_slope::w_e_valley:
+                    if (xl + yl <= TILE_SIZE + 1)
+                    {
+                        return std::make_tuple(height, waterHeight);
+                    }
+                    quad = TILE_SIZE - xl - yl;
+                    break;
+                case surface_slope::n_s_valley:
+                    quad = xl - yl;
+                    break;
             }
-            if (quad > 0) {
+            if (quad > 0)
+            {
                 height += quad / 2;
             }
         }

@@ -117,6 +117,7 @@ namespace openloco::map
         }
 
         uint8_t base_z() const { return _base_z; }
+
     public:
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
         station_element* as_station() const { return as<station_element, element_type::station>(); }
@@ -126,29 +127,30 @@ namespace openloco::map
     };
     static_assert(sizeof(tile_element) == 8);
 
-    enum class surface_slope : uint8_t {
-        FLAT = 0x00,
-        ALL_CORNERS_UP = 0x0F,
+    namespace surface_slope
+    {
+        constexpr uint8_t flat = 0x00;
+        constexpr uint8_t all_corners_up = 0x0F;
 
-        N_CORNER_UP = (1 << 0),
-        E_CORNER_UP = (1 << 1),
-        S_CORNER_UP = (1 << 2),
-        W_CORNER_UP = (1 << 3),
-        DOUBLE_HEIGHT = (1 << 4),
+        constexpr uint8_t n_corner_up = (1 << 0);
+        constexpr uint8_t e_corner_up = (1 << 1);
+        constexpr uint8_t s_corner_up = (1 << 2);
+        constexpr uint8_t w_corner_up = (1 << 3);
+        constexpr uint8_t double_height = (1 << 4);
 
-        W_CORNER_DN = ALL_CORNERS_UP & ~W_CORNER_UP,
-        S_CORNER_DN = ALL_CORNERS_UP & ~S_CORNER_UP,
-        E_CORNER_DN = ALL_CORNERS_UP & ~E_CORNER_UP,
-        N_CORNER_DN = ALL_CORNERS_UP & ~N_CORNER_UP,
+        constexpr uint8_t w_corner_dn = all_corners_up & ~w_corner_up;
+        constexpr uint8_t s_corner_dn = all_corners_up & ~s_corner_up;
+        constexpr uint8_t e_corner_dn = all_corners_up & ~e_corner_up;
+        constexpr uint8_t n_corner_dn = all_corners_up & ~n_corner_up;
 
-        NE_SIDE_UP = N_CORNER_UP | E_CORNER_UP,
-        SE_SIDE_UP = E_CORNER_UP | S_CORNER_UP,
-        NW_SIDE_UP = N_CORNER_UP | W_CORNER_UP,
-        SW_SIDE_UP = S_CORNER_UP | W_CORNER_UP,
+        constexpr uint8_t ne_side_up = n_corner_up | e_corner_up;
+        constexpr uint8_t se_side_up = e_corner_up | s_corner_up;
+        constexpr uint8_t nw_side_up = n_corner_up | w_corner_up;
+        constexpr uint8_t sw_side_up = s_corner_up | w_corner_up;
 
-        W_E_VALLEY = E_CORNER_UP | W_CORNER_UP,
-        N_S_VALLEY = N_CORNER_UP | S_CORNER_UP
-    };
+        constexpr uint8_t w_e_valley = e_corner_up | w_corner_up;
+        constexpr uint8_t n_s_valley = n_corner_up | s_corner_up;
+    }
 
     struct surface_element : public tile_element_base
     {
@@ -159,9 +161,9 @@ namespace openloco::map
         uint8_t _industry;
 
     public:
-        bool is_slope_dbl_height() const { return _slope & (uint8_t)surface_slope::DOUBLE_HEIGHT; }
-        surface_slope slope_corners() const { return static_cast<surface_slope>(_slope & 0x0F); }
-        surface_slope slope() const { return static_cast<surface_slope>(_slope & 0x1F); }
+        bool is_slope_dbl_height() const { return _slope & surface_slope::double_height; }
+        uint8_t slope_corners() const { return _slope & 0x0F; }
+        uint8_t slope() const { return _slope & 0x1F; }
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t industry_id() const { return _industry; }
