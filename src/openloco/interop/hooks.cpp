@@ -647,17 +647,16 @@ void openloco::interop::register_hooks()
             gui::init();
             return 0;
         });
-    
+
     ui::tooltip::register_hooks();
 
     register_hook(
         0x004AB655,
         [](registers& regs) -> uint8_t {
-        auto v = (openloco::vehicle*)regs.esi;
-        v->secondary_animation_update();
-        return 0;
-    }
-    );
+            auto v = (openloco::vehicle*)regs.esi;
+            v->secondary_animation_update();
+            return 0;
+        });
 
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0

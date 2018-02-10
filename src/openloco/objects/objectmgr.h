@@ -101,7 +101,7 @@ namespace openloco::objectmgr
     template<>
     interface_skin_object* get();
     template<>
-    steam_object* get();
+    steam_object* get(size_t id);
     template<>
     cargo_object* get(size_t id);
     template<>
