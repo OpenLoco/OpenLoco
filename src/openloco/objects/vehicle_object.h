@@ -75,7 +75,7 @@ namespace openloco
         uint16_t flags;      // 0xE0
         uint8_t pad_E2[0x10D - 0xE2];
         simple_animation animation[2]; // 0x10D
-        uint8_t pad_113;
+        uint8_t var_113;
         uint16_t designed; // 0x114
         uint16_t obsolete; // 0x116
         uint8_t pad_118;
