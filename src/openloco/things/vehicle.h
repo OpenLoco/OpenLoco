@@ -77,6 +77,10 @@ namespace openloco
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
         void steam_puffs_animation_update(uint8_t num, int8_t var_05);
         void diesel_exahust1_animation_update(uint8_t num, int8_t var_05);
+        void diesel_exahust2_animation_update(uint8_t num, int8_t var_05);
+        void electric_spark1_animation_update(uint8_t num, int8_t var_05);
+        void electric_spark2_animation_update(uint8_t num, int8_t var_05);
+        void ship_wake_animation_update(uint8_t num, int8_t var_05);
     };
 #pragma pack(pop)
 }
