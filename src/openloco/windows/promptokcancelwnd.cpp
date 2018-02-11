@@ -53,7 +53,7 @@ namespace openloco::ui::windows
                 []() {
                     input::handle_keyboard();
                     sub_48A18C();
-                    call(0x004CD3D0);
+                    windowmgr::dispatch_update_all();
                     call(0x004BEC5B);
                     windowmgr::update();
                     call(0x004C98CF);
