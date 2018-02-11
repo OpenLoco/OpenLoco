@@ -74,6 +74,7 @@ namespace openloco::ui::windowmgr
     void invalidate(window_type type, uint16_t id);
     void close(window_type type);
     void close(window_type type, uint16_t id);
+    void close(window* window);
     window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
     window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
     void init_scroll_widgets(window* window);

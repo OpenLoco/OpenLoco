@@ -45,6 +45,13 @@ namespace openloco::ui
         return regs.dx;
     }
 
+    void window::call_close()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_close, regs);
+    }
+
     void window::call_update()
     {
         registers regs;

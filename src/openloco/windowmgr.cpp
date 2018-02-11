@@ -241,4 +241,48 @@ namespace openloco::ui::windowmgr
         call(0x4CE6FF);
         call(0x4CEEA7);
     }
+
+    // 0x004CC6EA
+    void close(window* window)
+    {
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        // Make a copy of the window class and number in case
+        // the window order is changed by the close event.
+        auto type = window->type;
+        uint16_t number = window->number;
+
+        window->call_close();
+
+        window = find(type, number);
+        if (window == nullptr)
+            return;
+
+        if (window->viewports[0] != nullptr)
+        {
+            window->viewports[0]->width = 0;
+            window->viewports[0] = nullptr;
+        }
+
+        if (window->viewports[1] != nullptr)
+        {
+            window->viewports[1]->width = 0;
+            window->viewports[1] = nullptr;
+        }
+
+        window->invalidate();
+
+        // Remove window from list and reshift all windows
+        _windows_end--;
+        int windowCount = *_windows_end - window;
+        if (windowCount > 0)
+        {
+            memmove(window, window + 1, windowCount * sizeof(ui::window));
+        }
+
+        call(0x004CEC25); // viewport_update_pointers
+    }
 }
