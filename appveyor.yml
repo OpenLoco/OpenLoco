@@ -1,12 +1,14 @@
-version: 0.1.0.{build}
 image: Visual Studio 2017
+version: 0.1.0.{build}
+environment:
+  version: 0.1.0
 install:
 - ps: >-
-    New-Item -ItemType Directory lib
+    New-Item -ItemType Directory lib | Out-Null
 
-    Set-Location lib
+    Push-Location lib
 
-    New-Item -ItemType Directory bin,lib,include
+    New-Item -ItemType Directory bin,lib,include | Out-Null
 
     Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip -OutFile sdl2.zip
 
@@ -21,8 +23,34 @@ install:
     Remove-Item .\sdl2.zip
 
     Remove-Item -Recurse .\SDL2-2.0.7
+
+    Pop-Location
+configuration: Release
 build:
   verbosity: minimal
+after_build:
+- ps: >-
+    New-Item -ItemType Directory artefacts | Out-Null
+
+    Copy-Item CHANGELOG.md,LICENSE,bin\openloco.dll,lib\bin\SDL2.dll artefacts
+
+    Copy-Item loco.exe artefacts\openloco.exe
+
+    Push-Location artefacts
+
+    7z a -tzip -mx9 -mtc=off -r openloco-v${env:version}-win32.zip *
+
+    Pop-Location
+
 artifacts:
-  - path: '**\*.dll'
-    name: Binary
+- path: 'artefacts\openloco-v$(version)-win32.zip'
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: 49K/y43epwh5Sb8uY1l/TbIFRPcEq6fraQaYGS0bgWQJfONznd6hCqPUCg7WSX16
+  artifact: artefacts\openloco-v$(version)-win32.zip
+  draft: true
+  prerelease: true
+  on:
+    branch: master
+    appveyor_repo_tag: true
