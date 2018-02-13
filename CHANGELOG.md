@@ -7,5 +7,8 @@
 - Feature: Vehicle breakdowns can now be disabled (As seen in OpenTTD).
 - Feature: Playable in a resizable window.
 - Feature: Click (while holding shift) track / road construction will place 10 pieces in a row.
-- Change: [#79] Store game.cfg, plugin.dat and scores.dat in `%APPDATA%\OpenLoco` (Windows) `~/.config/openloco` (Linux / macOS) .
+- Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in:
+  - Windows: `%APPDATA%\OpenLoco`
+  - Linux: `~/.config/openloco`
+  - macOS: `~/Library/Application Support/OpenLoco`
 - Change: [#79] Disable file existence and size checks.
