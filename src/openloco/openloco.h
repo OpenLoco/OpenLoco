@@ -3,6 +3,7 @@
 #include "utility/prng.hpp"
 #include <cstdint>
 #include <functional>
+#include <string>
 
 namespace openloco
 {
@@ -12,6 +13,10 @@ namespace openloco
         constexpr uint8_t editor = 1 << 1;
         constexpr uint8_t unknown_2 = 1 << 2;
     }
+
+    extern const char version[];
+
+    std::string get_version_info();
 
     void* hInstance();
     const char* lpCmdLine();

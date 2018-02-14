@@ -19,12 +19,14 @@ namespace openloco::ui::windows
 
     window* open_title_version()
     {
+        auto width = 512;
+        auto height = 16;
         auto window = openloco::ui::windowmgr::create_window(
             window_type::openloco_version,
             8,
-            ui::height() - 11 - 8,
-            512,
-            30,
+            ui::height() - height,
+            width,
+            height,
             (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
             (void*)&_events);
         window->widgets = widgets;
@@ -39,8 +41,7 @@ namespace openloco::ui::windows
     // 0x00439236
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        char str[128] = "OpenLoco 2018.1 (0f2d6ec)";
-
+        auto versionInfo = get_version_info();
         {
             registers regs;
             regs.cx = window->x;
@@ -48,7 +49,7 @@ namespace openloco::ui::windows
             regs.bx = 160;
             regs.al = colour::white | 0x20;
             regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)str;
+            regs.esi = (int32_t)versionInfo.c_str();
             call(0x00451025, regs);
         }
     }

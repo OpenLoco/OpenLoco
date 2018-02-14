@@ -75,6 +75,11 @@ namespace openloco
     static void date_tick();
     static void sub_46FFCA();
 
+    std::string get_version_info()
+    {
+        return version;
+    }
+
 #ifdef _WIN32
     void* hInstance()
     {
