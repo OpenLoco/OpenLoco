@@ -1,7 +1,7 @@
 image: Visual Studio 2017
-version: 0.1.0.{build}
+version: 18.02-build{build}
 environment:
-  version: 0.1.0
+  version: 18.02
 install:
 - ps: >-
     New-Item -ItemType Directory lib | Out-Null
