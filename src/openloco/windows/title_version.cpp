@@ -13,11 +13,8 @@ namespace openloco::ui::windows
         { 0x1E, 0, 0, 0, 0, 0, { 0 }, 0 }
     };
 
-    static ui::window_event_list_t events;
+    static ui::window_event_list _events;
 
-    static void draw(window* window);
-
-    uint8_t* buffer;
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     window* open_title_version()
@@ -29,16 +26,12 @@ namespace openloco::ui::windows
             512,
             30,
             (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
-            (void*)&events);
+            (void*)&_events);
         window->widgets = widgets;
 
-        for (int i = 0; i < 26; i++)
-        {
-            events.events[i] = 0x0042A035;
-        }
-        events.prepare_draw = (void (*)(ui::window*))0x0042A035;
-        events.draw = draw;
-        events.event_28 = 0x0042A035;
+        _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
+        _events.draw = draw;
+        _events.event_28 = 0x0042A035;
 
         return window;
     }
@@ -54,9 +47,9 @@ namespace openloco::ui::windows
             regs.dx = window->y;
             regs.bx = 160;
             regs.al = colour::white | 0x20;
-            regs.edi = (uint32_t)dpi;
-            regs.esi = (uint32_t)str;
-            call(0x451025, regs);
+            regs.edi = (int32_t)dpi;
+            regs.esi = (int32_t)str;
+            call(0x00451025, regs);
         }
     }
 }

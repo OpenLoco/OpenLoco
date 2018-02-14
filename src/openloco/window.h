@@ -39,11 +39,11 @@ namespace openloco::ui
         constexpr uint16_t flag_12 = 1 << 12;
     }
 
-    struct window_event_list_t
+    struct window_event_list
     {
         union
         {
-            uint32_t events[29];
+            void* events[29];
             struct
             {
                 uint32_t on_close;
@@ -72,11 +72,20 @@ namespace openloco::ui
                 uint32_t tooltip;
                 uint32_t cursor;
                 uint32_t event_25;
-                void(*prepare_draw)(window*);
-                void(*draw)(window*, gfx::drawpixelinfo_t*);
+                void (*prepare_draw)(window*);
+                void (*draw)(window*, gfx::drawpixelinfo_t*);
                 uint32_t event_28;
             };
         };
+
+        window_event_list()
+        {
+            // Set all events to a `ret` instruction
+            for (auto& e : events)
+            {
+                e = (void*)0x0042A034;
+            }
+        }
     };
 
     struct viewport
@@ -101,10 +110,10 @@ namespace openloco::ui
             uint8_t pad_all[0x88E];
             struct
             {
-                window_event_list_t* event_handlers; // 0x00
-                ui::viewport* viewport;              // 0x04
-                uint8_t pad_08[0x04];                // 0x08
-                uint32_t enabled_widgets;            // 0x0C
+                window_event_list* event_handlers; // 0x00
+                ui::viewport* viewport;            // 0x04
+                uint8_t pad_08[0x04];              // 0x08
+                uint32_t enabled_widgets;          // 0x0C
                 uint8_t pad_10[0x2C - 0x10];
                 widget* widgets;     // 0x2C
                 uint16_t x;          // 0x30
