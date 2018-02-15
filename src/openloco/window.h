@@ -157,7 +157,6 @@ namespace openloco::ui
 
         bool call_tooltip(int16_t widget_index); // 23
         void call_prepare_draw();                // 26
-        void draw(gfx::drawpixelinfo_t* dpi);
     };
 #pragma pack(pop)
 }

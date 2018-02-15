@@ -76,7 +76,6 @@ namespace openloco::ui::windowmgr
     window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
     window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
     void init_scroll_widgets(window* window);
-    void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
 }
 
 namespace openloco::ui::windows
