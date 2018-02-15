@@ -75,6 +75,11 @@ namespace openloco
     static void date_tick();
     static void sub_46FFCA();
 
+    std::string get_version_info()
+    {
+        return version;
+    }
+
 #ifdef _WIN32
     void* hInstance()
     {
@@ -102,6 +107,11 @@ namespace openloco
     bool is_title_mode()
     {
         return (_screen_flags & screen_flags::title) != 0;
+    }
+
+    bool is_unknown_4_mode()
+    {
+        return (_screen_flags & screen_flags::unknown_4) != 0;
     }
 
     bool is_paused()

@@ -1,17 +1,13 @@
 #pragma once
 
+#include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
 #include "window.h"
 #include <cstddef>
 
-namespace openloco::gfx
-{
-    struct drawpixelinfo_t;
-}
-
 namespace openloco::ui
 {
-    enum class window_type
+    enum class window_type : uint8_t
     {
         main = 0,
         toolbar_top = 1,
@@ -50,12 +46,14 @@ namespace openloco::ui
         company_face_selection = 42,
         landscape_generation = 43,
         scenario_options = 45,
+        wt_47 = 47,
         company_list = 48,
         tutorial = 49,
         prompt_confirm_display_mode = 50,
         text_input = 51,
         prompt_browse = 52,
         prompt_ok_cancel = 54,
+        openloco_version = 55,
         undefined = 255
     };
 }
@@ -68,7 +66,7 @@ namespace openloco::ui::windowmgr
     size_t num_windows();
 
     void update();
-    void resize();
+    window* get_main();
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
     void invalidate(window_type type);
@@ -91,6 +89,7 @@ namespace openloco::ui::windows
     void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
+    window* open_title_version();
     void sub_498E9B(window* w);
 
     bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);

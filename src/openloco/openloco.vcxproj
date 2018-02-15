@@ -40,6 +40,7 @@
     <ClCompile Include="town.cpp" />
     <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="utility\string.cpp" />
+    <ClCompile Include="version.cpp" />
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="intro.cpp" />
@@ -61,6 +62,7 @@
     <ClCompile Include="windows\textinputwnd.cpp" />
     <ClCompile Include="windows\townwnd.cpp" />
     <ClCompile Include="windows\tooltip.cpp" />
+    <ClCompile Include="windows\title_version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />

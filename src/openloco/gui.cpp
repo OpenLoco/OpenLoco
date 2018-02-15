@@ -7,6 +7,7 @@
 #include "tutorial.h"
 #include "ui.h"
 #include "viewportmgr.h"
+#include "window.h"
 #include "windowmgr.h"
 
 namespace ui = openloco::ui;
@@ -100,6 +101,8 @@ namespace openloco::gui
             window->flags |= ui::window_flags::flag_4;
             window->colours[0] = colour::translucent(colour::grey);
             window->colours[1] = colour::translucent(colour::grey);
+
+            ui::windows::open_title_version();
         }
         else
         {
@@ -186,6 +189,82 @@ namespace openloco::gui
             }
         }
 
-        windowmgr::resize();
+        resize();
+    }
+
+    // 0x004392BD
+    void resize()
+    {
+        const int32_t uiWidth = ui::width();
+        const int32_t uiHeight = ui::height();
+
+        if (openloco::is_editor_mode())
+        {
+            call(0x43CD35);
+            return;
+        }
+
+        auto window = windowmgr::get_main();
+        if (window)
+        {
+            window->width = uiWidth;
+            window->height = uiHeight;
+            window->widgets[0].right = uiWidth;
+            window->widgets[0].bottom = uiHeight;
+            window->viewport->width = uiWidth;
+            window->viewport->height = uiHeight;
+            window->viewport->view_width = uiWidth << window->viewport->zoom;
+            window->viewport->view_height = uiHeight << window->viewport->zoom;
+        }
+
+        window = windowmgr::find(window_type::toolbar_top);
+        if (window)
+        {
+            window->width = std::max(uiWidth, 640);
+        }
+
+        window = windowmgr::find(window_type::toolbar_player_info);
+        if (window)
+        {
+            window->y = uiHeight - 27;
+        }
+
+        window = windowmgr::find(window_type::toolbar_time);
+        if (window)
+        {
+            window->y = uiHeight - 27;
+            window->x = std::max(uiWidth, 640) - 140;
+        }
+
+        window = windowmgr::find(window_type::title_menu);
+        if (window)
+        {
+            window->x = uiWidth / 2 - 148;
+            window->y = uiHeight - 117;
+        }
+
+        window = windowmgr::find(window_type::title_exit);
+        if (window)
+        {
+            window->x = uiWidth - 40;
+            window->y = uiHeight - 28;
+        }
+
+        window = windowmgr::find(window_type::openloco_version);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+        }
+
+        window = windowmgr::find(window_type::tutorial);
+        if (window)
+        {
+            if (tutorial::state() == tutorial::tutorial_state::none)
+            {
+                registers regs;
+                regs.esi = (uint32_t)window;
+                call(0x004CC6EA, regs);
+            }
+        }
     }
 }
