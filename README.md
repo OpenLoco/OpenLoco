@@ -61,11 +61,10 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 - [SDL2](https://www.libsdl.org/download-2.0.php)
   - Development Libraries
 
-### Linux:
-OpenLoco can not currently be built on Linux without a cross compiler. Pull requests are welcome to fix building for Linux. There are many function calls still to Win32 APIs. These require 'hooking' so that they can be replaced with cross-platform implementations. Scripts for linking in the loco.exe binary sections and remapping the address space can be found in the OpenRCT2 code base.
-
-### macOS:
-See Linux.
+### Linux / macOS:
+- cmake
+- make or ninja
+- [SDL2](https://www.libsdl.org/download-2.0.php)
 
 ---
 
@@ -74,15 +73,15 @@ See Linux.
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
 2. Copy SDL2 into a sub directory called lib under the root, alternatively use [vcpkg](https://github.com/microsoft/vcpkg).
 3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenRCT2`).
-4. Run `msbuild openloco.sln`.
+4. Run `msbuild openloco.sln`
 5. Run the game, `bin\openloco`
 
-### Linux:
+### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
 ```
 mkdir build
 cd build
-cmake ../
+cmake ..
 make
 ```
 
