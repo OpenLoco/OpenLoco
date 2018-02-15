@@ -14,7 +14,7 @@ namespace openloco::ui::tooltip
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<int8_t, 0x00523381> _523381;
+    static loco_global<window_type, 0x00523381> _523381;
     static loco_global<int16_t, 0x00523382> _523382;
     static loco_global<int16_t, 0x00523384> _523384;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;

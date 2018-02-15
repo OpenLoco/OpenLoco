@@ -6,6 +6,7 @@
 
 namespace openloco::ui
 {
+    enum class window_type : uint8_t;
     struct window;
 
 #pragma pack(push, 1)
@@ -143,7 +144,7 @@ namespace openloco::ui
                 uint16_t var_878;
                 uint16_t var_87A;
                 uint8_t pad_87C[0x882 - 0x87C];
-                uint8_t type; // 0x882
+                window_type type; // 0x882
                 uint8_t pad_883[1];
                 int8_t var_884;
                 uint8_t pad_885[1];

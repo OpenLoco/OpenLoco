@@ -7,7 +7,7 @@
 
 namespace openloco::ui
 {
-    enum class window_type
+    enum class window_type : uint8_t
     {
         main = 0,
         toolbar_top = 1,
@@ -46,6 +46,7 @@ namespace openloco::ui
         company_face_selection = 42,
         landscape_generation = 43,
         scenario_options = 45,
+        wt_47 = 47,
         company_list = 48,
         tutorial = 49,
         prompt_confirm_display_mode = 50,

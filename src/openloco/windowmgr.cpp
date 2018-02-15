@@ -189,7 +189,7 @@ namespace openloco::ui::windowmgr
                 return;
         }
 
-        if (/*openloco::screen_flags() & (1<<4) && */ w->type == 47)
+        if (is_unknown_4_mode() && w->type == window_type::wt_47)
         {
             return;
         }
