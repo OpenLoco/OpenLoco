@@ -1,4 +1,4 @@
-18.02 (in development)
+18.02 (2018-02-15)
 ------------------------------------------------------------------------
 - Feature: [#12, #14, #50] Support for Linux and macOS.
 - Feature: [#20] Support graphics data files from Stream distribution.
