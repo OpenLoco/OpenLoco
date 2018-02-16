@@ -419,7 +419,7 @@ namespace openloco::ui::widget
     // 0x004CA750
     void draw_23_caption(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = (char)144;
+        stringFormatBuffer[0] = (uint8_t)144;
         stringmgr::format_string(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t width = widget->right - widget->left - 4 - 14;
@@ -456,7 +456,7 @@ namespace openloco::ui::widget
     // 0x004CA88B
     void draw_25_caption(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = (char)146;
+        stringFormatBuffer[0] = (uint8_t)146;
         stringmgr::format_string(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t x = widget->left + window->x + 2;
