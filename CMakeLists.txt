@@ -21,6 +21,31 @@ if (APPLE)
     set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/opt/openssl/lib/pkgconfig")
 endif (APPLE)
 
+# Define current git branch
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE OPENLOCO_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+# Define short commit hash
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE OPENLOCO_COMMIT_SHA1_SHORT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+# To avoid unnecessary rebuilds, set the current branch and short sha1 hash
+# only for the one file that uses these definitions: version.cpp
+set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
+    PROPERTY COMPILE_DEFINITIONS
+    OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
+    OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
+
 # Set some compiler features
 set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wall")
 
