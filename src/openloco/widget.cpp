@@ -470,7 +470,7 @@ namespace openloco::ui::widget
         gfx::draw_string(*dpi, x, window->y + widget->top + 1, 0x20, stringFormatBuffer);
     }
 
-    void draw_hscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    static void draw_hscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
         ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
 
@@ -535,7 +535,7 @@ namespace openloco::ui::widget
         // popa
     }
 
-    void draw_vscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    static void draw_vscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
         ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
 
@@ -601,7 +601,7 @@ namespace openloco::ui::widget
     }
 
     // 0x004CB31C
-    void draw_26(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    void draw_26(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index)
     {
         uint16_t left = window->x + widget->left;
         uint16_t top = window->y + widget->top;
