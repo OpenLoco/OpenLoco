@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 set (PROJECT openloco)
 
-project(${PROJECT})
+project(${PROJECT} CXX)
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
