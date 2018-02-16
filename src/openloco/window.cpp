@@ -74,7 +74,7 @@ namespace openloco::ui
             {
                 if (input::has_flag((input::input_flags)(1 << 0)))
                 {
-                    pressed_widget = 1u << addr<0x00523372, uint32_t>();
+                    pressed_widget = 1ULL << addr<0x00523372, uint32_t>();
                 }
             }
         }
@@ -82,22 +82,21 @@ namespace openloco::ui
         uint64_t tool_widget = 0;
         if (this->type == addr<0x00523392, window_type>() && this->number == addr<0x00523390, uint16_t>())
         {
-            tool_widget = 1u << addr<0x00523394, uint32_t>();
+            tool_widget = 1ULL << addr<0x00523394, uint32_t>();
         }
 
         uint64_t hovered_widget = 0;
         if (this->type == addr<0x005233A8, window_type>() && this->number == addr<0x005233AA, uint16_t>())
         {
-            hovered_widget = 1u << addr<0x005233AC, uint16_t>();
+            hovered_widget = 1ULL << addr<0x005233AC, uint16_t>();
         }
 
         int scrollviewIndex = 0;
         for (int widgetIndex = 0; widgetIndex < 64; widgetIndex++)
         {
             auto widget = &this->widgets[widgetIndex];
-            auto type = (widget_type)widget->type;
 
-            if (type == widget_type::end)
+            if (widget->type == widget_type::end)
             {
                 break;
             }
@@ -114,37 +113,37 @@ namespace openloco::ui
                 }
             }
 
-            uint16_t flags = 0;
+            uint16_t widgetFlags = 0;
             if (widget->colour == 0 && this->flags & window_flags::flag_11)
             {
-                flags = 0x80;
+                widgetFlags = 0x80;
             }
 
             uint8_t colour = this->colours[widget->colour];
 
-            bool enabled = (this->enabled_widgets & (1 << widgetIndex)) != 0;
-            bool disabled = (this->disabled_widgets & (1 << widgetIndex)) != 0;
-            bool activated = (this->activated_widgets & (1 << widgetIndex)) != 0;
-            activated |= (pressed_widget & (1 << widgetIndex)) != 0;
-            activated |= (tool_widget & (1 << widgetIndex)) != 0;
-            bool hovered = (hovered_widget & (1 << widgetIndex)) != 0;
+            bool enabled = (this->enabled_widgets & (1ULL << widgetIndex)) != 0;
+            bool disabled = (this->disabled_widgets & (1ULL << widgetIndex)) != 0;
+            bool activated = (this->activated_widgets & (1ULL << widgetIndex)) != 0;
+            activated |= (pressed_widget & (1ULL << widgetIndex)) != 0;
+            activated |= (tool_widget & (1ULL << widgetIndex)) != 0;
+            bool hovered = (hovered_widget & (1ULL << widgetIndex)) != 0;
 
-            switch (type)
+            switch (widget->type)
             {
                 case widget_type::none:
                 case widget_type::end:
                     break;
 
                 case widget_type::panel:
-                    widget::draw_1(dpi, this, widget, flags, colour);
+                    widget::draw_1(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::frame:
-                    widget::draw_2(dpi, this, widget, flags, colour);
+                    widget::draw_2(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::wt_3:
-                    widget::draw_3(dpi, this, widget, flags, colour, enabled, disabled, activated);
+                    widget::draw_3(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_4:
@@ -155,30 +154,30 @@ namespace openloco::ui
                 case widget_type::wt_6:
                 case widget_type::wt_7:
                 case widget_type::wt_8:
-                    widget::draw_5(dpi, this, widget, flags, colour, enabled, disabled, activated);
+                    widget::draw_5(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_9:
-                    widget::draw_9(dpi, this, widget, flags, colour, enabled, disabled, activated, hovered);
+                    widget::draw_9(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_10:
-                    widget::draw_10(dpi, this, widget, flags, colour, enabled, disabled, activated, hovered);
+                    widget::draw_10(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_11:
                 case widget_type::wt_12:
                 case widget_type::wt_14:
-                    if (type == widget_type::wt_12)
+                    if (widget->type == widget_type::wt_12)
                     {
                         assert(false); // Unused
                     }
-                    widget::draw_11_a(dpi, this, widget, flags, colour, enabled, disabled, activated);
-                    widget::draw_13(dpi, this, widget, flags, colour, enabled, disabled, activated);
+                    widget::draw_11_a(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_13:
-                    widget::draw_13(dpi, this, widget, flags, colour, enabled, disabled, activated);
+                    widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_15:
@@ -189,8 +188,8 @@ namespace openloco::ui
                 case widget_type::wt_17:
                 case widget_type::wt_18:
                 case widget_type::wt_19:
-                    widget::draw_17(dpi, this, widget, flags, colour);
-                    widget::draw_15(dpi, this, widget, flags, colour, disabled);
+                    widget::draw_17(dpi, this, widget, widgetFlags, colour);
+                    widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_20:
@@ -199,34 +198,34 @@ namespace openloco::ui
                     break;
 
                 case widget_type::caption_22:
-                    widget::draw_22_caption(dpi, this, widget, flags, colour);
+                    widget::draw_22_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_23:
-                    widget::draw_23_caption(dpi, this, widget, flags, colour);
+                    widget::draw_23_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_24:
-                    widget::draw_24_caption(dpi, this, widget, flags, colour);
+                    widget::draw_24_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_25:
-                    widget::draw_25_caption(dpi, this, widget, flags, colour);
+                    widget::draw_25_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::scrollview:
-                    widget::draw_26(dpi, this, widget, flags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
+                    widget::draw_26(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
                     scrollviewIndex++;
                     break;
 
                 case widget_type::checkbox:
-                    widget::draw_27_checkbox(dpi, this, widget, flags, colour, enabled, disabled, activated);
-                    widget::draw_27_label(dpi, this, widget, flags, colour, disabled);
+                    widget::draw_27_checkbox(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_28:
                     assert(false); // Unused
-                    widget::draw_27_label(dpi, this, widget, flags, colour, disabled);
+                    widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_29:
