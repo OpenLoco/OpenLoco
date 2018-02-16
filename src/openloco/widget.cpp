@@ -470,6 +470,136 @@ namespace openloco::ui::widget
         gfx::draw_string(*dpi, x, window->y + widget->top + 1, 0x20, stringFormatBuffer);
     }
 
+    void draw_hscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    {
+        ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
+
+        uint16_t ax = window->x + widget->left + 1;
+        uint16_t cx = window->y + widget->top + 1;
+        uint16_t bx = window->x + widget->right - 1;
+        uint16_t dx = window->y + widget->bottom - 1;
+
+        cx = dx - 10;
+        if (scroll_area->flags & 0x10)
+        {
+            bx -= 11;
+        }
+
+        uint16_t f;
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 4)
+        {
+            f = flags | 0x20;
+        }
+        gfx::fill_rect_inset(dpi, ax, cx, ax + 9, dx, colour, f);
+        // popa
+
+        // pusha
+        gfx::draw_string(*dpi, ax + 2, cx, colour::black, (char*)0x005045F2);
+        // popa
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 8)
+        {
+            f = flags | 0x20;
+        }
+        gfx::fill_rect_inset(dpi, bx - 9, cx, bx, dx, colour, f);
+        // popa
+
+        // pusha
+        gfx::draw_string(*dpi, bx - 6 - 1, cx, colour::black, (char*)0x005045F5);
+        // popa
+
+        // pusha
+        gfx::fill_rect(dpi, ax + 10, cx, bx - 10, dx, colour::get_shade(colour, 7));
+        gfx::fill_rect(dpi, ax + 10, cx, bx - 10, dx, 0x1000000 | colour::get_shade(colour, 3));
+        // popa
+
+        // pusha
+        gfx::fill_rect(dpi, ax + 10, cx + 2, bx - 10, cx + 2, colour::get_shade(colour, 3));
+        gfx::fill_rect(dpi, ax + 10, cx + 3, bx - 10, cx + 3, colour::get_shade(colour, 7));
+        gfx::fill_rect(dpi, ax + 10, cx + 7, bx - 10, cx + 7, colour::get_shade(colour, 3));
+        gfx::fill_rect(dpi, ax + 10, cx + 8, bx - 10, cx + 8, colour::get_shade(colour, 7));
+        // popa
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 2)
+        {
+            f = 0x20;
+        }
+        gfx::fill_rect_inset(dpi, ax - 1 + scroll_area->h_thumb_left, cx, ax - 1 + scroll_area->h_thumb_right, dx, colour, f);
+        // popa
+    }
+
+    void draw_vscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    {
+        ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
+
+        uint16_t ax = window->x + widget->left + 1;
+        uint16_t cx = window->y + widget->top + 1;
+        uint16_t bx = window->x + widget->right - 1;
+        uint16_t dx = window->y + widget->bottom - 1;
+
+        ax = bx - 10;
+        if (scroll_area->flags & 0x1)
+        {
+            dx -= 11;
+        }
+
+        uint16_t f;
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 0x40)
+        {
+            f = flags | 0x20;
+        }
+        gfx::fill_rect_inset(dpi, ax, cx, bx, cx + 9, colour, f);
+        // popa
+
+        // pusha
+        gfx::draw_string(*dpi, ax + 1, cx - 1, colour::black, (char*)0x005045EC);
+        // popa
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 0x80)
+        {
+            f = flags | 0x20;
+        }
+        gfx::fill_rect_inset(dpi, ax, dx - 9, bx, dx, colour, f);
+        // popa
+
+        // pusha
+        gfx::draw_string(*dpi, ax + 1, dx - 8 - 1, colour::black, (char*)0x005045EF);
+        // popa
+
+        // pusha
+        gfx::fill_rect(dpi, ax, cx + 10, bx, dx - 10, colour::get_shade(colour, 7));
+        gfx::fill_rect(dpi, ax, cx + 10, bx, dx - 10, 0x1000000 | colour::get_shade(colour, 3));
+        // popa
+
+        // pusha
+        gfx::fill_rect(dpi, ax + 2, cx + 10, ax + 2, dx - 10, colour::get_shade(colour, 3));
+        gfx::fill_rect(dpi, ax + 3, cx + 10, ax + 3, dx - 10, colour::get_shade(colour, 7));
+        gfx::fill_rect(dpi, ax + 7, cx + 10, ax + 7, dx - 10, colour::get_shade(colour, 3));
+        gfx::fill_rect(dpi, ax + 8, cx + 10, ax + 8, dx - 10, colour::get_shade(colour, 7));
+        // popa
+
+        // pusha
+        f = 0;
+        if (scroll_area->flags & 0x20)
+        {
+            f = flags | 0x20;
+        }
+        gfx::fill_rect_inset(dpi, ax, cx - 1 + scroll_area->v_thumb_top, bx, cx - 1 + scroll_area->v_thumb_bottom, colour, f);
+        // popa
+    }
+
     // 0x004CB31C
     void draw_26(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
@@ -490,13 +620,13 @@ namespace openloco::ui::widget
         _currentFontSpriteBase = 224;
         if (scroll_area->flags & (1 << 0))
         {
-            // draw horizontal scrollbar
+            draw_hscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             bottom -= 11;
         }
 
         if (scroll_area->flags & (1 << 4))
         {
-            // draw vertical scrollbar
+            draw_vscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             right -= 11;
         }
 
