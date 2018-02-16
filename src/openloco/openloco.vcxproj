@@ -48,12 +48,14 @@
     </ClCompile>
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="widget.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />
     <ClCompile Include="scenariomgr.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="windowmgr.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
+    <ClCompile Include="graphics\colour.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="progressbar.cpp" />
     <ClCompile Include="interop\hook.cpp" />

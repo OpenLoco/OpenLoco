@@ -19,7 +19,7 @@ namespace openloco::ui::tooltip
     static loco_global<int16_t, 0x00523384> _523384;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
-    static loco_global<ui::widget[1], 0x005234CC> _widgets;
+    static loco_global<ui::widget_t[1], 0x005234CC> _widgets;
 
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> byte_112CC04;

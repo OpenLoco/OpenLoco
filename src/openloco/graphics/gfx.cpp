@@ -139,6 +139,33 @@ namespace openloco::gfx
         clear(dpi, fill);
     }
 
+    // 0x004957C4
+    int16_t clip_string(int16_t width, char* string)
+    {
+
+        registers regs;
+        regs.di = width;
+        regs.esi = (int32_t)string;
+        call(0x004957C4, regs);
+        return regs.cx;
+    }
+
+    void draw_string(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        const char* string)
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.edi = (int32_t)&dpi;
+        regs.esi = (int32_t)string;
+        call(0x00451025, regs);
+    }
+
     // 0x00494B3F
     // al: colour
     // bx: string id
@@ -192,6 +219,26 @@ namespace openloco::gfx
         call(0x00494BBF, regs);
     }
 
+    void draw_string_centred_clipped(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        int16_t width,
+        uint8_t colour,
+        string_id stringId,
+        const char* args)
+    {
+        registers regs;
+        regs.edi = (int32_t)&dpi;
+        regs.esi = (int32_t)args;
+        regs.ebx = stringId;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.bp = width;
+        call(0x00494C36, regs);
+    }
+
     // 0x004474BA
     static void draw_rect_impl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color)
     {
@@ -205,10 +252,28 @@ namespace openloco::gfx
         call(0x004474BA, regs);
     }
 
+    void fill_rect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color)
+    {
+        draw_rect_impl(dpi, left, top, right, bottom, color);
+    }
+
     void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t color)
     {
         // This makes the function signature more like a drawing application
         draw_rect_impl(dpi, x, y, x + dx - 1, y + dy - 1, color);
+    }
+
+    void fill_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = left;
+        regs.bx = right;
+        regs.cx = top;
+        regs.dx = bottom;
+        regs.ebp = color;
+        regs.edi = (uint32_t)dpi;
+        regs.si = flags;
+        call(0x004C58C7, regs);
     }
 
     // 0x004CD406
@@ -226,5 +291,48 @@ namespace openloco::gfx
         regs.dx = right;
         regs.bp = bottom;
         call(0x004C5C69, regs);
+    }
+
+    void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.ebx = image;
+        regs.edi = (uint32_t)dpi;
+        call(0x00448C79, regs);
+    }
+
+    loco_global<uint8_t*, 0x0050B860> _50B860;
+    loco_global<uint32_t, 0x00E04324> _E04324;
+
+    void draw_image_solid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
+    {
+        uint8_t palette[256];
+        memset(palette, palette_index, 256);
+        palette[0] = 0;
+
+        _50B860 = palette;
+        _E04324 = 0x20000000;
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.ebx = image;
+        regs.edi = (uint32_t)dpi;
+        call(0x00448D90, regs);
+    }
+
+    bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = width;
+        regs.edi = (int32_t)src;
+        regs.dx = height;
+        regs.cx = y;
+        call(0x4cec50, regs);
+        *dst = (gfx::drawpixelinfo_t*)regs.edi;
+
+        return *dst != nullptr;
     }
 }

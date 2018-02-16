@@ -9,8 +9,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-    static widget widgets[] = {
-        { 0x1E, 0, 0, 0, 0, 0, { 0 }, 0 }
+    static widget_t widgets[] = {
+        { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }
     };
 
     static ui::window_event_list _events;

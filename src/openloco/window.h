@@ -7,37 +7,88 @@
 namespace openloco::ui
 {
     enum class window_type : uint8_t;
+    enum class widget_type : uint8_t;
     struct window;
 
 #pragma pack(push, 1)
 
-    struct widget
+    struct widget_t
     {
-        uint8_t type;   // 0x00
-        uint8_t colour; // 0x01
-        int16_t left;   // 0x02
-        int16_t right;  // 0x04
-        int16_t top;    // 0x06
-        int16_t bottom; // 0x08
+        widget_type type; // 0x00
+        uint8_t colour;   // 0x01
+        int16_t left;     // 0x02
+        int16_t right;    // 0x04
+        int16_t top;      // 0x06
+        int16_t bottom;   // 0x08
         union
         {
             uint32_t image;
             string_id text;
-            uint32_t content;
+            int32_t content;
         };
         string_id tooltip; // 0x0E
     };
 
+    enum class widget_type : uint8_t
+    {
+        none = 0,
+        panel = 1,
+        frame = 2,
+        wt_3,
+        wt_4,
+        wt_5,
+        wt_6,
+        wt_7,
+        wt_8,
+        wt_9,
+        wt_10,
+        wt_11,
+        wt_12,
+        wt_13,
+        wt_14,
+        wt_15,
+        wt_16,
+        wt_17,
+        wt_18,
+        wt_19,
+        wt_20,
+        wt_21,
+        caption_22,
+        caption_23,
+        caption_24,
+        caption_25,
+        scrollview = 26,
+        checkbox = 27,
+        wt_28,
+        wt_29,
+        end = 30,
+    };
+
+    struct scroll_area_t
+    {
+        uint16_t flags;          // 0x00
+        uint16_t h_left;         // 0x02
+        uint16_t h_right;        // 0x04
+        uint16_t h_thumb_left;   // 0x06
+        uint16_t h_thumb_right;  // 0x08
+        uint16_t v_top;          // 0x0A
+        uint16_t v_bottom;       // 0x0C
+        uint16_t v_thumb_top;    // 0x0E
+        uint16_t v_thumb_bottom; // 0x10
+    };
+
     namespace window_flags
     {
-        constexpr uint16_t flag_0 = 1 << 0;
-        constexpr uint16_t flag_1 = 1 << 1;
-        constexpr uint16_t flag_4 = 1 << 4;
-        constexpr uint16_t flag_5 = 1 << 5;
-        constexpr uint16_t flag_6 = 1 << 6;
-        constexpr uint16_t flag_7 = 1 << 7;
-        constexpr uint16_t flag_9 = 1 << 9;
-        constexpr uint16_t flag_12 = 1 << 12;
+        constexpr uint32_t flag_0 = 1 << 0;
+        constexpr uint32_t flag_1 = 1 << 1;
+        constexpr uint32_t flag_4 = 1 << 4;
+        constexpr uint32_t flag_5 = 1 << 5;
+        constexpr uint32_t flag_6 = 1 << 6;
+        constexpr uint32_t flag_7 = 1 << 7;
+        constexpr uint32_t resizable = 1 << 9;
+        constexpr uint32_t flag_11 = 1 << 11;
+        constexpr uint32_t flag_12 = 1 << 12;
+        constexpr uint32_t white_border_mask = (1 << 17) | (1 << 18);
     }
 
     struct window_event_list
@@ -114,20 +165,23 @@ namespace openloco::ui
                 window_event_list* event_handlers; // 0x00
                 ui::viewport* viewport;            // 0x04
                 uint8_t pad_08[0x04];              // 0x08
-                uint32_t enabled_widgets;          // 0x0C
-                uint8_t pad_10[0x2C - 0x10];
-                widget* widgets;     // 0x2C
-                uint16_t x;          // 0x30
-                uint16_t y;          // 0x32
-                uint16_t width;      // 0x34
-                uint16_t height;     // 0x36
-                uint16_t min_width;  // 0x38
-                uint16_t max_width;  // 0x3a
-                uint16_t min_height; // 0x3c
-                uint16_t max_height; // 0x3e
-                uint16_t number;
-                uint32_t flags;
-                uint8_t pad_46[0x83E - 0x46];
+                uint64_t enabled_widgets;          // 0x0C
+                uint64_t disabled_widgets;         // 0x14
+                uint64_t activated_widgets;        // 0x1C
+                uint8_t pad_24[0x2C - 0x24];
+                widget_t* widgets;             // 0x2C
+                uint16_t x;                    // 0x30
+                uint16_t y;                    // 0x32
+                uint16_t width;                // 0x34
+                uint16_t height;               // 0x36
+                uint16_t min_width;            // 0x38
+                uint16_t max_width;            // 0x3a
+                uint16_t min_height;           // 0x3c
+                uint16_t max_height;           // 0x3e
+                uint16_t number;               // 0x40
+                uint32_t flags;                // 0x42
+                scroll_area_t scroll_areas[3]; // 0x46
+                uint8_t pad_7C[0x83E - 0x7C];
                 uint16_t var_83E;
                 uint8_t pad_840[0x846 - 0x840];
                 uint16_t var_846;
@@ -154,6 +208,7 @@ namespace openloco::ui
 
         void invalidate();
         void sub_4CA17F();
+        void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         bool call_tooltip(int16_t widget_index); // 23
         void call_prepare_draw();                // 26
