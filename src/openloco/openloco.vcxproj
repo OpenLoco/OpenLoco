@@ -2,6 +2,7 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
+    <APPVEYOR_REPO_COMMIT_SHORT Condition="'$(APPVEYOR_REPO_COMMIT)'!=''">$(APPVEYOR_REPO_COMMIT.Substring(0, $([System.Math]::Min($(APPVEYOR_REPO_COMMIT.Length), 7))))</APPVEYOR_REPO_COMMIT_SHORT>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -40,7 +41,11 @@
     <ClCompile Include="town.cpp" />
     <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="utility\string.cpp" />
-    <ClCompile Include="version.cpp" />
+    <ClCompile Include="version.cpp">
+      <!-- Define git information -->
+      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_COMMIT_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(APPVEYOR_REPO_COMMIT_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="intro.cpp" />
