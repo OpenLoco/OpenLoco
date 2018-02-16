@@ -19,7 +19,7 @@ using namespace openloco::interop;
 namespace openloco::gui
 {
 
-    loco_global<openloco::ui::widget[64], 0x00509c20> _mainWindowWidgets;
+    loco_global<openloco::ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
 
     // 0x00438A6C
     void init()
@@ -60,7 +60,7 @@ namespace openloco::gui
                 92,
                 ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5 | ui::window_flags::flag_6,
                 (void*)0x004f9ec8);
-            window->widgets = (ui::widget*)0x00509df4;
+            window->widgets = (ui::widget_t*)0x00509df4;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
 
             windowmgr::init_scroll_widgets(window);
@@ -77,7 +77,7 @@ namespace openloco::gui
                 28,
                 ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5 | ui::window_flags::flag_6,
                 (void*)0x004f9f3c);
-            window->widgets = (ui::widget*)0x00509e58;
+            window->widgets = (ui::widget_t*)0x00509e58;
             window->enabled_widgets = (1 << 0);
 
             windowmgr::init_scroll_widgets(window);
@@ -93,7 +93,7 @@ namespace openloco::gui
                 170,
                 ui::window_flags::flag_1,
                 (void*)0x004f9fb0);
-            window->widgets = (ui::widget*)0x00509e6c;
+            window->widgets = (ui::widget_t*)0x00509e6c;
             window->enabled_widgets = (1 << 0);
 
             windowmgr::init_scroll_widgets(window);
@@ -115,7 +115,7 @@ namespace openloco::gui
                 28,
                 ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5,
                 (void*)0x4fa180);
-            window->widgets = (ui::widget*)0x509c34;
+            window->widgets = (ui::widget_t*)0x509c34;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
             windowmgr::init_scroll_widgets(window);
 
@@ -136,7 +136,7 @@ namespace openloco::gui
                 27,
                 ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5,
                 (void*)0x4fa024);
-            window->widgets = (ui::widget*)0x509d08;
+            window->widgets = (ui::widget_t*)0x509d08;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->var_854 = 0;
             windowmgr::init_scroll_widgets(window);
@@ -155,7 +155,7 @@ namespace openloco::gui
                 27,
                 ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5,
                 (void*)0x4fa098);
-            window->widgets = (ui::widget*)0x509d5c;
+            window->widgets = (ui::widget_t*)0x509d5c;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
             window->var_854 = 0;
             window->var_856 = 0;
@@ -178,7 +178,7 @@ namespace openloco::gui
                     27,
                     ui::window_flags::flag_1 | ui::window_flags::flag_4 | ui::window_flags::flag_5,
                     (void*)0x4fa10c);
-                window->widgets = (ui::widget*)0x509de0;
+                window->widgets = (ui::widget_t*)0x509de0;
                 windowmgr::init_scroll_widgets(window);
 
                 if (skin != nullptr)

@@ -52,5 +52,7 @@ namespace openloco
         {
             return c & ~translucent_flag;
         }
+
+        uint8_t get_shade(colour_t colour, uint8_t shade);
     }
 }

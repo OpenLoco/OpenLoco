@@ -11,4 +11,13 @@ namespace openloco::stringmgr
     {
         return _strings[id];
     }
+
+    void format_string(char* buffer, string_id id, void* args)
+    {
+        registers regs;
+        regs.eax = id;
+        regs.edi = (uint32_t)buffer;
+        regs.ecx = (uint32_t)args;
+        call(0x004958C6, regs);
+    }
 }

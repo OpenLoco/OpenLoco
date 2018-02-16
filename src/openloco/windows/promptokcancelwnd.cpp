@@ -39,7 +39,7 @@ namespace openloco::ui::windows
         auto window = windowmgr::create_window_centred(window_type::prompt_ok_cancel, 280, 92, ui::window_flags::flag_12 | ui::window_flags::flag_1, (void*)0x004FB37C);
         if (window != nullptr)
         {
-            window->widgets = (widget*)0x0050AE00;
+            window->widgets = (widget_t*)0x0050AE00;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->sub_4CA17F();
             window->colours[0] = colour::translucent(colour::salmon_pink);
