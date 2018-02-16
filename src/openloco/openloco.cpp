@@ -707,7 +707,8 @@ namespace openloco
     // 0x00406D13
     void main()
     {
-        std::cout << "OpenLoco v0.1" << std::endl;
+        auto versionInfo = openloco::get_version_info();
+        std::cout << versionInfo << std::endl;
         try
         {
             register_hooks();
