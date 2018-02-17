@@ -99,9 +99,13 @@ namespace openloco::ui::widget
             assert(false);
         }
 
-        if (image & (1 << 30))
+        if ((image & (1 << 30)) == 0)
         {
             image |= colour << 19;
+        }
+        else
+        {
+            image &= ~(1 << 30);
         }
 
         gfx::draw_image(dpi, x, y, image);
