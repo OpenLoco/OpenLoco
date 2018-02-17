@@ -78,6 +78,13 @@ static bool STDCALL fn_4054b9()
 }
 
 FORCE_ALIGN_ARG_POINTER
+static bool STDCALL fn_40726d()
+{
+    STUB();
+    return true;
+}
+
+FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_timeGetTime()
 {
     return platform::get_time();
@@ -452,11 +459,11 @@ static void register_no_win32_hooks()
     using namespace openloco::interop;
 
     write_jmp(0x40447f, (void*)&fn_40447f);
-    register_hook_stub(0x40726d);
     write_jmp(0x404b68, (void*)&fn_404b68);
     write_jmp(0x404e8c, (void*)&get_num_dsound_devices);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
+    write_jmp(0x40726d, (void*)&fn_40726d);
     write_jmp(0x4d1401, (void*)&fn_malloc);
     write_jmp(0x4D1B28, (void*)&fn_realloc);
     write_jmp(0x4D1355, (void*)&fn_free);
@@ -480,9 +487,8 @@ static void register_no_win32_hooks()
     write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
     // sound
-    register_hook_stub(0x489cb5);
-    register_hook_stub(0x489f1b);
-    register_hook_stub(0x48a4bf);
+    write_ret(0x489cb5); // audio::play_sound
+    write_ret(0x489f1b); // audio::play_sound
 
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
