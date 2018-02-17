@@ -48,10 +48,10 @@ static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
     return;
 }
 
-static void STDCALL fn_404e8c()
+static int STDCALL get_num_dsound_devices()
 {
     STUB();
-    return;
+    return 0;
 }
 
 #pragma pack(push, 1)
@@ -454,7 +454,7 @@ static void register_no_win32_hooks()
     write_jmp(0x40447f, (void*)&fn_40447f);
     register_hook_stub(0x40726d);
     write_jmp(0x404b68, (void*)&fn_404b68);
-    write_jmp(0x404e8c, (void*)&fn_404e8c);
+    write_jmp(0x404e8c, (void*)&get_num_dsound_devices);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
     write_jmp(0x4d1401, (void*)&fn_malloc);
