@@ -31,7 +31,7 @@ bool window::call_tooltip(int16_t widget_index)
     registers regs;
     regs.ax = widget_index;
     regs.esi = (int32_t)this;
-    call((int32_t)this->event_handlers->event_19, regs);
+    call((int32_t)this->event_handlers->tooltip, regs);
     return regs.ax != (int16_t)string_ids::null;
 }
 
