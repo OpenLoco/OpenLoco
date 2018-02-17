@@ -2,7 +2,7 @@
 
 // clang-format off
 #define NAME            "OpenLoco"
-#define VERSION         "18.02"
+#define VERSION         "18.02.2"
 #define VERSION_INFO    NAME ", v" VERSION
 // clang-format on
 
