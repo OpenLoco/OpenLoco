@@ -184,18 +184,6 @@ namespace openloco::interop
         _hookTableOffset++;
     }
 
-    void register_hook_stub(uintptr_t address)
-    {
-        static uintptr_t passAddress;
-        passAddress = address;
-        register_hook(
-            address,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                std::printf("                    fn %08" PRIXPTR "\n", passAddress);
-                return 0;
-            });
-    }
-
     void write_ret(uint32_t address)
     {
         uint8_t opcode = 0xC3;
