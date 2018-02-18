@@ -221,9 +221,13 @@ namespace openloco::ui::widget
         // TODO: Remove image addition
         uint32_t image = widget->image + 2;
 
-        if (image & (1 << 30))
+        if ((image & (1 << 30)) == 0)
         {
             image |= colour << 19;
+        }
+        else
+        {
+            image &= ~(1 << 30);
         }
 
         gfx::draw_image(dpi, window->x + widget->left, window->y + widget->top, image);
@@ -294,9 +298,13 @@ namespace openloco::ui::widget
             }
         }
 
-        if (image & (1 << 30))
+        if ((image & (1 << 30)) == 0)
         {
             image |= colour << 19;
+        }
+        else
+        {
+            image &= ~(1 << 30);
         }
 
         gfx::draw_image(dpi, window->x + widget->left, window->y + widget->top, image);
