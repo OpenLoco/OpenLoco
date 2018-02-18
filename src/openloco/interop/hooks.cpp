@@ -143,7 +143,7 @@ static void CDECL fn_4081ad(int32_t wParam)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 {
-    console::log("seek %d bytes from current", distance);
+    console::log("seek %d bytes from start", distance);
     fseek(a0, distance, SEEK_SET);
     return ftell(a0);
 }
