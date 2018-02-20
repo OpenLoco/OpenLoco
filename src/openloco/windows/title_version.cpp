@@ -54,15 +54,6 @@ namespace openloco::ui::windows
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto versionInfo = get_version_info();
-        {
-            registers regs;
-            regs.cx = window->x;
-            regs.dx = window->y;
-            regs.bx = 160;
-            regs.al = colour::white | 0x20;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)versionInfo.c_str();
-            call(0x00451025, regs);
-        }
+        gfx::draw_string(*dpi, window->x, window->y, colour::white | 0x20, versionInfo.c_str());
     }
 }

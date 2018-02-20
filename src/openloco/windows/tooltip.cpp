@@ -21,6 +21,7 @@ namespace openloco::ui::tooltip
 
     static loco_global<ui::widget_t[1], 0x005234CC> _widgets;
 
+    static loco_global<char[1], 0x112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> byte_112CC04;
 
@@ -69,14 +70,7 @@ namespace openloco::ui::tooltip
 
     static void common(const window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
-        {
-            // format_string
-            registers regs;
-            regs.eax = window->widgets[widgetIndex].tooltip;
-            regs.edi = (uint32_t)&byte_112CC04[0];
-            regs.ecx = 0x112C826;
-            call(0x004958C6, regs);
-        }
+        stringmgr::format_string(byte_112CC04, window->widgets[widgetIndex].tooltip, _commonFormatArgs);
 
         gCurrentFontSpriteBase = 224;
         int16_t strWidth;
