@@ -80,7 +80,7 @@ namespace openloco
         uint16_t obsolete; // 0x116
         uint8_t pad_118;
         uint8_t startsnd_type; // 0x119
-        uint8_t pad_11A[0x15A - 0x11A];
+        uint8_t var_11A[0x40]; // assumed size
         uint8_t numsnd; // 0x15A
         uint8_t pad_15B[0x15E - 0x15B];
     };

@@ -42,9 +42,7 @@ namespace openloco
         uint8_t pad_52[0x54 - 0x52];
         uint8_t var_54;
         int8_t var_55;
-        uint32_t var_56;
-        uint8_t var_5A;
-        uint8_t pad_5B[0x5D - 0x5B];
+        uint8_t pad_56[0x5D - 0x56];
         uint8_t var_5D;
         uint8_t var_5E;
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
@@ -64,9 +62,16 @@ namespace openloco
     private:
         bool update();
         void sub_4BAA76();
+        int32_t sub_4A8B81();
         int32_t sub_4AA1D0();
         void animation_update();
         void sub_4AAB0B();
+        void sub_4A8882();
+        void sub_4A88A6(vehicle_2 * vehType2);
+        void sub_4A8B7C(vehicle_2 * vehType2, uint8_t * buffer);
+        void sub_4A88F7(vehicle_2 * vehType2, uint8_t * buffer);
+        void sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer);
+        void sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer);
         void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
@@ -82,6 +87,19 @@ namespace openloco
         void electric_spark1_animation_update(uint8_t num, int8_t var_05);
         void electric_spark2_animation_update(uint8_t num, int8_t var_05);
         void ship_wake_animation_update(uint8_t num, int8_t var_05);
+    };
+
+    struct vehicle_2 : thing_base {
+        uint8_t pad_20[0x44 - 0x20];
+        uint8_t var_44;
+        uint8_t var_45;
+        uint16_t var_46;
+        uint16_t object_id; // 0x48
+        uint8_t pad_4A[0x56 - 0x4A];
+        uint32_t var_56;
+        uint8_t var_5A;
+
+        vehicle_object* object() const;
     };
 #pragma pack(pop)
 }

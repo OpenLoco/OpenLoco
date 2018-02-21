@@ -53,6 +53,7 @@ namespace openloco
         void invalidate_sprite();
     };
 
+    struct vehicle_2;
     struct vehicle_bogie;
     struct vehicle_body;
     struct smoke;
@@ -77,6 +78,7 @@ namespace openloco
                 return vehicle;
             return as<vehicle_body, thing_type::vehicle_body_cont>();
         }
+        vehicle_2* as_vehicle_2() const { return as<vehicle_2, thing_type::vehicle_2>(); }
         smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
         exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
     };
