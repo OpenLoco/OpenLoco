@@ -90,7 +90,9 @@ namespace openloco
     };
 
     struct vehicle_2 : thing_base {
-        uint8_t pad_20[0x44 - 0x20];
+        uint8_t pad_20[0x3A - 0x20];
+        thing_id_t next_car_id;     // 0x3A
+        uint8_t pad_3C[0x44 - 0x3C];
         uint8_t var_44;
         uint8_t var_45;
         uint16_t var_46;
@@ -99,7 +101,14 @@ namespace openloco
         uint32_t var_56;
         uint8_t var_5A;
 
+        thing * next_car();
+
         vehicle_object* object() const;
+    };
+
+    struct vehicle_6 : thing_base {
+        uint8_t pad_20[0x5F - 0x20];
+        uint8_t var_5F;
     };
 #pragma pack(pop)
 }

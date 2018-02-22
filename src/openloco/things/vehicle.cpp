@@ -74,6 +74,11 @@ vehicle* vehicle::next_car()
     return thingmgr::get<vehicle>(next_car_id);
 }
 
+thing* vehicle_2::next_car()
+{
+    return thingmgr::get<thing>(next_car_id);
+}
+
 vehicle_object* vehicle::object() const
 {
     return objectmgr::get<vehicle_object>(object_id);
@@ -392,9 +397,10 @@ void openloco::vehicle::sub_4AAB0B()
 
 void openloco::vehicle::sub_4A8882()
 {
-    vehicle_2 * vehType2 = vehicle_1136120;
+    //vehicle_2 * vehType2 = vehicle_1136120;
 }
 
+// Not guaranteed to be type 2 could be type 6
 void openloco::vehicle::sub_4A88A6(vehicle_2 * vehType2)
 {
     if (tile_x == 0xFFFF || 
@@ -461,13 +467,61 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (var_5E != 5 && var_5E != 4)
         {
-            if (vehType2->next_car()->var_5F & (1 << 2))
+            // Can be a type 6 or bogie
+            if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
             {
                 sub_4A8B7C(vehType2, nullptr);
                 return;
             }
         }
     }
+
+    vehicle_2 * vehType2_2 = vehicle_1136120;
+    uint16_t _var_46 = 0;
+    uint8_t _var_45 = 0;
+    if (vehType2_2->var_5A == 2)
+    {
+        if (vehType2_2->var_56 < 786432)
+        {
+            _var_46 = *((uint16_t*)&buffer[1]);
+            _var_45 = buffer[3];
+        }
+        else
+        {
+            _var_46 = *((uint16_t*)&buffer[4]);
+            _var_45 = buffer[6];
+        }
+    }
+    else if (vehType2_2->var_5A == 1)
+    {
+        if (vehType2->type == thing_type::vehicle_2 ||
+            ((vehicle *)vehType2->next_car())->var_5E == 0)
+        {
+            _var_46 = *((uint16_t*)&buffer[7]) + vehType2_2->var_56 >> buffer[16];
+            _var_45 = buffer[9];
+        }
+        else
+        {
+            _var_46 = *((uint16_t*)&buffer[1]);
+            _var_45 = buffer[3];
+        }
+    }
+    else
+    {
+        _var_46 = *((uint16_t*)&buffer[1]);
+        _var_45 = buffer[3];
+    }
+
+    if (vehType2->var_44 == 0xFF)
+    {
+        // Half
+        vehType2->var_45 = buffer[3] >> 1;
+        // Quarter
+        vehType2->var_46 = *((uint16_t*)&buffer[1]) >> 2;
+        vehType2->var_44 = buffer[0];
+    }
+
+    //4A89CE
 }
 
 void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)

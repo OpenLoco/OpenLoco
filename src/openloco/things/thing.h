@@ -56,6 +56,7 @@ namespace openloco
     struct vehicle_2;
     struct vehicle_bogie;
     struct vehicle_body;
+    struct vehicle_6;
     struct smoke;
     struct exhaust;
     // Max size of a thing. Use when needing to know thing size
@@ -79,6 +80,7 @@ namespace openloco
             return as<vehicle_body, thing_type::vehicle_body_cont>();
         }
         vehicle_2* as_vehicle_2() const { return as<vehicle_2, thing_type::vehicle_2>(); }
+        vehicle_6* as_vehicle_6() const { return as<vehicle_6, thing_type::vehicle_6>(); }
         smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
         exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
     };
