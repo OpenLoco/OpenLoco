@@ -14,7 +14,6 @@ namespace openloco::ui::windows
     };
 
     static ui::window_event_list _events;
-    static bool _initialisedDrawHook;
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
@@ -33,19 +32,8 @@ namespace openloco::ui::windows
         window->widgets = widgets;
 
         _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
-        _events.draw = (void (*)(ui::window*, gfx::drawpixelinfo_t*))0x00401B34;
+        _events.draw = draw;
         _events.event_28 = 0x0042A035;
-
-        if (!_initialisedDrawHook)
-        {
-            _initialisedDrawHook = true;
-            interop::register_hook(
-                (uintptr_t)_events.draw,
-                [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                    draw((ui::window*)regs.esi, (gfx::drawpixelinfo_t*)regs.edi);
-                    return 0;
-                });
-        }
 
         return window;
     }

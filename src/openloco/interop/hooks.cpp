@@ -687,6 +687,29 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(
+        0x004C5FC8,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
+
+            auto window = (ui::window*)regs.esi;
+
+            ui::windowmgr::draw_single(dpi, window, regs.ax, regs.bx, regs.dx, regs.bp);
+            //  gfx::fill_rect_inset(dpi, regs.ax, regs.bx, regs.dx, regs.bp, 2, 0x60);
+            window++;
+
+            while (window < addr<0x0113D754, ui::window*>())
+            {
+                if ((window->flags & ui::window_flags::flag_4) != 0)
+                {
+                    ui::windowmgr::draw_single(dpi, window, regs.ax, regs.bx, regs.dx, regs.bp);
+                }
+                window++;
+            }
+
+            return 0;
+        });
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
     // Can be removed when windowmgr:update() is hooked
