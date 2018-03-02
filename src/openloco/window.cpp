@@ -105,6 +105,24 @@ namespace openloco::ui
         }
     }
 
+    void window::call_draw(gfx::drawpixelinfo_t* dpi)
+    {
+        if (event_handlers->draw != nullptr)
+        {
+            if (is_interop_event(this->event_handlers->draw))
+            {
+                registers regs;
+                regs.esi = (int32_t)this;
+                regs.edi = (int32_t)dpi;
+                call((int32_t)this->event_handlers->draw, regs);
+            }
+            else
+            {
+                event_handlers->draw(this, dpi);
+            }
+        }
+    }
+
     // 0x004CA4DF
     void window::draw(gfx::drawpixelinfo_t* dpi)
     {
