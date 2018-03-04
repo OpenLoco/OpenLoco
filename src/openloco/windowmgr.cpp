@@ -154,12 +154,13 @@ namespace openloco::ui::windowmgr
     void draw_single(gfx::drawpixelinfo_t* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy dpi so we can crop it
-        auto dpi = gfx::drawpixelinfo_t();
-        memcpy(&dpi, _dpi, sizeof(gfx::drawpixelinfo_t));
+        auto dpi = *_dpi;
 
+        bool of;
         // Clamp left to 0
+        of = (left <= dpi.x);
         int32_t overflow = left - dpi.x;
-        if (overflow > 0)
+        if (of)
         {
             dpi.x += overflow;
             dpi.width -= overflow;
@@ -170,8 +171,9 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp width to right
+        of = (dpi.x + dpi.width) <= right;
         overflow = dpi.x + dpi.width - right;
-        if (overflow > 0)
+        if (of)
         {
             dpi.width -= overflow;
             if (dpi.width <= 0)
@@ -180,8 +182,9 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp top to 0
+        of = (top <= dpi.y);
         overflow = top - dpi.y;
-        if (overflow > 0)
+        if (of)
         {
             dpi.y += overflow;
             dpi.height -= overflow;
@@ -191,8 +194,9 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp height to bottom
+        of = (dpi.y + dpi.height) <= bottom;
         overflow = dpi.y + dpi.height - bottom;
-        if (overflow > 0)
+        if (of)
         {
             dpi.height -= overflow;
             if (dpi.height <= 0)
