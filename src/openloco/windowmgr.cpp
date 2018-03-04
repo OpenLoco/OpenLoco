@@ -156,11 +156,9 @@ namespace openloco::ui::windowmgr
         // Copy dpi so we can crop it
         auto dpi = *_dpi;
 
-        bool of;
         // Clamp left to 0
-        of = (left <= dpi.x);
         int32_t overflow = left - dpi.x;
-        if (of)
+        if (overflow <= 0)
         {
             dpi.x += overflow;
             dpi.width -= overflow;
@@ -171,9 +169,8 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp width to right
-        of = (dpi.x + dpi.width) <= right;
         overflow = dpi.x + dpi.width - right;
-        if (of)
+        if (overflow <= 0)
         {
             dpi.width -= overflow;
             if (dpi.width <= 0)
@@ -182,9 +179,8 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp top to 0
-        of = (top <= dpi.y);
         overflow = top - dpi.y;
-        if (of)
+        if (overflow <= 0)
         {
             dpi.y += overflow;
             dpi.height -= overflow;
@@ -194,9 +190,8 @@ namespace openloco::ui::windowmgr
         }
 
         // Clamp height to bottom
-        of = (dpi.y + dpi.height) <= bottom;
         overflow = dpi.y + dpi.height - bottom;
-        if (of)
+        if (overflow <= 0)
         {
             dpi.height -= overflow;
             if (dpi.height <= 0)
