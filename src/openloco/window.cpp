@@ -93,6 +93,18 @@ namespace openloco::ui
         return (cursor_id)regs.ebx;
     }
 
+    void window::call_on_mouse_up(int8_t widget_index)
+    {
+        registers regs;
+        regs.edx = widget_index;
+        regs.esi = (uint32_t)this;
+
+        // Not sure if this is used
+        regs.edi = (uint32_t) & this->widgets[widget_index];
+
+        call((uint32_t)this->event_handlers->on_mouse_up, regs);
+    }
+
     void window::call_3()
     {
         registers regs;
@@ -135,6 +147,15 @@ namespace openloco::ui
         regs.esi = (int32_t)this;
         call((int32_t)this->event_handlers->tooltip, regs);
         return regs.ax != (int16_t)string_ids::null;
+    }
+
+    void window::call_25(int16_t xPos, int16_t yPos)
+    {
+        registers regs;
+        regs.cx = xPos;
+        regs.dx = yPos;
+        regs.esi = (int32_t)this;
+        call(this->event_handlers->event_25, regs);
     }
 
     void window::call_prepare_draw()
