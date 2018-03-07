@@ -71,11 +71,11 @@ namespace openloco::ui
     {
         uint16_t flags;          // 0x00
         uint16_t h_left;         // 0x02
-        uint16_t h_right;        // 0x04
+        int16_t h_right;         // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
         uint16_t v_top;          // 0x0A
-        uint16_t v_bottom;       // 0x0C
+        int16_t v_bottom;        // 0x0C
         uint16_t v_thumb_top;    // 0x0E
         uint16_t v_thumb_bottom; // 0x10
     };
@@ -91,6 +91,8 @@ namespace openloco::ui
         constexpr uint32_t resizable = 1 << 9;
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
+        constexpr uint32_t flag_15 = 1 << 15;
+        constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_mask = (1 << 17) | (1 << 18);
     }
 
@@ -205,16 +207,20 @@ namespace openloco::ui
                 int8_t var_884;
                 uint8_t pad_885[1];
                 uint8_t colours[4]; // 0x886
+                int16_t var_88A;
+                int16_t var_88C;
             };
         };
 
         void invalidate();
+        void update_scroll_widgets();
         void sub_4CA17F();
         int16_t find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
-        void call_on_mouse_up(int8_t widget_index);                                                       // 2
+        void call_on_mouse_up(int8_t widget_index);                                                       // 1
+        void call_on_resize();                                                                            // 2
         void call_3();                                                                                    // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_update();                                                                               // 7

@@ -114,6 +114,7 @@ namespace openloco::input
     static loco_global<uint32_t, 0x005233B2> _5233B2;
     static loco_global<ui::window_type, 0x005233B6> modalWindowType;
 
+    static void state_resizing(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
     static void state_positioning_window(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
@@ -219,13 +220,110 @@ namespace openloco::input
                 break;
 
             case input_state::resizing:
-                call(0x004C7722, regs);
+                state_resizing(button, x, y, window, widget, widget_index);
                 break;
 
             case input_state::scroll_right:
                 call(0x004C76A7, regs);
                 break;
         }
+    }
+
+    // 0x004C7722
+    static void state_resizing(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
+    {
+        auto w = ui::windowmgr::find(_dragWindowType, _dragWindowNumber);
+        if (w == nullptr)
+        {
+            _state = 0;
+            return;
+        }
+
+        bool doDefault = false;
+        int dx, dy;
+        switch (state)
+        {
+            case mouse_button::right_down:
+                _state = 1;
+                _52338A = 0;
+                _523384 = _pressedWidgetIndex;
+                _523381 = _pressedWindowType;
+                _523382 = _pressedWindowNumber;
+
+                if (w->flags & ui::window_flags::flag_15)
+                {
+                    doDefault = true;
+                    break;
+                }
+
+                if (w->flags & ui::window_flags::flag_16)
+                {
+                    x = window->var_88A - window->width + _dragLastX;
+                    y = window->var_88C - window->height + _dragLastY;
+                    w->flags &= ~ui::window_flags::flag_16;
+                    doDefault = true;
+                    break;
+                }
+
+                window->var_88A = window->width;
+                window->var_88C = window->height;
+                x = _dragLastX - window->x - window->width + ui::width();
+                y = _dragLastY - window->y - window->height + ui::height() - 27;
+                w->flags |= ui::window_flags::flag_16;
+                if (y >= ui::height() - 2)
+                {
+                    return;
+                }
+
+                dx = x - _dragLastX;
+                dy = y - _dragLastY;
+
+                if (dx == 0 && dy == 0)
+                {
+                    return;
+                }
+
+                break;
+
+            case mouse_button::released:
+                doDefault = true;
+                break;
+
+            default:
+                return;
+        }
+
+        if (doDefault)
+        {
+            if (y >= ui::height() - 2)
+            {
+                return;
+            }
+
+            dx = x - _dragLastX;
+            dy = y - _dragLastY;
+
+            if (dx == 0 && dy == 0)
+            {
+                return;
+            }
+
+            w->flags &= ~ui::window_flags::flag_16;
+        }
+
+        w->invalidate();
+
+        w->width = std::clamp<int>(w->width + dx, w->min_width, w->max_width);
+        w->height = std::clamp<int>(w->height + dy, w->min_height, w->max_height);
+        w->flags |= ui::window_flags::flag_15;
+        w->call_on_resize();
+        w->call_prepare_draw();
+        w->scroll_areas[0].h_right = -1;
+        w->scroll_areas[0].v_bottom = -1;
+        w->scroll_areas[1].h_right = -1;
+        w->scroll_areas[1].v_bottom = -1;
+        window->update_scroll_widgets();
+        w->invalidate();
     }
 
     // 0x004C7903

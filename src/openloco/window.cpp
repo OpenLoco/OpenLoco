@@ -26,6 +26,13 @@ namespace openloco::ui
         call(0x004CA4BD, regs);
     }
 
+    void window::update_scroll_widgets()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x004CA115, regs);
+    }
+
     void window::sub_4CA17F()
     {
         registers regs;
@@ -103,6 +110,12 @@ namespace openloco::ui
         regs.edi = (uint32_t) & this->widgets[widget_index];
 
         call((uint32_t)this->event_handlers->on_mouse_up, regs);
+    }
+
+    void window::call_on_resize()
+    {
+        registers regs;
+        call((uint32_t)this->event_handlers->on_resize, regs);
     }
 
     void window::call_3()
