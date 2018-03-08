@@ -693,8 +693,9 @@ void openloco::interop::register_hooks()
             auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
 
             auto window = (ui::window*)regs.esi;
-
-            ui::windowmgr::draw_single(dpi, window, regs.ax, regs.bx, regs.dx, regs.bp);
+            // Make a copy to prevent overwriting from nested calls
+            auto regs2 = regs;
+            ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
             //  gfx::fill_rect_inset(dpi, regs.ax, regs.bx, regs.dx, regs.bp, 2, 0x60);
             window++;
 
@@ -702,7 +703,7 @@ void openloco::interop::register_hooks()
             {
                 if ((window->flags & ui::window_flags::flag_4) != 0)
                 {
-                    ui::windowmgr::draw_single(dpi, window, regs.ax, regs.bx, regs.dx, regs.bp);
+                    ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                 }
                 window++;
             }

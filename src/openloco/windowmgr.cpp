@@ -158,7 +158,7 @@ namespace openloco::ui::windowmgr
 
         // Clamp left to 0
         int32_t overflow = left - dpi.x;
-        if (overflow <= 0)
+        if (overflow > 0)
         {
             dpi.x += overflow;
             dpi.width -= overflow;
@@ -170,7 +170,7 @@ namespace openloco::ui::windowmgr
 
         // Clamp width to right
         overflow = dpi.x + dpi.width - right;
-        if (overflow <= 0)
+        if (overflow > 0)
         {
             dpi.width -= overflow;
             if (dpi.width <= 0)
@@ -180,7 +180,7 @@ namespace openloco::ui::windowmgr
 
         // Clamp top to 0
         overflow = top - dpi.y;
-        if (overflow <= 0)
+        if (overflow > 0)
         {
             dpi.y += overflow;
             dpi.height -= overflow;
@@ -191,7 +191,7 @@ namespace openloco::ui::windowmgr
 
         // Clamp height to bottom
         overflow = dpi.y + dpi.height - bottom;
-        if (overflow <= 0)
+        if (overflow > 0)
         {
             dpi.height -= overflow;
             if (dpi.height <= 0)
