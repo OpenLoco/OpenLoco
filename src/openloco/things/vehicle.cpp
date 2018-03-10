@@ -416,7 +416,7 @@ void openloco::vehicle::sub_4A88A6(vehicle_2 * vehType2)
         (var_38 & (1<<4))||
         vehType2->object_id == 0xFFFF)
     {
-        sub_4A8B7C(vehType2, nullptr);
+        sub_4A8B7C(vehType2);
         return;
     }
 
@@ -424,51 +424,51 @@ void openloco::vehicle::sub_4A88A6(vehicle_2 * vehType2)
     switch (vehicleObject->startsnd_type)
     {
     case 0:
-        sub_4A8B7C(vehType2, nullptr);
+        sub_4A8B7C(vehType2);
         break;
     case 1:
-        sub_4A88F7(vehType2, vehicleObject->var_11A);
+        sub_4A88F7(vehType2, &vehicleObject->sound.type_1);
         break;
     case 2:
-        sub_4A8937(vehType2, vehicleObject->var_11A);
+        sub_4A8937(vehType2, &vehicleObject->sound.type_2);
         break;
     case 3:
-        sub_4A8A39(vehType2, vehicleObject->var_11A);
+        sub_4A8A39(vehType2, &vehicleObject->sound.type_3);
         break;
     default:
         assert(false);
     }
 }
 
-void openloco::vehicle::sub_4A8B7C(vehicle_2 * vehType2, uint8_t * buffer)
+void openloco::vehicle::sub_4A8B7C(vehicle_2 * vehType2)
 {
     vehType2->var_44 = 0xFF;
 }
 
-void openloco::vehicle::sub_4A88F7(vehicle_2 * vehType2, uint8_t * buffer)
+void openloco::vehicle::sub_4A88F7(vehicle_2 * vehType2, vehicle_object_sound_1 * snd)
 {
     vehicle_2 * vehType2_2 = vehicle_1136120;
-    if ((vehType2_2->var_56 < *((uint32_t*)&buffer[1]))) {
-        sub_4A8B7C(vehType2, nullptr);
+    if (vehType2_2->var_56 < snd->var_01) {
+        sub_4A8B7C(vehType2);
         return;
     }
 
-    uint32_t unk = vehType2_2->var_56 - *((uint32_t*)&buffer[1]);
-    vehType2->var_46 = (unk >> buffer[5]) + *((uint16_t*)&buffer[6]);
+    uint32_t unk = vehType2_2->var_56 - snd->var_01;
+    vehType2->var_46 = (unk >> snd->var_05) + snd->var_06;
 
-    unk >>= buffer[8];
-    unk += buffer[9];
+    unk >>= snd->var_08;
+    unk += snd->var_09;
 
-    if (unk > buffer[10])
+    if (unk > snd->var_0A)
     {
-        unk = buffer[10];
+        unk = snd->var_0A;
     }
 
     vehType2->var_45 = unk;
-    vehType2->var_44 = buffer[0];
+    vehType2->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
+void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 * snd)
 {
     if (vehType2 == vehicle_1136120)
     {
@@ -477,7 +477,7 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
             // Can be a type 6 or bogie
             if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
             {
-                sub_4A8B7C(vehType2, nullptr);
+                sub_4A8B7C(vehType2);
                 return;
             }
         }
@@ -490,13 +490,13 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2_2->var_56 < 786432)
         {
-            _var_46 = *((uint16_t*)&buffer[1]);
-            _var_45 = buffer[3];
+            _var_46 = snd->var_01;
+            _var_45 = snd->var_03;
         }
         else
         {
-            _var_46 = *((uint16_t*)&buffer[4]);
-            _var_45 = buffer[6];
+            _var_46 = snd->var_04;
+            _var_45 = snd->var_06;
         }
     }
     else if (vehType2_2->var_5A == 1)
@@ -504,28 +504,28 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
         if (vehType2->type == thing_type::vehicle_2 ||
             ((vehicle *)vehType2->next_car())->var_5E == 0)
         {
-            _var_46 = *((uint16_t*)&buffer[7]) + (vehType2_2->var_56 >> buffer[16]);
-            _var_45 = buffer[9];
+            _var_46 = snd->var_07 + (vehType2_2->var_56 >> snd->var_10);
+            _var_45 = snd->var_09;
         }
         else
         {
-            _var_46 = *((uint16_t*)&buffer[1]);
-            _var_45 = buffer[3];
+            _var_46 = snd->var_01;
+            _var_45 = snd->var_03;
         }
     }
     else
     {
-        _var_46 = *((uint16_t*)&buffer[1]);
-        _var_45 = buffer[3];
+        _var_46 = snd->var_01;
+        _var_45 = snd->var_03;
     }
 
     if (vehType2->var_44 == 0xFF)
     {
         // Half
-        vehType2->var_45 = buffer[3] >> 1;
+        vehType2->var_45 = snd->var_03 >> 1;
         // Quarter
-        vehType2->var_46 = *((uint16_t*)&buffer[1]) >> 2;
-        vehType2->var_44 = buffer[0];
+        vehType2->var_46 = snd->var_01 >> 2;
+        vehType2->var_44 = snd->var_00;
         return;
     }
 
@@ -533,11 +533,11 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2->var_46 > _var_46)
         {
-            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - *((uint16_t*)&buffer[12])));
+            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - snd->var_0C));
         }
         else
         {
-            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + *((uint16_t*)&buffer[10])));
+            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + snd->var_0A));
         }
     }
     
@@ -545,18 +545,18 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2->var_45 > _var_45)
         {
-            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - buffer[15]));
+            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - snd->var_0F));
         }
         else
         {
-            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + buffer[14]));
+            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + snd->var_0E));
         }
     }
 
-    vehType2->var_44 = buffer[0];
+    vehType2->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
+void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 * snd)
 {
     if (vehType2 == vehicle_1136120)
     {
@@ -565,7 +565,7 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
             // Can be a type 6 or bogie
             if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
             {
-                sub_4A8B7C(vehType2, nullptr);
+                sub_4A8B7C(vehType2);
                 return;
             }
         }
@@ -580,25 +580,25 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2_2->var_56 < 786432)
         {
-            _var_46 = *((uint16_t*)&buffer[1]);
-            _var_45 = buffer[18];
+            _var_46 = snd->var_01;
+            _var_45 = snd->var_12;
         }
         else
         {
-            _var_45 = buffer[18];
+            _var_45 = snd->var_12;
             var5aEqual1Code = true;
         }
     }
     else if (vehType2_2->var_5A == 1)
     {
-        _var_45 = buffer[19];
+        _var_45 = snd->var_13;
         var5aEqual1Code = true;
 
     }
     else
     {
-        _var_46 = *((uint16_t*)&buffer[1]);
-        _var_45 = buffer[3];
+        _var_46 = snd->var_01;
+        _var_45 = snd->var_03;
     }
 
     if (var5aEqual1Code == true)
@@ -606,40 +606,39 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
         if (vehType2->type == thing_type::vehicle_2 ||
             ((vehicle *)vehType2->next_car())->var_5E == 0)
         {
-            //4a8a79
             auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
 
-            auto dx = *((uint16_t*)&buffer[4]);
+            auto dx = snd->var_04;
 
-            if (_var_56 >= *((uint16_t*)&buffer[6]))
+            if (_var_56 >= snd->var_06)
             {
-                dx -= *((uint16_t*)&buffer[8]);
-                if (_var_56 >= *((uint16_t*)&buffer[10]))
+                dx -= snd->var_08;
+                if (_var_56 >= snd->var_0A)
                 {
-                    dx -= *((uint16_t*)&buffer[12]);
-                    if (_var_56 >= *((uint16_t*)&buffer[14]))
+                    dx -= snd->var_0C;
+                    if (_var_56 >= snd->var_0E)
                     {
-                        dx -= *((uint16_t*)&buffer[16]);
+                        dx -= snd->var_10;
                     }
                 }
             }
             _var_56 <<= 16;
-            _var_46 = (uint16_t)((_var_56 >> buffer[26]) + dx);
+            _var_46 = (uint16_t)((_var_56 >> snd->var_1A) + dx);
         }
         else
         {
-            _var_46 = *((uint16_t*)&buffer[1]);
-            _var_45 = buffer[3];
+            _var_46 = snd->var_01;
+            _var_45 = snd->var_03;
         }
     }
 
     if (vehType2->var_44 == 0xFF)
     {
         // Half
-        vehType2->var_45 = buffer[3] >> 1;
+        vehType2->var_45 = snd->var_03 >> 1;
         // Quarter
-        vehType2->var_46 = *((uint16_t*)&buffer[1]) >> 2;
-        vehType2->var_44 = buffer[0];
+        vehType2->var_46 = snd->var_01 >> 2;
+        vehType2->var_44 = snd->var_00;
         return;
     }
 
@@ -647,12 +646,12 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2->var_46 > _var_46)
         {
-            _var_45 = buffer[18];
-            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - *((uint16_t*)&buffer[22])));
+            _var_45 = snd->var_12;
+            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - snd->var_16));
         }
         else
         {
-            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + *((uint16_t*)&buffer[20])));
+            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + snd->var_14));
         }
     }
 
@@ -660,15 +659,15 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
     {
         if (vehType2->var_45 > _var_45)
         {
-            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - buffer[25]));
+            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - snd->var_19));
         }
         else
         {
-            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + buffer[24]));
+            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + snd->var_18));
         }
     }
 
-    vehType2->var_44 = buffer[0];
+    vehType2->var_44 = snd->var_00;
 }
 
 // 0x004AC255

@@ -68,10 +68,10 @@ namespace openloco
         void sub_4AAB0B();
         void sub_4A8882();
         void sub_4A88A6(vehicle_2 * vehType2);
-        void sub_4A8B7C(vehicle_2 * vehType2, uint8_t * buffer);
-        void sub_4A88F7(vehicle_2 * vehType2, uint8_t * buffer);
-        void sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer);
-        void sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer);
+        void sub_4A8B7C(vehicle_2 * vehType2);
+        void sub_4A88F7(vehicle_2 * vehType2, vehicle_object_sound_1 * buffer);
+        void sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 * buffer);
+        void sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 * buffer);
         void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);

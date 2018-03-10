@@ -4,6 +4,54 @@
 
 namespace openloco
 {
+    struct vehicle_object_sound_1
+    {
+        uint8_t var_00;
+        uint32_t var_01;
+        uint8_t var_05;
+        uint16_t var_06;
+        uint8_t var_08;
+        uint8_t var_09;
+        uint8_t var_0A;
+    };
+
+    struct vehicle_object_sound_2
+    {
+        uint8_t var_00;
+        uint16_t var_01;
+        uint8_t var_03;
+        uint16_t var_04;
+        uint8_t var_06;
+        uint16_t var_07;
+        uint8_t var_09;
+        uint16_t var_0A;
+        uint16_t var_0C;
+        uint8_t var_0E;
+        uint8_t var_0F;
+        uint8_t var_10;
+    };
+
+    struct vehicle_object_sound_3
+    {
+        uint8_t var_00;
+        uint16_t var_01;
+        uint8_t var_03;
+        uint16_t var_04;
+        uint16_t var_06;
+        uint16_t var_08;
+        uint16_t var_0A;
+        uint16_t var_0C;
+        uint16_t var_0E;
+        uint16_t var_10;
+        uint8_t var_12;
+        uint8_t var_13;
+        uint16_t var_14;
+        uint16_t var_16;
+        uint8_t var_18;
+        uint8_t var_19;
+        uint8_t var_1A;
+    };
+
     enum class simple_animation_type : uint8_t
     {
         none = 0,
@@ -80,7 +128,13 @@ namespace openloco
         uint16_t obsolete; // 0x116
         uint8_t pad_118;
         uint8_t startsnd_type; // 0x119
-        uint8_t var_11A[0x40]; // assumed size
+        union
+        {
+            vehicle_object_sound_1 type_1;
+            vehicle_object_sound_2 type_2;
+            vehicle_object_sound_3 type_3;
+        } sound;
+        uint8_t pad_135[0x15A - 135];
         uint8_t numsnd; // 0x15A
         uint8_t pad_15B[0x15E - 0x15B];
     };
