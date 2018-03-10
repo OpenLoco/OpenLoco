@@ -3,9 +3,12 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "map/tilemgr.h"
+#include "things/thingmgr.h"
 #include "widget.h"
 #include <cassert>
 #include <cinttypes>
+#include <cmath>
 
 using namespace openloco;
 using namespace openloco::interop;
@@ -36,6 +39,229 @@ namespace openloco::ui
     bool window::is_holdable(ui::widget_index index)
     {
         return (this->holdable_widgets & (1ULL << index)) != 0;
+    }
+
+    void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        regs.bp = bp;
+        regs.edx = rotation;
+        call(0x45FD41, regs);
+        *outX = regs.ax;
+        *outY = regs.bx;
+        *outZ = regs.dx;
+    }
+
+    static void viewport_set_underground_flag(bool underground, ui::window* w, ui::viewport* vp)
+    {
+        registers regs;
+        regs.esi = (int32_t)w;
+        regs.edi = (int32_t)vp;
+        regs.dl = underground;
+        call(0x4C641F, regs);
+    }
+
+    loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
+
+    typedef struct LocationXY16
+    {
+        int16_t x, y;
+    } LocationXY16;
+
+    /**
+     *
+     * @param x @<ax>
+     * @param y
+     * @param z
+     * @param rotation
+     * @return
+     */
+    LocationXY16 coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
+    {
+        LocationXY16 coordinate_2d;
+
+        switch (rotation)
+        {
+            default:
+            case 0:
+                coordinate_2d.x = y - x;
+                coordinate_2d.y = ((y + x) >> 1) - z;
+                break;
+            case 1:
+                coordinate_2d.x = -y - x;
+                coordinate_2d.y = ((y - x) >> 1) - z;
+                break;
+            case 2:
+                coordinate_2d.x = -y + x;
+                coordinate_2d.y = ((-y - x) >> 1) - z;
+                break;
+            case 3:
+                coordinate_2d.x = y + x;
+                coordinate_2d.y = ((-y + x) >> 1) - z;
+                break;
+        }
+        return coordinate_2d;
+    }
+
+    // 0x004C68E4
+    static void viewport_move(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        regs.esi = (uint32_t)w;
+        regs.edi = (uint32_t)vp;
+        call(0x004C68E4, regs);
+    }
+
+    /**
+     * Return the absolute height of an element, given its (x, y) coordinates
+     * remember to & with 0xFFFF if you don't want water affecting results
+     *
+     * @param x @<ax>
+     * @param y @<cx>
+     * @return height @<edx>
+     *
+     * 0x00467297
+     */
+    uint32_t tile_element_height(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.cx = y;
+        call(0x00467297, regs);
+
+        return regs.edx;
+    }
+
+    void sub_4CA444(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY, ui::viewport* vp)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        regs.cx = z;
+        regs.edi = (uint32_t)vp;
+        call(0x004CA444, regs);
+
+        *outX = regs.ax;
+        *outY = regs.bx;
+    }
+
+    // 0x004C6456
+    void window::viewports_update_position()
+    {
+        this->call_resize();
+
+        for (int i = 0; i < 2; i++)
+        {
+            viewport* viewport = this->viewports[i];
+            viewport_config* config = &this->viewport_configurations[i];
+
+            if (viewport == nullptr)
+            {
+                continue;
+            }
+
+            int16_t centreX, centreY;
+
+            if (config->viewport_target_sprite != 0xFFFF)
+            {
+                auto thing = thingmgr::get<thing_base>(config->viewport_target_sprite);
+
+                int height = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
+                bool underground = (thing->z < height);
+
+                viewport_set_underground_flag(underground, this, viewport);
+
+                sub_4CA444(thing->x, thing->y, thing->z + 12, &centreX, &centreY, viewport);
+            }
+            else
+            {
+                int16_t outX, outY, outZ;
+
+                int16_t x = config->saved_view_x + (viewport->view_width / 2);
+                int16_t y = config->saved_view_y + (viewport->view_height / 2);
+
+                sub_45FD41(x, y, 128, gCurrentRotation, &outX, &outY, &outZ);
+                viewport_set_underground_flag(false, this, viewport);
+
+                bool atMapEdge = false;
+                if (outX < -256)
+                {
+                    outX = -256;
+                    atMapEdge = true;
+                }
+                if (outY < -256)
+                {
+                    outY = -256;
+                    atMapEdge = true;
+                }
+                if (outX > 0x30FE)
+                {
+                    outX = 0x30FE;
+                    atMapEdge = true;
+                }
+                if (outY > 0x30FE)
+                {
+                    outY = 0x30FE;
+                    atMapEdge = true;
+                }
+
+                if (atMapEdge)
+                {
+                    auto coord_2d = coordinate_3d_to_2d(outX, outY, 128, gCurrentRotation);
+
+                    config->saved_view_x = coord_2d.x - viewport->view_width / 2;
+                    config->saved_view_y = coord_2d.y - viewport->view_height / 2;
+                }
+
+                centreX = config->saved_view_x;
+                centreY = config->saved_view_y;
+
+                if (this->flags & window_flags::scrolling_to_location)
+                {
+                    bool flippedX = false;
+                    centreX -= viewport->view_x;
+                    if (centreX < 0)
+                    {
+                        centreX = -centreX;
+                        flippedX = true;
+                    }
+
+                    bool flippedY = false;
+                    centreY -= viewport->view_y;
+                    if (centreY < 0)
+                    {
+                        centreY = -centreY;
+                        flippedY = true;
+                    }
+
+                    centreX = (centreX + 7) / 8; // ceil(centreX / 8.0);
+                    centreY = (centreY + 7) / 8; // ceil(centreX / 8.0);
+
+                    if (centreX == 0 && centreY == 0)
+                    {
+                        this->flags &= ~window_flags::scrolling_to_location;
+                    }
+
+                    if (flippedX)
+                    {
+                        centreX = -centreX;
+                    }
+
+                    if (flippedY)
+                    {
+                        centreY = -centreY;
+                    }
+
+                    centreX += viewport->view_x;
+                    centreY += viewport->view_y;
+                }
+            }
+            viewport_move(centreX, centreY, this, viewport);
+        }
     }
 
     // 0x004CA4BD
@@ -120,6 +346,13 @@ namespace openloco::ui
         registers regs;
         regs.esi = (int32_t)this;
         call((uint32_t)this->event_handlers->on_close, regs);
+    }
+
+    void window::call_resize()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_resize, regs);
     }
 
     void window::call_update()

@@ -165,6 +165,13 @@ namespace openloco::ui
         uint16_t var_12; // 0x12, maybe flags
     };
 
+    struct viewport_config
+    {
+        uint16_t viewport_target_sprite; // 0x0
+        uint16_t saved_view_x;           // 0x2
+        uint16_t saved_view_y;           // 0x4
+    };
+
     struct window
     {
         union
@@ -203,11 +210,8 @@ namespace openloco::ui
                 uint16_t var_870;
                 uint16_t var_872;
                 uint8_t pad_874[0x876 - 0x874];
-                uint16_t var_876;
-                uint16_t var_878;
-                uint16_t var_87A;
-                uint8_t pad_87C[0x882 - 0x87C];
-                window_type type; // 0x882
+                viewport_config viewport_configurations[2]; // 0x876
+                window_type type;                           // 0x882
                 uint8_t pad_883[1];
                 int8_t var_884;
                 uint8_t pad_885[1];
@@ -221,6 +225,7 @@ namespace openloco::ui
         bool is_disabled(int8_t widget_index);
         bool is_holdable(widget_index index);
         bool can_resize();
+        void viewports_update_position();
         void invalidate();
         void update_scroll_widgets();
         void sub_4CA17F();
@@ -236,7 +241,7 @@ namespace openloco::ui
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
         void call_update();                                                                               // 7
-        void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11                                                                               // 7
+        void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
