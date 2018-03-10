@@ -216,7 +216,7 @@ namespace openloco::ui
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_prepare_draw();                                                                         // 26
-        void call_draw(gfx::drawpixelinfo_t* dpi);
+        void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
     };
 #pragma pack(pop)
 }
