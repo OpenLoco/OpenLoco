@@ -691,12 +691,12 @@ void openloco::interop::register_hooks()
         0x004C5FC8,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
-
             auto window = (ui::window*)regs.esi;
+
             // Make a copy to prevent overwriting from nested calls
             auto regs2 = regs;
+
             ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
-            //  gfx::fill_rect_inset(dpi, regs.ax, regs.bx, regs.dx, regs.bp, 2, 0x60);
             window++;
 
             while (window < addr<0x0113D754, ui::window*>())
