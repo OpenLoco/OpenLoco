@@ -397,7 +397,14 @@ void openloco::vehicle::sub_4AAB0B()
 
 void openloco::vehicle::sub_4A8882()
 {
-    //vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2 * vehType2 = vehicle_1136120;
+    sub_4A88A6(vehType2);
+    vehicle * vehType6 = (vehicle *)vehType2;
+    while (vehType6->type != thing_type::vehicle_6)
+    {
+        vehType6 = vehType6->next_car();
+    }
+    sub_4A88A6((vehicle_2*)vehType6);
 }
 
 // Not guaranteed to be type 2 could be type 6
@@ -497,7 +504,7 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
         if (vehType2->type == thing_type::vehicle_2 ||
             ((vehicle *)vehType2->next_car())->var_5E == 0)
         {
-            _var_46 = *((uint16_t*)&buffer[7]) + vehType2_2->var_56 >> buffer[16];
+            _var_46 = *((uint16_t*)&buffer[7]) + (vehType2_2->var_56 >> buffer[16]);
             _var_45 = buffer[9];
         }
         else
@@ -519,13 +526,149 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, uint8_t * buffer)
         // Quarter
         vehType2->var_46 = *((uint16_t*)&buffer[1]) >> 2;
         vehType2->var_44 = buffer[0];
+        return;
     }
 
-    //4A89CE
+    if (vehType2->var_46 != _var_46)
+    {
+        if (vehType2->var_46 > _var_46)
+        {
+            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - *((uint16_t*)&buffer[12])));
+        }
+        else
+        {
+            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + *((uint16_t*)&buffer[10])));
+        }
+    }
+    
+    if (vehType2->var_45 != _var_45)
+    {
+        if (vehType2->var_45 > _var_45)
+        {
+            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - buffer[15]));
+        }
+        else
+        {
+            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + buffer[14]));
+        }
+    }
+
+    vehType2->var_44 = buffer[0];
 }
 
 void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, uint8_t * buffer)
 {
+    if (vehType2 == vehicle_1136120)
+    {
+        if (var_5E != 5 && var_5E != 4)
+        {
+            // Can be a type 6 or bogie
+            if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
+            {
+                sub_4A8B7C(vehType2, nullptr);
+                return;
+            }
+        }
+    }
+
+    vehicle_2 * vehType2_2 = vehicle_1136120;
+    uint16_t _var_46 = 0;
+    uint8_t _var_45 = 0;
+    bool var5aEqual1Code = false;
+
+    if (vehType2_2->var_5A == 2 || vehType2_2->var_5A == 3)
+    {
+        if (vehType2_2->var_56 < 786432)
+        {
+            _var_46 = *((uint16_t*)&buffer[1]);
+            _var_45 = buffer[18];
+        }
+        else
+        {
+            _var_45 = buffer[18];
+            var5aEqual1Code = true;
+        }
+    }
+    else if (vehType2_2->var_5A == 1)
+    {
+        _var_45 = buffer[19];
+        var5aEqual1Code = true;
+
+    }
+    else
+    {
+        _var_46 = *((uint16_t*)&buffer[1]);
+        _var_45 = buffer[3];
+    }
+
+    if (var5aEqual1Code == true)
+    {
+        if (vehType2->type == thing_type::vehicle_2 ||
+            ((vehicle *)vehType2->next_car())->var_5E == 0)
+        {
+            //4a8a79
+            auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
+
+            auto dx = *((uint16_t*)&buffer[4]);
+
+            if (_var_56 >= *((uint16_t*)&buffer[6]))
+            {
+                dx -= *((uint16_t*)&buffer[8]);
+                if (_var_56 >= *((uint16_t*)&buffer[10]))
+                {
+                    dx -= *((uint16_t*)&buffer[12]);
+                    if (_var_56 >= *((uint16_t*)&buffer[14]))
+                    {
+                        dx -= *((uint16_t*)&buffer[16]);
+                    }
+                }
+            }
+            _var_56 <<= 16;
+            _var_46 = (uint16_t)((_var_56 >> buffer[26]) + dx);
+        }
+        else
+        {
+            _var_46 = *((uint16_t*)&buffer[1]);
+            _var_45 = buffer[3];
+        }
+    }
+
+    if (vehType2->var_44 == 0xFF)
+    {
+        // Half
+        vehType2->var_45 = buffer[3] >> 1;
+        // Quarter
+        vehType2->var_46 = *((uint16_t*)&buffer[1]) >> 2;
+        vehType2->var_44 = buffer[0];
+        return;
+    }
+
+    if (vehType2->var_46 != _var_46)
+    {
+        if (vehType2->var_46 > _var_46)
+        {
+            _var_45 = buffer[18];
+            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - *((uint16_t*)&buffer[22])));
+        }
+        else
+        {
+            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + *((uint16_t*)&buffer[20])));
+        }
+    }
+
+    if (vehType2->var_45 != _var_45)
+    {
+        if (vehType2->var_45 > _var_45)
+        {
+            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - buffer[25]));
+        }
+        else
+        {
+            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + buffer[24]));
+        }
+    }
+
+    vehType2->var_44 = buffer[0];
 }
 
 // 0x004AC255
