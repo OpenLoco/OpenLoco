@@ -113,7 +113,7 @@
     <ClInclude Include="utility\collection.hpp" />
     <ClInclude Include="utility\numeric.hpp" />
     <ClInclude Include="utility\string.hpp" />
-    <ClCompile Include="ui\scrollview.h" />
+    <ClInclude Include="ui\scrollview.h" />
     <ClInclude Include="types.hpp" />
     <ClInclude Include="viewportmgr.h" />
     <ClInclude Include="window.h" />
