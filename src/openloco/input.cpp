@@ -136,18 +136,18 @@ namespace openloco::input
             widget_index = window->find_widget_at(x, y);
         }
 
-        if (modalWindowType != ui::window_type::undefined)
+        if (*modalWindowType != ui::window_type::undefined)
         {
             if (window != nullptr)
             {
-                if (window->type != modalWindowType)
+                if (window->type != *modalWindowType)
                 {
                     if (button == mouse_button::left_down)
                     {
 
                         { // window_bring_to_front_by_id
                             registers r1;
-                            r1.cx = (int8_t)(ui::window_type)modalWindowType;
+                            r1.cx = (int8_t)(ui::window_type)*modalWindowType;
                             r1.dx = 0;
                             call(0x004CD3A9, r1);
                         }
@@ -240,7 +240,7 @@ namespace openloco::input
         }
 
         bool doDefault = false;
-        int dx, dy;
+        int dx = 0, dy = 0;
         switch (state)
         {
             case mouse_button::right_down:
@@ -424,9 +424,9 @@ namespace openloco::input
                     {
                         if (w->enabled_widgets & 1ULL << _pressedWidgetIndex)
                         {
-                            auto widget = &w->widgets[_pressedWidgetIndex];
+                            auto pressedWidget = &w->widgets[_pressedWidgetIndex];
 
-                            audio::play_sound((audio::sound_id)2, w->x + ((widget->left + widget->right) / 2));
+                            audio::play_sound((audio::sound_id)2, w->x + ((pressedWidget->left + pressedWidget->right) / 2));
                             window->call_on_mouse_up(_pressedWidgetIndex);
                         }
                     }
@@ -492,7 +492,7 @@ namespace openloco::input
     // 0x004C8098
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
     {
-        if (window->type != _hoverWindowType || window->number != _hoverWindowNumber || widgetIndex != _hoverWidgetIdx)
+        if (window->type != *_hoverWindowType || window->number != *_hoverWindowNumber || widgetIndex != *_hoverWidgetIdx)
         {
             input_widget_over_flatbutton_invalidate();
             _hoverWindowType = window->type;
@@ -534,7 +534,7 @@ namespace openloco::input
             }
         }
 
-        if (_523381 != ui::window_type::undefined)
+        if (*_523381 != ui::window_type::undefined)
         {
             {
                 registers regs;
@@ -712,7 +712,7 @@ namespace openloco::input
         }
         //  ui::windowmgr::bring_to_front(window);
 
-        if (modalWindowType == window->type)
+        if (*modalWindowType == window->type)
         {
             loc_4C8689(x, y, window, widget, widgetIndex);
             return;
