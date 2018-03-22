@@ -617,6 +617,13 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004958C6,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            stringmgr::format_string((char*) regs.edi, regs.eax, (void*) regs.ecx);
+            return 0;
+        });
+
+    register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             ui::windows::construction_mouse_up(*((ui::window*)regs.esi), regs.dx);
