@@ -9,10 +9,11 @@ using namespace openloco::interop;
 
 namespace openloco::stringmgr
 {
-    static loco_global<char * [0xFFFF], 0x005183FC> _strings;
-    static loco_global<char * [0xFFFF], 0x0095885C> _userStrings;
-
+    const uint16_t NUM_USER_STRINGS = 2048;
     const uint8_t USER_STRING_SIZE = 32;
+
+    static loco_global<char * [0xFFFF], 0x005183FC> _strings;
+    static loco_global<char [NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
     const char* get_string(string_id id)
     {
@@ -38,10 +39,10 @@ namespace openloco::stringmgr
                 args = (uint8_t*) args + 2;
 
                 // imul    id, 20h
-                id *= USER_STRING_SIZE;
+                // id *= USER_STRING_SIZE;
 
                 // add     id, offset _userStrings
-                char* sourceStr = _userStrings[0] + id;
+                char* sourceStr = _userStrings[id];
 
                 // loc_4958EF:
                 // mov     dl, [id]
@@ -77,7 +78,7 @@ namespace openloco::stringmgr
 
                 // lea     args, towns[args]
                 // !!! FIXME: string_id?
-                args = (void*) &town;
+                args = (void*) &town->name;
 
                 // call    format_string
                 format_string(buffer, id, args);
