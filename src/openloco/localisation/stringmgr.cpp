@@ -20,6 +20,55 @@ namespace openloco::stringmgr
         return _strings[id];
     }
 
+    // TODO: decltype(value)
+    static void format_comma(uint32_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4959A1, regs);
+    }
+
+    // TODO: decltype(value)
+    static void format_int(uint32_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x495E2A, regs);
+    }
+
+    // TODO: decltype(value)
+    static void formatNumeric_4(uint16_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4963FC, regs);
+    }
+
+    // TODO: decltype(value)
+    static void format_comma2dp32(uint32_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4962F1, regs);
+    }
+
+    static void format_comma(uint16_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x495F35, regs);
+    }
+
     // 0x004958C6
     void format_string(char* buffer, string_id id, void* args)
     {
@@ -66,9 +115,6 @@ namespace openloco::stringmgr
                 // add     id, 0FFFF6119h
                 id -= 40679;
 
-                // push    args
-                auto temp = args;
-
                 // movzx   args, word ptr [args]
                 uint16_t town_id = *(uint16_t*) args;
                 args = (uint8_t*) args + 2;
@@ -77,15 +123,10 @@ namespace openloco::stringmgr
                 auto town = townmgr::get(town_id);
 
                 // lea     args, towns[args]
-                // !!! FIXME: string_id?
-                args = (void*) &town->name;
+                void* town_name = (void*) &town->name;
 
                 // call    format_string
-                format_string(buffer, id, args);
-                // TODO: is `args` we pushed earlier used in call?
-
-                // pop     args
-                args = temp;
+                format_string(buffer, id, town_name);
 
                 return;
             }
@@ -120,8 +161,177 @@ namespace openloco::stringmgr
             regs.edi = (uint32_t)buffer;
             regs.ecx = (uint32_t)args;
 
-            call(0x00495935, regs);
+            char* sourceStr = get_string(id);
+
+            while (uint8_t ch = *sourceStr++)
+            {
+                if (ch <= 0x1F)
+                {
+                    if (ch == 0)
+                    {
+                        *buffer = '\0';
+                        return;
+                    }
+                    else if (ch <= 4)
+                    {
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                    }
+                    else if (ch <= 16)
+                    {
+                        *buffer++ = ch;
+                    }
+                    else if (ch <= 22)
+                    {
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                    }
+                    else
+                    {
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                        ch = *sourceStr++
+                        *buffer++ = ch;
+                    }
+                }
+                else if (ch < '}') // 0x7B
+                {
+                    *buffer++ = ch;
+                }
+                else if (ch < 0x90)
+                {
+                    switch (ch)
+                    {
+                        case 123 + 0:
+                        {
+                            uint32_t value = *args;
+                            args = (uint8_t*) args + 4;
+                            format_comma(value, buffer);
+                            break;
+                        }
+
+                        case 123 + 1:
+                        {
+                            uint32_t value = *args;
+                            args = (uint8_t*) args + 4;
+                            format_int(value, buffer);
+                            break;
+                        }
+
+                        case 123 + 2:
+                        {
+                            uint16_t value = *args;
+                            args = (uint8_t*) args + 2;
+                            formatNumeric_4(value, buffer);
+                            break;
+                        }
+
+                        case 123 + 3:
+                        {
+                            uint32_t value = *args;
+                            args = (uint8_t*) args + 4;
+                            format_comma2dp32(value, buffer);
+                            break;
+                        }
+
+                        case 123 + 4:
+                        {
+                            uint16_t value = *args;
+                            args = (uint8_t*) args + 2;
+                            format_comma(value, buffer);
+                            break;
+                        }
+
+                        case 123 + 5:
+                        {
+                            uint16_t value = *args;
+                            args = (uint8_t*) args + 2;
+                            format_int((uint32_t) value, buffer);
+                            break;
+                        }
+
+                        case 123 + 6:
+                        {
+                            // sub_495B66
+                            break;
+                        }
+
+                        case 123 + 7:
+                        {
+                            // sub_495B5B
+                            break;
+                        }
+
+                        case 123 + 8:
+                        {
+                            uint16_t value = *args;
+                            args = (uint8_t*) args + 2;
+                            // push esi?
+                            format_string(buffer, value, args);
+                            // pop esi?
+                            break;
+                        }
+
+                        case 123 + 9:
+                        {
+                            // similar to 123 + 8, but on esi
+                            break;
+                        }
+
+                        case 123 + 10:
+                            break;
+
+                        case 123 + 11:
+                            break;
+
+                        case 123 + 12:
+                            break;
+
+                        case 123 + 13:
+                            break;
+
+                        case 123 + 14:
+                            break;
+
+                        case 123 + 15:
+                            break;
+
+                        case 123 + 16:
+                            break;
+
+                        case 123 + 17:
+                            break;
+
+                        case 123 + 18:
+                            break;
+
+                        case 123 + 19:
+                            break;
+
+                        case 123 + 20:
+                            break;
+                    }
+                }
+                else
+                {
+                    *buffer++ = ch;
+                }
+            }
+
+
+            return;
+            // call(0x00495935, regs);
         }
 
     }
+
 }
