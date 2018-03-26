@@ -9,8 +9,14 @@ using namespace openloco::interop;
 
 namespace openloco::stringmgr
 {
-    const uint16_t NUM_USER_STRINGS = 2048;
-    const uint8_t USER_STRING_SIZE = 32;
+    const uint16_t NUM_USER_STRINGS   = 2048;
+    const uint8_t  USER_STRING_SIZE   = 32;
+    const uint16_t USER_STRINGS_START = 0x8000;
+    const uint16_t USER_STRINGS_END   = USER_STRINGS_START + NUM_USER_STRINGS;
+
+    const uint16_t NUM_TOWN_NAMES     = 345;
+    const uint16_t TOWN_NAMES_START   = 0x9EE7;
+    const uint16_t TOWN_NAMES_END     = TOWN_NAMES_START + NUM_TOWN_NAMES;
 
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
     static loco_global<char [NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
@@ -77,12 +83,12 @@ namespace openloco::stringmgr
         regs.edi = (uint32_t)buffer;
         regs.ecx = (uint32_t)args;
 
-        if (id >= 0x8000)
+        if (id >= USER_STRINGS_START)
         {
-            if (id < 0x8800)
+            if (id < USER_STRINGS_END)
             {
                 // sub     id, 8000h
-                id -= 0x8000;
+                id -= USER_STRINGS_START;
 
                 // add     args, 2
                 args = (uint8_t*) args + 2;
@@ -110,10 +116,10 @@ namespace openloco::stringmgr
 
                 return;
             }
-            else if (id < 41024) // 0xA040
+            else if (id < TOWN_NAMES_END)
             {
                 // add     id, 0FFFF6119h
-                id -= 40679;
+                id -= TOWN_NAMES_START;
 
                 // movzx   args, word ptr [args]
                 uint16_t town_id = *(uint16_t*) args;
@@ -130,7 +136,7 @@ namespace openloco::stringmgr
 
                 return;
             }
-            else if (id == 41024)
+            else if (id == TOWN_NAMES_END)
             {
                 auto temp = args;
 
