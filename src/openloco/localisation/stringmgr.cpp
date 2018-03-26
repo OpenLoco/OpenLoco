@@ -221,48 +221,48 @@ namespace openloco::stringmgr
                     {
                         case 123 + 0:
                         {
-                            uint32_t value = *args;
-                            args = (uint8_t*) args + 4;
+                            uint32_t value = *(uint32_t*) args;
+                            args = (uint32_t*) args + 1;
                             buffer = format_comma(value, buffer);
                             break;
                         }
 
                         case 123 + 1:
                         {
-                            uint32_t value = *args;
-                            args = (uint8_t*) args + 4;
+                            uint32_t value = *(uint32_t*) args;
+                            args = (uint32_t*) args + 1;
                             buffer = format_int(value, buffer);
                             break;
                         }
 
                         case 123 + 2:
                         {
-                            uint16_t value = *args;
-                            args = (uint8_t*) args + 2;
+                            uint16_t value = *(uint16_t*) args;
+                            args = (uint16_t*) args + 1;
                             buffer = formatNumeric_4(value, buffer);
                             break;
                         }
 
                         case 123 + 3:
                         {
-                            uint32_t value = *args;
-                            args = (uint8_t*) args + 4;
+                            uint32_t value = *(uint32_t*) args;
+                            args = (uint32_t*) args + 1;
                             buffer = format_comma2dp32(value, buffer);
                             break;
                         }
 
                         case 123 + 4:
                         {
-                            uint16_t value = *args;
-                            args = (uint8_t*) args + 2;
+                            uint16_t value = *(uint16_t*) args;
+                            args = (uint16_t*) args + 1;
                             buffer = format_comma(value, buffer);
                             break;
                         }
 
                         case 123 + 5:
                         {
-                            uint16_t value = *args;
-                            args = (uint8_t*) args + 2;
+                            uint16_t value = *(uint16_t*) args;
+                            args = (uint16_t*) args + 1;
                             buffer = format_int((uint32_t) value, buffer);
                             break;
                         }
@@ -281,51 +281,81 @@ namespace openloco::stringmgr
 
                         case 123 + 8:
                         {
-                            uint16_t value = *args;
-                            args = (uint8_t*) args + 2;
-                            // push esi?
+                            uint16_t value = *(uint16_t*) args;
+                            args = (uint16_t*) args + 1;
+                            const char* sourceStr_ = sourceStr;
                             buffer = format_string(buffer, value, args);
-                            // pop esi?
+                            sourceStr = sourceStr_;
                             break;
                         }
 
                         case 123 + 9:
                         {
-                            // similar to 123 + 8, but on esi
+                            id = *(uint16_t*) sourceStr;
+                            sourceStr += 2;
+                            const char* sourceStr_ = sourceStr;
+                            buffer = format_string(buffer, id, args);
+                            sourceStr = sourceStr_;
                             break;
                         }
 
                         case 123 + 10:
+                        {
+                            const char* sourceStr_ = sourceStr;
+                            sourceStr = (char*) args;
+                            args = (uint32_t*) args + 1;
+
+                            do
+                            {
+                                *buffer++ = *sourceStr++;
+                            }
+                            while (*sourceStr != '\0');
+
+                            buffer--;
+                            sourceStr = sourceStr_;
                             break;
+                        }
 
                         case 123 + 11:
+                            // format by string?
                             break;
 
                         case 123 + 12:
+                            // velocity
                             break;
 
                         case 123 + 13:
+                            // pop16
+                            args = (uint16_t*) args + 1;
                             break;
 
                         case 123 + 14:
+                            // push16
+                            args = (uint16_t*) args - 1;
                             break;
 
                         case 123 + 15:
+                            // timeMS
                             break;
 
                         case 123 + 16:
+                            // timeHM
                             break;
 
                         case 123 + 17:
+                            // distance
                             break;
 
                         case 123 + 18:
+                            // height
                             break;
 
                         case 123 + 19:
+                            // power
                             break;
 
                         case 123 + 20:
+                            // sprite
                             break;
                     }
                 }
@@ -335,7 +365,7 @@ namespace openloco::stringmgr
                 }
             }
 
-            return *buffer;
+            return buffer;
         }
 
     }
