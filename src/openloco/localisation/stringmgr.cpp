@@ -27,56 +27,61 @@ namespace openloco::stringmgr
     }
 
     // TODO: decltype(value)
-    static void format_comma(uint32_t value, char* buffer)
+    static char* format_comma(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = value;
         regs.edi = (uint32_t) buffer;
 
         call(0x4959A1, regs);
+        return (char*) regs.edi;
     }
 
     // TODO: decltype(value)
-    static void format_int(uint32_t value, char* buffer)
+    static char* format_int(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = value;
         regs.edi = (uint32_t) buffer;
 
         call(0x495E2A, regs);
+        return (char*) regs.edi;
     }
 
     // TODO: decltype(value)
-    static void formatNumeric_4(uint16_t value, char* buffer)
+    static char* formatNumeric_4(uint16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
         call(0x4963FC, regs);
+        return (char*) regs.edi;
     }
 
     // TODO: decltype(value)
-    static void format_comma2dp32(uint32_t value, char* buffer)
+    static char* format_comma2dp32(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = value;
         regs.edi = (uint32_t) buffer;
 
         call(0x4962F1, regs);
+        return (char*) regs.edi;
     }
 
-    static void format_comma(uint16_t value, char* buffer)
+    static char* format_comma(uint16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
         call(0x495F35, regs);
+        return (char*) regs.edi;
     }
 
     // 0x004958C6
-    void format_string(char* buffer, string_id id, void* args)
+    char* format_string(char* buffer, string_id id, void* args)
     {
         registers regs;
         regs.eax = id;
@@ -106,15 +111,14 @@ namespace openloco::stringmgr
                 // inc     buffer
                 // or      dl, dl
                 // jnz     short loc_4958EF
+                // dec     buffer
 
                 // !!! TODO: original code is prone to buffer overflow.
                 buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
                 buffer[USER_STRING_SIZE - 1] = '\0';
+                buffer += strlen(sourceStr);
 
-                // dec     buffer
-                // TODO: ???
-
-                return;
+                return buffer;
             }
             else if (id < TOWN_NAMES_END)
             {
@@ -132,9 +136,7 @@ namespace openloco::stringmgr
                 void* town_name = (void*) &town->name;
 
                 // call    format_string
-                format_string(buffer, id, town_name);
-
-                return;
+                return format_string(buffer, id, town_name);
             }
             else if (id == TOWN_NAMES_END)
             {
@@ -148,12 +150,12 @@ namespace openloco::stringmgr
                 auto town = townmgr::get(town_id);
 
                 // call    format_string
-                format_string(buffer, town->name, nullptr);
+                buffer = format_string(buffer, town->name, nullptr);
 
                 // pop     args
                 args = temp;
 
-                return;
+                return buffer;
             }
             else
             {
@@ -176,7 +178,7 @@ namespace openloco::stringmgr
                     if (ch == 0)
                     {
                         *buffer = '\0';
-                        return;
+                        return buffer;
                     }
                     else if (ch <= 4)
                     {
@@ -221,7 +223,7 @@ namespace openloco::stringmgr
                         {
                             uint32_t value = *args;
                             args = (uint8_t*) args + 4;
-                            format_comma(value, buffer);
+                            buffer = format_comma(value, buffer);
                             break;
                         }
 
@@ -229,7 +231,7 @@ namespace openloco::stringmgr
                         {
                             uint32_t value = *args;
                             args = (uint8_t*) args + 4;
-                            format_int(value, buffer);
+                            buffer = format_int(value, buffer);
                             break;
                         }
 
@@ -237,7 +239,7 @@ namespace openloco::stringmgr
                         {
                             uint16_t value = *args;
                             args = (uint8_t*) args + 2;
-                            formatNumeric_4(value, buffer);
+                            buffer = formatNumeric_4(value, buffer);
                             break;
                         }
 
@@ -245,7 +247,7 @@ namespace openloco::stringmgr
                         {
                             uint32_t value = *args;
                             args = (uint8_t*) args + 4;
-                            format_comma2dp32(value, buffer);
+                            buffer = format_comma2dp32(value, buffer);
                             break;
                         }
 
@@ -253,7 +255,7 @@ namespace openloco::stringmgr
                         {
                             uint16_t value = *args;
                             args = (uint8_t*) args + 2;
-                            format_comma(value, buffer);
+                            buffer = format_comma(value, buffer);
                             break;
                         }
 
@@ -261,7 +263,7 @@ namespace openloco::stringmgr
                         {
                             uint16_t value = *args;
                             args = (uint8_t*) args + 2;
-                            format_int((uint32_t) value, buffer);
+                            buffer = format_int((uint32_t) value, buffer);
                             break;
                         }
 
@@ -282,7 +284,7 @@ namespace openloco::stringmgr
                             uint16_t value = *args;
                             args = (uint8_t*) args + 2;
                             // push esi?
-                            format_string(buffer, value, args);
+                            buffer = format_string(buffer, value, args);
                             // pop esi?
                             break;
                         }
@@ -333,9 +335,7 @@ namespace openloco::stringmgr
                 }
             }
 
-
-            return;
-            // call(0x00495935, regs);
+            return *buffer;
         }
 
     }
