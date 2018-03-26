@@ -211,10 +211,10 @@ namespace openloco::gui
             window->height = uiHeight;
             window->widgets[0].right = uiWidth;
             window->widgets[0].bottom = uiHeight;
-            window->viewport->width = uiWidth;
-            window->viewport->height = uiHeight;
-            window->viewport->view_width = uiWidth << window->viewport->zoom;
-            window->viewport->view_height = uiHeight << window->viewport->zoom;
+            window->viewports[0]->width = uiWidth;
+            window->viewports[0]->height = uiHeight;
+            window->viewports[0]->view_width = uiWidth << window->viewports[0]->zoom;
+            window->viewports[0]->view_height = uiHeight << window->viewports[0]->zoom;
         }
 
         window = windowmgr::find(window_type::toolbar_top);

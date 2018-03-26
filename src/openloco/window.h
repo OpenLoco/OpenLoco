@@ -13,6 +13,8 @@ namespace openloco::ui
 
 #pragma pack(push, 1)
 
+    struct viewport;
+
     struct widget_t
     {
         widget_type type; // 0x00
@@ -164,8 +166,7 @@ namespace openloco::ui
             struct
             {
                 window_event_list* event_handlers; // 0x00
-                ui::viewport* viewport;            // 0x04
-                uint8_t pad_08[0x04];              // 0x08
+                ui::viewport* viewports[2];        // 0x04
                 uint64_t enabled_widgets;          // 0x0C
                 uint64_t disabled_widgets;         // 0x14
                 uint64_t activated_widgets;        // 0x1C
@@ -212,6 +213,8 @@ namespace openloco::ui
         int16_t find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
+        void call_close();                                                                                // 0
+        void call_update();                                                                               // 7
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24

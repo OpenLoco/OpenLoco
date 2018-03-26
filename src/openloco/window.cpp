@@ -45,6 +45,20 @@ namespace openloco::ui
         return regs.dx;
     }
 
+    void window::call_close()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_close, regs);
+    }
+
+    void window::call_update()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_update, regs);
+    }
+
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
     {
         registers regs;

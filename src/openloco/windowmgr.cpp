@@ -1,4 +1,5 @@
 #include "windowmgr.h"
+#include "companymgr.h"
 #include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "ui.h"
@@ -14,6 +15,7 @@ namespace openloco::ui::windowmgr
     }
 
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
+    loco_global<uint32_t, 0x00523508> _523508;
     loco_global<window[12], 0x011370AC> _windows;
     loco_global<window*, 0x0113D754> _windows_end;
 
@@ -223,5 +225,64 @@ namespace openloco::ui::windowmgr
 
         w->call_prepare_draw();
         w->call_draw(&dpi);
+    }
+
+    // 0x004CD3D0
+    void dispatch_update_all()
+    {
+        _523508++;
+        companymgr::updating_company_id(companymgr::get_controlling_id());
+
+        for (ui::window* w = _windows_end - 1; w >= _windows; w--)
+        {
+            w->call_update();
+        }
+
+        call(0x4CE6FF);
+        call(0x4CEEA7);
+    }
+
+    // 0x004CC6EA
+    void close(window* window)
+    {
+        if (window == nullptr)
+        {
+            return;
+        }
+
+        // Make a copy of the window class and number in case
+        // the window order is changed by the close event.
+        auto type = window->type;
+        uint16_t number = window->number;
+
+        window->call_close();
+
+        window = find(type, number);
+        if (window == nullptr)
+            return;
+
+        if (window->viewports[0] != nullptr)
+        {
+            window->viewports[0]->width = 0;
+            window->viewports[0] = nullptr;
+        }
+
+        if (window->viewports[1] != nullptr)
+        {
+            window->viewports[1]->width = 0;
+            window->viewports[1] = nullptr;
+        }
+
+        window->invalidate();
+
+        // Remove window from list and reshift all windows
+        _windows_end--;
+        int windowCount = *_windows_end - window;
+        if (windowCount > 0)
+        {
+            memmove(window, window + 1, windowCount * sizeof(ui::window));
+        }
+
+        call(0x004CEC25); // viewport_update_pointers
     }
 }
