@@ -169,7 +169,7 @@ namespace openloco::stringmgr
             regs.edi = (uint32_t)buffer;
             regs.ecx = (uint32_t)args;
 
-            char* sourceStr = get_string(id);
+            const char* sourceStr = get_string(id);
 
             while (uint8_t ch = *sourceStr++)
             {
@@ -182,38 +182,71 @@ namespace openloco::stringmgr
                     }
                     else if (ch <= 4)
                     {
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
                     }
                     else if (ch <= 16)
                     {
-                        *buffer++ = ch;
+                        *buffer = ch;
+                        buffer++;
                     }
                     else if (ch <= 22)
                     {
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
                     }
                     else
                     {
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
-                        ch = *sourceStr++
-                        *buffer++ = ch;
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
+
+                        ch = *sourceStr;
+                        sourceStr++;
+
+                        *buffer = ch;
+                        buffer++;
                     }
                 }
                 else if (ch < '}') // 0x7B
                 {
-                    *buffer++ = ch;
+                    *buffer = ch;
+                    buffer++;
                 }
                 else if (ch < 0x90)
                 {
@@ -361,7 +394,8 @@ namespace openloco::stringmgr
                 }
                 else
                 {
-                    *buffer++ = ch;
+                    *buffer = ch;
+                    buffer++;
                 }
             }
 
