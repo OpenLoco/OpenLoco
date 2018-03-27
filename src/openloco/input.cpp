@@ -144,20 +144,8 @@ namespace openloco::input
                 {
                     if (button == mouse_button::left_down)
                     {
-
-                        { // window_bring_to_front_by_id
-                            registers r1;
-                            r1.cx = (int8_t)(ui::window_type)*modalWindowType;
-                            r1.dx = 0;
-                            call(0x004CD3A9, r1);
-                        }
-
-                        { // audio_play_sound_panned
-                            registers r1;
-                            r1.eax = 14;
-                            r1.ebx = x;
-                            call(0x489cb5, r1);
-                        }
+                        ui::windowmgr::bring_to_front(modalWindowType, 0);
+                        audio::play_sound((audio::sound_id)14, x);
                     }
 
                     if (button == mouse_button::left_up)

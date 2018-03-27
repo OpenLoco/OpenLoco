@@ -82,6 +82,17 @@ namespace openloco::ui::windowmgr
         return (window*)regs.esi;
     }
 
+    // 0x004CD3A9
+    window* bring_to_front(window_type type, uint16_t id)
+    {
+        registers regs;
+        regs.cx = (uint8_t)type;
+        regs.dx = id;
+        call(0x004CD3A9, regs);
+
+        return (window*)regs.esi;
+    }
+
     // 0x004CB966
     void invalidate(window_type type)
     {

@@ -80,6 +80,7 @@ namespace openloco::ui::windowmgr
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
     window* find_at(int16_t x, int16_t y);
+    window* bring_to_front(window_type type, uint16_t id);
     void invalidate(window_type type);
     void invalidate(window_type type, uint16_t id);
     void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index);
