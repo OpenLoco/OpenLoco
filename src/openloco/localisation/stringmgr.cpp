@@ -3,6 +3,7 @@
 #include "../townmgr.h"
 
 #include <cstring>
+#include <cstdio>
 #include <stdexcept>
 
 using namespace openloco::interop;
@@ -23,7 +24,11 @@ namespace openloco::stringmgr
 
     const char* get_string(string_id id)
     {
-        return _strings[id];
+        printf("Fetching string %d\n", id);
+        char* str = _strings[id];
+        printf("Found at %p\n", str);
+
+        return str;
     }
 
     // TODO: decltype(value)
@@ -83,10 +88,12 @@ namespace openloco::stringmgr
     // 0x004958C6
     char* format_string(char* buffer, string_id id, void* args)
     {
+        /*
         registers regs;
         regs.eax = id;
         regs.edi = (uint32_t)buffer;
         regs.ecx = (uint32_t)args;
+        */
 
         if (id >= USER_STRINGS_START)
         {
@@ -164,12 +171,19 @@ namespace openloco::stringmgr
         }
         else
         {
+            /*
             registers regs;
             regs.eax = id;
             regs.edi = (uint32_t)buffer;
             regs.ecx = (uint32_t)args;
+            */
 
             const char* sourceStr = get_string(id);
+            if (sourceStr == nullptr)
+            {
+                printf("Got a nullptr for string id %d -- cowardly refusing\n", id);
+                return buffer;
+            }
 
             while (uint8_t ch = *sourceStr++)
             {
@@ -340,7 +354,9 @@ namespace openloco::stringmgr
 
                             do
                             {
-                                *buffer++ = *sourceStr++;
+                                *buffer = *sourceStr;
+                                buffer++;
+                                sourceStr++;
                             }
                             while (*sourceStr != '\0');
 
