@@ -121,8 +121,8 @@ namespace openloco::input
 
                         break;
 
-                    case ui::widget_type::wt_19:
-                        if (input::has_flag(input_flags::flag_3))
+                    case ui::widget_type::viewport:
+                        if (input::has_flag(input_flags::tool_active))
                         {
                             // 3
                             cursorId = (ui::cursor_id)*current_tool;

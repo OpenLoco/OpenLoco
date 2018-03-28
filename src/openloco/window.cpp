@@ -18,6 +18,21 @@ namespace openloco::ui
         return (uint32_t)e < 0x004D7000;
     }
 
+    bool window::can_resize()
+    {
+        return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
+    }
+
+    bool window::is_enabled(int8_t widget_index)
+    {
+        return (this->enabled_widgets & (1ULL << widget_index)) != 0;
+    }
+
+    bool window::is_disabled(int8_t widget_index)
+    {
+        return (this->disabled_widgets & (1ULL << widget_index)) != 0;
+    }
+
     // 0x004CA4BD
     void window::invalidate()
     {
@@ -64,6 +79,16 @@ namespace openloco::ui
         registers regs;
         regs.esi = (int32_t)this;
         call((uint32_t)this->event_handlers->on_update, regs);
+    }
+
+    void window::call_tool_down(int16_t widget_index, int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        regs.dx = widget_index;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_tool_down, regs);
     }
 
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
@@ -334,7 +359,7 @@ namespace openloco::ui
 
                 case widget_type::wt_17:
                 case widget_type::wt_18:
-                case widget_type::wt_19:
+                case widget_type::viewport:
                     widget::draw_17(dpi, this, widget, widgetFlags, colour);
                     widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
                     break;

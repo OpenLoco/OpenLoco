@@ -7,10 +7,10 @@ namespace openloco::input
     enum class mouse_button
     {
         released,
-        left_down,
-        right_down,
-        left_up,
-        right_up,
+        left_pressed,
+        left_released,
+        right_pressed,
+        right_released,
     };
 
     enum class input_state
@@ -29,8 +29,8 @@ namespace openloco::input
 
     enum class input_flags
     {
-        flag0 = 1 << 0,
-        flag_3 = 1 << 3,
+        widget_pressed = 1 << 0,
+        tool_active = 1 << 3,
         flag4 = 1 << 4,
         flag5 = 1 << 5,
         viewport_scrolling = 1 << 7,

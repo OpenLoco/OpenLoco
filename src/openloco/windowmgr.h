@@ -19,7 +19,7 @@ namespace openloco::ui
         about = 9,
         about_atari = 10,
         about_music = 11,
-        wt_12 = 12,
+        error = 12,
         construction = 13,
         prompt_save_game = 14,
         terraform = 15,
@@ -80,6 +80,7 @@ namespace openloco::ui::windowmgr
     window* find(window_type type);
     window* find(window_type type, uint16_t id);
     window* find_at(int16_t x, int16_t y);
+    window* bring_to_front(window* window);
     window* bring_to_front(window_type type, uint16_t id);
     void invalidate(window_type type);
     void invalidate(window_type type, uint16_t id);

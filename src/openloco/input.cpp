@@ -8,6 +8,8 @@
 
 using namespace openloco::interop;
 
+#define LOCOMOTION 1
+
 namespace openloco::input
 {
     loco_global<uint8_t, 0x00508F18> _keyModifier;
@@ -85,30 +87,34 @@ namespace openloco::input
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
 
     static loco_global<ui::window_type, 0x0052336F> _pressedWindowType;
-    static loco_global<uint16_t, 0x00523370> _pressedWindowNumber;
+    static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
     static loco_global<uint32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint16_t, 0x00523378> _dragLastX;
     static loco_global<uint16_t, 0x0052337A> _dragLastY;
-    static loco_global<uint16_t, 0x0052337C> _dragWindowNumber;
+    static loco_global<ui::window_number, 0x0052337C> _dragWindowNumber;
     static loco_global<ui::window_type, 0x0052337E> _dragWindowType;
     static loco_global<uint8_t, 0x0052337F> _dragWidgetIndex;
     static loco_global<uint8_t, 0x00523380> _dragScrollIndex;
-    static loco_global<ui::window_type, 0x00523381> _523381;
-    static loco_global<int16_t, 0x00523384> _523382;
-    static loco_global<int16_t, 0x00523384> _523384;
-    static loco_global<uint16_t, 0x00523386> _523386;
-    static loco_global<uint16_t, 0x00523388> _523388;
-    static loco_global<uint16_t, 0x0052338A> _52338A;
+    static loco_global<ui::window_type, 0x00523381> _tooltipWindowType;
+    static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
+    static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
+    static loco_global<uint16_t, 0x00523386> _tooltipCursorX;
+    static loco_global<uint16_t, 0x00523388> _tooltipCursorY;
+    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
+    static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<ui::window_type, 0x00523392> _toolWindowType;
+
+    loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<uint16_t, 0x00523396> _523396;
     static loco_global<uint32_t, 0x00523398> _523398;
 
     static loco_global<ui::window_type, 0x005233A8> _hoverWindowType;
     static loco_global<uint8_t, 0x005233A9> _5233A9;
-    static loco_global<uint16_t, 0x005233AA> _hoverWindowNumber;
+    static loco_global<ui::window_number, 0x005233AA> _hoverWindowNumber;
     static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
@@ -120,9 +126,9 @@ namespace openloco::input
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
     static void state_normal_left(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
     static void state_normal_right(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
-    static void loc_4C8689(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
-    static void input_window_resize(int16_t x, int16_t y, ui::window* window, int32_t widget_index);
-    static void window_drag(int16_t x, int16_t y, ui::window* window, int32_t widget_index);
+    static void scroll_begin(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
+    static void window_resize_begin(int16_t x, int16_t y, ui::window* window, int32_t widget_index);
+    static void window_position_begin(int16_t x, int16_t y, ui::window* window, int32_t widget_index);
 
     void handle_mouse(int16_t x, int16_t y, mouse_button button)
     {
@@ -136,25 +142,27 @@ namespace openloco::input
             widget_index = window->find_widget_at(x, y);
         }
 
+#ifdef LOCOMOTION
         if (*modalWindowType != ui::window_type::undefined)
         {
             if (window != nullptr)
             {
                 if (window->type != *modalWindowType)
                 {
-                    if (button == mouse_button::left_down)
+                    if (button == mouse_button::left_pressed)
                     {
                         ui::windowmgr::bring_to_front(modalWindowType, 0);
                         audio::play_sound((audio::sound_id)14, x);
                     }
 
-                    if (button == mouse_button::left_up)
+                    if (button == mouse_button::right_pressed)
                     {
                         return;
                     }
                 }
             }
         }
+#endif
 
         ui::widget_t* widget = nullptr;
         if (widget_index != -1)
@@ -173,10 +181,10 @@ namespace openloco::input
         switch (input::state())
         {
             case input_state::reset:
-                _523386 = x;
-                _523388 = y;
-                _52338A = 0;
-                _523381 = ui::window_type::undefined;
+                _tooltipCursorX = x;
+                _tooltipCursorY = y;
+                _tooltipTimeout = 0;
+                _tooltipWindowType = ui::window_type::undefined;
                 _state = (uint8_t)input_state::reset;
                 reset_flag(input_flags::flag4);
                 state_normal(button, x, y, window, widget, widget_index);
@@ -231,12 +239,12 @@ namespace openloco::input
         int dx = 0, dy = 0;
         switch (state)
         {
-            case mouse_button::right_down:
+            case mouse_button::left_released:
                 _state = 1;
-                _52338A = 0;
-                _523384 = _pressedWidgetIndex;
-                _523381 = _pressedWindowType;
-                _523382 = _pressedWindowNumber;
+                _tooltipTimeout = 0;
+                _tooltipWidgetIndex = _pressedWidgetIndex;
+                _tooltipWindowType = _pressedWindowType;
+                _tooltipWindowNumber = _pressedWindowNumber;
 
                 if (w->flags & ui::window_flags::flag_15)
                 {
@@ -370,13 +378,13 @@ namespace openloco::input
                 break;
             }
 
-            case mouse_button::right_down:
+            case mouse_button::left_released:
             {
                 _state = 1;
-                _52338A = 0;
-                _523384 = _pressedWidgetIndex;
-                _523381 = _pressedWindowType;
-                _523382 = _pressedWindowNumber;
+                _tooltipTimeout = 0;
+                _tooltipWidgetIndex = _pressedWidgetIndex;
+                _tooltipWindowType = _pressedWindowType;
+                _tooltipWindowNumber = _pressedWindowNumber;
 
                 y = std::clamp<int16_t>(y, 29, ui::height() - 29);
 
@@ -434,10 +442,10 @@ namespace openloco::input
     {
         switch (state)
         {
-            case mouse_button::left_down:
+            case mouse_button::left_pressed:
                 state_normal_left(x, y, window, widget, widgetIndex);
                 break;
-            case mouse_button::left_up:
+            case mouse_button::right_pressed:
                 state_normal_right(x, y, window, widget, widgetIndex);
                 break;
             case mouse_button::released:
@@ -457,11 +465,11 @@ namespace openloco::input
 
         if (windowType == ui::window_type::undefined)
         {
-            ui::windowmgr::invalidate_widget((ui::window_type)windowType, windowNumber, widgetIdx);
+            ui::windowmgr::invalidate_widget(windowType, windowNumber, widgetIdx);
             return;
         }
 
-        ui::window* oldWindow = ui::windowmgr::find((ui::window_type)windowType, windowNumber);
+        ui::window* oldWindow = ui::windowmgr::find(windowType, windowNumber);
 
         if (oldWindow != nullptr)
         {
@@ -472,7 +480,7 @@ namespace openloco::input
                 oldWidget->type == ui::widget_type::wt_16 || oldWidget->type == ui::widget_type::wt_10 || oldWidget->type == ui::widget_type::wt_9)
             {
 
-                ui::windowmgr::invalidate_widget((ui::window_type)windowType, windowNumber, widgetIdx);
+                ui::windowmgr::invalidate_widget(windowType, windowNumber, widgetIdx);
             }
         }
     }
@@ -489,6 +497,7 @@ namespace openloco::input
             input_widget_over_flatbutton_invalidate();
         }
 
+#if LOCOMOTION
         if (window != nullptr && widgetIndex != -1)
         {
             if ((window->disabled_widgets & (1ULL << widgetIndex)))
@@ -496,6 +505,7 @@ namespace openloco::input
                 window->call_3();
             }
         }
+#endif
 
         bool open = true;
         if (window != nullptr && widgetIndex != -1)
@@ -522,27 +532,32 @@ namespace openloco::input
             }
         }
 
-        if (*_523381 != ui::window_type::undefined)
+        if (*_tooltipWindowType != ui::window_type::undefined)
         {
+            if (*_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
-                registers regs;
-                regs.esi = (uint32_t)window;
-
-                call(0x4C82FC, regs);
+                _tooltipTimeout += time_since_last_tick;
+                if (_tooltipTimeout >= 8000)
+                {
+                    ui::windowmgr::close(ui::window_type::tooltip, 0);
+                }
             }
-            return;
+            else
+            {
+                ui::windowmgr::close(ui::window_type::tooltip);
+            }
         }
 
-        if (_tooltipNotShownTicks < 500 || (x == _523386 && y == _523388))
+        if (_tooltipNotShownTicks < 500 || (x == _tooltipCursorX && y == _tooltipCursorY))
         {
-            _52338A += time_since_last_tick;
+            _tooltipTimeout += time_since_last_tick;
             int bp = 2000;
             if (_tooltipNotShownTicks <= 1000)
             {
                 bp = 0;
             }
 
-            if (bp > _52338A)
+            if (bp > _tooltipTimeout)
             {
                 return;
             }
@@ -557,25 +572,34 @@ namespace openloco::input
             }
         }
 
-        _52338A = 0;
-        _523386 = x;
-        _523388 = y;
+        _tooltipTimeout = 0;
+        _tooltipCursorX = x;
+        _tooltipCursorY = y;
     }
 
     // 0x004C84BE
     static void state_normal_left(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
     {
+        ui::window_type windowType = ui::window_type::undefined;
+        ui::window_number windowNumber = 0;
 
-        ui::windowmgr::close(ui::window_type::wt_12);
+        if (window != nullptr)
+        {
+            windowType = window->type;
+            windowNumber = window->number;
+        }
+
+        ui::windowmgr::close(ui::window_type::error);
         ui::windowmgr::close(ui::window_type::tooltip);
 
+        // Window might have changed position in the list, therefore find it again
+        window = ui::windowmgr::find(windowType, windowNumber);
         if (window == nullptr)
         {
             return;
         }
 
-        // ui::windowmgr::bring_to_front(window);
-
+        window = ui::windowmgr::bring_to_front(window);
         if (widget == nullptr)
         {
             return;
@@ -587,16 +611,36 @@ namespace openloco::input
             case ui::widget_type::caption_23:
             case ui::widget_type::caption_24:
             case ui::widget_type::caption_25:
-                window_drag(x, y, window, widgetIndex);
+                window_position_begin(x, y, window, widgetIndex);
                 break;
 
             case ui::widget_type::panel:
             case ui::widget_type::frame:
-                input_window_resize(x, y, window, widgetIndex);
+                if (window->can_resize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
+                {
+                    window_resize_begin(x, y, window, widgetIndex);
+                }
+                else
+                {
+                    window_position_begin(x, y, window, widgetIndex);
+                }
                 break;
 
-            case ui::widget_type::wt_19:
-                //input_drag_viewport
+            case ui::widget_type::viewport:
+                _state = (uint8_t)input_state::viewport_left;
+                _dragLastX = x;
+                _dragLastY = y;
+                _dragWindowType = window->type;
+                _dragWindowNumber = window->number;
+                if (has_flag(input_flags::tool_active))
+                {
+                    auto w = ui::windowmgr::find(_toolWindowType, _toolWindowNumber);
+                    if (w != nullptr)
+                    {
+                        w->call_tool_down(_toolWidgetIndex, x, y);
+                        set_flag(input_flags::flag4);
+                    }
+                }
                 break;
 
             case ui::widget_type::scrollview:
@@ -605,72 +649,36 @@ namespace openloco::input
                 _pressedWidgetIndex = widgetIndex;
                 _pressedWindowType = window->type;
                 _pressedWindowNumber = window->number;
-                _523386 = x;
-                _523388 = y;
-                loc_4C8689(x, y, window, widget, widgetIndex);
+                _tooltipCursorX = x;
+                _tooltipCursorY = y;
+                scroll_begin(x, y, window, widget, widgetIndex);
                 break;
 
             default:
-                if (!(window->enabled_widgets & (1ULL << widgetIndex)))
+                if (window->is_enabled(widgetIndex) && !window->is_disabled(widgetIndex))
                 {
-                    break;
-                }
-                if ((window->disabled_widgets & (1ULL << widgetIndex)))
-                {
-                    break;
-                }
+                    audio::play_sound(audio::sound_id::click_1, window->x + ((widget->left + widget->right) / 2));
 
-                // Not sure if there is NO location, or a location with only a Z
-                audio::play_sound((audio::sound_id)0, window->x + ((widget->left + widget->right) / 2));
+                    // Set new cursor down widget
+                    _pressedWidgetIndex = widgetIndex;
+                    _pressedWindowType = window->type;
+                    _pressedWindowNumber = window->number;
+                    set_flag(input_flags::widget_pressed);
+                    _state = (uint8_t)input_state::widget_pressed;
+                    _clickRepeatTicks = 1;
 
-                _pressedWidgetIndex = widgetIndex;
-                _pressedWindowType = window->type;
-                _pressedWindowNumber = window->number;
-                set_flag(input_flags::flag0);
-                _state = (uint8_t)input_state::widget_pressed;
-                _clickRepeatTicks = 1;
-                ui::windowmgr::invalidate_widget((ui::window_type)window->type, window->number, widgetIndex);
-                window->call_on_mouse_down(widgetIndex);
+                    ui::windowmgr::invalidate_widget(window->type, window->number, widgetIndex);
+                    window->call_on_mouse_down(widgetIndex);
+                }
 
                 break;
         }
     }
 
     // 0x004C85D1
-    static void input_window_resize(int16_t x, int16_t y, ui::window* window, int32_t widget_index)
+    static void window_resize_begin(int16_t x, int16_t y, ui::window* window, int32_t widget_index)
     {
-        bool resize = true;
-
-        // TEST + JZ is hard to understand
-        if (!(window->flags & (1u << 9)))
-        {
-            resize = false;
-        }
-
-        if (window->min_width == window->max_width && window->min_height == window->max_height)
-        {
-            resize = false;
-        }
-
-        if (x < (window->x + window->width - 19))
-        {
-            resize = false;
-        }
-
-        if (y < (window->y + window->height - 19))
-        {
-            resize = false;
-        }
-
-        if (resize)
-        {
-            _state = (uint8_t)input_state::resizing;
-        }
-        else
-        {
-            _state = (uint8_t)input_state::positioning_window;
-        }
-
+        _state = (uint8_t)input_state::resizing;
         _pressedWidgetIndex = widget_index;
         _dragLastX = x;
         _dragLastY = y;
@@ -679,8 +687,7 @@ namespace openloco::input
     }
 
     // 0x00C877D
-    static void
-    window_drag(int16_t x, int16_t y, ui::window* window, int32_t widget_index)
+    static void window_position_begin(int16_t x, int16_t y, ui::window* window, int32_t widget_index)
     {
         _state = (uint8_t)input_state::positioning_window;
         _pressedWidgetIndex = widget_index;
@@ -694,27 +701,31 @@ namespace openloco::input
     {
         ui::windowmgr::close(ui::window_type::tooltip);
 
-        if (!window)
+        if (window == nullptr)
         {
             return;
         }
         //  ui::windowmgr::bring_to_front(window);
 
-        if (*modalWindowType == window->type)
+        if (*modalWindowType != ui::window_type::undefined)
         {
-            loc_4C8689(x, y, window, widget, widgetIndex);
+            if (*modalWindowType == window->type)
+            {
+                scroll_begin(x, y, window, widget, widgetIndex);
+            }
+
             return;
         }
 
-        if (widget)
+        if (!is_title_mode())
         {
             switch (widget->type)
             {
                 default:
                     break;
 
-                case ui::widget_type::wt_19:
-                    window->flags &= ~(1u << 3);
+                case ui::widget_type::viewport:
+                    window->flags &= ~ui::window_flags::flag_3;
                     _state = (uint8_t)input_state::viewport_right;
                     _dragLastX = x;
                     _dragLastY = y;
@@ -761,16 +772,18 @@ namespace openloco::input
         }
     }
 
-    void loc_4C8689(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
+    void scroll_begin(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
     {
-        ui::scrollview::scroll_part outArea;
+        ui::scrollview::scroll_part scrollArea;
         int16_t outX, outY;
         int32_t scrollAreaOffset;
-        ui::scrollview::get_part(window, widget, x, y, &outX, &outY, &outArea, &scrollAreaOffset);
-        _523396 = (uint16_t)outArea;
+
+        ui::scrollview::get_part(window, widget, x, y, &outX, &outY, &scrollArea, &scrollAreaOffset);
+
+        _523396 = (uint16_t)scrollArea;
         _523398 = scrollAreaOffset;
 
-        if (outArea == ui::scrollview::scroll_part::view)
+        if (scrollArea == ui::scrollview::scroll_part::view)
         {
             window->call_scroll_mouse_down(outX, outY, scrollAreaOffset / 0x12);
             return;
@@ -779,32 +792,36 @@ namespace openloco::input
         // Not implemented for any window
         // window->call_22()
 
-        switch (outArea)
+        registers regs;
+        regs.cx = (int16_t)scrollArea;
+        regs.edx = scrollAreaOffset;
+
+        switch (scrollArea)
         {
             case ui::scrollview::scroll_part::hscrollbar_left:
-                call(0x4c894f);
+                call(0x4c894f, regs);
                 break;
             case ui::scrollview::scroll_part::hscrollbar_right:
-                call(0x4c89ae);
+                call(0x4c89ae, regs);
                 break;
             case ui::scrollview::scroll_part::hscrollbar_left_trough:
-                call(0x4c8a36);
+                call(0x4c8a36, regs);
                 break;
             case ui::scrollview::scroll_part::hscrollbar_right_trough:
-                call(0x4c8aa6);
+                call(0x4c8aa6, regs);
                 break;
 
             case ui::scrollview::scroll_part::vscrollbar_top:
-                call(0x4c8b26);
+                call(0x4c8b26, regs);
                 break;
             case ui::scrollview::scroll_part::vscrollbar_bottom:
-                call(0x4c8b85);
+                call(0x4c8b85, regs);
                 break;
             case ui::scrollview::scroll_part::vscrollbar_top_trough:
-                call(0x4c8c0d);
+                call(0x4c8c0d, regs);
                 break;
             case ui::scrollview::scroll_part::vscrollbar_bottom_trough:
-                call(0x4c8c7d);
+                call(0x4c8c7d, regs);
                 break;
 
             default:

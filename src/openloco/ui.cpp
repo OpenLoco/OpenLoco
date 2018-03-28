@@ -566,11 +566,11 @@ namespace openloco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(mouse_button::left_down);
+                            input::enqueue_mouse_button(mouse_button::left_pressed);
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(mouse_button::right_down);
+                            input::enqueue_mouse_button(mouse_button::left_released);
                             addr<0x0113E0C0, int32_t>() = 1;
                             addr<0x005251C8, int32_t>() = 1;
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -584,11 +584,11 @@ namespace openloco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(mouse_button::left_up);
+                            input::enqueue_mouse_button(mouse_button::right_pressed);
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(mouse_button::right_up);
+                            input::enqueue_mouse_button(mouse_button::right_released);
                             addr<0x0113E0C0, int32_t>() = 0;
                             addr<0x005251C8, int32_t>() = 0;
                             addr<0x01140845, uint8_t>() = 0;
