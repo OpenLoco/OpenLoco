@@ -81,11 +81,11 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_update, regs);
     }
 
-    void window::call_tool_down(int16_t widget_index, int16_t x, int16_t y)
+    void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
         registers regs;
-        regs.ax = x;
-        regs.bx = y;
+        regs.ax = xPos;
+        regs.bx = yPos;
         regs.dx = widget_index;
         regs.esi = (int32_t)this;
         call((uint32_t)this->event_handlers->on_tool_down, regs);

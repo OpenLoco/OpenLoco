@@ -229,7 +229,7 @@ namespace openloco::ui
         void call_3();                                                                                    // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_update();                                                                               // 7
-        void call_tool_down(int16_t widget_index, int16_t x, int16_t y);                                  // 11                                                                               // 7
+        void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11                                                                               // 7
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
