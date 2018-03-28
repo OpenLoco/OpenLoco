@@ -56,7 +56,7 @@ namespace openloco::ui
     }
 
     // 0x004C9513
-    int16_t window::find_widget_at(int16_t xPos, int16_t yPos)
+    widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
     {
         registers regs;
         regs.ax = xPos;
@@ -64,7 +64,7 @@ namespace openloco::ui
         regs.esi = (int32_t)this;
         call(0x004C9513, regs);
 
-        return regs.dx;
+        return (widget_index)regs.dx;
     }
 
     void window::call_close()
@@ -187,13 +187,13 @@ namespace openloco::ui
         return regs.ax != (int16_t)string_ids::null;
     }
 
-    void window::call_25(int16_t xPos, int16_t yPos)
+    void window::call_on_move(int16_t xPos, int16_t yPos)
     {
         registers regs;
         regs.cx = xPos;
         regs.dx = yPos;
         regs.esi = (int32_t)this;
-        call(this->event_handlers->event_25, regs);
+        call(this->event_handlers->on_move, regs);
     }
 
     void window::call_prepare_draw()

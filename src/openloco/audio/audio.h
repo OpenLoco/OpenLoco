@@ -7,6 +7,8 @@ namespace openloco::audio
     enum class sound_id
     {
         click_1 = 0,
+        sound_2 = 2,
+        sound_14 = 14,
     };
 
     void initialise_dsound();

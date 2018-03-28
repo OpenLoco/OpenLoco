@@ -7,6 +7,7 @@
 
 namespace openloco::ui
 {
+    using widget_index = int8_t;
     using window_number = uint16_t;
     enum class window_type : uint8_t;
     enum class widget_type : uint8_t;
@@ -130,7 +131,7 @@ namespace openloco::ui
                 uint32_t event_22;
                 uint32_t tooltip;
                 uint32_t cursor;
-                uint32_t event_25;
+                uint32_t on_move;
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, gfx::drawpixelinfo_t*);
                 uint32_t event_28;
@@ -220,7 +221,7 @@ namespace openloco::ui
         void invalidate();
         void update_scroll_widgets();
         void sub_4CA17F();
-        int16_t find_widget_at(int16_t xPos, int16_t yPos);
+        widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
@@ -235,7 +236,7 @@ namespace openloco::ui
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
-        void call_25(int16_t xPos, int16_t yPos);                                                         // 25
+        void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
         void call_prepare_draw();                                                                         // 26
         void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
     };
