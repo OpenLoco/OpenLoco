@@ -115,6 +115,265 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
+    static char* format_string_part(char* buffer, char* sourceStr, void* args)
+    {
+        while (uint8_t ch = *sourceStr++)
+        {
+            if (ch <= 0x1F)
+            {
+                if (ch == 0)
+                {
+                    *buffer = '\0';
+                    return buffer;
+                }
+                else if (ch <= 4)
+                {
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+                }
+                else if (ch <= 16)
+                {
+                    *buffer = ch;
+                    buffer++;
+                }
+                else if (ch <= 22)
+                {
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+                }
+                else
+                {
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+
+                    ch = *sourceStr;
+                    sourceStr++;
+
+                    *buffer = ch;
+                    buffer++;
+                }
+            }
+            else if (ch < '}') // 0x7B
+            {
+                *buffer = ch;
+                buffer++;
+            }
+            else if (ch < 0x90)
+            {
+                switch (ch)
+                {
+                    case 123 + 0:
+                    {
+                        uint32_t value = *(uint32_t*) args;
+                        args = (uint32_t*) args + 1;
+                        buffer = format_comma(value, buffer);
+                        break;
+                    }
+
+                    case 123 + 1:
+                    {
+                        uint32_t value = *(uint32_t*) args;
+                        args = (uint32_t*) args + 1;
+                        buffer = format_int(value, buffer);
+                        break;
+                    }
+
+                    case 123 + 2:
+                    {
+                        uint16_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+                        buffer = formatNumeric_4(value, buffer);
+                        break;
+                    }
+
+                    case 123 + 3:
+                    {
+                        uint32_t value = *(uint32_t*) args;
+                        args = (uint32_t*) args + 1;
+                        buffer = format_comma2dp32(value, buffer);
+                        break;
+                    }
+
+                    case 123 + 4:
+                    {
+                        uint16_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+                        buffer = format_comma(value, buffer);
+                        break;
+                    }
+
+                    case 123 + 5:
+                    {
+                        uint16_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+                        buffer = format_int((uint32_t) value, buffer);
+                        break;
+                    }
+
+                    case 123 + 6:
+                    {
+                        // sub_495B66
+                        break;
+                    }
+
+                    case 123 + 7:
+                    {
+                        // sub_495B5B
+                        break;
+                    }
+
+                    case 123 + 8:
+                    {
+                        uint16_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+                        char* sourceStr_ = sourceStr;
+                        buffer = format_string(buffer, value, args);
+                        sourceStr = sourceStr_;
+                        break;
+                    }
+
+                    case 123 + 9:
+                    {
+                        string_id id = *(uint16_t*) sourceStr;
+                        sourceStr += 2;
+                        char* sourceStr_ = sourceStr;
+                        buffer = format_string(buffer, id, args);
+                        sourceStr = sourceStr_;
+                        break;
+                    }
+
+                    case 123 + 10:
+                    {
+                        char* sourceStr_ = sourceStr;
+                        sourceStr = (char*) args;
+                        args = (uint32_t*) args + 1;
+
+                        do
+                        {
+                            *buffer = *sourceStr;
+                            buffer++;
+                            sourceStr++;
+                        }
+                        while (*sourceStr != '\0');
+
+                        buffer--;
+                        sourceStr = sourceStr_;
+                        break;
+                    }
+
+                    case 123 + 11:
+                    {
+                        char modifier = *sourceStr;
+                        uint32_t value = *(uint32_t*) args;
+                        sourceStr++;
+                        args = (uint32_t*) args + 1;
+
+                        switch (modifier)
+                        {
+                            case 0:
+                                buffer = formatDayMonthYearFull(value, buffer);
+                                break;
+
+                            case 4:
+                                buffer = formatMonthYearFull(value, buffer);
+                                break;
+
+                            case 8:
+                                buffer = formatMonthYearAbbrev_0(value, buffer);
+                                break;
+
+                            default:
+                               throw std::out_of_range("format_string: unexpected modifier: " + modifier);
+                        }
+
+                        break;
+                    }
+
+                    case 123 + 12:
+                        // velocity
+                        break;
+
+                    case 123 + 13:
+                        // pop16
+                        args = (uint16_t*) args + 1;
+                        break;
+
+                    case 123 + 14:
+                        // push16
+                        args = (uint16_t*) args - 1;
+                        break;
+
+                    case 123 + 15:
+                        // timeMS
+                        break;
+
+                    case 123 + 16:
+                        // timeHM
+                        break;
+
+                    case 123 + 17:
+                        // distance
+                        break;
+
+                    case 123 + 18:
+                        // height
+                        break;
+
+                    case 123 + 19:
+                        // power
+                        break;
+
+                    case 123 + 20:
+                        // sprite
+                        break;
+                }
+            }
+            else
+            {
+                *buffer = ch;
+                buffer++;
+            }
+        }
+
+        return buffer;
+    }
+
     // 0x004958C6
     char* format_string(char* buffer, string_id id, void* args)
     {
@@ -208,270 +467,14 @@ namespace openloco::stringmgr
             regs.ecx = (uint32_t)args;
             */
 
-            const char* sourceStr = get_string(id);
+            char* sourceStr = (char*) get_string(id);
             if (sourceStr == nullptr)
             {
                 printf("Got a nullptr for string id %d -- cowardly refusing\n", id);
                 return buffer;
             }
 
-            while (uint8_t ch = *sourceStr++)
-            {
-                if (ch <= 0x1F)
-                {
-                    if (ch == 0)
-                    {
-                        *buffer = '\0';
-                        return buffer;
-                    }
-                    else if (ch <= 4)
-                    {
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-                    }
-                    else if (ch <= 16)
-                    {
-                        *buffer = ch;
-                        buffer++;
-                    }
-                    else if (ch <= 22)
-                    {
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-                    }
-                    else
-                    {
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-                    }
-                }
-                else if (ch < '}') // 0x7B
-                {
-                    *buffer = ch;
-                    buffer++;
-                }
-                else if (ch < 0x90)
-                {
-                    switch (ch)
-                    {
-                        case 123 + 0:
-                        {
-                            uint32_t value = *(uint32_t*) args;
-                            args = (uint32_t*) args + 1;
-                            buffer = format_comma(value, buffer);
-                            break;
-                        }
-
-                        case 123 + 1:
-                        {
-                            uint32_t value = *(uint32_t*) args;
-                            args = (uint32_t*) args + 1;
-                            buffer = format_int(value, buffer);
-                            break;
-                        }
-
-                        case 123 + 2:
-                        {
-                            uint16_t value = *(uint16_t*) args;
-                            args = (uint16_t*) args + 1;
-                            buffer = formatNumeric_4(value, buffer);
-                            break;
-                        }
-
-                        case 123 + 3:
-                        {
-                            uint32_t value = *(uint32_t*) args;
-                            args = (uint32_t*) args + 1;
-                            buffer = format_comma2dp32(value, buffer);
-                            break;
-                        }
-
-                        case 123 + 4:
-                        {
-                            uint16_t value = *(uint16_t*) args;
-                            args = (uint16_t*) args + 1;
-                            buffer = format_comma(value, buffer);
-                            break;
-                        }
-
-                        case 123 + 5:
-                        {
-                            uint16_t value = *(uint16_t*) args;
-                            args = (uint16_t*) args + 1;
-                            buffer = format_int((uint32_t) value, buffer);
-                            break;
-                        }
-
-                        case 123 + 6:
-                        {
-                            // sub_495B66
-                            break;
-                        }
-
-                        case 123 + 7:
-                        {
-                            // sub_495B5B
-                            break;
-                        }
-
-                        case 123 + 8:
-                        {
-                            uint16_t value = *(uint16_t*) args;
-                            args = (uint16_t*) args + 1;
-                            const char* sourceStr_ = sourceStr;
-                            buffer = format_string(buffer, value, args);
-                            sourceStr = sourceStr_;
-                            break;
-                        }
-
-                        case 123 + 9:
-                        {
-                            id = *(uint16_t*) sourceStr;
-                            sourceStr += 2;
-                            const char* sourceStr_ = sourceStr;
-                            buffer = format_string(buffer, id, args);
-                            sourceStr = sourceStr_;
-                            break;
-                        }
-
-                        case 123 + 10:
-                        {
-                            const char* sourceStr_ = sourceStr;
-                            sourceStr = (char*) args;
-                            args = (uint32_t*) args + 1;
-
-                            do
-                            {
-                                *buffer = *sourceStr;
-                                buffer++;
-                                sourceStr++;
-                            }
-                            while (*sourceStr != '\0');
-
-                            buffer--;
-                            sourceStr = sourceStr_;
-                            break;
-                        }
-
-                        case 123 + 11:
-                        {
-                            char modifier = *sourceStr;
-                            uint32_t value = *(uint32_t*) args;
-                            sourceStr++;
-                            args = (uint32_t*) args + 1;
-
-                            switch (modifier)
-                            {
-                                case 0:
-                                    buffer = formatDayMonthYearFull(value, buffer);
-                                    break;
-
-                                case 4:
-                                    buffer = formatMonthYearFull(value, buffer);
-                                    break;
-
-                                case 8:
-                                    buffer = formatMonthYearAbbrev_0(value, buffer);
-                                    break;
-
-                                default:
-                                   throw std::out_of_range("format_string: unexpected modifier: " + modifier);
-                            }
-
-                            break;
-                        }
-
-                        case 123 + 12:
-                            // velocity
-                            break;
-
-                        case 123 + 13:
-                            // pop16
-                            args = (uint16_t*) args + 1;
-                            break;
-
-                        case 123 + 14:
-                            // push16
-                            args = (uint16_t*) args - 1;
-                            break;
-
-                        case 123 + 15:
-                            // timeMS
-                            break;
-
-                        case 123 + 16:
-                            // timeHM
-                            break;
-
-                        case 123 + 17:
-                            // distance
-                            break;
-
-                        case 123 + 18:
-                            // height
-                            break;
-
-                        case 123 + 19:
-                            // power
-                            break;
-
-                        case 123 + 20:
-                            // sprite
-                            break;
-                    }
-                }
-                else
-                {
-                    *buffer = ch;
-                    buffer++;
-                }
-            }
-
-            return buffer;
+            return format_string_part(buffer, sourceStr, args);
         }
-
     }
-
 }
