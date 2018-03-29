@@ -85,6 +85,36 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
+    static char* formatDayMonthYearFull(uint16_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4FF67C, regs);
+        return (char*) regs.edi;
+    }
+
+    static char* formatMonthYearFull(uint16_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4FF68C, regs);
+        return (char*) regs.edi;
+    }
+
+    static char* formatMonthYearAbbrev_0(uint16_t value, char* buffer)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+
+        call(0x4FF69C, regs);
+        return (char*) regs.edi;
+    }
+
     // 0x004958C6
     char* format_string(char* buffer, string_id id, void* args)
     {
@@ -366,8 +396,32 @@ namespace openloco::stringmgr
                         }
 
                         case 123 + 11:
-                            // format by string?
+                        {
+                            char modifier = *sourceStr;
+                            uint32_t value = *(uint32_t*) args;
+                            sourceStr++;
+                            args = (uint32_t*) args + 1;
+
+                            switch (modifier)
+                            {
+                                case 0:
+                                    buffer = formatDayMonthYearFull(value, buffer);
+                                    break;
+
+                                case 4:
+                                    buffer = formatMonthYearFull(value, buffer);
+                                    break;
+
+                                case 8:
+                                    buffer = formatMonthYearAbbrev_0(value, buffer);
+                                    break;
+
+                                default:
+                                   throw std::out_of_range("format_string: unexpected modifier: " + modifier);
+                            }
+
                             break;
+                        }
 
                         case 123 + 12:
                             // velocity
