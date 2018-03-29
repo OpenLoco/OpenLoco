@@ -85,7 +85,7 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* formatDayMonthYearFull(uint16_t value, char* buffer)
+    static char* formatDayMonthYearFull(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t) value;
@@ -95,7 +95,7 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* formatMonthYearFull(uint16_t value, char* buffer)
+    static char* formatMonthYearFull(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t) value;
@@ -105,7 +105,7 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* formatMonthYearAbbrev_0(uint16_t value, char* buffer)
+    static char* formatMonthYearAbbrev_0(uint32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t) value;
@@ -248,13 +248,15 @@ namespace openloco::stringmgr
 
                     case 123 + 6:
                     {
-                        // sub_495B66
+                        args = (uint32_t*) args + 1;
+                        // !!! TODO: implement and call sub_495B66
                         break;
                     }
 
                     case 123 + 7:
                     {
-                        // sub_495B5B
+                        args = (uint16_t*) args + 3;
+                        // !!! TODO: implement and call sub_495B5B
                         break;
                     }
 
@@ -327,6 +329,7 @@ namespace openloco::stringmgr
 
                     case 123 + 12:
                         // velocity
+                        args = (uint16_t*) args + 1;
                         break;
 
                     case 123 + 13:
@@ -341,26 +344,39 @@ namespace openloco::stringmgr
 
                     case 123 + 15:
                         // timeMS
+                        args = (uint16_t*) args + 1;
+                        // !!! TODO: implement timeMS
                         break;
 
                     case 123 + 16:
                         // timeHM
+                        args = (uint16_t*) args + 1;
+                        // !!! TODO: implement timeHM
                         break;
 
                     case 123 + 17:
                         // distance
+                        args = (uint16_t*) args + 1;
+                        // !!! TODO: implement distance
                         break;
 
                     case 123 + 18:
                         // height
+                        args = (uint16_t*) args + 3;
+                        // !!! TODO: implement height
                         break;
 
                     case 123 + 19:
                         // power
+                        args = (uint32_t*) args + 1;
+                        // !!! TODO: implement power
                         break;
 
                     case 123 + 20:
                         // sprite
+                        args = (uint32_t*) args + 1;
+                        buffer += 5;
+                        // !!! TODO: implement sprite
                         break;
                 }
             }
