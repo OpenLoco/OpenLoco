@@ -615,10 +615,10 @@ namespace openloco::ui::widget
     // 0x004CB31C
     void draw_26(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index)
     {
-        uint16_t left = window->x + widget->left;
-        uint16_t top = window->y + widget->top;
-        uint16_t right = window->x + widget->right;
-        uint16_t bottom = window->y + widget->bottom;
+        int16_t left = window->x + widget->left;
+        int16_t top = window->y + widget->top;
+        int16_t right = window->x + widget->right;
+        int16_t bottom = window->y + widget->bottom;
 
         gfx::fill_rect_inset(dpi, left, top, right, bottom, colour, flags | 0x60);
 
