@@ -321,7 +321,7 @@ namespace openloco::stringmgr
                                 break;
 
                             default:
-                               throw std::out_of_range("format_string: unexpected modifier: " + modifier);
+                               throw std::out_of_range("format_string: unexpected modifier: " + std::to_string((uint8_t) modifier));
                         }
 
                         break;
@@ -471,7 +471,7 @@ namespace openloco::stringmgr
             }
             else
             {
-                throw std::out_of_range("format_string: invalid string id: " + id);
+                throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
             }
         }
         else
