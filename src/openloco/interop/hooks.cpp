@@ -626,12 +626,6 @@ void openloco::interop::register_hooks()
             ui::set_cursor(cursor);
             return 0;
         });
-    register_hook(
-        0x004CF142,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::set_cursor(ui::cursor_id::blank);
-            return 0;
-        });
 
     register_hook(
         0x00445AB9,

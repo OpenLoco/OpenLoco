@@ -140,6 +140,7 @@ namespace openloco::ui
     void window::call_on_resize()
     {
         registers regs;
+        regs.esi = (uint32_t)this;
         call((uint32_t)this->event_handlers->on_resize, regs);
     }
 
