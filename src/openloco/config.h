@@ -9,10 +9,13 @@ namespace openloco::config
 
     struct config_t
     {
-        uint32_t unk_00;
+        uint8_t show_height_as_units;
+        uint8_t pad_01[3];
         uint16_t resolution_width;
         uint16_t resolution_height;
-        uint8_t pad_06[526];
+        uint8_t pad_04[32];
+        uint8_t measurement_format;
+        uint8_t pad_06[493];
     };
 
     struct new_config

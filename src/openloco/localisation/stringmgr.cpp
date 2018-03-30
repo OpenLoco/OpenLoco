@@ -1,4 +1,5 @@
 #include "stringmgr.h"
+#include "../config.h"
 #include "../interop/interop.hpp"
 #include "../townmgr.h"
 
@@ -328,9 +329,20 @@ namespace openloco::stringmgr
                     }
 
                     case 123 + 12:
+                    {
                         // velocity
                         args = (uint16_t*) args + 1;
+                        auto measurement_format = config::get().measurement_format;
+                        if (measurement_format == 0)
+                        {
+                            // !!! TODO: implement mph
+                        }
+                        else
+                        {
+                            // !!! TODO: implement kmh
+                        }
                         break;
+                    }
 
                     case 123 + 13:
                         // pop16
@@ -355,22 +367,61 @@ namespace openloco::stringmgr
                         break;
 
                     case 123 + 17:
+                    {
                         // distance
                         args = (uint16_t*) args + 1;
-                        // !!! TODO: implement distance
+                        auto measurement_format = config::get().measurement_format;
+                        if (measurement_format == 0)
+                        {
+                            // !!! TODO: implement ft (feet)
+                        }
+                        else
+                        {
+                            // !!! TODO: implement m (meters)
+                        }
                         break;
+                    }
 
                     case 123 + 18:
+                    {
                         // height
                         args = (uint16_t*) args + 3;
                         // !!! TODO: implement height
+                        uint8_t show_height_as_units = config::get().show_height_as_units;
+                        if (show_height_as_units == 2)
+                        {
+                            // !!! TODO: implement units
+                        }
+                        else
+                        {
+                            uint8_t measurement_format = config::get().measurement_format;
+                            if (measurement_format == 0)
+                            {
+                                // !!! TODO: implement ft (feet)
+                            }
+                            else
+                            {
+                                // !!! TODO: implement m (meters)
+                            }
+                        }
                         break;
+                    }
 
                     case 123 + 19:
+                    {
                         // power
                         args = (uint32_t*) args + 1;
-                        // !!! TODO: implement power
+                        auto measurement_format = config::get().measurement_format;
+                        if (measurement_format == 0)
+                        {
+                            // !!! TODO: implement hp (horsepower)
+                        }
+                        else
+                        {
+                            // !!! TODO: implement kW (kilowatt)
+                        }
                         break;
+                    }
 
                     case 123 + 20:
                         // sprite
