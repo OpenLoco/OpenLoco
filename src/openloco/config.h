@@ -7,15 +7,21 @@ namespace openloco::config
 {
 #pragma pack(push, 1)
 
+    enum flags
+    {
+        SHOW_HEIGHT_AS_UNITS = (1 << 1),
+    };
+
     struct config_t
     {
-        uint8_t show_height_as_units;
-        uint8_t pad_01[3];
-        uint16_t resolution_width;
-        uint16_t resolution_height;
-        uint8_t pad_04[32];
-        uint8_t measurement_format;
-        uint8_t pad_06[493];
+        uint32_t flags;             // 0x50AEB4, 0x00
+        uint16_t resolution_width;  // 0x50AEB8, 0x04
+        uint16_t resolution_height; // 0x50AEBA, 0x06
+        uint8_t pad_08[0x28 - 0x08];
+        uint8_t measurement_format; // 0x50AEDC, 0x28
+        uint8_t pad_29;
+        uint8_t keyboard_shortcuts[0xAF24 - 0xAEDE]; // 0x30
+        uint8_t pad_71[0xB0CA - 0xAF25];
     };
 
     struct new_config

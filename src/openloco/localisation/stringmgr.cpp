@@ -387,8 +387,8 @@ namespace openloco::stringmgr
                         // height
                         args = (uint16_t*) args + 3;
                         // !!! TODO: implement height
-                        uint8_t show_height_as_units = config::get().show_height_as_units;
-                        if (show_height_as_units == 2)
+                        bool show_height_as_units = config::get().flags & config::flags::SHOW_HEIGHT_AS_UNITS;
+                        if (show_height_as_units)
                         {
                             // !!! TODO: implement units
                         }
