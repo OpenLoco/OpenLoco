@@ -337,7 +337,7 @@ namespace openloco::stringmgr
                         args = (uint16_t*) args + 1;
 
                         const char* unit;
-                        if (measurement_format == 0)
+                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                         {
                             // !!! TODO: Move to string id
                             unit = "mph";
@@ -391,7 +391,7 @@ namespace openloco::stringmgr
                         // distance
                         args = (uint16_t*) args + 1;
                         auto measurement_format = config::get().measurement_format;
-                        if (measurement_format == 0)
+                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                         {
                             // !!! TODO: implement ft (feet)
                         }
@@ -415,7 +415,7 @@ namespace openloco::stringmgr
                         else
                         {
                             uint8_t measurement_format = config::get().measurement_format;
-                            if (measurement_format == 0)
+                            if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                             {
                                 // !!! TODO: implement ft (feet)
                             }
@@ -432,7 +432,7 @@ namespace openloco::stringmgr
                         // power
                         args = (uint32_t*) args + 1;
                         auto measurement_format = config::get().measurement_format;
-                        if (measurement_format == 0)
+                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                         {
                             // !!! TODO: implement hp (horsepower)
                         }

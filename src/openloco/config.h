@@ -12,6 +12,12 @@ namespace openloco::config
         SHOW_HEIGHT_AS_UNITS = (1 << 1),
     };
 
+    enum measurement_formats
+    {
+        FORMAT_IMPERIAL = 0,
+        FORMAT_METRIC = 1,
+    };
+
     struct config_t
     {
         uint32_t flags;             // 0x50AEB4, 0x00
