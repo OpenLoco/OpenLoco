@@ -92,7 +92,7 @@ namespace openloco::stringmgr
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
-        call(0x4FF67C, regs);
+        call(0x495CB5, regs);
         return (char*) regs.edi;
     }
 
@@ -102,7 +102,7 @@ namespace openloco::stringmgr
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
-        call(0x4FF68C, regs);
+        call(0x495D77, regs);
         return (char*) regs.edi;
     }
 
@@ -112,7 +112,7 @@ namespace openloco::stringmgr
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
-        call(0x4FF69C, regs);
+        call(0x495DC7, regs);
         return (char*) regs.edi;
     }
 
@@ -299,13 +299,13 @@ namespace openloco::stringmgr
                         sourceStr = sourceStr_;
                         break;
                     }
-/*
+
                     case 123 + 11:
                     {
                         char modifier = *sourceStr;
-                        uint32_t value = *(uint32_t*) args;
+                        uint8_t value = *(uint8_t*) args;
                         sourceStr++;
-                        args = (uint32_t*) args + 1;
+                        args = (uint8_t*) args + 1;
 
                         switch (modifier)
                         {
@@ -327,7 +327,7 @@ namespace openloco::stringmgr
 
                         break;
                     }
-*/
+
                     case 123 + 12:
                     {
                         // velocity
