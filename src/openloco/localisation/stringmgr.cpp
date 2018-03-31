@@ -467,16 +467,35 @@ namespace openloco::stringmgr
                     case 123 + 19:
                     {
                         // power
+                        uint32_t value = *(uint16_t*) args;
                         args = (uint32_t*) args + 1;
                         auto measurement_format = config::get().measurement_format;
+
+                        const char* unit;
                         if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                         {
-                            // !!! TODO: implement hp (horsepower)
+                            // !!! TODO: Move to string id
+                            unit = "hp";
                         }
                         else
                         {
-                            // !!! TODO: implement kW (kilowatt)
+                            // !!! TODO: Move to string id
+                            unit = "kW";
+                            value = (value * 764) >> 10;
                         }
+
+                        buffer = format_comma(value, buffer);
+
+                        do
+                        {
+                            *buffer = *unit;
+                            buffer++;
+                            unit++;
+                        }
+                        while (*unit != '\0');
+
+                        buffer--;
+
                         break;
                     }
 
