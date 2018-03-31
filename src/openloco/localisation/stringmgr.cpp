@@ -500,11 +500,16 @@ namespace openloco::stringmgr
                     }
 
                     case 123 + 20:
+                    {
                         // sprite
+                        *buffer = 23;
+                        uint32_t value = *(uint32_t*) args;
                         args = (uint32_t*) args + 1;
+                        *(buffer + 1) = value;
                         buffer += 5;
                         // !!! TODO: implement sprite
                         break;
+                    }
                 }
             }
             else
