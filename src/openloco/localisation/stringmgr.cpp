@@ -251,6 +251,7 @@ namespace openloco::stringmgr
                     {
                         args = (uint32_t*) args + 1;
                         // !!! TODO: implement and call sub_495B66
+                        printf("Unimplemented format string: 6\n");
                         break;
                     }
 
@@ -258,6 +259,7 @@ namespace openloco::stringmgr
                     {
                         args = (uint16_t*) args + 3;
                         // !!! TODO: implement and call sub_495B5B
+                        printf("Unimplemented format string: 7\n");
                         break;
                     }
 
@@ -378,12 +380,14 @@ namespace openloco::stringmgr
                         // timeMS
                         args = (uint16_t*) args + 1;
                         // !!! TODO: implement timeMS
+                        printf("Unimplemented format string: 15\n");
                         break;
 
                     case 123 + 16:
                         // timeHM
                         args = (uint16_t*) args + 1;
                         // !!! TODO: implement timeHM
+                        printf("Unimplemented format string: 16\n");
                         break;
 
                     case 123 + 17:
@@ -624,7 +628,10 @@ namespace openloco::stringmgr
                 return buffer;
             }
 
-            return format_string_part(buffer, sourceStr, args);
+            buffer = format_string_part(buffer, sourceStr, args);
+            // !!! HACK: ensure string is null-terminated
+            *buffer = '\0';
+            return buffer;
         }
     }
 }
