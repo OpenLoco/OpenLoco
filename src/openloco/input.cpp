@@ -495,15 +495,6 @@ namespace openloco::input
     // 0x004C8098
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
-        ui::window_type windowType = ui::window_type::undefined;
-        ui::window_number windowNumber = 0;
-
-        if (window != nullptr)
-        {
-            windowType = window->type;
-            windowNumber = window->number;
-        }
-
         if (window->type != *_hoverWindowType || window->number != *_hoverWindowNumber || widgetIndex != *_hoverWidgetIdx)
         {
             input_widget_over_flatbutton_invalidate();
