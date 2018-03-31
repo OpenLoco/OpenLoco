@@ -143,39 +143,25 @@ namespace openloco::stringmgr
                     *buffer = ch;
                     buffer++;
                 }
-                else if (ch <= 22)
-                {
-                    *buffer = ch;
-                    buffer++;
-
-                    ch = *sourceStr;
-                    sourceStr++;
-
-                    *buffer = ch;
-                    buffer++;
-
-                    ch = *sourceStr;
-                    sourceStr++;
-
-                    *buffer = ch;
-                    buffer++;
-                }
                 else
                 {
-                    *buffer = ch;
-                    buffer++;
+                    if (ch <= 22)
+                    {
+                        *buffer = ch;
+                        buffer++;
 
-                    ch = *sourceStr;
-                    sourceStr++;
+                        ch = *sourceStr;
+                        sourceStr++;
 
-                    *buffer = ch;
-                    buffer++;
+                        *buffer = ch;
+                        buffer++;
 
-                    ch = *sourceStr;
-                    sourceStr++;
+                        ch = *sourceStr;
+                        sourceStr++;
 
-                    *buffer = ch;
-                    buffer++;
+                        *buffer = ch;
+                        buffer++;
+                    }
 
                     ch = *sourceStr;
                     sourceStr++;
