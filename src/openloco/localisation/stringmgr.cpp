@@ -424,25 +424,43 @@ namespace openloco::stringmgr
                     case 123 + 18:
                     {
                         // height
-                        args = (uint16_t*) args + 3;
-                        // !!! TODO: implement height
+                        uint32_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+
                         bool show_height_as_units = config::get().flags & config::flags::SHOW_HEIGHT_AS_UNITS;
+                        uint8_t measurement_format = config::get().measurement_format;
+                        const char* unit;
+
                         if (show_height_as_units)
                         {
-                            // !!! TODO: implement units
+                            // !!! TODO: move to string id
+                            unit = " units";
+                        }
+                        else if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
+                        {
+                            // !!! TODO: Move to string id
+                            unit = "ft";
+                            value *= 10;
                         }
                         else
                         {
-                            uint8_t measurement_format = config::get().measurement_format;
-                            if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
-                            {
-                                // !!! TODO: implement ft (feet)
-                            }
-                            else
-                            {
-                                // !!! TODO: implement m (meters)
-                            }
+                            // !!! TODO: Move to string id
+                            unit = "m";
+                            value *= 5;
                         }
+
+                        buffer = format_comma(value, buffer);
+
+                        do
+                        {
+                            *buffer = *unit;
+                            buffer++;
+                            unit++;
+                        }
+                        while (*unit != '\0');
+
+                        buffer--;
+
                         break;
                     }
 
