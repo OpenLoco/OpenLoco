@@ -389,16 +389,35 @@ namespace openloco::stringmgr
                     case 123 + 17:
                     {
                         // distance
+                        uint32_t value = *(uint16_t*) args;
                         args = (uint16_t*) args + 1;
                         auto measurement_format = config::get().measurement_format;
+
+                        const char* unit;
                         if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
                         {
-                            // !!! TODO: implement ft (feet)
+                            // !!! TODO: Move to string id
+                            unit = "ft";
                         }
                         else
                         {
-                            // !!! TODO: implement m (meters)
+                            // !!! TODO: Move to string id
+                            unit = "m";
+                            value = (value * 840) >> 8;
                         }
+
+                        buffer = format_comma(value, buffer);
+
+                        do
+                        {
+                            *buffer = *unit;
+                            buffer++;
+                            unit++;
+                        }
+                        while (*unit != '\0');
+
+                        buffer--;
+
                         break;
                     }
 
