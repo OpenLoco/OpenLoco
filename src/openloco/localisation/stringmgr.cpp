@@ -299,7 +299,7 @@ namespace openloco::stringmgr
                         sourceStr = sourceStr_;
                         break;
                     }
-
+/*
                     case 123 + 11:
                     {
                         char modifier = *sourceStr;
@@ -327,7 +327,7 @@ namespace openloco::stringmgr
 
                         break;
                     }
-
+*/
                     case 123 + 12:
                     {
                         // velocity
@@ -603,7 +603,9 @@ namespace openloco::stringmgr
             }
             else
             {
-                throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
+                // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
+                printf("Invalid string id: %d\n", (uint32_t) id);
+                return buffer;
             }
         }
         else
@@ -616,7 +618,7 @@ namespace openloco::stringmgr
             */
 
             char* sourceStr = (char*) get_string(id);
-            if (sourceStr == nullptr)
+            if (sourceStr == nullptr || sourceStr == (char*) 0x50)
             {
                 printf("Got a nullptr for string id %d -- cowardly refusing\n", id);
                 return buffer;
