@@ -331,16 +331,36 @@ namespace openloco::stringmgr
                     case 123 + 12:
                     {
                         // velocity
-                        args = (uint16_t*) args + 1;
                         auto measurement_format = config::get().measurement_format;
+
+                        uint32_t value = *(uint16_t*) args;
+                        args = (uint16_t*) args + 1;
+
+                        const char* unit;
                         if (measurement_format == 0)
                         {
-                            // !!! TODO: implement mph
+                            // !!! TODO: Move to string id
+                            unit = "mph";
                         }
                         else
                         {
-                            // !!! TODO: implement kmh
+                            // !!! TODO: Move to string id
+                            unit = "kmh";
+                            value = (value * 1648) >> 10;
                         }
+
+                        buffer = format_comma(value, buffer);
+
+                        do
+                        {
+                            *buffer = *unit;
+                            buffer++;
+                            unit++;
+                        }
+                        while (*unit != '\0');
+
+                        buffer--;
+
                         break;
                     }
 
