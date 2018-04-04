@@ -116,7 +116,7 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* format_string_part(char* buffer, char* sourceStr, void* args)
+    static char* format_string_part(char* buffer, const char* sourceStr, void* args)
     {
         while (uint8_t ch = *sourceStr++)
         {
@@ -253,7 +253,7 @@ namespace openloco::stringmgr
                     {
                         uint16_t value = *(uint16_t*) args;
                         args = (uint16_t*) args + 1;
-                        char* sourceStr_ = sourceStr;
+                        const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, value, args);
                         sourceStr = sourceStr_;
                         break;
@@ -263,7 +263,7 @@ namespace openloco::stringmgr
                     {
                         string_id id = *(uint16_t*) sourceStr;
                         sourceStr += 2;
-                        char* sourceStr_ = sourceStr;
+                        const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, id, args);
                         sourceStr = sourceStr_;
                         break;
@@ -271,7 +271,7 @@ namespace openloco::stringmgr
 
                     case 123 + 10:
                     {
-                        char* sourceStr_ = sourceStr;
+                        const char* sourceStr_ = sourceStr;
                         sourceStr = (char*) args;
                         args = (uint32_t*) args + 1;
 
@@ -536,7 +536,7 @@ namespace openloco::stringmgr
                 // id *= USER_STRING_SIZE;
 
                 // add     id, offset _userStrings
-                char* sourceStr = _userStrings[id];
+                const char* sourceStr = _userStrings[id];
 
                 // loc_4958EF:
                 // mov     dl, [id]
@@ -607,7 +607,7 @@ namespace openloco::stringmgr
             regs.ecx = (uint32_t)args;
             */
 
-            char* sourceStr = (char*) get_string(id);
+            const char* sourceStr = get_string(id);
             if (sourceStr == nullptr || sourceStr == (char*) 0x50)
             {
                 printf("Got a nullptr for string id %d -- cowardly refusing\n", id);
