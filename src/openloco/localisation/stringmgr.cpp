@@ -40,7 +40,7 @@ namespace openloco::stringmgr
         regs.eax = value;
         regs.edi = (uint32_t) buffer;
 
-        call(0x4959A1, regs);
+        call(0x00495F35, regs);
         return (char*) regs.edi;
     }
 
