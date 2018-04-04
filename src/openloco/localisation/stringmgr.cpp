@@ -77,16 +77,6 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* format_comma(uint16_t value, char* buffer)
-    {
-        registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
-
-        call(0x495F35, regs);
-        return (char*) regs.edi;
-    }
-
     static char* formatDayMonthYearFull(uint32_t value, char* buffer)
     {
         registers regs;
