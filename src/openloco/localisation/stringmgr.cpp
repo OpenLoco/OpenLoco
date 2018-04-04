@@ -1,3 +1,4 @@
+#include "argswrapper.hpp"
 #include "stringmgr.h"
 #include "../config.h"
 #include "../interop/interop.hpp"
@@ -116,7 +117,9 @@ namespace openloco::stringmgr
         return (char*) regs.edi;
     }
 
-    static char* format_string_part(char* buffer, const char* sourceStr, void* args)
+    static char* format_string(char* buffer, string_id id, argswrapper &args);
+
+    static char* format_string_part(char* buffer, const char* sourceStr, argswrapper &args)
     {
         while (uint8_t ch = *sourceStr++)
         {
@@ -187,55 +190,49 @@ namespace openloco::stringmgr
                 {
                     case 123 + 0:
                     {
-                        uint32_t value = *(uint32_t*) args;
-                        args = (uint32_t*) args + 1;
+                        uint32_t value = args.pop32();
                         buffer = format_comma(value, buffer);
                         break;
                     }
 
                     case 123 + 1:
                     {
-                        uint32_t value = *(uint32_t*) args;
-                        args = (uint32_t*) args + 1;
+                        uint32_t value = args.pop32();
                         buffer = format_int(value, buffer);
                         break;
                     }
 
                     case 123 + 2:
                     {
-                        uint16_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint16_t value = args.pop16();
                         buffer = formatNumeric_4(value, buffer);
                         break;
                     }
 
                     case 123 + 3:
                     {
-                        uint32_t value = *(uint32_t*) args;
-                        args = (uint32_t*) args + 1;
+                        uint32_t value = args.pop32();
                         buffer = format_comma2dp32(value, buffer);
                         break;
                     }
 
                     case 123 + 4:
                     {
-                        uint16_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint16_t value = args.pop16();
                         buffer = format_comma(value, buffer);
                         break;
                     }
 
                     case 123 + 5:
                     {
-                        uint16_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint16_t value = args.pop16();
                         buffer = format_int((uint32_t) value, buffer);
                         break;
                     }
 
                     case 123 + 6:
                     {
-                        args = (uint32_t*) args + 1;
+                        args.pop32();
                         // !!! TODO: implement and call sub_495B66
                         printf("Unimplemented format string: 6\n");
                         break;
@@ -243,7 +240,8 @@ namespace openloco::stringmgr
 
                     case 123 + 7:
                     {
-                        args = (uint16_t*) args + 3;
+                        args.pop32();
+                        args.pop16();
                         // !!! TODO: implement and call sub_495B5B
                         printf("Unimplemented format string: 7\n");
                         break;
@@ -251,17 +249,16 @@ namespace openloco::stringmgr
 
                     case 123 + 8:
                     {
-                        uint16_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        string_id id = args.pop16();
                         const char* sourceStr_ = sourceStr;
-                        buffer = format_string(buffer, value, args);
+                        buffer = format_string(buffer, id, args);
                         sourceStr = sourceStr_;
                         break;
                     }
 
                     case 123 + 9:
                     {
-                        string_id id = *(uint16_t*) sourceStr;
+                        string_id id = *(string_id*) sourceStr;
                         sourceStr += 2;
                         const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, id, args);
@@ -272,8 +269,7 @@ namespace openloco::stringmgr
                     case 123 + 10:
                     {
                         const char* sourceStr_ = sourceStr;
-                        sourceStr = (char*) args;
-                        args = (uint32_t*) args + 1;
+                        sourceStr = (char*) args.pop32();
 
                         do
                         {
@@ -291,9 +287,8 @@ namespace openloco::stringmgr
                     case 123 + 11:
                     {
                         char modifier = *sourceStr;
-                        uint8_t value = *(uint8_t*) args;
+                        uint8_t value = args.pop8();
                         sourceStr++;
-                        args = (uint8_t*) args + 1;
 
                         switch (modifier)
                         {
@@ -321,8 +316,7 @@ namespace openloco::stringmgr
                         // velocity
                         auto measurement_format = config::get().measurement_format;
 
-                        uint32_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint32_t value = args.pop16();
 
                         const char* unit;
                         if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
@@ -354,24 +348,24 @@ namespace openloco::stringmgr
 
                     case 123 + 13:
                         // pop16
-                        args = (uint16_t*) args + 1;
+                        args.pop16();
                         break;
 
                     case 123 + 14:
                         // push16
-                        args = (uint16_t*) args - 1;
+                        args.push16();
                         break;
 
                     case 123 + 15:
                         // timeMS
-                        args = (uint16_t*) args + 1;
+                        args.pop16();
                         // !!! TODO: implement timeMS
                         printf("Unimplemented format string: 15\n");
                         break;
 
                     case 123 + 16:
                         // timeHM
-                        args = (uint16_t*) args + 1;
+                        args.pop16();
                         // !!! TODO: implement timeHM
                         printf("Unimplemented format string: 16\n");
                         break;
@@ -379,8 +373,7 @@ namespace openloco::stringmgr
                     case 123 + 17:
                     {
                         // distance
-                        uint32_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
 
                         const char* unit;
@@ -414,8 +407,7 @@ namespace openloco::stringmgr
                     case 123 + 18:
                     {
                         // height
-                        uint32_t value = *(uint16_t*) args;
-                        args = (uint16_t*) args + 1;
+                        uint32_t value = args.pop16();
 
                         bool show_height_as_units = config::get().flags & config::flags::SHOW_HEIGHT_AS_UNITS;
                         uint8_t measurement_format = config::get().measurement_format;
@@ -457,8 +449,7 @@ namespace openloco::stringmgr
                     case 123 + 19:
                     {
                         // power
-                        uint32_t value = *(uint16_t*) args;
-                        args = (uint32_t*) args + 1;
+                        uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
 
                         const char* unit;
@@ -493,11 +484,9 @@ namespace openloco::stringmgr
                     {
                         // sprite
                         *buffer = 23;
-                        uint32_t value = *(uint32_t*) args;
-                        args = (uint32_t*) args + 1;
+                        uint32_t value = args.pop32();
                         *(buffer + 1) = value;
                         buffer += 5;
-                        // !!! TODO: implement sprite
                         break;
                     }
                 }
@@ -512,8 +501,14 @@ namespace openloco::stringmgr
         return buffer;
     }
 
+    static char* format_string_part(char* buffer, const char* sourceStr, void* args)
+    {
+        auto wrapped = argswrapper(args);
+        return format_string_part(buffer, sourceStr, wrapped);
+    }
+
     // 0x004958C6
-    char* format_string(char* buffer, string_id id, void* args)
+    static char* format_string(char* buffer, string_id id, argswrapper &args)
     {
         /*
         registers regs;
@@ -530,7 +525,7 @@ namespace openloco::stringmgr
                 id -= USER_STRINGS_START;
 
                 // add     args, 2
-                args = (uint8_t*) args + 2;
+                args.pop16();
 
                 // imul    id, 20h
                 // id *= USER_STRING_SIZE;
@@ -560,8 +555,7 @@ namespace openloco::stringmgr
                 id -= TOWN_NAMES_START;
 
                 // movzx   args, word ptr [args]
-                uint16_t town_id = *(uint16_t*) args;
-                args = (uint8_t*) args + 2;
+                uint16_t town_id = args.pop16();
 
                 // imul    args, 270h
                 auto town = townmgr::get(town_id);
@@ -577,8 +571,7 @@ namespace openloco::stringmgr
                 auto temp = args;
 
                 // movzx   ecx, word ptr [ecx]
-                uint16_t town_id = *(uint16_t*) args;
-                args = (uint8_t*) args + 2;
+                uint16_t town_id = args.pop16();
 
                 // movzx   id, word ptr towns[args]
                 auto town = townmgr::get(town_id);
@@ -619,5 +612,11 @@ namespace openloco::stringmgr
             *buffer = '\0';
             return buffer;
         }
+    }
+
+    char* format_string(char* buffer, string_id id, void* args)
+    {
+        auto wrapped = argswrapper(args);
+        return format_string(buffer, id, wrapped);
     }
 }
