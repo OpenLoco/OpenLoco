@@ -500,37 +500,13 @@ namespace openloco::stringmgr
     // 0x004958C6
     static char* format_string(char* buffer, string_id id, argswrapper &args)
     {
-        /*
-        registers regs;
-        regs.eax = id;
-        regs.edi = (uint32_t)buffer;
-        regs.ecx = (uint32_t)args;
-        */
-
         if (id >= USER_STRINGS_START)
         {
             if (id < USER_STRINGS_END)
             {
-                // sub     id, 8000h
                 id -= USER_STRINGS_START;
-
-                // add     args, 2
                 args.pop16();
-
-                // imul    id, 20h
-                // id *= USER_STRING_SIZE;
-
-                // add     id, offset _userStrings
                 const char* sourceStr = _userStrings[id];
-
-                // loc_4958EF:
-                // mov     dl, [id]
-                // mov     [buffer], dl
-                // inc     id
-                // inc     buffer
-                // or      dl, dl
-                // jnz     short loc_4958EF
-                // dec     buffer
 
                 // !!! TODO: original code is prone to buffer overflow.
                 buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
@@ -541,37 +517,19 @@ namespace openloco::stringmgr
             }
             else if (id < TOWN_NAMES_END)
             {
-                // add     id, 0FFFF6119h
                 id -= TOWN_NAMES_START;
-
-                // movzx   args, word ptr [args]
                 uint16_t town_id = args.pop16();
-
-                // imul    args, 270h
                 auto town = townmgr::get(town_id);
-
-                // lea     args, towns[args]
                 void* town_name = (void*) &town->name;
-
-                // call    format_string
                 return format_string(buffer, id, town_name);
             }
             else if (id == TOWN_NAMES_END)
             {
                 auto temp = args;
-
-                // movzx   ecx, word ptr [ecx]
                 uint16_t town_id = args.pop16();
-
-                // movzx   id, word ptr towns[args]
                 auto town = townmgr::get(town_id);
-
-                // call    format_string
                 buffer = format_string(buffer, town->name, nullptr);
-
-                // pop     args
                 args = temp;
-
                 return buffer;
             }
             else
@@ -583,13 +541,6 @@ namespace openloco::stringmgr
         }
         else
         {
-            /*
-            registers regs;
-            regs.eax = id;
-            regs.edi = (uint32_t)buffer;
-            regs.ecx = (uint32_t)args;
-            */
-
             const char* sourceStr = get_string(id);
             if (sourceStr == nullptr || sourceStr == (char*) 0x50)
             {
