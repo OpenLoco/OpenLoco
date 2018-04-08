@@ -113,48 +113,33 @@ namespace openloco::stringmgr
     {
         while (uint8_t ch = *sourceStr++)
         {
-            if (ch <= 0x1F)
+            if (ch == 0)
             {
-                if (ch == 0)
-                {
-                    *buffer = '\0';
-                    return buffer;
-                }
-                else if (ch <= 4)
+                *buffer = '\0';
+                return buffer;
+            }
+            else if (ch <= 4)
+            {
+                *buffer = ch;
+                buffer++;
+
+                ch = *sourceStr;
+                sourceStr++;
+
+                *buffer = ch;
+                buffer++;
+            }
+            else if (ch <= 16)
+            {
+                *buffer = ch;
+                buffer++;
+            }
+            else if (ch <= 0x1F)
+            {
+                if (ch > 22)
                 {
                     *buffer = ch;
                     buffer++;
-
-                    ch = *sourceStr;
-                    sourceStr++;
-
-                    *buffer = ch;
-                    buffer++;
-                }
-                else if (ch <= 16)
-                {
-                    *buffer = ch;
-                    buffer++;
-                }
-                else
-                {
-                    if (ch <= 22)
-                    {
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-
-                        ch = *sourceStr;
-                        sourceStr++;
-
-                        *buffer = ch;
-                        buffer++;
-                    }
 
                     ch = *sourceStr;
                     sourceStr++;
@@ -168,6 +153,18 @@ namespace openloco::stringmgr
                     *buffer = ch;
                     buffer++;
                 }
+
+                ch = *sourceStr;
+                sourceStr++;
+
+                *buffer = ch;
+                buffer++;
+
+                ch = *sourceStr;
+                sourceStr++;
+
+                *buffer = ch;
+                buffer++;
             }
             else if (ch < '}') // 0x7B
             {
@@ -500,46 +497,7 @@ namespace openloco::stringmgr
     // 0x004958C6
     static char* format_string(char* buffer, string_id id, argswrapper &args)
     {
-        if (id >= USER_STRINGS_START)
-        {
-            if (id < USER_STRINGS_END)
-            {
-                id -= USER_STRINGS_START;
-                args.pop16();
-                const char* sourceStr = _userStrings[id];
-
-                // !!! TODO: original code is prone to buffer overflow.
-                buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
-                buffer[USER_STRING_SIZE - 1] = '\0';
-                buffer += strlen(sourceStr);
-
-                return buffer;
-            }
-            else if (id < TOWN_NAMES_END)
-            {
-                id -= TOWN_NAMES_START;
-                uint16_t town_id = args.pop16();
-                auto town = townmgr::get(town_id);
-                void* town_name = (void*) &town->name;
-                return format_string(buffer, id, town_name);
-            }
-            else if (id == TOWN_NAMES_END)
-            {
-                auto temp = args;
-                uint16_t town_id = args.pop16();
-                auto town = townmgr::get(town_id);
-                buffer = format_string(buffer, town->name, nullptr);
-                args = temp;
-                return buffer;
-            }
-            else
-            {
-                // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
-                printf("Invalid string id: %d\n", (uint32_t) id);
-                return buffer;
-            }
-        }
-        else
+        if (id < USER_STRINGS_START)
         {
             const char* sourceStr = get_string(id);
             if (sourceStr == nullptr || sourceStr == (char*) 0x50)
@@ -551,6 +509,42 @@ namespace openloco::stringmgr
             buffer = format_string_part(buffer, sourceStr, args);
             // !!! HACK: ensure string is null-terminated
             *buffer = '\0';
+            return buffer;
+        }
+        else if (id < USER_STRINGS_END)
+        {
+            id -= USER_STRINGS_START;
+            args.pop16();
+            const char* sourceStr = _userStrings[id];
+
+            // !!! TODO: original code is prone to buffer overflow.
+            buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
+            buffer[USER_STRING_SIZE - 1] = '\0';
+            buffer += strlen(sourceStr);
+
+            return buffer;
+        }
+        else if (id < TOWN_NAMES_END)
+        {
+            id -= TOWN_NAMES_START;
+            uint16_t town_id = args.pop16();
+            auto town = townmgr::get(town_id);
+            void* town_name = (void*) &town->name;
+            return format_string(buffer, id, town_name);
+        }
+        else if (id == TOWN_NAMES_END)
+        {
+            auto temp = args;
+            uint16_t town_id = args.pop16();
+            auto town = townmgr::get(town_id);
+            buffer = format_string(buffer, town->name, nullptr);
+            args = temp;
+            return buffer;
+        }
+        else
+        {
+            // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
+            printf("Invalid string id: %d\n", (uint32_t) id);
             return buffer;
         }
     }
