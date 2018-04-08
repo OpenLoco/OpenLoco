@@ -4,6 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../townmgr.h"
 
+#include <cassert>
 #include <cstring>
 #include <cstdio>
 #include <stdexcept>
@@ -111,8 +112,10 @@ namespace openloco::stringmgr
 
     static char* format_string_part(char* buffer, const char* sourceStr, argswrapper &args)
     {
-        while (uint8_t ch = *sourceStr++)
+        while (true)
         {
+            uint8_t ch = *sourceStr;
+            sourceStr++;
             if (ch == 0)
             {
                 *buffer = '\0';
@@ -507,8 +510,7 @@ namespace openloco::stringmgr
             }
 
             buffer = format_string_part(buffer, sourceStr, args);
-            // !!! HACK: ensure string is null-terminated
-            *buffer = '\0';
+            assert(*buffer == '\0');
             return buffer;
         }
         else if (id < USER_STRINGS_END)
