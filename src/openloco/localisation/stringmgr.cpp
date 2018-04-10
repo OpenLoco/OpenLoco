@@ -1,12 +1,12 @@
 #include "argswrapper.hpp"
 #include "stringmgr.h"
 #include "../config.h"
+#include "../console.h"
 #include "../interop/interop.hpp"
 #include "../townmgr.h"
 
 #include <cassert>
 #include <cstring>
-#include <cstdio>
 #include <stdexcept>
 
 using namespace openloco::interop;
@@ -27,9 +27,9 @@ namespace openloco::stringmgr
 
     const char* get_string(string_id id)
     {
-        printf("Fetching string %d\n", id);
+        console::log("Fetching string %d", id);
         char* str = _strings[id];
-        printf("Found at %p\n", str);
+        console::log("Found at %p", str);
 
         return str;
     }
@@ -222,18 +222,18 @@ namespace openloco::stringmgr
 
                     case 123 + 6:
                     {
+                        console::error("Unimplemented format string: 6");
                         args.pop32();
                         // !!! TODO: implement and call sub_495B66
-                        printf("Unimplemented format string: 6\n");
                         break;
                     }
 
                     case 123 + 7:
                     {
+                        console::error("Unimplemented format string: 7");
                         args.pop32();
                         args.pop16();
                         // !!! TODO: implement and call sub_495B5B
-                        printf("Unimplemented format string: 7\n");
                         break;
                     }
 
@@ -348,16 +348,16 @@ namespace openloco::stringmgr
 
                     case 123 + 15:
                         // timeMS
+                        console::error("Unimplemented format string: 15");
                         args.pop16();
                         // !!! TODO: implement timeMS
-                        printf("Unimplemented format string: 15\n");
                         break;
 
                     case 123 + 16:
                         // timeHM
+                        console::error("Unimplemented format string: 16");
                         args.pop16();
                         // !!! TODO: implement timeHM
-                        printf("Unimplemented format string: 16\n");
                         break;
 
                     case 123 + 17:
@@ -505,7 +505,7 @@ namespace openloco::stringmgr
             const char* sourceStr = get_string(id);
             if (sourceStr == nullptr || sourceStr == (char*) 0x50)
             {
-                printf("Got a nullptr for string id %d -- cowardly refusing\n", id);
+                console::error("Got a nullptr for string id %d -- cowardly refusing", id);
                 return buffer;
             }
 
@@ -546,7 +546,7 @@ namespace openloco::stringmgr
         else
         {
             // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
-            printf("Invalid string id: %d\n", (uint32_t) id);
+            console::error("Invalid string id: %d", (uint32_t) id);
             return buffer;
         }
     }
