@@ -84,7 +84,7 @@ namespace openloco::stringmgr
         regs.eax = (uint32_t) value;
         regs.edi = (uint32_t) buffer;
 
-        call(0x495CB5, regs);
+        call(0x495D09, regs);
         return (char*) regs.edi;
     }
 
@@ -277,7 +277,7 @@ namespace openloco::stringmgr
                     case 123 + 11:
                     {
                         char modifier = *sourceStr;
-                        uint8_t value = args.pop8();
+                        uint32_t value = args.pop32();
                         sourceStr++;
 
                         switch (modifier)
