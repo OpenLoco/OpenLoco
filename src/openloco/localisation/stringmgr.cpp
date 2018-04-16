@@ -474,9 +474,12 @@ namespace openloco::stringmgr
                     {
                         // sprite
                         *buffer = 23;
+
                         uint32_t value = args.pop32();
-                        *(buffer + 1) = value;
+                        uint32_t* sprite_ptr = (uint32_t*) (buffer + 1);
+                        *sprite_ptr = value;
                         buffer += 5;
+
                         break;
                     }
                 }
