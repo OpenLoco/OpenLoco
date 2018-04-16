@@ -462,17 +462,11 @@ namespace openloco::stringmgr
 
                     case 123 + 15:
                         // timeMS
-                        console::error("Unimplemented format string: 15");
-                        args.pop16();
-                        // !!! TODO: implement timeMS
-                        break;
+                        throw std::runtime_error("Unimplemented format string: 15");
 
                     case 123 + 16:
                         // timeHM
-                        console::error("Unimplemented format string: 16");
-                        args.pop16();
-                        // !!! TODO: implement timeHM
-                        break;
+                        throw std::runtime_error("Unimplemented format string: 15");
 
                     case 123 + 17:
                     {
