@@ -686,9 +686,11 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             auto window = (ui::window*)regs.esi;
             auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
             window->draw(dpi);
+            regs = backup;
             return 0;
         });
 
