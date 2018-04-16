@@ -2,6 +2,7 @@
 #include "../config.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
+#include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
 #include "../townmgr.h"
 #include "argswrapper.hpp"
@@ -59,12 +60,13 @@ namespace openloco::stringmgr
     }
 
     // TODO: decltype(value)
-    static char* formatNumeric_2(uint16_t value, char* buffer, char decimal_separator)
+    static char* formatNumeric_2(int64_t value, char* buffer, uint8_t separator)
     {
         registers regs;
         regs.eax = (uint32_t)value;
+        regs.edx = (uint32_t)(value >> 31);
         regs.edi = (uint32_t)buffer;
-        regs.ebx = (uint32_t)decimal_separator;
+        regs.ebx = (uint32_t)separator;
 
         call(0x496052, regs);
         return (char*)regs.edi;
@@ -140,7 +142,7 @@ namespace openloco::stringmgr
         const char* prefix_symbol = get_string(currency->prefix_symbol);
         buffer = format_string_part(buffer, prefix_symbol, nullptr);
 
-        buffer = formatNumeric_2(localised_value, buffer, currency->decimal_separator);
+        buffer = formatNumeric_2(localised_value, buffer, currency->separator);
 
         const char* suffix_symbol = get_string(currency->suffix_symbol);
         buffer = format_string_part(buffer, suffix_symbol, nullptr);
@@ -156,6 +158,7 @@ namespace openloco::stringmgr
         {
             uint8_t ch = *sourceStr;
             sourceStr++;
+
             if (ch == 0)
             {
                 *buffer = '\0';
@@ -262,7 +265,8 @@ namespace openloco::stringmgr
 
                     case 123 + 6:
                     {
-                        int64_t value = args.pop32();
+                        int64_t value = 0;
+                        value = args.pop32();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
@@ -577,9 +581,7 @@ namespace openloco::stringmgr
         }
         else
         {
-            // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
-            console::error("Invalid string id: %d", (uint32_t)id);
-            return buffer;
+            throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t)id));
         }
     }
 
