@@ -64,7 +64,7 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value >> 31);
+        regs.edx = (uint32_t)(value / (1 << 31));
         regs.edi = (uint32_t)buffer;
         regs.ebx = (uint32_t)separator;
 
@@ -137,7 +137,7 @@ namespace openloco::stringmgr
 
         currency_object* currency = objectmgr::get<currency_object>(0);
 
-        int64_t localised_value = value << currency->factor;
+        int64_t localised_value = value * (1ULL << currency->factor);
 
         const char* prefix_symbol = get_string(currency->prefix_symbol);
         buffer = format_string_part(buffer, prefix_symbol, nullptr);
@@ -275,7 +275,7 @@ namespace openloco::stringmgr
                     {
                         int32_t value_low = args.pop32();
                         int16_t value_high = args.pop16();
-                        int64_t value = ((int64_t)value_high << 32) + value_low;
+                        int64_t value = ((int64_t)value_high * (1ULL << 31)) + value_low;
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
