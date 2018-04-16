@@ -1,14 +1,17 @@
 #include "stringmgr.h"
 #include "../config.h"
 #include "../console.h"
+#include "../date.h"
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
 #include "../townmgr.h"
 #include "argswrapper.hpp"
+#include "string_ids.h"
 
 #include <cassert>
 #include <cstring>
+#include <map>
 #include <stdexcept>
 
 using namespace openloco::interop;
@@ -26,6 +29,55 @@ namespace openloco::stringmgr
 
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
+
+    static std::map<int32_t, string_id> day_to_string = {
+        { 1, string_ids::day_1st },
+        { 2, string_ids::day_2nd },
+        { 3, string_ids::day_3rd },
+        { 4, string_ids::day_4th },
+        { 5, string_ids::day_5th },
+        { 6, string_ids::day_6th },
+        { 7, string_ids::day_7th },
+        { 8, string_ids::day_8th },
+        { 9, string_ids::day_9th },
+        { 10, string_ids::day_10th },
+        { 11, string_ids::day_11th },
+        { 12, string_ids::day_12th },
+        { 13, string_ids::day_13th },
+        { 14, string_ids::day_14th },
+        { 15, string_ids::day_15th },
+        { 16, string_ids::day_16th },
+        { 17, string_ids::day_17th },
+        { 18, string_ids::day_18th },
+        { 19, string_ids::day_19th },
+        { 20, string_ids::day_20th },
+        { 21, string_ids::day_21st },
+        { 22, string_ids::day_22nd },
+        { 23, string_ids::day_23rd },
+        { 24, string_ids::day_24th },
+        { 25, string_ids::day_25th },
+        { 26, string_ids::day_26th },
+        { 27, string_ids::day_27th },
+        { 28, string_ids::day_28th },
+        { 29, string_ids::day_29th },
+        { 30, string_ids::day_30th },
+        { 31, string_ids::day_31st },
+    };
+
+    static std::map<month_id, std::pair<string_id, string_id>> month_to_string = {
+        { month_id::january, { string_ids::month_short_january, string_ids::month_long_january } },
+        { month_id::february, { string_ids::month_short_february, string_ids::month_long_february } },
+        { month_id::march, { string_ids::month_short_march, string_ids::month_long_march } },
+        { month_id::april, { string_ids::month_short_april, string_ids::month_long_april } },
+        { month_id::may, { string_ids::month_short_may, string_ids::month_long_may } },
+        { month_id::june, { string_ids::month_short_june, string_ids::month_long_june } },
+        { month_id::july, { string_ids::month_short_july, string_ids::month_long_july } },
+        { month_id::august, { string_ids::month_short_august, string_ids::month_long_august } },
+        { month_id::september, { string_ids::month_short_september, string_ids::month_long_september } },
+        { month_id::october, { string_ids::month_short_october, string_ids::month_long_october } },
+        { month_id::november, { string_ids::month_short_november, string_ids::month_long_november } },
+        { month_id::december, { string_ids::month_short_december, string_ids::month_long_december } },
+    };
 
     const char* get_string(string_id id)
     {
@@ -96,32 +148,53 @@ namespace openloco::stringmgr
 
     static char* formatDayMonthYearFull(uint32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        auto date = calc_date(value);
 
-        call(0x495D09, regs);
-        return (char*)regs.edi;
+        string_id day_string = day_to_string[date.day];
+        buffer = format_string(buffer, day_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        string_id month_string = month_to_string[date.month].first;
+        buffer = format_string(buffer, month_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        buffer = format_int(date.year, buffer);
+
+        return buffer;
     }
 
     static char* formatMonthYearFull(uint32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        auto date = calc_date(value);
 
-        call(0x495D77, regs);
-        return (char*)regs.edi;
+        string_id month_string = month_to_string[date.month].first;
+        buffer = format_string(buffer, month_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        buffer = format_int(date.year, buffer);
+
+        return buffer;
     }
 
     static char* formatMonthYearAbbrev_0(uint32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        auto date = calc_date(value);
 
-        call(0x495DC7, regs);
-        return (char*)regs.edi;
+        string_id month_string = month_to_string[date.month].second;
+        buffer = format_string(buffer, month_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        buffer = format_int(date.year, buffer);
+
+        return buffer;
     }
 
     static char* format_string_part(char* buffer, const char* sourceStr, void* args);
