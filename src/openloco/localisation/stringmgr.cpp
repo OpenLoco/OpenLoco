@@ -1,6 +1,5 @@
 #include "stringmgr.h"
 #include "../config.h"
-#include "../console.h"
 #include "../date.h"
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
@@ -81,11 +80,7 @@ namespace openloco::stringmgr
 
     const char* get_string(string_id id)
     {
-        console::log("Fetching string %d", id);
         char* str = _strings[id];
-        console::log("Found at %p", str);
-        console::log("Reads: '%s'", str);
-
         return str;
     }
 
@@ -356,9 +351,7 @@ namespace openloco::stringmgr
                     case 123 + 8:
                     {
                         string_id id = args.pop16();
-                        const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, id, args);
-                        sourceStr = sourceStr_;
                         break;
                     }
 
@@ -366,9 +359,7 @@ namespace openloco::stringmgr
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
-                        const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, id, args);
-                        sourceStr = sourceStr_;
                         break;
                     }
 
@@ -608,7 +599,7 @@ namespace openloco::stringmgr
             const char* sourceStr = get_string(id);
             if (sourceStr == nullptr)
             {
-                console::error("Got a nullptr for string id %d -- cowardly refusing", id);
+                throw std::runtime_error("Got a nullptr for string id " + std::to_string(id) + " -- cowardly refusing");
                 return buffer;
             }
 
@@ -624,8 +615,8 @@ namespace openloco::stringmgr
 
             // !!! TODO: original code is prone to buffer overflow.
             buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
-            buffer[USER_STRING_SIZE - 1] = '\0';
             buffer += strlen(sourceStr);
+            *buffer = '\0';
 
             return buffer;
         }
@@ -639,12 +630,9 @@ namespace openloco::stringmgr
         }
         else if (id == TOWN_NAMES_END)
         {
-            auto temp = args;
             uint16_t town_id = args.pop16();
             auto town = townmgr::get(town_id);
-            buffer = format_string(buffer, town->name, nullptr);
-            args = temp;
-            return buffer;
+            return format_string(buffer, town->name, nullptr);
         }
         else
         {
