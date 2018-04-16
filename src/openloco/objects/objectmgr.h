@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include "../localisation/stringmgr.h"
 
 namespace openloco
 {
@@ -48,7 +49,18 @@ namespace openloco
     struct cargo_object;
     struct interface_skin_object;
     struct sound_object;
-    struct currency_object;
+
+    struct currency_object
+    {
+        uint8_t pad_00[0x02];
+        string_id prefix_symbol;
+        string_id suffix_symbol;
+        uint8_t pad_06[0x10 - 0x06];
+        char decimal_separator;
+        uint8_t factor;
+        // !!! TODO: verify object isn't larger.
+    };
+
     struct steam_object;
     struct rock_object;
     struct water_object;

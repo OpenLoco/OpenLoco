@@ -94,6 +94,12 @@ namespace openloco::objectmgr
         return _industryObjects[id];
     }
 
+    template<>
+    currency_object* get(size_t id)
+    {
+        return _currencyObjects[id];
+    }
+
     size_t get_max_objects(object_type type)
     {
         static size_t counts[] = {

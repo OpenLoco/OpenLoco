@@ -3,6 +3,7 @@
 #include "../config.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
+#include "../objects/objectmgr.h"
 #include "../townmgr.h"
 
 #include <cassert>
@@ -30,6 +31,7 @@ namespace openloco::stringmgr
         console::log("Fetching string %d", id);
         char* str = _strings[id];
         console::log("Found at %p", str);
+        console::log("Reads: '%s'", str);
 
         return str;
     }
@@ -53,6 +55,18 @@ namespace openloco::stringmgr
         regs.edi = (uint32_t) buffer;
 
         call(0x495E2A, regs);
+        return (char*) regs.edi;
+    }
+
+    // TODO: decltype(value)
+    static char* formatNumeric_2(uint16_t value, char* buffer, char decimal_separator)
+    {
+        registers regs;
+        regs.eax = (uint32_t) value;
+        regs.edi = (uint32_t) buffer;
+        regs.ebx = (uint32_t) decimal_separator;
+
+        call(0x496052, regs);
         return (char*) regs.edi;
     }
 
@@ -106,6 +120,32 @@ namespace openloco::stringmgr
 
         call(0x495DC7, regs);
         return (char*) regs.edi;
+    }
+
+    static char* format_string_part(char* buffer, const char* sourceStr, void* args);
+
+    static char* formatCurrency(int64_t value, char* buffer)
+    {
+        if (value < 0)
+        {
+            *buffer = '-';
+            buffer++;
+            value = -value;
+        }
+
+        currency_object* currency = objectmgr::get<currency_object>(0);
+
+        int64_t localised_value = value << currency->factor;
+
+        const char* prefix_symbol = get_string(currency->prefix_symbol);
+        buffer = format_string_part(buffer, prefix_symbol, nullptr);
+
+        buffer = formatNumeric_2(localised_value, buffer, currency->decimal_separator);
+
+        const char* suffix_symbol = get_string(currency->suffix_symbol);
+        buffer = format_string_part(buffer, suffix_symbol, nullptr);
+
+        return buffer;
     }
 
     static char* format_string(char* buffer, string_id id, argswrapper &args);
@@ -222,18 +262,17 @@ namespace openloco::stringmgr
 
                     case 123 + 6:
                     {
-                        console::error("Unimplemented format string: 6");
-                        args.pop32();
-                        // !!! TODO: implement and call sub_495B66
+                        int64_t value = args.pop32();
+                        buffer = formatCurrency(value, buffer);
                         break;
                     }
 
                     case 123 + 7:
                     {
-                        console::error("Unimplemented format string: 7");
-                        args.pop32();
-                        args.pop16();
-                        // !!! TODO: implement and call sub_495B5B
+                        int32_t value_low = args.pop32();
+                        int16_t value_high = args.pop16();
+                        int64_t value = ((int64_t) value_high << 32) + value_low;
+                        buffer = formatCurrency(value, buffer);
                         break;
                     }
 
