@@ -169,12 +169,12 @@ namespace openloco::stringmgr
                 *buffer = ch;
                 buffer++;
             }
-            else if (ch < '}') // 0x7B
+            else if (ch < 0x7B || ch >= 0x90)
             {
                 *buffer = ch;
                 buffer++;
             }
-            else if (ch < 0x90)
+            else
             {
                 switch (ch)
                 {
@@ -481,11 +481,6 @@ namespace openloco::stringmgr
                     }
                 }
             }
-            else
-            {
-                *buffer = ch;
-                buffer++;
-            }
         }
 
         return buffer;
@@ -503,7 +498,7 @@ namespace openloco::stringmgr
         if (id < USER_STRINGS_START)
         {
             const char* sourceStr = get_string(id);
-            if (sourceStr == nullptr || sourceStr == (char*) 0x50)
+            if (sourceStr == nullptr)
             {
                 console::error("Got a nullptr for string id %d -- cowardly refusing", id);
                 return buffer;
