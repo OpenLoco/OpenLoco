@@ -195,10 +195,10 @@ namespace openloco::stringmgr
 
                     ch = *sourceStr;
                     sourceStr++;
-
-                    *buffer = ch;
-                    buffer++;
                 }
+
+                *buffer = ch;
+                buffer++;
 
                 ch = *sourceStr;
                 sourceStr++;
