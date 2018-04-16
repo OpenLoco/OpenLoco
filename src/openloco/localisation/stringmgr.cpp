@@ -311,7 +311,7 @@ namespace openloco::stringmgr
                             sourceStr++;
                         } while (*sourceStr != '\0');
 
-                        buffer--;
+                        *buffer = '\0';
                         sourceStr = sourceStr_;
                         break;
                     }
@@ -372,7 +372,7 @@ namespace openloco::stringmgr
                             unit++;
                         } while (*unit != '\0');
 
-                        buffer--;
+                        *buffer = '\0';
 
                         break;
                     }
@@ -429,7 +429,7 @@ namespace openloco::stringmgr
                             unit++;
                         } while (*unit != '\0');
 
-                        buffer--;
+                        *buffer = '\0';
 
                         break;
                     }
@@ -470,7 +470,7 @@ namespace openloco::stringmgr
                             unit++;
                         } while (*unit != '\0');
 
-                        buffer--;
+                        *buffer = '\0';
 
                         break;
                     }
@@ -503,7 +503,7 @@ namespace openloco::stringmgr
                             unit++;
                         } while (*unit != '\0');
 
-                        buffer--;
+                        *buffer = '\0';
 
                         break;
                     }
