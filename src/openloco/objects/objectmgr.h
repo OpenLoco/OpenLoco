@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../localisation/stringmgr.h"
 #include <cstdint>
 #include <cstdio>
-#include "../localisation/stringmgr.h"
 
 namespace openloco
 {

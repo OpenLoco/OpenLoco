@@ -1,10 +1,10 @@
-#include "argswrapper.hpp"
 #include "stringmgr.h"
 #include "../config.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
 #include "../objects/objectmgr.h"
 #include "../townmgr.h"
+#include "argswrapper.hpp"
 
 #include <cassert>
 #include <cstring>
@@ -14,17 +14,17 @@ using namespace openloco::interop;
 
 namespace openloco::stringmgr
 {
-    const uint16_t NUM_USER_STRINGS   = 2048;
-    const uint8_t  USER_STRING_SIZE   = 32;
+    const uint16_t NUM_USER_STRINGS = 2048;
+    const uint8_t USER_STRING_SIZE = 32;
     const uint16_t USER_STRINGS_START = 0x8000;
-    const uint16_t USER_STRINGS_END   = USER_STRINGS_START + NUM_USER_STRINGS;
+    const uint16_t USER_STRINGS_END = USER_STRINGS_START + NUM_USER_STRINGS;
 
-    const uint16_t NUM_TOWN_NAMES     = 345;
-    const uint16_t TOWN_NAMES_START   = 0x9EE7;
-    const uint16_t TOWN_NAMES_END     = TOWN_NAMES_START + NUM_TOWN_NAMES;
+    const uint16_t NUM_TOWN_NAMES = 345;
+    const uint16_t TOWN_NAMES_START = 0x9EE7;
+    const uint16_t TOWN_NAMES_END = TOWN_NAMES_START + NUM_TOWN_NAMES;
 
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
-    static loco_global<char [NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
+    static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
     const char* get_string(string_id id)
     {
@@ -41,10 +41,10 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = value;
-        regs.edi = (uint32_t) buffer;
+        regs.edi = (uint32_t)buffer;
 
         call(0x00495F35, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     // TODO: decltype(value)
@@ -52,33 +52,33 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = value;
-        regs.edi = (uint32_t) buffer;
+        regs.edi = (uint32_t)buffer;
 
         call(0x495E2A, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     // TODO: decltype(value)
     static char* formatNumeric_2(uint16_t value, char* buffer, char decimal_separator)
     {
         registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
-        regs.ebx = (uint32_t) decimal_separator;
+        regs.eax = (uint32_t)value;
+        regs.edi = (uint32_t)buffer;
+        regs.ebx = (uint32_t)decimal_separator;
 
         call(0x496052, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     // TODO: decltype(value)
     static char* formatNumeric_4(uint16_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
+        regs.eax = (uint32_t)value;
+        regs.edi = (uint32_t)buffer;
 
         call(0x4963FC, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     // TODO: decltype(value)
@@ -86,40 +86,40 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = value;
-        regs.edi = (uint32_t) buffer;
+        regs.edi = (uint32_t)buffer;
 
         call(0x4962F1, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     static char* formatDayMonthYearFull(uint32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
+        regs.eax = (uint32_t)value;
+        regs.edi = (uint32_t)buffer;
 
         call(0x495D09, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     static char* formatMonthYearFull(uint32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
+        regs.eax = (uint32_t)value;
+        regs.edi = (uint32_t)buffer;
 
         call(0x495D77, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     static char* formatMonthYearAbbrev_0(uint32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t) value;
-        regs.edi = (uint32_t) buffer;
+        regs.eax = (uint32_t)value;
+        regs.edi = (uint32_t)buffer;
 
         call(0x495DC7, regs);
-        return (char*) regs.edi;
+        return (char*)regs.edi;
     }
 
     static char* format_string_part(char* buffer, const char* sourceStr, void* args);
@@ -148,9 +148,9 @@ namespace openloco::stringmgr
         return buffer;
     }
 
-    static char* format_string(char* buffer, string_id id, argswrapper &args);
+    static char* format_string(char* buffer, string_id id, argswrapper& args);
 
-    static char* format_string_part(char* buffer, const char* sourceStr, argswrapper &args)
+    static char* format_string_part(char* buffer, const char* sourceStr, argswrapper& args)
     {
         while (true)
         {
@@ -256,7 +256,7 @@ namespace openloco::stringmgr
                     case 123 + 5:
                     {
                         uint16_t value = args.pop16();
-                        buffer = format_int((uint32_t) value, buffer);
+                        buffer = format_int((uint32_t)value, buffer);
                         break;
                     }
 
@@ -271,7 +271,7 @@ namespace openloco::stringmgr
                     {
                         int32_t value_low = args.pop32();
                         int16_t value_high = args.pop16();
-                        int64_t value = ((int64_t) value_high << 32) + value_low;
+                        int64_t value = ((int64_t)value_high << 32) + value_low;
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
@@ -287,7 +287,7 @@ namespace openloco::stringmgr
 
                     case 123 + 9:
                     {
-                        string_id id = *(string_id*) sourceStr;
+                        string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
                         const char* sourceStr_ = sourceStr;
                         buffer = format_string(buffer, id, args);
@@ -298,15 +298,14 @@ namespace openloco::stringmgr
                     case 123 + 10:
                     {
                         const char* sourceStr_ = sourceStr;
-                        sourceStr = (char*) args.pop32();
+                        sourceStr = (char*)args.pop32();
 
                         do
                         {
                             *buffer = *sourceStr;
                             buffer++;
                             sourceStr++;
-                        }
-                        while (*sourceStr != '\0');
+                        } while (*sourceStr != '\0');
 
                         buffer--;
                         sourceStr = sourceStr_;
@@ -334,7 +333,7 @@ namespace openloco::stringmgr
                                 break;
 
                             default:
-                               throw std::out_of_range("format_string: unexpected modifier: " + std::to_string((uint8_t) modifier));
+                                throw std::out_of_range("format_string: unexpected modifier: " + std::to_string((uint8_t)modifier));
                         }
 
                         break;
@@ -367,8 +366,7 @@ namespace openloco::stringmgr
                             *buffer = *unit;
                             buffer++;
                             unit++;
-                        }
-                        while (*unit != '\0');
+                        } while (*unit != '\0');
 
                         buffer--;
 
@@ -425,8 +423,7 @@ namespace openloco::stringmgr
                             *buffer = *unit;
                             buffer++;
                             unit++;
-                        }
-                        while (*unit != '\0');
+                        } while (*unit != '\0');
 
                         buffer--;
 
@@ -467,8 +464,7 @@ namespace openloco::stringmgr
                             *buffer = *unit;
                             buffer++;
                             unit++;
-                        }
-                        while (*unit != '\0');
+                        } while (*unit != '\0');
 
                         buffer--;
 
@@ -501,8 +497,7 @@ namespace openloco::stringmgr
                             *buffer = *unit;
                             buffer++;
                             unit++;
-                        }
-                        while (*unit != '\0');
+                        } while (*unit != '\0');
 
                         buffer--;
 
@@ -515,7 +510,7 @@ namespace openloco::stringmgr
                         *buffer = 23;
 
                         uint32_t value = args.pop32();
-                        uint32_t* sprite_ptr = (uint32_t*) (buffer + 1);
+                        uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;
                         buffer += 5;
 
@@ -535,7 +530,7 @@ namespace openloco::stringmgr
     }
 
     // 0x004958C6
-    static char* format_string(char* buffer, string_id id, argswrapper &args)
+    static char* format_string(char* buffer, string_id id, argswrapper& args)
     {
         if (id < USER_STRINGS_START)
         {
@@ -568,7 +563,7 @@ namespace openloco::stringmgr
             id -= TOWN_NAMES_START;
             uint16_t town_id = args.pop16();
             auto town = townmgr::get(town_id);
-            void* town_name = (void*) &town->name;
+            void* town_name = (void*)&town->name;
             return format_string(buffer, id, town_name);
         }
         else if (id == TOWN_NAMES_END)
@@ -583,7 +578,7 @@ namespace openloco::stringmgr
         else
         {
             // throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t) id));
-            console::error("Invalid string id: %d", (uint32_t) id);
+            console::error("Invalid string id: %d", (uint32_t)id);
             return buffer;
         }
     }

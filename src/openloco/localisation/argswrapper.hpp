@@ -10,15 +10,16 @@ namespace openloco::stringmgr
         void* args;
 
     public:
-        argswrapper(void* newargs) : args(newargs) {};
+        argswrapper(void* newargs)
+            : args(newargs){};
 
         uint8_t pop8()
         {
             if (args == nullptr)
                 return 0;
 
-            uint8_t value = *(uint8_t*) args;
-            args = (uint8_t*) args + 1;
+            uint8_t value = *(uint8_t*)args;
+            args = (uint8_t*)args + 1;
             return value;
         }
 
@@ -27,8 +28,8 @@ namespace openloco::stringmgr
             if (args == nullptr)
                 return 0;
 
-            uint16_t value = *(uint16_t*) args;
-            args = (uint16_t*) args + 1;
+            uint16_t value = *(uint16_t*)args;
+            args = (uint16_t*)args + 1;
             return value;
         }
 
@@ -37,14 +38,14 @@ namespace openloco::stringmgr
             if (args == nullptr)
                 return 0;
 
-            uint32_t value = *(uint32_t*) args;
-            args = (uint32_t*) args + 1;
+            uint32_t value = *(uint32_t*)args;
+            args = (uint32_t*)args + 1;
             return value;
         }
 
         void push16()
         {
-            args = (uint16_t*) args - 1;
+            args = (uint16_t*)args - 1;
         }
     };
 }
