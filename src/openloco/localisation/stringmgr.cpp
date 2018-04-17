@@ -610,7 +610,7 @@ namespace openloco::stringmgr
         else if (id < USER_STRINGS_END)
         {
             id -= USER_STRINGS_START;
-            args.pop16();
+            args.skip16();
             const char* sourceStr = _userStrings[id];
 
             // !!! TODO: original code is prone to buffer overflow.

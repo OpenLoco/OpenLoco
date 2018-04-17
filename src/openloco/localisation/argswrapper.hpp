@@ -43,6 +43,12 @@ namespace openloco::stringmgr
             return value;
         }
 
+        void skip16()
+        {
+            if (args != nullptr)
+                args = (uint16_t*)args + 1;
+        }
+
         void push16()
         {
             args = (uint16_t*)args - 1;
