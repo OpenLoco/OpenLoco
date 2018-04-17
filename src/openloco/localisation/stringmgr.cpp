@@ -29,6 +29,31 @@ namespace openloco::stringmgr
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
+    enum formatting_codes
+    {
+        int32_grouped = 123 + 0,
+        int32_ungrouped = 123 + 1,
+        int16_decimals = 123 + 2,
+        int32_decimals = 123 + 3,
+        int16_grouped = 123 + 4,
+        int16_ungrouped = 123 + 5,
+        currency32 = 123 + 6,
+        currency48 = 123 + 7,
+        stringid_args = 123 + 8,
+        stringid_str = 123 + 9,
+        string_ptr = 123 + 10,
+        date = 123 + 11,
+        velocity = 123 + 12,
+        pop16 = 123 + 13,
+        push16 = 123 + 14,
+        timeMS = 123 + 15,
+        timeHM = 123 + 16,
+        distance = 123 + 17,
+        height = 123 + 18,
+        power = 123 + 19,
+        inline_sprite = 123 + 20,
+    };
+
     static std::map<int32_t, string_id> day_to_string = {
         { 1, string_ids::day_1st },
         { 2, string_ids::day_2nd },
@@ -84,30 +109,27 @@ namespace openloco::stringmgr
         return str;
     }
 
-    // TODO: decltype(value)
-    static char* format_comma(uint32_t value, char* buffer)
+    static char* format_comma(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = value;
+        regs.eax = (uint32_t)value;
         regs.edi = (uint32_t)buffer;
 
         call(0x00495F35, regs);
         return (char*)regs.edi;
     }
 
-    // TODO: decltype(value)
-    static char* format_int(uint32_t value, char* buffer)
+    static char* format_int(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = value;
+        regs.eax = (uint32_t)value;
         regs.edi = (uint32_t)buffer;
 
         call(0x495E2A, regs);
         return (char*)regs.edi;
     }
 
-    // TODO: decltype(value)
-    static char* formatNumeric_2(int64_t value, char* buffer, uint8_t separator)
+    static char* formatNumeric_2(uint64_t value, char* buffer, uint8_t separator)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -119,8 +141,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    // TODO: decltype(value)
-    static char* formatNumeric_4(uint16_t value, char* buffer)
+    static char* formatNumeric_4(int16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -130,20 +151,19 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    // TODO: decltype(value)
-    static char* format_comma2dp32(uint32_t value, char* buffer)
+    static char* format_comma2dp32(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = value;
+        regs.eax = (uint32_t)value;
         regs.edi = (uint32_t)buffer;
 
         call(0x4962F1, regs);
         return (char*)regs.edi;
     }
 
-    static char* formatDayMonthYearFull(uint32_t value, char* buffer)
+    static char* formatDayMonthYearFull(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(value);
+        auto date = calc_date(totalDays);
 
         string_id day_string = day_to_string[date.day];
         buffer = format_string(buffer, day_string, nullptr);
@@ -162,9 +182,9 @@ namespace openloco::stringmgr
         return buffer;
     }
 
-    static char* formatMonthYearFull(uint32_t value, char* buffer)
+    static char* formatMonthYearFull(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(value);
+        auto date = calc_date(totalDays);
 
         string_id month_string = month_to_string[date.month].first;
         buffer = format_string(buffer, month_string, nullptr);
@@ -177,9 +197,9 @@ namespace openloco::stringmgr
         return buffer;
     }
 
-    static char* formatMonthYearAbbrev_0(uint32_t value, char* buffer)
+    static char* formatMonthYearAbbrev_0(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(value);
+        auto date = calc_date(totalDays);
 
         string_id month_string = month_to_string[date.month].second;
         buffer = format_string(buffer, month_string, nullptr);
@@ -289,49 +309,49 @@ namespace openloco::stringmgr
             {
                 switch (ch)
                 {
-                    case 123 + 0:
+                    case formatting_codes::int32_grouped:
                     {
-                        uint32_t value = args.pop32();
+                        int32_t value = args.pop32();
                         buffer = format_comma(value, buffer);
                         break;
                     }
 
-                    case 123 + 1:
+                    case formatting_codes::int32_ungrouped:
                     {
-                        uint32_t value = args.pop32();
+                        int32_t value = args.pop32();
                         buffer = format_int(value, buffer);
                         break;
                     }
 
-                    case 123 + 2:
+                    case formatting_codes::int16_decimals:
                     {
-                        uint16_t value = args.pop16();
+                        int16_t value = args.pop16();
                         buffer = formatNumeric_4(value, buffer);
                         break;
                     }
 
-                    case 123 + 3:
+                    case formatting_codes::int32_decimals:
                     {
-                        uint32_t value = args.pop32();
+                        int32_t value = args.pop32();
                         buffer = format_comma2dp32(value, buffer);
                         break;
                     }
 
-                    case 123 + 4:
+                    case formatting_codes::int16_grouped:
                     {
-                        uint16_t value = args.pop16();
+                        int16_t value = args.pop16();
                         buffer = format_comma(value, buffer);
                         break;
                     }
 
-                    case 123 + 5:
+                    case formatting_codes::int16_ungrouped:
                     {
-                        uint16_t value = args.pop16();
-                        buffer = format_int((uint32_t)value, buffer);
+                        int16_t value = args.pop16();
+                        buffer = format_int((int32_t)value, buffer);
                         break;
                     }
 
-                    case 123 + 6:
+                    case formatting_codes::currency32:
                     {
                         int64_t value = 0;
                         value = args.pop32();
@@ -339,7 +359,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 7:
+                    case formatting_codes::currency48:
                     {
                         int32_t value_low = args.pop32();
                         int16_t value_high = args.pop16();
@@ -348,14 +368,14 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 8:
+                    case formatting_codes::stringid_args:
                     {
                         string_id id = args.pop16();
                         buffer = format_string(buffer, id, args);
                         break;
                     }
 
-                    case 123 + 9:
+                    case formatting_codes::stringid_str:
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
@@ -363,7 +383,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 10:
+                    case formatting_codes::string_ptr:
                     {
                         const char* sourceStr_ = sourceStr;
                         sourceStr = (char*)args.pop32();
@@ -380,24 +400,24 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 11:
+                    case formatting_codes::date:
                     {
                         char modifier = *sourceStr;
-                        uint32_t value = args.pop32();
+                        uint32_t totalDays = args.pop32();
                         sourceStr++;
 
                         switch (modifier)
                         {
                             case 0:
-                                buffer = formatDayMonthYearFull(value, buffer);
+                                buffer = formatDayMonthYearFull(totalDays, buffer);
                                 break;
 
                             case 4:
-                                buffer = formatMonthYearFull(value, buffer);
+                                buffer = formatMonthYearFull(totalDays, buffer);
                                 break;
 
                             case 8:
-                                buffer = formatMonthYearAbbrev_0(value, buffer);
+                                buffer = formatMonthYearAbbrev_0(totalDays, buffer);
                                 break;
 
                             default:
@@ -407,9 +427,8 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 12:
+                    case formatting_codes::velocity:
                     {
-                        // velocity
                         auto measurement_format = config::get().measurement_format;
 
                         uint32_t value = args.pop16();
@@ -441,27 +460,22 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 13:
-                        // pop16
+                    case formatting_codes::pop16:
                         args.pop16();
                         break;
 
-                    case 123 + 14:
-                        // push16
+                    case formatting_codes::push16:
                         args.push16();
                         break;
 
-                    case 123 + 15:
-                        // timeMS
+                    case formatting_codes::timeMS:
                         throw std::runtime_error("Unimplemented format string: 15");
 
-                    case 123 + 16:
-                        // timeHM
+                    case formatting_codes::timeHM:
                         throw std::runtime_error("Unimplemented format string: 15");
 
-                    case 123 + 17:
+                    case formatting_codes::distance:
                     {
-                        // distance
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
 
@@ -492,9 +506,8 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 18:
+                    case formatting_codes::height:
                     {
-                        // height
                         uint32_t value = args.pop16();
 
                         bool show_height_as_units = config::get().flags & config::flags::SHOW_HEIGHT_AS_UNITS;
@@ -533,9 +546,8 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 19:
+                    case formatting_codes::power:
                     {
-                        // power
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
 
@@ -566,11 +578,9 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case 123 + 20:
+                    case formatting_codes::inline_sprite:
                     {
-                        // sprite
                         *buffer = 23;
-
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;
