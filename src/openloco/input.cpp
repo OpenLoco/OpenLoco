@@ -748,62 +748,64 @@ namespace openloco::input
             return;
         }
 
-        if (!is_title_mode())
+        if (is_title_mode())
         {
-            switch (widget->type)
-            {
-                default:
-                    break;
+            return;
+        }
 
-                case ui::widget_type::viewport:
-                    window->flags &= ~ui::window_flags::flag_3;
-                    _state = (uint8_t)input_state::viewport_right;
-                    _dragLastX = x;
-                    _dragLastY = y;
-                    _dragWindowType = window->type;
-                    _dragWindowNumber = window->number;
-                    _ticksSinceDragStart = 0;
+        switch (widget->type)
+        {
+            default:
+                break;
 
-                    ui::set_cursor(ui::cursor_id::blank);
-                    sub_407218();
+            case ui::widget_type::viewport:
+                window->flags &= ~ui::window_flags::flag_3;
+                _state = (uint8_t)input_state::viewport_right;
+                _dragLastX = x;
+                _dragLastY = y;
+                _dragWindowType = window->type;
+                _dragWindowNumber = window->number;
+                _ticksSinceDragStart = 0;
 
-                    _5233AE = 0;
-                    _5233B2 = 0;
-                    set_flag(input_flags::flag5);
-                    break;
+                ui::set_cursor(ui::cursor_id::blank);
+                sub_407218();
 
-                case ui::widget_type::scrollview:
-                    _state = (uint8_t)input_state::scroll_right;
-                    _dragLastX = x;
-                    _dragLastY = y;
-                    _dragWindowType = window->type;
-                    _dragWindowNumber = window->number;
-                    _dragWidgetIndex = widgetIndex;
-                    _ticksSinceDragStart = 0;
+                _5233AE = 0;
+                _5233B2 = 0;
+                set_flag(input_flags::flag5);
+                break;
 
-                    int scrollIndex = 0;
-                    for (int i = 0;; i++)
+            case ui::widget_type::scrollview:
+                _state = (uint8_t)input_state::scroll_right;
+                _dragLastX = x;
+                _dragLastY = y;
+                _dragWindowType = window->type;
+                _dragWindowNumber = window->number;
+                _dragWidgetIndex = widgetIndex;
+                _ticksSinceDragStart = 0;
+
+                int scrollIndex = 0;
+                for (int i = 0;; i++)
+                {
+                    if (window->widgets[i].type == ui::widget_type::scrollview)
                     {
-                        if (window->widgets[i].type == ui::widget_type::scrollview)
-                        {
-                            scrollIndex++;
-                        }
-                        if (&window->widgets[i] == widget)
-                        {
-                            break;
-                        }
+                        scrollIndex++;
                     }
+                    if (&window->widgets[i] == widget)
+                    {
+                        break;
+                    }
+                }
 
-                    _dragScrollIndex = scrollIndex;
+                _dragScrollIndex = scrollIndex;
 
-                    ui::set_cursor(ui::cursor_id::blank);
-                    sub_407218();
+                ui::set_cursor(ui::cursor_id::blank);
+                sub_407218();
 
-                    _5233AE = 0;
-                    _5233B2 = 0;
-                    set_flag(input_flags::flag5);
-                    break;
-            }
+                _5233AE = 0;
+                _5233B2 = 0;
+                set_flag(input_flags::flag5);
+                break;
         }
     }
 
