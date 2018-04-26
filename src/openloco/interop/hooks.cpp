@@ -667,8 +667,10 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004CC6EA,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             auto window = (ui::window*)regs.esi;
             ui::windowmgr::close(window);
+            regs = backup;
             return 0;
         });
 
