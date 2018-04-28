@@ -434,7 +434,7 @@ namespace openloco::stringmgr
                         uint32_t value = args.pop16();
 
                         const char* unit;
-                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
+                        if (measurement_format == config::measurement_format::imperial)
                         {
                             // !!! TODO: Move to string id
                             unit = "mph";
@@ -480,7 +480,7 @@ namespace openloco::stringmgr
                         auto measurement_format = config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
+                        if (measurement_format == config::measurement_format::imperial)
                         {
                             // !!! TODO: Move to string id
                             unit = "ft";
@@ -519,7 +519,7 @@ namespace openloco::stringmgr
                             // !!! TODO: move to string id
                             unit = " units";
                         }
-                        else if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
+                        else if (measurement_format == config::measurement_format::imperial)
                         {
                             // !!! TODO: Move to string id
                             unit = "ft";
@@ -552,7 +552,7 @@ namespace openloco::stringmgr
                         auto measurement_format = config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == config::measurement_formats::FORMAT_IMPERIAL)
+                        if (measurement_format == config::measurement_format::imperial)
                         {
                             // !!! TODO: Move to string id
                             unit = "hp";

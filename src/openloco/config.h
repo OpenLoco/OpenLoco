@@ -12,10 +12,10 @@ namespace openloco::config
         SHOW_HEIGHT_AS_UNITS = (1 << 1),
     };
 
-    enum measurement_formats
+    enum measurement_format
     {
-        FORMAT_IMPERIAL = 0,
-        FORMAT_METRIC = 1,
+        imperial = 0,
+        metric = 1,
     };
 
     struct config_t
