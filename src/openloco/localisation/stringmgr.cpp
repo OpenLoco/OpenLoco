@@ -9,6 +9,7 @@
 #include "string_ids.h"
 
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <map>
 #include <stdexcept>
@@ -466,20 +467,14 @@ namespace openloco::stringmgr
                         else
                         {
                             // !!! TODO: Move to string id
-                            unit = "kmh";
-                            value = (value * 1648) >> 10;
+                            unit = "kmh\xB9";
+                            value = std::round(value * 1.609375);
                         }
 
                         buffer = format_int32_grouped(value, buffer);
 
-                        do
-                        {
-                            *buffer = *unit;
-                            buffer++;
-                            unit++;
-                        } while (*unit != '\0');
-
-                        *buffer = '\0';
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -508,24 +503,18 @@ namespace openloco::stringmgr
                         {
                             // !!! TODO: Move to string id
                             unit = "ft";
+                            value = std::round(value * 3.28125);
                         }
                         else
                         {
                             // !!! TODO: Move to string id
                             unit = "m";
-                            value = (value * 840) >> 8;
                         }
 
                         buffer = format_int32_grouped(value, buffer);
 
-                        do
-                        {
-                            *buffer = *unit;
-                            buffer++;
-                            unit++;
-                        } while (*unit != '\0');
-
-                        *buffer = '\0';
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -558,14 +547,8 @@ namespace openloco::stringmgr
 
                         buffer = format_int32_grouped(value, buffer);
 
-                        do
-                        {
-                            *buffer = *unit;
-                            buffer++;
-                            unit++;
-                        } while (*unit != '\0');
-
-                        *buffer = '\0';
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -585,19 +568,13 @@ namespace openloco::stringmgr
                         {
                             // !!! TODO: Move to string id
                             unit = "kW";
-                            value = (value * 764) >> 10;
+                            value = std::round(value * 0.746);
                         }
 
                         buffer = format_int32_grouped(value, buffer);
 
-                        do
-                        {
-                            *buffer = *unit;
-                            buffer++;
-                            unit++;
-                        } while (*unit != '\0');
-
-                        *buffer = '\0';
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
