@@ -161,7 +161,8 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* formatDayMonthYearFull(uint32_t totalDays, char* buffer)
+    // 0x00495D09
+    static char* format_date_dmy_full(uint32_t totalDays, char* buffer)
     {
         auto date = calc_date(totalDays);
 
@@ -171,7 +172,7 @@ namespace openloco::stringmgr
         *buffer = ' ';
         buffer++;
 
-        string_id month_string = month_to_string[date.month].first;
+        string_id month_string = month_to_string[date.month].second;
         buffer = format_string(buffer, month_string, nullptr);
 
         *buffer = ' ';
@@ -182,22 +183,8 @@ namespace openloco::stringmgr
         return buffer;
     }
 
-    static char* formatMonthYearFull(uint32_t totalDays, char* buffer)
-    {
-        auto date = calc_date(totalDays);
-
-        string_id month_string = month_to_string[date.month].first;
-        buffer = format_string(buffer, month_string, nullptr);
-
-        *buffer = ' ';
-        buffer++;
-
-        buffer = format_int_ungrouped(date.year, buffer);
-
-        return buffer;
-    }
-
-    static char* formatMonthYearAbbrev_0(uint32_t totalDays, char* buffer)
+    // 0x00495D77
+    static char* format_date_my_full(uint32_t totalDays, char* buffer)
     {
         auto date = calc_date(totalDays);
 
@@ -208,6 +195,37 @@ namespace openloco::stringmgr
         buffer++;
 
         buffer = format_int_ungrouped(date.year, buffer);
+
+        return buffer;
+    }
+
+    // 0x00495DC7
+    static char* format_date_my_abbrev(uint32_t totalDays, char* buffer)
+    {
+        auto date = calc_date(totalDays);
+
+        string_id month_string = month_to_string[date.month].second;
+        buffer = format_string(buffer, month_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        buffer = format_int_ungrouped(date.year, buffer);
+
+        return buffer;
+    }
+
+    // 0x00495DC7
+    static char* format_raw_date_my_abbrev(uint32_t totalDays, char* buffer)
+    {
+        auto month = static_cast<month_id>(totalDays % 12);
+        string_id month_string = month_to_string[month].first;
+        buffer = format_string(buffer, month_string, nullptr);
+
+        *buffer = ' ';
+        buffer++;
+
+        buffer = format_int_ungrouped(totalDays / 12, buffer);
 
         return buffer;
     }
@@ -409,15 +427,19 @@ namespace openloco::stringmgr
                         switch (modifier)
                         {
                             case 0:
-                                buffer = formatDayMonthYearFull(totalDays, buffer);
+                                buffer = format_date_dmy_full(totalDays, buffer);
                                 break;
 
                             case 4:
-                                buffer = formatMonthYearFull(totalDays, buffer);
+                                buffer = format_date_my_full(totalDays, buffer);
+                                break;
+
+                            case 5:
+                                buffer = format_date_my_abbrev(totalDays, buffer);
                                 break;
 
                             case 8:
-                                buffer = formatMonthYearAbbrev_0(totalDays, buffer);
+                                buffer = format_raw_date_my_abbrev(totalDays, buffer);
                                 break;
 
                             default:
