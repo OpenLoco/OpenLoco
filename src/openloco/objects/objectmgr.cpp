@@ -95,9 +95,9 @@ namespace openloco::objectmgr
     }
 
     template<>
-    currency_object* get(size_t id)
+    currency_object* get()
     {
-        return _currencyObjects[id];
+        return _currencyObjects[0];
     }
 
     size_t get_max_objects(object_type type)
