@@ -109,7 +109,7 @@ namespace openloco::stringmgr
         return str;
     }
 
-    static char* format_int_grouped(int32_t value, char* buffer)
+    static char* format_int32_grouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -119,7 +119,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_int_ungrouped(int32_t value, char* buffer)
+    static char* format_int32_ungrouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -129,11 +129,13 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_long_grouped(uint64_t value, char* buffer, uint8_t separator)
+    static char* format_int48_grouped(int64_t value, char* buffer, uint8_t separator)
     {
+        auto uvalue = (uint64_t)value;
+
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1 << 31));
+        regs.eax = (uint32_t)uvalue & 0xFFFFFFFF;
+        regs.dx = (uint16_t)(uvalue >> 32);
         regs.edi = (uint32_t)buffer;
         regs.ebx = (uint32_t)separator;
 
@@ -178,7 +180,7 @@ namespace openloco::stringmgr
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int_ungrouped(date.year, buffer);
+        buffer = format_int32_ungrouped(date.year, buffer);
 
         return buffer;
     }
@@ -194,7 +196,7 @@ namespace openloco::stringmgr
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int_ungrouped(date.year, buffer);
+        buffer = format_int32_ungrouped(date.year, buffer);
 
         return buffer;
     }
@@ -210,7 +212,7 @@ namespace openloco::stringmgr
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int_ungrouped(date.year, buffer);
+        buffer = format_int32_ungrouped(date.year, buffer);
 
         return buffer;
     }
@@ -225,7 +227,7 @@ namespace openloco::stringmgr
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int_ungrouped(totalDays / 12, buffer);
+        buffer = format_int32_ungrouped(totalDays / 12, buffer);
 
         return buffer;
     }
@@ -248,7 +250,7 @@ namespace openloco::stringmgr
         const char* prefix_symbol = get_string(currency->prefix_symbol);
         buffer = format_string_part(buffer, prefix_symbol, nullptr);
 
-        buffer = format_long_grouped(localised_value, buffer, currency->separator);
+        buffer = format_int48_grouped(localised_value, buffer, currency->separator);
 
         const char* suffix_symbol = get_string(currency->suffix_symbol);
         buffer = format_string_part(buffer, suffix_symbol, nullptr);
@@ -330,14 +332,14 @@ namespace openloco::stringmgr
                     case formatting_codes::int32_grouped:
                     {
                         int32_t value = args.pop32();
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
                     case formatting_codes::int32_ungrouped:
                     {
                         int32_t value = args.pop32();
-                        buffer = format_int_ungrouped(value, buffer);
+                        buffer = format_int32_ungrouped(value, buffer);
                         break;
                     }
 
@@ -358,14 +360,14 @@ namespace openloco::stringmgr
                     case formatting_codes::int16_grouped:
                     {
                         int16_t value = args.pop16();
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
                     case formatting_codes::int16_ungrouped:
                     {
                         int16_t value = args.pop16();
-                        buffer = format_int_ungrouped((int32_t)value, buffer);
+                        buffer = format_int32_ungrouped((int32_t)value, buffer);
                         break;
                     }
 
@@ -468,7 +470,7 @@ namespace openloco::stringmgr
                             value = (value * 1648) >> 10;
                         }
 
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
 
                         do
                         {
@@ -514,7 +516,7 @@ namespace openloco::stringmgr
                             value = (value * 840) >> 8;
                         }
 
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
 
                         do
                         {
@@ -554,7 +556,7 @@ namespace openloco::stringmgr
                             value *= 5;
                         }
 
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
 
                         do
                         {
@@ -586,7 +588,7 @@ namespace openloco::stringmgr
                             value = (value * 764) >> 10;
                         }
 
-                        buffer = format_int_grouped(value, buffer);
+                        buffer = format_int32_grouped(value, buffer);
 
                         do
                         {
