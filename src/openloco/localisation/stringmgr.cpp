@@ -130,13 +130,11 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_int48_grouped(int64_t value, char* buffer, uint8_t separator)
+    static char* format_int48_grouped(uint64_t value, char* buffer, uint8_t separator)
     {
-        auto uvalue = (uint64_t)value;
-
         registers regs;
-        regs.eax = (uint32_t)uvalue & 0xFFFFFFFF;
-        regs.dx = (uint16_t)(uvalue >> 32);
+        regs.eax = (uint32_t)value;
+        regs.edx = (uint32_t)(value / (1 << 31)); // regs.dx = (uint16_t)(value >> 32);
         regs.edi = (uint32_t)buffer;
         regs.ebx = (uint32_t)separator;
 
