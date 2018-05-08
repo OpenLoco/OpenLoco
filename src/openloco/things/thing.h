@@ -54,6 +54,7 @@ namespace openloco
     };
 
     struct vehicle_2;
+    struct vehicle_26;
     struct vehicle_bogie;
     struct vehicle_body;
     struct vehicle_6;
@@ -81,6 +82,12 @@ namespace openloco
         }
         vehicle_2* as_vehicle_2() const { return as<vehicle_2, thing_type::vehicle_2>(); }
         vehicle_6* as_vehicle_6() const { return as<vehicle_6, thing_type::vehicle_6>(); }
+        vehicle_26* as_vehicle_2or6() const {
+            auto vehicle = as<vehicle_26, thing_type::vehicle_2>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_26, thing_type::vehicle_6>();
+        }
         smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
         exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
     };

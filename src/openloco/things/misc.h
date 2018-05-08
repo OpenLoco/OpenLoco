@@ -16,7 +16,7 @@ namespace openloco
         int16_t var_34;
         int16_t var_36;
         uint8_t pad_38[0x49 - 0x38];
-        uint8_t object_id;
+        uint8_t object_id; // 0x49
 
         steam_object* object() const;
 

@@ -42,7 +42,8 @@ namespace openloco
         uint8_t pad_52[0x54 - 0x52];
         uint8_t var_54;
         int8_t var_55;
-        uint8_t pad_56[0x5D - 0x56];
+        uint8_t pad_56[0x5C - 0x56];
+        uint8_t var_5C;
         uint8_t var_5D;
         uint8_t var_5E;
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
@@ -67,12 +68,13 @@ namespace openloco
         void animation_update();
         void sub_4AAB0B();
         void sub_4A8882();
-        void sub_4A88A6(vehicle_2 * vehType2);
-        void sub_4A8B7C(vehicle_2 * vehType2);
-        void sub_4A88F7(vehicle_2 * vehType2, vehicle_object_sound_1 * buffer);
-        void sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 * buffer);
-        void sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 * buffer);
+        void sub_4A88A6(vehicle_26 * vehType2or6);
+        void sub_4A8B7C(vehicle_26 * vehType2or6);
+        void sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * buffer);
+        void sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * buffer);
+        void sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * buffer);
         void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
+        void sub_4AF06E();
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
@@ -106,8 +108,24 @@ namespace openloco
         vehicle_object* object() const;
     };
 
+    // TODO: Find out the difference between type 2 and 6
+    struct vehicle_26 : thing_base {
+        uint8_t pad_20[0x3A - 0x20];
+        thing_id_t next_car_id;     // 0x3A
+        uint8_t pad_3C[0x44 - 0x3C];
+        uint8_t var_44;
+        uint8_t var_45;
+        uint16_t var_46;
+        uint16_t object_id; // 0x48
+
+        thing * next_car();
+        vehicle_object* object() const;
+    };
+
     struct vehicle_6 : thing_base {
-        uint8_t pad_20[0x5F - 0x20];
+        uint8_t pad_20[0x4F - 0x20];
+        uint16_t var_4F;
+        uint8_t pad_51[0x5F - 0x51];
         uint8_t var_5F;
     };
 #pragma pack(pop)

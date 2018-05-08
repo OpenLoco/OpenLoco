@@ -23,6 +23,7 @@ loco_global<vehicle*, 0x0113611C> vehicle_113611C; // type 1
 loco_global<vehicle_2*, 0x01136120> vehicle_1136120; // type 2
 loco_global<vehicle*, 0x01136124> vehicle_front_bogie;
 loco_global<vehicle*, 0x01136128> vehicle_back_bogie;
+loco_global<int32_t, 0x0113612C> vehicle_var_113612C;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;   // var_28 related?
@@ -79,12 +80,22 @@ thing* vehicle_2::next_car()
     return thingmgr::get<thing>(next_car_id);
 }
 
+thing* vehicle_26::next_car()
+{
+    return thingmgr::get<thing>(next_car_id);
+}
+
 vehicle_object* vehicle::object() const
 {
     return objectmgr::get<vehicle_object>(object_id);
 }
 
 vehicle_object* vehicle_2::object() const
+{
+    return objectmgr::get<vehicle_object>(object_id);
+}
+
+vehicle_object* vehicle_26::object() const
 {
     return objectmgr::get<vehicle_object>(object_id);
 }
@@ -212,6 +223,39 @@ int32_t openloco::vehicle::sub_4A8B81()
 
     vehicle_var_113646C = var_5D;
     sub_4A8882();
+
+
+    vehicle_front_bogie = (vehicle*)0xFFFFFFFF;
+    vehicle_back_bogie = (vehicle*)0xFFFFFFFF;
+
+    vehicle_2* vehType2 = vehicle_1136120;
+    vehicle_var_113612C = vehType2->var_56 >> 7;
+    vehicle_var_1136130 = vehType2->var_56 >> 7;
+
+    if (var_5C != 0)
+    {
+        var_5C--;
+    }
+
+    if (tile_x == -1)
+    {
+        //4A8F3F
+        vehicle_6* vehType6 = vehType2->next_car()->as_vehicle_6();
+        if (vehType6 == nullptr)
+        {
+            return 0x10;
+        }
+
+        vehType6->var_4F++;
+        if (vehType6->var_4F < 960)
+        {
+            return 0x10;
+        }
+        sub_4AF06E();
+        return 0x10;
+    }
+    sub_4BA8D4();
+    //4A8BF8
     return int32_t();
 }
 
@@ -398,63 +442,63 @@ void openloco::vehicle::sub_4AAB0B()
 void openloco::vehicle::sub_4A8882()
 {
     vehicle_2 * vehType2 = vehicle_1136120;
-    sub_4A88A6(vehType2);
+    sub_4A88A6((vehicle_26*)vehType2);
     vehicle * vehType6 = (vehicle *)vehType2;
     while (vehType6->type != thing_type::vehicle_6)
     {
         vehType6 = vehType6->next_car();
     }
-    sub_4A88A6((vehicle_2*)vehType6);
+    sub_4A88A6((vehicle_26*)vehType6);
 }
 
 // Not guaranteed to be type 2 could be type 6
-void openloco::vehicle::sub_4A88A6(vehicle_2 * vehType2)
+void openloco::vehicle::sub_4A88A6(vehicle_26 * vehType2or6)
 {
     if (tile_x == 0xFFFF || 
         var_5D == 8 || 
         var_5D == 9 || 
         (var_38 & (1<<4))||
-        vehType2->object_id == 0xFFFF)
+        vehType2or6->object_id == 0xFFFF)
     {
-        sub_4A8B7C(vehType2);
+        sub_4A8B7C(vehType2or6);
         return;
     }
 
-    auto vehicleObject = vehType2->object();
+    auto vehicleObject = vehType2or6->object();
     switch (vehicleObject->startsnd_type)
     {
     case 0:
-        sub_4A8B7C(vehType2);
+        sub_4A8B7C(vehType2or6);
         break;
     case 1:
-        sub_4A88F7(vehType2, &vehicleObject->sound.type_1);
+        sub_4A88F7(vehType2or6, &vehicleObject->sound.type_1);
         break;
     case 2:
-        sub_4A8937(vehType2, &vehicleObject->sound.type_2);
+        sub_4A8937(vehType2or6, &vehicleObject->sound.type_2);
         break;
     case 3:
-        sub_4A8A39(vehType2, &vehicleObject->sound.type_3);
+        sub_4A8A39(vehType2or6, &vehicleObject->sound.type_3);
         break;
     default:
         assert(false);
     }
 }
 
-void openloco::vehicle::sub_4A8B7C(vehicle_2 * vehType2)
+void openloco::vehicle::sub_4A8B7C(vehicle_26 * vehType2or6)
 {
-    vehType2->var_44 = 0xFF;
+    vehType2or6->var_44 = 0xFF;
 }
 
-void openloco::vehicle::sub_4A88F7(vehicle_2 * vehType2, vehicle_object_sound_1 * snd)
+void openloco::vehicle::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * snd)
 {
     vehicle_2 * vehType2_2 = vehicle_1136120;
     if (vehType2_2->var_56 < snd->var_01) {
-        sub_4A8B7C(vehType2);
+        sub_4A8B7C(vehType2or6);
         return;
     }
 
     uint32_t unk = vehType2_2->var_56 - snd->var_01;
-    vehType2->var_46 = (unk >> snd->var_05) + snd->var_06;
+    vehType2or6->var_46 = (unk >> snd->var_05) + snd->var_06;
 
     unk >>= snd->var_08;
     unk += snd->var_09;
@@ -464,20 +508,20 @@ void openloco::vehicle::sub_4A88F7(vehicle_2 * vehType2, vehicle_object_sound_1 
         unk = snd->var_0A;
     }
 
-    vehType2->var_45 = unk;
-    vehType2->var_44 = snd->var_00;
+    vehType2or6->var_45 = unk;
+    vehType2or6->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 * snd)
+void openloco::vehicle::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * snd)
 {
-    if (vehType2 == vehicle_1136120)
+    if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
         if (var_5E != 5 && var_5E != 4)
         {
             // Can be a type 6 or bogie
-            if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
+            if (((vehicle *)vehType2or6->next_car())->var_5F & (1 << 2))
             {
-                sub_4A8B7C(vehType2);
+                sub_4A8B7C(vehType2or6);
                 return;
             }
         }
@@ -501,8 +545,8 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 
     }
     else if (vehType2_2->var_5A == 1)
     {
-        if (vehType2->type == thing_type::vehicle_2 ||
-            ((vehicle *)vehType2->next_car())->var_5E == 0)
+        if (vehType2or6->type == thing_type::vehicle_2 ||
+            ((vehicle *)vehType2or6->next_car())->var_5E == 0)
         {
             _var_46 = snd->var_07 + (vehType2_2->var_56 >> snd->var_10);
             _var_45 = snd->var_09;
@@ -519,53 +563,53 @@ void openloco::vehicle::sub_4A8937(vehicle_2 * vehType2, vehicle_object_sound_2 
         _var_45 = snd->var_03;
     }
 
-    if (vehType2->var_44 == 0xFF)
+    if (vehType2or6->var_44 == 0xFF)
     {
         // Half
-        vehType2->var_45 = snd->var_03 >> 1;
+        vehType2or6->var_45 = snd->var_03 >> 1;
         // Quarter
-        vehType2->var_46 = snd->var_01 >> 2;
-        vehType2->var_44 = snd->var_00;
+        vehType2or6->var_46 = snd->var_01 >> 2;
+        vehType2or6->var_44 = snd->var_00;
         return;
     }
 
-    if (vehType2->var_46 != _var_46)
+    if (vehType2or6->var_46 != _var_46)
     {
-        if (vehType2->var_46 > _var_46)
+        if (vehType2or6->var_46 > _var_46)
         {
-            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - snd->var_0C));
+            vehType2or6->var_46 = std::max(_var_46, (uint16_t)(vehType2or6->var_46 - snd->var_0C));
         }
         else
         {
-            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + snd->var_0A));
+            vehType2or6->var_46 = std::min(_var_46, (uint16_t)(vehType2or6->var_46 + snd->var_0A));
         }
     }
     
-    if (vehType2->var_45 != _var_45)
+    if (vehType2or6->var_45 != _var_45)
     {
-        if (vehType2->var_45 > _var_45)
+        if (vehType2or6->var_45 > _var_45)
         {
-            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - snd->var_0F));
+            vehType2or6->var_45 = std::max(_var_45, (uint8_t)(vehType2or6->var_45 - snd->var_0F));
         }
         else
         {
-            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + snd->var_0E));
+            vehType2or6->var_45 = std::min(_var_45, (uint8_t)(vehType2or6->var_45 + snd->var_0E));
         }
     }
 
-    vehType2->var_44 = snd->var_00;
+    vehType2or6->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 * snd)
+void openloco::vehicle::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * snd)
 {
-    if (vehType2 == vehicle_1136120)
+    if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
         if (var_5E != 5 && var_5E != 4)
         {
             // Can be a type 6 or bogie
-            if (((vehicle *)vehType2->next_car())->var_5F & (1 << 2))
+            if (((vehicle *)vehType2or6->next_car())->var_5F & (1 << 2))
             {
-                sub_4A8B7C(vehType2);
+                sub_4A8B7C(vehType2or6);
                 return;
             }
         }
@@ -603,8 +647,8 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 
 
     if (var5aEqual1Code == true)
     {
-        if (vehType2->type == thing_type::vehicle_2 ||
-            ((vehicle *)vehType2->next_car())->var_5E == 0)
+        if (vehType2or6->type == thing_type::vehicle_2 ||
+            ((vehicle *)vehType2or6->next_car())->var_5E == 0)
         {
             auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
 
@@ -632,42 +676,42 @@ void openloco::vehicle::sub_4A8A39(vehicle_2 * vehType2, vehicle_object_sound_3 
         }
     }
 
-    if (vehType2->var_44 == 0xFF)
+    if (vehType2or6->var_44 == 0xFF)
     {
         // Half
-        vehType2->var_45 = snd->var_03 >> 1;
+        vehType2or6->var_45 = snd->var_03 >> 1;
         // Quarter
-        vehType2->var_46 = snd->var_01 >> 2;
-        vehType2->var_44 = snd->var_00;
+        vehType2or6->var_46 = snd->var_01 >> 2;
+        vehType2or6->var_44 = snd->var_00;
         return;
     }
 
-    if (vehType2->var_46 != _var_46)
+    if (vehType2or6->var_46 != _var_46)
     {
-        if (vehType2->var_46 > _var_46)
+        if (vehType2or6->var_46 > _var_46)
         {
             _var_45 = snd->var_12;
-            vehType2->var_46 = std::max(_var_46, (uint16_t)(vehType2->var_46 - snd->var_16));
+            vehType2or6->var_46 = std::max(_var_46, (uint16_t)(vehType2or6->var_46 - snd->var_16));
         }
         else
         {
-            vehType2->var_46 = std::min(_var_46, (uint16_t)(vehType2->var_46 + snd->var_14));
+            vehType2or6->var_46 = std::min(_var_46, (uint16_t)(vehType2or6->var_46 + snd->var_14));
         }
     }
 
-    if (vehType2->var_45 != _var_45)
+    if (vehType2or6->var_45 != _var_45)
     {
-        if (vehType2->var_45 > _var_45)
+        if (vehType2or6->var_45 > _var_45)
         {
-            vehType2->var_45 = std::max(_var_45, (uint8_t)(vehType2->var_45 - snd->var_19));
+            vehType2or6->var_45 = std::max(_var_45, (uint8_t)(vehType2or6->var_45 - snd->var_19));
         }
         else
         {
-            vehType2->var_45 = std::min(_var_45, (uint8_t)(vehType2->var_45 + snd->var_18));
+            vehType2or6->var_45 = std::min(_var_45, (uint8_t)(vehType2or6->var_45 + snd->var_18));
         }
     }
 
-    vehType2->var_44 = snd->var_00;
+    vehType2or6->var_44 = snd->var_00;
 }
 
 // 0x004AC255
@@ -1838,4 +1882,11 @@ void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
     loc.y += yFactor;
 
     exhaust::create(loc, vehicleObject->animation[num].object_id);
+}
+
+void vehicle::sub_4AF06E()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004AF06E, regs);
 }
