@@ -512,7 +512,7 @@ namespace openloco::stringmgr
                     {
                         uint32_t value = args.pop16();
 
-                        bool show_height_as_units = config::get().flags & config::flags::SHOW_HEIGHT_AS_UNITS;
+                        bool show_height_as_units = config::get().flags & config::flags::show_height_as_units;
                         uint8_t measurement_format = config::get().measurement_format;
                         const char* unit;
 
@@ -525,7 +525,7 @@ namespace openloco::stringmgr
                         {
                             // !!! TODO: Move to string id
                             unit = "ft";
-                            value *= 10;
+                            value *= 16;
                         }
                         else
                         {

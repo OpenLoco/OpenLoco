@@ -9,7 +9,7 @@ namespace openloco::config
 
     enum flags
     {
-        SHOW_HEIGHT_AS_UNITS = (1 << 1),
+        show_height_as_units = (1 << 1),
     };
 
     enum measurement_format
