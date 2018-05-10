@@ -112,4 +112,6 @@ namespace openloco::objectmgr
     building_object* get(size_t id);
     template<>
     industry_object* get(size_t id);
+    template<>
+    currency_object* get();
 }

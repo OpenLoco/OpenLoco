@@ -617,6 +617,16 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004958C6,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            char* buffer = stringmgr::format_string((char*)regs.edi, regs.eax, (void*)regs.ecx);
+            regs = backup;
+            regs.edi = (uint32_t)buffer;
+            return 0;
+        });
+
+    register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             ui::windows::construction_mouse_up(*((ui::window*)regs.esi), regs.dx);
@@ -657,8 +667,10 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004CC6EA,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             auto window = (ui::window*)regs.esi;
             ui::windowmgr::close(window);
+            regs = backup;
             return 0;
         });
 
@@ -679,9 +691,11 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             auto window = (ui::window*)regs.esi;
             auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
             window->draw(dpi);
+            regs = backup;
             return 0;
         });
 
