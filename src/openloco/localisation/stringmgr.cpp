@@ -32,6 +32,8 @@ namespace openloco::stringmgr
 
     enum formatting_codes
     {
+        inline_sprite_str = 23,
+
         int32_grouped = 123 + 0,
         int32_ungrouped = 123 + 1,
         int16_decimals = 123 + 2,
@@ -52,7 +54,7 @@ namespace openloco::stringmgr
         distance = 123 + 17,
         height = 123 + 18,
         power = 123 + 19,
-        inline_sprite = 123 + 20,
+        inline_sprite_args = 123 + 20,
     };
 
     static std::map<int32_t, string_id> day_to_string = {
@@ -568,9 +570,9 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::inline_sprite:
+                    case formatting_codes::inline_sprite_args:
                     {
-                        *buffer = 23;
+                        *buffer = formatting_codes::inline_sprite_str;
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;
