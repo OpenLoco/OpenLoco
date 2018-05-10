@@ -581,7 +581,7 @@ namespace openloco::input
             }
             else
             {
-                ui::tooltip::update(window, widgetIndex, x, y);
+                ui::tooltip::update(window, widgetIndex, window->widgets[widgetIndex].tooltip, x, y);
             }
         }
 
