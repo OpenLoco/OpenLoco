@@ -266,7 +266,6 @@ namespace openloco::stringmgr
         while (true)
         {
             uint8_t ch = *sourceStr;
-            sourceStr++;
 
             if (ch == 0)
             {
@@ -275,59 +274,38 @@ namespace openloco::stringmgr
             }
             else if (ch <= 4)
             {
-                *buffer = ch;
-                buffer++;
-
-                ch = *sourceStr;
-                sourceStr++;
-
-                *buffer = ch;
-                buffer++;
+                std::memcpy(buffer, sourceStr, 2);
+                buffer += 2;
+                sourceStr += 2;
             }
             else if (ch <= 16)
             {
-                *buffer = ch;
-                buffer++;
+                std::memcpy(buffer, sourceStr, 1);
+                buffer += 1;
+                sourceStr += 1;
+            }
+            else if (ch <= 22)
+            {
+                std::memcpy(buffer, sourceStr, 3);
+                buffer += 3;
+                sourceStr += 3;
             }
             else if (ch <= 0x1F)
             {
-                if (ch > 22)
-                {
-                    *buffer = ch;
-                    buffer++;
-
-                    ch = *sourceStr;
-                    sourceStr++;
-
-                    *buffer = ch;
-                    buffer++;
-
-                    ch = *sourceStr;
-                    sourceStr++;
-                }
-
-                *buffer = ch;
-                buffer++;
-
-                ch = *sourceStr;
-                sourceStr++;
-
-                *buffer = ch;
-                buffer++;
-
-                ch = *sourceStr;
-                sourceStr++;
-
-                *buffer = ch;
-                buffer++;
+                std::memcpy(buffer, sourceStr, 5);
+                buffer += 5;
+                sourceStr += 5;
             }
             else if (ch < 0x7B || ch >= 0x90)
             {
-                *buffer = ch;
-                buffer++;
+                std::memcpy(buffer, sourceStr, 1);
+                buffer += 1;
+                sourceStr += 1;
             }
             else
             {
+                sourceStr++;
+
                 switch (ch)
                 {
                     case formatting_codes::int32_grouped:
@@ -583,8 +561,6 @@ namespace openloco::stringmgr
                 }
             }
         }
-
-        return buffer;
     }
 
     static char* format_string_part(char* buffer, const char* sourceStr, void* args)
