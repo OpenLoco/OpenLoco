@@ -134,7 +134,7 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1 << 31)); // regs.dx = (uint16_t)(value >> 32);
+        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
         regs.edi = (uint32_t)buffer;
         regs.ebx = (uint32_t)separator;
 
@@ -380,9 +380,9 @@ namespace openloco::stringmgr
 
                     case formatting_codes::currency48:
                     {
-                        int32_t value_low = args.pop32();
-                        int16_t value_high = args.pop16();
-                        int64_t value = ((int64_t)value_high * (1ULL << 31)) + value_low;
+                        uint32_t value_low = (uint32_t)args.pop32();
+                        int32_t value_high = (int16_t)args.pop16();
+                        int64_t value = (value_high * (1ULL << 32)) | value_low;
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
@@ -404,18 +404,9 @@ namespace openloco::stringmgr
 
                     case formatting_codes::string_ptr:
                     {
-                        const char* sourceStr_ = sourceStr;
-                        sourceStr = (char*)args.pop32();
-
-                        do
-                        {
-                            *buffer = *sourceStr;
-                            buffer++;
-                            sourceStr++;
-                        } while (*sourceStr != '\0');
-
-                        *buffer = '\0';
-                        sourceStr = sourceStr_;
+                        const char* str = (char*)args.pop32();
+                        strcpy(buffer, str);
+                        buffer += strlen(str);
                         break;
                     }
 
@@ -489,7 +480,7 @@ namespace openloco::stringmgr
                         throw std::runtime_error("Unimplemented format string: 15");
 
                     case formatting_codes::timeHM:
-                        throw std::runtime_error("Unimplemented format string: 15");
+                        throw std::runtime_error("Unimplemented format string: 16");
 
                     case formatting_codes::distance:
                     {
