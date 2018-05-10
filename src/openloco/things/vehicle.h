@@ -11,6 +11,12 @@ namespace openloco
         constexpr uint8_t broken_down = 1 << 2;
     }
 
+    namespace flags_73
+    {
+        constexpr uint8_t broken_down = 1 << 0;
+        constexpr uint8_t unk_2 = 1 << 1;
+    }
+
 #pragma pack(push, 1)
     struct vehicle : thing_base
     {
@@ -75,6 +81,9 @@ namespace openloco
         void sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * buffer);
         void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
         void sub_4AF06E();
+        void sub_4B9A2A();
+        void sub_4B980A();
+        void sub_4AA625();
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
@@ -102,6 +111,8 @@ namespace openloco
         uint8_t pad_4A[0x56 - 0x4A];
         uint32_t var_56;
         uint8_t var_5A;
+        uint8_t pad_5B[0x73 - 0x5B];
+        uint8_t var_73;
 
         thing * next_car();
 

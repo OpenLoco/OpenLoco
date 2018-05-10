@@ -27,7 +27,7 @@ loco_global<int32_t, 0x0113612C> vehicle_var_113612C;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;   // var_28 related?
-loco_global<uint8_t, 0x0113646C> vehicle_var_113646C;  // var_5D retated? used only in 4B980A
+loco_global<uint8_t, 0x0113646C> vehicle_var_113646C;  // var_5D related? used only in 4B980A
 loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
@@ -243,18 +243,68 @@ int32_t openloco::vehicle::sub_4A8B81()
         vehicle_6* vehType6 = vehType2->next_car()->as_vehicle_6();
         if (vehType6 == nullptr)
         {
-            return 0x10;
+            return 0x100;
         }
 
         vehType6->var_4F++;
         if (vehType6->var_4F < 960)
         {
-            return 0x10;
+            return 0x100;
         }
         sub_4AF06E();
-        return 0x10;
+        return 0x100;
     }
     sub_4BA8D4();
+
+    if (var_42 == 2)
+    {
+        // 0x004A9051
+    }
+    else if (var_42 == 3)
+    {
+        // 0x004A9649
+    }
+    else
+    {
+        // 0x004A8C11
+        if ((vehType2->var_73 & flags_73::broken_down || !(vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
+        {
+            // 0x004A8F75
+        }
+        else
+        {
+            if (var_5D == 5)
+            {
+                sub_4B9A2A();
+
+                sub_4B980A();
+                return 0;
+            }
+            else if (var_5D == 6)
+            {
+                // 0x004A9011
+            }
+            else if (var_5D == 8)
+            {
+                sub_4AA625();
+
+                return 0x100;
+            }
+            else if (var_5D == 9)
+            {
+                return 0x100;
+            }
+            else
+            {
+                var_5D = 2;
+
+                if (var_73 & flags_73::broken_down)
+                {
+
+                }
+            }
+        }
+    }
     //4A8BF8
     return int32_t();
 }
@@ -1889,4 +1939,25 @@ void vehicle::sub_4AF06E()
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004AF06E, regs);
+}
+
+void vehicle::sub_4B9A2A()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004B9A2A, regs);
+}
+
+void vehicle::sub_4B980A()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004B980A, regs);
+}
+
+void vehicle::sub_4AA625()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004AA625, regs);
 }
