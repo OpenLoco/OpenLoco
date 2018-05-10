@@ -45,7 +45,7 @@ namespace openloco::ui::tooltip
         register_hook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::update((ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                ui::tooltip::update((ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
         register_hook(
@@ -68,9 +68,9 @@ namespace openloco::ui::tooltip
             });
     }
 
-    static void common(const window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
+    static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        stringmgr::format_string(byte_112CC04, window->widgets[widgetIndex].tooltip, _commonFormatArgs);
+        stringmgr::format_string(byte_112CC04, stringId, _commonFormatArgs);
 
         gCurrentFontSpriteBase = 224;
         int16_t strWidth;
@@ -158,11 +158,11 @@ namespace openloco::ui::tooltip
 
         _1136F98 = -1;
 
-        common(window, widgetIndex, cursorX, cursorY);
+        common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY);
     }
 
     // 0x004C9216
-    void update(ui::window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
+    void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
         windowmgr::close(window_type::tooltip, 0);
 
@@ -182,9 +182,9 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        _1136F98 = (uint32_t)&window->widgets[widgetIndex];
+        _1136F98 = stringId;
 
-        common(window, widgetIndex, cursorX, cursorY);
+        common(window, widgetIndex, stringId, cursorX, cursorY);
     }
 
     // 0x004C9397

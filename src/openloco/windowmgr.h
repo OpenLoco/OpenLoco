@@ -109,5 +109,5 @@ namespace openloco::ui::tooltip
 {
     void register_hooks();
     void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
-    void update(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
+    void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
 }
