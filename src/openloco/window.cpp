@@ -3,6 +3,7 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
 #include "widget.h"
@@ -12,6 +13,7 @@
 
 using namespace openloco;
 using namespace openloco::interop;
+using namespace openloco::map;
 
 namespace openloco::ui
 {
@@ -41,7 +43,7 @@ namespace openloco::ui
         return (this->holdable_widgets & (1ULL << index)) != 0;
     }
 
-    void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
+    static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
     {
         registers regs;
         regs.ax = x;
@@ -65,46 +67,6 @@ namespace openloco::ui
 
     loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 
-    typedef struct LocationXY16
-    {
-        int16_t x, y;
-    } LocationXY16;
-
-    /**
-     *
-     * @param x @<ax>
-     * @param y
-     * @param z
-     * @param rotation
-     * @return
-     */
-    LocationXY16 coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
-    {
-        LocationXY16 coordinate_2d;
-
-        switch (rotation)
-        {
-            default:
-            case 0:
-                coordinate_2d.x = y - x;
-                coordinate_2d.y = ((y + x) >> 1) - z;
-                break;
-            case 1:
-                coordinate_2d.x = -y - x;
-                coordinate_2d.y = ((y - x) >> 1) - z;
-                break;
-            case 2:
-                coordinate_2d.x = -y + x;
-                coordinate_2d.y = ((-y - x) >> 1) - z;
-                break;
-            case 3:
-                coordinate_2d.x = y + x;
-                coordinate_2d.y = ((-y + x) >> 1) - z;
-                break;
-        }
-        return coordinate_2d;
-    }
-
     // 0x004C68E4
     static void viewport_move(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
     {
@@ -116,27 +78,7 @@ namespace openloco::ui
         call(0x004C68E4, regs);
     }
 
-    /**
-     * Return the absolute height of an element, given its (x, y) coordinates
-     * remember to & with 0xFFFF if you don't want water affecting results
-     *
-     * @param x @<ax>
-     * @param y @<cx>
-     * @return height @<edx>
-     *
-     * 0x00467297
-     */
-    uint32_t tile_element_height(int16_t x, int16_t y)
-    {
-        registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        call(0x00467297, regs);
-
-        return regs.edx;
-    }
-
-    void sub_4CA444(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY, ui::viewport* vp)
+    static void sub_4CA444(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY, ui::viewport* vp)
     {
         registers regs;
         regs.ax = x;
