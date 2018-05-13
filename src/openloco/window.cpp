@@ -94,7 +94,7 @@ namespace openloco::ui
     // 0x004C6456
     void window::viewports_update_position()
     {
-        this->call_resize();
+        this->call_on_resize();
 
         for (int i = 0; i < 2; i++)
         {
@@ -288,13 +288,6 @@ namespace openloco::ui
         registers regs;
         regs.esi = (int32_t)this;
         call((uint32_t)this->event_handlers->on_close, regs);
-    }
-
-    void window::call_resize()
-    {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_resize, regs);
     }
 
     void window::call_update()

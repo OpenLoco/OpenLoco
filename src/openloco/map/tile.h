@@ -257,5 +257,4 @@ namespace openloco::map
         size_t index_of(const tile_element_base* element) const;
         surface_element* surface();
     };
-
 }
