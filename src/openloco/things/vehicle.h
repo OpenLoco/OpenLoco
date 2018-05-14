@@ -28,7 +28,8 @@ namespace openloco
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t pad_35[0x38 - 0x35];
+        uint8_t pad_35;
+        uint16_t var_36;
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
@@ -55,7 +56,9 @@ namespace openloco
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
         uint8_t pad_60[0x6A - 0x60];
         uint8_t var_6A;
-        uint8_t pad_6B[0x73 - 0x6B];
+        uint8_t pad_6B[0x6E - 0x6B];
+        uint8_t var_6E;
+        uint8_t pad_6F[0x73 - 0x6F];
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
         vehicle* next_vehicle();
@@ -84,6 +87,11 @@ namespace openloco
         void sub_4B9A2A();
         void sub_4B980A();
         void sub_4AA625();
+        void sub_4AD93A();
+        int32_t sub_4A8CB6();
+        int32_t sub_4A8C81();
+        int32_t sub_4A8D48();
+        int16_t sub_4BABAD();
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);

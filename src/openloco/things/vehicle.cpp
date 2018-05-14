@@ -267,7 +267,7 @@ int32_t openloco::vehicle::sub_4A8B81()
     else
     {
         // 0x004A8C11
-        if ((vehType2->var_73 & flags_73::broken_down || !(vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
+        if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
         {
             // 0x004A8F75
         }
@@ -298,15 +298,96 @@ int32_t openloco::vehicle::sub_4A8B81()
             {
                 var_5D = 2;
 
-                if (var_73 & flags_73::broken_down)
+                if (!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2))
                 {
-
+                    if (!(var_0C & (1 << 6)) || var_6E > 236)
+                    {
+                        if (!(var_0C & (1 << 1)))
+                        {
+                            return sub_4A8D48();
+                        }
+                        else
+                        {
+                            return sub_4A8CB6();
+                        }
+                    }
+                    else
+                    {
+                        return sub_4A8C81();
+                    }
+                }
+                else
+                {
+                    return sub_4A8CB6();
                 }
             }
         }
     }
-    //4A8BF8
+
     return int32_t();
+}
+
+// 0x004A8CB6 should be for only type 0's
+int32_t openloco::vehicle::sub_4A8CB6()
+{
+    vehicle * vehType1 = vehicle_113611C;
+
+    if (x != vehType1->x ||
+        y != vehType1->y ||
+        z != vehType1->z)
+    {
+        sub_4AD93A();
+        if (var_5D == 4)
+        {
+            // Likely different structure as this is for type 0
+            var_54 = 0xFF;
+            var_55 = 0xFF;
+            var_5D = 2;
+        }
+    }
+
+    auto vehUnk = next_car()->next_car();
+    if (vehUnk->var_36 != var_36)
+    {
+        sub_4B980A();
+        return 0;
+    }
+
+    var_5D = 1;
+    vehicle_2 * vehType2 = vehicle_1136120;
+
+    if (!(vehType2->var_73 & flags_73::broken_down))
+    {
+        sub_4B980A();
+        return 0;
+    }
+
+    // Likely different structure as this is for type 0
+    var_54 = 0xFF;
+    var_55 = 0xFF;
+    var_5D = 7;
+
+    sub_4B980A();
+    return 0;
+}
+
+// 0x004A8C81
+int32_t openloco::vehicle::sub_4A8C81()
+{
+    vehicle_2 * vehType2 = vehicle_1136120;
+    if (vehType2->var_56 > 65536)
+    {
+        return sub_4A8D48();
+    }
+
+    auto stationObjectId = sub_4BABAD();
+    // continue...
+}
+
+// 0x004A8D48
+int32_t openloco::vehicle::sub_4A8D48()
+{
+
 }
 
 // 0x004AA1D0
@@ -1960,4 +2041,19 @@ void vehicle::sub_4AA625()
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004AA625, regs);
+}
+
+void vehicle::sub_4AD93A()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004AD93A, regs);
+}
+
+int16_t vehicle::sub_4BABAD()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004AD93A, regs);
+    return regs.ax;
 }
