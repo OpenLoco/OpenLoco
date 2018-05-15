@@ -22,6 +22,7 @@ void thing_base::move_to(loc16 loc)
 // 0x004CBB01
 void openloco::thing_base::invalidate_sprite()
 {
+    auto _this = ((thing*)this)->as_misc();
     if (sprite_left == (int16_t)0x8000u)
     {
         return;

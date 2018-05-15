@@ -17,8 +17,65 @@ namespace openloco
         constexpr uint8_t unk_2 = 1 << 1;
     }
 
+    enum class vehicle_thing_type : uint8_t
+    {
+        vehicle_0 = 0,
+        vehicle_1,
+        vehicle_2,
+        vehicle_bogie,
+        vehicle_body_end,
+        vehicle_body_cont,
+        vehicle_6
+    };
+
+    struct vehicle_2;
+    struct vehicle_26;
+    struct vehicle_bogie;
+    struct vehicle_body;
+    struct vehicle_6;
+
 #pragma pack(push, 1)
-    struct vehicle : thing_base
+    struct vehicle_base : thing_base
+    {
+        vehicle_thing_type type;
+        uint8_t pad_02;
+        uint8_t pad_03;
+        thing_id_t next_thing_id; // 0x04
+        uint8_t pad_06[0x09 - 0x06];
+        uint8_t var_09;
+        thing_id_t id;
+        uint16_t var_0C;
+        int16_t x; // 0x0E
+        int16_t y; // 0x10
+        int16_t z; // 0x12
+        uint8_t var_14;
+        uint8_t var_15;
+        int16_t sprite_left;   // 0x16
+        int16_t sprite_top;    // 0x18
+        int16_t sprite_right;  // 0x1A
+        int16_t sprite_bottom; // 0x1C
+        uint8_t sprite_yaw;    // 0x1E
+        uint8_t sprite_pitch;  // 0x1F
+
+        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, thing_type::vehicle_bogie>(); }
+        vehicle_body* as_vehicle_body() const
+        {
+            auto vehicle = as<vehicle_body, thing_type::vehicle_body_end>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_body, thing_type::vehicle_body_cont>();
+        }
+        vehicle_2* as_vehicle_2() const { return as<vehicle_2, thing_type::vehicle_2>(); }
+        vehicle_6* as_vehicle_6() const { return as<vehicle_6, thing_type::vehicle_6>(); }
+        vehicle_26* as_vehicle_2or6() const {
+            auto vehicle = as<vehicle_26, thing_type::vehicle_2>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_26, thing_type::vehicle_6>();
+        }
+    };
+
+    struct vehicle : vehicle_base
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;
@@ -108,7 +165,7 @@ namespace openloco
         void ship_wake_animation_update(uint8_t num, int8_t var_05);
     };
 
-    struct vehicle_2 : thing_base {
+    struct vehicle_2 : vehicle_base {
         uint8_t pad_20[0x3A - 0x20];
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
@@ -128,7 +185,7 @@ namespace openloco
     };
 
     // TODO: Find out the difference between type 2 and 6
-    struct vehicle_26 : thing_base {
+    struct vehicle_26 : vehicle_base {
         uint8_t pad_20[0x3A - 0x20];
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
@@ -141,7 +198,7 @@ namespace openloco
         vehicle_object* object() const;
     };
 
-    struct vehicle_6 : thing_base {
+    struct vehicle_6 : vehicle_base {
         uint8_t pad_20[0x4F - 0x20];
         uint16_t var_4F;
         uint8_t pad_51[0x5F - 0x51];
