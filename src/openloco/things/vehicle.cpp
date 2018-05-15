@@ -18,8 +18,8 @@ using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::objectmgr;
 
-loco_global<vehicle*, 0x01136118> vehicle_1136118; // type 0
-loco_global<vehicle*, 0x0113611C> vehicle_113611C; // type 1
+loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
+loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
 loco_global<vehicle_2*, 0x01136120> vehicle_1136120; // type 2
 loco_global<vehicle*, 0x01136124> vehicle_front_bogie;
 loco_global<vehicle*, 0x01136128> vehicle_back_bogie;
@@ -75,6 +75,16 @@ vehicle* vehicle::next_car()
     return thingmgr::get<vehicle>(next_car_id);
 }
 
+vehicle* vehicle_base::next_vehicle()
+{
+    return thingmgr::get<vehicle>(((vehicle *)this)->next_thing_id);
+}
+
+vehicle* vehicle_base::next_car()
+{
+    return thingmgr::get<vehicle>(((vehicle *)this)->next_car_id);
+}
+
 thing* vehicle_2::next_car()
 {
     return thingmgr::get<thing>(next_car_id);
@@ -121,7 +131,7 @@ bool vehicle::update()
     switch (type)
     {
         case vehicle_thing_type::vehicle_0:
-            result = sub_4A8B81();
+            result = this->as_vehicle_0()->Update() ? 0 : 0x100;
             break;
         case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);
@@ -146,7 +156,7 @@ bool vehicle::update()
 }
 
 // 0x004BA8D4
-void vehicle::sub_4BA8D4()
+void vehicle_0::sub_4BA8D4()
 {
     switch (var_5D)
     {
@@ -206,18 +216,19 @@ void vehicle::sub_4BA8D4()
     }
 }
 
-void vehicle::sub_4BAA76()
+void vehicle_0::sub_4BAA76()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004BAA76, regs);
 }
 
-int32_t openloco::vehicle::sub_4A8B81()
+// 0x004A8B81
+bool openloco::vehicle_0::Update()
 {
     vehicle_1136118 = this;
     auto veh = next_car();
-    vehicle_113611C = veh;
+    vehicle_113611C = veh->as_vehicle_1();
     veh = veh->next_car();
     vehicle_1136120 = ((thing*)veh)->as_vehicle()->as_vehicle_2();
 
@@ -243,16 +254,16 @@ int32_t openloco::vehicle::sub_4A8B81()
         vehicle_6* vehType6 = vehType2->next_car()->as_vehicle()->as_vehicle_6();
         if (vehType6 == nullptr)
         {
-            return 0x100;
+            return false;
         }
 
         vehType6->var_4F++;
         if (vehType6->var_4F < 960)
         {
-            return 0x100;
+            return false;
         }
         sub_4AF06E();
-        return 0x100;
+        return false;
     }
     sub_4BA8D4();
 
@@ -278,7 +289,7 @@ int32_t openloco::vehicle::sub_4A8B81()
                 sub_4B9A2A();
 
                 sub_4B980A();
-                return 0;
+                return true;
             }
             else if (var_5D == 6)
             {
@@ -288,11 +299,11 @@ int32_t openloco::vehicle::sub_4A8B81()
             {
                 sub_4AA625();
 
-                return 0x100;
+                return false;
             }
             else if (var_5D == 9)
             {
-                return 0x100;
+                return false;
             }
             else
             {
@@ -328,9 +339,9 @@ int32_t openloco::vehicle::sub_4A8B81()
 }
 
 // 0x004A8CB6 should be for only type 0's
-int32_t openloco::vehicle::sub_4A8CB6()
+bool openloco::vehicle_0::sub_4A8CB6()
 {
-    vehicle * vehType1 = vehicle_113611C;
+    vehicle_1 * vehType1 = vehicle_113611C;
 
     if (x != vehType1->x ||
         y != vehType1->y ||
@@ -339,9 +350,7 @@ int32_t openloco::vehicle::sub_4A8CB6()
         sub_4AD93A();
         if (var_5D == 4)
         {
-            // Likely different structure as this is for type 0
-            var_54 = (uint8_t)0xFF;
-            var_55 = (uint8_t)0xFF;
+            station_object_id = 0xFFFF;
             var_5D = 2;
         }
     }
@@ -350,7 +359,7 @@ int32_t openloco::vehicle::sub_4A8CB6()
     if (vehUnk->var_36 != var_36)
     {
         sub_4B980A();
-        return 0;
+        return true;
     }
 
     var_5D = 1;
@@ -359,20 +368,19 @@ int32_t openloco::vehicle::sub_4A8CB6()
     if (!(vehType2->var_73 & flags_73::broken_down))
     {
         sub_4B980A();
-        return 0;
+        return true;
     }
 
     // Likely different structure as this is for type 0
-    var_54 = (uint8_t)0xFF;
-    var_55 = (uint8_t)0xFF;
+    station_object_id = 0xFFFF;
     var_5D = 7;
 
     sub_4B980A();
-    return 0;
+    return true;
 }
 
 // 0x004A8C81
-int32_t openloco::vehicle::sub_4A8C81()
+bool openloco::vehicle_0::sub_4A8C81()
 {
     vehicle_2 * vehType2 = vehicle_1136120;
     if (vehType2->var_56 > 65536)
@@ -382,14 +390,14 @@ int32_t openloco::vehicle::sub_4A8C81()
     
     //auto stationObjectId = sub_4BABAD();
     // continue...
-    return 0;
+    return true;
 }
 
 // 0x004A8D48
-int32_t openloco::vehicle::sub_4A8D48()
+bool openloco::vehicle_0::sub_4A8D48()
 {
     // continue...
-    return 0;
+    return true;
 }
 
 // 0x004AA1D0
@@ -432,7 +440,7 @@ void openloco::vehicle::animation_update()
     if (var_38 & (1 << 4))
         return;
 
-    vehicle* veh = vehicle_1136118;
+    vehicle_0* veh = vehicle_1136118;
     if ((veh->var_5D == 8) || (veh->var_5D == 9))
         return;
 
@@ -572,25 +580,25 @@ void openloco::vehicle::sub_4AAB0B()
     }
 }
 
-void openloco::vehicle::sub_4A8882()
+void openloco::vehicle_0::sub_4A8882()
 {
     vehicle_2 * vehType2 = vehicle_1136120;
-    sub_4A88A6((vehicle_26*)vehType2);
+    sub_4A88A6(vehType2->as_vehicle_2or6());
     vehicle * vehType6 = (vehicle *)vehType2;
     while (vehType6->type != vehicle_thing_type::vehicle_6)
     {
         vehType6 = vehType6->next_car();
     }
-    sub_4A88A6((vehicle_26*)vehType6);
+    sub_4A88A6(vehType6->as_vehicle_2or6());
 }
 
 // Not guaranteed to be type 2 could be type 6
-void openloco::vehicle::sub_4A88A6(vehicle_26 * vehType2or6)
+void openloco::vehicle_0::sub_4A88A6(vehicle_26 * vehType2or6)
 {
-    if (tile_x == 0xFFFF || 
-        var_5D == 8 || 
-        var_5D == 9 || 
-        (var_38 & (1<<4))||
+    if (tile_x == 0xFFFF ||
+        var_5D == 8 ||
+        var_5D == 9 ||
+        (var_38 & (1 << 4)) ||
         vehType2or6->object_id == 0xFFFF)
     {
         sub_4A8B7C(vehType2or6);
@@ -617,12 +625,12 @@ void openloco::vehicle::sub_4A88A6(vehicle_26 * vehType2or6)
     }
 }
 
-void openloco::vehicle::sub_4A8B7C(vehicle_26 * vehType2or6)
+void openloco::vehicle_0::sub_4A8B7C(vehicle_26 * vehType2or6)
 {
     vehType2or6->var_44 = 0xFF;
 }
 
-void openloco::vehicle::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * snd)
+void openloco::vehicle_0::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * snd)
 {
     vehicle_2 * vehType2_2 = vehicle_1136120;
     if (vehType2_2->var_56 < snd->var_01) {
@@ -645,7 +653,7 @@ void openloco::vehicle::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_soun
     vehType2or6->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * snd)
+void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * snd)
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
@@ -733,7 +741,7 @@ void openloco::vehicle::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_soun
     vehType2or6->var_44 = snd->var_00;
 }
 
-void openloco::vehicle::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * snd)
+void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * snd)
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
@@ -1652,7 +1660,7 @@ void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
-    vehicle* veh = vehicle_1136118;
+    vehicle_0* veh = vehicle_1136118;
     vehicle_2* vehType2 = vehicle_1136120;
     auto vehicleObject = object();
 
@@ -2017,42 +2025,42 @@ void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
     exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
-void vehicle::sub_4AF06E()
+void vehicle_0::sub_4AF06E()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004AF06E, regs);
 }
 
-void vehicle::sub_4B9A2A()
+void vehicle_0::sub_4B9A2A()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004B9A2A, regs);
 }
 
-void vehicle::sub_4B980A()
+void vehicle_0::sub_4B980A()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004B980A, regs);
 }
 
-void vehicle::sub_4AA625()
+void vehicle_0::sub_4AA625()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004AA625, regs);
 }
 
-void vehicle::sub_4AD93A()
+void vehicle_0::sub_4AD93A()
 {
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004AD93A, regs);
 }
 
-int16_t vehicle::sub_4BABAD()
+int16_t vehicle_0::sub_4BABAD()
 {
     registers regs;
     regs.esi = (int32_t)this;
