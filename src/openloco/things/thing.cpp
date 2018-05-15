@@ -9,7 +9,7 @@ using namespace openloco;
 using namespace openloco::interop;
 
 // 0x0046FC83
-void thing_base::move_to(loc16 loc)
+void thing::move_to(loc16 loc)
 {
     registers regs;
     regs.ax = loc.x;
@@ -20,9 +20,8 @@ void thing_base::move_to(loc16 loc)
 }
 
 // 0x004CBB01
-void openloco::thing_base::invalidate_sprite()
+void openloco::thing::invalidate_sprite()
 {
-    auto _this = ((thing*)this)->as_misc();
     if (sprite_left == (int16_t)0x8000u)
     {
         return;
@@ -75,4 +74,13 @@ void openloco::thing_base::invalidate_sprite()
 
         openloco::gfx::set_dirty_blocks(left, top, right, bottom);
     }
+}
+
+void thing_base::move_to(loc16 loc)
+{
+    ((thing*)this)->move_to(loc);
+}
+void thing_base::invalidate_sprite()
+{
+    ((thing*)this)->invalidate_sprite();
 }

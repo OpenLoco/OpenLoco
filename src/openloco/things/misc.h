@@ -15,7 +15,7 @@ namespace openloco
     struct exhaust;
 
 #pragma pack(push, 1)
-    struct misc_base : thing_base
+    struct misc : thing_base
     {
         misc_thing_type type;
         uint8_t pad_02;
@@ -36,12 +36,18 @@ namespace openloco
         int16_t sprite_bottom; // 0x1C
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
-
-        smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
-        exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
+    private:
+        template<typename TType, misc_thing_type TClass>
+        TType* as() const
+        {
+            return type == TClass ? (TType*)this : nullptr;
+        }
+    public:
+        smoke* as_smoke() const { return as<smoke, misc_thing_type::smoke>(); }
+        exhaust* as_exahust() const { return as<exhaust, misc_thing_type::exhaust>(); }
     };
 
-    struct exhaust : misc_base
+    struct exhaust : misc
     {
         uint8_t pad_20[0x26 - 0x20];
         int16_t var_26;
@@ -58,7 +64,7 @@ namespace openloco
         static exhaust* create(loc16 loc, uint8_t type);
     };
 
-    struct smoke : misc_base
+    struct smoke : misc
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;

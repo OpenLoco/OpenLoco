@@ -56,22 +56,28 @@ namespace openloco
         int16_t sprite_bottom; // 0x1C
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
-
-        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, thing_type::vehicle_bogie>(); }
+    private:
+        template<typename TType, vehicle_thing_type TClass>
+        TType* as() const
+        {
+            return type == TClass ? (TType*)this : nullptr;
+        }
+    public:
+        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, vehicle_thing_type::vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
         {
-            auto vehicle = as<vehicle_body, thing_type::vehicle_body_end>();
+            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_end>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_body, thing_type::vehicle_body_cont>();
+            return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
         }
-        vehicle_2* as_vehicle_2() const { return as<vehicle_2, thing_type::vehicle_2>(); }
-        vehicle_6* as_vehicle_6() const { return as<vehicle_6, thing_type::vehicle_6>(); }
+        vehicle_2* as_vehicle_2() const { return as<vehicle_2, vehicle_thing_type::vehicle_2>(); }
+        vehicle_6* as_vehicle_6() const { return as<vehicle_6, vehicle_thing_type::vehicle_6>(); }
         vehicle_26* as_vehicle_2or6() const {
-            auto vehicle = as<vehicle_26, thing_type::vehicle_2>();
+            auto vehicle = as<vehicle_26, vehicle_thing_type::vehicle_2>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_26, thing_type::vehicle_6>();
+            return as<vehicle_26, vehicle_thing_type::vehicle_6>();
         }
     };
 
