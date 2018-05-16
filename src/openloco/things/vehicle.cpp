@@ -21,8 +21,8 @@ using namespace openloco::objectmgr;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
 loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
 loco_global<vehicle_2*, 0x01136120> vehicle_1136120; // type 2
-loco_global<vehicle*, 0x01136124> vehicle_front_bogie;
-loco_global<vehicle*, 0x01136128> vehicle_back_bogie;
+loco_global<vehicle_bogie*, 0x01136124> vehicle_front_bogie;
+loco_global<vehicle_bogie*, 0x01136128> vehicle_back_bogie;
 loco_global<int32_t, 0x0113612C> vehicle_var_113612C;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
@@ -110,6 +110,11 @@ vehicle_object* vehicle_26::object() const
     return objectmgr::get<vehicle_object>(object_id);
 }
 
+vehicle_object* vehicle_body::object() const
+{
+    return objectmgr::get<vehicle_object>(object_id);
+}
+
 void vehicle::update_head()
 {
     auto v = this;
@@ -131,7 +136,7 @@ bool vehicle::update()
     switch (type)
     {
         case vehicle_thing_type::vehicle_0:
-            result = this->as_vehicle_0()->Update() ? 0 : 0x100;
+            return this->as_vehicle_0()->Update();
             break;
         case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);
@@ -144,7 +149,7 @@ bool vehicle::update()
             break;
         case vehicle_thing_type::vehicle_body_end:
         case vehicle_thing_type::vehicle_body_cont:
-            result = sub_4AA1D0();
+            return this->as_vehicle_body()->Update();
             break;
         case vehicle_thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -236,8 +241,8 @@ bool openloco::vehicle_0::Update()
     sub_4A8882();
 
 
-    vehicle_front_bogie = (vehicle*)0xFFFFFFFF;
-    vehicle_back_bogie = (vehicle*)0xFFFFFFFF;
+    vehicle_front_bogie = (vehicle_bogie*)0xFFFFFFFF;
+    vehicle_back_bogie = (vehicle_bogie*)0xFFFFFFFF;
 
     vehicle_2* vehType2 = vehicle_1136120;
     vehicle_var_113612C = vehType2->var_56 >> 7;
@@ -401,15 +406,12 @@ bool openloco::vehicle_0::sub_4A8D48()
 }
 
 // 0x004AA1D0
-int32_t openloco::vehicle::sub_4AA1D0()
+bool openloco::vehicle_body::Update()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-
     if (var_42 == 2 || var_42 == 3)
     {
         animation_update();
-        return 0;
+        return true;
     }
 
     if (vehicle_var_1136237 | vehicle_var_1136238)
@@ -432,10 +434,10 @@ int32_t openloco::vehicle::sub_4AA1D0()
     animation_update();
     sub_4AAB0B();
     vehicle_var_1136130 = backup1136130;
-    return 0;
+    return true;
 }
 
-void openloco::vehicle::animation_update()
+void openloco::vehicle_body::animation_update()
 {
     if (var_38 & (1 << 4))
         return;
@@ -483,7 +485,7 @@ void openloco::vehicle::animation_update()
 }
 
 // 0x004AAB0B
-void openloco::vehicle::sub_4AAB0B()
+void openloco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
     if (var_38 & (1 << 1))
@@ -505,7 +507,7 @@ void openloco::vehicle::sub_4AAB0B()
     }
     else if (vehicle_object->sprites[object_sprite_type].var_05 != 1)
     {
-        vehicle* frontBogie = vehicle_front_bogie;
+        vehicle_bogie* frontBogie = vehicle_front_bogie;
         vehicle_2* vehType2 = vehicle_1136120;
         al = var_46;
         int8_t ah = 0;
@@ -856,7 +858,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
 }
 
 // 0x004AC255
-void openloco::vehicle::sub_4AC255(vehicle* back_bogie, vehicle* front_bogie)
+void openloco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie)
 {
     loc16 loc = {
         static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
@@ -915,7 +917,7 @@ void openloco::vehicle::sub_4AC255(vehicle* back_bogie, vehicle* front_bogie)
 }
 
 // 0x004BE368
-uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
+uint16_t openloco::vehicle_body::sub_4BE368(uint32_t distance)
 {
     uint8_t i = 10;
     for (; distance > 4096; --i, distance >>= 2)
@@ -925,7 +927,7 @@ uint16_t openloco::vehicle::sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle_body::vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -965,7 +967,7 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch_steep_slopes(uint16_
 }
 
 // 0x004BF49D
-uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle_body::vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -994,7 +996,7 @@ uint8_t openloco::vehicle::vehicle_body_update_sprite_pitch(uint16_t xy_offset, 
 }
 
 // 0x004BF52B
-uint8_t openloco::vehicle::vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -1036,7 +1038,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t
 }
 
 // 0x004BF5B3
-uint8_t openloco::vehicle::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -1086,7 +1088,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t
 }
 
 // 0x004BF5FB
-uint8_t openloco::vehicle::vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -1155,7 +1157,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t
 }
 
 // 0x004BF657
-uint8_t openloco::vehicle::vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -1265,7 +1267,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t
 }
 
 // 0x004BF6DF
-uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -1448,7 +1450,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 }
 
 // 0x004AB655
-void openloco::vehicle::secondary_animation_update()
+void openloco::vehicle_body::secondary_animation_update()
 {
     auto vehicleObject = object();
     uint8_t var_05 = vehicleObject->var_24[var_54].var_05;
@@ -1488,11 +1490,11 @@ void openloco::vehicle::secondary_animation_update()
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t var_05)
 {
     auto vehicleObject = object();
-    vehicle* frontBogie = vehicle_front_bogie;
-    vehicle* backBogie = vehicle_back_bogie;
+    vehicle_bogie* frontBogie = vehicle_front_bogie;
+    vehicle_bogie* backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
@@ -1653,10 +1655,10 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int8_t var_05)
 {
-    vehicle* frontBogie = vehicle_front_bogie;
-    vehicle* backBogie = vehicle_back_bogie;
+    vehicle_bogie* frontBogie = vehicle_front_bogie;
+    vehicle_bogie* backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
@@ -1739,10 +1741,10 @@ void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle::diesel_exhaust2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int8_t var_05)
 {
-    vehicle* frontBogie = vehicle_front_bogie;
-    vehicle* backBogie = vehicle_back_bogie;
+    vehicle_bogie* frontBogie = vehicle_front_bogie;
+    vehicle_bogie* backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
@@ -1814,10 +1816,10 @@ void openloco::vehicle::diesel_exhaust2_animation_update(uint8_t num, int8_t var
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle::electric_spark1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int8_t var_05)
 {
-    vehicle* frontBogie = vehicle_front_bogie;
-    vehicle* backBogie = vehicle_back_bogie;
+    vehicle_bogie* frontBogie = vehicle_front_bogie;
+    vehicle_bogie* backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
@@ -1874,10 +1876,10 @@ void openloco::vehicle::electric_spark1_animation_update(uint8_t num, int8_t var
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle::electric_spark2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int8_t var_05)
 {
-    vehicle* frontBogie = vehicle_front_bogie;
-    vehicle* backBogie = vehicle_back_bogie;
+    vehicle_bogie* frontBogie = vehicle_front_bogie;
+    vehicle_bogie* backBogie = vehicle_back_bogie;
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
@@ -1956,7 +1958,7 @@ void openloco::vehicle::electric_spark2_animation_update(uint8_t num, int8_t var
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int8_t var_05)
 {
     vehicle_2* vehType2 = vehicle_1136120;
     auto vehicleObject = object();
