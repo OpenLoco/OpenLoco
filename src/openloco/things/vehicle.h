@@ -110,7 +110,9 @@ namespace openloco
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;
-        uint8_t pad_47[0x4A - 0x47];
+        uint8_t pad_47;
+        uint8_t var_48;
+        uint8_t pad_49[0x4A - 0x49];
         uint16_t var_4A;
         uint8_t cargo_type; // 0x4C
         uint8_t pad_4D;
@@ -149,7 +151,8 @@ namespace openloco
     };
 
     struct vehicle_0 : vehicle_base {
-        uint8_t pad_20[0x30 - 0x20];
+        uint8_t pad_20[0x2E - 0x20];
+        uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
@@ -184,6 +187,13 @@ namespace openloco
         void sub_4B980A();
         void sub_4AA625();
         int16_t sub_4BABAD();
+        void sub_4B996F();
+        void sub_4B9987();
+        void sub_4BACAF();
+        void sub_4B99E1();
+        void sub_4707C0();
+        uint8_t sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C);
+
     };
 
     struct vehicle_1 : vehicle_base {

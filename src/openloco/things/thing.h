@@ -36,7 +36,7 @@ namespace openloco
     // Max size of a thing. Use when needing to know thing size
     struct thing : thing_base
     {
-    private:
+    public:
         uint8_t type;
         uint8_t pad_02;
         uint8_t pad_03;
@@ -57,6 +57,8 @@ namespace openloco
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
         uint8_t pad_01[128 - 0x1F];
+
+    private:
         template<typename TType, thing_base_type TClass>
         TType* as() const
         {

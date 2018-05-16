@@ -393,14 +393,59 @@ bool openloco::vehicle_0::sub_4A8C81()
         return sub_4A8D48();
     }
     
-    //auto stationObjectId = sub_4BABAD();
-    // continue...
-    return true;
+    station_object_id = sub_4BABAD();
+    sub_4B996F();
+    sub_4B9987();
+    sub_4BACAF();
+    sub_4B99E1();
+
+    return sub_4A8CB6();
 }
 
 // 0x004A8D48
 bool openloco::vehicle_0::sub_4A8D48()
 {
+    sub_4707C0();
+    uint8_t al = sub_4ACEE7(13945600, vehicle_var_113612C);
+
+    if (var_42 == 1)
+    {
+        //0x004a8D8F
+    }
+    else
+    {
+        if (al == 4)
+        {
+            //0x004A8F6B
+        }
+        else if (al == 3)
+        {
+            // 0x004A8DCB
+        }
+        else
+        {
+            vehicle* veh = next_car()->next_car();
+            if (veh->var_36 != var_36 ||
+                veh->var_2E != var_2E)
+            {
+                sub_4B980A();
+                return true;
+            }
+
+            var_5D = 3;
+            veh = next_car();
+            veh->var_46++;
+
+            if (var_0C & (1 << 6)) {
+                var_5C = 2;
+                veh->var_48 |= 1 << 0;
+                sub_4B980A();
+                return true;
+            }
+
+            //0x004A8E1E
+        }
+    }
     // continue...
     return true;
 }
@@ -2068,4 +2113,50 @@ int16_t vehicle_0::sub_4BABAD()
     regs.esi = (int32_t)this;
     call(0x004AD93A, regs);
     return regs.ax;
+}
+
+void vehicle_0::sub_4B996F()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004B996F, regs);
+}
+
+void vehicle_0::sub_4B9987()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004B9987, regs);
+}
+
+void vehicle_0::sub_4BACAF()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004BACAF, regs);
+}
+
+void vehicle_0::sub_4B99E1()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004B99E1, regs);
+}
+
+void vehicle_0::sub_4707C0()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004707C0, regs);
+}
+
+uint8_t vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.eax = unk_1;
+    regs.ebx = var_113612C;
+    call(0x004ACEE7, regs);
+
+    return regs.al;
 }

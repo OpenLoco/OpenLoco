@@ -67,7 +67,7 @@ void vehicle_channel::update()
     if (!is_free())
     {
         auto v = thingmgr::get<vehicle>(_vehicle_id);
-        if (v != nullptr && v->var_00 == 0 && (v->type == thing_type::vehicle_2 || v->type == thing_type::vehicle_6) && (v->var_4A & 1))
+        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->type == vehicle_thing_type::vehicle_2 || v->type == vehicle_thing_type::vehicle_6) && (v->var_4A & 1))
         {
             // clang-format off
             auto [sid, sa] = sub_48A590(v);

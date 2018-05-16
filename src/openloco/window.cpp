@@ -154,14 +154,14 @@ namespace openloco::ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = thingmgr::get<thing_base>(config->viewport_target_sprite);
+                auto _thing = thingmgr::get<thing>(config->viewport_target_sprite);
 
-                int z = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
-                bool underground = (thing->z < z);
+                int z = (tile_element_height(_thing->x, _thing->y) & 0xFFFF) - 16;
+                bool underground = (_thing->z < z);
 
                 viewport_set_underground_flag(underground, this, viewport);
 
-                centre_2d_coordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY, viewport);
+                centre_2d_coordinates(_thing->x, _thing->y, _thing->z + 12, &centreX, &centreY, viewport);
             }
             else
             {
