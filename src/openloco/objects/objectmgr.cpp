@@ -84,6 +84,12 @@ namespace openloco::objectmgr
     }
 
     template<>
+    road_object* get(size_t id)
+    {
+        return _roadObjects[id];
+    }
+
+    template<>
     vehicle_object* get(size_t id)
     {
         return _vehicleObjects[id];

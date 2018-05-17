@@ -151,12 +151,15 @@ namespace openloco
     };
 
     struct vehicle_0 : vehicle_base {
-        uint8_t pad_20[0x2E - 0x20];
+        uint8_t pad_20;
+        uint8_t var_21;
+        uint8_t pad_22[0x2C - 0x22];
+        uint16_t var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t pad_35[0x36 - 0x35];
+        uint8_t road_object_id;
         uint16_t var_36;
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
@@ -192,8 +195,10 @@ namespace openloco
         void sub_4BACAF();
         void sub_4B99E1();
         void sub_4707C0();
-        uint8_t sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C);
-
+        uint16_t sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C);
+        bool sub_4AC1C2();
+        bool sub_4AC0A3();
+        uint8_t sub_4AA36A();
     };
 
     struct vehicle_1 : vehicle_base {

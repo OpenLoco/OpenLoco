@@ -56,8 +56,7 @@ namespace openloco
         int16_t sprite_bottom; // 0x1C
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
-        uint8_t pad_01[128 - 0x1F];
-
+        uint8_t pad_20[128 - 0x20];
     private:
         template<typename TType, thing_base_type TClass>
         TType* as() const

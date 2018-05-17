@@ -6,6 +6,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/vehicle_object.h"
+#include "../objects/road_object.h"
 #include "../openloco.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
@@ -18,6 +19,9 @@ using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::objectmgr;
 
+loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
+loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
+loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
 loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
 loco_global<vehicle_2*, 0x01136120> vehicle_1136120; // type 2
@@ -406,7 +410,9 @@ bool openloco::vehicle_0::sub_4A8C81()
 bool openloco::vehicle_0::sub_4A8D48()
 {
     sub_4707C0();
-    uint8_t al = sub_4ACEE7(13945600, vehicle_var_113612C);
+    uint16_t ax = sub_4ACEE7(13945600, vehicle_var_113612C);
+    uint8_t al = ax & 0xFF;
+    uint8_t ah = (ax >> 8) & 0xFF;
 
     if (var_42 == 1)
     {
@@ -420,10 +426,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 3)
         {
-            // 0x004A8DCB
-        }
-        else
-        {
+            // 0x004A8DCB            
             vehicle* veh = next_car()->next_car();
             if (veh->var_36 != var_36 ||
                 veh->var_2E != var_2E)
@@ -443,7 +446,45 @@ bool openloco::vehicle_0::sub_4A8D48()
                 return true;
             }
 
+            if (ah & (1 << 1))
+            {
+                // 0x004A8E64
+            }
+            else
+            {
+                if (!(veh->var_46 & 0x3F))
+                {
+                    if (!(ah & (1 << 7)))
+                    {
+                        if (sub_4AC1C2())
+                        {
+                            var_5C = 2;
+                            veh->var_48 |= 1 << 0;
+                            sub_4B980A();
+                            return true;
+                        }
+                    }
+
+                    if (sub_4AC0A3())
+                    {
+                        //0x004A8ED9
+                    }
+                }
+
+                if (veh->var_46 < 640)
+                {
+                    sub_4B980A();
+                    return true;
+                }
+
+                // 0x004A8ED9
+            }
             //0x004A8E1E
+        }
+        else
+        {
+            //0x004A8D6F
+
         }
     }
     // continue...
@@ -2150,7 +2191,7 @@ void vehicle_0::sub_4707C0()
     call(0x004707C0, regs);
 }
 
-uint8_t vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C)
+uint16_t vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C)
 {
     registers regs;
     regs.esi = (int32_t)this;
@@ -2158,5 +2199,74 @@ uint8_t vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C)
     regs.ebx = var_113612C;
     call(0x004ACEE7, regs);
 
-    return regs.al;
+    return regs.ax;
+}
+
+bool vehicle_0::sub_4AC1C2()
+{
+    //vehicle_var_113601A = 0;
+    //auto loc_x = tile_x;
+    //auto loc_y = tile_y;
+    //auto loc_z = tile_base_z * 4;
+    //auto ebp = var_2C;
+    //auto bl = var_21;
+    //auto bh = road_object_id;
+    //auto edi = &vehicle_var_11360A0;
+    registers regs;
+    regs.esi = (int32_t)this;
+    return call(0x004AC1C2, regs) & (1 << 8);
+}
+
+bool vehicle_0::sub_4AC0A3()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    return call(0x004AC0A3, regs) & (1 << 8);
+}
+
+uint8_t vehicle_0::sub_4AA36A()
+{
+    vehicle * veh = next_car()->next_car();
+    if (veh->var_36 != var_36 ||
+        veh->var_2E != var_2E)
+    {
+        veh->var_46 = 0;
+        return 0;
+    }
+
+    auto param1 = 160;
+    auto param2 = 960;
+
+    if (road_object_id == 0xFF || 
+        objectmgr::get<road_object>(road_object_id)->var_12 & (1 << 6))
+    {
+        if (veh->var_2C & (1 << 7))
+        {
+            param1 = 128;
+            param2 = 544;
+        }
+    }     
+    else
+    {
+        param2 = 2880;
+        if (veh->var_2C & (1 << 7))
+        {
+            param1 = 64;
+            param2 = 128;
+        }
+    }
+
+    veh->var_46++;
+    if (veh->var_46 == param1)
+    {
+        return 1;
+    }
+
+    if (veh->var_46 == param2)
+    {
+        var_5C = 40;
+        return 2;
+    }
+
+    return 0;
 }
