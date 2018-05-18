@@ -278,10 +278,12 @@ bool openloco::vehicle_0::Update()
 
     if (var_42 == 2)
     {
+        assert(false);
         // 0x004A9051
     }
     else if (var_42 == 3)
     {
+        assert(false);
         // 0x004A9649
     }
     else
@@ -289,6 +291,7 @@ bool openloco::vehicle_0::Update()
         // 0x004A8C11
         if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
         {
+            assert(false);
             // 0x004A8F75
         }
         else
@@ -302,6 +305,7 @@ bool openloco::vehicle_0::Update()
             }
             else if (var_5D == 6)
             {
+                assert(false);
                 // 0x004A9011
             }
             else if (var_5D == 8)
@@ -343,11 +347,11 @@ bool openloco::vehicle_0::Update()
             }
         }
     }
-
+    assert(false);
     return int32_t();
 }
 
-// 0x004A8CB6 should be for only type 0's
+// 0x004A8CB6
 bool openloco::vehicle_0::sub_4A8CB6()
 {
     vehicle_1 * vehType1 = vehicle_113611C;
@@ -380,7 +384,6 @@ bool openloco::vehicle_0::sub_4A8CB6()
         return true;
     }
 
-    // Likely different structure as this is for type 0
     station_object_id = 0xFFFF;
     var_5D = 7;
 
@@ -435,7 +438,14 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 2)
         {
-            // 0x004A8EEC
+            vehicle * veh = next_car()->next_car();
+            if (var_36 != veh->var_36 ||
+                veh->var_2E != var_2E)
+            {
+                sub_4B980A();
+                return true;
+            }
+            return sub_4A8F22();
         }
         else
         {
@@ -453,8 +463,7 @@ bool openloco::vehicle_0::sub_4A8D48()
             return true;
         }
         else if (al == 3)
-        {
-            // 0x004A8DCB            
+        {        
             vehicle* veh = next_car()->next_car();
             if (veh->var_36 != var_36 ||
                 veh->var_2E != var_2E)
@@ -476,7 +485,23 @@ bool openloco::vehicle_0::sub_4A8D48()
 
             if (ah & (1 << 1))
             {
-                // 0x004A8E64
+                if (veh->var_46 < 1920)
+                {
+                    sub_4B980A();
+                    return true;
+                }
+
+                if (!(ah & (1 << 7)))
+                {
+                    if (sub_4AC1C2())
+                    {
+                        var_5C = 2;
+                        veh->var_48 |= 1 << 0;
+                        sub_4B980A();
+                        return true;
+                    }
+                }
+                return sub_4A8ED9();
             }
             else
             {
@@ -495,7 +520,7 @@ bool openloco::vehicle_0::sub_4A8D48()
 
                     if (sub_4AC0A3())
                     {
-                        //0x004A8ED9
+                        return sub_4A8ED9();
                     }
                 }
 
@@ -504,19 +529,37 @@ bool openloco::vehicle_0::sub_4A8D48()
                     sub_4B980A();
                     return true;
                 }
-
-                // 0x004A8ED9
+                return sub_4A8ED9();
             }
-            //0x004A8E1E
         }
         else
         {
-            //0x004A8D6F
+            vehicle * veh = next_car();
+            veh->var_46 = 0;
+            if (al == 2)
+            {
+                if (!(var_0C & (1 << 6)))
+                {
+                    return sub_4A8ED9();
+                }
 
+                veh = veh->next_car();
+                if (veh->var_36 != var_36 ||
+                    veh->var_2E != var_2E)
+                {
+                    return sub_4A8ED9();
+                }
+
+                veh->sub_4AA464();
+                return false;
+            }
+            else
+            {
+                sub_4B980A();
+                return true;
+            }
         }
     }
-    // continue...
-    return true;
 }
 
 // 0x004A8DB7
@@ -545,11 +588,26 @@ bool openloco::vehicle_0::sub_4A8F22()
     }
     else
     {
-        //0x004A8EB6
         auto veh = next_car()->next_car();
         veh->sub_4AA464();
         return false;
     }
+}
+
+// 0x004A8ED9
+bool openloco::vehicle_0::sub_4A8ED9()
+{
+    vehicle * veh = next_car();
+    veh->var_46 = 0;
+
+    veh = veh->next_car();
+    if (var_36 != veh->var_36 ||
+        veh->var_2E != var_2E)
+    {
+        sub_4B980A();
+        return true;
+    }
+    return sub_4A8F22();
 }
 
 // 0x004AA1D0

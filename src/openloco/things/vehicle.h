@@ -207,6 +207,7 @@ namespace openloco
         void sub_4AD778();
         bool sub_4BADE4();
         void sub_4ADB47(uint32_t unk_1);
+        bool sub_4A8ED9();
     };
 
     struct vehicle_1 : vehicle_base {
