@@ -72,6 +72,7 @@ namespace openloco::map
         station = 2,  // 0x08
         building = 4, // 0x10
         industry = 5, // 0x14
+        unk_7 = 7,    // 0x1C
         unk_8 = 8,    // 0x20
     };
 
@@ -86,6 +87,7 @@ namespace openloco::map
     struct building_element;
     struct industry_element;
     struct unk1_element;
+    struct unk7_element;
 
 #pragma pack(push, 1)
     struct tile_element_base
@@ -127,6 +129,7 @@ namespace openloco::map
         building_element* as_building() const { return as<building_element, element_type::building>(); }
         industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
         unk1_element* as_unk1() const { return as<unk1_element, element_type::unk_1>(); }
+        unk7_element* as_unk7() const { return as<unk7_element, element_type::unk_7>(); }
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -225,6 +228,17 @@ namespace openloco::map
     public:
         bool has_80() const { return (_type & 0x80) != 0; }
         uint8_t unk_z() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
+    };
+
+    struct unk7_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+    public:
+        uint8_t unk_4_F() const { return _4 & 0xF; }
     };
 #pragma pack(pop)
 

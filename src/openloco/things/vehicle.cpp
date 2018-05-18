@@ -409,20 +409,48 @@ bool openloco::vehicle_0::sub_4A8C81()
 // 0x004A8D48
 bool openloco::vehicle_0::sub_4A8D48()
 {
-    sub_4707C0();
-    uint16_t ax = sub_4ACEE7(13945600, vehicle_var_113612C);
-    uint8_t al = ax & 0xFF;
-    uint8_t ah = (ax >> 8) & 0xFF;
+    sub_4707C0();    
+    uint8_t al = 0, ah = 0;
+    uint16_t stationObjectId = 0;
+    sub_4ACEE7(13945600, vehicle_var_113612C, al, ah, stationObjectId);
+
 
     if (var_42 == 1)
     {
-        //0x004a8D8F
+        uint8_t bl = sub_4AA36A();
+        if (bl == 1)
+        {
+            return sub_4A8DB7();
+        }
+        else if (bl == 2)
+        {
+            return sub_4A8F22();
+        }
+        else if (al == 4)
+        {
+            var_5D = 4;
+            station_object_id = stationObjectId;
+            sub_4B980A();
+            return true;
+        }
+        else if (al == 2)
+        {
+            // 0x004A8EEC
+        }
+        else
+        {
+            sub_4B980A();
+            return true;
+        }
     }
     else
     {
         if (al == 4)
         {
-            //0x004A8F6B
+            var_5D = 4;
+            station_object_id = stationObjectId;
+            sub_4B980A();
+            return true;
         }
         else if (al == 3)
         {
@@ -489,6 +517,39 @@ bool openloco::vehicle_0::sub_4A8D48()
     }
     // continue...
     return true;
+}
+
+// 0x004A8DB7
+bool openloco::vehicle_0::sub_4A8DB7()
+{
+    sub_4AD778();
+    if (var_5D == 4)
+    {
+        var_5D = 2;
+    }
+    sub_4B980A();
+    return true;
+}
+
+// 0x004A8F22
+bool openloco::vehicle_0::sub_4A8F22()
+{
+    if (sub_4BADE4())
+    {
+        auto temp = var_52;
+        var_52 = 1;
+        sub_4ADB47(0);
+        var_52 = temp;
+        sub_4B980A();
+        return true;
+    }
+    else
+    {
+        //0x004A8EB6
+        auto veh = next_car()->next_car();
+        veh->sub_4AA464();
+        return false;
+    }
 }
 
 // 0x004AA1D0
@@ -2191,15 +2252,16 @@ void vehicle_0::sub_4707C0()
     call(0x004707C0, regs);
 }
 
-uint16_t vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C)
+void vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t & unk_2, uint8_t & unk_3, uint16_t & unk_4)
 {
     registers regs;
     regs.esi = (int32_t)this;
     regs.eax = unk_1;
     regs.ebx = var_113612C;
     call(0x004ACEE7, regs);
-
-    return regs.ax;
+    unk_2 = regs.al;
+    unk_3 = regs.ah;
+    unk_4 = regs.bp;
 }
 
 bool vehicle_0::sub_4AC1C2()
@@ -2224,6 +2286,14 @@ bool vehicle_0::sub_4AC0A3()
     return call(0x004AC0A3, regs) & (1 << 8);
 }
 
+void vehicle_0::sub_4AD778()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004AD778, regs);
+}
+
+// 0x004AA36A
 uint8_t vehicle_0::sub_4AA36A()
 {
     vehicle * veh = next_car()->next_car();
@@ -2269,4 +2339,78 @@ uint8_t vehicle_0::sub_4AA36A()
     }
 
     return 0;
+}
+
+bool vehicle_0::sub_4BADE4()
+{
+    vehicle * veh = next_car()->next_car();
+    map::map_pos3 loc = {
+        veh->tile_x,
+        veh->tile_y,
+        veh->tile_base_z
+    };
+
+    uint16_t bp = veh->var_2C;
+
+    if (veh->var_42 == 1)
+    {
+        auto tile = map::tilemgr::get(loc);
+        for (auto& el : tile)
+        {
+            auto elUnk7 = el.as_unk7();
+            if (elUnk7 == nullptr)
+                continue;
+
+            auto heightDiff = std::abs(elUnk7->base_z() - loc.z);
+            if (heightDiff > 4)
+                continue;
+
+            if (elUnk7->flags() & ((1 << 4) | (1 << 5)))
+                continue;
+
+            if (elUnk7->unk_4_F() != ((bp >> 3) & 0xF))
+                continue;
+
+            return true;
+        }
+        return false;
+    }
+    else
+    {
+        auto tile = map::tilemgr::get(loc);
+        for (auto& el : tile)
+        {
+            auto elUnk1 = el.as_unk1();
+            if (elUnk1 == nullptr)
+                continue;
+
+            auto heightDiff = std::abs(elUnk1->base_z() - loc.z);
+            if (heightDiff > 4)
+                continue;
+
+            if (elUnk1->flags() & ((1 << 4) | (1 << 5)))
+                continue;
+
+            if (elUnk1->unk_z() != bp)
+                continue;
+
+            return true;
+        }
+        return false;
+    }
+}
+
+void vehicle_0::sub_4ADB47(uint32_t unk_1)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.eax = unk_1;
+    call(0x004ADB47, regs);
+}
+
+void vehicle::sub_4AA464()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x004ADB47, regs);
 }

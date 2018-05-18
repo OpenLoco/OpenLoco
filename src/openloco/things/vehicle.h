@@ -140,6 +140,7 @@ namespace openloco
 
         void update_head();
         
+        void sub_4AA464();
 
 
     private:
@@ -164,7 +165,9 @@ namespace openloco
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
         uint8_t var_42;
-        uint8_t pad_43[0x54 - 0x42];
+        uint8_t pad_43[0x52 - 0x42];
+        uint8_t var_52;
+        uint8_t pad_53;
         uint16_t station_object_id; // 0x54
         uint8_t pad_56[0x5C - 0x56];
         uint8_t var_5C;
@@ -195,10 +198,15 @@ namespace openloco
         void sub_4BACAF();
         void sub_4B99E1();
         void sub_4707C0();
-        uint16_t sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C);
+        void sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t & unk_2, uint8_t & unk_3, uint16_t & unk_4);
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         uint8_t sub_4AA36A();
+        bool sub_4A8DB7();
+        bool sub_4A8F22();
+        void sub_4AD778();
+        bool sub_4BADE4();
+        void sub_4ADB47(uint32_t unk_1);
     };
 
     struct vehicle_1 : vehicle_base {
