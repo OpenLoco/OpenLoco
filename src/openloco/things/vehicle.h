@@ -168,13 +168,20 @@ namespace openloco
         uint8_t pad_43[0x52 - 0x42];
         uint8_t var_52;
         uint8_t pad_53;
-        uint16_t station_object_id; // 0x54
+        uint16_t station_id; // 0x54
         uint8_t pad_56[0x5C - 0x56];
         uint8_t var_5C;
         uint8_t var_5D;
         uint8_t var_5E;
-        uint8_t pad_5F[0x6E - 0x5F];
+        uint8_t var_5F;
+        uint8_t pad_60[0x68 - 0x60];
+        uint8_t var_68;
+        uint8_t pad_69[0x6E - 0x69];
         uint8_t var_6E;
+        uint16_t var_6F; // x related
+        uint16_t var_71; // y related
+        uint32_t var_73;
+
         bool Update();
         void sub_4A8882();
         void sub_4A88A6(vehicle_26 * vehType2or6);
@@ -208,6 +215,13 @@ namespace openloco
         bool sub_4BADE4();
         void sub_4ADB47(uint32_t unk_1);
         bool sub_4A8ED9();
+        bool sub_4BA142();
+        void sub_4BAC74();
+        bool sub_4A9011();
+        bool sub_4ACCDC();
+        bool sub_4A8FAC();
+        bool sub_4A9051();
+        void sub_4273DF(uint32_t & unk_1, uint32_t & unk_2);
     };
 
     struct vehicle_1 : vehicle_base {
@@ -227,9 +241,7 @@ namespace openloco
         uint8_t var_5A;
         uint8_t pad_5B[0x73 - 0x5B];
         uint8_t var_73;
-
-        thing * next_car();
-
+        
         vehicle_object* object() const;
     };
 
@@ -243,7 +255,6 @@ namespace openloco
         uint16_t var_46;
         uint16_t object_id; // 0x48
 
-        thing * next_car();
         vehicle_object* object() const;
     };
 
@@ -262,7 +273,7 @@ namespace openloco
         uint8_t pad_20[0x38 - 0x20];
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        uint8_t pad_3A[0x40 - 0x39];
+        uint8_t pad_3A[0x40 - 0x3A];
         uint16_t object_id; // 0x40
         uint8_t var_42;
         uint8_t pad_43;
@@ -277,10 +288,10 @@ namespace openloco
         bool Update();
 
         void secondary_animation_update();
+        void sub_4AAB0B();
     private:
         void animation_update();
         void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
-        void sub_4AAB0B();
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);

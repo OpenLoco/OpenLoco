@@ -10,6 +10,7 @@
 #include "../openloco.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
+#include "../stationmgr.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
@@ -87,16 +88,6 @@ vehicle* vehicle_base::next_vehicle()
 vehicle* vehicle_base::next_car()
 {
     return thingmgr::get<vehicle>(((vehicle *)this)->next_car_id);
-}
-
-thing* vehicle_2::next_car()
-{
-    return thingmgr::get<thing>(next_car_id);
-}
-
-thing* vehicle_26::next_car()
-{
-    return thingmgr::get<thing>(next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -260,7 +251,7 @@ bool openloco::vehicle_0::Update()
     if (tile_x == -1)
     {
         //4A8F3F
-        vehicle_6* vehType6 = vehType2->next_car()->as_vehicle()->as_vehicle_6();
+        vehicle_6* vehType6 = vehType2->next_car()->as_vehicle_6();
         if (vehType6 == nullptr)
         {
             return false;
@@ -278,8 +269,8 @@ bool openloco::vehicle_0::Update()
 
     if (var_42 == 2)
     {
-        assert(false);
         // 0x004A9051
+        return sub_4A9051();
     }
     else if (var_42 == 3)
     {
@@ -291,8 +282,32 @@ bool openloco::vehicle_0::Update()
         // 0x004A8C11
         if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
         {
-            assert(false);
-            // 0x004A8F75
+            if (var_42 == 1)
+            {
+                uint8_t bl = sub_4AA36A();
+                if (bl == 1)
+                {
+                    return sub_4A8DB7();
+                }
+                else if (bl == 2)
+                {
+                    return sub_4A8F22();
+                }
+            }
+
+            if (var_0C & (1 << 1))
+            {
+                return sub_4A8CB6();
+            }
+            else if (var_0C & (1 << 6))
+            {            
+                if (var_6E <= 236)
+                {
+                    return sub_4A8C81();
+                }
+            }
+
+            return sub_4A8FAC();
         }
         else
         {
@@ -305,8 +320,7 @@ bool openloco::vehicle_0::Update()
             }
             else if (var_5D == 6)
             {
-                assert(false);
-                // 0x004A9011
+                return sub_4A9011();
             }
             else if (var_5D == 8)
             {
@@ -363,7 +377,7 @@ bool openloco::vehicle_0::sub_4A8CB6()
         sub_4AD93A();
         if (var_5D == 4)
         {
-            station_object_id = 0xFFFF;
+            station_id = 0xFFFF;
             var_5D = 2;
         }
     }
@@ -384,7 +398,7 @@ bool openloco::vehicle_0::sub_4A8CB6()
         return true;
     }
 
-    station_object_id = 0xFFFF;
+    station_id = 0xFFFF;
     var_5D = 7;
 
     sub_4B980A();
@@ -400,7 +414,7 @@ bool openloco::vehicle_0::sub_4A8C81()
         return sub_4A8D48();
     }
     
-    station_object_id = sub_4BABAD();
+    station_id = sub_4BABAD();
     sub_4B996F();
     sub_4B9987();
     sub_4BACAF();
@@ -414,8 +428,8 @@ bool openloco::vehicle_0::sub_4A8D48()
 {
     sub_4707C0();    
     uint8_t al = 0, ah = 0;
-    uint16_t stationObjectId = 0;
-    sub_4ACEE7(13945600, vehicle_var_113612C, al, ah, stationObjectId);
+    uint16_t stationId = 0;
+    sub_4ACEE7(13945600, vehicle_var_113612C, al, ah, stationId);
 
 
     if (var_42 == 1)
@@ -432,7 +446,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         else if (al == 4)
         {
             var_5D = 4;
-            station_object_id = stationObjectId;
+            station_id = stationId;
             sub_4B980A();
             return true;
         }
@@ -458,7 +472,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         if (al == 4)
         {
             var_5D = 4;
-            station_object_id = stationObjectId;
+            station_id = stationId;
             sub_4B980A();
             return true;
         }
@@ -608,6 +622,109 @@ bool openloco::vehicle_0::sub_4A8ED9()
         return true;
     }
     return sub_4A8F22();
+}
+
+// 0x004A9011
+bool openloco::vehicle_0::sub_4A9011()
+{
+    if (sub_4BA142())
+    {
+        sub_4B980A();
+        return true;
+    }
+
+    sub_4BAC74();
+    var_5D = 1;
+    sub_4707C0();
+
+    if (var_0C & (1 << 6))
+    {
+        sub_4B980A();
+        return true;
+    }
+
+    if (sub_4ACCDC())
+    {
+        return sub_4A8F22();
+    }
+
+    sub_4B980A();
+    return true;
+}
+
+// 0x004A8FAC
+bool openloco::vehicle_0::sub_4A8FAC()
+{
+    vehicle * veh = next_car()->next_car();
+    if (var_36 != veh->var_36 ||
+        veh->var_2E != var_2E)
+    {
+        sub_4B980A();
+        return true;
+    }
+
+    if (var_0C & (1 << 6))
+    {
+        sub_4B980A();
+        return true;
+    }
+
+    sub_4B996F();
+    sub_4B9987();
+    sub_4BACAF();
+    sub_4B99E1();
+
+    sub_4B980A();
+    return true;
+}
+
+bool openloco::vehicle_0::sub_4A9051()
+{
+    vehicle_var_1136130 = 8192;
+    vehicle_2 * vehType2 = vehicle_1136120;
+
+    if (vehType2->var_56 >= 1310720)
+    {
+        vehicle_var_1136130 = 16384;
+    }
+
+    vehicle_body * veh = vehType2->next_car()->next_car()->next_car()->as_vehicle_body();
+    veh->sub_4AAB0B();
+
+    if (var_5D == 1)
+    {
+        if (var_0C & (1 << 1))
+        {
+            sub_4B980A();
+            return true;
+        }
+
+        // 0x004A95D7
+        sub_4B996F();
+        sub_4B9987();
+        sub_4B99E1();
+
+        sub_4B980A();
+        return true;
+    }
+    else if (var_5D == 5)
+    {
+        sub_4B9A2A();
+        sub_4B980A();
+        return true;
+    }
+    else if (var_5D == 6)
+    {
+        assert(false);
+        // 0x004A95F5
+    }
+
+    var_5D = 2;
+
+
+    assert(false);
+    return true;
+    // 0x004A90E3
 }
 
 // 0x004AA1D0
@@ -867,7 +984,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
         if (var_5E != 5 && var_5E != 4)
         {
             // Can be a type 6 or bogie
-            if (((vehicle *)vehType2or6->next_car())->var_5F & (1 << 2))
+            if (vehType2or6->next_car()->var_5F & (1 << 2))
             {
                 sub_4A8B7C(vehType2or6);
                 return;
@@ -894,7 +1011,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
     else if (vehType2_2->var_5A == 1)
     {
         if (vehType2or6->type == vehicle_thing_type::vehicle_2 ||
-            ((vehicle *)vehType2or6->next_car())->var_5E == 0)
+            vehType2or6->next_car()->var_5E == 0)
         {
             _var_46 = snd->var_07 + (vehType2_2->var_56 >> snd->var_10);
             _var_45 = snd->var_09;
@@ -955,7 +1072,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
         if (var_5E != 5 && var_5E != 4)
         {
             // Can be a type 6 or bogie
-            if (((vehicle *)vehType2or6->next_car())->var_5F & (1 << 2))
+            if (vehType2or6->next_car()->var_5F & (1 << 2))
             {
                 sub_4A8B7C(vehType2or6);
                 return;
@@ -996,7 +1113,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
     if (var5aEqual1Code == true)
     {
         if (vehType2or6->type == vehicle_thing_type::vehicle_2 ||
-            ((vehicle *)vehType2or6->next_car())->var_5E == 0)
+            vehType2or6->next_car()->var_5E == 0)
         {
             auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
 
@@ -2471,4 +2588,73 @@ void vehicle::sub_4AA464()
     registers regs;
     regs.esi = (int32_t)this;
     call(0x004ADB47, regs);
+}
+
+bool vehicle_0::sub_4BA142()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    return call(0x004BA142, regs) & (1 << 8);
+}
+
+void vehicle_0::sub_4BAC74()
+{
+    var_73 = scenario_ticks();
+
+    vehicle * veh = next_car()->next_car();
+    var_6F = veh->x;
+    var_71 = veh->y;
+
+    var_5F |= (1 << 3);
+}
+
+bool vehicle_0::sub_4ACCDC()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    return call(0x004ACCDC, regs) & (1 << 8);
+}
+
+void vehicle_0::sub_4273DF(uint32_t & unk_1, uint32_t & unk_2)
+{
+    if (station_id == 0xFFFF ||
+        var_68 == 0xFF)
+    {
+        vehicle * veh = next_car()->next_car();
+        unk_1 = 2;
+        unk_2 = veh->var_54;
+
+        // 0x00427503
+        if (!(veh->var_73 & (1 << 0)))
+        {
+            unk_2 = veh->var_5C;
+        }
+
+        return;
+    }
+
+    auto station = stationmgr::get(station_id);
+
+    map::map_pos3 loc =
+    {
+        station->unk_tile_x,
+        station->unk_tile_y,
+        station->unk_tile_z
+    };
+
+    auto tile = map::tilemgr::get(loc);
+    for (auto& el : tile)
+    {
+        auto elStation = el.as_station();
+        if (elStation == nullptr)
+            continue;
+
+        if (elStation->base_z() != loc.z)
+            continue;
+
+        // 0x0042743D
+    }
+
+    // Tile not found. Todo: fail gracefully
+    assert(false);
 }
