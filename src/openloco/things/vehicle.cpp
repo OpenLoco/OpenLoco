@@ -136,7 +136,11 @@ bool vehicle::update()
     switch (type)
     {
         case vehicle_thing_type::vehicle_0:
-            return this->as_vehicle_0()->Update();
+            auto veh = this->as_vehicle_0();
+            if (veh != nullptr)
+            {
+                return veh->Update();
+            }
             break;
         case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);
@@ -149,7 +153,11 @@ bool vehicle::update()
             break;
         case vehicle_thing_type::vehicle_body_end:
         case vehicle_thing_type::vehicle_body_cont:
-            return this->as_vehicle_body()->Update();
+            auto veh = this->as_vehicle_body();
+            if (veh != nullptr)
+            {
+                return veh->Update();
+            }
             break;
         case vehicle_thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -494,6 +502,10 @@ bool openloco::vehicle_0::sub_4A8D48()
 
             var_5D = 3;
             veh = next_car();
+
+            // Note this is uint16 not uint8 must be a different type of vehicle
+            // fix this! Will probably have to trust this is a vehicle_1
+            assert(false);
             veh->var_46++;
 
             if (var_0C & (1 << 6)) {
@@ -1092,7 +1104,7 @@ void openloco::vehicle_0::sub_4A8882()
 // Not guaranteed to be type 2 could be type 6
 void openloco::vehicle_0::sub_4A88A6(vehicle_26 * vehType2or6)
 {
-    if (tile_x == 0xFFFF ||
+    if (tile_x == -1 ||
         var_5D == 8 ||
         var_5D == 9 ||
         (var_38 & (1 << 4)) ||
@@ -2924,9 +2936,9 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
 
         map::map_pos3 loc2 =
         {
-            airportObject->var_AE[ebx].x - 16,
-            airportObject->var_AE[ebx].y - 16,
-            airportObject->var_AE[ebx].z + loc.z
+            (int16_t)(airportObject->var_AE[ebx].x - 16),
+            (int16_t)(airportObject->var_AE[ebx].y - 16),
+            (int16_t)(airportObject->var_AE[ebx].z + loc.z)
         };
 
         switch (elStation->rotation())
@@ -2960,6 +2972,7 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
         }
 
         // ax, cx, dx = loc2
+        // ebx = airportObject->var_AE[ebx].flags
         // ebp = &airportObject->var_B2[unk_var_68]
 
         return;
