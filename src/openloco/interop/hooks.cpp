@@ -535,6 +535,43 @@ void openloco::interop::load_sections()
 #endif
 }
 
+static void register_terraform_hooks()
+{
+    /* Event 1: clear tool
+    ------------------------*/
+    // Remove size limit outside of scenario editor: will always be 10 instead of 5.
+    interop::write_nop(0x4BC75B, 0x4BC779 - 0x4BC75B);
+
+    /* Event 2: land tool
+    -----------------------*/
+    // Enable soil selection
+    // TODO: doesn't have any effect yet, and is in the way.
+    // interop::write_nop(0x4BC8CE, 0x4BC8D7 - 0x4BC8CE);
+
+    // Remove decrease size limit: enable mountain tool outside of scenario editor.
+    interop::write_nop(0x4BCA9E, 0x4BCAB1 - 0x4BCA9E);
+
+    // Remove increase size limit: will always be 10 instead of 5.
+    interop::write_nop(0x4BCADC, 0x4BCAFA - 0x4BCADC);
+
+    /* Event 3: water tool
+    ------------------------*/
+    // Remove size limit outside of scenario editor: will always be 10 instead of 5.
+    interop::write_nop(0x4BCE49, 0x4BCE67 - 0x4BCE49);
+
+    /* Event 4: trees and forests
+    -------------------------------*/
+    // Enable forest placement outside of scenario editor.
+    // TODO: placing a forest currently does not cost any money.
+    interop::write_nop(0x4BB8AA, 0x4BB8B5 - 0x4BB8AA);
+
+    /* Event 5: fences
+    --------------------*/
+    // Don't disable fences tab
+    // TODO: don't decrease window.
+    interop::write_nop(0x4BCF6B, 0x4BCF7B - 0x4BCF6B);
+}
+
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
@@ -542,6 +579,8 @@ void openloco::interop::register_hooks()
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
 #endif // _NO_LOCO_WIN32_
+
+    register_terraform_hooks();
 
     register_hook(
         0x004416B5,
