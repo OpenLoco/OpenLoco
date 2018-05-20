@@ -222,6 +222,8 @@ namespace openloco
         bool sub_4A8FAC();
         bool sub_4A9051();
         void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
+        void sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3);
+        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68);
     };
 
     struct vehicle_1 : vehicle_base {

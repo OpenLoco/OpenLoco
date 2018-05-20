@@ -24,6 +24,9 @@ using namespace openloco::objectmgr;
 loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
 loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
+loco_global<uint32_t, 0x011360D0> vehicle_var_11360D0;
+loco_global<uint16_t, 0x01136168> vehicle_var_1136168;
+loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
 loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
 loco_global<vehicle_2*, 0x01136120> vehicle_1136120; // type 2
@@ -38,6 +41,7 @@ loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
+loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
 
 // 0x00503E5C
@@ -777,11 +781,123 @@ bool openloco::vehicle_0::sub_4A9051()
         vehType2->var_56 = type2var56;
     }
 
-    return true;
+    uint32_t ebp = 0;
+    uint16_t dx = 0; // z related
+    uint8_t bl = 0;  // yaw related
+    sub_427122(ebp, dx, bl);
+
+    vehicle_var_11360D0 = ebp;
+    vehicle_var_1136168 = dx; // z related
+
+    if (vehicle_var_525BB0 & (1 << 7))
+    {
+        vehicle_var_113646D = bl;
+        bl = sprite_yaw;
+        vehType2->var_5A = 1;
+        if (dx < z)
+        {
+            vehType2->var_5A = 2;
+        }
+    }
+
+    bl = (bl - sprite_yaw) & 0x3F;
+    
+    if (bl != 0)
+    {
+        if (bl > 32)
+        {
+            sprite_yaw = (sprite_yaw - 1) & 0x3F;
+        }
+        else
+        {
+            sprite_yaw = (sprite_yaw + 1) & 0x3F;
+        }
+    }
+
+    if (vehType2->var_56 < 3276800)
+    {
+        auto vehObject = vehType2->next_car()->object();
+        al = 2;
+        // Slope sprites for taxiing planes??
+        if (!(vehObject->flags & (1 << 8)))
+        {
+            al = 0;
+        }
+    }
+    else
+    {
+        al = 0;
+    }
+
+    if (dx > z)
+    {
+        if (vehType2->var_56 <= 22937600)
+        {
+            al = 2;
+        }
+    }
+
+    if (dx < z)
+    {
+        if (vehType2->var_56 <= 11796480)
+        {
+            auto vehObject = vehType2->next_car()->object();
+
+            if (vehObject->flags & (1 << 11))
+            {
+                al = 2;
+            }
+        }
+    }
+
+    if (al != sprite_pitch)
+    {
+        if (al < sprite_pitch)
+        {
+            sprite_pitch--;
+        }
+        else
+        {
+            sprite_pitch++;
+        }
+    }
+
+    if (vehicle_var_525BB0 & (1 << 7))
+    {
+        vehType2->var_56 = 524288;
+        if (vehicle_var_1136168 != z)
+        {
+            //0x004A94A9
+        }
+    }
+    else
+    {
+        uint32_t param = 480;
+        if (var_68 != 0xFF)
+        {
+            param = 5;
+            if (vehType2->var_56 >= 4587520)
+            {
+                param = 30;
+            }
+        }
+
+        if (ebp > param)
+        {
+            // 0x004A94A9
+        }
+    }
+    // 0x004A92CC
+
+    if (station_id != 0xFFFF &&
+        var_68 != 0xFF)
+    {
+
+    }
+
     // 0x004A9187
-    //assert(false);
-    //return true;
-    // 0x004A90E3
+    assert(false);
+    return true;
 }
 
 // 0x004AA1D0
@@ -2710,8 +2826,8 @@ void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
 
         auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
 
-        uint8_t al = airportObject->var_B2[var_68 * 12];
-        uint8_t cl = airportObject->var_B2[var_68 * 12 + 3];
+        uint8_t al = airportObject->var_B2[var_68].var_00;
+        uint8_t cl = airportObject->var_B2[var_68].var_03;
 
         vehicle * veh = next_car()->next_car();
 
@@ -2762,6 +2878,90 @@ void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
             unk_1 = 12;
             unk_2 = 20;
         }
+        return;
+    }
+
+    // Tile not found. Todo: fail gracefully
+    assert(false);
+}
+
+void vehicle_0::sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x00427122, regs);
+
+    unk_1 = regs.ebp;
+    unk_2 = regs.dx;
+    unk_3 = regs.bl;
+}
+
+void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
+{
+    auto station = stationmgr::get(_station_Id);
+
+    map::map_pos3 loc =
+    {
+        station->unk_tile_x,
+        station->unk_tile_y,
+        station->unk_tile_z
+    };
+
+    auto tile = map::tilemgr::get(loc);
+
+    for (auto& el : tile)
+    {
+        auto elStation = el.as_station();
+        if (elStation == nullptr)
+            continue;
+
+        if (elStation->base_z() != loc.z / 4)
+            continue;
+
+        auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
+
+        uint32_t ebx = airportObject->var_B2[unk_var_68].var_02;
+
+        map::map_pos3 loc2 =
+        {
+            airportObject->var_AE[ebx].x - 16,
+            airportObject->var_AE[ebx].y - 16,
+            airportObject->var_AE[ebx].z + loc.z
+        };
+
+        switch (elStation->rotation())
+        {
+        case 0:
+            break;
+        case 1:
+            std::swap(loc2.x, loc2.y);
+            loc.y = -loc.y;
+            break;
+        case 2:
+            loc.x = -loc.x;
+            loc.y = -loc.y;
+            break;
+        case 3:
+            std::swap(loc2.x, loc2.y);
+            loc.x = -loc.x;
+            break;
+        }
+
+        loc2.x += 16 + loc.x;
+        loc2.y += 16 + loc.y;
+        
+        if (!(airportObject->var_AE[ebx].flags & (1 << 3)))
+        {
+            loc2.z = loc.z + 255;
+            if (!(airportObject->var_AE[ebx].flags & (1 << 4)))
+            {
+                loc2.z = 960;
+            }
+        }
+
+        // ax, cx, dx = loc2
+        // ebp = &airportObject->var_B2[unk_var_68]
+
         return;
     }
 
