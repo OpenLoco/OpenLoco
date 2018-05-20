@@ -7,6 +7,7 @@
 #include "../objects/objectmgr.h"
 #include "../objects/vehicle_object.h"
 #include "../objects/road_object.h"
+#include "../objects/airport_object.h"
 #include "../openloco.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
@@ -269,6 +270,7 @@ bool openloco::vehicle_0::Update()
 
     if (var_42 == 2)
     {
+        // Airplane ?
         // 0x004A9051
         return sub_4A9051();
     }
@@ -720,10 +722,65 @@ bool openloco::vehicle_0::sub_4A9051()
     }
 
     var_5D = 2;
+    uint8_t al = 0;
+    uint16_t bx = 0;
+    sub_4273DF(al, bx);
 
+    var_5D = al;
+    vehicle_1 * vehType1 = vehicle_113611C;
+    vehType1->var_44 = bx;
 
-    assert(false);
+    sub_4707C0();
+
+    uint32_t type1var44 = (vehType1->var_44 * 65536);
+    auto type2var56 = vehType2->var_56;
+
+    if (type2var56 == type1var44)
+    {
+        vehType2->var_5A = 5;
+        
+        if (type2var56 != 1310720)
+        {
+            vehType2->var_5A = 2;
+        }
+    }
+    else if (type2var56 > type1var44)
+    {
+        vehType2->var_5A = 2;
+        uint32_t param = 131072;
+        if (type2var56 > 8519680)
+        {
+            param = 327680;
+            if (type2var56 > 26214400)
+            {
+                param = 720896;
+                if (type2var56 > 39321600)
+                {
+                    param = 1638400;
+                }
+            }
+        }
+
+        if (type1var44 == 1310720)
+        {
+            vehType2->var_5A = 3;
+        }
+
+        type2var56 = std::max<int32_t>(0, type2var56 - param);
+        vehType2->var_56 = type2var56;
+    }
+    else
+    {
+        vehType2->var_5A = 1;
+        type2var56 += 131072;
+        type2var56 = std::min<uint32_t>(type2var56, type1var44);
+        vehType2->var_56 = type2var56;
+    }
+
     return true;
+    // 0x004A9187
+    //assert(false);
+    //return true;
     // 0x004A90E3
 }
 
@@ -2615,19 +2672,18 @@ bool vehicle_0::sub_4ACCDC()
     return call(0x004ACCDC, regs) & (1 << 8);
 }
 
-void vehicle_0::sub_4273DF(uint32_t & unk_1, uint32_t & unk_2)
+void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
 {
     if (station_id == 0xFFFF ||
         var_68 == 0xFF)
     {
         vehicle * veh = next_car()->next_car();
         unk_1 = 2;
-        unk_2 = veh->var_54;
+        unk_2 = veh->var_54 | (veh->var_55 << 8);
 
-        // 0x00427503
         if (!(veh->var_73 & (1 << 0)))
         {
-            unk_2 = veh->var_5C;
+            unk_2 = veh->var_5C | (veh->var_5D << 8);
         }
 
         return;
@@ -2649,10 +2705,64 @@ void vehicle_0::sub_4273DF(uint32_t & unk_1, uint32_t & unk_2)
         if (elStation == nullptr)
             continue;
 
-        if (elStation->base_z() != loc.z)
+        if (elStation->base_z() != loc.z / 4)
             continue;
 
-        // 0x0042743D
+        auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
+
+        uint8_t al = airportObject->var_B2[var_68 * 12];
+        uint8_t cl = airportObject->var_B2[var_68 * 12 + 3];
+
+        vehicle * veh = next_car()->next_car();
+
+        if (al != 0)
+        {
+            if (cl == 1 || al != 2)
+            {
+                if (al == 1)
+                {
+                    unk_1 = 10;
+                    unk_2 = veh->var_5C | (veh->var_5D << 8);
+                }
+                else if (al == 3)
+                {
+                    unk_1 = 10;
+                    unk_2 = 0;
+                }
+                else if (al == 4)
+                {
+                    unk_1 = 11;
+                    unk_2 = 20;
+                }
+                else
+                {
+                    unk_1 = 4;
+                    unk_2 = veh->var_5C | (veh->var_5D << 8);
+                }
+                return;
+            }
+        }
+
+        if (cl == 2)
+        {
+            unk_1 = 13;
+            unk_2 = veh->var_54 | (veh->var_55 << 8);
+            if (!(veh->var_73 & (1 << 0)))
+            {
+                unk_2 = veh->var_5C | (veh->var_5D << 8);
+            }
+        }
+        else if (cl == 3)
+        {
+            unk_1 = 13;
+            unk_2 = 0;
+        }
+        else
+        {
+            unk_1 = 12;
+            unk_2 = 20;
+        }
+        return;
     }
 
     // Tile not found. Todo: fail gracefully

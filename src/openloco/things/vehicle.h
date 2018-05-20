@@ -165,7 +165,7 @@ namespace openloco
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
         uint8_t var_42;
-        uint8_t pad_43[0x52 - 0x42];
+        uint8_t pad_43[0x52 - 0x43];
         uint8_t var_52;
         uint8_t pad_53;
         uint16_t station_id; // 0x54
@@ -221,10 +221,12 @@ namespace openloco
         bool sub_4ACCDC();
         bool sub_4A8FAC();
         bool sub_4A9051();
-        void sub_4273DF(uint32_t & unk_1, uint32_t & unk_2);
+        void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
     };
 
     struct vehicle_1 : vehicle_base {
+        uint8_t pad_20[0x44 - 0x20];
+        uint16_t var_44; // possibly 2 uint8_t's
         bool Update();
     };
 
