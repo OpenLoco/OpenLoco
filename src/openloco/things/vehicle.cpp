@@ -136,12 +136,14 @@ bool vehicle::update()
     switch (type)
     {
         case vehicle_thing_type::vehicle_0:
+        {
             auto veh = this->as_vehicle_0();
             if (veh != nullptr)
             {
                 return veh->Update();
             }
             break;
+        }
         case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);
             break;
@@ -153,12 +155,14 @@ bool vehicle::update()
             break;
         case vehicle_thing_type::vehicle_body_end:
         case vehicle_thing_type::vehicle_body_cont:
+        {
             auto veh = this->as_vehicle_body();
             if (veh != nullptr)
             {
                 return veh->Update();
             }
             break;
+        }
         case vehicle_thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
             break;
