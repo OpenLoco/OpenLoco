@@ -712,16 +712,13 @@ bool openloco::vehicle_0::sub_4A9051()
 
     if (var_5D == 1)
     {
-        if (var_0C & (1 << 1))
+        if (!(var_0C & (1 << 1)))
         {
-            sub_4B980A();
-            return true;
-        }
+            sub_4B996F();
+            sub_4B9987();
+            sub_4B99E1();
 
-        // 0x004A95D7
-        sub_4B996F();
-        sub_4B9987();
-        sub_4B99E1();
+        }
 
         sub_4B980A();
         return true;
@@ -880,7 +877,7 @@ bool openloco::vehicle_0::sub_4A9051()
         vehType2->var_56 = 524288;
         if (vehicle_var_1136168 != z)
         {
-            //0x004A94A9
+            return sub_4A94A9();
         }
     }
     else
@@ -897,18 +894,129 @@ bool openloco::vehicle_0::sub_4A9051()
 
         if (ebp > param)
         {
-            // 0x004A94A9
+            return sub_4A94A9();
         }
     }
-    // 0x004A92CC
 
     if (station_id != 0xFFFF &&
         var_68 != 0xFF)
     {
+        uint16_t flags = 0;
+        sub_426E26(station_id, var_68, flags);
 
+        if (flags & (1 << 8))
+        {
+            sub_42750E();
+        }
+        if (flags & (1 << 3))
+        {
+            sub_4BACAF();
+        }
+
+        if (flags & (1 << 1))
+        {
+            return sub_4A95CB();
+        }
     }
 
-    // 0x004A9187
+    int32_t eax = -1;
+    if (station_id != 0xFFFF)
+    {
+        // This is sign extended just cause sub_427214 needs it to be
+        eax = (int8_t)var_68;
+    }
+
+    sub_427214(eax);
+
+    if (eax != -1)
+    {
+        // 0x004A9348
+        assert(false);
+    }
+
+    if (vehType2->var_56 > 1966080)
+    {
+        return sub_4A94A9();
+    }
+    else
+    {
+        vehType2->var_56 = 0;
+        vehType2->var_5A = 0;
+
+        sub_4B980A();
+        return true;
+    }
+}
+
+bool vehicle_0::sub_4A95CB()
+{
+    if (var_0C & (1 << 1))
+    {
+        var_5D = 1;
+        vehicle_2 * vehType2 = vehicle_1136120;
+        vehType2->var_56 = 0;
+    }
+    else
+    {
+        sub_4B996F();
+        sub_4B9987();
+        sub_4B99E1();
+    }
+
+    sub_4B980A();
+    return true;
+}
+
+bool vehicle_0::sub_4A94A9()
+{
+    auto _yaw = sprite_yaw;
+    if (vehicle_var_525BB0 & (1 << 7))
+    {
+        _yaw = vehicle_var_113646D;
+    }
+
+    vehicle_1 * vehType1 = vehicle_113611C;
+    vehicle_2 * vehType2 = vehicle_1136120;
+
+    loc16 loc =
+    {
+        x,
+        y,
+        0
+    };
+    loc.z = vehicle_var_1136168;
+    map::map_pos loc2 =
+    {
+        vehType1->var_4E,
+        vehType1->var_50
+    };
+
+    // loc1 and loc2 occupy eax, ecx it is
+    // possible that this factor effects loc1
+    auto factor = vehType2->var_56 / 8192;
+    assert(factor < 65536);
+    // If this assert never gets hit then its
+    // safe to assume loc1 is not effected
+    loc2.x += factorXY503B6A[_yaw * 2] * factor;
+    loc2.y += factorXY503B6A[_yaw * 2 + 1] * factor;
+
+    vehType1->var_4E = loc2.x;
+    vehType1->var_50 = loc2.y;
+    
+    if (loc.z == z)
+    {
+        // 0x004A95BB
+        sub_426CA4(loc, sprite_yaw, sprite_pitch);
+        sub_4B980A();
+        return true;
+    }
+
+    if (vehicle_var_11360D0 <= 28)
+    {
+        // 0x004A9564
+        assert(false);
+    }
+    // 0x004A952A
     assert(false);
     return true;
 }
@@ -2909,7 +3017,7 @@ void vehicle_0::sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3)
     unk_3 = regs.bl;
 }
 
-void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
+void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags)
 {
     auto station = stationmgr::get(_station_Id);
 
@@ -2942,6 +3050,8 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
             (int16_t)(airportObject->var_AE[ebx].z + loc.z)
         };
 
+        airportFlags = airportObject->var_AE[ebx].flags;
+
         switch (elStation->rotation())
         {
         case 0:
@@ -2963,22 +3073,69 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68)
         loc2.x += 16 + loc.x;
         loc2.y += 16 + loc.y;
         
-        if (!(airportObject->var_AE[ebx].flags & (1 << 3)))
+        if (!(airportFlags & (1 << 3)))
         {
             loc2.z = loc.z + 255;
-            if (!(airportObject->var_AE[ebx].flags & (1 << 4)))
+            if (!(airportFlags & (1 << 4)))
             {
                 loc2.z = 960;
             }
         }
 
-        // ax, cx, dx = loc2
-        // ebx = airportObject->var_AE[ebx].flags
-        // ebp = &airportObject->var_B2[unk_var_68]
+        // ax, cx, dx = loc2 ?? not used??
+        // airportFlags = ebx = airportObject->var_AE[ebx].flags ?? okay
+        // ebp = &airportObject->var_B2[unk_var_68] ??
 
         return;
     }
 
     // Tile not found. Todo: fail gracefully
     assert(false);
+}
+
+void vehicle_0::sub_42750E()
+{
+    vehicle_2 * vehType2 = vehicle_1136120;
+    auto veh = vehType2->next_car();
+
+    auto vehObject = veh->object();
+
+    if (vehObject->num_sounds == 0)
+    {
+        return;
+    }
+
+    auto chosenSound = gprng().rand_next(vehObject->num_sounds & 0x7F);
+    auto soundId = (audio::sound_id)vehObject->var_15B[chosenSound];
+
+    loc16 loc =
+    {
+        vehType2->x,
+        vehType2->y,
+        vehType2->z + 22
+    };
+
+    audio::play_sound(soundId, loc, 0, 22050, true);
+}
+
+void vehicle_0::sub_427214(int32_t & _var_68)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.eax = _var_68;
+    call(0x00427214, regs);
+
+    _var_68 = regs.eax;
+}
+
+void vehicle_0::sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.ax = loc.x;
+    regs.cx = loc.y;
+    regs.dx = loc.z;
+    regs.bl = yaw;
+    regs.bh = pitch;
+    call(0x00426CA4, regs);
 }

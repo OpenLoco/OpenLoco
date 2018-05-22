@@ -223,7 +223,12 @@ namespace openloco
         bool sub_4A9051();
         void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
         void sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3);
-        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68);
+        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags);
+        void sub_42750E();
+        bool sub_4A95CB();
+        void sub_427214(int32_t & _var_68);
+        bool sub_4A94A9();
+        void sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch);
     };
 
     struct vehicle_1 : vehicle_base {
@@ -231,6 +236,9 @@ namespace openloco
         uint16_t var_44; // possibly 2 uint8_t's
         uint16_t var_46;
         uint8_t var_48;
+        uint8_t pad_49[0x4E - 0x49];
+        int16_t var_4E; // x related
+        int16_t var_50; // y related
         bool Update();
     };
 
