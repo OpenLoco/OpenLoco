@@ -492,7 +492,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 3)
         {        
-            vehicle* veh = next_car()->next_car();
+            vehicle_2* veh = next_car()->next_car()->as_vehicle_2();
             if (veh->var_36 != var_36 ||
                 veh->var_2E != var_2E)
             {
@@ -501,23 +501,20 @@ bool openloco::vehicle_0::sub_4A8D48()
             }
 
             var_5D = 3;
-            veh = next_car();
+            vehicle_1 * vehType1 = next_car()->as_vehicle_1();
 
-            // Note this is uint16 not uint8 must be a different type of vehicle
-            // fix this! Will probably have to trust this is a vehicle_1
-            assert(false);
-            veh->var_46++;
+            vehType1->var_46++;
 
             if (var_0C & (1 << 6)) {
                 var_5C = 2;
-                veh->var_48 |= 1 << 0;
+                vehType1->var_48 |= 1 << 0;
                 sub_4B980A();
                 return true;
             }
 
             if (ah & (1 << 1))
             {
-                if (veh->var_46 < 1920)
+                if (vehType1->var_46 < 1920)
                 {
                     sub_4B980A();
                     return true;
@@ -528,7 +525,7 @@ bool openloco::vehicle_0::sub_4A8D48()
                     if (sub_4AC1C2())
                     {
                         var_5C = 2;
-                        veh->var_48 |= 1 << 0;
+                        vehType1->var_48 |= 1 << 0;
                         sub_4B980A();
                         return true;
                     }
@@ -537,14 +534,14 @@ bool openloco::vehicle_0::sub_4A8D48()
             }
             else
             {
-                if (!(veh->var_46 & 0x3F))
+                if (!(vehType1->var_46 & 0x3F))
                 {
                     if (!(ah & (1 << 7)))
                     {
                         if (sub_4AC1C2())
                         {
                             var_5C = 2;
-                            veh->var_48 |= 1 << 0;
+                            vehType1->var_48 |= 1 << 0;
                             sub_4B980A();
                             return true;
                         }
@@ -556,7 +553,7 @@ bool openloco::vehicle_0::sub_4A8D48()
                     }
                 }
 
-                if (veh->var_46 < 640)
+                if (vehType1->var_46 < 640)
                 {
                     sub_4B980A();
                     return true;
@@ -566,7 +563,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else
         {
-            vehicle * veh = next_car();
+            vehicle_1 * veh = next_car()->as_vehicle_1();
             veh->var_46 = 0;
             if (al == 2)
             {
@@ -575,14 +572,14 @@ bool openloco::vehicle_0::sub_4A8D48()
                     return sub_4A8ED9();
                 }
 
-                veh = veh->next_car();
-                if (veh->var_36 != var_36 ||
-                    veh->var_2E != var_2E)
+                vehicle_2 * vehType2 = veh->next_car()->as_vehicle_2();
+                if (vehType2->var_36 != var_36 ||
+                    vehType2->var_2E != var_2E)
                 {
                     return sub_4A8ED9();
                 }
 
-                veh->sub_4AA464();
+                vehType2->sub_4AA464();
                 return false;
             }
             else
@@ -620,7 +617,7 @@ bool openloco::vehicle_0::sub_4A8F22()
     }
     else
     {
-        auto veh = next_car()->next_car();
+        auto veh = next_car()->next_car()->as_vehicle_2();
         veh->sub_4AA464();
         return false;
     }
@@ -2768,7 +2765,7 @@ void vehicle_0::sub_4ADB47(uint32_t unk_1)
     call(0x004ADB47, regs);
 }
 
-void vehicle::sub_4AA464()
+void vehicle_2::sub_4AA464()
 {
     registers regs;
     regs.esi = (int32_t)this;

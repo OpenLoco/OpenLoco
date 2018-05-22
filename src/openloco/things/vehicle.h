@@ -140,7 +140,7 @@ namespace openloco
 
         void update_head();
         
-        void sub_4AA464();
+
 
 
     private:
@@ -229,11 +229,17 @@ namespace openloco
     struct vehicle_1 : vehicle_base {
         uint8_t pad_20[0x44 - 0x20];
         uint16_t var_44; // possibly 2 uint8_t's
+        uint16_t var_46;
+        uint8_t var_48;
         bool Update();
     };
 
     struct vehicle_2 : vehicle_base {
-        uint8_t pad_20[0x3A - 0x20];
+        uint8_t pad_20[0x2E - 0x20];
+        uint16_t var_2E;
+        uint8_t pad_30[0x36 - 0x30];
+        uint16_t var_36;
+        uint8_t pad_38[0x3A - 0x38];
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
         uint8_t var_44;
@@ -247,6 +253,7 @@ namespace openloco
         uint8_t var_73;
         
         vehicle_object* object() const;
+        void sub_4AA464();
     };
 
     // TODO: Find out the difference between type 2 and 6
