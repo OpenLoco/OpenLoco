@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="openloco::interop::loco_global&lt;*&gt;">
+    <DisplayString>{{size = {_Mylast - _Myfirst}}}</DisplayString>
+    <Expand>
+      <Item Name="[size]">_Mylast - _Myfirst</Item>
+      <ArrayItems>
+        <Size>_Mylast - _Myfirst</Size>
+        <ValuePointer>_Myfirst</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="openloco::interop::loco_global&lt;*&gt;">
+    <DisplayString>{*_Myptr}</DisplayString>
+    <Expand>
+      <Item Name="[ptr]">_Myptr</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
