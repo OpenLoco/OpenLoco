@@ -110,7 +110,7 @@ namespace openloco::input
     loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<uint16_t, 0x00523396> _523396;
-    static loco_global<uint32_t, 0x00523398> _523398;
+    static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
 
     static loco_global<ui::window_type, 0x005233A8> _hoverWindowType;
     static loco_global<uint8_t, 0x005233A9> _5233A9;
@@ -132,6 +132,7 @@ namespace openloco::input
     static void window_resize_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index);
     static void window_position_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index);
 
+    // 0x004C7174
     void handle_mouse(int16_t x, int16_t y, mouse_button button)
     {
         loco_global<uint16_t, 0x001136fa0>() = (uint16_t)button;
@@ -495,7 +496,16 @@ namespace openloco::input
     // 0x004C8098
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
-        if (window->type != *_hoverWindowType || window->number != *_hoverWindowNumber || widgetIndex != *_hoverWidgetIdx)
+        ui::window_type windowType = ui::window_type::undefined;
+        ui::window_number windowNumber = 0;
+
+        if (window != nullptr)
+        {
+            windowType = window->type;
+            windowNumber = window->number;
+        }
+
+        if (windowType != *_hoverWindowType || windowNumber != *_hoverWindowNumber || widgetIndex != *_hoverWidgetIdx)
         {
             input_widget_over_flatbutton_invalidate();
             _hoverWindowType = window->type;
@@ -509,7 +519,7 @@ namespace openloco::input
         {
             if (!window->is_disabled(widgetIndex))
             {
-                window->call_3();
+                window->call_3(widgetIndex);
             }
         }
 #endif // LOCOMOTION
@@ -529,12 +539,13 @@ namespace openloco::input
                 }
                 else if (scrollArea == ui::scrollview::scroll_part::view)
                 {
-                    window->call_scroll_mouse_over(scrollX, scrollY, scrollIndex / 0x12);
+                    window->call_scroll_mouse_over(scrollX, scrollY, scrollIndex / sizeof(ui::scroll_area_t));
                 }
                 else
                 {
                     if (*_tooltipWindowType != ui::window_type::undefined)
                     {
+                        // TODO: @aaronvangeffen table for STR_0188
                         if (((uint8_t)scrollArea + 187) != _1136F98)
                         {
                             call(0x4C87B5);
@@ -552,13 +563,15 @@ namespace openloco::input
                 _tooltipTimeout += time_since_last_tick;
                 if (_tooltipTimeout >= 8000)
                 {
-                    ui::windowmgr::close(ui::window_type::tooltip, 0);
+                    ui::windowmgr::close(ui::window_type::tooltip);
                 }
             }
             else
             {
                 call(0x4C87B5);
             }
+
+            return;
         }
 
         if (_tooltipNotShownTicks < 500 || (x == _tooltipCursorX && y == _tooltipCursorY))
@@ -657,7 +670,6 @@ namespace openloco::input
                 break;
 
             case ui::widget_type::scrollview:
-                // 0x4c8658
                 _state = (uint8_t)input_state::scroll_left;
                 _pressedWidgetIndex = widgetIndex;
                 _pressedWindowType = window->type;
@@ -709,8 +721,10 @@ namespace openloco::input
         _dragLastY = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
+        _5233A9 = false;
     }
 
+    // 0x004C834A
     static void state_normal_right(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         ui::window_type windowType = ui::window_type::undefined;
@@ -759,7 +773,8 @@ namespace openloco::input
                 break;
 
             case ui::widget_type::viewport:
-                window->flags &= ~ui::window_flags::flag_3;
+                // TODO: input_viewport_drag_begin
+                window->flags &= ~ui::window_flags::scrolling_to_location;
                 _state = (uint8_t)input_state::viewport_right;
                 _dragLastX = x;
                 _dragLastY = y;
@@ -767,7 +782,7 @@ namespace openloco::input
                 _dragWindowNumber = window->number;
                 _ticksSinceDragStart = 0;
 
-                ui::set_cursor(ui::cursor_id::blank);
+                ui::hide_cursor();
                 sub_407218();
 
                 _5233AE = 0;
@@ -776,6 +791,7 @@ namespace openloco::input
                 break;
 
             case ui::widget_type::scrollview:
+                // TODO: input_scroll_drag_begin
                 _state = (uint8_t)input_state::scroll_right;
                 _dragLastX = x;
                 _dragLastY = y;
@@ -784,6 +800,7 @@ namespace openloco::input
                 _dragWidgetIndex = widgetIndex;
                 _ticksSinceDragStart = 0;
 
+                // TODO: window_get_scroll_data_index
                 int scrollIndex = 0;
                 for (int i = 0;; i++)
                 {
@@ -799,7 +816,7 @@ namespace openloco::input
 
                 _dragScrollIndex = scrollIndex;
 
-                ui::set_cursor(ui::cursor_id::blank);
+                ui::hide_cursor();
                 sub_407218();
 
                 _5233AE = 0;
@@ -809,6 +826,7 @@ namespace openloco::input
         }
     }
 
+    // 0x004C8689
     void scroll_begin(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
     {
         ui::scrollview::scroll_part scrollArea;
@@ -818,11 +836,11 @@ namespace openloco::input
         ui::scrollview::get_part(window, widget, x, y, &outX, &outY, &scrollArea, &scrollAreaOffset);
 
         _523396 = (uint16_t)scrollArea;
-        _523398 = scrollAreaOffset;
+        _currentScrollOffset = scrollAreaOffset;
 
         if (scrollArea == ui::scrollview::scroll_part::view)
         {
-            window->call_scroll_mouse_down(outX, outY, scrollAreaOffset / 0x12);
+            window->call_scroll_mouse_down(outX, outY, scrollAreaOffset / sizeof(ui::scroll_area_t));
             return;
         }
 

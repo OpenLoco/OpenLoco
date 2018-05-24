@@ -86,7 +86,7 @@ namespace openloco::ui
     {
         constexpr uint32_t flag_0 = 1 << 0;
         constexpr uint32_t flag_1 = 1 << 1;
-        constexpr uint32_t flag_3 = 1 << 3;
+        constexpr uint32_t scrolling_to_location = 1 << 3;
         constexpr uint32_t flag_4 = 1 << 4;
         constexpr uint32_t flag_5 = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
@@ -227,7 +227,7 @@ namespace openloco::ui
         void call_close();                                                                                // 0
         void call_on_mouse_up(int8_t widget_index);                                                       // 1
         void call_on_resize();                                                                            // 2
-        void call_3();                                                                                    // 3
+        void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_update();                                                                               // 7
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11                                                                               // 7

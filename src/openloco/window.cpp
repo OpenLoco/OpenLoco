@@ -144,9 +144,12 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_resize, regs);
     }
 
-    void window::call_3()
+    void window::call_3(int8_t widget_index)
     {
         registers regs;
+        regs.edx = widget_index;
+        regs.esi = (uint32_t)this;
+        regs.edi = (uint32_t) & this->widgets[widget_index];
         call((uint32_t)this->event_handlers->event_03, regs);
     }
 

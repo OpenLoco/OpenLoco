@@ -757,11 +757,11 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004C7174,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            uint16_t state = regs.cx;
+            uint16_t button = regs.cx;
             uint16_t x = regs.ax;
             uint16_t y = regs.bx;
 
-            input::handle_mouse(x, y, (input::mouse_button)state);
+            input::handle_mouse(x, y, (input::mouse_button)button);
 
             return 0;
         });
