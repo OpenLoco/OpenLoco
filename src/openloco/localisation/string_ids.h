@@ -49,6 +49,17 @@ namespace openloco::string_ids
     constexpr string_id month_short_november = 51;
     constexpr string_id month_short_december = 52;
 
+    constexpr string_id tooltip_scroll_left = 188;
+    constexpr string_id tooltip_scroll_right = 189;
+    constexpr string_id tooltip_scroll_left_fast = 190;
+    constexpr string_id tooltip_scroll_right_fast = 191;
+    constexpr string_id tooltip_scroll_left_right = 192;
+    constexpr string_id tooltip_scroll_up = 193;
+    constexpr string_id tooltip_scroll_down = 194;
+    constexpr string_id tooltip_scroll_up_fast = 195;
+    constexpr string_id tooltip_scroll_down_fast = 196;
+    constexpr string_id tooltip_scroll_up_down = 197;
+
     constexpr string_id wcolour2_stringid2 = 457;
 
     constexpr string_id month_long_january = 635;

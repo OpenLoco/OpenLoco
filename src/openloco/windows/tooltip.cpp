@@ -30,7 +30,7 @@ namespace openloco::ui::tooltip
     static loco_global<char[512], 0x01136D90> _text;
     static loco_global<uint16_t, 0x01136F90> _lineBreakCount;
 
-    static loco_global<int32_t, 0x01136F98> _1136F98;
+    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void on_close(ui::window* window);
@@ -158,7 +158,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        _1136F98 = -1;
+        _currentTooltipStringId = -1;
 
         common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY);
     }
@@ -184,7 +184,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        _1136F98 = stringId;
+        _currentTooltipStringId = stringId;
 
         common(window, widgetIndex, stringId, cursorX, cursorY);
     }

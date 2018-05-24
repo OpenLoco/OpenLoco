@@ -1,10 +1,13 @@
 #include "input.h"
 #include "audio/audio.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include "ui.h"
 #include "ui/scrollview.h"
 #include "window.h"
 #include "windowmgr.h"
+
+#include <map>
 
 using namespace openloco::interop;
 
@@ -120,7 +123,20 @@ namespace openloco::input
     static loco_global<uint32_t, 0x005233B2> _5233B2;
     static loco_global<ui::window_type, 0x005233B6> modalWindowType;
 
-    static loco_global<int32_t, 0x01136F98> _1136F98;
+    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
+
+    static std::map<ui::scrollview::scroll_part, string_id> scroll_widget_tooltips = {
+        { ui::scrollview::scroll_part::hscrollbar_left, string_ids::tooltip_scroll_left },
+        { ui::scrollview::scroll_part::hscrollbar_right, string_ids::tooltip_scroll_right },
+        { ui::scrollview::scroll_part::hscrollbar_left_trough, string_ids::tooltip_scroll_left_fast },
+        { ui::scrollview::scroll_part::hscrollbar_right_trough, string_ids::tooltip_scroll_right_fast },
+        { ui::scrollview::scroll_part::hscrollbar_thumb, string_ids::tooltip_scroll_left_right },
+        { ui::scrollview::scroll_part::vscrollbar_top, string_ids::tooltip_scroll_up },
+        { ui::scrollview::scroll_part::vscrollbar_bottom, string_ids::tooltip_scroll_down },
+        { ui::scrollview::scroll_part::vscrollbar_top_trough, string_ids::tooltip_scroll_up_fast },
+        { ui::scrollview::scroll_part::vscrollbar_bottom_trough, string_ids::tooltip_scroll_down_fast },
+        { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
+    };
 
     static void state_resizing(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_positioning_window(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -524,7 +540,7 @@ namespace openloco::input
         }
 #endif // LOCOMOTION
 
-        bool open = true;
+        string_id tooltipStringId = string_ids::null;
         if (window != nullptr && widgetIndex != -1)
         {
             if (widget->type == ui::widget_type::scrollview)
@@ -543,15 +559,14 @@ namespace openloco::input
                 }
                 else
                 {
+                    tooltipStringId = scroll_widget_tooltips[scrollArea];
                     if (*_tooltipWindowType != ui::window_type::undefined)
                     {
-                        // TODO: @aaronvangeffen table for STR_0188
-                        if (((uint8_t)scrollArea + 187) != _1136F98)
+                        if (tooltipStringId != _currentTooltipStringId)
                         {
                             call(0x4C87B5);
                         }
                     }
-                    open = false;
                 }
             }
         }
@@ -588,13 +603,13 @@ namespace openloco::input
                 return;
             }
 
-            if (open)
+            if (tooltipStringId == string_ids::null)
             {
                 ui::tooltip::open(window, widgetIndex, x, y);
             }
             else
             {
-                ui::tooltip::update(window, widgetIndex, window->widgets[widgetIndex].tooltip, x, y);
+                ui::tooltip::update(window, widgetIndex, tooltipStringId, x, y);
             }
         }
 
