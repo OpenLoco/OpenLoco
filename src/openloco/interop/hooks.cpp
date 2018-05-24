@@ -648,12 +648,6 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
-        0x00407218,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::input::sub_407218();
-            return 0;
-        });
-    register_hook(
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             openloco::input::sub_407231();
