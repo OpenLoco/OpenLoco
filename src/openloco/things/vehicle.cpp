@@ -1003,21 +1003,43 @@ bool vehicle_0::sub_4A94A9()
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
     
-    if (loc.z == z)
+    if (loc.z != z)
     {
-        // 0x004A95BB
-        sub_426CA4(loc, sprite_yaw, sprite_pitch);
-        sub_4B980A();
-        return true;
-    }
+        if (vehicle_var_11360D0 <= 28)
+        {
+            int16_t z_shift = 1;
+            if (vehType2->var_56 >= 3276800)
+            {
+                z_shift++;
+                if (vehType2->var_56 >= 6553600)
+                {
+                    z_shift++;
+                }
+            }
 
-    if (vehicle_var_11360D0 <= 28)
-    {
-        // 0x004A9564
-        assert(false);
+            if (loc.z < z)
+            {
+                loc.z = std::max<int16_t>(loc.z, z - z_shift);
+            }
+            else if (loc.z > z)
+            {
+                loc.z = std::min<int16_t>(loc.z, z + z_shift);
+            }
+        }
+        else
+        {
+            loc.z -= z;
+            auto param1 = ((loc.z * (vehType2->var_56 / 65536)) / 32);
+            auto param2 = vehicle_var_11360D0 - 18;
+            loc.z += param1 / param2;
+            if ((param1 % param2) & (1 << 15))
+            {
+                loc.z -= 2;
+            }
+        }
     }
-    // 0x004A952A
-    assert(false);
+    sub_426CA4(loc, sprite_yaw, sprite_pitch);
+    sub_4B980A();
     return true;
 }
 
