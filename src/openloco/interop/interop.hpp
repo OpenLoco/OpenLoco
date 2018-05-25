@@ -134,10 +134,20 @@ namespace openloco::interop
     template<typename T, uintptr_t TAddress>
     struct loco_global
     {
+    public:
         typedef T type;
         typedef type* pointer;
         typedef type& reference;
         typedef const type& const_reference;
+
+    private:
+        pointer _Myptr;
+
+    public:
+        loco_global()
+        {
+            _Myptr = &(addr<TAddress, T>());
+        }
 
         operator reference()
         {
@@ -268,11 +278,23 @@ namespace openloco::interop
     template<typename T, size_t TCount, uintptr_t TAddress>
     struct loco_global<T[TCount], TAddress>
     {
+    public:
         typedef T type;
         typedef type* pointer;
         typedef type& reference;
         typedef const type& const_reference;
         typedef loco_global_iterator<T> iterator;
+
+    private:
+        pointer _Myfirst;
+        pointer _Mylast;
+
+    public:
+        loco_global()
+        {
+            _Myfirst = get();
+            _Mylast = _Myfirst + TCount;
+        }
 
         operator pointer()
         {

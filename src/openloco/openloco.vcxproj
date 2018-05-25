@@ -126,6 +126,9 @@
     <ClInclude Include="interop\interop.hpp" />
     <ClInclude Include="station.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42A6B551-4EC5-4B66-A130-628622CD98C4}</ProjectGuid>
     <RootNamespace>openloco</RootNamespace>
