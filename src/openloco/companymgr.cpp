@@ -11,7 +11,12 @@ namespace openloco::companymgr
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
-    static void sub_4306D1();
+    static loco_global<uint8_t, 0x00526214> _company_competition_delay;
+    static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
+    static loco_global<uint8_t, 0x00525E3C> _byte_525E3C;
+    static loco_global<uint8_t, 0x00525E3D> _byte_525E3D;
+
+    static void produce_companies();
 
     company_id_t updating_company_id()
     {
@@ -61,13 +66,41 @@ namespace openloco::companymgr
             if (_byte_525FCB >= 192)
             {
                 _byte_525FCB = 0;
-                sub_4306D1();
+                produce_companies();
             }
         }
     }
 
-    static void sub_4306D1()
+    static void sub_42F9AC()
     {
-        call(0x004306D1);
+        call(0x0042F9AC);
+    }
+
+    // 0x004306D1
+    static void produce_companies()
+    {
+        if (_company_competition_delay == 0 && _company_max_competing != 0)
+        {
+            int32_t companies_active = 0;
+            for (const auto& company : companies())
+            {
+                auto id = company.id();
+                if (!company.empty() && id != _byte_525E3C && id != _byte_525E3D)
+                {
+                    companies_active++;
+                }
+            }
+
+            auto& prng = gprng();
+
+            if (prng.rand_next(16) == 0)
+            {
+                if (prng.rand_next(_company_max_competing) + 1 > companies_active)
+                {
+                    // Creates new company.
+                    sub_42F9AC();
+                }
+            }
+        }
     }
 }
