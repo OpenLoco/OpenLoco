@@ -140,7 +140,7 @@ bool vehicle::update()
             auto veh = this->as_vehicle_0();
             if (veh != nullptr)
             {
-                return veh->Update();
+                return !veh->Update();
             }
             break;
         }
@@ -159,7 +159,7 @@ bool vehicle::update()
             auto veh = this->as_vehicle_body();
             if (veh != nullptr)
             {
-                return veh->Update();
+                return !veh->Update();
             }
             break;
         }

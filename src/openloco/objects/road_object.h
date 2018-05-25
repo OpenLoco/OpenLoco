@@ -4,6 +4,7 @@
 
 namespace openloco
 {
+#pragma pack(push, 1)
     struct road_object
     {
         string_id name;
@@ -11,4 +12,5 @@ namespace openloco
         uint16_t var_12;
         uint8_t pad_14[0x30 - 0x14];
     };
+#pragma pack(pop)
 }

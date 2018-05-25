@@ -4,6 +4,7 @@
 
 namespace openloco
 {
+#pragma pack(push, 1)
     struct road_station_object
     {
         string_id name;
@@ -12,4 +13,5 @@ namespace openloco
         uint8_t pad_0C[0x2C - 0x0C];
         uint8_t var_2C;
     };
+#pragma pack(pop)
 }
