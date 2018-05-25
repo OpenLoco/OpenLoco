@@ -1245,7 +1245,7 @@ void openloco::vehicle_0::sub_4A88A6(vehicle_26 * vehType2or6)
 
 void openloco::vehicle_0::sub_4A8B7C(vehicle_26 * vehType2or6)
 {
-    vehType2or6->var_44 = 0xFF;
+    vehType2or6->sound_id = 0xFF;
 }
 
 void openloco::vehicle_0::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * snd)
@@ -1268,7 +1268,7 @@ void openloco::vehicle_0::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_so
     }
 
     vehType2or6->var_45 = unk;
-    vehType2or6->var_44 = snd->var_00;
+    vehType2or6->sound_id = snd->sound_object_id;
 }
 
 void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * snd)
@@ -1322,13 +1322,13 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
         _var_45 = snd->var_03;
     }
 
-    if (vehType2or6->var_44 == 0xFF)
+    if (vehType2or6->sound_id == 0xFF)
     {
         // Half
         vehType2or6->var_45 = snd->var_03 >> 1;
         // Quarter
         vehType2or6->var_46 = snd->var_01 >> 2;
-        vehType2or6->var_44 = snd->var_00;
+        vehType2or6->sound_id = snd->sound_object_id;
         return;
     }
 
@@ -1356,7 +1356,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
         }
     }
 
-    vehType2or6->var_44 = snd->var_00;
+    vehType2or6->sound_id = snd->sound_object_id;
 }
 
 void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * snd)
@@ -1435,13 +1435,13 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
         }
     }
 
-    if (vehType2or6->var_44 == 0xFF)
+    if (vehType2or6->sound_id == 0xFF)
     {
         // Half
         vehType2or6->var_45 = snd->var_03 >> 1;
         // Quarter
         vehType2or6->var_46 = snd->var_01 >> 2;
-        vehType2or6->var_44 = snd->var_00;
+        vehType2or6->sound_id = snd->sound_object_id;
         return;
     }
 
@@ -1470,7 +1470,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
         }
     }
 
-    vehType2or6->var_44 = snd->var_00;
+    vehType2or6->sound_id = snd->sound_object_id;
 }
 
 // 0x004AC255

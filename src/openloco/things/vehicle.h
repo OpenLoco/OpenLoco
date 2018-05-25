@@ -250,7 +250,7 @@ namespace openloco
         uint8_t pad_38[0x3A - 0x38];
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
-        uint8_t var_44;
+        uint8_t sound_id;
         uint8_t var_45;
         uint16_t var_46;
         uint16_t object_id; // 0x48
@@ -269,7 +269,7 @@ namespace openloco
         uint8_t pad_20[0x3A - 0x20];
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
-        uint8_t var_44;
+        uint8_t sound_id;
         uint8_t var_45;
         uint16_t var_46;
         uint16_t object_id; // 0x48

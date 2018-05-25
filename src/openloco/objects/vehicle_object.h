@@ -7,7 +7,7 @@ namespace openloco
 #pragma pack(push, 1)
     struct vehicle_object_sound_1
     {
-        uint8_t var_00;
+        uint8_t sound_object_id;
         uint32_t var_01;
         uint8_t var_05;
         uint16_t var_06;
@@ -18,7 +18,7 @@ namespace openloco
 
     struct vehicle_object_sound_2
     {
-        uint8_t var_00;
+        uint8_t sound_object_id;
         uint16_t var_01;
         uint8_t var_03;
         uint16_t var_04;
@@ -34,7 +34,7 @@ namespace openloco
 
     struct vehicle_object_sound_3
     {
-        uint8_t var_00;
+        uint8_t sound_object_id;
         uint16_t var_01;
         uint8_t var_03;
         uint16_t var_04;
