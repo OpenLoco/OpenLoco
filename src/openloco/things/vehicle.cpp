@@ -292,6 +292,7 @@ bool openloco::vehicle_0::Update()
     }
     else if (var_42 == 3)
     {
+        // Boat
         assert(false);
         // 0x004A9649
     }
@@ -731,8 +732,7 @@ bool openloco::vehicle_0::sub_4A9051()
     }
     else if (var_5D == 6)
     {
-        assert(false);
-        // 0x004A95F5
+        return sub_4A95F5();
     }
 
     var_5D = 2;
@@ -930,8 +930,7 @@ bool openloco::vehicle_0::sub_4A9051()
 
     if (eax != -1)
     {
-        // 0x004A9348
-        assert(false);
+        return sub_4A9348(eax);
     }
 
     if (vehType2->var_56 > 1966080)
@@ -1032,7 +1031,7 @@ bool vehicle_0::sub_4A94A9()
             auto param1 = ((loc.z * (vehType2->var_56 / 65536)) / 32);
             auto param2 = vehicle_var_11360D0 - 18;
             loc.z += param1 / param2;
-            if ((param1 % param2) & (1 << 15))
+            if ((param1 % param2) && (param2 < 0))
             {
                 loc.z -= 2;
             }
@@ -1041,6 +1040,72 @@ bool vehicle_0::sub_4A94A9()
     sub_426CA4(loc, sprite_yaw, sprite_pitch);
     sub_4B980A();
     return true;
+}
+
+bool openloco::vehicle_0::sub_4A95F5()
+{
+    vehicle_2 * vehType2 = vehicle_1136120;
+    vehType2->var_56 = 0;
+    vehType2->var_5A = 0;
+    if (sub_4BA142())
+    {
+        sub_4B980A();
+        return true;
+    }
+
+    sub_4707C0();
+    var_5D = 2;
+
+    uint8_t al = 0;
+    uint16_t bx = 0;
+    sub_4273DF(al, bx);
+
+    var_5D = al;
+
+    int32_t eax = -1;
+    if (station_id != 0xFFFF)
+    {
+        // This is sign extended just cause sub_427214 needs it to be
+        eax = (int8_t)var_68;
+    }
+
+    sub_427214(eax);
+
+    if (eax != -1)
+    {
+        return sub_4A9348(eax);
+    }
+
+    var_5D = 6;
+    sub_4B980A();
+    return true;
+}
+
+bool vehicle_0::sub_4A9348(uint32_t unk_1)
+{
+    if (station_id != (uint16_t)-1 &&
+        var_68 != (uint8_t)-1)
+    {
+        stationmgr::get(station_id)->var_3BA &= ~(1 << var_68);
+    }
+
+    if (unk_1 == (uint32_t)-1)
+    {
+        // This can never happen as the calling functions prevent this
+        assert(false);
+        return true;
+        // 0x004A938A
+    }
+    else
+    {
+        var_68 = unk_1;
+        if (station_id != (uint16_t)-1)
+        {
+            auto station = stationmgr::get(station_id);
+            station->var_3BA |= ~(1 << var_68);
+        }
+        return sub_4A94A9();
+    }
 }
 
 // 0x004AA1D0

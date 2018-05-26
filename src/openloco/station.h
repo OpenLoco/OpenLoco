@@ -64,7 +64,8 @@ namespace openloco
         int16_t unk_tile_x; // 0x3B4
         int16_t unk_tile_y; // 0x3B6
         int16_t unk_tile_z; // 0x3B8
-        uint8_t pad_3BA[0x3D2 - 0x3BA];
+        uint32_t var_3BA;
+        uint8_t pad_3BE[0x3D2 - 0x3BE];
 
         bool empty() const { return name == string_ids::null; }
         station_id_t id() const;
