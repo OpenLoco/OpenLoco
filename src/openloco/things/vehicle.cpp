@@ -286,11 +286,11 @@ bool openloco::vehicle_0::Update()
     }
     sub_4BA8D4();
 
-    if (var_42 == 2)
+    if (v_class == vehicle_class::air)
     {
         return update_plane();
     }
-    else if (var_42 == 3)
+    else if (v_class == vehicle_class::water)
     {
         return update_boat();
     }
@@ -306,7 +306,7 @@ bool openloco::vehicle_0::update_other()
     vehicle_2* vehType2 = vehicle_1136120;
     if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
     {
-        if (var_42 == 1)
+        if (v_class == vehicle_class::road)
         {
             uint8_t bl = sub_4AA36A();
             if (bl == 1)
@@ -450,7 +450,7 @@ bool openloco::vehicle_0::sub_4A8D48()
     uint16_t stationId = 0;
     sub_4ACEE7(13945600, vehicle_var_113612C, al, ah, stationId);
 
-    if (var_42 == 1)
+    if (v_class == vehicle_class::road)
     {
         uint8_t bl = sub_4AA36A();
         if (bl == 1)
@@ -1171,7 +1171,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
         if (station_id != (uint16_t)-1)
         {
             auto station = stationmgr::get(station_id);
-            station->var_3BA |= ~(1 << var_68);
+            station->var_3BA |= (1 << var_68);
         }
         return sub_4A94A9();
     }
@@ -1287,7 +1287,7 @@ bool openloco::vehicle_0::update_boat()
 // 0x004AA1D0
 bool openloco::vehicle_body::Update()
 {
-    if (var_42 == 2 || var_42 == 3)
+    if (v_class == vehicle_class::air || v_class == vehicle_class::water)
     {
         animation_update();
         return true;
@@ -1535,7 +1535,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26* vehType2or6, vehicle_object_sou
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
-        if (var_5E != 5 && var_5E != 4)
+        if (v_type != vehicle_type::ship && v_type != vehicle_type::plane)
         {
             // Can be a type 6 or bogie
             if (vehType2or6->next_car()->var_5F & (1 << 2))
@@ -1622,7 +1622,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26* vehType2or6, vehicle_object_sou
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
-        if (var_5E != 5 && var_5E != 4)
+        if (v_type != vehicle_type::ship && v_type != vehicle_type::plane)
         {
             // Can be a type 6 or bogie
             if (vehType2or6->next_car()->var_5F & (1 << 2))
@@ -2539,7 +2539,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int8_
     vehicle_2* vehType2 = vehicle_1136120;
     auto vehicleObject = object();
 
-    if (veh->var_5E == 5)
+    if (veh->v_type == vehicle_type::ship)
     {
         if (vehType2->var_56 == 0)
             return;
@@ -3076,7 +3076,7 @@ bool vehicle_0::sub_4BADE4()
 
     uint16_t bp = veh->var_2C;
 
-    if (veh->var_42 == 1)
+    if (veh->v_class == vehicle_class::road)
     {
         auto tile = map::tilemgr::get(loc);
         for (auto& el : tile)
@@ -3370,12 +3370,157 @@ void vehicle_0::sub_42750E()
 
 void vehicle_0::sub_427214(int32_t& _var_68)
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    regs.eax = _var_68;
-    call(0x00427214, regs);
+    auto station = stationmgr::get(station_id);
 
-    _var_68 = regs.eax;
+    map::map_pos3 loc = {
+        station->unk_tile_x,
+        station->unk_tile_y,
+        station->unk_tile_z
+    };
+
+    auto tile = map::tilemgr::get(loc);
+
+    for (auto& el : tile)
+    {
+        auto elStation = el.as_station();
+        if (elStation == nullptr)
+            continue;
+
+        if (elStation->base_z() != loc.z / 4)
+            continue;
+
+        auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
+
+        if (_var_68 == -1)
+        {
+            for (uint8_t b2_index = 0; b2_index < airportObject->var_AD; b2_index++)
+            {
+                auto _b2struct = &airportObject->var_B2[b2_index];
+                if (!(airportObject->var_AE[_b2struct->var_01].flags & (1 << 2)))
+                {
+                    continue;
+                }
+
+                if (station->var_3BA & _b2struct->var_04)
+                {
+                    continue;
+                }
+
+                uint32_t unk = _b2struct->var_08;
+
+                if (unk != 0)
+                {
+                    unk &= station->var_3BA;
+                }
+
+                if (unk == _b2struct->var_08)
+                {
+                    continue;
+                }
+
+                _var_68 = b2_index;
+                return;
+            }
+            _var_68 = -2;
+            return;
+        }
+        else
+        {
+            uint8_t al = airportObject->var_B2[_var_68].var_02;
+            if (airportObject->var_AE[al].flags & (1 << 1))
+            {
+                _var_68 = -1;
+                return;
+            }
+            // 0x4272A5
+            if (next_car()->next_car()->next_car()->object()->flags & (1 << 13))
+            {
+                for (uint8_t b2_index = 0; b2_index < airportObject->var_AD; b2_index++)
+                {
+                    auto _b2struct = &airportObject->var_B2[b2_index];
+
+                    if (_b2struct->var_01 != al)
+                    {
+                        continue;
+                    }
+
+                    if (airportObject->var_AE[_b2struct->var_02].flags & (1 << 6))
+                    {
+                        continue;
+                    }
+
+                    if (station->var_3BA & _b2struct->var_04)
+                    {
+                        continue;
+                    }
+
+                    uint32_t unk = _b2struct->var_08;
+
+                    if (unk == 0)
+                    {
+                        _var_68 = b2_index;
+                        return;
+                    }
+
+                    unk &= station->var_3BA;
+                    if (unk == _b2struct->var_08)
+                    {
+                        continue;
+                    }
+
+                    _var_68 = b2_index;
+                    return;
+                }
+
+                _var_68 = -2;
+                return;
+            }
+            else
+            {
+                for (uint8_t b2_index = 0; b2_index < airportObject->var_AD; b2_index++)
+                {
+                    auto _b2struct = &airportObject->var_B2[b2_index];
+                    if (_b2struct->var_01 != al)
+                    {
+                        continue;
+                    }
+
+                    if (airportObject->var_AE[_b2struct->var_02].flags & (1 << 5))
+                    {
+                        continue;
+                    }
+
+                    if (station->var_3BA & _b2struct->var_04)
+                    {
+                        continue;
+                    }
+
+                    uint32_t unk = _b2struct->var_08;
+
+                    if (unk == 0)
+                    {
+                        _var_68 = b2_index;
+                        return;
+                    }
+
+                    unk &= station->var_3BA;
+                    if (unk == _b2struct->var_08)
+                    {
+                        continue;
+                    }
+
+                    _var_68 = b2_index;
+                    return;
+                }
+                _var_68 = -2;
+                return;
+            }
+        }
+    }
+
+    // Tile not found. Todo: fail gracefully
+    assert(false);
+    return;
 }
 
 void vehicle_0::sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch)

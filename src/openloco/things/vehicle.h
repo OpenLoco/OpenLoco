@@ -6,6 +6,7 @@
 namespace openloco
 {
     using company_id_t = uint8_t;
+    using station_id_t = uint16_t;
 
     namespace flags_5f
     {
@@ -109,8 +110,8 @@ namespace openloco
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t object_id; // 0x40
-        uint8_t var_42;
+        uint16_t object_id;    // 0x40
+        vehicle_class v_class; // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;
@@ -164,7 +165,7 @@ namespace openloco
         uint16_t var_36;
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
-        uint8_t var_42;
+        vehicle_class v_class; // 0x42
         uint8_t pad_43[0x46 - 0x43];
         uint32_t var_46;
         uint16_t var_4A;
@@ -172,11 +173,11 @@ namespace openloco
         uint8_t pad_4E[0x52 - 0x4E];
         uint8_t var_52;
         uint8_t pad_53;
-        uint16_t station_id; // 0x54
+        station_id_t station_id; // 0x54
         uint8_t pad_56[0x5C - 0x56];
         uint8_t var_5C;
         uint8_t var_5D;
-        uint8_t var_5E;
+        vehicle_type v_type;
         uint8_t var_5F;
         uint8_t pad_60[0x68 - 0x60];
         uint8_t var_68;
@@ -283,7 +284,7 @@ namespace openloco
         uint8_t pad_20[0x3A - 0x20];
         thing_id_t next_car_id; // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
-        uint8_t sound_id;
+        uint8_t sound_id; // 0x44
         uint8_t var_45;
         uint16_t var_46;
         uint16_t object_id; // 0x48
@@ -309,8 +310,8 @@ namespace openloco
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         uint8_t pad_3A[0x40 - 0x3A];
-        uint16_t object_id; // 0x40
-        uint8_t var_42;
+        uint16_t object_id;    // 0x40
+        vehicle_class v_class; // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;

@@ -4,6 +4,23 @@
 
 namespace openloco
 {
+    enum class vehicle_class : uint8_t
+    {
+        rail = 0,
+        road,
+        air,
+        water
+    };
+
+    enum class vehicle_type : uint8_t
+    {
+        train = 0,
+        bus,
+        truck,
+        tram,
+        plane,
+        ship
+    };
 #pragma pack(push, 1)
     struct vehicle_object_sound_1
     {
@@ -102,8 +119,8 @@ namespace openloco
     struct vehicle_object
     {
         string_id name;        // 0x00 probably not confirmed
-        uint8_t vehicle_class; // 0x02
-        uint8_t type;          // 0x03
+        vehicle_class v_class; // 0x02
+        vehicle_type type;     // 0x03
         uint8_t pad_04[0x6 - 0x4];
         uint8_t num_mods;      // 0x06
         uint8_t cost_ind;      // 0x07
