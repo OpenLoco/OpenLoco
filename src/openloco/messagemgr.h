@@ -9,6 +9,7 @@ namespace openloco
     {
         cargo_now_accepted = 9,
         cargo_no_longer_accepted = 10,
+        unable_to_land_at_airport = 12,
     };
 }
 

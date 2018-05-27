@@ -12,6 +12,8 @@
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
 #include "../stationmgr.h"
+#include "../messagemgr.h"
+#include "../companymgr.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
@@ -43,6 +45,7 @@ loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
 loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -286,15 +289,11 @@ bool openloco::vehicle_0::Update()
 
     if (var_42 == 2)
     {
-        // Airplane ?
-        // 0x004A9051
-        return sub_4A9051();
+        return update_plane();
     }
     else if (var_42 == 3)
     {
-        // Boat
-        assert(false);
-        // 0x004A9649
+        return update_boat();
     }
     else
     {
@@ -698,7 +697,8 @@ bool openloco::vehicle_0::sub_4A8FAC()
     return true;
 }
 
-bool openloco::vehicle_0::sub_4A9051()
+// 0x004A9051
+bool openloco::vehicle_0::update_plane()
 {
     vehicle_var_1136130 = 8192;
     vehicle_2 * vehType2 = vehicle_1136120;
@@ -1093,6 +1093,90 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
     {
         // This can never happen as the calling functions prevent this
         assert(false);
+
+        sub_4BAC74();
+        if (var_4C == 1)
+        {
+            // 0x4a94a5
+            var_68 = 0xFF;
+            return sub_4A94A9();
+        }
+
+        uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
+
+        if (bl != 1)
+        {
+            var_68 = 0xFF;
+            return sub_4A94A9();
+        }
+
+        openloco::station_id_t station_index =
+            (vehicle_var_987C5C[var_4A + var_46 + 1] |
+            ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8))
+            & 0x3FF;
+
+        auto station = stationmgr::get(station_index);
+
+        if (station == nullptr ||
+            !(station->var_2A & (1 << 6)))
+        {
+            var_68 = 0xFF;
+            return sub_4A94A9();
+        }
+
+        if (!is_player_company(owner))
+        {
+            station_id = station_index;
+            var_68 = 0xFF;
+            return sub_4A94A9();
+        }
+
+
+        map::map_pos3 loc =
+        {
+            station->unk_tile_x,
+            station->unk_tile_y,
+            station->unk_tile_z
+        };
+
+        auto tile = map::tilemgr::get(loc);
+        for (auto& el : tile)
+        {
+            auto elStation = el.as_station();
+            if (elStation == nullptr)
+                continue;
+
+            if (elStation->base_z() != loc.z / 4)
+                continue;
+
+            auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
+
+            uint16_t param = next_car()->next_car()->next_car()->sub_426790();
+
+            if (airportObject->var_10 & param)
+            {
+                station_id = station_index;
+                var_68 = 0xFF;
+                return sub_4A94A9();
+            }
+
+            if (owner == companymgr::get_controlling_id())
+            {
+                messagemgr::post(
+                    message_type::unable_to_land_at_airport,
+                    owner,
+                    var_0A,
+                    station_index
+                );
+            }
+
+            var_68 = 0xFF;
+            return sub_4A94A9();
+        }
+
+        // Todo: fail gracefully on tile not found
+        assert(false);
+
         return true;
         // 0x004A938A
     }
@@ -1106,6 +1190,24 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
         }
         return sub_4A94A9();
     }
+}
+
+// 0x004A9649
+bool openloco::vehicle_0::update_boat()
+{
+    
+    vehicle_2 * vehType2 = vehicle_1136120;
+    if (vehType2->var_56 >= 327680)
+    {
+        vehicle_var_1136130 = 16384;
+    }
+    else
+    {
+        vehicle_var_1136130 = 8192;
+    }
+
+    vehType2->next_car()->next_car()->next_car()->as_vehicle_body()->sub_4AAB0B();
+    // 0x04A969E
 }
 
 // 0x004AA1D0
@@ -2827,7 +2929,7 @@ bool vehicle_0::sub_4AC1C2()
     //auto loc_y = tile_y;
     //auto loc_z = tile_base_z * 4;
     //auto ebp = var_2C;
-    //auto bl = var_21;
+    //auto bl = owner;
     //auto bh = road_object_id;
     //auto edi = &vehicle_var_11360A0;
     registers regs;
@@ -3225,4 +3327,22 @@ void vehicle_0::sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch)
     regs.bl = yaw;
     regs.bh = pitch;
     call(0x00426CA4, regs);
+}
+
+uint16_t vehicle::sub_426790()
+{
+    auto obj = object();
+    if (obj->flags & (1 << 13))
+    {
+        return 16;
+    }
+
+    if (obj->weight < 60)
+    {
+        return 12;
+    }
+    else
+    {
+        return 8;
+    }
 }

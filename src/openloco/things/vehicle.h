@@ -141,7 +141,7 @@ namespace openloco
         void update_head();
         
 
-
+        uint16_t sub_426790();
 
     private:
         bool update();
@@ -153,7 +153,7 @@ namespace openloco
 
     struct vehicle_0 : vehicle_base {
         uint8_t pad_20;
-        uint8_t var_21;
+        company_id_t owner; // 0x21
         uint8_t pad_22[0x2C - 0x22];
         uint16_t var_2C;
         uint16_t var_2E;
@@ -165,7 +165,11 @@ namespace openloco
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
         uint8_t var_42;
-        uint8_t pad_43[0x52 - 0x43];
+        uint8_t pad_43[0x46 - 0x43];
+        uint32_t var_46;
+        uint16_t var_4A;
+        uint16_t var_4C;
+        uint8_t pad_4E[0x52 - 0x4E];
         uint8_t var_52;
         uint8_t pad_53;
         uint16_t station_id; // 0x54
@@ -220,7 +224,8 @@ namespace openloco
         bool sub_4A9011();
         bool sub_4ACCDC();
         bool sub_4A8FAC();
-        bool sub_4A9051();
+        bool update_plane();
+        bool update_boat();
         void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
         void sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3);
         void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags);
