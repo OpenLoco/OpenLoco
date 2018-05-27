@@ -42,6 +42,7 @@ namespace openloco
         {
             return type == TClass ? (TType*)this : nullptr;
         }
+
     public:
         smoke* as_smoke() const { return as<smoke, misc_thing_type::smoke>(); }
         exhaust* as_exahust() const { return as<exhaust, misc_thing_type::exhaust>(); }

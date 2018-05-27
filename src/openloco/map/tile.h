@@ -238,6 +238,7 @@ namespace openloco::map
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
+
     public:
         uint8_t unk_4_F() const { return _4 & 0xF; }
     };

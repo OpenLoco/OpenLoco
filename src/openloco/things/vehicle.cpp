@@ -1,19 +1,19 @@
 #include "vehicle.h"
 #include "../audio/audio.h"
+#include "../companymgr.h"
 #include "../config.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../map/tilemgr.h"
-#include "../objects/objectmgr.h"
-#include "../objects/vehicle_object.h"
-#include "../objects/road_object.h"
+#include "../messagemgr.h"
 #include "../objects/airport_object.h"
+#include "../objects/objectmgr.h"
+#include "../objects/road_object.h"
+#include "../objects/vehicle_object.h"
 #include "../openloco.h"
+#include "../stationmgr.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
-#include "../stationmgr.h"
-#include "../messagemgr.h"
-#include "../companymgr.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
@@ -38,13 +38,13 @@ loco_global<int32_t, 0x0113612C> vehicle_var_113612C;
 loco_global<int32_t, 0x01136130> vehicle_var_1136130;
 loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
 loco_global<uint8_t, 0x01136238> vehicle_var_1136238;   // var_28 related?
-loco_global<uint8_t, 0x0113646C> vehicle_var_113646C;  // var_5D related? used only in 4B980A
+loco_global<uint8_t, 0x0113646C> vehicle_var_113646C;   // var_5D related? used only in 4B980A
 loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
 loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
-loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 
 // 0x00503E5C
@@ -90,12 +90,12 @@ vehicle* vehicle::next_car()
 
 vehicle* vehicle_base::next_vehicle()
 {
-    return thingmgr::get<vehicle>(((vehicle *)this)->next_thing_id);
+    return thingmgr::get<vehicle>(((vehicle*)this)->next_thing_id);
 }
 
 vehicle* vehicle_base::next_car()
 {
-    return thingmgr::get<vehicle>(((vehicle *)this)->next_car_id);
+    return thingmgr::get<vehicle>(((vehicle*)this)->next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -255,7 +255,6 @@ bool openloco::vehicle_0::Update()
     vehicle_var_113646C = var_5D;
     sub_4A8882();
 
-
     vehicle_front_bogie = (vehicle_bogie*)0xFFFFFFFF;
     vehicle_back_bogie = (vehicle_bogie*)0xFFFFFFFF;
 
@@ -390,11 +389,9 @@ bool openloco::vehicle_0::update_other()
 // 0x004A8CB6
 bool openloco::vehicle_0::sub_4A8CB6()
 {
-    vehicle_1 * vehType1 = vehicle_113611C;
+    vehicle_1* vehType1 = vehicle_113611C;
 
-    if (x != vehType1->x ||
-        y != vehType1->y ||
-        z != vehType1->z)
+    if (x != vehType1->x || y != vehType1->y || z != vehType1->z)
     {
         sub_4AD93A();
         if (var_5D == 4)
@@ -412,7 +409,7 @@ bool openloco::vehicle_0::sub_4A8CB6()
     }
 
     var_5D = 1;
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
 
     if (!(vehType2->var_73 & flags_73::broken_down))
     {
@@ -430,12 +427,12 @@ bool openloco::vehicle_0::sub_4A8CB6()
 // 0x004A8C81
 bool openloco::vehicle_0::sub_4A8C81()
 {
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
     if (vehType2->var_56 > 65536)
     {
         return sub_4A8D48();
     }
-    
+
     station_id = sub_4BABAD();
     sub_4B996F();
     sub_4B9987();
@@ -448,11 +445,10 @@ bool openloco::vehicle_0::sub_4A8C81()
 // 0x004A8D48
 bool openloco::vehicle_0::sub_4A8D48()
 {
-    sub_4707C0();    
+    sub_4707C0();
     uint8_t al = 0, ah = 0;
     uint16_t stationId = 0;
     sub_4ACEE7(13945600, vehicle_var_113612C, al, ah, stationId);
-
 
     if (var_42 == 1)
     {
@@ -474,9 +470,8 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 2)
         {
-            vehicle * veh = next_car()->next_car();
-            if (var_36 != veh->var_36 ||
-                veh->var_2E != var_2E)
+            vehicle* veh = next_car()->next_car();
+            if (var_36 != veh->var_36 || veh->var_2E != var_2E)
             {
                 sub_4B980A();
                 return true;
@@ -499,21 +494,21 @@ bool openloco::vehicle_0::sub_4A8D48()
             return true;
         }
         else if (al == 3)
-        {        
+        {
             vehicle_2* veh = next_car()->next_car()->as_vehicle_2();
-            if (veh->var_36 != var_36 ||
-                veh->var_2E != var_2E)
+            if (veh->var_36 != var_36 || veh->var_2E != var_2E)
             {
                 sub_4B980A();
                 return true;
             }
 
             var_5D = 3;
-            vehicle_1 * vehType1 = next_car()->as_vehicle_1();
+            vehicle_1* vehType1 = next_car()->as_vehicle_1();
 
             vehType1->var_46++;
 
-            if (var_0C & (1 << 6)) {
+            if (var_0C & (1 << 6))
+            {
                 var_5C = 2;
                 vehType1->var_48 |= 1 << 0;
                 sub_4B980A();
@@ -571,7 +566,7 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else
         {
-            vehicle_1 * veh = next_car()->as_vehicle_1();
+            vehicle_1* veh = next_car()->as_vehicle_1();
             veh->var_46 = 0;
             if (al == 2)
             {
@@ -580,9 +575,8 @@ bool openloco::vehicle_0::sub_4A8D48()
                     return sub_4A8ED9();
                 }
 
-                vehicle_2 * vehType2 = veh->next_car()->as_vehicle_2();
-                if (vehType2->var_36 != var_36 ||
-                    vehType2->var_2E != var_2E)
+                vehicle_2* vehType2 = veh->next_car()->as_vehicle_2();
+                if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
                 {
                     return sub_4A8ED9();
                 }
@@ -634,12 +628,11 @@ bool openloco::vehicle_0::sub_4A8F22()
 // 0x004A8ED9
 bool openloco::vehicle_0::sub_4A8ED9()
 {
-    vehicle * veh = next_car();
+    vehicle* veh = next_car();
     veh->var_46 = 0;
 
     veh = veh->next_car();
-    if (var_36 != veh->var_36 ||
-        veh->var_2E != var_2E)
+    if (var_36 != veh->var_36 || veh->var_2E != var_2E)
     {
         sub_4B980A();
         return true;
@@ -678,9 +671,8 @@ bool openloco::vehicle_0::sub_4A9011()
 // 0x004A8FAC
 bool openloco::vehicle_0::sub_4A8FAC()
 {
-    vehicle * veh = next_car()->next_car();
-    if (var_36 != veh->var_36 ||
-        veh->var_2E != var_2E)
+    vehicle* veh = next_car()->next_car();
+    if (var_36 != veh->var_36 || veh->var_2E != var_2E)
     {
         sub_4B980A();
         return true;
@@ -705,14 +697,14 @@ bool openloco::vehicle_0::sub_4A8FAC()
 bool openloco::vehicle_0::update_plane()
 {
     vehicle_var_1136130 = 8192;
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
 
     if (vehType2->var_56 >= 1310720)
     {
         vehicle_var_1136130 = 16384;
     }
 
-    vehicle_body * veh = vehType2->next_car()->next_car()->next_car()->as_vehicle_body();
+    vehicle_body* veh = vehType2->next_car()->next_car()->next_car()->as_vehicle_body();
     veh->sub_4AAB0B();
 
     if (var_5D == 1)
@@ -722,7 +714,6 @@ bool openloco::vehicle_0::update_plane()
             sub_4B996F();
             sub_4B9987();
             sub_4B99E1();
-
         }
 
         sub_4B980A();
@@ -745,7 +736,7 @@ bool openloco::vehicle_0::update_plane()
     sub_4273DF(al, bx);
 
     var_5D = al;
-    vehicle_1 * vehType1 = vehicle_113611C;
+    vehicle_1* vehType1 = vehicle_113611C;
     vehType1->var_44 = bx;
 
     sub_4707C0();
@@ -756,7 +747,7 @@ bool openloco::vehicle_0::update_plane()
     if (type2var56 == type1var44)
     {
         vehType2->var_5A = 5;
-        
+
         if (type2var56 != 1310720)
         {
             vehType2->var_5A = 2;
@@ -815,7 +806,7 @@ bool openloco::vehicle_0::update_plane()
     }
 
     bl = (bl - sprite_yaw) & 0x3F;
-    
+
     if (bl != 0)
     {
         if (bl > 32)
@@ -902,8 +893,7 @@ bool openloco::vehicle_0::update_plane()
         }
     }
 
-    if (station_id != 0xFFFF &&
-        var_68 != 0xFF)
+    if (station_id != 0xFFFF && var_68 != 0xFF)
     {
         uint16_t flags = 0;
         sub_426E26(station_id, var_68, flags);
@@ -956,7 +946,7 @@ bool vehicle_0::sub_4A95CB()
     if (var_0C & (1 << 1))
     {
         var_5D = 1;
-        vehicle_2 * vehType2 = vehicle_1136120;
+        vehicle_2* vehType2 = vehicle_1136120;
         vehType2->var_56 = 0;
     }
     else
@@ -978,18 +968,16 @@ bool vehicle_0::sub_4A94A9()
         _yaw = vehicle_var_113646D;
     }
 
-    vehicle_1 * vehType1 = vehicle_113611C;
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_1* vehType1 = vehicle_113611C;
+    vehicle_2* vehType2 = vehicle_1136120;
 
-    loc16 loc =
-    {
+    loc16 loc = {
         x,
         y,
         0
     };
     loc.z = vehicle_var_1136168;
-    map::map_pos loc2 =
-    {
+    map::map_pos loc2 = {
         vehType1->var_4E,
         vehType1->var_50
     };
@@ -1005,7 +993,7 @@ bool vehicle_0::sub_4A94A9()
 
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
-    
+
     if (loc.z != z)
     {
         if (vehicle_var_11360D0 <= 28)
@@ -1048,7 +1036,7 @@ bool vehicle_0::sub_4A94A9()
 
 bool openloco::vehicle_0::sub_4A95F5()
 {
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
     vehType2->var_56 = 0;
     vehType2->var_5A = 0;
     if (sub_4BA142())
@@ -1087,8 +1075,7 @@ bool openloco::vehicle_0::sub_4A95F5()
 
 bool vehicle_0::sub_4A9348(uint32_t unk_1)
 {
-    if (station_id != (uint16_t)-1 &&
-        var_68 != (uint8_t)-1)
+    if (station_id != (uint16_t)-1 && var_68 != (uint8_t)-1)
     {
         stationmgr::get(station_id)->var_3BA &= ~(1 << var_68);
     }
@@ -1114,15 +1101,12 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
             return sub_4A94A9();
         }
 
-        openloco::station_id_t station_index =
-            (vehicle_var_987C5C[var_4A + var_46 + 1] |
-            ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8))
+        openloco::station_id_t station_index = (vehicle_var_987C5C[var_4A + var_46 + 1] | ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8))
             & 0x3FF;
 
         auto station = stationmgr::get(station_index);
 
-        if (station == nullptr ||
-            !(station->var_2A & (1 << 6)))
+        if (station == nullptr || !(station->var_2A & (1 << 6)))
         {
             var_68 = 0xFF;
             return sub_4A94A9();
@@ -1135,9 +1119,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
             return sub_4A94A9();
         }
 
-
-        map::map_pos3 loc =
-        {
+        map::map_pos3 loc = {
             station->unk_tile_x,
             station->unk_tile_y,
             station->unk_tile_z
@@ -1170,8 +1152,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
                     message_type::unable_to_land_at_airport,
                     owner,
                     var_0A,
-                    station_index
-                );
+                    station_index);
             }
 
             var_68 = 0xFF;
@@ -1199,8 +1180,8 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
 // 0x004A9649
 bool openloco::vehicle_0::update_boat()
 {
-    
-    vehicle_2 * vehType2 = vehicle_1136120;
+
+    vehicle_2* vehType2 = vehicle_1136120;
     if (vehType2->var_56 >= 327680)
     {
         vehicle_var_1136130 = 16384;
@@ -1482,9 +1463,9 @@ void openloco::vehicle_body::sub_4AAB0B()
 
 void openloco::vehicle_0::sub_4A8882()
 {
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
     sub_4A88A6(vehType2->as_vehicle_2or6());
-    vehicle * vehType6 = (vehicle *)vehType2;
+    vehicle* vehType6 = (vehicle*)vehType2;
     while (vehType6->type != vehicle_thing_type::vehicle_6)
     {
         vehType6 = vehType6->next_car();
@@ -1493,13 +1474,9 @@ void openloco::vehicle_0::sub_4A8882()
 }
 
 // Not guaranteed to be type 2 could be type 6
-void openloco::vehicle_0::sub_4A88A6(vehicle_26 * vehType2or6)
+void openloco::vehicle_0::sub_4A88A6(vehicle_26* vehType2or6)
 {
-    if (tile_x == -1 ||
-        var_5D == 8 ||
-        var_5D == 9 ||
-        (var_38 & (1 << 4)) ||
-        vehType2or6->object_id == 0xFFFF)
+    if (tile_x == -1 || var_5D == 8 || var_5D == 9 || (var_38 & (1 << 4)) || vehType2or6->object_id == 0xFFFF)
     {
         sub_4A8B7C(vehType2or6);
         return;
@@ -1508,32 +1485,33 @@ void openloco::vehicle_0::sub_4A88A6(vehicle_26 * vehType2or6)
     auto vehicleObject = vehType2or6->object();
     switch (vehicleObject->startsnd_type)
     {
-    case 0:
-        sub_4A8B7C(vehType2or6);
-        break;
-    case 1:
-        sub_4A88F7(vehType2or6, &vehicleObject->sound.type_1);
-        break;
-    case 2:
-        sub_4A8937(vehType2or6, &vehicleObject->sound.type_2);
-        break;
-    case 3:
-        sub_4A8A39(vehType2or6, &vehicleObject->sound.type_3);
-        break;
-    default:
-        assert(false);
+        case 0:
+            sub_4A8B7C(vehType2or6);
+            break;
+        case 1:
+            sub_4A88F7(vehType2or6, &vehicleObject->sound.type_1);
+            break;
+        case 2:
+            sub_4A8937(vehType2or6, &vehicleObject->sound.type_2);
+            break;
+        case 3:
+            sub_4A8A39(vehType2or6, &vehicleObject->sound.type_3);
+            break;
+        default:
+            assert(false);
     }
 }
 
-void openloco::vehicle_0::sub_4A8B7C(vehicle_26 * vehType2or6)
+void openloco::vehicle_0::sub_4A8B7C(vehicle_26* vehType2or6)
 {
     vehType2or6->sound_id = 0xFF;
 }
 
-void openloco::vehicle_0::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * snd)
+void openloco::vehicle_0::sub_4A88F7(vehicle_26* vehType2or6, vehicle_object_sound_1* snd)
 {
-    vehicle_2 * vehType2_2 = vehicle_1136120;
-    if (vehType2_2->var_56 < snd->var_01) {
+    vehicle_2* vehType2_2 = vehicle_1136120;
+    if (vehType2_2->var_56 < snd->var_01)
+    {
         sub_4A8B7C(vehType2or6);
         return;
     }
@@ -1553,7 +1531,7 @@ void openloco::vehicle_0::sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_so
     vehType2or6->sound_id = snd->sound_object_id;
 }
 
-void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * snd)
+void openloco::vehicle_0::sub_4A8937(vehicle_26* vehType2or6, vehicle_object_sound_2* snd)
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
@@ -1568,7 +1546,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
         }
     }
 
-    vehicle_2 * vehType2_2 = vehicle_1136120;
+    vehicle_2* vehType2_2 = vehicle_1136120;
     uint16_t _var_46 = 0;
     uint8_t _var_45 = 0;
     if (vehType2_2->var_5A == 2)
@@ -1586,8 +1564,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
     }
     else if (vehType2_2->var_5A == 1)
     {
-        if (vehType2or6->type == vehicle_thing_type::vehicle_2 ||
-            vehType2or6->next_car()->var_5E == 0)
+        if (vehType2or6->type == vehicle_thing_type::vehicle_2 || vehType2or6->next_car()->var_5E == 0)
         {
             _var_46 = snd->var_07 + (vehType2_2->var_56 >> snd->var_10);
             _var_45 = snd->var_09;
@@ -1625,7 +1602,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
             vehType2or6->var_46 = std::min(_var_46, (uint16_t)(vehType2or6->var_46 + snd->var_0A));
         }
     }
-    
+
     if (vehType2or6->var_45 != _var_45)
     {
         if (vehType2or6->var_45 > _var_45)
@@ -1641,7 +1618,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_so
     vehType2or6->sound_id = snd->sound_object_id;
 }
 
-void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * snd)
+void openloco::vehicle_0::sub_4A8A39(vehicle_26* vehType2or6, vehicle_object_sound_3* snd)
 {
     if ((vehicle_2*)vehType2or6 == vehicle_1136120)
     {
@@ -1656,7 +1633,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
         }
     }
 
-    vehicle_2 * vehType2_2 = vehicle_1136120;
+    vehicle_2* vehType2_2 = vehicle_1136120;
     uint16_t _var_46 = 0;
     uint8_t _var_45 = 0;
     bool var5aEqual1Code = false;
@@ -1678,7 +1655,6 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
     {
         _var_45 = snd->var_13;
         var5aEqual1Code = true;
-
     }
     else
     {
@@ -1688,8 +1664,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_so
 
     if (var5aEqual1Code == true)
     {
-        if (vehType2or6->type == vehicle_thing_type::vehicle_2 ||
-            vehType2or6->next_car()->var_5E == 0)
+        if (vehType2or6->type == vehicle_thing_type::vehicle_2 || vehType2or6->next_car()->var_5E == 0)
         {
             auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
 
@@ -3003,7 +2978,7 @@ void vehicle_0::sub_4707C0()
     call(0x004707C0, regs);
 }
 
-void vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t & unk_2, uint8_t & unk_3, uint16_t & unk_4)
+void vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t& unk_2, uint8_t& unk_3, uint16_t& unk_4)
 {
     registers regs;
     regs.esi = (int32_t)this;
@@ -3047,9 +3022,8 @@ void vehicle_0::sub_4AD778()
 // 0x004AA36A
 uint8_t vehicle_0::sub_4AA36A()
 {
-    vehicle * veh = next_car()->next_car();
-    if (veh->var_36 != var_36 ||
-        veh->var_2E != var_2E)
+    vehicle* veh = next_car()->next_car();
+    if (veh->var_36 != var_36 || veh->var_2E != var_2E)
     {
         veh->var_46 = 0;
         return 0;
@@ -3058,15 +3032,14 @@ uint8_t vehicle_0::sub_4AA36A()
     auto param1 = 160;
     auto param2 = 960;
 
-    if (road_object_id == 0xFF || 
-        objectmgr::get<road_object>(road_object_id)->var_12 & (1 << 6))
+    if (road_object_id == 0xFF || objectmgr::get<road_object>(road_object_id)->var_12 & (1 << 6))
     {
         if (veh->var_2C & (1 << 7))
         {
             param1 = 128;
             param2 = 544;
         }
-    }     
+    }
     else
     {
         param2 = 2880;
@@ -3094,7 +3067,7 @@ uint8_t vehicle_0::sub_4AA36A()
 
 bool vehicle_0::sub_4BADE4()
 {
-    vehicle * veh = next_car()->next_car();
+    vehicle* veh = next_car()->next_car();
     map::map_pos3 loc = {
         veh->tile_x,
         veh->tile_y,
@@ -3177,7 +3150,7 @@ void vehicle_0::sub_4BAC74()
 {
     var_73 = scenario_ticks();
 
-    vehicle * veh = next_car()->next_car();
+    vehicle* veh = next_car()->next_car();
     var_6F = veh->x;
     var_71 = veh->y;
 
@@ -3191,12 +3164,11 @@ bool vehicle_0::sub_4ACCDC()
     return call(0x004ACCDC, regs) & (1 << 8);
 }
 
-void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
+void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& unk_2)
 {
-    if (station_id == 0xFFFF ||
-        var_68 == 0xFF)
+    if (station_id == 0xFFFF || var_68 == 0xFF)
     {
-        vehicle * veh = next_car()->next_car();
+        vehicle* veh = next_car()->next_car();
         unk_1 = 2;
         unk_2 = veh->var_54 | (veh->var_55 << 8);
 
@@ -3210,8 +3182,7 @@ void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
 
     auto station = stationmgr::get(station_id);
 
-    map::map_pos3 loc =
-    {
+    map::map_pos3 loc = {
         station->unk_tile_x,
         station->unk_tile_y,
         station->unk_tile_z
@@ -3232,7 +3203,7 @@ void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
         uint8_t al = airportObject->var_B2[var_68].var_00;
         uint8_t cl = airportObject->var_B2[var_68].var_03;
 
-        vehicle * veh = next_car()->next_car();
+        vehicle* veh = next_car()->next_car();
 
         if (al != 0)
         {
@@ -3288,7 +3259,7 @@ void vehicle_0::sub_4273DF(uint8_t & unk_1, uint16_t & unk_2)
     assert(false);
 }
 
-void vehicle_0::sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3)
+void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
 {
     registers regs;
     regs.esi = (int32_t)this;
@@ -3299,12 +3270,11 @@ void vehicle_0::sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3)
     unk_3 = regs.bl;
 }
 
-void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags)
+void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags)
 {
     auto station = stationmgr::get(_station_Id);
 
-    map::map_pos3 loc =
-    {
+    map::map_pos3 loc = {
         station->unk_tile_x,
         station->unk_tile_y,
         station->unk_tile_z
@@ -3325,8 +3295,7 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & 
 
         uint32_t ebx = airportObject->var_B2[unk_var_68].var_02;
 
-        map::map_pos3 loc2 =
-        {
+        map::map_pos3 loc2 = {
             (int16_t)(airportObject->var_AE[ebx].x - 16),
             (int16_t)(airportObject->var_AE[ebx].y - 16),
             (int16_t)(airportObject->var_AE[ebx].z + loc.z)
@@ -3336,25 +3305,25 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & 
 
         switch (elStation->rotation())
         {
-        case 0:
-            break;
-        case 1:
-            std::swap(loc2.x, loc2.y);
-            loc.y = -loc.y;
-            break;
-        case 2:
-            loc.x = -loc.x;
-            loc.y = -loc.y;
-            break;
-        case 3:
-            std::swap(loc2.x, loc2.y);
-            loc.x = -loc.x;
-            break;
+            case 0:
+                break;
+            case 1:
+                std::swap(loc2.x, loc2.y);
+                loc.y = -loc.y;
+                break;
+            case 2:
+                loc.x = -loc.x;
+                loc.y = -loc.y;
+                break;
+            case 3:
+                std::swap(loc2.x, loc2.y);
+                loc.x = -loc.x;
+                break;
         }
 
         loc2.x += 16 + loc.x;
         loc2.y += 16 + loc.y;
-        
+
         if (!(airportFlags & (1 << 3)))
         {
             loc2.z = loc.z + 255;
@@ -3377,7 +3346,7 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & 
 
 void vehicle_0::sub_42750E()
 {
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
     auto veh = vehType2->next_car();
 
     auto vehObject = veh->object();
@@ -3390,8 +3359,7 @@ void vehicle_0::sub_42750E()
     auto chosenSound = gprng().rand_next(vehObject->num_sounds & 0x7F);
     auto soundId = (audio::sound_id)vehObject->var_15B[chosenSound];
 
-    loc16 loc =
-    {
+    loc16 loc = {
         vehType2->x,
         vehType2->y,
         vehType2->z + 22
@@ -3400,7 +3368,7 @@ void vehicle_0::sub_42750E()
     audio::play_sound(soundId, loc, 0, 22050, true);
 }
 
-void vehicle_0::sub_427214(int32_t & _var_68)
+void vehicle_0::sub_427214(int32_t& _var_68)
 {
     registers regs;
     regs.esi = (int32_t)this;

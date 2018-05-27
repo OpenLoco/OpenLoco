@@ -67,6 +67,7 @@ namespace openloco
         {
             return type == TClass ? (TType*)this : nullptr;
         }
+
     public:
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, vehicle_thing_type::vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
@@ -80,7 +81,8 @@ namespace openloco
         vehicle_1* as_vehicle_1() const { return as<vehicle_1, vehicle_thing_type::vehicle_1>(); }
         vehicle_2* as_vehicle_2() const { return as<vehicle_2, vehicle_thing_type::vehicle_2>(); }
         vehicle_6* as_vehicle_6() const { return as<vehicle_6, vehicle_thing_type::vehicle_6>(); }
-        vehicle_26* as_vehicle_2or6() const {
+        vehicle_26* as_vehicle_2or6() const
+        {
             auto vehicle = as<vehicle_26, vehicle_thing_type::vehicle_2>();
             if (vehicle != nullptr)
                 return vehicle;
@@ -141,19 +143,15 @@ namespace openloco
         vehicle_object* object() const;
 
         void update_head();
-        
 
         uint16_t sub_426790();
 
     private:
         bool update();
-
-
-
-
     };
 
-    struct vehicle_0 : vehicle_base {
+    struct vehicle_0 : vehicle_base
+    {
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x2C - 0x22];
@@ -190,11 +188,11 @@ namespace openloco
 
         bool Update();
         void sub_4A8882();
-        void sub_4A88A6(vehicle_26 * vehType2or6);
-        void sub_4A8B7C(vehicle_26 * vehType2or6);
-        void sub_4A88F7(vehicle_26 * vehType2or6, vehicle_object_sound_1 * buffer);
-        void sub_4A8937(vehicle_26 * vehType2or6, vehicle_object_sound_2 * buffer);
-        void sub_4A8A39(vehicle_26 * vehType2or6, vehicle_object_sound_3 * buffer);
+        void sub_4A88A6(vehicle_26* vehType2or6);
+        void sub_4A8B7C(vehicle_26* vehType2or6);
+        void sub_4A88F7(vehicle_26* vehType2or6, vehicle_object_sound_1* buffer);
+        void sub_4A8937(vehicle_26* vehType2or6, vehicle_object_sound_2* buffer);
+        void sub_4A8A39(vehicle_26* vehType2or6, vehicle_object_sound_3* buffer);
         bool sub_4A8C81();
         bool sub_4A8D48();
         void sub_4BA8D4();
@@ -211,7 +209,7 @@ namespace openloco
         void sub_4BACAF();
         void sub_4B99E1();
         void sub_4707C0();
-        void sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t & unk_2, uint8_t & unk_3, uint16_t & unk_4);
+        void sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t& unk_2, uint8_t& unk_3, uint16_t& unk_4);
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         uint8_t sub_4AA36A();
@@ -229,12 +227,12 @@ namespace openloco
         bool update_plane();
         bool update_boat();
         bool update_other();
-        void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
-        void sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3);
-        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags);
+        void sub_4273DF(uint8_t& unk_1, uint16_t& unk_2);
+        void sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3);
+        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags);
         void sub_42750E();
         bool sub_4A95CB();
-        void sub_427214(int32_t & _var_68);
+        void sub_427214(int32_t& _var_68);
         bool sub_4A94A9();
         void sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch);
         bool sub_4A95F5();
@@ -244,7 +242,8 @@ namespace openloco
         void sub_42843E();
     };
 
-    struct vehicle_1 : vehicle_base {
+    struct vehicle_1 : vehicle_base
+    {
         uint8_t pad_20[0x44 - 0x20];
         uint16_t var_44; // possibly 2 uint8_t's
         uint16_t var_46;
@@ -255,13 +254,14 @@ namespace openloco
         bool Update();
     };
 
-    struct vehicle_2 : vehicle_base {
+    struct vehicle_2 : vehicle_base
+    {
         uint8_t pad_20[0x2E - 0x20];
         uint16_t var_2E;
         uint8_t pad_30[0x36 - 0x30];
         uint16_t var_36;
         uint8_t pad_38[0x3A - 0x38];
-        thing_id_t next_car_id;     // 0x3A
+        thing_id_t next_car_id; // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
         uint8_t sound_id;
         uint8_t var_45;
@@ -272,15 +272,16 @@ namespace openloco
         uint8_t var_5A;
         uint8_t pad_5B[0x73 - 0x5B];
         uint8_t var_73;
-        
+
         vehicle_object* object() const;
         void sub_4AA464();
     };
 
     // TODO: Find out the difference between type 2 and 6
-    struct vehicle_26 : vehicle_base {
+    struct vehicle_26 : vehicle_base
+    {
         uint8_t pad_20[0x3A - 0x20];
-        thing_id_t next_car_id;     // 0x3A
+        thing_id_t next_car_id; // 0x3A
         uint8_t pad_3C[0x44 - 0x3C];
         uint8_t sound_id;
         uint8_t var_45;
@@ -290,7 +291,8 @@ namespace openloco
         vehicle_object* object() const;
     };
 
-    struct vehicle_bogie : vehicle_base {
+    struct vehicle_bogie : vehicle_base
+    {
         uint8_t pad_20[0x2C - 0x20];
         uint16_t var_2C;
         uint16_t var_2E;
@@ -301,7 +303,8 @@ namespace openloco
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
     };
 
-    struct vehicle_body : vehicle_base {
+    struct vehicle_body : vehicle_base
+    {
         uint8_t pad_20[0x38 - 0x20];
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
@@ -321,6 +324,7 @@ namespace openloco
 
         void secondary_animation_update();
         void sub_4AAB0B();
+
     private:
         void animation_update();
         void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
@@ -342,7 +346,8 @@ namespace openloco
         vehicle_object* object() const;
     };
 
-    struct vehicle_6 : vehicle_base {
+    struct vehicle_6 : vehicle_base
+    {
         uint8_t pad_20[0x4F - 0x20];
         uint16_t var_4F;
         uint8_t pad_51[0x5F - 0x51];
