@@ -297,90 +297,94 @@ bool openloco::vehicle_0::Update()
     }
     else
     {
-        // 0x004A8C11
-        if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
+        return update_other();
+    }
+}
+
+// 0x004A8C11
+bool openloco::vehicle_0::update_other()
+{
+    vehicle_2* vehType2 = vehicle_1136120;
+    if ((!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2)) && var_5D == 4)
+    {
+        if (var_42 == 1)
         {
-            if (var_42 == 1)
+            uint8_t bl = sub_4AA36A();
+            if (bl == 1)
             {
-                uint8_t bl = sub_4AA36A();
-                if (bl == 1)
-                {
-                    return sub_4A8DB7();
-                }
-                else if (bl == 2)
-                {
-                    return sub_4A8F22();
-                }
+                return sub_4A8DB7();
             }
-
-            if (var_0C & (1 << 1))
+            else if (bl == 2)
             {
-                return sub_4A8CB6();
+                return sub_4A8F22();
             }
-            else if (var_0C & (1 << 6))
-            {            
-                if (var_6E <= 236)
-                {
-                    return sub_4A8C81();
-                }
-            }
+        }
 
-            return sub_4A8FAC();
+        if (var_0C & (1 << 1))
+        {
+            return sub_4A8CB6();
+        }
+        else if (var_0C & (1 << 6))
+        {
+            if (var_6E <= 236)
+            {
+                return sub_4A8C81();
+            }
+        }
+
+        return sub_4A8FAC();
+    }
+    else
+    {
+        if (var_5D == 5)
+        {
+            sub_4B9A2A();
+
+            sub_4B980A();
+            return true;
+        }
+        else if (var_5D == 6)
+        {
+            return sub_4A9011();
+        }
+        else if (var_5D == 8)
+        {
+            sub_4AA625();
+
+            return false;
+        }
+        else if (var_5D == 9)
+        {
+            return false;
         }
         else
         {
-            if (var_5D == 5)
-            {
-                sub_4B9A2A();
+            var_5D = 2;
 
-                sub_4B980A();
-                return true;
-            }
-            else if (var_5D == 6)
+            if (!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2))
             {
-                return sub_4A9011();
-            }
-            else if (var_5D == 8)
-            {
-                sub_4AA625();
-
-                return false;
-            }
-            else if (var_5D == 9)
-            {
-                return false;
-            }
-            else
-            {
-                var_5D = 2;
-
-                if (!(vehType2->var_73 & flags_73::broken_down) || (vehType2->var_73 & flags_73::unk_2))
+                if (!(var_0C & (1 << 6)) || var_6E > 236)
                 {
-                    if (!(var_0C & (1 << 6)) || var_6E > 236)
+                    if (!(var_0C & (1 << 1)))
                     {
-                        if (!(var_0C & (1 << 1)))
-                        {
-                            return sub_4A8D48();
-                        }
-                        else
-                        {
-                            return sub_4A8CB6();
-                        }
+                        return sub_4A8D48();
                     }
                     else
                     {
-                        return sub_4A8C81();
+                        return sub_4A8CB6();
                     }
                 }
                 else
                 {
-                    return sub_4A8CB6();
+                    return sub_4A8C81();
                 }
+            }
+            else
+            {
+                return sub_4A8CB6();
             }
         }
     }
-    assert(false);
-    return int32_t();
 }
 
 // 0x004A8CB6
@@ -1207,7 +1211,96 @@ bool openloco::vehicle_0::update_boat()
     }
 
     vehType2->next_car()->next_car()->next_car()->as_vehicle_body()->sub_4AAB0B();
-    // 0x04A969E
+
+    if (var_5D == 1)
+    {
+        if (var_0C & (1 << 1))
+        {
+            sub_4B980A();
+            return true;
+        }
+
+        if (station_id != uint16_t(-1))
+        {
+            vehType2->var_56 = 0;
+            sub_4B996F();
+            sub_4B9987();
+            sub_4BACAF();
+            sub_4B99E1();
+            sub_4B980A();
+            return true;
+        }
+    }
+
+    if (var_0C & (1 << 1))
+    {
+        if (!(sub_427C05(1) & (1 << 17)))
+        {
+            sub_4B980A();
+            return true;
+        }
+
+        var_5D = 1;
+        vehType2->var_56 = 0;
+        vehType2->var_5A = 0;
+
+        sub_4B980A();
+        return true;
+    }
+
+    if (var_5D == 5)
+    {
+        sub_4B9A2A();
+        sub_4B980A();
+        return true;
+    }
+    else if (var_5D == 6)
+    {
+        if (sub_4BA142())
+        {
+            sub_4B980A();
+            return true;
+        }
+
+        sub_4BAC74();
+        sub_4707C0();
+        var_5D = 2;
+        var_5D = sub_427BF2();
+        sub_427C05(2);
+        sub_42843E();
+
+        sub_4B980A();
+        return true;
+    }
+    else
+    {
+        var_5D = 2;
+        var_5D = sub_427BF2();
+        sub_4707C0();
+        if (!(sub_427C05(0) & (1 << 16)))
+        {
+            sub_4B980A();
+            return true;
+        }
+
+        if (var_0C & (1 << 1))
+        {
+            var_5D = 1;
+            vehType2->var_56 = 0;
+            vehType2->var_5A = 0;
+
+            sub_4B980A();
+            return true;
+        }
+
+        vehType2->var_56 = 0;
+        sub_4B996F();
+        sub_4B9987();
+        sub_4BACAF();
+        sub_4B99E1();
+        sub_4B980A();
+        return true;
+    }
 }
 
 // 0x004AA1D0
@@ -3345,4 +3438,32 @@ uint16_t vehicle::sub_426790()
     {
         return 8;
     }
+}
+
+uint8_t vehicle_0::sub_427BF2()
+{
+    if (station_id == (uint16_t)-1)
+    {
+        return 2;
+    }
+    else
+    {
+        return 4;
+    }
+}
+
+uint32_t vehicle_0::sub_427C05(uint32_t unk_1)
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    regs.eax = unk_1;
+    call(0x00427C05, regs);
+    return regs.eax;
+}
+
+void vehicle_0::sub_42843E()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    call(0x0042843E, regs);
 }

@@ -5,6 +5,8 @@
 
 namespace openloco
 {
+    using company_id_t = uint8_t;
+
     namespace flags_5f
     {
         constexpr uint8_t breakdown_pending = 1 << 1;
@@ -226,6 +228,7 @@ namespace openloco
         bool sub_4A8FAC();
         bool update_plane();
         bool update_boat();
+        bool update_other();
         void sub_4273DF(uint8_t & unk_1, uint16_t & unk_2);
         void sub_427122(uint32_t & unk_1, uint16_t & unk_2, uint8_t & unk_3);
         void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t & airportFlags);
@@ -236,6 +239,9 @@ namespace openloco
         void sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch);
         bool sub_4A95F5();
         bool sub_4A9348(uint32_t unk_1);
+        uint8_t sub_427BF2();
+        uint32_t sub_427C05(uint32_t unk_1);
+        void sub_42843E();
     };
 
     struct vehicle_1 : vehicle_base {
