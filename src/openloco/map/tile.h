@@ -228,7 +228,8 @@ namespace openloco::map
 
     public:
         bool has_80() const { return (_type & 0x80) != 0; }
-        uint8_t unk_z() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
+        uint8_t unk_direction() const { return _type & 0x03; }
+        uint8_t unk_4() const { return _4 & 0x3F; }
     };
 
     struct unk7_element : public tile_element_base

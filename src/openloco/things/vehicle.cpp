@@ -2464,9 +2464,14 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
             auto elUnk1 = el.as_unk1();
             if (elUnk1 == nullptr)
                 continue;
+
             if (elUnk1->base_z() != frontBogie->tile_base_z)
                 continue;
-            if (elUnk1->unk_z() != loc.z)
+
+            if (elUnk1->unk_direction() != (frontBogie->var_2C & 0x3))
+                continue;
+
+            if (elUnk1->unk_4() != ((frontBogie->var_2C >> 3) & 0x3F))
                 continue;
 
             if (!elUnk1->has_80())
@@ -3115,7 +3120,10 @@ bool vehicle_0::sub_4BADE4()
             if (elUnk1->flags() & ((1 << 4) | (1 << 5)))
                 continue;
 
-            if (elUnk1->unk_z() != bp)
+            if (elUnk1->unk_direction() != (bp & 0x3))
+                continue;
+
+            if (elUnk1->unk_4() != ((bp >> 3) & 0x3F))
                 continue;
 
             return true;
