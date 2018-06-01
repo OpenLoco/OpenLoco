@@ -116,7 +116,7 @@ namespace openloco::input
     static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
 
     static loco_global<ui::window_type, 0x005233A8> _hoverWindowType;
-    static loco_global<uint8_t, 0x005233A9> _5233A9;
+    static uint8_t _5233A9;
     static loco_global<ui::window_number, 0x005233AA> _hoverWindowNumber;
     static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
@@ -368,9 +368,10 @@ namespace openloco::input
             {
                 y = std::clamp<int16_t>(y, 29, ui::height() - 29);
 
-                int dx = x - _dragLastX;
-                int dy = y - _dragLastY;
+                int16_t dx = x - _dragLastX;
+                int16_t dy = y - _dragLastY;
 
+                // TODO: window_move_position
                 if (dx != 0 && dy != 0)
                 {
                     _5233A9 = true;
@@ -401,6 +402,7 @@ namespace openloco::input
 
             case mouse_button::left_released:
             {
+                // TODO: input_window_position_end
                 _state = (uint8_t)input_state::normal;
                 _tooltipTimeout = 0;
                 _tooltipWidgetIndex = _pressedWidgetIndex;
@@ -411,6 +413,7 @@ namespace openloco::input
 
                 int dx = x - _dragLastX;
                 int dy = y - _dragLastY;
+                // TODO: window_move_position
                 if (dx != 0 && dy != 0)
                 {
                     _5233A9 = true;
@@ -439,15 +442,15 @@ namespace openloco::input
 
                 if (_5233A9 == false)
                 {
-                    w = ui::windowmgr::find(_dragWindowType, _dragWindowNumber);
-                    if (w != nullptr)
+                    auto dragWindow = ui::windowmgr::find(_dragWindowType, _dragWindowNumber);
+                    if (dragWindow != nullptr)
                     {
-                        if (w->is_enabled(_pressedWidgetIndex))
+                        if (dragWindow->is_enabled(_pressedWidgetIndex))
                         {
-                            auto pressedWidget = &w->widgets[_pressedWidgetIndex];
+                            auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
-                            audio::play_sound(audio::sound_id::sound_2, w->x + ((pressedWidget->left + pressedWidget->right) / 2));
-                            w->call_on_mouse_up(_pressedWidgetIndex);
+                            audio::play_sound(audio::sound_id::sound_2, dragWindow->x + ((pressedWidget->left + pressedWidget->right) / 2));
+                            dragWindow->call_on_mouse_up(_pressedWidgetIndex);
                         }
                     }
                 }
