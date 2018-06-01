@@ -7,6 +7,14 @@
 
 using namespace openloco::interop;
 
+namespace openloco::ui
+{
+    int16_t widget_t::mid_x()
+    {
+        return (this->left + this->right) / 2;
+    }
+}
+
 namespace openloco::ui::widget
 {
 
@@ -18,6 +26,7 @@ namespace openloco::ui::widget
 
     void draw_11_c(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
     void draw_14(gfx::drawpixelinfo_t* dpi, widget_t* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
+
 
     static void sub_4CF3EB(const gfx::drawpixelinfo_t* dpi, const window* window, const widget_t* widget, int16_t x, int16_t y, uint8_t colour, int16_t width)
     {

@@ -339,7 +339,7 @@ namespace openloco::input
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
-                            audio::play_sound(audio::sound_id::sound_2, dragWindow->x + ((pressedWidget->left + pressedWidget->right) / 2));
+                            audio::play_sound(audio::sound_id::sound_2, dragWindow->x + pressedWidget->mid_x());
                             dragWindow->call_on_mouse_up(_pressedWidgetIndex);
                         }
                     }
@@ -560,7 +560,7 @@ namespace openloco::input
             default:
                 if (window->is_enabled(widgetIndex) && !window->is_disabled(widgetIndex))
                 {
-                    audio::play_sound(audio::sound_id::click_1, window->x + ((widget->left + widget->right) / 2));
+                    audio::play_sound(audio::sound_id::click_1, window->x + widget->mid_x());
 
                     // Set new cursor down widget
                     _pressedWidgetIndex = widgetIndex;
