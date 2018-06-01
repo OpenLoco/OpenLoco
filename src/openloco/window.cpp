@@ -179,7 +179,7 @@ namespace openloco::ui
         regs.esi = (int32_t)this;
         regs.cx = xPos;
         regs.dx = yPos;
-        call((uint32_t)this->event_handlers->event_19, regs);
+        call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
     }
 
     bool window::call_tooltip(int16_t widget_index)

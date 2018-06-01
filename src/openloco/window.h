@@ -125,7 +125,7 @@ namespace openloco::ui
                 uint32_t get_scroll_size;
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
-                uint32_t event_19;
+                uint32_t scroll_mouse_over;
                 uint32_t text_input;
                 uint32_t event_21;
                 uint32_t event_22;

@@ -121,7 +121,7 @@ namespace openloco::input
     static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
-    static loco_global<ui::window_type, 0x005233B6> modalWindowType;
+    static loco_global<ui::window_type, 0x005233B6> _modalWindowType;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
@@ -162,15 +162,15 @@ namespace openloco::input
         }
 
 #if LOCOMOTION
-        if (*modalWindowType != ui::window_type::undefined)
+        if (*_modalWindowType != ui::window_type::undefined)
         {
             if (window != nullptr)
             {
-                if (window->type != *modalWindowType)
+                if (window->type != *_modalWindowType)
                 {
                     if (button == mouse_button::left_pressed)
                     {
-                        ui::windowmgr::bring_to_front(modalWindowType, 0);
+                        ui::windowmgr::bring_to_front(_modalWindowType, 0);
                         audio::play_sound(audio::sound_id::sound_14, x);
                     }
 
@@ -770,9 +770,9 @@ namespace openloco::input
             return;
         }
 
-        if (*modalWindowType != ui::window_type::undefined)
+        if (*_modalWindowType != ui::window_type::undefined)
         {
-            if (*modalWindowType == window->type)
+            if (*_modalWindowType == window->type)
             {
                 scroll_begin(x, y, window, widget, widgetIndex);
             }
