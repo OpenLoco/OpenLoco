@@ -9,15 +9,15 @@ namespace openloco::ui::scrollview
     {
         none = -1,
         view = 0,
-        hscrollbar_left = 1,
-        hscrollbar_right = 2,
-        hscrollbar_left_trough = 3,
-        hscrollbar_right_trough = 4,
+        hscrollbar_button_left = 1,
+        hscrollbar_button_right = 2,
+        hscrollbar_track_left = 3,
+        hscrollbar_track_right = 4,
         hscrollbar_thumb = 5,
-        vscrollbar_top = 6,
-        vscrollbar_bottom = 7,
-        vscrollbar_top_trough = 8,
-        vscrollbar_bottom_trough = 9,
+        vscrollbar_button_top = 6,
+        vscrollbar_button_bottom = 7,
+        vscrollbar_track_top = 8,
+        vscrollbar_track_bottom = 9,
         vscrollbar_thumb = 10,
     };
 

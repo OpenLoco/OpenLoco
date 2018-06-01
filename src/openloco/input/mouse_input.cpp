@@ -74,15 +74,15 @@ namespace openloco::input
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static std::map<ui::scrollview::scroll_part, string_id> scroll_widget_tooltips = {
-        { ui::scrollview::scroll_part::hscrollbar_left, string_ids::tooltip_scroll_left },
-        { ui::scrollview::scroll_part::hscrollbar_right, string_ids::tooltip_scroll_right },
-        { ui::scrollview::scroll_part::hscrollbar_left_trough, string_ids::tooltip_scroll_left_fast },
-        { ui::scrollview::scroll_part::hscrollbar_right_trough, string_ids::tooltip_scroll_right_fast },
+        { ui::scrollview::scroll_part::hscrollbar_button_left, string_ids::tooltip_scroll_left },
+        { ui::scrollview::scroll_part::hscrollbar_button_right, string_ids::tooltip_scroll_right },
+        { ui::scrollview::scroll_part::hscrollbar_track_left, string_ids::tooltip_scroll_left_fast },
+        { ui::scrollview::scroll_part::hscrollbar_track_right, string_ids::tooltip_scroll_right_fast },
         { ui::scrollview::scroll_part::hscrollbar_thumb, string_ids::tooltip_scroll_left_right },
-        { ui::scrollview::scroll_part::vscrollbar_top, string_ids::tooltip_scroll_up },
+        { ui::scrollview::scroll_part::vscrollbar_button_top, string_ids::tooltip_scroll_up },
         { ui::scrollview::scroll_part::vscrollbar_bottom, string_ids::tooltip_scroll_down },
-        { ui::scrollview::scroll_part::vscrollbar_top_trough, string_ids::tooltip_scroll_up_fast },
-        { ui::scrollview::scroll_part::vscrollbar_bottom_trough, string_ids::tooltip_scroll_down_fast },
+        { ui::scrollview::scroll_part::vscrollbar_track_top, string_ids::tooltip_scroll_up_fast },
+        { ui::scrollview::scroll_part::vscrollbar_track_bottom, string_ids::tooltip_scroll_down_fast },
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
     };
 
@@ -728,29 +728,29 @@ namespace openloco::input
 
         switch (scrollArea)
         {
-            case ui::scrollview::scroll_part::hscrollbar_left:
+            case ui::scrollview::scroll_part::hscrollbar_button_left:
                 call(0x4c894f, regs);
                 break;
-            case ui::scrollview::scroll_part::hscrollbar_right:
+            case ui::scrollview::scroll_part::hscrollbar_button_right:
                 call(0x4c89ae, regs);
                 break;
-            case ui::scrollview::scroll_part::hscrollbar_left_trough:
+            case ui::scrollview::scroll_part::hscrollbar_track_left:
                 call(0x4c8a36, regs);
                 break;
-            case ui::scrollview::scroll_part::hscrollbar_right_trough:
+            case ui::scrollview::scroll_part::hscrollbar_track_right:
                 call(0x4c8aa6, regs);
                 break;
 
-            case ui::scrollview::scroll_part::vscrollbar_top:
+            case ui::scrollview::scroll_part::vscrollbar_button_top:
                 call(0x4c8b26, regs);
                 break;
             case ui::scrollview::scroll_part::vscrollbar_bottom:
                 call(0x4c8b85, regs);
                 break;
-            case ui::scrollview::scroll_part::vscrollbar_top_trough:
+            case ui::scrollview::scroll_part::vscrollbar_track_top:
                 call(0x4c8c0d, regs);
                 break;
-            case ui::scrollview::scroll_part::vscrollbar_bottom_trough:
+            case ui::scrollview::scroll_part::vscrollbar_track_bottom:
                 call(0x4c8c7d, regs);
                 break;
 
