@@ -309,7 +309,10 @@ namespace openloco::input
                 int16_t dx = x - _dragLastX;
                 int16_t dy = y - _dragLastY;
 
-                _5233A9 = window->move(dx, dy);
+                if (w->move(dx, dy))
+                {
+                    _5233A9 = true;
+                }
 
                 _dragLastX = x;
                 _dragLastY = y;
@@ -324,7 +327,10 @@ namespace openloco::input
 
                 int dx = x - _dragLastX;
                 int dy = y - _dragLastY;
-                _5233A9 = window->move(dx, dy);
+                if (w->move(dx, dy))
+                {
+                    _5233A9 = true;
+                }
 
                 _dragLastX = x;
                 _dragLastY = y;
