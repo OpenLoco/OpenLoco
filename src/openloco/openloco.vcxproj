@@ -25,6 +25,7 @@
     <ClCompile Include="industry.cpp" />
     <ClCompile Include="industrymgr.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="input\mouse_input.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
     <ClCompile Include="localisation\stringmgr.cpp" />
     <ClCompile Include="map\tile.cpp" />
