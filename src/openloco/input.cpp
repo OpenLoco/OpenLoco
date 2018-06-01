@@ -40,6 +40,11 @@ namespace openloco::input
         return (input_state)*_state;
     }
 
+    void state(input_state state)
+    {
+        _state = (uint8_t)state;
+    }
+
     bool has_key_modifier(key_modifier modifier)
     {
         return _keyModifier;

@@ -57,6 +57,7 @@ namespace openloco::input
     void set_flag(input_flags value);
     void reset_flag(input_flags value);
     input_state state();
+    void state(input_state);
 
     bool has_key_modifier(key_modifier modifier);
 
