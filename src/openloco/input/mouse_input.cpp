@@ -80,7 +80,7 @@ namespace openloco::input
         { ui::scrollview::scroll_part::hscrollbar_track_right, string_ids::tooltip_scroll_right_fast },
         { ui::scrollview::scroll_part::hscrollbar_thumb, string_ids::tooltip_scroll_left_right },
         { ui::scrollview::scroll_part::vscrollbar_button_top, string_ids::tooltip_scroll_up },
-        { ui::scrollview::scroll_part::vscrollbar_bottom, string_ids::tooltip_scroll_down },
+        { ui::scrollview::scroll_part::vscrollbar_button_bottom, string_ids::tooltip_scroll_down },
         { ui::scrollview::scroll_part::vscrollbar_track_top, string_ids::tooltip_scroll_up_fast },
         { ui::scrollview::scroll_part::vscrollbar_track_bottom, string_ids::tooltip_scroll_down_fast },
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
@@ -744,7 +744,7 @@ namespace openloco::input
             case ui::scrollview::scroll_part::vscrollbar_button_top:
                 call(0x4c8b26, regs);
                 break;
-            case ui::scrollview::scroll_part::vscrollbar_bottom:
+            case ui::scrollview::scroll_part::vscrollbar_button_bottom:
                 call(0x4c8b85, regs);
                 break;
             case ui::scrollview::scroll_part::vscrollbar_track_top:
