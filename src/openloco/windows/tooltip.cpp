@@ -14,9 +14,11 @@ namespace openloco::ui::tooltip
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<window_type, 0x00523381> _523381;
-    static loco_global<int16_t, 0x00523382> _523382;
-    static loco_global<int16_t, 0x00523384> _523384;
+
+    static loco_global<window_type, 0x00523381> _tooltipWindowType;
+    static loco_global<window_number, 0x00523382> _tooltipWindowNumber;
+    static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
+
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
     static loco_global<ui::widget_t[1], 0x005234CC> _widgets;
@@ -28,7 +30,7 @@ namespace openloco::ui::tooltip
     static loco_global<char[512], 0x01136D90> _text;
     static loco_global<uint16_t, 0x01136F90> _lineBreakCount;
 
-    static loco_global<int32_t, 0x01136F98> _1136F98;
+    static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void on_close(ui::window* window);
@@ -140,9 +142,9 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        _523381 = window->type;
-        _523382 = window->number;
-        _523384 = widgetIndex;
+        _tooltipWindowType = window->type;
+        _tooltipWindowNumber = window->number;
+        _tooltipWidgetIndex = widgetIndex;
 
         auto showString = window->call_tooltip(widgetIndex);
         if (!showString)
@@ -150,13 +152,13 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        auto wnd = windowmgr::find(window_type::wt_12, 0);
+        auto wnd = windowmgr::find(window_type::error, 0);
         if (wnd != nullptr)
         {
             return;
         }
 
-        _1136F98 = -1;
+        _currentTooltipStringId = -1;
 
         common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY);
     }
@@ -166,9 +168,9 @@ namespace openloco::ui::tooltip
     {
         windowmgr::close(window_type::tooltip, 0);
 
-        _523381 = window->type;
-        _523382 = window->number;
-        _523384 = widgetIndex;
+        _tooltipWindowType = window->type;
+        _tooltipWindowNumber = window->number;
+        _tooltipWidgetIndex = widgetIndex;
 
         auto showString = window->call_tooltip(widgetIndex);
         if (!showString)
@@ -176,13 +178,13 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        auto wnd = windowmgr::find(window_type::wt_12, 0);
+        auto wnd = windowmgr::find(window_type::error, 0);
         if (wnd != nullptr)
         {
             return;
         }
 
-        _1136F98 = stringId;
+        _currentTooltipStringId = stringId;
 
         common(window, widgetIndex, stringId, cursorX, cursorY);
     }

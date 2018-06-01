@@ -102,6 +102,16 @@ namespace openloco::ui::windowmgr
         }
     }
 
+    // 0x004CB966
+    void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index)
+    {
+        registers regs;
+        regs.ah = widget_index;
+        regs.al = (uint8_t)type | 1 << 7;
+        regs.bx = id;
+        call(0x004CB966, regs);
+    }
+
     // 0x004CC692
     void close(window_type type)
     {
@@ -117,6 +127,27 @@ namespace openloco::ui::windowmgr
         regs.cl = (uint8_t)type;
         regs.dx = id;
         call(0x004CC692, regs);
+    }
+
+    // 0x004CC750
+    window* bring_to_front(window* w)
+    {
+        registers regs;
+        regs.esi = (uint32_t)w;
+        call(0x004CC750, regs);
+
+        return (window*)regs.esi;
+    }
+
+    // 0x004CD3A9
+    window* bring_to_front(window_type type, uint16_t id)
+    {
+        registers regs;
+        regs.cx = (uint8_t)type;
+        regs.dx = id;
+        call(0x004CD3A9, regs);
+
+        return (window*)regs.esi;
     }
 
     // 0x004C9F5D

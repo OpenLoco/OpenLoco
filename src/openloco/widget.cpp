@@ -7,6 +7,14 @@
 
 using namespace openloco::interop;
 
+namespace openloco::ui
+{
+    int16_t widget_t::mid_x()
+    {
+        return (this->left + this->right) / 2;
+    }
+}
+
 namespace openloco::ui::widget
 {
 

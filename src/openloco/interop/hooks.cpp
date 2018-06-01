@@ -626,12 +626,6 @@ void openloco::interop::register_hooks()
             ui::set_cursor(cursor);
             return 0;
         });
-    register_hook(
-        0x004CF142,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::set_cursor(ui::cursor_id::blank);
-            return 0;
-        });
 
     register_hook(
         0x00445AB9,
@@ -653,12 +647,6 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
-        0x00407218,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::input::sub_407218();
-            return 0;
-        });
     register_hook(
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -756,6 +744,19 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
             v->secondary_animation_update();
+
+            return 0;
+        });
+
+    register_hook(
+        0x004C7174,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            uint16_t button = regs.cx;
+            uint16_t x = regs.ax;
+            uint16_t y = regs.bx;
+
+            input::handle_mouse(x, y, (input::mouse_button)button);
+
             return 0;
         });
 

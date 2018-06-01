@@ -32,6 +32,12 @@ namespace openloco::audio
         play_sound(id, loc, play_at_location);
     }
 
+    // 0x00489CB5
+    void play_sound(sound_id id, int32_t pan)
+    {
+        play_sound(id, {}, play_at_location);
+    }
+
     // 0x00489F1B
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound)
     {

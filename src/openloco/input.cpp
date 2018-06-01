@@ -1,6 +1,13 @@
 #include "input.h"
+#include "audio/audio.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include "ui.h"
+#include "ui/scrollview.h"
+#include "window.h"
+#include "windowmgr.h"
+
+#include <map>
 
 using namespace openloco::interop;
 
@@ -8,7 +15,7 @@ namespace openloco::input
 {
     loco_global<uint8_t, 0x00508F18> _keyModifier;
     loco_global<uint32_t, 0x00523368> _flags;
-    loco_global<uint8_t, 0x0052336D> _state;
+    static loco_global<uint8_t, 0x0052336D> _state;
     static int32_t _cursor_drag_start_x;
     static int32_t _cursor_drag_start_y;
     loco_global<uint32_t, 0x00525374> _cursor_drag_state;
@@ -31,6 +38,11 @@ namespace openloco::input
     input_state state()
     {
         return (input_state)*_state;
+    }
+
+    void state(input_state state)
+    {
+        _state = (uint8_t)state;
     }
 
     bool has_key_modifier(key_modifier modifier)

@@ -7,6 +7,8 @@
 
 namespace openloco::ui
 {
+    using widget_index = int8_t;
+    using window_number = uint16_t;
     enum class window_type : uint8_t;
     enum class widget_type : uint8_t;
     struct window;
@@ -30,6 +32,8 @@ namespace openloco::ui
             int32_t content;
         };
         string_id tooltip; // 0x0E
+
+        int16_t mid_x();
     };
 
     enum class widget_type : uint8_t
@@ -53,7 +57,7 @@ namespace openloco::ui
         wt_16,
         wt_17,
         wt_18,
-        wt_19,
+        viewport = 19,
         wt_20,
         wt_21,
         caption_22,
@@ -71,11 +75,11 @@ namespace openloco::ui
     {
         uint16_t flags;          // 0x00
         uint16_t h_left;         // 0x02
-        uint16_t h_right;        // 0x04
+        int16_t h_right;         // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
         uint16_t v_top;          // 0x0A
-        uint16_t v_bottom;       // 0x0C
+        int16_t v_bottom;        // 0x0C
         uint16_t v_thumb_top;    // 0x0E
         uint16_t v_thumb_bottom; // 0x10
     };
@@ -84,6 +88,7 @@ namespace openloco::ui
     {
         constexpr uint32_t flag_0 = 1 << 0;
         constexpr uint32_t flag_1 = 1 << 1;
+        constexpr uint32_t scrolling_to_location = 1 << 3;
         constexpr uint32_t flag_4 = 1 << 4;
         constexpr uint32_t flag_5 = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
@@ -91,6 +96,8 @@ namespace openloco::ui
         constexpr uint32_t resizable = 1 << 9;
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
+        constexpr uint32_t flag_15 = 1 << 15;
+        constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_mask = (1 << 17) | (1 << 18);
     }
 
@@ -112,7 +119,7 @@ namespace openloco::ui
                 uint32_t event_08;
                 uint32_t event_09;
                 uint32_t event_10;
-                uint32_t event_11;
+                uint32_t on_tool_down;
                 uint32_t event_12;
                 uint32_t event_13;
                 uint32_t tool_abort;
@@ -120,13 +127,13 @@ namespace openloco::ui
                 uint32_t get_scroll_size;
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
-                uint32_t event_19;
+                uint32_t scroll_mouse_over;
                 uint32_t text_input;
                 uint32_t event_21;
                 uint32_t event_22;
                 uint32_t tooltip;
                 uint32_t cursor;
-                uint32_t event_25;
+                uint32_t on_move;
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, gfx::drawpixelinfo_t*);
                 uint32_t event_28;
@@ -180,7 +187,7 @@ namespace openloco::ui
                 uint16_t max_width;            // 0x3a
                 uint16_t min_height;           // 0x3c
                 uint16_t max_height;           // 0x3e
-                uint16_t number;               // 0x40
+                window_number number;          // 0x40
                 uint32_t flags;                // 0x42
                 scroll_area_t scroll_areas[3]; // 0x46
                 uint8_t pad_7C[0x83E - 0x7C];
@@ -205,19 +212,35 @@ namespace openloco::ui
                 int8_t var_884;
                 uint8_t pad_885[1];
                 uint8_t colours[4]; // 0x886
+                int16_t var_88A;
+                int16_t var_88C;
             };
         };
 
+        bool is_enabled(int8_t widget_index);
+        bool is_disabled(int8_t widget_index);
+        bool can_resize();
         void invalidate();
+        void update_scroll_widgets();
         void sub_4CA17F();
-        int16_t find_widget_at(int16_t xPos, int16_t yPos);
+        int8_t get_scroll_data_index(widget_index index);
+        bool move(int16_t dx, int16_t dy);
+        widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
+        void call_on_mouse_up(int8_t widget_index);                                                       // 1
+        void call_on_resize();                                                                            // 2
+        void call_3(int8_t widget_index);                                                                 // 3
+        void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_update();                                                                               // 7
+        void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11                                                                               // 7
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
+        void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
+        void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
+        void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
         void call_prepare_draw();                                                                         // 26
         void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
     };
