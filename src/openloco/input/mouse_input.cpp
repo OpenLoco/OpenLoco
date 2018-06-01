@@ -806,5 +806,4 @@ namespace openloco::input
             }
         }
     }
-
 }

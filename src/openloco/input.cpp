@@ -89,5 +89,4 @@ namespace openloco::input
             ui::show_cursor();
         }
     }
-
 }
