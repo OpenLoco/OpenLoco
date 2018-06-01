@@ -55,6 +55,49 @@ namespace openloco::ui
         call(0x004CA17F, regs);
     }
 
+    int8_t window::get_scroll_data_index(widget_index index)
+    {
+        int8_t scrollIndex = 0;
+        for (int i = 0; i < index; i++)
+        {
+            if (this->widgets[i].type == ui::widget_type::scrollview)
+            {
+                scrollIndex++;
+            }
+        }
+
+        return scrollIndex;
+    }
+
+    bool window::move(int16_t dx, int16_t dy)
+    {
+        if (dx == 0 && dy == 0)
+        {
+            return false;
+        }
+
+        this->invalidate();
+
+        this->x += dx;
+        this->y += dy;
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += dx;
+            this->viewports[0]->y += dy;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += dx;
+            this->viewports[1]->y += dy;
+        }
+
+        this->invalidate();
+
+        return true;
+    }
+
     // 0x004C9513
     widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
     {

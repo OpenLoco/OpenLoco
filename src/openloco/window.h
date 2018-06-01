@@ -221,6 +221,8 @@ namespace openloco::ui
         void invalidate();
         void update_scroll_widgets();
         void sub_4CA17F();
+        int8_t get_scroll_data_index(widget_index index);
+        bool move(int16_t dx, int16_t dy);
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
