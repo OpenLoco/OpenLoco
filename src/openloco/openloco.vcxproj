@@ -31,7 +31,6 @@
     <ClCompile Include="map\tile.cpp" />
     <ClCompile Include="map\tilemgr.cpp" />
     <ClCompile Include="messagemgr.cpp" />
-    <ClCompile Include="mouseinput.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="station.cpp" />
@@ -44,6 +43,7 @@
     <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="utility\string.cpp" />
     <ClCompile Include="ui\scrollview.cpp" />
+    <ClCompile Include="ui\viewport_interaction.cpp" />
     <ClCompile Include="version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>

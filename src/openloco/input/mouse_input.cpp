@@ -2,6 +2,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../stationmgr.h"
 #include "../ui/scrollview.h"
 #include "../window.h"
 #include "../windowmgr.h"
@@ -35,7 +36,13 @@ namespace openloco::input
 
 #pragma mark - Input
 
-    loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+
+    static loco_global<int8_t, 0x0050A040> _50A040;
+
+    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+
+    static loco_global<int8_t, 0x0052336C> _52336C;
 
     static loco_global<ui::window_type, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
@@ -57,12 +64,14 @@ namespace openloco::input
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::window_type, 0x00523392> _toolWindowType;
-
-    loco_global<int16_t, 0x00523394> _toolWidgetIndex;
+    static loco_global<int8_t, 0x00523393> _currentTool;
+    static loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<uint16_t, 0x00523396> _currentScrollArea;
     static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
 
+    static loco_global<int16_t, 0x005233A4> _5233A4;
+    static loco_global<int16_t, 0x005233A6> _5233A6;
     static loco_global<ui::window_type, 0x005233A8> _hoverWindowType;
     static uint8_t _5233A9;
     static loco_global<ui::window_number, 0x005233AA> _hoverWindowNumber;
@@ -70,6 +79,10 @@ namespace openloco::input
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
     static loco_global<ui::window_type, 0x005233B6> _modalWindowType;
+
+    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
+
+    static loco_global<uint16_t, 0x00F252A4> _F252A4;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
@@ -783,7 +796,7 @@ namespace openloco::input
         sub_407218();
     }
 
-#pragma mark Widgets
+#pragma mark - Widgets
 
     static void widget_over_flatbutton_invalidate()
     {
@@ -810,6 +823,138 @@ namespace openloco::input
 
                 windowmgr::invalidate_widget(windowType, windowNumber, widgetIdx);
             }
+        }
+    }
+
+#pragma mark -
+
+    // 0x004CD47A
+    void process_mouse_over(int16_t x, int16_t y)
+    {
+        bool skipItem = false;
+        ui::cursor_id cursorId = ui::cursor_id::pointer;
+
+        _mapTooltipFormatArguments = string_ids::null;
+        _50A040 = -1;
+
+        if (_mapSelectionFlags & (1 << 6))
+        {
+            _mapSelectionFlags &= (uint16_t) ~(1 << 6);
+            auto station = stationmgr::get(_F252A4);
+            if (!station->empty())
+            {
+                station->invalidate();
+            }
+        }
+
+        ui::window* window = ui::windowmgr::find_at(x, y);
+
+        if (window != nullptr)
+        {
+            int16_t widgetIdx = window->find_widget_at(x, y);
+
+            if (widgetIdx != -1)
+            {
+                ui::widget_t& widget = window->widgets[widgetIdx];
+                switch (widget.type)
+                {
+                    case ui::widget_type::panel:
+                    case ui::widget_type::frame:
+                        if (window->flags & ui::window_flags::resizable)
+                        {
+                            if (window->min_width != window->max_width || window->min_height != window->max_height)
+                            {
+                                if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
+                                {
+                                    cursorId = ui::cursor_id::diagonal_arrows;
+                                    break;
+                                }
+                            }
+                        }
+                        //fall-through
+
+                    default:
+                        _5233A4 = x;
+                        _5233A6 = y;
+                        cursorId = window->call_cursor(widgetIdx, x, y, cursorId);
+                        break;
+
+                    case ui::widget_type::scrollview:
+                        _5233A4 = x;
+                        _5233A6 = y;
+                        ui::scrollview::scroll_part output_scroll_area;
+                        int32_t scroll_id;
+                        int16_t scroll_x, scroll_y;
+                        ui::scrollview::get_part(
+                            window,
+                            &window->widgets[widgetIdx],
+                            x,
+                            y,
+                            &scroll_x,
+                            &scroll_y,
+                            &output_scroll_area,
+                            &scroll_id);
+
+                        if (output_scroll_area == ui::scrollview::scroll_part::view)
+                        {
+
+                            cursorId = window->call_cursor(widgetIdx, scroll_x, scroll_y, cursorId);
+                        }
+
+                        break;
+
+                    case ui::widget_type::viewport:
+                        if (input::has_flag(input_flags::tool_active))
+                        {
+                            // 3
+                            cursorId = (ui::cursor_id)*_currentTool;
+                            auto wnd = ui::windowmgr::find(_toolWindowType, _toolWindowNumber);
+                            if (wnd)
+                            {
+                                bool out = false;
+                                wnd->call_15(x, y, cursorId, &out);
+                                if (out)
+                                {
+                                    skipItem = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            switch (viewport_interaction::get_item_left(x, y, nullptr))
+                            {
+                                case 3:
+                                case 14:
+                                case 15:
+                                case 20:
+                                case 21:
+                                    skipItem = true;
+                                    cursorId = ui::cursor_id::hand_pointer;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        if (!skipItem)
+        {
+            viewport_interaction::right_over(x, y);
+        }
+
+        if (input::state() == input::input_state::resizing)
+        {
+            cursorId = ui::cursor_id::diagonal_arrows;
+        }
+
+        if (cursorId != (ui::cursor_id)*_52336C)
+        {
+            _52336C = (int8_t)cursorId;
+            ui::set_cursor(cursorId);
         }
     }
 }

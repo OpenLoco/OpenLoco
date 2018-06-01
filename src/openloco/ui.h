@@ -36,4 +36,10 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
+
+    namespace viewport_interaction
+    {
+        uint8_t get_item_left(int16_t x, int16_t y, void* arg);
+        void right_over(int16_t x, int16_t y);
+    }
 }
