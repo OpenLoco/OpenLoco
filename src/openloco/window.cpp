@@ -112,8 +112,8 @@ namespace openloco::ui
             {
                 auto thing = thingmgr::get<thing_base>(config->viewport_target_sprite);
 
-                int height = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
-                bool underground = (thing->z < height);
+                int z = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
+                bool underground = (thing->z < z);
 
                 viewport_set_underground_flag(underground, this, viewport);
 
@@ -123,10 +123,10 @@ namespace openloco::ui
             {
                 int16_t outX, outY, outZ;
 
-                int16_t x = config->saved_view_x + (viewport->view_width / 2);
-                int16_t y = config->saved_view_y + (viewport->view_height / 2);
+                int16_t midX = config->saved_view_x + (viewport->view_width / 2);
+                int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                sub_45FD41(x, y, 128, gCurrentRotation, &outX, &outY, &outZ);
+                sub_45FD41(midX, midY, 128, gCurrentRotation, &outX, &outY, &outZ);
                 viewport_set_underground_flag(false, this, viewport);
 
                 bool atMapEdge = false;
