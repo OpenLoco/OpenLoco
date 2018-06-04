@@ -78,17 +78,13 @@ namespace openloco::ui
         call(0x004C68E4, regs);
     }
 
-    static void sub_4CA444(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY, ui::viewport* vp)
+    // 0x004CA444
+    static void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY, ui::viewport* vp)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.cx = z;
-        regs.edi = (uint32_t)vp;
-        call(0x004CA444, regs);
+        auto centre = coordinate_3d_to_2d(x, y, z, gCurrentRotation);
 
-        *outX = regs.ax;
-        *outY = regs.bx;
+        *outX = centre.x - vp->view_width / 2;
+        *outY = centre.y - vp->view_height / 2;
     }
 
     // 0x004C6456
@@ -117,7 +113,7 @@ namespace openloco::ui
 
                 viewport_set_underground_flag(underground, this, viewport);
 
-                sub_4CA444(thing->x, thing->y, thing->z + 12, &centreX, &centreY, viewport);
+                centre_2d_coordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY, viewport);
             }
             else
             {
