@@ -449,7 +449,7 @@ namespace openloco::stringmgr
                     }
 
                     case formatting_codes::pop16:
-                        args.pop16();
+                        args.skip16();
                         break;
 
                     case formatting_codes::push16:
@@ -578,7 +578,6 @@ namespace openloco::stringmgr
             if (sourceStr == nullptr)
             {
                 throw std::runtime_error("Got a nullptr for string id " + std::to_string(id) + " -- cowardly refusing");
-                return buffer;
             }
 
             buffer = format_string_part(buffer, sourceStr, args);
