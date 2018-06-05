@@ -50,7 +50,7 @@ matrix:
           script:
             - mkdir build && cd build
             - cmake ../
-            - make
+            - make -j2
         - os: osx
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
           language: cpp
@@ -63,7 +63,7 @@ matrix:
           script:
             - mkdir build && cd build
             - cmake ../
-            - make
+            - make -j2
 
 
 script:
