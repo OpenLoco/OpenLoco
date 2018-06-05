@@ -198,5 +198,10 @@ endif()
 
 if (APPLE)
     target_link_libraries(${PROJECT} "-framework Cocoa")
-    target_compile_definitions(${PROJECT} PRIVATE COMPAT_STD_BYTE=1)
+
+    try_compile(SUPPORT_STD_BYTE ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/std_byte.cpp CXX_STANDARD 17)
+    if (NOT SUPPORT_STD_BYTE)
+        message(STATUS "std::byte is not supported.")
+        target_compile_definitions(${PROJECT} PRIVATE COMPAT_STD_BYTE=1)
+    endif ()
 endif ()
