@@ -41,9 +41,8 @@ matrix:
         - os: osx
           osx_image: xcode9.3
           language: cpp
-          env:
-            - HOMEBREW_NO_AUTO_UPDATE=1
-          before_install: []
+          before_install:
+            - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
@@ -55,9 +54,8 @@ matrix:
         - os: osx
           osx_image: xcode9.2
           language: cpp
-          env:
-            - HOMEBREW_NO_AUTO_UPDATE=1
-          before_install: []
+          before_install:
+            - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
