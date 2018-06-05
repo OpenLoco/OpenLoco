@@ -38,6 +38,35 @@ matrix:
                 - clang-format-5.0
           script:
             - ./scripts/run-clang-format.py -r src
+        - os: osx
+          osx_image: xcode9.3
+          language: cpp
+          env:
+            - HOMEBREW_NO_AUTO_UPDATE=1
+          before_install: []
+          install:
+            - brew uninstall --ignore-dependencies boost
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
+          script:
+            - mkdir build && cd build
+            - cmake ../
+            - make
+        - os: osx
+          osx_image: xcode9.2
+          language: cpp
+          env:
+            - HOMEBREW_NO_AUTO_UPDATE=1
+          before_install: []
+          install:
+            - brew uninstall --ignore-dependencies boost
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
+          script:
+            - mkdir build && cd build
+            - cmake ../
+            - make
+
 
 script:
     - mkdir build
