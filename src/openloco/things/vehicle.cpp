@@ -27,7 +27,7 @@ loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
 loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
 loco_global<uint32_t, 0x011360D0> vehicle_var_11360D0;
-loco_global<uint16_t, 0x01136168> vehicle_var_1136168;
+loco_global<uint16_t, 0x01136168> vehicle_var_target_z;
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
 loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
@@ -787,19 +787,19 @@ bool openloco::vehicle_0::update_plane()
     }
 
     uint32_t ebp = 0;
-    uint16_t dx = 0; // z related
+    uint16_t target_z = 0;
     uint8_t bl = 0;  // yaw related
-    sub_427122(ebp, dx, bl);
+    sub_427122(ebp, target_z, bl);
 
     vehicle_var_11360D0 = ebp;
-    vehicle_var_1136168 = dx; // z related
+    vehicle_var_target_z = target_z; // z related
 
     if (vehicle_var_525BB0 & (1 << 7))
     {
         vehicle_var_113646D = bl;
         bl = sprite_yaw;
         vehType2->var_5A = 1;
-        if (dx < z)
+        if (target_z < z)
         {
             vehType2->var_5A = 2;
         }
@@ -834,7 +834,7 @@ bool openloco::vehicle_0::update_plane()
         al = 0;
     }
 
-    if (dx > z)
+    if (target_z > z)
     {
         if (vehType2->var_56 <= 22937600)
         {
@@ -842,7 +842,7 @@ bool openloco::vehicle_0::update_plane()
         }
     }
 
-    if (dx < z)
+    if (target_z < z)
     {
         if (vehType2->var_56 <= 11796480)
         {
@@ -870,7 +870,7 @@ bool openloco::vehicle_0::update_plane()
     if (vehicle_var_525BB0 & (1 << 7))
     {
         vehType2->var_56 = 524288;
-        if (vehicle_var_1136168 != z)
+        if (vehicle_var_target_z != z)
         {
             return sub_4A94A9();
         }
@@ -976,16 +976,14 @@ bool vehicle_0::sub_4A94A9()
         y,
         0
     };
-    loc.z = vehicle_var_1136168;
+    loc.z = vehicle_var_target_z;
     map::map_pos loc2 = {
         vehType1->var_4E,
         vehType1->var_50
     };
 
-    // loc1 and loc2 occupy eax, ecx it is
-    // possible that this factor effects loc1
+    // loc1 and loc2 occupy eax, ecx
     auto factor = vehType2->var_56 / 8192;
-    assert(factor < 65536);
     auto factorX = factorXY503B6A[_yaw * 2] * factor;
     auto factorY = factorXY503B6A[_yaw * 2 + 1] * factor;
     int bigCoordx = (uint16_t)loc.x * 65536 + (uint16_t)loc2.x + factorX;
@@ -1029,10 +1027,14 @@ bool vehicle_0::sub_4A94A9()
             loc.z -= z;
             auto param1 = ((loc.z * (vehType2->var_56 / 65536)) / 32);
             auto param2 = vehicle_var_11360D0 - 18;
-            loc.z = z + param1 / param2 + 1;
-            if ((param1 % param2) && (param2 < 0))
+            // Crude round up??
+            if (param1 / param2 < 0)
             {
-                loc.z -= 2;
+                loc.z = z + param1 / param2 - 1;
+            }
+            else
+            {
+                loc.z = z + param1 / param2 + 1;
             }
         }
     }
@@ -3348,7 +3350,7 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& a
             }
         }
 
-        // ax, cx, dx = loc2 ?? not used??
+        // ax, cx, target_z = loc2 ?? not used??
         // airportFlags = ebx = airportObject->var_AE[ebx].flags ?? okay
         // ebp = &airportObject->var_B2[unk_var_68] ??
 
