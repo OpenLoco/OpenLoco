@@ -986,10 +986,17 @@ bool vehicle_0::sub_4A94A9()
     // possible that this factor effects loc1
     auto factor = vehType2->var_56 / 8192;
     assert(factor < 65536);
-    // If this assert never gets hit then its
-    // safe to assume loc1 is not effected
-    loc2.x += factorXY503B6A[_yaw * 2] * factor;
-    loc2.y += factorXY503B6A[_yaw * 2 + 1] * factor;
+    auto factorX = factorXY503B6A[_yaw * 2] * factor;
+    auto factorY = factorXY503B6A[_yaw * 2 + 1] * factor;
+    int bigCoordx = (uint16_t)loc.x * 65536 + (uint16_t)loc2.x + factorX;
+    int bigCoordy = (uint16_t)loc.y * 65536 + (uint16_t)loc2.y + factorY;
+
+    loc.x = bigCoordx >> 16;
+    loc2.x = bigCoordx & 0xFFFF;
+
+    loc.y = bigCoordy >> 16;
+    loc2.y = bigCoordy & 0xFFFF;
+
 
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
@@ -1022,7 +1029,7 @@ bool vehicle_0::sub_4A94A9()
             loc.z -= z;
             auto param1 = ((loc.z * (vehType2->var_56 / 65536)) / 32);
             auto param2 = vehicle_var_11360D0 - 18;
-            loc.z += param1 / param2;
+            loc.z = z + param1 / param2 + 1;
             if ((param1 % param2) && (param2 < 0))
             {
                 loc.z -= 2;
