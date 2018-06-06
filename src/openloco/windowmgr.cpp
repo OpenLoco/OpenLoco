@@ -4,6 +4,7 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "intro.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/scrollview.h"
@@ -278,11 +279,66 @@ namespace openloco::ui::windowmgr
     {
         _current_modal_type = (uint8_t)type;
     }
+    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
+    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
+    static loco_global<uint16_t, 0x0052334E> gWindowUpdateTicks;
 
     // 0x004C6118
     void update()
     {
-        call(0x004C6118);
+        _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
+        _9DA3D4 = _9DA3D4 + 1;
+        if (_9DA3D4 == 224)
+        {
+            if (screen_info->dirty_blocks_initialised)
+            {
+                if (_523364 != window_type::undefined)
+                {
+                    _9DA3D4 = _9DA3D4 - 1;
+                }
+            }
+        }
+
+        if (!screen_info->dirty_blocks_initialised)
+        {
+            return;
+        }
+
+        if (!intro::is_active())
+        {
+            gfx::draw_dirty_blocks();
+        }
+
+        for (ui::window* w : windows)
+        {
+            w->viewports_update_position();
+        }
+
+        gWindowUpdateTicks = gWindowUpdateTicks + time_since_last_tick;
+        if (gWindowUpdateTicks >= 1000)
+        {
+            gWindowUpdateTicks = 0;
+            for (ui::window* w : reverse_windows)
+            {
+                w->call_6();
+            }
+        }
+
+        for (ui::window* w : reverse_windows)
+        {
+            if ((w->flags & window_flags::white_border_mask) != 0)
+            {
+                // TODO: Replace with countdown
+                w->flags -= window_flags::white_border_one;
+                if ((w->flags & window_flags::white_border_mask) != 0)
+                {
+                    w->invalidate();
+                }
+            }
+        }
+
+        all_wheel_input();
     }
 
     // 0x004CE438
@@ -617,6 +673,269 @@ namespace openloco::ui::windowmgr
 
         w->call_prepare_draw();
         w->call_draw(&dpi);
+    }
+
+    // 0x004C9984
+    void invalidate_all_windows_after_input()
+    {
+        if (!is_paused())
+        {
+            _523508++;
+        }
+
+        auto window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->update_scroll_widgets();
+            window->invalidate_pressed_image_buttons();
+            window->call_on_resize();
+        }
+    }
+
+    // 0x004C6EE6
+    static input::mouse_button game_get_next_input(uint32_t* x, int16_t* y)
+    {
+        registers regs;
+        call(0x004c6ee6, regs);
+
+        *x = regs.eax;
+        *y = regs.bx;
+
+        return (input::mouse_button)regs.cx;
+    }
+
+    static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
+    static loco_global<ui::window_type, 0x00523392> _toolWindowType;
+    static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
+
+    void tool_cancel()
+    {
+    }
+
+    // 0x004CD422
+    void process_mouse_tool(int16_t x, int16_t y)
+    {
+        if (!input::has_flag(input::input_flags::tool_active))
+        {
+            return;
+        }
+
+        auto window = find(_toolWindowType, _toolWindowNumber);
+        if (window != nullptr)
+        {
+            window->call_tool_update(_toolWidgetIdx, x, y);
+        }
+        else
+        {
+            tool_cancel();
+        }
+    }
+
+    loco_global<uint16_t, 0x00508F10> __508F10;
+
+    bool has_508F10(int i)
+    {
+        return (((uint16_t)__508F10) & (1 << i)) != 0;
+    }
+
+    bool set_508F10(int i)
+    {
+        bool val = (((uint16_t)__508F10) & (1 << i)) != 0;
+
+        __508F10 = __508F10 | ~(1 << i);
+        return val;
+    }
+    bool reset_508F10(int i)
+    {
+        bool val = (((uint16_t)__508F10) & (1 << i)) != 0;
+
+        __508F10 = __508F10 & ~(1 << i);
+        return val;
+    }
+
+    loco_global<uint32_t, 0x00525E28> _525E28;
+
+    void do_game_command(int esi, registers& registers)
+    {
+        registers.esi = esi;
+        call(0x00431315, registers);
+    }
+
+    // 0x004C96E7
+    void handle_input()
+    {
+        window* w;
+        bool set;
+
+        if (reset_508F10(10))
+        {
+            call(0x00435ACC);
+        }
+
+        set = _525E28 & (1 << 2);
+        *_525E28 &= ~(1 << 2);
+        if (set)
+        {
+            if ((get_screen_flags() & 3) == 0)
+            {
+                if (tutorial::state() == tutorial::tutorial_state::none)
+                {
+                    call(0x4C95A6);
+                }
+            }
+        }
+
+        if (reset_508F10(5))
+        {
+            registers regs;
+            regs.bl = 1;
+            regs.dl = 2;
+            regs.di = 1;
+            do_game_command(21, regs);
+        }
+
+        if (has_508F10(0) && has_508F10(4))
+        {
+            if (reset_508F10(2))
+            {
+                call(0x004A0AB0);
+                call(0x004CF456);
+                registers regs;
+                regs.bl = 1;
+                do_game_command(69, regs);
+            }
+
+            if (reset_508F10(3))
+            {
+                call(0x004A0AB0);
+                call(0x004CF456);
+                registers regs;
+                regs.bl = 1;
+                do_game_command(70, regs);
+            }
+        }
+
+        if (reset_508F10(4))
+        {
+            registers regs;
+            regs.bl = 1;
+            do_game_command(72, regs);
+        }
+
+        if (reset_508F10(0))
+        {
+            // window_close_construction_windows();
+            call(0x004CF456);
+        }
+
+        if (reset_508F10(1))
+        {
+            registers regs;
+            regs.bl = 1;
+            regs.dl = 0;
+            regs.di = 2;
+            do_game_command(21, regs);
+        }
+
+        //  if (dirty_blocks_initialized)
+        {
+
+            w = *_windows_end;
+            while (w > _windows)
+            {
+                w--;
+                w->call_8();
+            }
+
+            invalidate_all_windows_after_input();
+            call(0x004c6e65); // update_cursor_position
+
+            uint32_t x;
+            int16_t y;
+            input::mouse_button state;
+            while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+            {
+                if (is_title_mode() && intro::is_active() && state == input::mouse_button::left_pressed)
+                {
+                    if (intro::state() == (intro::intro_state)9)
+                    {
+                        intro::state(intro::intro_state::end);
+                        continue;
+                    }
+                    else
+                    {
+                        intro::state((intro::intro_state)8);
+                    }
+                }
+                input::handle_mouse(x, y, state);
+            }
+
+            if (input::has_flag(input::input_flags::flag5))
+            {
+                input::handle_mouse(x, y, state);
+            }
+            else if (x != 0x80000000)
+            {
+                x = std::clamp<int16_t>(y, 0, ui::width() - 1);
+                y = std::clamp<int16_t>(x, 0, ui::height() - 1);
+
+                input::handle_mouse(x, y, state);
+                input::process_mouse_over(x, y);
+                process_mouse_tool(x, y);
+            }
+        }
+
+        w = *_windows_end;
+        while (w > _windows)
+        {
+            w--;
+            //            w->call_9();
+        }
+    }
+
+    void sub_4C98CF()
+    {
+        ui::window* window;
+
+        window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->call_8();
+        }
+
+        invalidate_all_windows_after_input();
+        call(0x004c6e65); // update_cursor_position
+
+        uint32_t x;
+        int16_t y;
+        input::mouse_button state;
+        while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+        {
+            input::handle_mouse(x, y, state);
+        }
+
+        if (input::has_flag(input::input_flags::flag5))
+        {
+            input::handle_mouse(x, y, state);
+        }
+        else if (x != 0x80000000)
+        {
+            x = std::clamp<int16_t>(y, 0, ui::width() - 1);
+            y = std::clamp<int16_t>(x, 0, ui::height() - 1);
+
+            input::handle_mouse(x, y, state);
+            input::process_mouse_over(x, y);
+            process_mouse_tool(x, y);
+        }
+
+        window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            //            window->call_9();
+        }
     }
 
     // 0x004CD3D0
