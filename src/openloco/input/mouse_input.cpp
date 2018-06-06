@@ -15,6 +15,7 @@ namespace openloco::input
 {
 
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal_left(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -42,11 +43,14 @@ namespace openloco::input
 
     static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
 
+    static loco_global<uint16_t, 0x0052334A> _52334A;
+    static loco_global<uint16_t, 0x0052334C> _52334C;
+
     static loco_global<int8_t, 0x0052336C> _52336C;
 
     static loco_global<ui::window_type, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
-    static loco_global<uint32_t, 0x00523372> _pressedWidgetIndex;
+    static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint16_t, 0x00523378> _dragLastX;
     static loco_global<uint16_t, 0x0052337A> _dragLastY;
@@ -85,6 +89,18 @@ namespace openloco::input
     static loco_global<uint16_t, 0x00F252A4> _F252A4;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
+
+    static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
+    static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
+    static loco_global<string_id[40], 0x0113DC50> _dropdownItemFormats;
+
+    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
+
+    static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
+    static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
+    static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
+    static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
+    static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
     static std::map<ui::scrollview::scroll_part, string_id> scroll_widget_tooltips = {
         { ui::scrollview::scroll_part::hscrollbar_button_left, string_ids::tooltip_scroll_left },
@@ -166,7 +182,7 @@ namespace openloco::input
 
             case input_state::widget_pressed:
             case input_state::dropdown_active:
-                call(0x004C7AE7, regs);
+                state_widget_pressed(button, x, y, window, widget, widgetIndex);
                 break;
 
             case input_state::positioning_window:
@@ -369,6 +385,282 @@ namespace openloco::input
 
             default:
                 break;
+        }
+    }
+
+    static void loc_4C7CEA(ui::window* window, int16_t item)
+    {
+        window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+        if (window != nullptr)
+        {
+            windowmgr::close(ui::window_type::dropdown, 0);
+            window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+
+            bool flagSet = has_flag(input_flags::widget_pressed);
+            reset_flag(input_flags::widget_pressed);
+            if (flagSet)
+            {
+                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+            }
+
+            input::state(input_state::normal);
+            _tooltipTimeout = 0;
+            _tooltipWindowType = _pressedWindowType;
+            _tooltipWindowNumber = _pressedWindowNumber;
+
+            if (*_modalWindowType == ui::window_type::undefined || *_modalWindowType == window->type)
+            {
+                window->call_on_dropdown(_pressedWidgetIndex, item);
+            }
+        }
+    }
+
+    static int loc_4C7F4D(ui::window* window)
+    {
+        // Check whether _52334A and _52334C is over a list item
+        int x = _52334A - window->x;
+        if (x < 0)
+        {
+            return -1;
+        }
+        if (x >= window->width)
+        {
+            return -1;
+        }
+
+        // 2px of padding on the top of the list?
+        int y = _52334C - window->y - 2;
+        if (y < 0)
+        {
+            return -1;
+        }
+
+        unsigned int itemY = y / _dropdownItemHeight;
+        if (itemY >= _dropdownItemCount)
+        {
+            return -1;
+        }
+
+        x -= 2;
+        if (x < 0)
+        {
+            return -1;
+        }
+
+        unsigned int itemX = x / _dropdownItemWidth;
+        if (itemX >= _dropdownColumnCount)
+        {
+            return -1;
+        }
+        if (itemY >= _dropdownRowCount)
+        {
+            return -1;
+        }
+
+        int item = itemY * _dropdownColumnCount + itemX;
+        if (item >= _dropdownItemCount)
+        {
+            return -1;
+        }
+
+        if (item < 32 && (_dropdownDisabledItems & (1 << item)) != 0)
+        {
+            return -1;
+        }
+
+        if (_dropdownItemFormats[item] == 0)
+        {
+            return -1;
+        }
+
+        return item;
+    }
+
+    // 0x004C7AE7
+    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    {
+        _52334A = x;
+        _52334C = y;
+
+        auto pressedWindow = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+        if (pressedWindow == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        if (input::state() == input_state::dropdown_active)
+        {
+            if (_113DC78 & (1 << 0))
+            {
+                if (widgetIndex == -1 || *_pressedWindowType != window->type || _pressedWindowNumber != window->number || _pressedWidgetIndex != widgetIndex)
+                {
+                    if (widgetIndex == -1 || window->type != ui::window_type::dropdown)
+                    {
+                        windowmgr::close(ui::window_type::dropdown, 0);
+
+                        if (*_pressedWindowType != ui::window_type::undefined)
+                        {
+                            windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                        }
+
+                        _pressedWindowType = ui::window_type::undefined;
+                        reset_flag(input_flags::widget_pressed);
+                        input::state(input_state::reset);
+                        return;
+                    }
+                }
+            }
+        }
+
+        bool doShared = false;
+        switch (button)
+        {
+            case mouse_button::released: // 0
+            {
+                if (window != nullptr)
+                {
+                    if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
+                    {
+                        if (!window->is_disabled(widgetIndex))
+                        {
+                            if (_clickRepeatTicks != 0)
+                            {
+                                _clickRepeatTicks++;
+                            }
+
+                            // Handle click repeat
+                            if (window->is_held(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
+                            {
+                                window->call_on_mouse_down(widgetIndex);
+                            }
+
+                            bool flagSet = has_flag(input_flags::widget_pressed);
+                            set_flag(input_flags::widget_pressed);
+                            if (!flagSet)
+                            {
+                                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, widgetIndex);
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+            break;
+
+            case mouse_button::left_pressed: // 1
+                if (input::state() == input_state::dropdown_active)
+                {
+                    if (window != nullptr && widgetIndex != -1)
+                    {
+                        auto buttonWidget = &window->widgets[widgetIndex];
+                        audio::play_sound(audio::sound_id::click_1, window->x + buttonWidget->mid_x());
+                    }
+                }
+                return;
+
+            case mouse_button::left_released: // 2
+                doShared = true;
+                // goto 0x4C7F02
+
+                break;
+
+            case mouse_button::right_pressed: // 3
+                if (input::state() == input_state::dropdown_active)
+                {
+                    doShared = true;
+                }
+                else
+                {
+                    return;
+                }
+
+                break;
+
+            case mouse_button::right_released:
+                return;
+        }
+
+        if (doShared)
+        {
+            if (input::state() == input_state::dropdown_active)
+            {
+                if (window != nullptr)
+                {
+                    if (window->type == ui::window_type::dropdown)
+                    {
+                        auto item = loc_4C7F4D(window);
+                        if (item != -1)
+                        {
+                            loc_4C7CEA(window, item);
+                        }
+                    }
+                    else
+                    {
+                        if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
+                        {
+                            if (has_flag(input_flags::flag1))
+                            {
+                                bool flagSet = has_flag(input_flags::flag2);
+                                set_flag(input_flags::flag2);
+                                if (flagSet)
+                                {
+                                    return;
+                                }
+                            }
+
+                            loc_4C7CEA(window, -1);
+                        }
+                    }
+                }
+
+                // 0x4C7DA0
+                windowmgr::close(ui::window_type::dropdown, 0);
+                window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+            }
+
+            input::state(input_state::normal);
+            _tooltipTimeout = 0;
+            _tooltipWidgetIndex = _pressedWidgetIndex;
+            _tooltipWindowType = _pressedWindowType;
+            _tooltipWindowNumber = _pressedWindowNumber;
+            if (window != nullptr)
+            {
+                audio::play_sound((audio::sound_id)1, window->x + widget->mid_x());
+            }
+
+            if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->is_disabled(widgetIndex))
+            {
+                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                window->call_on_mouse_up(widgetIndex);
+                return;
+            }
+        }
+
+        // 0x4C7F02
+        _clickRepeatTicks = 0;
+        if (input::state() != input_state::dropdown_active)
+        {
+            bool flagSet = has_flag(input_flags::widget_pressed);
+            reset_flag(input_flags::widget_pressed);
+            if (flagSet)
+            {
+                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+            }
+        }
+
+        if (input::state() == input_state::dropdown_active)
+        {
+            if (window != nullptr && window->type == ui::window_type::dropdown)
+            {
+                auto item = loc_4C7F4D(window);
+                if (item != -1)
+                {
+                    _dropdownHighlightedIndex = item;
+                    windowmgr::invalidate(ui::window_type::dropdown, 0);
+                }
+            }
         }
     }
 

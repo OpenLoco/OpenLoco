@@ -33,6 +33,11 @@ namespace openloco::ui
         return (this->disabled_widgets & (1ULL << widget_index)) != 0;
     }
 
+    bool window::is_held(ui::widget_index index)
+    {
+        return (this->held_widgets & (1ULL << index)) != 0;
+    }
+
     // 0x004CA4BD
     void window::invalidate()
     {
@@ -203,6 +208,15 @@ namespace openloco::ui
         regs.esi = (uint32_t)this;
         regs.edi = (uint32_t) & this->widgets[widget_index];
         call((uint32_t)this->event_handlers->on_mouse_down, regs);
+    }
+
+    void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
+    {
+        registers regs;
+        regs.ax = item_index;
+        regs.edx = widget_index;
+        regs.esi = (uint32_t)this;
+        call((uint32_t)this->event_handlers->on_dropdown, regs);
     }
 
     void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)

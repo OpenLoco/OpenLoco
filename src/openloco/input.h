@@ -30,6 +30,8 @@ namespace openloco::input
     enum class input_flags
     {
         widget_pressed = 1 << 0,
+        flag1 = 1 << 1,
+        flag2 = 1 << 2,
         tool_active = 1 << 3,
         flag4 = 1 << 4,
         flag5 = 1 << 5,
