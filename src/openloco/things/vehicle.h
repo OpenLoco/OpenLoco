@@ -269,7 +269,7 @@ namespace openloco
         uint16_t var_46;
         uint16_t object_id; // 0x48
         uint8_t pad_4A[0x56 - 0x4A];
-        uint32_t var_56;
+        uint32_t speed; // 0x56
         uint8_t var_5A;
         uint8_t pad_5B[0x73 - 0x5B];
         uint8_t var_73;

@@ -22,6 +22,7 @@
 using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::objectmgr;
+using namespace openloco::literals;
 
 loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
@@ -259,8 +260,8 @@ bool openloco::vehicle_0::Update()
     vehicle_back_bogie = (vehicle_bogie*)0xFFFFFFFF;
 
     vehicle_2* vehType2 = vehicle_1136120;
-    vehicle_var_113612C = vehType2->var_56 >> 7;
-    vehicle_var_1136130 = vehType2->var_56 >> 7;
+    vehicle_var_113612C = vehType2->speed >> 7;
+    vehicle_var_1136130 = vehType2->speed >> 7;
 
     if (var_5C != 0)
     {
@@ -428,7 +429,7 @@ bool openloco::vehicle_0::sub_4A8CB6()
 bool openloco::vehicle_0::sub_4A8C81()
 {
     vehicle_2* vehType2 = vehicle_1136120;
-    if (vehType2->var_56 > 65536)
+    if (vehType2->speed > 1_mph32)
     {
         return sub_4A8D48();
     }
@@ -699,7 +700,7 @@ bool openloco::vehicle_0::update_plane()
     vehicle_var_1136130 = 8192;
     vehicle_2* vehType2 = vehicle_1136120;
 
-    if (vehType2->var_56 >= 1310720)
+    if (vehType2->speed >= 20_mph32)
     {
         vehicle_var_1136130 = 16384;
     }
@@ -732,58 +733,58 @@ bool openloco::vehicle_0::update_plane()
 
     var_5D = 2;
     uint8_t al = 0;
-    uint16_t bx = 0;
-    sub_4273DF(al, bx);
+    uint16_t target_speed = 0;
+    sub_4273DF(al, target_speed);
 
     var_5D = al;
     vehicle_1* vehType1 = vehicle_113611C;
-    vehType1->var_44 = bx;
+    vehType1->var_44 = target_speed;
 
     sub_4707C0();
 
-    uint32_t type1var44 = (vehType1->var_44 * 65536);
-    auto type2var56 = vehType2->var_56;
+    uint32_t type1speed = speed16_to_32(vehType1->var_44);
+    auto type2speed = vehType2->speed;
 
-    if (type2var56 == type1var44)
+    if (type2speed == type1speed)
     {
         vehType2->var_5A = 5;
 
-        if (type2var56 != 1310720)
+        if (type2speed != 20_mph32)
         {
             vehType2->var_5A = 2;
         }
     }
-    else if (type2var56 > type1var44)
+    else if (type2speed > type1speed)
     {
         vehType2->var_5A = 2;
-        uint32_t param = 131072;
-        if (type2var56 > 8519680)
+        uint32_t deceleration_rate = 2_mph32;
+        if (type2speed > 130_mph32)
         {
-            param = 327680;
-            if (type2var56 > 26214400)
+            deceleration_rate = 5_mph32;
+            if (type2speed > 400_mph32)
             {
-                param = 720896;
-                if (type2var56 > 39321600)
+                deceleration_rate = 11_mph32;
+                if (type2speed > 600_mph32)
                 {
-                    param = 1638400;
+                    deceleration_rate = 25_mph32;
                 }
             }
         }
 
-        if (type1var44 == 1310720)
+        if (type1speed == 20_mph32)
         {
             vehType2->var_5A = 3;
         }
 
-        type2var56 = std::max<int32_t>(0, type2var56 - param);
-        vehType2->var_56 = type2var56;
+        type2speed = std::max<int32_t>(0, type2speed - deceleration_rate);
+        vehType2->speed = type2speed;
     }
     else
     {
         vehType2->var_5A = 1;
-        type2var56 += 131072;
-        type2var56 = std::min<uint32_t>(type2var56, type1var44);
-        vehType2->var_56 = type2var56;
+        type2speed += 2_mph32;
+        type2speed = std::min<uint32_t>(type2speed, type1speed);
+        vehType2->speed = type2speed;
     }
 
     uint32_t ebp = 0;
@@ -819,7 +820,7 @@ bool openloco::vehicle_0::update_plane()
         }
     }
 
-    if (vehType2->var_56 < 3276800)
+    if (vehType2->speed < 50_mph32)
     {
         auto vehObject = vehType2->next_car()->object();
         al = 2;
@@ -836,7 +837,7 @@ bool openloco::vehicle_0::update_plane()
 
     if (target_z > z)
     {
-        if (vehType2->var_56 <= 22937600)
+        if (vehType2->speed <= 350_mph32)
         {
             al = 2;
         }
@@ -844,7 +845,7 @@ bool openloco::vehicle_0::update_plane()
 
     if (target_z < z)
     {
-        if (vehType2->var_56 <= 11796480)
+        if (vehType2->speed <= 180_mph32)
         {
             auto vehObject = vehType2->next_car()->object();
 
@@ -869,7 +870,7 @@ bool openloco::vehicle_0::update_plane()
 
     if (vehicle_var_525BB0 & (1 << 7))
     {
-        vehType2->var_56 = 524288;
+        vehType2->speed = 8_mph32;
         if (vehicle_var_target_z != z)
         {
             return sub_4A94A9();
@@ -881,7 +882,7 @@ bool openloco::vehicle_0::update_plane()
         if (var_68 != 0xFF)
         {
             param = 5;
-            if (vehType2->var_56 >= 4587520)
+            if (vehType2->speed >= 70_mph32)
             {
                 param = 30;
             }
@@ -927,13 +928,13 @@ bool openloco::vehicle_0::update_plane()
         return sub_4A9348(eax);
     }
 
-    if (vehType2->var_56 > 1966080)
+    if (vehType2->speed > 30_mph32)
     {
         return sub_4A94A9();
     }
     else
     {
-        vehType2->var_56 = 0;
+        vehType2->speed = 0;
         vehType2->var_5A = 0;
 
         sub_4B980A();
@@ -947,7 +948,7 @@ bool vehicle_0::sub_4A95CB()
     {
         var_5D = 1;
         vehicle_2* vehType2 = vehicle_1136120;
-        vehType2->var_56 = 0;
+        vehType2->speed = 0;
     }
     else
     {
@@ -983,7 +984,7 @@ bool vehicle_0::sub_4A94A9()
     };
 
     // loc1 and loc2 occupy eax, ecx
-    auto factor = vehType2->var_56 / 8192;
+    auto factor = vehType2->speed / 8192;
     auto factorX = factorXY503B6A[_yaw * 2] * factor;
     auto factorY = factorXY503B6A[_yaw * 2 + 1] * factor;
     int bigCoordx = (uint16_t)loc.x * 65536 + (uint16_t)loc2.x + factorX;
@@ -1004,10 +1005,10 @@ bool vehicle_0::sub_4A94A9()
         if (vehicle_var_11360D0 <= 28)
         {
             int16_t z_shift = 1;
-            if (vehType2->var_56 >= 3276800)
+            if (vehType2->speed >= 50_mph32)
             {
                 z_shift++;
-                if (vehType2->var_56 >= 6553600)
+                if (vehType2->speed >= 100_mph32)
                 {
                     z_shift++;
                 }
@@ -1025,7 +1026,7 @@ bool vehicle_0::sub_4A94A9()
         else
         {
             loc.z -= z;
-            auto param1 = ((loc.z * (vehType2->var_56 / 65536)) / 32);
+            auto param1 = ((loc.z * (vehType2->speed / 65536)) / 32);
             auto param2 = vehicle_var_11360D0 - 18;
             // Crude round up??
             if (param1 / param2 < 0)
@@ -1046,7 +1047,7 @@ bool vehicle_0::sub_4A94A9()
 bool openloco::vehicle_0::sub_4A95F5()
 {
     vehicle_2* vehType2 = vehicle_1136120;
-    vehType2->var_56 = 0;
+    vehType2->speed = 0;
     vehType2->var_5A = 0;
     if (sub_4BA142())
     {
@@ -1191,7 +1192,7 @@ bool openloco::vehicle_0::update_boat()
 {
 
     vehicle_2* vehType2 = vehicle_1136120;
-    if (vehType2->var_56 >= 327680)
+    if (vehType2->speed >= 5_mph32)
     {
         vehicle_var_1136130 = 16384;
     }
@@ -1212,7 +1213,7 @@ bool openloco::vehicle_0::update_boat()
 
         if (station_id != uint16_t(-1))
         {
-            vehType2->var_56 = 0;
+            vehType2->speed = 0;
             sub_4B996F();
             sub_4B9987();
             sub_4BACAF();
@@ -1231,7 +1232,7 @@ bool openloco::vehicle_0::update_boat()
         }
 
         var_5D = 1;
-        vehType2->var_56 = 0;
+        vehType2->speed = 0;
         vehType2->var_5A = 0;
 
         sub_4B980A();
@@ -1276,14 +1277,14 @@ bool openloco::vehicle_0::update_boat()
         if (var_0C & (1 << 1))
         {
             var_5D = 1;
-            vehType2->var_56 = 0;
+            vehType2->speed = 0;
             vehType2->var_5A = 0;
 
             sub_4B980A();
             return true;
         }
 
-        vehType2->var_56 = 0;
+        vehType2->speed = 0;
         sub_4B996F();
         sub_4B9987();
         sub_4BACAF();
@@ -1390,7 +1391,7 @@ void openloco::vehicle_body::sub_4AAB0B()
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 6))
     {
         vehicle_2* vehType2 = vehicle_1136120;
-        al = (vehType2->var_56 >> 16) / (vehicle_object->speed / vehicle_object->sprites[object_sprite_type].var_02);
+        al = (vehType2->speed >> 16) / (vehicle_object->speed / vehicle_object->sprites[object_sprite_type].var_02);
         al = std::min(al, vehicle_object->sprites[object_sprite_type].var_02);
     }
     else if (vehicle_object->sprites[object_sprite_type].var_05 != 1)
@@ -1399,7 +1400,7 @@ void openloco::vehicle_body::sub_4AAB0B()
         vehicle_2* vehType2 = vehicle_1136120;
         al = var_46;
         int8_t ah = 0;
-        if (vehType2->var_56 < 0x230000)
+        if (vehType2->speed < 35_mph32)
         {
             ah = 0;
         }
@@ -1519,13 +1520,13 @@ void openloco::vehicle_0::sub_4A8B7C(vehicle_26* vehType2or6)
 void openloco::vehicle_0::sub_4A88F7(vehicle_26* vehType2or6, vehicle_object_sound_1* snd)
 {
     vehicle_2* vehType2_2 = vehicle_1136120;
-    if (vehType2_2->var_56 < snd->var_01)
+    if (vehType2_2->speed < snd->var_01)
     {
         sub_4A8B7C(vehType2or6);
         return;
     }
 
-    uint32_t unk = vehType2_2->var_56 - snd->var_01;
+    uint32_t unk = vehType2_2->speed - snd->var_01;
     vehType2or6->var_46 = (unk >> snd->var_05) + snd->var_06;
 
     unk >>= snd->var_08;
@@ -1560,7 +1561,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26* vehType2or6, vehicle_object_sou
     uint8_t _var_45 = 0;
     if (vehType2_2->var_5A == 2)
     {
-        if (vehType2_2->var_56 < 786432)
+        if (vehType2_2->speed < 12_mph32)
         {
             _var_46 = snd->var_01;
             _var_45 = snd->var_03;
@@ -1575,7 +1576,7 @@ void openloco::vehicle_0::sub_4A8937(vehicle_26* vehType2or6, vehicle_object_sou
     {
         if (vehType2or6->type == vehicle_thing_type::vehicle_2 || vehType2or6->next_car()->var_5E == 0)
         {
-            _var_46 = snd->var_07 + (vehType2_2->var_56 >> snd->var_10);
+            _var_46 = snd->var_07 + (vehType2_2->speed >> snd->var_10);
             _var_45 = snd->var_09;
         }
         else
@@ -1649,7 +1650,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26* vehType2or6, vehicle_object_sou
 
     if (vehType2_2->var_5A == 2 || vehType2_2->var_5A == 3)
     {
-        if (vehType2_2->var_56 < 786432)
+        if (vehType2_2->speed < 12_mph32)
         {
             _var_46 = snd->var_01;
             _var_45 = snd->var_12;
@@ -1675,7 +1676,7 @@ void openloco::vehicle_0::sub_4A8A39(vehicle_26* vehType2or6, vehicle_object_sou
     {
         if (vehType2or6->type == vehicle_thing_type::vehicle_2 || vehType2or6->next_car()->var_5E == 0)
         {
-            auto _var_56 = std::min(vehType2_2->var_56, (uint32_t)458752) >> 16;
+            auto _var_56 = std::min(vehType2_2->speed, (uint32_t)7_mph32) >> 16;
 
             auto dx = snd->var_04;
 
@@ -2387,7 +2388,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
         soundCode = true;
     }
     bool tickCalc = true;
-    if (vehType2->var_5A != 0 && vehType2->var_56 >= 65536)
+    if (vehType2->var_5A != 0 && vehType2->speed >= 1_mph32)
     {
         tickCalc = false;
     }
@@ -2495,10 +2496,10 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
     {
         auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
-        if (vehType2->var_56 > 983040)
+        if (vehType2->speed > 15_mph32)
             return;
 
-        int32_t volume = 0 - (vehType2->var_56 >> 9);
+        int32_t volume = 0 - (vehType2->speed >> 9);
 
         auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
 
@@ -2519,10 +2520,10 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
         auto underSoundId = static_cast<audio::sound_id>(steam_obj->var_1F[soundModifier + var_55]);
         auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55]);
 
-        if (vehType2->var_56 > 983040)
+        if (vehType2->speed > 15_mph32)
             return;
 
-        int32_t volume = 0 - (vehType2->var_56 >> 9);
+        int32_t volume = 0 - (vehType2->speed >> 9);
 
         auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
 
@@ -2555,7 +2556,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int8_
 
     if (veh->v_type == vehicle_type::ship)
     {
-        if (vehType2->var_56 == 0)
+        if (vehType2->speed == 0)
             return;
 
         if (var_38 & (1 << 1))
@@ -2641,7 +2642,7 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int8_
     if (vehType2->var_5A != 1)
         return;
 
-    if (vehType2->var_56 > 917504)
+    if (vehType2->speed > 14_mph32)
         return;
 
     if (var_38 & (1 << 1))
@@ -2853,17 +2854,17 @@ void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int8_t var_
     if (vehType2->var_5A == 0)
         return;
 
-    if (vehType2->var_56 < 393216)
+    if (vehType2->speed < 6_mph32)
         return;
 
     auto frequency = 32;
-    if (vehType2->var_56 >= 589824)
+    if (vehType2->speed >= 9_mph32)
     {
         frequency = 16;
-        if (vehType2->var_56 >= 851968)
+        if (vehType2->speed >= 13_mph32)
         {
             frequency = 8;
-            if (vehType2->var_56 >= 1638400)
+            if (vehType2->speed >= 25_mph32)
             {
                 frequency = 4;
             }
@@ -3181,17 +3182,17 @@ bool vehicle_0::sub_4ACCDC()
     return call(0x004ACCDC, regs) & (1 << 8);
 }
 
-void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& unk_2)
+void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
 {
     if (station_id == 0xFFFF || var_68 == 0xFF)
     {
         vehicle* veh = next_car()->next_car();
         unk_1 = 2;
-        unk_2 = veh->var_54 | (veh->var_55 << 8);
+        target_speed16 = veh->var_54 | (veh->var_55 << 8);
 
-        if (!(veh->var_73 & (1 << 0)))
+        if (veh->var_73 & (1 << 0))
         {
-            unk_2 = veh->var_5C | (veh->var_5D << 8);
+            target_speed16 = veh->var_5C | (veh->var_5D << 8);
         }
 
         return;
@@ -3217,8 +3218,8 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& unk_2)
 
         auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
 
-        uint8_t al = airportObject->var_B2[var_68].var_00;
-        uint8_t cl = airportObject->var_B2[var_68].var_03;
+        uint8_t al = airportObject->var_B2[var_68].var_03;
+        uint8_t cl = airportObject->var_B2[var_68].var_00;
 
         vehicle* veh = next_car()->next_car();
 
@@ -3229,22 +3230,22 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& unk_2)
                 if (al == 1)
                 {
                     unk_1 = 10;
-                    unk_2 = veh->var_5C | (veh->var_5D << 8);
+                    target_speed16 = veh->var_5C | (veh->var_5D << 8);
                 }
                 else if (al == 3)
                 {
                     unk_1 = 10;
-                    unk_2 = 0;
+                    target_speed16 = 0;
                 }
                 else if (al == 4)
                 {
                     unk_1 = 11;
-                    unk_2 = 20;
+                    target_speed16 = 20;
                 }
                 else
                 {
                     unk_1 = 4;
-                    unk_2 = veh->var_5C | (veh->var_5D << 8);
+                    target_speed16 = veh->var_5C | (veh->var_5D << 8);
                 }
                 return;
             }
@@ -3253,21 +3254,21 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& unk_2)
         if (cl == 2)
         {
             unk_1 = 13;
-            unk_2 = veh->var_54 | (veh->var_55 << 8);
-            if (!(veh->var_73 & (1 << 0)))
+            target_speed16 = veh->var_54 | (veh->var_55 << 8);
+            if (veh->var_73 & (1 << 0))
             {
-                unk_2 = veh->var_5C | (veh->var_5D << 8);
+                target_speed16 = veh->var_5C | (veh->var_5D << 8);
             }
         }
         else if (cl == 3)
         {
             unk_1 = 13;
-            unk_2 = 0;
+            target_speed16 = 0;
         }
         else
         {
             unk_1 = 12;
-            unk_2 = 20;
+            target_speed16 = 20;
         }
         return;
     }

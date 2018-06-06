@@ -36,4 +36,13 @@ namespace openloco
 
     using xy32 = location2<int32_t>;
     using loc16 = location3<int16_t>;
+
+    constexpr int32_t speed16_to_32(int32_t speed_mph) { return speed_mph << 16; }
+    namespace literals
+    {
+        constexpr uint32_t operator"" _mph32(unsigned long long speed_mph)
+        {
+            return speed_mph << 16;
+        }
+    }
 }
