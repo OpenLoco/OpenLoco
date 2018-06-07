@@ -1,4 +1,5 @@
 #include "../audio/audio.h"
+#include "../companymgr.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
@@ -15,6 +16,11 @@ using namespace openloco::ui;
 
 namespace openloco::input
 {
+    static void invalidate_scroll();
+    static void viewport_interaction_left_click(int16_t x, int16_t y);
+
+    static void state_scroll_left(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_viewport_left(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -196,11 +202,11 @@ namespace openloco::input
                 break;
 
             case input_state::viewport_left:
-                call(0x004C7334, regs);
+                state_viewport_left(button, x, y, window, widget, widgetIndex);
                 break;
 
             case input_state::scroll_left:
-                call(0x004C71F6, regs);
+                state_scroll_left(button, x, y, window, widget, widgetIndex);
                 break;
 
             case input_state::resizing:
@@ -210,6 +216,317 @@ namespace openloco::input
             case input_state::scroll_right:
                 call(0x004C76A7, regs);
                 break;
+        }
+    }
+
+    // 0x004C71F6
+    static void state_scroll_left(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
+    {
+        switch (button)
+        {
+            case mouse_button::released:
+                if (widgetIndex != _pressedWidgetIndex || window->type != *_pressedWindowType || window->number != *_pressedWindowNumber)
+                {
+                    invalidate_scroll();
+                    return;
+                }
+
+                int bp;
+                switch ((ui::scrollview::scroll_part)*_currentScrollArea)
+                {
+                    case ui::scrollview::scroll_part::hscrollbar_thumb:
+                        _tooltipCursorX = x;
+                        bp = x - _tooltipCursorX;
+                        // 0x4C87E1 input_scroll_part_update_hthumb
+                        return;
+
+                    case ui::scrollview::scroll_part::vscrollbar_thumb:
+                        _tooltipCursorX = y;
+                        bp = y - _tooltipCursorY;
+                        // 0x4C8898 input_scroll_part_update_vthumb
+                        return;
+
+                    default:
+                        break;
+                }
+
+                ui::scrollview::scroll_part scrollArea;
+                int16_t scrollX, scrollY;
+                int32_t scrollIndex;
+                ui::scrollview::get_part(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
+
+                if (scrollArea != (ui::scrollview::scroll_part)*_currentScrollArea)
+                {
+                    invalidate_scroll();
+                    return;
+                }
+
+                switch (scrollArea)
+                {
+                    case ui::scrollview::scroll_part::view:
+                        //0x4C729A
+                        window->call_scroll_mouse_drag(scrollX, scrollY, scrollIndex / 0x12);
+                        return;
+
+                    case ui::scrollview::scroll_part::hscrollbar_button_left:
+                        //0x4C894F input_scroll_part_update_hleft
+                        return;
+                    case ui::scrollview::scroll_part::hscrollbar_button_right:
+                        //0x4C89AE input_scroll_part_update_hright
+                        return;
+
+                    case ui::scrollview::scroll_part::vscrollbar_button_top:
+                        //0x4C8B26 input_scroll_part_update_vtop
+                        return;
+                    case ui::scrollview::scroll_part::vscrollbar_button_bottom:
+                        //0x4C8B85 input_scroll_part_update_vbottom
+                        return;
+
+                    default:
+                        return;
+                }
+                break;
+
+            case mouse_button::left_released:
+                input::state(input_state::reset);
+                invalidate_scroll();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // 0x004C7334
+    static void state_viewport_left(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
+    {
+        auto w = windowmgr::find(_dragWindowType, _dragWindowNumber);
+        if (w == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        switch (button)
+        {
+            case mouse_button::released:
+            {
+                auto viewport = w->viewports[0];
+                if (viewport == nullptr)
+                {
+                    viewport = w->viewports[1];
+                }
+                if (viewport == nullptr)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                if (w->type == *_dragWindowType && w->number == _dragWindowNumber)
+                {
+                    if (has_flag(input_flags::tool_active))
+                    {
+                        w = windowmgr::find(_toolWindowType, _toolWindowNumber);
+                        if (w != nullptr)
+                        {
+                            w->call_tool_drag(_toolWidgetIndex, x, y);
+                            return;
+                        }
+                    }
+                }
+            }
+            break;
+
+            case mouse_button::left_released:
+                input::state(input_state::reset);
+                if (w->type == *_dragWindowType && w->number == _dragWindowNumber)
+                {
+                    if (has_flag(input_flags::tool_active))
+                    {
+                        w = windowmgr::find(_toolWindowType, _toolWindowNumber);
+                        if (w != nullptr)
+                        {
+                            w->call_tool_up(_toolWidgetIndex, x, y);
+                            return;
+                        }
+                        return;
+                    }
+
+                    if (!has_flag(input_flags::flag4))
+                    {
+                        viewport_interaction_left_click(x, y);
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    struct unk_item_3_t
+    {
+        uint8_t var_0;
+    };
+
+    struct unk_item_21_t
+    {
+        uint8_t var_0;
+        uint8_t var_1;
+        uint8_t var_2;
+        uint8_t pad_3[5 - 3];
+        uint8_t var_5;
+    };
+
+    struct unk_item_t
+    {
+        uint8_t type; // @<bl>
+        uint16_t x;   // @<ax>
+        uint16_t y;   // @<cx>
+        union
+        { // @<edx>
+            unk_item_3_t* item_3;
+            unk_item_21_t* item_21;
+            uint32_t edx;
+        };
+    };
+
+    static uint8_t viewport_interaction_get_item_left(int16_t x, int16_t y, unk_item_t* item)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+
+        call(0x004CD658, regs);
+
+        item->type = regs.bl;
+        item->x = regs.ax;
+        item->y = regs.cx;
+        item->edx = regs.edx;
+
+        return item->type;
+    }
+
+    struct xy16_t
+    {
+        uint16_t x;
+        uint16_t y;
+    };
+
+    loco_global<xy16_t[4], 0x004F9296> _4F9296;
+
+    static void open_vehicle_window(unk_item_3_t* item)
+    {
+        registers regs;
+        regs.edx = (uint32_t)item;
+        call(0x004B6033, regs);
+    }
+
+    static void open_town_window(int number)
+    {
+        registers regs;
+        regs.edx = number;
+        call(0x00499B7E, regs);
+    }
+
+    static void open_station_window(int number)
+    {
+        registers regs;
+        regs.edx = number;
+        call(0x0048F210, regs);
+    }
+
+    static void open_industry_window(int number)
+    {
+        registers regs;
+        regs.edx = number;
+        call(0x00456D2D, regs);
+    }
+
+    static void open_company_window(int number)
+    {
+        registers regs;
+        regs.edx = number;
+        call(0x0043454F, regs);
+    }
+
+    // 0x004C7429
+    static void viewport_interaction_left_click(int16_t x, int16_t y)
+    {
+        unk_item_t item;
+
+        switch (viewport_interaction_get_item_left(x, y, &item))
+        {
+            case 3: // sprite?
+                if (item.item_3->var_0 == 0)
+                {
+                    open_vehicle_window(item.item_3);
+                }
+                break;
+
+            case 14:
+                open_town_window(item.edx);
+                break;
+
+            case 15:
+                open_station_window(item.edx);
+                break;
+
+            case 20:
+                open_industry_window(item.edx);
+                break;
+
+            case 21:
+            {
+                uint8_t bl = item.item_21->var_5 & 0b11;
+                x = item.x - _4F9296[bl].x;
+                y = item.y - _4F9296[bl].y;
+
+                bl = item.item_21->var_2;
+
+                for (size_t i = 0; i < companymgr::max_companies; i++)
+                {
+                    auto company = companymgr::get(i);
+
+                    if (company->empty())
+                    {
+                        continue;
+                    }
+
+                    if (company->var_257A == x)
+                    {
+                        continue;
+                    }
+
+                    if (company->var_257C != y)
+                    {
+                        continue;
+                    }
+
+                    if (company->var_2579 != bl)
+                    {
+                        continue;
+                    }
+
+                    open_company_window(i);
+                    break;
+                }
+            }
+            break;
+
+            default:
+                break;
+        }
+    }
+
+    // 0x004C72ED
+    static void invalidate_scroll()
+    {
+        auto w = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+        if (w != nullptr)
+        {
+            w->scroll_areas[_currentScrollOffset / 0x12].flags &= 0xFF11;
+            windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
         }
     }
 
