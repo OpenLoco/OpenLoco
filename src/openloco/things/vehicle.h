@@ -268,10 +268,13 @@ namespace openloco
         uint8_t var_45;
         uint16_t var_46;
         uint16_t object_id; // 0x48
-        uint8_t pad_4A[0x56 - 0x4A];
+        uint8_t pad_4A[0x54 - 0x4A];
+        uint16_t speed_54; // 0x54 max speed?
         uint32_t speed; // 0x56
         uint8_t var_5A;
-        uint8_t pad_5B[0x73 - 0x5B];
+        uint8_t pad_5B;
+        uint16_t speed_5C; // 0x5C broken down max speed?
+        uint8_t pad_5E[0x73 - 0x5E];
         uint8_t var_73;
 
         vehicle_object* object() const;

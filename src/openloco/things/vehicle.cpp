@@ -3186,13 +3186,19 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
 {
     if (station_id == 0xFFFF || var_68 == 0xFF)
     {
-        vehicle* veh = next_car()->next_car();
-        unk_1 = 2;
-        target_speed16 = veh->var_54 | (veh->var_55 << 8);
+        auto veh = next_car()->next_car()->as_vehicle_2();
 
-        if (veh->var_73 & (1 << 0))
+        if (veh == nullptr)
         {
-            target_speed16 = veh->var_5C | (veh->var_5D << 8);
+            assert(false);
+            return;
+        }
+        unk_1 = 2;
+        target_speed16 = veh->speed_54;
+
+        if (veh->var_73 & flags_73::broken_down)
+        {
+            target_speed16 = veh->speed_5C;
         }
 
         return;
@@ -3221,7 +3227,12 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
         uint8_t al = airportObject->var_B2[var_68].var_03;
         uint8_t cl = airportObject->var_B2[var_68].var_00;
 
-        vehicle* veh = next_car()->next_car();
+        auto veh = next_car()->next_car()->as_vehicle_2();
+        if (veh == nullptr)
+        {
+            assert(false);
+            return;
+        }
 
         if (al != 0)
         {
@@ -3230,7 +3241,7 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
                 if (al == 1)
                 {
                     unk_1 = 10;
-                    target_speed16 = veh->var_5C | (veh->var_5D << 8);
+                    target_speed16 = veh->speed_5C;
                 }
                 else if (al == 3)
                 {
@@ -3245,7 +3256,7 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
                 else
                 {
                     unk_1 = 4;
-                    target_speed16 = veh->var_5C | (veh->var_5D << 8);
+                    target_speed16 = veh->speed_5C;
                 }
                 return;
             }
@@ -3254,10 +3265,10 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
         if (cl == 2)
         {
             unk_1 = 13;
-            target_speed16 = veh->var_54 | (veh->var_55 << 8);
-            if (veh->var_73 & (1 << 0))
+            target_speed16 = veh->speed_54;
+            if (veh->var_73 & flags_73::broken_down)
             {
-                target_speed16 = veh->var_5C | (veh->var_5D << 8);
+                target_speed16 = veh->speed_5C;
             }
         }
         else if (cl == 3)
