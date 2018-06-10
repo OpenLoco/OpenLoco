@@ -908,7 +908,7 @@ bool openloco::vehicle_0::update_plane()
             sub_4BACAF();
         }
 
-        if (flags & (1 << 1))
+        if (flags & (1 << 0))
         {
             return sub_4A95CB();
         }
