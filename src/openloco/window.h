@@ -177,7 +177,7 @@ namespace openloco::ui
                 uint64_t enabled_widgets;          // 0x0C
                 uint64_t disabled_widgets;         // 0x14
                 uint64_t activated_widgets;        // 0x1C
-                uint64_t held_widgets;             // 0x24
+                uint64_t holdable_widgets;         // 0x24
                 widget_t* widgets;                 // 0x2C
                 uint16_t x;                        // 0x30
                 uint16_t y;                        // 0x32
@@ -219,7 +219,7 @@ namespace openloco::ui
 
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
-        bool is_held(widget_index index);
+        bool is_holdable(widget_index index);
         bool can_resize();
         void invalidate();
         void update_scroll_widgets();

@@ -93,7 +93,7 @@ namespace openloco::input
 
     static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<string_id[40], 0x0113DC50> _dropdownItemFormats;
+    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
 
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
 
@@ -389,66 +389,67 @@ namespace openloco::input
         }
     }
 
-    static void loc_4C7CEA(ui::window* window, int16_t item)
+    static void dropdown_register_selection(int16_t item)
     {
+        auto window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+        if (window == nullptr)
+            return;
+
+        windowmgr::close(ui::window_type::dropdown, 0);
         window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
-        if (window != nullptr)
+
+        bool flagSet = has_flag(input_flags::widget_pressed);
+        reset_flag(input_flags::widget_pressed);
+        if (flagSet)
         {
-            windowmgr::close(ui::window_type::dropdown, 0);
-            window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
+            windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+        }
 
-            bool flagSet = has_flag(input_flags::widget_pressed);
-            reset_flag(input_flags::widget_pressed);
-            if (flagSet)
-            {
-                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
-            }
+        input::state(input_state::normal);
+        _tooltipTimeout = 0;
+        _tooltipWidgetIndex = _pressedWidgetIndex;
+        _tooltipWindowType = _pressedWindowType;
+        _tooltipWindowNumber = _pressedWindowNumber;
 
-            input::state(input_state::normal);
-            _tooltipTimeout = 0;
-            _tooltipWindowType = _pressedWindowType;
-            _tooltipWindowNumber = _pressedWindowNumber;
-
-            if (*_modalWindowType == ui::window_type::undefined || *_modalWindowType == window->type)
-            {
-                window->call_on_dropdown(_pressedWidgetIndex, item);
-            }
+        if (*_modalWindowType == ui::window_type::undefined || *_modalWindowType == window->type)
+        {
+            window->call_on_dropdown(_pressedWidgetIndex, item);
         }
     }
 
-    static int loc_4C7F4D(ui::window* window)
+    static int dropdown_index_from_point(ui::window* window, int x, int y)
     {
-        // Check whether _52334A and _52334C is over a list item
-        int x = _52334A - window->x;
-        if (x < 0)
+        // Check whether x and y are over a list item
+        int left = x - window->x;
+        if (left < 0)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
-        if (x >= window->width)
+        if (left >= window->width)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
 
         // 2px of padding on the top of the list?
-        int y = _52334C - window->y - 2;
-        if (y < 0)
+        int top = y - window->y - 2;
+        if (top < 0)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
 
-        unsigned int itemY = y / _dropdownItemHeight;
+        unsigned int itemY = top / _dropdownItemHeight;
         if (itemY >= _dropdownItemCount)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
 
-        x -= 2;
-        if (x < 0)
+        left -= 2;
+        if (left < 0)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
 
-        unsigned int itemX = x / _dropdownItemWidth;
+        unsigned int itemX = left / _dropdownItemWidth;
         if (itemX >= _dropdownColumnCount)
         {
             return DROPDOWN_ITEM_UNDEFINED;
@@ -464,7 +465,7 @@ namespace openloco::input
             return DROPDOWN_ITEM_UNDEFINED;
         }
 
-        if (item < 32 && (_dropdownDisabledItems & (1 << item)) != 0)
+        if (item < 32 && (_dropdownDisabledItems & (1ULL << item)) != 0)
         {
             return DROPDOWN_ITEM_UNDEFINED;
         }
@@ -506,7 +507,7 @@ namespace openloco::input
                         }
 
                         _pressedWindowType = ui::window_type::undefined;
-                        reset_flag(input_flags::widget_pressed);
+                        input::reset_flag(input_flags::widget_pressed);
                         input::state(input_state::reset);
                         return;
                     }
@@ -519,36 +520,37 @@ namespace openloco::input
         {
             case mouse_button::released: // 0
             {
-                if (window != nullptr)
+                if (window == nullptr)
+                    break;
+
+                if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
                 {
-                    if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
+                    if (!window->is_disabled(widgetIndex))
                     {
-                        if (!window->is_disabled(widgetIndex))
+                        if (_clickRepeatTicks != 0)
                         {
-                            if (_clickRepeatTicks != 0)
-                            {
-                                _clickRepeatTicks++;
-                            }
-
-                            // Handle click repeat
-                            if (window->is_held(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
-                            {
-                                window->call_on_mouse_down(widgetIndex);
-                            }
-
-                            bool flagSet = has_flag(input_flags::widget_pressed);
-                            set_flag(input_flags::widget_pressed);
-                            if (!flagSet)
-                            {
-                                windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, widgetIndex);
-                            }
-
-                            return;
+                            _clickRepeatTicks++;
                         }
+
+                        // Handle click repeat
+                        if (window->is_holdable(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
+                        {
+                            window->call_on_mouse_down(widgetIndex);
+                        }
+
+                        bool flagSet = input::has_flag(input_flags::widget_pressed);
+                        input::set_flag(input_flags::widget_pressed);
+                        if (!flagSet)
+                        {
+                            windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, widgetIndex);
+                        }
+
+                        return;
                     }
                 }
+
+                break;
             }
-            break;
 
             case mouse_button::left_pressed: // 1
                 if (input::state() == input_state::dropdown_active)
@@ -563,8 +565,6 @@ namespace openloco::input
 
             case mouse_button::left_released: // 2
                 doShared = true;
-                // goto 0x4C7F02
-
                 break;
 
             case mouse_button::right_pressed: // 3
@@ -585,16 +585,17 @@ namespace openloco::input
 
         if (doShared)
         {
+            // 0x4C7BC7
             if (input::state() == input_state::dropdown_active)
             {
                 if (window != nullptr)
                 {
                     if (window->type == ui::window_type::dropdown)
                     {
-                        auto item = loc_4C7F4D(window);
+                        auto item = dropdown_index_from_point(window, x, y);
                         if (item != DROPDOWN_ITEM_UNDEFINED)
                         {
-                            loc_4C7CEA(window, item);
+                            dropdown_register_selection(item);
                         }
                     }
                     else
@@ -605,13 +606,13 @@ namespace openloco::input
                             {
                                 bool flagSet = has_flag(input_flags::flag2);
                                 set_flag(input_flags::flag2);
-                                if (flagSet)
+                                if (!flagSet)
                                 {
                                     return;
                                 }
                             }
 
-                            loc_4C7CEA(window, DROPDOWN_ITEM_UNDEFINED);
+                            dropdown_register_selection(DROPDOWN_ITEM_UNDEFINED);
                         }
                     }
                 }
@@ -628,7 +629,7 @@ namespace openloco::input
             _tooltipWindowNumber = _pressedWindowNumber;
             if (window != nullptr)
             {
-                audio::play_sound((audio::sound_id)1, window->x + widget->mid_x());
+                audio::play_sound(audio::sound_id::sound_1, window->x + widget->mid_x());
             }
 
             if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->is_disabled(widgetIndex))
@@ -655,7 +656,7 @@ namespace openloco::input
         {
             if (window != nullptr && window->type == ui::window_type::dropdown)
             {
-                auto item = loc_4C7F4D(window);
+                auto item = dropdown_index_from_point(window, x, y);
                 if (item != DROPDOWN_ITEM_UNDEFINED)
                 {
                     _dropdownHighlightedIndex = item;
