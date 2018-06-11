@@ -15,6 +15,7 @@ namespace openloco::ui
         toolbar_time = 3,
 
         tooltip = 6,
+        dropdown = 7,
 
         about = 9,
         about_atari = 10,

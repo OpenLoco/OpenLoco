@@ -177,19 +177,19 @@ namespace openloco::ui
                 uint64_t enabled_widgets;          // 0x0C
                 uint64_t disabled_widgets;         // 0x14
                 uint64_t activated_widgets;        // 0x1C
-                uint8_t pad_24[0x2C - 0x24];
-                widget_t* widgets;             // 0x2C
-                uint16_t x;                    // 0x30
-                uint16_t y;                    // 0x32
-                uint16_t width;                // 0x34
-                uint16_t height;               // 0x36
-                uint16_t min_width;            // 0x38
-                uint16_t max_width;            // 0x3a
-                uint16_t min_height;           // 0x3c
-                uint16_t max_height;           // 0x3e
-                window_number number;          // 0x40
-                uint32_t flags;                // 0x42
-                scroll_area_t scroll_areas[3]; // 0x46
+                uint64_t holdable_widgets;         // 0x24
+                widget_t* widgets;                 // 0x2C
+                uint16_t x;                        // 0x30
+                uint16_t y;                        // 0x32
+                uint16_t width;                    // 0x34
+                uint16_t height;                   // 0x36
+                uint16_t min_width;                // 0x38
+                uint16_t max_width;                // 0x3a
+                uint16_t min_height;               // 0x3c
+                uint16_t max_height;               // 0x3e
+                window_number number;              // 0x40
+                uint32_t flags;                    // 0x42
+                scroll_area_t scroll_areas[3];     // 0x46
                 uint8_t pad_7C[0x83E - 0x7C];
                 uint16_t var_83E;
                 uint8_t pad_840[0x846 - 0x840];
@@ -219,6 +219,7 @@ namespace openloco::ui
 
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
+        bool is_holdable(widget_index index);
         bool can_resize();
         void invalidate();
         void update_scroll_widgets();
@@ -233,6 +234,7 @@ namespace openloco::ui
         void call_on_resize();                                                                            // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
+        void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
         void call_update();                                                                               // 7
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11                                                                               // 7
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
