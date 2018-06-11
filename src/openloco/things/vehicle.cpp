@@ -1025,9 +1025,8 @@ bool vehicle_0::sub_4A94A9()
         }
         else
         {
-            loc.z -= z;
-            auto param1 = ((loc.z * (vehType2->speed / 65536)) / 32);
-            auto param2 = vehicle_var_11360D0 - 18;
+            int32_t param1 = ((int32_t)(((int32_t)loc.z - (int32_t)z) * (vehType2->speed / 65536)) / 32);
+            int32_t param2 = vehicle_var_11360D0 - 18;
             // Crude round up??
             if (param1 / param2 < 0)
             {
