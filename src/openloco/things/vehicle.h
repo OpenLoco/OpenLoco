@@ -234,10 +234,10 @@ namespace openloco
         void sub_42750E();
         bool sub_4A95CB();
         void sub_427214(int32_t& _var_68);
-        bool sub_4A94A9();
+        bool sub_4A94A9(uint16_t target_z);
         void sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch);
         bool sub_4A95F5();
-        bool sub_4A9348(uint32_t unk_1);
+        bool sub_4A9348(uint32_t unk_1, uint16_t target_z);
         uint8_t sub_427BF2();
         uint32_t sub_427C05(uint32_t unk_1);
         void sub_42843E();

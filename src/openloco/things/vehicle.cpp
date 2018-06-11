@@ -28,7 +28,7 @@ loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
 loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
 loco_global<uint32_t, 0x011360D0> vehicle_var_11360D0;
-loco_global<uint16_t, 0x01136168> vehicle_var_target_z;
+loco_global<uint16_t, 0x01136168> vehicle_var_target_z; // no longer used
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
 loco_global<vehicle_1*, 0x0113611C> vehicle_113611C; // type 1
@@ -871,9 +871,9 @@ bool openloco::vehicle_0::update_plane()
     if (vehicle_var_525BB0 & (1 << 7))
     {
         vehType2->speed = 8_mph32;
-        if (vehicle_var_target_z != z)
+        if (target_z != z)
         {
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
     }
     else
@@ -890,7 +890,7 @@ bool openloco::vehicle_0::update_plane()
 
         if (ebp > param)
         {
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
     }
 
@@ -925,12 +925,12 @@ bool openloco::vehicle_0::update_plane()
 
     if (eax != -2)
     {
-        return sub_4A9348(eax);
+        return sub_4A9348(eax, target_z);
     }
 
     if (vehType2->speed > 30_mph32)
     {
-        return sub_4A94A9();
+        return sub_4A94A9(target_z);
     }
     else
     {
@@ -961,7 +961,7 @@ bool vehicle_0::sub_4A95CB()
     return true;
 }
 
-bool vehicle_0::sub_4A94A9()
+bool vehicle_0::sub_4A94A9(uint16_t target_z)
 {
     auto _yaw = sprite_yaw;
     if (vehicle_var_525BB0 & (1 << 7))
@@ -975,9 +975,9 @@ bool vehicle_0::sub_4A94A9()
     loc16 loc = {
         x,
         y,
-        0
+        (int16_t)target_z
     };
-    loc.z = vehicle_var_target_z;
+
     map::map_pos loc2 = {
         vehType1->var_4E,
         vehType1->var_50
@@ -999,8 +999,7 @@ bool vehicle_0::sub_4A94A9()
 
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
-
-    if (loc.z != z)
+    if (target_z != z)
     {
         if (vehicle_var_11360D0 <= 28)
         {
@@ -1014,23 +1013,24 @@ bool vehicle_0::sub_4A94A9()
                 }
             }
 
-            if (loc.z < z)
+            if (target_z < z)
             {
-                loc.z = std::max<int16_t>(loc.z, z - z_shift);
+                loc.z = std::max<int16_t>(target_z, z - z_shift);
             }
-            else if (loc.z > z)
+            else if (target_z > z)
             {
-                loc.z = std::min<int16_t>(loc.z, z + z_shift);
+                loc.z = std::min<int16_t>(target_z, z + z_shift);
             }
         }
         else
         {
-            int32_t param1 = ((int32_t)(((int32_t)loc.z - (int32_t)z) * (vehType2->speed / 65536)) / 32);
+            int32_t z_diff = target_z - z;
+            int32_t param1 = std::abs(z_diff) * (vehType2->speed / 65536) / 32;
             int32_t param2 = vehicle_var_11360D0 - 18;
             // Crude round up??
-            if (param1 / param2 < 0)
+            if (z_diff < 0)
             {
-                loc.z = z + param1 / param2 - 1;
+                loc.z = z - param1 / param2 - 1;
             }
             else
             {
@@ -1074,7 +1074,9 @@ bool openloco::vehicle_0::sub_4A95F5()
 
     if (eax != -2)
     {
-        return sub_4A9348(eax);
+        // Strangely the original would enter this function with an
+        // uninitialised target_z. We will pass a valid z.
+        return sub_4A9348(eax, z);
     }
 
     var_5D = 6;
@@ -1082,7 +1084,7 @@ bool openloco::vehicle_0::sub_4A95F5()
     return true;
 }
 
-bool vehicle_0::sub_4A9348(uint32_t unk_1)
+bool vehicle_0::sub_4A9348(uint32_t unk_1, uint16_t target_z)
 {
     if (station_id != (uint16_t)-1 && var_68 != (uint8_t)-1)
     {
@@ -1096,7 +1098,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
         {
             // 0x4a94a5
             var_68 = 0xFF;
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
 
         uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
@@ -1104,7 +1106,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
         if (bl != 1)
         {
             var_68 = 0xFF;
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
 
         openloco::station_id_t station_index = (vehicle_var_987C5C[var_4A + var_46 + 1] | ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8))
@@ -1115,14 +1117,14 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
         if (station == nullptr || !(station->var_2A & (1 << 6)))
         {
             var_68 = 0xFF;
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
 
         if (!is_player_company(owner))
         {
             station_id = station_index;
             var_68 = 0xFF;
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
 
         map::map_pos3 loc = {
@@ -1149,7 +1151,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
             {
                 station_id = station_index;
                 var_68 = 0xFF;
-                return sub_4A94A9();
+                return sub_4A94A9(target_z);
             }
 
             if (owner == companymgr::get_controlling_id())
@@ -1162,7 +1164,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
             }
 
             var_68 = 0xFF;
-            return sub_4A94A9();
+            return sub_4A94A9(target_z);
         }
 
         // Todo: fail gracefully on tile not found
@@ -1179,7 +1181,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
             auto station = stationmgr::get(station_id);
             station->var_3BA |= (1 << var_68);
         }
-        return sub_4A94A9();
+        return sub_4A94A9(target_z);
     }
 }
 
