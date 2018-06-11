@@ -3434,11 +3434,13 @@ void vehicle_0::sub_427214(int32_t& _var_68)
 
                 uint32_t unk = _b2struct->var_08;
 
-                if (unk != 0)
+                if (unk == 0)
                 {
-                    unk &= station->var_3BA;
+                    _var_68 = b2_index;
+                    return;
                 }
 
+                unk &= station->var_3BA;
                 if (unk == _b2struct->var_08)
                 {
                     continue;
