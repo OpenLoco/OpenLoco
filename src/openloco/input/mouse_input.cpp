@@ -11,9 +11,10 @@
 using namespace openloco::interop;
 using namespace openloco::ui;
 
+#define DROPDOWN_ITEM_UNDEFINED -1
+
 namespace openloco::input
 {
-
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -421,56 +422,56 @@ namespace openloco::input
         int x = _52334A - window->x;
         if (x < 0)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
         if (x >= window->width)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         // 2px of padding on the top of the list?
         int y = _52334C - window->y - 2;
         if (y < 0)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         unsigned int itemY = y / _dropdownItemHeight;
         if (itemY >= _dropdownItemCount)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         x -= 2;
         if (x < 0)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         unsigned int itemX = x / _dropdownItemWidth;
         if (itemX >= _dropdownColumnCount)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
         if (itemY >= _dropdownRowCount)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         int item = itemY * _dropdownColumnCount + itemX;
         if (item >= _dropdownItemCount)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         if (item < 32 && (_dropdownDisabledItems & (1 << item)) != 0)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         if (_dropdownItemFormats[item] == 0)
         {
-            return -1;
+            return DROPDOWN_ITEM_UNDEFINED;
         }
 
         return item;
@@ -591,7 +592,7 @@ namespace openloco::input
                     if (window->type == ui::window_type::dropdown)
                     {
                         auto item = loc_4C7F4D(window);
-                        if (item != -1)
+                        if (item != DROPDOWN_ITEM_UNDEFINED)
                         {
                             loc_4C7CEA(window, item);
                         }
@@ -610,7 +611,7 @@ namespace openloco::input
                                 }
                             }
 
-                            loc_4C7CEA(window, -1);
+                            loc_4C7CEA(window, DROPDOWN_ITEM_UNDEFINED);
                         }
                     }
                 }
@@ -655,7 +656,7 @@ namespace openloco::input
             if (window != nullptr && window->type == ui::window_type::dropdown)
             {
                 auto item = loc_4C7F4D(window);
-                if (item != -1)
+                if (item != DROPDOWN_ITEM_UNDEFINED)
                 {
                     _dropdownHighlightedIndex = item;
                     windowmgr::invalidate(ui::window_type::dropdown, 0);
