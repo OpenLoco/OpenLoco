@@ -923,7 +923,7 @@ bool openloco::vehicle_0::update_plane()
 
     sub_427214(eax);
 
-    if (eax != -1)
+    if (eax != -2)
     {
         return sub_4A9348(eax);
     }
@@ -1073,7 +1073,7 @@ bool openloco::vehicle_0::sub_4A95F5()
 
     sub_427214(eax);
 
-    if (eax != -1)
+    if (eax != -2)
     {
         return sub_4A9348(eax);
     }
@@ -1092,9 +1092,6 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1)
 
     if (unk_1 == (uint32_t)-1)
     {
-        // This can never happen as the calling functions prevent this
-        assert(false);
-
         sub_4BAC74();
         if (var_4C == 1)
         {
@@ -3456,7 +3453,7 @@ void vehicle_0::sub_427214(int32_t& _var_68)
         else
         {
             uint8_t al = airportObject->var_B2[_var_68].var_02;
-            if (airportObject->var_AE[al].flags & (1 << 1))
+            if (var_5D == 13 && airportObject->var_AE[al].flags & (1 << 1))
             {
                 _var_68 = -1;
                 return;
