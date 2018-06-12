@@ -156,6 +156,27 @@ namespace openloco::ui::windowmgr
 
                 return 0;
             });
+
+        register_hook(
+            0x004CB966,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                if (regs.al < 0)
+                {
+                    invalidate_widget((ui::window_type)(regs.al & 0x7F), regs.bx, regs.ah);
+                }
+                else if ((regs.al & 1 << 6) != 0)
+                {
+                    invalidate((ui::window_type)(regs.al & 0xBF));
+                }
+                else
+                {
+                    invalidate((ui::window_type)regs.al, regs.bx);
+                }
+                regs = backup;
+
+                return 0;
+            });
     }
 
     window* get(size_t index)
@@ -300,31 +321,49 @@ namespace openloco::ui::windowmgr
     // 0x004CB966
     void invalidate(window_type type)
     {
-        auto w = find(type);
-        if (w != nullptr)
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
         {
+            if (w->type != type)
+                continue;
+
             w->invalidate();
         }
     }
 
     // 0x004CB966
-    void invalidate(window_type type, uint16_t id)
+    void invalidate(window_type type, window_number number)
     {
-        auto w = find(type, id);
-        if (w != nullptr)
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
         {
+            if (w->type != type)
+                continue;
+
+            if (w->number != number)
+                continue;
+
             w->invalidate();
         }
     }
 
     // 0x004CB966
-    void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index)
+    void invalidate_widget(window_type type, window_number number, uint8_t widget_index)
     {
-        registers regs;
-        regs.ah = widget_index;
-        regs.al = (uint8_t)type | 1 << 7;
-        regs.bx = id;
-        call(0x004CB966, regs);
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
+        {
+            auto widget = &w->widgets[widget_index];
+
+            if (widget->left != -2)
+            {
+                gfx::set_dirty_blocks(
+                    w->x + widget->left,
+                    w->y + widget->top,
+                    w->x + widget->right + 1,
+                    w->y + widget->bottom + 1);
+            }
+        }
     }
 
     // 0x004CC692

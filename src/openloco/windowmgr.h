@@ -86,8 +86,8 @@ namespace openloco::ui::windowmgr
     window* bring_to_front(window* window);
     window* bring_to_front(window_type type, uint16_t id);
     void invalidate(window_type type);
-    void invalidate(window_type type, uint16_t id);
-    void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index);
+    void invalidate(window_type type, window_number number);
+    void invalidate_widget(window_type type, window_number number, uint8_t widget_index);
     void close(window_type type);
     void close(window_type type, uint16_t id);
     void close(window* window);
