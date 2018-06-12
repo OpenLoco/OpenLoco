@@ -50,7 +50,9 @@ namespace openloco
     struct station
     {
         string_id name; // 0x00
-        uint8_t pad_02[0x28 - 0x02];
+        int16_t tile_x; // 0x02
+        int16_t tile_y; // 0x04
+        uint8_t pad_06[0x28 - 0x06];
         company_id_t owner; // 0x28
         uint8_t var_29;
         uint16_t var_2A;
