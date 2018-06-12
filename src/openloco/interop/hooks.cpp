@@ -781,7 +781,7 @@ void openloco::interop::register_hooks()
 
             while (window < addr<0x0113D754, ui::window*>())
             {
-                if ((window->flags & ui::window_flags::flag_4) != 0)
+                if ((window->flags & ui::window_flags::transparent) != 0)
                 {
                     ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                 }

@@ -121,7 +121,7 @@ namespace openloco::ui::tooltip
             y,
             width,
             height,
-            window_flags::flag_1 | window_flags::flag_4 | window_flags::flag_7,
+            window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
             (void*)0x504774);
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;

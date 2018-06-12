@@ -86,11 +86,11 @@ namespace openloco::ui
 
     namespace window_flags
     {
-        constexpr uint32_t flag_0 = 1 << 0;
-        constexpr uint32_t flag_1 = 1 << 1;
+        constexpr uint32_t stick_to_back = 1 << 0;
+        constexpr uint32_t stick_to_front = 1 << 1;
         constexpr uint32_t scrolling_to_location = 1 << 3;
-        constexpr uint32_t flag_4 = 1 << 4;
-        constexpr uint32_t flag_5 = 1 << 5;
+        constexpr uint32_t transparent = 1 << 4;
+        constexpr uint32_t no_background = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t resizable = 1 << 9;

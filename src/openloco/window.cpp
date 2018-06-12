@@ -295,7 +295,7 @@ namespace openloco::ui
     // 0x004CA4DF
     void window::draw(gfx::drawpixelinfo_t* dpi)
     {
-        if ((this->flags & window_flags::flag_4) && !(this->flags & window_flags::flag_5))
+        if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
         {
             gfx::fill_rect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
@@ -334,7 +334,7 @@ namespace openloco::ui
                 break;
             }
 
-            if ((this->flags & window_flags::flag_5) == 0)
+            if ((this->flags & window_flags::no_background) == 0)
             {
                 // Check if widget is outside the draw region
                 if (this->x + widget->left >= dpi->x + dpi->width && this->x + widget->right < dpi->x)
