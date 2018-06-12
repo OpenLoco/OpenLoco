@@ -14,6 +14,45 @@ namespace openloco::ui::windowmgr
         constexpr uint16_t by_type = 1 << 7;
     }
 
+    class Container
+    {
+        window* _start;
+        window* _end;
+
+        struct iterator
+        {
+            window* e;
+
+            // this is the important one
+            window* operator*() { return e; }
+
+            // the rest are just boilerplate
+            iterator& operator++()
+            {
+                ++e;
+                return *this;
+            }
+            iterator operator++(int)
+            {
+                iterator tmp{ e };
+                ++*this;
+                return tmp;
+            }
+
+            bool operator==(iterator rhs) const { return e == rhs.e; }
+            bool operator!=(iterator rhs) const { return e != rhs.e; }
+        };
+
+    public:
+        iterator begin() { return { _start }; };
+        iterator end() { return { _end }; };
+        Container(window* start, window* end)
+        {
+            _start = start;
+            _end = end;
+        }
+    };
+
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
     loco_global<uint32_t, 0x00523508> _523508;
     loco_global<window[12], 0x011370AC> _windows;
@@ -61,6 +100,28 @@ namespace openloco::ui::windowmgr
 
                 return 0;
             });
+
+        register_hook(
+            0x004C9B56,
+            [](registers& regs) -> uint8_t {
+                ui::window* w;
+                if (regs.cx & find_flag::by_type)
+                {
+                    w = find((ui::window_type)regs.cx);
+                }
+                else
+                {
+                    w = find((ui::window_type)regs.cx, regs.dx);
+                }
+
+                regs.esi = (uintptr_t)w;
+                if (w == nullptr)
+                {
+                    return X86_FLAG_ZERO;
+                }
+
+                return 0;
+            });
     }
 
     window* get(size_t index)
@@ -100,20 +161,31 @@ namespace openloco::ui::windowmgr
     // 0x004C9B56
     window* find(window_type type)
     {
-        registers regs;
-        regs.cx = (uint8_t)type | find_flag::by_type;
-        call(0x004C9B56, regs);
-        return (window*)regs.esi;
+        auto container = Container(_windows, _windows_end);
+        for (window* e : container)
+        {
+            if (e->type == type)
+            {
+                return e;
+            }
+        }
+
+        return nullptr;
     }
 
     // 0x004C9B56
-    window* find(window_type type, uint16_t id)
+    window* find(window_type type, window_number number)
     {
-        registers regs;
-        regs.cl = (uint8_t)type;
-        regs.dx = id;
-        call(0x004C9B56, regs);
-        return (window*)regs.esi;
+        auto container = Container(_windows, _windows_end);
+        for (window* e : container)
+        {
+            if (e->type == type && e->number == number)
+            {
+                return e;
+            }
+        }
+
+        return nullptr;
     }
 
     // 0x004C9A95

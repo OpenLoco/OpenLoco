@@ -80,7 +80,7 @@ namespace openloco::ui::windowmgr
     void update();
     window* get_main();
     window* find(window_type type);
-    window* find(window_type type, uint16_t id);
+    window* find(window_type type, window_number number);
     window* find_at(int16_t x, int16_t y);
     window* bring_to_front(window* window);
     window* bring_to_front(window_type type, uint16_t id);
