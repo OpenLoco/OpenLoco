@@ -47,6 +47,7 @@ loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
 loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
+loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070; // Size tbc
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -2958,16 +2959,35 @@ int16_t vehicle_0::sub_4BABAD()
 
 void vehicle_0::sub_4B996F()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    call(0x004B996F, regs);
+    auto station = stationmgr::get(station_id);
+    station->var_3B2 |= (1 << (uint8_t)v_type);
 }
 
 void vehicle_0::sub_4B9987()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    call(0x004B9987, regs);
+    uint8_t al = vehicle_var_987C5C[var_4A + var_46] & 7;
+
+    if (al != 1 && al != 2)
+    {
+        return;
+    }
+
+    station_id_t station_id2 = vehicle_var_987C5C[var_4A + var_46 + 1] | ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8);
+
+    if (station_id2 != station_id)
+    {
+        return;
+    }
+
+    auto unk_1 = var_4A + vehicle_var_4FE070[al];
+
+    if (vehicle_var_987C5C[unk_1 + var_46] == 0)
+    {
+        unk_1 = 0;
+    }
+
+    var_4A = unk_1;
+    ui::windowmgr::sub_4B93A5(var_0A);
 }
 
 void vehicle_0::sub_4BACAF()
@@ -2979,9 +2999,17 @@ void vehicle_0::sub_4BACAF()
 
 void vehicle_0::sub_4B99E1()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    call(0x004B99E1, regs);
+    var_5F &= ~(1 << 0);
+    var_5D = 5;
+    var_56 = 10;
+    var_58 = 0;
+
+    auto veh = next_car()->next_car()->next_car();
+    while (veh->type != vehicle_thing_type::vehicle_6)
+    {
+        veh->var_5F |= (1 << 0);
+        veh = veh->next_car();
+    }
 }
 
 void vehicle_0::sub_4707C0()

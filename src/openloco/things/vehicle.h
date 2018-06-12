@@ -174,10 +174,11 @@ namespace openloco
         uint8_t var_52;
         uint8_t pad_53;
         station_id_t station_id; // 0x54
-        uint8_t pad_56[0x5C - 0x56];
+        uint16_t var_56;
+        uint8_t pad_58[0x5C - 0x58];
         uint8_t var_5C;
         uint8_t var_5D;
-        vehicle_type v_type;
+        vehicle_type v_type;    // 0x5E
         uint8_t var_5F;
         uint8_t pad_60[0x68 - 0x60];
         uint8_t var_68;
