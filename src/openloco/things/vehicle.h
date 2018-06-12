@@ -175,7 +175,7 @@ namespace openloco
         uint8_t pad_53;
         station_id_t station_id; // 0x54
         uint16_t var_56;
-        uint8_t pad_58[0x5C - 0x58];
+        uint32_t var_58; // time loading??
         uint8_t var_5C;
         uint8_t var_5D;
         vehicle_type v_type;    // 0x5E

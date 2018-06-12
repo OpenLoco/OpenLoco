@@ -48,6 +48,7 @@ loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070; // Size tbc
+loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088; // Size tbc
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -3014,9 +3015,42 @@ void vehicle_0::sub_4B99E1()
 
 void vehicle_0::sub_4707C0()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    call(0x004707C0, regs);
+    if (var_4C == 1)
+    {
+        return;
+    }
+
+    uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
+
+    if (vehicle_var_4FE088[bl] & (1 << 0))
+    {
+        return;
+    }
+
+    auto _var_4A = var_4A;
+
+    do
+    {
+        _var_4A += vehicle_var_4FE070[bl];
+        if (bl == 0)
+        {
+            _var_4A = 0;
+        }
+
+        if (_var_4A == var_4A)
+        {
+            return;
+        }
+
+        bl = vehicle_var_987C5C[_var_4A + var_46] & 7;
+
+    } while (!(bl & (1 << 0)));
+
+    if (_var_4A != var_4A)
+    {
+        var_4A = _var_4A;
+        ui::windowmgr::sub_4B93A5(var_0A);
+    }
 }
 
 void vehicle_0::sub_4ACEE7(uint32_t unk_1, uint32_t var_113612C, uint8_t& unk_2, uint8_t& unk_3, uint16_t& unk_4)
