@@ -71,6 +71,7 @@ namespace openloco::ui
 
 namespace openloco::ui::windowmgr
 {
+    void register_hooks();
     window_type current_modal_type();
     void current_modal_type(window_type type);
     window* get(size_t index);
