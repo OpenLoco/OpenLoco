@@ -177,6 +177,23 @@ namespace openloco::ui::windowmgr
 
                 return 0;
             });
+
+        register_hook(
+            0x004CC692,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                if ((regs.cx & find_flag::by_type) != 0)
+                {
+                    close((ui::window_type)(regs.cx & ~find_flag::by_type));
+                }
+                else
+                {
+                    close((ui::window_type)regs.cx, regs.dx);
+                }
+                regs = backup;
+
+                return 0;
+            });
     }
 
     window* get(size_t index)
@@ -369,18 +386,31 @@ namespace openloco::ui::windowmgr
     // 0x004CC692
     void close(window_type type)
     {
-        registers regs;
-        regs.cx = (uint8_t)type | find_flag::by_type;
-        call(0x004CC692, regs);
+        bool loop = true;
+        while (loop)
+        {
+            loop = false;
+            auto container = Container(_windows, _windows_end);
+            for (window* w : container)
+            {
+                if (w->type != type)
+                    continue;
+
+                close(w);
+                loop = true;
+                break;
+            }
+        }
     }
 
     // 0x004CC692
     void close(window_type type, uint16_t id)
     {
-        registers regs;
-        regs.cl = (uint8_t)type;
-        regs.dx = id;
-        call(0x004CC692, regs);
+        auto window = find(type, id);
+        if (window != nullptr)
+        {
+            close(window);
+        }
     }
 
     // 0x004CC750
