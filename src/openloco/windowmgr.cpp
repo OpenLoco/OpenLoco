@@ -122,6 +122,20 @@ namespace openloco::ui::windowmgr
 
                 return 0;
             });
+
+        register_hook(
+            0x004CE438,
+            [](registers& regs) -> uint8_t {
+                auto w = get_main();
+
+                regs.esi = (uintptr_t)w;
+                if (w == nullptr)
+                {
+                    return X86_FLAG_CARRY;
+                }
+
+                return 0;
+            });
     }
 
     window* get(size_t index)
@@ -153,9 +167,7 @@ namespace openloco::ui::windowmgr
     // 0x004CE438
     window* get_main()
     {
-        registers regs;
-        call(0x004CE438, regs);
-        return (window*)regs.esi;
+        return find(window_type::main);
     }
 
     // 0x004C9B56
