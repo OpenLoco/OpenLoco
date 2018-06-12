@@ -142,8 +142,9 @@ namespace openloco::ui::windowmgr
             0x004C9A95,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                find_at(regs.ax, regs.bx);
+                auto window = find_at(regs.ax, regs.bx);
                 regs = backup;
+                regs.esi = (uintptr_t)window;
 
                 return 0;
             });
@@ -152,8 +153,9 @@ namespace openloco::ui::windowmgr
             0x004C9AFA,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                find_at_alt(regs.ax, regs.bx);
+                auto window = find_at_alt(regs.ax, regs.bx);
                 regs = backup;
+                regs.esi = (uintptr_t)window;
 
                 return 0;
             });
@@ -313,8 +315,9 @@ namespace openloco::ui::windowmgr
     window* find_at(int16_t x, int16_t y)
     {
         window* w = _windows_end;
-        while (w >= _windows)
+        while (w > _windows)
         {
+            w--;
             if (x < w->x)
                 continue;
 
