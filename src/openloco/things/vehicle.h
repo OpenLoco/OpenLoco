@@ -7,6 +7,10 @@ namespace openloco
 {
     using company_id_t = uint8_t;
     using station_id_t = uint16_t;
+    namespace map
+    {
+        struct map_pos3;
+    }
 
     namespace flags_5f
     {
@@ -232,6 +236,7 @@ namespace openloco
         void sub_4273DF(uint8_t& unk_1, uint16_t& unk_2);
         void sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3);
         void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags);
+        void sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags, map::map_pos3& loc);
         void sub_42750E();
         bool sub_4A95CB();
         void sub_427214(int32_t& _var_68);

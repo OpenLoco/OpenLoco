@@ -61,7 +61,6 @@ namespace openloco
         uint8_t var_3B0;
         uint8_t var_3B1;
         uint16_t var_3B2;
-        uint8_t pad_3B3[0x3B4 - 0x3B3];
         int16_t unk_tile_x; // 0x3B4
         int16_t unk_tile_y; // 0x3B6
         int16_t unk_tile_z; // 0x3B8

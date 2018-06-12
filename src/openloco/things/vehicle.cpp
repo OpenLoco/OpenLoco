@@ -44,7 +44,7 @@ loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
-loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;
+loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0; // airport_object_var_AE_flags
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070; // Size tbc
@@ -3217,6 +3217,7 @@ void vehicle_2::sub_4AA464()
     call(0x004ADB47, regs);
 }
 
+// Wait for load. False on loaded
 bool vehicle_0::sub_4BA142()
 {
     registers regs;
@@ -3350,6 +3351,73 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
 
 void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
 {
+    vehicle_var_525BB0 = 0;
+    station_id_t station_id2 = (station_id_t)0xFFFF;
+    map::map_pos3 loc;
+    bool loc_found = false;
+    if (station_id == (station_id_t)0xFFFF)
+    {
+        uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
+        if (bl == 3 || !(vehicle_var_4FE088[bl] & (1 << 3)))
+        {
+            // 0x4271A0
+            station_id2 = station_id;
+        }
+        else
+        {
+            station_id2 = vehicle_var_987C5C[var_4A + var_46 + 1] | ((vehicle_var_987C5C[var_4A + var_46] >> 6) << 8);
+        }
+    }
+    else
+    {
+        if (var_68 == (uint8_t)0xFF)
+        {
+            station_id2 = station_id;
+        }
+        else
+        {
+            auto station_ = stationmgr::get(station_id);
+            if (!(station_->var_2A & (1 << 6)))
+            {
+                station_id2 = station_id;
+            }
+            else
+            {
+                uint16_t flags = 0;
+                sub_426E26(station_id, var_68, flags, loc);
+                vehicle_var_525BB0 = flags;
+                loc_found = true;
+            }
+        }
+        // 0x004271B8
+    }
+
+    if (loc_found == false)
+    {
+        if (station_id2 == (station_id_t)0xFFFF)
+        {
+            loc.x = 0x17FF;
+            loc.y = 0x17FF;
+            loc.z = 960;
+        }
+        else
+        {
+            auto station_ = stationmgr::get(station_id2);
+            loc.x = station_->tile_x;
+            loc.y = station_->tile_y;
+            if (station_->var_2A & (1 << 6))
+            {
+                loc.x = station_->unk_tile_x;
+                loc.y = station_->unk_tile_y;
+            }
+            loc.z = 960;
+        }
+    }
+
+    // 0x4271E4
+
+
+    unk_2 = loc.z;
     registers regs;
     regs.esi = (int32_t)this;
     call(0x00427122, regs);
@@ -3361,15 +3429,25 @@ void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
 
 void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags)
 {
+    map::map_pos3 loc = {
+        0,
+        0,
+        0
+    };
+    sub_426E26(_station_Id, unk_var_68, airportFlags, loc);
+}
+
+void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags, map::map_pos3& loc)
+{
     auto station = stationmgr::get(_station_Id);
 
-    map::map_pos3 loc = {
+    map::map_pos3 staion_loc = {
         station->unk_tile_x,
         station->unk_tile_y,
         station->unk_tile_z
     };
 
-    auto tile = map::tilemgr::get(loc);
+    auto tile = map::tilemgr::get(staion_loc);
 
     for (auto& el : tile)
     {
@@ -3377,17 +3455,17 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& a
         if (elStation == nullptr)
             continue;
 
-        if (elStation->base_z() != loc.z / 4)
+        if (elStation->base_z() != staion_loc.z / 4)
             continue;
 
         auto airportObject = objectmgr::get<airport_object>(elStation->object_id());
 
         uint32_t ebx = airportObject->var_B2[unk_var_68].var_02;
 
-        map::map_pos3 loc2 = {
+        loc = {
             (int16_t)(airportObject->var_AE[ebx].x - 16),
             (int16_t)(airportObject->var_AE[ebx].y - 16),
-            (int16_t)(airportObject->var_AE[ebx].z + loc.z)
+            (int16_t)(airportObject->var_AE[ebx].z + staion_loc.z)
         };
 
         airportFlags = airportObject->var_AE[ebx].flags;
@@ -3397,7 +3475,7 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& a
             case 0:
                 break;
             case 1:
-                std::swap(loc2.x, loc2.y);
+                std::swap(loc.x, loc.y);
                 loc.y = -loc.y;
                 break;
             case 2:
@@ -3405,25 +3483,25 @@ void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& a
                 loc.y = -loc.y;
                 break;
             case 3:
-                std::swap(loc2.x, loc2.y);
+                std::swap(loc.x, loc.y);
                 loc.x = -loc.x;
                 break;
         }
 
-        loc2.x += 16 + loc.x;
-        loc2.y += 16 + loc.y;
+        loc.x += 16 + staion_loc.x;
+        loc.y += 16 + staion_loc.y;
 
         if (!(airportFlags & (1 << 3)))
         {
-            loc2.z = loc.z + 255;
+            loc.z = staion_loc.z + 255;
             if (!(airportFlags & (1 << 4)))
             {
-                loc2.z = 960;
+                loc.z = 960;
             }
         }
 
-        // ax, cx, target_z = loc2 ?? not used??
-        // airportFlags = ebx = airportObject->var_AE[ebx].flags ?? okay
+        // ax, cx, dx = loc
+        // airportFlags = ebx = airportObject->var_AE[ebx].flags
         // ebp = &airportObject->var_B2[unk_var_68] ??
 
         return;
