@@ -241,6 +241,13 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
     }
 
+    void window::call_21()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((int32_t)this->event_handlers->event_21, regs);
+    }
+
     bool window::call_tooltip(int16_t widget_index)
     {
         registers regs;

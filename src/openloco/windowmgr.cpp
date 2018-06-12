@@ -1,5 +1,6 @@
 #include "windowmgr.h"
 #include "companymgr.h"
+#include "console.h"
 #include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "ui.h"
@@ -190,6 +191,56 @@ namespace openloco::ui::windowmgr
                 {
                     close((ui::window_type)regs.cx, regs.dx);
                 }
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x0045F18B,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                sub_45F18B();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004CD296,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                relocate_windows();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004CEE0B,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                sub_4CEE0B((ui::window*)regs.esi);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004B93A5,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                sub_4B93A5(regs.bx);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004BF089,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                close_topmost();
                 regs = backup;
 
                 return 0;
@@ -599,5 +650,147 @@ namespace openloco::ui::windowmgr
         }
 
         call(0x004CEC25); // viewport_update_pointers
+    }
+
+    void sub_45F18B()
+    {
+        window* w = _windows_end;
+        while (w >= _windows)
+        {
+            w->call_21();
+        }
+    }
+
+    // 0x004CD296
+    void relocate_windows()
+    {
+        int16_t newLocation = 8;
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
+        {
+            // Work out if the window requires moving
+            bool extendsX = (w->x + 10) >= ui::width();
+            bool extendsY = (w->y + 10) >= ui::height();
+            if ((w->flags & window_flags::stick_to_back) != 0 || (w->flags & window_flags::stick_to_front) != 0)
+            {
+                // toolbars are 27px high
+                extendsY = (w->y + 10 - 27) >= ui::height();
+            }
+
+            if (extendsX || extendsY)
+            {
+                // Calculate the new locations
+                int16_t oldX = w->x;
+                int16_t oldY = w->y;
+                w->x = newLocation;
+                w->y = newLocation + 28;
+
+                // Move the next new location so windows are not directly on top
+                newLocation += 8;
+
+                // Adjust the viewports if required.
+                if (w->viewports[0] != nullptr)
+                {
+                    w->viewports[0]->x -= oldX - w->x;
+                    w->viewports[0]->y -= oldY - w->y;
+                }
+
+                if (w->viewports[1] != nullptr)
+                {
+                    w->viewports[1]->x -= oldX - w->x;
+                    w->viewports[1]->y -= oldY - w->y;
+                }
+            }
+        }
+    }
+
+    // 0x004CEE0B
+    void sub_4CEE0B(window* self)
+    {
+        int left = self->x;
+        int right = self->x + self->width;
+        int top = self->y;
+        int bottom = self->y + self->height;
+
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
+        {
+            if (w == self)
+                continue;
+
+            if (w->flags & window_flags::stick_to_back)
+                continue;
+
+            if (w->flags & window_flags::stick_to_front)
+                continue;
+
+            if (w->x >= right)
+                continue;
+
+            if (w->x + w->width <= left)
+                continue;
+
+            if (w->y >= bottom)
+                continue;
+
+            if (w->y + w->height <= top)
+                continue;
+
+            w->invalidate();
+
+            if (bottom < ui::height() - 80)
+            {
+                int dY = bottom + 3 - w->y;
+                w->y += dY;
+                w->invalidate();
+
+                if (w->viewports[0] != nullptr)
+                {
+                    w->viewports[0]->y += dY;
+                }
+
+                if (w->viewports[1] != nullptr)
+                {
+                    w->viewports[1]->y += dY;
+                }
+            }
+        }
+    }
+
+    void sub_4B93A5(uint16_t arg)
+    {
+
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
+        {
+            if (w->type != window_type::vehicle)
+                continue;
+
+            if (w->number != arg)
+                continue;
+
+            if (w->var_870 != 4)
+                continue;
+
+            w->invalidate();
+        }
+    }
+
+    void close_topmost()
+    {
+        close(window_type::dropdown, 0);
+
+        auto container = Container(_windows, _windows_end);
+        for (window* w : container)
+        {
+            if (w->flags & window_flags::stick_to_back)
+                continue;
+
+            if (w->flags & window_flags::stick_to_front)
+                continue;
+
+            close(w);
+            break;
+        }
     }
 }

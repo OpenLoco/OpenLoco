@@ -96,6 +96,11 @@ namespace openloco::ui::windowmgr
     void init_scroll_widgets(window* window);
     void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
+    void sub_45F18B();
+    void relocate_windows();
+    void sub_4CEE0B(window* self);
+    void sub_4B93A5(uint16_t arg);
+    void close_topmost();
 }
 
 namespace openloco::ui::windows
