@@ -136,6 +136,26 @@ namespace openloco::ui::windowmgr
 
                 return 0;
             });
+
+        register_hook(
+            0x004C9A95,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                find_at(regs.ax, regs.bx);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004C9AFA,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                find_at_alt(regs.ax, regs.bx);
+                regs = backup;
+
+                return 0;
+            });
     }
 
     window* get(size_t index)
@@ -203,11 +223,78 @@ namespace openloco::ui::windowmgr
     // 0x004C9A95
     window* find_at(int16_t x, int16_t y)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x004C9A95, regs);
-        return (window*)regs.esi;
+        window* w = _windows_end;
+        while (w >= _windows)
+        {
+            if (x < w->x)
+                continue;
+
+            if (x >= (w->x + w->width))
+                continue;
+
+            if (y < w->y)
+                continue;
+            if (y >= (w->y + w->height))
+                continue;
+
+            if ((w->flags & window_flags::flag_7) != 0)
+                continue;
+
+            if ((w->flags & window_flags::no_background) != 0)
+            {
+                auto index = w->find_widget_at(x, y);
+                if (index == -1)
+                {
+                    continue;
+                }
+            }
+
+            if (w->call_on_resize() == nullptr)
+            {
+                return find_at(x, y);
+            }
+
+            return w;
+        }
+
+        return nullptr;
+    }
+
+    // 0x004C9AFA
+    window* find_at_alt(int16_t x, int16_t y)
+    {
+        window* w = _windows_end;
+        while (w >= _windows)
+        {
+            if (x < w->x)
+                continue;
+
+            if (x >= (w->x + w->width))
+                continue;
+
+            if (y < w->y)
+                continue;
+            if (y >= (w->y + w->height))
+                continue;
+
+            if ((w->flags & window_flags::no_background) != 0)
+            {
+                auto index = w->find_widget_at(x, y);
+                if (index == -1)
+                {
+                    continue;
+                }
+            }
+
+            if (w->call_on_resize() == nullptr)
+            {
+                return find_at_alt(x, y);
+            }
+
+            return w;
+        }
+
+        return nullptr;
     }
 
     // 0x004CB966

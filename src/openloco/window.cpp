@@ -185,11 +185,13 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_mouse_up, regs);
     }
 
-    void window::call_on_resize()
+    ui::window* window::call_on_resize()
     {
         registers regs;
         regs.esi = (uint32_t)this;
         call((uint32_t)this->event_handlers->on_resize, regs);
+
+        return (window*)regs.esi;
     }
 
     void window::call_3(int8_t widget_index)

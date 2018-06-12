@@ -231,7 +231,7 @@ namespace openloco::ui
 
         void call_close();                                                                                // 0
         void call_on_mouse_up(int8_t widget_index);                                                       // 1
-        void call_on_resize();                                                                            // 2
+        ui::window* call_on_resize();                                                                     // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
