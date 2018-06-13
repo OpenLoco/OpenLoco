@@ -66,6 +66,7 @@
     <ClCompile Include="openloco.cpp" />
     <ClCompile Include="gui.cpp" />
     <ClCompile Include="windows\constructionwnd.cpp" />
+    <ClCompile Include="windows\map.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\stationwnd.cpp" />

@@ -101,6 +101,7 @@ namespace openloco::ui::windowmgr
     void sub_4CEE0B(window* self);
     void sub_4B93A5(uint16_t arg);
     void close_topmost();
+    void all_wheel_input();
 }
 
 namespace openloco::ui::windows
@@ -119,6 +120,7 @@ namespace openloco::ui::windows
 
     bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);
     bool prompt_ok_cancel(string_id okButtonStringId);
+    void map_center_on_view_point();
 }
 
 namespace openloco::ui::textinput

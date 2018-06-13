@@ -2,8 +2,11 @@
 #include "companymgr.h"
 #include "console.h"
 #include "graphics/colours.h"
+#include "input.h"
 #include "interop/interop.hpp"
+#include "tutorial.h"
 #include "ui.h"
+#include "ui/scrollview.h"
 #include <algorithm>
 
 using namespace openloco::interop;
@@ -243,6 +246,16 @@ namespace openloco::ui::windowmgr
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
                 close_topmost();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004C6202,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                all_wheel_input();
                 regs = backup;
 
                 return 0;
@@ -799,4 +812,216 @@ namespace openloco::ui::windowmgr
             break;
         }
     }
+
+    static loco_global<int32_t, 0x00525330> _cursorWheel;
+
+    static void window_scroll_wheel_input(ui::window *window, widget_index widgetIndex, int wheel)
+    {
+        int scrollIndex = window->get_scroll_data_index(widgetIndex);
+        scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
+        ui::widget_t* widget = &window->widgets[widgetIndex];
+
+        if (window->scroll_areas[scrollIndex].flags & 0b10000)
+        {
+            int size = widget->bottom - widget->top - 1;
+            if (scroll->flags & 0b1)
+                size -= 11;
+            size = std::max(0, scroll->v_bottom - size);
+            scroll->v_top = std::clamp(scroll->v_top + wheel, 0, size);
+        }
+        else if (window->scroll_areas[scrollIndex].flags & 0b1)
+        {
+            int size = widget->right - widget->left - 1;
+            if (scroll->flags & 0b10000)
+                size -= 11;
+            size = std::max(0, scroll->h_right - size);
+            scroll->h_left = std::clamp(scroll->h_left + wheel, 0, size);
+        }
+
+        ui::scrollview::update_thumbs(window, widgetIndex);
+        invalidate_widget(window->type, window->number, widgetIndex);
+    }
+
+    // 0x004C628E
+    static bool window_wheel_input(window* window, int wheel)
+    {
+        int widgetIndex = -1;
+        int scrollIndex = -1;
+        for (widget_t* widget = window->widgets; widget->type != widget_type::end; widget++)
+        {
+            widgetIndex++;
+
+            if (widget->type != widget_type::scrollview)
+                continue;
+
+            scrollIndex++;
+            if (window->scroll_areas[scrollIndex].flags & 0b10001)
+            {
+                window_scroll_wheel_input(window, widgetIndex, wheel);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // TODO: Move
+    static void sub_45EFDB(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)window;
+        call(0x0045EFDB, regs);
+    }
+
+    // TODO: Move
+    static void sub_45F015(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)window;
+        call(0x0045F015, regs);
+    }
+
+    // TODO: Move
+    static void sub_45F04F(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)window;
+        call(0x0045F04F, regs);
+    }
+
+    // TODO: Move
+    static void sub_45F0ED(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)window;
+        call(0x0045F0ED, regs);
+    }
+
+    // TODO: Move
+    static void sub_49771C()
+    {
+        // Might have something to do with town labels
+        call(0x0049771C);
+    }
+
+    // TODO: Move
+    static void sub_48DDC3()
+    {
+        // Might have something to do with station labels
+        call(0x0048DDC3);
+    }
+
+    void all_wheel_input()
+    {
+        int wheel = 0;
+
+        while (true)
+        {
+            _cursorWheel -= 120;
+
+            if (_cursorWheel < 0)
+            {
+                _cursorWheel += 120;
+                break;
+            }
+
+            wheel -= 17;
+        }
+
+        while (true)
+        {
+            _cursorWheel += 120;
+
+            if (_cursorWheel > 0)
+            {
+                _cursorWheel -= 120;
+                break;
+            }
+
+            wheel += 17;
+        }
+
+        if (tutorial::state() != tutorial::tutorial_state::none)
+            return;
+
+        if (input::has_flag(input::input_flags::flag5))
+        {
+            if (openloco::is_title_mode())
+                return;
+
+            auto main = windowmgr::get_main();
+            if (main != nullptr)
+            {
+                if (wheel > 0)
+                {
+                    sub_45F04F(main);
+                }
+                else if (wheel < 0)
+                {
+                    sub_45F0ED(main);
+                }
+                sub_49771C();
+                sub_48DDC3();
+                windows::map_center_on_view_point();
+            }
+
+            return;
+        }
+
+        int32_t x = addr<0x0113E72C, int32_t>();
+        int32_t y = addr<0x0113E730, int32_t>();
+        auto window = find_at(x, y);
+
+        if (window != nullptr)
+        {
+            if (window->type == window_type::main)
+            {
+                if (openloco::is_title_mode())
+                    return;
+
+                if (wheel > 0)
+                {
+                    sub_45F015(window);
+                }
+                else if (wheel < 0)
+                {
+                    sub_45EFDB(window);
+                }
+                sub_49771C();
+                sub_48DDC3();
+
+                return;
+            }
+            else
+            {
+                auto widgetIndex = window->find_widget_at(x, y);
+                if (widgetIndex != -1)
+                {
+                    if (window->widgets[widgetIndex].type == widget_type::scrollview)
+                    {
+                        auto scrollIndex = window->get_scroll_data_index(widgetIndex);
+                        if (window->scroll_areas[scrollIndex].flags & 0b10001)
+                        {
+                            window_scroll_wheel_input(window, widgetIndex, wheel);
+                            return;
+                        }
+                    }
+
+                    if (window_wheel_input(window, wheel))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        for (ui::window* w = _windows_end - 1; w >= _windows; w--)
+        {
+            if (window_wheel_input(w, wheel))
+            {
+                return;
+            }
+        }
+    }
+
 }

@@ -32,4 +32,15 @@ namespace openloco::ui::scrollview
         *output_scroll_area = (scroll_part)regs.cx;
         *scroll_id = regs.edx;
     }
+
+    // 0x004CA1ED
+    void update_thumbs(window* window, widget_index widgetIndex)
+    {
+        registers regs;
+
+        regs.esi = (uintptr_t)window;
+        regs.ebx = window->get_scroll_data_index(widgetIndex) * sizeof(scroll_area_t);
+        regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+        call(0x4CA1ED, regs);
+    }
 }
