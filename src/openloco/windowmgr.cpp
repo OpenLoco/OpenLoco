@@ -356,8 +356,10 @@ namespace openloco::ui::windowmgr
     window* find_at_alt(int16_t x, int16_t y)
     {
         window* w = _windows_end;
-        while (w >= _windows)
+        while (w > _windows)
         {
+            w--;
+
             if (x < w->x)
                 continue;
 
@@ -658,8 +660,9 @@ namespace openloco::ui::windowmgr
     void sub_45F18B()
     {
         window* w = _windows_end;
-        while (w >= _windows)
+        while (w > _windows)
         {
+            w--;
             w->call_21();
         }
     }
