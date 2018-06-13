@@ -18,49 +18,16 @@ namespace openloco::ui::windowmgr
         constexpr uint16_t by_type = 1 << 7;
     }
 
-    class Container
-    {
-        window* _start;
-        window* _end;
-
-        struct iterator
-        {
-            window* e;
-
-            // this is the important one
-            window* operator*() { return e; }
-
-            // the rest are just boilerplate
-            iterator& operator++()
-            {
-                ++e;
-                return *this;
-            }
-            iterator operator++(int)
-            {
-                iterator tmp{ e };
-                ++*this;
-                return tmp;
-            }
-
-            bool operator==(iterator rhs) const { return e == rhs.e; }
-            bool operator!=(iterator rhs) const { return e != rhs.e; }
-        };
-
-    public:
-        iterator begin() { return { _start }; };
-        iterator end() { return { _end }; };
-        Container(window* start, window* end)
-        {
-            _start = start;
-            _end = end;
-        }
-    };
-
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
     loco_global<uint32_t, 0x00523508> _523508;
     loco_global<window[12], 0x011370AC> _windows;
     loco_global<window*, 0x0113D754> _windows_end;
+
+    struct WindowList
+    {
+        window* begin() const { return &_windows[0]; };
+        window* end() const { return _windows_end; };
+    };
 
     void register_hooks()
     {
@@ -264,7 +231,7 @@ namespace openloco::ui::windowmgr
 
     window* get(size_t index)
     {
-        return &_windows.get()[index];
+        return &_windows[index];
     }
 
     size_t num_windows()
@@ -297,12 +264,11 @@ namespace openloco::ui::windowmgr
     // 0x004C9B56
     window* find(window_type type)
     {
-        auto container = Container(_windows, _windows_end);
-        for (window* e : container)
+        for (window& w : WindowList())
         {
-            if (e->type == type)
+            if (w.type == type)
             {
-                return e;
+                return &w;
             }
         }
 
@@ -312,12 +278,11 @@ namespace openloco::ui::windowmgr
     // 0x004C9B56
     window* find(window_type type, window_number number)
     {
-        auto container = Container(_windows, _windows_end);
-        for (window* e : container)
+        for (window& w : WindowList())
         {
-            if (e->type == type && e->number == number)
+            if (w.type == type && w.number == number)
             {
-                return e;
+                return &w;
             }
         }
 
@@ -407,47 +372,44 @@ namespace openloco::ui::windowmgr
     // 0x004CB966
     void invalidate(window_type type)
     {
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            if (w->type != type)
+            if (w.type != type)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
     // 0x004CB966
     void invalidate(window_type type, window_number number)
     {
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            if (w->type != type)
+            if (w.type != type)
                 continue;
 
-            if (w->number != number)
+            if (w.number != number)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
     // 0x004CB966
     void invalidate_widget(window_type type, window_number number, uint8_t widget_index)
     {
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            auto widget = &w->widgets[widget_index];
+            auto widget = w.widgets[widget_index];
 
-            if (widget->left != -2)
+            if (widget.left != -2)
             {
                 gfx::set_dirty_blocks(
-                    w->x + widget->left,
-                    w->y + widget->top,
-                    w->x + widget->right + 1,
-                    w->y + widget->bottom + 1);
+                    w.x + widget.left,
+                    w.y + widget.top,
+                    w.x + widget.right + 1,
+                    w.y + widget.bottom + 1);
             }
         }
     }
@@ -455,18 +417,17 @@ namespace openloco::ui::windowmgr
     // 0x004CC692
     void close(window_type type)
     {
-        bool loop = true;
-        while (loop)
+        bool repeat = true;
+        while (repeat)
         {
-            loop = false;
-            auto container = Container(_windows, _windows_end);
-            for (window* w : container)
+            repeat = false;
+            for (window& w : WindowList())
             {
-                if (w->type != type)
+                if (w.type != type)
                     continue;
 
-                close(w);
-                loop = true;
+                close(&w);
+                repeat = true;
                 break;
             }
         }
@@ -684,40 +645,39 @@ namespace openloco::ui::windowmgr
     void relocate_windows()
     {
         int16_t newLocation = 8;
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
             // Work out if the window requires moving
-            bool extendsX = (w->x + 10) >= ui::width();
-            bool extendsY = (w->y + 10) >= ui::height();
-            if ((w->flags & window_flags::stick_to_back) != 0 || (w->flags & window_flags::stick_to_front) != 0)
+            bool extendsX = (w.x + 10) >= ui::width();
+            bool extendsY = (w.y + 10) >= ui::height();
+            if ((w.flags & window_flags::stick_to_back) != 0 || (w.flags & window_flags::stick_to_front) != 0)
             {
                 // toolbars are 27px high
-                extendsY = (w->y + 10 - 27) >= ui::height();
+                extendsY = (w.y + 10 - 27) >= ui::height();
             }
 
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                int16_t oldX = w->x;
-                int16_t oldY = w->y;
-                w->x = newLocation;
-                w->y = newLocation + 28;
+                int16_t oldX = w.x;
+                int16_t oldY = w.y;
+                w.x = newLocation;
+                w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
 
                 // Adjust the viewports if required.
-                if (w->viewports[0] != nullptr)
+                if (w.viewports[0] != nullptr)
                 {
-                    w->viewports[0]->x -= oldX - w->x;
-                    w->viewports[0]->y -= oldY - w->y;
+                    w.viewports[0]->x -= oldX - w.x;
+                    w.viewports[0]->y -= oldY - w.y;
                 }
 
-                if (w->viewports[1] != nullptr)
+                if (w.viewports[1] != nullptr)
                 {
-                    w->viewports[1]->x -= oldX - w->x;
-                    w->viewports[1]->y -= oldY - w->y;
+                    w.viewports[1]->x -= oldX - w.x;
+                    w.viewports[1]->y -= oldY - w.y;
                 }
             }
         }
@@ -731,46 +691,45 @@ namespace openloco::ui::windowmgr
         int top = self->y;
         int bottom = self->y + self->height;
 
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            if (w == self)
+            if (&w == self)
                 continue;
 
-            if (w->flags & window_flags::stick_to_back)
+            if (w.flags & window_flags::stick_to_back)
                 continue;
 
-            if (w->flags & window_flags::stick_to_front)
+            if (w.flags & window_flags::stick_to_front)
                 continue;
 
-            if (w->x >= right)
+            if (w.x >= right)
                 continue;
 
-            if (w->x + w->width <= left)
+            if (w.x + w.width <= left)
                 continue;
 
-            if (w->y >= bottom)
+            if (w.y >= bottom)
                 continue;
 
-            if (w->y + w->height <= top)
+            if (w.y + w.height <= top)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
 
             if (bottom < ui::height() - 80)
             {
-                int dY = bottom + 3 - w->y;
-                w->y += dY;
-                w->invalidate();
+                int dY = bottom + 3 - w.y;
+                w.y += dY;
+                w.invalidate();
 
-                if (w->viewports[0] != nullptr)
+                if (w.viewports[0] != nullptr)
                 {
-                    w->viewports[0]->y += dY;
+                    w.viewports[0]->y += dY;
                 }
 
-                if (w->viewports[1] != nullptr)
+                if (w.viewports[1] != nullptr)
                 {
-                    w->viewports[1]->y += dY;
+                    w.viewports[1]->y += dY;
                 }
             }
         }
@@ -778,20 +737,18 @@ namespace openloco::ui::windowmgr
 
     void sub_4B93A5(uint16_t arg)
     {
-
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            if (w->type != window_type::vehicle)
+            if (w.type != window_type::vehicle)
                 continue;
 
-            if (w->number != arg)
+            if (w.number != arg)
                 continue;
 
-            if (w->var_870 != 4)
+            if (w.var_870 != 4)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
@@ -799,16 +756,15 @@ namespace openloco::ui::windowmgr
     {
         close(window_type::dropdown, 0);
 
-        auto container = Container(_windows, _windows_end);
-        for (window* w : container)
+        for (window& w : WindowList())
         {
-            if (w->flags & window_flags::stick_to_back)
+            if (w.flags & window_flags::stick_to_back)
                 continue;
 
-            if (w->flags & window_flags::stick_to_front)
+            if (w.flags & window_flags::stick_to_front)
                 continue;
 
-            close(w);
+            close(&w);
             break;
         }
     }
