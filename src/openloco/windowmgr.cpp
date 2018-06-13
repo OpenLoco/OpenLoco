@@ -815,7 +815,7 @@ namespace openloco::ui::windowmgr
 
     static loco_global<int32_t, 0x00525330> _cursorWheel;
 
-    static void window_scroll_wheel_input(ui::window *window, widget_index widgetIndex, int wheel)
+    static void window_scroll_wheel_input(ui::window* window, widget_index widgetIndex, int wheel)
     {
         int scrollIndex = window->get_scroll_data_index(widgetIndex);
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
@@ -1023,5 +1023,4 @@ namespace openloco::ui::windowmgr
             }
         }
     }
-
 }
