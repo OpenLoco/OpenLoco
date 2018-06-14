@@ -440,7 +440,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CC692
-    void close(window_type type, uint16_t id)
+    void close(window_type type, window_number id)
     {
         auto window = find(type, id);
         if (window != nullptr)
