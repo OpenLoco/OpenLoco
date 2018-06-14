@@ -1920,6 +1920,22 @@ uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_0(int16_t x_offset, in
     return indexToYaw[i];
 }
 
+// 0x00503E6E
+constexpr uint8_t indexToYaw_12[] = {
+    16,
+    24,
+    32,
+    16,
+    8,
+    0,
+    48,
+    40,
+    32,
+    48,
+    56,
+    0
+};
+
 // 0x004BF5B3
 uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset)
 {
@@ -1952,22 +1968,7 @@ uint8_t openloco::vehicle_body::vehicle_update_sprite_yaw_1(int16_t x_offset, in
         }
     }
 
-    // 0x00503E6E
-    constexpr uint8_t indexToYaw[] = {
-        16,
-        24,
-        32,
-        16,
-        8,
-        0,
-        48,
-        40,
-        32,
-        48,
-        56,
-        0
-    };
-    return indexToYaw[i];
+    return indexToYaw_12[i];
 }
 
 // 0x004BF5FB
@@ -3349,13 +3350,20 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
     assert(false);
 }
 
-void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
+/**
+ * Seems to work out where to land or something like that.
+ *  xy_distance = regs.ebp
+ *  target_z = regs.dx
+ *  target_yaw = regs.bl
+ *  airportFlags = vehicle_var_525BB0
+ */
+void vehicle_0::sub_427122(uint32_t& xy_distance, uint16_t& target_z, uint8_t& target_yaw)
 {
     vehicle_var_525BB0 = 0;
-    station_id_t station_id2 = (station_id_t)0xFFFF;
+    station_id_t station_id2 = station_id::null;
     map::map_pos3 loc;
     bool loc_found = false;
-    if (station_id == (station_id_t)0xFFFF)
+    if (station_id == station_id::null)
     {
         uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
         if (bl == 3 || !(vehicle_var_4FE088[bl] & (1 << 3)))
@@ -3389,7 +3397,6 @@ void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
                 loc_found = true;
             }
         }
-        // 0x004271B8
     }
 
     if (loc_found == false)
@@ -3414,17 +3421,60 @@ void vehicle_0::sub_427122(uint32_t& unk_1, uint16_t& unk_2, uint8_t& unk_3)
         }
     }
 
-    // 0x4271E4
+    loc.x -= x;
+    loc.y -= y;
 
+    target_yaw = plane_get_yaw_from_loc(loc);
 
-    unk_2 = loc.z;
+    // xy_distance manhatten distance to station?
+    xy_distance = std::abs(loc.x) + std::abs(loc.y);
+
+    target_z = loc.z;
+}
+
+/**
+ * 0x004BF568
+ * Works out what Yaw a plane should have to change direction to loc
+ */
+uint8_t vehicle_0::plane_get_yaw_from_loc(const map::map_pos &loc)
+{
+    uint8_t index = 0;
+    if (loc.x < 0)
+    {
+        index = 3;
+    }
+
+    if (loc.y < 0)
+    {
+        index += 6;
+    }
+
+    uint32_t param2;
+    if (loc.y == 0)
+    {
+        param2 = std::numeric_limits<uint32_t>::max();
+    }
+    else
+    {
+        param2 = std::abs(loc.x) * 65536 / std::abs(loc.y);
+    }
+
+    if (param2 >= 3434)
+    {
+        index++;
+        if (param2 >= 1250501)
+        {
+            index++;
+        }
+    }
+
     registers regs;
-    regs.esi = (int32_t)this;
-    call(0x00427122, regs);
+    regs.ax = loc.x;
+    regs.cx = loc.y;
+    call(0x004BF56B, regs);
 
-    unk_1 = regs.ebp;
-    unk_2 = regs.dx;
-    unk_3 = regs.bl;
+    assert(regs.eax == indexToYaw_12[index]);
+    return indexToYaw_12[index];
 }
 
 void vehicle_0::sub_426E26(uint16_t _station_Id, uint8_t unk_var_68, uint16_t& airportFlags)

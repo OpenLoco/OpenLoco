@@ -10,6 +10,7 @@ namespace openloco
     namespace map
     {
         struct map_pos3;
+        struct map_pos;
     }
 
     namespace flags_5f
@@ -247,6 +248,7 @@ namespace openloco
         uint8_t sub_427BF2();
         uint32_t sub_427C05(uint32_t unk_1);
         void sub_42843E();
+        uint8_t plane_get_yaw_from_loc(const map::map_pos &loc);
     };
 
     struct vehicle_1 : vehicle_base
