@@ -99,7 +99,7 @@ namespace openloco::ui::windowmgr
     void call_event_viewport_rotate_on_all_windows();
     void relocate_windows();
     void sub_4CEE0B(window* self);
-    void sub_4B93A5(uint16_t arg);
+    void sub_4B93A5(window_number number);
     void close_topmost();
     void all_wheel_input();
 }

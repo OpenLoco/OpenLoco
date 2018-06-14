@@ -744,14 +744,14 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004B93A5
-    void sub_4B93A5(uint16_t arg)
+    void sub_4B93A5(window_number number)
     {
         for (window& w : WindowList())
         {
             if (w.type != window_type::vehicle)
                 continue;
 
-            if (w.number != arg)
+            if (w.number != number)
                 continue;
 
             if (w.var_870 != 4)
