@@ -401,6 +401,12 @@ namespace openloco::ui::windowmgr
     {
         for (window& w : WindowList())
         {
+            if (w.type != type)
+                continue;
+
+            if (w.number != number)
+                continue;
+
             auto widget = w.widgets[widget_index];
 
             if (widget.left != -2)
