@@ -86,11 +86,11 @@ namespace openloco::ui
 
     namespace window_flags
     {
-        constexpr uint32_t flag_0 = 1 << 0;
-        constexpr uint32_t flag_1 = 1 << 1;
+        constexpr uint32_t stick_to_back = 1 << 0;
+        constexpr uint32_t stick_to_front = 1 << 1;
         constexpr uint32_t scrolling_to_location = 1 << 3;
-        constexpr uint32_t flag_4 = 1 << 4;
-        constexpr uint32_t flag_5 = 1 << 5;
+        constexpr uint32_t transparent = 1 << 4;
+        constexpr uint32_t no_background = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t resizable = 1 << 9;
@@ -129,7 +129,7 @@ namespace openloco::ui
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
                 uint32_t text_input;
-                uint32_t event_21;
+                uint32_t viewport_rotate;
                 uint32_t event_22;
                 uint32_t tooltip;
                 uint32_t cursor;
@@ -231,7 +231,7 @@ namespace openloco::ui
 
         void call_close();                                                                                // 0
         void call_on_mouse_up(int8_t widget_index);                                                       // 1
-        void call_on_resize();                                                                            // 2
+        ui::window* call_on_resize();                                                                     // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
@@ -240,6 +240,7 @@ namespace openloco::ui
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
+        void call_viewport_rotate();                                                                      // 21
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25

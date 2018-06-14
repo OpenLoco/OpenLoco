@@ -703,23 +703,6 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
-        0x004CC6EA,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            auto window = (ui::window*)regs.esi;
-            ui::windowmgr::close(window);
-            regs = backup;
-            return 0;
-        });
-
-    register_hook(
-        0x004CD3D0,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windowmgr::dispatch_update_all();
-            return 0;
-        });
-
-    register_hook(
         0x004CD47A,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             input::process_mouse_over(regs.ax, regs.bx);
@@ -737,6 +720,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    ui::windowmgr::register_hooks();
     ui::tooltip::register_hooks();
 
     register_hook(
@@ -764,30 +748,6 @@ void openloco::interop::register_hooks()
         0x004392BD,
         [](registers& regs) -> uint8_t {
             gui::resize();
-            return 0;
-        });
-
-    register_hook(
-        0x004C5FC8,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
-            auto window = (ui::window*)regs.esi;
-
-            // Make a copy to prevent overwriting from nested calls
-            auto regs2 = regs;
-
-            ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
-            window++;
-
-            while (window < addr<0x0113D754, ui::window*>())
-            {
-                if ((window->flags & ui::window_flags::flag_4) != 0)
-                {
-                    ui::windowmgr::draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
-                }
-                window++;
-            }
-
             return 0;
         });
 

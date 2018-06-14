@@ -30,4 +30,5 @@ namespace openloco::ui::scrollview
         int16_t* output_y,
         scroll_part* output_scroll_area,
         int32_t* scroll_id);
+    void update_thumbs(window* window, widget_index widgetIndex);
 }

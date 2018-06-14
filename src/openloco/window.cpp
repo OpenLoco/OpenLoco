@@ -185,11 +185,13 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_mouse_up, regs);
     }
 
-    void window::call_on_resize()
+    ui::window* window::call_on_resize()
     {
         registers regs;
         regs.esi = (uint32_t)this;
         call((uint32_t)this->event_handlers->on_resize, regs);
+
+        return (window*)regs.esi;
     }
 
     void window::call_3(int8_t widget_index)
@@ -237,6 +239,13 @@ namespace openloco::ui
         regs.cx = xPos;
         regs.dx = yPos;
         call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
+    }
+
+    void window::call_viewport_rotate()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call((int32_t)this->event_handlers->viewport_rotate, regs);
     }
 
     bool window::call_tooltip(int16_t widget_index)
@@ -295,7 +304,7 @@ namespace openloco::ui
     // 0x004CA4DF
     void window::draw(gfx::drawpixelinfo_t* dpi)
     {
-        if ((this->flags & window_flags::flag_4) && !(this->flags & window_flags::flag_5))
+        if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
         {
             gfx::fill_rect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
@@ -334,7 +343,7 @@ namespace openloco::ui
                 break;
             }
 
-            if ((this->flags & window_flags::flag_5) == 0)
+            if ((this->flags & window_flags::no_background) == 0)
             {
                 // Check if widget is outside the draw region
                 if (this->x + widget->left >= dpi->x + dpi->width && this->x + widget->right < dpi->x)

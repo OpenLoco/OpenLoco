@@ -71,6 +71,7 @@ namespace openloco::ui
 
 namespace openloco::ui::windowmgr
 {
+    void register_hooks();
     window_type current_modal_type();
     void current_modal_type(window_type type);
     window* get(size_t index);
@@ -79,13 +80,14 @@ namespace openloco::ui::windowmgr
     void update();
     window* get_main();
     window* find(window_type type);
-    window* find(window_type type, uint16_t id);
+    window* find(window_type type, window_number number);
     window* find_at(int16_t x, int16_t y);
+    window* find_at_alt(int16_t x, int16_t y);
     window* bring_to_front(window* window);
     window* bring_to_front(window_type type, uint16_t id);
     void invalidate(window_type type);
-    void invalidate(window_type type, uint16_t id);
-    void invalidate_widget(window_type type, uint16_t id, uint8_t widget_index);
+    void invalidate(window_type type, window_number number);
+    void invalidate_widget(window_type type, window_number number, uint8_t widget_index);
     void close(window_type type);
     void close(window_type type, uint16_t id);
     void close(window* window);
@@ -94,6 +96,12 @@ namespace openloco::ui::windowmgr
     void init_scroll_widgets(window* window);
     void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
+    void call_event_viewport_rotate_on_all_windows();
+    void relocate_windows();
+    void sub_4CEE0B(window* self);
+    void sub_4B93A5(window_number number);
+    void close_topmost();
+    void all_wheel_input();
 }
 
 namespace openloco::ui::windows
@@ -112,6 +120,7 @@ namespace openloco::ui::windows
 
     bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);
     bool prompt_ok_cancel(string_id okButtonStringId);
+    void map_center_on_view_point();
 }
 
 namespace openloco::ui::textinput
