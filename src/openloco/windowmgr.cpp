@@ -490,6 +490,7 @@ namespace openloco::ui::windowmgr
         return create_window(type, x, y, width, height, flags, events);
     }
 
+    // 0x004CA17F
     void init_scroll_widgets(window* window)
     {
         registers regs;
@@ -631,6 +632,7 @@ namespace openloco::ui::windowmgr
         call(0x004CEC25); // viewport_update_pointers
     }
 
+    // 0x0045F18B
     void sub_45F18B()
     {
         window* w = _windows_end;
@@ -735,6 +737,7 @@ namespace openloco::ui::windowmgr
         }
     }
 
+    // 0x004B93A5
     void sub_4B93A5(uint16_t arg)
     {
         for (window& w : WindowList())
@@ -752,6 +755,7 @@ namespace openloco::ui::windowmgr
         }
     }
 
+    // 0x004BF089
     void close_topmost()
     {
         close(window_type::dropdown, 0);
@@ -867,6 +871,7 @@ namespace openloco::ui::windowmgr
         call(0x0048DDC3);
     }
 
+    // 0x004C6202
     void all_wheel_input()
     {
         int wheel = 0;
