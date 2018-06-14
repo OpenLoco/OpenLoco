@@ -6,6 +6,7 @@
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
+#include "ui/scrollview.h"
 #include "widget.h"
 #include <cassert>
 #include <cinttypes>
@@ -210,18 +211,86 @@ namespace openloco::ui
         call(0x004CA4BD, regs);
     }
 
+    // 0x004CA115
     void window::update_scroll_widgets()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call(0x004CA115, regs);
+        uint32_t s = 0;
+        for (int w = 0;; ++w)
+        {
+            ui::widget_t* widget = &this->widgets[w];
+
+            if (widget->type == widget_type::end)
+                break;
+
+            if (widget->type != widget_type::scrollview)
+                continue;
+
+            uint16_t scrollWidth, scrollHeight;
+            this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
+
+            bool invalidate = false;
+
+            if (widget->content & (1 << 0))
+            {
+                if (this->scroll_areas[s].h_right != scrollWidth + 1)
+                {
+                    invalidate = true;
+                }
+            }
+
+            if (widget->content & (1 << 1))
+            {
+                if (this->scroll_areas[s].v_bottom != scrollHeight + 1)
+                {
+                    invalidate = true;
+                }
+            }
+
+            if (invalidate)
+            {
+                ui::scrollview::update_thumbs(this, w);
+                this->invalidate();
+            }
+
+            s++;
+        }
     }
 
-    void window::sub_4CA17F()
+    // 0x004CA17F
+    void window::init_scroll_widgets()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call(0x004CA17F, regs);
+        uint32_t s = 0;
+        for (int w = 0;; ++w)
+        {
+            ui::widget_t* widget = &this->widgets[w];
+
+            if (widget->type == widget_type::end)
+                break;
+
+            if (widget->type != widget_type::scrollview)
+                continue;
+
+            this->scroll_areas[s].flags = 0;
+
+            uint16_t scrollWidth, scrollHeight;
+            this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
+            this->scroll_areas[s].h_left = 0;
+            this->scroll_areas[s].h_right = scrollWidth + 1;
+            this->scroll_areas[s].h_left = 0;
+            this->scroll_areas[s].v_bottom = scrollHeight + 1;
+
+            if (widget->content & (1 << 0))
+            {
+                this->scroll_areas[s].flags |= 1 << 0;
+            }
+            if (widget->content & (1 << 1))
+            {
+                this->scroll_areas[s].flags |= 1 << 4;
+            }
+
+            ui::scrollview::update_thumbs(this, w);
+            s++;
+        }
     }
 
     int8_t window::get_scroll_data_index(widget_index index)
@@ -383,6 +452,16 @@ namespace openloco::ui
         regs.edx = widget_index;
         regs.esi = (uint32_t)this;
         call((uint32_t)this->event_handlers->on_dropdown, regs);
+    }
+
+    void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    {
+        registers regs;
+        regs.eax = scrollIndex;
+        regs.esi = (uintptr_t)this;
+        call((uint32_t)this->event_handlers->get_scroll_size, regs);
+        *scrollWidth = regs.cx;
+        *scrollHeight = regs.dx;
     }
 
     void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)

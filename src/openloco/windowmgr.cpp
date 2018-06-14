@@ -496,14 +496,6 @@ namespace openloco::ui::windowmgr
         return create_window(type, x, y, width, height, flags, events);
     }
 
-    // 0x004CA17F
-    void init_scroll_widgets(window* window)
-    {
-        registers regs;
-        regs.esi = (uint32_t)window;
-        call(0x4ca17f, regs);
-    }
-
     // 0x004C5FC8
     void draw_single(gfx::drawpixelinfo_t* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {

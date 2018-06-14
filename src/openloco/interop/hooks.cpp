@@ -761,6 +761,28 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(
+        0x004CA115,
+        [](registers& regs) -> uint8_t {
+            registers backup = regs;
+            auto window = (ui::window*)regs.esi;
+            window->update_scroll_widgets();
+            regs = backup;
+
+            return 0;
+        });
+
+    register_hook(
+        0x004CA17F,
+        [](registers& regs) -> uint8_t {
+            registers backup = regs;
+            auto window = (ui::window*)regs.esi;
+            window->init_scroll_widgets();
+            regs = backup;
+
+            return 0;
+        });
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
     // Can be removed when windowmgr:update() is hooked
