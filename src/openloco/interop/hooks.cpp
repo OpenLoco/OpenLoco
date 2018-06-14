@@ -762,6 +762,30 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004C9513,
+        [](registers& regs) -> uint8_t {
+            registers backup = regs;
+            auto window = (ui::window*)regs.esi;
+            int16_t x = regs.ax;
+            int16_t y = regs.bx;
+
+            auto widgetIndex = window->find_widget_at(x, y);
+
+            regs = backup;
+            regs.edx = widgetIndex;
+            if (widgetIndex == -1)
+            {
+                regs.edi = (uintptr_t)&window->widgets[0];
+            }
+            else
+            {
+                regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+            }
+
+            return 0;
+        });
+
+    register_hook(
         0x004CA115,
         [](registers& regs) -> uint8_t {
             registers backup = regs;

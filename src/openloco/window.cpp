@@ -339,13 +339,44 @@ namespace openloco::ui
     // 0x004C9513
     widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
     {
-        registers regs;
-        regs.ax = xPos;
-        regs.bx = yPos;
-        regs.esi = (int32_t)this;
-        call(0x004C9513, regs);
+        this->call_prepare_draw();
 
-        return (widget_index)regs.dx;
+        widget_index activeWidget = -1;
+
+        widget_index widgetIndex = -1;
+        for (ui::widget_t* widget = &this->widgets[0]; widget->type != widget_type::end; widget++)
+        {
+            widgetIndex++;
+
+            if (widget->type == widget_type::none)
+                continue;
+
+            if (xPos < this->x + widget->left)
+                continue;
+
+            if (xPos > this->x + widget->right)
+                continue;
+
+            if (yPos < this->y + widget->top)
+                continue;
+
+            if (yPos > this->y + widget->bottom)
+                continue;
+
+            activeWidget = widgetIndex;
+        }
+
+        if (activeWidget == -1)
+        {
+            return -1;
+        }
+
+        if (this->widgets[activeWidget].type == widget_type ::wt_18)
+        {
+            activeWidget++;
+        }
+
+        return activeWidget;
     }
 
     void window::call_close()
