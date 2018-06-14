@@ -35,7 +35,7 @@ namespace openloco::ui::windowmgr
             0x0045F18B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                sub_45F18B();
+                call_event_viewport_rotate_on_all_windows();
                 regs = backup;
 
                 return 0;
@@ -639,13 +639,13 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x0045F18B
-    void sub_45F18B()
+    void call_event_viewport_rotate_on_all_windows()
     {
         window* w = _windows_end;
         while (w > _windows)
         {
             w--;
-            w->call_21();
+            w->call_viewport_rotate();
         }
     }
 

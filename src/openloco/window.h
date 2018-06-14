@@ -129,7 +129,7 @@ namespace openloco::ui
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
                 uint32_t text_input;
-                uint32_t event_21;
+                uint32_t viewport_rotate;
                 uint32_t event_22;
                 uint32_t tooltip;
                 uint32_t cursor;
@@ -240,7 +240,7 @@ namespace openloco::ui
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
-        void call_21();                                                                                   // 21
+        void call_viewport_rotate();                                                                      // 21
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
