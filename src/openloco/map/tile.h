@@ -62,14 +62,8 @@ namespace openloco::map
     };
 #pragma pack(pop)
 
-    // TODO: rename struct
-    typedef struct LocationXY16
-    {
-        int16_t x, y;
-    } LocationXY16;
-
     uint32_t tile_element_height(int16_t x, int16_t y);
-    LocationXY16 coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
+    map_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
 
     enum class element_type
     {

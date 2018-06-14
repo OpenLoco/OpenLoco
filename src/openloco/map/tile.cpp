@@ -139,11 +139,10 @@ namespace openloco::map
      * @param z
      * @param rotation
      * @return
-     * @todo: rename LocationXY16
      */
-    LocationXY16 coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
+    map_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
     {
-        LocationXY16 coordinate_2d;
+        map_pos coordinate_2d;
 
         switch (rotation)
         {
@@ -165,6 +164,7 @@ namespace openloco::map
                 coordinate_2d.y = ((-y + x) >> 1) - z;
                 break;
         }
+
         return coordinate_2d;
     }
 }
