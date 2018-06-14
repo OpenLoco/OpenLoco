@@ -32,19 +32,32 @@ namespace openloco::ui::windowmgr
     void register_hooks()
     {
         register_hook(
-            0x004CC6EA,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            0x0045F18B,
+            [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
-                close(window);
+                sub_45F18B();
                 regs = backup;
+
                 return 0;
             });
 
         register_hook(
-            0x004CD3D0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                dispatch_update_all();
+            0x004B93A5,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                sub_4B93A5(regs.bx);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004BF089,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                close_topmost();
+                regs = backup;
+
                 return 0;
             });
 
@@ -73,37 +86,11 @@ namespace openloco::ui::windowmgr
             });
 
         register_hook(
-            0x004C9B56,
+            0x004C6202,
             [](registers& regs) -> uint8_t {
-                ui::window* w;
-                if (regs.cx & find_flag::by_type)
-                {
-                    w = find((ui::window_type)regs.cx);
-                }
-                else
-                {
-                    w = find((ui::window_type)regs.cx, regs.dx);
-                }
-
-                regs.esi = (uintptr_t)w;
-                if (w == nullptr)
-                {
-                    return X86_FLAG_ZERO;
-                }
-
-                return 0;
-            });
-
-        register_hook(
-            0x004CE438,
-            [](registers& regs) -> uint8_t {
-                auto w = get_main();
-
-                regs.esi = (uintptr_t)w;
-                if (w == nullptr)
-                {
-                    return X86_FLAG_CARRY;
-                }
+                registers backup = regs;
+                all_wheel_input();
+                regs = backup;
 
                 return 0;
             });
@@ -126,6 +113,28 @@ namespace openloco::ui::windowmgr
                 auto window = find_at_alt(regs.ax, regs.bx);
                 regs = backup;
                 regs.esi = (uintptr_t)window;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004C9B56,
+            [](registers& regs) -> uint8_t {
+                ui::window* w;
+                if (regs.cx & find_flag::by_type)
+                {
+                    w = find((ui::window_type)regs.cx);
+                }
+                else
+                {
+                    w = find((ui::window_type)regs.cx, regs.dx);
+                }
+
+                regs.esi = (uintptr_t)w;
+                if (w == nullptr)
+                {
+                    return X86_FLAG_ZERO;
+                }
 
                 return 0;
             });
@@ -169,12 +178,12 @@ namespace openloco::ui::windowmgr
             });
 
         register_hook(
-            0x0045F18B,
-            [](registers& regs) -> uint8_t {
+            0x004CC6EA,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_45F18B();
+                auto window = (ui::window*)regs.esi;
+                close(window);
                 regs = backup;
-
                 return 0;
             });
 
@@ -189,40 +198,31 @@ namespace openloco::ui::windowmgr
             });
 
         register_hook(
+            0x004CD3D0,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                dispatch_update_all();
+                return 0;
+            });
+
+        register_hook(
+            0x004CE438,
+            [](registers& regs) -> uint8_t {
+                auto w = get_main();
+
+                regs.esi = (uintptr_t)w;
+                if (w == nullptr)
+                {
+                    return X86_FLAG_CARRY;
+                }
+
+                return 0;
+            });
+
+        register_hook(
             0x004CEE0B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
                 sub_4CEE0B((ui::window*)regs.esi);
-                regs = backup;
-
-                return 0;
-            });
-
-        register_hook(
-            0x004B93A5,
-            [](registers& regs) -> uint8_t {
-                registers backup = regs;
-                sub_4B93A5(regs.bx);
-                regs = backup;
-
-                return 0;
-            });
-
-        register_hook(
-            0x004BF089,
-            [](registers& regs) -> uint8_t {
-                registers backup = regs;
-                close_topmost();
-                regs = backup;
-
-                return 0;
-            });
-
-        register_hook(
-            0x004C6202,
-            [](registers& regs) -> uint8_t {
-                registers backup = regs;
-                all_wheel_input();
                 regs = backup;
 
                 return 0;
