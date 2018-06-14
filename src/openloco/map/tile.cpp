@@ -1,10 +1,11 @@
 #include "tile.h"
 #include "../industrymgr.h"
+#include "../interop/interop.hpp"
 #include "../objects/objectmgr.h"
 #include <cassert>
 
 using namespace openloco;
-using namespace openloco::map;
+using namespace openloco::interop;
 
 const uint8_t* tile_element_base::data() const
 {
@@ -107,4 +108,63 @@ surface_element* tile::surface()
         }
     }
     return result;
+}
+
+namespace openloco::map
+{
+    /**
+     * Return the absolute height of an element, given its (x, y) coordinates
+     * remember to & with 0xFFFF if you don't want water affecting results
+     *
+     * @param x @<ax>
+     * @param y @<cx>
+     * @return height @<edx>
+     *
+     * 0x00467297
+     */
+    uint32_t tile_element_height(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.cx = y;
+        call(0x00467297, regs);
+
+        return regs.edx;
+    }
+
+    /**
+     *
+     * @param x @<ax>
+     * @param y
+     * @param z
+     * @param rotation
+     * @return
+     */
+    map_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
+    {
+        map_pos coordinate_2d;
+
+        switch (rotation)
+        {
+            default:
+            case 0:
+                coordinate_2d.x = y - x;
+                coordinate_2d.y = ((y + x) >> 1) - z;
+                break;
+            case 1:
+                coordinate_2d.x = -y - x;
+                coordinate_2d.y = ((y - x) >> 1) - z;
+                break;
+            case 2:
+                coordinate_2d.x = -y + x;
+                coordinate_2d.y = ((-y - x) >> 1) - z;
+                break;
+            case 3:
+                coordinate_2d.x = y + x;
+                coordinate_2d.y = ((-y + x) >> 1) - z;
+                break;
+        }
+
+        return coordinate_2d;
+    }
 }
