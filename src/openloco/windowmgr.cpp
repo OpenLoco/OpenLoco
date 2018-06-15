@@ -133,7 +133,7 @@ namespace openloco::ui::windowmgr
                 ui::window* w;
                 if (regs.cx & find_flag::by_type)
                 {
-                    w = find((ui::window_type)regs.cx);
+                    w = find((ui::window_type)(regs.cx & ~find_flag::by_type));
                 }
                 else
                 {
