@@ -203,6 +203,14 @@ namespace openloco::ui
         }
     }
 
+    // 0x004C99B9
+    void window::invalidate_pressed_image_buttons()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x004C99B9, regs);
+    }
+
     // 0x004CA4BD
     void window::invalidate()
     {

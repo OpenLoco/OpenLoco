@@ -96,6 +96,16 @@ namespace openloco::ui::windowmgr
             });
 
         register_hook(
+            0x004C9984,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                invalidate_all_windows_after_input();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x004C9A95,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
@@ -417,6 +427,24 @@ namespace openloco::ui::windowmgr
                     w.x + widget.right + 1,
                     w.y + widget.bottom + 1);
             }
+        }
+    }
+
+    // 0x004C9984
+    void invalidate_all_windows_after_input()
+    {
+        if (is_paused())
+        {
+            _523508++;
+        }
+
+        auto window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->update_scroll_widgets();
+            window->invalidate_pressed_image_buttons();
+            window->call_on_resize();
         }
     }
 

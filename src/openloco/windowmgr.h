@@ -88,6 +88,7 @@ namespace openloco::ui::windowmgr
     void invalidate(window_type type);
     void invalidate(window_type type, window_number number);
     void invalidate_widget(window_type type, window_number number, uint8_t widget_index);
+    void invalidate_all_windows_after_input();
     void close(window_type type);
     void close(window_type type, uint16_t id);
     void close(window* window);

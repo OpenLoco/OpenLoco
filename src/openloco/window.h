@@ -226,6 +226,7 @@ namespace openloco::ui
         bool is_holdable(widget_index index);
         bool can_resize();
         void viewports_update_position();
+        void invalidate_pressed_image_buttons();
         void invalidate();
         void update_scroll_widgets();
         void init_scroll_widgets();
