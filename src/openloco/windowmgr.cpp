@@ -851,24 +851,61 @@ namespace openloco::ui::windowmgr
         return false;
     }
 
-    // TODO: Move
-    static void sub_45EFDB(ui::window* window)
+    static void viewport_zoom_set(ui::window* w, int8_t zoomLevel)
     {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045EFDB, regs);
+        viewport* v = w->viewports[0];
+        viewport_config* vc = &w->viewport_configurations[0];
+
+        zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
+        if (v->zoom == zoomLevel)
+            return;
+
+        // Zoom in
+        while (v->zoom > zoomLevel)
+        {
+            v->zoom--;
+            vc->saved_view_x += v->view_width / 4;
+            vc->saved_view_y += v->view_height / 4;
+            v->view_width /= 2;
+            v->view_height /= 2;
+        }
+
+        // Zoom out
+        while (v->zoom < zoomLevel)
+        {
+            v->zoom++;
+            vc->saved_view_x -= v->view_width / 2;
+            vc->saved_view_y -= v->view_height / 2;
+            v->view_width *= 2;
+            v->view_height *= 2;
+        }
+
+        w->invalidate();
     }
 
     // TODO: Move
-    static void sub_45F015(ui::window* window)
+    // 0x0045F015
+    static void viewport_zoom_in(ui::window* window)
     {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F015, regs);
+        if (window->viewports[0] == nullptr)
+            return;
+
+        viewport_zoom_set(window, window->viewports[0]->zoom + 1);
     }
 
     // TODO: Move
-    static void sub_45F04F(ui::window* window)
+    // 0x0045EFDB
+    static void viewport_zoom_out(ui::window* window)
+    {
+        if (window->viewports[0] == nullptr)
+            return;
+
+        viewport_zoom_set(window, window->viewports[0]->zoom - 1);
+    }
+
+    // TODO: Move
+    // 0x0045F04F
+    static void viewport_rotate_right(ui::window* window)
     {
         registers regs;
         regs.esi = (uintptr_t)window;
@@ -876,7 +913,8 @@ namespace openloco::ui::windowmgr
     }
 
     // TODO: Move
-    static void sub_45F0ED(ui::window* window)
+    // 0x0045F0ED
+    static void viewport_rotate_left(ui::window* window)
     {
         registers regs;
         regs.esi = (uintptr_t)window;
@@ -884,6 +922,7 @@ namespace openloco::ui::windowmgr
     }
 
     // TODO: Move
+    // 0x0049771C
     static void sub_49771C()
     {
         // Might have something to do with town labels
@@ -891,6 +930,7 @@ namespace openloco::ui::windowmgr
     }
 
     // TODO: Move
+    // 0x0048DDC3
     static void sub_48DDC3()
     {
         // Might have something to do with station labels
@@ -941,11 +981,11 @@ namespace openloco::ui::windowmgr
             {
                 if (wheel > 0)
                 {
-                    sub_45F04F(main);
+                    viewport_rotate_right(main);
                 }
                 else if (wheel < 0)
                 {
-                    sub_45F0ED(main);
+                    viewport_rotate_left(main);
                 }
                 sub_49771C();
                 sub_48DDC3();
@@ -968,11 +1008,11 @@ namespace openloco::ui::windowmgr
 
                 if (wheel > 0)
                 {
-                    sub_45F015(window);
+                    viewport_zoom_in(window);
                 }
                 else if (wheel < 0)
                 {
-                    sub_45EFDB(window);
+                    viewport_zoom_out(window);
                 }
                 sub_49771C();
                 sub_48DDC3();
