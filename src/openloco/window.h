@@ -226,9 +226,10 @@ namespace openloco::ui
         bool is_holdable(widget_index index);
         bool can_resize();
         void viewports_update_position();
+        void invalidate_pressed_image_buttons();
         void invalidate();
         void update_scroll_widgets();
-        void sub_4CA17F();
+        void init_scroll_widgets();
         int8_t get_scroll_data_index(widget_index index);
         bool move(int16_t dx, int16_t dy);
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
@@ -243,6 +244,7 @@ namespace openloco::ui
         void call_update();                                                                               // 7
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
+        void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         void call_viewport_rotate();                                                                      // 21

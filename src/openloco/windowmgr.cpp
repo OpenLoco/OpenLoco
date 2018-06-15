@@ -96,6 +96,16 @@ namespace openloco::ui::windowmgr
             });
 
         register_hook(
+            0x004C9984,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                invalidate_all_windows_after_input();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x004C9A95,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
@@ -420,6 +430,24 @@ namespace openloco::ui::windowmgr
         }
     }
 
+    // 0x004C9984
+    void invalidate_all_windows_after_input()
+    {
+        if (is_paused())
+        {
+            _523508++;
+        }
+
+        auto window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->update_scroll_widgets();
+            window->invalidate_pressed_image_buttons();
+            window->call_on_resize();
+        }
+    }
+
     // 0x004CC692
     void close(window_type type)
     {
@@ -494,14 +522,6 @@ namespace openloco::ui::windowmgr
         auto x = (ui::width() / 2) - (width / 2);
         auto y = std::max(28, (ui::height() / 2) - (height / 2));
         return create_window(type, x, y, width, height, flags, events);
-    }
-
-    // 0x004CA17F
-    void init_scroll_widgets(window* window)
-    {
-        registers regs;
-        regs.esi = (uint32_t)window;
-        call(0x4ca17f, regs);
     }
 
     // 0x004C5FC8

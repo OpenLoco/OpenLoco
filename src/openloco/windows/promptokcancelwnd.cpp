@@ -41,7 +41,7 @@ namespace openloco::ui::windows
         {
             window->widgets = (widget_t*)0x0050AE00;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
-            window->sub_4CA17F();
+            window->init_scroll_widgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);
             window->flags |= ui::window_flags::transparent;

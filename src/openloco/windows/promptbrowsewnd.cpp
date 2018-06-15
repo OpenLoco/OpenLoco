@@ -90,7 +90,7 @@ namespace openloco::ui::windows
         {
             window->widgets = (widget_t*)0x0050AD58;
             window->enabled_widgets = (1 << 2) | (1 << 4) | (1 << 6);
-            window->sub_4CA17F();
+            window->init_scroll_widgets();
             addr<0x01136FA2, int16_t>() = -1;
             addr<0x011370A9, uint8_t>() = 0;
             addr<0x01136FA4, int16_t>() = 0;
