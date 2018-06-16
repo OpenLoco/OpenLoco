@@ -1,3 +1,8 @@
+18.02+ (in development)
+------------------------------------------------------------------------
+- Feature: [#163] Remove terraforming limits outside of scenario editor.
+- Fix: Tooltips were calling the wrong event.
+
 18.02 (2018-02-15)
 ------------------------------------------------------------------------
 - Feature: [#12, #14, #50] Support for Linux and macOS.
