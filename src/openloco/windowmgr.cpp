@@ -32,6 +32,26 @@ namespace openloco::ui::windowmgr
     void register_hooks()
     {
         register_hook(
+            0x0045EFDB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto window = (ui::window*)regs.esi;
+                window->viewport_zoom_out(false);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x0045F015,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto window = (ui::window*)regs.esi;
+                window->viewport_zoom_in(false);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
             0x0045F18B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
