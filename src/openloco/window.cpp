@@ -315,6 +315,136 @@ namespace openloco::ui
         return scrollIndex;
     }
 
+    void window::viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
+    {
+        // Get mouse position to offset against.
+        int32_t mouse_x, mouse_y;
+        ui::get_cursor_pos(mouse_x, mouse_y);
+
+        // Compute map coordinate by mouse position.
+        // TODO
+        // get_map_coordinates_from_pos(mouse_x, mouse_y, VIEWPORT_INTERACTION_MASK_NONE, map_x, map_y, nullptr, nullptr, nullptr);
+
+        // Get viewport coordinates centring around the tile.
+        int32_t base_height = map::tile_element_height(*map_x, *map_y);
+        int16_t dest_x, dest_y;
+        viewport* v = this->viewports[0];
+        centre_2d_coordinates(*map_x, *map_y, base_height, &dest_x, &dest_y, v);
+
+        // Rebase mouse position onto centre of window, and compensate for zoom level.
+        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+
+        // Compute cursor offset relative to tile.
+        viewport_config* vc = &this->viewport_configurations[0];
+        *offset_x = (vc->saved_view_x - (dest_x + rebased_x)) * (1 << v->zoom);
+        *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
+    }
+
+    void window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
+    {
+        // Get viewport coordinates centring around the tile.
+        int16_t dest_x, dest_y;
+        int32_t base_height = map::tile_element_height(map_x, map_y);
+        viewport* v = this->viewports[0];
+        centre_2d_coordinates(map_x, map_y, base_height, &dest_x, &dest_y, v);
+
+        // Get mouse position to offset against.
+        int32_t mouse_x, mouse_y;
+        ui::get_cursor_pos(mouse_x, mouse_y);
+
+        // Rebase mouse position onto centre of window, and compensate for zoom level.
+        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+
+        // Apply offset to the viewport.
+        viewport_config* vc = &this->viewport_configurations[0];
+        vc->saved_view_x = dest_x + rebased_x + (offset_x / (1 << v->zoom));
+        vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
+    }
+
+    void window::viewport_zoom_set(int8_t zoomLevel, bool toCursor)
+    {
+        viewport* v = this->viewports[0];
+        viewport_config* vc = &this->viewport_configurations[0];
+
+        zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
+        if (v->zoom == zoomLevel)
+            return;
+
+        // Zooming to cursor? Remember where we're pointing at the moment.
+        int16_t saved_map_x = 0;
+        int16_t saved_map_y = 0;
+        int16_t offset_x = 0;
+        int16_t offset_y = 0;
+        if (toCursor)
+        {
+            this->viewport_get_map_coords_by_cursor(&saved_map_x, &saved_map_y, &offset_x, &offset_y);
+        }
+
+        // Zoom in
+        while (v->zoom > zoomLevel)
+        {
+            v->zoom--;
+            vc->saved_view_x += v->view_width / 4;
+            vc->saved_view_y += v->view_height / 4;
+            v->view_width /= 2;
+            v->view_height /= 2;
+        }
+
+        // Zoom out
+        while (v->zoom < zoomLevel)
+        {
+            v->zoom++;
+            vc->saved_view_x -= v->view_width / 2;
+            vc->saved_view_y -= v->view_height / 2;
+            v->view_width *= 2;
+            v->view_height *= 2;
+        }
+
+        // Zooming to cursor? Centre around the tile we were hovering over just now.
+        if (toCursor)
+        {
+            this->viewport_centre_tile_around_cursor(saved_map_x, saved_map_y, offset_x, offset_y);
+        }
+
+        this->invalidate();
+    }
+
+    // 0x0045F015
+    void window::viewport_zoom_in(bool toCursor)
+    {
+        if (this->viewports[0] == nullptr)
+            return;
+
+        this->viewport_zoom_set(this->viewports[0]->zoom + 1, toCursor);
+    }
+
+    // 0x0045EFDB
+    void window::viewport_zoom_out(bool toCursor)
+    {
+        if (this->viewports[0] == nullptr)
+            return;
+
+        this->viewport_zoom_set(this->viewports[0]->zoom - 1, toCursor);
+    }
+
+    // 0x0045F04F
+    void window::viewport_rotate_right()
+    {
+        registers regs;
+        regs.esi = (uintptr_t)this;
+        call(0x0045F04F, regs);
+    }
+
+    // 0x0045F0ED
+    void window::viewport_rotate_left()
+    {
+        registers regs;
+        regs.esi = (uintptr_t)this;
+        call(0x0045F0ED, regs);
+    }
+
     bool window::move(int16_t dx, int16_t dy)
     {
         if (dx == 0 && dy == 0)

@@ -4,7 +4,6 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
-#include "map/tile.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/scrollview.h"
@@ -852,140 +851,6 @@ namespace openloco::ui::windowmgr
         return false;
     }
 
-    static void window_viewport_get_map_coords_by_cursor(ui::window *w, int16_t *map_x, int16_t *map_y, int16_t *offset_x, int16_t *offset_y)
-    {
-        // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        ui::get_cursor_pos(mouse_x, mouse_y);
-
-        // Compute map coordinate by mouse position.
-        // TODO
-        get_map_coordinates_from_pos(mouse_x, mouse_y, VIEWPORT_INTERACTION_MASK_NONE, map_x, map_y, nullptr, nullptr, nullptr);
-
-        // Get viewport coordinates centring around the tile.
-        int32_t base_height = map::tile_element_height(*map_x, *map_y);
-        int32_t dest_x, dest_y;
-        viewport* v = w->viewports[0];
-        centre_2d_coordinates(*map_x, *map_y, base_height, &dest_x, &dest_y, v);
-
-        // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int32_t rebased_x = ((w->width >> 1) - mouse_x) * (1 << v->zoom),
-            rebased_y = ((w->height >> 1) - mouse_y) * (1 << v->zoom);
-
-        // Compute cursor offset relative to tile.
-        viewport_config* vc = &w->viewport_configurations[0];
-        *offset_x = (vc->saved_view_x - (dest_x + rebased_x)) * (1 << v->zoom);
-        *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
-    }
-
-    static void window_viewport_centre_tile_around_cursor(ui::window *w, int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
-    {
-        // Get viewport coordinates centring around the tile.
-        int32_t dest_x, dest_y;
-        int32_t base_height = map::tile_element_height(map_x, map_y);
-        viewport* v = w->viewports[0];
-        centre_2d_coordinates(map_x, map_y, base_height, &dest_x, &dest_y, v);
-
-        // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        ui::get_cursor_pos(mouse_x, mouse_y);
-
-        // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int32_t rebased_x = ((w->width >> 1) - mouse_x) * (1 << v->zoom),
-            rebased_y = ((w->height >> 1) - mouse_y) * (1 << v->zoom);
-
-        // Apply offset to the viewport.
-        viewport_config* vc = &w->viewport_configurations[0];
-        vc->saved_view_x = dest_x + rebased_x + (offset_x / (1 << v->zoom));
-        vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
-    }
-
-    static void viewport_zoom_set(ui::window* w, int8_t zoomLevel, bool toCursor)
-    {
-        viewport* v = w->viewports[0];
-        viewport_config* vc = &w->viewport_configurations[0];
-
-        zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
-        if (v->zoom == zoomLevel)
-            return;
-
-        // Zooming to cursor? Remember where we're pointing at the moment.
-        int16_t saved_map_x = 0;
-        int16_t saved_map_y = 0;
-        int16_t offset_x = 0;
-        int16_t offset_y = 0;
-        if (toCursor)
-        {
-            window_viewport_get_map_coords_by_cursor(w, &saved_map_x, &saved_map_y, &offset_x, &offset_y);
-        }
-
-        // Zoom in
-        while (v->zoom > zoomLevel)
-        {
-            v->zoom--;
-            vc->saved_view_x += v->view_width / 4;
-            vc->saved_view_y += v->view_height / 4;
-            v->view_width /= 2;
-            v->view_height /= 2;
-        }
-
-        // Zoom out
-        while (v->zoom < zoomLevel)
-        {
-            v->zoom++;
-            vc->saved_view_x -= v->view_width / 2;
-            vc->saved_view_y -= v->view_height / 2;
-            v->view_width *= 2;
-            v->view_height *= 2;
-        }
-
-        // Zooming to cursor? Centre around the tile we were hovering over just now.
-        if (toCursor)
-        {
-            window_viewport_centre_tile_around_cursor(w, saved_map_x, saved_map_y, offset_x, offset_y);
-        }
-
-        w->invalidate();
-    }
-
-    // TODO: Move
-    // 0x0045F015
-    static void viewport_zoom_in(ui::window* window, bool toCursor)
-    {
-        if (window->viewports[0] == nullptr)
-            return;
-
-        viewport_zoom_set(window, window->viewports[0]->zoom + 1, toCursor);
-    }
-
-    // TODO: Move
-    // 0x0045EFDB
-    static void viewport_zoom_out(ui::window* window, bool toCursor)
-    {
-        if (window->viewports[0] == nullptr)
-            return;
-
-        viewport_zoom_set(window, window->viewports[0]->zoom - 1, toCursor);
-    }
-
-    // TODO: Move
-    // 0x0045F04F
-    static void viewport_rotate_right(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F04F, regs);
-    }
-
-    // TODO: Move
-    // 0x0045F0ED
-    static void viewport_rotate_left(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F0ED, regs);
-    }
-
     // TODO: Move
     // 0x0049771C
     static void sub_49771C()
@@ -1046,11 +911,11 @@ namespace openloco::ui::windowmgr
             {
                 if (wheel > 0)
                 {
-                    viewport_rotate_right(main);
+                    main->viewport_rotate_right();
                 }
                 else if (wheel < 0)
                 {
-                    viewport_rotate_left(main);
+                    main->viewport_rotate_left();
                 }
                 sub_49771C();
                 sub_48DDC3();
@@ -1073,11 +938,11 @@ namespace openloco::ui::windowmgr
 
                 if (wheel > 0)
                 {
-                    viewport_zoom_in(window, true);
+                    window->viewport_zoom_in(true);
                 }
                 else if (wheel < 0)
                 {
-                    viewport_zoom_out(window, true);
+                    window->viewport_zoom_out(true);
                 }
                 sub_49771C();
                 sub_48DDC3();
