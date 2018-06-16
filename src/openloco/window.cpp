@@ -705,6 +705,9 @@ namespace openloco::ui
                     break;
 
                 case widget_type::wt_15:
+                    widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
+                    break;
+
                 case widget_type::wt_16:
                     assert(false); // Unused
                     break;
