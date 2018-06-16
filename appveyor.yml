@@ -25,6 +25,8 @@ install:
     Remove-Item -Recurse .\SDL2-2.0.7
 
     Pop-Location
+
+    $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
 configuration: Release
 build:
   verbosity: minimal
