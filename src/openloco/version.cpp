@@ -1,22 +1,29 @@
 #include "openloco.h"
 
-// clang-format off
-#define NAME            "OpenLoco"
-#define VERSION         "18.02.2"
-#define VERSION_INFO    NAME ", v" VERSION
-// clang-format on
+#define NAME "OpenLoco"
+#define VERSION "18.02.2"
 
 namespace openloco
 {
-    const char version[] = VERSION_INFO
-#ifdef OPENLOCO_BRANCH
-        "-" OPENLOCO_BRANCH
+    const char version[] = NAME ", "
+#ifdef OPENLOCO_VERSION_TAG
+        OPENLOCO_VERSION_TAG
+#else
+                                "v" VERSION
 #endif
-#ifdef OPENLOCO_COMMIT_SHA1_SHORT
-        " build " OPENLOCO_COMMIT_SHA1_SHORT
+#if defined(OPENLOCO_BRANCH) || defined(OPENLOCO_COMMIT_SHA1_SHORT) || !defined(NDEBUG)
+                                " ("
+#if defined(OPENLOCO_BRANCH) && defined(OPENLOCO_COMMIT_SHA1_SHORT)
+        OPENLOCO_COMMIT_SHA1_SHORT " on " OPENLOCO_BRANCH
+#elif defined(OPENLOCO_COMMIT_SHA1_SHORT)
+        OPENLOCO_COMMIT_SHA1_SHORT
+#elif defined(OPENLOCO_BRANCH)
+        OPENLOCO_BRANCH
 #endif
 #ifndef NDEBUG
-        " (DEBUG)"
+                                ", DEBUG"
+#endif
+                                ")"
 #endif
         ;
 }
