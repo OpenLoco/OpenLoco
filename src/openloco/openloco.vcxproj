@@ -48,6 +48,7 @@
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_COMMIT_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(APPVEYOR_REPO_COMMIT_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="window.cpp" />

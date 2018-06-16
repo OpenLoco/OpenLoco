@@ -21,6 +21,16 @@ if (APPLE)
     set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/opt/openssl/lib/pkgconfig")
 endif (APPLE)
 
+# Describe current version in terms of closest tag
+execute_process(
+    COMMAND git describe HEAD
+    COMMAND sed -E "s/-g.+$//"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE OPENLOCO_VERSION_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    # ERROR_QUIET
+)
+
 # Define current git branch
 execute_process(
     COMMAND git rev-parse --abbrev-ref HEAD
@@ -43,6 +53,7 @@ execute_process(
 # only for the one file that uses these definitions: version.cpp
 set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
     PROPERTY COMPILE_DEFINITIONS
+    OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
     OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
