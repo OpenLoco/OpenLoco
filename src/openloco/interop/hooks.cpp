@@ -206,6 +206,8 @@ public:
     std::vector<openloco::environment::fs::path> fileList;
 };
 
+#define FILE_ATTRIBUTE_DIRECTORY 0x10
+
 FORCE_ALIGN_ARG_POINTER
 static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 {
@@ -214,11 +216,6 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
     Session* data = new Session;
 
     openloco::environment::fs::path path = lpFileName;
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    std::string format = path.filename().string();
-#else
-    std::string format = path.filename().u8string();
-#endif
     path.remove_filename();
 
     openloco::environment::fs::directory_iterator iter(path), end;
@@ -234,6 +231,16 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 #else
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
+
+    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    {
+        out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+    }
+    else
+    {
+        out->dwFileAttributes &= ~FILE_ATTRIBUTE_DIRECTORY;
+    }
+
     data->fileList.erase(data->fileList.begin());
     return data;
 }
@@ -252,6 +259,16 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
 #else
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
+
+    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    {
+        out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+    }
+    else
+    {
+        out->dwFileAttributes &= ~FILE_ATTRIBUTE_DIRECTORY;
+    }
+
     data->fileList.erase(data->fileList.begin());
 
     return true;
