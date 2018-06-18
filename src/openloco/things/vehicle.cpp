@@ -44,12 +44,12 @@ loco_global<uint8_t, 0x0113646C> vehicle_var_113646C;   // var_5D related? used 
 loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
 loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
-loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
-loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0; // airport_object_var_AE_flags
+loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C;   // bools
+loco_global<uint32_t, 0x00525BB0> vehicle_var_525BB0;      // airport_object_var_AE_flags
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
-loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070; // Size tbc
-loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088; // Size tbc
+loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
+loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -824,7 +824,7 @@ bool openloco::vehicle_0::update_plane()
 
     uint32_t ebp = 0;
     uint16_t target_z = 0;
-    uint8_t bl = 0;  // yaw related
+    uint8_t bl = 0; // yaw related
     sub_427122(ebp, target_z, bl);
 
     vehicle_var_11360D0 = ebp;
@@ -3473,7 +3473,7 @@ void vehicle_0::sub_427122(uint32_t& xy_distance, uint16_t& target_z, uint8_t& t
  * 0x004BF568
  * Works out what Yaw a plane should have to change direction to loc
  */
-uint8_t vehicle_0::plane_get_yaw_from_loc(const map::map_pos &loc)
+uint8_t vehicle_0::plane_get_yaw_from_loc(const map::map_pos& loc)
 {
     uint8_t index = 0;
     if (loc.x < 0)

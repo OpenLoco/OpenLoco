@@ -183,7 +183,7 @@ namespace openloco
         uint32_t var_58; // time loading??
         uint8_t var_5C;
         uint8_t var_5D;
-        vehicle_type v_type;    // 0x5E
+        vehicle_type v_type; // 0x5E
         uint8_t var_5F;
         uint8_t pad_60[0x68 - 0x60];
         uint8_t var_68;
@@ -248,7 +248,7 @@ namespace openloco
         uint8_t sub_427BF2();
         uint32_t sub_427C05(uint32_t unk_1);
         void sub_42843E();
-        uint8_t plane_get_yaw_from_loc(const map::map_pos &loc);
+        uint8_t plane_get_yaw_from_loc(const map::map_pos& loc);
     };
 
     struct vehicle_1 : vehicle_base
@@ -278,7 +278,7 @@ namespace openloco
         uint16_t object_id; // 0x48
         uint8_t pad_4A[0x54 - 0x4A];
         uint16_t speed_54; // 0x54 max speed?
-        uint32_t speed; // 0x56
+        uint32_t speed;    // 0x56
         uint8_t var_5A;
         uint8_t pad_5B;
         uint16_t speed_5C; // 0x5C broken down max speed?
