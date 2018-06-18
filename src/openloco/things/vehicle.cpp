@@ -28,7 +28,7 @@ using namespace openloco::literals;
 loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
 loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
-loco_global<uint32_t, 0x011360D0> vehicle_var_11360D0;
+loco_global<uint32_t, 0x011360D0> vehicle_var_manhattan_distance_to_station;
 loco_global<uint16_t, 0x01136168> vehicle_var_target_z; // no longer used
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
 loco_global<vehicle_0*, 0x01136118> vehicle_1136118; // type 0
@@ -822,18 +822,18 @@ bool openloco::vehicle_0::update_plane()
         vehType2->speed = type2speed;
     }
 
-    uint32_t ebp = 0;
+    uint32_t manhattan_distance = 0;
     uint16_t target_z = 0;
-    uint8_t bl = 0; // yaw related
-    sub_427122(ebp, target_z, bl);
+    uint8_t target_yaw = 0;
+    sub_427122(manhattan_distance, target_z, target_yaw);
 
-    vehicle_var_11360D0 = ebp;
-    vehicle_var_target_z = target_z; // z related
+    vehicle_var_manhattan_distance_to_station = manhattan_distance;
+    vehicle_var_target_z = target_z;
 
     if (vehicle_var_525BB0 & (1 << 7))
     {
-        vehicle_var_113646D = bl;
-        bl = sprite_yaw;
+        vehicle_var_113646D = target_yaw;
+        target_yaw = sprite_yaw;
         vehType2->var_5A = 1;
         if (target_z < z)
         {
@@ -841,11 +841,11 @@ bool openloco::vehicle_0::update_plane()
         }
     }
 
-    bl = (bl - sprite_yaw) & 0x3F;
+    target_yaw = (target_yaw - sprite_yaw) & 0x3F;
 
-    if (bl != 0)
+    if (target_yaw != 0)
     {
-        if (bl > 32)
+        if (target_yaw > 32)
         {
             sprite_yaw = (sprite_yaw - 1) & 0x3F;
         }
@@ -855,26 +855,23 @@ bool openloco::vehicle_0::update_plane()
         }
     }
 
+    uint8_t pitch = 0;
     if (vehType2->speed < 50_mph32)
     {
         auto vehObject = vehType2->next_car()->object();
-        al = 2;
+        pitch = 2;
         // Slope sprites for taxiing planes??
         if (!(vehObject->flags & (1 << 8)))
         {
-            al = 0;
+            pitch = 0;
         }
-    }
-    else
-    {
-        al = 0;
     }
 
     if (target_z > z)
     {
         if (vehType2->speed <= 350_mph32)
         {
-            al = 2;
+            pitch = 2;
         }
     }
 
@@ -886,14 +883,14 @@ bool openloco::vehicle_0::update_plane()
 
             if (vehObject->flags & (1 << 11))
             {
-                al = 2;
+                pitch = 2;
             }
         }
     }
 
-    if (al != sprite_pitch)
+    if (pitch != sprite_pitch)
     {
-        if (al < sprite_pitch)
+        if (pitch < sprite_pitch)
         {
             sprite_pitch--;
         }
@@ -923,7 +920,7 @@ bool openloco::vehicle_0::update_plane()
             }
         }
 
-        if (ebp > param)
+        if (manhattan_distance > param)
         {
             return sub_4A94A9(target_z);
         }
@@ -1030,13 +1027,12 @@ bool vehicle_0::sub_4A94A9(uint16_t target_z)
 
     loc.y = bigCoordy >> 16;
     loc2.y = bigCoordy & 0xFFFF;
-
-
+    
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
     if (target_z != z)
     {
-        if (vehicle_var_11360D0 <= 28)
+        if (vehicle_var_manhattan_distance_to_station <= 28)
         {
             int16_t z_shift = 1;
             if (vehType2->speed >= 50_mph32)
@@ -1061,7 +1057,7 @@ bool vehicle_0::sub_4A94A9(uint16_t target_z)
         {
             int32_t z_diff = target_z - z;
             int32_t param1 = std::abs(z_diff) * (vehType2->speed / 65536) / 32;
-            int32_t param2 = vehicle_var_11360D0 - 18;
+            int32_t param2 = vehicle_var_manhattan_distance_to_station - 18;
             // Crude round up??
             if (z_diff < 0)
             {
@@ -3389,12 +3385,12 @@ void vehicle_0::sub_4273DF(uint8_t& unk_1, uint16_t& target_speed16)
 
 /**
  * Seems to work out where to land or something like that.
- *  xy_distance = regs.ebp
+ *  manhattan_distance = regs.ebp
  *  target_z = regs.dx
  *  target_yaw = regs.bl
  *  airportFlags = vehicle_var_525BB0
  */
-void vehicle_0::sub_427122(uint32_t& xy_distance, uint16_t& target_z, uint8_t& target_yaw)
+void vehicle_0::sub_427122(uint32_t& manhattan_distance, uint16_t& target_z, uint8_t& target_yaw)
 {
     vehicle_var_525BB0 = 0;
     station_id_t station_id2 = station_id::null;
@@ -3405,7 +3401,6 @@ void vehicle_0::sub_427122(uint32_t& xy_distance, uint16_t& target_z, uint8_t& t
         uint8_t bl = vehicle_var_987C5C[var_4A + var_46] & 7;
         if (bl == 3 || !(vehicle_var_4FE088[bl] & (1 << 3)))
         {
-            // 0x4271A0
             station_id2 = station_id;
         }
         else
@@ -3463,8 +3458,8 @@ void vehicle_0::sub_427122(uint32_t& xy_distance, uint16_t& target_z, uint8_t& t
 
     target_yaw = plane_get_yaw_from_loc(loc);
 
-    // xy_distance manhatten distance to station?
-    xy_distance = std::abs(loc.x) + std::abs(loc.y);
+    // manhattan distance to station
+    manhattan_distance = std::abs(loc.x) + std::abs(loc.y);
 
     target_z = loc.z;
 }
