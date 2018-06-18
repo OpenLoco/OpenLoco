@@ -166,7 +166,7 @@ namespace openloco
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t road_object_id;
+        uint8_t road_object_id; // 0x35
         uint16_t var_36;
         uint8_t var_38;
         uint8_t pad_39[0x42 - 0x39];
@@ -177,7 +177,7 @@ namespace openloco
         uint16_t var_4C;
         uint8_t pad_4E[0x52 - 0x4E];
         uint8_t var_52;
-        uint8_t pad_53;
+        uint8_t var_53;
         station_id_t station_id; // 0x54
         uint16_t var_56;
         uint32_t var_58; // time loading??
@@ -257,7 +257,8 @@ namespace openloco
         uint16_t var_44; // possibly 2 uint8_t's
         uint16_t var_46;
         uint8_t var_48;
-        uint8_t pad_49[0x4E - 0x49];
+        uint8_t var_49;
+        uint8_t pad_4A[0x4E - 0x4A];
         int16_t var_4E; // x related
         int16_t var_50; // y related
         bool Update();

@@ -25,9 +25,9 @@ using namespace openloco::interop;
 using namespace openloco::objectmgr;
 using namespace openloco::literals;
 
-loco_global<uint16_t, 0x0113601A> vehicle_var_113601A;
+loco_global<uint8_t[2], 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
-loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0;
+loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0; // Start of array of ???
 loco_global<uint32_t, 0x011360D0> vehicle_var_manhattan_distance_to_station;
 loco_global<uint16_t, 0x01136168> vehicle_var_target_z; // no longer used
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
@@ -50,6 +50,21 @@ loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
 loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
+loco_global<int16_t, 0x01135FAE> vehicle_var_1135FAE;
+loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;
+loco_global<uint16_t, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
+
+#pragma pack(push, 1)
+struct unk_4F7B5C
+{
+    uint8_t unk_0;
+    uint8_t unk_1;
+    int16_t x;
+    int16_t y;
+    int16_t z;
+};
+#pragma pack(pop)
+loco_global<unk_4F7B5C[352], 0x004F7B5C> vehicle_var_4F7B5C;  // Size tbc 0x160
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -3272,6 +3287,24 @@ void vehicle_0::sub_4BAC74()
 
 bool vehicle_0::sub_4ACCDC()
 {
+    if (v_class == vehicle_class::road)
+    {
+        // 0x004ACDE0
+    }
+    else
+    {
+        auto veh = next_car()->as_vehicle_1();
+        vehicle_var_113601A[0] = var_53;
+        vehicle_var_113601A[1] = veh->var_49;
+
+        loc16 loc = {
+            tile_x,
+            tile_y,
+            tile_base_z * 4
+        };
+
+        // 0x004ACD1F
+    }
     registers regs;
     regs.esi = (int32_t)this;
     return call(0x004ACCDC, regs) & (1 << 8);
@@ -3504,7 +3537,7 @@ uint8_t vehicle_0::plane_get_yaw_from_loc(const map::map_pos& loc)
     regs.ax = loc.x;
     regs.cx = loc.y;
     call(0x004BF56B, regs);
-
+    // Todo: Remove call after 18/08/18
     assert(regs.eax == indexToYaw_12[index]);
     return indexToYaw_12[index];
 }
@@ -3830,4 +3863,79 @@ void vehicle_0::sub_42843E()
     registers regs;
     regs.esi = (int32_t)this;
     call(0x0042843E, regs);
+}
+
+void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1, uint8_t unk_2);
+
+/**
+ *
+ * loc            = ax, bx, dx (large value x4) 
+ * owner          = bl
+ * road_object_id = bh
+ * _var_2C        = ebp
+ * unk_1          = edi
+ */
+void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1)
+{
+    loc.x += vehicle_var_4F7B5C[_var_2C].x;
+    loc.y += vehicle_var_4F7B5C[_var_2C].y;
+    loc.z += vehicle_var_4F7B5C[_var_2C].z;
+
+    vehicle_var_1135FAE = -1;
+    vehicle_var_113607D = 0;
+
+    map::map_pos3 map_loc = {
+        loc.x,
+        loc.y,
+        loc.z / 4
+    };
+    sub_4A2601(map_loc, owner, road_object_id, _var_2C, unk_1, vehicle_var_4F7B5C[_var_2C].unk_1);
+}
+
+/**
+ *
+ * loc            = ax, bx, dl (smaller value /4)
+ * owner          = bl
+ * road_object_id = bh
+ * _var_2C        = ebp
+ * unk_1          = edi
+ * unk_2          = dh
+ */
+void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1, uint8_t unk_2)
+{
+    vehicle_var_1135EE6 = unk_1;
+
+    auto tile = map::tilemgr::get(loc);
+
+    for (auto& el : tile)
+    {
+        auto elUnk1 = el.as_unk1();
+        if (elUnk1 == nullptr)
+        {
+            continue;
+        }
+
+        if (elUnk1->owner() != owner)
+        {
+            continue;
+        }
+
+        if (elUnk1->road_object_id() != road_object_id)
+        {
+            continue;
+        }
+
+        if ((elUnk1->unk_7u() & vehicle_var_113601A[0]) != vehicle_var_113601A[0])
+        {
+            continue;
+        }
+
+        if (elUnk1->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5))
+        {
+            continue;
+        }
+
+        // 0x004A2699
+    }
+    // 0x004A2809
 }

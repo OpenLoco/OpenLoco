@@ -70,6 +70,7 @@ namespace openloco::map
         surface,      // 0x00
         unk_1,        // 0x04
         station = 2,  // 0x08
+        unk_3 = 3,    // 0x0F
         building = 4, // 0x10
         industry = 5, // 0x14
         unk_7 = 7,    // 0x1C
@@ -79,6 +80,7 @@ namespace openloco::map
     namespace element_flags
     {
         constexpr uint8_t flag_4 = 1 << 4;
+        constexpr uint8_t flag_5 = 1 << 5;
         constexpr uint8_t last = 1 << 7;
     }
 
@@ -87,6 +89,7 @@ namespace openloco::map
     struct building_element;
     struct industry_element;
     struct unk1_element;
+    struct unk3_element;
     struct unk7_element;
 
 #pragma pack(push, 1)
@@ -129,6 +132,7 @@ namespace openloco::map
         building_element* as_building() const { return as<building_element, element_type::building>(); }
         industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
         unk1_element* as_unk1() const { return as<unk1_element, element_type::unk_1>(); }
+        unk3_element* as_unk3() const { return as<unk3_element, element_type::unk_3>(); }
         unk7_element* as_unk7() const { return as<unk7_element, element_type::unk_7>(); }
     };
     static_assert(sizeof(tile_element) == 8);
@@ -230,6 +234,20 @@ namespace openloco::map
         bool has_80() const { return (_type & 0x80) != 0; }
         uint8_t unk_direction() const { return _type & 0x03; }
         uint8_t unk_4() const { return _4 & 0x3F; }
+        uint8_t road_object_id() const { return _5 >> 4; } // _5u
+        uint8_t unk_5l() const { return _5 & 0xF; }
+        uint8_t unk_6() const { return _6; }
+        uint8_t owner() const { return _7 & 0xF; } // _7l
+        uint8_t unk_7u() const { return _7 >> 4; }
+    };
+
+    struct unk3_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
     };
 
     struct unk7_element : public tile_element_base
