@@ -254,7 +254,7 @@ bool openloco::vehicle_0::Update()
     auto veh = next_car();
     vehicle_113611C = veh->as_vehicle_1();
     veh = veh->next_car();
-    vehicle_1136120 = ((thing*)veh)->as_vehicle()->as_vehicle_2();
+    vehicle_1136120 = veh->as_vehicle_2();
 
     vehicle_var_113646C = var_5D;
     sub_4A8882();
@@ -474,7 +474,13 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 2)
         {
-            vehicle* veh = next_car()->next_car();
+            auto veh = next_car()->next_car()->as_vehicle_2();
+            if (veh == nullptr)
+            {
+                assert(false);
+                // Todo fail gracefully
+                return false;
+            }
             if (var_36 != veh->var_36 || veh->var_2E != var_2E)
             {
                 sub_4B980A();
@@ -499,7 +505,13 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else if (al == 3)
         {
-            vehicle_2* veh = next_car()->next_car()->as_vehicle_2();
+            auto veh = next_car()->next_car()->as_vehicle_2();
+            if (veh == nullptr)
+            {
+                assert(false);
+                // Todo fail gracefully
+                return false;
+            }
             if (veh->var_36 != var_36 || veh->var_2E != var_2E)
             {
                 sub_4B980A();
@@ -507,8 +519,13 @@ bool openloco::vehicle_0::sub_4A8D48()
             }
 
             var_5D = 3;
-            vehicle_1* vehType1 = next_car()->as_vehicle_1();
-
+            auto vehType1 = next_car()->as_vehicle_1();
+            if (vehType1 == nullptr)
+            {
+                assert(false);
+                // Todo fail gracefully
+                return false;
+            }
             vehType1->var_46++;
 
             if (var_0C & (1 << 6))
@@ -570,7 +587,13 @@ bool openloco::vehicle_0::sub_4A8D48()
         }
         else
         {
-            vehicle_1* veh = next_car()->as_vehicle_1();
+            auto veh = next_car()->as_vehicle_1();
+            if (veh == nullptr)
+            {
+                assert(false);
+                // Todo fail gracefully
+                return false;
+            }
             veh->var_46 = 0;
             if (al == 2)
             {
@@ -580,6 +603,12 @@ bool openloco::vehicle_0::sub_4A8D48()
                 }
 
                 vehicle_2* vehType2 = veh->next_car()->as_vehicle_2();
+                if (vehType2 == nullptr)
+                {
+                    assert(false);
+                    // Todo fail gracefully
+                    return false;
+                }
                 if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
                 {
                     return sub_4A8ED9();
@@ -709,7 +738,10 @@ bool openloco::vehicle_0::update_plane()
     }
 
     vehicle_body* veh = vehType2->next_car()->next_car()->next_car()->as_vehicle_body();
-    veh->sub_4AAB0B();
+    if (veh != nullptr)
+    {
+        veh->sub_4AAB0B();
+    }
 
     if (var_5D == 1)
     {
@@ -1202,7 +1234,11 @@ bool openloco::vehicle_0::update_boat()
         vehicle_var_1136130 = 8192;
     }
 
-    vehType2->next_car()->next_car()->next_car()->as_vehicle_body()->sub_4AAB0B();
+    auto vehBody = vehType2->next_car()->next_car()->next_car()->as_vehicle_body();
+    if (vehBody != nullptr)
+    {
+        vehBody->sub_4AAB0B();
+    }
 
     if (var_5D == 1)
     {
@@ -3580,7 +3616,7 @@ void vehicle_0::sub_42750E()
     loc16 loc = {
         vehType2->x,
         vehType2->y,
-        vehType2->z + 22
+        static_cast<int16_t>(vehType2->z + 22)
     };
 
     audio::play_sound(soundId, loc, 0, 22050, true);
