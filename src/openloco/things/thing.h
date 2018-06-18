@@ -64,7 +64,6 @@ namespace openloco
             return base_type == TClass ? (TType*)this : nullptr;
         }
 
-    public:
         void move_to(loc16 loc);
         void invalidate_sprite();
         vehicle_base* as_vehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }

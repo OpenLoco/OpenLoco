@@ -14,6 +14,7 @@
 #include "../stationmgr.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
+#include "../windowmgr.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>
