@@ -81,6 +81,7 @@ namespace openloco::map
     {
         constexpr uint8_t flag_4 = 1 << 4;
         constexpr uint8_t flag_5 = 1 << 5;
+        constexpr uint8_t flag_6 = 1 << 6;
         constexpr uint8_t last = 1 << 7;
     }
 
@@ -134,6 +135,7 @@ namespace openloco::map
         unk1_element* as_unk1() const { return as<unk1_element, element_type::unk_1>(); }
         unk3_element* as_unk3() const { return as<unk3_element, element_type::unk_3>(); }
         unk7_element* as_unk7() const { return as<unk7_element, element_type::unk_7>(); }
+        tile_element* next();
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -232,8 +234,10 @@ namespace openloco::map
 
     public:
         bool has_80() const { return (_type & 0x80) != 0; }
+        bool has_40() const { return (_type & 0x40) != 0; }
         uint8_t unk_direction() const { return _type & 0x03; }
         uint8_t unk_4() const { return _4 & 0x3F; }
+        bool has_4_80() const { return (_4 & 0x80) != 0; }
         uint8_t road_object_id() const { return _5 >> 4; } // _5u
         uint8_t unk_5l() const { return _5 & 0xF; }
         uint8_t unk_6() const { return _6; }

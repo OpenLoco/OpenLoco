@@ -51,9 +51,18 @@ loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
 loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
 loco_global<int16_t, 0x01135FAE> vehicle_var_1135FAE;
-loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;
-loco_global<uint16_t, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
-
+loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;  // bool
+loco_global<uint32_t, 0x01135EE2> vehicle_var_1135EE2; // Size of vehicle_var_1135EE6 array
+loco_global<uint16_t *, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
+#pragma pack(push, 1)
+struct unk_4F73D8
+{
+    uint8_t pad_00[0x5 - 0x00];
+    uint16_t var_05;
+    uint8_t pad_07[0xA - 0x7];
+};
+#pragma pack(pop)
+loco_global<unk_4F73D8*[44], 0x004F73D8> vehicle_var_4F73D8;
 #pragma pack(push, 1)
 struct unk_4F7B5C
 {
@@ -3865,7 +3874,7 @@ void vehicle_0::sub_42843E()
     call(0x0042843E, regs);
 }
 
-void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1, uint8_t unk_2);
+void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2);
 
 /**
  *
@@ -3875,7 +3884,7 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
  * _var_2C        = ebp
  * unk_1          = edi
  */
-void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1)
+void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1)
 {
     loc.x += vehicle_var_4F7B5C[_var_2C].x;
     loc.y += vehicle_var_4F7B5C[_var_2C].y;
@@ -3901,7 +3910,7 @@ void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_
  * unk_1          = edi
  * unk_2          = dh
  */
-void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint32_t unk_1, uint8_t unk_2)
+void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2)
 {
     vehicle_var_1135EE6 = unk_1;
 
@@ -3910,7 +3919,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
     for (auto& el : tile)
     {
         auto elUnk1 = el.as_unk1();
-        if (elUnk1 == nullptr)
+        auto el2 = el.next();
+        if (elUnk1 == nullptr || el2 == nullptr)
         {
             continue;
         }
@@ -3935,7 +3945,101 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
             continue;
         }
 
-        // 0x004A2699
+        uint16_t cl = (elUnk1->unk_4() << 3) | elUnk1->unk_direction();
+
+        if (!(elUnk1->unk_5l()) &&
+            unk_2 == vehicle_var_4F7B5C[_var_2C].unk_0)
+        {
+            auto ebp = vehicle_var_4F73D8[elUnk1->unk_4()];
+            auto height = -ebp->var_05 / 4 + elUnk1->base_z();
+
+            if (height == loc.z)
+            {
+                if (elUnk1->has_4_80())
+                {
+                    cl |= ((elUnk1->unk_6() & 0xE0) << 4) | (1 << 12);
+                }
+
+                if (vehicle_var_113601A[1] & elUnk1->unk_7u())
+                {
+                    cl |= (1 << 13);
+                }
+
+                if (elUnk1->has_80() && 
+                    !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                {
+                    vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
+                }
+
+                if (elUnk1->unk_6() & (1 << 4))
+                {
+                    vehicle_var_113607D = (1 << 0);
+                }
+
+                if (elUnk1->has_40() &&
+                    !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                {
+                    cl |= (1 << 15);
+                }
+
+                *unk_1++ = cl;
+                cl &= 0x1FB;
+            }
+        }
+
+        if (!(elUnk1->flags() & (map::element_flags::flag_6)))
+        {
+            continue;
+        }
+
+        cl |= (1 << 2);
+        if (unk_2 != vehicle_var_4F7B5C[cl].unk_0)
+        {
+            continue;
+        }
+
+        // Pretty sure these are identical
+        assert(elUnk1->unk_4() == (cl >> 3));
+        auto ebp = vehicle_var_4F73D8[elUnk1->unk_4()];
+        ebp += elUnk1->unk_5l();
+
+        auto height = -ebp->var_05 / 4 + elUnk1->base_z();
+
+        if (height != loc.z)
+        {
+            continue;
+        }
+
+        if (elUnk1->has_4_80())
+        {
+            cl |= ((elUnk1->unk_6() & 0xE0) << 4) | (1 << 12);
+        }
+
+        if (vehicle_var_113601A[1] & elUnk1->unk_7u())
+        {
+            cl |= (1 << 13);
+        }
+
+        if (elUnk1->has_80() &&
+            !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+        {
+            vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
+        }
+
+        if (elUnk1->unk_6() & (1 << 4))
+        {
+            vehicle_var_113607D = (1 << 0);
+        }
+
+        if (elUnk1->has_40() &&
+            !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+        {
+            cl |= (1 << 15);
+        }
+
+        *unk_1++ = cl;
     }
-    // 0x004A2809
+
+    *unk_1 = (uint16_t)-1;
+    vehicle_var_1135EE2 = unk_1 - vehicle_var_1135EE6;
 }

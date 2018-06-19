@@ -96,6 +96,16 @@ size_t tile::index_of(const tile_element_base* element) const
     return npos;
 }
 
+tile_element* tile_element::next()
+{
+    if (is_last())
+    {
+        return nullptr;
+    }
+
+    return this + 1;
+}
+
 surface_element* tile::surface()
 {
     surface_element* result = nullptr;
