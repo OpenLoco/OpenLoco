@@ -50,7 +50,7 @@ loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;       // boolean
 loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
 loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
-loco_global<int16_t, 0x01135FAE> vehicle_var_1135FAE;
+loco_global<station_id_t, 0x01135FAE> vehicle_var_1135FAE;
 loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;  // bool
 loco_global<uint16_t *, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
 #pragma pack(push, 1)
@@ -3889,7 +3889,7 @@ void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uin
     loc.y += vehicle_var_4F7B5C[_var_2C].y;
     loc.z += vehicle_var_4F7B5C[_var_2C].z;
 
-    vehicle_var_1135FAE = -1;
+    vehicle_var_1135FAE = (station_id_t)-1;
     vehicle_var_113607D = 0;
 
     map::map_pos3 map_loc = {
@@ -3918,7 +3918,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
     for (auto& el : tile)
     {
         auto elUnk1 = el.as_unk1();
-        auto el2 = el.next(); // el2 is semaphore related? type unk_3 probably
+
         if (elUnk1 == nullptr)
         {
             continue;
@@ -3944,13 +3944,22 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
             continue;
         }
 
+        auto elNext = el.next();
+        map::station_element* elStation = nullptr;
+        map::unk3_element* elSignal = nullptr;
+        if (elNext != nullptr)
+        {
+            elStation = elNext->as_station();
+            elSignal = elNext->as_unk3();
+        }
         uint16_t cl = (elUnk1->unk_4() << 3) | elUnk1->unk_direction();
 
         if (!(elUnk1->unk_5l()) &&
-            unk_2 == vehicle_var_4F7B5C[_var_2C].unk_0)
+            unk_2 == vehicle_var_4F7B5C[cl].unk_0)
         {
             auto ebp = vehicle_var_4F73D8[elUnk1->unk_4()];
-            auto height = -ebp->var_05 / 4 + elUnk1->base_z();
+            // Shift arithmatic
+            auto height = -(ebp->var_05 >> 2) + elUnk1->base_z();
 
             if (height == loc.z)
             {
@@ -3965,10 +3974,10 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
                 }
 
                 if (elUnk1->has_station_element() &&
-                    el2 != nullptr &&
-                    !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                    elStation != nullptr &&
+                    !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
-                    vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
+                    vehicle_var_1135FAE = elStation->station_id();
                 }
 
                 if (elUnk1->unk_6() & (1 << 4))
@@ -3977,8 +3986,8 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
                 }
 
                 if (elUnk1->has_signal() &&
-                    el2 != nullptr &&
-                    !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                    elSignal != nullptr &&
+                    !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
                     cl |= (1 << 15);
                 }
@@ -4003,8 +4012,8 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
         assert(elUnk1->unk_4() == (cl >> 3));
         auto ebp = vehicle_var_4F73D8[elUnk1->unk_4()];
         ebp += elUnk1->unk_5l();
-
-        auto height = -ebp->var_05 / 4 + elUnk1->base_z();
+        // Shift arithmatic
+        auto height = -((ebp->var_05 + vehicle_var_4F7B5C[cl].z) >> 2) + elUnk1->base_z();
 
         if (height != loc.z)
         {
@@ -4022,10 +4031,10 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
         }
 
         if (elUnk1->has_station_element() &&
-            el2 != nullptr &&
-            !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+            elStation != nullptr &&
+            !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
-            vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
+            vehicle_var_1135FAE = elStation->station_id();
         }
 
         if (elUnk1->unk_6() & (1 << 4))
@@ -4034,8 +4043,8 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
         }
 
         if (elUnk1->has_signal() &&
-            el2 != nullptr &&
-            !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+            elSignal != nullptr &&
+            !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
             cl |= (1 << 15);
         }

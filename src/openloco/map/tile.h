@@ -8,6 +8,8 @@ namespace openloco
 {
     struct building_object;
     struct industry;
+
+    using station_id_t = uint16_t;
 }
 
 namespace openloco::map
@@ -186,13 +188,13 @@ namespace openloco::map
     private:
         uint8_t _4;
         uint8_t _5;
-        uint8_t _6;
-        uint8_t _7;
+        uint16_t _station_id;
 
     public:
         uint8_t object_id() const { return _5 & 0x1F; }
         uint8_t unk_5b() const { return _5 >> 5; }
         uint8_t rotation() const { return _type & 0x3; }
+        station_id_t station_id() const { return static_cast<station_id_t>(_station_id & 0x3FF); }
     };
 
     struct building_element : public tile_element_base
