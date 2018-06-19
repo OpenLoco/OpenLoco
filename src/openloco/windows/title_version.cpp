@@ -28,7 +28,7 @@ namespace openloco::ui::windows
             width,
             height,
             (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
-            (void*)&_events);
+            &_events);
         window->widgets = widgets;
 
         _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
