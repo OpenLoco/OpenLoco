@@ -539,9 +539,18 @@ namespace openloco::ui
 
     void window::call_update()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_update, regs);
+        if (event_handlers->on_update == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_update))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uintptr_t)this->event_handlers->on_update, regs);
+            return;
+        }
+
+        event_handlers->on_update(this);
     }
 
     void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
@@ -588,16 +597,25 @@ namespace openloco::ui
         return (cursor_id)regs.ebx;
     }
 
-    void window::call_on_mouse_up(int8_t widget_index)
+    void window::call_on_mouse_up(widget_index widgetIndex)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
+        if (event_handlers->on_mouse_up == nullptr)
+            return;
 
-        // Not sure if this is used
-        regs.edi = (uint32_t) & this->widgets[widget_index];
+        if (is_interop_event(event_handlers->on_mouse_up))
+        {
+            registers regs;
+            regs.edx = widgetIndex;
+            regs.esi = (uint32_t)this;
 
-        call((uint32_t)this->event_handlers->on_mouse_up, regs);
+            // Not sure if this is used
+            regs.edi = (uint32_t) & this->widgets[widgetIndex];
+
+            call((uintptr_t)this->event_handlers->on_mouse_up, regs);
+            return;
+        }
+
+        event_handlers->on_mouse_up(this, widgetIndex);
     }
 
     ui::window* window::call_on_resize()

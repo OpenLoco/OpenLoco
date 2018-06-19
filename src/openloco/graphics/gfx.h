@@ -64,6 +64,18 @@ namespace openloco::gfx
 
 #pragma pack(pop)
 
+    struct point_t
+    {
+        int16_t x;
+        int16_t y;
+    };
+
+    struct ui_size_t
+    {
+        uint16_t width;
+        uint16_t height;
+    };
+
     drawpixelinfo_t& screen_dpi();
 
     void load_g1();
@@ -71,6 +83,7 @@ namespace openloco::gfx
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
 
     int16_t clip_string(int16_t width, char* string);
+    uint16_t get_string_width(const char* buffer);
 
     void draw_string(
         drawpixelinfo_t& dpi,
@@ -83,6 +96,12 @@ namespace openloco::gfx
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void* args);
+    void draw_string_494B3F(
+        drawpixelinfo_t& dpi,
+        point_t* origin,
         uint8_t colour,
         string_id stringId,
         const void* args);

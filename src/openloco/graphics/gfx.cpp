@@ -150,6 +150,20 @@ namespace openloco::gfx
         return regs.cx;
     }
 
+    /**
+     * 0x00495685
+     *
+     * @param buffer @<esi>
+     * @return width @<cx>
+     */
+    uint16_t get_string_width(const char* buffer)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)buffer;
+        call(0x495685, regs);
+        return regs.cx;
+    }
+
     void draw_string(
         drawpixelinfo_t& dpi,
         int16_t x,
@@ -189,6 +203,34 @@ namespace openloco::gfx
         regs.esi = (int32_t)args;
         regs.edi = (int32_t)&dpi;
         call(0x00494B3F, regs);
+    }
+
+    /**
+     *
+     * @param dpi @<edi>
+     * @param origin {x @<cx>, y @<dx>}
+     * @param colour @<al>
+     * @param stringId  @<bx>
+     * @param args @<edi>
+     */
+    void draw_string_494B3F(
+        drawpixelinfo_t& dpi,
+        point_t* origin,
+        uint8_t colour,
+        string_id stringId,
+        const void* args)
+    {
+        registers regs;
+        regs.al = colour;
+        regs.bx = stringId;
+        regs.cx = origin->x;
+        regs.dx = origin->y;
+        regs.esi = (int32_t)args;
+        regs.edi = (int32_t)&dpi;
+        call(0x00494B3F, regs);
+
+        origin->x = regs.cx;
+        origin->y = regs.dx;
     }
 
     // 0x00494BBF

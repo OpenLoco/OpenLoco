@@ -34,6 +34,8 @@ namespace openloco::ui
         string_id tooltip; // 0x0E
 
         int16_t mid_x();
+        uint16_t width();
+        uint16_t height();
     };
 
     enum class widget_type : uint8_t
@@ -70,6 +72,44 @@ namespace openloco::ui
         wt_29,
         end = 30,
     };
+
+    static constexpr widget_t make_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    {
+        widget_t out = {};
+        out.left = origin.x;
+        out.right = origin.x + size.width - 1;
+        out.top = origin.y;
+        out.bottom = origin.y + size.height - 1;
+        out.type = type;
+        out.colour = colour;
+        out.content = content;
+        out.tooltip = tooltip;
+
+        return out;
+    }
+
+    static constexpr widget_t make_text_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
+    {
+        widget_t out = {};
+        out.left = origin.x;
+        out.right = origin.x + size.width - 1;
+        out.top = origin.y;
+        out.bottom = origin.y + size.height - 1;
+        out.type = type;
+        out.colour = colour;
+        out.text = content;
+        out.tooltip = tooltip;
+
+        return out;
+    }
+
+    static constexpr widget_t widget_end()
+    {
+        widget_t out = {};
+        out.type = widget_type::end;
+
+        return out;
+    }
 
     struct scroll_area_t
     {
@@ -109,13 +149,13 @@ namespace openloco::ui
             struct
             {
                 uint32_t on_close;
-                uint32_t on_mouse_up;
+                void (*on_mouse_up)(window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
                 uint32_t on_mouse_down;
                 uint32_t on_dropdown;
                 uint32_t event_06;
-                uint32_t on_update;
+                void (*on_update)(window*);
                 uint32_t event_08;
                 uint32_t event_09;
                 uint32_t event_10;
@@ -244,7 +284,7 @@ namespace openloco::ui
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
-        void call_on_mouse_up(int8_t widget_index);                                                       // 1
+        void call_on_mouse_up(widget_index widgetIndex);                                                  // 1
         ui::window* call_on_resize();                                                                     // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
