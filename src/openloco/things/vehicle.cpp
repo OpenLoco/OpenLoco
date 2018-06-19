@@ -27,7 +27,7 @@ using namespace openloco::literals;
 
 loco_global<uint8_t[2], 0x0113601A> vehicle_var_113601A;
 loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
-loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0; // Start of array of ???
+loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0; // Start of array of ??? use an array on the stack?
 loco_global<uint32_t, 0x011360D0> vehicle_var_manhattan_distance_to_station;
 loco_global<uint16_t, 0x01136168> vehicle_var_target_z; // no longer used
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
@@ -52,13 +52,12 @@ loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
 loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
 loco_global<int16_t, 0x01135FAE> vehicle_var_1135FAE;
 loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;  // bool
-loco_global<uint32_t, 0x01135EE2> vehicle_var_1135EE2; // Size of vehicle_var_1135EE6 array
 loco_global<uint16_t *, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
 #pragma pack(push, 1)
 struct unk_4F73D8
 {
     uint8_t pad_00[0x5 - 0x00];
-    uint16_t var_05;
+    int16_t var_05;
     uint8_t pad_07[0xA - 0x7];
 };
 #pragma pack(pop)
@@ -2512,7 +2511,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
         var_55 = 0;
     }
 
-    bool itemFound = false;
+    bool station_found = false;
 
     // Looking for a bridge? or somthing ontop
     if (steam_obj->var_08 & (1 << 2))
@@ -2521,14 +2520,6 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
 
         for (auto& el : tile)
         {
-            if (itemFound && !(el.flags() & ((1 << 5) | (1 << 4))))
-            {
-                break;
-            }
-            else
-            {
-                itemFound = false;
-            }
             auto elUnk1 = el.as_unk1();
             if (elUnk1 == nullptr)
                 continue;
@@ -2542,15 +2533,21 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
             if (elUnk1->unk_4() != ((frontBogie->var_2C >> 3) & 0x3F))
                 continue;
 
-            if (!elUnk1->has_80())
+            if (!elUnk1->has_station_element())
                 continue;
 
-            if (!elUnk1->is_last())
-                itemFound = true;
+            auto elStation = el.next();
+            if (elStation == nullptr)
+                continue;
+            
+            if (elStation->flags() & (map::element_flags::flag_5 | map::element_flags::flag_4))
+                continue;
+            station_found = true;
+            break;
         }
     }
 
-    if (itemFound)
+    if (station_found)
     {
         auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
@@ -3312,6 +3309,9 @@ bool vehicle_0::sub_4ACCDC()
             tile_base_z * 4
         };
 
+        // 0x011360A0 for array data
+        uint16_t var_113609C_array[24];
+        sub_4A2604(loc, owner, road_object_id, var_2C, &var_113609C_array[2]);
         // 0x004ACD1F
     }
     registers regs;
@@ -3874,8 +3874,6 @@ void vehicle_0::sub_42843E()
     call(0x0042843E, regs);
 }
 
-void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2);
-
 /**
  *
  * loc            = ax, bx, dx (large value x4) 
@@ -3884,8 +3882,9 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
  * _var_2C        = ebp
  * unk_1          = edi
  */
-void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1)
+void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1)
 {
+    // Get next tile in current direction
     loc.x += vehicle_var_4F7B5C[_var_2C].x;
     loc.y += vehicle_var_4F7B5C[_var_2C].y;
     loc.z += vehicle_var_4F7B5C[_var_2C].z;
@@ -3910,7 +3909,7 @@ void sub_4A2604(loc16 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_
  * unk_1          = edi
  * unk_2          = dh
  */
-void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2)
+void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2)
 {
     vehicle_var_1135EE6 = unk_1;
 
@@ -3919,8 +3918,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
     for (auto& el : tile)
     {
         auto elUnk1 = el.as_unk1();
-        auto el2 = el.next();
-        if (elUnk1 == nullptr || el2 == nullptr)
+        auto el2 = el.next(); // el2 is semaphore related? type unk_3 probably
+        if (elUnk1 == nullptr)
         {
             continue;
         }
@@ -3965,7 +3964,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
                     cl |= (1 << 13);
                 }
 
-                if (elUnk1->has_80() && 
+                if (elUnk1->has_station_element() &&
+                    el2 != nullptr &&
                     !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
                     vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
@@ -3976,7 +3976,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
                     vehicle_var_113607D = (1 << 0);
                 }
 
-                if (elUnk1->has_40() &&
+                if (elUnk1->has_signal() &&
+                    el2 != nullptr &&
                     !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
                     cl |= (1 << 15);
@@ -4020,7 +4021,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
             cl |= (1 << 13);
         }
 
-        if (elUnk1->has_80() &&
+        if (elUnk1->has_station_element() &&
+            el2 != nullptr &&
             !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
             vehicle_var_1135FAE = (el2->data()[6] | (el2->data()[7] << 8)) & 0x3FF;
@@ -4031,7 +4033,8 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
             vehicle_var_113607D = (1 << 0);
         }
 
-        if (elUnk1->has_40() &&
+        if (elUnk1->has_signal() &&
+            el2 != nullptr &&
             !(el2->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
             cl |= (1 << 15);
@@ -4041,5 +4044,6 @@ void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16
     }
 
     *unk_1 = (uint16_t)-1;
-    vehicle_var_1135EE2 = unk_1 - vehicle_var_1135EE6;
+    uint16_t * start = vehicle_var_1135EE6;
+    ((uint32_t*)start)[-1] = unk_1 - start;
 }

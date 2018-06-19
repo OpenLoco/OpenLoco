@@ -204,8 +204,8 @@ namespace openloco::map
         uint8_t _7;
 
     public:
-        bool has_40() const { return (_type & 0x40) != 0; }
-        bool has_80() const { return (_type & 0x80) != 0; }
+        bool has_signal() const { return (_type & 0x40) != 0; }
+        bool has_station_element() const { return (_type & 0x80) != 0; }
         uint8_t object_id() const { return _4; }
         building_object* object() const;
         uint8_t var_5b() const { return _5 & 3; }
@@ -233,8 +233,8 @@ namespace openloco::map
         uint8_t _7;
 
     public:
-        bool has_80() const { return (_type & 0x80) != 0; }
-        bool has_40() const { return (_type & 0x40) != 0; }
+        bool has_station_element() const { return (_type & 0x80) != 0; }
+        bool has_signal() const { return (_type & 0x40) != 0; }
         uint8_t unk_direction() const { return _type & 0x03; }
         uint8_t unk_4() const { return _4 & 0x3F; }
         bool has_4_80() const { return (_4 & 0x80) != 0; }

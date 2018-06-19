@@ -368,4 +368,8 @@ namespace openloco
     };
 
 #pragma pack(pop)
+
+    void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2);
+    void sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1);
+
 }

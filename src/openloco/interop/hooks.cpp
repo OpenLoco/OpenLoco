@@ -836,6 +836,25 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004A2604,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER->uint8_t{
+            loc16 loc = {
+                regs.ax,
+                regs.cx,
+                regs.dx
+            };
+            uint8_t owner = regs.bl;
+            uint8_t road_object_id = regs.bh;
+            uint16_t _var_2C = regs.bp;
+            uint16_t* unk_1 = (uint16_t*)regs.edi;
+            openloco::sub_4A2604(loc, owner, road_object_id, _var_2C, unk_1);
+            regs.ax = loc.x;
+            regs.cx = loc.y;
+            regs.dx = loc.z;
+            return 0;
+        });
+
+    register_hook(
         0x004C7174,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             uint16_t button = regs.cx;
