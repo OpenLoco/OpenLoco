@@ -2995,9 +2995,53 @@ void vehicle_0::sub_4B9A2A()
 
 void vehicle_0::sub_4B980A()
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    call(0x004B980A, regs);
+    if (var_5D != 2)
+    {
+        return;
+    }
+
+    if (vehicle_var_113646C != 1 && vehicle_var_113646C != 3)
+    {
+        return;
+    }
+
+    vehicle_2 * vehType2 = vehicle_1136120;
+    auto vehicle_object = vehType2->next_car()->object();
+
+    if (vehicle_object->num_sounds == 0)
+    {
+        return;
+    }
+
+    auto num_sounds = vehicle_object->num_sounds & 0x7F;
+
+    if (vehicle_object->num_sounds & (1 << 7))
+    {
+        num_sounds--;
+        if (num_sounds == 0)
+        {
+            num_sounds = 1;
+        }
+    }
+
+    auto chosen_sound = gprng().rand_next(num_sounds);
+    auto _sound_id = (audio::sound_id)vehicle_object->var_15B[chosen_sound];
+
+    uint16_t height = map::tile_element_height(vehType2->x, vehType2->y) & 0xFFFF;
+
+    auto volume = 0;
+    if (vehType2->z < height)
+    {
+        volume = -1500;
+    }
+
+    loc16 loc =
+    {
+        vehType2->x,
+        vehType2->y,
+        static_cast<int16_t>(vehType2->z + 22)
+    };
+    audio::play_sound(_sound_id, loc, volume, 22050, true);
 }
 
 void vehicle_0::sub_4AA625()
