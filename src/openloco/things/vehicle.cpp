@@ -26,8 +26,17 @@ using namespace openloco::objectmgr;
 using namespace openloco::literals;
 
 loco_global<uint8_t[2], 0x0113601A> vehicle_var_113601A;
-loco_global<uint32_t, 0x0113609C> vehicle_var_113609C;
-loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0; // Start of array of ??? use an array on the stack?
+#pragma pack(push, 1)
+struct array_113609C
+{
+    uint32_t size;      // 0x0113609C
+    uint16_t data[22];   // 0x011360A0
+};
+#pragma pack(pop)
+
+loco_global<array_113609C, 0x0113609C> vehicle_var_array_11360A0;
+loco_global<uint32_t, 0x0113609C> vehicle_var_113609C; // Don't use. use vehicle_var_array_11360A0
+loco_global<uint16_t, 0x011360A0> vehicle_var_11360A0; // Don't use. use vehicle_var_array_11360A0
 loco_global<uint32_t, 0x011360D0> vehicle_var_manhattan_distance_to_station;
 loco_global<uint16_t, 0x01136168> vehicle_var_target_z; // no longer used
 loco_global<uint8_t, 0x0113646D> vehicle_var_113646D;
@@ -3310,8 +3319,12 @@ bool vehicle_0::sub_4ACCDC()
         };
 
         // 0x011360A0 for array data
-        uint16_t var_113609C_array[24];
-        sub_4A2604(loc, owner, road_object_id, var_2C, &var_113609C_array[2]);
+        sub_4A2604(loc, owner, road_object_id, var_2C, (uint16_t*)&vehicle_var_array_11360A0->data);
+
+        if (vehicle_var_array_11360A0->size == 0)
+        {
+            return false;
+        }
         // 0x004ACD1F
     }
     registers regs;
@@ -3911,10 +3924,13 @@ void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uin
  */
 void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2)
 {
-    vehicle_var_1135EE6 = unk_1;
+    // Get the array. Remove this hack when hook removed
+    array_113609C *unk_arr = (array_113609C*)(unk_1 - 2);
+    // Unsure if this is still used. Was used to work out size of array
+    vehicle_var_1135EE6 = unk_arr->data;
 
     auto tile = map::tilemgr::get(loc);
-
+    auto i = 0;
     for (auto& el : tile)
     {
         auto elUnk1 = el.as_unk1();
@@ -3992,7 +4008,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
                     cl |= (1 << 15);
                 }
 
-                *unk_1++ = cl;
+                unk_arr->data[i++] = cl;
                 cl &= 0x1FB;
             }
         }
@@ -4049,10 +4065,9 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
             cl |= (1 << 15);
         }
 
-        *unk_1++ = cl;
+        unk_arr->data[i++] = cl;
     }
 
-    *unk_1 = (uint16_t)-1;
-    uint16_t * start = vehicle_var_1135EE6;
-    ((uint32_t*)start)[-1] = unk_1 - start;
+    unk_arr->data[i] = (uint16_t)-1;
+    unk_arr->size = i;
 }
