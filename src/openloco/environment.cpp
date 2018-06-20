@@ -78,7 +78,7 @@ namespace openloco::environment
                 config::write_new_config();
                 return path;
             }
-            std::cerr << "Configured install path for Locomotion is missing data/g1.dat." << std::endl;
+            std::cerr << "Configured install path for Locomotion is missing Data/g1.DAT." << std::endl;
         }
 
         path = auto_detect_loco_install_path();
@@ -110,7 +110,7 @@ namespace openloco::environment
             }
 
             std::cerr << "Path is missing g1.dat." << std::endl;
-            ui::show_message_box("OpenLoco", "Path is missing data/g1.dat.");
+            ui::show_message_box("OpenLoco", "Path is missing Data/g1.DAT.");
             std::exit(-1);
         }
     }
