@@ -1101,7 +1101,7 @@ bool vehicle_0::sub_4A94A9(uint16_t target_z)
             }
         }
     }
-    sub_426CA4(loc, sprite_yaw, sprite_pitch);
+    plane_move_to(loc, sprite_yaw, sprite_pitch);
     sub_4B980A();
     return true;
 }
@@ -3873,16 +3873,46 @@ void vehicle_0::sub_427214(int32_t& _var_68)
     return;
 }
 
-void vehicle_0::sub_426CA4(loc16 loc, uint8_t yaw, uint8_t pitch)
+// 0x00426CA4
+void vehicle_0::plane_move_to(loc16 loc, uint8_t yaw, uint8_t pitch)
 {
-    registers regs;
-    regs.esi = (int32_t)this;
-    regs.ax = loc.x;
-    regs.cx = loc.y;
-    regs.dx = loc.z;
-    regs.bl = yaw;
-    regs.bh = pitch;
-    call(0x00426CA4, regs);
+    move_to(loc);
+    tile_x = 0;
+
+    auto veh = next_car(); // 1
+    veh->move_to(loc);
+    veh->tile_x = 0;
+
+    veh = veh->next_car(); // 2
+    veh->move_to(loc);
+    veh->tile_x = 0;
+
+    veh = veh->next_car(); // 3 shadow?
+    veh->invalidate_sprite();
+
+    auto height = map::tile_element_height(loc.x, loc.y);
+    if (height & 0xFFFF0000)
+    {
+        height >>= 16; // Get water height
+    }
+
+    auto temp_z = loc.z;
+    loc.z = height;
+    veh->move_to(loc);
+    loc.z = temp_z;
+
+    veh->sprite_yaw = yaw;
+    veh->sprite_pitch = 0;
+    veh->tile_x = 0;
+    veh->invalidate_sprite();
+
+    veh = veh->next_car()->next_car(); // 6?
+    veh->invalidate_sprite();
+    veh->move_to(loc);
+    veh->sprite_yaw = yaw;
+    veh->sprite_pitch = pitch;
+    veh->tile_x = 0;
+    veh->invalidate_sprite();
 }
 
 uint16_t vehicle::sub_426790()
