@@ -32,6 +32,26 @@ namespace openloco::ui::windowmgr
     void register_hooks()
     {
         register_hook(
+            0x0045EFDB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto window = (ui::window*)regs.esi;
+                window->viewport_zoom_out(false);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x0045F015,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto window = (ui::window*)regs.esi;
+                window->viewport_zoom_in(false);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
             0x0045F18B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
@@ -852,38 +872,7 @@ namespace openloco::ui::windowmgr
     }
 
     // TODO: Move
-    static void sub_45EFDB(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045EFDB, regs);
-    }
-
-    // TODO: Move
-    static void sub_45F015(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F015, regs);
-    }
-
-    // TODO: Move
-    static void sub_45F04F(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F04F, regs);
-    }
-
-    // TODO: Move
-    static void sub_45F0ED(ui::window* window)
-    {
-        registers regs;
-        regs.esi = (uintptr_t)window;
-        call(0x0045F0ED, regs);
-    }
-
-    // TODO: Move
+    // 0x0049771C
     static void sub_49771C()
     {
         // Might have something to do with town labels
@@ -891,6 +880,7 @@ namespace openloco::ui::windowmgr
     }
 
     // TODO: Move
+    // 0x0048DDC3
     static void sub_48DDC3()
     {
         // Might have something to do with station labels
@@ -941,11 +931,11 @@ namespace openloco::ui::windowmgr
             {
                 if (wheel > 0)
                 {
-                    sub_45F04F(main);
+                    main->viewport_rotate_right();
                 }
                 else if (wheel < 0)
                 {
-                    sub_45F0ED(main);
+                    main->viewport_rotate_left();
                 }
                 sub_49771C();
                 sub_48DDC3();
@@ -968,11 +958,11 @@ namespace openloco::ui::windowmgr
 
                 if (wheel > 0)
                 {
-                    sub_45F015(window);
+                    window->viewport_zoom_in(true);
                 }
                 else if (wheel < 0)
                 {
-                    sub_45EFDB(window);
+                    window->viewport_zoom_out(true);
                 }
                 sub_49771C();
                 sub_48DDC3();

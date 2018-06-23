@@ -231,6 +231,14 @@ namespace openloco::ui
         void update_scroll_widgets();
         void init_scroll_widgets();
         int8_t get_scroll_data_index(widget_index index);
+        void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
+        void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
+        void viewport_zoom_set(int8_t zoomLevel, bool toCursor);
+        void viewport_zoom_in(bool toCursor);
+        void viewport_zoom_out(bool toCursor);
+        void viewport_rotate_right();
+        void viewport_rotate_left();
+
         bool move(int16_t dx, int16_t dy);
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
