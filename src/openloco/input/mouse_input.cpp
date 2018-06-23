@@ -141,6 +141,7 @@ namespace openloco::input
                     {
                         windowmgr::bring_to_front(_modalWindowType, 0);
                         audio::play_sound(audio::sound_id::sound_14, x);
+                        return;
                     }
 
                     if (button == mouse_button::right_pressed)
