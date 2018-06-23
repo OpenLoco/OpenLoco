@@ -106,11 +106,6 @@ namespace openloco::ui::windowmgr
 
 namespace openloco::ui::windows
 {
-    enum class browse_type
-    {
-        load = 1,
-        save = 2
-    };
 
     void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
@@ -118,9 +113,19 @@ namespace openloco::ui::windows
     window* open_title_version();
     void sub_498E9B(window* w);
 
-    bool prompt_browse(browse_type type, char* path, const char* filter, const char* title);
     bool prompt_ok_cancel(string_id okButtonStringId);
     void map_center_on_view_point();
+}
+
+namespace openloco::ui::prompt_browse
+{
+    enum class browse_type
+    {
+        load = 1,
+        save = 2
+    };
+    bool open(browse_type type, char* path, const char* filter, const char* title);
+    void register_hooks();
 }
 
 namespace openloco::ui::textinput

@@ -645,71 +645,6 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
-        0x00445AB9,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = prompt_browse(
-                (browse_type)regs.al,
-                (char*)regs.ecx,
-                (const char*)regs.edx,
-                (const char*)regs.ebx);
-            regs.eax = result ? 1 : 0;
-            return 0;
-        });
-
-    // TODO: move to promptbrowsewnd::up_one_level
-    register_hook(
-        0x00446E2F,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            // ui::windows::up_one_level();
-            loco_global<char[512], 0x009D9E84> _directory;
-            char* ptr = _directory;
-            while (*ptr != '\0')
-                ptr++;
-
-            ptr--;
-            if (*ptr == '\\' || *ptr == '/')
-                ptr--;
-
-            while (ptr != _directory && *ptr != '\\' && *ptr != '/')
-                ptr--;
-
-            if (*ptr == '\\' || *ptr == '/')
-                ptr++;
-
-            *ptr = '\0';
-
-            call(0x00446A93);
-            return 0;
-        });
-
-    // TODO: move to promptbrowsewnd::append_directory
-    register_hook(
-        0x00446E62,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            // ui::windows::append_directory();
-            loco_global<char[512], 0x009D9E84> _directory;
-            char* dst = _directory;
-            while (*dst != '\0')
-                dst++;
-
-            char* src = (char*)regs.ebp;
-            while (*src != '\0')
-            {
-                *dst++ = *src++;
-            }
-
-#ifdef _NO_LOCO_WIN32_
-            *dst++ = '/';
-#else
-            *dst++ = '\\';
-#endif
-            *dst = '\0';
-
-            call(0x00446A93);
-            return 0;
-        });
-
-    register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto result = prompt_ok_cancel(regs.eax);
@@ -790,8 +725,9 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    ui::windowmgr::register_hooks();
+    ui::prompt_browse::register_hooks();
     ui::tooltip::register_hooks();
+    ui::windowmgr::register_hooks();
 
     register_hook(
         0x004AB655,

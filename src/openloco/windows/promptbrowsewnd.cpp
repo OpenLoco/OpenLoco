@@ -21,7 +21,7 @@ namespace fs = boost::filesystem;
 namespace fs = std::experimental::filesystem;
 #endif
 
-namespace openloco::ui::windows
+namespace openloco::ui::prompt_browse
 {
     static fs::path get_directory(const fs::path& path);
     static std::string get_basename(const fs::path& path);
@@ -56,7 +56,7 @@ namespace openloco::ui::windows
     // edx: filter
     // ebx: title
     // eax: {return}
-    bool prompt_browse(
+    bool open(
         browse_type type,
         char* szPath,
         const char* filter,
@@ -157,5 +157,81 @@ namespace openloco::ui::windows
             baseName = "";
         }
         return baseName;
+    }
+
+    // 0x00446A93
+    static void refresh_directory_list()
+    {
+        call(0x00446A93);
+    }
+
+    // 0x00446E2F
+    static void up_one_level()
+    {
+        char* ptr = _directory;
+        while (*ptr != '\0')
+            ptr++;
+
+        ptr--;
+        if (*ptr == fs::path::preferred_separator)
+            ptr--;
+
+        while (ptr != _directory && *ptr != fs::path::preferred_separator)
+            ptr--;
+
+        if (*ptr == fs::path::preferred_separator)
+            ptr++;
+
+        *ptr = '\0';
+
+        refresh_directory_list();
+    }
+
+    // 0x00446E62
+    static void append_directory(const char* to_append)
+    {
+        char* dst = _directory;
+        while (*dst != '\0')
+            dst++;
+
+        const char* src = to_append;
+        while (*src != '\0')
+        {
+            *dst++ = *src++;
+        }
+
+        *dst++ = fs::path::preferred_separator;
+        *dst = '\0';
+
+        refresh_directory_list();
+    }
+
+    void register_hooks()
+    {
+        register_hook(
+            0x00445AB9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                auto result = open(
+                    (browse_type)regs.al,
+                    (char*)regs.ecx,
+                    (const char*)regs.edx,
+                    (const char*)regs.ebx);
+                regs.eax = result ? 1 : 0;
+                return 0;
+            });
+
+        register_hook(
+            0x00446E2F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                up_one_level();
+                return 0;
+            });
+
+        register_hook(
+            0x00446E62,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                append_directory((char*)regs.ebp);
+                return 0;
+            });
     }
 }
