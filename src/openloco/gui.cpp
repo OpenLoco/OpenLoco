@@ -122,10 +122,10 @@ namespace openloco::gui
             auto skin = openloco::objectmgr::get<interface_skin_object>();
             if (skin != nullptr)
             {
-                window->colours[0] = skin->colours_12[0];
-                window->colours[1] = skin->colours_12[1];
-                window->colours[2] = skin->colours_12[2];
-                window->colours[3] = skin->colours_12[3];
+                window->colours[0] = skin->colour_12;
+                window->colours[1] = skin->colour_13;
+                window->colours[2] = skin->colour_14;
+                window->colours[3] = skin->colour_15;
             }
 
             window = openloco::ui::windowmgr::create_window(
@@ -143,8 +143,8 @@ namespace openloco::gui
 
             if (skin != nullptr)
             {
-                window->colours[0] = colour::translucent(skin->colours_12[4]);
-                window->colours[1] = colour::translucent(skin->colours_12[4]);
+                window->colours[0] = colour::translucent(skin->colour_16);
+                window->colours[1] = colour::translucent(skin->colour_16);
             }
 
             window = openloco::ui::windowmgr::create_window(
@@ -163,8 +163,8 @@ namespace openloco::gui
 
             if (skin != nullptr)
             {
-                window->colours[0] = colour::translucent(skin->colours_12[5]);
-                window->colours[1] = colour::translucent(skin->colours_12[5]);
+                window->colours[0] = colour::translucent(skin->colour_17);
+                window->colours[1] = colour::translucent(skin->colour_17);
             }
 
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
@@ -183,8 +183,8 @@ namespace openloco::gui
 
                 if (skin != nullptr)
                 {
-                    window->colours[0] = colour::translucent(skin->colours_06[0]);
-                    window->colours[1] = colour::translucent(skin->colours_06[1]);
+                    window->colours[0] = colour::translucent(skin->colour_06);
+                    window->colours[1] = colour::translucent(skin->colour_07);
                 }
             }
         }
