@@ -61,6 +61,8 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_75 = 75;
     constexpr string_id about_locomotion_76 = 76;
     constexpr string_id about_locomotion_77 = 77;
+
+    // Unused (blank in original game)
     constexpr string_id about_locomotion_78 = 78;
     constexpr string_id about_locomotion_79 = 79;
     constexpr string_id about_locomotion_80 = 80;
@@ -98,9 +100,15 @@ namespace openloco::string_ids
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
 
+    // Unused
     constexpr string_id atari_inc_credits_btn = 1929;
+
     constexpr string_id licenced_to_atari_inc = 1930;
+
+    // Unused
     constexpr string_id atari_inc_credits_caption = 1931;
+
+    // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id loading = 1088;
     constexpr string_id station_cargo_rating_percent = 1423;

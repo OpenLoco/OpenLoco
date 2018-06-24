@@ -18,6 +18,7 @@ namespace openloco::ui
         dropdown = 7,
 
         about = 9,
+        // The Atari credits window is no longer used
         about_atari = 10,
         about_music = 11,
         error = 12,
