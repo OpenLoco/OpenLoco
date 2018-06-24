@@ -52,6 +52,22 @@ namespace openloco::string_ids
     constexpr string_id tooltip_close_window = 60;
 
     constexpr string_id about_locomotion_caption = 68;
+    constexpr string_id about_locomotion_69 = 69;
+    constexpr string_id about_locomotion_70 = 70;
+    constexpr string_id about_locomotion_71 = 71;
+    constexpr string_id about_locomotion_72 = 72;
+    constexpr string_id about_locomotion_73 = 73;
+    constexpr string_id about_locomotion_74 = 74;
+    constexpr string_id about_locomotion_75 = 75;
+    constexpr string_id about_locomotion_76 = 76;
+    constexpr string_id about_locomotion_77 = 77;
+    constexpr string_id about_locomotion_78 = 78;
+    constexpr string_id about_locomotion_79 = 79;
+    constexpr string_id about_locomotion_80 = 80;
+    constexpr string_id about_locomotion_81 = 81;
+    constexpr string_id about_locomotion_82 = 82;
+    constexpr string_id about_locomotion_83 = 83;
+    constexpr string_id about_locomotion_84 = 84;
 
     constexpr string_id tooltip_scroll_left = 188;
     constexpr string_id tooltip_scroll_right = 189;

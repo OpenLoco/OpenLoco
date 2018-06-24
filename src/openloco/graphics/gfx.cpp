@@ -261,6 +261,23 @@ namespace openloco::gfx
         call(0x00494BBF, regs);
     }
 
+    void draw_string_centred(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const char* args)
+    {
+        registers regs;
+        regs.al = colour;
+        regs.bx = stringId;
+        regs.cx = x;
+        regs.dx = y;
+        regs.edi = (int32_t)&dpi;
+        call(0x00494DE8, regs);
+    }
+
     void draw_string_centred_clipped(
         drawpixelinfo_t& dpi,
         int16_t x,
