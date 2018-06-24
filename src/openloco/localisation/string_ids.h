@@ -49,6 +49,10 @@ namespace openloco::string_ids
     constexpr string_id month_short_november = 51;
     constexpr string_id month_short_december = 52;
 
+    constexpr string_id tooltip_close_window = 60;
+
+    constexpr string_id about_locomotion_caption = 68;
+
     constexpr string_id tooltip_scroll_left = 188;
     constexpr string_id tooltip_scroll_right = 189;
     constexpr string_id tooltip_scroll_left_fast = 190;
@@ -74,6 +78,13 @@ namespace openloco::string_ids
     constexpr string_id month_long_october = 644;
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
+
+    constexpr string_id music_acknowledgements_btn = 1017;
+    constexpr string_id music_acknowledgements_caption = 1018;
+
+    constexpr string_id atari_inc_credits_btn = 1929;
+    constexpr string_id licenced_to_atari_inc = 1930;
+    constexpr string_id atari_inc_credits_caption = 1931;
 
     constexpr string_id loading = 1088;
     constexpr string_id station_cargo_rating_percent = 1423;

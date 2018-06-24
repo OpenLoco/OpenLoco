@@ -645,6 +645,13 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x0043B26C,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            ui::about::open();
+            return 0;
+        });
+
+    register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto result = prompt_ok_cancel(regs.eax);
