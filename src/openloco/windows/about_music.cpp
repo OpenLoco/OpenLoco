@@ -45,7 +45,7 @@ namespace openloco::ui::about_music
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
 
-    // 0x0043B26C
+    // 0x0043B4AF
     void open()
     {
         if (windowmgr::bring_to_front(window_type::about_music, 0) != nullptr)
@@ -73,6 +73,7 @@ namespace openloco::ui::about_music
         window->colours[1] = interface->colour_10;
     }
 
+    // 0x0043BFB0
     static void on_mouse_up(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
@@ -83,23 +84,27 @@ namespace openloco::ui::about_music
         }
     }
 
+    // 0x0043BFBB
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = num_songs * (10 + 10 + 14);
     }
 
+    // 0x0043BFC0
     static void tooltip(ui::window* window, widget_index widgetIndex)
     {
         loco_global<string_id, 0x112C826> common_format_args;
         *common_format_args = string_ids::tooltip_scroll_credits_list;
     }
 
+    // 0x0043B8B8
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
+    // 0x0043B8BE
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         static std::pair<string_id, string_id> strings_to_draw[num_songs] = {
