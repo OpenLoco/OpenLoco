@@ -1,5 +1,6 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
+#include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
@@ -30,9 +31,9 @@ namespace openloco::ui::about_music
     static widget_t _widgets[] = {
         make_widget({ 0, 0 }, { ww, wh }, widget_type::frame, 0),
         make_widget({ 1, 1 }, { ww - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
-        make_widget({ ww - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, 2321, string_ids::tooltip_close_window),
+        make_widget({ ww - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 15 }, { ww, 297 }, widget_type::panel, 1),
-        make_widget({ 4, 18 }, { ww - 8, 289 }, widget_type::scrollview, 1, 2),
+        make_widget({ 4, 18 }, { ww - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
         widget_end(),
     };
 

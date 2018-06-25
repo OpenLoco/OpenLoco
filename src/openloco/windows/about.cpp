@@ -1,5 +1,6 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
+#include "../graphics/image_ids.h"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -25,7 +26,7 @@ namespace openloco::ui::about
     static widget_t _widgets[] = {
         make_widget({ 0, 0 }, { ww, wh }, widget_type::frame, 0),
         make_widget({ 1, 1 }, { ww - 2, 13 }, widget_type::caption_25, 0, string_ids::about_locomotion_caption),
-        make_widget({ ww - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, 2321, string_ids::tooltip_close_window),
+        make_widget({ ww - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 15 }, { ww, 245 }, widget_type::panel, 1),
         make_widget({ 100, 234 }, { 200, 12 }, widget_type::wt_11, 1, string_ids::music_acknowledgements_btn),
         widget_end(),
@@ -89,7 +90,7 @@ namespace openloco::ui::about
         draw_string_centred(*dpi, x, y, colour::black, string_ids::about_locomotion_70, nullptr);
 
         // Chris Sawyer logo
-        draw_image(dpi, window->x + 92, window->y + 52, 3616);
+        draw_image(dpi, window->x + 92, window->y + 52, image_ids::chris_sawyer_logo_small);
 
         y += 79;
         draw_string_centred(*dpi, x, y, colour::black, string_ids::about_locomotion_71, nullptr);

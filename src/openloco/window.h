@@ -73,6 +73,13 @@ namespace openloco::ui
         end = 30,
     };
 
+    enum scrollbars : uint8_t
+    {
+        horizontal = (1 << 0),
+        vertical = (1 << 1),
+        both = (1 << 0) | (1 << 1),
+    };
+
     static constexpr widget_t make_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
