@@ -123,6 +123,11 @@ namespace openloco::ui::about
     void open();
 }
 
+namespace openloco::ui::about_music
+{
+    void open();
+}
+
 namespace openloco::ui::prompt_browse
 {
     enum class browse_type

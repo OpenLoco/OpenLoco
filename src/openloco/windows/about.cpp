@@ -3,7 +3,6 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-// #include "../openloco.h"
 #include "../windowmgr.h"
 
 namespace openloco::ui::about
@@ -71,7 +70,7 @@ namespace openloco::ui::about
                 break;
 
             case widx::music_acknowledgements_btn:
-                // Unimplemented.
+                about_music::open();
                 break;
         }
     }
