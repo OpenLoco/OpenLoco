@@ -2,6 +2,8 @@
 
 #include "stringmgr.h"
 
+#define UNUSED_STR(x) (x)
+
 namespace openloco::string_ids
 {
     constexpr string_id day_1st = 10;
@@ -61,15 +63,13 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_75 = 75;
     constexpr string_id about_locomotion_76 = 76;
     constexpr string_id about_locomotion_77 = 77;
-
-    // Unused (blank in original game)
-    constexpr string_id about_locomotion_78 = 78;
-    constexpr string_id about_locomotion_79 = 79;
-    constexpr string_id about_locomotion_80 = 80;
-    constexpr string_id about_locomotion_81 = 81;
-    constexpr string_id about_locomotion_82 = 82;
-    constexpr string_id about_locomotion_83 = 83;
-    constexpr string_id about_locomotion_84 = 84;
+    constexpr string_id about_locomotion_78 = UNUSED_STR(78);
+    constexpr string_id about_locomotion_79 = UNUSED_STR(79);
+    constexpr string_id about_locomotion_80 = UNUSED_STR(80);
+    constexpr string_id about_locomotion_81 = UNUSED_STR(81);
+    constexpr string_id about_locomotion_82 = UNUSED_STR(82);
+    constexpr string_id about_locomotion_83 = UNUSED_STR(83);
+    constexpr string_id about_locomotion_84 = UNUSED_STR(84);
 
     constexpr string_id tooltip_scroll_left = 188;
     constexpr string_id tooltip_scroll_right = 189;
@@ -182,13 +182,9 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
-    // Unused
-    constexpr string_id atari_inc_credits_btn = 1929;
-
+    constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
-
-    // Unused
-    constexpr string_id atari_inc_credits_caption = 1931;
+    constexpr string_id atari_inc_credits_caption = UNUSED_STR(1931);
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 

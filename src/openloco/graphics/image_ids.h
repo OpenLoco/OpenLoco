@@ -1,5 +1,7 @@
 #pragma once
 
+#define UNUSED_IMG(x) (x)
+
 namespace openloco::image_ids
 {
     constexpr uint32_t close_button = 2321;
@@ -10,7 +12,7 @@ namespace openloco::image_ids
 
     constexpr uint32_t atari_logo_intro_left = 3620;
     constexpr uint32_t atari_logo_intro_right = 3620;
-    constexpr uint32_t atari_logo_small = 3623;
+    constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
 
     constexpr uint32_t locomotion_logo = 3624;
 }
