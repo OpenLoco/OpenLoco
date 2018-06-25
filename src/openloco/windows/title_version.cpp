@@ -33,7 +33,6 @@ namespace openloco::ui::windows
 
         _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
         _events.draw = draw;
-        _events.event_28 = 0x0042A035;
 
         return window;
     }
