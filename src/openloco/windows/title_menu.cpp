@@ -2,6 +2,7 @@
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -12,7 +13,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-//    constexpr string_id STR_TOOLTIP_1567 = 1567;
 //    constexpr string_id STR_1568 = 1568;
 //    constexpr string_id STR_1569 = 1569;
 
@@ -23,6 +23,31 @@ namespace openloco::ui::windows
 
 //    constexpr string_id STR_2039 = 2039;
 
+    namespace widx
+    {
+        enum
+        {
+            scenario_list_btn,
+            load_game_btn,
+            tutorial_btn,
+            scenario_editor_btn,
+            chat_btn,
+            disconnect_btn,
+        };
+    }
+
+    static widget_t _widgets[] = {
+        make_widget( { 0, 0 }, { 74, 74 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game ),
+        make_widget( { 74, 0 }, { 74, 74 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game ),
+        make_widget( { 148, 0 }, { 74, 74 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial ),
+        make_widget( { 222, 0 }, { 74, 74 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor ),
+        make_widget( { 265, 47 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip ),
+        make_widget( { 0, 74 }, { 296, 18 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip ),
+        widget_end(),
+    };
+
+    static window_event_list _events;
+
     static void sub_439112();
     static void sub_4391CC();
     static void sub_43918F(char string[512]);
@@ -32,15 +57,15 @@ namespace openloco::ui::windows
     static void sub_439163();
     static void sub_439102();
 
-    static void paint(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
-    static loco_global<window_event_list[1], 0x004f9ec8> _events;
+    // static loco_global<window_event_list[1], 0x004f9ec8> _events;
 
     ui::window* open_title_menu()
     {
-        _events[0].draw = paint;
-        _events[0].prepare_draw = prepare_draw;
+        _events.prepare_draw = prepare_draw;
+        _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
             window_type::title_menu,
@@ -48,10 +73,16 @@ namespace openloco::ui::windows
             ui::height() - 117,
             296,
             92,
-            (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
-            (window_event_list*)&_events[0]);
-        window->widgets = (ui::widget_t*)0x00509df4;
-        window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
+            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            &_events);
+
+        window->widgets = _widgets;
+        window->enabled_widgets =
+            (1 << widx::scenario_list_btn) |
+            (1 << widx::load_game_btn) |
+            (1 << widx::tutorial_btn) |
+            (1 << widx::scenario_editor_btn) |
+            (1 << widx::chat_btn);
 
         window->init_scroll_widgets();
 
@@ -96,8 +127,9 @@ namespace openloco::ui::windows
     }
 
     // 0x00439298
-    static void paint(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
+        // Draw widgets.
         window->draw(dpi);
 
         if (window->widgets[0].type != ui::widget_type::none)

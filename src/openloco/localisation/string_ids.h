@@ -107,6 +107,11 @@ namespace openloco::string_ids
 
     constexpr string_id wcolour2_stringid2 = 457;
 
+    constexpr string_id title_menu_new_game = 613;
+    constexpr string_id title_menu_load_game = 614;
+    constexpr string_id title_menu_show_tutorial = 615;
+    constexpr string_id title_menu_exit_from_game = 616;
+
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
     constexpr string_id month_long_march = 637;
@@ -186,9 +191,15 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
+    constexpr string_id title_multiplayer_toggle_tooltip = 1567;
+
+    constexpr string_id title_menu_scenario_editor = 1740;
+
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
     constexpr string_id atari_inc_credits_caption = UNUSED_STR(1931);
+
+    constexpr string_id title_menu_chat_tooltip = 1933;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
