@@ -1,7 +1,11 @@
 #pragma once
 
 #ifndef _WIN32
+#define VK_BACK 0x08
+#define VK_RETURN 0x0D
 #define VK_PAUSE 0x13
+#define VK_ESCAPE 0x1B
+#define VK_SPACE 0x20
 #define VK_PRIOR 0x21
 #define VK_NEXT 0x22
 #define VK_END 0x23
@@ -33,6 +37,7 @@
 #define VK_DECIMAL 0x6E
 #define VK_DIVIDE 0x6F
 #define VK_F1 0x70
+#define VK_F12 0x7B
 #define VK_OEM_1 0xBA
 #define VK_OEM_PLUS 0xBB
 #define VK_OEM_COMMA 0xBC
