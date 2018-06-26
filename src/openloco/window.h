@@ -233,8 +233,8 @@ namespace openloco::ui
                 uint64_t activated_widgets;        // 0x1C
                 uint64_t holdable_widgets;         // 0x24
                 widget_t* widgets;                 // 0x2C
-                uint16_t x;                        // 0x30
-                uint16_t y;                        // 0x32
+                int16_t x;                         // 0x30
+                int16_t y;                         // 0x32
                 uint16_t width;                    // 0x34
                 uint16_t height;                   // 0x36
                 uint16_t min_width;                // 0x38
