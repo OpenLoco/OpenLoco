@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="**\*.cpp" />
+    <ClCompile Include="**\*.cpp" Exclude="version.cpp" />
     <ClCompile Include="version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
