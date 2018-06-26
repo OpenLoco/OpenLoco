@@ -66,6 +66,8 @@
     <ClCompile Include="interop\interop.cpp" />
     <ClCompile Include="openloco.cpp" />
     <ClCompile Include="gui.cpp" />
+    <ClCompile Include="windows\about.cpp" />
+    <ClCompile Include="windows\about_music.cpp" />
     <ClCompile Include="windows\constructionwnd.cpp" />
     <ClCompile Include="windows\map.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />

@@ -18,6 +18,7 @@ namespace openloco::ui
         dropdown = 7,
 
         about = 9,
+        // The Atari credits window is no longer used
         about_atari = 10,
         about_music = 11,
         error = 12,
@@ -92,8 +93,8 @@ namespace openloco::ui::windowmgr
     void close(window_type type);
     void close(window_type type, uint16_t id);
     void close(window* window);
-    window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, void* events);
-    window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, void* events);
+    window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
+    window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
     void draw_single(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
     void call_event_viewport_rotate_on_all_windows();
@@ -115,6 +116,16 @@ namespace openloco::ui::windows
 
     bool prompt_ok_cancel(string_id okButtonStringId);
     void map_center_on_view_point();
+}
+
+namespace openloco::ui::about
+{
+    void open();
+}
+
+namespace openloco::ui::about_music
+{
+    void open();
 }
 
 namespace openloco::ui::prompt_browse

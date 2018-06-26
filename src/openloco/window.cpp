@@ -233,7 +233,7 @@ namespace openloco::ui
             if (widget->type != widget_type::scrollview)
                 continue;
 
-            uint16_t scrollWidth, scrollHeight;
+            uint16_t scrollWidth = 0, scrollHeight = 0;
             this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
 
             bool invalidate = false;
@@ -280,7 +280,7 @@ namespace openloco::ui
 
             this->scroll_areas[s].flags = 0;
 
-            uint16_t scrollWidth, scrollHeight;
+            uint16_t scrollWidth = 0, scrollHeight = 0;
             this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
             this->scroll_areas[s].h_left = 0;
             this->scroll_areas[s].h_right = scrollWidth + 1;
@@ -539,9 +539,18 @@ namespace openloco::ui
 
     void window::call_update()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_update, regs);
+        if (event_handlers->on_update == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_update))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uintptr_t)this->event_handlers->on_update, regs);
+            return;
+        }
+
+        event_handlers->on_update(this);
     }
 
     void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
@@ -588,16 +597,25 @@ namespace openloco::ui
         return (cursor_id)regs.ebx;
     }
 
-    void window::call_on_mouse_up(int8_t widget_index)
+    void window::call_on_mouse_up(widget_index widgetIndex)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
+        if (event_handlers->on_mouse_up == nullptr)
+            return;
 
-        // Not sure if this is used
-        regs.edi = (uint32_t) & this->widgets[widget_index];
+        if (is_interop_event(event_handlers->on_mouse_up))
+        {
+            registers regs;
+            regs.edx = widgetIndex;
+            regs.esi = (uint32_t)this;
 
-        call((uint32_t)this->event_handlers->on_mouse_up, regs);
+            // Not sure if this is used
+            regs.edi = (uint32_t) & this->widgets[widgetIndex];
+
+            call((uintptr_t)this->event_handlers->on_mouse_up, regs);
+            return;
+        }
+
+        event_handlers->on_mouse_up(this, widgetIndex);
     }
 
     ui::window* window::call_on_resize()
@@ -638,12 +656,21 @@ namespace openloco::ui
 
     void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        registers regs;
-        regs.eax = scrollIndex;
-        regs.esi = (uintptr_t)this;
-        call((uint32_t)this->event_handlers->get_scroll_size, regs);
-        *scrollWidth = regs.cx;
-        *scrollHeight = regs.dx;
+        if (event_handlers->get_scroll_size == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->get_scroll_size))
+        {
+            registers regs;
+            regs.eax = scrollIndex;
+            regs.esi = (uintptr_t)this;
+            call((uint32_t)this->event_handlers->get_scroll_size, regs);
+            *scrollWidth = regs.cx;
+            *scrollHeight = regs.dx;
+            return;
+        }
+
+        event_handlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
     }
 
     void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
@@ -675,11 +702,20 @@ namespace openloco::ui
 
     bool window::call_tooltip(int16_t widget_index)
     {
-        registers regs;
-        regs.ax = widget_index;
-        regs.esi = (int32_t)this;
-        call((int32_t)this->event_handlers->tooltip, regs);
-        return regs.ax != (int16_t)string_ids::null;
+        if (event_handlers->tooltip == nullptr)
+            return false;
+
+        if (is_interop_event(event_handlers->tooltip))
+        {
+            registers regs;
+            regs.ax = widget_index;
+            regs.esi = (int32_t)this;
+            call((int32_t)this->event_handlers->tooltip, regs);
+            return regs.ax != (int16_t)string_ids::null;
+        }
+
+        event_handlers->tooltip(this, widget_index);
+        return true;
     }
 
     void window::call_on_move(int16_t xPos, int16_t yPos)
@@ -693,37 +729,53 @@ namespace openloco::ui
 
     void window::call_prepare_draw()
     {
-        if (event_handlers->prepare_draw != nullptr)
+        if (event_handlers->prepare_draw == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->prepare_draw))
         {
-            if (is_interop_event(event_handlers->prepare_draw))
-            {
-                registers regs;
-                regs.esi = (int32_t)this;
-                call((int32_t)this->event_handlers->prepare_draw, regs);
-            }
-            else
-            {
-                event_handlers->prepare_draw(this);
-            }
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((int32_t)this->event_handlers->prepare_draw, regs);
+            return;
         }
+
+        event_handlers->prepare_draw(this);
     }
 
     void window::call_draw(gfx::drawpixelinfo_t* dpi)
     {
-        if (event_handlers->draw != nullptr)
+        if (event_handlers->draw == nullptr)
+            return;
+
+        if (is_interop_event(this->event_handlers->draw))
         {
-            if (is_interop_event(this->event_handlers->draw))
-            {
-                registers regs;
-                regs.esi = (int32_t)this;
-                regs.edi = (int32_t)dpi;
-                call((int32_t)this->event_handlers->draw, regs);
-            }
-            else
-            {
-                event_handlers->draw(this, dpi);
-            }
+            registers regs;
+            regs.esi = (int32_t)this;
+            regs.edi = (int32_t)dpi;
+            call((int32_t)this->event_handlers->draw, regs);
+            return;
         }
+
+        event_handlers->draw(this, dpi);
+    }
+
+    void window::call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    {
+        if (event_handlers->draw_scroll == nullptr)
+            return;
+
+        if (is_interop_event(this->event_handlers->draw_scroll))
+        {
+            registers regs;
+            regs.ax = scrollIndex;
+            regs.esi = (int32_t)this;
+            regs.edi = (int32_t)dpi;
+            call((int32_t)event_handlers->draw_scroll, regs);
+            return;
+        }
+
+        event_handlers->draw_scroll(this, dpi, scrollIndex);
     }
 
     // 0x004CA4DF

@@ -692,13 +692,7 @@ namespace openloco::ui::widget
             cropped.x -= left - scroll_area->h_left;
             cropped.y -= top - scroll_area->v_top;
 
-            {
-                registers regs;
-                regs.ax = scrollview_index;
-                regs.esi = (int32_t)window;
-                regs.edi = (int32_t)&cropped;
-                call(window->event_handlers->event_28, regs);
-            }
+            window->call_draw_scroll(&cropped, scrollview_index);
         }
     }
 

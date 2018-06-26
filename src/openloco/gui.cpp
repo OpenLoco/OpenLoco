@@ -36,7 +36,7 @@ namespace openloco::gui
             uiWidth,
             uiHeight,
             ui::window_flags::stick_to_back,
-            (void*)0x004FA1F4);
+            (ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
         openloco::ui::viewportmgr::create(window, window->x, window->y, window->width, window->height, false, 0, 6143, 6143, 480);
@@ -59,7 +59,7 @@ namespace openloco::gui
                 296,
                 92,
                 ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background | ui::window_flags::flag_6,
-                (void*)0x004f9ec8);
+                (ui::window_event_list*)0x004f9ec8);
             window->widgets = (ui::widget_t*)0x00509df4;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
 
@@ -76,7 +76,7 @@ namespace openloco::gui
                 40,
                 28,
                 ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background | ui::window_flags::flag_6,
-                (void*)0x004f9f3c);
+                (ui::window_event_list*)0x004f9f3c);
             window->widgets = (ui::widget_t*)0x00509e58;
             window->enabled_widgets = (1 << 0);
 
@@ -92,7 +92,7 @@ namespace openloco::gui
                 298,
                 170,
                 ui::window_flags::stick_to_front,
-                (void*)0x004f9fb0);
+                (ui::window_event_list*)0x004f9fb0);
             window->widgets = (ui::widget_t*)0x00509e6c;
             window->enabled_widgets = (1 << 0);
 
@@ -114,7 +114,7 @@ namespace openloco::gui
                 uiWidth,
                 28,
                 ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (void*)0x4fa180);
+                (ui::window_event_list*)0x4fa180);
             window->widgets = (ui::widget_t*)0x509c34;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
             window->init_scroll_widgets();
@@ -122,10 +122,10 @@ namespace openloco::gui
             auto skin = openloco::objectmgr::get<interface_skin_object>();
             if (skin != nullptr)
             {
-                window->colours[0] = skin->colours_12[0];
-                window->colours[1] = skin->colours_12[1];
-                window->colours[2] = skin->colours_12[2];
-                window->colours[3] = skin->colours_12[3];
+                window->colours[0] = skin->colour_12;
+                window->colours[1] = skin->colour_13;
+                window->colours[2] = skin->colour_14;
+                window->colours[3] = skin->colour_15;
             }
 
             window = openloco::ui::windowmgr::create_window(
@@ -135,7 +135,7 @@ namespace openloco::gui
                 140,
                 27,
                 ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (void*)0x4fa024);
+                (ui::window_event_list*)0x4fa024);
             window->widgets = (ui::widget_t*)0x509d08;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->var_854 = 0;
@@ -143,8 +143,8 @@ namespace openloco::gui
 
             if (skin != nullptr)
             {
-                window->colours[0] = colour::translucent(skin->colours_12[4]);
-                window->colours[1] = colour::translucent(skin->colours_12[4]);
+                window->colours[0] = colour::translucent(skin->colour_16);
+                window->colours[1] = colour::translucent(skin->colour_16);
             }
 
             window = openloco::ui::windowmgr::create_window(
@@ -154,7 +154,7 @@ namespace openloco::gui
                 140,
                 27,
                 ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (void*)0x4fa098);
+                (ui::window_event_list*)0x4fa098);
             window->widgets = (ui::widget_t*)0x509d5c;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
             window->var_854 = 0;
@@ -163,8 +163,8 @@ namespace openloco::gui
 
             if (skin != nullptr)
             {
-                window->colours[0] = colour::translucent(skin->colours_12[5]);
-                window->colours[1] = colour::translucent(skin->colours_12[5]);
+                window->colours[0] = colour::translucent(skin->colour_17);
+                window->colours[1] = colour::translucent(skin->colour_17);
             }
 
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
@@ -177,14 +177,14 @@ namespace openloco::gui
                     uiWidth - 280,
                     27,
                     ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                    (void*)0x4fa10c);
+                    (ui::window_event_list*)0x4fa10c);
                 window->widgets = (ui::widget_t*)0x509de0;
                 window->init_scroll_widgets();
 
                 if (skin != nullptr)
                 {
-                    window->colours[0] = colour::translucent(skin->colours_06[0]);
-                    window->colours[1] = colour::translucent(skin->colours_06[1]);
+                    window->colours[0] = colour::translucent(skin->colour_06);
+                    window->colours[1] = colour::translucent(skin->colour_07);
                 }
             }
         }
