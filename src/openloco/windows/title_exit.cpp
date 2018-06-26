@@ -1,4 +1,5 @@
 #include "../graphics/colours.h"
+#include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"
@@ -10,13 +11,28 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-    static void paint(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    namespace widx
+    {
+        enum
+        {
+            exit_button
+        };
+    }
 
-    static loco_global<window_event_list[1], 0x004f9f3c> _events;
+    static widget_t _widgets[] = {
+        make_widget( { 0, 0 }, { 40, 28 }, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game ),
+        widget_end(),
+    };
+
+    static window_event_list _events;
+
+    static void on_mouse_up(window* window, widget_index widgetIndex);
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     window* open_title_exit()
     {
-        _events[0].draw = paint;
+        _events.on_mouse_up = on_mouse_up;
+        _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
             window_type::title_exit,
@@ -24,10 +40,11 @@ namespace openloco::ui::windows
             ui::height() - 28,
             40,
             28,
-            (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
-            (window_event_list*)&_events[0]);
-        window->widgets = (ui::widget_t*)0x00509e58;
-        window->enabled_widgets = (1 << 0);
+            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            &_events);
+
+        window->widgets = _widgets;
+        window->enabled_widgets = (1 << widx::exit_button);
 
         window->init_scroll_widgets();
 
@@ -38,34 +55,28 @@ namespace openloco::ui::windows
     }
 
     // 0x00439236
-    static void paint(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
+        // Draw widgets.
         window->draw(dpi);
 
-        // draw_string_centred_wrapped(uint16_t string_id@<bx>, 16 center_x@<cx>, 16 center_y@<cx>, void* args@<esi>)
-        {
-            registers regs;
-            regs.cx = window->x + window->width / 2;
-            regs.dx = window->y + window->widgets[0].top + 8;
-            regs.bx = string_ids::title_exit_game;
-            regs.al = 0;
-            regs.esi = 0x112c826; // common format args
-            regs.edi = (uint32_t)&dpi;
-            call(0x00494ECF, regs);
-        }
+        int16_t x = window->x + window->width / 2;
+        int16_t y = window->y + window->widgets[0].top + 8;
+        gfx::point_t origin = { x, y };
+        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, 0, string_ids::title_exit_game, nullptr);
     }
 
     // 0x00439268
-    static void on_mouse_up(window* window, uint16_t widget_index)
+    static void on_mouse_up(window* window, widget_index widgetIndex)
     {
         if (intro::state() != intro::intro_state::none)
         {
             return;
         }
 
-        switch (widget_index)
+        switch (widgetIndex)
         {
-            case 0:
+            case widx::exit_button:
                 // do_game_command
                 {
                     registers regs;
