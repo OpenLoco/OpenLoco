@@ -15,121 +15,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio\audio.cpp" />
-    <ClCompile Include="company.cpp" />
-    <ClCompile Include="companymgr.cpp" />
-    <ClCompile Include="config.cpp" />
-    <ClCompile Include="console.cpp" />
-    <ClCompile Include="date.cpp" />
-    <ClCompile Include="environment.cpp" />
-    <ClCompile Include="industry.cpp" />
-    <ClCompile Include="industrymgr.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="input\mouse_input.cpp" />
-    <ClCompile Include="interop\hooks.cpp" />
-    <ClCompile Include="localisation\stringmgr.cpp" />
-    <ClCompile Include="map\tile.cpp" />
-    <ClCompile Include="map\tilemgr.cpp" />
-    <ClCompile Include="messagemgr.cpp" />
-    <ClCompile Include="platform\platform.posix.cpp" />
-    <ClCompile Include="platform\platform.windows.cpp" />
-    <ClCompile Include="station.cpp" />
-    <ClCompile Include="stationmgr.cpp" />
-    <ClCompile Include="things\misc.cpp" />
-    <ClCompile Include="things\thing.cpp" />
-    <ClCompile Include="things\thingmgr.cpp" />
-    <ClCompile Include="things\vehicle.cpp" />
-    <ClCompile Include="town.cpp" />
-    <ClCompile Include="townmgr.cpp" />
-    <ClCompile Include="utility\string.cpp" />
-    <ClCompile Include="ui\scrollview.cpp" />
-    <ClCompile Include="ui\viewport_interaction.cpp" />
+    <ClCompile Include="**\*.cpp" />
     <ClCompile Include="version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_COMMIT_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(APPVEYOR_REPO_COMMIT_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="viewportmgr.cpp" />
-    <ClCompile Include="window.cpp" />
-    <ClCompile Include="widget.cpp" />
-    <ClCompile Include="intro.cpp" />
-    <ClCompile Include="objects\objectmgr.cpp" />
-    <ClCompile Include="scenariomgr.cpp" />
-    <ClCompile Include="tutorial.cpp" />
-    <ClCompile Include="windowmgr.cpp" />
-    <ClCompile Include="graphics\gfx.cpp" />
-    <ClCompile Include="graphics\colour.cpp" />
-    <ClCompile Include="ui.cpp" />
-    <ClCompile Include="progressbar.cpp" />
-    <ClCompile Include="interop\hook.cpp" />
-    <ClCompile Include="interop\interop.cpp" />
-    <ClCompile Include="openloco.cpp" />
-    <ClCompile Include="gui.cpp" />
-    <ClCompile Include="windows\about.cpp" />
-    <ClCompile Include="windows\about_music.cpp" />
-    <ClCompile Include="windows\constructionwnd.cpp" />
-    <ClCompile Include="windows\map.cpp" />
-    <ClCompile Include="windows\promptbrowsewnd.cpp" />
-    <ClCompile Include="windows\promptokcancelwnd.cpp" />
-    <ClCompile Include="windows\stationwnd.cpp" />
-    <ClCompile Include="windows\textinputwnd.cpp" />
-    <ClCompile Include="windows\townwnd.cpp" />
-    <ClCompile Include="windows\tooltip.cpp" />
-    <ClCompile Include="windows\title_version.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="audio\audio.h" />
-    <ClInclude Include="company.h" />
-    <ClInclude Include="companymgr.h" />
-    <ClInclude Include="config.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="date.h" />
-    <ClInclude Include="environment.h" />
-    <ClInclude Include="graphics\colours.h" />
-    <ClInclude Include="industry.h" />
-    <ClInclude Include="industrymgr.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="intro.h" />
-    <ClInclude Include="localisation\stringmgr.h" />
-    <ClInclude Include="localisation\string_ids.h" />
-    <ClInclude Include="map\tile.h" />
-    <ClInclude Include="map\tile_loop.hpp" />
-    <ClInclude Include="map\tilemgr.h" />
-    <ClInclude Include="messagemgr.h" />
-    <ClInclude Include="objects\building_object.h" />
-    <ClInclude Include="objects\cargo_object.h" />
-    <ClInclude Include="objects\industry_object.h" />
-    <ClInclude Include="objects\objectmgr.h" />
-    <ClInclude Include="objects\road_station_object.h" />
-    <ClInclude Include="objects\steam_object.h" />
-    <ClInclude Include="platform\platform.h" />
-    <ClInclude Include="objects\vehicle_object.h" />
-    <ClInclude Include="things\misc.h" />
-    <ClInclude Include="utility\prng.hpp" />
-    <ClInclude Include="scenariomgr.h" />
-    <ClInclude Include="stationmgr.h" />
-    <ClInclude Include="things\thing.h" />
-    <ClInclude Include="things\thingmgr.h" />
-    <ClInclude Include="things\vehicle.h" />
-    <ClInclude Include="town.h" />
-    <ClInclude Include="townmgr.h" />
-    <ClInclude Include="tutorial.h" />
-    <ClInclude Include="utility\collection.hpp" />
-    <ClInclude Include="utility\numeric.hpp" />
-    <ClInclude Include="utility\string.hpp" />
-    <ClInclude Include="ui\scrollview.h" />
-    <ClInclude Include="types.hpp" />
-    <ClInclude Include="viewportmgr.h" />
-    <ClInclude Include="window.h" />
-    <ClInclude Include="windowmgr.h" />
-    <ClInclude Include="graphics\gfx.h" />
-    <ClInclude Include="openloco.h" />
-    <ClInclude Include="ui.h" />
-    <ClInclude Include="gui.h" />
-    <ClInclude Include="progressbar.h" />
-    <ClInclude Include="interop\interop.hpp" />
-    <ClInclude Include="station.h" />
+    <ClInclude Include="**\*.h" />
+    <ClInclude Include="**\*.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
