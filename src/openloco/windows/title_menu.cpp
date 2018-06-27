@@ -61,6 +61,7 @@ namespace openloco::ui::windows
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_mouse_down(ui::window* window, widget_index widgetIndex);
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void on_update(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
@@ -71,6 +72,7 @@ namespace openloco::ui::windows
         _events.on_mouse_up = on_mouse_up;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
+        _events.on_update = on_update;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
 
@@ -386,8 +388,8 @@ namespace openloco::ui::windows
         call(0x0046e328);
     }
 
-    // 0x004391F9 (window *window@<esi>)
-    static void event_7(window* window)
+    // 0x004391F9
+    static void on_update(window* window)
     {
         window->var_846++;
 
