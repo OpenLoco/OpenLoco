@@ -71,6 +71,8 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_83 = UNUSED_STR(83);
     constexpr string_id about_locomotion_84 = UNUSED_STR(84);
 
+    constexpr string_id label_button_ok = 187;
+
     constexpr string_id tooltip_scroll_left = 188;
     constexpr string_id tooltip_scroll_right = 189;
     constexpr string_id tooltip_scroll_left_fast = 190;
@@ -100,6 +102,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_company_list = 213;
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
+
+    constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
 
@@ -189,5 +193,10 @@ namespace openloco::string_ids
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id loading = 1088;
+
     constexpr string_id station_cargo_rating_percent = 1423;
+
+    constexpr string_id text_input_cursor = UNUSED_STR(2003);
+
+    constexpr string_id buffer_2039 = 2039;
 }

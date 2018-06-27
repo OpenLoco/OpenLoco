@@ -700,6 +700,26 @@ namespace openloco::ui
         call((int32_t)this->event_handlers->viewport_rotate, regs);
     }
 
+    void window::call_text_input(widget_index caller, char* buffer)
+    {
+        if (event_handlers->text_input == (uintptr_t) nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->text_input))
+        {
+            registers regs;
+            regs.dx = caller;
+            regs.esi = (int32_t)this;
+            regs.cl = 1;
+            regs.edi = (uintptr_t)buffer;
+            call((uintptr_t)this->event_handlers->text_input, regs);
+            return;
+        }
+
+        // TODO: add C version of text_input event
+        assert(false);
+    }
+
     bool window::call_tooltip(int16_t widget_index)
     {
         if (event_handlers->tooltip == nullptr)

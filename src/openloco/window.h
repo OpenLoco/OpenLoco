@@ -233,8 +233,8 @@ namespace openloco::ui
                 uint64_t activated_widgets;        // 0x1C
                 uint64_t holdable_widgets;         // 0x24
                 widget_t* widgets;                 // 0x2C
-                uint16_t x;                        // 0x30
-                uint16_t y;                        // 0x32
+                int16_t x;                         // 0x30
+                int16_t y;                         // 0x32
                 uint16_t width;                    // 0x34
                 uint16_t height;                   // 0x36
                 uint16_t min_width;                // 0x38
@@ -302,6 +302,7 @@ namespace openloco::ui
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
+        void call_text_input(widget_index caller, char* buffer);                                          // 20
         void call_viewport_rotate();                                                                      // 21
         bool call_tooltip(int16_t widget_index);                                                          // 23
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24

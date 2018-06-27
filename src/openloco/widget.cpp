@@ -13,6 +13,16 @@ namespace openloco::ui
     {
         return (this->left + this->right) / 2;
     }
+
+    uint16_t widget_t::width()
+    {
+        return (this->right - this->left) + 1;
+    }
+
+    uint16_t widget_t::height()
+    {
+        return (this->bottom - this->top) + 1;
+    }
 }
 
 namespace openloco::ui::widget

@@ -141,7 +141,13 @@ namespace openloco::ui::prompt_browse
 
 namespace openloco::ui::textinput
 {
-    void close();
+    void register_hooks();
+
+    void open_textinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void sub_4CE6C9(window_type type, window_number number);
+    void cancel();
+    void sub_4CE910(int eax, int ebx);
+    void sub_4CE6FF();
 }
 
 namespace openloco::ui::tooltip
