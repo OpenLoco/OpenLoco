@@ -60,6 +60,7 @@ namespace openloco::ui::windows
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_mouse_down(ui::window* window, widget_index widgetIndex);
+    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
@@ -69,6 +70,7 @@ namespace openloco::ui::windows
     {
         _events.on_mouse_up = on_mouse_up;
         _events.on_mouse_down = on_mouse_down;
+        _events.on_dropdown = on_dropdown;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
 
@@ -267,12 +269,12 @@ namespace openloco::ui::windows
     }
 
     // 0x004390DD
-    static void event_5(uint16_t widget_index)
+    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
-        switch (widget_index)
+        switch (widgetIndex)
         {
-            case 2:
+            case widx::tutorial_btn:
                 sub_4391CC();
                 break;
         }

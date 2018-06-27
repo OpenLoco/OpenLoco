@@ -656,11 +656,20 @@ namespace openloco::ui
 
     void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
     {
-        registers regs;
-        regs.ax = item_index;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        call((uint32_t)this->event_handlers->on_dropdown, regs);
+        if (event_handlers->on_dropdown == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_dropdown))
+        {
+            registers regs;
+            regs.ax = item_index;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            call((uint32_t)this->event_handlers->on_dropdown, regs);
+            return;
+        }
+
+        event_handlers->on_dropdown(this, widget_index, item_index);
     }
 
     void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
