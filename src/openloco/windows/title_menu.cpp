@@ -32,7 +32,7 @@ namespace openloco::ui::windows
             tutorial_btn,
             scenario_editor_btn,
             chat_btn,
-            disconnect_btn,
+            multiplayer_toggle_btn,
         };
     }
 
@@ -56,7 +56,10 @@ namespace openloco::ui::windows
     static void sub_43910A();
     static void sub_439163();
     static void sub_439102();
+    static void sub_46E328();
 
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
+    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
@@ -64,6 +67,8 @@ namespace openloco::ui::windows
 
     ui::window* open_title_menu()
     {
+        _events.on_mouse_up = on_mouse_up;
+        _events.on_mouse_down = on_mouse_down;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
 
@@ -93,36 +98,36 @@ namespace openloco::ui::windows
         return window;
     }
 
-    // 0x00438E0b (window *window@<esi>)
+    // 0x00438E0B
     static void prepare_draw(ui::window* window)
     {
         window->disabled_widgets = 0;
-        window->widgets[2].type = ui::widget_type::wt_9;
-        window->widgets[3].type = ui::widget_type::wt_9;
+        window->widgets[widx::tutorial_btn].type = ui::widget_type::wt_9;
+        window->widgets[widx::scenario_editor_btn].type = ui::widget_type::wt_9;
 
-        window->widgets[0].left = 0;
-        window->widgets[0].right = 73;
-        window->widgets[1].left = 74;
-        window->widgets[1].right = 147;
-        window->widgets[2].left = 148;
-        window->widgets[2].right = 221;
-        window->widgets[3].left = 222;
-        window->widgets[3].right = 295;
-        window->widgets[4].type = ui::widget_type::none;
+        window->widgets[widx::scenario_list_btn].left = 0;
+        window->widgets[widx::scenario_list_btn].right = 73;
+        window->widgets[widx::load_game_btn].left = 74;
+        window->widgets[widx::load_game_btn].right = 147;
+        window->widgets[widx::tutorial_btn].left = 148;
+        window->widgets[widx::tutorial_btn].right = 221;
+        window->widgets[widx::scenario_editor_btn].left = 222;
+        window->widgets[widx::scenario_editor_btn].right = 295;
+        window->widgets[widx::chat_btn].type = ui::widget_type::none;
 
         if (openloco::get_screen_flags() & screen_flags::unknown_2)
         {
-            window->widgets[2].type = ui::widget_type::none;
-            window->widgets[3].type = ui::widget_type::none;
+            window->widgets[widx::tutorial_btn].type = ui::widget_type::none;
+            window->widgets[widx::scenario_editor_btn].type = ui::widget_type::none;
 
-            window->widgets[0].left = 74;
-            window->widgets[0].right = 147;
-            window->widgets[1].left = 148;
-            window->widgets[1].right = 221;
+            window->widgets[widx::scenario_list_btn].left = 74;
+            window->widgets[widx::scenario_list_btn].right = 147;
+            window->widgets[widx::load_game_btn].left = 148;
+            window->widgets[widx::load_game_btn].right = 221;
 
-            window->widgets[4].type = ui::widget_type::wt_9;
+            window->widgets[widx::chat_btn].type = ui::widget_type::wt_9;
             interface_skin_object* skin = objectmgr::get<interface_skin_object>();
-            window->widgets[4].image = skin->img + 188;
+            window->widgets[widx::chat_btn].image = skin->img + 188;
         }
     }
 
@@ -132,10 +137,10 @@ namespace openloco::ui::windows
         // Draw widgets.
         window->draw(dpi);
 
-        if (window->widgets[0].type != ui::widget_type::none)
+        if (window->widgets[widx::scenario_list_btn].type != ui::widget_type::none)
         {
-            int16_t x = window->widgets[0].left + window->x;
-            int16_t y = window->widgets[0].top + window->y;
+            int16_t x = window->widgets[widx::scenario_list_btn].left + window->x;
+            int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = 3552;
             if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 0))
@@ -147,10 +152,10 @@ namespace openloco::ui::windows
             openloco::gfx::draw_image(dpi, x, y, 3547);
         }
 
-        if (window->widgets[1].type != ui::widget_type::none)
+        if (window->widgets[widx::load_game_btn].type != ui::widget_type::none)
         {
-            int16_t x = window->widgets[1].left + window->x;
-            int16_t y = window->widgets[1].top + window->y;
+            int16_t x = window->widgets[widx::load_game_btn].left + window->x;
+            int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = 3552;
             if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 1))
@@ -162,10 +167,10 @@ namespace openloco::ui::windows
             openloco::gfx::draw_image(dpi, x, y, 3548);
         }
 
-        if (window->widgets[2].type != ui::widget_type::none)
+        if (window->widgets[widx::tutorial_btn].type != ui::widget_type::none)
         {
-            int16_t x = window->widgets[2].left + window->x;
-            int16_t y = window->widgets[2].top + window->y;
+            int16_t x = window->widgets[widx::tutorial_btn].left + window->x;
+            int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = 3552;
             if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 2))
@@ -177,10 +182,10 @@ namespace openloco::ui::windows
             openloco::gfx::draw_image(dpi, x, y, 3549);
         }
 
-        if (window->widgets[3].type != ui::widget_type::none)
+        if (window->widgets[widx::scenario_editor_btn].type != ui::widget_type::none)
         {
-            int16_t x = window->widgets[3].left + window->x;
-            int16_t y = window->widgets[3].top + window->y;
+            int16_t x = window->widgets[widx::scenario_editor_btn].left + window->x;
+            int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = 3608;
             if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 3))
@@ -220,42 +225,42 @@ namespace openloco::ui::windows
     }
 
     // 0x00439094
-    static void event_1(uint16_t widget_index)
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
     {
         if (intro::state() != intro::intro_state::none)
         {
             return;
         }
 
-        call(0x0046e328);
-        switch (widget_index)
+        sub_46E328();
+
+        switch (widgetIndex)
         {
-            case 0:
+            case widx::scenario_list_btn:
                 sub_4391DA();
                 break;
-            case 1:
+            case widx::load_game_btn:
                 sub_4391E2();
                 break;
-            case 3:
+            case widx::scenario_editor_btn:
                 sub_43910A();
                 break;
-            case 4:
+            case widx::chat_btn:
                 sub_439163();
                 break;
-            case 5:
+            case widx::multiplayer_toggle_btn:
                 sub_439102();
                 break;
         }
     }
 
-    // window * window@<esi>, widget * widget@<edi>, u16 index@<dx>
     // 0x004390D1
-    static void event_4(uint16_t widget_index)
+    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
     {
-        call(0x0046e328);
-        switch (widget_index)
+        sub_46E328();
+        switch (widgetIndex)
         {
-            case 2:
+            case widx::tutorial_btn:
                 sub_439112();
                 break;
         }
@@ -264,7 +269,7 @@ namespace openloco::ui::windows
     // 0x004390DD
     static void event_5(uint16_t widget_index)
     {
-        call(0x0046e328);
+        sub_46E328();
         switch (widget_index)
         {
             case 2:
@@ -372,6 +377,11 @@ namespace openloco::ui::windows
             regs.esi = 21;
             call(0x00431315, regs);
         }
+    }
+
+    static void sub_46E328()
+    {
+        call(0x0046e328);
     }
 
     // 0x004391F9 (window *window@<esi>)

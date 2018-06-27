@@ -636,13 +636,22 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->event_03, regs);
     }
 
-    void window::call_on_mouse_down(int8_t widget_index)
+    void window::call_on_mouse_down(ui::widget_index widget_index)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        regs.edi = (uint32_t) & this->widgets[widget_index];
-        call((uint32_t)this->event_handlers->on_mouse_down, regs);
+        if (event_handlers->on_mouse_down == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_mouse_down))
+        {
+            registers regs;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            regs.edi = (uint32_t) & this->widgets[widget_index];
+            call((uint32_t)this->event_handlers->on_mouse_down, regs);
+            return;
+        }
+
+        event_handlers->on_mouse_down(this, widget_index);
     }
 
     void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
