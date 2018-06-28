@@ -192,6 +192,11 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues_credit = 1081;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
+    constexpr string_id single_player_mode = 1568;
+    constexpr string_id two_player_mode_connected = 1569;
+
+    constexpr string_id chat_title = 1717;
+    constexpr string_id chat_instructions = 1718;
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
@@ -208,6 +213,8 @@ namespace openloco::string_ids
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id title_exit_game = 1869;
+
+    constexpr string_id the_other_player = 1934;
 
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 

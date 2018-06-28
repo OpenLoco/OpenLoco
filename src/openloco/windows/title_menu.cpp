@@ -13,16 +13,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-//    constexpr string_id STR_1568 = 1568;
-//    constexpr string_id STR_1569 = 1569;
-
-    constexpr string_id STR_1717 = 1717;
-    constexpr string_id STR_1718 = 1718;
-
-    constexpr string_id STR_1934 = 1934;
-
-//    constexpr string_id STR_2039 = 2039;
-
     namespace widx
     {
         enum
@@ -54,7 +44,7 @@ namespace openloco::ui::windows
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
-    static void sub_439163();
+    static void sub_439163(ui::window* callingWindow, widget_index callingWidget);
     static void sub_439102();
     static void sub_46E328();
 
@@ -135,7 +125,7 @@ namespace openloco::ui::windows
         }
     }
 
-    // 0x00439298
+    // 0x00438EC7
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
@@ -200,32 +190,25 @@ namespace openloco::ui::windows
             openloco::gfx::draw_image(dpi, x, y, image_id);
         }
 
-        //        {
-        //            int16_t y = window->widgets[5].top + 3 + window->y;
-        //            int16_t x = window->width / 2 + window->x;
-        //
-        //            string_id string = STR_1568;
-        //
-        //            if (false)
-        //            {
-        //                // 0x005177FA = char[512+1]
-        //                // 0x00F254D0 player name
-        //                0x5177FA [0] = '\0';
-        //                std::strcpy((void*)0x5177FA, 0x00F254D0)
-        //                    loco_global<0x112c826, uint16_t>()
-        //                    = STR_2039;
-        //                string = STR_1569;
-        //            }
-        //
-        //            registers regs;
-        //            regs.al = 0;
-        //            regs.bx = string;
-        //            regs.cx = x;
-        //            regs.dx = y;
-        //            regs.bp = 292;        // color???
-        //            regs.esi = 0x112c826; // common format args
-        //            call(0x00494C36, regs);
-        //        }
+        {
+            int16_t y = window->widgets[5].top + 3 + window->y;
+            int16_t x = window->width / 2 + window->x;
+
+            string_id string = string_ids::single_player_mode;
+
+            // if (false)
+            // {
+            //    // 0x005177FA = char[512+1]
+            //    // 0x00F254D0 player name
+            //    0x5177FA [0] = '\0';
+            //    std::strcpy((void*)0x5177FA, 0x00F254D0)
+            //        loco_global<0x112c826, uint16_t>()
+            //        = string_ids::buffer_2039;
+            //    string = string_ids::two_player_mode_connected;
+            // }
+
+            draw_string_centred_clipped(*dpi, x, y, 292, 0, string, (char*)0x112c826);
+        }
     }
 
     // 0x00439094
@@ -250,7 +233,7 @@ namespace openloco::ui::windows
                 sub_43910A();
                 break;
             case widx::chat_btn:
-                sub_439163();
+                sub_439163(window, widgetIndex);
                 break;
             case widx::multiplayer_toggle_btn:
                 sub_439102();
@@ -324,19 +307,14 @@ namespace openloco::ui::windows
         // call(0x4CCA6D, regs);
     }
 
-    static void sub_439163()
+    static void sub_439163(ui::window* callingWindow, widget_index callingWidget)
     {
         windowmgr::close(window_type::multiplayer);
 
-        {
-            // open textinput
-            registers regs;
-            loco_global<uint16_t, 0x112c82E>() = STR_1934;
-            regs.eax = STR_1717;
-            regs.ebx = STR_1718;
-            regs.ecx = 0;
-            call(0x004ce523, regs);
-        }
+        static loco_global<char[16], 0x0112C826> commonFormatArgs;
+        // (uint16_t)commonFormatArgs[8] = (uint16_t)string_ids::the_other_player;
+
+        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::null, callingWidget, commonFormatArgs);
     }
 
     static void sub_43918F(char string[512])
