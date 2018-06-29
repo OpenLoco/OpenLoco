@@ -8,6 +8,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
+    static const gfx::ui_size_t window_size = { 298, 170 };
+
     namespace widx
     {
         enum
@@ -17,7 +19,7 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget( { 0, 0 }, { 298, 170 }, widget_type::wt_3, 0 ),
+        make_widget({ 0, 0 }, window_size, widget_type::wt_3, 0),
         widget_end(),
     };
 
@@ -35,8 +37,8 @@ namespace openloco::ui::windows
             window_type::title_logo,
             0,
             0,
-            298,
-            170,
+            window_size.width,
+            window_size.height,
             window_flags::stick_to_front | window_flags::transparent,
             &_events);
 
