@@ -1,3 +1,4 @@
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
@@ -45,8 +46,8 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void sub_439112();
-    static void sub_4391CC();
+    static void sub_439112(window* window);
+    static void sub_4391CC(int16_t itemIndex);
     static void sub_43918F(char string[512]);
     static void sub_4391DA();
     static void sub_4391E2();
@@ -59,6 +60,7 @@ namespace openloco::ui::windows
     static void on_mouse_down(ui::window* window, widget_index widgetIndex);
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_update(window* window);
+    static void on_text_input(window* window, widget_index widgetIndex, char* input);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
@@ -69,6 +71,7 @@ namespace openloco::ui::windows
         _events.on_mouse_up = on_mouse_up;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
+        _events.text_input = on_text_input;
         _events.on_update = on_update;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
@@ -200,30 +203,32 @@ namespace openloco::ui::windows
         }
 
         {
-            int16_t y = window->widgets[5].top + 3 + window->y;
+            int16_t y = window->widgets[widx::multiplayer_toggle_btn].top + 3 + window->y;
             int16_t x = window->width / 2 + window->x;
 
             string_id string = string_ids::single_player_mode;
 
-            // if (false)
-            // {
-            //    // 0x005177FA = char[512+1]
-            //    // 0x00F254D0 player name
-            //    0x5177FA [0] = '\0';
-            //    std::strcpy((void*)0x5177FA, 0x00F254D0)
-            //        loco_global<0x112c826, uint16_t>()
-            //        = string_ids::buffer_2039;
-            //    string = string_ids::two_player_mode_connected;
-            // }
+            if ((openloco::get_screen_flags() & 1 << 2) != 0)
+            {
+                // char[512+1]
+                auto buffer = stringmgr::get_string(string_ids::buffer_2039);
 
-            draw_string_centred_clipped(*dpi, x, y, 292, 0, string, (char*)0x112c826);
+                char* playerName = (char*)0xF254D0;
+
+                strcpy((char*)buffer, playerName);
+
+                // common_format_args[0] = string_ids::buffer_2039;
+                string = string_ids::two_player_mode_connected;
+            }
+
+            draw_string_centred_clipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
         }
     }
 
     // 0x00439094
     static void on_mouse_up(ui::window* window, widget_index widgetIndex)
     {
-        if (intro::state() != intro::intro_state::none)
+        if (intro::is_active())
         {
             return;
         }
@@ -257,7 +262,7 @@ namespace openloco::ui::windows
         switch (widgetIndex)
         {
             case widx::tutorial_btn:
-                sub_439112();
+                sub_439112(window);
                 break;
         }
     }
@@ -269,15 +274,15 @@ namespace openloco::ui::windows
         switch (widgetIndex)
         {
             case widx::tutorial_btn:
-                sub_4391CC();
+                sub_4391CC(itemIndex);
                 break;
         }
     }
 
     // 0x004390ED
-    static void event_20(uint16_t widget_index, char* input)
+    static void on_text_input(window* window, widget_index widgetIndex, char* input)
     {
-        switch (widget_index)
+        switch (widgetIndex)
         {
             case widx::chat_btn:
                 sub_43918F(input);
@@ -301,19 +306,46 @@ namespace openloco::ui::windows
         call(0x0043D7DC); // show_scenario_editor
     }
 
-    static void sub_439112()
+    /**
+     * 0x004CCA6D
+     * x @<cx>
+     * y @<dx>
+     * width @<bp>
+     * height @<di>
+     * colour @<al>
+     * count @<bl>
+     * flags @<bh>
+     */
+    static void window_dropdown_show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, int8_t flags)
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.bl = count;
+        regs.bh = flags;
+        regs.bp = width;
+        regs.di = height;
+
+        call(0x4CCA6D, regs);
+    }
+
+    static void sub_439112(window* window)
     {
         // dropdownFormat[0] = STR_1879
         // dropdownFormat[1] = STR_1880
         // dropdownFormat[2] = STR_1881
-        // al = translucent(window->colours[0])
 
-        // cx = window->x + widget->left
-        // dx = window->y + widget->top
-        // bx = 0x8003 (flags and count?)
-        // bp = widget->right - widget->left + 1
-        // di = widget->bottom - widget->top + 1
-        // call(0x4CCA6D, regs);
+        widget_t* widget = &window->widgets[widx::tutorial_btn];
+
+        window_dropdown_show_text(
+            window->x + widget->left,
+            window->y + widget->top,
+            widget->width(),
+            widget->height(),
+            colour::translucent(window->colours[0]),
+            3,
+            0x8);
     }
 
     static void sub_439163(ui::window* callingWindow, widget_index callingWidget)
@@ -323,33 +355,29 @@ namespace openloco::ui::windows
         static loco_global<char[16], 0x0112C826> commonFormatArgs;
         // (uint16_t)commonFormatArgs[8] = (uint16_t)string_ids::the_other_player;
 
-        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::null, callingWidget, commonFormatArgs);
+        // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
+        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, commonFormatArgs);
     }
 
     static void sub_43918F(char string[512])
     {
-        //        if (cl == 0)
-        //        {
-        //            return;
-        //        }
-        //
-        //        0x9c68e8 = 0;
-        //
-        //        for (int i = 0; i < 32; i++)
-        //        {
-        //        }
+        addr<0x009C68E8, int16_t>() = 0;
+
+        for (int i = 0; i < 32; i++)
+        {
+            game_commands::do_71(i, &string[i * 16]);
+        }
     }
 
-    static void sub_4391CC()
+    static void sub_4391CC(int16_t itemIndex)
     {
-        //        if (ax == -1)
-        //        {
-        //            return;
-        //        }
-        //
-        //        registers regs;
-        //        regs.ax = ax;
-        //        call(0x43c590, regs); // tutorial::start();
+        // DROPDOWN_ITEM_UNDEFINED
+        if (itemIndex == -1)
+            return;
+
+        registers regs;
+        regs.ax = itemIndex;
+        call(0x43c590, regs); // tutorial::start();
     }
 
     static void sub_4391DA()
@@ -359,15 +387,7 @@ namespace openloco::ui::windows
 
     static void sub_4391E2()
     {
-        // do_game_command
-        {
-            registers regs;
-            regs.bl = 1;
-            regs.dl = 0;
-            regs.di = 0;
-            regs.esi = 21;
-            call(0x00431315, regs);
-        }
+        game_commands::do_21(1, 0, 0);
     }
 
     static void sub_46E328()
@@ -380,13 +400,13 @@ namespace openloco::ui::windows
     {
         window->var_846++;
 
-        if (intro::state() != intro::intro_state::none)
+        if (intro::is_active())
         {
             window->invalidate();
             return;
         }
 
-        if (addr<0x00508F10, uint16_t>() & 0x300)
+        if ((addr<0x00508F10, uint16_t>() & 0x300) == 0)
         {
             window->invalidate();
             return;
@@ -403,5 +423,7 @@ namespace openloco::ui::windows
         {
             call(0x0046e639); // window_multiplayer::open
         }
+
+        window->invalidate();
     }
 }

@@ -15,4 +15,18 @@ namespace openloco::game_commands
         regs.esi = 21;
         call(0x00431315, regs);
     }
+
+    inline void do_71(int32_t ax, char* string)
+    {
+
+        registers regs;
+        regs.bl = 1;
+        regs.ax = ax;
+        memcpy(&regs.ecx, &string[0], 4);
+        memcpy(&regs.edx, &string[4], 4);
+        memcpy(&regs.ebp, &string[8], 4);
+        memcpy(&regs.edi, &string[12], 4);
+        regs.esi = 71;
+        call(0x00431315, regs);
+    }
 }

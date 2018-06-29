@@ -720,7 +720,7 @@ namespace openloco::ui
 
     void window::call_text_input(widget_index caller, char* buffer)
     {
-        if (event_handlers->text_input == (uintptr_t) nullptr)
+        if (event_handlers->text_input == nullptr)
             return;
 
         if (is_interop_event(event_handlers->text_input))
@@ -734,8 +734,7 @@ namespace openloco::ui
             return;
         }
 
-        // TODO: add C version of text_input event
-        assert(false);
+        this->event_handlers->text_input(this, caller, buffer);
     }
 
     bool window::call_tooltip(int16_t widget_index)

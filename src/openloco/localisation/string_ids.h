@@ -6,6 +6,8 @@
 
 namespace openloco::string_ids
 {
+    constexpr string_id empty = 0;
+
     constexpr string_id day_1st = 10;
     constexpr string_id day_2nd = 11;
     constexpr string_id day_3rd = 12;

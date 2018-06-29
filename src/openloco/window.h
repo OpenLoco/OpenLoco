@@ -175,7 +175,7 @@ namespace openloco::ui
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
-                uint32_t text_input;
+                void (*text_input)(window*, widget_index, char*);
                 uint32_t viewport_rotate;
                 uint32_t event_22;
                 void (*tooltip)(window*, widget_index);
