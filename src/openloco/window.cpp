@@ -843,9 +843,9 @@ namespace openloco::ui
         }
 
         uint64_t hovered_widget = 0;
-        if (this->type == addr<0x005233A8, window_type>() && this->number == addr<0x005233AA, uint16_t>())
+        if (input::is_hovering(this->type, this->number))
         {
-            hovered_widget = 1ULL << addr<0x005233AC, uint16_t>();
+            hovered_widget = 1ULL << input::get_hovered_widget_index();
         }
 
         int scrollviewIndex = 0;

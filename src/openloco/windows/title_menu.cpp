@@ -1,5 +1,6 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"
@@ -137,7 +138,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = 3552;
-            if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 0))
+            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
             {
                 image_id = 3552 + ((window->var_846 / 2) % 32);
             }
@@ -152,7 +153,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = 3552;
-            if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 1))
+            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::load_game_btn))
             {
                 image_id = 3552 + ((window->var_846 / 2) % 32);
             }
@@ -167,7 +168,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = 3552;
-            if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 2))
+            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
             {
                 image_id = 3552 + ((window->var_846 / 2) % 32);
             }
@@ -182,7 +183,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = 3608;
-            if ((addr<0x005233A8, uint8_t>() == 16) && (addr<0x005233AC, uint8_t>() == 3))
+            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
             {
                 image_id = 3584 + ((window->var_846 / 2) % 32);
             }

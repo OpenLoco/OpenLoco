@@ -116,6 +116,21 @@ namespace openloco::input
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
     };
 
+    bool is_hovering(ui::window_type type)
+    {
+        return *_hoverWindowType == type;
+    }
+
+    bool is_hovering(ui::window_type type, ui::window_number number)
+    {
+        return (*_hoverWindowType == type) && (_hoverWindowNumber == number);
+    }
+
+    ui::widget_index get_hovered_widget_index()
+    {
+        return _hoverWidgetIdx;
+    }
+
 #pragma mark - Mouse input
 
     // 0x004C7174
