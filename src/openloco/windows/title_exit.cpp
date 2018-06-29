@@ -1,3 +1,4 @@
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
@@ -11,6 +12,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
+    static const gfx::ui_size_t window_size = { 40, 28 };
+
     namespace widx
     {
         enum
@@ -20,7 +23,7 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget( { 0, 0 }, { 40, 28 }, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game ),
+        make_widget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game),
         widget_end(),
     };
 
@@ -36,10 +39,10 @@ namespace openloco::ui::windows
 
         auto window = openloco::ui::windowmgr::create_window(
             window_type::title_exit,
-            ui::width() - 40,
-            ui::height() - 28,
-            40,
-            28,
+            ui::width() - window_size.width,
+            ui::height() - window_size.height,
+            window_size.width,
+            window_size.height,
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
 
@@ -61,15 +64,15 @@ namespace openloco::ui::windows
         window->draw(dpi);
 
         int16_t x = window->x + window->width / 2;
-        int16_t y = window->y + window->widgets[0].top + 8;
+        int16_t y = window->y + window->widgets[widx::exit_button].top + 8;
         gfx::point_t origin = { x, y };
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, 0, string_ids::title_exit_game, nullptr);
+        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::black, string_ids::title_exit_game);
     }
 
     // 0x00439268
     static void on_mouse_up(window* window, widget_index widgetIndex)
     {
-        if (intro::state() != intro::intro_state::none)
+        if (intro::is_active())
         {
             return;
         }
@@ -77,15 +80,7 @@ namespace openloco::ui::windows
         switch (widgetIndex)
         {
             case widx::exit_button:
-                // do_game_command
-                {
-                    registers regs;
-                    regs.bl = 1;
-                    regs.dl = 0;
-                    regs.di = 2;
-                    regs.esi = 21;
-                    call(0x00431315, regs);
-                }
+                game_commands::do_21(1, 0, 2);
                 break;
         }
     }
