@@ -21,6 +21,76 @@ namespace openloco::ui::windows
     static const uint16_t ww = btn_main_size * 4;
     static const uint16_t wh = btn_main_size + btn_sub_height;
 
+    static const std::vector<uint32_t> globe_spin = {
+        image_ids::title_menu_globe_spin_0,
+        image_ids::title_menu_globe_spin_1,
+        image_ids::title_menu_globe_spin_2,
+        image_ids::title_menu_globe_spin_3,
+        image_ids::title_menu_globe_spin_4,
+        image_ids::title_menu_globe_spin_5,
+        image_ids::title_menu_globe_spin_6,
+        image_ids::title_menu_globe_spin_7,
+        image_ids::title_menu_globe_spin_8,
+        image_ids::title_menu_globe_spin_9,
+        image_ids::title_menu_globe_spin_10,
+        image_ids::title_menu_globe_spin_11,
+        image_ids::title_menu_globe_spin_12,
+        image_ids::title_menu_globe_spin_13,
+        image_ids::title_menu_globe_spin_14,
+        image_ids::title_menu_globe_spin_15,
+        image_ids::title_menu_globe_spin_16,
+        image_ids::title_menu_globe_spin_17,
+        image_ids::title_menu_globe_spin_18,
+        image_ids::title_menu_globe_spin_19,
+        image_ids::title_menu_globe_spin_20,
+        image_ids::title_menu_globe_spin_21,
+        image_ids::title_menu_globe_spin_22,
+        image_ids::title_menu_globe_spin_23,
+        image_ids::title_menu_globe_spin_24,
+        image_ids::title_menu_globe_spin_25,
+        image_ids::title_menu_globe_spin_26,
+        image_ids::title_menu_globe_spin_27,
+        image_ids::title_menu_globe_spin_28,
+        image_ids::title_menu_globe_spin_29,
+        image_ids::title_menu_globe_spin_30,
+        image_ids::title_menu_globe_spin_31,
+    };
+
+    static const std::vector<uint32_t> globe_construct = {
+        image_ids::title_menu_globe_construct_0,
+        image_ids::title_menu_globe_construct_1,
+        image_ids::title_menu_globe_construct_2,
+        image_ids::title_menu_globe_construct_3,
+        image_ids::title_menu_globe_construct_4,
+        image_ids::title_menu_globe_construct_5,
+        image_ids::title_menu_globe_construct_6,
+        image_ids::title_menu_globe_construct_7,
+        image_ids::title_menu_globe_construct_8,
+        image_ids::title_menu_globe_construct_9,
+        image_ids::title_menu_globe_construct_10,
+        image_ids::title_menu_globe_construct_11,
+        image_ids::title_menu_globe_construct_12,
+        image_ids::title_menu_globe_construct_13,
+        image_ids::title_menu_globe_construct_14,
+        image_ids::title_menu_globe_construct_15,
+        image_ids::title_menu_globe_construct_16,
+        image_ids::title_menu_globe_construct_17,
+        image_ids::title_menu_globe_construct_18,
+        image_ids::title_menu_globe_construct_19,
+        image_ids::title_menu_globe_construct_20,
+        image_ids::title_menu_globe_construct_21,
+        image_ids::title_menu_globe_construct_22,
+        image_ids::title_menu_globe_construct_23,
+        image_ids::title_menu_globe_construct_24,
+        image_ids::title_menu_globe_construct_25,
+        image_ids::title_menu_globe_construct_26,
+        image_ids::title_menu_globe_construct_27,
+        image_ids::title_menu_globe_construct_28,
+        image_ids::title_menu_globe_construct_29,
+        image_ids::title_menu_globe_construct_30,
+        image_ids::title_menu_globe_construct_31,
+    };
+
     namespace widx
     {
         enum
@@ -147,8 +217,7 @@ namespace openloco::ui::windows
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
             if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
             {
-                // TODO: add list of images
-                image_id = image_ids::title_menu_globe_spin_0 + ((window->var_846 / 2) % 32);
+                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
             openloco::gfx::draw_image(dpi, x, y, image_id);
@@ -163,8 +232,7 @@ namespace openloco::ui::windows
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
             if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::load_game_btn))
             {
-                // TODO: add list of images
-                image_id = image_ids::title_menu_globe_spin_0 + ((window->var_846 / 2) % 32);
+                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
             openloco::gfx::draw_image(dpi, x, y, image_id);
@@ -179,8 +247,7 @@ namespace openloco::ui::windows
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
             if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
             {
-                // TODO: add list of images
-                image_id = image_ids::title_menu_globe_spin_0 + ((window->var_846 / 2) % 32);
+                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
             openloco::gfx::draw_image(dpi, x, y, image_id);
@@ -197,8 +264,7 @@ namespace openloco::ui::windows
             uint32_t image_id = image_ids::title_menu_globe_construct_24;
             if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
             {
-                // TODO: add list of images
-                image_id = image_ids::title_menu_globe_construct_0 + ((window->var_846 / 2) % 32);
+                image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
 
             openloco::gfx::draw_image(dpi, x, y, image_id);
