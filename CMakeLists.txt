@@ -58,7 +58,7 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wall -Wno-unused-function")
+set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wall")
 
 # Poke some holes in -Wall:
 set(COMMON_COMPILE_OPTIONS
