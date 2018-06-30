@@ -61,6 +61,7 @@ namespace openloco::ui::windows
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_update(window* window);
     static void on_text_input(window* window, widget_index widgetIndex, char* input);
+    static ui::cursor_id on_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void prepare_draw(ui::window* window);
 
@@ -72,6 +73,7 @@ namespace openloco::ui::windows
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
         _events.text_input = on_text_input;
+        _events.cursor = on_cursor;
         _events.on_update = on_update;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
@@ -291,9 +293,11 @@ namespace openloco::ui::windows
     }
 
     // 0x004390f8
-    static void event_24()
+    static ui::cursor_id on_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        addr<0x0052338a, uint16_t>() = 2000;
+        // Reset tooltip timeout to keep tooltips open.
+        addr<0x0052338A, uint16_t>() = 2000;
+        return fallback;
     }
 
     static void sub_439102()

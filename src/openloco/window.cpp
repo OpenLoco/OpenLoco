@@ -580,21 +580,29 @@ namespace openloco::ui
 
     ui::cursor_id window::call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        registers regs;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        regs.ax = widgetIdx;
-        regs.ebx = -1;
-        regs.edi = (int32_t) & this->widgets[widgetIdx];
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->cursor, regs);
-
-        if (regs.ebx == -1)
-        {
+        if (event_handlers->cursor == nullptr)
             return fallback;
+
+        if (is_interop_event(event_handlers->cursor))
+        {
+            registers regs;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            regs.ax = widgetIdx;
+            regs.ebx = -1;
+            regs.edi = (int32_t) & this->widgets[widgetIdx];
+            regs.esi = (int32_t)this;
+            call((uintptr_t)this->event_handlers->cursor, regs);
+
+            if (regs.ebx == -1)
+            {
+                return fallback;
+            }
+
+            return (cursor_id)regs.ebx;
         }
 
-        return (cursor_id)regs.ebx;
+        return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
     }
 
     void window::call_on_mouse_up(widget_index widgetIndex)
