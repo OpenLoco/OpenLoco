@@ -3906,7 +3906,7 @@ void vehicle_0::plane_move_to(loc16 loc, uint8_t yaw, uint8_t pitch)
     veh->tile_x = 0;
     veh->invalidate_sprite();
 
-    veh = veh->next_car()->next_car(); // 6?
+    veh = veh->next_car()->next_car(); // 4
     veh->invalidate_sprite();
     veh->move_to(loc);
     veh->sprite_yaw = yaw;
