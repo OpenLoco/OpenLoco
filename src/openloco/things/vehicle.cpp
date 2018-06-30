@@ -29,8 +29,8 @@ loco_global<uint8_t[2], 0x0113601A> vehicle_var_113601A;
 #pragma pack(push, 1)
 struct array_113609C
 {
-    uint32_t size;      // 0x0113609C
-    uint16_t data[22];   // 0x011360A0
+    uint32_t size;     // 0x0113609C
+    uint16_t data[22]; // 0x011360A0
 };
 #pragma pack(pop)
 
@@ -60,8 +60,8 @@ loco_global<uint8_t[128000], 0x987C5C> vehicle_var_987C5C; // Size tbc
 loco_global<uint32_t[7], 0x004FE070> vehicle_var_4FE070;   // Size tbc
 loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
 loco_global<station_id_t, 0x01135FAE> vehicle_var_1135FAE;
-loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;  // bool
-loco_global<uint16_t *, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
+loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;   // bool
+loco_global<uint16_t*, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
 #pragma pack(push, 1)
 struct unk_4F73D8
 {
@@ -70,7 +70,7 @@ struct unk_4F73D8
     uint8_t pad_07[0xA - 0x7];
 };
 #pragma pack(pop)
-loco_global<unk_4F73D8*[44], 0x004F73D8> vehicle_var_4F73D8;
+loco_global<unk_4F73D8 * [44], 0x004F73D8> vehicle_var_4F73D8;
 #pragma pack(push, 1)
 struct unk_4F7B5C
 {
@@ -81,7 +81,7 @@ struct unk_4F7B5C
     int16_t z;
 };
 #pragma pack(pop)
-loco_global<unk_4F7B5C[352], 0x004F7B5C> vehicle_var_4F7B5C;  // Size tbc 0x160
+loco_global<unk_4F7B5C[352], 0x004F7B5C> vehicle_var_4F7B5C; // Size tbc 0x160
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -1059,7 +1059,7 @@ bool vehicle_0::sub_4A94A9(uint16_t target_z)
 
     loc.y = bigCoordy >> 16;
     loc2.y = bigCoordy & 0xFFFF;
-    
+
     vehType1->var_4E = loc2.x;
     vehType1->var_50 = loc2.y;
     if (target_z != z)
@@ -2548,7 +2548,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
             auto elStation = el.next();
             if (elStation == nullptr)
                 continue;
-            
+
             if (elStation->flags() & (map::element_flags::flag_5 | map::element_flags::flag_4))
                 continue;
             station_found = true;
@@ -3005,7 +3005,7 @@ void vehicle_0::sub_4B980A()
         return;
     }
 
-    vehicle_2 * vehType2 = vehicle_1136120;
+    vehicle_2* vehType2 = vehicle_1136120;
     auto vehicle_object = vehType2->next_car()->object();
 
     if (vehicle_object->num_sounds == 0)
@@ -3035,8 +3035,7 @@ void vehicle_0::sub_4B980A()
         volume = -1500;
     }
 
-    loc16 loc =
-    {
+    loc16 loc = {
         vehType2->x,
         vehType2->y,
         static_cast<int16_t>(vehType2->z + 22)
@@ -3353,13 +3352,19 @@ bool vehicle_0::sub_4ACCDC()
     else
     {
         auto veh = next_car()->as_vehicle_1();
+        if (veh == nullptr)
+        {
+            // TODO: handle gracefully
+            assert(false);
+            return false;
+        }
         vehicle_var_113601A[0] = var_53;
         vehicle_var_113601A[1] = veh->var_49;
 
         loc16 loc = {
             tile_x,
             tile_y,
-            tile_base_z * 4
+            static_cast<int16_t>(tile_base_z * 4)
         };
 
         // 0x011360A0 for array data
@@ -3969,7 +3974,7 @@ void vehicle_0::sub_42843E()
  * _var_2C        = ebp
  * unk_1          = edi
  */
-void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1)
+void openloco::sub_4A2604(loc16& loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t* unk_1)
 {
     // Get next tile in current direction
     loc.x += vehicle_var_4F7B5C[_var_2C].x;
@@ -3982,7 +3987,7 @@ void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uin
     map::map_pos3 map_loc = {
         loc.x,
         loc.y,
-        loc.z / 4
+        static_cast<map::coord_t>(loc.z / 4)
     };
     sub_4A2601(map_loc, owner, road_object_id, _var_2C, unk_1, vehicle_var_4F7B5C[_var_2C].unk_1);
 }
@@ -3996,10 +4001,10 @@ void openloco::sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uin
  * unk_1          = edi
  * unk_2          = dh
  */
-void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2)
+void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t* unk_1, uint8_t unk_2)
 {
     // Get the array. Remove this hack when hook removed
-    array_113609C *unk_arr = (array_113609C*)(unk_1 - 2);
+    array_113609C* unk_arr = (array_113609C*)(unk_1 - 2);
     // Unsure if this is still used. Was used to work out size of array
     vehicle_var_1135EE6 = unk_arr->data;
 
@@ -4044,8 +4049,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
         }
         uint16_t cl = (elUnk1->unk_4() << 3) | elUnk1->unk_direction();
 
-        if (!(elUnk1->unk_5l()) &&
-            unk_2 == vehicle_var_4F7B5C[cl].unk_0)
+        if (!(elUnk1->unk_5l()) && unk_2 == vehicle_var_4F7B5C[cl].unk_0)
         {
             auto ebp = vehicle_var_4F73D8[elUnk1->unk_4()];
             // Shift arithmatic
@@ -4063,9 +4067,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
                     cl |= (1 << 13);
                 }
 
-                if (elUnk1->has_station_element() &&
-                    elStation != nullptr &&
-                    !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                if (elUnk1->has_station_element() && elStation != nullptr && !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
                     vehicle_var_1135FAE = elStation->station_id();
                 }
@@ -4075,9 +4077,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
                     vehicle_var_113607D = (1 << 0);
                 }
 
-                if (elUnk1->has_signal() &&
-                    elSignal != nullptr &&
-                    !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+                if (elUnk1->has_signal() && elSignal != nullptr && !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
                 {
                     cl |= (1 << 15);
                 }
@@ -4120,9 +4120,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
             cl |= (1 << 13);
         }
 
-        if (elUnk1->has_station_element() &&
-            elStation != nullptr &&
-            !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+        if (elUnk1->has_station_element() && elStation != nullptr && !(elStation->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
             vehicle_var_1135FAE = elStation->station_id();
         }
@@ -4132,9 +4130,7 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
             vehicle_var_113607D = (1 << 0);
         }
 
-        if (elUnk1->has_signal() &&
-            elSignal != nullptr &&
-            !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
+        if (elUnk1->has_signal() && elSignal != nullptr && !(elSignal->flags() & (map::element_flags::flag_4 | map::element_flags::flag_5)))
         {
             cl |= (1 << 15);
         }

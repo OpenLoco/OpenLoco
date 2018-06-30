@@ -163,9 +163,9 @@ namespace openloco
         uint8_t pad_22[0x2C - 0x22];
         uint16_t var_2C;
         uint16_t var_2E;
-        int16_t tile_x;      // 0x30
-        int16_t tile_y;      // 0x32
-        uint8_t tile_base_z; // 0x34
+        int16_t tile_x;         // 0x30
+        int16_t tile_y;         // 0x32
+        uint8_t tile_base_z;    // 0x34
         uint8_t road_object_id; // 0x35
         uint16_t var_36;
         uint8_t var_38;
@@ -369,7 +369,7 @@ namespace openloco
 
 #pragma pack(pop)
 
-    void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1, uint8_t unk_2);
-    void sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t * unk_1);
+    void sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t* unk_1, uint8_t unk_2);
+    void sub_4A2604(loc16 &loc, uint8_t owner, uint8_t road_object_id, uint16_t _var_2C, uint16_t* unk_1);
 
 }
