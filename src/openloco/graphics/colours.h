@@ -11,6 +11,9 @@ namespace openloco
     {
         constexpr uint8_t translucent_flag = 1 << 7;
 
+        // TODO: move this.
+        constexpr uint32_t remap_flag = 1 << 29;
+
         constexpr colour_t black = 0;
         constexpr colour_t grey = 1;
         constexpr colour_t white = 2;

@@ -55,6 +55,8 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_close_window = 60;
 
+    constexpr string_id STR_0066 = 66;
+
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;
     constexpr string_id about_locomotion_70 = 70;
@@ -72,6 +74,14 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_82 = UNUSED_STR(82);
     constexpr string_id about_locomotion_83 = UNUSED_STR(83);
     constexpr string_id about_locomotion_84 = UNUSED_STR(84);
+
+    constexpr string_id STR_0085 = 85;
+    constexpr string_id STR_0086 = 86;
+    constexpr string_id STR_0088 = 88;
+    constexpr string_id STR_0090 = 90;
+    constexpr string_id STR_0091 = 91;
+
+    constexpr string_id dropdown = 96;
 
     constexpr string_id label_button_ok = 187;
 
@@ -130,6 +140,17 @@ namespace openloco::string_ids
     constexpr string_id month_long_december = 646;
 
     constexpr string_id options = 654;
+
+    constexpr string_id STR_0663 = 663;
+    constexpr string_id STR_0664 = 664;
+    constexpr string_id STR_0665 = 665;
+    constexpr string_id STR_0666 = 666;
+    constexpr string_id STR_0701 = 701;
+    constexpr string_id STR_1002 = 1002;
+    constexpr string_id STR_1003 = 1003;
+    constexpr string_id STR_1004 = 1004;
+    constexpr string_id STR_1010 = 1010;
+    constexpr string_id STR_1011 = 1011;
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
@@ -197,9 +218,43 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
+    constexpr string_id STR_1099 = 1099;
+    constexpr string_id STR_1100 = 1100;
+
+    constexpr string_id display_options = 1486;
+    constexpr string_id sound_options = 1487;
+    constexpr string_id music_options = 1488;
+    constexpr string_id regional_options = 1489;
+    constexpr string_id control_options = 1490;
+    constexpr string_id miscellaneous_options = 1491;
+
+    constexpr string_id STR_1498 = 1498;
+    constexpr string_id STR_1499 = 1499;
+    constexpr string_id STR_1500 = 1500;
+    constexpr string_id STR_1501 = 1501;
+    constexpr string_id STR_1502 = 1502;
+    constexpr string_id STR_1503 = 1503;
+    constexpr string_id STR_1506 = 1506;
+
+    constexpr string_id STR_1536 = 1536;
+    constexpr string_id STR_1537 = 1537;
+    constexpr string_id STR_1538 = 1538;
+    constexpr string_id STR_1542 = 1542;
+    constexpr string_id STR_1543 = 1543;
+    constexpr string_id STR_1548 = 1548;
+
+    constexpr string_id options_title_display = 1492;
+    constexpr string_id options_title_sound = 1493;
+    constexpr string_id options_title_music = 1494;
+    constexpr string_id options_title_regional = 1495;
+    constexpr string_id options_title_controls = 1496;
+    constexpr string_id options_title_miscellaneous = 1497;
+
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
+
+    constexpr string_id STR_1700 = 1700;
 
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
@@ -209,6 +264,9 @@ namespace openloco::string_ids
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;
     constexpr string_id tutorial_3 = 1881;
+
+    constexpr string_id STR_1919 = 1919;
+    constexpr string_id STR_1920 = 1920;
 
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
@@ -229,4 +287,7 @@ namespace openloco::string_ids
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
     constexpr string_id buffer_2039 = 2039;
+
+    constexpr string_id STR_2089 = 2089;
+    constexpr string_id STR_2090 = 2090;
 }

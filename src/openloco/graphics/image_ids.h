@@ -7,6 +7,12 @@ namespace openloco::image_ids
     constexpr uint32_t text_palette = 2169;
     constexpr uint32_t close_button = 2321;
 
+    constexpr uint32_t music_controls_stop = 2383;
+    constexpr uint32_t music_controls_play = 2384;
+    constexpr uint32_t music_controls_next = 2385;
+
+    constexpr uint32_t tab = 2387;
+
     constexpr uint32_t title_menu_sparkle = 3547;
     constexpr uint32_t title_menu_save = 3548;
     constexpr uint32_t title_menu_lesson_l = 3549;
