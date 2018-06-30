@@ -65,6 +65,7 @@ namespace openloco::ui
 
         prompt_ok_cancel = 54,
         openloco_version = 55,
+        title_options = 56,
 
         undefined = 255
     };
@@ -132,6 +133,11 @@ namespace openloco::ui::about_music
     void open();
 }
 
+namespace openloco::ui::options
+{
+    void open();
+}
+
 namespace openloco::ui::prompt_browse
 {
     enum class browse_type
@@ -152,6 +158,11 @@ namespace openloco::ui::textinput
     void cancel();
     void sub_4CE910(int eax, int ebx);
     void sub_4CE6FF();
+}
+
+namespace openloco::ui::title_options
+{
+    window* open();
 }
 
 namespace openloco::ui::tooltip

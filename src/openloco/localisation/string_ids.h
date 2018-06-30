@@ -105,6 +105,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id outlined_wcolour2_stringid2 = 450;
+
     constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
@@ -126,6 +128,8 @@ namespace openloco::string_ids
     constexpr string_id month_long_october = 644;
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
+
+    constexpr string_id options = 654;
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
