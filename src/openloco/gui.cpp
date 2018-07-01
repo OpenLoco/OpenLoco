@@ -210,6 +210,12 @@ namespace openloco::gui
             window->y = uiHeight - window->height;
         }
 
+        window = windowmgr::find(window_type::title_options);
+        if (window)
+        {
+            window->x = uiWidth - window->width;
+        }
+
         window = windowmgr::find(window_type::tutorial);
         if (window)
         {
