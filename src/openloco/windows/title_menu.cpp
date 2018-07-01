@@ -286,7 +286,7 @@ namespace openloco::ui::windows
 
                 strcpy((char*)buffer, playerName);
 
-                // common_format_args[0] = string_ids::buffer_2039;
+                addr<0x112C826, string_id>() = string_ids::buffer_2039;
                 string = string_ids::two_player_mode_connected;
             }
 
@@ -398,11 +398,10 @@ namespace openloco::ui::windows
     {
         windowmgr::close(window_type::multiplayer);
 
-        static loco_global<char[16], 0x0112C826> commonFormatArgs;
-        // (uint16_t)commonFormatArgs[8] = (uint16_t)string_ids::the_other_player;
+        addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, commonFormatArgs);
+        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(char string[512])
