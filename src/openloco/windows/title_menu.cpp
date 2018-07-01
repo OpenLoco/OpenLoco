@@ -277,7 +277,7 @@ namespace openloco::ui::windows
 
             string_id string = string_ids::single_player_mode;
 
-            if ((openloco::get_screen_flags() & 1 << 2) != 0)
+            if ((openloco::get_screen_flags() & screen_flags::unknown_2) != 0)
             {
                 // char[512+1]
                 auto buffer = stringmgr::get_string(string_ids::buffer_2039);
