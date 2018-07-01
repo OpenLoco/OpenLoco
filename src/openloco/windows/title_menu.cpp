@@ -10,6 +10,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/dropdown.h"
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
@@ -376,46 +377,21 @@ namespace openloco::ui::windows
         call(0x0043D7DC); // show_scenario_editor
     }
 
-    /**
-     * 0x004CCA6D
-     * x @<cx>
-     * y @<dx>
-     * width @<bp>
-     * height @<di>
-     * colour @<al>
-     * count @<bl>
-     * flags @<bh>
-     */
-    static void window_dropdown_show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, int8_t flags)
-    {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour;
-        regs.bl = count;
-        regs.bh = flags;
-        regs.bp = width;
-        regs.di = height;
-
-        call(0x4CCA6D, regs);
-    }
-
     static void sub_439112(window* window)
     {
-        // dropdownFormat[0] = STR_1879
-        // dropdownFormat[1] = STR_1880
-        // dropdownFormat[2] = STR_1881
+        dropdown::add(0, string_ids::tutorial_1);
+        dropdown::add(1, string_ids::tutorial_2);
+        dropdown::add(2, string_ids::tutorial_3);
 
         widget_t* widget = &window->widgets[widx::tutorial_btn];
-
-        window_dropdown_show_text(
+        dropdown::show_text(
             window->x + widget->left,
             window->y + widget->top,
             widget->width(),
             widget->height(),
             colour::translucent(window->colours[0]),
             3,
-            0x8);
+            0x80);
     }
 
     static void sub_439163(ui::window* callingWindow, widget_index callingWidget)

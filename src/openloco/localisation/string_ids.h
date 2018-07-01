@@ -206,6 +206,10 @@ namespace openloco::string_ids
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
+    constexpr string_id tutorial_1 = 1879;
+    constexpr string_id tutorial_2 = 1880;
+    constexpr string_id tutorial_3 = 1881;
+
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
     constexpr string_id atari_inc_credits_caption = UNUSED_STR(1931);
