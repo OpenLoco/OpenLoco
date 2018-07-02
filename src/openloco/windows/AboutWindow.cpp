@@ -43,7 +43,7 @@ namespace openloco::ui::about
         if (windowmgr::bring_to_front(window_type::about, 0) != nullptr)
             return;
 
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.draw = draw;
 
         auto window = windowmgr::create_window_centred(

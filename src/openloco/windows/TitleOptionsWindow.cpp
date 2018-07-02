@@ -34,7 +34,7 @@ namespace openloco::ui::title_options
 
     window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.draw = draw;
 
         auto window = windowmgr::create_window(

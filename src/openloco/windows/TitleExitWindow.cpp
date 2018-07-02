@@ -34,7 +34,7 @@ namespace openloco::ui::windows
 
     window* open_title_exit()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(

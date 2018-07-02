@@ -140,7 +140,7 @@ namespace openloco::ui::windows
 
     ui::window* open_title_menu()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
         _events.text_input = on_text_input;

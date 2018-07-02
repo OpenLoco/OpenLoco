@@ -391,7 +391,7 @@ namespace openloco::input
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
                             audio::play_sound(audio::sound_id::sound_2, dragWindow->x + pressedWidget->mid_x());
-                            dragWindow->call_on_mouse_up(_pressedWidgetIndex);
+                            dragWindow->callOnClickEvent(_pressedWidgetIndex);
                         }
                     }
                 }
@@ -651,7 +651,7 @@ namespace openloco::input
             if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->is_disabled(widgetIndex))
             {
                 windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
-                window->call_on_mouse_up(widgetIndex);
+                window->callOnClickEvent(widgetIndex);
                 return;
             }
         }

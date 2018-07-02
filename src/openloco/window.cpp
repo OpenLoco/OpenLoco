@@ -605,12 +605,12 @@ namespace openloco::ui
         return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
     }
 
-    void window::call_on_mouse_up(widget_index widgetIndex)
+    void window::callOnClickEvent(widget_index widgetIndex)
     {
-        if (event_handlers->on_mouse_up == nullptr)
+        if (event_handlers->onClick == nullptr)
             return;
 
-        if (is_interop_event(event_handlers->on_mouse_up))
+        if (is_interop_event(event_handlers->onClick))
         {
             registers regs;
             regs.edx = widgetIndex;
@@ -619,11 +619,11 @@ namespace openloco::ui
             // Not sure if this is used
             regs.edi = (uint32_t) & this->widgets[widgetIndex];
 
-            call((uintptr_t)this->event_handlers->on_mouse_up, regs);
+            call((uintptr_t)this->event_handlers->onClick, regs);
             return;
         }
 
-        event_handlers->on_mouse_up(this, widgetIndex);
+        event_handlers->onClick(this, widgetIndex);
     }
 
     ui::window* window::call_on_resize()

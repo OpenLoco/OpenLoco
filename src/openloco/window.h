@@ -156,7 +156,7 @@ namespace openloco::ui
             struct
             {
                 uint32_t on_close;
-                void (*on_mouse_up)(window*, widget_index);
+                void (*onClick)(window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
                 void (*on_mouse_down)(window*, widget_index);
@@ -291,7 +291,7 @@ namespace openloco::ui
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
         void call_close();                                                                                // 0
-        void call_on_mouse_up(widget_index widgetIndex);                                                  // 1
+        void callOnClickEvent(widget_index widgetIndex);                                                  // 1
         ui::window* call_on_resize();                                                                     // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4

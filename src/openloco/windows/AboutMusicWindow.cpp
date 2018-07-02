@@ -51,7 +51,7 @@ namespace openloco::ui::about_music
         if (windowmgr::bring_to_front(window_type::about_music, 0) != nullptr)
             return;
 
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.get_scroll_size = get_scroll_size;
         _events.tooltip = tooltip;
         _events.draw = draw;

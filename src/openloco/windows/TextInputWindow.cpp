@@ -148,7 +148,7 @@ namespace openloco::ui::textinput
 
         _events.draw = draw;
         _events.prepare_draw = prepare_draw;
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = on_mouse_up;
         _events.on_update = on_update;
 
         auto window = windowmgr::create_window_centred(
@@ -372,12 +372,12 @@ namespace openloco::ui::textinput
         }
         else if (eax == VK_RETURN)
         {
-            w->call_on_mouse_up(widx::ok);
+            w->callOnClickEvent(widx::ok);
             return;
         }
         else if (eax == VK_ESCAPE)
         {
-            w->call_on_mouse_up(widx::close);
+            w->callOnClickEvent(widx::close);
             return;
         }
         else if (ebx == VK_HOME)
