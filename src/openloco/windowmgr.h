@@ -65,6 +65,7 @@ namespace openloco::ui
 
         prompt_ok_cancel = 54,
         openloco_version = 55,
+        title_options = 56,
 
         undefined = 255
     };
@@ -112,6 +113,10 @@ namespace openloco::ui::windows
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
     window* open_title_version();
+    window* open_title_exit();
+    window* open_title_menu();
+    window* open_title_logo();
+    void open_about_window();
     void sub_498E9B(window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
@@ -124,6 +129,11 @@ namespace openloco::ui::about
 }
 
 namespace openloco::ui::about_music
+{
+    void open();
+}
+
+namespace openloco::ui::options
 {
     void open();
 }
@@ -148,6 +158,11 @@ namespace openloco::ui::textinput
     void cancel();
     void sub_4CE910(int eax, int ebx);
     void sub_4CE6FF();
+}
+
+namespace openloco::ui::title_options
+{
+    window* open();
 }
 
 namespace openloco::ui::tooltip

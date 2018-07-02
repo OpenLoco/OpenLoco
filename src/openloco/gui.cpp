@@ -52,57 +52,11 @@ namespace openloco::gui
 
         if (openloco::is_title_mode())
         {
-            window = openloco::ui::windowmgr::create_window(
-                window_type::title_menu,
-                (uiWidth - 296) / 2,
-                uiHeight - 117,
-                296,
-                92,
-                ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background | ui::window_flags::flag_6,
-                (ui::window_event_list*)0x004f9ec8);
-            window->widgets = (ui::widget_t*)0x00509df4;
-            window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
-
-            window->init_scroll_widgets();
-
-            window->colours[0] = colour::translucent(colour::saturated_green);
-            window->colours[1] = colour::translucent(colour::saturated_green);
-            window->var_846 = 0;
-
-            window = openloco::ui::windowmgr::create_window(
-                window_type::title_exit,
-                uiWidth - 40,
-                uiHeight - 28,
-                40,
-                28,
-                ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background | ui::window_flags::flag_6,
-                (ui::window_event_list*)0x004f9f3c);
-            window->widgets = (ui::widget_t*)0x00509e58;
-            window->enabled_widgets = (1 << 0);
-
-            window->init_scroll_widgets();
-
-            window->colours[0] = colour::translucent(colour::saturated_green);
-            window->colours[1] = colour::translucent(colour::saturated_green);
-
-            window = openloco::ui::windowmgr::create_window(
-                window_type::title_logo,
-                0,
-                0,
-                298,
-                170,
-                ui::window_flags::stick_to_front,
-                (ui::window_event_list*)0x004f9fb0);
-            window->widgets = (ui::widget_t*)0x00509e6c;
-            window->enabled_widgets = (1 << 0);
-
-            window->init_scroll_widgets();
-
-            window->flags |= ui::window_flags::transparent;
-            window->colours[0] = colour::translucent(colour::grey);
-            window->colours[1] = colour::translucent(colour::grey);
-
+            ui::windows::open_title_menu();
+            ui::windows::open_title_exit();
+            ui::windows::open_title_logo();
             ui::windows::open_title_version();
+            ui::title_options::open();
         }
         else
         {
@@ -254,6 +208,12 @@ namespace openloco::gui
         if (window)
         {
             window->y = uiHeight - window->height;
+        }
+
+        window = windowmgr::find(window_type::title_options);
+        if (window)
+        {
+            window->x = uiWidth - window->width;
         }
 
         window = windowmgr::find(window_type::tutorial);

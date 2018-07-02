@@ -414,7 +414,7 @@ namespace openloco
                 {
                     numUpdates = 1;
                 }
-                if (_screen_flags & screen_flags::unknown_2)
+                if ((_screen_flags & screen_flags::unknown_2) != 0)
                 {
                     numUpdates = 1;
                 }

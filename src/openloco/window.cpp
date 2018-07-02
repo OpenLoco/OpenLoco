@@ -580,21 +580,29 @@ namespace openloco::ui
 
     ui::cursor_id window::call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        registers regs;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        regs.ax = widgetIdx;
-        regs.ebx = -1;
-        regs.edi = (int32_t) & this->widgets[widgetIdx];
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->cursor, regs);
-
-        if (regs.ebx == -1)
-        {
+        if (event_handlers->cursor == nullptr)
             return fallback;
+
+        if (is_interop_event(event_handlers->cursor))
+        {
+            registers regs;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            regs.ax = widgetIdx;
+            regs.ebx = -1;
+            regs.edi = (int32_t) & this->widgets[widgetIdx];
+            regs.esi = (int32_t)this;
+            call((uintptr_t)this->event_handlers->cursor, regs);
+
+            if (regs.ebx == -1)
+            {
+                return fallback;
+            }
+
+            return (cursor_id)regs.ebx;
         }
 
-        return (cursor_id)regs.ebx;
+        return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
     }
 
     void window::call_on_mouse_up(widget_index widgetIndex)
@@ -636,22 +644,40 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->event_03, regs);
     }
 
-    void window::call_on_mouse_down(int8_t widget_index)
+    void window::call_on_mouse_down(ui::widget_index widget_index)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        regs.edi = (uint32_t) & this->widgets[widget_index];
-        call((uint32_t)this->event_handlers->on_mouse_down, regs);
+        if (event_handlers->on_mouse_down == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_mouse_down))
+        {
+            registers regs;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            regs.edi = (uint32_t) & this->widgets[widget_index];
+            call((uint32_t)this->event_handlers->on_mouse_down, regs);
+            return;
+        }
+
+        event_handlers->on_mouse_down(this, widget_index);
     }
 
     void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
     {
-        registers regs;
-        regs.ax = item_index;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        call((uint32_t)this->event_handlers->on_dropdown, regs);
+        if (event_handlers->on_dropdown == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_dropdown))
+        {
+            registers regs;
+            regs.ax = item_index;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            call((uint32_t)this->event_handlers->on_dropdown, regs);
+            return;
+        }
+
+        event_handlers->on_dropdown(this, widget_index, item_index);
     }
 
     void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
@@ -702,7 +728,7 @@ namespace openloco::ui
 
     void window::call_text_input(widget_index caller, char* buffer)
     {
-        if (event_handlers->text_input == (uintptr_t) nullptr)
+        if (event_handlers->text_input == nullptr)
             return;
 
         if (is_interop_event(event_handlers->text_input))
@@ -716,8 +742,7 @@ namespace openloco::ui
             return;
         }
 
-        // TODO: add C version of text_input event
-        assert(false);
+        this->event_handlers->text_input(this, caller, buffer);
     }
 
     bool window::call_tooltip(int16_t widget_index)
@@ -825,9 +850,9 @@ namespace openloco::ui
         }
 
         uint64_t hovered_widget = 0;
-        if (this->type == addr<0x005233A8, window_type>() && this->number == addr<0x005233AA, uint16_t>())
+        if (input::is_hovering(this->type, this->number))
         {
-            hovered_widget = 1ULL << addr<0x005233AC, uint16_t>();
+            hovered_widget = 1ULL << input::get_hovered_widget_index();
         }
 
         int scrollviewIndex = 0;

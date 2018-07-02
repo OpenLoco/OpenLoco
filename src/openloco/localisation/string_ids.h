@@ -6,6 +6,8 @@
 
 namespace openloco::string_ids
 {
+    constexpr string_id empty = 0;
+
     constexpr string_id day_1st = 10;
     constexpr string_id day_2nd = 11;
     constexpr string_id day_3rd = 12;
@@ -103,9 +105,16 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id outlined_wcolour2_stringid2 = 450;
+
     constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
+
+    constexpr string_id title_menu_new_game = 613;
+    constexpr string_id title_menu_load_game = 614;
+    constexpr string_id title_menu_show_tutorial = 615;
+    constexpr string_id title_menu_exit_from_game = 616;
 
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
@@ -119,6 +128,8 @@ namespace openloco::string_ids
     constexpr string_id month_long_october = 644;
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
+
+    constexpr string_id options = 654;
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
@@ -186,15 +197,34 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
+    constexpr string_id title_multiplayer_toggle_tooltip = 1567;
+    constexpr string_id single_player_mode = 1568;
+    constexpr string_id two_player_mode_connected = 1569;
+
+    constexpr string_id chat_title = 1717;
+    constexpr string_id chat_instructions = 1718;
+
+    constexpr string_id title_menu_scenario_editor = 1740;
+
+    constexpr string_id tutorial_1 = 1879;
+    constexpr string_id tutorial_2 = 1880;
+    constexpr string_id tutorial_3 = 1881;
+
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
     constexpr string_id atari_inc_credits_caption = UNUSED_STR(1931);
+
+    constexpr string_id title_menu_chat_tooltip = 1933;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id loading = 1088;
 
     constexpr string_id station_cargo_rating_percent = 1423;
+
+    constexpr string_id title_exit_game = 1869;
+
+    constexpr string_id the_other_player = 1934;
 
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
