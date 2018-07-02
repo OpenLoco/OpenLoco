@@ -2,14 +2,18 @@
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/interface_skin_object.h"
+#include "../objects/objectmgr.h"
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
+    static const gfx::ui_size_t _window_size_display = { 366, 144 };
+
     static widget_t _widgets_display[] = {
-        make_widget({ 0, 0 }, { 366, 144 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_display, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_display),
         make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -31,8 +35,12 @@ namespace openloco::ui::options
         make_widget({ 344, 125 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
     };
 
+    static loco_global<window_event_list, 0x00503F40> _events_display;
+
+    static const gfx::ui_size_t _window_size_sound = { 366, 97 };
+
     static widget_t _widgets_sound[] = {
-        make_widget({ 0, 0 }, { 366, 97 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_sound, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_sound),
         make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -49,8 +57,12 @@ namespace openloco::ui::options
         make_widget({ 10, 79 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1010, string_ids::STR_1011),
     };
 
+    static loco_global<window_event_list, 0x00503FB4> _events_sound;
+
+    static const gfx::ui_size_t _window_size_music = { 366, 129 };
+
     static widget_t _widgets_music[] = {
-        make_widget({ 0, 0 }, { 366, 129 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_music, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_music),
         make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -71,8 +83,12 @@ namespace openloco::ui::options
         make_widget({ 183, 108 }, { 173, 12 }, widget_type::wt_11, 1, string_ids::STR_1542, string_ids::STR_1543),
     };
 
+    static loco_global<window_event_list, 0x00504028> _events_music;
+
+    static const gfx::ui_size_t _window_size_regional = { 366, 147 };
+
     static widget_t _widgets_regional[] = {
-        make_widget({ 0, 0 }, { 366, 147 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_regional, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_regional),
         make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -94,8 +110,12 @@ namespace openloco::ui::options
         make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1498, string_ids::STR_1499),
     };
 
+    static loco_global<window_event_list, 0x0050409C> _events_regional;
+
+    static const gfx::ui_size_t _window_size_controls = { 366, 87 };
+
     static widget_t _widgets_controls[] = {
-        make_widget({ 0, 0 }, { 366, 87 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_controls, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_controls),
         make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -109,8 +129,12 @@ namespace openloco::ui::options
         make_widget({ 26, 64 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::STR_0701, string_ids::STR_1004),
     };
 
+    static loco_global<window_event_list, 0x00504110> _events_controls;
+
+    static const gfx::ui_size_t _window_size_misc = { 420, 102 };
+
     static widget_t _widgets_misc[] = {
-        make_widget({ 0, 0 }, { 420, 102 }, widget_type::frame, 0, -1),
+        make_widget({ 0, 0 }, _window_size_misc, widget_type::frame, 0, -1),
         make_widget({ 1, 1 }, { 418, 13 }, widget_type::caption_25, 0, string_ids::options_title_miscellaneous),
         make_widget({ 405, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
@@ -125,8 +149,52 @@ namespace openloco::ui::options
         make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::STR_2089, string_ids::STR_2090),
     };
 
+    static loco_global<window_event_list, 0x00504184> _events_misc;
+
+    static void sub_4BF8CD()
+    {
+        call(0x004BF8CD);
+    }
+
+    static void sub_4C1519()
+    {
+        call(0x004C1519);
+    }
+
+    // 0x004BF7B9
     void open()
     {
-        call(0x004BF7B9);
+        if (windowmgr::bring_to_front(window_type::options, 0) != nullptr)
+            return;
+
+        // 0x004BF833 (create_options_window)
+        auto window = windowmgr::create_window_centred(
+            window_type::options,
+            _window_size_display.width,
+            _window_size_display.height,
+            0,
+            &*_events_display);
+
+        window->widgets = _widgets_display;
+        window->number = 0;
+        window->var_870 = 0;
+        window->var_872 = 0;
+
+        auto interface = objectmgr::get<interface_skin_object>();
+        window->colours[0] = interface->colour_0B;
+        window->colours[1] = interface->colour_10;
+
+        sub_4BF8CD();
+        sub_4C1519();
+
+        // Returning to 0x004BF7CB (in windowmgr__open_options)
+        window->enabled_widgets = -1;  // !!! TODO
+        window->holdable_widgets = -1; // !!! TODO
+        window->event_handlers = &*_events_display;
+        window->activated_widgets = 0;
+
+        window->call_on_resize();
+        window->call_prepare_draw();
+        window->init_scroll_widgets();
     }
 }
