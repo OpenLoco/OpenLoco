@@ -2,6 +2,7 @@
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
+#include "colours.h"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -178,6 +179,232 @@ namespace openloco::gfx
         regs.edi = (int32_t)&dpi;
         regs.esi = (int32_t)string;
         call(0x00451025, regs);
+    }
+
+    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<int32_t, 0x112C824> _currentFontFlags;
+    static loco_global<uint8_t[4], 0x1136594> windowColours;
+    static loco_global<uint8_t[224 * 4], 0x112C884> characterWidths;
+
+    /**
+     * 0x00451025
+     *
+     * @param x  @<cx>
+     * @param y @<dx>
+     * @param context @<edi>
+     * @param text @<esi>
+     */
+    void drawString(int16_t x, int16_t y, drawpixelinfo_t* context, uint8_t* str)
+    {
+        gfx::point_t origin = { x, y };
+        gfx::point_t pos = origin;
+        uint8_t colours[8] = { 0 };
+
+        colours[0] = 0;
+        colours[1] = 0;
+        colours[2] = 0;
+        colours[3] = 0;
+        colours[4] = colour::get_shade(colour::bright_red, 4);
+
+        // 4510FF
+        colours[1] = colour::get_shade(colour::bright_red, 4);
+        colours[3] = colour::get_shade(colour::bright_red, 6);
+
+        // 451112
+        colours[1] = colour::get_shade(colour::bright_red, 3);
+        colours[3] = colour::get_shade(colour::bright_red, 5);
+
+        // 0x451130
+        colours[1] = colour::get_shade(colour::bright_red, 2);
+        colours[3] = colour::get_shade(colour::bright_red, 4);
+
+        while (true)
+        {
+            uint8_t chr = *str;
+            str++;
+
+            switch (chr)
+            {
+                case 0:
+                    return;
+
+                case 2:
+                    assert(false);
+                    str++;
+                    break;
+
+                case 6:
+                    pos.x = origin.x;
+                    if (_currentFontSpriteBase <= 224)
+                    {
+                        pos.y += 5;
+                    }
+                    else if (_currentFontSpriteBase == 448)
+                    {
+                        pos.y += 3;
+                    }
+                    else
+                    {
+                        pos.y += 9;
+                    }
+                    break;
+
+                case 5:
+                    pos.x = origin.x;
+                    if (_currentFontSpriteBase <= 224)
+                    {
+                        pos.y += 10;
+                    }
+                    else if (_currentFontSpriteBase == 448)
+                    {
+                        pos.y += 6;
+                    }
+                    else
+                    {
+                        pos.y += 18;
+                    }
+                    break;
+
+                case 1:
+                {
+                    uint8_t offset = *str;
+                    str++;
+                    pos.x = origin.x + offset;
+
+                    break;
+                }
+
+                case 17:
+                {
+                    uint8_t offset = *str;
+                    str++;
+                    pos.x = origin.x + offset;
+
+                    offset = *str;
+                    str++;
+                    pos.y = origin.y + offset;
+
+                    break;
+                }
+
+                case 7:
+                    _currentFontSpriteBase = 448;
+                    break;
+                case 8:
+                    _currentFontSpriteBase = 672;
+                    break;
+                case 10:
+                    _currentFontSpriteBase = 0;
+                    break;
+                case 9:
+                    _currentFontSpriteBase = 224;
+                    break;
+                case 11:
+                    _currentFontFlags |= ~(1 << 1);
+                    break;
+                case 12:
+                    _currentFontFlags &= ~(1 << 1);
+                    break;
+                case 13:
+                {
+                    int hue = windowColours[0];
+
+                    colours[1] = colour::get_shade(hue, 7);
+                    if (_currentFontFlags & (1 << 1))
+                    {
+                        colours[2] = 0x0A;
+                        colours[3] = 0x0A;
+                    }
+                    break;
+                }
+                case 14:
+                {
+                    int hue = windowColours[1];
+                    if (_currentFontFlags & (1 << 0))
+                    {
+                        // 0x451189
+                    }
+
+                    colours[1] = colour::get_shade(hue, 9);
+                    ;
+                    if (_currentFontFlags & (1 << 1))
+                    {
+                        colours[2] = 0x0A;
+                        colours[3] = 0x0A;
+                    }
+                    break;
+                }
+                case 15:
+                {
+                    int hue = windowColours[2];
+                    if (_currentFontFlags & (1 << 0))
+                    {
+                        // 0x451189
+                    }
+
+                    colours[1] = colour::get_shade(hue, 9);
+                    ;
+                    if (_currentFontFlags & (1 << 1))
+                    {
+                        colours[2] = 0x0A;
+                        colours[3] = 0x0A;
+                    }
+                    break;
+                }
+
+                case 144 + 0:
+                    // black
+
+                case 144 + 1:
+                    // grey
+
+                case 144 + 2:
+                    // white
+
+                case 144 + 3:
+                    // red
+
+                case 144 + 4:
+                    // green
+
+                case 144 + 5:
+                    // yellow
+
+                case 144 + 6:
+                    // TOPAZ
+
+                case 144 + 7:
+                    // CELADON
+
+                case 144 + 8:
+                    // BABYBLUE
+
+                case 144 + 9:
+                    // PALELAVENDER
+
+                case 144 + 10:
+                    // PALEGOLD
+
+                case 144 + 11:
+                    // LIGHTPINK
+
+                case 144 + 12:
+                    // PEARLAQUA
+
+                case 144 + 13:
+                    // PALESILVER
+                    break;
+
+                default:
+                    if (chr >= 32)
+                    {
+
+                        gfx::draw_sprite_palete_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, colours);
+                        pos.x += characterWidths[chr - 32 + _currentFontSpriteBase];
+                    }
+                    break;
+            }
+        }
     }
 
     // 0x00494B3F
@@ -403,6 +630,11 @@ namespace openloco::gfx
         memset(palette, palette_index, 256);
         palette[0] = 0;
 
+        draw_sprite_palete_set(dpi, x, y, image, palette);
+    }
+
+    void draw_sprite_palete_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    {
         _50B860 = palette;
         _E04324 = 0x20000000;
         registers regs;
