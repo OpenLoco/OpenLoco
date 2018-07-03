@@ -265,7 +265,7 @@ namespace openloco::ui
     }
 
     // 0x004CA17F
-    void window::init_scroll_widgets()
+    void window::initScrollWidgets()
     {
         uint32_t s = 0;
         for (int w = 0;; ++w)

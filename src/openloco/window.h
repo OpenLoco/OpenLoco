@@ -268,6 +268,32 @@ namespace openloco::ui
             };
         };
 
+        template<typename Arg>
+        void enableWidgets(Arg widgetIndex)
+        {
+            this->enabled_widgets |= 1ULL << widgetIndex;
+        }
+
+        template<typename Arg, typename... Args>
+        void enableWidgets(Arg first, Args... args)
+        {
+            enableWidgets(first);
+            enableWidgets(args...);
+        }
+
+        template<typename Arg>
+        void setEnabledWidgets(Arg widgetIndex)
+        {
+            this->enabled_widgets = 1ULL << widgetIndex;
+        }
+
+        template<typename Arg, typename... Args>
+        void setEnabledWidgets(Arg first, Args... args)
+        {
+            setEnabledWidgets(first);
+            enableWidgets(args...);
+        }
+
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
         bool is_holdable(widget_index index);
@@ -276,7 +302,7 @@ namespace openloco::ui
         void invalidate_pressed_image_buttons();
         void invalidate();
         void update_scroll_widgets();
-        void init_scroll_widgets();
+        void initScrollWidgets();
         int8_t get_scroll_data_index(widget_index index);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);

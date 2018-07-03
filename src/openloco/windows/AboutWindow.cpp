@@ -6,7 +6,9 @@
 #include "../objects/objectmgr.h"
 #include "../windowmgr.h"
 
-namespace openloco::ui::about
+using namespace openloco::ui;
+
+namespace openloco::windows::AboutWindow
 {
     constexpr uint16_t ww = 400;
     constexpr uint16_t wh = 260;
@@ -34,7 +36,7 @@ namespace openloco::ui::about
 
     static window_event_list _events;
 
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
+    static void onClick(ui::window* window, widget_index widgetIndex);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     // 0x0043B26C
@@ -43,7 +45,7 @@ namespace openloco::ui::about
         if (windowmgr::bring_to_front(window_type::about, 0) != nullptr)
             return;
 
-        _events.onClick = on_mouse_up;
+        _events.onClick = onClick;
         _events.draw = draw;
 
         auto window = windowmgr::create_window_centred(
@@ -54,8 +56,8 @@ namespace openloco::ui::about
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
-        window->init_scroll_widgets();
+        window->setEnabledWidgets(widx::close, widx::music_acknowledgements_btn);
+        window->initScrollWidgets();
 
         auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
@@ -63,7 +65,7 @@ namespace openloco::ui::about
     }
 
     // 0x0043B4AF
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onClick(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -72,7 +74,7 @@ namespace openloco::ui::about
                 break;
 
             case widx::music_acknowledgements_btn:
-                about_music::open();
+                AboutMusicWindow::open();
                 break;
         }
     }

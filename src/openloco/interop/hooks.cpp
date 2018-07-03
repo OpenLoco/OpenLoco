@@ -647,7 +647,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0043B26C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::about::open();
+            windows::AboutWindow::open();
             return 0;
         });
 
@@ -815,7 +815,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             registers backup = regs;
             auto window = (ui::window*)regs.esi;
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             regs = backup;
 
             return 0;

@@ -71,7 +71,7 @@ namespace openloco::gui
                 (ui::window_event_list*)0x4fa180);
             window->widgets = (ui::widget_t*)0x509c34;
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
 
             auto skin = openloco::objectmgr::get<interface_skin_object>();
             if (skin != nullptr)
@@ -93,7 +93,7 @@ namespace openloco::gui
             window->widgets = (ui::widget_t*)0x509d08;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->var_854 = 0;
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
 
             if (skin != nullptr)
             {
@@ -113,7 +113,7 @@ namespace openloco::gui
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
             window->var_854 = 0;
             window->var_856 = 0;
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
 
             if (skin != nullptr)
             {
@@ -133,7 +133,7 @@ namespace openloco::gui
                     ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
                     (ui::window_event_list*)0x4fa10c);
                 window->widgets = (ui::widget_t*)0x509de0;
-                window->init_scroll_widgets();
+                window->initScrollWidgets();
 
                 if (skin != nullptr)
                 {

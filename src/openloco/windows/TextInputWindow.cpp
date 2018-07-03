@@ -160,7 +160,7 @@ namespace openloco::ui::textinput
         window->widgets = _widgets;
         window->enabled_widgets |= 1ULL << widx::close;
         window->enabled_widgets |= 1ULL << widx::ok;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         cursor_position = _buffer.length();
         _cursorFrame = 0;

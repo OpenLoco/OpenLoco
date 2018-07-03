@@ -161,7 +161,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::scenario_list_btn) | (1 << widx::load_game_btn) | (1 << widx::tutorial_btn) | (1 << widx::scenario_editor_btn) | (1 << widx::chat_btn) | (1 << widx::multiplayer_toggle_btn);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);

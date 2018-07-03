@@ -123,12 +123,12 @@ namespace openloco::ui::windows
     void map_center_on_view_point();
 }
 
-namespace openloco::ui::about
+namespace openloco::windows::AboutWindow
 {
     void open();
 }
 
-namespace openloco::ui::about_music
+namespace openloco::windows::AboutMusicWindow
 {
     void open();
 }

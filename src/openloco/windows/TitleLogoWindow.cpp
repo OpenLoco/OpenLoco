@@ -5,6 +5,7 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::windows;
 
 namespace openloco::ui::windows
 {
@@ -45,7 +46,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::logo;
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::grey);
         window->colours[1] = colour::translucent(colour::grey);
@@ -65,7 +66,7 @@ namespace openloco::ui::windows
         switch (widgetIndex)
         {
             case widx::logo:
-                about::open();
+                AboutWindow::open();
                 break;
         }
     }
