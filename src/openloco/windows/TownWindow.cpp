@@ -7,7 +7,7 @@ using namespace openloco::interop;
 namespace openloco::ui::windows
 {
     // 0x00498E9B
-    void sub_498E9B(window* w)
+    void sub_498E9B(Window* w)
     {
         w->enabled_widgets |= (1 << 1);
 #ifdef _DISABLE_TOWN_RENAME_
@@ -21,11 +21,11 @@ namespace openloco::ui::windows
     // 0x00499B7E
     // dx: townId
     // esi: {return}
-    window* open_town_window(uint16_t townId)
+    Window* open_town_window(uint16_t townId)
     {
         registers regs;
         regs.dx = townId;
         call(0x00499B7E, regs);
-        return (window*)regs.esi;
+        return (Window*)regs.esi;
     }
 }

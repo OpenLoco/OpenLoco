@@ -29,10 +29,10 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void on_mouse_up(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void on_mouse_up(Window* window, widget_index widgetIndex);
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
-    window* open_title_exit()
+    Window* open_title_exit()
     {
         _events.onClick = on_mouse_up;
         _events.draw = draw;
@@ -58,7 +58,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00439236
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
@@ -70,7 +70,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00439268
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void on_mouse_up(Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {

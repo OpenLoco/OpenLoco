@@ -36,8 +36,8 @@ namespace openloco::windows::AboutWindow
 
     static window_event_list _events;
 
-    static void onClick(ui::window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void onClick(ui::Window* window, widget_index widgetIndex);
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
     // 0x0043B26C
     void open()
@@ -65,7 +65,7 @@ namespace openloco::windows::AboutWindow
     }
 
     // 0x0043B4AF
-    static void onClick(ui::window* window, widget_index widgetIndex)
+    static void onClick(ui::Window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -80,7 +80,7 @@ namespace openloco::windows::AboutWindow
     }
 
     // 0x0043B2E4
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

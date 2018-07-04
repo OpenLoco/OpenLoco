@@ -40,11 +40,11 @@ namespace openloco::windows::AboutMusicWindow
 
     static window_event_list _events;
 
-    static void onClick(ui::window* window, widget_index widgetIndex);
-    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void onClick(ui::Window* window, widget_index widgetIndex);
+    static void getScrollSize(ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void tooltip(ui::Window* window, widget_index widgetIndex);
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
+    static void drawScroll(ui::Window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
 
     // 0x0043B4AF
     void open()
@@ -75,7 +75,7 @@ namespace openloco::windows::AboutMusicWindow
     }
 
     // 0x0043BFB0
-    static void onClick(ui::window* window, widget_index widgetIndex)
+    static void onClick(ui::Window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -86,27 +86,27 @@ namespace openloco::windows::AboutMusicWindow
     }
 
     // 0x0043BFBB
-    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = num_songs * (10 + 10 + 14);
     }
 
     // 0x0043BFC0
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(ui::Window* window, widget_index widgetIndex)
     {
         loco_global<string_id, 0x112C826> common_format_args;
         *common_format_args = string_ids::tooltip_scroll_credits_list;
     }
 
     // 0x0043B8B8
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::Window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         static std::pair<string_id, string_id> strings_to_draw[num_songs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },

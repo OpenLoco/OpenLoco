@@ -11,7 +11,7 @@ namespace openloco::ui
     using window_number = uint16_t;
     enum class window_type : uint8_t;
     enum class widget_type : uint8_t;
-    struct window;
+    struct Window;
 
 #pragma pack(push, 1)
 
@@ -219,7 +219,7 @@ namespace openloco::ui
         uint16_t saved_view_y;           // 0x4
     };
 
-    struct window
+    struct Window
     {
         union
         {
