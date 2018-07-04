@@ -156,13 +156,13 @@ namespace openloco::ui
             struct
             {
                 uint32_t on_close;
-                void (*onClick)(window*, widget_index);
+                void (*onClick)(Window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
-                void (*on_mouse_down)(window*, widget_index);
-                void (*on_dropdown)(window*, widget_index, int16_t);
+                void (*on_mouse_down)(Window*, widget_index);
+                void (*on_dropdown)(Window*, widget_index, int16_t);
                 uint32_t event_06;
-                void (*on_update)(window*);
+                void (*on_update)(Window*);
                 uint32_t event_08;
                 uint32_t event_09;
                 uint32_t event_10;
@@ -171,19 +171,19 @@ namespace openloco::ui
                 uint32_t event_13;
                 uint32_t tool_abort;
                 uint32_t event_15;
-                void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+                void (*get_scroll_size)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
-                void (*text_input)(window*, widget_index, char*);
+                void (*text_input)(Window*, widget_index, char*);
                 uint32_t viewport_rotate;
                 uint32_t event_22;
-                void (*tooltip)(window*, widget_index);
+                void (*tooltip)(Window*, widget_index);
                 ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
-                void (*prepare_draw)(window*);
-                void (*draw)(window*, gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*prepare_draw)(Window*);
+                void (*draw)(Window*, gfx::drawpixelinfo_t*);
+                void (*draw_scroll)(Window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
             };
         };
 

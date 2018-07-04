@@ -1017,7 +1017,7 @@ namespace openloco::input
 
 #pragma mark - Viewport dragging
 
-    static void viewport_drag_begin(window* w)
+    static void viewport_drag_begin(Window* w)
     {
         w->flags &= ~ui::window_flags::scrolling_to_location;
         state(input_state::viewport_right);
@@ -1029,7 +1029,7 @@ namespace openloco::input
 #pragma mark - Scroll bars
 
     // 0x004C8689
-    void scroll_begin(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex)
+    void scroll_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, int8_t widgetIndex)
     {
         ui::scrollview::scroll_part scrollArea;
         int16_t outX, outY;
@@ -1090,7 +1090,7 @@ namespace openloco::input
 
 #pragma mark - Scrollview dragging
 
-    static void scroll_drag_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widgetIndex)
+    static void scroll_drag_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_index widgetIndex)
     {
         state(input_state::scroll_right);
         _dragLastX = x;
@@ -1120,7 +1120,7 @@ namespace openloco::input
             return;
         }
 
-        ui::window* oldWindow = windowmgr::find(windowType, windowNumber);
+        ui::Window* oldWindow = windowmgr::find(windowType, windowNumber);
 
         if (oldWindow != nullptr)
         {
@@ -1157,7 +1157,7 @@ namespace openloco::input
             }
         }
 
-        ui::window* window = ui::windowmgr::find_at(x, y);
+        ui::Window* window = ui::windowmgr::find_at(x, y);
 
         if (window != nullptr)
         {

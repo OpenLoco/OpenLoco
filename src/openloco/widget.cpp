@@ -1,8 +1,8 @@
 #include "widget.h"
+#include "Window.h"
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
-#include "window.h"
 #include <cassert>
 
 using namespace openloco::interop;
