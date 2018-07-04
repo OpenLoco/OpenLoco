@@ -1,8 +1,8 @@
+#include "../Window.h"
 #include "../graphics/colours.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
-#include "../window.h"
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
@@ -31,7 +31,7 @@ namespace openloco::ui::windows
             &_events);
         window->widgets = widgets;
 
-        _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
+        _events.prepare_draw = (void (*)(ui::Window*))0x0042A035;
         _events.draw = draw;
 
         return window;

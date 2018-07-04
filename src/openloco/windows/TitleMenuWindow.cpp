@@ -171,7 +171,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00438E0B
-    static void prepare_draw(ui::window* window)
+    static void prepare_draw(ui::Window* window)
     {
         window->disabled_widgets = 0;
         window->widgets[widx::tutorial_btn].type = ui::widget_type::wt_9;
@@ -205,7 +205,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00438EC7
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

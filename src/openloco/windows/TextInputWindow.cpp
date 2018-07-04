@@ -76,7 +76,7 @@ namespace openloco::ui::textinput
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                open_textinput((ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                open_textinput((ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -110,10 +110,10 @@ namespace openloco::ui::textinput
             });
     }
 
-    static void prepare_draw(ui::window* window);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_update(ui::window* window);
+    static void prepare_draw(ui::Window* window);
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* context);
+    static void on_mouse_up(ui::Window* window, widget_index widgetIndex);
+    static void on_update(ui::Window* window);
 
     static bool needs_reoffsetting(int16_t containerWidth);
     static void calculate_text_offset(int16_t containerWidth);
@@ -128,7 +128,7 @@ namespace openloco::ui::textinput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void open_textinput(ui::window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void open_textinput(ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;
@@ -244,7 +244,7 @@ namespace openloco::ui::textinput
      *
      * @param window @<esi>
      */
-    static void prepare_draw(ui::window* window)
+    static void prepare_draw(ui::Window* window)
     {
         _widgets[widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
@@ -256,7 +256,7 @@ namespace openloco::ui::textinput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* context)
     {
         window->draw(context);
 
@@ -296,7 +296,7 @@ namespace openloco::ui::textinput
     }
 
     // 0x004CE8B6
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void on_mouse_up(ui::Window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -316,7 +316,7 @@ namespace openloco::ui::textinput
     }
 
     // 0x004CE8FA
-    static void on_update(ui::window* window)
+    static void on_update(ui::Window* window)
     {
         _cursorFrame++;
         if ((_cursorFrame % 16) == 0)

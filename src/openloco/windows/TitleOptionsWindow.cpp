@@ -29,10 +29,10 @@ namespace openloco::ui::title_options
 
     static window_event_list _events;
 
-    static void on_mouse_up(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void on_mouse_up(Window* window, widget_index widgetIndex);
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
-    window* open()
+    Window* open()
     {
         _events.onClick = on_mouse_up;
         _events.draw = draw;
@@ -57,7 +57,7 @@ namespace openloco::ui::title_options
         return window;
     }
 
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
@@ -69,7 +69,7 @@ namespace openloco::ui::title_options
         gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void on_mouse_up(Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
