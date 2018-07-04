@@ -128,7 +128,7 @@ namespace openloco::windows::TitleMenuWindow
     static void sub_439102();
     static void sub_46E328();
 
-    static void onClick(ui::Window *window, widget_index widgetIndex);
+    static void onClick(ui::Window* window, widget_index widgetIndex);
     static void on_mouse_down(ui::Window* window, widget_index widgetIndex);
     static void on_dropdown(ui::Window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_update(Window* window);
@@ -296,7 +296,7 @@ namespace openloco::windows::TitleMenuWindow
     }
 
     // 0x00439094
-    static void onClick(ui::Window *window, widget_index widgetIndex)
+    static void onClick(ui::Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {

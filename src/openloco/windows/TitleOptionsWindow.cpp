@@ -30,7 +30,7 @@ namespace openloco::windows::TitleOptionsWindow
 
     static window_event_list _events;
 
-    static void onClick(Window *window, widget_index widgetIndex);
+    static void onClick(Window* window, widget_index widgetIndex);
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
     Window* open()
@@ -70,7 +70,7 @@ namespace openloco::windows::TitleOptionsWindow
         gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
-    static void onClick(Window *window, widget_index widgetIndex)
+    static void onClick(Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {

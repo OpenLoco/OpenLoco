@@ -26,7 +26,7 @@ namespace openloco::windows::TitleLogoWindow
 
     static window_event_list _events;
 
-    static void onClick(Window *window, widget_index widgetIndex);
+    static void onClick(Window* window, widget_index widgetIndex);
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
     ui::Window* open()
@@ -44,7 +44,7 @@ namespace openloco::windows::TitleLogoWindow
             &_events);
 
         window->widgets = _widgets;
-        window->setEnabledWidgets( widx::logo);
+        window->setEnabledWidgets(widx::logo);
 
         window->initScrollWidgets();
 
@@ -61,7 +61,7 @@ namespace openloco::windows::TitleLogoWindow
     }
 
     // 0x004392AD
-    static void onClick(Window *window, widget_index widgetIndex)
+    static void onClick(Window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
