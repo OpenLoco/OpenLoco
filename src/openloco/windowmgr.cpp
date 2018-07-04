@@ -95,7 +95,7 @@ namespace openloco::ui::windowmgr
 
                 while (window < addr<0x0113D754, ui::Window*>())
                 {
-                    if ((window->flags & ui::window_flags::transparent) != 0)
+                    if ((window->flags & ui::WindowFlags::transparent) != 0)
                     {
                         draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                     }
@@ -337,10 +337,10 @@ namespace openloco::ui::windowmgr
             if (y >= (w->y + w->height))
                 continue;
 
-            if ((w->flags & window_flags::flag_7) != 0)
+            if ((w->flags & WindowFlags::flag_7) != 0)
                 continue;
 
-            if ((w->flags & window_flags::no_background) != 0)
+            if ((w->flags & WindowFlags::noBackground) != 0)
             {
                 auto index = w->find_widget_at(x, y);
                 if (index == -1)
@@ -379,7 +379,7 @@ namespace openloco::ui::windowmgr
             if (y >= (w->y + w->height))
                 continue;
 
-            if ((w->flags & window_flags::no_background) != 0)
+            if ((w->flags & WindowFlags::noBackground) != 0)
             {
                 auto index = w->find_widget_at(x, y);
                 if (index == -1)
@@ -698,7 +698,7 @@ namespace openloco::ui::windowmgr
             // Work out if the window requires moving
             bool extendsX = (w.x + 10) >= ui::width();
             bool extendsY = (w.y + 10) >= ui::height();
-            if ((w.flags & window_flags::stick_to_back) != 0 || (w.flags & window_flags::stick_to_front) != 0)
+            if ((w.flags & WindowFlags::stickToBack) != 0 || (w.flags & WindowFlags::stickToFront) != 0)
             {
                 // toolbars are 27px high
                 extendsY = (w.y + 10 - 27) >= ui::height();
@@ -744,10 +744,10 @@ namespace openloco::ui::windowmgr
             if (&w == self)
                 continue;
 
-            if (w.flags & window_flags::stick_to_back)
+            if (w.flags & WindowFlags::stickToBack)
                 continue;
 
-            if (w.flags & window_flags::stick_to_front)
+            if (w.flags & WindowFlags::stickToFront)
                 continue;
 
             if (w.x >= right)
@@ -808,10 +808,10 @@ namespace openloco::ui::windowmgr
 
         for (Window& w : WindowList())
         {
-            if (w.flags & window_flags::stick_to_back)
+            if (w.flags & WindowFlags::stickToBack)
                 continue;
 
-            if (w.flags & window_flags::stick_to_front)
+            if (w.flags & WindowFlags::stickToFront)
                 continue;
 
             close(&w);

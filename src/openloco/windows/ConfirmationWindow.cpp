@@ -36,7 +36,7 @@ namespace openloco::ui::windows
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
 
-        auto window = windowmgr::create_window_centred(WindowType::confirmation, 280, 92, ui::window_flags::flag_12 | ui::window_flags::stick_to_front, (ui::window_event_list*)0x004FB37C);
+        auto window = windowmgr::create_window_centred(WindowType::confirmation, 280, 92, ui::WindowFlags::flag_12 | ui::WindowFlags::stickToFront, (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AE00;
@@ -44,7 +44,7 @@ namespace openloco::ui::windows
             window->initScrollWidgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);
-            window->flags |= ui::window_flags::transparent;
+            window->flags |= ui::WindowFlags::transparent;
             _result = 0;
 
             auto originalModal = windowmgr::current_modal_type();

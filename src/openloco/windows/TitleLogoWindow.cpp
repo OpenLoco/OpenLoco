@@ -40,7 +40,7 @@ namespace openloco::ui::windows
             0,
             window_size.width,
             window_size.height,
-            window_flags::stick_to_front | window_flags::transparent,
+            WindowFlags::stickToFront | WindowFlags::transparent,
             &_events);
 
         window->widgets = _widgets;

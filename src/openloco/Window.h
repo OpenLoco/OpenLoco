@@ -131,13 +131,13 @@ namespace openloco::ui
         uint16_t v_thumb_bottom; // 0x10
     };
 
-    namespace window_flags
+    namespace WindowFlags
     {
-        constexpr uint32_t stick_to_back = 1 << 0;
-        constexpr uint32_t stick_to_front = 1 << 1;
-        constexpr uint32_t scrolling_to_location = 1 << 3;
+        constexpr uint32_t stickToBack = 1 << 0;
+        constexpr uint32_t stickToFront = 1 << 1;
+        constexpr uint32_t scrollingToLocation = 1 << 3;
         constexpr uint32_t transparent = 1 << 4;
-        constexpr uint32_t no_background = 1 << 5;
+        constexpr uint32_t noBackground = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t resizable = 1 << 9;
@@ -145,7 +145,8 @@ namespace openloco::ui
         constexpr uint32_t flag_12 = 1 << 12;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
-        constexpr uint32_t white_border_mask = (1 << 17) | (1 << 18);
+
+        constexpr uint32_t whiteBorderMask = (1 << 17) | (1 << 18);
     }
 
     struct window_event_list

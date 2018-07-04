@@ -27,7 +27,7 @@ namespace openloco::ui::windows
             ui::height() - height,
             width,
             height,
-            (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
+            WindowFlags::stickToFront | WindowFlags::transparent |  WindowFlags::noBackground |  WindowFlags::flag_6,
             &_events);
         window->widgets = widgets;
 

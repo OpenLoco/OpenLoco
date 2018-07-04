@@ -155,7 +155,7 @@ namespace openloco::ui::windows
             ui::height() - wh - 25,
             ww,
             wh,
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;

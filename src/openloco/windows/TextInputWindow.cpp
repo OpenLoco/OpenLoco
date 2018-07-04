@@ -155,7 +155,7 @@ namespace openloco::ui::textinput
             WindowType::textInput,
             330,
             90,
-            window_flags::stick_to_front | window_flags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets |= 1ULL << widx::close;
@@ -192,7 +192,7 @@ namespace openloco::ui::textinput
         _widgets[widx::title].type = widget_type::caption_25;
         if (window->var_884 != -1)
         {
-            window->flags |= window_flags::flag_11;
+            window->flags |= WindowFlags::flag_11;
             _widgets[widx::title].type = widget_type::caption_24;
         }
     }

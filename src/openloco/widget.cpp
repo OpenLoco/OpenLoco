@@ -53,7 +53,7 @@ namespace openloco::ui::widget
     // 0x004CAB8E
     static void draw_resize_handle(gfx::drawpixelinfo_t* dpi, Window* window, widget_t* widget, uint8_t colour)
     {
-        if (!(window->flags & window_flags::resizable))
+        if (!(window->flags & WindowFlags::resizable))
         {
             return;
         }
@@ -144,7 +144,7 @@ namespace openloco::ui::widget
         if (gfx::clip_drawpixelinfo(&clipped, dpi, widget->left + window->x, widget->top + window->y, widget->right - widget->left, 41))
         {
             uint32_t image;
-            if (window->flags & window_flags::flag_11)
+            if (window->flags & WindowFlags::flag_11)
             {
                 image = 0x20000000 | 2322 | ((colour & 0x7F) << 19);
             }
@@ -156,7 +156,7 @@ namespace openloco::ui::widget
         }
 
         uint8_t shade;
-        if (window->flags & window_flags::flag_11)
+        if (window->flags & WindowFlags::flag_11)
         {
             shade = openloco::colour::get_shade(colour, 3);
         }
@@ -196,7 +196,7 @@ namespace openloco::ui::widget
             return;
         }
 
-        if (window->flags & window_flags::flag_6)
+        if (window->flags & WindowFlags::flag_6)
         {
             gfx::fill_rect(dpi, left, top, right, bottom, 0x2000000 | 52);
         }

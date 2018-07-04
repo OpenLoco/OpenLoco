@@ -26,7 +26,7 @@ namespace openloco::ui
 
     bool Window::can_resize()
     {
-        return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
+        return (this->flags & WindowFlags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
     }
 
     bool Window::is_enabled(int8_t widget_index)
@@ -159,7 +159,7 @@ namespace openloco::ui
                 centreX = config->saved_view_x;
                 centreY = config->saved_view_y;
 
-                if (this->flags & window_flags::scrolling_to_location)
+                if (this->flags & WindowFlags::scrollingToLocation)
                 {
                     bool flippedX = false;
                     centreX -= viewport->view_x;
@@ -182,7 +182,7 @@ namespace openloco::ui
 
                     if (centreX == 0 && centreY == 0)
                     {
-                        this->flags &= ~window_flags::scrolling_to_location;
+                        this->flags &= ~WindowFlags::scrollingToLocation;
                     }
 
                     if (flippedX)
@@ -826,7 +826,7 @@ namespace openloco::ui
     // 0x004CA4DF
     void Window::draw(gfx::drawpixelinfo_t* dpi)
     {
-        if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
+        if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {
             gfx::fill_rect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
@@ -865,7 +865,7 @@ namespace openloco::ui
                 break;
             }
 
-            if ((this->flags & window_flags::no_background) == 0)
+            if ((this->flags & WindowFlags::noBackground) == 0)
             {
                 // Check if widget is outside the draw region
                 if (this->x + widget->left >= dpi->x + dpi->width && this->x + widget->right < dpi->x)
@@ -878,7 +878,7 @@ namespace openloco::ui
             }
 
             uint16_t widgetFlags = 0;
-            if (widget->colour == 0 && this->flags & window_flags::flag_11)
+            if (widget->colour == 0 && this->flags & WindowFlags::flag_11)
             {
                 widgetFlags = 0x80;
             }
@@ -1002,7 +1002,7 @@ namespace openloco::ui
             }
         }
 
-        if (this->flags & window_flags::white_border_mask)
+        if (this->flags & WindowFlags::whiteBorderMask)
         {
             gfx::fill_rect_inset(
                 dpi,
