@@ -1,4 +1,4 @@
-#include "window.h"
+#include "Window.h"
 #include "console.h"
 #include "graphics/colours.h"
 #include "input.h"
@@ -24,22 +24,22 @@ namespace openloco::ui
         return (uint32_t)e < 0x004D7000;
     }
 
-    bool window::can_resize()
+    bool Window::can_resize()
     {
         return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
     }
 
-    bool window::is_enabled(int8_t widget_index)
+    bool Window::is_enabled(int8_t widget_index)
     {
         return (this->enabled_widgets & (1ULL << widget_index)) != 0;
     }
 
-    bool window::is_disabled(int8_t widget_index)
+    bool Window::is_disabled(int8_t widget_index)
     {
         return (this->disabled_widgets & (1ULL << widget_index)) != 0;
     }
 
-    bool window::is_holdable(ui::widget_index index)
+    bool Window::is_holdable(ui::widget_index index)
     {
         return (this->holdable_widgets & (1ULL << index)) != 0;
     }
@@ -57,7 +57,7 @@ namespace openloco::ui
         *outZ = regs.dx;
     }
 
-    static void viewport_set_underground_flag(bool underground, ui::window* w, ui::viewport* vp)
+    static void viewport_set_underground_flag(bool underground, ui::Window* w, ui::viewport* vp)
     {
         registers regs;
         regs.esi = (int32_t)w;
@@ -69,7 +69,7 @@ namespace openloco::ui
     loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 
     // 0x004C68E4
-    static void viewport_move(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
+    static void viewport_move(int16_t x, int16_t y, ui::Window* w, ui::viewport* vp)
     {
         registers regs;
         regs.ax = x;
@@ -89,7 +89,7 @@ namespace openloco::ui
     }
 
     // 0x004C6456
-    void window::viewports_update_position()
+    void Window::viewports_update_position()
     {
         this->call_on_resize();
 
@@ -204,7 +204,7 @@ namespace openloco::ui
     }
 
     // 0x004C99B9
-    void window::invalidate_pressed_image_buttons()
+    void Window::invalidate_pressed_image_buttons()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -212,7 +212,7 @@ namespace openloco::ui
     }
 
     // 0x004CA4BD
-    void window::invalidate()
+    void Window::invalidate()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -220,7 +220,7 @@ namespace openloco::ui
     }
 
     // 0x004CA115
-    void window::update_scroll_widgets()
+    void Window::update_scroll_widgets()
     {
         uint32_t s = 0;
         for (int w = 0;; ++w)
@@ -265,7 +265,7 @@ namespace openloco::ui
     }
 
     // 0x004CA17F
-    void window::initScrollWidgets()
+    void Window::initScrollWidgets()
     {
         uint32_t s = 0;
         for (int w = 0;; ++w)
@@ -301,7 +301,7 @@ namespace openloco::ui
         }
     }
 
-    int8_t window::get_scroll_data_index(widget_index index)
+    int8_t Window::get_scroll_data_index(widget_index index)
     {
         int8_t scrollIndex = 0;
         for (int i = 0; i < index; i++)
@@ -329,7 +329,7 @@ namespace openloco::ui
         *y = regs.cx;
     }
 
-    void window::viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
+    void Window::viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
     {
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
@@ -354,7 +354,7 @@ namespace openloco::ui
         *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
     }
 
-    void window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
+    void Window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.
         int16_t dest_x, dest_y;
@@ -376,7 +376,7 @@ namespace openloco::ui
         vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
     }
 
-    void window::viewport_zoom_set(int8_t zoomLevel, bool toCursor)
+    void Window::viewport_zoom_set(int8_t zoomLevel, bool toCursor)
     {
         viewport* v = this->viewports[0];
         viewport_config* vc = &this->viewport_configurations[0];
@@ -425,7 +425,7 @@ namespace openloco::ui
     }
 
     // 0x0045F015
-    void window::viewport_zoom_in(bool toCursor)
+    void Window::viewport_zoom_in(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
@@ -434,7 +434,7 @@ namespace openloco::ui
     }
 
     // 0x0045EFDB
-    void window::viewport_zoom_out(bool toCursor)
+    void Window::viewport_zoom_out(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
@@ -443,7 +443,7 @@ namespace openloco::ui
     }
 
     // 0x0045F04F
-    void window::viewport_rotate_right()
+    void Window::viewport_rotate_right()
     {
         registers regs;
         regs.esi = (uintptr_t)this;
@@ -451,14 +451,14 @@ namespace openloco::ui
     }
 
     // 0x0045F0ED
-    void window::viewport_rotate_left()
+    void Window::viewport_rotate_left()
     {
         registers regs;
         regs.esi = (uintptr_t)this;
         call(0x0045F0ED, regs);
     }
 
-    bool window::move(int16_t dx, int16_t dy)
+    bool Window::move(int16_t dx, int16_t dy)
     {
         if (dx == 0 && dy == 0)
         {
@@ -488,7 +488,7 @@ namespace openloco::ui
     }
 
     // 0x004C9513
-    widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
+    widget_index Window::find_widget_at(int16_t xPos, int16_t yPos)
     {
         this->call_prepare_draw();
 
@@ -530,14 +530,14 @@ namespace openloco::ui
         return activeWidget;
     }
 
-    void window::call_close()
+    void Window::call_close()
     {
         registers regs;
         regs.esi = (int32_t)this;
         call((uint32_t)this->event_handlers->on_close, regs);
     }
 
-    void window::call_update()
+    void Window::call_update()
     {
         if (event_handlers->on_update == nullptr)
             return;
@@ -553,7 +553,7 @@ namespace openloco::ui
         event_handlers->on_update(this);
     }
 
-    void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
+    void Window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
         registers regs;
         regs.ax = xPos;
@@ -563,7 +563,7 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_tool_down, regs);
     }
 
-    ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
+    ui::cursor_id Window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
     {
         registers regs;
         regs.ax = xPos;
@@ -578,7 +578,7 @@ namespace openloco::ui
         return (cursor_id)regs.edi;
     }
 
-    ui::cursor_id window::call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    ui::cursor_id Window::call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
         if (event_handlers->cursor == nullptr)
             return fallback;
@@ -605,7 +605,7 @@ namespace openloco::ui
         return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
     }
 
-    void window::callOnClickEvent(widget_index widgetIndex)
+    void Window::callOnClickEvent(widget_index widgetIndex)
     {
         if (event_handlers->onClick == nullptr)
             return;
@@ -626,16 +626,16 @@ namespace openloco::ui
         event_handlers->onClick(this, widgetIndex);
     }
 
-    ui::window* window::call_on_resize()
+    ui::Window* Window::call_on_resize()
     {
         registers regs;
         regs.esi = (uint32_t)this;
         call((uint32_t)this->event_handlers->on_resize, regs);
 
-        return (window*)regs.esi;
+        return (Window*)regs.esi;
     }
 
-    void window::call_3(int8_t widget_index)
+    void Window::call_3(int8_t widget_index)
     {
         registers regs;
         regs.edx = widget_index;
@@ -644,7 +644,7 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->event_03, regs);
     }
 
-    void window::call_on_mouse_down(ui::widget_index widget_index)
+    void Window::call_on_mouse_down(ui::widget_index widget_index)
     {
         if (event_handlers->on_mouse_down == nullptr)
             return;
@@ -662,7 +662,7 @@ namespace openloco::ui
         event_handlers->on_mouse_down(this, widget_index);
     }
 
-    void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
+    void Window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
     {
         if (event_handlers->on_dropdown == nullptr)
             return;
@@ -680,7 +680,7 @@ namespace openloco::ui
         event_handlers->on_dropdown(this, widget_index, item_index);
     }
 
-    void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    void Window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         if (event_handlers->get_scroll_size == nullptr)
             return;
@@ -699,7 +699,7 @@ namespace openloco::ui
         event_handlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
     }
 
-    void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    void Window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
         registers regs;
         regs.ax = scroll_index;
@@ -709,7 +709,7 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
     }
 
-    void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    void Window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
         registers regs;
         regs.ax = scroll_index;
@@ -719,14 +719,14 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
     }
 
-    void window::call_viewport_rotate()
+    void Window::call_viewport_rotate()
     {
         registers regs;
         regs.esi = (int32_t)this;
         call((int32_t)this->event_handlers->viewport_rotate, regs);
     }
 
-    void window::call_text_input(widget_index caller, char* buffer)
+    void Window::call_text_input(widget_index caller, char* buffer)
     {
         if (event_handlers->text_input == nullptr)
             return;
@@ -745,7 +745,7 @@ namespace openloco::ui
         this->event_handlers->text_input(this, caller, buffer);
     }
 
-    bool window::call_tooltip(int16_t widget_index)
+    bool Window::call_tooltip(int16_t widget_index)
     {
         if (event_handlers->tooltip == nullptr)
             return false;
@@ -763,7 +763,7 @@ namespace openloco::ui
         return true;
     }
 
-    void window::call_on_move(int16_t xPos, int16_t yPos)
+    void Window::call_on_move(int16_t xPos, int16_t yPos)
     {
         registers regs;
         regs.cx = xPos;
@@ -772,7 +772,7 @@ namespace openloco::ui
         call(this->event_handlers->on_move, regs);
     }
 
-    void window::call_prepare_draw()
+    void Window::call_prepare_draw()
     {
         if (event_handlers->prepare_draw == nullptr)
             return;
@@ -788,7 +788,7 @@ namespace openloco::ui
         event_handlers->prepare_draw(this);
     }
 
-    void window::call_draw(gfx::drawpixelinfo_t* dpi)
+    void Window::call_draw(gfx::drawpixelinfo_t* dpi)
     {
         if (event_handlers->draw == nullptr)
             return;
@@ -805,7 +805,7 @@ namespace openloco::ui
         event_handlers->draw(this, dpi);
     }
 
-    void window::call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    void Window::call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         if (event_handlers->draw_scroll == nullptr)
             return;
@@ -824,7 +824,7 @@ namespace openloco::ui
     }
 
     // 0x004CA4DF
-    void window::draw(gfx::drawpixelinfo_t* dpi)
+    void Window::draw(gfx::drawpixelinfo_t* dpi)
     {
         if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
         {

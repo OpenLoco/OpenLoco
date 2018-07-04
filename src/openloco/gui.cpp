@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "Window.h"
 #include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "objects/interface_skin_object.h"
@@ -7,7 +8,6 @@
 #include "tutorial.h"
 #include "ui.h"
 #include "viewportmgr.h"
-#include "window.h"
 #include "windowmgr.h"
 
 namespace ui = openloco::ui;

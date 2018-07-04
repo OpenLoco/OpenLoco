@@ -1,10 +1,10 @@
 #include "input.h"
+#include "Window.h"
 #include "audio/audio.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "ui.h"
 #include "ui/scrollview.h"
-#include "window.h"
 #include "windowmgr.h"
 
 #include <map>

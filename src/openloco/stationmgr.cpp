@@ -1,9 +1,9 @@
 #include "stationmgr.h"
+#include "Window.h"
 #include "companymgr.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "townmgr.h"
-#include "window.h"
 #include "windowmgr.h"
 
 using namespace openloco::interop;

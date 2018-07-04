@@ -20,13 +20,13 @@ namespace openloco::ui::windowmgr
 
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
     loco_global<uint32_t, 0x00523508> _523508;
-    loco_global<window[12], 0x011370AC> _windows;
-    loco_global<window*, 0x0113D754> _windows_end;
+    loco_global<Window[12], 0x011370AC> _windows;
+    loco_global<Window*, 0x0113D754> _windows_end;
 
     struct WindowList
     {
-        window* begin() const { return &_windows[0]; };
-        window* end() const { return _windows_end; };
+        Window* begin() const { return &_windows[0]; };
+        Window* end() const { return _windows_end; };
     };
 
     void register_hooks()
@@ -35,7 +35,7 @@ namespace openloco::ui::windowmgr
             0x0045EFDB,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::Window*)regs.esi;
                 window->viewport_zoom_out(false);
                 regs = backup;
                 return 0;
@@ -45,7 +45,7 @@ namespace openloco::ui::windowmgr
             0x0045F015,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::Window*)regs.esi;
                 window->viewport_zoom_in(false);
                 regs = backup;
                 return 0;
@@ -85,7 +85,7 @@ namespace openloco::ui::windowmgr
             0x004C5FC8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::Window*)regs.esi;
 
                 // Make a copy to prevent overwriting from nested calls
                 auto regs2 = regs;
@@ -93,7 +93,7 @@ namespace openloco::ui::windowmgr
                 draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                 window++;
 
-                while (window < addr<0x0113D754, ui::window*>())
+                while (window < addr<0x0113D754, ui::Window*>())
                 {
                     if ((window->flags & ui::window_flags::transparent) != 0)
                     {
@@ -150,7 +150,7 @@ namespace openloco::ui::windowmgr
         register_hook(
             0x004C9B56,
             [](registers& regs) -> uint8_t {
-                ui::window* w;
+                ui::Window* w;
                 if (regs.cx & find_flag::by_type)
                 {
                     w = find((ui::window_type)(regs.cx & ~find_flag::by_type));
@@ -211,7 +211,7 @@ namespace openloco::ui::windowmgr
             0x004CC6EA,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::Window*)regs.esi;
                 close(window);
                 regs = backup;
                 return 0;
@@ -252,7 +252,7 @@ namespace openloco::ui::windowmgr
             0x004CEE0B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                sub_4CEE0B((ui::window*)regs.esi);
+                sub_4CEE0B((ui::Window*)regs.esi);
                 regs = backup;
 
                 return 0;
