@@ -128,7 +128,7 @@ namespace openloco::windows::AboutMusicWindow
 
 namespace openloco::windows::MapWindow
 {
-    void centerOnViewpoint();;
+    void centerOnViewpoint();
 }
 
 namespace openloco::windows::OptionsWindow
