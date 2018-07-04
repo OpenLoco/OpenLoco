@@ -12,9 +12,8 @@
 
 namespace ui = openloco::ui;
 
-namespace windowmgr = openloco::ui::windowmgr;
-using window_type = openloco::ui::window_type;
 using namespace openloco::interop;
+using namespace openloco::ui;
 
 namespace openloco::gui
 {
@@ -30,7 +29,7 @@ namespace openloco::gui
         _mainWindowWidgets[0].bottom = uiHeight;
         _mainWindowWidgets[0].right = uiWidth;
         auto window = openloco::ui::windowmgr::create_window(
-            window_type::main,
+            WindowType::main,
             0,
             0,
             uiWidth,
@@ -62,7 +61,7 @@ namespace openloco::gui
         {
 
             window = openloco::ui::windowmgr::create_window(
-                window_type::toolbar_top,
+                WindowType::topToolbar,
                 0,
                 0,
                 uiWidth,
@@ -83,7 +82,7 @@ namespace openloco::gui
             }
 
             window = openloco::ui::windowmgr::create_window(
-                window_type::toolbar_player_info,
+                WindowType::playerInfoToolbar,
                 0,
                 uiHeight - 27,
                 140,
@@ -102,7 +101,7 @@ namespace openloco::gui
             }
 
             window = openloco::ui::windowmgr::create_window(
-                window_type::toolbar_time,
+                WindowType::timeToolbar,
                 uiWidth - 140,
                 uiHeight - 27,
                 140,
@@ -125,7 +124,7 @@ namespace openloco::gui
             {
 
                 window = openloco::ui::windowmgr::create_window(
-                    window_type::tutorial,
+                    WindowType::tutorial,
                     140,
                     uiHeight - 27,
                     uiWidth - 280,
@@ -171,52 +170,52 @@ namespace openloco::gui
             window->viewports[0]->view_height = uiHeight << window->viewports[0]->zoom;
         }
 
-        window = windowmgr::find(window_type::toolbar_top);
+        window = windowmgr::find(WindowType::topToolbar);
         if (window)
         {
             window->width = std::max(uiWidth, 640);
         }
 
-        window = windowmgr::find(window_type::toolbar_player_info);
+        window = windowmgr::find(WindowType::playerInfoToolbar);
         if (window)
         {
             window->y = uiHeight - 27;
         }
 
-        window = windowmgr::find(window_type::toolbar_time);
+        window = windowmgr::find(WindowType::timeToolbar);
         if (window)
         {
             window->y = uiHeight - 27;
             window->x = std::max(uiWidth, 640) - 140;
         }
 
-        window = windowmgr::find(window_type::title_menu);
+        window = windowmgr::find(WindowType::titleMenu);
         if (window)
         {
             window->x = uiWidth / 2 - 148;
             window->y = uiHeight - 117;
         }
 
-        window = windowmgr::find(window_type::title_exit);
+        window = windowmgr::find(WindowType::titleExit);
         if (window)
         {
             window->x = uiWidth - 40;
             window->y = uiHeight - 28;
         }
 
-        window = windowmgr::find(window_type::openloco_version);
+        window = windowmgr::find(WindowType::titleVersion);
         if (window)
         {
             window->y = uiHeight - window->height;
         }
 
-        window = windowmgr::find(window_type::title_options);
+        window = windowmgr::find(WindowType::titleOptions);
         if (window)
         {
             window->x = uiWidth - window->width;
         }
 
-        window = windowmgr::find(window_type::tutorial);
+        window = windowmgr::find(WindowType::tutorial);
         if (window)
         {
             if (tutorial::state() == tutorial::tutorial_state::none)

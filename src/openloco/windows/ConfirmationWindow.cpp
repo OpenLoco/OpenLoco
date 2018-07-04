@@ -36,7 +36,7 @@ namespace openloco::ui::windows
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
 
-        auto window = windowmgr::create_window_centred(window_type::prompt_ok_cancel, 280, 92, ui::window_flags::flag_12 | ui::window_flags::stick_to_front, (ui::window_event_list*)0x004FB37C);
+        auto window = windowmgr::create_window_centred(WindowType::confirmation, 280, 92, ui::window_flags::flag_12 | ui::window_flags::stick_to_front, (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AE00;
@@ -48,7 +48,7 @@ namespace openloco::ui::windows
             _result = 0;
 
             auto originalModal = windowmgr::current_modal_type();
-            windowmgr::current_modal_type(window_type::prompt_ok_cancel);
+            windowmgr::current_modal_type(WindowType::confirmation);
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
@@ -58,7 +58,7 @@ namespace openloco::ui::windows
                     windowmgr::update();
                     call(0x004C98CF);
                     call(0x004CF63B);
-                    return windowmgr::find(window_type::prompt_ok_cancel) != nullptr;
+                    return windowmgr::find(WindowType::confirmation) != nullptr;
                 });
             windowmgr::current_modal_type(originalModal);
             return _result != 0;

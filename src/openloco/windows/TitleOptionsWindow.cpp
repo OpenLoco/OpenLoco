@@ -38,7 +38,7 @@ namespace openloco::ui::title_options
         _events.draw = draw;
 
         auto window = windowmgr::create_window(
-            window_type::title_options,
+            WindowType::titleOptions,
             ui::width() - window_size.width,
             0,
             window_size.width,

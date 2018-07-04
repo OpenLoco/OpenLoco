@@ -153,11 +153,11 @@ namespace openloco::ui::windowmgr
                 ui::Window* w;
                 if (regs.cx & find_flag::by_type)
                 {
-                    w = find((ui::window_type)(regs.cx & ~find_flag::by_type));
+                    w = find((ui::WindowType)(regs.cx & ~find_flag::by_type));
                 }
                 else
                 {
-                    w = find((ui::window_type)regs.cx, regs.dx);
+                    w = find((ui::WindowType)regs.cx, regs.dx);
                 }
 
                 regs.esi = (uintptr_t)w;
@@ -175,15 +175,15 @@ namespace openloco::ui::windowmgr
                 registers backup = regs;
                 if (regs.al < 0)
                 {
-                    invalidate_widget((ui::window_type)(regs.al & 0x7F), regs.bx, regs.ah);
+                    invalidate_widget((ui::WindowType)(regs.al & 0x7F), regs.bx, regs.ah);
                 }
                 else if ((regs.al & 1 << 6) != 0)
                 {
-                    invalidate((ui::window_type)(regs.al & 0xBF));
+                    invalidate((ui::WindowType)(regs.al & 0xBF));
                 }
                 else
                 {
-                    invalidate((ui::window_type)regs.al, regs.bx);
+                    invalidate((ui::WindowType)regs.al, regs.bx);
                 }
                 regs = backup;
 
@@ -196,11 +196,11 @@ namespace openloco::ui::windowmgr
                 registers backup = regs;
                 if ((regs.cx & find_flag::by_type) != 0)
                 {
-                    close((ui::window_type)(regs.cx & ~find_flag::by_type));
+                    close((ui::WindowType)(regs.cx & ~find_flag::by_type));
                 }
                 else
                 {
-                    close((ui::window_type)regs.cx, regs.dx);
+                    close((ui::WindowType)regs.cx, regs.dx);
                 }
                 regs = backup;
 
@@ -269,12 +269,12 @@ namespace openloco::ui::windowmgr
         return ((uintptr_t)*_windows_end - (uintptr_t)_windows.get()) / sizeof(Window);
     }
 
-    window_type current_modal_type()
+    WindowType current_modal_type()
     {
-        return (window_type)*_current_modal_type;
+        return (WindowType)*_current_modal_type;
     }
 
-    void current_modal_type(window_type type)
+    void current_modal_type(WindowType type)
     {
         _current_modal_type = (uint8_t)type;
     }
@@ -288,11 +288,11 @@ namespace openloco::ui::windowmgr
     // 0x004CE438
     Window* get_main()
     {
-        return find(window_type::main);
+        return find(WindowType::main);
     }
 
     // 0x004C9B56
-    Window* find(window_type type)
+    Window* find(WindowType type)
     {
         for (Window& w : WindowList())
         {
@@ -306,7 +306,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004C9B56
-    Window* find(window_type type, window_number number)
+    Window* find(WindowType type, window_number number)
     {
         for (Window& w : WindowList())
         {
@@ -400,7 +400,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CB966
-    void invalidate(window_type type)
+    void invalidate(WindowType type)
     {
         for (Window& w : WindowList())
         {
@@ -412,7 +412,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CB966
-    void invalidate(window_type type, window_number number)
+    void invalidate(WindowType type, window_number number)
     {
         for (Window& w : WindowList())
         {
@@ -427,7 +427,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CB966
-    void invalidate_widget(window_type type, window_number number, uint8_t widget_index)
+    void invalidate_widget(WindowType type, window_number number, uint8_t widget_index)
     {
         for (Window& w : WindowList())
         {
@@ -469,7 +469,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CC692
-    void close(window_type type)
+    void close(WindowType type)
     {
         bool repeat = true;
         while (repeat)
@@ -488,7 +488,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CC692
-    void close(window_type type, window_number id)
+    void close(WindowType type, window_number id)
     {
         auto window = find(type, id);
         if (window != nullptr)
@@ -508,7 +508,7 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CD3A9
-    Window* bring_to_front(window_type type, uint16_t id)
+    Window* bring_to_front(WindowType type, uint16_t id)
     {
         registers regs;
         regs.cx = (uint8_t)type;
@@ -520,7 +520,7 @@ namespace openloco::ui::windowmgr
 
     // 0x004C9F5D
     Window* create_window(
-        window_type type,
+        WindowType type,
         int32_t x,
         int32_t y,
         int32_t width,
@@ -537,7 +537,7 @@ namespace openloco::ui::windowmgr
         return (Window*)regs.esi;
     }
 
-    Window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events)
+    Window* create_window_centred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events)
     {
         auto x = (ui::width() / 2) - (width / 2);
         auto y = std::max(28, (ui::height() / 2) - (height / 2));
@@ -592,7 +592,7 @@ namespace openloco::ui::windowmgr
                 return;
         }
 
-        if (is_unknown_4_mode() && w->type != window_type::wt_47)
+        if (is_unknown_4_mode() && w->type != WindowType::wt_47)
         {
             return;
         }
@@ -788,7 +788,7 @@ namespace openloco::ui::windowmgr
     {
         for (Window& w : WindowList())
         {
-            if (w.type != window_type::vehicle)
+            if (w.type != WindowType::vehicle)
                 continue;
 
             if (w.number != number)
@@ -804,7 +804,7 @@ namespace openloco::ui::windowmgr
     // 0x004BF089
     void close_topmost()
     {
-        close(window_type::dropdown, 0);
+        close(WindowType::dropdown, 0);
 
         for (Window& w : WindowList())
         {
@@ -951,7 +951,7 @@ namespace openloco::ui::windowmgr
 
         if (window != nullptr)
         {
-            if (window->type == window_type::main)
+            if (window->type == WindowType::main)
             {
                 if (openloco::is_title_mode())
                     return;

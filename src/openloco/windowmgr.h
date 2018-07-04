@@ -7,65 +7,65 @@
 
 namespace openloco::ui
 {
-    enum class window_type : uint8_t
+    enum class WindowType : uint8_t
     {
         main = 0,
-        toolbar_top = 1,
-        toolbar_player_info = 2,
-        toolbar_time = 3,
+        topToolbar = 1,
+        playerInfoToolbar = 2,
+        timeToolbar = 3,
 
         tooltip = 6,
         dropdown = 7,
 
         about = 9,
         // The Atari credits window is no longer used
-        about_atari = 10,
-        about_music = 11,
+        aboutAtari = 10,
+        aboutMusic = 11,
         error = 12,
         construction = 13,
-        prompt_save_game = 14,
+        saveGamePrompt = 14,
         terraform = 15,
-        title_menu = 16,
-        title_exit = 17,
-        scenario_select = 18,
-        keyboard_shortcuts = 19,
-        keyboard_shortcuts_edit = 20,
+        titleMenu = 16,
+        titleExit = 17,
+        scenarioSelect = 18,
+        keyboardShortcuts = 19,
+        editKeyboardShortcut = 20,
         map = 21,
-        title_logo = 22,
+        titleLogo = 22,
         vehicle = 23,
         station = 24,
 
         company = 26,
-        vehicle_list = 27,
-        build_vehicle = 28,
-        station_list = 29,
+        vehicleList = 27,
+        buildVehicle = 28,
+        stationList = 29,
 
-        object_selection = 31,
-        town_list = 32,
+        objectSelection = 31,
+        townList = 32,
         town = 33,
         industry = 34,
-        industry_list = 35,
+        industryList = 35,
 
         messages = 37,
 
         multiplayer = 39,
         options = 40,
-        music_selection = 41,
-        company_face_selection = 42,
-        landscape_generation = 43,
+        musicSelection = 41,
+        companyFaceSelection = 42,
+        landscapeGeneration = 43,
 
-        scenario_options = 45,
+        scenarioOptions = 45,
 
         wt_47 = 47,
-        company_list = 48,
+        companyList = 48,
         tutorial = 49,
-        prompt_confirm_display_mode = 50,
-        text_input = 51,
-        prompt_browse = 52,
+        confirmDisplayModePrompt = 50,
+        textInput = 51,
+        fileBrowser = 52,
 
-        prompt_ok_cancel = 54,
-        openloco_version = 55,
-        title_options = 56,
+        confirmation = 54,
+        titleVersion = 55,
+        titleOptions = 56,
 
         undefined = 255
     };
@@ -74,28 +74,28 @@ namespace openloco::ui
 namespace openloco::ui::windowmgr
 {
     void register_hooks();
-    window_type current_modal_type();
-    void current_modal_type(window_type type);
+    WindowType current_modal_type();
+    void current_modal_type(WindowType type);
     Window* get(size_t index);
     size_t num_windows();
 
     void update();
     Window* get_main();
-    Window* find(window_type type);
-    Window* find(window_type type, window_number number);
+    Window* find(WindowType type);
+    Window* find(WindowType type, window_number number);
     Window* find_at(int16_t x, int16_t y);
     Window* find_at_alt(int16_t x, int16_t y);
     Window* bring_to_front(Window* window);
-    Window* bring_to_front(window_type type, uint16_t id);
-    void invalidate(window_type type);
-    void invalidate(window_type type, window_number number);
-    void invalidate_widget(window_type type, window_number number, uint8_t widget_index);
+    Window* bring_to_front(WindowType type, uint16_t id);
+    void invalidate(WindowType type);
+    void invalidate(WindowType type, window_number number);
+    void invalidate_widget(WindowType type, window_number number, uint8_t widget_index);
     void invalidate_all_windows_after_input();
-    void close(window_type type);
-    void close(window_type type, uint16_t id);
+    void close(WindowType type);
+    void close(WindowType type, uint16_t id);
     void close(Window* window);
-    Window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
-    Window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
+    Window* create_window(WindowType type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
+    Window* create_window_centred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
     void draw_single(gfx::drawpixelinfo_t* dpi, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
     void call_event_viewport_rotate_on_all_windows();
@@ -154,7 +154,7 @@ namespace openloco::ui::textinput
     void register_hooks();
 
     void open_textinput(ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
-    void sub_4CE6C9(window_type type, window_number number);
+    void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);
     void sub_4CE6FF();

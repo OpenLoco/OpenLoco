@@ -22,7 +22,7 @@ namespace openloco::ui::windows
         auto width = 512;
         auto height = 16;
         auto window = openloco::ui::windowmgr::create_window(
-            window_type::openloco_version,
+            WindowType::titleVersion,
             8,
             ui::height() - height,
             width,

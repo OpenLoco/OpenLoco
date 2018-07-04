@@ -55,7 +55,7 @@ namespace openloco::stationmgr
 
     static void sub_49E1F1(station_id_t id)
     {
-        auto w = windowmgr::find(window_type::construction);
+        auto w = windowmgr::find(WindowType::construction);
         if (w != nullptr && w->var_870 == 1)
         {
             if ((addr<0x00522096, uint8_t>() & 8) && addr<0x01135F70, int32_t>() == id)

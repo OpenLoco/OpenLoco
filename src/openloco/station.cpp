@@ -152,7 +152,7 @@ namespace openloco
 
         sub_4929DB();
 
-        auto w = windowmgr::find(window_type::station, id());
+        auto w = windowmgr::find(WindowType::station, id());
         if (w != nullptr && (w->var_870 == 2 || w->var_870 == 1 || quantityUpdated))
         {
             w->invalidate();
@@ -250,6 +250,6 @@ namespace openloco
 
     void station::invalidate_window()
     {
-        windowmgr::invalidate(window_type::station, id());
+        windowmgr::invalidate(WindowType::station, id());
     }
 }

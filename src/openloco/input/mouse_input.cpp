@@ -49,17 +49,17 @@ namespace openloco::input
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
-    static loco_global<ui::window_type, 0x0052336F> _pressedWindowType;
+    static loco_global<ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint16_t, 0x00523378> _dragLastX;
     static loco_global<uint16_t, 0x0052337A> _dragLastY;
     static loco_global<ui::window_number, 0x0052337C> _dragWindowNumber;
-    static loco_global<ui::window_type, 0x0052337E> _dragWindowType;
+    static loco_global<ui::WindowType, 0x0052337E> _dragWindowType;
     static loco_global<uint8_t, 0x0052337F> _dragWidgetIndex;
     static loco_global<uint8_t, 0x00523380> _dragScrollIndex;
-    static loco_global<ui::window_type, 0x00523381> _tooltipWindowType;
+    static loco_global<ui::WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<int16_t, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
     static loco_global<uint16_t, 0x00523386> _tooltipCursorX;
@@ -68,7 +68,7 @@ namespace openloco::input
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
-    static loco_global<ui::window_type, 0x00523392> _toolWindowType;
+    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
@@ -77,13 +77,13 @@ namespace openloco::input
 
     static loco_global<int16_t, 0x005233A4> _5233A4;
     static loco_global<int16_t, 0x005233A6> _5233A6;
-    static loco_global<ui::window_type, 0x005233A8> _hoverWindowType;
+    static loco_global<ui::WindowType, 0x005233A8> _hoverWindowType;
     static uint8_t _5233A9;
     static loco_global<ui::window_number, 0x005233AA> _hoverWindowNumber;
     static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
-    static loco_global<ui::window_type, 0x005233B6> _modalWindowType;
+    static loco_global<ui::WindowType, 0x005233B6> _modalWindowType;
 
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
@@ -116,12 +116,12 @@ namespace openloco::input
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
     };
 
-    bool is_hovering(ui::window_type type)
+    bool is_hovering(ui::WindowType type)
     {
         return *_hoverWindowType == type;
     }
 
-    bool is_hovering(ui::window_type type, ui::window_number number)
+    bool is_hovering(ui::WindowType type, ui::window_number number)
     {
         return (*_hoverWindowType == type) && (_hoverWindowNumber == number);
     }
@@ -146,7 +146,7 @@ namespace openloco::input
             widgetIndex = window->find_widget_at(x, y);
         }
 
-        if (*_modalWindowType != ui::window_type::undefined)
+        if (*_modalWindowType != ui::WindowType::undefined)
         {
             if (window != nullptr)
             {
@@ -187,7 +187,7 @@ namespace openloco::input
                 _tooltipCursorX = x;
                 _tooltipCursorY = y;
                 _tooltipTimeout = 0;
-                _tooltipWindowType = ui::window_type::undefined;
+                _tooltipWindowType = ui::WindowType::undefined;
                 state(input_state::normal);
                 reset_flag(input_flags::flag4);
                 state_normal(button, x, y, window, widget, widgetIndex);
@@ -411,7 +411,7 @@ namespace openloco::input
         if (window == nullptr)
             return;
 
-        windowmgr::close(ui::window_type::dropdown, 0);
+        windowmgr::close(ui::WindowType::dropdown, 0);
         window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
 
         bool flagSet = has_flag(input_flags::widget_pressed);
@@ -427,7 +427,7 @@ namespace openloco::input
         _tooltipWindowType = _pressedWindowType;
         _tooltipWindowNumber = _pressedWindowNumber;
 
-        if (*_modalWindowType == ui::window_type::undefined || *_modalWindowType == window->type)
+        if (*_modalWindowType == ui::WindowType::undefined || *_modalWindowType == window->type)
         {
             window->call_on_dropdown(_pressedWidgetIndex, item);
         }
@@ -513,16 +513,16 @@ namespace openloco::input
             {
                 if (widgetIndex == -1 || *_pressedWindowType != window->type || _pressedWindowNumber != window->number || _pressedWidgetIndex != widgetIndex)
                 {
-                    if (widgetIndex == -1 || window->type != ui::window_type::dropdown)
+                    if (widgetIndex == -1 || window->type != ui::WindowType::dropdown)
                     {
-                        windowmgr::close(ui::window_type::dropdown, 0);
+                        windowmgr::close(ui::WindowType::dropdown, 0);
 
-                        if (*_pressedWindowType != ui::window_type::undefined)
+                        if (*_pressedWindowType != ui::WindowType::undefined)
                         {
                             windowmgr::invalidate_widget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
                         }
 
-                        _pressedWindowType = ui::window_type::undefined;
+                        _pressedWindowType = ui::WindowType::undefined;
                         input::reset_flag(input_flags::widget_pressed);
                         input::state(input_state::reset);
                         return;
@@ -606,7 +606,7 @@ namespace openloco::input
             {
                 if (window != nullptr)
                 {
-                    if (window->type == ui::window_type::dropdown)
+                    if (window->type == ui::WindowType::dropdown)
                     {
                         auto item = dropdown_index_from_point(window, x, y);
                         if (item != DROPDOWN_ITEM_UNDEFINED)
@@ -634,7 +634,7 @@ namespace openloco::input
                 }
 
                 // 0x4C7DA0
-                windowmgr::close(ui::window_type::dropdown, 0);
+                windowmgr::close(ui::WindowType::dropdown, 0);
                 window = windowmgr::find(_pressedWindowType, _pressedWindowNumber);
             }
 
@@ -670,13 +670,13 @@ namespace openloco::input
 
         if (input::state() == input_state::dropdown_active)
         {
-            if (window != nullptr && window->type == ui::window_type::dropdown)
+            if (window != nullptr && window->type == ui::WindowType::dropdown)
             {
                 auto item = dropdown_index_from_point(window, x, y);
                 if (item != DROPDOWN_ITEM_UNDEFINED)
                 {
                     _dropdownHighlightedIndex = item;
-                    windowmgr::invalidate(ui::window_type::dropdown, 0);
+                    windowmgr::invalidate(ui::WindowType::dropdown, 0);
                 }
             }
         }
@@ -705,7 +705,7 @@ namespace openloco::input
     // 0x004C8098
     static void state_normal_hover(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
-        ui::window_type windowType = ui::window_type::undefined;
+        ui::WindowType windowType = ui::WindowType::undefined;
         ui::window_number windowNumber = 0;
 
         if (window != nullptr)
@@ -751,7 +751,7 @@ namespace openloco::input
                 else
                 {
                     tooltipStringId = scroll_widget_tooltips[scrollArea];
-                    if (*_tooltipWindowType != ui::window_type::undefined)
+                    if (*_tooltipWindowType != ui::WindowType::undefined)
                     {
                         if (tooltipStringId != _currentTooltipStringId)
                         {
@@ -762,14 +762,14 @@ namespace openloco::input
             }
         }
 
-        if (*_tooltipWindowType != ui::window_type::undefined)
+        if (*_tooltipWindowType != ui::WindowType::undefined)
         {
             if (*_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
                 _tooltipTimeout += time_since_last_tick;
                 if (_tooltipTimeout >= 8000)
                 {
-                    windowmgr::close(ui::window_type::tooltip);
+                    windowmgr::close(ui::WindowType::tooltip);
                 }
             }
             else
@@ -812,7 +812,7 @@ namespace openloco::input
     // 0x004C84BE
     static void state_normal_left(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
-        ui::window_type windowType = ui::window_type::undefined;
+        ui::WindowType windowType = ui::WindowType::undefined;
         ui::window_number windowNumber = 0;
 
         if (window != nullptr)
@@ -821,8 +821,8 @@ namespace openloco::input
             windowNumber = window->number;
         }
 
-        windowmgr::close(ui::window_type::error);
-        windowmgr::close(ui::window_type::tooltip);
+        windowmgr::close(ui::WindowType::error);
+        windowmgr::close(ui::WindowType::tooltip);
 
         // Window might have changed position in the list, therefore find it again
         window = windowmgr::find(windowType, windowNumber);
@@ -909,7 +909,7 @@ namespace openloco::input
     // 0x004C834A
     static void state_normal_right(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
-        ui::window_type windowType = ui::window_type::undefined;
+        ui::WindowType windowType = ui::WindowType::undefined;
         ui::window_number windowNumber = 0;
 
         if (window != nullptr)
@@ -918,7 +918,7 @@ namespace openloco::input
             windowNumber = window->number;
         }
 
-        windowmgr::close(ui::window_type::tooltip);
+        windowmgr::close(ui::WindowType::tooltip);
 
         // Window might have changed position in the list, therefore find it again
         window = windowmgr::find(windowType, windowNumber);
@@ -934,7 +934,7 @@ namespace openloco::input
             return;
         }
 
-        if (*_modalWindowType != ui::window_type::undefined)
+        if (*_modalWindowType != ui::WindowType::undefined)
         {
             if (*_modalWindowType == window->type)
             {
@@ -1110,11 +1110,11 @@ namespace openloco::input
 
     static void widget_over_flatbutton_invalidate()
     {
-        ui::window_type windowType = _hoverWindowType;
+        ui::WindowType windowType = _hoverWindowType;
         uint16_t widgetIdx = _hoverWidgetIdx;
         uint16_t windowNumber = _hoverWindowNumber;
 
-        if (windowType == ui::window_type::undefined)
+        if (windowType == ui::WindowType::undefined)
         {
             windowmgr::invalidate_widget(windowType, windowNumber, widgetIdx);
             return;

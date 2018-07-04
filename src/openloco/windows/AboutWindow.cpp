@@ -42,14 +42,14 @@ namespace openloco::windows::AboutWindow
     // 0x0043B26C
     void open()
     {
-        if (windowmgr::bring_to_front(window_type::about, 0) != nullptr)
+        if (windowmgr::bring_to_front(WindowType::about, 0) != nullptr)
             return;
 
         _events.onClick = onClick;
         _events.draw = draw;
 
         auto window = windowmgr::create_window_centred(
-            window_type::about,
+            WindowType::about,
             ww,
             wh,
             0,

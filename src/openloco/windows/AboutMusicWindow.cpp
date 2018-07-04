@@ -49,7 +49,7 @@ namespace openloco::windows::AboutMusicWindow
     // 0x0043B4AF
     void open()
     {
-        if (windowmgr::bring_to_front(window_type::about_music, 0) != nullptr)
+        if (windowmgr::bring_to_front(WindowType::aboutMusic, 0) != nullptr)
             return;
 
         _events.onClick = onClick;
@@ -59,7 +59,7 @@ namespace openloco::windows::AboutMusicWindow
         _events.draw_scroll = drawScroll;
 
         auto window = windowmgr::create_window_centred(
-            window_type::about_music,
+            WindowType::aboutMusic,
             ww,
             wh,
             0,

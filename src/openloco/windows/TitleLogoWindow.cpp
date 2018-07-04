@@ -35,7 +35,7 @@ namespace openloco::ui::windows
         _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
-            window_type::title_logo,
+            WindowType::titleLogo,
             0,
             0,
             window_size.width,
