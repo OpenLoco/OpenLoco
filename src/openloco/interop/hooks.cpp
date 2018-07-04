@@ -695,7 +695,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x00498E9B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::ui::windows::sub_498E9B((openloco::ui::Window*)regs.esi);
+            windows::TownWindow::sub_498E9B((openloco::ui::Window*)regs.esi);
             return 0;
         });
 

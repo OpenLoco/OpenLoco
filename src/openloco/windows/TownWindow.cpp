@@ -3,13 +3,14 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TownWindow
 {
     // 0x00498E9B
     void sub_498E9B(Window* w)
     {
-        w->enabled_widgets |= (1 << 1);
+        w->enableWidgets(1);
 #ifdef _DISABLE_TOWN_RENAME_
         if (is_editor_mode())
         {
@@ -21,7 +22,7 @@ namespace openloco::ui::windows
     // 0x00499B7E
     // dx: townId
     // esi: {return}
-    Window* open_town_window(uint16_t townId)
+    Window* open(town_id_t townId)
     {
         registers regs;
         regs.dx = townId;

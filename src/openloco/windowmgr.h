@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
+#include "town.h"
 #include <cstddef>
 
 namespace openloco::ui
@@ -111,13 +112,11 @@ namespace openloco::ui::windows
 
     void construction_mouse_up(Window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(Window& w, gfx::drawpixelinfo_t& dpi);
-    Window* open_town_window(uint16_t townId);
     Window* open_title_version();
     Window* open_title_exit();
     Window* open_title_menu();
     Window* open_title_logo();
     void open_about_window();
-    void sub_498E9B(Window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
     void map_center_on_view_point();
@@ -170,4 +169,10 @@ namespace openloco::ui::tooltip
     void register_hooks();
     void open(ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+}
+
+namespace openloco::windows::TownWindow
+{
+    ui::Window* open(town_id_t townId);
+    void sub_498E9B(ui::Window* w);
 }
