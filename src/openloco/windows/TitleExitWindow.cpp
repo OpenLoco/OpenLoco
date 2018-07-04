@@ -9,8 +9,9 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TitleExitWindow
 {
     static const gfx::ui_size_t window_size = { 40, 28 };
 
@@ -29,12 +30,12 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void on_mouse_up(Window* window, widget_index widgetIndex);
+    static void onClick(Window* window, widget_index widgetIndex);
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
-    Window* open_title_exit()
+    Window* open()
     {
-        _events.onClick = on_mouse_up;
+        _events.onClick = onClick;
         _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
@@ -47,7 +48,7 @@ namespace openloco::ui::windows
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::exit_button);
+        window->setEnabledWidgets(widx::exit_button);
 
         window->initScrollWidgets();
 
@@ -70,7 +71,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00439268
-    static void on_mouse_up(Window* window, widget_index widgetIndex)
+    static void onClick(Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {

@@ -51,11 +51,11 @@ namespace openloco::gui
 
         if (openloco::is_title_mode())
         {
-            ui::windows::open_title_menu();
-            ui::windows::open_title_exit();
-            ui::windows::open_title_logo();
-            ui::windows::open_title_version();
-            ui::title_options::open();
+            windows::TitleMenuWindow::open();
+            windows::TitleExitWindow::open();
+            windows::TitleLogoWindow::open();
+            windows::TitleVersionWindow::open();
+            windows::TitleOptionsWindow::open();
         }
         else
         {

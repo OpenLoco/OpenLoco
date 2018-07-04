@@ -11,8 +11,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-    static loco_global<uint8_t[256], 0x001136BA4> byte_1136BA4;
-
     static station_id_t get_station_id(const Window& w)
     {
         return w.number;
@@ -39,7 +37,7 @@ namespace openloco::ui::windows
     // 0x0048ED2F
     void station_2_scroll_paint(Window& w, gfx::drawpixelinfo_t& dpi)
     {
-        auto paletteId = byte_1136BA4[w.colours[1] * 8];
+        auto paletteId = colour::get_shade(w.colours[1], 4);
         gfx::clear_single(dpi, paletteId);
 
         const auto& station = get_station(w);

@@ -10,6 +10,7 @@
 #include <algorithm>
 
 using namespace openloco::interop;
+using namespace openloco::windows;
 
 namespace openloco::ui::windowmgr
 {
@@ -939,7 +940,7 @@ namespace openloco::ui::windowmgr
                 }
                 sub_49771C();
                 sub_48DDC3();
-                windows::map_center_on_view_point();
+                MapWindow::centerOnViewpoint();
             }
 
             return;

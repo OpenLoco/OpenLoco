@@ -112,14 +112,8 @@ namespace openloco::ui::windows
 
     void construction_mouse_up(Window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(Window& w, gfx::drawpixelinfo_t& dpi);
-    Window* open_title_version();
-    Window* open_title_exit();
-    Window* open_title_menu();
-    Window* open_title_logo();
-    void open_about_window();
 
     bool prompt_ok_cancel(string_id okButtonStringId);
-    void map_center_on_view_point();
 }
 
 namespace openloco::windows::AboutWindow
@@ -132,7 +126,12 @@ namespace openloco::windows::AboutMusicWindow
     void open();
 }
 
-namespace openloco::ui::options
+namespace openloco::windows::MapWindow
+{
+    void centerOnViewpoint();;
+}
+
+namespace openloco::windows::OptionsWindow
 {
     void open();
 }
@@ -159,9 +158,29 @@ namespace openloco::ui::textinput
     void sub_4CE6FF();
 }
 
-namespace openloco::ui::title_options
+namespace openloco::windows::TitleExitWindow
 {
-    Window* open();
+    ui::Window* open();
+}
+
+namespace openloco::windows::TitleLogoWindow
+{
+    ui::Window* open();
+}
+
+namespace openloco::windows::TitleMenuWindow
+{
+    ui::Window* open();
+}
+
+namespace openloco::windows::TitleOptionsWindow
+{
+    ui::Window* open();
+}
+
+namespace openloco::windows::TitleVersionWindow
+{
+    ui::Window* open();
 }
 
 namespace openloco::ui::tooltip

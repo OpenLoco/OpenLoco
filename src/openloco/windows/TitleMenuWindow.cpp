@@ -14,8 +14,9 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TitleMenuWindow
 {
     static const uint16_t btn_main_size = 74;
     static const uint16_t btn_sub_height = 18;
@@ -127,7 +128,7 @@ namespace openloco::ui::windows
     static void sub_439102();
     static void sub_46E328();
 
-    static void on_mouse_up(ui::Window* window, widget_index widgetIndex);
+    static void onClick(ui::Window *window, widget_index widgetIndex);
     static void on_mouse_down(ui::Window* window, widget_index widgetIndex);
     static void on_dropdown(ui::Window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_update(Window* window);
@@ -138,9 +139,9 @@ namespace openloco::ui::windows
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
 
-    ui::Window* open_title_menu()
+    ui::Window* open()
     {
-        _events.onClick = on_mouse_up;
+        _events.onClick = onClick;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
         _events.text_input = on_text_input;
@@ -295,7 +296,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00439094
-    static void on_mouse_up(ui::Window* window, widget_index widgetIndex)
+    static void onClick(ui::Window *window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {

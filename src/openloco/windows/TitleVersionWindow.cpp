@@ -6,18 +6,19 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TitleVersionWindow
 {
     static widget_t widgets[] = {
-        { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }
+        widget_end()
     };
 
     static ui::window_event_list _events;
 
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
-    Window* open_title_version()
+    Window* open()
     {
         auto width = 512;
         auto height = 16;
@@ -27,11 +28,10 @@ namespace openloco::ui::windows
             ui::height() - height,
             width,
             height,
-            WindowFlags::stickToFront | WindowFlags::transparent |  WindowFlags::noBackground |  WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
         window->widgets = widgets;
 
-        _events.prepare_draw = (void (*)(ui::Window*))0x0042A035;
         _events.draw = draw;
 
         return window;

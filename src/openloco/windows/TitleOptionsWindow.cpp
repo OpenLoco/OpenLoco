@@ -9,8 +9,9 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::title_options
+namespace openloco::windows::TitleOptionsWindow
 {
     static const gfx::ui_size_t window_size = { 60, 15 };
 
@@ -29,12 +30,12 @@ namespace openloco::ui::title_options
 
     static window_event_list _events;
 
-    static void on_mouse_up(Window* window, widget_index widgetIndex);
+    static void onClick(Window *window, widget_index widgetIndex);
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
     Window* open()
     {
-        _events.onClick = on_mouse_up;
+        _events.onClick = onClick;
         _events.draw = draw;
 
         auto window = windowmgr::create_window(
@@ -69,7 +70,7 @@ namespace openloco::ui::title_options
         gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
-    static void on_mouse_up(Window* window, widget_index widgetIndex)
+    static void onClick(Window *window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
@@ -79,7 +80,7 @@ namespace openloco::ui::title_options
         switch (widgetIndex)
         {
             case widx::options_button:
-                ui::options::open();
+                OptionsWindow::open();
                 break;
         }
     }

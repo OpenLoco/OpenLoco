@@ -5,9 +5,9 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
-using namespace openloco::windows;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TitleLogoWindow
 {
     static const gfx::ui_size_t window_size = { 298, 170 };
 
@@ -26,12 +26,12 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void on_mouse_up(Window* window, widget_index widgetIndex);
+    static void onClick(Window *window, widget_index widgetIndex);
     static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
 
-    ui::Window* open_title_logo()
+    ui::Window* open()
     {
-        _events.onClick = on_mouse_up;
+        _events.onClick = onClick;
         _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
@@ -44,7 +44,7 @@ namespace openloco::ui::windows
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::logo;
+        window->setEnabledWidgets( widx::logo);
 
         window->initScrollWidgets();
 
@@ -61,7 +61,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004392AD
-    static void on_mouse_up(Window* window, widget_index widgetIndex)
+    static void onClick(Window *window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
