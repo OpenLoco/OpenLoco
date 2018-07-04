@@ -95,7 +95,7 @@ namespace openloco::ui::windowmgr
     void close(window_type type, uint16_t id);
     void close(Window* window);
     Window* create_window(window_type type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
-    Window* create_window(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list *events);
+    Window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
     void draw_single(gfx::drawpixelinfo_t* dpi, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
     void call_event_viewport_rotate_on_all_windows();

@@ -15,24 +15,24 @@ using namespace openloco::ui;
 
 namespace openloco::input
 {
-    static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_normal_left(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_normal_right(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
-    static void state_positioning_window(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_normal(mouse_button state, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_normal_hover(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_normal_left(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_normal_right(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_positioning_window(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
 
-    static void window_position_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index);
+    static void window_position_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_index widget_index);
     static void window_position_end();
 
-    static void window_resize_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index);
+    static void window_resize_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_index widget_index);
 
-    static void viewport_drag_begin(window* w);
+    static void viewport_drag_begin(Window* w);
 
-    static void scroll_begin(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, int8_t widgetIndex);
+    static void scroll_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, int8_t widgetIndex);
 
-    static void scroll_drag_begin(int16_t x, int16_t y, window* pWindow, widget_index index);
+    static void scroll_drag_begin(int16_t x, int16_t y, Window* pWindow, widget_index index);
 
     static void widget_over_flatbutton_invalidate();
 
@@ -138,7 +138,7 @@ namespace openloco::input
     {
         loco_global<uint16_t, 0x001136fa0>() = (uint16_t)button;
 
-        ui::window* window = windowmgr::find_at(x, y);
+        ui::Window* window = windowmgr::find_at(x, y);
 
         ui::widget_index widgetIndex = -1;
         if (window != nullptr)
@@ -229,7 +229,7 @@ namespace openloco::input
     }
 
     // 0x004C7722
-    static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         auto w = windowmgr::find(_dragWindowType, _dragWindowNumber);
         if (w == nullptr)
@@ -337,7 +337,7 @@ namespace openloco::input
     }
 
     // 0x004C7903
-    static void state_positioning_window(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_positioning_window(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         auto w = windowmgr::find(_dragWindowType, _dragWindowNumber);
         if (w == nullptr)
@@ -433,7 +433,7 @@ namespace openloco::input
         }
     }
 
-    static int dropdown_index_from_point(ui::window* window, int x, int y)
+    static int dropdown_index_from_point(ui::Window* window, int x, int y)
     {
         // Check whether x and y are over a list item
         int left = x - window->x;
@@ -495,7 +495,7 @@ namespace openloco::input
     }
 
     // 0x004C7AE7
-    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         _52334A = x;
         _52334C = y;
@@ -683,7 +683,7 @@ namespace openloco::input
     }
 
     // 0x004C8048
-    static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_normal(mouse_button state, int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         switch (state)
         {
@@ -703,7 +703,7 @@ namespace openloco::input
     }
 
     // 0x004C8098
-    static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_normal_hover(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         ui::window_type windowType = ui::window_type::undefined;
         ui::window_number windowNumber = 0;
@@ -810,7 +810,7 @@ namespace openloco::input
     }
 
     // 0x004C84BE
-    static void state_normal_left(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_normal_left(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         ui::window_type windowType = ui::window_type::undefined;
         ui::window_number windowNumber = 0;
@@ -907,7 +907,7 @@ namespace openloco::input
     }
 
     // 0x004C834A
-    static void state_normal_right(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
+    static void state_normal_right(int16_t x, int16_t y, ui::Window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
         ui::window_type windowType = ui::window_type::undefined;
         ui::window_number windowNumber = 0;
@@ -981,7 +981,7 @@ namespace openloco::input
 #pragma mark - Window positioning
 
     // 0x00C877D
-    static void window_position_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index)
+    static void window_position_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_index widget_index)
     {
         state(input_state::positioning_window);
         _pressedWidgetIndex = widget_index;
@@ -1004,7 +1004,7 @@ namespace openloco::input
 #pragma mark - Window resizing
 
     // 0x004C85D1
-    static void window_resize_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index)
+    static void window_resize_begin(int16_t x, int16_t y, ui::Window* window, ui::widget_index widget_index)
     {
         state(input_state::resizing);
         _pressedWidgetIndex = widget_index;

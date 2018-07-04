@@ -537,7 +537,7 @@ namespace openloco::ui::windowmgr
         return (Window*)regs.esi;
     }
 
-    Window* create_window(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events)
+    Window* create_window_centred(window_type type, int32_t width, int32_t height, int32_t flags, window_event_list* events)
     {
         auto x = (ui::width() / 2) - (width / 2);
         auto y = std::max(28, (ui::height() / 2) - (height / 2));
