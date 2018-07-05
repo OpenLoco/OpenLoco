@@ -220,9 +220,7 @@ namespace openloco::gui
         {
             if (tutorial::state() == tutorial::tutorial_state::none)
             {
-                registers regs;
-                regs.esi = (uint32_t)window;
-                call(0x004CC6EA, regs);
+                windowmgr::close(window);
             }
         }
     }
