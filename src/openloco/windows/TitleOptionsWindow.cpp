@@ -48,7 +48,7 @@ namespace openloco::windows::TitleOptionsWindow
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::options_button);
+        window->setEnabledWidgets(widx::options_button);
 
         window->initScrollWidgets();
 

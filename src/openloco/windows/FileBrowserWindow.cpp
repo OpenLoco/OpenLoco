@@ -14,6 +14,7 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
 namespace fs = boost::filesystem;
@@ -21,16 +22,18 @@ namespace fs = boost::filesystem;
 namespace fs = std::experimental::filesystem;
 #endif
 
-namespace openloco::ui::prompt_browse
+namespace openloco::windows::FileBrowserWindow
 {
-    static fs::path get_directory(const fs::path& path);
-    static std::string get_basename(const fs::path& path);
+    static fs::path getDirectory(const fs::path& path);
+    static std::string getBasename(const fs::path& path);
 
-    enum class browse_file_type
+    enum class BrowseFileType
     {
         saved_game,
         landscape
     };
+
+    loco_global<ui::widget_t[9], 0x0050AD58> _widgets;
 
     loco_global<uint8_t, 0x009D9D63> _type;
     loco_global<uint8_t, 0x009DA284> _fileType;
@@ -57,22 +60,22 @@ namespace openloco::ui::prompt_browse
     // ebx: title
     // eax: {return}
     bool open(
-        browse_type type,
+        BrowseType type,
         char* szPath,
         const char* filter,
         const char* title)
     {
         auto path = fs::path(szPath);
-        auto directory = get_directory(path);
-        auto baseName = get_basename(path);
+        auto directory = getDirectory(path);
+        auto baseName = getBasename(path);
 
-        textinput::cancel();
+        TextInputWindow::cancel();
 
         _type = (uint8_t)type;
-        _fileType = (uint8_t)browse_file_type::saved_game;
+        _fileType = (uint8_t)BrowseFileType::saved_game;
         if (utility::iequals(filter, "*.sc5"))
         {
-            _fileType = (uint8_t)browse_file_type::landscape;
+            _fileType = (uint8_t)BrowseFileType::landscape;
         }
         utility::strcpy_safe(_title, title);
         utility::strcpy_safe(_filter, filter);
@@ -88,8 +91,8 @@ namespace openloco::ui::prompt_browse
         auto window = windowmgr::create_window_centred(WindowType::fileBrowser, 500, 380, ui::WindowFlags::stickToFront | ui::WindowFlags::resizable | ui::WindowFlags::flag_12, (ui::window_event_list*)0x004FB308);
         if (window != nullptr)
         {
-            window->widgets = (widget_t*)0x0050AD58;
-            window->enabled_widgets = (1 << 2) | (1 << 4) | (1 << 6);
+            window->widgets = &_widgets[0];
+            window->setEnabledWidgets(2, 4, 6);
             window->initScrollWidgets();
             addr<0x01136FA2, int16_t>() = -1;
             addr<0x011370A9, uint8_t>() = 0;
@@ -97,7 +100,7 @@ namespace openloco::ui::prompt_browse
             window->var_83E = 11;
             window->var_85A = 0xFFFF;
             addr<0x009DA285, uint8_t>() = 0;
-            sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
+            sub_4CEB67(_widgets[5].width());
             window->colours[0] = colour::black;
             window->colours[1] = colour::saturated_green;
             windowmgr::current_modal_type(WindowType::fileBrowser);
@@ -123,7 +126,7 @@ namespace openloco::ui::prompt_browse
         return false;
     }
 
-    static fs::path get_directory(const fs::path& path)
+    static fs::path getDirectory(const fs::path& path)
     {
         if (path.has_extension())
         {
@@ -145,7 +148,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static std::string get_basename(const fs::path& path)
+    static std::string getBasename(const fs::path& path)
     {
 #ifdef _OPENLOCO_USE_BOOST_FS_
         auto baseName = path.stem().string();
@@ -160,13 +163,13 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00446A93
-    static void refresh_directory_list()
+    static void refreshDirectoryList()
     {
         call(0x00446A93);
     }
 
     // 0x00446E2F
-    static void up_one_level()
+    static void upOneLevel()
     {
         char* ptr = _directory;
         while (*ptr != '\0')
@@ -184,11 +187,11 @@ namespace openloco::ui::prompt_browse
 
         *ptr = '\0';
 
-        refresh_directory_list();
+        refreshDirectoryList();
     }
 
     // 0x00446E62
-    static void append_directory(const char* to_append)
+    static void appendDirectory(const char* to_append)
     {
         char* dst = _directory;
         while (*dst != '\0')
@@ -203,16 +206,16 @@ namespace openloco::ui::prompt_browse
         *dst++ = fs::path::preferred_separator;
         *dst = '\0';
 
-        refresh_directory_list();
+        refreshDirectoryList();
     }
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x00445AB9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto result = open(
-                    (browse_type)regs.al,
+                    (BrowseType)regs.al,
                     (char*)regs.ecx,
                     (const char*)regs.edx,
                     (const char*)regs.ebx);
@@ -223,14 +226,14 @@ namespace openloco::ui::prompt_browse
         register_hook(
             0x00446E2F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                up_one_level();
+                upOneLevel();
                 return 0;
             });
 
         register_hook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                append_directory((char*)regs.ebp);
+                appendDirectory((char*)regs.ebp);
                 return 0;
             });
     }

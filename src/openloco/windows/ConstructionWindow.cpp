@@ -3,8 +3,9 @@
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::ConstructionWindow
 {
     namespace widget_idx
     {
@@ -19,7 +20,7 @@ namespace openloco::ui::windows
     }
 
     // 0x0049D3F6
-    void construction_mouse_up(Window& w, uint16_t widgetIndex)
+    void onClick(Window& w, uint16_t widgetIndex)
     {
         // Allow shift key to repeat the action multiple times
         // This is useful for building very long tracks.

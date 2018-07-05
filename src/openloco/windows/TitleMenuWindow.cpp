@@ -146,8 +146,8 @@ namespace openloco::windows::TitleMenuWindow
         _events.on_dropdown = on_dropdown;
         _events.text_input = on_text_input;
         _events.cursor = on_cursor;
-        _events.on_update = on_update;
-        _events.prepare_draw = prepare_draw;
+        _events.onUpdate = on_update;
+        _events.prepareDraw = prepare_draw;
         _events.draw = draw;
 
         auto window = openloco::ui::windowmgr::create_window(
@@ -160,7 +160,7 @@ namespace openloco::windows::TitleMenuWindow
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::scenario_list_btn) | (1 << widx::load_game_btn) | (1 << widx::tutorial_btn) | (1 << widx::scenario_editor_btn) | (1 << widx::chat_btn) | (1 << widx::multiplayer_toggle_btn);
+        window->setEnabledWidgets(widx::scenario_list_btn, widx::load_game_btn, widx::tutorial_btn, widx::scenario_editor_btn, widx::chat_btn, widx::multiplayer_toggle_btn);
 
         window->initScrollWidgets();
 
@@ -363,7 +363,7 @@ namespace openloco::windows::TitleMenuWindow
     // 0x004390f8
     static ui::cursor_id on_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        // Reset tooltip timeout to keep tooltips open.
+        // Reset TooltipWindow timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;
         return fallback;
     }
@@ -402,7 +402,7 @@ namespace openloco::windows::TitleMenuWindow
         addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
+        windows::TextInputWindow::open(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(char string[512])

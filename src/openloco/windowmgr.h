@@ -107,15 +107,6 @@ namespace openloco::ui::windowmgr
     void all_wheel_input();
 }
 
-namespace openloco::ui::windows
-{
-
-    void construction_mouse_up(Window& w, uint16_t widgetIndex);
-    void station_2_scroll_paint(Window& w, gfx::drawpixelinfo_t& dpi);
-
-    bool prompt_ok_cancel(string_id okButtonStringId);
-}
-
 namespace openloco::windows::AboutWindow
 {
     void open();
@@ -124,6 +115,16 @@ namespace openloco::windows::AboutWindow
 namespace openloco::windows::AboutMusicWindow
 {
     void open();
+}
+
+namespace openloco::windows::ConfirmationWindow
+{
+    bool open(string_id okButtonStringId);
+}
+
+namespace openloco::windows::ConstructionWindow
+{
+    void onClick(ui::Window& w, uint16_t widgetIndex);
 }
 
 namespace openloco::windows::MapWindow
@@ -136,23 +137,27 @@ namespace openloco::windows::OptionsWindow
     void open();
 }
 
-namespace openloco::ui::prompt_browse
+namespace openloco::windows::StationWindow
 {
-    enum class browse_type
+    void drawScroll2(ui::Window& w, gfx::drawpixelinfo_t& dpi);
+}
+
+namespace openloco::windows::FileBrowserWindow
+{
+    enum class BrowseType
     {
         load = 1,
         save = 2
     };
-    bool open(browse_type type, char* path, const char* filter, const char* title);
-    void register_hooks();
+    bool open(BrowseType type, char* path, const char* filter, const char* title);
+    void registerHooks();
 }
 
-namespace openloco::ui::textinput
+namespace openloco::windows::TextInputWindow
 {
-    void register_hooks();
-
-    void open_textinput(ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
-    void sub_4CE6C9(WindowType type, window_number number);
+    void registerHooks();
+    void open(ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void sub_4CE6C9(ui::WindowType type, ui::window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);
     void sub_4CE6FF();
@@ -183,9 +188,9 @@ namespace openloco::windows::TitleVersionWindow
     ui::Window* open();
 }
 
-namespace openloco::ui::tooltip
+namespace openloco::windows::TooltipWindow
 {
-    void register_hooks();
+    void registerHooks();
     void open(ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
 }

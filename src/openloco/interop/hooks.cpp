@@ -602,7 +602,6 @@ static void register_terraform_hooks()
 
 void openloco::interop::register_hooks()
 {
-    using namespace openloco::ui::windows;
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
@@ -654,7 +653,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = prompt_ok_cancel(regs.eax);
+            auto result = windows::ConfirmationWindow::open(regs.eax);
             regs.eax = result ? 1 : 0;
             return 0;
         });
@@ -679,14 +678,14 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::construction_mouse_up(*((ui::Window*)regs.esi), regs.dx);
+            windows::ConstructionWindow::onClick(*((ui::Window*)regs.esi), regs.dx);
             return 0;
         });
 
     register_hook(
         0x0048ED2F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::station_2_scroll_paint(
+            windows::StationWindow::drawScroll2(
                 *((ui::Window*)regs.esi),
                 *((gfx::drawpixelinfo_t*)regs.edi));
             return 0;
@@ -732,9 +731,9 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    ui::prompt_browse::register_hooks();
-    ui::textinput::register_hooks();
-    ui::tooltip::register_hooks();
+    windows::FileBrowserWindow::registerHooks();
+    windows::TextInputWindow::registerHooks();
+    windows::TooltipWindow::registerHooks();
     ui::windowmgr::register_hooks();
 
     register_hook(

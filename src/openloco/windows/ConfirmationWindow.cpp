@@ -7,8 +7,9 @@
 #include <cstring>
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::ConfirmationWindow
 {
 #pragma pack(push, 1)
     struct text_buffers_t
@@ -18,7 +19,8 @@ namespace openloco::ui::windows
     };
 #pragma pack(pop)
 
-    loco_global<string_id, 0x0050AE3A> _ok_button_string_id;
+    loco_global<ui::widget_t[6], 0x0050AE00> _widgets;
+
     loco_global<text_buffers_t*, 0x009D1078> _text_buffers;
     loco_global<uint8_t, 0x009D1C9A> _result;
 
@@ -28,10 +30,10 @@ namespace openloco::ui::windows
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool prompt_ok_cancel(string_id okButtonStringId)
+    bool open(string_id okButtonStringId)
     {
         text_buffers_t buffers;
-        _ok_button_string_id = okButtonStringId;
+        _widgets[3].text = okButtonStringId;
         std::memcpy(buffers.title, byte_112CC04, 512);
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
@@ -39,8 +41,8 @@ namespace openloco::ui::windows
         auto window = windowmgr::create_window_centred(WindowType::confirmation, 280, 92, ui::WindowFlags::flag_12 | ui::WindowFlags::stickToFront, (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
-            window->widgets = (widget_t*)0x0050AE00;
-            window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
+            window->widgets = &_widgets[0];
+            window->setEnabledWidgets(2, 3, 4);
             window->initScrollWidgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);

@@ -796,11 +796,11 @@ namespace openloco::input
 
             if (tooltipStringId == string_ids::null)
             {
-                ui::tooltip::open(window, widgetIndex, x, y);
+                windows::TooltipWindow::open(window, widgetIndex, x, y);
             }
             else
             {
-                ui::tooltip::update(window, widgetIndex, tooltipStringId, x, y);
+                windows::TooltipWindow::update(window, widgetIndex, tooltipStringId, x, y);
             }
         }
 

@@ -8,8 +8,9 @@
 #include <cstring>
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::tooltip
+namespace openloco::windows::TooltipWindow
 {
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
@@ -36,18 +37,18 @@ namespace openloco::ui::tooltip
     static void onClose(ui::Window* window);
     static void update(ui::Window* window);
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::open((ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                open((ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         register_hook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::update((ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                update((ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
         register_hook(
@@ -106,9 +107,9 @@ namespace openloco::ui::tooltip
         int x, y;
 
         int maxY = ui::height() - height;
-        y = cursorY + 26; // Normally, we'd display the tooltip 26 lower
+        y = cursorY + 26; // Normally, we'd display the TooltipWindow 26 lower
         if (y > maxY)
-            // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
+            // If y is too large, the TooltipWindow could be forced below the cursor if we'd just clamped y,
             // so we'll subtract a bit more
             y -= height + 40;
         y = std::clamp(y, 22, maxY);

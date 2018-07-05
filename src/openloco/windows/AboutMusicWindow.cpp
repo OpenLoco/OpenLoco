@@ -53,10 +53,10 @@ namespace openloco::windows::AboutMusicWindow
             return;
 
         _events.onClick = onClick;
-        _events.get_scroll_size = getScrollSize;
+        _events.getScrollSize = getScrollSize;
         _events.tooltip = tooltip;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
 
         auto window = windowmgr::create_window_centred(
             WindowType::aboutMusic,

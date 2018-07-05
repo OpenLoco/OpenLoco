@@ -163,7 +163,7 @@ namespace openloco::ui
                 void (*on_mouse_down)(Window*, widget_index);
                 void (*on_dropdown)(Window*, widget_index, int16_t);
                 uint32_t event_06;
-                void (*on_update)(Window*);
+                void (*onUpdate)(Window*);
                 uint32_t event_08;
                 uint32_t event_09;
                 uint32_t event_10;
@@ -172,7 +172,7 @@ namespace openloco::ui
                 uint32_t event_13;
                 uint32_t tool_abort;
                 uint32_t event_15;
-                void (*get_scroll_size)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+                void (*getScrollSize)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
@@ -182,9 +182,9 @@ namespace openloco::ui
                 void (*tooltip)(Window*, widget_index);
                 ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
-                void (*prepare_draw)(Window*);
+                void (*prepareDraw)(Window*);
                 void (*draw)(Window*, gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(Window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*drawScroll)(Window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
             };
         };
 

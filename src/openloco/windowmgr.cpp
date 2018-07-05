@@ -631,7 +631,7 @@ namespace openloco::ui::windowmgr
             w->call_update();
         }
 
-        ui::textinput::sub_4CE6FF();
+        TextInputWindow::sub_4CE6FF();
         call(0x4CEEA7);
     }
 
