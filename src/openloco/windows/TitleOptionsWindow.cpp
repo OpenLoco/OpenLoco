@@ -31,7 +31,7 @@ namespace openloco::windows::TitleOptionsWindow
     static window_event_list _events;
 
     static void onClick(Window* window, widget_index widgetIndex);
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
 
     Window* open()
     {
@@ -58,16 +58,16 @@ namespace openloco::windows::TitleOptionsWindow
         return window;
     }
 
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::options_button].top + 2;
         gfx::point_t origin = { x, y };
 
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
+        gfx::draw_string_centred_wrapped(context, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
     static void onClick(Window* window, widget_index widgetIndex)

@@ -16,7 +16,7 @@ namespace openloco::windows::TitleVersionWindow
 
     static ui::window_event_list _events;
 
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
 
     Window* open()
     {
@@ -38,9 +38,9 @@ namespace openloco::windows::TitleVersionWindow
     }
 
     // 0x00439236
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         auto versionInfo = get_version_info();
-        gfx::draw_string(*dpi, window->x, window->y, colour::white | 0x20, versionInfo.c_str());
+        gfx::draw_string(*context, window->x, window->y, colour::white | 0x20, versionInfo.c_str());
     }
 }

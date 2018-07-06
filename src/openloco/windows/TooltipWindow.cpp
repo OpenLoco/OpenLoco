@@ -33,7 +33,7 @@ namespace openloco::windows::TooltipWindow
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
     static void onClose(ui::Window* window);
     static void update(ui::Window* window);
 
@@ -54,7 +54,7 @@ namespace openloco::windows::TooltipWindow
         register_hook(
             0x004C9397,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                draw((ui::Window*)regs.esi, (gfx::drawpixelinfo_t*)regs.edi);
+                draw((ui::Window*)regs.esi, (gfx::GraphicsContext*)regs.edi);
                 return 0;
             });
         register_hook(
@@ -191,25 +191,25 @@ namespace openloco::windows::TooltipWindow
     }
 
     // 0x004C9397
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         uint16_t x = window->x;
         uint16_t y = window->y;
         uint16_t width = window->width;
         uint16_t height = window->height;
 
-        gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
+        gfx::draw_rect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        gfx::draw_rect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
 
-        gfx::draw_rect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        gfx::draw_rect(context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        gfx::draw_rect(context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        gfx::draw_rect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        gfx::draw_rect(context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
         {
             // draw_string_centred_raw
@@ -218,7 +218,7 @@ namespace openloco::windows::TooltipWindow
             regs.dx = y + 1;
             regs.al = 0;
             regs.bp = _lineBreakCount;
-            regs.edi = (uint32_t)dpi;
+            regs.edi = (uint32_t)context;
             regs.esi = (uint32_t)&_text[0];
             call(0x00494E33, regs);
         }

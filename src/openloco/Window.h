@@ -183,8 +183,8 @@ namespace openloco::ui
                 ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
                 void (*prepareDraw)(Window*);
-                void (*draw)(Window*, gfx::drawpixelinfo_t*);
-                void (*drawScroll)(Window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*draw)(Window*, gfx::GraphicsContext*);
+                void (*drawScroll)(Window*, gfx::GraphicsContext*, uint32_t scrollIndex);
             };
         };
 
@@ -315,7 +315,7 @@ namespace openloco::ui
 
         bool move(int16_t dx, int16_t dy);
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
-        void draw(openloco::gfx::drawpixelinfo_t* dpi);
+        void draw(openloco::gfx::GraphicsContext* context);
 
         void call_close();                                                                                // 0
         void callOnClickEvent(widget_index widgetIndex);                                                  // 1
@@ -335,8 +335,8 @@ namespace openloco::ui
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
         void call_prepare_draw();                                                                         // 26
-        void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
-        void call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                           // 28
+        void call_draw(gfx::GraphicsContext* context);                                                    // 27
+        void call_draw_scroll(gfx::GraphicsContext* context, uint32_t scrollIndex);                       // 28
     };
 #pragma pack(pop)
 }

@@ -43,8 +43,8 @@ namespace openloco::windows::AboutMusicWindow
     static void onClick(ui::Window* window, widget_index widgetIndex);
     static void getScrollSize(ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void tooltip(ui::Window* window, widget_index widgetIndex);
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(ui::Window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
+    static void drawScroll(ui::Window* window, gfx::GraphicsContext* context, uint32_t scrollIndex);
 
     // 0x0043B4AF
     void open()
@@ -99,14 +99,14 @@ namespace openloco::windows::AboutMusicWindow
     }
 
     // 0x0043B8B8
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
     }
 
     // 0x0043B8BE
-    static void drawScroll(ui::Window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::Window* window, gfx::GraphicsContext* context, uint32_t scrollIndex)
     {
         static std::pair<string_id, string_id> strings_to_draw[num_songs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },
@@ -150,15 +150,15 @@ namespace openloco::windows::AboutMusicWindow
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            draw_string_centred(*dpi, x, y, colour::black, song_strings.first, nullptr);
+            draw_string_centred(*context, x, y, colour::black, song_strings.first, nullptr);
             y += 10;
 
             // Credit line
-            draw_string_centred(*dpi, x, y, colour::black, song_strings.second, nullptr);
+            draw_string_centred(*context, x, y, colour::black, song_strings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
-            draw_string_centred(*dpi, x, y, colour::black, string_ids::music_copyright, nullptr);
+            draw_string_centred(*context, x, y, colour::black, string_ids::music_copyright, nullptr);
             y += 14;
         }
     }

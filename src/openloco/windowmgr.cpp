@@ -85,20 +85,20 @@ namespace openloco::ui::windowmgr
         register_hook(
             0x004C5FC8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
+                auto context = &addr<0x005233B8, gfx::GraphicsContext>();
                 auto window = (ui::Window*)regs.esi;
 
                 // Make a copy to prevent overwriting from nested calls
                 auto regs2 = regs;
 
-                draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
+                draw_single(context, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                 window++;
 
                 while (window < addr<0x0113D754, ui::Window*>())
                 {
                     if ((window->flags & ui::WindowFlags::transparent) != 0)
                     {
-                        draw_single(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
+                        draw_single(context, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
                     }
                     window++;
                 }
@@ -546,50 +546,50 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004C5FC8
-    void draw_single(gfx::drawpixelinfo_t* _dpi, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void draw_single(gfx::GraphicsContext* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        // Copy dpi so we can crop it
-        auto dpi = *_dpi;
+        // Copy context so we can crop it
+        auto context = *_context;
 
         // Clamp left to 0
-        int32_t overflow = left - dpi.x;
+        int32_t overflow = left - context.x;
         if (overflow > 0)
         {
-            dpi.x += overflow;
-            dpi.width -= overflow;
-            if (dpi.width <= 0)
+            context.x += overflow;
+            context.width -= overflow;
+            if (context.width <= 0)
                 return;
-            dpi.pitch += overflow;
-            dpi.bits += overflow;
+            context.pitch += overflow;
+            context.bits += overflow;
         }
 
         // Clamp width to right
-        overflow = dpi.x + dpi.width - right;
+        overflow = context.x + context.width - right;
         if (overflow > 0)
         {
-            dpi.width -= overflow;
-            if (dpi.width <= 0)
+            context.width -= overflow;
+            if (context.width <= 0)
                 return;
-            dpi.pitch += overflow;
+            context.pitch += overflow;
         }
 
         // Clamp top to 0
-        overflow = top - dpi.y;
+        overflow = top - context.y;
         if (overflow > 0)
         {
-            dpi.y += overflow;
-            dpi.height -= overflow;
-            if (dpi.height <= 0)
+            context.y += overflow;
+            context.height -= overflow;
+            if (context.height <= 0)
                 return;
-            dpi.bits += (dpi.width + dpi.pitch) * overflow;
+            context.bits += (context.width + context.pitch) * overflow;
         }
 
         // Clamp height to bottom
-        overflow = dpi.y + dpi.height - bottom;
+        overflow = context.y + context.height - bottom;
         if (overflow > 0)
         {
-            dpi.height -= overflow;
-            if (dpi.height <= 0)
+            context.height -= overflow;
+            if (context.height <= 0)
                 return;
         }
 
@@ -617,7 +617,7 @@ namespace openloco::ui::windowmgr
         windowColours[3] = colour::opaque(w->colours[3]);
 
         w->call_prepare_draw();
-        w->call_draw(&dpi);
+        w->call_draw(&context);
     }
 
     // 0x004CD3D0

@@ -687,7 +687,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             windows::StationWindow::drawScroll2(
                 *((ui::Window*)regs.esi),
-                *((gfx::drawpixelinfo_t*)regs.edi));
+                *((gfx::GraphicsContext*)regs.edi));
             return 0;
         });
 
@@ -725,8 +725,8 @@ void openloco::interop::register_hooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (ui::Window*)regs.esi;
-            auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
-            window->draw(dpi);
+            auto context = (gfx::GraphicsContext*)regs.edi;
+            window->draw(context);
             regs = backup;
             return 0;
         });

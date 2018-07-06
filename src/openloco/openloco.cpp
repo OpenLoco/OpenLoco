@@ -279,7 +279,7 @@ namespace openloco
 #endif
         call(0x0046AD7D);
         call(0x00438A6C);
-        gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
+        gfx::clear(gfx::getScreenGraphicsContext(), 0x0A0A0A0A);
     }
 
     // 0x0048AC66
@@ -352,7 +352,7 @@ namespace openloco
         if (byte_50AF26 == 0)
         {
             byte_50AF26 = 16;
-            gfx::clear(gfx::screen_dpi(), 0);
+            gfx::clear(gfx::getScreenGraphicsContext(), 0);
             ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             addr<0x00F2539C, int32_t>() = 0;
         }

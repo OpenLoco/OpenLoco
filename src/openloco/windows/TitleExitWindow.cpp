@@ -31,7 +31,7 @@ namespace openloco::windows::TitleExitWindow
     static window_event_list _events;
 
     static void onClick(Window* window, widget_index widgetIndex);
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
 
     Window* open()
     {
@@ -59,15 +59,15 @@ namespace openloco::windows::TitleExitWindow
     }
 
     // 0x00439236
-    static void draw(ui::Window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::exit_button].top + 8;
         gfx::point_t origin = { x, y };
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::black, string_ids::title_exit_game);
+        gfx::draw_string_centred_wrapped(context, &origin, window->width, colour::black, string_ids::title_exit_game);
     }
 
     // 0x00439268

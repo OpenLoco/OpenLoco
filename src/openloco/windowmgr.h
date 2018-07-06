@@ -97,7 +97,7 @@ namespace openloco::ui::windowmgr
     void close(Window* window);
     Window* create_window(WindowType type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
     Window* create_window_centred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
-    void draw_single(gfx::drawpixelinfo_t* dpi, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void draw_single(gfx::GraphicsContext* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatch_update_all();
     void call_event_viewport_rotate_on_all_windows();
     void relocate_windows();
@@ -139,7 +139,7 @@ namespace openloco::windows::OptionsWindow
 
 namespace openloco::windows::StationWindow
 {
-    void drawScroll2(ui::Window& w, gfx::drawpixelinfo_t& dpi);
+    void drawScroll2(ui::Window& w, gfx::GraphicsContext& context);
 }
 
 namespace openloco::windows::FileBrowserWindow
