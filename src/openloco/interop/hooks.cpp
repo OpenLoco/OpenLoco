@@ -837,7 +837,7 @@ void openloco::interop::register_hooks()
 
     register_hook(
         0x004A2604,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t{
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             loc16 loc = {
                 regs.ax,
                 regs.cx,

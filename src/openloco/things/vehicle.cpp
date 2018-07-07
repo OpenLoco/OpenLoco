@@ -3347,14 +3347,14 @@ bool vehicle_0::sub_4ACCDC()
 {
     if (v_class == vehicle_class::road)
     {
-        // 0x004ACDE0
+        // 0x004ACDE0 Todo: finish
     }
     else
     {
         auto veh = next_car()->as_vehicle_1();
         if (veh == nullptr)
         {
-            // TODO: handle gracefully
+            // Todo: handle gracefully
             assert(false);
             return false;
         }
@@ -3374,7 +3374,7 @@ bool vehicle_0::sub_4ACCDC()
         {
             return false;
         }
-        // 0x004ACD1F
+        // 0x004ACD1F Todo: finish
     }
     registers regs;
     regs.esi = (int32_t)this;
