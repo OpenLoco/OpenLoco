@@ -4,8 +4,8 @@
 #include "../localisation/stringmgr.h"
 #include "../stationmgr.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
 

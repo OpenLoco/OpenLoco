@@ -6,7 +6,7 @@
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -38,7 +38,7 @@ namespace openloco::windows::TitleOptionsWindow
         _events.onClick = onClick;
         _events.draw = draw;
 
-        auto window = windowmgr::create_window(
+        auto window = WindowManager::createWindow(
             WindowType::titleOptions,
             ui::width() - window_size.width,
             0,

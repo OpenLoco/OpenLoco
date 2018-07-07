@@ -10,8 +10,8 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -150,7 +150,7 @@ namespace openloco::windows::TitleMenuWindow
         _events.prepareDraw = prepare_draw;
         _events.draw = draw;
 
-        auto window = openloco::ui::windowmgr::create_window(
+        auto window = openloco::ui::WindowManager::createWindow(
             WindowType::titleMenu,
             (ui::width() - ww) / 2,
             ui::height() - wh - 25,
@@ -397,7 +397,7 @@ namespace openloco::windows::TitleMenuWindow
 
     static void sub_439163(ui::Window* callingWindow, widget_index callingWidget)
     {
-        windowmgr::close(WindowType::multiplayer);
+        WindowManager::close(WindowType::multiplayer);
 
         addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
 
@@ -464,7 +464,7 @@ namespace openloco::windows::TitleMenuWindow
             return;
         }
 
-        auto multiplayer = windowmgr::find(WindowType::multiplayer);
+        auto multiplayer = WindowManager::find(WindowType::multiplayer);
         if (multiplayer == nullptr)
         {
             call(0x0046e639); // window_multiplayer::open

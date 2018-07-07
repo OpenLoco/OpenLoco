@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Window.h"
-#include "graphics/gfx.h"
-#include "localisation/stringmgr.h"
-#include "town.h"
+#include "../Window.h"
+#include "../graphics/gfx.h"
+#include "../localisation/stringmgr.h"
+#include "../town.h"
 #include <cstddef>
 
 namespace openloco::ui
@@ -72,39 +72,39 @@ namespace openloco::ui
     };
 }
 
-namespace openloco::ui::windowmgr
+namespace openloco::ui::WindowManager
 {
-    void register_hooks();
-    WindowType current_modal_type();
-    void current_modal_type(WindowType type);
+    void registerHooks();
+    WindowType getCurrentModalType();
+    void setCurrentModalType(WindowType type);
     Window* get(size_t index);
-    size_t num_windows();
+    size_t count();
 
     void update();
-    Window* get_main();
+    Window* getMain();
     Window* find(WindowType type);
     Window* find(WindowType type, window_number number);
-    Window* find_at(int16_t x, int16_t y);
-    Window* find_at_alt(int16_t x, int16_t y);
-    Window* bring_to_front(Window* window);
-    Window* bring_to_front(WindowType type, uint16_t id);
+    Window* findAt(int16_t x, int16_t y);
+    Window* findAtAlt(int16_t x, int16_t y);
+    Window* bringToFront(Window* window);
+    Window* bringToFront(WindowType type, window_number number);
     void invalidate(WindowType type);
     void invalidate(WindowType type, window_number number);
-    void invalidate_widget(WindowType type, window_number number, uint8_t widget_index);
-    void invalidate_all_windows_after_input();
+    void invalidateWidget(WindowType type, window_number number, uint8_t widget_index);
+    void invalidateAllWindowsAfterInput();
     void close(WindowType type);
-    void close(WindowType type, uint16_t id);
+    void close(WindowType type, window_number number);
     void close(Window* window);
-    Window* create_window(WindowType type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
-    Window* create_window_centred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
-    void draw_single(gfx::GraphicsContext* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
-    void dispatch_update_all();
-    void call_event_viewport_rotate_on_all_windows();
-    void relocate_windows();
+    Window* createWindow(WindowType type, int32_t x, int32_t y, int32_t width, int32_t height, int32_t flags, window_event_list* events);
+    Window* createWindowCentred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events);
+    void drawSingle(gfx::GraphicsContext* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void dispatchUpdateAll();
+    void callViewportRotateEventOnAllWindows();
+    void relocateWindows();
     void sub_4CEE0B(Window* self);
     void sub_4B93A5(window_number number);
-    void close_topmost();
-    void all_wheel_input();
+    void closeTopmost();
+    void allWheelInput();
 }
 
 namespace openloco::windows::AboutWindow

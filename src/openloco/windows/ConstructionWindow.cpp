@@ -1,6 +1,6 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -36,7 +36,7 @@ namespace openloco::windows::ConstructionWindow
         switch (widgetIndex)
         {
             case widget_idx::close:
-                windowmgr::close(&w);
+                WindowManager::close(&w);
                 break;
             case widget_idx::tab_0:
             case widget_idx::tab_1:

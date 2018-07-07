@@ -7,8 +7,8 @@
 #include "openloco.h"
 #include "tutorial.h"
 #include "ui.h"
+#include "ui/WindowManager.h"
 #include "viewportmgr.h"
-#include "windowmgr.h"
 
 namespace ui = openloco::ui;
 
@@ -28,7 +28,7 @@ namespace openloco::gui
 
         _mainWindowWidgets[0].bottom = uiHeight;
         _mainWindowWidgets[0].right = uiWidth;
-        auto window = openloco::ui::windowmgr::create_window(
+        auto window = openloco::ui::WindowManager::createWindow(
             WindowType::main,
             0,
             0,
@@ -60,7 +60,7 @@ namespace openloco::gui
         else
         {
 
-            window = openloco::ui::windowmgr::create_window(
+            window = openloco::ui::WindowManager::createWindow(
                 WindowType::topToolbar,
                 0,
                 0,
@@ -81,7 +81,7 @@ namespace openloco::gui
                 window->colours[3] = skin->colour_15;
             }
 
-            window = openloco::ui::windowmgr::create_window(
+            window = openloco::ui::WindowManager::createWindow(
                 WindowType::playerInfoToolbar,
                 0,
                 uiHeight - 27,
@@ -100,7 +100,7 @@ namespace openloco::gui
                 window->colours[1] = colour::translucent(skin->colour_16);
             }
 
-            window = openloco::ui::windowmgr::create_window(
+            window = openloco::ui::WindowManager::createWindow(
                 WindowType::timeToolbar,
                 uiWidth - 140,
                 uiHeight - 27,
@@ -123,7 +123,7 @@ namespace openloco::gui
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
             {
 
-                window = openloco::ui::windowmgr::create_window(
+                window = openloco::ui::WindowManager::createWindow(
                     WindowType::tutorial,
                     140,
                     uiHeight - 27,
@@ -157,7 +157,7 @@ namespace openloco::gui
             return;
         }
 
-        auto window = windowmgr::get_main();
+        auto window = WindowManager::getMain();
         if (window)
         {
             window->width = uiWidth;
@@ -170,57 +170,57 @@ namespace openloco::gui
             window->viewports[0]->view_height = uiHeight << window->viewports[0]->zoom;
         }
 
-        window = windowmgr::find(WindowType::topToolbar);
+        window = WindowManager::find(WindowType::topToolbar);
         if (window)
         {
             window->width = std::max(uiWidth, 640);
         }
 
-        window = windowmgr::find(WindowType::playerInfoToolbar);
+        window = WindowManager::find(WindowType::playerInfoToolbar);
         if (window)
         {
             window->y = uiHeight - 27;
         }
 
-        window = windowmgr::find(WindowType::timeToolbar);
+        window = WindowManager::find(WindowType::timeToolbar);
         if (window)
         {
             window->y = uiHeight - 27;
             window->x = std::max(uiWidth, 640) - 140;
         }
 
-        window = windowmgr::find(WindowType::titleMenu);
+        window = WindowManager::find(WindowType::titleMenu);
         if (window)
         {
             window->x = uiWidth / 2 - 148;
             window->y = uiHeight - 117;
         }
 
-        window = windowmgr::find(WindowType::titleExit);
+        window = WindowManager::find(WindowType::titleExit);
         if (window)
         {
             window->x = uiWidth - 40;
             window->y = uiHeight - 28;
         }
 
-        window = windowmgr::find(WindowType::titleVersion);
+        window = WindowManager::find(WindowType::titleVersion);
         if (window)
         {
             window->y = uiHeight - window->height;
         }
 
-        window = windowmgr::find(WindowType::titleOptions);
+        window = WindowManager::find(WindowType::titleOptions);
         if (window)
         {
             window->x = uiWidth - window->width;
         }
 
-        window = windowmgr::find(WindowType::tutorial);
+        window = WindowManager::find(WindowType::tutorial);
         if (window)
         {
             if (tutorial::state() == tutorial::tutorial_state::none)
             {
-                windowmgr::close(window);
+                WindowManager::close(window);
             }
         }
     }

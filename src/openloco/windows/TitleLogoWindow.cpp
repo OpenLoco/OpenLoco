@@ -2,7 +2,7 @@
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -34,7 +34,7 @@ namespace openloco::windows::TitleLogoWindow
         _events.onClick = onClick;
         _events.draw = draw;
 
-        auto window = openloco::ui::windowmgr::create_window(
+        auto window = openloco::ui::WindowManager::createWindow(
             WindowType::titleLogo,
             0,
             0,

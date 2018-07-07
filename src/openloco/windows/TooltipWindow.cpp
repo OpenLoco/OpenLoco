@@ -3,7 +3,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 #include <algorithm>
 #include <cstring>
 
@@ -116,7 +116,7 @@ namespace openloco::windows::TooltipWindow
 
         x = std::clamp(cursorX - (width / 2), 0, ui::width() - width);
 
-        auto tooltip = windowmgr::create_window(
+        auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
             x,
             y,
@@ -131,7 +131,7 @@ namespace openloco::windows::TooltipWindow
     // 0x004C906B
     void open(ui::Window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
-        windowmgr::close(WindowType::tooltip, 0);
+        WindowManager::close(WindowType::tooltip, 0);
         if (window == nullptr || widgetIndex == -1)
         {
             return;
@@ -153,7 +153,7 @@ namespace openloco::windows::TooltipWindow
             return;
         }
 
-        auto wnd = windowmgr::find(WindowType::error, 0);
+        auto wnd = WindowManager::find(WindowType::error, 0);
         if (wnd != nullptr)
         {
             return;
@@ -167,7 +167,7 @@ namespace openloco::windows::TooltipWindow
     // 0x004C9216
     void update(ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        windowmgr::close(WindowType::tooltip, 0);
+        WindowManager::close(WindowType::tooltip, 0);
 
         _tooltipWindowType = window->type;
         _tooltipWindowNumber = window->number;
@@ -179,7 +179,7 @@ namespace openloco::windows::TooltipWindow
             return;
         }
 
-        auto wnd = windowmgr::find(WindowType::error, 0);
+        auto wnd = WindowManager::find(WindowType::error, 0);
         if (wnd != nullptr)
         {
             return;

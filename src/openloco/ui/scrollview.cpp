@@ -1,7 +1,7 @@
 #include "scrollview.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 

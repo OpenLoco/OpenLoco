@@ -15,8 +15,8 @@
 #include "../station.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "../windowmgr.h"
 #include "interop.hpp"
 
 using namespace openloco;
@@ -734,7 +734,7 @@ void openloco::interop::register_hooks()
     windows::FileBrowserWindow::registerHooks();
     windows::TextInputWindow::registerHooks();
     windows::TooltipWindow::registerHooks();
-    ui::windowmgr::register_hooks();
+    ui::WindowManager::registerHooks();
 
     register_hook(
         0x004AB655,
@@ -822,7 +822,7 @@ void openloco::interop::register_hooks()
 
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
-    // Can be removed when windowmgr:update() is hooked
+    // Can be removed when WindowManager:update() is hooked
     write_ret(0x00406520);
 
     // Remove check for is road in use when removing roads. It is

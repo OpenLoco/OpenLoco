@@ -36,13 +36,13 @@
 #include "townmgr.h"
 #include "tutorial.h"
 #include "ui.h"
+#include "ui/WindowManager.h"
 #include "utility/numeric.hpp"
-#include "windowmgr.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 using namespace openloco::interop;
-namespace windowmgr = openloco::ui::windowmgr;
+using namespace openloco::ui;
 using input_flags = openloco::input::input_flags;
 using input_state = openloco::input::input_state;
 
@@ -409,7 +409,7 @@ namespace openloco
             else
             {
                 uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
-                if (windowmgr::find(ui::WindowType::multiplayer, 0) != nullptr)
+                if (WindowManager::find(ui::WindowType::multiplayer, 0) != nullptr)
                 {
                     numUpdates = 1;
                 }

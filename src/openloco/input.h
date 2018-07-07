@@ -1,6 +1,6 @@
 #pragma once
 
-#include "windowmgr.h"
+#include "ui/WindowManager.h"
 #include <cstdint>
 
 namespace openloco::input

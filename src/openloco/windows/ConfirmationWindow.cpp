@@ -3,7 +3,7 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 #include <cstring>
 
 using namespace openloco::interop;
@@ -38,7 +38,7 @@ namespace openloco::windows::ConfirmationWindow
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
 
-        auto window = windowmgr::create_window_centred(WindowType::confirmation, 280, 92, ui::WindowFlags::flag_12 | ui::WindowFlags::stickToFront, (ui::window_event_list*)0x004FB37C);
+        auto window = WindowManager::createWindowCentred(WindowType::confirmation, 280, 92, ui::WindowFlags::flag_12 | ui::WindowFlags::stickToFront, (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
             window->widgets = &_widgets[0];
@@ -49,20 +49,20 @@ namespace openloco::windows::ConfirmationWindow
             window->flags |= ui::WindowFlags::transparent;
             _result = 0;
 
-            auto originalModal = windowmgr::current_modal_type();
-            windowmgr::current_modal_type(WindowType::confirmation);
+            auto originalModal = WindowManager::getCurrentModalType();
+            WindowManager::setCurrentModalType(WindowType::confirmation);
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
                     sub_48A18C();
-                    windowmgr::dispatch_update_all();
+                    WindowManager::dispatchUpdateAll();
                     call(0x004BEC5B);
-                    windowmgr::update();
+                    WindowManager::update();
                     call(0x004C98CF);
                     call(0x004CF63B);
-                    return windowmgr::find(WindowType::confirmation) != nullptr;
+                    return WindowManager::find(WindowType::confirmation) != nullptr;
                 });
-            windowmgr::current_modal_type(originalModal);
+            WindowManager::setCurrentModalType(originalModal);
             return _result != 0;
         }
         return false;

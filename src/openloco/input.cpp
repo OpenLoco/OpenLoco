@@ -4,8 +4,8 @@
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "ui.h"
+#include "ui/WindowManager.h"
 #include "ui/scrollview.h"
-#include "windowmgr.h"
 
 #include <map>
 
