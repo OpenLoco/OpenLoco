@@ -9,9 +9,9 @@ namespace openloco::ui
 {
     using widget_index = int8_t;
     using window_number = uint16_t;
-    enum class window_type : uint8_t;
+    enum class WindowType : uint8_t;
     enum class widget_type : uint8_t;
-    struct window;
+    struct Window;
 
 #pragma pack(push, 1)
 
@@ -131,13 +131,13 @@ namespace openloco::ui
         uint16_t v_thumb_bottom; // 0x10
     };
 
-    namespace window_flags
+    namespace WindowFlags
     {
-        constexpr uint32_t stick_to_back = 1 << 0;
-        constexpr uint32_t stick_to_front = 1 << 1;
-        constexpr uint32_t scrolling_to_location = 1 << 3;
+        constexpr uint32_t stickToBack = 1 << 0;
+        constexpr uint32_t stickToFront = 1 << 1;
+        constexpr uint32_t scrollingToLocation = 1 << 3;
         constexpr uint32_t transparent = 1 << 4;
-        constexpr uint32_t no_background = 1 << 5;
+        constexpr uint32_t noBackground = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t resizable = 1 << 9;
@@ -145,7 +145,8 @@ namespace openloco::ui
         constexpr uint32_t flag_12 = 1 << 12;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
-        constexpr uint32_t white_border_mask = (1 << 17) | (1 << 18);
+
+        constexpr uint32_t whiteBorderMask = (1 << 17) | (1 << 18);
     }
 
     struct window_event_list
@@ -156,13 +157,13 @@ namespace openloco::ui
             struct
             {
                 uint32_t on_close;
-                void (*on_mouse_up)(window*, widget_index);
+                void (*onClick)(Window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
-                void (*on_mouse_down)(window*, widget_index);
-                void (*on_dropdown)(window*, widget_index, int16_t);
+                void (*on_mouse_down)(Window*, widget_index);
+                void (*on_dropdown)(Window*, widget_index, int16_t);
                 uint32_t event_06;
-                void (*on_update)(window*);
+                void (*onUpdate)(Window*);
                 uint32_t event_08;
                 uint32_t event_09;
                 uint32_t event_10;
@@ -171,19 +172,19 @@ namespace openloco::ui
                 uint32_t event_13;
                 uint32_t tool_abort;
                 uint32_t event_15;
-                void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+                void (*getScrollSize)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 uint32_t scroll_mouse_down;
                 uint32_t event_18;
                 uint32_t scroll_mouse_over;
-                void (*text_input)(window*, widget_index, char*);
+                void (*text_input)(Window*, widget_index, char*);
                 uint32_t viewport_rotate;
                 uint32_t event_22;
-                void (*tooltip)(window*, widget_index);
+                void (*tooltip)(Window*, widget_index);
                 ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
-                void (*prepare_draw)(window*);
-                void (*draw)(window*, gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*prepareDraw)(Window*);
+                void (*draw)(Window*, gfx::GraphicsContext*);
+                void (*drawScroll)(Window*, gfx::GraphicsContext*, uint32_t scrollIndex);
             };
         };
 
@@ -219,7 +220,7 @@ namespace openloco::ui
         uint16_t saved_view_y;           // 0x4
     };
 
-    struct window
+    struct Window
     {
         union
         {
@@ -258,7 +259,7 @@ namespace openloco::ui
                 uint16_t var_872;
                 uint8_t pad_874[0x876 - 0x874];
                 viewport_config viewport_configurations[2]; // 0x876
-                window_type type;                           // 0x882
+                WindowType type;                            // 0x882
                 uint8_t pad_883[1];
                 int8_t var_884;
                 uint8_t pad_885[1];
@@ -268,6 +269,32 @@ namespace openloco::ui
             };
         };
 
+        template<typename Arg>
+        void enableWidgets(Arg widgetIndex)
+        {
+            this->enabled_widgets |= 1ULL << widgetIndex;
+        }
+
+        template<typename Arg, typename... Args>
+        void enableWidgets(Arg first, Args... args)
+        {
+            enableWidgets(first);
+            enableWidgets(args...);
+        }
+
+        template<typename Arg>
+        void setEnabledWidgets(Arg widgetIndex)
+        {
+            this->enabled_widgets = 1ULL << widgetIndex;
+        }
+
+        template<typename Arg, typename... Args>
+        void setEnabledWidgets(Arg first, Args... args)
+        {
+            setEnabledWidgets(first);
+            enableWidgets(args...);
+        }
+
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
         bool is_holdable(widget_index index);
@@ -276,7 +303,7 @@ namespace openloco::ui
         void invalidate_pressed_image_buttons();
         void invalidate();
         void update_scroll_widgets();
-        void init_scroll_widgets();
+        void initScrollWidgets();
         int8_t get_scroll_data_index(widget_index index);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
@@ -288,11 +315,11 @@ namespace openloco::ui
 
         bool move(int16_t dx, int16_t dy);
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
-        void draw(openloco::gfx::drawpixelinfo_t* dpi);
+        void draw(openloco::gfx::GraphicsContext* context);
 
         void call_close();                                                                                // 0
-        void call_on_mouse_up(widget_index widgetIndex);                                                  // 1
-        ui::window* call_on_resize();                                                                     // 2
+        void callOnClickEvent(widget_index widgetIndex);                                                  // 1
+        ui::Window* call_on_resize();                                                                     // 2
         void call_3(int8_t widget_index);                                                                 // 3
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
@@ -308,8 +335,8 @@ namespace openloco::ui
         ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
         void call_prepare_draw();                                                                         // 26
-        void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
-        void call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                           // 28
+        void call_draw(gfx::GraphicsContext* context);                                                    // 27
+        void call_draw_scroll(gfx::GraphicsContext* context, uint32_t scrollIndex);                       // 28
     };
 #pragma pack(pop)
 }

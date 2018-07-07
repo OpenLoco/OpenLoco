@@ -15,8 +15,8 @@
 #include "../station.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "../windowmgr.h"
 #include "interop.hpp"
 
 using namespace openloco;
@@ -602,7 +602,6 @@ static void register_terraform_hooks()
 
 void openloco::interop::register_hooks()
 {
-    using namespace openloco::ui::windows;
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
@@ -647,14 +646,14 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0043B26C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::about::open();
+            windows::AboutWindow::open();
             return 0;
         });
 
     register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = prompt_ok_cancel(regs.eax);
+            auto result = windows::ConfirmationWindow::open(regs.eax);
             regs.eax = result ? 1 : 0;
             return 0;
         });
@@ -679,23 +678,23 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::construction_mouse_up(*((ui::window*)regs.esi), regs.dx);
+            windows::ConstructionWindow::onClick(*((ui::Window*)regs.esi), regs.dx);
             return 0;
         });
 
     register_hook(
         0x0048ED2F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::station_2_scroll_paint(
-                *((ui::window*)regs.esi),
-                *((gfx::drawpixelinfo_t*)regs.edi));
+            windows::StationWindow::drawScroll2(
+                *((ui::Window*)regs.esi),
+                *((gfx::GraphicsContext*)regs.edi));
             return 0;
         });
 
     register_hook(
         0x00498E9B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::ui::windows::sub_498E9B((openloco::ui::window*)regs.esi);
+            windows::TownWindow::sub_498E9B((openloco::ui::Window*)regs.esi);
             return 0;
         });
 
@@ -725,17 +724,17 @@ void openloco::interop::register_hooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
-            auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
-            window->draw(dpi);
+            auto window = (ui::Window*)regs.esi;
+            auto context = (gfx::GraphicsContext*)regs.edi;
+            window->draw(context);
             regs = backup;
             return 0;
         });
 
-    ui::prompt_browse::register_hooks();
-    ui::textinput::register_hooks();
-    ui::tooltip::register_hooks();
-    ui::windowmgr::register_hooks();
+    windows::FileBrowserWindow::registerHooks();
+    windows::TextInputWindow::registerHooks();
+    windows::TooltipWindow::registerHooks();
+    ui::WindowManager::registerHooks();
 
     register_hook(
         0x004AB655,
@@ -769,7 +768,7 @@ void openloco::interop::register_hooks()
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::Window*)regs.esi;
             window->viewports_update_position();
             regs = backup;
             return 0;
@@ -779,7 +778,7 @@ void openloco::interop::register_hooks()
         0x004C9513,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::Window*)regs.esi;
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
@@ -803,7 +802,7 @@ void openloco::interop::register_hooks()
         0x004CA115,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::Window*)regs.esi;
             window->update_scroll_widgets();
             regs = backup;
 
@@ -814,8 +813,8 @@ void openloco::interop::register_hooks()
         0x004CA17F,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
-            window->init_scroll_widgets();
+            auto window = (ui::Window*)regs.esi;
+            window->initScrollWidgets();
             regs = backup;
 
             return 0;
@@ -823,7 +822,7 @@ void openloco::interop::register_hooks()
 
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
-    // Can be removed when windowmgr:update() is hooked
+    // Can be removed when WindowManager:update() is hooked
     write_ret(0x00406520);
 
     // Remove check for is road in use when removing roads. It is

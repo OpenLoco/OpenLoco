@@ -1,7 +1,7 @@
 #include "scrollview.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 
@@ -10,7 +10,7 @@ namespace openloco::ui::scrollview
 
     // 0x004C8EF0
     void get_part(
-        ui::window* window,
+        ui::Window* window,
         ui::widget_t* widget,
         int16_t x,
         int16_t y,
@@ -34,7 +34,7 @@ namespace openloco::ui::scrollview
     }
 
     // 0x004CA1ED
-    void update_thumbs(window* window, widget_index widgetIndex)
+    void update_thumbs(Window* window, widget_index widgetIndex)
     {
         registers regs;
 

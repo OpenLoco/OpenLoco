@@ -1,6 +1,6 @@
 #pragma once
 
-#include "windowmgr.h"
+#include "ui/WindowManager.h"
 #include <cstdint>
 
 namespace openloco::input
@@ -62,8 +62,8 @@ namespace openloco::input
     input_state state();
     void state(input_state);
 
-    bool is_hovering(ui::window_type);
-    bool is_hovering(ui::window_type, ui::window_number);
+    bool is_hovering(ui::WindowType);
+    bool is_hovering(ui::WindowType, ui::window_number);
     ui::widget_index get_hovered_widget_index();
 
     bool has_key_modifier(key_modifier modifier);

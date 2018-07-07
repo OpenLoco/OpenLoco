@@ -1,5 +1,5 @@
+#include "../Window.h"
 #include "../interop/interop.hpp"
-#include "../window.h"
 
 using namespace openloco::interop;
 
@@ -22,7 +22,7 @@ namespace openloco::ui::scrollview
     };
 
     void get_part(
-        ui::window* window,
+        ui::Window* window,
         ui::widget_t* widget,
         int16_t x,
         int16_t y,
@@ -30,5 +30,5 @@ namespace openloco::ui::scrollview
         int16_t* output_y,
         scroll_part* output_scroll_area,
         int32_t* scroll_id);
-    void update_thumbs(window* window, widget_index widgetIndex);
+    void update_thumbs(Window* window, widget_index widgetIndex);
 }

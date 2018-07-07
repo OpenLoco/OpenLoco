@@ -6,11 +6,12 @@
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::title_options
+namespace openloco::windows::TitleOptionsWindow
 {
     static const gfx::ui_size_t window_size = { 60, 15 };
 
@@ -29,27 +30,27 @@ namespace openloco::ui::title_options
 
     static window_event_list _events;
 
-    static void on_mouse_up(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void onClick(Window* window, widget_index widgetIndex);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
 
-    window* open()
+    Window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = onClick;
         _events.draw = draw;
 
-        auto window = windowmgr::create_window(
-            window_type::title_options,
+        auto window = WindowManager::createWindow(
+            WindowType::titleOptions,
             ui::width() - window_size.width,
             0,
             window_size.width,
             window_size.height,
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::options_button);
+        window->setEnabledWidgets(widx::options_button);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);
@@ -57,19 +58,19 @@ namespace openloco::ui::title_options
         return window;
     }
 
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::options_button].top + 2;
         gfx::point_t origin = { x, y };
 
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
+        gfx::draw_string_centred_wrapped(context, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void onClick(Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
@@ -79,7 +80,7 @@ namespace openloco::ui::title_options
         switch (widgetIndex)
         {
             case widx::options_button:
-                ui::options::open();
+                OptionsWindow::open();
                 break;
         }
     }

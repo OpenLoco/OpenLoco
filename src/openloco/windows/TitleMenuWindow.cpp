@@ -10,12 +10,13 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::windows
+namespace openloco::windows::TitleMenuWindow
 {
     static const uint16_t btn_main_size = 74;
     static const uint16_t btn_sub_height = 18;
@@ -117,51 +118,51 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void sub_439112(window* window);
+    static void sub_439112(Window* window);
     static void sub_4391CC(int16_t itemIndex);
     static void sub_43918F(char string[512]);
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
-    static void sub_439163(ui::window* callingWindow, widget_index callingWidget);
+    static void sub_439163(ui::Window* callingWindow, widget_index callingWidget);
     static void sub_439102();
     static void sub_46E328();
 
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
-    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void on_update(window* window);
-    static void on_text_input(window* window, widget_index widgetIndex, char* input);
+    static void onClick(ui::Window* window, widget_index widgetIndex);
+    static void on_mouse_down(ui::Window* window, widget_index widgetIndex);
+    static void on_dropdown(ui::Window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void on_update(Window* window);
+    static void on_text_input(Window* window, widget_index widgetIndex, char* input);
     static ui::cursor_id on_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void prepare_draw(ui::window* window);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
+    static void prepare_draw(ui::Window* window);
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
 
-    ui::window* open_title_menu()
+    ui::Window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.onClick = onClick;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
         _events.text_input = on_text_input;
         _events.cursor = on_cursor;
-        _events.on_update = on_update;
-        _events.prepare_draw = prepare_draw;
+        _events.onUpdate = on_update;
+        _events.prepareDraw = prepare_draw;
         _events.draw = draw;
 
-        auto window = openloco::ui::windowmgr::create_window(
-            window_type::title_menu,
+        auto window = openloco::ui::WindowManager::createWindow(
+            WindowType::titleMenu,
             (ui::width() - ww) / 2,
             ui::height() - wh - 25,
             ww,
             wh,
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::scenario_list_btn) | (1 << widx::load_game_btn) | (1 << widx::tutorial_btn) | (1 << widx::scenario_editor_btn) | (1 << widx::chat_btn) | (1 << widx::multiplayer_toggle_btn);
+        window->setEnabledWidgets(widx::scenario_list_btn, widx::load_game_btn, widx::tutorial_btn, widx::scenario_editor_btn, widx::chat_btn, widx::multiplayer_toggle_btn);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);
@@ -171,7 +172,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00438E0B
-    static void prepare_draw(ui::window* window)
+    static void prepare_draw(ui::Window* window)
     {
         window->disabled_widgets = 0;
         window->widgets[widx::tutorial_btn].type = ui::widget_type::wt_9;
@@ -205,10 +206,10 @@ namespace openloco::ui::windows
     }
 
     // 0x00438EC7
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
         if (window->widgets[widx::scenario_list_btn].type != ui::widget_type::none)
         {
@@ -216,13 +217,13 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_sparkle);
+            openloco::gfx::draw_image(context, x, y, image_id);
+            openloco::gfx::draw_image(context, x, y, image_ids::title_menu_sparkle);
         }
 
         if (window->widgets[widx::load_game_btn].type != ui::widget_type::none)
@@ -231,13 +232,13 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::load_game_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::load_game_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_save);
+            openloco::gfx::draw_image(context, x, y, image_id);
+            openloco::gfx::draw_image(context, x, y, image_ids::title_menu_save);
         }
 
         if (window->widgets[widx::tutorial_btn].type != ui::widget_type::none)
@@ -246,15 +247,15 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
+            openloco::gfx::draw_image(context, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_lesson_l);
+            openloco::gfx::draw_image(context, x, y, image_ids::title_menu_lesson_l);
         }
 
         if (window->widgets[widx::scenario_editor_btn].type != ui::widget_type::none)
@@ -263,12 +264,12 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_construct_24;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
             {
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
+            openloco::gfx::draw_image(context, x, y, image_id);
         }
 
         {
@@ -290,12 +291,12 @@ namespace openloco::ui::windows
                 string = string_ids::two_player_mode_connected;
             }
 
-            draw_string_centred_clipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
+            draw_string_centred_clipped(*context, x, y, ww - 4, colour::black, string, (char*)0x112c826);
         }
     }
 
     // 0x00439094
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onClick(ui::Window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
@@ -325,7 +326,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390D1
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
+    static void on_mouse_down(ui::Window* window, widget_index widgetIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -337,7 +338,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390DD
-    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void on_dropdown(ui::Window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -349,7 +350,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390ED
-    static void on_text_input(window* window, widget_index widgetIndex, char* input)
+    static void on_text_input(Window* window, widget_index widgetIndex, char* input)
     {
         switch (widgetIndex)
         {
@@ -362,7 +363,7 @@ namespace openloco::ui::windows
     // 0x004390f8
     static ui::cursor_id on_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        // Reset tooltip timeout to keep tooltips open.
+        // Reset TooltipWindow timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;
         return fallback;
     }
@@ -377,7 +378,7 @@ namespace openloco::ui::windows
         call(0x0043D7DC); // show_scenario_editor
     }
 
-    static void sub_439112(window* window)
+    static void sub_439112(Window* window)
     {
         dropdown::add(0, string_ids::tutorial_1);
         dropdown::add(1, string_ids::tutorial_2);
@@ -394,14 +395,14 @@ namespace openloco::ui::windows
             0x80);
     }
 
-    static void sub_439163(ui::window* callingWindow, widget_index callingWidget)
+    static void sub_439163(ui::Window* callingWindow, widget_index callingWidget)
     {
-        windowmgr::close(window_type::multiplayer);
+        WindowManager::close(WindowType::multiplayer);
 
         addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        textinput::open_textinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
+        windows::TextInputWindow::open(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(char string[512])
@@ -441,7 +442,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004391F9
-    static void on_update(window* window)
+    static void on_update(Window* window)
     {
         window->var_846++;
 
@@ -463,7 +464,7 @@ namespace openloco::ui::windows
             return;
         }
 
-        auto multiplayer = windowmgr::find(window_type::multiplayer);
+        auto multiplayer = WindowManager::find(WindowType::multiplayer);
         if (multiplayer == nullptr)
         {
             call(0x0046e639); // window_multiplayer::open

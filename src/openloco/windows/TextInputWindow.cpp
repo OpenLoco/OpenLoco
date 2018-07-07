@@ -5,8 +5,8 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../ui/WindowManager.h"
 #include "../win32.h"
-#include "../windowmgr.h"
 #include <cassert>
 
 #ifdef _WIN32
@@ -22,14 +22,15 @@
 #endif
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
-namespace openloco::ui::textinput
+namespace openloco::windows::TextInputWindow
 {
     constexpr int16_t textboxPadding = 4;
 
     static int16_t _callingWidget;
     static window_number _callingWindowNumber;
-    static loco_global<window_type, 0x523364> _callingWindowType;
+    static loco_global<WindowType, 0x523364> _callingWindowType;
 
     static char _formatArgs[16];
     static string_id _title;
@@ -70,13 +71,13 @@ namespace openloco::ui::textinput
         widget_end(),
     };
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                open_textinput((ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                open((ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -85,7 +86,7 @@ namespace openloco::ui::textinput
             0x004CE6C9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4CE6C9((window_type)regs.cl, (window_number)regs.dx);
+                sub_4CE6C9((WindowType)regs.cl, (window_number)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -110,14 +111,14 @@ namespace openloco::ui::textinput
             });
     }
 
-    static void prepare_draw(ui::window* window);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_update(ui::window* window);
+    static void prepareDraw(ui::Window* window);
+    static void draw(ui::Window* window, gfx::GraphicsContext* context);
+    static void onClick(ui::Window* window, widget_index widgetIndex);
+    static void onUpdate(ui::Window* window);
 
-    static bool needs_reoffsetting(int16_t containerWidth);
-    static void calculate_text_offset(int16_t containerWidth);
-    static void sanitize_input();
+    static bool needsReoffsetting(int16_t containerWidth);
+    static void calculateTextOffset(int16_t containerWidth);
+    static void sanitizeInput();
 
     /**
      * 0x004CE523
@@ -128,7 +129,7 @@ namespace openloco::ui::textinput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void open_textinput(ui::window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void open(ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;
@@ -147,34 +148,33 @@ namespace openloco::ui::textinput
         _buffer = temp;
 
         _events.draw = draw;
-        _events.prepare_draw = prepare_draw;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
+        _events.prepareDraw = prepareDraw;
+        _events.onClick = onClick;
+        _events.onUpdate = onUpdate;
 
-        auto window = windowmgr::create_window_centred(
-            window_type::text_input,
+        auto window = WindowManager::createWindowCentred(
+            WindowType::textInput,
             330,
             90,
-            window_flags::stick_to_front | window_flags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets |= 1ULL << widx::close;
-        window->enabled_widgets |= 1ULL << widx::ok;
-        window->init_scroll_widgets();
+        window->setEnabledWidgets(widx::close, widx::ok);
+        window->initScrollWidgets();
 
         cursor_position = _buffer.length();
         _cursorFrame = 0;
 
         _xOffset = 0;
-        calculate_text_offset(_widgets[widx::input].width() - 2);
+        calculateTextOffset(_widgets[widx::input].width() - 2);
 
-        caller = windowmgr::find(_callingWindowType, _callingWindowNumber);
+        caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
         window->colours[0] = caller->colours[0];
         window->colours[1] = caller->colours[1];
         window->var_884 = caller->var_884;
 
-        if (caller->type == window_type::title_menu)
+        if (caller->type == WindowType::titleMenu)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[0] = interface->colour_0B;
@@ -182,7 +182,7 @@ namespace openloco::ui::textinput
             window->var_884 = -1;
         }
 
-        if (caller->type == window_type::toolbar_time)
+        if (caller->type == WindowType::timeToolbar)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
@@ -192,7 +192,7 @@ namespace openloco::ui::textinput
         _widgets[widx::title].type = widget_type::caption_25;
         if (window->var_884 != -1)
         {
-            window->flags |= window_flags::flag_11;
+            window->flags |= WindowFlags::flag_11;
             _widgets[widx::title].type = widget_type::caption_24;
         }
     }
@@ -203,9 +203,9 @@ namespace openloco::ui::textinput
      * @param type @<cl>
      * @param number @<dx>
      */
-    void sub_4CE6C9(window_type type, window_number number)
+    void sub_4CE6C9(WindowType type, window_number number)
     {
-        auto window = windowmgr::find(window_type::text_input, 0);
+        auto window = WindowManager::find(WindowType::textInput, 0);
         if (window == nullptr)
             return;
 
@@ -220,7 +220,7 @@ namespace openloco::ui::textinput
      */
     void cancel()
     {
-        windowmgr::close(window_type::text_input);
+        WindowManager::close(WindowType::textInput);
     }
 
     /**
@@ -228,11 +228,11 @@ namespace openloco::ui::textinput
      */
     void sub_4CE6FF()
     {
-        auto window = windowmgr::find(window_type::text_input);
+        auto window = WindowManager::find(WindowType::textInput);
         if (window == nullptr)
             return;
 
-        window = windowmgr::find(_callingWindowType, _callingWindowNumber);
+        window = WindowManager::find(_callingWindowType, _callingWindowNumber);
         if (window == nullptr)
         {
             cancel();
@@ -244,7 +244,7 @@ namespace openloco::ui::textinput
      *
      * @param window @<esi>
      */
-    static void prepare_draw(ui::window* window)
+    static void prepareDraw(ui::Window* window)
     {
         _widgets[widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
@@ -256,7 +256,7 @@ namespace openloco::ui::textinput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context)
+    static void draw(ui::Window* window, gfx::GraphicsContext* context)
     {
         window->draw(context);
 
@@ -267,8 +267,8 @@ namespace openloco::ui::textinput
         gfx::draw_string_centred_wrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid2, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[widx::input];
-        gfx::drawpixelinfo_t* clipped = nullptr;
-        if (!gfx::clip_drawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
+        gfx::GraphicsContext* clipped = nullptr;
+        if (!gfx::clipGraphicsContext(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
             return;
         }
@@ -296,27 +296,27 @@ namespace openloco::ui::textinput
     }
 
     // 0x004CE8B6
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onClick(ui::Window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                windowmgr::close(window);
+                WindowManager::close(window);
                 break;
             case widx::ok:
-                sanitize_input();
-                auto caller = windowmgr::find(_callingWindowType, _callingWindowNumber);
+                sanitizeInput();
+                auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
                     caller->call_text_input(_callingWidget, _buffer.data());
                 }
-                windowmgr::close(window);
+                WindowManager::close(window);
                 break;
         }
     }
 
     // 0x004CE8FA
-    static void on_update(ui::window* window)
+    static void onUpdate(ui::Window* window)
     {
         _cursorFrame++;
         if ((_cursorFrame % 16) == 0)
@@ -327,7 +327,7 @@ namespace openloco::ui::textinput
 
     void sub_4CE910(int eax, int ebx)
     {
-        auto w = windowmgr::find(window_type::text_input);
+        auto w = WindowManager::find(WindowType::textInput);
         if (w == nullptr)
         {
             return;
@@ -372,12 +372,12 @@ namespace openloco::ui::textinput
         }
         else if (eax == VK_RETURN)
         {
-            w->call_on_mouse_up(widx::ok);
+            w->callOnClickEvent(widx::ok);
             return;
         }
         else if (eax == VK_ESCAPE)
         {
-            w->call_on_mouse_up(widx::close);
+            w->callOnClickEvent(widx::close);
             return;
         }
         else if (ebx == VK_HOME)
@@ -409,17 +409,17 @@ namespace openloco::ui::textinput
             cursor_position += 1;
         }
 
-        windowmgr::invalidate(window_type::text_input, 0);
+        WindowManager::invalidate(WindowType::textInput, 0);
         _cursorFrame = 0;
 
         int containerWidth = _widgets[widx::input].width() - 2;
-        if (needs_reoffsetting(containerWidth))
+        if (needsReoffsetting(containerWidth))
         {
-            calculate_text_offset(containerWidth);
+            calculateTextOffset(containerWidth);
         }
     }
 
-    static bool needs_reoffsetting(int16_t containerWidth)
+    static bool needsReoffsetting(int16_t containerWidth)
     {
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
@@ -446,7 +446,7 @@ namespace openloco::ui::textinput
      *
      * @param containerWidth @<edx>
      */
-    static void calculate_text_offset(int16_t containerWidth)
+    static void calculateTextOffset(int16_t containerWidth)
     {
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
@@ -474,7 +474,7 @@ namespace openloco::ui::textinput
     /**
      * 0x004CEBFB
      */
-    static void sanitize_input()
+    static void sanitizeInput()
     {
         _buffer.erase(
             std::remove_if(

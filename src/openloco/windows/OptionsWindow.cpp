@@ -1,9 +1,9 @@
 #include "../interop/interop.hpp"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 
-namespace openloco::ui::options
+namespace openloco::windows::OptionsWindow
 {
     void open()
     {

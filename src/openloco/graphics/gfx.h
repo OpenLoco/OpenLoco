@@ -8,7 +8,7 @@ namespace openloco::gfx
 {
 #pragma pack(push, 1)
 
-    struct drawpixelinfo_t
+    struct GraphicsContext
     {
         uint8_t* bits;       // 0x00
         int16_t x;           // 0x04
@@ -19,7 +19,7 @@ namespace openloco::gfx
         uint16_t zoom_level; // 0x0E
     };
 
-    drawpixelinfo_t& screen_dpi();
+    GraphicsContext& getScreenGraphicsContext();
 
     struct g1_header_t
     {
@@ -76,37 +76,37 @@ namespace openloco::gfx
         uint16_t height;
     };
 
-    drawpixelinfo_t& screen_dpi();
+    GraphicsContext& getScreenGraphicsContext();
 
     void load_g1();
-    void clear(drawpixelinfo_t& dpi, uint32_t fill);
-    void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
+    void clear(GraphicsContext& context, uint32_t fill);
+    void clear_single(GraphicsContext& context, uint8_t paletteId);
 
     int16_t clip_string(int16_t width, char* string);
     uint16_t get_string_width(const char* buffer);
 
     void draw_string(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         int16_t x,
         int16_t y,
         uint8_t colour,
         const char* string);
 
     void draw_string_494B3F(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         int16_t x,
         int16_t y,
         uint8_t colour,
         string_id stringId,
         const void* args);
     void draw_string_494B3F(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         point_t* origin,
         uint8_t colour,
         string_id stringId,
         const void* args);
     void draw_string_494BBF(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -114,14 +114,14 @@ namespace openloco::gfx
         string_id stringId,
         const void* args);
     void draw_string_centred(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         int16_t x,
         int16_t y,
         uint8_t colour,
         string_id stringId,
         const char* args);
     void draw_string_centred_clipped(
-        drawpixelinfo_t& dpi,
+        GraphicsContext& context,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -129,20 +129,20 @@ namespace openloco::gfx
         string_id stringId,
         const char* args);
     void draw_string_centred_wrapped(
-        drawpixelinfo_t* context,
+        GraphicsContext* context,
         point_t* origin,
         uint16_t width,
         uint8_t colour,
         string_id stringId,
         const char* args = nullptr);
 
-    void fill_rect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color);
-    void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t color);
-    void fill_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color, uint8_t flags);
-    void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image);
-    void draw_image_solid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
+    void fill_rect(gfx::GraphicsContext* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color);
+    void draw_rect(gfx::GraphicsContext* context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t color);
+    void fill_rect_inset(gfx::GraphicsContext* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color, uint8_t flags);
+    void draw_image(gfx::GraphicsContext* context, int16_t x, int16_t y, uint32_t image);
+    void draw_image_solid(gfx::GraphicsContext* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
-    bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
+    bool clipGraphicsContext(gfx::GraphicsContext** dst, gfx::GraphicsContext* src, int16_t x, int16_t y, int16_t width, int16_t height);
 }
