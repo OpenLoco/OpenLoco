@@ -8,11 +8,11 @@ if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 endif()
 
-INCLUDE(FindPkgConfig)
+include(FindPkgConfig)
 
 set(USE_BOOST_FS_DEFAULT OFF)
 if(APPLE OR MINGW)
-	set(USE_BOOST_FS_DEFAULT ON)
+    set(USE_BOOST_FS_DEFAULT ON)
 endif()
 
 option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
@@ -165,8 +165,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -W
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
-PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
-SET(SDL2LIBS ${SDL2_LDFLAGS})
+pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2)
 
 if (USE_BOOST_FILESYSTEM)
     set(Boost_USE_STATIC_LIBS OFF)
@@ -184,6 +183,7 @@ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/in
 
 set(CMAKE_CXX_STANDARD 17)
 
+link_directories(${SDL2_LIBRARY_DIRS})
 if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})
     target_link_libraries(${PROJECT} winmm)
@@ -191,7 +191,8 @@ else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
-target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
+target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
+target_include_directories(${PROJECT} PRIVATE ${SDL2_INCLUDE_DIRS})
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
 endif()
