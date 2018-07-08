@@ -92,7 +92,7 @@ namespace openloco::gfx
         uint8_t colour,
         const char* string);
 
-    void drawString(int16_t x, int16_t y, drawpixelinfo_t* context, uint8_t* str);
+    void drawString(int16_t x, int16_t y, uint8_t al, drawpixelinfo_t* context, uint8_t* str);
 
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,

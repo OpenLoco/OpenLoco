@@ -191,10 +191,11 @@ namespace openloco::gfx
      *
      * @param x  @<cx>
      * @param y @<dx>
+     * @param al @<al>
      * @param context @<edi>
      * @param text @<esi>
      */
-    void drawString(int16_t x, int16_t y, drawpixelinfo_t* context, uint8_t* str)
+    void drawString(int16_t x, int16_t y, uint8_t al, drawpixelinfo_t* context, uint8_t* str)
     {
         gfx::point_t origin = { x, y };
         gfx::point_t pos = origin;
@@ -206,17 +207,65 @@ namespace openloco::gfx
         colours[3] = 0;
         colours[4] = colour::get_shade(colour::bright_red, 4);
 
-        // 4510FF
-        colours[1] = colour::get_shade(colour::bright_red, 4);
-        colours[3] = colour::get_shade(colour::bright_red, 6);
+        if (al == 0xFE)
+            // GOTO: loop_newline
+            return;
 
-        // 451112
-        colours[1] = colour::get_shade(colour::bright_red, 3);
-        colours[3] = colour::get_shade(colour::bright_red, 5);
+        if (al == 0xFD)
+            // GOTO: loc_451143
+            return;
 
-        // 0x451130
-        colours[1] = colour::get_shade(colour::bright_red, 2);
-        colours[3] = colour::get_shade(colour::bright_red, 4);
+        if (x >= context->x + context->width)
+            return;
+
+        if (x < context->x - 1280)
+            return;
+
+        if (y >= context->y + context->height)
+            return;
+
+        if (y < context->y - 90)
+            return;
+
+        _currentFontFlags = 0;
+        if (_currentFontSpriteBase == -1)
+        {
+            _currentFontSpriteBase = 224;
+            _currentFontFlags |= (1 << 2);
+        }
+        else if (_currentFontSpriteBase == -2)
+        {
+            _currentFontSpriteBase = 224;
+            _currentFontFlags |= (1 << 2);
+            _currentFontFlags |= (1 << 3);
+        }
+        if (al & (1 << 5))
+        {
+            al &= ~(1 << 5);
+            _currentFontFlags |= (1 << 1);
+        }
+
+        if (al & (1 << 6))
+        {
+            al &= ~(1 << 6);
+            _currentFontFlags |= (1 << 0);
+
+            if ((_currentFontFlags & (1 << 2)) == 0)
+            {
+                colours[1] = colour::get_shade(al, 4);
+                colours[3] = colour::get_shade(al, 6);
+            }
+            else if (((_currentFontFlags & (1 << 3)) == 0))
+            {
+                colours[1] = colour::get_shade(al, 3);
+                colours[3] = colour::get_shade(al, 5);
+            }
+            else
+            {
+                colours[1] = colour::get_shade(al, 2);
+                colours[3] = colour::get_shade(al, 4);
+            }
+        }
 
         while (true)
         {
@@ -393,7 +442,15 @@ namespace openloco::gfx
 
                 case 144 + 13:
                     // PALESILVER
-                    break;
+                    {
+                        int c = chr - 144;
+                        auto el = &_g1Elements[2169];
+                        colours[1] = el->offset[c * 4 + 0];
+                        colours[2] = el->offset[c * 4 + 1];
+                        colours[3] = el->offset[c * 4 + 2];
+                        colours[4] = el->offset[c * 4 + 3];
+                        break;
+                    }
 
                 default:
                     if (chr >= 32)
@@ -401,6 +458,11 @@ namespace openloco::gfx
 
                         gfx::draw_sprite_palete_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, colours);
                         pos.x += characterWidths[chr - 32 + _currentFontSpriteBase];
+                    }
+                    else
+                    {
+                        printf("   CHAR: %d\n", chr);
+                        assert(false);
                     }
                     break;
             }
