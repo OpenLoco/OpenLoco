@@ -671,8 +671,10 @@ void openloco::interop::register_hooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            gfx::drawString(regs.cx, regs.dx, regs.al, (gfx::drawpixelinfo_t*)regs.edi, (uint8_t*)regs.esi);
+            auto pos = gfx::drawString(regs.cx, regs.dx, regs.al, (gfx::drawpixelinfo_t*)regs.edi, (uint8_t*)regs.esi);
             regs = backup;
+            regs.cx = pos.x;
+            regs.dx = pos.y;
 
             return 0;
         });

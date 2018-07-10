@@ -1,5 +1,4 @@
 #include "gfx.h"
-#include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
@@ -20,10 +19,28 @@ namespace openloco::gfx
         constexpr uint32_t steam = 0x0F38;
     }
 
+    namespace text_draw_flags
+    {
+        constexpr uint8_t inset = (1ULL << 0);
+        constexpr uint8_t outline = (1ULL << 1);
+        constexpr uint8_t dark = (1ULL << 2);
+        constexpr uint8_t extra_dark = (1ULL << 3);
+    }
+
+    constexpr uint32_t g1_count_objects = 0x40000;
+    constexpr uint32_t g1_count_temporary = 0x1000;
+
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global<g1_element[g1_expected_count::disc + 0x50000], 0x9E2424> _g1Elements;
+    static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
+
+    static loco_global<uint16_t, 0x112C824> _currentFontFlags;
+    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
+    static loco_global<uint8_t[4], 0x1136594> _windowColours;
+
+    static palette_index_t _textColours[8] = { 0 };
 
     drawpixelinfo_t& screen_dpi()
     {
@@ -183,35 +200,15 @@ namespace openloco::gfx
         call(0x00451025, regs);
     }
 
-    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
-    static loco_global<uint16_t, 0x112C824> _currentFontFlags;
-    static loco_global<uint8_t[4], 0x1136594> windowColours;
-    static loco_global<uint8_t[224 * 4], 0x112C884> characterWidths;
-
-    constexpr uint8_t textflag_5 = (1ULL << 5);
-    constexpr uint8_t textflag_6 = (1ULL << 6);
-
-    constexpr uint8_t TEXT_DRAW_FLAG_INSET = (1ULL << 0);
-    constexpr uint8_t TEXT_DRAW_FLAG_OUTLINE = (1ULL << 1);
-    constexpr uint8_t TEXT_DRAW_FLAG_DARK = (1ULL << 2);
-    constexpr uint8_t TEXT_DRAW_FLAG_EXTRA_DARK = (1ULL << 3);
-
-    constexpr int font_regular = 0;
-    constexpr int font_bold = 224;
-    constexpr int font_small = 448;
-    constexpr int font_large = 672;
-
-    static uint8_t _textColours[8] = { 0 };
-
-    static void setTextColours(uint8_t pal1, uint8_t pal2, uint8_t pal3)
+    static void setTextColours(palette_index_t pal1, palette_index_t pal2, palette_index_t pal3)
     {
-        if ((_currentFontFlags & TEXT_DRAW_FLAG_INSET) != 0)
+        if ((_currentFontFlags & text_draw_flags::inset) != 0)
             return;
 
         _textColours[1] = pal1;
-        _textColours[2] = 0;
-        _textColours[3] = 0;
-        if ((_currentFontFlags & TEXT_DRAW_FLAG_OUTLINE) != 0)
+        _textColours[2] = palette_index::transparent;
+        _textColours[3] = palette_index::transparent;
+        if ((_currentFontFlags & text_draw_flags::outline) != 0)
         {
             _textColours[2] = pal2;
             _textColours[3] = pal3;
@@ -231,47 +228,48 @@ namespace openloco::gfx
 
             switch (chr)
             {
-                case 0:
+                case '\0':
                     return pos;
 
-                case 2:
+                case control_code::adjust_palette:
+                    // This control character does not appear in the localisation files
                     assert(false);
                     str++;
                     break;
 
-                case 6:
+                case control_code::newline_smaller:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font_regular || _currentFontSpriteBase == font_bold)
+                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
                     {
                         pos.y += 5;
                     }
-                    else if (_currentFontSpriteBase == font_small)
+                    else if (_currentFontSpriteBase == font::small)
                     {
                         pos.y += 3;
                     }
-                    else if (_currentFontSpriteBase == font_large)
+                    else if (_currentFontSpriteBase == font::large)
                     {
                         pos.y += 9;
                     }
                     break;
 
-                case 5:
+                case control_code::newline:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font_regular || _currentFontSpriteBase == font_bold)
+                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
                     {
                         pos.y += 10;
                     }
-                    else if (_currentFontSpriteBase == font_small)
+                    else if (_currentFontSpriteBase == font::small)
                     {
                         pos.y += 6;
                     }
-                    else if (_currentFontSpriteBase == font_large)
+                    else if (_currentFontSpriteBase == font::large)
                     {
                         pos.y += 18;
                     }
                     break;
 
-                case 1:
+                case control_code::move_x:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -280,7 +278,7 @@ namespace openloco::gfx
                     break;
                 }
 
-                case 17:
+                case control_code::newline_x_y:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -293,50 +291,50 @@ namespace openloco::gfx
                     break;
                 }
 
-                case 7:
-                    _currentFontSpriteBase = font_small;
+                case control_code::font_small:
+                    _currentFontSpriteBase = font::small;
                     break;
-                case 8:
-                    _currentFontSpriteBase = font_large;
+                case control_code::font_large:
+                    _currentFontSpriteBase = font::large;
                     break;
-                case 10:
-                    _currentFontSpriteBase = font_regular;
+                case control_code::font_regular:
+                    _currentFontSpriteBase = font::medium_normal;
                     break;
-                case 9:
-                    _currentFontSpriteBase = font_bold;
+                case control_code::font_bold:
+                    _currentFontSpriteBase = font::medium_bold;
                     break;
-                case 11:
-                    _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_OUTLINE;
+                case control_code::outline:
+                    _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
                     break;
-                case 12:
-                    _currentFontFlags = _currentFontFlags & ~TEXT_DRAW_FLAG_OUTLINE;
+                case control_code::outline_off:
+                    _currentFontFlags = _currentFontFlags & ~text_draw_flags::outline;
                     break;
-                case 13:
+                case control_code::window_colour_1:
                 {
-                    int hue = windowColours[0];
-                    setTextColours(colour::get_shade(hue, 7), 0x0A, 0x0A);
+                    int hue = _windowColours[0];
+                    setTextColours(colour::get_shade(hue, 7), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
-                case 14:
+                case control_code::window_colour_2:
                 {
-                    int hue = windowColours[1];
-                    setTextColours(colour::get_shade(hue, 9), 0x0A, 0x0A);
+                    int hue = _windowColours[1];
+                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
-                case 15:
+                case control_code::window_colour_3:
                 {
-                    int hue = windowColours[2];
-                    setTextColours(colour::get_shade(hue, 9), 0x0A, 0x0A);
+                    int hue = _windowColours[2];
+                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
 
-                case 23:
+                case control_code::inline_sprite:
                 {
                     uint32_t image = ((uint32_t*)str)[0];
                     uint32_t imageId = image & 0x7FFFF;
                     str += 4;
 
-                    if ((_currentFontFlags & TEXT_DRAW_FLAG_OUTLINE) != 0)
+                    if ((_currentFontFlags & text_draw_flags::outline) != 0)
                     {
                         gfx::draw_image_solid(context, pos.x, pos.y, imageId, _textColours[3]);
                         gfx::draw_image_solid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
@@ -350,46 +348,46 @@ namespace openloco::gfx
                     break;
                 }
 
-                case 144 + 0:
+                case control_code::colour_black:
                     // black
 
-                case 144 + 1:
+                case control_code::colour_grey:
                     // grey
 
-                case 144 + 2:
+                case control_code::colour_white:
                     // white
 
-                case 144 + 3:
+                case control_code::colour_red:
                     // red
 
-                case 144 + 4:
+                case control_code::colour_green:
                     // green
 
-                case 144 + 5:
+                case control_code::colour_yellow:
                     // yellow
 
-                case 144 + 6:
+                case control_code::colour_topaz:
                     // TOPAZ
 
-                case 144 + 7:
+                case control_code::colour_celadon:
                     // CELADON
 
-                case 144 + 8:
+                case control_code::colour_babyblue:
                     // BABYBLUE
 
-                case 144 + 9:
+                case control_code::colour_palelavender:
                     // PALELAVENDER
 
-                case 144 + 10:
+                case control_code::colour_palegold:
                     // PALEGOLD
 
-                case 144 + 11:
+                case control_code::colour_lightpink:
                     // LIGHTPINK
 
-                case 144 + 12:
+                case control_code::colour_pearlaqua:
                     // PEARLAQUA
 
-                case 144 + 13:
+                case control_code::colour_palesilver:
                     // PALESILVER
                     {
                         int c = chr - 144;
@@ -402,12 +400,12 @@ namespace openloco::gfx
                     if (chr >= 32)
                     {
 
-                        gfx::draw_sprite_palete_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
-                        pos.x += characterWidths[chr - 32 + _currentFontSpriteBase];
+                        gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                        pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
                     }
                     else
                     {
-                        printf("   CHAR: %d\n", chr);
+                        // Unhandled control code
                         assert(false);
                     }
                     break;
@@ -428,16 +426,15 @@ namespace openloco::gfx
      */
     gfx::point_t drawString(int16_t x, int16_t y, uint8_t colour, drawpixelinfo_t* context, uint8_t* str)
     {
-        console::log("%s(%d, %d, 0x%02X, %s)", __FUNCTION__, x, y, colour, str);
         // 0x00E04348, 0x00E0434A
         gfx::point_t origin = { x, y };
 
-        if (colour == 0xFE)
+        if (colour == format_flags::fe)
         {
             return loop_newline(context, origin, str);
         }
 
-        if (colour == 0xFD)
+        if (colour == format_flags::fd)
         {
             _currentFontFlags = 0;
 
@@ -462,59 +459,59 @@ namespace openloco::gfx
             return origin;
 
         _currentFontFlags = 0;
-        if (_currentFontSpriteBase == -1)
+        if (_currentFontSpriteBase == font::m1)
         {
-            _currentFontSpriteBase = font_bold;
-            _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_DARK;
+            _currentFontSpriteBase = font::medium_bold;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
         }
-        else if (_currentFontSpriteBase == -2)
+        else if (_currentFontSpriteBase == font::m2)
         {
-            _currentFontSpriteBase = font_bold;
-            _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_DARK;
-            _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_EXTRA_DARK;
+            _currentFontSpriteBase = font::medium_bold;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
         }
-        console::log("_currentFontSpriteBase = %d", 0 + _currentFontSpriteBase);
-        _textColours[0] = 0;
+
+        _textColours[0] = palette_index::transparent;
         _textColours[1] = colour::get_shade(colour::dark_purple, 5);
         _textColours[2] = colour::get_shade(colour::bright_pink, 5);
         _textColours[3] = colour::get_shade(colour::light_blue, 5);
 
-        if (colour & textflag_5)
+        if (colour & format_flags::textflag_5)
         {
-            colour &= ~textflag_5;
-            _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_OUTLINE;
+            colour &= ~format_flags::textflag_5;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
         }
 
-        if (colour & textflag_6)
+        if (colour & format_flags::textflag_6)
         {
-            colour &= ~textflag_6;
-            _currentFontFlags = _currentFontFlags | TEXT_DRAW_FLAG_INSET;
+            colour &= ~format_flags::textflag_6;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::inset;
         }
 
-        if ((_currentFontFlags & TEXT_DRAW_FLAG_INSET) != 0)
+        if ((_currentFontFlags & text_draw_flags::inset) != 0)
         {
-            if ((_currentFontFlags & TEXT_DRAW_FLAG_DARK) != 0 && (_currentFontFlags & TEXT_DRAW_FLAG_EXTRA_DARK) != 0)
+            if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
             {
                 _textColours[1] = colour::get_shade(colour, 2);
-                _textColours[2] = 0;
+                _textColours[2] = palette_index::transparent;
                 _textColours[3] = colour::get_shade(colour, 4);
             }
-            else if ((_currentFontFlags & TEXT_DRAW_FLAG_DARK) != 0)
+            else if ((_currentFontFlags & text_draw_flags::dark) != 0)
             {
                 _textColours[1] = colour::get_shade(colour, 3);
-                _textColours[2] = 0;
+                _textColours[2] = palette_index::transparent;
                 _textColours[3] = colour::get_shade(colour, 5);
             }
             else
             {
                 _textColours[1] = colour::get_shade(colour, 4);
-                _textColours[2] = 0;
+                _textColours[2] = palette_index::transparent;
                 _textColours[3] = colour::get_shade(colour, 6);
             }
         }
         else
         {
-            setTextColours(colour::get_shade(colour, 9), 0x0A, 0x0A);
+            setTextColours(colour::get_shade(colour, 9), palette_index::index_0A, palette_index::index_0A);
         }
 
         return loop_newline(context, origin, str);
@@ -743,10 +740,10 @@ namespace openloco::gfx
         memset(palette, palette_index, 256);
         palette[0] = 0;
 
-        draw_sprite_palete_set(dpi, x, y, image, palette);
+        draw_image_palette_set(dpi, x, y, image, palette);
     }
 
-    void draw_sprite_palete_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    void draw_image_palette_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
         _50B860 = palette;
         _E04324 = 0x20000000;

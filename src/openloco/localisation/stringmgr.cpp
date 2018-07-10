@@ -550,7 +550,7 @@ namespace openloco::stringmgr
 
                     case formatting_codes::inline_sprite_args:
                     {
-                        *buffer = formatting_codes::inline_sprite_str;
+                        *buffer = control_code::inline_sprite;
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;

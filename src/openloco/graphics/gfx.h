@@ -143,7 +143,7 @@ namespace openloco::gfx
     void fill_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color, uint8_t flags);
     void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image);
     void draw_image_solid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
-    void draw_sprite_palete_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
+    void draw_image_palette_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
 
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);

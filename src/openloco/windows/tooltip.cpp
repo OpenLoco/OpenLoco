@@ -74,7 +74,7 @@ namespace openloco::ui::tooltip
     {
         stringmgr::format_string(byte_112CC04, stringId, _commonFormatArgs);
 
-        gCurrentFontSpriteBase = 224;
+        gCurrentFontSpriteBase = font::medium_bold;
         int16_t strWidth;
         {
             // gfx_get_string_width_new_lined
@@ -85,7 +85,7 @@ namespace openloco::ui::tooltip
         }
         strWidth = std::max<int16_t>(strWidth, 196);
 
-        gCurrentFontSpriteBase = 224;
+        gCurrentFontSpriteBase = font::medium_bold;
         {
             // gfx_wrap_string
             registers regs;
