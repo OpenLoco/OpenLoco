@@ -1,3 +1,4 @@
+#include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
@@ -5,6 +6,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui.h"
+#include "../ui/dropdown.h"
 #include "../windowmgr.h"
 
 using namespace openloco::interop;
@@ -96,7 +98,157 @@ namespace openloco::ui::options
             regs.edx = wi;
             regs.esi = (uint32_t)w;
             call(0x004BFB8C, regs);
+
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_control:
+                case common::widx::tab_miscellaneous:
+                    return;
+
+                case widx::landscape_smoothing:
+                {
+                    // Does this actually create a reference?
+                    auto cfg = &openloco::config::get();
+                    if (cfg->flags & 4)
+                    {
+                        cfg->flags &= ~4;
+                    }
+                    else
+                    {
+                        cfg->flags |= 4;
+                    }
+                    openloco::config::write();
+                    gfx::invalidate_screen();
+                    return;
+                }
+
+                case widx::gridlines_on_landscape:
+                {
+                    // Does this actually create a reference?
+                    auto cfg = &openloco::config::get();
+                    if (cfg->flags & 1)
+                    {
+                        cfg->flags &= ~1;
+                    }
+                    else
+                    {
+                        cfg->flags |= 1;
+                    }
+                    openloco::config::write();
+                    gfx::invalidate_screen();
+
+                    auto main = windowmgr::get_main();
+                    if (main != nullptr)
+                    {
+                        main->viewports[0]->var_12 &= ~(1 << 5);
+
+                        if ((cfg->flags & 1) != 0)
+                        {
+                            main->viewports[0]->var_12 |= (1 << 5);
+                        }
+                    }
+
+                    return;
+                }
+            }
         }
+
+#pragma mark - Widget 19
+
+        // dropdown
+        static void sub_4BFE2E(window* w)
+        {
+            w->widgets[widx - 1].left;   // -E
+            w->widgets[widx - 1].right;  // -C
+            w->widgets[widx - 1].top;    // -A
+            w->widgets[widx - 1].bottom; // -8
+
+            // TODO: allow to pass object with format args
+            dropdown::add(0, string_ids::str_421, string_ids::white);
+            dropdown::add(1, string_ids::str_421, string_ids::translucent);
+            dropdown::set_selection(config::get().var_11);
+        }
+
+        // dropdown
+        static void sub_4BFE98(int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            if (ax == config::get().var_11)
+                return;
+
+            // Does this actually create a reference?
+            auto cfg = &openloco::config::get();
+            cfg->var_11 = ax;
+            openloco::config::write();
+            gfx::invalidate_screen();
+        }
+
+#pragma mark - Widget 15
+        // mouse down
+        static void sub_4BFEBE()
+        {
+        }
+
+        // dropdown
+        static void sub_4BFF4C(int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            if (ax == config::get().var_71)
+                return;
+
+            // Does this actually create a reference?
+            auto cfg = &openloco::config::get();
+            cfg->var_71 = ax;
+            openloco::config::write();
+            gfx::invalidate_screen();
+        }
+
+#pragma mark - Widget 17
+        // mouse down
+        static void sub_4BFF72()
+        {
+        }
+
+        // dropdown
+        static void sub_4C0000(int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            if (ax == config::get().var_114)
+                return;
+
+            // Does this actually create a reference?
+            auto cfg = &openloco::config::get();
+            cfg->var_114 = ax;
+            openloco::config::write();
+            gfx::invalidate_screen();
+        }
+
+#pragma mark - Widget 11
+        // mouse down
+        static void sub_4C0026()
+        {
+        }
+
+        // dropdown
+        static void sub_4C00F4(int16_t ax)
+        {
+        }
+
+#pragma mark -
 
         // 0x004BFBB7
         static void on_mouse_down(window* w, widget_index wi)

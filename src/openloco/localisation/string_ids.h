@@ -115,6 +115,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id str_421 = 421;
+
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
     constexpr string_id white_stringid2 = 455;
