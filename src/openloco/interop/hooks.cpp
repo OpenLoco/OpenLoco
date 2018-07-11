@@ -174,19 +174,6 @@ static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
     return size;
 }
 
-FORCE_ALIGN_ARG_POINTER
-static int CDECL fn_CloseHandle(FILE* file)
-{
-    // STUB();
-    if (file == nullptr)
-    {
-        return 1;
-    }
-
-    fclose(file);
-    return 0;
-}
-
 typedef struct FindFileData
 {
     uint32_t dwFileAttributes;
@@ -381,6 +368,7 @@ static bool STDCALL lib_WriteFile(
     uint32_t* lpNumberOfBytesWritten,
     uintptr_t lpOverlapped)
 {
+    *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
     console::log("WriteFile(%s)", buffer);
 
     return true;
@@ -458,9 +446,12 @@ static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitial
     return nullptr;
 }
 
-static void STDCALL lib_CloseHandle(int a0)
+FORCE_ALIGN_ARG_POINTER
+static bool STDCALL lib_CloseHandle(void* hObject)
 {
-    console::log("CloseHandle(%d)", a0);
+    auto file = (FILE*)hObject;
+
+    return fclose(file) == 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -498,7 +489,6 @@ static void register_no_win32_hooks()
     write_jmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
     write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
     write_jmp(0x4081fe, (void*)&fn_FileRead);
-    write_jmp(0x408297, (void*)&fn_CloseHandle);
     write_jmp(0x40830e, (void*)&fn_FindFirstFile);
     write_jmp(0x40831d, (void*)&fn_FindNextFile);
     write_jmp(0x40832c, (void*)&fn_FindClose);

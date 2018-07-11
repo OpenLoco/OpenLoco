@@ -39,7 +39,7 @@ namespace openloco::stringmgr
         int16_decimals = 123 + 2,
         int32_decimals = 123 + 3,
         int16_grouped = 123 + 4,
-        int16_ungrouped = 123 + 5,
+        uint16_ungrouped = 123 + 5,
         currency32 = 123 + 6,
         currency48 = 123 + 7,
         stringid_args = 123 + 8,
@@ -343,9 +343,9 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::int16_ungrouped:
+                    case formatting_codes::uint16_ungrouped:
                     {
-                        int16_t value = args.pop16();
+                        uint16_t value = args.pop16();
                         buffer = format_int32_ungrouped((int32_t)value, buffer);
                         break;
                     }
@@ -490,7 +490,7 @@ namespace openloco::stringmgr
 
                     case formatting_codes::height:
                     {
-                        uint32_t value = args.pop16();
+                        int32_t value = (int16_t)args.pop16();
 
                         bool show_height_as_units = config::get().flags & config::flags::show_height_as_units;
                         uint8_t measurement_format = config::get().measurement_format;

@@ -238,18 +238,20 @@ namespace openloco::ui
 
             bool invalidate = false;
 
-            if (widget->content & (1 << 0))
+            if (widget->content & scrollbars::horizontal)
             {
                 if (this->scroll_areas[s].h_right != scrollWidth + 1)
                 {
+                    this->scroll_areas[s].h_right = scrollWidth + 1;
                     invalidate = true;
                 }
             }
 
-            if (widget->content & (1 << 1))
+            if (widget->content & scrollbars::vertical)
             {
                 if (this->scroll_areas[s].v_bottom != scrollHeight + 1)
                 {
+                    this->scroll_areas[s].v_bottom = scrollHeight + 1;
                     invalidate = true;
                 }
             }
@@ -284,14 +286,14 @@ namespace openloco::ui
             this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
             this->scroll_areas[s].h_left = 0;
             this->scroll_areas[s].h_right = scrollWidth + 1;
-            this->scroll_areas[s].h_left = 0;
+            this->scroll_areas[s].v_top = 0;
             this->scroll_areas[s].v_bottom = scrollHeight + 1;
 
-            if (widget->content & (1 << 0))
+            if (widget->content & scrollbars::horizontal)
             {
                 this->scroll_areas[s].flags |= 1 << 0;
             }
-            if (widget->content & (1 << 1))
+            if (widget->content & scrollbars::vertical)
             {
                 this->scroll_areas[s].flags |= 1 << 4;
             }
