@@ -4,6 +4,7 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../ui.h"
 #include "../windowmgr.h"
 
 using namespace openloco::interop;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace openloco::ui
 {
@@ -13,6 +14,12 @@ namespace openloco::ui
         hand_pointer,
         busy,
         diagonal_arrows,
+    };
+
+    struct Resolution
+    {
+        int32_t width;
+        int32_t height;
     };
 
 #ifdef _WIN32
@@ -36,6 +43,9 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
+    void updateFullscreenResolutions();
+    std::vector<Resolution> getFullscreenResolutions();
+    Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);
 
     namespace viewport_interaction
     {
