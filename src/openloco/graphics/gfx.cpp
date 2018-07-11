@@ -3,6 +3,7 @@
 #include "../interop/interop.hpp"
 #include "../ui.h"
 #include "colours.h"
+#include "image_ids.h"
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -215,6 +216,12 @@ namespace openloco::gfx
         }
     }
 
+    static void setTextColour(int colour)
+    {
+        auto el = &_g1Elements[image_ids::text_palette];
+        setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
+    }
+
     static gfx::point_t loop_newline(drawpixelinfo_t* context, gfx::point_t origin, uint8_t* str)
     {
         gfx::point_t pos = origin;
@@ -349,52 +356,60 @@ namespace openloco::gfx
                 }
 
                 case control_code::colour_black:
-                    // black
+                    setTextColour(0);
+                    break;
 
                 case control_code::colour_grey:
-                    // grey
+                    setTextColour(1);
+                    break;
 
                 case control_code::colour_white:
-                    // white
+                    setTextColour(2);
+                    break;
 
                 case control_code::colour_red:
-                    // red
+                    setTextColour(3);
+                    break;
 
                 case control_code::colour_green:
-                    // green
+                    setTextColour(4);
+                    break;
 
                 case control_code::colour_yellow:
-                    // yellow
+                    setTextColour(5);
+                    break;
 
                 case control_code::colour_topaz:
-                    // TOPAZ
+                    setTextColour(6);
+                    break;
 
                 case control_code::colour_celadon:
-                    // CELADON
+                    setTextColour(7);
+                    break;
 
                 case control_code::colour_babyblue:
-                    // BABYBLUE
+                    setTextColour(8);
+                    break;
 
                 case control_code::colour_palelavender:
-                    // PALELAVENDER
+                    setTextColour(9);
+                    break;
 
                 case control_code::colour_palegold:
-                    // PALEGOLD
+                    setTextColour(10);
+                    break;
 
                 case control_code::colour_lightpink:
-                    // LIGHTPINK
+                    setTextColour(11);
+                    break;
 
                 case control_code::colour_pearlaqua:
-                    // PEARLAQUA
+                    setTextColour(12);
+                    break;
 
                 case control_code::colour_palesilver:
-                    // PALESILVER
-                    {
-                        int c = chr - 144;
-                        auto el = &_g1Elements[2169];
-                        setTextColours(el->offset[c * 4 + 0], el->offset[c * 4 + 1], el->offset[c * 4 + 2]);
-                        break;
-                    }
+                    setTextColour(13);
+                    break;
 
                 default:
                     if (chr >= 32)
@@ -437,12 +452,7 @@ namespace openloco::gfx
         if (colour == format_flags::fd)
         {
             _currentFontFlags = 0;
-
-            // Act as {COLOUR BLACK}
-            int c = 0;
-            auto el = &_g1Elements[2169];
-            setTextColours(el->offset[c * 4 + 0], el->offset[c * 4 + 1], el->offset[c * 4 + 2]);
-
+            setTextColour(0);
             return loop_newline(context, origin, str);
         }
 

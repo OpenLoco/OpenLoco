@@ -4,6 +4,7 @@
 
 namespace openloco::image_ids
 {
+    constexpr uint32_t text_palette = 2169;
     constexpr uint32_t close_button = 2321;
 
     constexpr uint32_t title_menu_sparkle = 3547;
