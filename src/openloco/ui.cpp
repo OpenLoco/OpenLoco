@@ -13,6 +13,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include <shlobj.h>
 #include <windows.h>
+
+// `small` is used as a type in `windows.h`
+#undef small
 #endif
 
 #ifndef _LOCO_WIN32_

@@ -2,7 +2,10 @@
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
+#include "colours.h"
+#include "image_ids.h"
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -17,10 +20,28 @@ namespace openloco::gfx
         constexpr uint32_t steam = 0x0F38;
     }
 
+    namespace text_draw_flags
+    {
+        constexpr uint8_t inset = (1ULL << 0);
+        constexpr uint8_t outline = (1ULL << 1);
+        constexpr uint8_t dark = (1ULL << 2);
+        constexpr uint8_t extra_dark = (1ULL << 3);
+    }
+
+    constexpr uint32_t g1_count_objects = 0x40000;
+    constexpr uint32_t g1_count_temporary = 0x1000;
+
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global<g1_element[g1_expected_count::disc], 0x9E2424> _g1Elements;
+    static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
+
+    static loco_global<uint16_t, 0x112C824> _currentFontFlags;
+    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
+    static loco_global<uint8_t[4], 0x1136594> _windowColours;
+
+    static palette_index_t _textColours[8] = { 0 };
 
     drawpixelinfo_t& screen_dpi()
     {
@@ -178,6 +199,332 @@ namespace openloco::gfx
         regs.edi = (int32_t)&dpi;
         regs.esi = (int32_t)string;
         call(0x00451025, regs);
+    }
+
+    static void setTextColours(palette_index_t pal1, palette_index_t pal2, palette_index_t pal3)
+    {
+        if ((_currentFontFlags & text_draw_flags::inset) != 0)
+            return;
+
+        _textColours[1] = pal1;
+        _textColours[2] = palette_index::transparent;
+        _textColours[3] = palette_index::transparent;
+        if ((_currentFontFlags & text_draw_flags::outline) != 0)
+        {
+            _textColours[2] = pal2;
+            _textColours[3] = pal3;
+        }
+    }
+
+    static void setTextColour(int colour)
+    {
+        auto el = &_g1Elements[image_ids::text_palette];
+        setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
+    }
+
+    static gfx::point_t loop_newline(drawpixelinfo_t* context, gfx::point_t origin, uint8_t* str)
+    {
+        gfx::point_t pos = origin;
+
+        while (true)
+        {
+            // Removed detection of offscreen-drawing
+
+            uint8_t chr = *str;
+            str++;
+
+            switch (chr)
+            {
+                case '\0':
+                    return pos;
+
+                case control_code::adjust_palette:
+                    // This control character does not appear in the localisation files
+                    assert(false);
+                    str++;
+                    break;
+
+                case control_code::newline_smaller:
+                    pos.x = origin.x;
+                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    {
+                        pos.y += 5;
+                    }
+                    else if (_currentFontSpriteBase == font::small)
+                    {
+                        pos.y += 3;
+                    }
+                    else if (_currentFontSpriteBase == font::large)
+                    {
+                        pos.y += 9;
+                    }
+                    break;
+
+                case control_code::newline:
+                    pos.x = origin.x;
+                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    {
+                        pos.y += 10;
+                    }
+                    else if (_currentFontSpriteBase == font::small)
+                    {
+                        pos.y += 6;
+                    }
+                    else if (_currentFontSpriteBase == font::large)
+                    {
+                        pos.y += 18;
+                    }
+                    break;
+
+                case control_code::move_x:
+                {
+                    uint8_t offset = *str;
+                    str++;
+                    pos.x = origin.x + offset;
+
+                    break;
+                }
+
+                case control_code::newline_x_y:
+                {
+                    uint8_t offset = *str;
+                    str++;
+                    pos.x = origin.x + offset;
+
+                    offset = *str;
+                    str++;
+                    pos.y = origin.y + offset;
+
+                    break;
+                }
+
+                case control_code::font_small:
+                    _currentFontSpriteBase = font::small;
+                    break;
+                case control_code::font_large:
+                    _currentFontSpriteBase = font::large;
+                    break;
+                case control_code::font_regular:
+                    _currentFontSpriteBase = font::medium_normal;
+                    break;
+                case control_code::font_bold:
+                    _currentFontSpriteBase = font::medium_bold;
+                    break;
+                case control_code::outline:
+                    _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
+                    break;
+                case control_code::outline_off:
+                    _currentFontFlags = _currentFontFlags & ~text_draw_flags::outline;
+                    break;
+                case control_code::window_colour_1:
+                {
+                    int hue = _windowColours[0];
+                    setTextColours(colour::get_shade(hue, 7), palette_index::index_0A, palette_index::index_0A);
+                    break;
+                }
+                case control_code::window_colour_2:
+                {
+                    int hue = _windowColours[1];
+                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    break;
+                }
+                case control_code::window_colour_3:
+                {
+                    int hue = _windowColours[2];
+                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    break;
+                }
+
+                case control_code::inline_sprite:
+                {
+                    uint32_t image = ((uint32_t*)str)[0];
+                    uint32_t imageId = image & 0x7FFFF;
+                    str += 4;
+
+                    if ((_currentFontFlags & text_draw_flags::outline) != 0)
+                    {
+                        gfx::draw_image_solid(context, pos.x, pos.y, imageId, _textColours[3]);
+                        gfx::draw_image_solid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
+                    }
+                    else
+                    {
+                        gfx::draw_image(context, pos.x, pos.y, image);
+                    }
+
+                    pos.x += _g1Elements[imageId].width;
+                    break;
+                }
+
+                case control_code::colour_black:
+                    setTextColour(0);
+                    break;
+
+                case control_code::colour_grey:
+                    setTextColour(1);
+                    break;
+
+                case control_code::colour_white:
+                    setTextColour(2);
+                    break;
+
+                case control_code::colour_red:
+                    setTextColour(3);
+                    break;
+
+                case control_code::colour_green:
+                    setTextColour(4);
+                    break;
+
+                case control_code::colour_yellow:
+                    setTextColour(5);
+                    break;
+
+                case control_code::colour_topaz:
+                    setTextColour(6);
+                    break;
+
+                case control_code::colour_celadon:
+                    setTextColour(7);
+                    break;
+
+                case control_code::colour_babyblue:
+                    setTextColour(8);
+                    break;
+
+                case control_code::colour_palelavender:
+                    setTextColour(9);
+                    break;
+
+                case control_code::colour_palegold:
+                    setTextColour(10);
+                    break;
+
+                case control_code::colour_lightpink:
+                    setTextColour(11);
+                    break;
+
+                case control_code::colour_pearlaqua:
+                    setTextColour(12);
+                    break;
+
+                case control_code::colour_palesilver:
+                    setTextColour(13);
+                    break;
+
+                default:
+                    if (chr >= 32)
+                    {
+
+                        gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                        pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
+                    }
+                    else
+                    {
+                        // Unhandled control code
+                        assert(false);
+                    }
+                    break;
+            }
+        }
+
+        return pos;
+    }
+
+    /**
+     * 0x00451025
+     *
+     * @param x  @<cx>
+     * @param y @<dx>
+     * @param colour @<al>
+     * @param context @<edi>
+     * @param text @<esi>
+     */
+    gfx::point_t drawString(int16_t x, int16_t y, uint8_t colour, drawpixelinfo_t* context, uint8_t* str)
+    {
+        // 0x00E04348, 0x00E0434A
+        gfx::point_t origin = { x, y };
+
+        if (colour == format_flags::fe)
+        {
+            return loop_newline(context, origin, str);
+        }
+
+        if (colour == format_flags::fd)
+        {
+            _currentFontFlags = 0;
+            setTextColour(0);
+            return loop_newline(context, origin, str);
+        }
+
+        if (x >= context->x + context->width)
+            return origin;
+
+        if (x < context->x - 1280)
+            return origin;
+
+        if (y >= context->y + context->height)
+            return origin;
+
+        if (y < context->y - 90)
+            return origin;
+
+        _currentFontFlags = 0;
+        if (_currentFontSpriteBase == font::m1)
+        {
+            _currentFontSpriteBase = font::medium_bold;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
+        }
+        else if (_currentFontSpriteBase == font::m2)
+        {
+            _currentFontSpriteBase = font::medium_bold;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
+        }
+
+        _textColours[0] = palette_index::transparent;
+        _textColours[1] = colour::get_shade(colour::dark_purple, 5);
+        _textColours[2] = colour::get_shade(colour::bright_pink, 5);
+        _textColours[3] = colour::get_shade(colour::light_blue, 5);
+
+        if (colour & format_flags::textflag_5)
+        {
+            colour &= ~format_flags::textflag_5;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
+        }
+
+        if (colour & format_flags::textflag_6)
+        {
+            colour &= ~format_flags::textflag_6;
+            _currentFontFlags = _currentFontFlags | text_draw_flags::inset;
+        }
+
+        if ((_currentFontFlags & text_draw_flags::inset) != 0)
+        {
+            if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
+            {
+                _textColours[1] = colour::get_shade(colour, 2);
+                _textColours[2] = palette_index::transparent;
+                _textColours[3] = colour::get_shade(colour, 4);
+            }
+            else if ((_currentFontFlags & text_draw_flags::dark) != 0)
+            {
+                _textColours[1] = colour::get_shade(colour, 3);
+                _textColours[2] = palette_index::transparent;
+                _textColours[3] = colour::get_shade(colour, 5);
+            }
+            else
+            {
+                _textColours[1] = colour::get_shade(colour, 4);
+                _textColours[2] = palette_index::transparent;
+                _textColours[3] = colour::get_shade(colour, 6);
+            }
+        }
+        else
+        {
+            setTextColours(colour::get_shade(colour, 9), palette_index::index_0A, palette_index::index_0A);
+        }
+
+        return loop_newline(context, origin, str);
     }
 
     // 0x00494B3F
@@ -403,6 +750,11 @@ namespace openloco::gfx
         memset(palette, palette_index, 256);
         palette[0] = 0;
 
+        draw_image_palette_set(dpi, x, y, image, palette);
+    }
+
+    void draw_image_palette_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    {
         _50B860 = palette;
         _E04324 = 0x20000000;
         registers regs;

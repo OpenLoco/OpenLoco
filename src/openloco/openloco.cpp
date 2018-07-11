@@ -13,6 +13,9 @@
 #endif
 #include <objbase.h>
 #include <windows.h>
+
+// `small` is used as a type in `windows.h`
+#undef small
 #endif
 
 #include "audio/audio.h"

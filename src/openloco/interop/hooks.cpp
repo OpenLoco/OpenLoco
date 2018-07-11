@@ -8,6 +8,7 @@
 #endif
 #include "../console.h"
 #include "../environment.h"
+#include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../gui.h"
 #include "../input.h"
@@ -663,6 +664,18 @@ void openloco::interop::register_hooks()
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             openloco::input::sub_407231();
+            return 0;
+        });
+
+    register_hook(
+        0x00451025,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            auto pos = gfx::drawString(regs.cx, regs.dx, regs.al, (gfx::drawpixelinfo_t*)regs.edi, (uint8_t*)regs.esi);
+            regs = backup;
+            regs.cx = pos.x;
+            regs.dx = pos.y;
+
             return 0;
         });
 
