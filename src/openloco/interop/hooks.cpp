@@ -380,6 +380,7 @@ static bool STDCALL lib_WriteFile(
     uint32_t* lpNumberOfBytesWritten,
     uintptr_t lpOverlapped)
 {
+    fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
     console::log("WriteFile(%s)", buffer);
 
     return true;
