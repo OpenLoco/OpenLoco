@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+#ifdef small
+#error "small is defined, likely by windows.h"
+#endif
+
 namespace openloco
 {
     using string_id = uint16_t;
