@@ -18,6 +18,12 @@ namespace openloco::config
         metric = 1,
     };
 
+    struct keyboard_shortcut_t
+    {
+        uint8_t var_0;
+        uint8_t var_1;
+    };
+
     struct config_t
     {
         uint32_t flags;             // 0x50AEB4, 0x00
@@ -26,9 +32,17 @@ namespace openloco::config
         uint8_t pad_08[0x28 - 0x08];
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
-        uint8_t keyboard_shortcuts[0xAF24 - 0xAEDE]; // 0x30
-        uint8_t pad_71[0xB0CA - 0xAF25];
+        keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
+        uint8_t pad_70[0xD4 - 0x70];
+        char last_host[64]; // 0xD4
+        uint8_t var_114;
+        uint8_t var_115;
+        char preferred_name[256]; // 0x116
     };
+    static_assert(offsetof(config_t, keyboard_shortcuts) == 0x2A);
+    static_assert(offsetof(config_t, preferred_name) == 0x116);
+    static_assert(offsetof(config_t, last_host) == 0xD4);
+    static_assert(sizeof(config_t) == 0x216);
 
     struct new_config
     {
