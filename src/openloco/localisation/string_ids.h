@@ -55,7 +55,7 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_close_window = 60;
 
-    constexpr string_id STR_0066 = 66;
+    constexpr string_id display_resolution_format = 66;
 
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;
@@ -141,10 +141,12 @@ namespace openloco::string_ids
 
     constexpr string_id options = 654;
 
-    constexpr string_id STR_0663 = 663;
-    constexpr string_id STR_0664 = 664;
-    constexpr string_id STR_0665 = 665;
-    constexpr string_id STR_0666 = 666;
+    constexpr string_id display_resolution = 662;
+    constexpr string_id landscape_smoothing = 663;
+    constexpr string_id landscape_smoothing_tip = 664;
+    constexpr string_id gridlines_on_landscape = 665;
+    constexpr string_id gridlines_on_landscape_tip = 666;
+
     constexpr string_id STR_0701 = 701;
     constexpr string_id STR_1002 = 1002;
     constexpr string_id STR_1003 = 1003;
@@ -218,8 +220,17 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
-    constexpr string_id STR_1099 = 1099;
-    constexpr string_id STR_1100 = 1100;
+    constexpr string_id white = 1090;
+    constexpr string_id translucent = 1091;
+    constexpr string_id construction_marker = 1092;
+    constexpr string_id vehicles_min_scale = 1093;
+    constexpr string_id station_names_min_scale = 1094;
+    constexpr string_id full_scale = 1095;
+    constexpr string_id half_scale = 1096;
+    constexpr string_id quarter_scale = 1097;
+    constexpr string_id eighth_scale = 1098;
+    constexpr string_id vehicles_min_scale_tip = 1099;
+    constexpr string_id station_names_min_scale_tip = 1100;
 
     constexpr string_id display_options = 1486;
     constexpr string_id sound_options = 1487;

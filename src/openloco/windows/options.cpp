@@ -11,31 +11,72 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
+    namespace common
+    {
+        namespace widx
+        {
+            enum
+            {
+                frame,
+                caption,
+                close_button,
+                panel,
+                tab_display,
+                tab_sound,
+                tab_music,
+                tab_regional,
+                tab_control,
+                tab_miscellaneous,
+            };
+        }
+
+#define common_options_widgets(window_size, window_caption_id)                                                                                              \
+    make_widget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                              \
+        make_widget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                    \
+        make_widget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        make_widget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                          \
+        make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),                         \
+        make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),                          \
+        make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),                          \
+        make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),                       \
+        make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),                       \
+        make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options)
+    }
+
     namespace display
     {
         static const gfx::ui_size_t _window_size = { 366, 144 };
 
+        namespace widx
+        {
+            enum
+            {
+                display_resolution = 10,
+                display_resolution_btn,
+                landscape_smoothing,
+                gridlines_on_landscape,
+                vehicles_min_scale,
+                vehicles_min_scale_btn,
+                station_names_min_scale,
+                station_names_min_scale_btn,
+                construction_marker,
+                construction_marker_btn,
+            };
+        }
+
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_display),
-            make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
-            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::STR_0066),
+            common_options_widgets(_window_size, string_ids::options_title_display),
+            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_format),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_0663, string_ids::STR_0664),
-            make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_0665, string_ids::STR_0666),
-            make_widget({ 183, 94 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::null, string_ids::STR_1099),
-            make_widget({ 344, 95 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::STR_1099),
-            make_widget({ 183, 109 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::null, string_ids::STR_1100),
-            make_widget({ 344, 110 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::STR_1100),
-            make_widget({ 183, 124 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::null),
+            make_widget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
+            make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
+            make_widget({ 183, 94 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
+            make_widget({ 344, 95 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
+            make_widget({ 183, 109 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
+            make_widget({ 344, 110 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
+            make_widget({ 183, 124 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
             make_widget({ 344, 125 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x00503F40> _events;
@@ -46,21 +87,13 @@ namespace openloco::ui::options
         static const gfx::ui_size_t _window_size = { 366, 97 };
 
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_sound),
-            make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
+            common_options_widgets(_window_size, string_ids::options_title_sound),
             make_widget({ 10, 49 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::STR_0085),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::STR_0090),
             make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 10, 79 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1010, string_ids::STR_1011),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x00503FB4> _events;
@@ -71,16 +104,7 @@ namespace openloco::ui::options
         static const gfx::ui_size_t _window_size = { 366, 129 };
 
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_music),
-            make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
+            common_options_widgets(_window_size, string_ids::options_title_music),
             make_widget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, string_ids::STR_0085),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_stop, string_ids::STR_1536),
@@ -90,6 +114,7 @@ namespace openloco::ui::options
             make_widget({ 10, 93 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::STR_0086),
             make_widget({ 344, 94 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 108 }, { 173, 12 }, widget_type::wt_11, 1, string_ids::STR_1542, string_ids::STR_1543),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x00504028> _events;
@@ -100,16 +125,7 @@ namespace openloco::ui::options
         static const gfx::ui_size_t _window_size = { 366, 147 };
 
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_regional),
-            make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
+            common_options_widgets(_window_size, string_ids::options_title_regional),
             make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::STR_0091),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::STR_0088),
@@ -120,6 +136,7 @@ namespace openloco::ui::options
             make_widget({ 344, 100 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::STR_1503),
             make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1500, string_ids::STR_1501),
             make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1498, string_ids::STR_1499),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x0050409C> _events;
@@ -130,18 +147,10 @@ namespace openloco::ui::options
         static const gfx::ui_size_t _window_size = { 366, 87 };
 
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, string_ids::options_title_controls),
-            make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
+            common_options_widgets(_window_size, string_ids::options_title_controls),
             make_widget({ 10, 50 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1002, string_ids::STR_1003),
             make_widget({ 26, 64 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::STR_0701, string_ids::STR_1004),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x00504110> _events;
@@ -152,19 +161,11 @@ namespace openloco::ui::options
         static const gfx::ui_size_t _window_size = { 420, 102 };
 
         static widget_t _widgets[] = {
-            make_widget({ 0, 0 }, _window_size, widget_type::frame, 0, -1),
-            make_widget({ 1, 1 }, { 418, 13 }, widget_type::caption_25, 0, string_ids::options_title_miscellaneous),
-            make_widget({ 405, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-            make_widget({ 0, 41 }, { 366, 102 }, widget_type::panel, 1, -1),
-            make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::display_options),
-            make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::sound_options),
-            make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::music_options),
-            make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::regional_options),
-            make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),
-            make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options),
+            common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
             make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::STR_1919, string_ids::STR_1920),
             make_widget({ 335, 64 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::STR_1700),
             make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::STR_2089, string_ids::STR_2090),
+            widget_end(),
         };
 
         static loco_global<window_event_list, 0x00504184> _events;
