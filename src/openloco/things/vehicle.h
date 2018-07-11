@@ -249,6 +249,7 @@ namespace openloco
         uint32_t sub_427C05(uint32_t unk_1);
         void sub_42843E();
         uint8_t plane_get_yaw_from_loc(const map::map_pos& loc);
+        uint16_t sub_4AC3D3(loc16 loc, bool unk_1);
     };
 
     struct vehicle_1 : vehicle_base

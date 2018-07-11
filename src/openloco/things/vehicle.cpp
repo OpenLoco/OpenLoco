@@ -1,4 +1,3 @@
-#include "vehicle.h"
 #include "../audio/audio.h"
 #include "../companymgr.h"
 #include "../config.h"
@@ -17,6 +16,7 @@
 #include "../windowmgr.h"
 #include "misc.h"
 #include "thingmgr.h"
+#include "vehicle.h"
 #include <algorithm>
 #include <cassert>
 
@@ -62,6 +62,7 @@ loco_global<uint8_t[7], 0x004FE088> vehicle_var_4FE088;    // Size tbc
 loco_global<station_id_t, 0x01135FAE> vehicle_var_1135FAE;
 loco_global<uint8_t, 0x0113607D> vehicle_var_113607D;   // bool
 loco_global<uint16_t*, 0x01135EE6> vehicle_var_1135EE6; // vehicle_var_11360A0 related?
+loco_global<uint16_t, 0x01136458> vehicle_var_1136458;
 #pragma pack(push, 1)
 struct unk_4F73D8
 {
@@ -82,7 +83,14 @@ struct unk_4F7B5C
 };
 #pragma pack(pop)
 loco_global<unk_4F7B5C[352], 0x004F7B5C> vehicle_var_4F7B5C; // Size tbc 0x160
-
+#pragma pack(push, 1)
+struct unk_503C6C
+{
+    int16_t x;
+    int16_t y;
+};
+#pragma pack(pop)
+loco_global<unk_503C6C[16], 0x00503C6C> vehilce_var_503C6C;
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
     0,
@@ -3374,7 +3382,48 @@ bool vehicle_0::sub_4ACCDC()
         {
             return false;
         }
-        // 0x004ACD1F Todo: finish
+        sub_4AC3D3(loc, false);
+
+        auto _veh = next_car();
+        while (_veh->type != vehicle_thing_type::vehicle_6)
+        {
+            _veh = _veh->next_car();
+            if (_veh == nullptr)
+            {
+                // Todo: handle gracefully
+                assert(false);
+                return false;
+            }
+        }
+
+        auto vehType6 = _veh->as_vehicle_6();
+        if (vehType6 == nullptr)
+        {
+            // Todo: handle gracefully
+            assert(false);
+            return false;
+        }
+
+        loc.x = _veh->tile_x + vehicle_var_4F7B5C[_veh->var_2C].x;
+        loc.y = _veh->tile_y + vehicle_var_4F7B5C[_veh->var_2C].y;
+        loc.z = _veh->tile_base_z * 4 + vehicle_var_4F7B5C[_veh->var_2C].z;
+
+        auto bl = vehicle_var_4F7B5C[_veh->var_2C].unk_1;
+        if (bl < 12)
+        {
+            loc.x -= vehilce_var_503C6C[bl].x;
+            loc.y -= vehilce_var_503C6C[bl].y;
+        }
+
+        sub_4A2604(loc, owner, road_object_id, _veh->var_2C ^ (1 << 2), (uint16_t*)&vehicle_var_array_11360A0->data);
+
+        if (vehicle_var_array_11360A0->size == 0)
+        {
+            return false;
+        }
+        vehicle_var_1136458 = 0;
+        sub_4AC3D3(loc, true);
+        return vehicle_var_1136458 != 0;
     }
     registers regs;
     regs.esi = (int32_t)this;
@@ -4140,4 +4189,24 @@ void openloco::sub_4A2601(map::map_pos3 loc, uint8_t owner, uint8_t road_object_
 
     unk_arr->data[i] = (uint16_t)-1;
     unk_arr->size = i;
+}
+
+/**
+ * 0x004AC3D3
+ * this         = esi
+ * loc          = ax, cx, dx
+ * unk_1        = bx highest bit
+ * return ebx (word zero extend)
+ */
+uint16_t vehicle_0::sub_4AC3D3(loc16 loc, bool unk_1)
+{
+    registers regs;
+    regs.ax = loc.x;
+    regs.cx = loc.y;
+    regs.dx = loc.z | (unk_1 ? (1 << 15) : 0);
+    regs.esi = (int32_t)this;
+    call(0x004AC3D3, regs);
+
+    // return ebx word from 11360a0 array
+    return regs.bx;
 }
