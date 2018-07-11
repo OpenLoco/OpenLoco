@@ -190,10 +190,7 @@ namespace openloco::ui
         window_event_list()
         {
             // Set all events to a `ret` instruction
-            for (auto& e : events)
-            {
-                e = (void*)0x0042A034;
-            }
+            std::fill_n(events, 29, (void*)0x0042A034);
         }
     };
 

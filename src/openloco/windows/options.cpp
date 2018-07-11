@@ -11,6 +11,14 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
+    static void sub_4C141D(window* w, gfx::drawpixelinfo_t* dpi)
+    {
+        registers regs;
+        regs.esi = (uint32_t)w;
+        regs.edi = (int32_t)dpi;
+        call(0x004C141D, regs);
+    }
+
     namespace common
     {
         namespace widx
@@ -79,7 +87,84 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static loco_global<window_event_list, 0x00503F40> _events;
+        static window_event_list _events;
+
+        // 0x004BFB8C
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            registers regs;
+            regs.edx = wi;
+            regs.esi = (uint32_t)w;
+            call(0x004BFB8C, regs);
+        }
+
+        // 0x004BFBB7
+        static void on_mouse_down(window* w, widget_index wi)
+        {
+            registers regs;
+            regs.edx = wi;
+            regs.esi = (uint32_t)w;
+            call(0x004BFBB7, regs);
+        }
+
+        // 0x004BFBE8
+        static void on_dropdown(window* w, widget_index wi, int16_t item_index)
+        {
+            registers regs;
+            regs.ax = item_index;
+            regs.edx = wi;
+            regs.esi = (uint32_t)w;
+            call(0x004BFBE8, regs);
+        }
+
+        // 0x004C01F5
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            w->invalidate();
+        }
+
+        // 0x004BFA04
+        static void prepare_draw(window* w)
+        {
+            registers regs;
+            regs.esi = (uint32_t)w;
+            call(0x004BFA04, regs);
+        }
+
+        // 0x004BFAF9
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            // Draw widgets.
+            w->draw(dpi);
+
+            sub_4C141D(w, dpi);
+
+            int16_t x = w->x + 10;
+            int16_t y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
+            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::display_resolution, nullptr);
+
+            y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
+            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
+
+            y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
+            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
+
+            y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
+            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+        }
+
+        static const window_event_list init_events()
+        {
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_mouse_down = on_mouse_down;
+            _events.on_dropdown = on_dropdown;
+            _events.on_update = on_update;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
+            return _events;
+        }
     }
 
     namespace sound
@@ -187,13 +272,15 @@ namespace openloco::ui::options
         if (windowmgr::bring_to_front(window_type::options, 0) != nullptr)
             return;
 
+        display::init_events();
+
         // 0x004BF833 (create_options_window)
         auto window = windowmgr::create_window_centred(
             window_type::options,
             display::_window_size.width,
             display::_window_size.height,
             0,
-            &*display::_events);
+            &display::_events);
 
         window->widgets = display::_widgets;
         window->number = 0;
@@ -210,7 +297,7 @@ namespace openloco::ui::options
         // Returning to 0x004BF7CB (in windowmgr__open_options)
         window->enabled_widgets = -1;  // !!! TODO
         window->holdable_widgets = -1; // !!! TODO
-        window->event_handlers = &*display::_events;
+        window->event_handlers = &display::_events;
         window->activated_widgets = 0;
 
         window->call_on_resize();
