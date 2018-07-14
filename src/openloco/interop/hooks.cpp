@@ -12,6 +12,7 @@
 #include "../graphics/gfx.h"
 #include "../gui.h"
 #include "../input.h"
+#include "../map/tile.h"
 #include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
@@ -497,6 +498,28 @@ static void register_no_win32_hooks()
     // sound
     write_ret(0x489cb5); // audio::play_sound
     write_ret(0x489f1b); // audio::play_sound
+
+    write_ret(0x4656BF); // 0 Surface
+    write_ret(0x49B6BF); // 1 Track
+    write_ret(0x48B313); // 2 Stations
+    write_ret(0x48864C); // 3 Signs
+    write_ret(0x42C6C4); // 4 Houses
+    write_ret(0x4BAEDA); // 5 Trees
+    write_ret(0x4C3D7C); // 6 Fences
+    write_ret(0x4759A6); // 7 Roads
+    write_ret(0x453C52); // 8 Industry
+
+    register_hook(
+        0x004BAEDA,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+
+            auto tile = (map::tile_element*)regs.esi;
+            gfx::draw_tree(tile->as_tree(), regs.ecx, regs.dx);
+
+            regs = backup;
+            return 0;
+        });
 
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)

@@ -32,7 +32,7 @@ namespace openloco
         while (!element->is_last())
         {
             element++;
-            if (element->type() == element_type::unk_8)
+            if (element->type() == element_type::industry)
             {
                 return true;
             }

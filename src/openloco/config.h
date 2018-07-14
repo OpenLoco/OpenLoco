@@ -23,7 +23,9 @@ namespace openloco::config
         uint32_t flags;             // 0x50AEB4, 0x00
         uint16_t resolution_width;  // 0x50AEB8, 0x04
         uint16_t resolution_height; // 0x50AEBA, 0x06
-        uint8_t pad_08[0x28 - 0x08];
+        uint8_t pad_08[0x24 - 0x08];
+        uint8_t var_24;
+        uint8_t pad_25[0x28 - 0x25];
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
         uint8_t keyboard_shortcuts[0xAF24 - 0xAEDE]; // 0x30

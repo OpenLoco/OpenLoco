@@ -1101,18 +1101,18 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
             {
                 itemFound = false;
             }
-            auto elUnk1 = el.as_unk1();
-            if (elUnk1 == nullptr)
+            auto trackEl = el.as_track();
+            if (trackEl == nullptr)
                 continue;
-            if (elUnk1->base_z() != frontBogie->tile_base_z)
+            if (trackEl->base_z() != frontBogie->tile_base_z)
                 continue;
-            if (elUnk1->unk_z() != loc.z)
-                continue;
-
-            if (!elUnk1->has_80())
+            if (trackEl->unk_z() != loc.z)
                 continue;
 
-            if (!elUnk1->is_last())
+            if (!trackEl->has_80())
+                continue;
+
+            if (!trackEl->is_last())
                 itemFound = true;
         }
     }

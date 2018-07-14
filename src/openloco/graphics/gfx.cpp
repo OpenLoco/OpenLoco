@@ -1,6 +1,11 @@
 #include "gfx.h"
+#include "../config.h"
+#include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
+#include "../map/tile.h"
+#include "../objects/objectmgr.h"
+#include "../objects/tree_object.h"
 #include "../ui.h"
 #include "colours.h"
 #include "image_ids.h"
@@ -778,4 +783,215 @@ namespace openloco::gfx
 
         return *dst != nullptr;
     }
+
+    loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
+    loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
+    loco_global<int32_t[4], 0x4FD140> _4FD140;
+
+    /***
+     *
+     * @param rotation @<ebp>
+     * @param image_id  @<ebx>
+     * @param x_offset @<al>
+     * @param y_offset @<cl>
+     * @param z_offset @<dx>
+     * @param bound_box_length_x @<di>
+     * @param bound_box_length_y @<si>
+     * @param bound_box_length_z @<ah>
+     * @param bound_box_offset_x @<0xE3F0A0>
+     * @param bound_box_offset_y @<0xE3F0A2>
+     * @param bound_box_offset_z @<0xE3F0A4>
+     */
+    void AddToPlotList_3(
+        int rotation,
+        uint32_t image_id,
+        uint8_t x_offset,
+        uint8_t y_offset,
+        uint16_t z_offset,
+        uint16_t bound_box_length_x,
+        uint16_t bound_box_length_y,
+        uint8_t bound_box_length_z,
+        int16_t bound_box_offset_x,
+        int16_t bound_box_offset_y,
+        uint16_t bound_box_offset_z)
+    {
+        registers regs;
+        regs.ebx = image_id;
+        regs.al = x_offset;
+        regs.cl = y_offset;
+        regs.dx = z_offset;
+        regs.di = bound_box_length_x;
+        regs.si = bound_box_length_y;
+        regs.ah = bound_box_length_z;
+
+        addr<0xE3F0A0, int16_t>() = bound_box_offset_x;
+        addr<0xE3F0A2, int16_t>() = bound_box_offset_y;
+        addr<0xE3F0A4, uint16_t>() = bound_box_offset_z;
+
+        call(_4FD140[rotation], regs);
+    }
+
+    /***
+     *
+     * @param rotation @<ebp>
+     * @param image_id  @<ebx>
+     * @param x_offset @<al>
+     * @param y_offset @<cl>
+     * @param z_offset @<dx>
+     * @param bound_box_length_x @<di>
+     * @param bound_box_length_y @<si>
+     * @param bound_box_length_z @<ah>
+     * @param bound_box_offset_x @<0xE3F0A0>
+     * @param bound_box_offset_y @<0xE3F0A2>
+     * @param bound_box_offset_z @<0xE3F0A4>
+     */
+    void AddToPlotList_4FD1E0(
+        int rotation,
+        uint32_t image_id,
+        uint8_t x_offset,
+        uint8_t y_offset,
+        uint16_t z_offset,
+        uint16_t bound_box_length_x,
+        uint16_t bound_box_length_y,
+        uint8_t bound_box_length_z,
+        int16_t bound_box_offset_x,
+        int16_t bound_box_offset_y,
+        uint16_t bound_box_offset_z)
+    {
+        registers regs;
+        regs.ebx = image_id;
+        regs.al = x_offset;
+        regs.cl = y_offset;
+        regs.dx = z_offset;
+        regs.di = bound_box_length_x;
+        regs.si = bound_box_length_y;
+        regs.ah = bound_box_length_z;
+
+        addr<0xE3F0A0, int16_t>() = bound_box_offset_x;
+        addr<0xE3F0A2, int16_t>() = bound_box_offset_y;
+        addr<0xE3F0A4, uint16_t>() = bound_box_offset_z;
+
+        call(_4FD1E0[rotation], regs);
+    }
+
+    loco_global<int8_t[6], 0x50076A> _50076A;
+    loco_global<int8_t[6], 0x500770> _500770;
+    loco_global<uint32_t[2], 0x4FFAE8> _4FFAE8;
+
+    loco_global<int8_t, 0xE3F0AC> _spriteType;
+    loco_global<drawpixelinfo_t*, 0xE0C3E0> _E0C3E0;
+
+    struct pos8
+    {
+        uint8_t x;
+        uint8_t y;
+    };
+
+    loco_global<pos8[4], 0x50074C> _50074C;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+
+    /***
+     *
+     * @param tile @<esi>
+     * @param rotation @<ecx>
+     * @param height @<dx>
+     */
+    void draw_tree(map::tree_element* tile, uint8_t rotation, uint16_t height)
+    {
+        _spriteType = 12;
+
+        int id = tile->data()[4];
+        auto treeObj = objectmgr::get<tree_object>(id);
+
+        int _imageId1 = (rotation % treeObj->rotation_count) + (tile->data()[5] & 0b1111) * treeObj->rotation_count;
+        int _imageId2;
+
+        int al = tile->data()[7] & 0b111;
+        int season = tile->data()[7] >> 3;
+
+        int _1136474 = -1;
+
+        if (al != 7)
+        {
+            _1136474 = _50076A[season];
+
+            uint32_t edx = (tile->data()[7] & 0b111) + 1;
+
+            // TODO: Make bool list
+            if (_500770[season] == 1)
+            {
+                season = _50076A[season];
+                edx = (-edx) & 0b111;
+            }
+
+            int altSeason = 0;
+            if ((tile->data()[6] & 0x40) != 0)
+            {
+                altSeason = 1;
+            }
+
+            edx = edx << 26;
+            _imageId2 = edx | (_imageId1 + treeObj->image_ids[altSeason][season]);
+        }
+
+        int _shadowImageId = 0;
+        if ((treeObj->var_08 & 0x80) != 0)
+        {
+            _shadowImageId = 0x41900000 | (treeObj->shadow_image_offset + _imageId1);
+        }
+
+        int ecx = ((tile->data()[0] >> 6) + gCurrentRotation) % 4;
+        int _al = _50074C[ecx].x;
+        int _cl = _50074C[ecx].y;
+
+        int _ah = tile->clear_z() - tile->base_z();
+        _ah = std::min(_ah, 0x20);
+        _ah *= 4;
+
+        int b = 0;
+        if ((tile->data()[6] & 0x40) != 0)
+        {
+            b = 1;
+        }
+
+        _imageId1 = _imageId1 + treeObj->image_ids[b][ecx];
+
+        if (treeObj->var_44 != 0)
+        {
+            // No vanilla object has this property set
+            uint8_t colour = tile->data()[6] & 0x1F; // 5 bits
+            uint32_t marker = 0x20000000 | (colour << 19);
+            _imageId2 = _imageId2 | marker;
+            _imageId1 = _imageId1 | marker;
+        }
+
+        if (tile->is_flag_4())
+        {
+            // construction marker
+            _spriteType = 0;
+            uint32_t marker = _4FFAE8[config::get().var_24];
+            _imageId2 = (_imageId2 & 0x7FFFF) | marker;
+            _imageId1 = (_imageId1 & 0x7FFFF) | marker;
+        }
+
+        _ah -= 3;
+
+        if (_shadowImageId != 0)
+        {
+            if (_E0C3E0->zoom_level <= 1)
+            {
+                AddToPlotList_3(gCurrentRotation, _shadowImageId, _al, _cl, height, 18, 18, 1, _al, _cl, height);
+            }
+        }
+
+        AddToPlotList_3(gCurrentRotation, _imageId1, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+
+        if (_1136474 != -1)
+        {
+            AddToPlotList_4FD1E0(gCurrentRotation, _imageId2, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+        }
+    }
+#pragma clang diagnostic pop
 }
