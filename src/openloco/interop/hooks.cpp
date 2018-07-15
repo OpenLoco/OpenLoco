@@ -824,9 +824,16 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(
+        0x004C6118,
+        [](registers& regs) -> uint8_t {
+            ui::windowmgr::update();
+            return 0;
+        });
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
-    // Can be removed when windowmgr:update() is hooked
+    // Can be removed when multiplayer window is implemented
     write_ret(0x00406520);
 
     // Remove check for is road in use when removing roads. It is

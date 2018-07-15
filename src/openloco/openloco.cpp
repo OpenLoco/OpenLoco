@@ -21,6 +21,7 @@
 #include "audio/audio.h"
 #include "companymgr.h"
 #include "config.h"
+#include "console.h"
 #include "date.h"
 #include "environment.h"
 #include "graphics/gfx.h"
@@ -533,6 +534,124 @@ namespace openloco
         addr<0x010E7D64, uint32_t>() = 0xD900BF;
     }
 
+    loco_global<uint16_t*, 0x009DA3CC> _currentTitleCommand;
+    loco_global<uint16_t, 0x9DA3D0> _currentTitleCountdown;
+
+    static void load_title()
+    {
+        call(0x4442C4);
+    }
+
+    static void sub_444387()
+    {
+        if (!is_title_mode())
+        {
+            return;
+        }
+
+        _screen_age = 0;
+
+        if (_currentTitleCountdown != 0)
+        {
+            _currentTitleCountdown = _currentTitleCountdown - 1;
+            return;
+        }
+
+        do
+        {
+            uint16_t cmd = *(*_currentTitleCommand);
+            _currentTitleCommand++;
+
+            switch (cmd)
+            {
+                case 0: // wait(duration)
+                {
+                    uint16_t arg = *(*_currentTitleCommand);
+                    _currentTitleCommand++;
+                    _currentTitleCountdown = arg / 4;
+                    break;
+                }
+
+                case 1:
+                {
+                    uint16_t arg;
+                    do
+                    {
+                        arg = *(*_currentTitleCommand);
+                        _currentTitleCommand++;
+                    } while (arg != 0);
+
+                    load_title();
+                    gfx::invalidate_screen();
+                    _screen_age = 0;
+                    addr<0x50C19A, uint16_t>() = 55000;
+                    break;
+                }
+
+                case 2: // move(x, y)
+                {
+                    uint16_t argA = *(*_currentTitleCommand);
+                    _currentTitleCommand++;
+                    uint16_t argB = *(*_currentTitleCommand);
+                    _currentTitleCommand++;
+
+                    if (addr<0x00525E28, uint32_t>() & 1)
+                    {
+                        auto height = tile_element_height(argA * 32 + 16, argB * 32 + 16);
+                        auto main = windowmgr::get_main();
+                        if (main != nullptr)
+                        {
+                            registers regs;
+
+                            regs.ax = argA * 32 + 16;
+                            regs.cx = argB * 32 + 16;
+                            regs.edx = height;
+                            regs.esi = (uintptr_t)main;
+                            call(0x004C6827, regs);
+                            main->flags &= ~ui::window_flags::scrolling_to_location;
+                            main->viewports_update_position();
+                        }
+                    }
+
+                    break;
+                }
+
+                case 3: // rotate()
+                {
+                    if (addr<0x00525E28, uint32_t>() & 1)
+                    {
+                        auto main = windowmgr::get_main();
+                        if (main != nullptr)
+                        {
+                            registers regs;
+
+                            regs.esi = (uintptr_t)main;
+                            call(0x0045F04F, regs);
+                        }
+                    }
+
+                    break;
+                }
+
+                case 4: // reset
+                {
+                    _currentTitleCommand = (uint16_t*)0x4FB1F3;
+                    break;
+                }
+            }
+        } while (_currentTitleCountdown == 0);
+    }
+
+    static void sub_444357()
+    {
+        _currentTitleCommand = (uint16_t*)0x4FB1F3;
+        _currentTitleCountdown = 0;
+        load_title();
+        _screen_age = 0;
+        addr<0x50C19A, uint16_t>() = 55000;
+        sub_444387();
+    }
+
     // 0x0046ABCB
     static void tick_logic()
     {
@@ -556,7 +675,7 @@ namespace openloco
         invalidate_map_animations();
         call(0x0048A73B);
         call(0x0048ACFD);
-        call(0x00444387);
+        sub_444387();
 
         addr<0x009C871C, uint8_t>() = addr<0x00F25374, uint8_t>();
         if (addr<0x0050C197, uint8_t>() != 0)

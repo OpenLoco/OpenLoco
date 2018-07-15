@@ -720,6 +720,12 @@ namespace openloco::gfx
         set_dirty_blocks(0, 0, ui::width(), ui::height());
     }
 
+    // 0x004C5CFA
+    void draw_dirty_blocks()
+    {
+        call(0x004C5CFA);
+    }
+
     // 0x004C5C69
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {

@@ -16,6 +16,7 @@ using namespace openloco::ui;
 namespace openloco::input
 {
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
+    static void state_positioning_window(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -94,6 +95,8 @@ namespace openloco::input
     static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+
+    static loco_global<int32_t, 0x01136F98> _1136F98;
 
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
 
