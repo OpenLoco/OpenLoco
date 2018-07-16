@@ -239,9 +239,17 @@ namespace openloco::map
     struct tree_element : public tile_element_base
     {
     private:
-        uint8_t _4;
+        uint8_t _4; // ID
+
+        // ____XXXX
         uint8_t _5;
+
+        // _1______: alt season flag?
+        // ___XXXXX: Colour?
         uint8_t _6;
+
+        // _____XXX
+        // ?????___
         uint8_t _7;
     };
 #pragma pack(pop)
