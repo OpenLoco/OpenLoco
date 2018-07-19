@@ -205,12 +205,12 @@ namespace openloco::ui::options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().var_71)
+            if (ax == config::get().thing_zoom_max)
                 return;
 
             // Does this actually create a reference?
             auto cfg = &openloco::config::get();
-            cfg->var_71 = ax;
+            cfg->thing_zoom_max = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }

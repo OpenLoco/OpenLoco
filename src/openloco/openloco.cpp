@@ -68,7 +68,6 @@ namespace openloco
     loco_global<uint8_t, 0x00508F14> _screen_flags;
     loco_global<uint8_t, 0x00508F17> paused_state;
     loco_global<uint8_t, 0x00508F1A> game_speed;
-    loco_global<uint8_t, 0x0050AF26> byte_50AF26;
     loco_global<utility::prng, 0x00525E18> _prng;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
@@ -353,19 +352,19 @@ namespace openloco
         addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
         addr<0x0114084C, int32_t>() = 0;
         addr<0x01140840, int32_t>() = 0;
-        if (byte_50AF26 == 0)
+        if (config::get().var_72 == 0)
         {
-            byte_50AF26 = 16;
+            config::get().var_72 = 16;
             gfx::clear(gfx::screen_dpi(), 0);
             ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
         {
-            if (byte_50AF26 >= 16)
+            if (config::get().var_72 >= 16)
             {
-                byte_50AF26++;
-                if (byte_50AF26 >= 48)
+                config::get().var_72++;
+                if (config::get().var_72 >= 48)
                 {
                     if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
                     {
@@ -380,15 +379,15 @@ namespace openloco
                 }
                 ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 gfx::invalidate_screen();
-                if (byte_50AF26 != 96)
+                if (config::get().var_72 != 96)
                 {
                     tick_wait();
                     return;
                 }
-                byte_50AF26 = 1;
+                config::get().var_72 = 1;
                 if (addr<0x00F2539C, int32_t>() != 0)
                 {
-                    byte_50AF26 = 2;
+                    config::get().var_72 = 2;
                 }
                 config::write();
             }
@@ -483,17 +482,17 @@ namespace openloco
                 call(0x00431695);
                 call(0x00452B5F);
                 sub_46FFCA();
-                if (addr<0x0050AEC0, uint8_t>() != 0xFF)
+                if (config::get().countdown != 0xFF)
                 {
-                    addr<0x0050AEC0, uint8_t>()++;
-                    if (addr<0x0050AEC0, uint8_t>() != 0xFF)
+                    config::get().countdown++;
+                    if (config::get().countdown != 0xFF)
                     {
                         config::write();
                     }
                 }
             }
 
-            if (byte_50AF26 == 2)
+            if (config::get().var_72 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
                 ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
