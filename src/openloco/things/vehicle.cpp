@@ -111,7 +111,8 @@ bool vehicle::update()
             break;
         case thing_type::vehicle_body_end:
         case thing_type::vehicle_body_cont:
-            result = sub_4AA1D0();
+            result = call(0x004AA1D0, regs);
+            // result = sub_4AA1D0();
             break;
         case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);

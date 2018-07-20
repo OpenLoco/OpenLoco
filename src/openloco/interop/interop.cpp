@@ -344,6 +344,7 @@ namespace openloco::interop
         // TODO should we allow different base addresses?
         //      if so then we need to do extra work for that.
         auto length = std::min(lhs.state.size(), rhs.state.size());
+        int lastError = -1;
         for (size_t i = 0; i < length; i++)
         {
             auto left = lhs.state[i];
@@ -351,6 +352,11 @@ namespace openloco::interop
             if (left != right)
             {
                 uint32_t addr = lhs.begin + i;
+                if (lastError != -1 && lastError != i - 1)
+                {
+                    std::printf("...\n");
+                }
+                lastError = i;
                 std::printf("0x%06" PRIX32 ": %02" PRIX8 "  %02" PRIX8 "\n", addr, (uint8_t)left, (uint8_t)right);
             }
         }
