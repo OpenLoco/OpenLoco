@@ -463,7 +463,7 @@ namespace openloco::ui::widget
 
         sub_4CF3EB(dpi, window, widget, x, y, colour, width);
 
-        gfx::draw_string(*dpi, x, y, colour::black, stringFormatBuffer);
+        gfx::draw_string(dpi, x, y, colour::black, stringFormatBuffer);
     }
 
     // 0x004CA7F6
@@ -480,7 +480,7 @@ namespace openloco::ui::widget
         int16_t stringWidth = gfx::clip_string(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        gfx::draw_string(*dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
+        gfx::draw_string(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
     }
 
     // 0x004CA88B
@@ -497,7 +497,7 @@ namespace openloco::ui::widget
         int16_t stringWidth = gfx::clip_string(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        gfx::draw_string(*dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
+        gfx::draw_string(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
     }
 
     static void draw_hscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -527,7 +527,7 @@ namespace openloco::ui::widget
         // popa
 
         // pusha
-        gfx::draw_string(*dpi, ax + 2, cx, colour::black, (char*)0x005045F2);
+        gfx::draw_string(dpi, ax + 2, cx, colour::black, (char*)0x005045F2);
         // popa
 
         // pusha
@@ -540,7 +540,7 @@ namespace openloco::ui::widget
         // popa
 
         // pusha
-        gfx::draw_string(*dpi, bx - 6 - 1, cx, colour::black, (char*)0x005045F5);
+        gfx::draw_string(dpi, bx - 6 - 1, cx, colour::black, (char*)0x005045F5);
         // popa
 
         // pusha
@@ -592,7 +592,7 @@ namespace openloco::ui::widget
         // popa
 
         // pusha
-        gfx::draw_string(*dpi, ax + 1, cx - 1, colour::black, (char*)0x005045EC);
+        gfx::draw_string(dpi, ax + 1, cx - 1, colour::black, (char*)0x005045EC);
         // popa
 
         // pusha
@@ -605,7 +605,7 @@ namespace openloco::ui::widget
         // popa
 
         // pusha
-        gfx::draw_string(*dpi, ax + 1, dx - 8 - 1, colour::black, (char*)0x005045EF);
+        gfx::draw_string(dpi, ax + 1, dx - 8 - 1, colour::black, (char*)0x005045EF);
         // popa
 
         // pusha
@@ -724,7 +724,7 @@ namespace openloco::ui::widget
         if (activated)
         {
             _currentFontSpriteBase = font::medium_bold;
-            gfx::draw_string(*dpi, window->x + widget->left, window->y + widget->top, colour & 0x7F, _strCheckmark);
+            gfx::draw_string(dpi, window->x + widget->left, window->y + widget->top, colour & 0x7F, _strCheckmark);
         }
     }
 

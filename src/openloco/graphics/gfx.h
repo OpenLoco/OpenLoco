@@ -85,14 +85,7 @@ namespace openloco::gfx
     int16_t clip_string(int16_t width, char* string);
     uint16_t get_string_width(const char* buffer);
 
-    void draw_string(
-        drawpixelinfo_t& dpi,
-        int16_t x,
-        int16_t y,
-        uint8_t colour,
-        const char* string);
-
-    gfx::point_t drawString(int16_t x, int16_t y, uint8_t colour, drawpixelinfo_t* context, uint8_t* str);
+    gfx::point_t draw_string(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str);
 
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,

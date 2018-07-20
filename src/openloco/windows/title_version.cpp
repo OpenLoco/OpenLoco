@@ -27,7 +27,7 @@ namespace openloco::ui::windows
             ui::height() - height,
             width,
             height,
-            (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6),
+            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
         window->widgets = widgets;
 
@@ -41,6 +41,6 @@ namespace openloco::ui::windows
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto versionInfo = get_version_info();
-        gfx::draw_string(*dpi, window->x, window->y, colour::white | 0x20, versionInfo.c_str());
+        gfx::draw_string(dpi, window->x, window->y, colour::white | format_flags::textflag_5, (void*)versionInfo.c_str());
     }
 }
