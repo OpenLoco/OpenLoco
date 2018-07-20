@@ -20,6 +20,7 @@ namespace openloco::interop
     constexpr auto HOOK_BYTE_COUNT = 140;
 
     static registers _hookRegisters;
+    static uintptr_t _lastHook;
 
 // This macro writes a little-endian 4-byte long value into *data
 // It is used to avoid type punning.
@@ -69,6 +70,14 @@ namespace openloco::interop
         data[i++] = 0x89; // mov [_hookRegisters + 24], ebp
         data[i++] = (0b101 << 3) | 0b101;
         write_address_strictalias(&data[i], registerAddress + 24);
+        i += 4;
+
+        data[i++] = 0x8B; //  mov    eax,DWORD PTR [esp]
+        data[i++] = 0x04;
+        data[i++] = 0x24;
+        data[i++] = 0x89; // mov [_hookRegisters], eax
+        data[i++] = (0b000 << 3) | 0b101;
+        write_address_strictalias(&data[i], (uintptr_t)&_lastHook);
         i += 4;
 
         // work out distance to nearest 0xC
