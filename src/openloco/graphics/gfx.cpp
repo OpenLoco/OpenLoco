@@ -452,6 +452,11 @@ namespace openloco::gfx
         if (y < context->y - 90)
             return origin;
 
+        if (colour == format_flags::ff)
+        {
+            return loop_newline(context, origin, (uint8_t*)str);
+        }
+
         _currentFontFlags = 0;
         if (_currentFontSpriteBase == font::m1)
         {

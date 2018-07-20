@@ -33,6 +33,7 @@ namespace openloco
 
         constexpr uint8_t fd = 0xFD;
         constexpr uint8_t fe = 0xFE;
+        constexpr uint8_t ff = 0xFF;
     }
 
     namespace control_code
