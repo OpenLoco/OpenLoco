@@ -555,7 +555,8 @@ namespace openloco
         save_state afterVanilla = save_state(start, end);
         beforeVanilla.reset();
         save_state beforeCpp = save_state(start, end);
-        thingmgr::update_vehicles();
+        //thingmgr::update_vehicles();
+        call(0x004A8826);
         save_state afterCpp = save_state(start, end);
 
         printf("Before diff\n");
