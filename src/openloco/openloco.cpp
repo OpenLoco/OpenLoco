@@ -550,13 +550,18 @@ namespace openloco
 
         uintptr_t start = 0x506000;
         uintptr_t end = 0x1143000;
-        save_state before = save_state(start, end);
+        save_state beforeVanilla = save_state(start, end);
         call(0x004A8826);
         save_state afterVanilla = save_state(start, end);
-        before.reset();
+        beforeVanilla.reset();
+        save_state beforeCpp = save_state(start, end);
         thingmgr::update_vehicles();
         save_state afterCpp = save_state(start, end);
 
+        printf("Before diff\n");
+        save_state::log_diff(beforeVanilla, beforeCpp);
+
+        printf("After diff\n");
         save_state::log_diff(afterVanilla, afterCpp);
         printf("===\n");
 
