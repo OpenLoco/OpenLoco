@@ -1,6 +1,7 @@
 #include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
@@ -13,12 +14,51 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
-    static void sub_4C141D(window* w, gfx::drawpixelinfo_t* dpi)
+
+    static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, uint32_t imageId, widget_index index)
     {
-        registers regs;
-        regs.esi = (uint32_t)w;
-        regs.edi = (int32_t)dpi;
-        call(0x004C141D, regs);
+        auto widget = &w->widgets[index];
+
+        gfx::point_t pos = {};
+        pos.x = widget->left + w->x;
+        pos.y = widget->top + w->y;
+
+        if (w->is_disabled(index))
+        {
+            return; // 0x8000
+        }
+
+        bool isActivated = false;
+        if (w->is_activated(index))
+        {
+            isActivated = true;
+        }
+        else if (input::state() == input::input_state::widget_pressed)
+        {
+            isActivated = input::is_pressed(w->type, w->number, index);
+        }
+
+        if (imageId == -1)
+        {
+            return;
+        }
+
+        if (isActivated)
+        {
+            if (imageId != -2)
+            {
+                gfx::draw_image(ctx, pos.x, pos.y, imageId);
+            }
+        }
+        else
+        {
+            if (imageId != -2)
+            {
+                gfx::draw_image(ctx, pos.x, pos.y + 1, imageId);
+            }
+            gfx::draw_image(ctx, pos.x, pos.y, 0x40000000 | (51 << 19) | 2387);
+            gfx::draw_rect(ctx, pos.x, pos.y + 26, 31, 1, colour::get_shade(w->colours[1], 7));
+        }
     }
 
     namespace common
@@ -38,6 +78,27 @@ namespace openloco::ui::options
                 tab_control,
                 tab_miscellaneous,
             };
+        }
+
+        static void sub_4C141D(window* w, gfx::drawpixelinfo_t* ctx)
+        {
+            sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
+            sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
+
+            if (w->var_870 == 2)
+            {
+                //     w->var_872 >> 2 % 16;
+            }
+            sub_4CF194(w, ctx, image_ids::tab_music_0, widx::tab_music);
+
+            if (w->var_870 == 3)
+            {
+                //      w->var_872 >> 1 % 32;
+            }
+            sub_4CF194(w, ctx, image_ids::tab_globe_0, widx::tab_regional);
+
+            sub_4CF194(w, ctx, image_ids::tab_control, widx::tab_control);
+            sub_4CF194(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
 #define common_options_widgets(window_size, window_caption_id)                                                                                              \
@@ -291,7 +352,7 @@ namespace openloco::ui::options
             // Draw widgets.
             w->draw(dpi);
 
-            sub_4C141D(w, dpi);
+            common::sub_4C141D(w, dpi);
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::display_resolution].top + 1;

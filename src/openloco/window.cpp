@@ -39,6 +39,11 @@ namespace openloco::ui
         return (this->disabled_widgets & (1ULL << widget_index)) != 0;
     }
 
+    bool window::is_activated(widget_index index)
+    {
+        return (this->activated_widgets & (1ULL << index)) != 0;
+    }
+
     bool window::is_holdable(ui::widget_index index)
     {
         return (this->holdable_widgets & (1ULL << index)) != 0;

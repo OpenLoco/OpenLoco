@@ -267,6 +267,7 @@ namespace openloco::ui
 
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
+        bool is_activated(widget_index index);
         bool is_holdable(widget_index index);
         bool can_resize();
         void viewports_update_position();
