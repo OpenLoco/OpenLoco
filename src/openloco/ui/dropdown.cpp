@@ -5,11 +5,24 @@ using namespace openloco::interop;
 
 namespace openloco::ui::dropdown
 {
+    static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+    static loco_global<string_id[40], 0x0113D8A0> _dropdownItemArgs;
 
     void add(int16_t index, string_id title)
     {
         _dropdownItemFormats[index] = title;
+    }
+
+    void add(int16_t index, string_id title, string_id args)
+    {
+        _dropdownItemFormats[index] = title;
+        _dropdownItemArgs[index] = args;
+    }
+
+    void set_selection(int16_t index)
+    {
+        _dropdownHighlightedIndex = index;
     }
 
     /**

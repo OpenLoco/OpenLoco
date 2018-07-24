@@ -166,15 +166,15 @@ namespace openloco::ui::options
         // dropdown
         static void sub_4BFE2E(window* w)
         {
-            w->widgets[widx - 1].left;   // -E
-            w->widgets[widx - 1].right;  // -C
-            w->widgets[widx - 1].top;    // -A
-            w->widgets[widx - 1].bottom; // -8
+            // w->widgets[widx - 1].left;   // -E
+            // w->widgets[widx - 1].right;  // -C
+            // w->widgets[widx - 1].top;    // -A
+            // w->widgets[widx - 1].bottom; // -8
 
             // TODO: allow to pass object with format args
             dropdown::add(0, string_ids::str_421, string_ids::white);
             dropdown::add(1, string_ids::str_421, string_ids::translucent);
-            dropdown::set_selection(config::get().var_11);
+            dropdown::set_selection(config::get().construction_marker);
         }
 
         // dropdown
@@ -183,12 +183,12 @@ namespace openloco::ui::options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().var_11)
+            if (ax == config::get().construction_marker)
                 return;
 
             // Does this actually create a reference?
             auto cfg = &openloco::config::get();
-            cfg->var_11 = ax;
+            cfg->construction_marker = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }

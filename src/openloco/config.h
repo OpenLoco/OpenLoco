@@ -30,14 +30,16 @@ namespace openloco::config
         uint16_t resolution_width;  // 0x50AEB8, 0x04
         uint16_t resolution_height; // 0x50AEBA, 0x06
         uint8_t pad_08[0x0C - 0x08];
-        uint8_t countdown;
-        uint8_t pad_0D[0x28 - 0x0D];
+        uint8_t countdown; // 0x50AEC0, 0x0C
+        uint8_t pad_0D[0x24 - 0x0D];
+        uint8_t construction_marker; // 0x50AED8, 0x24
+        uint8_t pad_25[0x28 - 0x25];
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
         uint8_t pad_70[1];
         uint8_t thing_zoom_max;
-        uint8_t var_72;
+        uint8_t var_72; // 0x50AF26, 0x72
         uint8_t pad_73[0xD4 - 0x73];
         char last_host[64]; // 0xD4
         uint8_t var_114;
