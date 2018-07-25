@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -16,8 +17,12 @@ using namespace openloco::interop;
 namespace openloco::ui::options
 {
     static void on_mouse_up(window* w, widget_index wi);
+    static void sub_4C13BE(window* w);
 
-    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
+    static loco_global<uint8_t, 0x009C8714> _9C8714;
+    static loco_global<int8_t, 0x0050D434> _currentSong;
+
+    static loco_global<char[20], 0x0112C826> _commonFormatArgs;
 
 #define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
@@ -364,9 +369,40 @@ namespace openloco::ui::options
         // 0x004BFA04
         static void prepare_draw(window* w)
         {
-            registers regs;
-            regs.esi = (uint32_t)w;
-            call(0x004BFA04, regs);
+            assert(w->var_870 == common::tab::display);
+            assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            set_format_arg(0x10, uint16_t, config::get().resolution_width);
+            set_format_arg(0x12, uint16_t, config::get().resolution_height);
+
+            w->widgets[0x12].text = string_ids::white + config::get().construction_marker;
+            w->widgets[0xE].text = string_ids::full_scale + config::get().thing_zoom_max;
+            w->widgets[0x10].text = string_ids::full_scale + config::get().var_114;
+
+            w->activated_widgets &= ~(1 << 12);
+            if ((config::get().flags & 4) == 0)
+            {
+                w->activated_widgets |= (1 << 12);
+            }
+
+            w->activated_widgets &= ~(1 << 13);
+            if (config::get().flags & 1)
+            {
+                w->activated_widgets |= (1 << 13);
+            }
+
+            sub_4C13BE(w);
         }
 
         // 0x004BFAF9
@@ -451,9 +487,7 @@ namespace openloco::ui::options
                 w->activated_widgets |= (1 << 14);
             }
 
-            registers regs;
-            regs.esi = (uintptr_t)w;
-            call(0x4C13BE, regs);
+            sub_4C13BE(w);
         }
 
         // 0x004C02F5
@@ -465,6 +499,8 @@ namespace openloco::ui::options
             common::draw_tabs(w, dpi);
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xC].top + 1, 0, string_ids::str_650, nullptr);
         }
+
+        static void sub_4C0371(window* w);
 
         static void on_mouse_up(window* w, widget_index wi)
         {
@@ -482,7 +518,28 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::on_mouse_up(w, wi);
                     return;
+
+                case 14:
+                    sub_4C0371(w);
+                    return;
             }
+        }
+
+        static void sub_4C0371(window* w)
+        {
+            audio::pause_sound();
+
+            auto cfg = &openloco::config::get();
+            cfg->force_software_audio_mixer = !cfg->force_software_audio_mixer;
+            openloco::config::write();
+        }
+
+        // 0x004C04E0
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
         }
 
         static void init_events()
@@ -490,7 +547,7 @@ namespace openloco::ui::options
             _events->on_mouse_up = on_mouse_up;
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
-            _events->on_update = nullptr;
+            _events->on_update = on_update;
             _events->prepare_draw = prepare_draw;
             _events->draw = draw;
         }
@@ -514,7 +571,57 @@ namespace openloco::ui::options
             widget_end(),
         };
 
+        static void sub_4C0770();
+        static void sub_4C0778(window* w);
+        static void sub_4C07A4(window* w);
+        static void sub_4C07C4(window* w);
+
         static loco_global<window_event_list, 0x00504028> _events;
+
+        static void prepare_draw(window* w)
+        {
+            assert(w->var_870 == common::tab::music);
+            assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            string_id ax = string_ids::str_1595;
+            if (_currentSong != -1)
+            {
+                ax = string_ids::str_1596 + _currentSong;
+            }
+
+            set_format_arg(0, string_id, ax);
+            set_format_arg(2, string_id, string_ids::str_1539 + config::get().var_73);
+
+            w->activated_widgets &= 0xFFFFCFFF;
+            w->activated_widgets |= 0x1000;
+            if (_currentSong != -1)
+            {
+                if (config::get().var_23)
+                {
+                    w->activated_widgets &= 0xFFFFCFFF;
+                    w->activated_widgets |= 0x2000;
+                }
+            }
+
+            w->disabled_widgets |= 0x40000;
+            if (config::get().var_73 == 2)
+            {
+                w->disabled_widgets &= 0xFFFBFFFF;
+            }
+
+            sub_4C13BE(w);
+        }
 
         // 0x004C05F9
         static void draw(window* w, gfx::drawpixelinfo_t* dpi)
@@ -528,7 +635,10 @@ namespace openloco::ui::options
 
             gfx::draw_string_494B3F(*dpi, w->x + 183, w->y + w->widgets[0xF].top + 7, 0, string_ids::str_1547, nullptr);
 
-            // TODO: images
+            gfx::draw_image(dpi, w->x + w->widgets[0xF].left, w->y + w->widgets[0xF].top, 0x20000000 | (w->colours[1] << 19) | image_ids::spr_3543);
+
+            int16_t x = 90 + (config::get().volume / 32);
+            gfx::draw_image(dpi, w->x + w->widgets[0xF].left + x, w->y + w->widgets[0xF].top, 0x20000000 | (w->colours[1] << 19) | image_ids::spr_3544);
         }
 
         static void on_mouse_up(window* w, widget_index wi)
@@ -547,7 +657,71 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::on_mouse_up(w, wi);
                     return;
+
+                case 12:
+                    sub_4C0778(w);
+                case 13:
+                    sub_4C07A4(w);
+                case 14:
+                    sub_4C07C4(w);
+                case 18:
+                    sub_4C0770();
+                    return;
+                    ;
             }
+        }
+
+        static void sub_4C0770()
+        {
+            call(0x004C1602); // Open music selection
+        }
+
+        static void sub_4C0778(window* w)
+        {
+            if (config::get().var_23 == 0)
+                return;
+
+            auto cfg = &config::get();
+            cfg->var_23 = 0;
+            config::write();
+
+            call(0x0048AAE8);
+
+            _currentSong = -1;
+
+            w->invalidate();
+        }
+
+        static void sub_4C07A4(window* w)
+        {
+            if (config::get().var_23 != 0)
+                return;
+
+            auto cfg = &config::get();
+            cfg->var_23 = 1;
+            config::write();
+
+            w->invalidate();
+        }
+
+        static void sub_4C07C4(window* w)
+        {
+            if (config::get().var_23 == 0)
+                return;
+
+            call(0x0048AAE8);
+
+            _currentSong = -1;
+
+            w->invalidate();
+        }
+
+        // 0x004C0A37
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
         }
 
         static void init_events()
@@ -555,8 +729,8 @@ namespace openloco::ui::options
             _events->on_mouse_up = on_mouse_up;
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
-            _events->on_update = nullptr;
-            _events->prepare_draw = nullptr;
+            _events->on_update = on_update;
+            _events->prepare_draw = prepare_draw;
             _events->draw = draw;
         }
     }
@@ -579,6 +753,9 @@ namespace openloco::ui::options
             make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1498, string_ids::STR_1499),
             widget_end(),
         };
+
+        static void sub_4C0F14(window* w);
+        static void sub_4C0F274(window* w);
 
         static loco_global<window_event_list, 0x0050409C> _events;
 
@@ -629,9 +806,7 @@ namespace openloco::ui::options
                 w->disabled_widgets |= (1 << 15);
             }
 
-            registers regs;
-            regs.esi = (uintptr_t)w;
-            call(0x4C13BE, regs);
+            sub_4C13BE(w);
         }
 
         // 0x004C0B5B
@@ -663,7 +838,58 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::on_mouse_up(w, wi);
                     return;
+
+                case 18:
+                    sub_4C0F14(w);
+                    return;
+
+                case 19:
+                    sub_4C0F274(w);
+                    return;
             }
+        }
+
+        static void sub_4C0F14(window* w)
+        {
+            auto cfg = &openloco::config::get();
+            if (cfg->flags & 0x40)
+            {
+                cfg->flags &= ~0x40;
+            }
+            else
+            {
+                cfg->flags |= 0x40;
+            }
+            config::write();
+
+            w->invalidate();
+        }
+
+        static void sub_4C0F274(window* w)
+        {
+            auto cfg = &openloco::config::get();
+            if (cfg->flags & 0x80)
+            {
+                cfg->flags &= ~0x80;
+            }
+            else
+            {
+                cfg->flags |= 0x80;
+            }
+            config::write();
+
+            call(0x004C153B);
+            call(0x004BF935);
+
+            w->invalidate();
+        }
+
+        // 0x004C1195
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
         }
 
         static void init_events()
@@ -671,7 +897,7 @@ namespace openloco::ui::options
             _events->on_mouse_up = on_mouse_up;
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
-            _events->on_update = nullptr;
+            _events->on_update = on_update;
             _events->prepare_draw = prepare_draw;
             _events->draw = draw;
         }
@@ -712,9 +938,7 @@ namespace openloco::ui::options
                 w->activated_widgets |= (1 << 10);
             }
 
-            registers regs;
-            regs.esi = (uintptr_t)w;
-            call(0x4C13BE, regs);
+            sub_4C13BE(w);
         }
 
         // 0x004C113F
@@ -854,9 +1078,7 @@ namespace openloco::ui::options
                 w->widgets[widx::export_plugin_objects].type = widget_type::checkbox;
             }
 
-            registers regs;
-            regs.esi = (uint32_t)w;
-            call(0x004C13BE, regs);
+            sub_4C13BE(w);
         }
 
         // 0x004C1282
@@ -1002,6 +1224,31 @@ namespace openloco::ui::options
     static void sub_4BF8CD()
     {
         call(0x004BF8CD);
+    }
+
+    static void sub_4C13BE(window* w)
+    {
+        w->disabled_widgets &= 0x0FFFFFF3F;
+        if (is_editor_mode() || is_title_mode())
+        {
+            //  w->disabled_widgets |= 0x40;
+        }
+
+        if (is_editor_mode() && _9C8714 == 0)
+        {
+            w->disabled_widgets |= 0x80;
+        }
+
+        int x = w->widgets[4].left;
+        for (int i = 4; i <= 9; i++)
+        {
+            if (!w->is_disabled(i))
+            {
+                w->widgets[i].left = x;
+                w->widgets[i].right = x + 30;
+                x += 31;
+            }
+        }
     }
 
     static void sub_4C1519()

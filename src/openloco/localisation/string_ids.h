@@ -278,11 +278,17 @@ namespace openloco::string_ids
     constexpr string_id str_1504 = 1504;
     constexpr string_id str_1505 = 1505;
     constexpr string_id str_1535 = 1535;
+
+    constexpr string_id str_1539 = 1539;
+
     constexpr string_id str_1547 = 1547;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
+
+    constexpr string_id str_1595 = 1595;
+    constexpr string_id str_1596 = 1596;
 
     constexpr string_id STR_1700 = 1700;
 

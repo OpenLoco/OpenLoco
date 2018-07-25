@@ -32,18 +32,21 @@ namespace openloco::config
         uint8_t pad_08[0x0C - 0x08];
         uint8_t countdown; // 0x50AEC0, 0x0C
         uint8_t pad_0D[0x1F - 0x0D];
-        uint8_t force_software_audio_mixer; // 0x1F
-        uint8_t pad_20[0x24 - 0x20];
-        uint8_t construction_marker; // 0x50AED8, 0x24
+        uint32_t force_software_audio_mixer; // 0x1F
+        uint8_t var_23;                      // 0x23
+        uint8_t construction_marker;         // 0x50AED8, 0x24
         uint8_t pad_25[0x27 - 0x25];
         uint8_t sound_quality;      // 0x27
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
         uint8_t edge_scrolling;
-        uint8_t thing_zoom_max;
-        uint8_t var_72; // 0x50AF26, 0x72
-        uint8_t pad_73[0xD4 - 0x73];
+        uint8_t thing_zoom_max; // 0x71
+        uint8_t var_72;         // 0x50AF26, 0x72
+        uint8_t var_73;         // 0x50AF27, 0x73
+        uint8_t pad_74[0xCC - 0x74];
+        int32_t volume; // 0xCC
+        uint8_t pad_D0[0xD4 - 0xD0];
         char last_host[64]; // 0xD4
         uint8_t var_114;
         uint8_t var_115;

@@ -66,6 +66,9 @@ namespace openloco::image_ids
 
     constexpr uint32_t tab = 2387;
 
+    constexpr uint32_t spr_3543 = 3543;
+    constexpr uint32_t spr_3544 = 3544;
+
     constexpr uint32_t title_menu_sparkle = 3547;
     constexpr uint32_t title_menu_save = 3548;
     constexpr uint32_t title_menu_lesson_l = 3549;
