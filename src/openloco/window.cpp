@@ -539,9 +539,18 @@ namespace openloco::ui
 
     void window::call_close()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_close, regs);
+        if (event_handlers->on_close == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_close))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_close, regs);
+            return;
+        }
+
+        event_handlers->on_close(this);
     }
 
     void window::call_update()

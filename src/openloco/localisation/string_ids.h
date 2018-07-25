@@ -141,7 +141,12 @@ namespace openloco::string_ids
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
 
+    constexpr string_id str_650 = 650;
+
     constexpr string_id options = 654;
+
+    constexpr string_id str_656 = 656;
+    constexpr string_id str_657 = 657;
 
     constexpr string_id display_resolution = 662;
     constexpr string_id landscape_smoothing = 663;
@@ -262,6 +267,10 @@ namespace openloco::string_ids
     constexpr string_id options_title_regional = 1495;
     constexpr string_id options_title_controls = 1496;
     constexpr string_id options_title_miscellaneous = 1497;
+    constexpr string_id str_1504 = 1504;
+    constexpr string_id str_1505 = 1505;
+    constexpr string_id str_1535 = 1535;
+    constexpr string_id str_1547 = 1547;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
@@ -280,6 +289,9 @@ namespace openloco::string_ids
 
     constexpr string_id STR_1919 = 1919;
     constexpr string_id STR_1920 = 1920;
+    constexpr string_id str_1921 = 1921;
+    constexpr string_id str_1922 = 1922;
+    constexpr string_id str_1923 = 1923;
 
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;

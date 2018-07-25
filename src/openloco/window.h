@@ -155,7 +155,7 @@ namespace openloco::ui
             void* events[29];
             struct
             {
-                uint32_t on_close;
+                void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
@@ -243,7 +243,8 @@ namespace openloco::ui
                 scroll_area_t scroll_areas[3];     // 0x46
                 uint8_t pad_7C[0x83E - 0x7C];
                 uint16_t var_83E;
-                uint8_t pad_840[0x846 - 0x840];
+                uint16_t var_840;
+                uint8_t pad_842[0x846 - 0x842];
                 uint16_t var_846;
                 uint8_t pad_848[0x854 - 0x848];
                 uint16_t var_854;
@@ -264,6 +265,18 @@ namespace openloco::ui
                 int16_t var_88C;
             };
         };
+
+        constexpr void set_size(gfx::ui_size_t size)
+        {
+            this->min_width = size.width;
+            this->min_height = size.height;
+
+            this->max_width = size.width;
+            this->max_height = size.height;
+
+            this->width = size.width;
+            this->height = size.height;
+        }
 
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);

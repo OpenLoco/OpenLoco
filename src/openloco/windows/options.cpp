@@ -14,6 +14,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
+    static void on_mouse_up(window* w, widget_index wi);
 
     static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, uint32_t imageId, widget_index index)
     {
@@ -75,12 +76,22 @@ namespace openloco::ui::options
                 tab_sound,
                 tab_music,
                 tab_regional,
-                tab_control,
+                tab_controls,
                 tab_miscellaneous,
             };
         }
 
-        static void sub_4C141D(window* w, gfx::drawpixelinfo_t* ctx)
+        enum tab
+        {
+            display,
+            sound,
+            music,
+            regional,
+            controls,
+            miscellaneous,
+        };
+
+        static void draw_tabs(window* w, gfx::drawpixelinfo_t* ctx)
         {
             sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
             sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
@@ -97,7 +108,7 @@ namespace openloco::ui::options
             }
             sub_4CF194(w, ctx, image_ids::tab_globe_0, widx::tab_regional);
 
-            sub_4CF194(w, ctx, image_ids::tab_control, widx::tab_control);
+            sub_4CF194(w, ctx, image_ids::tab_control, widx::tab_controls);
             sub_4CF194(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
@@ -155,11 +166,6 @@ namespace openloco::ui::options
         // 0x004BFB8C
         static void on_mouse_up(window* w, widget_index wi)
         {
-            registers regs;
-            regs.edx = wi;
-            regs.esi = (uint32_t)w;
-            call(0x004BFB8C, regs);
-
             switch (wi)
             {
                 case common::widx::close_button:
@@ -170,8 +176,9 @@ namespace openloco::ui::options
                 case common::widx::tab_sound:
                 case common::widx::tab_music:
                 case common::widx::tab_regional:
-                case common::widx::tab_control:
+                case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
                     return;
 
                 case widx::landscape_smoothing:
@@ -224,7 +231,7 @@ namespace openloco::ui::options
 
 #pragma mark - Widget 19
 
-        // dropdown
+        // mouse down
         static void sub_4BFE2E(window* w)
         {
             // w->widgets[widx - 1].left;   // -E
@@ -314,10 +321,21 @@ namespace openloco::ui::options
         // 0x004BFBB7
         static void on_mouse_down(window* w, widget_index wi)
         {
-            registers regs;
-            regs.edx = wi;
-            regs.esi = (uint32_t)w;
-            call(0x004BFBB7, regs);
+            switch (wi)
+            {
+                case 11:
+                    sub_4C0026();
+                    break;
+                case 19:
+                    sub_4BFE2E(w);
+                    break;
+                case 15:
+                    sub_4BFEBE();
+                    break;
+                case 17:
+                    sub_4BFF72();
+                    break;
+            }
         }
 
         // 0x004BFBE8
@@ -352,7 +370,7 @@ namespace openloco::ui::options
             // Draw widgets.
             w->draw(dpi);
 
-            common::sub_4C141D(w, dpi);
+            common::draw_tabs(w, dpi);
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
@@ -395,6 +413,45 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00503FB4> _events;
+
+        // 0x004C02F5
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            // Draw widgets.
+            w->draw(dpi);
+
+            common::draw_tabs(w, dpi);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xC].top + 1, 0, string_ids::str_650, nullptr);
+        }
+
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_controls:
+                case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
+                    return;
+            }
+        }
+
+        static void init_events()
+        {
+            _events->on_mouse_up = on_mouse_up;
+            _events->on_mouse_down = nullptr;
+            _events->on_dropdown = nullptr;
+            _events->on_update = nullptr;
+            _events->prepare_draw = nullptr;
+            _events->draw = draw;
+        }
     }
 
     namespace music
@@ -416,6 +473,50 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00504028> _events;
+
+        // 0x004C05F9
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            // Draw widgets.
+            w->draw(dpi);
+
+            common::draw_tabs(w, dpi);
+
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xB].top, 0, string_ids::str_1535, nullptr);
+
+            gfx::draw_string_494B3F(*dpi, w->x + 183, w->y + w->widgets[0xF].top + 7, 0, string_ids::str_1547, nullptr);
+
+            // TODO: images
+        }
+
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_controls:
+                case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
+                    return;
+            }
+        }
+
+        static void init_events()
+        {
+            _events->on_mouse_up = on_mouse_up;
+            _events->on_mouse_down = nullptr;
+            _events->on_dropdown = nullptr;
+            _events->on_update = nullptr;
+            _events->prepare_draw = nullptr;
+            _events->draw = draw;
+        }
     }
 
     namespace regional
@@ -438,6 +539,48 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x0050409C> _events;
+
+        // 0x004C0B5B
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            // Draw widgets.
+            w->draw(dpi);
+            common::draw_tabs(w, dpi);
+
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xA].top + 1, 0, string_ids::str_656, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xC].top + 1, 0, string_ids::str_657, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xE].top + 1, 0, string_ids::str_1504, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0x10].top + 1, 0, string_ids::str_1505, nullptr);
+        }
+
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_controls:
+                case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
+                    return;
+            }
+        }
+
+        static void init_events()
+        {
+            _events->on_mouse_up = on_mouse_up;
+            _events->on_mouse_down = nullptr;
+            _events->on_dropdown = nullptr;
+            _events->on_update = nullptr;
+            _events->prepare_draw = nullptr;
+            _events->draw = draw;
+        }
     }
 
     namespace controls
@@ -452,11 +595,116 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00504110> _events;
+
+        static void prepare_draw(window* w)
+        {
+            assert(w->var_870 == common::tab::controls);
+            assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            w->activated_widgets &= ~(1 << 10);
+            if (config::get().edge_scrolling)
+            {
+                w->activated_widgets |= (1 << 10);
+            }
+
+            registers regs;
+            regs.esi = (uintptr_t)w;
+            call(0x4C13BE, regs);
+        }
+
+        // 0x004C113F
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            w->draw(dpi);
+            common::draw_tabs(w, dpi);
+        }
+
+        static void sub_4C117A(window* w);
+        static void sub_4C118D();
+
+        // 0x004C114A
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_controls:
+                case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
+                    return;
+
+                case 11:
+                    sub_4C118D();
+                    break;
+
+                case 10:
+                    sub_4C117A(w);
+                    break;
+            }
+        }
+
+        static void sub_4C117A(window* w)
+        {
+            auto cfg = &openloco::config::get();
+            cfg->edge_scrolling = !cfg->edge_scrolling;
+            config::write();
+
+            w->invalidate();
+        }
+
+        static void sub_4C118D()
+        {
+            call(0x004BE6C7);
+        }
+
+        // 0x004C1195
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+        }
+
+        static void init_events()
+        {
+            _events->on_mouse_up = on_mouse_up;
+            _events->on_update = on_update;
+            _events->prepare_draw = prepare_draw;
+            _events->draw = draw;
+        }
     }
 
     namespace misc
     {
         static const gfx::ui_size_t _window_size = { 420, 102 };
+
+        namespace widx
+        {
+            enum
+            {
+                use_preferred_owner_name = 10,
+                change_btn,
+                export_plugin_objects,
+            };
+        }
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
@@ -467,6 +715,196 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00504184> _events;
+
+        static loco_global<char[16], 0x0112C826> _commonFormatArgs;
+
+        static loco_global<uint8_t, 0x0112A17E> _112A17E;
+
+        static void sub_4C1319(window* w);
+        static void sub_4C1342(window* w, char* str);
+        static void sub_4C135F(window* w);
+        static void sub_4C1389(window* w);
+
+        // 0x004C11B7
+        static void prepare_draw(window* w)
+        {
+            assert(w->var_870 == common::tab::miscellaneous);
+            //  assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0x0FFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            w->activated_widgets &= ~(1 << widx::export_plugin_objects);
+            if (config::get().flags & 8)
+            {
+                w->activated_widgets |= (1 << widx::export_plugin_objects);
+            }
+
+            w->activated_widgets &= ~(1 << widx::use_preferred_owner_name);
+            w->disabled_widgets |= (1 << widx::change_btn);
+            if (config::get().flags & 0x200)
+            {
+                w->activated_widgets |= (1 << widx::use_preferred_owner_name);
+                w->disabled_widgets &= ~(1 << widx::change_btn);
+            }
+
+            w->widgets[widx::export_plugin_objects].type = widget_type::none;
+            if (_112A17E)
+            {
+                w->widgets[widx::export_plugin_objects].type = widget_type::checkbox;
+            }
+
+            registers regs;
+            regs.esi = (uint32_t)w;
+            call(0x004C13BE, regs);
+        }
+
+        // 0x004C1282
+        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        {
+            w->draw(dpi);
+            common::draw_tabs(w, dpi);
+
+            auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+            char* playerName = config::get().preferred_name;
+            strcpy(buffer, playerName);
+            buffer[strlen(playerName)] = '\0';
+
+            *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0xB].top + 1, 0, string_ids::str_1921, _commonFormatArgs);
+        }
+
+        // 0x004C12D2
+        static void on_mouse_up(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case common::widx::close_button:
+                    windowmgr::close(w);
+                    return;
+
+                case common::widx::tab_display:
+                case common::widx::tab_sound:
+                case common::widx::tab_music:
+                case common::widx::tab_regional:
+                case common::widx::tab_controls:
+                case common::widx::tab_miscellaneous:
+                    options::on_mouse_up(w, wi);
+                    return;
+
+                case 12:
+                    sub_4C1389(w);
+                    break;
+
+                case 10:
+                    sub_4C135F(w);
+                    break;
+
+                case 11:
+                    sub_4C1319(w);
+                    break;
+            }
+        }
+
+        // 0x004C1304
+        static void text_input(window* w, widget_index i, char* str)
+        {
+            switch (i)
+            {
+                case 11:
+                    sub_4C1342(w, str);
+                    break;
+            }
+        }
+
+        static void sub_4C1319(window* w)
+        {
+            auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+            char* playerName = config::get().preferred_name;
+            strcpy(buffer, playerName);
+            buffer[strlen(playerName)] = '\0';
+
+            textinput::open_textinput(w, string_ids::str_1922, string_ids::str_1923, string_ids::buffer_2039, 11, nullptr);
+        }
+
+        static void sub_4C1342(window* w, char* str)
+        {
+            if (strlen(str) == 0)
+                return;
+
+            auto cfg = &openloco::config::get();
+            strcpy(cfg->preferred_name, str);
+            cfg->preferred_name[strlen(str)] = '\0';
+
+            config::write();
+
+            w->invalidate();
+        }
+
+        static void sub_4C135F(window* w)
+        {
+            auto cfg = &openloco::config::get();
+            if (cfg->flags & 0x200)
+            {
+                cfg->flags &= ~0x200;
+            }
+            else
+            {
+                cfg->flags |= 0x200;
+            }
+            config::write();
+
+            w->invalidate();
+
+            if (cfg->flags & 0x200)
+            {
+                if (strlen(cfg->preferred_name) == 0)
+                {
+                    sub_4C1319(w);
+                }
+            }
+        }
+
+        static void sub_4C1389(window* w)
+        {
+            auto cfg = &openloco::config::get();
+            if (cfg->flags & 8)
+            {
+                cfg->flags &= ~8;
+            }
+            else
+            {
+                cfg->flags |= 8;
+            }
+            config::write();
+
+            w->invalidate();
+        }
+
+        // 0x004C139C
+        static void on_update(window* w)
+        {
+            w->var_872 += 1;
+            w->call_prepare_draw();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+        }
+
+        static void init_events()
+        {
+            _events->on_mouse_up = on_mouse_up;
+            _events->on_update = on_update;
+            _events->text_input = text_input;
+            _events->prepare_draw = prepare_draw;
+            _events->draw = draw;
+        }
     }
 
     static void sub_4BF8CD()
@@ -486,6 +924,11 @@ namespace openloco::ui::options
             return;
 
         display::init_events();
+        sound::init_events();
+        music::init_events();
+        regional::init_events();
+        controls::init_events();
+        misc::init_events();
 
         // 0x004BF833 (create_options_window)
         auto window = windowmgr::create_window_centred(
@@ -516,5 +959,91 @@ namespace openloco::ui::options
         window->call_on_resize();
         window->call_prepare_draw();
         window->init_scroll_widgets();
+    }
+
+    // 0x004BFC11
+    static void on_mouse_up(window* w, widget_index wi)
+    {
+        input::cancel_tool(w->type, w->number);
+
+        textinput::sub_4CE6C9(w->type, w->number);
+        w->var_870 = wi - common::widx::tab_display;
+        w->var_872 = 0;
+        w->flags &= ~(window_flags::flag_16);
+        w->disabled_widgets = 0;
+        w->holdable_widgets = 0;
+        w->activated_widgets = 0;
+        if (w->viewports[0])
+        {
+            w->viewports[0]->width = 0;
+            w->viewports[0] = nullptr;
+        }
+
+        switch ((common::tab)w->var_870)
+        {
+            case common::tab::display:
+                w->enabled_widgets = 0x0FFFF4;
+                w->event_handlers = &display::_events;
+                w->widgets = display::_widgets;
+                w->invalidate();
+                //
+                w->set_size(display::_window_size);
+                w->var_840 = 0xFFFF;
+                break;
+
+            case common::tab::sound:
+                w->enabled_widgets = 0x7FF4;
+                w->event_handlers = &(*sound::_events);
+                w->widgets = sound::_widgets;
+                w->invalidate();
+                //
+                w->set_size(sound::_window_size);
+                w->var_840 = 0xFFFF;
+                break;
+
+            case common::tab::music:
+                w->enabled_widgets = 0x7FFF4;
+                w->holdable_widgets = 0x8000;
+                w->event_handlers = &(*music::_events);
+                w->widgets = music::_widgets;
+                w->invalidate();
+                //
+                w->set_size(music::_window_size);
+                w->var_840 = 0xFFFF;
+                break;
+
+            case common::tab::regional:
+                w->enabled_widgets = 0x0FFFF4;
+                w->holdable_widgets = 0;
+                w->event_handlers = &(*regional::_events);
+                w->widgets = regional::_widgets;
+                w->invalidate();
+                //
+                w->set_size(regional::_window_size);
+                break;
+
+            case common::tab::controls:
+                w->enabled_widgets = 0x0FF4;
+                w->event_handlers = &(*controls::_events);
+                w->widgets = controls::_widgets;
+                w->invalidate();
+                //
+                w->set_size(controls::_window_size);
+                break;
+
+            case common::tab::miscellaneous:
+                w->enabled_widgets = 0x1FF4;
+                w->event_handlers = &(*misc::_events);
+                w->widgets = misc::_widgets;
+                w->invalidate();
+                //
+                w->set_size(misc::_window_size);
+                break;
+        }
+
+        w->call_on_resize();
+        w->call_prepare_draw();
+        w->init_scroll_widgets();
+        w->invalidate();
     }
 }

@@ -148,6 +148,17 @@ namespace openloco::input
         return _pressedWidgetIndex == index;
     }
 
+    void cancel_tool(ui::window_type type, ui::window_number number)
+    {
+        if (!has_flag(input_flags::tool_active))
+            return;
+
+        if (*_toolWindowType == type && _toolWindowNumber == number)
+        {
+            call(0x004CE3D6);
+        }
+    }
+
 #pragma mark - Mouse input
 
     // 0x004C7174

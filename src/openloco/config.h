@@ -37,7 +37,7 @@ namespace openloco::config
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
-        uint8_t pad_70[1];
+        uint8_t edge_scrolling;
         uint8_t thing_zoom_max;
         uint8_t var_72; // 0x50AF26, 0x72
         uint8_t pad_73[0xD4 - 0x73];
