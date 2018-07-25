@@ -31,9 +31,12 @@ namespace openloco::config
         uint16_t resolution_height; // 0x50AEBA, 0x06
         uint8_t pad_08[0x0C - 0x08];
         uint8_t countdown; // 0x50AEC0, 0x0C
-        uint8_t pad_0D[0x24 - 0x0D];
+        uint8_t pad_0D[0x1F - 0x0D];
+        uint8_t force_software_audio_mixer; // 0x1F
+        uint8_t pad_20[0x24 - 0x20];
         uint8_t construction_marker; // 0x50AED8, 0x24
-        uint8_t pad_25[0x28 - 0x25];
+        uint8_t pad_25[0x27 - 0x25];
+        uint8_t sound_quality;      // 0x27
         uint8_t measurement_format; // 0x50AEDC, 0x28
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A

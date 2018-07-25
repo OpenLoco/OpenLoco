@@ -123,6 +123,9 @@ namespace openloco::string_ids
 
     constexpr string_id wcolour2_stringid2 = 457;
 
+    constexpr string_id str_479 = 479;
+    constexpr string_id str_480 = 480;
+
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
@@ -142,11 +145,16 @@ namespace openloco::string_ids
     constexpr string_id month_long_december = 646;
 
     constexpr string_id str_650 = 650;
+    constexpr string_id str_651 = 651;
 
     constexpr string_id options = 654;
 
     constexpr string_id str_656 = 656;
     constexpr string_id str_657 = 657;
+    constexpr string_id str_658 = 658;
+
+    constexpr string_id str_660 = 660;
+    constexpr string_id str_661 = 661;
 
     constexpr string_id display_resolution = 662;
     constexpr string_id landscape_smoothing = 663;

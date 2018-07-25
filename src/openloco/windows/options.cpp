@@ -4,6 +4,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/currency_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui.h"
@@ -15,6 +16,10 @@ using namespace openloco::interop;
 namespace openloco::ui::options
 {
     static void on_mouse_up(window* w, widget_index wi);
+
+    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
+
+#define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
     static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, uint32_t imageId, widget_index index)
     {
@@ -414,6 +419,43 @@ namespace openloco::ui::options
 
         static loco_global<window_event_list, 0x00503FB4> _events;
 
+        // 0x004C0217
+        static void prepare_draw(window* w)
+        {
+            assert(w->var_870 == common::tab::sound);
+            assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            set_format_arg(0x0, string_id, string_ids::str_479);
+
+            /*if(_currentSoundDevice != -1 && _numSoundDevices != 0) {
+                set_format_arg(0x2, uint32_t, soundDevices[_currentSoundDevice].name);
+                set_format_arg(0x0, string_id, string_ids::str_480);
+            }*/
+
+            set_format_arg(0xA, string_id, string_ids::str_651 + openloco::config::get().sound_quality);
+
+            w->activated_widgets &= ~(1 << 14);
+            if (config::get().force_software_audio_mixer)
+            {
+                w->activated_widgets |= (1 << 14);
+            }
+
+            registers regs;
+            regs.esi = (uintptr_t)w;
+            call(0x4C13BE, regs);
+        }
+
         // 0x004C02F5
         static void draw(window* w, gfx::drawpixelinfo_t* dpi)
         {
@@ -449,7 +491,7 @@ namespace openloco::ui::options
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
             _events->on_update = nullptr;
-            _events->prepare_draw = nullptr;
+            _events->prepare_draw = prepare_draw;
             _events->draw = draw;
         }
     }
@@ -540,6 +582,58 @@ namespace openloco::ui::options
 
         static loco_global<window_event_list, 0x0050409C> _events;
 
+        // 0x004C0A59
+        static void prepare_draw(window* w)
+        {
+            assert(w->var_870 == common::tab::regional);
+            assert(w->widgets == _widgets);
+
+            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets |= 1 << (w->var_870 + 4);
+
+            w->widgets[0].right = w->width - 1;
+            w->widgets[0].bottom = w->height - 1;
+            w->widgets[3].right = w->width - 1;
+            w->widgets[3].bottom = w->height - 1;
+            w->widgets[1].right = w->width - 2;
+            w->widgets[2].left = w->width - 15;
+            w->widgets[2].right = w->width - 15 + 12;
+
+            string_id ax = string_ids::str_660;
+            if (openloco::config::get().flags & 2)
+            {
+                ax = string_ids::str_661;
+            }
+
+            set_format_arg(0x6, string_id, ax);
+            set_format_arg(0xC, string_id, string_ids::str_658 + openloco::config::get().measurement_format);
+            set_format_arg(0xA, string_id, objectmgr::get<currency_object>()->name);
+
+            w->activated_widgets &= ~(1 << 18);
+            if (config::get().flags & 0x40)
+            {
+                w->activated_widgets |= (1 << 18);
+            }
+
+            w->activated_widgets &= ~(1 << 19);
+            if (config::get().flags & 0x80)
+            {
+                w->activated_widgets |= (1 << 19);
+            }
+
+            w->disabled_widgets &= ~(1 << 14);
+            w->disabled_widgets &= ~(1 << 15);
+            if (config::get().flags & 0x80)
+            {
+                w->disabled_widgets |= (1 << 14);
+                w->disabled_widgets |= (1 << 15);
+            }
+
+            registers regs;
+            regs.esi = (uintptr_t)w;
+            call(0x4C13BE, regs);
+        }
+
         // 0x004C0B5B
         static void draw(window* w, gfx::drawpixelinfo_t* dpi)
         {
@@ -578,7 +672,7 @@ namespace openloco::ui::options
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
             _events->on_update = nullptr;
-            _events->prepare_draw = nullptr;
+            _events->prepare_draw = prepare_draw;
             _events->draw = draw;
         }
     }
@@ -715,8 +809,6 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00504184> _events;
-
-        static loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 

@@ -113,7 +113,7 @@ namespace openloco::ui::windowmgr
 
         register_hook(
             0x004C6202,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 all_wheel_input();
                 regs = backup;
