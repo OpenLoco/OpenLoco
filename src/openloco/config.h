@@ -9,7 +9,15 @@ namespace openloco::config
 
     enum flags
     {
+        gridlines_on_landscape = (1 << 0),
         show_height_as_units = (1 << 1),
+        landscape_smoothing = (1 << 2),
+        export_objects_with_saves = (1 << 3),
+
+        preferred_currency_for_new_games = (1 << 6),
+        preferred_currency_always = (1 << 7),
+
+        use_preferred_owner_name = (1 << 9),
     };
 
     enum measurement_format
@@ -44,7 +52,9 @@ namespace openloco::config
         uint8_t thing_zoom_max; // 0x71
         uint8_t var_72;         // 0x50AF26, 0x72
         uint8_t var_73;         // 0x50AF27, 0x73
-        uint8_t pad_74[0xCC - 0x74];
+        uint8_t pad_74[0x8C - 0x74];
+        uint8_t enabled_music[29]; // 0x50AF40, 0x8C
+        uint8_t pad_A9[0xCC - 0xA9];
         int32_t volume; // 0xCC
         uint8_t pad_D0[0xD4 - 0xD0];
         char last_host[64]; // 0xD4

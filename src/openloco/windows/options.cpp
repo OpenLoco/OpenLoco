@@ -195,13 +195,13 @@ namespace openloco::ui::options
                 case widx::landscape_smoothing:
                 {
                     auto& cfg = openloco::config::get();
-                    if (cfg.flags & 4)
+                    if (cfg.flags & config::flags::landscape_smoothing)
                     {
-                        cfg.flags &= ~4;
+                        cfg.flags &= ~config::flags::landscape_smoothing;
                     }
                     else
                     {
-                        cfg.flags |= 4;
+                        cfg.flags |= config::flags::landscape_smoothing;
                     }
                     openloco::config::write();
                     gfx::invalidate_screen();
@@ -211,13 +211,13 @@ namespace openloco::ui::options
                 case widx::gridlines_on_landscape:
                 {
                     auto& cfg = openloco::config::get();
-                    if (cfg.flags & 1)
+                    if (cfg.flags & config::flags::gridlines_on_landscape)
                     {
-                        cfg.flags &= ~1;
+                        cfg.flags &= ~config::flags::gridlines_on_landscape;
                     }
                     else
                     {
-                        cfg.flags |= 1;
+                        cfg.flags |= config::flags::gridlines_on_landscape;
                     }
                     openloco::config::write();
                     gfx::invalidate_screen();
@@ -227,7 +227,7 @@ namespace openloco::ui::options
                     {
                         main->viewports[0]->var_12 &= ~(1 << 5);
 
-                        if ((cfg.flags & 1) != 0)
+                        if ((cfg.flags & config::flags::gridlines_on_landscape) != 0)
                         {
                             main->viewports[0]->var_12 |= (1 << 5);
                         }
@@ -240,8 +240,8 @@ namespace openloco::ui::options
 
 #pragma mark - Construction Marker (Widget 19)
 
-        // mouse down
-        static void sub_4BFE2E(window* w, widget_index wi)
+        // 0x004BFE2E
+        static void construction_marker_mouse_down(window* w, widget_index wi)
         {
             dropdown::add(0, string_ids::str_421, 1, string_ids::white);
             dropdown::add(1, string_ids::str_421, 1, string_ids::translucent);
@@ -251,8 +251,8 @@ namespace openloco::ui::options
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 2, 0);
         }
 
-        // dropdown
-        static void sub_4BFE98(int16_t ax)
+        // 0x004BFE98
+        static void construction_marker_dropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -267,8 +267,9 @@ namespace openloco::ui::options
         }
 
 #pragma mark - Vehicle zoom (Widget 15)
-        // mouse down
-        static void sub_4BFEBE(window* w, widget_index wi)
+
+        // 0x004BFEBE
+        static void vehicle_zoom_mouse_down(window* w, widget_index wi)
         {
             dropdown::add(0, string_ids::str_421, 1, string_ids::full_scale);
             dropdown::add(1, string_ids::str_421, 1, string_ids::half_scale);
@@ -280,8 +281,8 @@ namespace openloco::ui::options
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
         }
 
-        // dropdown
-        static void sub_4BFF4C(int16_t ax)
+        // 0x004BFF4C
+        static void vehicle_zoom_dropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -296,8 +297,9 @@ namespace openloco::ui::options
         }
 
 #pragma mark - Station names minimum scale (Widget 17)
-        // mouse down
-        static void sub_4BFF72(window* w, widget_index wi)
+
+        // 0x004BFF72
+        static void station_names_scale_mouse_down(window* w, widget_index wi)
         {
             dropdown::add(0, string_ids::str_421, 1, string_ids::full_scale);
             dropdown::add(1, string_ids::str_421, 1, string_ids::half_scale);
@@ -309,8 +311,8 @@ namespace openloco::ui::options
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
         }
 
-        // dropdown
-        static void sub_4C0000(int16_t ax)
+        // 0x004C0000
+        static void station_names_scale_dropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -325,8 +327,9 @@ namespace openloco::ui::options
         }
 
 #pragma mark - Resolution dropdown (Widget 11)
-        // mouse down
-        static void sub_4C0026(window* w, widget_index wi)
+
+        // 0x004C0026
+        static void resolution_mouse_down(window* w, widget_index wi)
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
             for (size_t i = 0; i < resolutions.size(); i++)
@@ -339,8 +342,8 @@ namespace openloco::ui::options
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0);
         }
 
-        // dropdown
-        static void sub_4C00F4(int16_t index)
+        // 0x004C00F4
+        static void resolution_dropdown(int16_t index)
         {
             if (index == -1)
                 return;
@@ -365,16 +368,16 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case widx::display_resolution_btn:
-                    sub_4C0026(w, wi);
+                    resolution_mouse_down(w, wi);
                     break;
                 case widx::construction_marker_btn:
-                    sub_4BFE2E(w, wi);
+                    construction_marker_mouse_down(w, wi);
                     break;
                 case widx::vehicles_min_scale_btn:
-                    sub_4BFEBE(w, wi);
+                    vehicle_zoom_mouse_down(w, wi);
                     break;
                 case widx::station_names_min_scale_btn:
-                    sub_4BFF72(w, wi);
+                    station_names_scale_mouse_down(w, wi);
                     break;
             }
         }
@@ -385,16 +388,16 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case widx::display_resolution_btn:
-                    sub_4C00F4(item_index);
+                    resolution_dropdown(item_index);
                     break;
                 case widx::construction_marker_btn:
-                    sub_4BFE98(item_index);
+                    construction_marker_dropdown(item_index);
                     break;
                 case widx::vehicles_min_scale_btn:
-                    sub_4BFF4C(item_index);
+                    vehicle_zoom_dropdown(item_index);
                     break;
                 case widx::station_names_min_scale_btn:
-                    sub_4C0000(item_index);
+                    station_names_scale_dropdown(item_index);
                     break;
             }
         }
@@ -432,13 +435,13 @@ namespace openloco::ui::options
             w->widgets[widx::station_names_min_scale].text = string_ids::full_scale + config::get().station_names_min_scale;
 
             w->activated_widgets &= ~(1 << 12);
-            if ((config::get().flags & 4) == 0)
+            if ((config::get().flags & config::flags::landscape_smoothing) == 0)
             {
                 w->activated_widgets |= (1 << 12);
             }
 
             w->activated_widgets &= ~(1 << 13);
-            if (config::get().flags & 1)
+            if (config::get().flags & config::flags::gridlines_on_landscape)
             {
                 w->activated_widgets |= (1 << 13);
             }
@@ -635,10 +638,10 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            string_id ax = string_ids::str_1595;
+            string_id ax = string_ids::music_none;
             if (_currentSong != -1)
             {
-                ax = string_ids::str_1596 + _currentSong;
+                ax = string_ids::music_chuggin_along + _currentSong;
             }
 
             set_format_arg(0, string_id, ax);
@@ -708,7 +711,6 @@ namespace openloco::ui::options
                 case 18:
                     sub_4C0770();
                     return;
-                    ;
             }
         }
 
@@ -795,9 +797,6 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static void sub_4C0F14(window* w);
-        static void sub_4C0F274(window* w);
-
         static loco_global<window_event_list, 0x0050409C> _events;
 
         // 0x004C0A59
@@ -818,7 +817,7 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id ax = string_ids::str_660;
-            if (openloco::config::get().flags & 2)
+            if (openloco::config::get().flags & config::flags::show_height_as_units)
             {
                 ax = string_ids::str_661;
             }
@@ -828,20 +827,20 @@ namespace openloco::ui::options
             set_format_arg(0xA, string_id, objectmgr::get<currency_object>()->name);
 
             w->activated_widgets &= ~(1 << 18);
-            if (config::get().flags & 0x40)
+            if (config::get().flags & config::flags::preferred_currency_for_new_games)
             {
                 w->activated_widgets |= (1 << 18);
             }
 
             w->activated_widgets &= ~(1 << 19);
-            if (config::get().flags & 0x80)
+            if (config::get().flags & config::flags::preferred_currency_always)
             {
                 w->activated_widgets |= (1 << 19);
             }
 
             w->disabled_widgets &= ~(1 << 14);
             w->disabled_widgets &= ~(1 << 15);
-            if (config::get().flags & 0x80)
+            if (config::get().flags & config::flags::preferred_currency_always)
             {
                 w->disabled_widgets |= (1 << 14);
                 w->disabled_widgets |= (1 << 15);
@@ -863,6 +862,9 @@ namespace openloco::ui::options
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0x10].top + 1, 0, string_ids::str_1505, nullptr);
         }
 
+        static void preferred_currency_new_game_mouse_up(window* w);
+        static void preferred_currency_always_mouse_up(window* w);
+
         static void on_mouse_up(window* w, widget_index wi)
         {
             switch (wi)
@@ -881,41 +883,43 @@ namespace openloco::ui::options
                     return;
 
                 case 18:
-                    sub_4C0F14(w);
+                    preferred_currency_new_game_mouse_up(w);
                     return;
 
                 case 19:
-                    sub_4C0F274(w);
+                    preferred_currency_always_mouse_up(w);
                     return;
             }
         }
 
-        static void sub_4C0F14(window* w)
+        // 0x004C0F14
+        static void preferred_currency_new_game_mouse_up(window* w)
         {
             auto& cfg = openloco::config::get();
-            if (cfg.flags & 0x40)
+            if (cfg.flags & config::flags::preferred_currency_for_new_games)
             {
-                cfg.flags &= ~0x40;
+                cfg.flags &= ~config::flags::preferred_currency_for_new_games;
             }
             else
             {
-                cfg.flags |= 0x40;
+                cfg.flags |= config::flags::preferred_currency_for_new_games;
             }
             config::write();
 
             w->invalidate();
         }
 
-        static void sub_4C0F274(window* w)
+        // 0x004C0F274
+        static void preferred_currency_always_mouse_up(window* w)
         {
             auto& cfg = openloco::config::get();
-            if (cfg.flags & 0x80)
+            if (cfg.flags & config::flags::preferred_currency_always)
             {
-                cfg.flags &= ~0x80;
+                cfg.flags &= ~config::flags::preferred_currency_always;
             }
             else
             {
-                cfg.flags |= 0x80;
+                cfg.flags |= config::flags::preferred_currency_always;
             }
             config::write();
 
@@ -1100,14 +1104,14 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
-            if (config::get().flags & 8)
+            if (config::get().flags & config::flags::export_objects_with_saves)
             {
                 w->activated_widgets |= (1 << widx::export_plugin_objects);
             }
 
             w->activated_widgets &= ~(1 << widx::use_preferred_owner_name);
             w->disabled_widgets |= (1 << widx::change_btn);
-            if (config::get().flags & 0x200)
+            if (config::get().flags & config::flags::use_preferred_owner_name)
             {
                 w->activated_widgets |= (1 << widx::use_preferred_owner_name);
                 w->disabled_widgets &= ~(1 << widx::change_btn);
@@ -1207,19 +1211,19 @@ namespace openloco::ui::options
         static void sub_4C135F(window* w)
         {
             auto& cfg = openloco::config::get();
-            if (cfg.flags & 0x200)
+            if (cfg.flags & config::flags::use_preferred_owner_name)
             {
-                cfg.flags &= ~0x200;
+                cfg.flags &= ~config::flags::use_preferred_owner_name;
             }
             else
             {
-                cfg.flags |= 0x200;
+                cfg.flags |= config::flags::use_preferred_owner_name;
             }
             config::write();
 
             w->invalidate();
 
-            if (cfg.flags & 0x200)
+            if (cfg.flags & config::flags::use_preferred_owner_name)
             {
                 if (strlen(cfg.preferred_name) == 0)
                 {
@@ -1231,13 +1235,13 @@ namespace openloco::ui::options
         static void sub_4C1389(window* w)
         {
             auto& cfg = openloco::config::get();
-            if (cfg.flags & 8)
+            if (cfg.flags & config::flags::export_objects_with_saves)
             {
-                cfg.flags &= ~8;
+                cfg.flags &= ~config::flags::export_objects_with_saves;
             }
             else
             {
-                cfg.flags |= 8;
+                cfg.flags |= config::flags::export_objects_with_saves;
             }
             config::write();
 

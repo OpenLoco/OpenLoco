@@ -236,6 +236,8 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
+    constexpr string_id loading = 1088;
+
     constexpr string_id white = 1090;
     constexpr string_id translucent = 1091;
     constexpr string_id construction_marker = 1092;
@@ -247,6 +249,8 @@ namespace openloco::string_ids
     constexpr string_id eighth_scale = 1098;
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
+
+    constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id display_options = 1486;
     constexpr string_id sound_options = 1487;
@@ -276,6 +280,7 @@ namespace openloco::string_ids
     constexpr string_id options_title_regional = 1495;
     constexpr string_id options_title_controls = 1496;
     constexpr string_id options_title_miscellaneous = 1497;
+
     constexpr string_id str_1504 = 1504;
     constexpr string_id str_1505 = 1505;
     constexpr string_id str_1535 = 1535;
@@ -288,8 +293,36 @@ namespace openloco::string_ids
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
 
-    constexpr string_id str_1595 = 1595;
-    constexpr string_id str_1596 = 1596;
+    constexpr string_id music_none = 1595;
+    constexpr string_id music_chuggin_along = 1596;
+    constexpr string_id music_long_dusty_road = 1597;
+    constexpr string_id music_flying_high = 1598;
+    constexpr string_id music_gettin_on_the_gas = 1599;
+    constexpr string_id music_jumpin_the_rails = 1600;
+    constexpr string_id music_smooth_running = 1601;
+    constexpr string_id music_traffic_jam = 1602;
+    constexpr string_id music_never_stop_til_you_get_there = 1603;
+    constexpr string_id music_soaring_away = 1604;
+    constexpr string_id music_techno_torture = 1605;
+    constexpr string_id music_everlasting_high_rise = 1606;
+    constexpr string_id music_solace = 1607;
+    constexpr string_id music_chrysanthemum = 1608;
+    constexpr string_id music_eugenia = 1609;
+    constexpr string_id music_the_ragtime_dance = 1610;
+    constexpr string_id music_easy_winners = 1611;
+    constexpr string_id music_setting_off = 1612;
+    constexpr string_id music_a_travellers_seranade = 1613;
+    constexpr string_id music_latino_trip = 1614;
+    constexpr string_id music_a_good_head_of_steam = 1615;
+    constexpr string_id music_hop_to_the_bop = 1616;
+    constexpr string_id music_the_city_lights = 1617;
+    constexpr string_id music_steamin_down_town = 1618;
+    constexpr string_id music_bright_expectations = 1619;
+    constexpr string_id music_mo_station = 1620;
+    constexpr string_id music_far_out = 1621;
+    constexpr string_id music_running_on_time = 1622;
+    constexpr string_id music_get_me_to_gladstone_bay = 1623;
+    constexpr string_id music_sandy_track_blues = 1624;
 
     constexpr string_id STR_1700 = 1700;
 
@@ -297,6 +330,8 @@ namespace openloco::string_ids
     constexpr string_id chat_instructions = 1718;
 
     constexpr string_id title_menu_scenario_editor = 1740;
+
+    constexpr string_id title_exit_game = 1869;
 
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;
@@ -314,15 +349,9 @@ namespace openloco::string_ids
 
     constexpr string_id title_menu_chat_tooltip = 1933;
 
-    // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
-
-    constexpr string_id loading = 1088;
-
-    constexpr string_id station_cargo_rating_percent = 1423;
-
-    constexpr string_id title_exit_game = 1869;
-
     constexpr string_id the_other_player = 1934;
+
+    // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
