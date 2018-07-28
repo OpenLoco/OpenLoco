@@ -245,8 +245,8 @@ namespace openloco::ui::options
         // mouse down
         static void sub_4BFE2E(window* w, widget_index wi)
         {
-            dropdown::add(0, string_ids::str_421, string_ids::white);
-            dropdown::add(1, string_ids::str_421, string_ids::translucent);
+            dropdown::add(0, string_ids::str_421, 1, string_ids::white);
+            dropdown::add(1, string_ids::str_421, 1, string_ids::translucent);
             dropdown::set_selection(config::get().construction_marker);
 
             widget_t dropdown = w->widgets[wi - 1];
@@ -273,10 +273,10 @@ namespace openloco::ui::options
         // mouse down
         static void sub_4BFEBE(window* w, widget_index wi)
         {
-            dropdown::add(0, string_ids::str_421, string_ids::full_scale);
-            dropdown::add(1, string_ids::str_421, string_ids::half_scale);
-            dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
-            dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
+            dropdown::add(0, string_ids::str_421, 1, string_ids::full_scale);
+            dropdown::add(1, string_ids::str_421, 1, string_ids::half_scale);
+            dropdown::add(2, string_ids::str_421, 1, string_ids::quarter_scale);
+            dropdown::add(3, string_ids::str_421, 1, string_ids::eighth_scale);
             dropdown::set_selection(config::get().thing_zoom_max);
 
             widget_t dropdown = w->widgets[wi - 1];
@@ -303,10 +303,10 @@ namespace openloco::ui::options
         // mouse down
         static void sub_4BFF72(window* w, widget_index wi)
         {
-            dropdown::add(0, string_ids::str_421, string_ids::full_scale);
-            dropdown::add(1, string_ids::str_421, string_ids::half_scale);
-            dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
-            dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
+            dropdown::add(0, string_ids::str_421, 1, string_ids::full_scale);
+            dropdown::add(1, string_ids::str_421, 1, string_ids::half_scale);
+            dropdown::add(2, string_ids::str_421, 1, string_ids::quarter_scale);
+            dropdown::add(3, string_ids::str_421, 1, string_ids::eighth_scale);
             dropdown::set_selection(config::get().station_names_min_scale);
 
             widget_t dropdown = w->widgets[wi - 1];
@@ -336,7 +336,7 @@ namespace openloco::ui::options
             std::vector<Resolution> resolutions = getFullscreenResolutions();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
-                dropdown::add(i, string_ids::str_421, string_ids::display_resolution_dropdown_format, resolutions[i].width, resolutions[i].height);
+                dropdown::add(i, string_ids::str_421, 3, string_ids::display_resolution_dropdown_format, resolutions[i].width, resolutions[i].height);
             }
             // !!! TODO: set selection
             // dropdown::set_selection();

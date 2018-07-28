@@ -1,26 +1,36 @@
 #include "dropdown.h"
 #include "../interop/interop.hpp"
 
+#include <cassert>
 #include <cstdarg>
 
 using namespace openloco::interop;
 
 namespace openloco::ui::dropdown
 {
+    static constexpr int num_args_per_item = 4;
+
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<string_id[40][4], 0x0113D8A0> _dropdownItemArgs;
+    static loco_global<string_id[40][num_args_per_item], 0x0113D8A0> _dropdownItemArgs;
 
-    void add(int16_t index, string_id title, ...)
+    void add(int16_t index, string_id title)
+    {
+        _dropdownItemFormats[index] = title;
+    }
+
+    void add(int16_t index, string_id title, int n_args, ...)
     {
         _dropdownItemFormats[index] = title;
 
+        assert(n_args < num_args_per_item);
+
         va_list args;
-        va_start(args, title);
-        for (size_t arg_index = 0; arg_index < 4 && *args != '\0'; arg_index++)
+        va_start(args, n_args);
+        for (int arg_index = 0; arg_index < n_args; arg_index++)
         {
             int arg = va_arg(args, int);
-            _dropdownItemArgs[index][arg_index] = (string_id)arg;
+            _dropdownItemArgs[index][arg_index] = static_cast<string_id>(arg);
         }
         va_end(args);
     }
