@@ -27,7 +27,7 @@ namespace openloco::ui::options
 
 #define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
-    static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, uint32_t imageId, widget_index index)
+    static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
     {
         auto widget = &w->widgets[index];
 
@@ -240,20 +240,17 @@ namespace openloco::ui::options
             }
         }
 
-#pragma mark - Widget 19
+#pragma mark - Construction Marker (Widget 19)
 
         // mouse down
-        static void sub_4BFE2E(window* w)
+        static void sub_4BFE2E(window* w, widget_index wi)
         {
-            // w->widgets[widx - 1].left;   // -E
-            // w->widgets[widx - 1].right;  // -C
-            // w->widgets[widx - 1].top;    // -A
-            // w->widgets[widx - 1].bottom; // -8
-
-            // TODO: allow to pass object with format args
             dropdown::add(0, string_ids::str_421, string_ids::white);
             dropdown::add(1, string_ids::str_421, string_ids::translucent);
             dropdown::set_selection(config::get().construction_marker);
+
+            widget_t dropdown = w->widgets[wi - 1];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 2, 0);
         }
 
         // dropdown
@@ -272,10 +269,18 @@ namespace openloco::ui::options
             gfx::invalidate_screen();
         }
 
-#pragma mark - Widget 15
+#pragma mark - Vehicle zoom (Widget 15)
         // mouse down
-        static void sub_4BFEBE()
+        static void sub_4BFEBE(window* w, widget_index wi)
         {
+            dropdown::add(0, string_ids::str_421, string_ids::full_scale);
+            dropdown::add(1, string_ids::str_421, string_ids::half_scale);
+            dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
+            dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
+            dropdown::set_selection(config::get().thing_zoom_max);
+
+            widget_t dropdown = w->widgets[wi - 1];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
         }
 
         // dropdown
@@ -294,10 +299,18 @@ namespace openloco::ui::options
             gfx::invalidate_screen();
         }
 
-#pragma mark - Widget 17
+#pragma mark - Station names minimum scale (Widget 17)
         // mouse down
-        static void sub_4BFF72()
+        static void sub_4BFF72(window* w, widget_index wi)
         {
+            dropdown::add(0, string_ids::str_421, string_ids::full_scale);
+            dropdown::add(1, string_ids::str_421, string_ids::half_scale);
+            dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
+            dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
+            dropdown::set_selection(config::get().station_names_min_scale);
+
+            widget_t dropdown = w->widgets[wi - 1];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
         }
 
         // dropdown
@@ -306,17 +319,17 @@ namespace openloco::ui::options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().var_114)
+            if (ax == config::get().station_names_min_scale)
                 return;
 
             // Does this actually create a reference?
             auto cfg = &openloco::config::get();
-            cfg->var_114 = ax;
+            cfg->station_names_min_scale = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }
 
-#pragma mark - Widget 11
+#pragma mark - Resolution dropdown (Widget 11)
         // mouse down
         static void sub_4C0026(window* w, widget_index wi)
         {
@@ -332,8 +345,11 @@ namespace openloco::ui::options
         }
 
         // dropdown
-        static void sub_4C00F4(int16_t ax)
+        static void sub_4C00F4(int16_t index)
         {
+            std::vector<Resolution> resolutions = getFullscreenResolutions();
+            config::get().resolution_width = resolutions[index].width;
+            config::get().resolution_height = resolutions[index].height;
         }
 
 #pragma mark -
@@ -343,17 +359,17 @@ namespace openloco::ui::options
         {
             switch (wi)
             {
-                case 11:
+                case widx::display_resolution_btn:
                     sub_4C0026(w, wi);
                     break;
-                case 19:
-                    sub_4BFE2E(w);
+                case widx::construction_marker_btn:
+                    sub_4BFE2E(w, wi);
                     break;
-                case 15:
-                    sub_4BFEBE();
+                case widx::vehicles_min_scale_btn:
+                    sub_4BFEBE(w, wi);
                     break;
-                case 17:
-                    sub_4BFF72();
+                case widx::station_names_min_scale_btn:
+                    sub_4BFF72(w, wi);
                     break;
             }
         }
@@ -361,11 +377,21 @@ namespace openloco::ui::options
         // 0x004BFBE8
         static void on_dropdown(window* w, widget_index wi, int16_t item_index)
         {
-            registers regs;
-            regs.ax = item_index;
-            regs.edx = wi;
-            regs.esi = (uint32_t)w;
-            call(0x004BFBE8, regs);
+            switch (wi)
+            {
+                case widx::display_resolution_btn:
+                    sub_4C00F4(item_index);
+                    break;
+                case widx::construction_marker_btn:
+                    sub_4BFE98(item_index);
+                    break;
+                case widx::vehicles_min_scale_btn:
+                    sub_4BFF4C(item_index);
+                    break;
+                case widx::station_names_min_scale_btn:
+                    sub_4C0000(item_index);
+                    break;
+            }
         }
 
         // 0x004C01F5
@@ -385,20 +411,20 @@ namespace openloco::ui::options
             w->activated_widgets &= 0xFFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             set_format_arg(0x10, uint16_t, config::get().resolution_width);
             set_format_arg(0x12, uint16_t, config::get().resolution_height);
 
-            w->widgets[0x12].text = string_ids::white + config::get().construction_marker;
-            w->widgets[0xE].text = string_ids::full_scale + config::get().thing_zoom_max;
-            w->widgets[0x10].text = string_ids::full_scale + config::get().var_114;
+            w->widgets[widx::construction_marker].text = string_ids::white + config::get().construction_marker;
+            w->widgets[widx::vehicles_min_scale].text = string_ids::full_scale + config::get().thing_zoom_max;
+            w->widgets[widx::station_names_min_scale].text = string_ids::full_scale + config::get().station_names_min_scale;
 
             w->activated_widgets &= ~(1 << 12);
             if ((config::get().flags & 4) == 0)
@@ -474,13 +500,13 @@ namespace openloco::ui::options
             w->activated_widgets &= 0xFFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             set_format_arg(0x0, string_id, string_ids::str_479);
 
@@ -596,13 +622,13 @@ namespace openloco::ui::options
             w->activated_widgets &= 0xFFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id ax = string_ids::str_1595;
             if (_currentSong != -1)
@@ -778,13 +804,13 @@ namespace openloco::ui::options
             w->activated_widgets &= 0xFFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id ax = string_ids::str_660;
             if (openloco::config::get().flags & 2)
@@ -934,13 +960,13 @@ namespace openloco::ui::options
             w->activated_widgets &= 0xFFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             w->activated_widgets &= ~(1 << 10);
             if (config::get().edge_scrolling)
@@ -1060,13 +1086,13 @@ namespace openloco::ui::options
             w->activated_widgets &= 0x0FFFFFC0F;
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
-            w->widgets[0].right = w->width - 1;
-            w->widgets[0].bottom = w->height - 1;
-            w->widgets[3].right = w->width - 1;
-            w->widgets[3].bottom = w->height - 1;
-            w->widgets[1].right = w->width - 2;
-            w->widgets[2].left = w->width - 15;
-            w->widgets[2].right = w->width - 15 + 12;
+            w->widgets[common::widx::frame].right = w->width - 1;
+            w->widgets[common::widx::frame].bottom = w->height - 1;
+            w->widgets[common::widx::panel].right = w->width - 1;
+            w->widgets[common::widx::panel].bottom = w->height - 1;
+            w->widgets[common::widx::caption].right = w->width - 2;
+            w->widgets[common::widx::close_button].left = w->width - 15;
+            w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
             if (config::get().flags & 8)

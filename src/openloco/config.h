@@ -48,7 +48,7 @@ namespace openloco::config
         int32_t volume; // 0xCC
         uint8_t pad_D0[0xD4 - 0xD0];
         char last_host[64]; // 0xD4
-        uint8_t var_114;
+        uint8_t station_names_min_scale;
         uint8_t var_115;
         char preferred_name[256]; // 0x116
     };
