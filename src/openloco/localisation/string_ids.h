@@ -55,7 +55,8 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_close_window = 60;
 
-    constexpr string_id display_resolution_format = 66;
+    constexpr string_id display_resolution_dropdown_format = 65;
+    constexpr string_id display_resolution_label_format = 66;
 
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;

@@ -11,6 +11,7 @@
 #include "../ui.h"
 #include "../ui/dropdown.h"
 #include "../windowmgr.h"
+#include <cassert>
 
 using namespace openloco::interop;
 
@@ -158,7 +159,7 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_display),
-            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_format),
+            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
             make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
@@ -317,8 +318,17 @@ namespace openloco::ui::options
 
 #pragma mark - Widget 11
         // mouse down
-        static void sub_4C0026()
+        static void sub_4C0026(window* w, widget_index wi)
         {
+            std::vector<Resolution> resolutions = getFullscreenResolutions();
+            for (size_t i = 0; i < resolutions.size(); i++)
+            {
+                dropdown::add(i, string_ids::str_421, string_ids::display_resolution_dropdown_format, resolutions[i].width, resolutions[i].height);
+            }
+            // !!! TODO: set selection
+            // dropdown::set_selection();
+            widget_t dropdown = w->widgets[wi - 1];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0);
         }
 
         // dropdown
@@ -334,7 +344,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case 11:
-                    sub_4C0026();
+                    sub_4C0026(w, wi);
                     break;
                 case 19:
                     sub_4BFE2E(w);
