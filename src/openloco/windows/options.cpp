@@ -194,15 +194,14 @@ namespace openloco::ui::options
 
                 case widx::landscape_smoothing:
                 {
-                    // Does this actually create a reference?
-                    auto cfg = &openloco::config::get();
-                    if (cfg->flags & 4)
+                    auto& cfg = openloco::config::get();
+                    if (cfg.flags & 4)
                     {
-                        cfg->flags &= ~4;
+                        cfg.flags &= ~4;
                     }
                     else
                     {
-                        cfg->flags |= 4;
+                        cfg.flags |= 4;
                     }
                     openloco::config::write();
                     gfx::invalidate_screen();
@@ -211,15 +210,14 @@ namespace openloco::ui::options
 
                 case widx::gridlines_on_landscape:
                 {
-                    // Does this actually create a reference?
-                    auto cfg = &openloco::config::get();
-                    if (cfg->flags & 1)
+                    auto& cfg = openloco::config::get();
+                    if (cfg.flags & 1)
                     {
-                        cfg->flags &= ~1;
+                        cfg.flags &= ~1;
                     }
                     else
                     {
-                        cfg->flags |= 1;
+                        cfg.flags |= 1;
                     }
                     openloco::config::write();
                     gfx::invalidate_screen();
@@ -229,7 +227,7 @@ namespace openloco::ui::options
                     {
                         main->viewports[0]->var_12 &= ~(1 << 5);
 
-                        if ((cfg->flags & 1) != 0)
+                        if ((cfg.flags & 1) != 0)
                         {
                             main->viewports[0]->var_12 |= (1 << 5);
                         }
@@ -262,9 +260,8 @@ namespace openloco::ui::options
             if (ax == config::get().construction_marker)
                 return;
 
-            // Does this actually create a reference?
-            auto cfg = &openloco::config::get();
-            cfg->construction_marker = ax;
+            auto& cfg = openloco::config::get();
+            cfg.construction_marker = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }
@@ -292,9 +289,8 @@ namespace openloco::ui::options
             if (ax == config::get().thing_zoom_max)
                 return;
 
-            // Does this actually create a reference?
-            auto cfg = &openloco::config::get();
-            cfg->thing_zoom_max = ax;
+            auto& cfg = openloco::config::get();
+            cfg.thing_zoom_max = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }
@@ -322,9 +318,8 @@ namespace openloco::ui::options
             if (ax == config::get().station_names_min_scale)
                 return;
 
-            // Does this actually create a reference?
-            auto cfg = &openloco::config::get();
-            cfg->station_names_min_scale = ax;
+            auto& cfg = openloco::config::get();
+            cfg.station_names_min_scale = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }
@@ -347,9 +342,19 @@ namespace openloco::ui::options
         // dropdown
         static void sub_4C00F4(int16_t index)
         {
+            if (index == -1)
+                return;
+
+            auto& config = config::get();
+
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            config::get().resolution_width = resolutions[index].width;
-            config::get().resolution_height = resolutions[index].height;
+            if (config.resolution_width == resolutions[index].width &&
+                config.resolution_height == resolutions[index].height)
+                return;
+
+            config.resolution_width = resolutions[index].width;
+            config.resolution_height = resolutions[index].height;
+            openloco::config::write();
         }
 
 #pragma mark -
@@ -565,8 +570,8 @@ namespace openloco::ui::options
         {
             audio::pause_sound();
 
-            auto cfg = &openloco::config::get();
-            cfg->force_software_audio_mixer = !cfg->force_software_audio_mixer;
+            auto& cfg = openloco::config::get();
+            cfg.force_software_audio_mixer = !cfg.force_software_audio_mixer;
             openloco::config::write();
         }
 
@@ -717,8 +722,8 @@ namespace openloco::ui::options
             if (config::get().var_23 == 0)
                 return;
 
-            auto cfg = &config::get();
-            cfg->var_23 = 0;
+            auto& cfg = config::get();
+            cfg.var_23 = 0;
             config::write();
 
             call(0x0048AAE8);
@@ -733,8 +738,8 @@ namespace openloco::ui::options
             if (config::get().var_23 != 0)
                 return;
 
-            auto cfg = &config::get();
-            cfg->var_23 = 1;
+            auto& cfg = config::get();
+            cfg.var_23 = 1;
             config::write();
 
             w->invalidate();
@@ -887,14 +892,14 @@ namespace openloco::ui::options
 
         static void sub_4C0F14(window* w)
         {
-            auto cfg = &openloco::config::get();
-            if (cfg->flags & 0x40)
+            auto& cfg = openloco::config::get();
+            if (cfg.flags & 0x40)
             {
-                cfg->flags &= ~0x40;
+                cfg.flags &= ~0x40;
             }
             else
             {
-                cfg->flags |= 0x40;
+                cfg.flags |= 0x40;
             }
             config::write();
 
@@ -903,14 +908,14 @@ namespace openloco::ui::options
 
         static void sub_4C0F274(window* w)
         {
-            auto cfg = &openloco::config::get();
-            if (cfg->flags & 0x80)
+            auto& cfg = openloco::config::get();
+            if (cfg.flags & 0x80)
             {
-                cfg->flags &= ~0x80;
+                cfg.flags &= ~0x80;
             }
             else
             {
-                cfg->flags |= 0x80;
+                cfg.flags |= 0x80;
             }
             config::write();
 
@@ -1017,8 +1022,8 @@ namespace openloco::ui::options
 
         static void sub_4C117A(window* w)
         {
-            auto cfg = &openloco::config::get();
-            cfg->edge_scrolling = !cfg->edge_scrolling;
+            auto& cfg = openloco::config::get();
+            cfg.edge_scrolling = !cfg.edge_scrolling;
             config::write();
 
             w->invalidate();
@@ -1190,9 +1195,9 @@ namespace openloco::ui::options
             if (strlen(str) == 0)
                 return;
 
-            auto cfg = &openloco::config::get();
-            strcpy(cfg->preferred_name, str);
-            cfg->preferred_name[strlen(str)] = '\0';
+            auto& cfg = openloco::config::get();
+            strcpy(cfg.preferred_name, str);
+            cfg.preferred_name[strlen(str)] = '\0';
 
             config::write();
 
@@ -1201,22 +1206,22 @@ namespace openloco::ui::options
 
         static void sub_4C135F(window* w)
         {
-            auto cfg = &openloco::config::get();
-            if (cfg->flags & 0x200)
+            auto& cfg = openloco::config::get();
+            if (cfg.flags & 0x200)
             {
-                cfg->flags &= ~0x200;
+                cfg.flags &= ~0x200;
             }
             else
             {
-                cfg->flags |= 0x200;
+                cfg.flags |= 0x200;
             }
             config::write();
 
             w->invalidate();
 
-            if (cfg->flags & 0x200)
+            if (cfg.flags & 0x200)
             {
-                if (strlen(cfg->preferred_name) == 0)
+                if (strlen(cfg.preferred_name) == 0)
                 {
                     sub_4C1319(w);
                 }
@@ -1225,14 +1230,14 @@ namespace openloco::ui::options
 
         static void sub_4C1389(window* w)
         {
-            auto cfg = &openloco::config::get();
-            if (cfg->flags & 8)
+            auto& cfg = openloco::config::get();
+            if (cfg.flags & 8)
             {
-                cfg->flags &= ~8;
+                cfg.flags &= ~8;
             }
             else
             {
-                cfg->flags |= 8;
+                cfg.flags |= 8;
             }
             config::write();
 
