@@ -117,6 +117,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_credits_list = 215;
 
     constexpr string_id str_421 = 421;
+    constexpr string_id str_424 = 424;
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
@@ -153,6 +154,7 @@ namespace openloco::string_ids
     constexpr string_id str_656 = 656;
     constexpr string_id str_657 = 657;
     constexpr string_id str_658 = 658;
+    constexpr string_id str_659 = 659;
 
     constexpr string_id str_660 = 660;
     constexpr string_id str_661 = 661;
