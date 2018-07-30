@@ -1,4 +1,5 @@
 #include "dropdown.h"
+#include "../console.h"
 #include "../interop/interop.hpp"
 
 #include <cassert>
@@ -8,36 +9,85 @@ using namespace openloco::interop;
 
 namespace openloco::ui::dropdown
 {
-    static constexpr int num_args_per_item = 4;
+    static constexpr int bytes_per_item = 8;
 
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
+    static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
+
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<string_id[40][num_args_per_item], 0x0113D8A0> _dropdownItemArgs;
+    static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
 
     void add(int16_t index, string_id title)
     {
         _dropdownItemFormats[index] = title;
     }
 
-    void add(int16_t index, string_id title, int n_args, ...)
+    void add(int16_t index, string_id title, std::initializer_list<format_arg> l)
     {
         _dropdownItemFormats[index] = title;
 
-        assert(n_args < num_args_per_item);
+        std::byte* args = _dropdownItemArgs[index];
 
-        va_list args;
-        va_start(args, n_args);
-        for (int arg_index = 0; arg_index < n_args; arg_index++)
+        for (auto arg : l)
         {
-            int arg = va_arg(args, int);
-            _dropdownItemArgs[index][arg_index] = static_cast<string_id>(arg);
+            switch (arg.type)
+            {
+                case 1:
+                {
+                    string_id* ptr = (string_id*)args;
+                    *ptr = arg.u32;
+                    args += 2;
+                    break;
+                }
+                case 2:
+                {
+                    uintptr_t* ptr = (uintptr_t*)args;
+                    *ptr = (uintptr_t)arg.ptr;
+                    args += 4;
+                    break;
+                }
+
+                default:
+                    console::error("Unknown format: %d", arg.type);
+                    break;
+            }
         }
-        va_end(args);
+        // memcpy(_dropdownItemArgs[index], args.c_data(), bytes_per_item);
+    }
+
+    void add(int16_t index, string_id title, format_arg l)
+    {
+        add(index, title, { l });
     }
 
     void set_selection(int16_t index)
     {
-        _dropdownHighlightedIndex = index;
+        _dropdownSelection = (1 << index);
+    }
+
+    /**
+     * 0x004CC807
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param colour
+     * @param count
+     * @param flags
+     */
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, uint8_t flags)
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.bl = count;
+        regs.bh = flags;
+        regs.bp = width;
+        regs.di = height;
+
+        call(0x004CC807, regs);
     }
 
     /**
