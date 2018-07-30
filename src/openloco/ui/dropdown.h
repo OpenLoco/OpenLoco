@@ -3,45 +3,32 @@
 #include <cstdlib>
 #include <vector>
 
+enum format_arg_type
+{
+    u16,
+    ptr,
+};
+
 struct format_arg
 {
-    uint8_t type;
+
+    format_arg_type type;
     union
     {
-        uint32_t u32;
         uint16_t u16;
-        int32_t s32;
-        void* ptr;
+        uintptr_t ptr;
     };
 
     format_arg(uint16_t value)
     {
-        type = 1;
-        u32 = value;
+        type = format_arg_type::u16;
+        u16 = value;
     }
 
     format_arg(char* value)
     {
-        type = 2;
-        ptr = value;
-    }
-
-    void print()
-    {
-        switch (type)
-        {
-            case 1:
-                printf("[string_id %d '%s']\n", u32, openloco::stringmgr::get_string(u32));
-                break;
-
-            case 3:
-                printf("[s32 %d]\n", s32);
-                break;
-
-            case 2:
-                printf("[string '%s']", ptr);
-                break;
-        }
+        type = format_arg_type::ptr;
+        ptr = (uintptr_t)value;
     }
 };
 

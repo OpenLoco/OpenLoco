@@ -32,17 +32,18 @@ namespace openloco::ui::dropdown
         {
             switch (arg.type)
             {
-                case 1:
+                case format_arg_type::u16:
                 {
-                    string_id* ptr = (string_id*)args;
-                    *ptr = arg.u32;
+                    uint16_t* ptr = (uint16_t*)args;
+                    *ptr = arg.u16;
                     args += 2;
                     break;
                 }
-                case 2:
+
+                case format_arg_type::ptr:
                 {
                     uintptr_t* ptr = (uintptr_t*)args;
-                    *ptr = (uintptr_t)arg.ptr;
+                    *ptr = arg.ptr;
                     args += 4;
                     break;
                 }
@@ -52,7 +53,6 @@ namespace openloco::ui::dropdown
                     break;
             }
         }
-        // memcpy(_dropdownItemArgs[index], args.c_data(), bytes_per_item);
     }
 
     void add(int16_t index, string_id title, format_arg l)
