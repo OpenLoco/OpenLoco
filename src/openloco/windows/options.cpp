@@ -19,6 +19,7 @@ namespace openloco::ui::options
 {
     static void on_mouse_up(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
+    static void sub_4C1519();
 
     static loco_global<uint8_t, 0x009C8714> _9C8714;
     static loco_global<int8_t, 0x0050D434> _currentSong;
@@ -801,11 +802,15 @@ namespace openloco::ui::options
         };
 
         static void sub_4C0C73(window* w);
+        static void sub_4C0D33(window* w, int16_t ax);
         static void sub_4C0DCF(window* w);
-        static void sub_4C0F14(window* w);
-        static void sub_4C0F27(window* w);
+        static void sub_4C0E82(window* w, int16_t ax);
+        static void preferred_currency_new_game_mouse_up(window* w);
+        static void preferred_currency_always_mouse_up(window* w);
         static void sub_4C0F49(window* w);
+        static void sub_4C0FB3(window* w, int16_t ax);
         static void sub_4C0FFA(window* w);
+        static void sub_4C106C(window* w, int16_t ax);
 
         static loco_global<window_event_list, 0x0050409C> _events;
 
@@ -872,9 +877,6 @@ namespace openloco::ui::options
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[0x10].top + 1, 0, string_ids::str_1505, nullptr);
         }
 
-        static void preferred_currency_new_game_mouse_up(window* w);
-        static void preferred_currency_always_mouse_up(window* w);
-
         static void on_mouse_up(window* w, widget_index wi)
         {
             switch (wi)
@@ -918,6 +920,29 @@ namespace openloco::ui::options
                     break;
                 case 17:
                     sub_4C0DCF(w);
+                    break;
+            }
+        }
+
+        // 0x004C0C4A
+        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case 13:
+                    sub_4C106C(window, itemIndex);
+                    break;
+
+                case 11:
+                    sub_4C0FB3(window, itemIndex);
+                    break;
+
+                case 15:
+                    sub_4C0D33(window, itemIndex);
+                    break;
+
+                case 17:
+                    sub_4C0E82(window, itemIndex);
                     break;
             }
         }
@@ -1085,6 +1110,59 @@ namespace openloco::ui::options
 
         static void sub_4C0DCF(window* w)
         {
+            auto ptr = (std::byte*)_installedObjectList;
+
+            widget_t dropdown = w->widgets[17 - 1];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
+
+            int index = -1;
+            for (int i = 0; i < _installedObjectCount; i++)
+            {
+                auto entry = object_index_entry::read(&ptr);
+                if (entry._header->get_type() == 2)
+                {
+                    index++;
+                    dropdown::add(index, string_ids::str_424, entry._name);
+
+                    // TODO: Mark current value as selected
+                }
+            }
+        }
+
+        static void sub_4C0E82(window* w, int16_t ax)
+        {
+            if (ax == -1)
+            {
+                w->invalidate();
+                return;
+            }
+
+            auto ptr = (std::byte*)_installedObjectList;
+
+            int index = -1;
+            for (int i = 0; i < _installedObjectCount; i++)
+            {
+                auto entry = object_index_entry::read(&ptr);
+                if (entry._header->get_type() != 2)
+                    continue;
+
+                index++;
+
+                if (index == ax)
+                {
+                    auto& cfg = openloco::config::get();
+                    memcpy(cfg.preferred_currency, entry._header, 0x10);
+
+                    sub_4C1519();
+                    config::write();
+                    call(0x004C153B);
+                    call(0x004BF935);
+
+                    break;
+                }
+            }
+
+            w->invalidate();
         }
 
         // 0x004C0F14
@@ -1104,7 +1182,7 @@ namespace openloco::ui::options
             w->invalidate();
         }
 
-        // 0x004C0F274
+        // 0x004C0F27
         static void preferred_currency_always_mouse_up(window* w)
         {
             auto& cfg = openloco::config::get();
@@ -1126,15 +1204,38 @@ namespace openloco::ui::options
 
         static void sub_4C0F49(window* w)
         {
+            widget_t dropdown = w->widgets[11 - 1];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+
             dropdown::add(0, string_ids::str_421, string_ids::str_658);
             dropdown::add(1, string_ids::str_421, string_ids::str_659);
             dropdown::set_selection(config::get().measurement_format);
+        }
 
-            // TODO: call 0x004CC807
+        static void sub_4C0FB3(window* w, int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            auto& cfg = config::get();
+            cfg.measurement_format = ax;
+
+            // 0x004C0FC2
+            cfg.height_marker_offset = 0;
+            if ((cfg.flags & config::flags::show_height_as_units) == 0)
+            {
+                cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
+            }
+
+            config::write();
+            gfx::invalidate_screen();
         }
 
         static void sub_4C0FFA(window* w)
         {
+            widget_t dropdown = w->widgets[13 - 1];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+
             dropdown::add(0, string_ids::str_421, string_ids::str_660);
             dropdown::add(1, string_ids::str_421, string_ids::str_661);
 
@@ -1144,28 +1245,30 @@ namespace openloco::ui::options
                 selectedItem = 1;
             }
             dropdown::set_selection(selectedItem);
-
-            int i = 12;
-            int count = 2;
-
-            registers regs;
-            regs.cx = w->x + w->widgets[i].left;
-            regs.al = w->colours[1];
-            regs.bp = w->widgets[i].width() - 4;
-            regs.ebx = count | 0x80 << 8;
-            regs.dx = w->y + w->widgets[i].top;
-            regs.di = w->widgets[i].height();
-            call(0x004CC807, regs);
         }
 
-        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void sub_4C106C(window* w, int16_t ax)
         {
-            switch (widgetIndex)
+            if (ax == -1)
+                return;
+
+            auto& cfg = config::get();
+            cfg.flags &= ~config::flags::show_height_as_units;
+
+            if (ax == 0)
             {
-                case 15:
-                    sub_4C0D33(window, itemIndex);
-                    break;
+                cfg.flags |= config::flags::show_height_as_units;
             }
+
+            // 0x004C0FC2
+            cfg.height_marker_offset = 0;
+            if ((cfg.flags & config::flags::show_height_as_units) == 0)
+            {
+                cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
+            }
+
+            config::write();
+            gfx::invalidate_screen();
         }
 
         // 0x004C1195

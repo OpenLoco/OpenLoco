@@ -49,11 +49,13 @@ namespace openloco::config
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
         uint8_t edge_scrolling;
-        uint8_t thing_zoom_max; // 0x71
-        uint8_t var_72;         // 0x50AF26, 0x72
-        uint8_t var_73;         // 0x50AF27, 0x73
-        uint8_t pad_74[0x8C - 0x74];
-        uint8_t enabled_music[29]; // 0x50AF40, 0x8C
+        uint8_t thing_zoom_max;        // 0x71
+        uint8_t var_72;                // 0x50AF26, 0x72
+        uint8_t var_73;                // 0x50AF27, 0x73
+        uint16_t height_marker_offset; // 0x50AF28, 0x74
+        uint8_t pad_76[0x7C - 0x76];
+        uint8_t preferred_currency[0x10]; // 0x7C
+        uint8_t enabled_music[29];        // 0x50AF40, 0x8C
         uint8_t pad_A9[0xCC - 0xA9];
         int32_t volume; // 0xCC
         uint8_t pad_D0[0xD4 - 0xD0];
