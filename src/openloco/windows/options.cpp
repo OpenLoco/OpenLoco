@@ -1832,10 +1832,13 @@ namespace openloco::ui::options
     }
 
     // 0x004BF7B9
-    void open()
+    window* open()
     {
-        if (windowmgr::bring_to_front(window_type::options, 0) != nullptr)
-            return;
+        window* window;
+
+        window = windowmgr::bring_to_front(window_type::options, 0);
+        if (window != nullptr)
+            return window;
 
         display::init_events();
         sound::init_events();
@@ -1845,7 +1848,7 @@ namespace openloco::ui::options
         misc::init_events();
 
         // 0x004BF833 (create_options_window)
-        auto window = windowmgr::create_window_centred(
+        window = windowmgr::create_window_centred(
             window_type::options,
             display::_window_size.width,
             display::_window_size.height,
@@ -1873,6 +1876,18 @@ namespace openloco::ui::options
         window->call_on_resize();
         window->call_prepare_draw();
         window->init_scroll_widgets();
+
+        return window;
+    }
+
+    // 0x004BF823
+    window* open_music_settings()
+    {
+        auto window = open();
+
+        window->call_on_mouse_up(common::widx::tab_music);
+
+        return window;
     }
 
     // 0x004BFC11
