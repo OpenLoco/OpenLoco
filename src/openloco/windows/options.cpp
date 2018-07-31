@@ -111,13 +111,13 @@ namespace openloco::ui::options
             sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
             sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
-            if (w->var_870 == 2)
+            if (w->var_870 == tab::music)
             {
                 //     w->var_872 >> 2 % 16;
             }
             sub_4CF194(w, ctx, image_ids::tab_music_0, widx::tab_music);
 
-            if (w->var_870 == 3)
+            if (w->var_870 == tab::regional)
             {
                 //      w->var_872 >> 1 % 32;
             }
@@ -963,6 +963,52 @@ namespace openloco::ui::options
             printf("%08X ", data.checksum);
         }
 
+        struct object_index_entry
+        {
+            header* _header;
+            char* _filename;
+            char* _name;
+
+            static object_index_entry read(std::byte** ptr)
+            {
+                object_index_entry entry = { 0 };
+
+                entry._header = (header*)*ptr;
+                *ptr += sizeof(header);
+
+                entry._filename = (char*)*ptr;
+                *ptr += strlen(entry._filename) + 1;
+
+                // decoded_chunk_size
+                //header2* h2 = (header2*)ptr;
+                *ptr += sizeof(header2);
+
+                entry._name = (char*)*ptr;
+                *ptr += strlen(entry._name) + 1;
+
+                //header3* h3 = (header3*)ptr;
+                *ptr += sizeof(header3);
+
+                uint8_t* countA = (uint8_t*)*ptr;
+                *ptr += sizeof(uint8_t);
+                for (int n = 0; n < *countA; n++)
+                {
+                    //header* subh = (header*)ptr;
+                    *ptr += sizeof(header);
+                }
+
+                uint8_t* countB = (uint8_t*)*ptr;
+                *ptr += sizeof(uint8_t);
+                for (int n = 0; n < *countB; n++)
+                {
+                    //header* subh = (header*)ptr;
+                    *ptr += sizeof(header);
+                }
+
+                return entry;
+            }
+        };
+
         static void sub_4C0C73(window* w)
         {
             auto ptr = (std::byte*)_installedObjectList;
@@ -971,68 +1017,14 @@ namespace openloco::ui::options
 
             widget_t dropdown = w->widgets[15 - 1];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
-            int index = 0;
+            int index = -1;
             for (int i = 0; i < _installedObjectCount; i++)
             {
-                printf("-\n");
-                header* h = (header*)ptr;
-                ptr += sizeof(header);
-                printf("  header: ");
-                printHeader(*h);
-                printf("\n");
-
-                char* str = (char*)ptr;
-                ptr += strlen(str) + 1;
-                printf("  filename: %s\n", str);
-
-                // decoded_chunk_size
-                header2* h2 = (header2*)ptr;
-                ptr += sizeof(header2);
-                printf("  data: %02X %02X %02X %02X\n", h2->pad_00[0], h2->pad_00[1], h2->pad_00[2], h2->pad_00[3]);
-
-                char* str2 = (char*)ptr;
-                ptr += strlen(str2) + 1;
-                printf("  name: %s\n", str2);
-
-                header3* h3 = (header3*)ptr;
-                ptr += sizeof(header3);
-
-                uint8_t* count0 = (uint8_t*)ptr;
-                ptr += sizeof(uint8_t);
-                if (*count0 != 0)
+                auto entry = object_index_entry::read(&ptr);
+                if (entry._header->get_type() == 2)
                 {
-                    printf("  sub_1:\n");
-                    for (int n = 0; n < *count0; n++)
-                    {
-                        header* subh = (header*)ptr;
-                        printf("    - ");
-                        printHeader(*subh);
-                        printf("\n");
-
-                        ptr += sizeof(header);
-                    }
-                }
-
-                uint8_t* count2 = (uint8_t*)ptr;
-                ptr += sizeof(uint8_t);
-                if (*count2 != 0)
-                {
-                    printf("  sub_2:\n");
-                    for (int n = 0; n < *count2; n++)
-                    {
-                        header* subh = (header*)ptr;
-                        printf("    - ");
-                        printHeader(*subh);
-                        printf("\n");
-
-                        ptr += sizeof(header);
-                    }
-                }
-
-                if (h->get_type() == 2)
-                {
-                    dropdown::add(index, string_ids::str_424, str2);
                     index++;
+                    dropdown::add(index, string_ids::str_424, entry._name);
 
                     if (_11364A0[i] & 1)
                     {
@@ -1040,6 +1032,55 @@ namespace openloco::ui::options
                     }
                 }
             }
+        }
+
+        static void sub_4C0D33(window* w, int16_t ax)
+        {
+            if (ax == -1)
+            {
+                w->invalidate();
+                return;
+            }
+
+            auto ptr = (std::byte*)_installedObjectList;
+            uint8_t* _11364A0 = (uint8_t*)*__11364A0;
+
+            int index = -1;
+            for (int i = 0; i < _installedObjectCount; i++)
+            {
+                auto entry = object_index_entry::read(&ptr);
+                if (entry._header->get_type() != 2)
+                    continue;
+
+                index++;
+
+                if (index == ax)
+                {
+                    registers regs;
+                    regs.dl = 2; // object type
+                    regs.edi = (uintptr_t)_11364A0;
+                    call(0x00472AFE, regs); // get active object?
+
+                    if (regs.ebp != -1)
+                    {
+                        registers regs2;
+                        regs2.ebp = regs.ebp;
+                        call(0x00471FF8, regs2); // unload object
+                    }
+
+                    registers regs3;
+                    regs3.ebp = (uintptr_t)entry._header;
+
+                    call(0x00471BCE, regs3);
+                    call(0x0047237D); // reset_loaded_objects
+                    call(0x0046E07B); // load currency gfx
+                    call(0x004BF935);
+
+                    break;
+                }
+            }
+
+            w->invalidate();
         }
 
         static void sub_4C0DCF(window* w)
@@ -1117,6 +1158,16 @@ namespace openloco::ui::options
             call(0x004CC807, regs);
         }
 
+        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case 15:
+                    sub_4C0D33(window, itemIndex);
+                    break;
+            }
+        }
+
         // 0x004C1195
         static void on_update(window* w)
         {
@@ -1129,7 +1180,7 @@ namespace openloco::ui::options
         {
             _events->on_mouse_up = on_mouse_up;
             _events->on_mouse_down = on_mouse_down;
-            _events->on_dropdown = nullptr;
+            _events->on_dropdown = on_dropdown;
             _events->on_update = on_update;
             _events->prepare_draw = prepare_draw;
             _events->draw = draw;
