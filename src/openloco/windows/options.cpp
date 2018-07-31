@@ -1,5 +1,6 @@
 #include "../audio/audio.h"
 #include "../config.h"
+#include "../date.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -22,7 +23,10 @@ namespace openloco::ui::options
     static void sub_4C1519();
 
     static loco_global<uint8_t, 0x009C8714> _9C8714;
+
+    static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
+    static loco_global<uint8_t, 0x0050D435> _50D435;
 
     static loco_global<uint16_t, 0x0112C185> _112C185;
     static loco_global<char[20], 0x0112C826> _commonFormatArgs;
@@ -619,10 +623,15 @@ namespace openloco::ui::options
             widget_end(),
         };
 
+        static void sub_4C072A(window* w);
         static void sub_4C0770();
         static void sub_4C0778(window* w);
         static void sub_4C07A4(window* w);
         static void sub_4C07C4(window* w);
+        static void sub_4C07E4(window* w);
+        static void sub_4C084A(window* w, int16_t ax);
+        static void sub_4C0875(window* w);
+        static void sub_4C09F8(window* w, int16_t ax);
 
         static loco_global<window_event_list, 0x00504028> _events;
 
@@ -708,14 +717,68 @@ namespace openloco::ui::options
 
                 case 12:
                     sub_4C0778(w);
+                    return;
+
                 case 13:
                     sub_4C07A4(w);
+                    return;
+
                 case 14:
                     sub_4C07C4(w);
+                    return;
+
                 case 18:
                     sub_4C0770();
                     return;
             }
+        }
+
+        // 0x004C06F2
+        static void on_mouse_down(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case 17:
+                    sub_4C07E4(w);
+                    break;
+                case 11:
+                    sub_4C0875(w);
+                    break;
+                case 15:
+                    sub_4C072A(w);
+                    break;
+            }
+        }
+
+        // 0x004C070D
+        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case 17:
+                    sub_4C084A(window, itemIndex);
+                    break;
+                case 11:
+                    sub_4C09F8(window, itemIndex);
+                    break;
+            }
+        }
+
+        static loco_global<int16_t, 0x005233A4> _5233A4;
+        static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
+
+        static void sub_4C072A(window* w)
+        {
+            _clickRepeatTicks = 31;
+
+            int x = _5233A4 - w->x - w->widgets[0xF].left - 10;
+            x = std::clamp(x, 0, 80);
+
+            registers regs;
+            regs.ecx = (x * 32) - 2560;
+            call(0x0048AA67, regs);
+
+            w->invalidate();
         }
 
         static void sub_4C0770()
@@ -763,6 +826,131 @@ namespace openloco::ui::options
             w->invalidate();
         }
 
+#pragma mark - Widget 17
+
+        static void sub_4C07E4(window* w)
+        {
+            widget_t dropdown = w->widgets[17 - 1];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
+
+            for (int i = 0; i < 3; i++)
+            {
+                dropdown::add(i, string_ids::str_421, string_ids::str_1539 + i);
+            }
+
+            dropdown::set_selection(config::get().var_73);
+        }
+
+        static void sub_4C084A(window* w, int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            auto& cfg = openloco::config::get();
+            cfg.var_73 = ax;
+            config::write();
+
+            w->invalidate();
+
+            call(0x048AA0C);
+
+            windowmgr::close(window_type::music_selection);
+        }
+
+#pragma mark - Widget 11
+
+        struct unk1_t
+        {
+            uint8_t pad_0[0x8];
+            uint16_t var_8;
+            uint16_t var_A;
+            uint16_t var_C;
+        };
+
+        static loco_global<unk1_t[29], 0x004FE910> _4FE910;
+
+        static std::vector<int> get_available_tracks()
+        {
+            auto vector = std::vector<int>();
+
+            if (config::get().var_73 == 0)
+            {
+                uint16_t year = current_year();
+                for (int i = 0; i < 29; i++)
+                {
+                    if (year >= _4FE910[i].var_8 && year <= _4FE910[i].var_A)
+                    {
+                        vector.push_back(i);
+                    }
+                }
+            }
+            else if (config::get().var_73 == 1)
+            {
+                for (int i = 0; i < 29; i++)
+                {
+                    vector.push_back(i);
+                }
+            }
+            else if (config::get().var_73 == 2)
+            {
+                for (int i = 0; i < 29; i++)
+                {
+                    if (config::get().enabled_music[i] & 1)
+                    {
+                        vector.push_back(i);
+                    }
+                }
+
+                if (vector.size() == 0)
+                {
+                    for (int i = 0; i < 29; i++)
+                    {
+                        vector.push_back(i);
+                    }
+                }
+            }
+
+            return vector;
+        }
+
+        static void sub_4C0875(window* w)
+        {
+            auto tracks = get_available_tracks();
+
+            widget_t dropdown = w->widgets[11 - 1];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
+
+            int index = -1;
+            for (auto track : tracks)
+            {
+                index++;
+                dropdown::add(index, string_ids::str_421, string_ids::music_chuggin_along + track);
+                if (track == _currentSong)
+                {
+                    dropdown::set_selection(index);
+                }
+            }
+        }
+
+        static void sub_4C09F8(window* w, int16_t ax)
+        {
+            if (ax == -1)
+                return;
+
+            auto tracks = get_available_tracks();
+            int track = tracks.at(ax);
+            if (track == _currentSong)
+                return;
+
+            call(0x0048AAE8);
+
+            _currentSong = ax;
+            _50D435 = ax;
+            _50D430 = 0;
+
+            w->invalidate();
+        }
+
         // 0x004C0A37
         static void on_update(window* w)
         {
@@ -774,8 +962,8 @@ namespace openloco::ui::options
         static void init_events()
         {
             _events->on_mouse_up = on_mouse_up;
-            _events->on_mouse_down = nullptr;
-            _events->on_dropdown = nullptr;
+            _events->on_mouse_down = on_mouse_down;
+            _events->on_dropdown = on_dropdown;
             _events->on_update = on_update;
             _events->prepare_draw = prepare_draw;
             _events->draw = draw;

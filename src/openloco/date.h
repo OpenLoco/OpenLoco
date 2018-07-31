@@ -39,6 +39,7 @@ namespace openloco
     };
 
     uint32_t current_day();
+    uint16_t current_year();
 
     date current_date();
     void set_date(const date& date);
