@@ -49,7 +49,7 @@ namespace openloco::config
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
         uint8_t edge_scrolling;
-        uint8_t thing_zoom_max;        // 0x71
+        uint8_t vehicles_min_scale;    // 0x71
         uint8_t var_72;                // 0x50AF26, 0x72
         uint8_t var_73;                // 0x50AF27, 0x73
         uint16_t height_marker_offset; // 0x50AF28, 0x74

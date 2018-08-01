@@ -36,7 +36,7 @@ void openloco::thing_base::invalidate_sprite()
         if (viewport == nullptr)
             break;
 
-        if (viewport->zoom > config::get().thing_zoom_max)
+        if (viewport->zoom > config::get().vehicles_min_scale)
             continue;
 
         if (sprite_right <= viewport->view_x)

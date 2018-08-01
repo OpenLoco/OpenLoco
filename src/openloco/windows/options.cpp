@@ -261,12 +261,12 @@ namespace openloco::ui::options
         // 0x004BFE2E
         static void construction_marker_mouse_down(window* w, widget_index wi)
         {
+            widget_t dropdown = w->widgets[widx::construction_marker];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+
             dropdown::add(0, string_ids::str_421, string_ids::white);
             dropdown::add(1, string_ids::str_421, string_ids::translucent);
             dropdown::set_selection(config::get().construction_marker);
-
-            widget_t dropdown = w->widgets[wi - 1];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 2, 0);
         }
 
         // 0x004BFE98
@@ -289,14 +289,14 @@ namespace openloco::ui::options
         // 0x004BFEBE
         static void vehicle_zoom_mouse_down(window* w, widget_index wi)
         {
+            widget_t dropdown = w->widgets[widx::vehicles_min_scale];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
+
             dropdown::add(0, string_ids::str_421, string_ids::full_scale);
             dropdown::add(1, string_ids::str_421, string_ids::half_scale);
             dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
             dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
-            dropdown::set_selection(config::get().thing_zoom_max);
-
-            widget_t dropdown = w->widgets[wi - 1];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
+            dropdown::set_selection(config::get().vehicles_min_scale);
         }
 
         // 0x004BFF4C
@@ -305,11 +305,11 @@ namespace openloco::ui::options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().thing_zoom_max)
+            if (ax == config::get().vehicles_min_scale)
                 return;
 
             auto& cfg = openloco::config::get();
-            cfg.thing_zoom_max = ax;
+            cfg.vehicles_min_scale = ax;
             openloco::config::write();
             gfx::invalidate_screen();
         }
@@ -319,14 +319,14 @@ namespace openloco::ui::options
         // 0x004BFF72
         static void station_names_scale_mouse_down(window* w, widget_index wi)
         {
+            widget_t dropdown = w->widgets[widx::station_names_min_scale];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
+
             dropdown::add(0, string_ids::str_421, string_ids::full_scale);
             dropdown::add(1, string_ids::str_421, string_ids::half_scale);
             dropdown::add(2, string_ids::str_421, string_ids::quarter_scale);
             dropdown::add(3, string_ids::str_421, string_ids::eighth_scale);
             dropdown::set_selection(config::get().station_names_min_scale);
-
-            widget_t dropdown = w->widgets[wi - 1];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], 4, 0);
         }
 
         // 0x004C0000
@@ -356,8 +356,8 @@ namespace openloco::ui::options
             }
             // !!! TODO: set selection
             // dropdown::set_selection();
-            widget_t dropdown = w->widgets[wi - 1];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0);
+            widget_t dropdown = w->widgets[widx::display_resolution];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
         }
 
         // 0x004C00F4
@@ -424,7 +424,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            w->invalidate();
+            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
         }
 
         // 0x004BFA04
@@ -449,7 +449,7 @@ namespace openloco::ui::options
 
             // TODO: remove string addition
             w->widgets[widx::construction_marker].text = string_ids::white + config::get().construction_marker;
-            w->widgets[widx::vehicles_min_scale].text = string_ids::full_scale + config::get().thing_zoom_max;
+            w->widgets[widx::vehicles_min_scale].text = string_ids::full_scale + config::get().vehicles_min_scale;
             w->widgets[widx::station_names_min_scale].text = string_ids::full_scale + config::get().station_names_min_scale;
 
             w->activated_widgets &= ~(1 << widx::landscape_smoothing);
@@ -491,6 +491,8 @@ namespace openloco::ui::options
 
         static const window_event_list init_events()
         {
+            // TODO: Implement
+            // _events.on_close = nullptr;
             _events.on_mouse_up = on_mouse_up;
             _events.on_mouse_down = on_mouse_down;
             _events.on_dropdown = on_dropdown;
@@ -618,6 +620,8 @@ namespace openloco::ui::options
 
         static void init_events()
         {
+            // TODO: Implement
+            // _events.on_close = nullptr;
             _events->on_mouse_up = on_mouse_up;
             _events->on_mouse_down = nullptr;
             _events->on_dropdown = nullptr;
