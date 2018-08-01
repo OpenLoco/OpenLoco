@@ -18,9 +18,10 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
-    static void on_mouse_up(window* w, widget_index wi);
+    static void tab_on_mouse_up(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
     static void sub_4C1519();
+    static void sub_4BF935();
 
     static loco_global<uint8_t, 0x009C8714> _9C8714;
 
@@ -28,11 +29,11 @@ namespace openloco::ui::options
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _50D435;
 
+    // Should be a pointer to an array of u8's
+    static loco_global<void*, 0x011364A0> __11364A0;
+    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<uint16_t, 0x0112C185> _112C185;
     static loco_global<char[20], 0x0112C826> _commonFormatArgs;
-
-    // Should be a pointer to an array of u8's
-    static loco_global<uint8_t**, 0x011364A0> __11364A0;
 
 #define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
@@ -88,10 +89,10 @@ namespace openloco::ui::options
         {
             enum
             {
-                frame,
-                caption,
+                frame = 0,
+                caption = 1,
                 close_button,
-                panel,
+                panel = 3,
                 tab_display,
                 tab_sound,
                 tab_music,
@@ -116,17 +117,21 @@ namespace openloco::ui::options
             sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
             sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
+            uint32_t imageId = image_ids::tab_music_0;
             if (w->var_870 == tab::music)
             {
-                //     w->var_872 >> 2 % 16;
+                // TODO: fix image id addition
+                imageId += (w->var_872 / 4) % 16;
             }
-            sub_4CF194(w, ctx, image_ids::tab_music_0, widx::tab_music);
+            sub_4CF194(w, ctx, imageId, widx::tab_music);
 
+            imageId = image_ids::tab_globe_0;
             if (w->var_870 == tab::regional)
             {
-                //      w->var_872 >> 1 % 32;
+                // TODO: fix image id addition
+                imageId += (w->var_872 / 2) % 32;
             }
-            sub_4CF194(w, ctx, image_ids::tab_globe_0, widx::tab_regional);
+            sub_4CF194(w, ctx, imageId, widx::tab_regional);
 
             sub_4CF194(w, ctx, image_ids::tab_control, widx::tab_controls);
             sub_4CF194(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
@@ -198,12 +203,13 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case widx::landscape_smoothing:
                 {
                     auto& cfg = openloco::config::get();
+                    // TODO: is there a better way to toggle a flag?
                     if (cfg.flags & config::flags::landscape_smoothing)
                     {
                         cfg.flags &= ~config::flags::landscape_smoothing;
@@ -424,7 +430,7 @@ namespace openloco::ui::options
             assert(w->var_870 == common::tab::display);
             assert(w->widgets == _widgets);
 
-            w->activated_widgets &= 0xFFFFFC0F;
+            w->activated_widgets &= ~((1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9));
             w->activated_widgets |= 1 << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
@@ -438,20 +444,21 @@ namespace openloco::ui::options
             set_format_arg(0x10, uint16_t, config::get().resolution_width);
             set_format_arg(0x12, uint16_t, config::get().resolution_height);
 
+            // TODO: remove string addition
             w->widgets[widx::construction_marker].text = string_ids::white + config::get().construction_marker;
             w->widgets[widx::vehicles_min_scale].text = string_ids::full_scale + config::get().thing_zoom_max;
             w->widgets[widx::station_names_min_scale].text = string_ids::full_scale + config::get().station_names_min_scale;
 
-            w->activated_widgets &= ~(1 << 12);
+            w->activated_widgets &= ~(1 << widx::landscape_smoothing);
             if ((config::get().flags & config::flags::landscape_smoothing) == 0)
             {
-                w->activated_widgets |= (1 << 12);
+                w->activated_widgets |= (1 << widx::landscape_smoothing);
             }
 
-            w->activated_widgets &= ~(1 << 13);
+            w->activated_widgets &= ~(1 << widx::gridlines_on_landscape);
             if (config::get().flags & config::flags::gridlines_on_landscape)
             {
-                w->activated_widgets |= (1 << 13);
+                w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
 
             sub_4C13BE(w);
@@ -568,7 +575,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case 14:
@@ -712,7 +719,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case 12:
@@ -1079,7 +1086,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case 18:
@@ -1160,7 +1167,6 @@ namespace openloco::ui::options
         };
 
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
-        static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
 
         static void printHeader(header data)
         {
@@ -1287,7 +1293,7 @@ namespace openloco::ui::options
                     call(0x00471BCE, regs3);
                     call(0x0047237D); // reset_loaded_objects
                     call(0x0046E07B); // load currency gfx
-                    call(0x004BF935);
+                    sub_4BF935();
 
                     break;
                 }
@@ -1344,7 +1350,7 @@ namespace openloco::ui::options
                     sub_4C1519();
                     config::write();
                     call(0x004C153B);
-                    call(0x004BF935);
+                    sub_4BF935();
 
                     break;
                 }
@@ -1385,7 +1391,7 @@ namespace openloco::ui::options
             config::write();
 
             call(0x004C153B);
-            call(0x004BF935);
+            sub_4BF935();
 
             w->invalidate();
         }
@@ -1541,7 +1547,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case 11:
@@ -1686,7 +1692,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::on_mouse_up(w, wi);
+                    options::tab_on_mouse_up(w, wi);
                     return;
 
                 case 12:
@@ -1798,24 +1804,34 @@ namespace openloco::ui::options
 
     static void sub_4BF8CD()
     {
-        call(0x004BF8CD);
+        auto ptr = malloc(_installedObjectCount);
+        // TODO: reimplement nullptr check?
+
+        __11364A0 = ptr;
+        sub_4BF935();
+    }
+
+    static void sub_4BF935()
+    {
+        // TODO: implement
+        call(0x004BF935);
     }
 
     static void sub_4C13BE(window* w)
     {
-        w->disabled_widgets &= 0x0FFFFFF3F;
+        w->disabled_widgets &= ~((1 << common::widx::tab_music) | (1 << common::widx::tab_regional));
         if (is_editor_mode() || is_title_mode())
         {
-            //  w->disabled_widgets |= 0x40;
+            w->disabled_widgets |= 1 << common::widx::tab_music;
         }
 
         if (is_editor_mode() && _9C8714 == 0)
         {
-            w->disabled_widgets |= 0x80;
+            w->disabled_widgets |= 1 << common::widx::tab_regional;
         }
 
-        int x = w->widgets[4].left;
-        for (int i = 4; i <= 9; i++)
+        int x = w->widgets[common::widx::tab_display].left;
+        for (int i = common::widx::tab_display; i <= common::widx::tab_miscellaneous; i++)
         {
             if (!w->is_disabled(i))
             {
@@ -1840,6 +1856,7 @@ namespace openloco::ui::options
         if (window != nullptr)
             return window;
 
+        // TODO: only needs to be called once
         display::init_events();
         sound::init_events();
         music::init_events();
@@ -1859,6 +1876,7 @@ namespace openloco::ui::options
         window->number = 0;
         window->var_870 = 0;
         window->var_872 = 0;
+        window->var_840 = 0xFFFF;
 
         auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
@@ -1868,8 +1886,8 @@ namespace openloco::ui::options
         sub_4C1519();
 
         // Returning to 0x004BF7CB (in windowmgr__open_options)
-        window->enabled_widgets = -1;  // !!! TODO
-        window->holdable_widgets = -1; // !!! TODO
+        window->enabled_widgets = 0xFFFF4;
+        window->holdable_widgets = 0;
         window->event_handlers = &display::_events;
         window->activated_widgets = 0;
 
@@ -1891,7 +1909,7 @@ namespace openloco::ui::options
     }
 
     // 0x004BFC11
-    static void on_mouse_up(window* w, widget_index wi)
+    static void tab_on_mouse_up(window* w, widget_index wi)
     {
         input::cancel_tool(w->type, w->number);
 
