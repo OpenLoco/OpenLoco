@@ -43,9 +43,10 @@ namespace openloco::config
         uint32_t force_software_audio_mixer; // 0x1F
         uint8_t var_23;                      // 0x23
         uint8_t construction_marker;         // 0x50AED8, 0x24
-        uint8_t pad_25[0x27 - 0x25];
-        uint8_t sound_quality;      // 0x27
-        uint8_t measurement_format; // 0x50AEDC, 0x28
+        uint8_t var_25;                      // 0x25
+        uint8_t var_26;                      // 0x26
+        uint8_t sound_quality;               // 0x27
+        uint8_t measurement_format;          // 0x50AEDC, 0x28
         uint8_t pad_29;
         keyboard_shortcut_t keyboard_shortcuts[35]; // 0x2A
         uint8_t edge_scrolling;

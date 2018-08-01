@@ -148,7 +148,8 @@ namespace openloco::string_ids
 
     constexpr string_id str_650 = 650;
     constexpr string_id str_651 = 651;
-
+    constexpr string_id str_652 = 652;
+    constexpr string_id str_653 = 653;
     constexpr string_id options = 654;
 
     constexpr string_id str_656 = 656;

@@ -28,6 +28,8 @@ namespace openloco::ui::options
     static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _50D435;
+    static loco_global<uint8_t[3], 0x0050D5B5> _50D5B5;
+    static loco_global<uint8_t[3], 0x0050D5B8> _50D5B8;
 
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
@@ -515,7 +517,7 @@ namespace openloco::ui::options
                 w10_btn,
                 w12,
                 w12_btn,
-                w14
+                force_software_audio_mixer
             };
         }
 
@@ -530,6 +532,12 @@ namespace openloco::ui::options
         };
 
         static loco_global<window_event_list, 0x00503FB4> _events;
+
+        static void sub_4C0371(window* w);
+        static void sub_4C03A4(ui::window* window);
+        static void sub_4C040A(ui::window* window, int16_t itemIndex);
+        static void sub_4C043D(ui::window* window);
+        static void sub_4C04CA(ui::window* window, int16_t itemIndex);
 
         // 0x004C0217
         static void prepare_draw(window* w)
@@ -550,17 +558,19 @@ namespace openloco::ui::options
 
             set_format_arg(0x0, string_id, string_ids::str_479);
 
+            // TODO: implement device selection
             /*if(_currentSoundDevice != -1 && _numSoundDevices != 0) {
                 set_format_arg(0x2, uint32_t, soundDevices[_currentSoundDevice].name);
                 set_format_arg(0x0, string_id, string_ids::str_480);
             }*/
 
+            // TODO: remove string addition
             set_format_arg(0xA, string_id, string_ids::str_651 + openloco::config::get().sound_quality);
 
-            w->activated_widgets &= ~(1 << widx::w14);
+            w->activated_widgets &= ~(1 << widx::force_software_audio_mixer);
             if (config::get().force_software_audio_mixer)
             {
-                w->activated_widgets |= (1 << widx::w14);
+                w->activated_widgets |= (1 << widx::force_software_audio_mixer);
             }
 
             sub_4C13BE(w);
@@ -575,8 +585,6 @@ namespace openloco::ui::options
             common::draw_tabs(w, dpi);
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::w12].top + 1, 0, string_ids::str_650, nullptr);
         }
-
-        static void sub_4C0371(window* w);
 
         static void on_mouse_up(window* w, widget_index wi)
         {
@@ -595,11 +603,41 @@ namespace openloco::ui::options
                     options::tab_on_mouse_up(w, wi);
                     return;
 
-                case widx::w14:
+                case widx::force_software_audio_mixer:
                     sub_4C0371(w);
                     return;
             }
         }
+
+        static void on_mouse_down(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case 11:
+                    sub_4C043D(w);
+                    break;
+
+                case 13:
+                    sub_4C03A4(w);
+                    break;
+            }
+        }
+
+        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case 11:
+                    sub_4C04CA(window, itemIndex);
+                    break;
+
+                case 13:
+                    sub_4C040A(window, itemIndex);
+                    break;
+            }
+        }
+
+#pragma mark - Force software audio mixer (Widget 14)
 
         static void sub_4C0371(window* w)
         {
@@ -608,7 +646,51 @@ namespace openloco::ui::options
             auto& cfg = openloco::config::get();
             cfg.force_software_audio_mixer = !cfg.force_software_audio_mixer;
             openloco::config::write();
+
+            audio::unpause_sound();
+            w->invalidate();
         }
+
+#pragma mark - Widget 13
+
+        static void sub_4C03A4(ui::window* w)
+        {
+            widget_t dropdown = w->widgets[widx::w12];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
+
+            dropdown::add(0, string_ids::str_421, string_ids::str_651);
+            dropdown::add(1, string_ids::str_421, string_ids::str_652);
+            dropdown::add(2, string_ids::str_421, string_ids::str_653);
+            dropdown::set_selection(config::get().sound_quality);
+        }
+
+        static void sub_4C040A(ui::window* w, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+                return;
+
+            auto& cfg = openloco::config::get();
+            cfg.sound_quality = itemIndex;
+            cfg.var_25 = _50D5B5[itemIndex];
+            cfg.var_26 = _50D5B8[itemIndex];
+            openloco::config::write();
+
+            w->invalidate();
+        }
+
+#pragma mark - Widget 11
+
+        static void sub_4C043D(ui::window* window)
+        {
+            // TODO: loop through audio devices
+        }
+
+        static void sub_4C04CA(ui::window* window, int16_t itemIndex)
+        {
+            // TODO: select audio device
+        }
+
+#pragma mark -
 
         // 0x004C04E0
         static void on_update(window* w)
@@ -623,8 +705,8 @@ namespace openloco::ui::options
             // TODO: Implement
             // _events.on_close = nullptr;
             _events->on_mouse_up = on_mouse_up;
-            _events->on_mouse_down = nullptr;
-            _events->on_dropdown = nullptr;
+            _events->on_mouse_down = on_mouse_down;
+            _events->on_dropdown = on_dropdown;
             _events->on_update = on_update;
             _events->prepare_draw = prepare_draw;
             _events->draw = draw;
@@ -2000,7 +2082,7 @@ namespace openloco::ui::options
                 break;
 
             case common::tab::sound:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::w10) | (1 << sound::widx::w10_btn) | (1 << sound::widx::w12) | (1 << sound::widx::w12_btn) | (1 << sound::widx::w14);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::w10) | (1 << sound::widx::w10_btn) | (1 << sound::widx::w12) | (1 << sound::widx::w12_btn) | (1 << sound::widx::force_software_audio_mixer);
                 w->event_handlers = &(*sound::_events);
                 w->widgets = sound::_widgets;
                 w->invalidate();

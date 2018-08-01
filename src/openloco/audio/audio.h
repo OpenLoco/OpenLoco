@@ -17,6 +17,7 @@ namespace openloco::audio
     void initialise();
 
     void pause_sound();
+    void unpause_sound();
     void play_sound(sound_id id, loc16 loc);
     void play_sound(sound_id id, loc16 loc, int32_t pan);
     void play_sound(sound_id id, int32_t pan);
