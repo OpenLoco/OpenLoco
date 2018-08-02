@@ -353,12 +353,12 @@ namespace openloco::ui::options
             std::vector<Resolution> resolutions = getFullscreenResolutions();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
-                dropdown::add(i, string_ids::str_421, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                dropdown::add((int16_t)i, string_ids::str_421, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
             }
             // !!! TODO: set selection
             // dropdown::set_selection();
             widget_t dropdown = w->widgets[widx::display_resolution];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], (int8_t)resolutions.size(), 0x80);
         }
 
         // 0x004C00F4
@@ -435,7 +435,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -545,7 +545,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -764,7 +764,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1041,7 +1041,7 @@ namespace openloco::ui::options
             auto tracks = get_available_tracks();
 
             widget_t dropdown = w->widgets[widx::w10];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], (int8_t)tracks.size(), 0x80);
 
             int index = -1;
             for (auto track : tracks)
@@ -1149,7 +1149,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1301,6 +1301,7 @@ namespace openloco::ui::options
 
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
 
+        /*
         static void printHeader(header data)
         {
             printf("(%02X | %02X << 6) ", data.type & 0x3F, data.type >> 6);
@@ -1314,6 +1315,7 @@ namespace openloco::ui::options
 
             printf("%08X ", data.checksum);
         }
+        */
 
         struct object_index_entry
         {
@@ -1648,7 +1650,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1771,7 +1773,7 @@ namespace openloco::ui::options
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1 << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->var_870 + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
