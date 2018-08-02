@@ -4,6 +4,7 @@
 #include <codecvt>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -26,6 +27,7 @@
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
 
+#include "config.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
@@ -622,12 +624,13 @@ namespace openloco::ui
         });
         resolutions.erase(last, resolutions.end());
 
-        // TODO: Update config fullscreen resolution if not set
-        // if (gConfigGeneral.fullscreen_width == -1 || gConfigGeneral.fullscreen_height == -1)
-        // {
-        //     gConfigGeneral.fullscreen_width = resolutions.back().width;
-        //     gConfigGeneral.fullscreen_height = resolutions.back().height;
-        // }
+        // Update config fullscreen resolution if not set
+        auto& cfg = config::get();
+        if (cfg.resolution_width == std::numeric_limits<uint16_t>::max() && cfg.resolution_height == std::numeric_limits<uint16_t>::max())
+        {
+            cfg.resolution_width = resolutions.back().width;
+            cfg.resolution_height = resolutions.back().height;
+        }
 
         _fsResolutions = resolutions;
     }

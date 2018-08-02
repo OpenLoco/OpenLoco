@@ -351,18 +351,21 @@ namespace openloco::ui::options
         static void resolution_mouse_down(window* w, widget_index wi)
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
+
+            widget_t dropdown = w->widgets[widx::display_resolution];
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], (int8_t)resolutions.size(), 0x80);
+
+            auto& cfg = config::get();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 dropdown::add((int16_t)i, string_ids::str_421, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                if (cfg.resolution_width == resolutions[i].width && cfg.resolution_height == resolutions[i].height)
+                    dropdown::set_selection((int16_t)i);
             }
-            // !!! TODO: set selection
-            // dropdown::set_selection();
-            widget_t dropdown = w->widgets[widx::display_resolution];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], (int8_t)resolutions.size(), 0x80);
         }
 
         // 0x004C00F4
-        static void resolution_dropdown(int16_t index)
+        static void resolution_dropdown(window* w, int16_t index)
         {
             if (index == -1)
                 return;
@@ -376,6 +379,7 @@ namespace openloco::ui::options
             config.resolution_width = resolutions[index].width;
             config.resolution_height = resolutions[index].height;
             openloco::config::write();
+            windowmgr::invalidate_widget(w->type, w->number, widx::display_resolution);
         }
 
 #pragma mark -
@@ -406,7 +410,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case widx::display_resolution_btn:
-                    resolution_dropdown(item_index);
+                    resolution_dropdown(w, item_index);
                     break;
                 case widx::construction_marker_btn:
                     construction_marker_dropdown(item_index);
