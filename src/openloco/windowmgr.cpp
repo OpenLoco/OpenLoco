@@ -26,7 +26,13 @@ namespace openloco::ui::windowmgr
     struct WindowList
     {
         window* begin() const { return &_windows[0]; };
-        window* end() const { return _windows_end; };
+        window* end() const
+        {
+            if (_windows_end)
+                return _windows_end;
+            else
+                return &_windows[0];
+        };
     };
 
     void register_hooks()
