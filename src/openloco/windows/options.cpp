@@ -774,13 +774,15 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            string_id ax = string_ids::music_none;
+            string_id songName = string_ids::music_none;
             if (_currentSong != -1)
             {
-                ax = string_ids::music_chuggin_along + _currentSong;
+                // TODO: Remove string addition
+                songName = string_ids::music_chuggin_along + _currentSong;
             }
+            set_format_arg(0, string_id, songName);
 
-            set_format_arg(0, string_id, ax);
+            // TODO: Remove string addition
             set_format_arg(2, string_id, string_ids::str_1539 + config::get().var_73);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
@@ -1067,8 +1069,8 @@ namespace openloco::ui::options
 
             call(0x0048AAE8);
 
-            _currentSong = ax;
-            _50D435 = ax;
+            _currentSong = track;
+            _50D435 = track;
             _50D430 = 0;
 
             w->invalidate();
@@ -1817,7 +1819,7 @@ namespace openloco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
+            set_format_arg(0, string_id, string_ids::buffer_2039);
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::str_1921, _commonFormatArgs);
         }
 
