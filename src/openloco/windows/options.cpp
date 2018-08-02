@@ -151,8 +151,7 @@ namespace openloco::ui::options
         make_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::control_options),                       \
         make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, colour::remap_flag | image_ids::tab, string_ids::miscellaneous_options)
 
-        static const int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
-
+        static constexpr int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
     }
 
     namespace display
@@ -1161,7 +1160,7 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id ax = string_ids::str_660;
-            if (openloco::config::get().flags & config::flags::show_height_as_units)
+            if ((openloco::config::get().flags & config::flags::show_height_as_units) == 0)
             {
                 ax = string_ids::str_661;
             }
@@ -1371,7 +1370,7 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (int i = 0; i < _installedObjectCount; i++)
+            for (uint8_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() == 2)
@@ -1399,7 +1398,7 @@ namespace openloco::ui::options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (int i = 0; i < _installedObjectCount; i++)
+            for (uint8_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() != 2)
@@ -1444,7 +1443,7 @@ namespace openloco::ui::options
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (int i = 0; i < _installedObjectCount; i++)
+            for (uint8_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() == 2)
@@ -1468,7 +1467,7 @@ namespace openloco::ui::options
             auto ptr = (std::byte*)_installedObjectList;
 
             int index = -1;
-            for (int i = 0; i < _installedObjectCount; i++)
+            for (uint8_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() != 2)
@@ -1568,7 +1567,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::str_421, string_ids::str_661);
 
             int selectedItem = 0;
-            if (openloco::config::get().flags & 2)
+            if ((config::get().flags & config::flags::show_height_as_units) == 0)
             {
                 selectedItem = 1;
             }
