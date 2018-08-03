@@ -1281,6 +1281,7 @@ namespace openloco::ui::options
             }
         }
 
+#pragma pack(push, 1)
         struct header
         {
             uint8_t type;
@@ -1304,6 +1305,7 @@ namespace openloco::ui::options
             uint32_t var_00;      // image count?
             uint8_t pad_04[0x08]; // competitor stats?
         };
+#pragma pack(pop)
 
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
 
@@ -1378,7 +1380,7 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (uint8_t i = 0; i < _installedObjectCount; i++)
+            for (uint32_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() == 2)
@@ -1406,7 +1408,7 @@ namespace openloco::ui::options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (uint8_t i = 0; i < _installedObjectCount; i++)
+            for (uint32_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() != 2)
@@ -1451,7 +1453,7 @@ namespace openloco::ui::options
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (uint8_t i = 0; i < _installedObjectCount; i++)
+            for (uint32_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() == 2)
@@ -1475,7 +1477,7 @@ namespace openloco::ui::options
             auto ptr = (std::byte*)_installedObjectList;
 
             int index = -1;
-            for (uint8_t i = 0; i < _installedObjectCount; i++)
+            for (uint32_t i = 0; i < _installedObjectCount; i++)
             {
                 auto entry = object_index_entry::read(&ptr);
                 if (entry._header->get_type() != 2)
