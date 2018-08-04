@@ -516,10 +516,10 @@ namespace openloco::ui::options
         {
             enum
             {
-                w10 = 10,
-                w10_btn,
-                w12,
-                w12_btn,
+                audio_device = 10,
+                audio_device_btn,
+                sound_quality,
+                sound_quality_btn,
                 force_software_audio_mixer
             };
         }
@@ -586,7 +586,7 @@ namespace openloco::ui::options
             w->draw(dpi);
 
             common::draw_tabs(w, dpi);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::w12].top + 1, 0, string_ids::str_650, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::sound_quality].top + 1, 0, string_ids::str_650, nullptr);
         }
 
         static void on_mouse_up(window* w, widget_index wi)
@@ -616,11 +616,11 @@ namespace openloco::ui::options
         {
             switch (wi)
             {
-                case 11:
+                case widx::audio_device_btn:
                     sub_4C043D(w);
                     break;
 
-                case 13:
+                case widx::sound_quality_btn:
                     sub_4C03A4(w);
                     break;
             }
@@ -630,11 +630,11 @@ namespace openloco::ui::options
         {
             switch (widgetIndex)
             {
-                case 11:
+                case widx::audio_device_btn:
                     sub_4C04CA(window, itemIndex);
                     break;
 
-                case 13:
+                case widx::sound_quality_btn:
                     sub_4C040A(window, itemIndex);
                     break;
             }
@@ -658,7 +658,7 @@ namespace openloco::ui::options
 
         static void sub_4C03A4(ui::window* w)
         {
-            widget_t dropdown = w->widgets[widx::w12];
+            widget_t dropdown = w->widgets[widx::sound_quality];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
             dropdown::add(0, string_ids::str_421, string_ids::str_651);
@@ -2091,7 +2091,7 @@ namespace openloco::ui::options
                 break;
 
             case common::tab::sound:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::w10) | (1 << sound::widx::w10_btn) | (1 << sound::widx::w12) | (1 << sound::widx::w12_btn) | (1 << sound::widx::force_software_audio_mixer);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
                 w->event_handlers = &(*sound::_events);
                 w->widgets = sound::_widgets;
                 w->invalidate();
