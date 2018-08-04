@@ -462,6 +462,17 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 }
 #pragma warning(pop)
 
+static void register_memory_hooks()
+{
+    using namespace openloco::interop;
+
+    // Hook Locomotion's alloc / free routines so that we don't
+    // allocate a block in one module and freeing it in another.
+    write_jmp(0x4d1401, (void*)&fn_malloc);
+    write_jmp(0x4D1B28, (void*)&fn_realloc);
+    write_jmp(0x4D1355, (void*)&fn_free);
+}
+
 #ifdef _NO_LOCO_WIN32_
 static void register_no_win32_hooks()
 {
@@ -473,9 +484,6 @@ static void register_no_win32_hooks()
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
     write_jmp(0x40726d, (void*)&fn_40726d);
-    write_jmp(0x4d1401, (void*)&fn_malloc);
-    write_jmp(0x4D1B28, (void*)&fn_realloc);
-    write_jmp(0x4D1355, (void*)&fn_free);
     write_jmp(0x4054a3, (void*)&fn_4054a3);
     write_jmp(0x4072ec, (void*)&fn0);
     write_jmp(0x4078be, (void*)&fn_4078be);
@@ -594,6 +602,8 @@ static void register_terraform_hooks()
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
+
+    register_memory_hooks();
 
 #ifdef _NO_LOCO_WIN32_
     register_no_win32_hooks();
