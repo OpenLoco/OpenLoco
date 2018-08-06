@@ -253,7 +253,7 @@ namespace openloco::ui
                 uint16_t var_85A;
                 uint8_t pad_85C[0x870 - 0x85C];
                 uint16_t current_tab; // 0x870
-                uint16_t var_872;
+                uint16_t frame_no;    // 0x872
                 uint8_t pad_874[0x876 - 0x874];
                 viewport_config viewport_configurations[2]; // 0x876
                 window_type type;                           // 0x882

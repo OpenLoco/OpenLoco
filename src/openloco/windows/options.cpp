@@ -124,19 +124,69 @@ namespace openloco::ui::options
             sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
             sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
-            uint32_t imageId = image_ids::tab_music_0;
+            static const uint32_t music_tab_ids[] = {
+                image_ids::tab_music_0,
+                image_ids::tab_music_1,
+                image_ids::tab_music_2,
+                image_ids::tab_music_3,
+                image_ids::tab_music_4,
+                image_ids::tab_music_5,
+                image_ids::tab_music_6,
+                image_ids::tab_music_7,
+                image_ids::tab_music_8,
+                image_ids::tab_music_9,
+                image_ids::tab_music_10,
+                image_ids::tab_music_11,
+                image_ids::tab_music_12,
+                image_ids::tab_music_13,
+                image_ids::tab_music_14,
+                image_ids::tab_music_15,
+            };
+            uint32_t imageId = music_tab_ids[0];
             if (w->current_tab == tab::music)
             {
-                // TODO: fix image id addition
-                imageId += (w->var_872 / 4) % 16;
+                imageId = music_tab_ids[(w->frame_no / 4) % 16];
             }
             sub_4CF194(w, ctx, imageId, widx::tab_music);
 
+            static const uint32_t globe_tab_ids[] = {
+                image_ids::tab_globe_0,
+                image_ids::tab_globe_1,
+                image_ids::tab_globe_2,
+                image_ids::tab_globe_3,
+                image_ids::tab_globe_4,
+                image_ids::tab_globe_5,
+                image_ids::tab_globe_6,
+                image_ids::tab_globe_7,
+                image_ids::tab_globe_8,
+                image_ids::tab_globe_9,
+                image_ids::tab_globe_10,
+                image_ids::tab_globe_11,
+                image_ids::tab_globe_12,
+                image_ids::tab_globe_13,
+                image_ids::tab_globe_14,
+                image_ids::tab_globe_15,
+                image_ids::tab_globe_16,
+                image_ids::tab_globe_17,
+                image_ids::tab_globe_18,
+                image_ids::tab_globe_19,
+                image_ids::tab_globe_20,
+                image_ids::tab_globe_21,
+                image_ids::tab_globe_22,
+                image_ids::tab_globe_23,
+                image_ids::tab_globe_24,
+                image_ids::tab_globe_25,
+                image_ids::tab_globe_26,
+                image_ids::tab_globe_27,
+                image_ids::tab_globe_28,
+                image_ids::tab_globe_29,
+                image_ids::tab_globe_30,
+                image_ids::tab_globe_31,
+            };
             imageId = image_ids::tab_globe_0;
             if (w->current_tab == tab::regional)
             {
-                // TODO: fix image id addition
-                imageId += (w->var_872 / 2) % 32;
+                imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
             sub_4CF194(w, ctx, imageId, widx::tab_regional);
 
@@ -432,7 +482,7 @@ namespace openloco::ui::options
         // 0x004C01F5
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -711,7 +761,7 @@ namespace openloco::ui::options
         // 0x004C04E0
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -1139,7 +1189,7 @@ namespace openloco::ui::options
         // 0x004C0A37
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -1681,7 +1731,7 @@ namespace openloco::ui::options
         // 0x004C1195
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -1802,7 +1852,7 @@ namespace openloco::ui::options
         // 0x004C1195
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -2016,7 +2066,7 @@ namespace openloco::ui::options
         // 0x004C139C
         static void on_update(window* w)
         {
-            w->var_872 += 1;
+            w->frame_no += 1;
             w->call_prepare_draw();
             windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
@@ -2105,7 +2155,7 @@ namespace openloco::ui::options
         window->widgets = display::_widgets;
         window->number = 0;
         window->current_tab = 0;
-        window->var_872 = 0;
+        window->frame_no = 0;
         window->var_840 = 0xFFFF;
 
         auto interface = objectmgr::get<interface_skin_object>();
@@ -2145,7 +2195,7 @@ namespace openloco::ui::options
 
         textinput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - common::widx::tab_display;
-        w->var_872 = 0;
+        w->frame_no = 0;
         w->flags &= ~(window_flags::flag_16);
         w->disabled_widgets = 0;
         w->holdable_widgets = 0;
