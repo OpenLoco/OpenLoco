@@ -39,6 +39,11 @@ namespace openloco::ui::options
 
 #define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
+    static void on_close(window* w)
+    {
+        free(__11364A0);
+    }
+
     static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
     {
         auto widget = &w->widgets[index];
@@ -496,8 +501,7 @@ namespace openloco::ui::options
 
         static const window_event_list init_events()
         {
-            // TODO: Implement
-            // _events.on_close = nullptr;
+            _events.on_close = on_close;
             _events.on_mouse_up = on_mouse_up;
             _events.on_mouse_down = on_mouse_down;
             _events.on_dropdown = on_dropdown;
@@ -534,7 +538,7 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static loco_global<window_event_list, 0x00503FB4> _events;
+        static window_event_list _events;
 
         static void sub_4C0371(window* w);
         static void sub_4C03A4(ui::window* window);
@@ -705,14 +709,13 @@ namespace openloco::ui::options
 
         static void init_events()
         {
-            // TODO: Implement
-            // _events.on_close = nullptr;
-            _events->on_mouse_up = on_mouse_up;
-            _events->on_mouse_down = on_mouse_down;
-            _events->on_dropdown = on_dropdown;
-            _events->on_update = on_update;
-            _events->prepare_draw = prepare_draw;
-            _events->draw = draw;
+            _events.on_close = on_close;
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_mouse_down = on_mouse_down;
+            _events.on_dropdown = on_dropdown;
+            _events.on_update = on_update;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
         }
     }
 
@@ -760,7 +763,7 @@ namespace openloco::ui::options
         static void sub_4C0875(window* w);
         static void sub_4C09F8(window* w, int16_t ax);
 
-        static loco_global<window_event_list, 0x00504028> _events;
+        static window_event_list _events;
 
         static void prepare_draw(window* w)
         {
@@ -1094,12 +1097,13 @@ namespace openloco::ui::options
 
         static void init_events()
         {
-            _events->on_mouse_up = on_mouse_up;
-            _events->on_mouse_down = on_mouse_down;
-            _events->on_dropdown = on_dropdown;
-            _events->on_update = on_update;
-            _events->prepare_draw = prepare_draw;
-            _events->draw = draw;
+            _events.on_close = on_close;
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_mouse_down = on_mouse_down;
+            _events.on_dropdown = on_dropdown;
+            _events.on_update = on_update;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
         }
     }
 
@@ -1150,7 +1154,7 @@ namespace openloco::ui::options
         static void heights_labels_mouse_down(window* w);
         static void heights_labels_dropdown(window* w, int16_t ax);
 
-        static loco_global<window_event_list, 0x0050409C> _events;
+        static window_event_list _events;
 
         // 0x004C0A59
         static void prepare_draw(window* w)
@@ -1628,12 +1632,13 @@ namespace openloco::ui::options
 
         static void init_events()
         {
-            _events->on_mouse_up = on_mouse_up;
-            _events->on_mouse_down = on_mouse_down;
-            _events->on_dropdown = on_dropdown;
-            _events->on_update = on_update;
-            _events->prepare_draw = prepare_draw;
-            _events->draw = draw;
+            _events.on_close = on_close;
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_mouse_down = on_mouse_down;
+            _events.on_dropdown = on_dropdown;
+            _events.on_update = on_update;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
         }
     }
 
@@ -1660,7 +1665,7 @@ namespace openloco::ui::options
         static void edge_scrolling_mouse_up(window* w);
         static void open_keyboard_shortcuts();
 
-        static loco_global<window_event_list, 0x00504110> _events;
+        static window_event_list _events;
 
         static void prepare_draw(window* w)
         {
@@ -1748,10 +1753,11 @@ namespace openloco::ui::options
 
         static void init_events()
         {
-            _events->on_mouse_up = on_mouse_up;
-            _events->on_update = on_update;
-            _events->prepare_draw = prepare_draw;
-            _events->draw = draw;
+            _events.on_close = on_close;
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_update = on_update;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
         }
     }
 
@@ -1777,7 +1783,7 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static loco_global<window_event_list, 0x00504184> _events;
+        static window_event_list _events;
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
@@ -1961,11 +1967,12 @@ namespace openloco::ui::options
 
         static void init_events()
         {
-            _events->on_mouse_up = on_mouse_up;
-            _events->on_update = on_update;
-            _events->text_input = text_input;
-            _events->prepare_draw = prepare_draw;
-            _events->draw = draw;
+            _events.on_close = on_close;
+            _events.on_mouse_up = on_mouse_up;
+            _events.on_update = on_update;
+            _events.text_input = text_input;
+            _events.prepare_draw = prepare_draw;
+            _events.draw = draw;
         }
     }
 
@@ -2107,7 +2114,7 @@ namespace openloco::ui::options
 
             case common::tab::sound:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
-                w->event_handlers = &(*sound::_events);
+                w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;
                 w->invalidate();
                 //
@@ -2118,7 +2125,7 @@ namespace openloco::ui::options
             case common::tab::music:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::w10) | (1 << music::widx::w10_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::w16) | (1 << music::widx::w16_btn) | (1 << music::widx::edit_selection);
                 w->holdable_widgets = (1 << music::widx::volume);
-                w->event_handlers = &(*music::_events);
+                w->event_handlers = &music::_events;
                 w->widgets = music::_widgets;
                 w->invalidate();
                 //
@@ -2129,7 +2136,7 @@ namespace openloco::ui::options
             case common::tab::regional:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
                 w->holdable_widgets = 0;
-                w->event_handlers = &(*regional::_events);
+                w->event_handlers = &regional::_events;
                 w->widgets = regional::_widgets;
                 w->invalidate();
                 //
@@ -2138,7 +2145,7 @@ namespace openloco::ui::options
 
             case common::tab::controls:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys);
-                w->event_handlers = &(*controls::_events);
+                w->event_handlers = &controls::_events;
                 w->widgets = controls::_widgets;
                 w->invalidate();
                 //
@@ -2147,7 +2154,7 @@ namespace openloco::ui::options
 
             case common::tab::miscellaneous:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
-                w->event_handlers = &(*misc::_events);
+                w->event_handlers = &misc::_events;
                 w->widgets = misc::_widgets;
                 w->invalidate();
                 //
