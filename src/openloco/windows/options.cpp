@@ -507,10 +507,20 @@ namespace openloco::ui::options
             set_format_arg(0x10, uint16_t, config::get().resolution_width);
             set_format_arg(0x12, uint16_t, config::get().resolution_height);
 
-            // TODO: remove string addition
-            w->widgets[widx::construction_marker].text = string_ids::white + config::get().construction_marker;
-            w->widgets[widx::vehicles_min_scale].text = string_ids::full_scale + config::get().vehicles_min_scale;
-            w->widgets[widx::station_names_min_scale].text = string_ids::full_scale + config::get().station_names_min_scale;
+            if (config::get().construction_marker)
+                w->widgets[widx::construction_marker].text = string_ids::translucent;
+            else
+                w->widgets[widx::construction_marker].text = string_ids::white;
+
+            static const string_id scale_string_ids[] = {
+                string_ids::full_scale,
+                string_ids::half_scale,
+                string_ids::quarter_scale,
+                string_ids::eighth_scale,
+            };
+
+            w->widgets[widx::vehicles_min_scale].text = scale_string_ids[config::get().vehicles_min_scale];
+            w->widgets[widx::station_names_min_scale].text = scale_string_ids[config::get().station_names_min_scale];
 
             w->activated_widgets &= ~(1 << widx::landscape_smoothing);
             if ((config::get().flags & config::flags::landscape_smoothing) == 0)
