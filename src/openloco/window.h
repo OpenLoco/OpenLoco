@@ -95,6 +95,16 @@ namespace openloco::ui
         return out;
     }
 
+    static constexpr widget_t make_remap_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    {
+        widget_t out = make_widget(origin, size, type, colour, content, tooltip);
+
+        // TODO: implement this as a constant.
+        out.content |= (1 << 29);
+
+        return out;
+    }
+
     static constexpr widget_t make_text_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
