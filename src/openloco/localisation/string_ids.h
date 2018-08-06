@@ -76,11 +76,17 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_83 = UNUSED_STR(83);
     constexpr string_id about_locomotion_84 = UNUSED_STR(84);
 
-    constexpr string_id STR_0085 = 85;
-    constexpr string_id STR_0086 = 86;
-    constexpr string_id STR_0088 = 88;
-    constexpr string_id STR_0090 = 90;
-    constexpr string_id STR_0091 = 91;
+    constexpr string_id stringid = 85;
+    constexpr string_id arg2_stringid = 86;
+    constexpr string_id arg4_stringid = 87;
+    constexpr string_id arg6_stringid = 88;
+    constexpr string_id arg8_stringid = 89;
+    constexpr string_id arg10_stringid = 90;
+    constexpr string_id arg12_stringid = 91;
+    constexpr string_id arg14_stringid = 92;
+    constexpr string_id arg16_stringid = 93;
+    constexpr string_id arg18_stringid = 94;
+    constexpr string_id arg20_stringid = 95;
 
     constexpr string_id dropdown = 96;
 
@@ -116,8 +122,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
-    constexpr string_id str_421 = 421;
-    constexpr string_id str_424 = 424;
+    constexpr string_id dropdown_stringid = 421;
+    constexpr string_id dropdown_stringptr = 424;
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
@@ -125,8 +131,8 @@ namespace openloco::string_ids
 
     constexpr string_id wcolour2_stringid2 = 457;
 
-    constexpr string_id str_479 = 479;
-    constexpr string_id str_480 = 480;
+    constexpr string_id audio_device_none = 479;
+    constexpr string_id audio_device_name = 480;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -146,19 +152,18 @@ namespace openloco::string_ids
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
 
-    constexpr string_id str_650 = 650;
-    constexpr string_id str_651 = 651;
-    constexpr string_id str_652 = 652;
-    constexpr string_id str_653 = 653;
+    constexpr string_id sound_quality = 650;
+    constexpr string_id sound_quality_low = 651;
+    constexpr string_id sound_quality_medium = 652;
+    constexpr string_id sound_quality_high = 653;
     constexpr string_id options = 654;
 
-    constexpr string_id str_656 = 656;
-    constexpr string_id str_657 = 657;
-    constexpr string_id str_658 = 658;
-    constexpr string_id str_659 = 659;
-
-    constexpr string_id str_660 = 660;
-    constexpr string_id str_661 = 661;
+    constexpr string_id distance_and_speed = 656;
+    constexpr string_id heights = 657;
+    constexpr string_id imperial = 658;
+    constexpr string_id metric = 659;
+    constexpr string_id height_units = 660;
+    constexpr string_id height_real_values = 661;
 
     constexpr string_id display_resolution = 662;
     constexpr string_id landscape_smoothing = 663;
@@ -166,7 +171,8 @@ namespace openloco::string_ids
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
 
-    constexpr string_id STR_0701 = 701;
+    constexpr string_id customise_keys = 701;
+
     constexpr string_id STR_1002 = 1002;
     constexpr string_id STR_1003 = 1003;
     constexpr string_id STR_1004 = 1004;
@@ -261,22 +267,6 @@ namespace openloco::string_ids
     constexpr string_id regional_options = 1489;
     constexpr string_id control_options = 1490;
     constexpr string_id miscellaneous_options = 1491;
-
-    constexpr string_id STR_1498 = 1498;
-    constexpr string_id STR_1499 = 1499;
-    constexpr string_id STR_1500 = 1500;
-    constexpr string_id STR_1501 = 1501;
-    constexpr string_id STR_1502 = 1502;
-    constexpr string_id STR_1503 = 1503;
-    constexpr string_id STR_1506 = 1506;
-
-    constexpr string_id STR_1536 = 1536;
-    constexpr string_id STR_1537 = 1537;
-    constexpr string_id STR_1538 = 1538;
-    constexpr string_id STR_1542 = 1542;
-    constexpr string_id STR_1543 = 1543;
-    constexpr string_id STR_1548 = 1548;
-
     constexpr string_id options_title_display = 1492;
     constexpr string_id options_title_sound = 1493;
     constexpr string_id options_title_music = 1494;
@@ -284,13 +274,28 @@ namespace openloco::string_ids
     constexpr string_id options_title_controls = 1496;
     constexpr string_id options_title_miscellaneous = 1497;
 
+    constexpr string_id STR_1498 = 1498;
+    constexpr string_id STR_1499 = 1499;
+    constexpr string_id STR_1500 = 1500;
+    constexpr string_id STR_1501 = 1501;
+    constexpr string_id STR_1502 = 1502;
+    constexpr string_id STR_1503 = 1503;
     constexpr string_id str_1504 = 1504;
     constexpr string_id str_1505 = 1505;
-    constexpr string_id str_1535 = 1535;
+    constexpr string_id preferred_currency_buffer = 1506;
+
+    constexpr string_id currently_playing = 1535;
+    constexpr string_id music_controls_stop_tip = 1536;
+    constexpr string_id music_controls_play_tip = 1537;
+    constexpr string_id music_controls_next_tip = 1538;
 
     constexpr string_id str_1539 = 1539;
 
-    constexpr string_id str_1547 = 1547;
+    constexpr string_id edit_music_selection = 1542;
+    constexpr string_id edit_music_selection_tip = 1543;
+
+    constexpr string_id volume = 1547;
+    constexpr string_id set_volume_tip = 1548;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
