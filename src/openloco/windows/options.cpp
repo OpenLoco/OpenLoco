@@ -125,7 +125,7 @@ namespace openloco::ui::options
             sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
             uint32_t imageId = image_ids::tab_music_0;
-            if (w->var_870 == tab::music)
+            if (w->current_tab == tab::music)
             {
                 // TODO: fix image id addition
                 imageId += (w->var_872 / 4) % 16;
@@ -133,7 +133,7 @@ namespace openloco::ui::options
             sub_4CF194(w, ctx, imageId, widx::tab_music);
 
             imageId = image_ids::tab_globe_0;
-            if (w->var_870 == tab::regional)
+            if (w->current_tab == tab::regional)
             {
                 // TODO: fix image id addition
                 imageId += (w->var_872 / 2) % 32;
@@ -434,17 +434,17 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         // 0x004BFA04
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::display);
+            assert(w->current_tab == common::tab::display);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -549,11 +549,11 @@ namespace openloco::ui::options
         // 0x004C0217
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::sound);
+            assert(w->current_tab == common::tab::sound);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -713,7 +713,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -808,11 +808,11 @@ namespace openloco::ui::options
 
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::music);
+            assert(w->current_tab == common::tab::music);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1141,7 +1141,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1208,11 +1208,11 @@ namespace openloco::ui::options
         // 0x004C0A59
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::regional);
+            assert(w->current_tab == common::tab::regional);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1683,7 +1683,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1725,11 +1725,11 @@ namespace openloco::ui::options
 
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::controls);
+            assert(w->current_tab == common::tab::controls);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -1804,7 +1804,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1851,11 +1851,11 @@ namespace openloco::ui::options
         // 0x004C11B7
         static void prepare_draw(window* w)
         {
-            assert(w->var_870 == common::tab::miscellaneous);
+            assert(w->current_tab == common::tab::miscellaneous);
             assert(w->widgets == _widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
-            w->activated_widgets |= 1ULL << (w->var_870 + 4);
+            w->activated_widgets |= 1ULL << (w->current_tab + 4);
 
             w->widgets[common::widx::frame].right = w->width - 1;
             w->widgets[common::widx::frame].bottom = w->height - 1;
@@ -2018,7 +2018,7 @@ namespace openloco::ui::options
         {
             w->var_872 += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->var_870 + 4);
+            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -2104,7 +2104,7 @@ namespace openloco::ui::options
 
         window->widgets = display::_widgets;
         window->number = 0;
-        window->var_870 = 0;
+        window->current_tab = 0;
         window->var_872 = 0;
         window->var_840 = 0xFFFF;
 
@@ -2144,7 +2144,7 @@ namespace openloco::ui::options
         input::cancel_tool(w->type, w->number);
 
         textinput::sub_4CE6C9(w->type, w->number);
-        w->var_870 = wi - common::widx::tab_display;
+        w->current_tab = wi - common::widx::tab_display;
         w->var_872 = 0;
         w->flags &= ~(window_flags::flag_16);
         w->disabled_widgets = 0;
@@ -2156,7 +2156,7 @@ namespace openloco::ui::options
             w->viewports[0] = nullptr;
         }
 
-        switch ((common::tab)w->var_870)
+        switch ((common::tab)w->current_tab)
         {
             case common::tab::display:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn) | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
