@@ -534,7 +534,7 @@ namespace openloco::ui::options
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid),
             make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 79 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1010, string_ids::STR_1011),
+            make_widget({ 10, 79 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::forced_software_buffer_mixing, string_ids::forced_software_buffer_mixing_tip),
             widget_end(),
         };
 
@@ -797,7 +797,7 @@ namespace openloco::ui::options
             set_format_arg(0, string_id, songName);
 
             // TODO: Remove string addition
-            set_format_arg(2, string_id, string_ids::str_1539 + config::get().var_73);
+            set_format_arg(2, string_id, string_ids::play_only_music_from_current_era + config::get().var_73);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
             w->activated_widgets |= (1 << widx::music_controls_stop);
@@ -976,10 +976,9 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::sound_quality];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
-            for (int i = 0; i < 3; i++)
-            {
-                dropdown::add(i, string_ids::dropdown_stringid, string_ids::str_1539 + i);
-            }
+            dropdown::add(0, string_ids::dropdown_stringid, string_ids::play_only_music_from_current_era);
+            dropdown::add(1, string_ids::dropdown_stringid, string_ids::play_all_music);
+            dropdown::add(2, string_ids::dropdown_stringid, string_ids::play_custom_music_selection);
 
             dropdown::set_selection(config::get().var_73);
         }
@@ -1141,12 +1140,12 @@ namespace openloco::ui::options
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg6_stringid),
             make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid, string_ids::STR_1502),
-            make_widget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::STR_1502),
-            make_widget({ 183, 99 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::preferred_currency_buffer, string_ids::STR_1503),
-            make_widget({ 344, 100 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::STR_1503),
-            make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1500, string_ids::STR_1501),
-            make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1498, string_ids::STR_1499),
+            make_widget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid, string_ids::current_game_currency_tip),
+            make_widget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::current_game_currency_tip),
+            make_widget({ 183, 99 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::preferred_currency_buffer, string_ids::new_game_currency_tip),
+            make_widget({ 344, 100 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::new_game_currency_tip),
+            make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_new_game, string_ids::use_preferred_currency_new_game_tip),
+            make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_always, string_ids::use_preferred_currency_always_tip),
             widget_end(),
         };
 
@@ -1229,8 +1228,8 @@ namespace openloco::ui::options
 
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::str_1504, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::str_1505, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
         }
 
         static void on_mouse_up(window* w, widget_index wi)
@@ -1671,8 +1670,8 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_controls),
-            make_widget({ 10, 50 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::STR_1002, string_ids::STR_1003),
-            make_widget({ 26, 64 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::customise_keys, string_ids::STR_1004),
+            make_widget({ 10, 50 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::scroll_screen_edge, string_ids::scroll_screen_edge_tip),
+            make_widget({ 26, 64 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::customise_keys, string_ids::customise_keys_tip),
             widget_end(),
         };
 
@@ -1791,9 +1790,9 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
-            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::STR_1919, string_ids::STR_1920),
-            make_widget({ 335, 64 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::STR_1700),
-            make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::STR_2089, string_ids::STR_2090),
+            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
+            make_widget({ 335, 64 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
             widget_end(),
         };
 
@@ -1858,7 +1857,7 @@ namespace openloco::ui::options
             buffer[strlen(playerName)] = '\0';
 
             set_format_arg(0, string_id, string_ids::buffer_2039);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::str_1921, _commonFormatArgs);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, _commonFormatArgs);
         }
 
         // 0x004C12D2
@@ -1912,7 +1911,7 @@ namespace openloco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::open_textinput(w, string_ids::str_1922, string_ids::str_1923, string_ids::buffer_2039, 11, nullptr);
+            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, 11, nullptr);
         }
 
         // 0x004C1342

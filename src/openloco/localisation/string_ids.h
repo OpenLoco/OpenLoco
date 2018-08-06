@@ -173,11 +173,12 @@ namespace openloco::string_ids
 
     constexpr string_id customise_keys = 701;
 
-    constexpr string_id STR_1002 = 1002;
-    constexpr string_id STR_1003 = 1003;
-    constexpr string_id STR_1004 = 1004;
-    constexpr string_id STR_1010 = 1010;
-    constexpr string_id STR_1011 = 1011;
+    constexpr string_id scroll_screen_edge = 1002;
+    constexpr string_id scroll_screen_edge_tip = 1003;
+    constexpr string_id customise_keys_tip = 1004;
+
+    constexpr string_id forced_software_buffer_mixing = 1010;
+    constexpr string_id forced_software_buffer_mixing_tip = 1011;
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
@@ -274,14 +275,14 @@ namespace openloco::string_ids
     constexpr string_id options_title_controls = 1496;
     constexpr string_id options_title_miscellaneous = 1497;
 
-    constexpr string_id STR_1498 = 1498;
-    constexpr string_id STR_1499 = 1499;
-    constexpr string_id STR_1500 = 1500;
-    constexpr string_id STR_1501 = 1501;
-    constexpr string_id STR_1502 = 1502;
-    constexpr string_id STR_1503 = 1503;
-    constexpr string_id str_1504 = 1504;
-    constexpr string_id str_1505 = 1505;
+    constexpr string_id use_preferred_currency_always = 1498;
+    constexpr string_id use_preferred_currency_always_tip = 1499;
+    constexpr string_id use_preferred_currency_new_game = 1500;
+    constexpr string_id use_preferred_currency_new_game_tip = 1501;
+    constexpr string_id current_game_currency_tip = 1502;
+    constexpr string_id new_game_currency_tip = 1503;
+    constexpr string_id current_game_currency = 1504;
+    constexpr string_id new_game_currency = 1505;
     constexpr string_id preferred_currency_buffer = 1506;
 
     constexpr string_id currently_playing = 1535;
@@ -289,7 +290,9 @@ namespace openloco::string_ids
     constexpr string_id music_controls_play_tip = 1537;
     constexpr string_id music_controls_next_tip = 1538;
 
-    constexpr string_id str_1539 = 1539;
+    constexpr string_id play_only_music_from_current_era = 1539;
+    constexpr string_id play_all_music = 1540;
+    constexpr string_id play_custom_music_selection = 1541;
 
     constexpr string_id edit_music_selection = 1542;
     constexpr string_id edit_music_selection_tip = 1543;
@@ -332,7 +335,7 @@ namespace openloco::string_ids
     constexpr string_id music_get_me_to_gladstone_bay = 1623;
     constexpr string_id music_sandy_track_blues = 1624;
 
-    constexpr string_id STR_1700 = 1700;
+    constexpr string_id change = 1700;
 
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
@@ -345,11 +348,11 @@ namespace openloco::string_ids
     constexpr string_id tutorial_2 = 1880;
     constexpr string_id tutorial_3 = 1881;
 
-    constexpr string_id STR_1919 = 1919;
-    constexpr string_id STR_1920 = 1920;
-    constexpr string_id str_1921 = 1921;
-    constexpr string_id str_1922 = 1922;
-    constexpr string_id str_1923 = 1923;
+    constexpr string_id use_preferred_owner_name = 1919;
+    constexpr string_id use_preferred_owner_name_tip = 1920;
+    constexpr string_id wcolour2_preferred_owner_name = 1921;
+    constexpr string_id preferred_owner_name = 1922;
+    constexpr string_id enter_preferred_owner_name = 1923;
 
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
@@ -365,6 +368,6 @@ namespace openloco::string_ids
 
     constexpr string_id buffer_2039 = 2039;
 
-    constexpr string_id STR_2089 = 2089;
-    constexpr string_id STR_2090 = 2090;
+    constexpr string_id export_plugin_objects = 2089;
+    constexpr string_id export_plugin_objects_tip = 2090;
 }
