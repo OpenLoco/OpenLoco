@@ -158,13 +158,18 @@ namespace openloco::environment
         if (!fs::exists(result))
         {
 #ifndef _WIN32
-            if (auto similarResult = find_similar_file(result); similarResult.empty())
+            auto similarResult = find_similar_file(result);
+            if (similarResult.empty())
             {
-#endif
                 std::cerr << "File not found: " << result << std::endl;
-#ifndef _WIN32
+            }
+            else
+            {
                 result = similarResult;
             }
+#else
+
+            std::cerr << "File not found: " << result << std::endl;
 #endif
         }
         return result;
