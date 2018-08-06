@@ -185,22 +185,6 @@ namespace openloco::gfx
         return regs.cx;
     }
 
-    void draw_string(
-        drawpixelinfo_t& dpi,
-        int16_t x,
-        int16_t y,
-        uint8_t colour,
-        const char* string)
-    {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour;
-        regs.edi = (int32_t)&dpi;
-        regs.esi = (int32_t)string;
-        call(0x00451025, regs);
-    }
-
     static void setTextColours(palette_index_t pal1, palette_index_t pal2, palette_index_t pal3)
     {
         if ((_currentFontFlags & text_draw_flags::inset) != 0)
@@ -439,21 +423,21 @@ namespace openloco::gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    gfx::point_t drawString(int16_t x, int16_t y, uint8_t colour, drawpixelinfo_t* context, uint8_t* str)
+    gfx::point_t draw_string(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
         gfx::point_t origin = { x, y };
 
         if (colour == format_flags::fe)
         {
-            return loop_newline(context, origin, str);
+            return loop_newline(context, origin, (uint8_t*)str);
         }
 
         if (colour == format_flags::fd)
         {
             _currentFontFlags = 0;
             setTextColour(0);
-            return loop_newline(context, origin, str);
+            return loop_newline(context, origin, (uint8_t*)str);
         }
 
         if (x >= context->x + context->width)
@@ -467,6 +451,11 @@ namespace openloco::gfx
 
         if (y < context->y - 90)
             return origin;
+
+        if (colour == format_flags::ff)
+        {
+            return loop_newline(context, origin, (uint8_t*)str);
+        }
 
         _currentFontFlags = 0;
         if (_currentFontSpriteBase == font::m1)
@@ -524,7 +513,7 @@ namespace openloco::gfx
             setTextColours(colour::get_shade(colour, 9), palette_index::index_0A, palette_index::index_0A);
         }
 
-        return loop_newline(context, origin, str);
+        return loop_newline(context, origin, (uint8_t*)str);
     }
 
     // 0x00494B3F

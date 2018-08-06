@@ -352,8 +352,7 @@ namespace openloco::stringmgr
 
                     case formatting_codes::currency32:
                     {
-                        int64_t value = 0;
-                        value = args.pop32();
+                        int32_t value = args.pop32();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
