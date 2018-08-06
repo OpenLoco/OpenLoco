@@ -793,7 +793,7 @@ namespace openloco::ui::options
             w->activated_widgets |= (1 << widx::music_controls_stop);
             if (_currentSong != -1)
             {
-                if (config::get().var_23)
+                if (config::get().music_playing)
                 {
                     w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
                     w->activated_widgets |= (1 << widx::music_controls_play);
@@ -917,11 +917,11 @@ namespace openloco::ui::options
 
         static void sub_4C0778(window* w)
         {
-            if (config::get().var_23 == 0)
+            if (config::get().music_playing == 0)
                 return;
 
             auto& cfg = config::get();
-            cfg.var_23 = 0;
+            cfg.music_playing = 0;
             config::write();
 
             call(0x0048AAE8);
@@ -933,11 +933,11 @@ namespace openloco::ui::options
 
         static void sub_4C07A4(window* w)
         {
-            if (config::get().var_23 != 0)
+            if (config::get().music_playing != 0)
                 return;
 
             auto& cfg = config::get();
-            cfg.var_23 = 1;
+            cfg.music_playing = 1;
             config::write();
 
             w->invalidate();
@@ -945,7 +945,7 @@ namespace openloco::ui::options
 
         static void sub_4C07C4(window* w)
         {
-            if (config::get().var_23 == 0)
+            if (config::get().music_playing == 0)
                 return;
 
             call(0x0048AAE8);
