@@ -67,12 +67,15 @@ namespace openloco::map
 
     enum class element_type
     {
-        surface,      // 0x00
-        unk_1,        // 0x04
-        station = 2,  // 0x08
+        surface,     // 0x00
+        track,       // 0x04
+        station = 2, // 0x08
+        signal = 3,
         building = 4, // 0x10
-        industry = 5, // 0x14
-        unk_8 = 8,    // 0x20
+        tree = 5,     // 0x14
+        fence = 6,
+        road = 7,
+        industry = 8, // 0x20
     };
 
     namespace element_flags
@@ -85,13 +88,18 @@ namespace openloco::map
     struct station_element;
     struct building_element;
     struct industry_element;
-    struct unk1_element;
+    struct track_element;
+    struct tree_element;
 
 #pragma pack(push, 1)
     struct tile_element_base
     {
     protected:
+        // ______XX:
+        // __XXXX__: type
+        // XX______:
         uint8_t _type;
+
         uint8_t _flags;
         uint8_t _base_z;
         uint8_t _clear_z;
@@ -126,7 +134,8 @@ namespace openloco::map
         station_element* as_station() const { return as<station_element, element_type::station>(); }
         building_element* as_building() const { return as<building_element, element_type::building>(); }
         industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
-        unk1_element* as_unk1() const { return as<unk1_element, element_type::unk_1>(); }
+        track_element* as_track() const { return as<track_element, element_type::track>(); }
+        tree_element* as_tree() const { return as<tree_element, element_type::tree>(); }
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -214,7 +223,7 @@ namespace openloco::map
         openloco::industry* industry() const;
     };
 
-    struct unk1_element : public tile_element_base
+    struct track_element : public tile_element_base
     {
     private:
         uint8_t _4;
@@ -225,6 +234,23 @@ namespace openloco::map
     public:
         bool has_80() const { return (_type & 0x80) != 0; }
         uint8_t unk_z() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
+    };
+
+    struct tree_element : public tile_element_base
+    {
+    private:
+        uint8_t _4; // ID
+
+        // ____XXXX
+        uint8_t _5;
+
+        // _1______: alt season flag?
+        // ___XXXXX: Colour?
+        uint8_t _6;
+
+        // _____XXX
+        // ?????___
+        uint8_t _7;
     };
 #pragma pack(pop)
 
