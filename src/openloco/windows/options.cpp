@@ -2205,7 +2205,8 @@ namespace openloco::ui::options
         sub_4C1519();
 
         // Returning to 0x004BF7CB (in windowmgr__open_options)
-        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn) | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+        window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
         window->holdable_widgets = 0;
         window->event_handlers = &display::_events;
         window->activated_widgets = 0;
@@ -2248,61 +2249,61 @@ namespace openloco::ui::options
         switch ((common::tab)w->current_tab)
         {
             case common::tab::display:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn) | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+                w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
                 w->event_handlers = &display::_events;
                 w->widgets = display::_widgets;
                 w->invalidate();
-                //
                 w->set_size(display::_window_size);
                 w->var_840 = 0xFFFF;
                 break;
 
             case common::tab::sound:
+                w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
                 w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;
                 w->invalidate();
-                //
                 w->set_size(sound::_window_size);
                 w->var_840 = 0xFFFF;
                 break;
 
             case common::tab::music:
+                w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
                 w->holdable_widgets = (1 << music::widx::volume);
                 w->event_handlers = &music::_events;
                 w->widgets = music::_widgets;
                 w->invalidate();
-                //
                 w->set_size(music::_window_size);
                 w->var_840 = 0xFFFF;
                 break;
 
             case common::tab::regional:
+                w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
                 w->holdable_widgets = 0;
                 w->event_handlers = &regional::_events;
                 w->widgets = regional::_widgets;
                 w->invalidate();
-                //
                 w->set_size(regional::_window_size);
                 break;
 
             case common::tab::controls:
+                w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys);
                 w->event_handlers = &controls::_events;
                 w->widgets = controls::_widgets;
                 w->invalidate();
-                //
                 w->set_size(controls::_window_size);
                 break;
 
             case common::tab::miscellaneous:
+                w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
                 w->event_handlers = &misc::_events;
                 w->widgets = misc::_widgets;
                 w->invalidate();
-                //
                 w->set_size(misc::_window_size);
                 break;
         }
