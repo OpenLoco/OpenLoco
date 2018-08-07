@@ -2261,6 +2261,12 @@ namespace openloco::ui::options
             case common::tab::sound:
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
+#ifdef _WIN32
+                w->disabled_widgets = 0;
+#else
+                w->disabled_widgets = (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn);
+                w->enabled_widgets ^= (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn);
+#endif
                 w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;
                 w->invalidate();
@@ -2269,8 +2275,7 @@ namespace openloco::ui::options
                 break;
 
             case common::tab::music:
-                w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
                 w->holdable_widgets = (1 << music::widx::volume);
                 w->event_handlers = &music::_events;
                 w->widgets = music::_widgets;
