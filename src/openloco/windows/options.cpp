@@ -599,6 +599,9 @@ namespace openloco::ui::options
         };
 
         static window_event_list _events;
+        static loco_global<int32_t, 0x0050D1E8> _currentSoundDevice;
+        static loco_global<int32_t, 0x005251F0> _numSoundDevices;
+        static loco_global<uintptr_t, 0x005251F4> _soundDevices;
 
         static void force_software_audio_mixer_mouse_up(window* w);
         static void sound_quality_mouse_down(ui::window* window);
@@ -625,11 +628,14 @@ namespace openloco::ui::options
 
             set_format_arg(0x0, string_id, string_ids::audio_device_none);
 
-            // TODO: implement device selection
-            /*if(_currentSoundDevice != -1 && _numSoundDevices != 0) {
-                set_format_arg(0x2, uint32_t, soundDevices[_currentSoundDevice].name);
+#ifdef _WIN32
+            if (_currentSoundDevice != -1 && _numSoundDevices != 0)
+            {
                 set_format_arg(0x0, string_id, string_ids::audio_device_name);
-            }*/
+                uintptr_t soundDevicePtr = _soundDevices + 0x10 + 0x210 * _currentSoundDevice;
+                set_format_arg(0x2, char*, (char*)soundDevicePtr);
+            }
+#endif
 
             static const string_id sound_quality_strings[] = {
                 string_ids::sound_quality_low,
@@ -755,15 +761,38 @@ namespace openloco::ui::options
 #pragma mark - Widget 11
 
         // 0x004C043D
-        static void audio_device_mouse_down(ui::window* window)
+        static void audio_device_mouse_down(ui::window* w)
         {
-            // TODO: loop through audio devices
+#ifdef _WIN32
+            if (_numSoundDevices == 0)
+                return;
+
+            widget_t dropdown = w->widgets[widx::audio_device];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _numSoundDevices, 0x80);
+
+            uintptr_t dsoundPtr = _soundDevices + 0x10;
+            for (int i = 0; i < _numSoundDevices; i++)
+            {
+                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::audio_device_name, (char*)dsoundPtr });
+                dsoundPtr += 0x210;
+            }
+
+            dropdown::set_selection(_currentSoundDevice);
+#endif
         }
 
         // 0x004C04CA
         static void audio_device_dropdown(ui::window* window, int16_t itemIndex)
         {
-            // TODO: select audio device
+            if (itemIndex == -1)
+                return;
+
+#ifdef _WIN32
+            // Updates config, switches audio devices.
+            registers regs;
+            regs.eax = itemIndex;
+            call(0x00489A37, regs);
+#endif
         }
 
 #pragma mark -
