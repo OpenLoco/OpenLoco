@@ -1,5 +1,6 @@
 #include "objectmgr.h"
 #include "../interop/interop.hpp"
+#include <vector>
 
 using namespace openloco::interop;
 
@@ -140,4 +141,82 @@ namespace openloco::objectmgr
         };
         return counts[(size_t)type];
     };
+
+    /*
+    static void printHeader(header data)
+    {
+        printf("(%02X | %02X << 6) ", data.type & 0x3F, data.type >> 6);
+        printf("%02X ", data.pad_01[0]);
+        printf("%02X ", data.pad_01[1]);
+        printf("%02X ", data.pad_01[2]);
+
+        char name[8 + 1] = { 0 };
+        memcpy(name, data.var_04, 8);
+        printf("'%s', ", name);
+
+        printf("%08X ", data.checksum);
+    }
+    */
+
+    object_index_entry object_index_entry::read(std::byte** ptr)
+    {
+        object_index_entry entry = { 0 };
+
+        entry._header = (header*)*ptr;
+        *ptr += sizeof(header);
+
+        entry._filename = (char*)*ptr;
+        *ptr += strlen(entry._filename) + 1;
+
+        // decoded_chunk_size
+        //header2* h2 = (header2*)ptr;
+        *ptr += sizeof(header2);
+
+        entry._name = (char*)*ptr;
+        *ptr += strlen(entry._name) + 1;
+
+        //header3* h3 = (header3*)ptr;
+        *ptr += sizeof(header3);
+
+        uint8_t* countA = (uint8_t*)*ptr;
+        *ptr += sizeof(uint8_t);
+        for (int n = 0; n < *countA; n++)
+        {
+            //header* subh = (header*)ptr;
+            *ptr += sizeof(header);
+        }
+
+        uint8_t* countB = (uint8_t*)*ptr;
+        *ptr += sizeof(uint8_t);
+        for (int n = 0; n < *countB; n++)
+        {
+            //header* subh = (header*)ptr;
+            *ptr += sizeof(header);
+        }
+
+        return entry;
+    }
+
+    static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
+    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
+
+    uint32_t getNumInstalledObjects()
+    {
+        return *_installedObjectCount;
+    }
+
+    std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type)
+    {
+        auto ptr = (std::byte*)_installedObjectList;
+        std::vector<std::pair<uint32_t, object_index_entry>> list;
+
+        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = object_index_entry::read(&ptr);
+            if (entry._header->get_type() == type)
+                list.emplace_back(std::pair<uint32_t, object_index_entry>(i, entry));
+        }
+
+        return list;
+    }
 }

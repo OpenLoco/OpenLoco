@@ -33,7 +33,6 @@ namespace openloco::ui::options
 
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
-    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<uint16_t, 0x0112C185> _112C185;
     static loco_global<char[20], 0x0112C826> _commonFormatArgs;
 
@@ -44,7 +43,8 @@ namespace openloco::ui::options
         free(__11364A0);
     }
 
-    static void sub_4CF194(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
+    // 0x004CF194
+    static void draw_tab(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
     {
         auto widget = &w->widgets[index];
 
@@ -121,8 +121,8 @@ namespace openloco::ui::options
 
         static void draw_tabs(window* w, gfx::drawpixelinfo_t* ctx)
         {
-            sub_4CF194(w, ctx, image_ids::tab_display, widx::tab_display);
-            sub_4CF194(w, ctx, image_ids::tab_sound, widx::tab_sound);
+            draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
+            draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
             static const uint32_t music_tab_ids[] = {
                 image_ids::tab_music_0,
@@ -147,7 +147,7 @@ namespace openloco::ui::options
             {
                 imageId = music_tab_ids[(w->frame_no / 4) % 16];
             }
-            sub_4CF194(w, ctx, imageId, widx::tab_music);
+            draw_tab(w, ctx, imageId, widx::tab_music);
 
             static const uint32_t globe_tab_ids[] = {
                 image_ids::tab_globe_0,
@@ -188,10 +188,10 @@ namespace openloco::ui::options
             {
                 imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
-            sub_4CF194(w, ctx, imageId, widx::tab_regional);
+            draw_tab(w, ctx, imageId, widx::tab_regional);
 
-            sub_4CF194(w, ctx, image_ids::tab_control, widx::tab_controls);
-            sub_4CF194(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
+            draw_tab(w, ctx, image_ids::tab_control, widx::tab_controls);
+            draw_tab(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
 #define common_options_widgets(window_size, window_caption_id)                                                                                              \
@@ -1281,9 +1281,9 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static void sub_4C0C73(window* w);
+        static void currency_mouse_down(window* w);
         static void currency_dropdown(window* w, int16_t ax);
-        static void sub_4C0DCF(window* w);
+        static void preferred_currency_mouse_down(window* w);
         static void preferred_currency_dropdown(window* w, int16_t ax);
         static void preferred_currency_new_game_mouse_up(window* w);
         static void preferred_currency_always_mouse_up(window* w);
@@ -1403,10 +1403,10 @@ namespace openloco::ui::options
                     distance_speed_mouse_down(w);
                     break;
                 case widx::currency_btn:
-                    sub_4C0C73(w);
+                    currency_mouse_down(w);
                     break;
                 case widx::preferred_currency_btn:
-                    sub_4C0DCF(w);
+                    preferred_currency_mouse_down(w);
                     break;
             }
         }
@@ -1434,117 +1434,24 @@ namespace openloco::ui::options
             }
         }
 
-#pragma pack(push, 1)
-        struct header
-        {
-            uint8_t type;
-            uint8_t pad_01[3];
-            uint8_t var_04[8];
-            uint32_t checksum;
-
-            constexpr uint8_t get_type()
-            {
-                return type & 0x3F;
-            }
-        };
-
-        struct header2
-        {
-            uint8_t pad_00[0x04 - 0x00];
-        };
-
-        struct header3
-        {
-            uint32_t var_00;      // image count?
-            uint8_t pad_04[0x08]; // competitor stats?
-        };
-#pragma pack(pop)
-
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
 
-        /*
-        static void printHeader(header data)
+        // 0x004C0C73
+        static void currency_mouse_down(window* w)
         {
-            printf("(%02X | %02X << 6) ", data.type & 0x3F, data.type >> 6);
-            printf("%02X ", data.pad_01[0]);
-            printf("%02X ", data.pad_01[1]);
-            printf("%02X ", data.pad_01[2]);
-
-            char name[8 + 1] = { 0 };
-            memcpy(name, data.var_04, 8);
-            printf("'%s', ", name);
-
-            printf("%08X ", data.checksum);
-        }
-        */
-
-        struct object_index_entry
-        {
-            header* _header;
-            char* _filename;
-            char* _name;
-
-            static object_index_entry read(std::byte** ptr)
-            {
-                object_index_entry entry = { 0 };
-
-                entry._header = (header*)*ptr;
-                *ptr += sizeof(header);
-
-                entry._filename = (char*)*ptr;
-                *ptr += strlen(entry._filename) + 1;
-
-                // decoded_chunk_size
-                //header2* h2 = (header2*)ptr;
-                *ptr += sizeof(header2);
-
-                entry._name = (char*)*ptr;
-                *ptr += strlen(entry._name) + 1;
-
-                //header3* h3 = (header3*)ptr;
-                *ptr += sizeof(header3);
-
-                uint8_t* countA = (uint8_t*)*ptr;
-                *ptr += sizeof(uint8_t);
-                for (int n = 0; n < *countA; n++)
-                {
-                    //header* subh = (header*)ptr;
-                    *ptr += sizeof(header);
-                }
-
-                uint8_t* countB = (uint8_t*)*ptr;
-                *ptr += sizeof(uint8_t);
-                for (int n = 0; n < *countB; n++)
-                {
-                    //header* subh = (header*)ptr;
-                    *ptr += sizeof(header);
-                }
-
-                return entry;
-            }
-        };
-
-        static void sub_4C0C73(window* w)
-        {
-            auto ptr = (std::byte*)_installedObjectList;
-
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             widget_t dropdown = w->widgets[widx::currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (uint32_t i = 0; i < _installedObjectCount; i++)
+            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
-                auto entry = object_index_entry::read(&ptr);
-                if (entry._header->get_type() == 2)
-                {
-                    index++;
-                    dropdown::add(index, string_ids::dropdown_stringptr, entry._name);
+                index++;
+                dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
 
-                    if (_11364A0[i] & 1)
-                    {
-                        dropdown::set_selection(index);
-                    }
+                if (_11364A0[object.first] & 1)
+                {
+                    dropdown::set_selection(index);
                 }
             }
         }
@@ -1558,22 +1465,16 @@ namespace openloco::ui::options
                 return;
             }
 
-            auto ptr = (std::byte*)_installedObjectList;
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (uint32_t i = 0; i < _installedObjectCount; i++)
+            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
-                auto entry = object_index_entry::read(&ptr);
-                if (entry._header->get_type() != 2)
-                    continue;
-
                 index++;
-
                 if (index == ax)
                 {
                     registers regs;
-                    regs.dl = 2; // object type
+                    regs.dl = (uint8_t)object_type::currency;
                     regs.edi = (uintptr_t)_11364A0;
                     call(0x00472AFE, regs); // get active object?
 
@@ -1585,7 +1486,7 @@ namespace openloco::ui::options
                     }
 
                     registers regs3;
-                    regs3.ebp = (uintptr_t)entry._header;
+                    regs3.ebp = (uintptr_t)object.second._header;
 
                     call(0x00471BCE, regs3);
                     call(0x0047237D); // reset_loaded_objects
@@ -1599,24 +1500,19 @@ namespace openloco::ui::options
             w->invalidate();
         }
 
-        static void sub_4C0DCF(window* w)
+        // 0x004C0DCF
+        static void preferred_currency_mouse_down(window* w)
         {
-            auto ptr = (std::byte*)_installedObjectList;
-
             widget_t dropdown = w->widgets[widx::preferred_currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (uint32_t i = 0; i < _installedObjectCount; i++)
+            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
-                auto entry = object_index_entry::read(&ptr);
-                if (entry._header->get_type() == 2)
-                {
-                    index++;
-                    dropdown::add(index, string_ids::dropdown_stringptr, entry._name);
+                index++;
+                dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
 
-                    // TODO: Mark current value as selected
-                }
+                // TODO: Mark current value as selected
             }
         }
 
@@ -1629,21 +1525,15 @@ namespace openloco::ui::options
                 return;
             }
 
-            auto ptr = (std::byte*)_installedObjectList;
-
             int index = -1;
-            for (uint32_t i = 0; i < _installedObjectCount; i++)
+            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
-                auto entry = object_index_entry::read(&ptr);
-                if (entry._header->get_type() != 2)
-                    continue;
-
                 index++;
 
                 if (index == ax)
                 {
                     auto& cfg = openloco::config::get();
-                    memcpy(cfg.preferred_currency, entry._header, 0x10);
+                    memcpy(cfg.preferred_currency, object.second._header, 0x10);
 
                     sub_4C1519();
                     config::write();
@@ -2123,7 +2013,7 @@ namespace openloco::ui::options
 
     static void sub_4BF8CD()
     {
-        auto ptr = malloc(_installedObjectCount);
+        auto ptr = malloc(objectmgr::getNumInstalledObjects());
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;
