@@ -140,6 +140,12 @@ int main(int argc, const char** argv)
     {
         int key2 = it->first.as<int>();
 
+        if (key2 == 337 || key2 == 338 || key2 == 1250 || key2 == 1506 || key2 == 1719
+            || key2 == 2039 || key2 == 2040 || key2 == 2042 || key2 == 2045)
+        {
+            continue;
+        }
+
         auto str = readString(str2.data(), str2.length());
 
         if (str != nullptr)
