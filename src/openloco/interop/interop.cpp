@@ -301,7 +301,7 @@ namespace openloco::interop
             &registers.ebp);
     }
 
-    void read_memory(uint32_t address, void* data, size_t size)
+    void read_memory(uintptr_t address, void* data, size_t size)
     {
 #ifdef _WIN32
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -314,7 +314,7 @@ namespace openloco::interop
 #endif // _WIN32
     }
 
-    void write_memory(uint32_t address, const void* data, size_t size)
+    void write_memory(uintptr_t address, const void* data, size_t size)
     {
 #ifdef _WIN32
         if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -379,7 +379,7 @@ namespace openloco::interop
             if (left != right)
             {
                 uint32_t addr = lhs.begin + i;
-                if (lastError != -1 && lastError != i - 1)
+                if (lastError != -1 && lastError != (int)i - 1)
                 {
                     std::printf("...\n");
                 }
