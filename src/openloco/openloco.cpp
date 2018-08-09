@@ -552,10 +552,10 @@ namespace openloco
         uintptr_t end   = 0x1143000;
         save_state beforeVanilla1 = save_state(start, end);
         // call(0x004A8826);
-        auto zoef1 = addr<0x906000, uint32_t>();
-        printf("zoef1 beforeVanilla1: %d\n", zoef1);
+        loco_global<uint32_t, 0x906000> zoef1;
+        printf("zoef1 beforeVanilla1: %d\n", *zoef1);
         zoef1 = 0xCAFEBABE;
-        printf("zoef1 afterVanilla1: %d\n", zoef1);
+        printf("zoef1 afterVanilla1: %d\n", *zoef1);
         save_state afterVanilla1 = save_state(start, end);
         beforeVanilla1.reset();
 
@@ -578,10 +578,10 @@ namespace openloco
 
         save_state beforeCpp1 = save_state(start, end);
         // thingmgr::update_vehicles();
-        auto zoef3 = addr<0x906000, uint32_t>();
-        printf("zoef3 beforeVanilla1: %d\n", zoef3);
+        loco_global<uint32_t, 0x906000> zoef3;
+        printf("zoef3 beforeVanilla1: %d\n", *zoef3);
         zoef3 = 0xCAFEBABE;
-        printf("zoef3 afterVanilla1: %d\n", zoef3);
+        printf("zoef3 afterVanilla1: %d\n", *zoef3);
         save_state afterCpp1 = save_state(start, end);
         beforeCpp1.reset();
 
