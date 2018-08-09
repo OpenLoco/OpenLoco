@@ -2,6 +2,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <stdexcept>
+#include <iostream>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -330,12 +331,38 @@ namespace openloco::interop
         : begin(begin)
         , end(end)
     {
+        // std::cout << "(end - begin) = " << (end - begin) << std::endl;
         state.resize(end - begin);
+        std::cout << "Saving state from begin: " << begin
+                << " with data pointer: " << state.data()
+                << " and size " << state.size()
+                << std::endl;
         read_memory(begin, state.data(), state.size());
+
+        auto copydata = state.data();
+        for (size_t i = 0; i < (end - begin); i++)
+        {
+            if (copydata[i] != *((std::byte*)(begin + i)))
+            {
+                std::cout << "Found mismatch at offset " << i << " in copy\n";
+                return;
+            }
+        }
+        // bool result = std::equal(
+        //     state.begin(),
+        //     state.end(),
+        //     begin,
+        //     end);
+
+        std::cout << "Original memory is equal to saved state" << std::endl;
     }
 
     void save_state::reset()
     {
+        std::cout << "Restoring state from begin: " << begin
+                << " with data pointer: " << state.data()
+                << " and size " << state.size()
+                << std::endl;
         interop::write_memory(begin, state.data(), state.size());
     }
 

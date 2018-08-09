@@ -549,21 +549,44 @@ namespace openloco
         industrymgr::update();
 
         uintptr_t start = 0x506000;
-        uintptr_t end = 0x1143000;
-        save_state beforeVanilla = save_state(start, end);
+        uintptr_t end   = 0x1143000;
+        save_state beforeVanilla1 = save_state(start, end);
         call(0x004A8826);
-        save_state afterVanilla = save_state(start, end);
-        beforeVanilla.reset();
-        save_state beforeCpp = save_state(start, end);
-        //thingmgr::update_vehicles();
+        save_state afterVanilla1 = save_state(start, end);
+        beforeVanilla1.reset();
+
+        save_state beforeVanilla2 = save_state(start, end);
         call(0x004A8826);
-        save_state afterCpp = save_state(start, end);
+        save_state afterVanilla2 = save_state(start, end);
+        beforeVanilla2.reset();
 
-        printf("Before diff\n");
-        save_state::log_diff(beforeVanilla, beforeCpp);
+        printf("Before vanilla{1,2} diff:\n");
+        printf("===\n");
+        save_state::log_diff(beforeVanilla1, beforeVanilla2);
+        printf("===\n");
 
-        printf("After diff\n");
-        save_state::log_diff(afterVanilla, afterCpp);
+        printf("After vanilla{1,2} diff:\n");
+        printf("===\n");
+        save_state::log_diff(afterVanilla1, afterVanilla2);
+        printf("===\n");
+
+        save_state beforeCpp1 = save_state(start, end);
+        thingmgr::update_vehicles();
+        save_state afterCpp1 = save_state(start, end);
+        beforeCpp1.reset();
+
+        save_state beforeCpp2 = save_state(start, end);
+        thingmgr::update_vehicles();
+        save_state afterCpp2 = save_state(start, end);
+
+        printf("Before cpp{1,2} diff:\n");
+        printf("===\n");
+        save_state::log_diff(beforeCpp1, beforeCpp2);
+        printf("===\n");
+
+        printf("After cpp{1,2} diff:\n");
+        printf("===\n");
+        save_state::log_diff(afterCpp1, afterCpp2);
         printf("===\n");
 
         sub_46FFCA();
