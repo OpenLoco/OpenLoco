@@ -551,12 +551,16 @@ namespace openloco
         uintptr_t start = 0x506000;
         uintptr_t end   = 0x1143000;
         save_state beforeVanilla1 = save_state(start, end);
-        call(0x004A8826);
+        // call(0x004A8826);
+        auto zoef1 = addr<0x906000, uint32_t>();
+        zoef1 = 0xCAFEBABE;
         save_state afterVanilla1 = save_state(start, end);
         beforeVanilla1.reset();
 
         save_state beforeVanilla2 = save_state(start, end);
-        call(0x004A8826);
+        // call(0x004A8826);
+        // auto zoef2 = addr<0x906000, uint32_t>();
+        // zoef2 = 0xCAFEBABE;
         save_state afterVanilla2 = save_state(start, end);
         beforeVanilla2.reset();
 
@@ -571,13 +575,18 @@ namespace openloco
         printf("===\n");
 
         save_state beforeCpp1 = save_state(start, end);
-        thingmgr::update_vehicles();
+        // thingmgr::update_vehicles();
+        auto zoef3 = addr<0x906000, uint32_t>();
+        zoef3 = 0xCAFEBABE;
         save_state afterCpp1 = save_state(start, end);
         beforeCpp1.reset();
 
         save_state beforeCpp2 = save_state(start, end);
-        thingmgr::update_vehicles();
+        // thingmgr::update_vehicles();
+        // auto zoef4 = addr<0x906000, uint32_t>();
+        // zoef4 = 0xCAFEBABE;
         save_state afterCpp2 = save_state(start, end);
+        beforeCpp2.reset();
 
         printf("Before cpp{1,2} diff:\n");
         printf("===\n");
