@@ -153,7 +153,7 @@ namespace openloco
         sub_4929DB();
 
         auto w = windowmgr::find(window_type::station, id());
-        if (w != nullptr && (w->var_870 == 2 || w->var_870 == 1 || quantityUpdated))
+        if (w != nullptr && (w->current_tab == 2 || w->current_tab == 1 || quantityUpdated))
         {
             w->invalidate();
         }

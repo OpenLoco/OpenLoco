@@ -55,6 +55,9 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_close_window = 60;
 
+    constexpr string_id display_resolution_dropdown_format = 65;
+    constexpr string_id display_resolution_label_format = 66;
+
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;
     constexpr string_id about_locomotion_70 = 70;
@@ -72,6 +75,20 @@ namespace openloco::string_ids
     constexpr string_id about_locomotion_82 = UNUSED_STR(82);
     constexpr string_id about_locomotion_83 = UNUSED_STR(83);
     constexpr string_id about_locomotion_84 = UNUSED_STR(84);
+
+    constexpr string_id stringid = 85;
+    constexpr string_id arg2_stringid = 86;
+    constexpr string_id arg4_stringid = 87;
+    constexpr string_id arg6_stringid = 88;
+    constexpr string_id arg8_stringid = 89;
+    constexpr string_id arg10_stringid = 90;
+    constexpr string_id arg12_stringid = 91;
+    constexpr string_id arg14_stringid = 92;
+    constexpr string_id arg16_stringid = 93;
+    constexpr string_id arg18_stringid = 94;
+    constexpr string_id arg20_stringid = 95;
+
+    constexpr string_id dropdown = 96;
 
     constexpr string_id label_button_ok = 187;
 
@@ -105,11 +122,17 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id dropdown_stringid = 421;
+    constexpr string_id dropdown_stringptr = 424;
+
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
     constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
+
+    constexpr string_id audio_device_none = 479;
+    constexpr string_id audio_device_name = 480;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -129,7 +152,33 @@ namespace openloco::string_ids
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
 
+    constexpr string_id sound_quality = 650;
+    constexpr string_id sound_quality_low = 651;
+    constexpr string_id sound_quality_medium = 652;
+    constexpr string_id sound_quality_high = 653;
     constexpr string_id options = 654;
+
+    constexpr string_id distance_and_speed = 656;
+    constexpr string_id heights = 657;
+    constexpr string_id imperial = 658;
+    constexpr string_id metric = 659;
+    constexpr string_id height_units = 660;
+    constexpr string_id height_real_values = 661;
+
+    constexpr string_id display_resolution = 662;
+    constexpr string_id landscape_smoothing = 663;
+    constexpr string_id landscape_smoothing_tip = 664;
+    constexpr string_id gridlines_on_landscape = 665;
+    constexpr string_id gridlines_on_landscape_tip = 666;
+
+    constexpr string_id customise_keys = 701;
+
+    constexpr string_id scroll_screen_edge = 1002;
+    constexpr string_id scroll_screen_edge_tip = 1003;
+    constexpr string_id customise_keys_tip = 1004;
+
+    constexpr string_id forced_software_buffer_mixing = 1010;
+    constexpr string_id forced_software_buffer_mixing_tip = 1011;
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
@@ -197,18 +246,113 @@ namespace openloco::string_ids
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
 
+    constexpr string_id loading = 1088;
+
+    constexpr string_id white = 1090;
+    constexpr string_id translucent = 1091;
+    constexpr string_id construction_marker = 1092;
+    constexpr string_id vehicles_min_scale = 1093;
+    constexpr string_id station_names_min_scale = 1094;
+    constexpr string_id full_scale = 1095;
+    constexpr string_id half_scale = 1096;
+    constexpr string_id quarter_scale = 1097;
+    constexpr string_id eighth_scale = 1098;
+    constexpr string_id vehicles_min_scale_tip = 1099;
+    constexpr string_id station_names_min_scale_tip = 1100;
+
+    constexpr string_id station_cargo_rating_percent = 1423;
+
+    constexpr string_id display_options = 1486;
+    constexpr string_id sound_options = 1487;
+    constexpr string_id music_options = 1488;
+    constexpr string_id regional_options = 1489;
+    constexpr string_id control_options = 1490;
+    constexpr string_id miscellaneous_options = 1491;
+    constexpr string_id options_title_display = 1492;
+    constexpr string_id options_title_sound = 1493;
+    constexpr string_id options_title_music = 1494;
+    constexpr string_id options_title_regional = 1495;
+    constexpr string_id options_title_controls = 1496;
+    constexpr string_id options_title_miscellaneous = 1497;
+
+    constexpr string_id use_preferred_currency_always = 1498;
+    constexpr string_id use_preferred_currency_always_tip = 1499;
+    constexpr string_id use_preferred_currency_new_game = 1500;
+    constexpr string_id use_preferred_currency_new_game_tip = 1501;
+    constexpr string_id current_game_currency_tip = 1502;
+    constexpr string_id new_game_currency_tip = 1503;
+    constexpr string_id current_game_currency = 1504;
+    constexpr string_id new_game_currency = 1505;
+    constexpr string_id preferred_currency_buffer = 1506;
+
+    constexpr string_id currently_playing = 1535;
+    constexpr string_id music_controls_stop_tip = 1536;
+    constexpr string_id music_controls_play_tip = 1537;
+    constexpr string_id music_controls_next_tip = 1538;
+
+    constexpr string_id play_only_music_from_current_era = 1539;
+    constexpr string_id play_all_music = 1540;
+    constexpr string_id play_custom_music_selection = 1541;
+
+    constexpr string_id edit_music_selection = 1542;
+    constexpr string_id edit_music_selection_tip = 1543;
+
+    constexpr string_id volume = 1547;
+    constexpr string_id set_volume_tip = 1548;
+
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
+
+    constexpr string_id music_none = 1595;
+    constexpr string_id music_chuggin_along = 1596;
+    constexpr string_id music_long_dusty_road = 1597;
+    constexpr string_id music_flying_high = 1598;
+    constexpr string_id music_gettin_on_the_gas = 1599;
+    constexpr string_id music_jumpin_the_rails = 1600;
+    constexpr string_id music_smooth_running = 1601;
+    constexpr string_id music_traffic_jam = 1602;
+    constexpr string_id music_never_stop_til_you_get_there = 1603;
+    constexpr string_id music_soaring_away = 1604;
+    constexpr string_id music_techno_torture = 1605;
+    constexpr string_id music_everlasting_high_rise = 1606;
+    constexpr string_id music_solace = 1607;
+    constexpr string_id music_chrysanthemum = 1608;
+    constexpr string_id music_eugenia = 1609;
+    constexpr string_id music_the_ragtime_dance = 1610;
+    constexpr string_id music_easy_winners = 1611;
+    constexpr string_id music_setting_off = 1612;
+    constexpr string_id music_a_travellers_seranade = 1613;
+    constexpr string_id music_latino_trip = 1614;
+    constexpr string_id music_a_good_head_of_steam = 1615;
+    constexpr string_id music_hop_to_the_bop = 1616;
+    constexpr string_id music_the_city_lights = 1617;
+    constexpr string_id music_steamin_down_town = 1618;
+    constexpr string_id music_bright_expectations = 1619;
+    constexpr string_id music_mo_station = 1620;
+    constexpr string_id music_far_out = 1621;
+    constexpr string_id music_running_on_time = 1622;
+    constexpr string_id music_get_me_to_gladstone_bay = 1623;
+    constexpr string_id music_sandy_track_blues = 1624;
+
+    constexpr string_id change = 1700;
 
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
+    constexpr string_id title_exit_game = 1869;
+
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;
     constexpr string_id tutorial_3 = 1881;
+
+    constexpr string_id use_preferred_owner_name = 1919;
+    constexpr string_id use_preferred_owner_name_tip = 1920;
+    constexpr string_id wcolour2_preferred_owner_name = 1921;
+    constexpr string_id preferred_owner_name = 1922;
+    constexpr string_id enter_preferred_owner_name = 1923;
 
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;
@@ -216,17 +360,14 @@ namespace openloco::string_ids
 
     constexpr string_id title_menu_chat_tooltip = 1933;
 
-    // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
-
-    constexpr string_id loading = 1088;
-
-    constexpr string_id station_cargo_rating_percent = 1423;
-
-    constexpr string_id title_exit_game = 1869;
-
     constexpr string_id the_other_player = 1934;
+
+    // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
     constexpr string_id buffer_2039 = 2039;
+
+    constexpr string_id export_plugin_objects = 2089;
+    constexpr string_id export_plugin_objects_tip = 2090;
 }

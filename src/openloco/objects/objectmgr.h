@@ -1,7 +1,10 @@
 #pragma once
 
+#include "../compat.h"
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <vector>
 
 namespace openloco
 {
@@ -114,4 +117,42 @@ namespace openloco::objectmgr
     industry_object* get(size_t id);
     template<>
     currency_object* get();
+
+#pragma pack(push, 1)
+    struct header
+    {
+        uint8_t type;
+        uint8_t pad_01[3];
+        uint8_t var_04[8];
+        uint32_t checksum;
+
+        constexpr object_type get_type()
+        {
+            return static_cast<object_type>(type & 0x3F);
+        }
+    };
+
+    struct header2
+    {
+        uint8_t pad_00[0x04 - 0x00];
+    };
+
+    struct header3
+    {
+        uint32_t var_00;      // image count?
+        uint8_t pad_04[0x08]; // competitor stats?
+    };
+
+    struct object_index_entry
+    {
+        header* _header;
+        char* _filename;
+        char* _name;
+
+        static object_index_entry read(std::byte** ptr);
+    };
+#pragma pack(pop)
+
+    uint32_t getNumInstalledObjects();
+    std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
 }

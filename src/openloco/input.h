@@ -66,6 +66,10 @@ namespace openloco::input
     bool is_hovering(ui::window_type, ui::window_number);
     ui::widget_index get_hovered_widget_index();
 
+    bool is_pressed(ui::window_type type, ui::window_number number, ui::widget_index index);
+
+    void cancel_tool(ui::window_type, ui::window_number);
+
     bool has_key_modifier(key_modifier modifier);
 
     void handle_keyboard();

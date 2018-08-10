@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../compat.h"
 #include "../utility/string.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -13,15 +14,6 @@
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #define FORCE_ALIGN_ARG_POINTER
-#endif
-
-#if defined(COMPAT_STD_BYTE)
-namespace std
-{
-    enum class byte : uint8_t
-    {
-    };
-}
 #endif
 
 namespace openloco::interop

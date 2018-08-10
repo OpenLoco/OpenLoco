@@ -21,6 +21,11 @@ namespace openloco
         return _current_day;
     }
 
+    uint16_t current_year()
+    {
+        return _current_year;
+    }
+
     date current_date()
     {
         return date(_current_year, (month_id)(*_current_month), _current_day_of_month);

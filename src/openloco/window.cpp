@@ -39,6 +39,11 @@ namespace openloco::ui
         return (this->disabled_widgets & (1ULL << widget_index)) != 0;
     }
 
+    bool window::is_activated(widget_index index)
+    {
+        return (this->activated_widgets & (1ULL << index)) != 0;
+    }
+
     bool window::is_holdable(ui::widget_index index)
     {
         return (this->holdable_widgets & (1ULL << index)) != 0;
@@ -534,9 +539,18 @@ namespace openloco::ui
 
     void window::call_close()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_close, regs);
+        if (event_handlers->on_close == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_close))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_close, regs);
+            return;
+        }
+
+        event_handlers->on_close(this);
     }
 
     void window::call_update()

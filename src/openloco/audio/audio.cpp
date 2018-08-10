@@ -26,6 +26,18 @@ namespace openloco::audio
         call(0x004899E4);
     }
 
+    // 0x00489C34
+    void pause_sound()
+    {
+        call(0x00489C34);
+    }
+
+    // 0x00489C58
+    void unpause_sound()
+    {
+        call(0x00489C58);
+    }
+
     // 0x00489CB5
     void play_sound(sound_id id, loc16 loc)
     {

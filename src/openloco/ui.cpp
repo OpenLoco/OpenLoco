@@ -1,8 +1,10 @@
 #include "win32.h"
 #include <algorithm>
+#include <cmath>
 #include <codecvt>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -25,6 +27,7 @@
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
 
+#include "config.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
@@ -78,6 +81,9 @@ namespace openloco::ui
     loco_global<screen_info_t, 0x0050B884> screen_info;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     loco_global<uint8_t[256], 0x01140740> _keyboard_state;
+
+    bool _resolutionsAllowAnyAspectRatio = false;
+    std::vector<Resolution> _fsResolutions;
 
     static SDL_Window* window;
     static SDL_Surface* surface;
@@ -577,5 +583,86 @@ namespace openloco::ui
     void show_message_box(const std::string& title, const std::string& message)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
+    }
+
+    void updateFullscreenResolutions()
+    {
+        // Query number of display modes
+        int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
+        int32_t numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
+
+        // Get desktop aspect ratio
+        SDL_DisplayMode mode;
+        SDL_GetDesktopDisplayMode(displayIndex, &mode);
+
+        // Get resolutions
+        auto resolutions = std::vector<Resolution>();
+        float desktopAspectRatio = (float)mode.w / mode.h;
+        for (int32_t i = 0; i < numDisplayModes; i++)
+        {
+            SDL_GetDisplayMode(displayIndex, i, &mode);
+            if (mode.w > 0 && mode.h > 0)
+            {
+                float aspectRatio = (float)mode.w / mode.h;
+                if (_resolutionsAllowAnyAspectRatio || std::fabs(desktopAspectRatio - aspectRatio) < 0.0001f)
+                {
+                    resolutions.push_back({ mode.w, mode.h });
+                }
+            }
+        }
+
+        // Sort by area
+        std::sort(resolutions.begin(), resolutions.end(), [](const Resolution& a, const Resolution& b) -> bool {
+            int32_t areaA = a.width * a.height;
+            int32_t areaB = b.width * b.height;
+            return areaA < areaB;
+        });
+
+        // Remove duplicates
+        auto last = std::unique(resolutions.begin(), resolutions.end(), [](const Resolution& a, const Resolution& b) -> bool {
+            return (a.width == b.width && a.height == b.height);
+        });
+        resolutions.erase(last, resolutions.end());
+
+        // Update config fullscreen resolution if not set
+        auto& cfg = config::get();
+        if (cfg.resolution_width == std::numeric_limits<uint16_t>::max() && cfg.resolution_height == std::numeric_limits<uint16_t>::max())
+        {
+            cfg.resolution_width = resolutions.back().width;
+            cfg.resolution_height = resolutions.back().height;
+        }
+
+        _fsResolutions = resolutions;
+    }
+
+    std::vector<Resolution> getFullscreenResolutions()
+    {
+        updateFullscreenResolutions();
+        return _fsResolutions;
+    }
+
+    Resolution getClosestResolution(int32_t inWidth, int32_t inHeight)
+    {
+        Resolution result = { 800, 600 };
+        int32_t closestAreaDiff = -1;
+        int32_t destinationArea = inWidth * inHeight;
+        for (const Resolution& resolution : _fsResolutions)
+        {
+            // Check if exact match
+            if (resolution.width == inWidth && resolution.height == inHeight)
+            {
+                result = resolution;
+                break;
+            }
+
+            // Check if area is closer to best match
+            int32_t areaDiff = std::abs((resolution.width * resolution.height) - destinationArea);
+            if (closestAreaDiff == -1 || areaDiff < closestAreaDiff)
+            {
+                closestAreaDiff = areaDiff;
+                result = resolution;
+            }
+        }
+        return result;
     }
 }

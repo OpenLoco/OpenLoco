@@ -1,4 +1,5 @@
 #include "thing.h"
+#include "../config.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"
@@ -6,8 +7,6 @@
 
 using namespace openloco;
 using namespace openloco::interop;
-
-loco_global<uint8_t, 0x0050AF25> thing_zoom_max;
 
 // 0x0046FC83
 void thing_base::move_to(loc16 loc)
@@ -37,7 +36,7 @@ void openloco::thing_base::invalidate_sprite()
         if (viewport == nullptr)
             break;
 
-        if (viewport->zoom > thing_zoom_max)
+        if (viewport->zoom > config::get().vehicles_min_scale)
             continue;
 
         if (sprite_right <= viewport->view_x)

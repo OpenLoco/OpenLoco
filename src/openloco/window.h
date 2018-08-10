@@ -95,6 +95,16 @@ namespace openloco::ui
         return out;
     }
 
+    static constexpr widget_t make_remap_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    {
+        widget_t out = make_widget(origin, size, type, colour, content, tooltip);
+
+        // TODO: implement this as a constant.
+        out.content |= (1 << 29);
+
+        return out;
+    }
+
     static constexpr widget_t make_text_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
@@ -155,7 +165,7 @@ namespace openloco::ui
             void* events[29];
             struct
             {
-                uint32_t on_close;
+                void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
                 uint32_t on_resize;
                 uint32_t event_03;
@@ -190,10 +200,7 @@ namespace openloco::ui
         window_event_list()
         {
             // Set all events to a `ret` instruction
-            for (auto& e : events)
-            {
-                e = (void*)0x0042A034;
-            }
+            std::fill_n(events, 29, (void*)0x0042A034);
         }
     };
 
@@ -246,7 +253,8 @@ namespace openloco::ui
                 scroll_area_t scroll_areas[3];     // 0x46
                 uint8_t pad_7C[0x83E - 0x7C];
                 uint16_t var_83E;
-                uint8_t pad_840[0x846 - 0x840];
+                uint16_t var_840;
+                uint8_t pad_842[0x846 - 0x842];
                 uint16_t var_846;
                 uint8_t pad_848[0x854 - 0x848];
                 uint16_t var_854;
@@ -254,8 +262,8 @@ namespace openloco::ui
                 uint8_t pad_858[0x85A - 0x858];
                 uint16_t var_85A;
                 uint8_t pad_85C[0x870 - 0x85C];
-                uint16_t var_870;
-                uint16_t var_872;
+                uint16_t current_tab; // 0x870
+                uint16_t frame_no;    // 0x872
                 uint8_t pad_874[0x876 - 0x874];
                 viewport_config viewport_configurations[2]; // 0x876
                 window_type type;                           // 0x882
@@ -268,8 +276,21 @@ namespace openloco::ui
             };
         };
 
+        constexpr void set_size(gfx::ui_size_t size)
+        {
+            this->min_width = size.width;
+            this->min_height = size.height;
+
+            this->max_width = size.width;
+            this->max_height = size.height;
+
+            this->width = size.width;
+            this->height = size.height;
+        }
+
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
+        bool is_activated(widget_index index);
         bool is_holdable(widget_index index);
         bool can_resize();
         void viewports_update_position();

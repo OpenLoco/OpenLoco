@@ -135,7 +135,8 @@ namespace openloco::ui::about_music
 
 namespace openloco::ui::options
 {
-    void open();
+    window* open();
+    window* open_music_settings();
 }
 
 namespace openloco::ui::prompt_browse

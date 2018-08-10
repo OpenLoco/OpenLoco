@@ -113,7 +113,7 @@ namespace openloco::ui::windowmgr
 
         register_hook(
             0x004C6202,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 all_wheel_input();
                 regs = backup;
@@ -800,7 +800,7 @@ namespace openloco::ui::windowmgr
             if (w.number != number)
                 continue;
 
-            if (w.var_870 != 4)
+            if (w.current_tab != 4)
                 continue;
 
             w.invalidate();
