@@ -282,6 +282,7 @@ static uint32_t read(uint8_t** string)
 
 int main(int argc, const char** argv)
 {
+    openloco::interop::load_sections();
     YAML::Node node = YAML::LoadFile("/Users/Marijn/de-DE.yml");
     [[maybe_unused]] auto type = node.Type();
     for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
@@ -303,7 +304,6 @@ int main(int argc, const char** argv)
         }
     }
 
-    openloco::interop::load_sections();
     openloco::lpCmdLine((char*)argv[0]);
     openloco::main();
     return 0;
