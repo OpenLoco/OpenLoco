@@ -45,8 +45,8 @@ namespace openloco::localisation
 
     [[maybe_unused]] static char* readString(const char* value, size_t size)
     {
-
-        char* str = (char*)malloc(size);
+        // Take terminating NULL character in account
+        char* str = (char*)malloc(size + 1);
         char* out = str;
 
         uint8_t* ptr = (uint8_t*)value;
