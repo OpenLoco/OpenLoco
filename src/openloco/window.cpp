@@ -1026,7 +1026,7 @@ namespace openloco::ui
                 this->y,
                 this->x + this->width - 1,
                 this->y + this->height - 1,
-                colour::white,
+                colour::lightGrey,
                 0x10);
         }
     }

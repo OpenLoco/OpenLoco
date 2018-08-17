@@ -51,8 +51,8 @@ namespace openloco::ui::title_options
 
         window->init_scroll_widgets();
 
-        window->colours[0] = colour::translucent(colour::saturated_green);
-        window->colours[1] = colour::translucent(colour::saturated_green);
+        window->colours[0] = colour::translucent(colour::palegreen);
+        window->colours[1] = colour::translucent(colour::palegreen);
 
         return window;
     }
@@ -66,7 +66,7 @@ namespace openloco::ui::title_options
         int16_t y = window->y + window->widgets[widx::options_button].top + 2;
         gfx::point_t origin = { x, y };
 
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
+        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::lightGrey, string_ids::outlined_wcolour2_stringid2, (const char*)&string_ids::options);
     }
 
     static void on_mouse_up(window* window, widget_index widgetIndex)

@@ -99,8 +99,8 @@ namespace openloco::ui::prompt_browse
             window->var_85A = 0xFFFF;
             addr<0x009DA285, uint8_t>() = 0;
             sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
-            window->colours[0] = colour::black;
-            window->colours[1] = colour::saturated_green;
+            window->colours[0] = colour::darkGrey;
+            window->colours[1] = colour::palegreen;
             windowmgr::current_modal_type(window_type::prompt_browse);
             prompt_tick_loop(
                 []() {

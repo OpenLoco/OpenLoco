@@ -53,13 +53,13 @@ namespace openloco::ui::windows
                 gfx::draw_string_494BBF(dpi, 1, y, 98, 0, string_ids::wcolour2_stringid2, &cargoObj->name);
 
                 auto rating = cargo.rating;
-                auto colour = colour::moss_green;
+                auto colour = colour::green;
                 if (rating < 100)
                 {
-                    colour = colour::dark_olive_green;
+                    colour = colour::yellow;
                     if (rating < 50)
                     {
-                        colour = colour::saturated_red;
+                        colour = colour::red;
                     }
                 }
                 uint8_t amount = (rating * 327) / 256;
