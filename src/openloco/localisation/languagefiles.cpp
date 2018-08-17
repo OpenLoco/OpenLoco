@@ -10,6 +10,45 @@ namespace openloco::localisation
 {
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
 
+    static std::map<std::string, uint8_t, std::less<>> basicCommands = {
+        { "SMALLFONT", control_codes::font_regular },
+        { "BIGFONT", control_codes::font_large },
+        { "TINYFONT", control_codes::font_small },
+        { "NEWLINE_SMALLER", control_codes::newline_smaller },
+        { "NEWLINE", control_codes::newline },
+        { "OUTLINE", openloco::control_codes::outline },
+        { "CROSS", 0x41 },
+        { "TICK", 0x41 },
+        { "SMALLUP", 0x41 },
+        { "SMALLDOWN", 0x41 },
+        { "RIGHT", 0x41 },
+        { "DOWN", 0x41 },
+        { "UP", 0x41 },
+        { "SYMBOL_RAILWAY", 0x41 },
+        { "SYMBOL_ROAD", 0x41 },
+        { "SYMBOL_AIR", 0x41 },
+        { "SYMBOL_WATER", 0x41 },
+        { "VELOCITY", control_codes::velocity },
+        { "CURRENCY32", control_codes::currency32 },
+        { "HEIGHT", control_codes::height },
+        { "CURRENCY48", control_codes::currency48 },
+        { "STRING", control_codes::string_ptr },
+        { "POP16", control_codes::pop16 },
+        { "POWER", control_codes::power },
+    };
+
+    static std::map<std::string, uint8_t, std::less<>> textColourNames = {
+        { "BLACK", control_codes::colour_black },
+        { "WINDOW_1", control_codes::window_colour_1 },
+        { "WINDOW_2", control_codes::window_colour_2 },
+        { "WINDOW_3", control_codes::window_colour_3 },
+        { "WHITE", control_codes::colour_white },
+        { "YELLOW", control_codes::colour_yellow },
+        { "TOPAZ", control_codes::colour_topaz },
+        { "RED", control_codes::colour_red },
+        { "GREEN", control_codes::colour_green },
+    };
+
     static uint32_t readCodePoint(uint8_t** string)
     {
         uint32_t read = 0;
@@ -87,7 +126,13 @@ namespace openloco::localisation
                     }
                 }
 
-                if (commands[0] == "STRINGID")
+                auto search = basicCommands.find(commands[0]);
+                if (search != basicCommands.end())
+                {
+                    *out = search->second;
+                    out++;
+                }
+                else if (commands[0] == "STRINGID")
                 {
                     if (commands.size() == 1)
                     {
@@ -98,31 +143,6 @@ namespace openloco::localisation
                     {
                         printf("%.*s\n", (int)commands[1].length(), commands[1].data());
                     }
-                }
-                else if (commands[0] == "CURRENCY48")
-                {
-                    *out = (char)control_codes::currency48;
-                    out++;
-                }
-                else if (commands[0] == "STRING")
-                {
-                    *out = (char)control_codes::string_ptr;
-                    out++;
-                }
-                else if (commands[0] == "POP16")
-                {
-                    *out = (char)control_codes::pop16;
-                    out++;
-                }
-                else if (commands[0] == "POWER")
-                {
-                    *out = (char)control_codes::power;
-                    out++;
-                }
-                else if (commands[0] == "HEIGHT")
-                {
-                    *out = (char)control_codes::height;
-                    out++;
                 }
                 else if (commands[0] == "UINT16")
                 {
@@ -149,11 +169,6 @@ namespace openloco::localisation
                         printf("%.*s\n", (int)commands[1].length(), commands[1].data());
                     }
                 }
-                else if (commands[0] == "CURRENCY32")
-                {
-                    *out = (char)control_codes::currency32;
-                    out++;
-                }
                 else if (commands[0] == "NUM16")
                 {
                 }
@@ -163,92 +178,15 @@ namespace openloco::localisation
                 else if (commands[0] == "RAWDATE")
                 {
                 }
-                else if (commands[0] == "VELOCITY")
-                {
-                    *out = (char)control_codes::velocity;
-                    out++;
-                }
                 else if (commands[0] == "DATE")
-                {
-                }
-                else if (commands[0] == "DOWN")
-                {
-                }
-                else if (commands[0] == "UP")
-                {
-                }
-                else if (commands[0] == "SYMBOL_RAILWAY")
-                {
-                }
-                else if (commands[0] == "SYMBOL_ROAD")
-                {
-                }
-                else if (commands[0] == "SYMBOL_AIR")
-                {
-                }
-                else if (commands[0] == "SYMBOL_WATER")
-                {
-                }
-                else if (commands[0] == "CROSS")
-                {
-                }
-                else if (commands[0] == "TICK")
-                {
-                }
-                else if (commands[0] == "SMALLUP")
-                {
-                }
-                else if (commands[0] == "SMALLDOWN")
-                {
-                }
-                else if (commands[0] == "RIGHT")
                 {
                 }
                 else if (commands[0] == "COLOUR")
                 {
-                    if (commands[1] == "BLACK")
+                    auto search = textColourNames.find(commands[1]);
+                    if (search != textColourNames.end())
                     {
-                        *out = control_codes::colour_black;
-                        out++;
-                    }
-                    else if (commands[1] == "WINDOW_1")
-                    {
-                        *out = control_codes::window_colour_1;
-                        out++;
-                    }
-                    else if (commands[1] == "WINDOW_2")
-                    {
-                        *out = control_codes::window_colour_2;
-                        out++;
-                    }
-                    else if (commands[1] == "WINDOW_3")
-                    {
-                        *out = control_codes::window_colour_3;
-                        out++;
-                    }
-                    else if (commands[1] == "WHITE")
-                    {
-                        *out = control_codes::colour_white;
-                        out++;
-                    }
-                    else if (commands[1] == "YELLOW")
-                    {
-                        *out = control_codes::colour_yellow;
-                        out++;
-                    }
-                    else if (commands[1] == "TOPAZ")
-                    {
-                        *out = control_codes::colour_topaz;
-                        out++;
-                    }
-                    else if (commands[1] == "RED")
-                    {
-                        *out = control_codes::colour_red;
-                        out++;
-                    }
-                    else if (commands[1] == "GREEN")
-                    {
-                        *out = control_codes::colour_green;
+                        *out = search->second;
                         out++;
                     }
                     else
@@ -256,38 +194,8 @@ namespace openloco::localisation
                         printf("%.*s\n", (int)commands[1].length(), commands[1].data());
                     }
                 }
-                else if (commands[0] == "SMALLFONT")
-                {
-                    *out = (char)control_codes::font_regular;
-                    out++;
-                }
-                else if (commands[0] == "BIGFONT")
-                {
-                    *out = (char)control_codes::font_large;
-                    out++;
-                }
-                else if (commands[0] == "TINYFONT")
-                {
-                    *out = (char)control_codes::font_small;
-                    out++;
-                }
                 else if (commands[0] == "MOVE_X")
                 {
-                }
-                else if (commands[0] == "NEWLINE_SMALLER")
-                {
-                    *out = (char)control_codes::newline_smaller;
-                    out++;
-                }
-                else if (commands[0] == "NEWLINE")
-                {
-                    *out = (char)control_codes::newline;
-                    out++;
-                }
-                else if (commands[0] == "OUTLINE")
-                {
-                    *out = openloco::control_codes::outline;
-                    out++;
                 }
                 else
                 {
