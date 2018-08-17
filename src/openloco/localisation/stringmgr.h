@@ -36,7 +36,7 @@ namespace openloco
         constexpr uint8_t ff = 0xFF;
     }
 
-    namespace control_code
+    namespace control_codes
     {
         // Arguments: uint8_t
         constexpr uint8_t move_x = 1;
@@ -58,7 +58,29 @@ namespace openloco
         constexpr uint8_t newline_x_y = 17;
 
         // Arguments: uint32_t
-        constexpr uint8_t inline_sprite = 23;
+        constexpr uint8_t inline_sprite_str = 23;
+
+        constexpr uint8_t int32_grouped = 123 + 0;
+        constexpr uint8_t int32_ungrouped = 123 + 1;
+        constexpr uint8_t int16_decimals = 123 + 2;
+        constexpr uint8_t int32_decimals = 123 + 3;
+        constexpr uint8_t int16_grouped = 123 + 4;
+        constexpr uint8_t uint16_ungrouped = 123 + 5;
+        constexpr uint8_t currency32 = 123 + 6;
+        constexpr uint8_t currency48 = 123 + 7;
+        constexpr uint8_t stringid_args = 123 + 8;
+        constexpr uint8_t stringid_str = 123 + 9;
+        constexpr uint8_t string_ptr = 123 + 10;
+        constexpr uint8_t date = 123 + 11;
+        constexpr uint8_t velocity = 123 + 12;
+        constexpr uint8_t pop16 = 123 + 13;
+        constexpr uint8_t push16 = 123 + 14;
+        constexpr uint8_t timeMS = 123 + 15;
+        constexpr uint8_t timeHM = 123 + 16;
+        constexpr uint8_t distance = 123 + 17;
+        constexpr uint8_t height = 123 + 18;
+        constexpr uint8_t power = 123 + 19;
+        constexpr uint8_t inline_sprite_args = 123 + 20;
 
         constexpr uint8_t colour_black = 144;
         constexpr uint8_t colour_grey = 145;

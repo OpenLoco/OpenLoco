@@ -30,33 +30,6 @@ namespace openloco::stringmgr
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
-    enum formatting_codes
-    {
-        inline_sprite_str = 23,
-
-        int32_grouped = 123 + 0,
-        int32_ungrouped = 123 + 1,
-        int16_decimals = 123 + 2,
-        int32_decimals = 123 + 3,
-        int16_grouped = 123 + 4,
-        uint16_ungrouped = 123 + 5,
-        currency32 = 123 + 6,
-        currency48 = 123 + 7,
-        stringid_args = 123 + 8,
-        stringid_str = 123 + 9,
-        string_ptr = 123 + 10,
-        date = 123 + 11,
-        velocity = 123 + 12,
-        pop16 = 123 + 13,
-        push16 = 123 + 14,
-        timeMS = 123 + 15,
-        timeHM = 123 + 16,
-        distance = 123 + 17,
-        height = 123 + 18,
-        power = 123 + 19,
-        inline_sprite_args = 123 + 20,
-    };
-
     static std::map<int32_t, string_id> day_to_string = {
         { 1, string_ids::day_1st },
         { 2, string_ids::day_2nd },
@@ -308,56 +281,56 @@ namespace openloco::stringmgr
 
                 switch (ch)
                 {
-                    case formatting_codes::int32_grouped:
+                    case control_codes::int32_grouped:
                     {
                         int32_t value = args.pop32();
                         buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::int32_ungrouped:
+                    case control_codes::int32_ungrouped:
                     {
                         int32_t value = args.pop32();
                         buffer = format_int32_ungrouped(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::int16_decimals:
+                    case control_codes::int16_decimals:
                     {
                         int16_t value = args.pop16();
                         buffer = format_short_with_decimals(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::int32_decimals:
+                    case control_codes::int32_decimals:
                     {
                         int32_t value = args.pop32();
                         buffer = format_int_with_decimals(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::int16_grouped:
+                    case control_codes::int16_grouped:
                     {
                         int16_t value = args.pop16();
                         buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::uint16_ungrouped:
+                    case control_codes::uint16_ungrouped:
                     {
                         uint16_t value = args.pop16();
                         buffer = format_int32_ungrouped((int32_t)value, buffer);
                         break;
                     }
 
-                    case formatting_codes::currency32:
+                    case control_codes::currency32:
                     {
                         int32_t value = args.pop32();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
 
-                    case formatting_codes::currency48:
+                    case control_codes::currency48:
                     {
                         uint32_t value_low = (uint32_t)args.pop32();
                         int32_t value_high = (int16_t)args.pop16();
@@ -366,14 +339,14 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::stringid_args:
+                    case control_codes::stringid_args:
                     {
                         string_id id = args.pop16();
                         buffer = format_string(buffer, id, args);
                         break;
                     }
 
-                    case formatting_codes::stringid_str:
+                    case control_codes::stringid_str:
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
@@ -381,7 +354,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::string_ptr:
+                    case control_codes::string_ptr:
                     {
                         const char* str = (char*)args.pop32();
                         strcpy(buffer, str);
@@ -389,7 +362,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::date:
+                    case control_codes::date:
                     {
                         char modifier = *sourceStr;
                         uint32_t totalDays = args.pop32();
@@ -420,7 +393,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::velocity:
+                    case control_codes::velocity:
                     {
                         auto measurement_format = config::get().measurement_format;
 
@@ -447,21 +420,21 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::pop16:
+                    case control_codes::pop16:
                         args.skip16();
                         break;
 
-                    case formatting_codes::push16:
+                    case control_codes::push16:
                         args.push16();
                         break;
 
-                    case formatting_codes::timeMS:
+                    case control_codes::timeMS:
                         throw std::runtime_error("Unimplemented format string: 15");
 
-                    case formatting_codes::timeHM:
+                    case control_codes::timeHM:
                         throw std::runtime_error("Unimplemented format string: 16");
 
-                    case formatting_codes::distance:
+                    case control_codes::distance:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -487,7 +460,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::height:
+                    case control_codes::height:
                     {
                         int32_t value = (int16_t)args.pop16();
 
@@ -521,7 +494,7 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::power:
+                    case control_codes::power:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -547,9 +520,9 @@ namespace openloco::stringmgr
                         break;
                     }
 
-                    case formatting_codes::inline_sprite_args:
+                    case control_codes::inline_sprite_args:
                     {
-                        *buffer = control_code::inline_sprite;
+                        *buffer = control_codes::inline_sprite_str;
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;

@@ -101,29 +101,39 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "CURRENCY48")
                 {
+                    *out = (char)control_codes::currency48;
+                    out++;
                 }
                 else if (commands[0] == "STRING")
                 {
+                    *out = (char)control_codes::string_ptr;
+                    out++;
                 }
                 else if (commands[0] == "POP16")
                 {
-                    *out = (char)(123 + 13);
+                    *out = (char)control_codes::pop16;
                     out++;
                 }
                 else if (commands[0] == "POWER")
                 {
+                    *out = (char)control_codes::power;
+                    out++;
                 }
                 else if (commands[0] == "HEIGHT")
                 {
+                    *out = (char)control_codes::height;
+                    out++;
                 }
                 else if (commands[0] == "UINT16")
                 {
+                    *out = (char)control_codes::uint16_ungrouped;
+                    out++;
                 }
                 else if (commands[0] == "SPRITE")
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (char)(123 + 20);
+                        *out = (char)control_codes::inline_sprite_str;
                         out++;
                     }
                     else
@@ -141,6 +151,8 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "CURRENCY32")
                 {
+                    *out = (char)control_codes::currency32;
+                    out++;
                 }
                 else if (commands[0] == "NUM16")
                 {
@@ -153,6 +165,8 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "VELOCITY")
                 {
+                    *out = (char)control_codes::velocity;
+                    out++;
                 }
                 else if (commands[0] == "DATE")
                 {
@@ -194,36 +208,48 @@ namespace openloco::localisation
                 {
                     if (commands[1] == "BLACK")
                     {
+                        *out = control_codes::colour_black;
+                        out++;
                     }
                     else if (commands[1] == "WINDOW_1")
                     {
-                        *out = openloco::control_code::window_colour_1;
+                        *out = control_codes::window_colour_1;
                         out++;
                     }
                     else if (commands[1] == "WINDOW_2")
                     {
-                        *out = openloco::control_code::window_colour_2;
+                        *out = control_codes::window_colour_2;
                         out++;
                     }
                     else if (commands[1] == "WINDOW_3")
                     {
-                        *out = openloco::control_code::window_colour_3;
+                        *out = control_codes::window_colour_3;
                         out++;
                     }
                     else if (commands[1] == "WHITE")
                     {
+                        *out = control_codes::colour_white;
+                        out++;
                     }
                     else if (commands[1] == "YELLOW")
                     {
+                        *out = control_codes::colour_yellow;
+                        out++;
                     }
                     else if (commands[1] == "TOPAZ")
                     {
+                        *out = control_codes::colour_topaz;
+                        out++;
                     }
                     else if (commands[1] == "RED")
                     {
+                        *out = control_codes::colour_red;
+                        out++;
                     }
                     else if (commands[1] == "GREEN")
                     {
+                        *out = control_codes::colour_green;
+                        out++;
                     }
                     else
                     {
@@ -232,25 +258,35 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "SMALLFONT")
                 {
+                    *out = (char)control_codes::font_regular;
+                    out++;
                 }
                 else if (commands[0] == "BIGFONT")
                 {
+                    *out = (char)control_codes::font_large;
+                    out++;
                 }
                 else if (commands[0] == "TINYFONT")
                 {
+                    *out = (char)control_codes::font_small;
+                    out++;
                 }
                 else if (commands[0] == "MOVE_X")
                 {
                 }
                 else if (commands[0] == "NEWLINE_SMALLER")
                 {
+                    *out = (char)control_codes::newline_smaller;
+                    out++;
                 }
                 else if (commands[0] == "NEWLINE")
                 {
+                    *out = (char)control_codes::newline;
+                    out++;
                 }
                 else if (commands[0] == "OUTLINE")
                 {
-                    *out = openloco::control_code::outline;
+                    *out = openloco::control_codes::outline;
                     out++;
                 }
                 else
@@ -275,7 +311,7 @@ namespace openloco::localisation
 
     bool loadLanguageFile()
     {
-        YAML::Node node = YAML::LoadFile("/Users/Marijn/de-DE.yml");
+        YAML::Node node = YAML::LoadFile("/home/aaron/de-DE.yml");
         [[maybe_unused]] auto type = node.Type();
         for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
         {
@@ -289,7 +325,7 @@ namespace openloco::localisation
 
             std::string str2 = it->second.as<std::string>();
 
-            auto str = readString(str2.data(), str2.length());
+            char* str = readString(str2.data(), str2.length());
 
             if (str != nullptr)
             {
