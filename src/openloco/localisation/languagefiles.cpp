@@ -1,6 +1,7 @@
 #include "languagefiles.h"
 #include "../interop/interop.hpp"
 #include "../utility/yaml.hpp"
+#include "string_ids.h"
 #include "stringmgr.h"
 #include <cassert>
 
@@ -225,8 +226,8 @@ namespace openloco::localisation
         {
             int key2 = it->first.as<int>();
 
-            if (key2 == 337 || key2 == 338 || key2 == 1250 || key2 == 1506 || key2 == 1719
-                || key2 == 2039 || key2 == 2040 || key2 == 2042 || key2 == 2045)
+            if (key2 == 337 || key2 == 338 || key2 == 1250 || key2 == string_ids::preferred_currency_buffer || key2 == 1719
+                || key2 == string_ids::buffer_2039 || key2 == string_ids::buffer_2040 || key2 == string_ids::buffer_2042 || key2 == string_ids::buffer_2045)
             {
                 continue;
             }

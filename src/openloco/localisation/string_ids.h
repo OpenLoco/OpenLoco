@@ -367,6 +367,11 @@ namespace openloco::string_ids
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
     constexpr string_id buffer_2039 = 2039;
+    constexpr string_id buffer_2040 = 2040;
+
+    constexpr string_id buffer_2042 = 2042;
+
+    constexpr string_id buffer_2045 = 2045;
 
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
