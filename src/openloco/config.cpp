@@ -5,6 +5,7 @@
 #include <experimental/filesystem>
 #endif
 #include <fstream>
+#include <yaml-cpp/yaml.h>
 
 #ifdef _WIN32
 #include <shlobj.h>
@@ -54,27 +55,32 @@ namespace openloco::config
 
     new_config& read_new_config()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_cfg);
+        auto configPath = environment::get_path(environment::path_id::openloco_yml);
+
+        if (!fs::exists(configPath))
+            return _new_config;
+
 #ifdef _OPENLOCO_USE_BOOST_FS_
-        std::ifstream stream(configPath.string());
+        YAML::Node config = YAML::LoadFile(configPath.string());
 #else
-        std::ifstream stream(configPath);
+        YAML::Node config = YAML::LoadFile(configPath);
 #endif
-        if (stream.is_open())
-        {
-            std::getline(stream, _new_config.loco_install_path);
-            stream >> _new_config.breakdowns_disabled;
-        }
+
+        if (config["loco_install_path"])
+            _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
+        if (config["breakdowns_disabled"])
+            _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
+
         return _new_config;
     }
 
     void write_new_config()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_cfg);
+        auto configPath = environment::get_path(environment::path_id::openloco_yml);
         auto dir = configPath.parent_path();
         if (!fs::is_directory(dir))
         {
-            fs::create_directories(configPath.parent_path());
+            fs::create_directories(dir);
             // clang-format off
             fs::permissions(
                 dir,
@@ -90,6 +96,12 @@ namespace openloco::config
             // clang-format on
         }
 
+        YAML::Emitter out;
+        out << YAML::BeginMap;
+        out << YAML::Key << "loco_install_path" << YAML::Value << _new_config.loco_install_path;
+        out << YAML::Key << "breakdowns_disabled" << YAML::Value << _new_config.breakdowns_disabled;
+        out << YAML::EndMap;
+
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ofstream stream(configPath.string());
 #else
@@ -97,8 +109,7 @@ namespace openloco::config
 #endif
         if (stream.is_open())
         {
-            stream << _new_config.loco_install_path << std::endl;
-            stream << _new_config.breakdowns_disabled << std::endl;
+            stream << out.c_str();
         }
     }
 }
