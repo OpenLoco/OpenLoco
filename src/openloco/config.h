@@ -98,6 +98,7 @@ namespace openloco::config
     {
         display_config display;
         std::string loco_install_path;
+        std::string language = "en-GB";
         bool breakdowns_disabled = false;
     };
 

@@ -2,6 +2,8 @@
 #if defined(__APPLE__) && defined(__MACH__)
 
 #include "platform.h"
+#include <limits.h>
+#include <mach-o/dyld.h>
 
 #import <Cocoa/Cocoa.h>
 
@@ -33,6 +35,21 @@ std::string openloco::platform::prompt_directory(const std::string &title)
         } else {
             return "";
         }
+    }
+}
+
+fs::path openloco::platform::GetCurrentExecutablePath()
+{
+    char exePath[PATH_MAX];
+    uint32_t size = PATH_MAX;
+    int result = _NSGetExecutablePath(exePath, &size);
+    if (result == 0)
+    {
+        return exePath;
+    }
+    else
+    {
+        return fs::path();
     }
 }
 

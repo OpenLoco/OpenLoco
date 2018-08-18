@@ -1,9 +1,14 @@
 #include "languagefiles.h"
+#include "../config.h"
+#include "../console.h"
+#include "../environment.h"
 #include "../interop/interop.hpp"
+#include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "string_ids.h"
 #include "stringmgr.h"
 #include <cassert>
+#include <iostream>
 
 using namespace openloco::interop;
 
@@ -220,7 +225,35 @@ namespace openloco::localisation
 
     bool loadLanguageFile()
     {
-        YAML::Node node = YAML::LoadFile("/home/aaron/de-DE.yml");
+        auto& config = config::get_new();
+        fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data/language";
+        fs::path languageFile = languageDir / (config.language + ".yml");
+
+        if (!fs::exists(languageFile))
+        {
+            std::cerr << "Language file " << config.language << ".yml does not exist! ";
+            if (config.language == "en-GB")
+            {
+                std::cerr << "Unable to load...\n";
+                return false;
+            }
+
+            std::cerr << "Falling back to en-GB...\n";
+            config.language = "en-GB";
+            languageFile = languageDir / (config.language + ".yml");
+            if (!fs::exists(languageFile))
+            {
+                std::cerr << "Language file " << config.language << ".yml does not exist! Unable to load...\n";
+                return false;
+            }
+        }
+
+#ifdef _OPENLOCO_USE_BOOST_FS_
+        YAML::Node node = YAML::LoadFile(languageFile.string());
+#else
+        YAML::Node node = YAML::LoadFile(languageFile);
+#endif
+
         [[maybe_unused]] auto type = node.Type();
         for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
         {

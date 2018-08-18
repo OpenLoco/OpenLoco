@@ -78,6 +78,8 @@ namespace openloco::config
 
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
+        if (config["language"])
+            _new_config.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
             _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
 
@@ -124,6 +126,7 @@ namespace openloco::config
         node["display"] = displayNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
+        node["language"] = _new_config.language;
         node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_

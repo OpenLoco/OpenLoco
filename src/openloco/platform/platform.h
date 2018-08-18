@@ -14,4 +14,5 @@ namespace openloco::platform
     uint32_t get_time();
     fs::path get_user_directory();
     std::string prompt_directory(const std::string& title);
+    fs::path GetCurrentExecutablePath();
 }

@@ -80,6 +80,25 @@ namespace openloco::platform
 
         return result;
     }
+
+    static std::string WIN32_GetModuleFileNameW(HMODULE hModule)
+    {
+        uint32_t wExePathCapacity = MAX_PATH;
+        std::unique_ptr<wchar_t[]> wExePath;
+        uint32_t size;
+        do
+        {
+            wExePathCapacity *= 2;
+            wExePath = std::make_unique<wchar_t[]>(wExePathCapacity);
+            size = GetModuleFileNameW(hModule, wExePath.get(), wExePathCapacity);
+        } while (size >= wExePathCapacity);
+        return utility::to_utf8(wExePath.get());
+    }
+
+    fs::path GetCurrentExecutablePath()
+    {
+        return WIN32_GetModuleFileNameW(nullptr);
+    }
 }
 
 #endif

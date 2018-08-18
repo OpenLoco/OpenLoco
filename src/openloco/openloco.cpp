@@ -251,6 +251,7 @@ namespace openloco
         call(0x004078BE);
         call(0x004BF476);
         environment::resolve_paths();
+        localisation::loadLanguageFile();
         progressbar::begin(string_ids::loading, 0);
         progressbar::set_progress(30);
         startup_checks();
@@ -723,7 +724,6 @@ namespace openloco
                 call(0x00407B26);
                 ui::initialise_input();
                 audio::initialise_dsound();
-                localisation::loadLanguageFile();
                 run();
                 audio::dispose_dsound();
                 ui::dispose_cursors();
