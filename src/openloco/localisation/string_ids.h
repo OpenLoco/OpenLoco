@@ -132,7 +132,7 @@ namespace openloco::string_ids
     constexpr string_id wcolour2_stringid2 = 457;
 
     constexpr string_id audio_device_none = 479;
-    constexpr string_id audio_device_name = 480;
+    constexpr string_id stringptr = 480;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;

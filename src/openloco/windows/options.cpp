@@ -5,6 +5,8 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/languagefiles.h"
+#include "../localisation/languages.h"
 #include "../localisation/string_ids.h"
 #include "../objects/currency_object.h"
 #include "../objects/interface_skin_object.h"
@@ -631,7 +633,7 @@ namespace openloco::ui::options
 #ifdef _WIN32
             if (_currentSoundDevice != -1 && _numSoundDevices != 0)
             {
-                set_format_arg(0x0, string_id, string_ids::audio_device_name);
+                set_format_arg(0x0, string_id, string_ids::stringptr);
                 uintptr_t soundDevicePtr = _soundDevices + 0x10 + 0x210 * _currentSoundDevice;
                 set_format_arg(0x2, char*, (char*)soundDevicePtr);
             }
@@ -773,7 +775,7 @@ namespace openloco::ui::options
             uintptr_t dsoundPtr = _soundDevices + 0x10;
             for (int i = 0; i < _numSoundDevices; i++)
             {
-                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::audio_device_name, (char*)dsoundPtr });
+                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, (char*)dsoundPtr });
                 dsoundPtr += 0x210;
             }
 
@@ -1247,13 +1249,15 @@ namespace openloco::ui::options
 
     namespace regional
     {
-        static const gfx::ui_size_t _window_size = { 366, 147 };
+        static const gfx::ui_size_t _window_size = { 366, 167 };
 
         namespace widx
         {
             enum
             {
-                distance_speed = 10,
+                language = 10,
+                language_btn,
+                distance_speed,
                 distance_speed_btn,
                 heights,
                 heights_btn,
@@ -1268,19 +1272,23 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_regional),
-            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg12_stringid),
+            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::stringptr),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg6_stringid),
-            make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid, string_ids::current_game_currency_tip),
-            make_widget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::current_game_currency_tip),
-            make_widget({ 183, 99 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::preferred_currency_buffer, string_ids::new_game_currency_tip),
-            make_widget({ 344, 100 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::new_game_currency_tip),
-            make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_new_game, string_ids::use_preferred_currency_new_game_tip),
-            make_widget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_always, string_ids::use_preferred_currency_always_tip),
+            make_widget({ 183, 69 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg12_stringid),
+            make_widget({ 344, 70 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg6_stringid),
+            make_widget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 183, 104 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid, string_ids::current_game_currency_tip),
+            make_widget({ 344, 105 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::current_game_currency_tip),
+            make_widget({ 183, 119 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::preferred_currency_buffer, string_ids::new_game_currency_tip),
+            make_widget({ 344, 120 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::new_game_currency_tip),
+            make_widget({ 10, 134 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_new_game, string_ids::use_preferred_currency_new_game_tip),
+            make_widget({ 10, 148 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_always, string_ids::use_preferred_currency_always_tip),
             widget_end(),
         };
 
+        static void language_mouse_down(window* w);
+        static void language_dropdown(window* w, int16_t ax);
         static void currency_mouse_down(window* w);
         static void currency_dropdown(window* w, int16_t ax);
         static void preferred_currency_mouse_down(window* w);
@@ -1310,6 +1318,9 @@ namespace openloco::ui::options
             w->widgets[common::widx::caption].right = w->width - 2;
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
+
+            auto& language = localisation::getDescriptorForLanguage(config::get_new().language);
+            set_format_arg(0, const char*, language.native_name.c_str());
 
             string_id current_height_units = string_ids::height_units;
             if ((openloco::config::get().flags & config::flags::show_height_as_units) == 0)
@@ -1396,6 +1407,9 @@ namespace openloco::ui::options
         {
             switch (wi)
             {
+                case widx::language_btn:
+                    language_mouse_down(w);
+                    break;
                 case widx::heights_btn:
                     heights_labels_mouse_down(w);
                     break;
@@ -1416,6 +1430,10 @@ namespace openloco::ui::options
         {
             switch (widgetIndex)
             {
+                case widx::language_btn:
+                    language_dropdown(window, itemIndex);
+                    break;
+
                 case widx::heights_btn:
                     heights_labels_dropdown(window, itemIndex);
                     break;
@@ -1435,6 +1453,38 @@ namespace openloco::ui::options
         }
 
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
+
+        static void language_mouse_down(window* w)
+        {
+            widget_t dropdown = w->widgets[widx::language];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], localisation::languages::count - 1, 0x80);
+
+            std::string& current_language = config::get_new().language;
+
+            for (int index = 1; index < localisation::languages::count; index++)
+            {
+                auto& ld = localisation::language_descriptors[index];
+                dropdown::add(index - 1, string_ids::dropdown_stringptr, (char*)ld.native_name.c_str());
+
+                if (ld.locale == current_language)
+                    dropdown::set_selection(index - 1);
+            }
+        }
+
+        static void language_dropdown(window* w, int16_t ax)
+        {
+            if (ax == -1)
+            {
+                w->invalidate();
+                return;
+            }
+
+            auto& ld = localisation::language_descriptors[ax + 1];
+            config::get_new().language = ld.locale;
+            config::write();
+            localisation::loadLanguageFile();
+            gfx::invalidate_screen();
+        }
 
         // 0x004C0C73
         static void currency_mouse_down(window* w)
@@ -2176,7 +2226,7 @@ namespace openloco::ui::options
 
             case common::tab::regional:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
                 w->holdable_widgets = 0;
                 w->event_handlers = &regional::_events;
                 w->widgets = regional::_widgets;
