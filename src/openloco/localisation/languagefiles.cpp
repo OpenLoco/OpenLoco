@@ -55,7 +55,7 @@ namespace openloco::localisation
         { "GREEN", control_codes::colour_green },
     };
 
-    static uint32_t readCodePoint(uint8_t** string)
+    uint32_t readCodePoint(uint8_t** string)
     {
         uint32_t read = 0;
 
@@ -68,20 +68,18 @@ namespace openloco::localisation
         }
         else if ((ptr[0] & 0b11100000) == 0b11000000)
         {
-            assert((ptr[1] & 0b11000000) == 0b10000000);
-
-            read = (ptr[0] & 0b11111) << 6 | ((ptr[1] & 0b111111));
-            //printf("%02X %02X %d %s\n", ptr[0], ptr[1], read, value);
+            read = ((ptr[0] & 0b11111) << 6) | (ptr[1] & 0b111111);
             *string += 2;
         }
         else if ((ptr[0] & 0b11110000) == 0b11100000)
         {
-            assert((ptr[1] & 0b11000000) == 0b10000000);
-            assert((ptr[2] & 0b11000000) == 0b10000000);
+            read = ((ptr[0] & 0b1111) << 12) | ((ptr[1] & 0b111111) << 6) | (ptr[2] & 0b111111);
             *string += 3;
         }
         else if ((ptr[0] & 0b11111000) == 0b11110000)
         {
+            read = ((ptr[0] & 0b111) << 18) | ((ptr[1] & 0b111111) << 12) | ((ptr[1] & 0b111111) << 6)
+                | (ptr[2] & 0b111111);
             *string += 4;
         }
 
