@@ -23,17 +23,17 @@ namespace openloco::localisation
         { "NEWLINE_SMALLER", control_codes::newline_smaller },
         { "NEWLINE", control_codes::newline },
         { "OUTLINE", openloco::control_codes::outline },
-        { "CROSS", 0x41 },
-        { "TICK", 0x41 },
-        { "SMALLUP", 0x41 },
-        { "SMALLDOWN", 0x41 },
-        { "RIGHT", 0x41 },
-        { "DOWN", 0x41 },
-        { "UP", 0x41 },
-        { "SYMBOL_RAILWAY", 0x41 },
-        { "SYMBOL_ROAD", 0x41 },
-        { "SYMBOL_AIR", 0x41 },
-        { "SYMBOL_WATER", 0x41 },
+        { "CROSS", symbols::cross },
+        { "TICK", symbols::tick },
+        { "SMALLUP", symbols::smallup },
+        { "SMALLDOWN", symbols::smalldown },
+        { "RIGHT", symbols::right },
+        { "DOWN", symbols::down },
+        { "UP", symbols::up },
+        { "SYMBOL_RAILWAY", symbols::railway },
+        { "SYMBOL_ROAD", symbols::road },
+        { "SYMBOL_AIR", symbols::air },
+        { "SYMBOL_WATER", symbols::water },
         { "VELOCITY", control_codes::velocity },
         { "CURRENCY32", control_codes::currency32 },
         { "HEIGHT", control_codes::height },
@@ -200,6 +200,9 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "MOVE_X")
                 {
+                    *out++ = (char)control_codes::move_x;
+                    uint8_t pixels_to_move_by = std::atoi(commands[1].data());
+                    *out++ = pixels_to_move_by;
                 }
                 else
                 {
