@@ -5,7 +5,19 @@
 #include <experimental/filesystem>
 #endif
 #include <fstream>
+
+#ifdef _WIN32
+// Ignore warnings generated from yaml-cpp
+#pragma warning(push)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4251)
+#pragma warning(disable : 4275)
+#pragma warning(disable : 4996)
 #include <yaml-cpp/yaml.h>
+#pragma warning(pop)
+#else
+#include <yaml-cpp/yaml.h>
+#endif
 
 #ifdef _WIN32
 #include <shlobj.h>
@@ -63,7 +75,8 @@ namespace openloco::config
 #ifdef _OPENLOCO_USE_BOOST_FS_
         YAML::Node config = YAML::LoadFile(configPath.string());
 #else
-        YAML::Node config = YAML::LoadFile(configPath);
+        // WARNING: YAML::LoadFile only supports ANSI 260 paths
+        YAML::Node config = YAML::LoadFile(configPath.string());
 #endif
 
         if (config["loco_install_path"])
