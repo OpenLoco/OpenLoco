@@ -30,6 +30,9 @@
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42A6B551-4EC5-4B66-A130-628622CD98C4}</ProjectGuid>
     <RootNamespace>openloco</RootNamespace>
@@ -49,9 +52,8 @@
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Lib>
-    <Link>
-      <AdditionalDependencies Condition="Exists('$(SolutionDir)\lib\lib\sdl2.lib')">sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
+  <!-- Include our vcpkg root first, otherwise the machine installed vcpkg will be used -->
+  <Import Project="..\..\packages\OpenLoco.Dependencies.1.0.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.0.0\build\native\OpenLoco.Dependencies.targets')" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
