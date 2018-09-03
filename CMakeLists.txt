@@ -168,7 +168,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAG
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 SET(SDL2LIBS ${SDL2_LDFLAGS})
 
-find_package(yaml-cpp REQUIRED)
+# The hint provided here is targetting Arch Linux, a distro of choice for many contributors
+find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 
 if (USE_BOOST_FILESYSTEM)
     set(Boost_USE_STATIC_LIBS OFF)
