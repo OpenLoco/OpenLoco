@@ -12,19 +12,19 @@ matrix:
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=release"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=release -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
             - DOCKERIMG=ubuntu-i686
         - os: linux
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
             - DOCKERIMG=ubuntu-i686
         - os: linux
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/  -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/"
             - DOCKERIMG=fedora-mingw32
         - os: linux
           before_install: []
