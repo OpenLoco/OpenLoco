@@ -47,7 +47,7 @@ matrix:
             - brew uninstall --ignore-dependencies boost
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v2/Formula/yaml-cpp.rb
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
             - mkdir build && cd build
             - cmake ../
@@ -61,7 +61,7 @@ matrix:
             - brew uninstall --ignore-dependencies boost
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v2/Formula/yaml-cpp.rb
+            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
             - mkdir build && cd build
             - cmake ../
