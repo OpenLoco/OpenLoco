@@ -9,10 +9,10 @@
 #ifdef _WIN32
 // Ignore warnings generated from yaml-cpp
 #pragma warning(push)
-#pragma warning(disable : 4127)
-#pragma warning(disable : 4251)
-#pragma warning(disable : 4275)
-#pragma warning(disable : 4996)
+#pragma warning(disable : 4127) // conditional expression is constant
+#pragma warning(disable : 4251) // 'identifier': 'object_type1' 'identifier1' needs to have dll-interface to be used by clients of 'object_type' 'identfier2'
+#pragma warning(disable : 4275) // non dll-interface 'classkey' 'identifier1' used as base for dll-interface 'classkey' 'identifier2'
+#pragma warning(disable : 4996) // declaration deprecated
 #include <yaml-cpp/yaml.h>
 #pragma warning(pop)
 #else
@@ -72,12 +72,8 @@ namespace openloco::config
         if (!fs::exists(configPath))
             return _new_config;
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
+        // WARNING: on Windows, YAML::LoadFile only supports ANSI paths
         YAML::Node config = YAML::LoadFile(configPath.string());
-#else
-        // WARNING: YAML::LoadFile only supports ANSI 260 paths
-        YAML::Node config = YAML::LoadFile(configPath.string());
-#endif
 
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
