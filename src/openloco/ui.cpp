@@ -113,6 +113,22 @@ namespace openloco::ui
 
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
 
+    static int32_t get_screen_flags()
+    {
+        int32_t flags = SDL_WINDOW_RESIZABLE;
+        const auto& cfg = config::get_new();
+        switch (cfg.screen_mode)
+        {
+            case config::screen_mode::fullscreen:
+                flags |= SDL_WINDOW_FULLSCREEN;
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                break;
+        }
+        return flags;
+    }
+
     // 0x00405409
     void create_window()
     {
@@ -146,7 +162,7 @@ namespace openloco::ui
             SDL_WINDOWPOS_CENTERED,
             initialWidth,
             initialHeight,
-            SDL_WINDOW_RESIZABLE);
+            get_screen_flags());
         if (window == nullptr)
         {
             throw std::runtime_error("Unable to create SDL2 window.");
@@ -177,6 +193,7 @@ namespace openloco::ui
 #ifdef _LOCO_WIN32_
         call(0x0045235D);
 #endif
+        SDL_RestoreWindow(window);
     }
 
     // 0x00452001

@@ -718,6 +718,8 @@ namespace openloco
         std::cout << versionInfo << std::endl;
         try
         {
+            config::read_new_config();
+
             register_hooks();
             if (sub_4054B9())
             {

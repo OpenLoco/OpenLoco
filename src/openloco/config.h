@@ -32,6 +32,13 @@ namespace openloco::config
         uint8_t var_1;
     };
 
+    enum class screen_mode
+    {
+        window,
+        fullscreen,
+        fullscreen_borderless
+    };
+
     struct config_t
     {
         uint32_t flags;                             // 0x50AEB4, 0x00
@@ -77,6 +84,7 @@ namespace openloco::config
     {
         std::string loco_install_path;
         bool breakdowns_disabled = false;
+        screen_mode screen_mode;
     };
 
 #pragma pack(pop)
