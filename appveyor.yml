@@ -4,27 +4,13 @@ environment:
   version: 18.02.2
 install:
 - ps: >-
-    New-Item -ItemType Directory lib | Out-Null
+    mkdir $env:TEMP\openloco
 
-    Push-Location lib
+    Invoke-WebRequest https://github.com/OpenRCT2/OpenLoco-Dependencies/releases/download/v1.0.0/openloco.dependencies.1.0.0.nupkg -OutFile $env:TEMP\openloco\openloco.dependencies.1.0.0.nupkg
 
-    New-Item -ItemType Directory bin,lib,include | Out-Null
+    Get-ChildItem $env:TEMP\openloco
 
-    Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.7-VC.zip -OutFile sdl2.zip
-
-    7z x sdl2.zip
-
-    Copy-Item .\SDL2-2.0.7\include\ -Recurse -Destination include\sdl2
-
-    Copy-Item .\SDL2-2.0.7\lib\x86\*.dll -Destination bin
-
-    Copy-Item .\SDL2-2.0.7\lib\x86\*.lib -Destination lib
-
-    Remove-Item .\sdl2.zip
-
-    Remove-Item -Recurse .\SDL2-2.0.7
-
-    Pop-Location
+    nuget install OpenLoco.Dependencies -Source $env:TEMP\openloco -OutputDirectory packages
 
     $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
 configuration: Release
@@ -34,7 +20,7 @@ after_build:
 - ps: >-
     New-Item -ItemType Directory artefacts | Out-Null
 
-    Copy-Item CHANGELOG.md,LICENSE,bin\openloco.dll,lib\bin\SDL2.dll artefacts
+    Copy-Item CHANGELOG.md,LICENSE,bin\*.dll artefacts
 
     Copy-Item loco.exe artefacts\openloco.exe
 

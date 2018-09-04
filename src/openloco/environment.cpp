@@ -205,7 +205,7 @@ namespace openloco::environment
             case path_id::plugin2:
             case path_id::gamecfg:
             case path_id::scores:
-            case path_id::openloco_cfg:
+            case path_id::openloco_yml:
                 return platform::get_user_directory();
             default:
                 return get_loco_install_path();
@@ -263,7 +263,7 @@ namespace openloco::environment
             "Data/TUT800_1.DAT",
             "Data/TUT800_2.DAT",
             "Data/TUT800_3.DAT",
-            "openloco.cfg"
+            "openloco.yml"
         };
 
         size_t index = (size_t)id;

@@ -55,16 +55,17 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 
 ### Windows:
 - 7 / 8 / 10
-- [Visual Studio 2017](https://www.visualstudio.com/vs/community/) update 5.5+
+- [Visual Studio 2017](https://www.visualstudio.com/vs/community/)
   - Desktop development with C++
   - Windows 10 SDK (10.0.14393.0)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-  - Development Libraries
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
 ### Linux / macOS:
 - cmake
 - make or ninja
 - [SDL2](https://www.libsdl.org/download-2.0.php)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenRCT2/OpenLoco/wiki/Compilation-on-macOS))
 
 ---
@@ -72,7 +73,7 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 ## 3.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Copy SDL2 into a sub directory called lib under the root, alternatively use [vcpkg](https://github.com/microsoft/vcpkg).
+2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenRCT2/OpenLoco-Dependencies/releases).
 3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenRCT2`).
 4. Run `msbuild openloco.sln`
 5. Run the game, `bin\openloco`
