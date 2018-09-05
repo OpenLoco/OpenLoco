@@ -28,6 +28,7 @@
 #endif
 
 #include "config.h"
+#include "console.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
@@ -102,6 +103,7 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
+    static void toggle_fullscreen_desktop();
 
 #ifdef _WIN32
     void* hwnd()
@@ -132,6 +134,8 @@ namespace openloco::ui
         desc.flags = SDL_WINDOW_RESIZABLE;
         switch (cfg.mode)
         {
+            case config::screen_mode::window:
+                break;
             case config::screen_mode::fullscreen:
                 desc.width = cfg.fullscreen_resolution.width;
                 desc.height = cfg.fullscreen_resolution.height;
@@ -611,6 +615,16 @@ namespace openloco::ui
                 case SDL_KEYDOWN:
                 {
                     auto keycode = e.key.keysym.sym;
+
+                    // Toggle fullscreen when ALT+RETURN is pressed
+                    if (keycode == SDLK_RETURN)
+                    {
+                        if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
+                        {
+                            toggle_fullscreen_desktop();
+                        }
+                    }
+
                     auto locokey = convert_sdl_keycode_to_windows(keycode);
                     if (locokey != 0)
                     {
@@ -714,5 +728,45 @@ namespace openloco::ui
             }
         }
         return result;
+    }
+
+    static void set_screen_mode(config::screen_mode mode)
+    {
+        auto flags = 0;
+        switch (mode)
+        {
+            case config::screen_mode::window:
+                break;
+            case config::screen_mode::fullscreen:
+                flags |= SDL_WINDOW_FULLSCREEN;
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                break;
+        }
+
+        if (SDL_SetWindowFullscreen(window, flags) != 0)
+        {
+            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+        }
+        else
+        {
+            auto& cfg = config::get_new();
+            cfg.display.mode = mode;
+            config::write_new_config();
+        }
+    }
+
+    static void toggle_fullscreen_desktop()
+    {
+        auto flags = SDL_GetWindowFlags(window);
+        if (flags & SDL_WINDOW_FULLSCREEN)
+        {
+            set_screen_mode(config::screen_mode::window);
+        }
+        else
+        {
+            set_screen_mode(config::screen_mode::fullscreen_borderless);
+        }
     }
 }
