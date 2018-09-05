@@ -78,12 +78,20 @@ namespace openloco::config
         _config_yaml = YAML::LoadFile(configPath.string());
 
         const auto& config = _config_yaml;
+        auto& displayNode = config["display"];
+        if (displayNode && displayNode.IsMap())
+        {
+            auto& displayConfig = _new_config.display;
+            displayConfig.mode = displayNode["mode"].as<screen_mode>(screen_mode::window);
+            displayConfig.index = displayNode["index"].as<int32_t>(0);
+            displayConfig.window_resolution = displayNode["window_resolution"].as<resolution_t>();
+            displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<resolution_t>();
+        }
+
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
         if (config["breakdowns_disabled"])
             _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
-        if (config["screen_mode"])
-            _new_config.screen_mode = config["screen_mode"].as<screen_mode>();
 
         return _new_config;
     }
@@ -110,10 +118,25 @@ namespace openloco::config
             // clang-format on
         }
 
-        auto node = _config_yaml;
+        auto& node = _config_yaml;
+
+        const auto& displayConfig = _new_config.display;
+        auto displayNode = node["display"];
+        displayNode["mode"] = displayConfig.mode;
+        if (displayConfig.index != 0)
+        {
+            displayNode["index"] = displayConfig.index;
+        }
+        else
+        {
+            displayNode.remove("index");
+        }
+        displayNode["window_resolution"] = displayConfig.window_resolution;
+        displayNode["fullscreen_resolution"] = displayConfig.fullscreen_resolution;
+        node["display"] = displayNode;
+
         node["loco_install_path"] = _new_config.loco_install_path;
         node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
-        node["screen_mode"] = _new_config.screen_mode;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ofstream stream(configPath.string());

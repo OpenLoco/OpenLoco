@@ -3,6 +3,11 @@
 #include <string>
 #include <vector>
 
+namespace openloco::config
+{
+    struct display_config;
+}
+
 namespace openloco::ui
 {
     enum class cursor_id
@@ -28,7 +33,7 @@ namespace openloco::ui
     int32_t width();
     int32_t height();
 
-    void create_window();
+    void create_window(const config::display_config& cfg);
     void initialise();
     void initialise_cursors();
     void initialise_input();

@@ -71,6 +71,15 @@ namespace openloco::ui
         int8_t dirty_blocks_initialised;
     };
 
+    struct sdl_window_desc
+    {
+        int32_t x{};
+        int32_t y{};
+        int32_t width{};
+        int32_t height{};
+        int32_t flags{};
+    };
+
 #pragma pack(pop)
 
     using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
@@ -113,24 +122,30 @@ namespace openloco::ui
 
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
 
-    static int32_t get_screen_flags()
+    static sdl_window_desc get_window_desc(const config::display_config& cfg)
     {
-        int32_t flags = SDL_WINDOW_RESIZABLE;
-        const auto& cfg = config::get_new();
-        switch (cfg.screen_mode)
+        sdl_window_desc desc;
+        desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        desc.y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        desc.width = std::max(640, cfg.window_resolution.width);
+        desc.height = std::max(480, cfg.window_resolution.height);
+        desc.flags = SDL_WINDOW_RESIZABLE;
+        switch (cfg.mode)
         {
             case config::screen_mode::fullscreen:
-                flags |= SDL_WINDOW_FULLSCREEN;
+                desc.width = cfg.fullscreen_resolution.width;
+                desc.height = cfg.fullscreen_resolution.height;
+                desc.flags |= SDL_WINDOW_FULLSCREEN;
                 break;
             case config::screen_mode::fullscreen_borderless:
-                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                desc.flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
                 break;
         }
-        return flags;
+        return desc;
     }
 
     // 0x00405409
-    void create_window()
+    void create_window(const config::display_config& cfg)
     {
 #ifdef _LOCO_WIN32_
         _hwnd = CreateWindowExA(
@@ -147,22 +162,14 @@ namespace openloco::ui
             (HINSTANCE)hInstance(),
             nullptr);
 #else
-        int32_t initialWidth = 800;
-        int32_t initialHeight = 600;
-
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             throw std::runtime_error("Unable to initialise SDL2 video subsystem.");
         }
 
         // Create the window
-        window = SDL_CreateWindow(
-            "OpenLoco",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            initialWidth,
-            initialHeight,
-            get_screen_flags());
+        auto desc = get_window_desc(cfg);
+        window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (window == nullptr)
         {
             throw std::runtime_error("Unable to create SDL2 window.");
@@ -183,7 +190,7 @@ namespace openloco::ui
         palette = SDL_AllocPalette(256);
         set_palette_callback = update_palette;
 
-        update(initialWidth, initialHeight);
+        update(desc.width, desc.height);
 #endif
     }
 
@@ -318,11 +325,32 @@ namespace openloco::ui
         screen_info->dirty_blocks_initialised = 1;
     }
 
+    static void position_changed(int32_t x, int32_t y)
+    {
+        auto displayIndex = SDL_GetWindowDisplayIndex(window);
+
+        auto& cfg = config::get_new().display;
+        if (cfg.index != displayIndex)
+        {
+            cfg.index = displayIndex;
+            config::write_new_config();
+        }
+    }
+
     void resize(int32_t width, int32_t height)
     {
         update(width, height);
         gui::resize();
         gfx::invalidate_screen();
+
+        // Save window size to config if NOT maximized
+        auto wf = SDL_GetWindowFlags(window);
+        if (!(wf & SDL_WINDOW_MAXIMIZED))
+        {
+            auto& cfg = config::get_new().display;
+            cfg.window_resolution = { width, height };
+            config::write_new_config();
+        }
     }
 
     void render()
@@ -528,9 +556,14 @@ namespace openloco::ui
                 case SDL_QUIT:
                     return false;
                 case SDL_WINDOWEVENT:
-                    if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+                    switch (e.window.event)
                     {
-                        resize(e.window.data1, e.window.data2);
+                        case SDL_WINDOWEVENT_MOVED:
+                            position_changed(e.window.data1, e.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            resize(e.window.data1, e.window.data2);
+                            break;
                     }
                     break;
                 case SDL_MOUSEMOTION:

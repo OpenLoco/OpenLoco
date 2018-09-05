@@ -60,6 +60,30 @@ namespace YAML
         }
     };
 
+    // resolution_t
+    template<>
+    struct convert<resolution_t>
+    {
+        static Node encode(const resolution_t& rhs)
+        {
+            Node node;
+            node["width"] = rhs.width;
+            node["height"] = rhs.height;
+            return node;
+        }
+
+        static bool decode(const Node& node, resolution_t& rhs)
+        {
+            if (node.IsMap())
+            {
+                rhs.width = node["width"].as<int32_t>();
+                rhs.height = node["height"].as<int32_t>();
+                return true;
+            }
+            return false;
+        }
+    };
+
     // screen_mode
     const convert_pair_vector<screen_mode> screen_mode_entries = {
         enum_def(screen_mode, window),

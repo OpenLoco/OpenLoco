@@ -80,11 +80,25 @@ namespace openloco::config
     static_assert(offsetof(config_t, last_host) == 0xD4);
     static_assert(sizeof(config_t) == 0x216);
 
+    struct resolution_t
+    {
+        int32_t width{};
+        int32_t height{};
+    };
+
+    struct display_config
+    {
+        screen_mode mode;
+        int32_t index{};
+        resolution_t window_resolution;
+        resolution_t fullscreen_resolution;
+    };
+
     struct new_config
     {
+        display_config display;
         std::string loco_install_path;
         bool breakdowns_disabled = false;
-        screen_mode screen_mode;
     };
 
 #pragma pack(pop)
