@@ -103,7 +103,9 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
+#if !(defined(__APPLE__) && defined(__MACH__))
     static void toggle_fullscreen_desktop();
+#endif
 
 #ifdef _WIN32
     void* hwnd()
@@ -132,6 +134,7 @@ namespace openloco::ui
         desc.width = std::max(640, cfg.window_resolution.width);
         desc.height = std::max(480, cfg.window_resolution.height);
         desc.flags = SDL_WINDOW_RESIZABLE;
+#if !(defined(__APPLE__) && defined(__MACH__))
         switch (cfg.mode)
         {
             case config::screen_mode::window:
@@ -145,6 +148,7 @@ namespace openloco::ui
                 desc.flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
                 break;
         }
+#endif
         return desc;
     }
 
@@ -616,6 +620,7 @@ namespace openloco::ui
                 {
                     auto keycode = e.key.keysym.sym;
 
+#if !(defined(__APPLE__) && defined(__MACH__))
                     // Toggle fullscreen when ALT+RETURN is pressed
                     if (keycode == SDLK_RETURN)
                     {
@@ -624,6 +629,7 @@ namespace openloco::ui
                             toggle_fullscreen_desktop();
                         }
                     }
+#endif
 
                     auto locokey = convert_sdl_keycode_to_windows(keycode);
                     if (locokey != 0)
@@ -730,6 +736,7 @@ namespace openloco::ui
         return result;
     }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
     static void set_screen_mode(config::screen_mode mode)
     {
         auto flags = 0;
@@ -769,4 +776,5 @@ namespace openloco::ui
             set_screen_mode(config::screen_mode::fullscreen_borderless);
         }
     }
+#endif
 }
