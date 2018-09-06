@@ -353,7 +353,7 @@ namespace openloco::ui
 
         // Save window size to config if NOT maximized
         auto wf = SDL_GetWindowFlags(window);
-        if (!(wf & SDL_WINDOW_MAXIMIZED))
+        if (!(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
         {
             auto& cfg = config::get_new().display;
             cfg.window_resolution = { width, height };
