@@ -718,10 +718,12 @@ namespace openloco
         std::cout << versionInfo << std::endl;
         try
         {
+            const auto& cfg = config::read_new_config();
+
             register_hooks();
             if (sub_4054B9())
             {
-                ui::create_window();
+                ui::create_window(cfg.display);
                 call(0x004078FE);
                 call(0x00407B26);
                 ui::initialise_input();

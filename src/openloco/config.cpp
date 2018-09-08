@@ -7,26 +7,15 @@
 #include <fstream>
 
 #ifdef _WIN32
-// Ignore warnings generated from yaml-cpp
-#pragma warning(push)
-#pragma warning(disable : 4127) // conditional expression is constant
-#pragma warning(disable : 4251) // 'identifier': 'object_type1' 'identifier1' needs to have dll-interface to be used by clients of 'object_type' 'identfier2'
-#pragma warning(disable : 4275) // non dll-interface 'classkey' 'identifier1' used as base for dll-interface 'classkey' 'identifier2'
-#pragma warning(disable : 4996) // declaration deprecated
-#include <yaml-cpp/yaml.h>
-#pragma warning(pop)
-#else
-#include <yaml-cpp/yaml.h>
-#endif
-
-#ifdef _WIN32
 #include <shlobj.h>
 #include <windows.h>
 #endif
 
+#include "config.convert.hpp"
 #include "config.h"
 #include "environment.h"
 #include "interop/interop.hpp"
+#include "utility/yaml.hpp"
 
 using namespace openloco::interop;
 
@@ -40,6 +29,7 @@ namespace openloco::config
 {
     static loco_global<config_t, 0x0050AEB4> _config;
     static new_config _new_config;
+    static YAML::Node _config_yaml;
 
     config_t& get()
     {
@@ -73,7 +63,18 @@ namespace openloco::config
             return _new_config;
 
         // WARNING: on Windows, YAML::LoadFile only supports ANSI paths
-        YAML::Node config = YAML::LoadFile(configPath.string());
+        _config_yaml = YAML::LoadFile(configPath.string());
+
+        const auto& config = _config_yaml;
+        auto& displayNode = config["display"];
+        if (displayNode && displayNode.IsMap())
+        {
+            auto& displayConfig = _new_config.display;
+            displayConfig.mode = displayNode["mode"].as<screen_mode>(screen_mode::window);
+            displayConfig.index = displayNode["index"].as<int32_t>(0);
+            displayConfig.window_resolution = displayNode["window_resolution"].as<resolution_t>();
+            displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<resolution_t>();
+        }
 
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
@@ -105,11 +106,25 @@ namespace openloco::config
             // clang-format on
         }
 
-        YAML::Emitter out;
-        out << YAML::BeginMap;
-        out << YAML::Key << "loco_install_path" << YAML::Value << _new_config.loco_install_path;
-        out << YAML::Key << "breakdowns_disabled" << YAML::Value << _new_config.breakdowns_disabled;
-        out << YAML::EndMap;
+        auto& node = _config_yaml;
+
+        const auto& displayConfig = _new_config.display;
+        auto displayNode = node["display"];
+        displayNode["mode"] = displayConfig.mode;
+        if (displayConfig.index != 0)
+        {
+            displayNode["index"] = displayConfig.index;
+        }
+        else
+        {
+            displayNode.remove("index");
+        }
+        displayNode["window_resolution"] = displayConfig.window_resolution;
+        displayNode["fullscreen_resolution"] = displayConfig.fullscreen_resolution;
+        node["display"] = displayNode;
+
+        node["loco_install_path"] = _new_config.loco_install_path;
+        node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ofstream stream(configPath.string());
@@ -118,7 +133,7 @@ namespace openloco::config
 #endif
         if (stream.is_open())
         {
-            stream << out.c_str();
+            stream << node << std::endl;
         }
     }
 }

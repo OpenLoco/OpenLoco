@@ -28,6 +28,7 @@
 #endif
 
 #include "config.h"
+#include "console.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
@@ -71,6 +72,15 @@ namespace openloco::ui
         int8_t dirty_blocks_initialised;
     };
 
+    struct sdl_window_desc
+    {
+        int32_t x{};
+        int32_t y{};
+        int32_t width{};
+        int32_t height{};
+        int32_t flags{};
+    };
+
 #pragma pack(pop)
 
     using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
@@ -93,6 +103,9 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
+#if !(defined(__APPLE__) && defined(__MACH__))
+    static void toggle_fullscreen_desktop();
+#endif
 
 #ifdef _WIN32
     void* hwnd()
@@ -113,8 +126,34 @@ namespace openloco::ui
 
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
 
+    static sdl_window_desc get_window_desc(const config::display_config& cfg)
+    {
+        sdl_window_desc desc;
+        desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        desc.y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
+        desc.width = std::max(640, cfg.window_resolution.width);
+        desc.height = std::max(480, cfg.window_resolution.height);
+        desc.flags = SDL_WINDOW_RESIZABLE;
+#if !(defined(__APPLE__) && defined(__MACH__))
+        switch (cfg.mode)
+        {
+            case config::screen_mode::window:
+                break;
+            case config::screen_mode::fullscreen:
+                desc.width = cfg.fullscreen_resolution.width;
+                desc.height = cfg.fullscreen_resolution.height;
+                desc.flags |= SDL_WINDOW_FULLSCREEN;
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                desc.flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                break;
+        }
+#endif
+        return desc;
+    }
+
     // 0x00405409
-    void create_window()
+    void create_window(const config::display_config& cfg)
     {
 #ifdef _LOCO_WIN32_
         _hwnd = CreateWindowExA(
@@ -131,22 +170,14 @@ namespace openloco::ui
             (HINSTANCE)hInstance(),
             nullptr);
 #else
-        int32_t initialWidth = 800;
-        int32_t initialHeight = 600;
-
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             throw std::runtime_error("Unable to initialise SDL2 video subsystem.");
         }
 
         // Create the window
-        window = SDL_CreateWindow(
-            "OpenLoco",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            initialWidth,
-            initialHeight,
-            SDL_WINDOW_RESIZABLE);
+        auto desc = get_window_desc(cfg);
+        window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (window == nullptr)
         {
             throw std::runtime_error("Unable to create SDL2 window.");
@@ -167,7 +198,7 @@ namespace openloco::ui
         palette = SDL_AllocPalette(256);
         set_palette_callback = update_palette;
 
-        update(initialWidth, initialHeight);
+        update(desc.width, desc.height);
 #endif
     }
 
@@ -177,6 +208,7 @@ namespace openloco::ui
 #ifdef _LOCO_WIN32_
         call(0x0045235D);
 #endif
+        SDL_RestoreWindow(window);
     }
 
     // 0x00452001
@@ -301,11 +333,32 @@ namespace openloco::ui
         screen_info->dirty_blocks_initialised = 1;
     }
 
+    static void position_changed(int32_t x, int32_t y)
+    {
+        auto displayIndex = SDL_GetWindowDisplayIndex(window);
+
+        auto& cfg = config::get_new().display;
+        if (cfg.index != displayIndex)
+        {
+            cfg.index = displayIndex;
+            config::write_new_config();
+        }
+    }
+
     void resize(int32_t width, int32_t height)
     {
         update(width, height);
         gui::resize();
         gfx::invalidate_screen();
+
+        // Save window size to config if NOT maximized
+        auto wf = SDL_GetWindowFlags(window);
+        if (!(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
+        {
+            auto& cfg = config::get_new().display;
+            cfg.window_resolution = { width, height };
+            config::write_new_config();
+        }
     }
 
     void render()
@@ -511,9 +564,14 @@ namespace openloco::ui
                 case SDL_QUIT:
                     return false;
                 case SDL_WINDOWEVENT:
-                    if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+                    switch (e.window.event)
                     {
-                        resize(e.window.data1, e.window.data2);
+                        case SDL_WINDOWEVENT_MOVED:
+                            position_changed(e.window.data1, e.window.data2);
+                            break;
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            resize(e.window.data1, e.window.data2);
+                            break;
                     }
                     break;
                 case SDL_MOUSEMOTION:
@@ -561,6 +619,18 @@ namespace openloco::ui
                 case SDL_KEYDOWN:
                 {
                     auto keycode = e.key.keysym.sym;
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+                    // Toggle fullscreen when ALT+RETURN is pressed
+                    if (keycode == SDLK_RETURN)
+                    {
+                        if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
+                        {
+                            toggle_fullscreen_desktop();
+                        }
+                    }
+#endif
+
                     auto locokey = convert_sdl_keycode_to_windows(keycode);
                     if (locokey != 0)
                     {
@@ -665,4 +735,46 @@ namespace openloco::ui
         }
         return result;
     }
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+    static void set_screen_mode(config::screen_mode mode)
+    {
+        auto flags = 0;
+        switch (mode)
+        {
+            case config::screen_mode::window:
+                break;
+            case config::screen_mode::fullscreen:
+                flags |= SDL_WINDOW_FULLSCREEN;
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                break;
+        }
+
+        if (SDL_SetWindowFullscreen(window, flags) != 0)
+        {
+            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+        }
+        else
+        {
+            auto& cfg = config::get_new();
+            cfg.display.mode = mode;
+            config::write_new_config();
+        }
+    }
+
+    static void toggle_fullscreen_desktop()
+    {
+        auto flags = SDL_GetWindowFlags(window);
+        if (flags & SDL_WINDOW_FULLSCREEN)
+        {
+            set_screen_mode(config::screen_mode::window);
+        }
+        else
+        {
+            set_screen_mode(config::screen_mode::fullscreen_borderless);
+        }
+    }
+#endif
 }

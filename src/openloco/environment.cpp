@@ -69,7 +69,7 @@ namespace openloco::environment
 
     static fs::path resolve_loco_install_path()
     {
-        auto& cfg = config::read_new_config();
+        auto& cfg = config::get_new();
         auto path = fs::path(cfg.loco_install_path);
         if (!path.empty())
         {
