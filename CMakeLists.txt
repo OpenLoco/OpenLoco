@@ -148,7 +148,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 # include lib
 include_directories("lib/")
 # add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
+file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
 
 
 if (APPLE)
@@ -223,4 +224,20 @@ if (APPLE)
         message(STATUS "std::byte is not supported.")
         target_compile_definitions(${PROJECT} PRIVATE COMPAT_STD_BYTE=1)
     endif ()
+endif ()
+
+# Add headers check to verify all headers carry their dependencies.
+# Only valid for Clang for now:
+# - GCC 8 does not support -Wno-pragma-once-outside-header
+# - Other compilers status unknown
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	add_library(${PROJECT}-headers-check OBJECT ${OLOCO_HEADERS})
+    set_target_properties(${PROJECT}-headers-check PROPERTIES LINKER_LANGUAGE CXX)
+	set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
+    add_definitions("-x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable")
+	get_target_property(OPENLOCO_INCLUDE_DIRS ${PROJECT} INCLUDE_DIRECTORIES)
+	set_target_properties(${PROJECT}-headers-check PROPERTIES INCLUDE_DIRECTORIES "${OPENLOCO_INCLUDE_DIRS}")
+else ()
+    # Dummy target to ease invocation
+    add_custom_target(${PROJECT}-headers-check)
 endif ()
