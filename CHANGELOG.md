@@ -3,6 +3,7 @@
 - Feature: [#163] Remove terraforming limits outside of scenario editor.
 - Feature: [#212] Add fullscreen support.
 - Fix: Tooltips were calling the wrong event.
+- Change: [#211] Store configuration file as YAML.
 
 18.02 (2018-02-15)
 ------------------------------------------------------------------------
