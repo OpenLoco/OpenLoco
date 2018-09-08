@@ -65,7 +65,7 @@ STR_0063    :Brak możliwości zainicjowania systemu graficznego
 STR_0064    :Numer Seryjny CD {INT32} jest nieprawidłowy dla twojej płyty Locomotion!{WINDOW_COLOUR_1}{WINDOW_COLOUR_1}Proszę o ponowną instalację Locomotion z prawidłowym numerem seryjnym
 STR_0065    :{CURRENCY2DP} x {CURRENCY2DP}
 STR_0066    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{CURRENCY2DP} x {CURRENCY2DP}
-STR_0067    :O Grze Chris Sawyer's Locomotion
+STR_0067    :O Grze 'Chris Sawyer's Locomotion'
 STR_0068    :Chris Sawyer's Locomotion
 STR_0069    :{WINDOW_COLOUR_2}Wersja 4.02.176 (English)
 STR_0070    :{WINDOW_COLOUR_2}Prawa Autorskie {COPYRIGHT} 2004 Chris Sawyer, Wszystkie Prawa Zastrzeżone
@@ -136,7 +136,7 @@ STR_0134    :{SMALLFONT}{WHITE}Poziom
 STR_0135    :{SMALLFONT}{WHITE}Nachylenie w Górę
 STR_0136    :{SMALLFONT}{WHITE}Strome Nachylenie w Górę
 STR_0137    :{WINDOW_COLOUR_2}Zbuduj to...
-STR_0138    :{WINDOW_COLOUR_2}Koszt: {WHITE}{CURRENCY}.
+STR_0138    :{WINDOW_COLOUR_2}Koszt: {WHITE}{CURRENCY}
 STR_0139    :Nie można tutaj postawić sygnału...
 STR_0140    :Nie można tutaj postawić sygnałów...
 STR_0141    :Nie można usunąć sygnału...
@@ -185,7 +185,7 @@ STR_0183    :Zapisać to przed wyjściem?
 STR_0184    :Zapisz
 STR_0185    :Nie Zapisuj
 STR_0186    :Anuluj
-STR_0187    :OK
+STR_0187    :Ok
 STR_0188    :{SMALLFONT}{WHITE}Przewiń {STRINGID2} w lewo
 STR_0189    :{SMALLFONT}{WHITE}Przewiń {STRINGID2} w prawo
 STR_0190    :{SMALLFONT}{WHITE}Przewiń {STRINGID2} szybko w lewo
@@ -222,7 +222,7 @@ STR_0220    :(player 1)
 STR_0221    :(player 2)
 STR_0222    :Nie można zmienić schematu kolorów...
 STR_0223    :Powiększanie
-STR_0224    :Zoom Out
+STR_0224    :Oddalenie
 STR_0225    :Miasta
 STR_0226    :Przemysł
 STR_0227    :Lotnisko
@@ -276,7 +276,7 @@ STR_0274    :{SMALLFONT}{WHITE}Budowa trakcji elektrycznej i innych ulepszeń
 STR_0275    :{SMALLFONT}{WHITE}Wybierz typ sygnalizatora
 STR_0276    :{SMALLFONT}{WHITE}Umieść sygnalizatory w obu kierunkach
 STR_0277    :{SMALLFONT}{WHITE}Umieść sygnalizatory w jednym kierunku (pociągi nie będą mogły jechać w drugim kierunku)
-STR_0278    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}{NEWLINE}V Max.: {STRINGID2}{NEWLINE}Max. height above ground:  {SPRITE}}.
+STR_0278    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}{NEWLINE}Prędkość Max.: {STRINGID2}{NEWLINE}Max. height above ground:  {SPRITE}}
 STR_0279    :{SMALLFONT}{WHITE}Wybierz typ stacji
 STR_0280    :Stacja {UINT16}
 STR_0281    :{STRINGID2}
@@ -328,9 +328,9 @@ STR_0326    :{STRINGID2} 19
 STR_0327    :{STRINGID2} 20
 STR_0328    :{WINDOW_COLOUR_2}{POP16}Waga: {WHITE}{COMMA32}t
 STR_0329    :{WINDOW_COLOUR_2}Moc całkowita: {WHITE}{BLACK}{WINDOW_COLOUR_2} Waga: {WHITE}{COMMA32}t
-STR_0330    :{WINDOW_COLOUR_2}V Max.: {WHITE}{VELOCITY}{POP16}{WINDOW_COLOUR_2} Niezawodność: {WHITE}{UINT16}%
-STR_0331    :{WINDOW_COLOUR_2}V Max.: {WHITE}{VELOCITY} {VELOCITY}{WINDOW_COLOUR_2} Niezawodność: {WHITE}{UINT16}%
-STR_0332    :{SMALLFONT}{WHITE}Sprzedaj {POP16}{STRINGID2}{NEWLINE}(lub przeciągnij tutaj pojedynczy pojazd, aby go sprzedać)
+STR_0330    :{WINDOW_COLOUR_2}Prędkość Max.: {WHITE}{VELOCITY}{POP16}{WINDOW_COLOUR_2} Niezawodność: {WHITE}{UINT16}%
+STR_0331    :{WINDOW_COLOUR_2}Prędkość Max.: {WHITE}{VELOCITY} / {VELOCITY}{WINDOW_COLOUR_2} Niezawodność: {WHITE}{UINT16}%
+STR_0332    :{SMALLFONT}{WHITE}Sprzedaj {POP16}{STRINGID2}{NEWLINE}(Lub przeciągnij tutaj pojedynczy pojazd, aby go sprzedać)
 STR_0333    :{SMALLFONT}{WHITE}Buduj nowy pojazd dla tego {POP16}{STRINGID2}
 STR_0334    :{WHITE}(kliknij na widok, aby ustawić pozycję startową {STRINGID2})
 STR_0335    :Pojazdy nie są kompatybilne
@@ -338,19 +338,19 @@ STR_0336    :Zbyt wiele pojazdów w grze
 STR_0337    :
 STR_0338    :
 STR_0339    :{SMALLFONT}{WHITE}{STRINGID2}
-STR_0340    :{NEWLINE}Rocznik:  {MONTH} {MONTH}.
-STR_0341    :{NEWLINE}Wartość:  {CURRENCY} {CURRENCY}.
-STR_0342    :{NEWLINE}Moc:  {BLACK}.
-STR_0343    :{NEWLINE}Waga:  {UINT16}t
-STR_0344    :{NEWLINE}V Max.:  {Dobrość}.
+STR_0340    :{NEWLINE}Rocznik:  {MONTH} {MONTH}
+STR_0341    :{NEWLINE}Wartość:  {CURRENCY} {CURRENCY}
+STR_0342    :{NEWLINE}Moc:  {BLACK}
+STR_0343    :{NEWLINE}Waga:  {UINT16}ton
+STR_0344    :{NEWLINE}Prędkość Max.:  {VELOCITY}
 STR_0345    : ({VELOCITY} dnia {STRINGID2})
 STR_0346    :{NEWLINE}Niezawodność:  {UINT16}%
 STR_0347    :{STRINGID2} {STRINGID2}
 STR_0348    :Sekcja pojedyncza
 STR_0349    :Sekcja blokowa
 STR_0350    :Wszystkie złączone tory
-STR_0351    :Ostrzeżenie: Zbyt dużo toru!{NEWLINE}Niektóre z wybranych torów mogły nie zostać zaktualizowane
-STR_0352    :{SMALLFONT}{WHITE}Zmodernizuj tory tymi usprawnieniami
+STR_0351    :Ostrzeżenie: Zbyt dużo toru!{NEWLINE}Niektóre z wybranych torów mogły nie zostać zmodernizowane
+STR_0352    :{SMALLFONT}{WHITE}Zmodernizuj tory tymi dodatkami
 STR_0353    :{SMALLFONT}{WHITE}(Kliknij na wybrany tor, aby to dodać)
 STR_0354    :{SMALLFONT}{WHITE}Wybierz co dodać do toru
 STR_0355    :{SMALLFONT}{WHITE}Przesuń główny widok, aby to pokazać
@@ -408,7 +408,7 @@ STR_0406    :Mieszkańcy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID2} doci
 STR_0407    :Pracownicy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID2} dostarczono do {STRINGID2}!
 STR_0408    :Wynaleziono Nowy Pojazd -{NEWLINE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}!
 STR_0409    :{STRINGID2} otrzymuje wyższą rangę z {OPENQUOTES}{STRINGID2}{ENDQUOTES} na {OPENQUOTES}{STRINGID2}{ENDQUOTES}!
-STR_0410    :Nowy {STRINGID2} w budowie w pobliżu {STRINGID2}!
+STR_0410    :Rzopoczęcie budowy - {STRINGID2} w pobliżu {STRINGID2}!
 STR_0411    :Gratulacje!{NEWLINE}Pomyślnie zakończono wyzwanie!
 STR_0412    :Porażka!{NEWLINE}Nie udało Ci się sprostać wyzwaniu!
 STR_0413    :Beaten!{NEWLINE}{STRINGID2} zakończył wyzwanie!
@@ -457,28 +457,28 @@ STR_0455    :{WHITE}{STRINGID2}
 STR_0456    :{WHITE}{STRINGID2} {STRINGID2}
 STR_0457    :{WINDOW_COLOUR_2}{STRINGID2}
 STR_0458    :{GREEN}{STRINGID2}
-STR_0459    :Zatrzymanie{POP16}{POP16}}.
-STR_0460    :/ Oczekiwanie na sygnał{POP16}{POP16}}
+STR_0459    :Zatrzymanie{POP16}{POP16}}
+STR_0460    :/ Oczekuje na sygnał{POP16}{POP16}
 STR_0461    :at {VELOCITY}{POP16}
 STR_0462    :{YELLOW}Wypadek!{POP16}{POP16}
 STR_0463    :{YELLOW}Utknął!{POP16}{POP16}
 STR_0464    :{YELLOW}Uszkodzony{POP16}{POP16}
-STR_0465    :Stopped{POP16}{POP16}}.
-STR_0466    :Ładowanie na {STRINGID2}
+STR_0465    :Zatrzymany{POP16}{POP16}}
+STR_0466    :Załadunek w {STRINGID2}
 STR_0467    :Rozładunek w {STRINGID2}
-STR_0468    :Podejście {STRINGID2}
-STR_0469    :Lądowanie na {STRINGID2}
-STR_0470    :Kołowanie w {STRINGID2}
-STR_0471    :Start z {STRINGID2}
-STR_0472    :Nagłówek do {STRINGID2}
-STR_0473    :Brak pozycji{POP16}{POP16}}.
-STR_0474    :Podróże{POP16}{POP16}}
+STR_0468    :Podjeżdża do {STRINGID2}
+STR_0469    :Ląduje w {STRINGID2}
+STR_0470    :Kołuje w {STRINGID2}
+STR_0471    :Odlatuje z {STRINGID2}
+STR_0472    :Jedzie do {STRINGID2}
+STR_0473    :Brak pozycji{POP16}{POP16}
+STR_0474    :Jedzie{POP16}{POP16}
 STR_0475    :{STRINGID2} - {STRINGID2}
 STR_0476    :{POP16}{POP16}{STRINGID2}
 STR_0477    :Nie można tu obniżyć poziomu wody...
 STR_0478    :Nie można tu podnieść poziomu wody...
 STR_0479    :(Brak)
-STR_0480    :{MONTHYEAR} ROK
+STR_0480    :{MONTHYEAR}
 STR_0481    :{YELLOW}Zamknięty - - 
 STR_0482    :{CELADON}{STRINGID2} - - 
 STR_0483    :Nieodpowiednie nachylenie terenu
@@ -501,22 +501,22 @@ STR_0499    :{UINT16} łódź
 STR_0500    :{UINT16} łodzie
 STR_0501    :Łódź {UINT16}
 STR_0502    :tor
-STR_0503    :ścieżki
+STR_0503    :tory
 STR_0504    :Tor
-STR_0505    :Ścieżki
+STR_0505    :Tory
 STR_0506    :{UINT16} tor
-STR_0507    :{UINT16} ścieżki
+STR_0507    :{UINT16} tory
 STR_0508    :Tor {UINT16}
-STR_0509    :platforma dokująca
-STR_0510    :platformy dokowania
-STR_0511    :Platforma dokowania
-STR_0512    :Platformy dokowania
-STR_0513    :{UINT16} platforma dokująca
-STR_0514    :{UINT16} platformy dokujące
-STR_0515    :Platforma dokowania {UINT16}
+STR_0509    :nabrzeże portu
+STR_0510    :nabrzeża portu
+STR_0511    :Nabrzeże portu
+STR_0512    :Nabrzeża portu
+STR_0513    :{UINT16} nabrzeże portu
+STR_0514    :{UINT16} nabrzeża portu
+STR_0515    :Nabrzeże portu {UINT16}
 STR_0516    :stacja
 STR_0517    :stacje
-STR_0518    :stacja
+STR_0518    :Stacja
 STR_0519    :Stacje
 STR_0520    :{UINT16} stacja
 STR_0521    :{UINT16} stacje
@@ -556,27 +556,27 @@ STR_0554    :Miasta
 STR_0555    :{UINT16} miasto
 STR_0556    :{UINT16} miasta
 STR_0557    :Miasto {UINT16}
-STR_0558    :przemysł
-STR_0559    :przemysł
-STR_0560    :Przemysł
-STR_0561    :Przemysł
-STR_0562    :{UINT16} przemysł
-STR_0563    :{UINT16} branże
-STR_0564    :Przemysł {UINT16}
-STR_0565    :{SMALLFONT}{WHITE}Rotate objects by 90{DEGREE}
-STR_0566    :Wymagany poziom terenu
+STR_0558    :zakład
+STR_0559    :zakłady
+STR_0560    :Zakład
+STR_0561    :Zakłady
+STR_0562    :{UINT16} zakład
+STR_0563    :{UINT16} zakłady
+STR_0564    :Zakład {UINT16}
+STR_0565    :{SMALLFONT}{WHITE}Obróć obiekty o 90{DEGREE}
+STR_0566    :Wymagany płaski teren
 STR_0567    :Nie można zmienić typu terenu...
-STR_0568    :{OUTLINE}{TOPAZ}+ {CURRENCY}.
-STR_0569    :{OUTLINE}{YELLOW}- {CURRENCY}.
+STR_0568    :{OUTLINE}{TOPAZ}+ {CURRENCY}
+STR_0569    :{OUTLINE}{YELLOW}- {CURRENCY}
 STR_0570    :{OUTLINE}{WINDOW_COLOUR_1}+ {CURRENCY}
 STR_0571    :{OUTLINE}{WINDOW_COLOUR_1}- {CURRENCY}
 STR_0572    :{STRINGID}
 STR_0573    :{YELLOW}{STRINGID}
-STR_0574    :{SMALLFONT}{WHITE}Show view of {POP16}{STRINGID2}
-STR_0575    :{SMALLFONT}{WHITE}Show {POP16}{STRINGID2} szczegóły projektu i opcje
-STR_0576    :{SMALLFONT}{WHITE}Show cargo/pasażerów w {POP16}{STRINGID2}.
-STR_0577    :{SMALLFONT}{WHITE}Show {POP16}{STRINGID2} szczegóły trasy
-STR_0578    :{SMALLFONT}{WHITE}Show {POP16}{STRINGID2} koszty bieżące i przychody
+STR_0574    :{SMALLFONT}{WHITE}Pokaż widok {POP16}{STRINGID2}
+STR_0575    :{SMALLFONT}{WHITE}Pokaż {POP16}{STRINGID2} szczegóły i opcje
+STR_0576    :{SMALLFONT}{WHITE}Pokaż towary/pasażerów w {POP16}{STRINGID2}
+STR_0577    :{SMALLFONT}{WHITE}Pokaż {POP16}{STRINGID2} szczegóły trasy
+STR_0578    :{SMALLFONT}{WHITE}Pokaż {POP16}{STRINGID2} koszty utrzymania i przychody
 STR_0579    :{SMALLFONT}{WHITE}Wybierz nową pozycję startową dla budownictwa
 STR_0580    :{SMALLFONT}{WHITE}Obróć o 90{DEGREE}
 STR_0581    :{STRINGID2} na drodze
@@ -584,7 +584,7 @@ STR_0582    :{CURRENCY}
 STR_0583    :Nie można tego tutaj zbudować...
 STR_0584    :{MONTH}
 STR_0585    :Chris Sawyer's Locomotion
-STR_0586    :Proszę włożyć płytę CD Locomotion do napędu:-
+STR_0586    :Proszę włożyć płytę CD Locomotion do napędu:
 STR_0587    :{WINDOW_COLOUR_2}Wydatki/Przychody
 STR_0588    :Dochód z Pociągów
 STR_0589    :Koszty Eksploatacji Pociągów
@@ -632,7 +632,7 @@ STR_0630    :{WINDOW_COLOUR_2}Kasę: {MOVE_X}Q{YELLOW}Upadłość!
 STR_0631    :{WINDOW_COLOUR_2}Kasę: {MOVE_X}Q{WHITE}{STRINGID}
 STR_0632    :{WINDOW_COLOUR_2}Kasę: {MOVE_X}Q{YELLOW}{STRINGID}
 STR_0633    :{WINDOW_COLOUR_2}Wartość Firmy: {WHITE}{STRINGID}
-STR_0634    :{WINDOW_COLOUR_2}Zysk z Pojazdów: {WHITE}{STRINGID} /miesiąc
+STR_0634    :{WINDOW_COLOUR_2}Zysk z Pojazdów: {WHITE}{STRINGID} miesięcznie
 STR_0635    :Styczeń
 STR_0636    :Luty
 STR_0637    :Marzec
@@ -687,12 +687,12 @@ STR_0685    :{STRINGID2} - Szczegóły Pojazdu
 STR_0686    :{STRINGID2} - Ładunek
 STR_0687    :{STRINGID2} - Trasa
 STR_0688    :{STRINGID2} - Finanse
-STR_0689    :{WINDOW_COLOUR_2}Pociągów: {WHITE}{UINT16}}
-STR_0690    :{WINDOW_COLOUR_2}Autobusów: {WHITE}{UINT16}}
+STR_0689    :{WINDOW_COLOUR_2}Pociągów: {WHITE}{UINT16}
+STR_0690    :{WINDOW_COLOUR_2}Autobusów: {WHITE}{UINT16}
 STR_0691    :{WINDOW_COLOUR_2}Ciężarówek: {WHITE}{UINT16}
-STR_0692    :{WINDOW_COLOUR_2}Tramwajów: {WHITE}{UINT16}}
+STR_0692    :{WINDOW_COLOUR_2}Tramwajów: {WHITE}{UINT16}
 STR_0693    :{WINDOW_COLOUR_2}Samolotów: {WHITE}{UINT16}
-STR_0694    :{WINDOW_COLOUR_2}Statków: {WHITE}{UINT16}}
+STR_0694    :{WINDOW_COLOUR_2}Statków: {WHITE}{UINT16}
 STR_0695    :{NEWLINE}Wyzwanie nie powiodło się!
 STR_0696    :{NEWLINE}Wyzwanie zakończone!
 STR_0697    :{SMALLFONT}{WHITE}Wskaźnik Wydajności: {COMMA2DP32}% {OPENQUOTES}{STRINGID2}{ENDQUOTES}
@@ -752,24 +752,24 @@ STR_0750    :???
 STR_0751    :???
 STR_0752    :Clear
 STR_0753    :Zwrot
-STR_0754    :?
-STR_0755    :?
-STR_0756    :?
-STR_0757    :?
+STR_0754    :???
+STR_0755    :???
+STR_0756    :???
+STR_0757    :???
 STR_0758    :Alt/Menu
 STR_0759    :Pause
 STR_0760    :Caps Lock
-STR_0761    :?
-STR_0762    :?
-STR_0763    :?
-STR_0764    :?
-STR_0765    :?
-STR_0766    :?
+STR_0761    :???
+STR_0762    :???
+STR_0763    :???
+STR_0764    :???
+STR_0765    :???
+STR_0766    :???
 STR_0767    :Escape
-STR_0768    :?
-STR_0769    :?
-STR_0770    :?
-STR_0771    :?
+STR_0768    :???
+STR_0769    :???
+STR_0770    :???
+STR_0771    :???
 STR_0772    :Spacja
 STR_0773    :PgUp
 STR_0774    :PgDn
@@ -780,11 +780,11 @@ STR_0778    :Góra
 STR_0779    :Prawo
 STR_0780    :Dół
 STR_0781    :Select
-STR_0782    :Print
-STR_0783    :Execute
-STR_0784    :Snapshot
-STR_0785    :Insert
-STR_0786    :Delete
+STR_0782    :Drukuj
+STR_0783    :Wykonaj
+STR_0784    :Migawka
+STR_0785    :Wstaw
+STR_0786    :Kasuj
 STR_0787    :Pomoc
 STR_0788    :0
 STR_0789    :1
@@ -829,11 +829,11 @@ STR_0827    :W
 STR_0828    :X
 STR_0829    :Y
 STR_0830    :Z
-STR_0831    :?
-STR_0832    :?
+STR_0831    :???
+STR_0832    :???
 STR_0833    :Menu
-STR_0834    :?
-STR_0835    :?
+STR_0834    :???
+STR_0835    :???
 STR_0836    :NumPad 0
 STR_0837    :NumPad 1
 STR_0838    :NumPad 2
@@ -844,10 +844,10 @@ STR_0842    :NumPad 6
 STR_0843    :NumPad 7
 STR_0844    :NumPad 8
 STR_0845    :NumPad 9
-STR_0846    :NumPad *.
+STR_0846    :NumPad *
 STR_0847    :NumPad +
 STR_0848    :?
-STR_0849    :NumPad - NumPad
+STR_0849    :NumPad -
 STR_0850    :NumPad .
 STR_0851    :NumPad /
 STR_0852    :F1
@@ -994,11 +994,11 @@ STR_0992    :???
 STR_0993    :???
 STR_0994    :???
 STR_0995    :???
-STR_0996    :{STRINGID2}:{MOVE_X}×{STRINGID2}{STRINGID2}}
+STR_0996    :{STRINGID2}:{MOVE_X}×{STRINGID2}{STRINGID2}
 STR_0997    :SHIFT + 
 STR_0998    :CTRL + 
 STR_0999    :Zmień Skrót Klawiszowy
-STR_1000    :{WINDOW_COLOUR_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{WHITE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}.
+STR_1000    :{WINDOW_COLOUR_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{WHITE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}
 STR_1001    :{SMALLFONT}{WHITE}Kliknij na opis skrótu, aby wybrać nowy klawisz
 STR_1002    :Przewijaj Widok Kursorem na Krawędzi Ekranu
 STR_1003    :{SMALLFONT}{WHITE}Wybierz, czy chcesz przewijać widok, gdy wskaźnik myszy znajduje się na krawędzi ekranu
@@ -1171,7 +1171,7 @@ STR_1169    :Pociąg potrzebuje lokomotywy lub wagonu silnikowego
 STR_1170    :{STRINGID2} z {STRINGID2}
 STR_1171    :Pusty
 STR_1172    :{SMALLFONT}{WHITE}{STRINGID2}
-STR_1173    :{NEWLINE}Pojemność:  {STRINGID2}}
+STR_1173    :{NEWLINE}Pojemność:  {STRINGID2}
 STR_1174    :{NEWLINE}+ {STRINGID2}
 STR_1175    :Zbyt wiele stacji w grze!
 STR_1176    :Stacja zbyt rozległa!
@@ -1211,7 +1211,7 @@ STR_1209    :{SMALLFONT}{WHITE}Ściany i ogrodzenia
 STR_1210    :{SMALLFONT}{WHITE}Wybierz kolor obiektu
 STR_1211    :{WINDOW_COLOUR_2}{STRINGID2}
 STR_1212    :{WINDOW_COLOUR_2}{STRINGID2} (po drodze z
-STR_1213    :{WINDOW_COLOUR_2}{STRINGID2}))
+STR_1213    :{WINDOW_COLOUR_2}{STRINGID2})
 STR_1214    :Brak miejsca na więcej rozkazów pojazdu!
 STR_1215    :Zbyt wiele rozkazów dla tego pojazdu!
 STR_1216    :- - Normalny - -
@@ -1249,7 +1249,7 @@ STR_1247    :Droga
 STR_1248    :{WHITE}Brak dostępnych pojazdów
 STR_1249    :{WHITE}Brak pasujących pojazdów, które można by dodać do {STRINGID2}
 STR_1250    :
-STR_1251    :{WINDOW_COLOUR_2} Koszt: {WHITE}{CURRENCY}.
+STR_1251    :{WINDOW_COLOUR_2} Koszt: {WHITE}{CURRENCY}
 STR_1252    :{NEWLINE}{WINDOW_COLOUR_2}} Wymaga: {WHITE}
 STR_1253    :{NEWLINE}{WINDOW_COLOUR_2}} Moc: {WHITE}{BLACK}
 STR_1254    :{NEWLINE}{WINDOW_COLOUR_2}} Waga: {WHITE}{UINT16}t
@@ -1260,8 +1260,8 @@ STR_1258    : + {STRINGID2}
 STR_1259    : ( + {STRINGID2} dla stromych wzniesień)
 STR_1260    : ({VELOCITY} dnia {STRINGID2})
 STR_1261    :lub {STRINGID2}
-STR_1262    :{NEWLINE}{WINDOW_COLOUR_2}} Koszt utrzymania: {WHITE}{CURRENCY}/miesiąc
-STR_1263    : (zwrotne)
+STR_1262    :{NEWLINE}{WINDOW_COLOUR_2} Koszt utrzymania: {WHITE}{CURRENCY}/miesiąc
+STR_1263    : (przebudowalny)
 STR_1264    :{UINT16} pociąg
 STR_1265    :{UINT16} autobus
 STR_1266    :{UINT16} ciężarówka
@@ -1294,7 +1294,7 @@ STR_1292    :Buduj Nowe Miasta
 STR_1293    :Buduj Poszczególne Budynki Miejskie
 STR_1294    :Buduj Pozostałe Budynki
 STR_1295    :{WHITE}Ludność
-STR_1296    :{WHITE}Ludność {DOWN}.
+STR_1296    :{WHITE}Ludność {DOWN}
 STR_1297    :{SMALLFONT}{WHITE}Sortuj listę według ludności
 STR_1298    :{COMMA32}
 STR_1299    :{WHITE}Stacje
@@ -1466,7 +1466,7 @@ STR_1464    :{STRINGID2} władze lokalne nie zezwolą na usunięcie używanych d
 STR_1465    :{SMALLFONT}{WHITE}Wybierz firmę
 STR_1466    :Gra dla Wielu Graczy
 STR_1467    :Gra dla Wielu Graczy - Opcje
-STR_1468    :{WHITE} Aby skonfigurować grę dla wielu graczy, jeden komputer powinien być skonfigurowany jako serwer, a następnie drugi powinien się z nim połączyć.{NEWLINE}{NEWLINE}Please select    :
+STR_1468    :{WHITE} Aby skonfigurować grę dla wielu graczy, jeden komputer powinien być skonfigurowany jako serwer, a następnie drugi powinien się z nim połączyć.{NEWLINE}{NEWLINE}Proszę wybrać:
 STR_1469    :
 STR_1470    :{WHITE}Ustawienie tego komputera jako serwer...
 STR_1471    :{WHITE}Błąd: Nie można skonfigurować tego komputera jako serwer
@@ -1476,7 +1476,7 @@ STR_1474    :
 STR_1475    :
 STR_1476    :{WHITE}Próba połączenia...
 STR_1477    :{WHITE}Błąd: Nie można zlokalizować lub połączyć się z serwerem
-STR_1478    :{WHITE}Sukces!{NEWLINE}Podłączono do: {STRINGID2}}.
+STR_1478    :{WHITE}Sukces!{NEWLINE}Podłączono do: {STRINGID2}}
 STR_1479    :{WHITE}W chwili obecnej podłączono do: {STRINGID2}{NEWLINE}{NEWLINE}Kliknij poniżej, aby odłączyć i powrócić do trybu pojedynczego gracza
 STR_1480    :{WINDOW_COLOUR_2}Ustaw ten komputer jako serwer
 STR_1481    :{WINDOW_COLOUR_2}Połącz się z serwerem
@@ -1511,7 +1511,7 @@ STR_1509    :Mniejsze wiadomości własnejfirmy:
 STR_1510    :Drobne wiadomości o innej firmaie:
 STR_1511    :Ogólne wiadomości:
 STR_1512    :Porada:
-STR_1513    :Off
+STR_1513    :Wył.
 STR_1514    :Szybka Wiadomość
 STR_1515    :Okno Wiadomości
 STR_1516    :{WINDOW_COLOUR_2}Miesięczny Koszt Eksploatacji: {WHITE}{CURRENCY}
@@ -1562,9 +1562,9 @@ STR_1560    :{WINDOW_COLOUR_2}Właściciel: {WHITE}{STRINGID2}
 STR_1561    :niski
 STR_1562    :średnia
 STR_1563    :wysoki
-STR_1564    :{WINDOW_COLOUR_2}Inteligencja: {WHITE}{UINT16}} ({STRINGID2}))
-STR_1565    :{WINDOW_COLOUR_2}Agresja: {WHITE}{UINT16} ({STRINGID2}))
-STR_1566    :{WINDOW_COLOUR_2}Konkurencyjność: {WHITE}{UINT16}}. ({STRINGID2}))
+STR_1564    :{WINDOW_COLOUR_2}Inteligencja: {WHITE}{UINT16} ({STRINGID2})
+STR_1565    :{WINDOW_COLOUR_2}Agresja: {WHITE}{UINT16} ({STRINGID2})
+STR_1566    :{WINDOW_COLOUR_2}Konkurencyjność: {WHITE}{UINT16} ({STRINGID2})
 STR_1567    :{SMALLFONT}{WHITE}Przełącz między trybem jednego gracza a trybem dla wielu graczy
 STR_1568    :{OUTLINE}{WINDOW_COLOUR_2}Tryb Jednego Gracza
 STR_1569    :{OUTLINE}{WINDOW_COLOUR_2}Tryb Wielu Graczy: Podłączony do {STRINGID2}
@@ -1793,7 +1793,7 @@ STR_1791    :{SMALLFONT}{WHITE}{STRINGID}
 STR_1792    :{SMALLFONT}{WHITE}{STRINGID2}
 STR_1793    :{SMALLFONT}{GREEN}{STRINGID2}
 STR_1794    :Typ lotniska nie jest odpowiedni dla tego samolotu
-STR_1795    :{WHITE}{POUND}}
+STR_1795    :{WHITE}{POUND}
 STR_1796    :{UINT16} dni
 STR_1797    :{CURRENCY}
 STR_1798    :{SMALLFONT}{WHITE}Płatność za przewóz {UINT16} jednostek ładunku na odległość {UINT16} kratek
@@ -1821,13 +1821,13 @@ STR_1819    :{SMALLFONT}{WHITE}szybko do przodu
 STR_1820    :{SMALLFONT}{WHITE}Extra fast forward
 STR_1821    :{WHITE}Krajobraz Generowany Losowo
 STR_1822    :{WINDOW_COLOUR_2}Data rozpoczęcia: {WHITE}{CURRENCY2DP}
-STR_1823    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE} Brak
+STR_1823    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE}Brak
 STR_1824    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE}Up to {UINT16}
 STR_1825    :{WHITE}{MOVE_X}{SMALLFONT}(nie rozpoczyna przez {UINT16} miesiąc)
 STR_1826    :{WHITE}{MOVE_X}{SMALLFONT}(nie rozpoczyna przez {UINT16} miesięcy)
-STR_1827    :{WINDOW_COLOUR_2}Wartość sprzedaży pojazdu: {WHITE}{CURRENCY}}
+STR_1827    :{WINDOW_COLOUR_2}Wartość sprzedaży pojazdu: {WHITE}{CURRENCY}
 STR_1828    :{WINDOW_COLOUR_2}Ostatni dochód: {WHITE}N/A
-STR_1829    :{WINDOW_COLOUR_2}Ostatni dochód: {WHITE}{MONTH}.
+STR_1829    :{WINDOW_COLOUR_2}Ostatni dochód: {WHITE}{MONTH}
 STR_1830    :{WHITE}{STRINGID2} przewieziono {UINT16} kratek w {UINT16} dni = {CURRENCY}
 STR_1831    :{WINDOW_COLOUR_2} Najwcześniejszy rok budowy: {WHITE}{CURRENCY2DP}
 STR_1832    :{WINDOW_COLOUR_2} Ostatni rok budowy: {WHITE}{CURRENCY2DP}
@@ -1838,8 +1838,8 @@ STR_1836    :Średnie
 STR_1837    :Dobre
 STR_1838    :Doskonałe
 STR_1839    :{WINDOW_COLOUR_2}{STRINGID2}: {WHITE}{UINT16}% ({STRINGID2})
-STR_1840    :Osiągnij wartość firmy {CURRENCY}{STRINGID2}{STRINGID2}}
-STR_1841    :Osiągnij miesięczny zysk z pojazdów {CURRENCY}{STRINGID2}{STRINGID2}}
+STR_1840    :Osiągnij wartość firmy {CURRENCY}{STRINGID2}{STRINGID2}
+STR_1841    :Osiągnij miesięczny zysk z pojazdów {CURRENCY}{STRINGID2}{STRINGID2}
 STR_1842    :Osiągnij wskaźnik wydajności {COMMA2DP32}% ({OPENQUOTES}{STRINGID2}{ENDQUOTES}){STRINGID2}{STRINGID2}
 STR_1843    :Dostarcz {STRINGID2}{STRINGID2}{STRINGID2}
 STR_1844    : i bądź firmą osiągającą najlepsze wyniki
@@ -1860,11 +1860,11 @@ STR_1858    :{COMMA2DP32}%
 STR_1859    :{COMMA32}
 STR_1860    :{POP16}{POP16}{POP16}{UINT16} lat
 STR_1861    :{SMALLFONT}(Ukończony przez {STRINGID2} w {UINT16} lat {UINT16} miesięcy)
-STR_1862    :{WINDOW_COLOUR_2}Sukces!{NEWLINE}{WHITE}  Ukończono wyzwanie w {INT16} lat {UINT16} miesięcy
+STR_1862    :{WINDOW_COLOUR_2}Sukces!{NEWLINE}{WHITE}  Ukończono wyzwanie w {INT16} lat i {UINT16} miesięcy
 STR_1863    :{WINDOW_COLOUR_2}Porażka!{NEWLINE}{WHITE}  Nie udało się zrealizować wyzwania
-STR_1864    :{WINDOW_COLOUR_2}Pokonał Cię inny gracz!{NEWLINE}{WHITE}  Wyzwanie ukończone przez {STRINGID2} w {UINT16} lat {UINT16} miesięcy
+STR_1864    :{WINDOW_COLOUR_2}Pokonał Cię inny gracz!{NEWLINE}{WHITE}  Wyzwanie ukończone przez {STRINGID2} w {UINT16} lat i {UINT16} miesięcy
 STR_1865    :{WINDOW_COLOUR_2}Postęp w realizacji wyzwania: {WHITE}{UINT16}%
-STR_1866    :{WINDOW_COLOUR_2}Pozostało: {WHITE}{UINT16} lat {UINT16} miesięcy
+STR_1866    :{WINDOW_COLOUR_2}Pozostało: {WHITE}{UINT16} lat i {UINT16} miesięcy
 STR_1867    :{WINDOW_COLOUR_2}Dostarczony towar:
 STR_1868    :{WHITE}Brak
 STR_1869    :{OUTLINE}{WINDOW_COLOUR_2}Wyjdź
@@ -1899,7 +1899,7 @@ STR_1897    :{SMALLFONT}{WHITE}Teraz możemy ustawić jadący autobus...
 STR_1898    :{SMALLFONT}{WHITE}Let's watch it pick up its first passengers...
 STR_1899    :{SMALLFONT}{WHITE}Zamierzamy zbudować serwis autobusowy do przewozu pasażerów pomiędzy Boulder Bay i Breakers Bridge. Ponieważ nie ma dróg łączących miasta, będziemy musieli zbudować jedną...
 STR_1900    :{SMALLFONT}{WHITE}Wybierz orientację nowego odcinka drogi i kliknij na widok aby rozpocząć budowę...
-STR_1901    :{SMALLFONT}{WHITE}Kliknięcie ikony 'build this' spowoduje dodanie kolejnych odcinków dróg tego samego typu...
+STR_1901    :{SMALLFONT}{WHITE}Kliknięcie ikony 'zbuduj to' spowoduje dodanie kolejnych odcinków dróg tego samego typu...
 STR_1902    :{SMALLFONT}{WHITE}Przed kontynuacją, oto szybszy sposób na rozpoczęcie budowy drogi...
 STR_1903    :{SMALLFONT}{WHITE}Kliknięcie prawym przyciskiem myszy na końcu drogi, którą chcesz przedłużyć...
 STR_1904    :{SMALLFONT}{WHITE}Wymagamy skręcić tutaj w lewo, więc wybierz krzywą w lewo...
@@ -1955,7 +1955,7 @@ STR_1953    :{WINDOW_COLOUR_2}Pisarz:  David Ellis
 STR_1954    :{WINDOW_COLOUR_2}Dyrektor ds. Wsparcia Publikacji:  Michael Gilmartin
 STR_1955    :{WINDOW_COLOUR_2}Kierownicy ds. Jakości:  Bill Carroll, Dave Strang
 STR_1956    :{WINDOW_COLOUR_2}Nadzorca ds. Jakości:  Jason Cordero
-STR_1957    :{WINDOW_COLOUR_2}Menedżer I.T./Zachód:  Ken Ford
+STR_1957    :{WINDOW_COLOUR_2}Menedżer I.T./Zachodni Region:  Ken Ford
 STR_1958    :{WINDOW_COLOUR_2}Menedżer Wsparcia Technicznego:  Michael Vetsch
 STR_1959    :{WINDOW_COLOUR_2}Przewodniczący ds. Testów:  Marshall Clevesy
 STR_1960    :{WINDOW_COLOUR_2}Asystent Przewodniczącego ds. Testów:  Sean McLaren
@@ -2003,7 +2003,7 @@ STR_2001    :Potwierdź zmianę trybu wyświetlania
 STR_2002    :{WINDOW_COLOUR_2}Rozdzielczość ekranu zmieniona na {CURRENCY2DP} x {CURRENCY2DP}
 STR_2003    :{WINDOW_COLOUR_2}_
 STR_2004    :{WINDOW_COLOUR_2}Nazwa pliku:
-STR_2005    :{WINDOW_COLOUR_2}Folder:  {WHITE}{STRINGID2}}.
+STR_2005    :{WINDOW_COLOUR_2}Folder:  {WHITE}{STRINGID2}}
 STR_2006    :{SMALLFONT}{WHITE}Przenieś jeden poziom do folderu nadrzędnego
 STR_2007    :{WINDOW_COLOUR_2}Spółka: {WHITE}{STRINGID2}
 STR_2008    :{WINDOW_COLOUR_2}Data: {WHITE}{MONTH}
@@ -2021,21 +2021,21 @@ STR_2019    :Nie można zmienić nazwy zakładu...
 STR_2020    :{NEWLINE_X_Y}
 STR_2021    :Znaleziono duplikat kluczy CD - Nie można się połączyć!
 STR_2022    :{WHITE}{SMALLFONT}(Nazwa Komputera = {STRINGID2})
-STR_2023    :1szy
-STR_2024    :2gi
-STR_2025    :3ci
-STR_2026    :4ty
-STR_2027    :5ty
-STR_2028    :6ty
-STR_2029    :7my
-STR_2030    :8my
-STR_2031    :9ty
-STR_2032    :10ty
-STR_2033    :11ty
-STR_2034    :12ty
-STR_2035    :13ty
-STR_2036    :14ty
-STR_2037    :15ty
+STR_2023    :1
+STR_2024    :2
+STR_2025    :3
+STR_2026    :4
+STR_2027    :5
+STR_2028    :6
+STR_2029    :7
+STR_2030    :8
+STR_2031    :9
+STR_2032    :10
+STR_2033    :11
+STR_2034    :12
+STR_2035    :13
+STR_2036    :14
+STR_2037    :15
 STR_2038    :{WHITE}{UINT16} wybrano (maksymalnie {UINT16})
 STR_2039    :
 STR_2040    :
