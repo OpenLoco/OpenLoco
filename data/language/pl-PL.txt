@@ -747,11 +747,11 @@ STR_0745    :???
 STR_0746    :???
 STR_0747    :???
 STR_0748    :Backspace
-STR_0749    :Tab
+STR_0749    :Tabulator
 STR_0750    :???
 STR_0751    :???
-STR_0752    :Clear
-STR_0753    :Zwrot
+STR_0752    :Wyczyść
+STR_0753    :Enter
 STR_0754    :???
 STR_0755    :???
 STR_0756    :???
@@ -779,7 +779,7 @@ STR_0777    :Lewo
 STR_0778    :Góra
 STR_0779    :Prawo
 STR_0780    :Dół
-STR_0781    :Select
+STR_0781    :Zaznacz
 STR_0782    :Drukuj
 STR_0783    :Wykonaj
 STR_0784    :Migawka
