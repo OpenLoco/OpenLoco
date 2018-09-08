@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #define UNUSED_IMG(x) (x)
 
 namespace openloco::image_ids
