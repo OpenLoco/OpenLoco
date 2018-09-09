@@ -67,7 +67,7 @@ STR_0065    :{CURRENCY2DP} x {CURRENCY2DP}
 STR_0066    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{CURRENCY2DP} x {CURRENCY2DP}
 STR_0067    :O Grze 'Chris Sawyer's Locomotion'
 STR_0068    :Chris Sawyer's Locomotion
-STR_0069    :{WINDOW_COLOUR_2}Wersja 4.02.176 (English)
+STR_0069    :{WINDOW_COLOUR_2}Wersja 4.02.176 (English US)
 STR_0070    :{WINDOW_COLOUR_2}Prawa Autorskie {COPYRIGHT} 2004 Chris Sawyer, Wszystkie Prawa Zastrzeżone
 STR_0071    :{WINDOW_COLOUR_2}Projekt i Program Chris Sawyer
 STR_0072    :{WINDOW_COLOUR_2}Grafika Simon Foster
@@ -105,10 +105,10 @@ STR_0103    :Wczytaj Grę
 STR_0104    :Zapisz Grę
 STR_0105    :Opuść Edytor Scenariuszy
 STR_0106    :Zakończ Grę
-STR_0107    :Zrzut Ekranu{UINT16}.BMP
+STR_0107    :Screenshot{UINT16}.BMP
 STR_0108    :Zrzut Ekranu
 STR_0109    :Zrzut ekranu zapisany na dysku jako "{STRINGID2}".
-STR_0110    :Zrzut ekranu nie powiodło się!
+STR_0110    :Błąd: Zrzut ekranu nie został wykonany!
 STR_0111    :Pełny obszar danych krajobrazowych!
 STR_0112    :Nie można budować częściowo nad i częściowo pod ziemią
 STR_0113    :{STRINGID2}
@@ -251,7 +251,7 @@ STR_0249    :{STRINGID2} - Ładunek Dostarczony
 STR_0250    :{STRINGID2} - Schemat Kolorów
 STR_0251    :{STRINGID2} - Wyzwanie
 STR_0252    :{SMALLFONT}{WHITE}Zmień kierunek
-STR_0253    :{SMALLFONT}{WHITE}Zignoruj czerwony sygnał
+STR_0253    :{SMALLFONT}{WHITE}Zignoruj sygnał
 STR_0254    :{SMALLFONT}{WHITE}Usuń {POP16}{STRINGID2} z toru/drogi
 STR_0255    :{SMALLFONT}{WHITE}Umieść {POP16}{STRINGID2} na torze/drodze
 STR_0256    :{SMALLFONT}{WHITE}Usuń {POP16}{STRINGID2} z lotniska
@@ -272,11 +272,11 @@ STR_0270    :{WHITE}{STRINGID2}
 STR_0271    :{SMALLFONT}{WHITE}Budowa toru/drogi
 STR_0272    :{SMALLFONT}{WHITE}Budowa stacji
 STR_0273    :{SMALLFONT}{WHITE}Budowa sygnalizacji
-STR_0274    :{SMALLFONT}{WHITE}Budowa trakcji elektrycznej i innych ulepszeń
-STR_0275    :{SMALLFONT}{WHITE}Wybierz typ sygnalizatora
-STR_0276    :{SMALLFONT}{WHITE}Umieść sygnalizatory w obu kierunkach
-STR_0277    :{SMALLFONT}{WHITE}Umieść sygnalizatory w jednym kierunku (pociągi nie będą mogły jechać w drugim kierunku)
-STR_0278    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}{NEWLINE}Prędkość Max.: {STRINGID2}{NEWLINE}Max. height above ground:  {SPRITE}}
+STR_0274    :{SMALLFONT}{WHITE}Budowa trakcji elektrycznej i innych dodatków
+STR_0275    :{SMALLFONT}{WHITE}Wybierz typ sygnału
+STR_0276    :{SMALLFONT}{WHITE}Umieść sygnały w obu kierunkach
+STR_0277    :{SMALLFONT}{WHITE}Umieść sygnał w jednym kierunku (pociągi nie będą mogły jechać w drugim kierunku)
+STR_0278    :{SMALLFONT}{WHITE}{POP16}{STRINGID2}{NEWLINE}Prędkość Max.: {STRINGID2}{NEWLINE}Wysokość Max. powyżej terenu:  {SPRITE}}
 STR_0279    :{SMALLFONT}{WHITE}Wybierz typ stacji
 STR_0280    :Stacja {UINT16}
 STR_0281    :{STRINGID2}
@@ -299,8 +299,8 @@ STR_0297    :{STRINGID2} Port
 STR_0298    :{STRINGID2} Obwodnica
 STR_0299    :{STRINGID2} Przedmieście
 STR_0300    :{STRINGID2} Zakłady
-STR_0301    :Górny {STRINGID2}
-STR_0302    :Dolny {STRINGID2}
+STR_0301    :{STRINGID2} Szczyt
+STR_0302    :{STRINGID2} Depresja
 STR_0303    :{STRINGID2} Lądowisko
 STR_0304    :{STRINGID2} Las
 STR_0305    :{STRINGID2} Węzeł
@@ -341,7 +341,7 @@ STR_0339    :{SMALLFONT}{WHITE}{STRINGID2}
 STR_0340    :{NEWLINE}Rocznik:  {MONTH} {MONTH}
 STR_0341    :{NEWLINE}Wartość:  {CURRENCY} {CURRENCY}
 STR_0342    :{NEWLINE}Moc:  {BLACK}
-STR_0343    :{NEWLINE}Waga:  {UINT16}ton
+STR_0343    :{NEWLINE}Waga:  {UINT16}t
 STR_0344    :{NEWLINE}Prędkość Max.:  {VELOCITY}
 STR_0345    : ({VELOCITY} dnia {STRINGID2})
 STR_0346    :{NEWLINE}Niezawodność:  {UINT16}%
@@ -349,7 +349,7 @@ STR_0347    :{STRINGID2} {STRINGID2}
 STR_0348    :Sekcja pojedyncza
 STR_0349    :Sekcja blokowa
 STR_0350    :Wszystkie złączone tory
-STR_0351    :Ostrzeżenie: Zbyt dużo toru!{NEWLINE}Niektóre z wybranych torów mogły nie zostać zmodernizowane
+STR_0351    :Ostrzeżenie: Zbyt dużo toru!{NEWLINE}Niektóre z wybranych odcinków mogły nie zostać zmodernizowane
 STR_0352    :{SMALLFONT}{WHITE}Zmodernizuj tory tymi dodatkami
 STR_0353    :{SMALLFONT}{WHITE}(Kliknij na wybrany tor, aby to dodać)
 STR_0354    :{SMALLFONT}{WHITE}Wybierz co dodać do toru
@@ -398,20 +398,20 @@ STR_0396    :Wycisz
 STR_0397    :Odtwarzaj Muzykę
 STR_0398    :{YELLOW}Bankrut!
 STR_0399    :{STRINGID2} nie może czekać na pełny załadunek w {STRINGID2}
-STR_0400    :{STRINGID2} nie może wjechać na pochyłość
+STR_0400    :{STRINGID2} nie może wjechać na stromą pochyłość
 STR_0401    :{STRINGID2} akceptuje teraz {STRINGID2}
 STR_0402    :{STRINGID2} nie akceptuje już {STRINGID2}
-STR_0403    :Nowa Firma Transportowa!{NEWLINE}{STRINGID2} rozpoczyna budowę w pobliżu {STRINGID2}!
+STR_0403    :Nowa Spółka Transportowa!{NEWLINE}{STRINGID2} rozpoczyna budowę w pobliżu {STRINGID2}!
 STR_0404    :{STRINGID2} nie może lądować na {STRINGID2} z powodu nieodpowiedniego lotniska
 STR_0405    :Mieszkańcy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID2} dojeżdza do {STRINGID2}!
 STR_0406    :Mieszkańcy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID2} dociera do {STRINGID2}!
 STR_0407    :Pracownicy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID2} dostarczono do {STRINGID2}!
 STR_0408    :Wynaleziono Nowy Pojazd -{NEWLINE}{OPENQUOTES}{STRINGID2}{ENDQUOTES}!
 STR_0409    :{STRINGID2} otrzymuje wyższą rangę z {OPENQUOTES}{STRINGID2}{ENDQUOTES} na {OPENQUOTES}{STRINGID2}{ENDQUOTES}!
-STR_0410    :Rzopoczęcie budowy - {STRINGID2} w pobliżu {STRINGID2}!
+STR_0410    :Rzopoczęcie nowej budowy - {STRINGID2} w pobliżu {STRINGID2}!
 STR_0411    :Gratulacje!{NEWLINE}Pomyślnie zakończono wyzwanie!
 STR_0412    :Porażka!{NEWLINE}Nie udało Ci się sprostać wyzwaniu!
-STR_0413    :Beaten!{NEWLINE}{STRINGID2} zakończył wyzwanie!
+STR_0413    :Pokonany!{NEWLINE}{STRINGID2} zakończył wyzwanie!
 STR_0414    :Ostrzeżenie o upadłości!{NEWLINE}{STRINGID2} zostanie zamknięte w ciągu 6 miesięcy, chyba że nastąpi poprawa wyników!
 STR_0415    :Ostatnie ostrzeżenie!{NEWLINE}{STRINGID2} zostanie zamknięte w ciągu 3 miesięcy, chyba że nastąpi poprawa wyników!
 STR_0416    :Bankrut!{NEWLINE}{STRINGID2} zostaje ogłoszony upadłym i zamknięty!
@@ -459,7 +459,7 @@ STR_0457    :{WINDOW_COLOUR_2}{STRINGID2}
 STR_0458    :{GREEN}{STRINGID2}
 STR_0459    :Zatrzymanie{POP16}{POP16}}
 STR_0460    :/ Oczekuje na sygnał{POP16}{POP16}
-STR_0461    :at {VELOCITY}{POP16}
+STR_0461    :- {VELOCITY}{POP16}
 STR_0462    :{YELLOW}Wypadek!{POP16}{POP16}
 STR_0463    :{YELLOW}Utknął!{POP16}{POP16}
 STR_0464    :{YELLOW}Uszkodzony{POP16}{POP16}
@@ -539,8 +539,8 @@ STR_0537    :struktura
 STR_0538    :struktury
 STR_0539    :Struktura
 STR_0540    :Struktury
-STR_0541    :{UINT16} struktura Struktury 
-STR_0542    :{UINT16}
+STR_0541    :{UINT16} struktura
+STR_0542    :{UINT16} struktury
 STR_0543    :Struktura {UINT16}
 STR_0544    :statek
 STR_0545    :statki
@@ -1253,7 +1253,7 @@ STR_1251    :{WINDOW_COLOUR_2} Koszt: {WHITE}{CURRENCY}
 STR_1252    :{NEWLINE}{WINDOW_COLOUR_2}} Wymaga: {WHITE}
 STR_1253    :{NEWLINE}{WINDOW_COLOUR_2}} Moc: {WHITE}{BLACK}
 STR_1254    :{NEWLINE}{WINDOW_COLOUR_2}} Waga: {WHITE}{UINT16}t
-STR_1255    :{NEWLINE}{WINDOW_COLOUR_2}} V Max: {WHITE}{VELOCITY}
+STR_1255    :{NEWLINE}{WINDOW_COLOUR_2}} Prędkość Max: {WHITE}{VELOCITY}
 STR_1256    :{NEWLINE}{WINDOW_COLOUR_2}} Zaprojektowany: {WHITE}{CURRENCY2DP}
 STR_1257    :{NEWLINE}{WINDOW_COLOUR_2}} Pojemność: {WHITE}{STRINGID2}
 STR_1258    : + {STRINGID2}
@@ -1312,7 +1312,7 @@ STR_1310    :{WHITE}{STRINGID2} ludność {COMMA32}
 STR_1311    :Nie można zmienić nazwy miasta...
 STR_1312    :Nowa Stacja
 STR_1313    :{WHITE}({STRINGID2})
-STR_1314    :{WINDOW_COLOUR_2}Obszar zlewni{NEWLINE}  Akceptuje. str_1315    :{window_colour_2}}: 
+STR_1314    :{WINDOW_COLOUR_2}Zasięg stacji{NEWLINE}  Akceptuje. str_1315    :{window_colour_2}}: 
 STR_1315    :{WINDOW_COLOUR_2}  Wytwarza: 
 STR_1316    :{WHITE}Nic
 STR_1317    :Zbyt wiele zakładów
@@ -1359,7 +1359,7 @@ STR_1357    :{WHITE}{SMALLFONT}{COMMA32}
 STR_1358    :{WHITE}{SMALLFONT}{CURRENCY2DP}
 STR_1359    :{STRINGID2}
 STR_1360    :{STRINGID2} - Ludność
-STR_1361    :{STRINGID2} Władze Lokalne
+STR_1361    :{STRINGID2} - Władze Lokalne
 STR_1362    :{STRINGID2} - Produkcja Miesięczna
 STR_1363    :{STRINGID2} - Statystyki
 STR_1364    :{STRINGID2} {STRINGID2}
@@ -1412,7 +1412,7 @@ STR_1410    :Zbyt blisko innego zakładu
 STR_1411    :Należy najpierw wybudować miasto w pobliżu
 STR_1412    :{SMALLFONT}{WHITE}Zasadź zdefiniowaną grupę drzew
 STR_1413    :{SMALLFONT}{WHITE}Zasadź losową grupę drzew
-STR_1414    :{SMALLFONT}{WHITE} Statystyka
+STR_1414    :{SMALLFONT}{WHITE}Statystyki
 STR_1415    :{WINDOW_COLOUR_2}Otrzymano w ostatnim miesiącu:
 STR_1416    :{WINDOW_COLOUR_2}Wytworzono w ostatnim miesiącu:
 STR_1417    :{WHITE}{STRINGID2} ({UINT16}% przewieziono)
@@ -1530,8 +1530,8 @@ STR_1528    :Stacja należąca do innej firmy
 STR_1529    :Brak wody!
 STR_1530    :Kanał wodny jest obecnie potrzebny statkom
 STR_1531    :Obecnie używany przez co najmniej jeden pojazd
-STR_1532    :{SMALLFONT}{WHITE}Przystosuj pojazd do przewozu innego rodzaju ładunku
-STR_1533    :Nie można przystosować tego pojazdu do przewozu innego rodzaju ładunku
+STR_1532    :{SMALLFONT}{WHITE}Przebuduj pojazd do przewozu innego rodzaju ładunku
+STR_1533    :Nie można przebudować tego pojazdu do przewozu innego rodzaju ładunku
 STR_1534    :Wymaga wody przed portem
 STR_1535    :{WINDOW_COLOUR_2}Odtwarzanie:
 STR_1536    :{SMALLFONT}{WHITE}Zatrzymaj
@@ -1559,9 +1559,9 @@ STR_1557    :{WINDOW_COLOUR_2}Wskaźnik Wydajności: {WHITE}{COMMA2DP32}% {NEWLI
 STR_1558    :{WINDOW_COLOUR_2}Wskaźnik Wydajności: {WHITE}{COMMA2DP32}%{INLINE_SPRITE}{MEDIUMFONT}
 STR_1559    :{WINDOW_COLOUR_2}Wskaźnik Wydajności: {WHITE}{COMMA2DP32}%{INLINE_SPRITE}{MEDIUMFONT}
 STR_1560    :{WINDOW_COLOUR_2}Właściciel: {WHITE}{STRINGID2}
-STR_1561    :niski
-STR_1562    :średnia
-STR_1563    :wysoki
+STR_1561    :Niska
+STR_1562    :Średna
+STR_1563    :Wysoka
 STR_1564    :{WINDOW_COLOUR_2}Inteligencja: {WHITE}{UINT16} ({STRINGID2})
 STR_1565    :{WINDOW_COLOUR_2}Agresja: {WHITE}{UINT16} ({STRINGID2})
 STR_1566    :{WINDOW_COLOUR_2}Konkurencyjność: {WHITE}{UINT16} ({STRINGID2})
@@ -1577,8 +1577,8 @@ STR_1575    :Region / Wybór Obiektu
 STR_1576    :Edytor Krajobrazu
 STR_1577    :Opcje Scenariusza
 STR_1578    :Zapisz Scenariusz
-STR_1579    :Do poprzedniego kroku:
-STR_1580    :Do następnego kroku:
+STR_1579    :Przejdź do poprzedniego kroku:
+STR_1580    :Przejdź do następnego kroku:
 STR_1581    :Wczytaj Krajobraz
 STR_1582    :Zapisz Krajobraz
 STR_1583    :Trwa tworzenie krajobrazu...
@@ -1629,7 +1629,7 @@ STR_1627    :Generowanie losowego krajobrazu tylko w momencie rozpoczęcia gry
 STR_1628    :{SMALLFONT}{WHITE}Generuj losowy krajobraz przy każdym rozpoczęciu nowej gry
 STR_1629    :Wyeneruj nowy krajobraz
 STR_1630    :{SMALLFONT}{WHITE}Wyeneruj nowy losowy krajobraz (obecny krajobraz zostanie utracony)
-STR_1631    :OK
+STR_1631    :Ok
 STR_1632    :Wyeneruj Nowy Krajobraz
 STR_1633    :Opcja Losowego Krajobrazu
 STR_1634    :Czy na pewno chcesz wygenerować nowy krajobraz, tracąc obecny?
@@ -1659,7 +1659,7 @@ STR_1657    :Płaska Ziemia
 STR_1658    :Małe Wzgórza
 STR_1659    :Góry
 STR_1660    :W Połowie Góry, W Połowie Wyżyny
-STR_1661    :W Połowie Góry, W Połowie Wiziny
+STR_1661    :W Połowie Góry, W Połowie Wyżyny
 STR_1662    :{WINDOW_COLOUR_2}Gęstość wzniesień:
 STR_1663    :{POP16}{POP16}{UINT16}%
 STR_1664    :{WINDOW_COLOUR_2}Liczba miast:
@@ -1685,10 +1685,10 @@ STR_1683    :{UINT16}
 STR_1684    :{WINDOW_COLOUR_2}Opóźnienie przed rozpoczęciem działalności przez konkurencyjne przedsiębiorstwa:
 STR_1685    :{POP16}{UINT16} miesięcy
 STR_1686    :{WINDOW_COLOUR_2}Wybór konkurencyjnych przedsiębiorstw:
-STR_1687    :{WINDOW_COLOUR_2}Preferowana wywiad:
-STR_1688    :{WINDOW_COLOUR_2}Preferowana agresywność:
+STR_1687    :{WINDOW_COLOUR_2}Preferowana inteligencja:
+STR_1688    :{WINDOW_COLOUR_2}Preferowana agresja:
 STR_1689    :{WINDOW_COLOUR_2}Preferowana konkurencyjność:
-STR_1690    :Dowolny
+STR_1690    :Dowolna
 STR_1691    :Niska
 STR_1692    :Średnia
 STR_1693    :Wysoka
@@ -1725,7 +1725,7 @@ STR_1723    :{WINDOW_COLOUR_2} Zaprojektowany w: {WHITE}{CURRENCY2DP}
 STR_1724    :{WINDOW_COLOUR_2} Wycofany w: {WHITE}{CURRENCY2DP}
 STR_1725    :{WINDOW_COLOUR_2} Moc: {WHITE}{BLACK}
 STR_1726    :{WINDOW_COLOUR_2} Waga: {WHITE}{UINT16}t
-STR_1727    :{WINDOW_COLOUR_2} VMax: {WHITE}{VELOCITY}. Prędkość: {WHITE}{VELOCITY}
+STR_1727    :{WINDOW_COLOUR_2} Prędkość Max: {WHITE}{VELOCITY}. Prędkość: {WHITE}{VELOCITY}
 STR_1728    :{WINDOW_COLOUR_2} Pojemność: {WHITE}{STRINGID2}
 STR_1729    :Nawiązywanie połączenia...
 STR_1730    :Wszędzie
@@ -1812,17 +1812,17 @@ STR_1810    :
 STR_1811    :Budynek {STRINGID2} w pobliżu {STRINGID2}
 STR_1812    :Budynek {STRINGID2} w pobliżu {STRINGID2}
 STR_1813    :Budynek {STRINGID2} w pobliżu {STRINGID2}
-STR_1814    :Sprawdza usługi w pobliżu {STRINGID2}
-STR_1815    :Bada krajobraz w pobliżu {STRINGID2}
+STR_1814    :Kontroluje usługi w pobliżu {STRINGID2}
+STR_1815    :Sprawdza teren w pobliżu {STRINGID2}
 STR_1816    :{YELLOW}Upadłość!
 STR_1817    :{SMALLFONT}{WHITE}Wstrzymaj grę
 STR_1818    :{SMALLFONT}{WHITE}Normalna prędkość
-STR_1819    :{SMALLFONT}{WHITE}szybko do przodu
-STR_1820    :{SMALLFONT}{WHITE}Extra fast forward
+STR_1819    :{SMALLFONT}{WHITE}Wolne przewijanie
+STR_1820    :{SMALLFONT}{WHITE}Szybkie przewijanie
 STR_1821    :{WHITE}Krajobraz Generowany Losowo
 STR_1822    :{WINDOW_COLOUR_2}Data rozpoczęcia: {WHITE}{CURRENCY2DP}
 STR_1823    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE}Brak
-STR_1824    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE}Up to {UINT16}
+STR_1824    :{WINDOW_COLOUR_2}Konkurencyjne firmy: {WHITE}Co najwyżej {UINT16}
 STR_1825    :{WHITE}{MOVE_X}{SMALLFONT}(nie rozpoczyna przez {UINT16} miesiąc)
 STR_1826    :{WHITE}{MOVE_X}{SMALLFONT}(nie rozpoczyna przez {UINT16} miesięcy)
 STR_1827    :{WINDOW_COLOUR_2}Wartość sprzedaży pojazdu: {WHITE}{CURRENCY}
@@ -1836,7 +1836,7 @@ STR_1834    :Beznadziejne
 STR_1835    :Słabe
 STR_1836    :Średnie
 STR_1837    :Dobre
-STR_1838    :Doskonałe
+STR_1838    :Świetne
 STR_1839    :{WINDOW_COLOUR_2}{STRINGID2}: {WHITE}{UINT16}% ({STRINGID2})
 STR_1840    :Osiągnij wartość firmy {CURRENCY}{STRINGID2}{STRINGID2}
 STR_1841    :Osiągnij miesięczny zysk z pojazdów {CURRENCY}{STRINGID2}{STRINGID2}
@@ -1859,7 +1859,7 @@ STR_1857    :{CURRENCY}
 STR_1858    :{COMMA2DP32}%
 STR_1859    :{COMMA32}
 STR_1860    :{POP16}{POP16}{POP16}{UINT16} lat
-STR_1861    :{SMALLFONT}(Ukończony przez {STRINGID2} w {UINT16} lat {UINT16} miesięcy)
+STR_1861    :{SMALLFONT}(Ukończony przez {STRINGID2} w {UINT16} lat i {UINT16} miesięcy)
 STR_1862    :{WINDOW_COLOUR_2}Sukces!{NEWLINE}{WHITE}  Ukończono wyzwanie w {INT16} lat i {UINT16} miesięcy
 STR_1863    :{WINDOW_COLOUR_2}Porażka!{NEWLINE}{WHITE}  Nie udało się zrealizować wyzwania
 STR_1864    :{WINDOW_COLOUR_2}Pokonał Cię inny gracz!{NEWLINE}{WHITE}  Wyzwanie ukończone przez {STRINGID2} w {UINT16} lat i {UINT16} miesięcy
@@ -1869,8 +1869,8 @@ STR_1867    :{WINDOW_COLOUR_2}Dostarczony towar:
 STR_1868    :{WHITE}Brak
 STR_1869    :{OUTLINE}{WINDOW_COLOUR_2}Wyjdź
 STR_1870    :Firma w stanie upadłości!
-STR_1871    :Pozwól zakładom zamykać się podczas gry
-STR_1872    :Pozwól, aby nowe zakłady powstawały podczas gry
+STR_1871    :Pozwól zakładom na likwidację podczas gry
+STR_1872    :Pozwól na powstawanie nowych zakładów podczas gry
 STR_1873    :Udostępniaj dodatkowe twarze firmy/właściciela
 STR_1874    :{SMALLFONT}{WHITE}Wybierz tę opcję, aby wysyłać niestandardowe pliki twarzy firmy/właściciela do innego komputera podczas łączenia
 STR_1875    :{WINDOW_COLOUR_2}Zabroń firmom konkurencyjnym możliwość używania:
@@ -1880,34 +1880,34 @@ STR_1878    :, {STRINGID2}
 STR_1879    :Przewodnik 1: Uruchomienie usługi autobusowej w mieście
 STR_1880    :Przewodnik 2: Budowa linii autobusowej pomiędzy dwoma miastami
 STR_1881    :Przewodnik 3: Budowa linii kolejowej pomiędzy dwoma miastami
-STR_1882    :{SMALLFONT}{WHITE}Zamierzamy zbudować usługę autobusową do przewozu pasażerów w mieście, więc pierwszym krokiem jest wybór miasta...
-STR_1883    :{SMALLFONT}{WHITE}Usuń myszą prawy przycisk myszy, aby przewinąć widok i spojrzeć na miasta...
-STR_1884    :{SMALLFONT}{WHITE}Boulders Bay jest największym miastem, więc będzie produkować najwięcej pasażerów. Powiększ za pomocą kółka myszy lub ikony powiększenia...
+STR_1882    :{SMALLFONT}{WHITE}Zamierzamy uruchomić usługę autobusową do przewozu pasażerów w obrębie miasta, więc pierwszym krokiem jest wybór miasta...
+STR_1883    :{SMALLFONT}{WHITE}Przesuń kamerę prawym przyciskiem myszy, aby spojrzeć na miasta...
+STR_1884    :{SMALLFONT}{WHITE}Boulders Bay jest największym miastem, więc będzie w nim najwięcej pasażerów. Powiększ za pomocą kółka myszy lub ikony powiększenia...
 STR_1885    :{SMALLFONT}{WHITE}Wszelka budowa dróg odbywa się przy użyciu okna budowy dróg...
 STR_1886    :{SMALLFONT}{WHITE}Nie potrzebujemy żadnych nowych dróg w mieście do obsługi autobusów, tylko przystanki autobusowe...
 STR_1887    :{SMALLFONT}{WHITE}Nasz autobus kursuje z jednej strony miasta do drugiej.
-STR_1888    :{SMALLFONT}{WHITE}Obszar zaznaczony na niebiesko to obszar zlewni stacji. Im więcej budynków w zlewni, tym więcej pasażerów będzie korzystać z Twojej stacji...
-STR_1889    :{SMALLFONT}{WHITE}Sprawdzaj, czy pozycja stacji akceptuje pasażerów, w przeciwnym razie nie będziesz w stanie ich rozładować i nie będziesz mógł zapłacić. Obejrzyj tekst {OPENQUOTES}Catchment Area{ENDQUOTES} u dołu okna konstrukcyjnego...
+STR_1888    :{SMALLFONT}{WHITE}Obszar zaznaczony na niebiesko to obszar zasięgu stacji. Im więcej budynków w okolicy, tym więcej pasażerów będzie korzystać z Twojej stacji...
+STR_1889    :{SMALLFONT}{WHITE}Sprawdzaj także, czy stacja akceptuje pasażerów, w przeciwnym razie nie będziesz w stanie ich rozładować i nie będziesz mógł zarobić. Zwróć uwagę na tekst {OPENQUOTES}Zasięg stacji{ENDQUOTES} u dołu okna konstrukcyjnego...
 STR_1890    :{SMALLFONT}{WHITE}Kiedy jesteś zadowolony z lokalizacji, kliknij lewym przyciskiem myszy, aby zbudować stację...
 STR_1891    :{SMALLFONT}{WHITE}Zbudujemy drugą stację po przeciwnej stronie miasta...
 STR_1892    :{SMALLFONT}{WHITE}Teraz musimy kupić autobus...
 STR_1893    :{SMALLFONT}{WHITE}Mamy do wyboru dwa typy autobusów. Wybierzmy nowszy projekt, który przewozi więcej pasażerów...
-STR_1894    :{SMALLFONT}{WHITE}Usuń kursor myszy, aby umieścić autobus na drodze i kliknij lewym przyciskiem myszy, aby go umieścić...
-STR_1895    :{SMALLFONT}{WHITE}Przed ustawieniem autobusu jadącego musi wiedzieć, dokąd ma jechać. Wybierz zakładkę Szczegóły trasy w oknie pojazdu...
-STR_1896    :{SMALLFONT}{WHITE}Aby ustawić trasę, wystarczy kliknąć na stacje w widoku...
+STR_1894    :{SMALLFONT}{WHITE}Skieruj kursor myszy, aby umieścić autobus na drodze i kliknij lewym przyciskiem myszy, aby go umieścić...
+STR_1895    :{SMALLFONT}{WHITE}Przed ustawieniem autobusu kierowca musi wiedzieć, dokąd ma jechać. Wybierz zakładkę Szczegóły trasy w oknie pojazdu...
+STR_1896    :{SMALLFONT}{WHITE}Aby ustawić trasę, wystarczy kliknąć na stację lub przystanek...
 STR_1897    :{SMALLFONT}{WHITE}Teraz możemy ustawić jadący autobus...
-STR_1898    :{SMALLFONT}{WHITE}Let's watch it pick up its first passengers...
-STR_1899    :{SMALLFONT}{WHITE}Zamierzamy zbudować serwis autobusowy do przewozu pasażerów pomiędzy Boulder Bay i Breakers Bridge. Ponieważ nie ma dróg łączących miasta, będziemy musieli zbudować jedną...
-STR_1900    :{SMALLFONT}{WHITE}Wybierz orientację nowego odcinka drogi i kliknij na widok aby rozpocząć budowę...
+STR_1898    :{SMALLFONT}{WHITE}Przyjrzyjmy się, jak zabiera pierwszych pasażerów...
+STR_1899    :{SMALLFONT}{WHITE}Chcemy zapewnić nową usługę autobusową do przewozu pasażerów pomiędzy Boulder Bay i Breakers Bridge. Ponieważ nie ma dróg łączących te miasta, będziemy musieli taką zbudować...
+STR_1900    :{SMALLFONT}{WHITE}Wybierz orientację nowego odcinka drogi i kliknij na terenie aby rozpocząć budowę...
 STR_1901    :{SMALLFONT}{WHITE}Kliknięcie ikony 'zbuduj to' spowoduje dodanie kolejnych odcinków dróg tego samego typu...
-STR_1902    :{SMALLFONT}{WHITE}Przed kontynuacją, oto szybszy sposób na rozpoczęcie budowy drogi...
-STR_1903    :{SMALLFONT}{WHITE}Kliknięcie prawym przyciskiem myszy na końcu drogi, którą chcesz przedłużyć...
-STR_1904    :{SMALLFONT}{WHITE}Wymagamy skręcić tutaj w lewo, więc wybierz krzywą w lewo...
+STR_1902    :{SMALLFONT}{WHITE}Zanim zaczniesz, przedstawię Ci szybszy sposób na rozpoczęcie budowy drogi...
+STR_1903    :{SMALLFONT}{WHITE}Możesz kliknąć prawym przyciskiem myszy na końcu drogi, którą chcesz przedłużyć...
+STR_1904    :{SMALLFONT}{WHITE}Chcemy skręcić tutaj w lewo, więc wybieramy krzywą w lewo...
 STR_1905    :{SMALLFONT}{WHITE}A teraz z powrotem do budynku prosto...
-STR_1906    :{SMALLFONT}{WHITE}To droga zbudowana, teraz dla stacji...
-STR_1907    :{SMALLFONT}{WHITE}I wreszcie kupimy autobus i uruchomimy go...
-STR_1908    :{SMALLFONT}{WHITE}To może być dość ruchliwa trasa, więc kupimy również drugi autobus...
-STR_1909    :{SMALLFONT}{WHITE}Aby szybko skopiować całą trasę autobusu 1 do autobusu 2, wystarczy kliknąć na tekst 'lista końca trasy' autobusu 1...
+STR_1906    :{SMALLFONT}{WHITE}Więc droga zbudowana, teraz przystanki...
+STR_1907    :{SMALLFONT}{WHITE}Wreszcie kupimy autobus i uruchomimy go...
+STR_1908    :{SMALLFONT}{WHITE}To może być dość popularna trasa, więc kupimy również drugi autobus...
+STR_1909    :{SMALLFONT}{WHITE}Aby szybko skopiować cały rozkład jazdy autobusu 1 do autobusu 2, wystarczy kliknąć na tekst 'koniec rozkazów' autobusu 1...
 STR_1910    :{SMALLFONT}{WHITE}Zacznijmy budowę linii kolejowej pomiędzy dwoma największymi miastami...
 STR_1911    :{SMALLFONT}{WHITE}Stacje kolejowe mogą być budowane tylko na prostym torze i muszą być wystarczająco długie dla naszego pociągu - to tutaj za kilka minut zbudujemy jedną stację...
 STR_1912    :{SMALLFONT}{WHITE}Teraz zbudujmy stacje...
@@ -1926,20 +1926,20 @@ STR_1924    :{WHITE}{TINYFONT}Moc
 STR_1925    :{WHITE}{TINYFONT}Hamuj
 STR_1926    :{SMALLFONT}{WHITE}Przesuń zaznaczenie na górę listy
 STR_1927    :{SMALLFONT}{WHITE}Przesuń zaznaczenie na dół listy
-STR_1928    :Nie można uruchomić gry bezpośrednio z nośników tylko do odczytu
+STR_1928    :Nie można uruchamiać gry bezpośrednio z nośników tylko do odczytu
 STR_1929    :Twórcy Atari Inc. ...
-STR_1930    :{WINDOW_COLOUR_2}Licencjonowany na Atari Inc.
+STR_1930    :{WINDOW_COLOUR_2}Licencja Atari Inc.
 STR_1931    :Twórcy Atari Inc.
 STR_1932    :Wersje gry są niekompatybilne - Nie można się połączyć!
 STR_1933    :{SMALLFONT}{WHITE}Wyślij krótką wiadomość do innego gracza
 STR_1934    :inny gracz
-STR_1935    :Inny gracz wyszedł z gry: Tryb dla dwóch graczy został zakończony
+STR_1935    :Inny gracz wyszedł z gry: Tryb dla wielu graczy został zakończony
 STR_1936    :{CELADON}Korzystanie z tego produktu podlega warunkom umowy licencyjnej{NEWLINE} zawartej w pliku produktu {OPENQUOTES}ReadMe{ENDQUOTES} oraz w instrukcji obsługi
 STR_1937    :{CELADON}Nota ESRB: Wrażenia z rozgrywki mogą się zmieniać podczas gry przez internet
 STR_1938    :{BABYBLUE}Niektóre środki lokomocji w tej grze mają nazwy, które mogą być podobne do nazw rzeczywistych pojazdów.
-STR_1939    :{BABYBLUE}Jest to narzędzue pomagające graczom odnieść się do fikcyjnego świata gry.
+STR_1939    :{BABYBLUE}Jest to narzędzie mające pomóc graczom odnieść się do fikcyjnego świata gry.
 STR_1940    :{BABYBLUE}Atrybuty (w tym szybkość, pojemność, niezawodność i koszt), które zostały przypisane do różnych
-STR_1941    :{BABYBLUE}pojazdów są przeznaczone wyłącznie do celów gier i nie są przeznaczone do reprezentowania tych rzeczywistych
+STR_1941    :{BABYBLUE}pojazdów są przeznaczone wyłącznie do celów gry i nie są przeznaczone do reprezentowania tych rzeczywistych
 STR_1942    :{BABYBLUE}dostępnych w handlu, zarówno o podobnej nazwie, jak i nie.
 STR_1943    :{WINDOW_COLOUR_2}Starszy Producent:  Thomas J. Zahorik
 STR_1944    :{WINDOW_COLOUR_2}Starszy Menedżer Marki:  Jeff Foley
@@ -1998,7 +1998,7 @@ STR_1996    :Rekordy Prędkości
 STR_1997    :{WINDOW_COLOUR_2}Rekord prędkości usług na lądzie: {WHITE}{VELOCITY}
 STR_1998    :{WINDOW_COLOUR_2}Rekord prędkości usługi powietrznej: {WHITE}{VELOCITY}
 STR_1999    :{WINDOW_COLOUR_2}Rekord prędkości usługi wodnej: {WHITE}{VELOCITY}
-STR_2000    :{WHITE}Osiągnięte przez {STRINGID2} w {MONTH}
+STR_2000    :{WHITE}Osiągnięte przez {STRINGID2} - {MONTH}
 STR_2001    :Potwierdź zmianę trybu wyświetlania
 STR_2002    :{WINDOW_COLOUR_2}Rozdzielczość ekranu zmieniona na {CURRENCY2DP} x {CURRENCY2DP}
 STR_2003    :{WINDOW_COLOUR_2}_
@@ -2009,10 +2009,10 @@ STR_2007    :{WINDOW_COLOUR_2}Spółka: {WHITE}{STRINGID2}
 STR_2008    :{WINDOW_COLOUR_2}Data: {WHITE}{MONTH}
 STR_2009    :{WINDOW_COLOUR_2}Postęp wyzwania: {WHITE}{UINT16}%
 STR_2010    :{WINDOW_COLOUR_2}Wyzwanie: {WHITE}Zakończono
-STR_2011    :{WINDOW_COLOUR_2}Wyzwanie: {WHITE}Failed
-STR_2012    :Zastąp istniejący plik: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
+STR_2011    :{WINDOW_COLOUR_2}Wyzwanie: {WHITE}Porażka
+STR_2012    :Czy zastąpić istniejący plik: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
 STR_2013    :Zastąp
-STR_2014    :Usuń plik: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
+STR_2014    :Czy usunąć plik: {OPENQUOTES}{STRINGID2}{ENDQUOTES}?
 STR_2015    :Usuń
 STR_2016    :Błąd: Nieprawidłowa nazwa pliku
 STR_2017    :Nazwa zakładu
@@ -2067,7 +2067,7 @@ STR_2065    :Oświetlenie Uliczne
 STR_2066    :Tunele
 STR_2067    :Mosty
 STR_2068    :Stacje Kolejowe
-STR_2069    :Dodatki do Torów
+STR_2069    :Dodatki Torowe
 STR_2070    :Tory
 STR_2071    :Przystanki Drogowe
 STR_2072    :Dodatki Drogowe
@@ -2094,7 +2094,7 @@ STR_2092    :Należy wybrać typ rusztowania
 STR_2093    :Zaawansowane
 STR_2094    :{SMALLFONT}{WHITE}Umożliwia bardziej zaawansowany wybór poszczególnych elementów
 STR_2095    :{GREEN}{BIGFONT}{POUND}
-STR_2096    :Nowe obiekty zainstalowane pomyślnie
+STR_2096    :Nowe obiekty zainstalowano pomyślnie
 STR_2097    :Należy wybrać co najmniej jeden zakład
 STR_2098    :Należy wybrać co najmniej jeden budynek miejski
 STR_2099    :Należy wybrać typ budynku siedziby firmy
@@ -2109,5 +2109,5 @@ STR_2107    :Należy wybrać co najmniej jeden typ przejazdu kolejowego
 STR_2108    :Należy wybrać typ oświetlenia ulicznego
 STR_2109    :Należy wybrać typ śniegu (nawet jeśli nie jest potrzebny)
 STR_2110    :Należy wybrać typ klimatu
-STR_2111    :Należy wybrać typ generowania danych map
+STR_2111    :Należy wybrać typ generatora mapy
 STR_2112    :Należy wybrać typ regionu
