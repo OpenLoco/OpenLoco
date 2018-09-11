@@ -18,11 +18,14 @@ namespace openloco::localisation
     static loco_global<char * [0xFFFF], 0x005183FC> _strings;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
+        { "INT16_1DP", control_codes::int16_decimals },
+        { "INT32_1DP", control_codes::int32_decimals },
+        { "INT16", control_codes::int16_grouped },
+        { "UINT16", control_codes::uint16_ungrouped },
         { "SMALLFONT", control_codes::font_regular },
         { "BIGFONT", control_codes::font_large },
         { "TINYFONT", control_codes::font_small },
         { "NEWLINE_SMALLER", control_codes::newline_smaller },
-        { "NEWLINE", control_codes::newline },
         { "OUTLINE", openloco::control_codes::outline },
         { "VELOCITY", control_codes::velocity },
         { "CURRENCY32", control_codes::currency32 },
@@ -149,27 +152,26 @@ namespace openloco::localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (char)control_codes::inline_sprite_str;
-                        out++;
+                        *out++ = (char)control_codes::inline_sprite_args;
                     }
                     else
                     {
-                        char str[125] = { 0 };
-                        memcpy(str, commands[1].data(), commands[1].length());
-                        int32_t val = atoi(str);
-
-                        *((uint32_t*)str) = val;
-
+                        *out++ = (char)control_codes::inline_sprite_str;
+                        int32_t sprite_id = std::atoi(commands[1].data());
+                        *((uint32_t*)out) = sprite_id;
                         out += 4;
-
-                        printf("%.*s\n", (int)commands[1].length(), commands[1].data());
                     }
-                }
-                else if (commands[0] == "NUM16")
-                {
                 }
                 else if (commands[0] == "INT32")
                 {
+                    if (commands.size() == 2 && commands[2] == "RAW")
+                    {
+                        *out++ = (char)control_codes::int32_ungrouped;
+                    }
+                    else
+                    {
+                        *out++ = (char)control_codes::int32_grouped;
+                    }
                 }
                 else if (commands[0] == "RAWDATE")
                 {
@@ -195,6 +197,23 @@ namespace openloco::localisation
                     *out++ = (char)control_codes::move_x;
                     uint8_t pixels_to_move_by = std::atoi(commands[1].data());
                     *out++ = pixels_to_move_by;
+                }
+                else if (commands[0] == "NEWLINE")
+                {
+                    if (commands.size() == 1)
+                    {
+                        *out++ = (char)control_codes::newline;
+                    }
+                    else if (commands.size() == 3)
+                    {
+                        *out++ = (char)control_codes::newline_x_y;
+
+                        uint8_t x_pixels_to_move_by = std::atoi(commands[1].data());
+                        *out++ = x_pixels_to_move_by;
+
+                        uint8_t y_pixels_to_move_by = std::atoi(commands[2].data());
+                        *out++ = y_pixels_to_move_by;
+                    }
                 }
                 else
                 {
