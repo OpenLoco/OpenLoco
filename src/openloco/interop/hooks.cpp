@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../audio/audio.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../graphics/colours.h"
@@ -37,6 +38,42 @@ using namespace openloco;
 #pragma warning(push)
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
+
+static int32_t CDECL audio_prepare_sound(int a0, int a1, int a2, int a3)
+{
+    return audio::prepare_sound(a0, (audio::sound_instance*)a1, a2, a3) ? 1 : 0;
+}
+
+static void CDECL audio_mix_sound(int a0, int a1, int a2, int a3, int a4)
+{
+    audio::mix_sound((audio::sound_instance*)a0, a1, a2, a3, a4);
+}
+
+static int32_t CDECL audio_load_music(int a0, const char* a1, int a2, int a3, int a4)
+{
+    return audio::load_music(a0, a1, a2) ? 1 : 0;
+}
+
+static int32_t CDECL audio_play_music(int a0, int a1, int a2, int a3, int a4)
+{
+    return audio::play_music(a0, a1, a2, a3, a4) ? 1 : 0;
+}
+
+static void CDECL audio_stop_music(int a0, int a1, int a2, int a3, int a4)
+{
+    audio::stop_music(a0);
+}
+
+static void CDECL audio_set_music_volume(int a0, int a1)
+{
+    audio::set_music_volume(a0, a1);
+}
+
+static int32_t CDECL audio_is_music_playing(int a0)
+{
+    return audio::is_music_playing(a0) ? 1 : 0;
+}
+
 static void STDCALL fn_40447f()
 {
     STUB();
@@ -612,6 +649,15 @@ void openloco::interop::register_hooks()
 #endif // _NO_LOCO_WIN32_
 
     register_terraform_hooks();
+
+    write_jmp(0x00404B68, (void*)&audio_prepare_sound);
+    write_jmp(0x00404D7A, (void*)&audio_mix_sound);
+
+    write_jmp(0x0040194E, (void*)&audio_load_music);
+    write_jmp(0x00401999, (void*)&audio_play_music);
+    write_jmp(0x00401A05, (void*)&audio_stop_music);
+    write_jmp(0x00401AD3, (void*)&audio_set_music_volume);
+    write_jmp(0x00401B10, (void*)&audio_is_music_playing);
 
     register_hook(
         0x004416B5,
