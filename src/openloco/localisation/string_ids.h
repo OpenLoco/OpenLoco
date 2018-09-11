@@ -122,6 +122,9 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id buffer_337 = 337;
+    constexpr string_id buffer_338 = 338;
+
     constexpr string_id dropdown_stringid = 421;
     constexpr string_id dropdown_stringptr = 424;
 
@@ -260,6 +263,8 @@ namespace openloco::string_ids
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
 
+    constexpr string_id buffer_1250 = 1250;
+
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id display_options = 1486;
@@ -339,6 +344,7 @@ namespace openloco::string_ids
 
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
+    constexpr string_id buffer_1719 = 1719;
 
     constexpr string_id title_menu_scenario_editor = 1740;
 

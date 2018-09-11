@@ -260,7 +260,7 @@ namespace openloco::localisation
         {
             int key2 = it->first.as<int>();
 
-            if (key2 == 337 || key2 == 338 || key2 == 1250 || key2 == string_ids::preferred_currency_buffer || key2 == 1719
+            if (key2 == string_ids::buffer_337 || key2 == string_ids::buffer_338 || key2 == string_ids::buffer_1250 || key2 == string_ids::preferred_currency_buffer || key2 == string_ids::buffer_1719
                 || key2 == string_ids::buffer_2039 || key2 == string_ids::buffer_2040 || key2 == string_ids::buffer_2042 || key2 == string_ids::buffer_2045)
             {
                 continue;
