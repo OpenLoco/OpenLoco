@@ -97,21 +97,6 @@ namespace openloco
         constexpr uint8_t colour_pearlaqua = 156;
         constexpr uint8_t colour_palesilver = 157;
     }
-
-    namespace symbols
-    {
-        constexpr uint8_t up = 32 + 128;
-        constexpr uint8_t down = 32 + 138;
-        constexpr uint8_t tick = 32 + 140;
-        constexpr uint8_t cross = 32 + 141;
-        constexpr uint8_t right = 32 + 143;
-        constexpr uint8_t railway = 32 + 145;
-        constexpr uint8_t road = 32 + 150;
-        constexpr uint8_t air = 32 + 151;
-        constexpr uint8_t water = 32 + 152;
-        constexpr uint8_t smallup = 32 + 156;
-        constexpr uint8_t smalldown = 32 + 157;
-    }
 }
 
 namespace openloco::stringmgr

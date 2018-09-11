@@ -215,7 +215,8 @@ namespace openloco::gfx
         {
             // Removed detection of offscreen-drawing
 
-            uint32_t chr = localisation::readCodePoint(&str);
+            uint8_t chr = *str;
+            str++;
 
             switch (chr)
             {
@@ -398,9 +399,6 @@ namespace openloco::gfx
                 default:
                     if (chr >= 32)
                     {
-                        if (chr >= 256)
-                            chr = '?';
-
                         gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
                         pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
                     }

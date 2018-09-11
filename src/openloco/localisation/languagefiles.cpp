@@ -5,6 +5,7 @@
 #include "../interop/interop.hpp"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
+#include "conversion.h"
 #include "string_ids.h"
 #include "stringmgr.h"
 #include <cassert>
@@ -23,17 +24,6 @@ namespace openloco::localisation
         { "NEWLINE_SMALLER", control_codes::newline_smaller },
         { "NEWLINE", control_codes::newline },
         { "OUTLINE", openloco::control_codes::outline },
-        { "CROSS", symbols::cross },
-        { "TICK", symbols::tick },
-        { "SMALLUP", symbols::smallup },
-        { "SMALLDOWN", symbols::smalldown },
-        { "RIGHT", symbols::right },
-        { "DOWN", symbols::down },
-        { "UP", symbols::up },
-        { "SYMBOL_RAILWAY", symbols::railway },
-        { "SYMBOL_ROAD", symbols::road },
-        { "SYMBOL_AIR", symbols::air },
-        { "SYMBOL_WATER", symbols::water },
         { "VELOCITY", control_codes::velocity },
         { "CURRENCY32", control_codes::currency32 },
         { "HEIGHT", control_codes::height },
@@ -96,6 +86,8 @@ namespace openloco::localisation
         while (true)
         {
             uint32_t readChar = readCodePoint(&ptr);
+            readChar = convertUnicodeToLoco(readChar);
+
             if (readChar == '{')
             {
                 std::vector<std::string_view> commands = {};
