@@ -41,7 +41,7 @@ using namespace openloco;
 
 static int32_t CDECL audio_prepare_sound(int a0, int a1, int a2, int a3)
 {
-    return audio::prepare_sound(a0, (audio::sound_instance*)a1, a2, a3) ? 1 : 0;
+    return audio::prepare_sound((audio::sound_id)a0, (audio::sound_instance*)a1, a2, a3) ? 1 : 0;
 }
 
 static void CDECL audio_mix_sound(int a0, int a1, int a2, int a3, int a4)
@@ -652,7 +652,6 @@ void openloco::interop::register_hooks()
 
     write_jmp(0x00404B68, (void*)&audio_prepare_sound);
     write_jmp(0x00404D7A, (void*)&audio_mix_sound);
-
     write_jmp(0x0040194E, (void*)&audio_load_music);
     write_jmp(0x00401999, (void*)&audio_play_music);
     write_jmp(0x00401A05, (void*)&audio_stop_music);

@@ -42,6 +42,14 @@ namespace openloco::audio
         breakdown_6 = 31,
     };
 
+    enum class music_channel
+    {
+        bgm,
+        unk_1,
+        ocean,
+        title,
+    };
+
     void initialise_dsound();
     void dispose_dsound();
     void initialise();
@@ -53,7 +61,7 @@ namespace openloco::audio
     void play_sound(sound_id id, int32_t pan);
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound);
 
-    bool prepare_sound(int32_t soundId, sound_instance* sound, int32_t channels, int32_t software);
+    bool prepare_sound(sound_id soundId, sound_instance* sound, int32_t channels, int32_t software);
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq);
 
     bool load_music(int32_t id, const char* path, int32_t c);

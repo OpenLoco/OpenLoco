@@ -35,31 +35,125 @@ namespace openloco::audio
     };
 #pragma pack(pop)
 
+    struct audio_format
+    {
+        int32_t frequency{};
+        int32_t format{};
+        int32_t channels{};
+    };
+
+    struct sample
+    {
+        void* pcm{};
+        size_t len{};
+        Mix_Chunk* chunk{};
+    };
+
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     constexpr int32_t play_at_location = 0x8001;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
-    static std::vector<Mix_Chunk*> _samples;
+
+    static audio_format _outputFormat;
+    static std::vector<sample> _samples;
     static Mix_Music* _music_track;
     static int32_t _current_music = -1;
 
     static constexpr int32_t volume_loco_to_sdl(int32_t loco)
     {
-        auto ratio = std::clamp(0.0f, (loco + 2560) / 2560.0f, 1.0f);
+        constexpr auto range = 3500.0f;
+        auto ratio = std::clamp(0.0f, (loco + range) / range, 1.0f);
         auto vol = (int32_t)(ratio * SDL_MIX_MAXVOLUME);
         return vol;
     }
 
-    static Mix_Chunk* load_sound_from_wave_memory(const WAVEFORMATEX& format, void* pcm, size_t pcmLen)
+    constexpr std::tuple<int32_t, int32_t> pan_loco_to_sdl(int32_t pan)
     {
-        auto mem = (uint8_t*)std::malloc(pcmLen);
-        std::memcpy(mem, pcm, pcmLen);
-        return Mix_QuickLoad_RAW(mem, pcmLen);
+        constexpr auto range = 2048.0f;
+        if (pan == 0)
+        {
+            return std::make_tuple(0, 0);
+        }
+        else if (pan < 0)
+        {
+            auto r = (int32_t)(255 - ((pan / -range) * 255));
+            return std::make_tuple(255, r);
+        }
+        else
+        {
+            auto r = (int32_t)(255 - ((pan / range) * 255));
+            return std::make_tuple(r, 255);
+        }
     }
 
-    static std::vector<Mix_Chunk*> load_sounds_from_css(const fs::path& path)
+    static sample load_sound_from_wave_memory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
-        std::vector<Mix_Chunk*> results;
+        // Build a CVT to convert the audio
+        const auto& dstFormat = _outputFormat;
+        SDL_AudioCVT cvt{};
+        auto cr = SDL_BuildAudioCVT(
+            &cvt,
+            AUDIO_S16LSB,
+            format.nChannels,
+            format.nSamplesPerSec,
+            dstFormat.format,
+            dstFormat.channels,
+            dstFormat.frequency);
+
+        if (cr == -1)
+        {
+            console::error("Error during SDL_BuildAudioCVT: %s", SDL_GetError());
+            return {};
+        }
+        else if (cr == 0)
+        {
+            // No conversion necessary
+            sample s;
+            s.pcm = std::malloc(pcmLen);
+            if (s.pcm == nullptr)
+            {
+                throw std::bad_alloc();
+            }
+            s.len = pcmLen;
+            std::memcpy(s.pcm, pcm, s.len);
+            s.chunk = Mix_QuickLoad_RAW((uint8_t*)s.pcm, pcmLen);
+            return s;
+        }
+        else
+        {
+            // Allocate a new buffer with src data for conversion
+            cvt.len = pcmLen;
+            cvt.buf = (uint8_t*)std::malloc(cvt.len * cvt.len_mult);
+            if (cvt.buf == nullptr)
+            {
+                throw std::bad_alloc();
+            }
+            std::memcpy(cvt.buf, pcm, pcmLen);
+            if (SDL_ConvertAudio(&cvt) != 0)
+            {
+                console::error("Error during SDL_ConvertAudio: %s", SDL_GetError());
+                return {};
+            }
+
+            // Trim converted buffer
+            cvt.buf = (uint8_t*)std::realloc(cvt.buf, cvt.len_cvt);
+            if (cvt.buf == nullptr)
+            {
+                throw std::bad_alloc();
+            }
+
+            sample s;
+            s.pcm = cvt.buf;
+            s.len = cvt.len_cvt;
+            s.chunk = Mix_QuickLoad_RAW(cvt.buf, cvt.len_cvt);
+            return s;
+        }
+    }
+
+    static std::vector<sample> load_sounds_from_css(const fs::path& path)
+    {
+        console::log("load_sounds_from_css(%s)", path.string().c_str());
+        std::vector<sample> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
         if (fs.is_open())
         {
@@ -81,8 +175,8 @@ namespace openloco::audio
                 pcm.resize(pcmLen);
                 read_data(fs, pcm.data(), pcmLen);
 
-                auto chunk = load_sound_from_wave_memory(format, pcm.data(), pcmLen);
-                results.push_back(chunk);
+                auto s = load_sound_from_wave_memory(format, pcm.data(), pcmLen);
+                results.push_back(s);
             }
         }
         return results;
@@ -92,7 +186,8 @@ namespace openloco::audio
     {
         for (size_t i = 0; i < _samples.size(); i++)
         {
-            Mix_FreeChunk(_samples[i]);
+            Mix_FreeChunk(_samples[i].chunk);
+            std::free(_samples[i].pcm);
         }
         _samples.clear();
     }
@@ -109,7 +204,11 @@ namespace openloco::audio
     {
         // call(0x00404E53);
 
-        if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0)
+        auto& format = _outputFormat;
+        format.frequency = MIX_DEFAULT_FREQUENCY;
+        format.format = MIX_DEFAULT_FORMAT;
+        format.channels = MIX_DEFAULT_CHANNELS;
+        if (Mix_OpenAudio(format.frequency, format.format, format.channels, 1024) != 0)
         {
             console::error("Mix_OpenAudio failed: %s", Mix_GetError());
             return;
@@ -186,19 +285,30 @@ namespace openloco::audio
     }
 
     // 0x00404B68
-    bool prepare_sound(int32_t soundId, sound_instance* sound, int32_t channels, int32_t software)
+    bool prepare_sound(sound_id id, sound_instance* sound, int32_t channels, int32_t software)
     {
-        console::log("prepare_sound(%d, 0x%X, %d, %d)", soundId, (int32_t)sound, channels, software);
+        console::log("prepare_sound(%d, 0x%X, %d, %d)", id, (int32_t)sound, channels, software);
+        sound->id = (uint16_t)id;
         return false;
     }
 
     // 0x00404D7A
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log("mix_sound(0x%Xz, %d, %d, %d, %d)", (int32_t)sound, b, volume, pan, freq);
-        if (b >= 0 && b < (int32_t)_samples.size())
+        console::log("mix_sound(0x%X, %d, %d, %d, %d)", (int32_t)sound, b, volume, pan, freq);
+
+        auto id = sound->id;
+        if (id >= 0 && id < (int32_t)_samples.size())
         {
-            Mix_PlayChannel(-1, _samples[b], 1);
+            auto& sample = _samples[id];
+            if (sample.chunk != nullptr)
+            {
+                auto channel = Mix_PlayChannel(-1, sample.chunk, 0);
+                Mix_Volume(channel, volume_loco_to_sdl(volume));
+
+                auto [left, right] = pan_loco_to_sdl(pan);
+                Mix_SetPanning(channel, left, right);
+            }
         }
     }
 
