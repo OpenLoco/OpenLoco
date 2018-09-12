@@ -10,7 +10,9 @@
 #include "../windowmgr.h"
 #include "channel.h"
 #include <SDL2/SDL_mixer.h>
+#include <cassert>
 #include <fstream>
+#include <unordered_map>
 
 #define __USE_NEW_MIXER__
 
@@ -55,6 +57,19 @@ namespace openloco::audio
         constexpr bool is_free() { return id == sound_entry_null; }
     };
     static_assert(sizeof(sound_entry) == 22);
+
+    struct sound_object_data
+    {
+        int32_t var_00;
+        int32_t offset;
+        uint32_t length;
+        WAVEFORMATEX pcm_header;
+
+        const void* pcm()
+        {
+            return this + sizeof(sound_object_data);
+        }
+    };
 #pragma pack(pop)
 
     struct audio_format
@@ -81,6 +96,7 @@ namespace openloco::audio
     static audio_format _outputFormat;
     static std::vector<channel> _channels;
     static std::vector<sample> _samples;
+    static std::unordered_map<uint16_t, sample> _object_samples;
     static Mix_Music* _music_track;
     static int32_t _current_music = -1;
 
@@ -390,8 +406,9 @@ namespace openloco::audio
     // 0x0048A4BF
     void play_sound(thing* t)
     {
+        console::error("play_sound(thing*) not implemented");
 #ifdef DEBUG
-        throw std::runtime_error("Not implemented");
+        assert(false);
 #endif
     }
 
@@ -500,21 +517,48 @@ namespace openloco::audio
         mix_sound((sound_id)sound->id, b, volume, pan, freq);
     }
 
+    static sample* get_sound_sample(sound_id id)
+    {
+        if (is_object_sound_id(id))
+        {
+            // TODO use a LRU queue for object samples
+            auto sr = _object_samples.find((uint16_t)id);
+            if (sr == _object_samples.end())
+            {
+                auto obj = get_sound_object(id);
+                if (obj != nullptr)
+                {
+                    auto data = (sound_object_data*)obj->data;
+                    assert(data->offset == 8);
+                    auto sample = load_sound_from_wave_memory(data->pcm_header, data->pcm(), data->length);
+                    _object_samples[(int16_t)id] = sample;
+                    return &_object_samples[(int16_t)id];
+                }
+            }
+            else
+            {
+                return &sr->second;
+            }
+        }
+        else if ((int32_t)id >= 0 && (int32_t)id < (int32_t)_samples.size())
+        {
+            return &_samples[(int32_t)id];
+        }
+        return nullptr;
+    }
+
     static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq)
     {
         console::log("mix_sound(%d, %d, %d, %d, %d)", (int32_t)id, b, volume, pan, freq);
-        if ((int32_t)id >= 0 && (int32_t)id < (int32_t)_samples.size())
+        auto sample = get_sound_sample(id);
+        if (sample != nullptr && sample->chunk != nullptr)
         {
-            auto& sample = _samples[(int32_t)id];
-            if (sample.chunk != nullptr)
-            {
-                auto channel = Mix_PlayChannel(-1, sample.chunk, 0);
-                auto sdlv = volume_loco_to_sdl(volume);
-                Mix_Volume(channel, sdlv);
+            auto channel = Mix_PlayChannel(-1, sample->chunk, 0);
+            auto sdlv = volume_loco_to_sdl(volume);
+            Mix_Volume(channel, sdlv);
 
-                auto [left, right] = pan_loco_to_sdl(pan);
-                Mix_SetPanning(channel, left, right);
-            }
+            auto [left, right] = pan_loco_to_sdl(pan);
+            Mix_SetPanning(channel, left, right);
         }
     }
 
