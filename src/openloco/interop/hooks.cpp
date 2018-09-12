@@ -541,10 +541,6 @@ static void register_no_win32_hooks()
     write_jmp(0x40832c, (void*)&fn_FindClose);
     write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
-    // sound
-    write_ret(0x489cb5); // audio::play_sound
-    write_ret(0x489f1b); // audio::play_sound
-
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
     {
@@ -658,12 +654,26 @@ void openloco::interop::register_hooks()
     write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
     write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
 
+#ifndef __USE_OLD_CODE__
+    register_hook(
+        0x0048A4BF,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((thing*)regs.esi);
+            return 0;
+        });
     register_hook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
             return 0;
         });
+    register_hook(
+        0x00489F1B,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            return 0;
+        });
+#endif
 
     register_hook(
         0x004416B5,

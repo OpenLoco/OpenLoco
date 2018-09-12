@@ -84,6 +84,7 @@ namespace openloco::audio
     static Mix_Music* _music_track;
     static int32_t _current_music = -1;
 
+    static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq);
 
     static constexpr bool is_music_channel(channel_id id)
@@ -102,10 +103,11 @@ namespace openloco::audio
 
     int32_t volume_loco_to_sdl(int32_t loco)
     {
-        constexpr auto range = 3500.0f;
-        auto ratio = std::clamp(0.0f, (loco + range) / range, 1.0f);
-        auto vol = (int32_t)(ratio * SDL_MIX_MAXVOLUME);
-        return vol;
+        return (int)(SDL_MIX_MAXVOLUME * (SDL_pow(10, (float)loco / 2000)));
+        // constexpr auto range = 3500.0f;
+        // auto ratio = std::clamp(0.0f, (loco + range) / range, 1.0f);
+        // auto vol = (int32_t)(ratio * SDL_MIX_MAXVOLUME);
+        // return vol;
     }
 
     static sample load_sound_from_wave_memory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
@@ -230,7 +232,9 @@ namespace openloco::audio
     // 0x00404E53
     void initialise_dsound()
     {
-        // call(0x00404E53);
+#ifdef __USE_OLD_CODE__
+        call(0x00404E53);
+#endif
 
         auto& format = _outputFormat;
         format.frequency = MIX_DEFAULT_FREQUENCY;
@@ -248,7 +252,9 @@ namespace openloco::audio
     // 0x00404E58
     void dispose_dsound()
     {
-        // call(0x00404E58);
+#ifdef __USE_OLD_CODE__
+        call(0x00404E58);
+#endif
 
         dispose_samples();
         dispose_channels();
@@ -259,7 +265,9 @@ namespace openloco::audio
     // 0x004899E4
     void initialise()
     {
-        // call(0x004899E4);
+#ifdef __USE_OLD_CODE__
+        call(0x004899E4);
+#endif
 
         auto css1path = environment::get_path(environment::path_id::css1);
         _samples = load_sounds_from_css(css1path);
@@ -278,55 +286,7 @@ namespace openloco::audio
         // call(0x00489C58);
     }
 
-    void play_sound(sound_id id, loc16 loc)
-    {
-        play_sound(id, loc, play_at_location);
-    }
-
-    void play_sound(sound_id id, int32_t pan)
-    {
-        play_sound(id, {}, play_at_location);
-    }
-
-    // 0x00489F1B
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound)
-    {
-        registers regs;
-        regs.eax = (int32_t)id;
-        regs.eax |= obj_sound ? 0x8000 : 0;
-        regs.ecx = loc.x;
-        regs.edx = loc.y;
-        regs.ebp = loc.z;
-        regs.ebx = frequency;
-        regs.edi = volume;
-        call(0x00489F1B, regs);
-    }
-
-    static ui::viewport_pos get_view_coords(loc16 loc, int32_t rotation)
-    {
-        ui::viewport_pos result;
-        switch (rotation & 3)
-        {
-            case 0:
-                result.x = loc.y - loc.x;
-                result.y = ((loc.y + loc.x) / 2) - loc.z;
-                break;
-            case 1:
-                result.x = -loc.x - loc.y;
-                result.y = ((loc.y - loc.x) / 2) - loc.z;
-                break;
-            case 2:
-                result.x = loc.x - loc.y;
-                result.y = ((-loc.y - loc.x) / 2) - loc.z;
-                break;
-            case 3:
-                result.x = loc.y + loc.x;
-                result.y = ((loc.x - loc.y) / 2) - loc.z;
-                break;
-        }
-        return result;
-    }
-
+#ifndef __USE_OLD_CODE__
     static viewport* find_best_viewport_for_sound(viewport_pos vpos)
     {
         auto w = windowmgr::find(window_type::main, 0);
@@ -355,22 +315,50 @@ namespace openloco::audio
         return nullptr;
     }
 
-    static int32_t get_volume_for_sound_id(sound_id id)
-    {
-        loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
-        return unk_4FEAB8[(int32_t)id];
-    }
-
-    constexpr bool is_object_sound_id(sound_id id)
-    {
-        return ((int32_t)id & 0x8000);
-    }
-
     static sound_object* get_sound_object(sound_id id)
     {
-        auto idx = (int32_t)id & 0x8000;
+        auto idx = (int32_t)id & ~0x8000;
         return objectmgr::get<sound_object>(idx);
     }
+
+    static int32_t get_volume_for_sound_id(sound_id id)
+    {
+        if (is_object_sound_id(id))
+        {
+            auto obj = get_sound_object(id);
+            if (obj != nullptr)
+            {
+                return obj->volume;
+            }
+            return 0;
+        }
+        else
+        {
+            loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
+            return unk_4FEAB8[(int32_t)id];
+        }
+    }
+
+    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    {
+        auto volume = 0;
+        auto zVol = 0;
+        auto tile = map::tilemgr::get(mpos);
+        if (!tile.is_null())
+        {
+            auto surface = tile.surface();
+            if (surface != nullptr)
+            {
+                if ((surface->base_z() * 4) - 5 > mpos.z)
+                {
+                    zVol = 8;
+                }
+            }
+            volume = ((-1024 * viewport.zoom - 1) << zVol) + 1;
+        }
+        return volume;
+    }
+#endif
 
 #ifndef __USE_NEW_MIXER__
     static sound_entry* get_free_sound_entry()
@@ -389,37 +377,42 @@ namespace openloco::audio
     }
 #endif
 
-    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    void play_sound(sound_id id, loc16 loc)
     {
-        auto zVol = 0;
-        auto tile = map::tilemgr::get(mpos);
-        auto surface = tile.surface();
-        if (surface != nullptr)
-        {
-            if ((surface->base_z() * 4) - 5 > mpos.z)
-            {
-                zVol = 8;
-            }
-        }
+        play_sound(id, loc, play_at_location);
+    }
 
-        auto volume = ((-1024 * viewport.zoom - 1) << zVol) + 1;
-        if (is_object_sound_id(id))
-        {
-            auto obj = get_sound_object(id);
-            if (obj != nullptr)
-            {
-                volume += obj->volume;
-            }
-        }
-        else
-        {
-            volume += get_volume_for_sound_id(id);
-        }
-        return volume;
+    void play_sound(sound_id id, int32_t pan)
+    {
+        play_sound(id, {}, play_at_location);
+    }
+
+    // 0x0048A4BF
+    void play_sound(thing* t)
+    {
+#ifdef DEBUG
+        throw std::runtime_error("Not implemented");
+#endif
+    }
+
+    // 0x00489F1B
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency)
+    {
+#ifdef __USE_OLD_CODE__
+        registers regs;
+        regs.eax = (int32_t)id;
+        regs.ecx = loc.x;
+        regs.edx = loc.y;
+        regs.ebp = loc.z;
+        regs.ebx = frequency;
+        regs.edi = volume;
+        call(0x00489F1B, regs);
+#else
+        play_sound(id, loc, volume, play_at_location, frequency);
+#endif
     }
 
     // 0x00489CB5
-    // pan is in UI pixels or known constant
     void play_sound(sound_id id, loc16 loc, int32_t pan)
     {
 #ifdef __USE_OLD_CODE__
@@ -431,22 +424,31 @@ namespace openloco::audio
         regs.ebx = pan;
         call(0x00489CB5, regs);
 #else
+        play_sound(id, loc, 0, pan, 0);
+#endif
+    }
+
+#ifndef __USE_OLD_CODE__
+    // 0x00489CB5 / 0x00489F1B
+    // pan is in UI pixels or known constant
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
+    {
         loco_global<uint8_t, 0x0050D555> unk_9AF59D;
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
         if (unk_9AF59D & 1)
         {
-            auto volume = 0;
+            volume += get_volume_for_sound_id(id);
             if (pan == play_at_location)
             {
-                auto vpos = get_view_coords(loc, current_rotation);
+                auto vpos = viewport::map_from_3d(loc, current_rotation);
                 auto viewport = find_best_viewport_for_sound(vpos);
                 if (viewport == nullptr)
                 {
                     return;
                 }
 
-                volume = calculate_volume_from_viewport(id, { loc.x, loc.y }, *viewport);
+                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, *viewport);
                 pan = viewport->map_to_ui(vpos).x;
                 if (volume < -10000)
                 {
@@ -466,23 +468,23 @@ namespace openloco::audio
             else if (pan != 0)
             {
                 auto uiWidth = std::max(64, ui::width());
-                pan = (((pan << 16) / uiWidth) - 0x8000) * 32;
+                pan = (((pan << 16) / uiWidth) - 0x8000) >> 4;
             }
 
 #ifdef __USE_NEW_MIXER__
-            mix_sound(id, 0, volume, pan, 0);
+            mix_sound(id, 0, volume, pan, frequency);
 #else
             auto entry = get_free_sound_entry();
             if (entry != nullptr)
             {
                 entry->id = (int16_t)id;
                 prepare_sound(id, &entry->sound, 1, cfg.force_software_audio_mixer);
-                mix_sound(&entry->sound, 0, volume, pan, 0);
+                mix_sound(&entry->sound, 0, volume, pan, frequency);
             }
 #endif
         }
-#endif
     }
+#endif
 
     // 0x00404B68
     bool prepare_sound(sound_id id, sound_instance* sound, int32_t channels, int32_t software)
@@ -507,7 +509,8 @@ namespace openloco::audio
             if (sample.chunk != nullptr)
             {
                 auto channel = Mix_PlayChannel(-1, sample.chunk, 0);
-                Mix_Volume(channel, volume_loco_to_sdl(volume));
+                auto sdlv = volume_loco_to_sdl(volume);
+                Mix_Volume(channel, sdlv);
 
                 auto [left, right] = pan_loco_to_sdl(pan);
                 Mix_SetPanning(channel, left, right);

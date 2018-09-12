@@ -237,7 +237,7 @@ namespace openloco::ui
 
         constexpr bool contains(const viewport_pos& vpos)
         {
-            return (vpos.y >= view_y && vpos.y < view_height && vpos.x >= view_x && vpos.x < view_width);
+            return (vpos.y >= view_y && vpos.y < vpos.y + view_height && vpos.x >= view_x && vpos.x < vpos.x + view_width);
         }
 
         /**
@@ -249,6 +249,8 @@ namespace openloco::ui
             auto uiY = y + ((vpos.y - view_y) >> zoom);
             return { uiX, uiY };
         }
+
+        static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
     };
 
     struct viewport_config

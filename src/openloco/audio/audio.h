@@ -3,6 +3,11 @@
 #include "../types.hpp"
 #include <tuple>
 
+namespace openloco
+{
+    struct thing;
+}
+
 namespace openloco::audio
 {
     struct sound_instance;
@@ -58,10 +63,11 @@ namespace openloco::audio
 
     void pause_sound();
     void unpause_sound();
+    void play_sound(thing* t);
     void play_sound(sound_id id, loc16 loc);
     void play_sound(sound_id id, loc16 loc, int32_t pan);
     void play_sound(sound_id id, int32_t pan);
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound);
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
 
     bool prepare_sound(sound_id soundId, sound_instance* sound, int32_t channels, int32_t software);
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq);
@@ -82,6 +88,16 @@ namespace openloco::audio
      *          library header includes in our own headers.
      */
     int32_t volume_loco_to_sdl(int32_t loco);
+
+    constexpr bool is_object_sound_id(sound_id id)
+    {
+        return ((int32_t)id & 0x8000);
+    }
+
+    constexpr sound_id make_object_sound_id(sound_id id)
+    {
+        return (sound_id)((int32_t)id | 0x8000);
+    }
 
     /**
      * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
