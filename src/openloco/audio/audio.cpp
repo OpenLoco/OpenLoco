@@ -59,31 +59,12 @@ namespace openloco::audio
     static Mix_Music* _music_track;
     static int32_t _current_music = -1;
 
-    static constexpr int32_t volume_loco_to_sdl(int32_t loco)
+    int32_t volume_loco_to_sdl(int32_t loco)
     {
         constexpr auto range = 3500.0f;
         auto ratio = std::clamp(0.0f, (loco + range) / range, 1.0f);
         auto vol = (int32_t)(ratio * SDL_MIX_MAXVOLUME);
         return vol;
-    }
-
-    constexpr std::tuple<int32_t, int32_t> pan_loco_to_sdl(int32_t pan)
-    {
-        constexpr auto range = 2048.0f;
-        if (pan == 0)
-        {
-            return std::make_tuple(0, 0);
-        }
-        else if (pan < 0)
-        {
-            auto r = (int32_t)(255 - ((pan / -range) * 255));
-            return std::make_tuple(255, r);
-        }
-        else
-        {
-            auto r = (int32_t)(255 - ((pan / range) * 255));
-            return std::make_tuple(r, 255);
-        }
     }
 
     static sample load_sound_from_wave_memory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
@@ -313,7 +294,7 @@ namespace openloco::audio
     }
 
     // 0x0040194E
-    bool load_music(int32_t id, const char* path, int32_t c)
+    bool load_channel(channel_id id, const char* path, int32_t c)
     {
         console::log("load_music(%d, %s, %d)", id, path, c);
         auto music = Mix_LoadMUS(path);
@@ -330,7 +311,7 @@ namespace openloco::audio
     }
 
     // 0x00401999
-    bool play_music(int32_t id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
+    bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
         console::log("play_music(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (_music_track != nullptr)
@@ -338,8 +319,8 @@ namespace openloco::audio
             auto loops = loop ? -1 : 1;
             if (Mix_PlayMusic(_music_track, loops) == 0)
             {
-                set_music_volume(id, volume);
-                _current_music = id;
+                set_channel_volume(id, volume);
+                _current_music = (int32_t)id;
                 return true;
             }
         }
@@ -347,10 +328,10 @@ namespace openloco::audio
     }
 
     // 0x00401A05
-    void stop_music(int32_t id)
+    void stop_channel(channel_id id)
     {
         console::log("stop_music(%d)", id);
-        if (_current_music == id)
+        if (_current_music == (int32_t)id)
         {
             Mix_HaltMusic();
             _current_music = -1;
@@ -358,16 +339,16 @@ namespace openloco::audio
     }
 
     // 0x00401AD3
-    void set_music_volume(int32_t id, int32_t volume)
+    void set_channel_volume(channel_id id, int32_t volume)
     {
         console::log("set_music_volume(%d, %d)", id, volume);
         Mix_VolumeMusic(volume_loco_to_sdl(volume));
     }
 
     // 0x00401B10
-    bool is_music_playing(int32_t id)
+    bool is_channel_playing(channel_id id)
     {
-        if (_current_music == id)
+        if (_current_music == (int32_t)id)
         {
             return Mix_PlayingMusic() != 0;
         }

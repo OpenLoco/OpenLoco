@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../types.hpp"
+#include <tuple>
 
 namespace openloco::audio
 {
@@ -42,7 +43,7 @@ namespace openloco::audio
         breakdown_6 = 31,
     };
 
-    enum class music_channel
+    enum class channel_id
     {
         bgm,
         unk_1,
@@ -64,13 +65,42 @@ namespace openloco::audio
     bool prepare_sound(sound_id soundId, sound_instance* sound, int32_t channels, int32_t software);
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq);
 
-    bool load_music(int32_t id, const char* path, int32_t c);
-    bool play_music(int32_t id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
-    void stop_music(int32_t id);
-    void set_music_volume(int32_t id, int32_t volume);
-    bool is_music_playing(int32_t id);
+    bool load_channel(channel_id id, const char* path, int32_t c);
+    bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
+    void stop_channel(channel_id id);
+    void set_channel_volume(channel_id id, int32_t volume);
+    bool is_channel_playing(channel_id id);
 
     void update_ambient_noise();
     void play_background_music();
     void play_title_screen_music();
+
+    /**
+     * Converts a Locomotion volume range to SDL2.
+     * @remarks Not constexpr as it requires an SDL2 macro and we avoid
+     *          library header includes in our own headers.
+     */
+    int32_t volume_loco_to_sdl(int32_t loco);
+
+    /**
+     * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
+     */
+    constexpr std::tuple<int32_t, int32_t> pan_loco_to_sdl(int32_t pan)
+    {
+        constexpr auto range = 2048.0f;
+        if (pan == 0)
+        {
+            return std::make_tuple(0, 0);
+        }
+        else if (pan < 0)
+        {
+            auto r = (int32_t)(255 - ((pan / -range) * 255));
+            return std::make_tuple(255, r);
+        }
+        else
+        {
+            auto r = (int32_t)(255 - ((pan / range) * 255));
+            return std::make_tuple(r, 255);
+        }
+    }
 }

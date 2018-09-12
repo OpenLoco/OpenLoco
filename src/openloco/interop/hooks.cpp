@@ -49,29 +49,29 @@ static void CDECL audio_mix_sound(int a0, int a1, int a2, int a3, int a4)
     audio::mix_sound((audio::sound_instance*)a0, a1, a2, a3, a4);
 }
 
-static int32_t CDECL audio_load_music(int a0, const char* a1, int a2, int a3, int a4)
+static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
 {
-    return audio::load_music(a0, a1, a2) ? 1 : 0;
+    return audio::load_channel((audio::channel_id)a0, a1, a2) ? 1 : 0;
 }
 
-static int32_t CDECL audio_play_music(int a0, int a1, int a2, int a3, int a4)
+static int32_t CDECL audio_play_channel(int a0, int a1, int a2, int a3, int a4)
 {
-    return audio::play_music(a0, a1, a2, a3, a4) ? 1 : 0;
+    return audio::play_channel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
 }
 
-static void CDECL audio_stop_music(int a0, int a1, int a2, int a3, int a4)
+static void CDECL audio_stop_channel(int a0, int a1, int a2, int a3, int a4)
 {
-    audio::stop_music(a0);
+    audio::stop_channel((audio::channel_id)a0);
 }
 
-static void CDECL audio_set_music_volume(int a0, int a1)
+static void CDECL audio_set_channel_volume(int a0, int a1)
 {
-    audio::set_music_volume(a0, a1);
+    audio::set_channel_volume((audio::channel_id)a0, a1);
 }
 
-static int32_t CDECL audio_is_music_playing(int a0)
+static int32_t CDECL audio_is_channel_playing(int a0)
 {
-    return audio::is_music_playing(a0) ? 1 : 0;
+    return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
 }
 
 static void STDCALL fn_40447f()
@@ -652,11 +652,11 @@ void openloco::interop::register_hooks()
 
     write_jmp(0x00404B68, (void*)&audio_prepare_sound);
     write_jmp(0x00404D7A, (void*)&audio_mix_sound);
-    write_jmp(0x0040194E, (void*)&audio_load_music);
-    write_jmp(0x00401999, (void*)&audio_play_music);
-    write_jmp(0x00401A05, (void*)&audio_stop_music);
-    write_jmp(0x00401AD3, (void*)&audio_set_music_volume);
-    write_jmp(0x00401B10, (void*)&audio_is_music_playing);
+    write_jmp(0x0040194E, (void*)&audio_load_channel);
+    write_jmp(0x00401999, (void*)&audio_play_channel);
+    write_jmp(0x00401A05, (void*)&audio_stop_channel);
+    write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
+    write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
 
     register_hook(
         0x004416B5,
