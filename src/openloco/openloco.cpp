@@ -285,12 +285,6 @@ namespace openloco
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
-    // 0x0048AC66
-    static void play_title_screen_music()
-    {
-        call(0x0048AC66);
-    }
-
     // 0x0046A794
     static void tick()
     {
@@ -468,8 +462,8 @@ namespace openloco
 
                 addr<0x00525F62, int16_t>()++;
                 call(0x0043D9D4);
-                call(0x0048A78D);
-                play_title_screen_music();
+                audio::play_background_music();
+                audio::play_title_screen_music();
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() == 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
@@ -554,7 +548,7 @@ namespace openloco
         companymgr::update();
         invalidate_map_animations();
         call(0x0048A73B);
-        call(0x0048ACFD);
+        audio::update_ambient_noise();
         call(0x00444387);
 
         addr<0x009C871C, uint8_t>() = addr<0x00F25374, uint8_t>();
