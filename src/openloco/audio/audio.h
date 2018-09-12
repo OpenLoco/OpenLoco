@@ -47,9 +47,10 @@ namespace openloco::audio
     {
         bgm,
         unk_1,
-        ocean,
+        ambient,
         title,
     };
+    constexpr int32_t num_reserved_channels = 4;
 
     void initialise_dsound();
     void dispose_dsound();

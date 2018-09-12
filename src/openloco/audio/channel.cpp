@@ -10,6 +10,12 @@ channel::channel(int32_t cid)
 {
 }
 
+channel::channel(const channel&& c)
+    : id(c.id)
+    , _chunk(c._chunk)
+{
+}
+
 channel::~channel()
 {
     Mix_FreeChunk(_chunk);

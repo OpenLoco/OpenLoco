@@ -22,10 +22,12 @@ namespace openloco::audio
         int32_t const id{};
 
     private:
-        Mix_Chunk* _chunk;
+        Mix_Chunk* _chunk{};
 
     public:
         channel(int32_t id);
+        channel(const channel&) = delete;
+        channel(const channel&&);
         ~channel();
         bool load(const fs::path& path);
         bool play(bool loop);
