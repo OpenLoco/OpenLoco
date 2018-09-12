@@ -38,13 +38,11 @@ namespace openloco::audio
         call(0x00489C58);
     }
 
-    // 0x00489CB5
     void play_sound(sound_id id, loc16 loc)
     {
         play_sound(id, loc, play_at_location);
     }
 
-    // 0x00489CB5
     void play_sound(sound_id id, int32_t pan)
     {
         play_sound(id, {}, play_at_location);
@@ -64,6 +62,7 @@ namespace openloco::audio
         call(0x00489F1B, regs);
     }
 
+    // 0x00489CB5
     void play_sound(sound_id id, loc16 loc, int32_t pan)
     {
         registers regs;
@@ -73,5 +72,23 @@ namespace openloco::audio
         regs.bp = loc.z;
         regs.ebx = pan;
         call(0x00489CB5, regs);
+    }
+
+    // 0x0048ACFD
+    void update_ambient_noise()
+    {
+        call(0x0048ACFD);
+    }
+
+    // 0x0048A78D
+    void play_background_music()
+    {
+        call(0x0048A78D);
+    }
+
+    // 0x0048AC66
+    void play_title_screen_music()
+    {
+        call(0x0048AC66);
     }
 }

@@ -19,11 +19,11 @@ namespace openloco::environment
         g1,
         plugin1,
         plugin2,
-        css1,
-        css2,
-        css3,
-        css4,
-        css5,
+        css1, // Sound effects
+        css2, // Wind (mountains)
+        css3, // Ocean
+        css4, // Jungle
+        css5, // Title music
         gamecfg,
         kanji,
         music_20s1,
