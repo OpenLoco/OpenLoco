@@ -3,6 +3,7 @@
 #include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
 #include "ui.h"
+#include "types.hpp"
 #include <cstdint>
 
 namespace openloco::ui
@@ -204,6 +205,22 @@ namespace openloco::ui
         }
     };
 
+    struct viewport_pos
+    {
+        int16_t x{};
+        int16_t y{};
+
+        viewport_pos()
+            : viewport_pos(0, 0)
+        {
+        }
+        viewport_pos(int16_t _x, int16_t _y)
+            : x(_x)
+            , y(_y)
+        {
+        }
+    };
+
     struct viewport
     {
         int16_t width;       // 0x00
@@ -217,6 +234,21 @@ namespace openloco::ui
         uint8_t zoom;        // 0x10
         uint8_t pad_11;
         uint16_t var_12; // 0x12, maybe flags
+
+        constexpr bool contains(const viewport_pos& vpos)
+        {
+            return (vpos.y >= view_y && vpos.y < view_height && vpos.x >= view_x && vpos.x < view_width);
+        }
+
+        /**
+         * Maps a 2D viewport position to a UI (screen) position.
+         */
+        xy32 map_to_ui(const viewport_pos& vpos)
+        {
+            auto uiX = x + ((vpos.x - view_x) >> zoom);
+            auto uiY = y + ((vpos.y - view_y) >> zoom);
+            return { uiX, uiY };
+        }
     };
 
     struct viewport_config

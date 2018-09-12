@@ -831,7 +831,7 @@ namespace openloco::ui::options
             auto& cfg = openloco::config::get();
             cfg.sound_quality = itemIndex;
             cfg.var_25 = _50D5B5[itemIndex];
-            cfg.var_26 = _50D5B8[itemIndex];
+            cfg.max_sound_instances = _50D5B8[itemIndex];
             openloco::config::write();
 
             w->invalidate();

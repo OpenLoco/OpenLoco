@@ -659,6 +659,13 @@ void openloco::interop::register_hooks()
     write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
 
     register_hook(
+        0x00489CB5,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            return 0;
+        });
+
+    register_hook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             using namespace openloco::environment;

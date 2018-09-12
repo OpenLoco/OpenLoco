@@ -1,18 +1,28 @@
 #include "audio.h"
+#include "../config.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
+#include "../map/tilemgr.h"
+#include "../objects/objectmgr.h"
+#include "../objects/sound_object.h"
 #include "../utility/stream.hpp"
+#include "../windowmgr.h"
 #include "channel.h"
 #include <SDL2/SDL_mixer.h>
 #include <fstream>
 
+#define __USE_NEW_MIXER__
+
 using namespace openloco::environment;
 using namespace openloco::interop;
+using namespace openloco::ui;
 using namespace openloco::utility;
 
 namespace openloco::audio
 {
+    constexpr int16_t sound_entry_null = -1;
+
 #pragma pack(push, 1)
     struct WAVEFORMATEX
     {
@@ -34,6 +44,17 @@ namespace openloco::audio
         int32_t var_0C;
         sound_instance* next;
     };
+    static_assert(sizeof(sound_instance) == 20);
+
+    struct sound_entry
+    {
+        int16_t id;
+        sound_instance sound;
+
+        void free() { id = sound_entry_null; }
+        constexpr bool is_free() { return id == sound_entry_null; }
+    };
+    static_assert(sizeof(sound_entry) == 22);
 #pragma pack(pop)
 
     struct audio_format
@@ -55,12 +76,15 @@ namespace openloco::audio
     constexpr int32_t num_sound_channels = 16;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
+    static loco_global<sound_entry[10], 0x0050D438> _sound_entries;
 
     static audio_format _outputFormat;
     static std::vector<channel> _channels;
     static std::vector<sample> _samples;
     static Mix_Music* _music_track;
     static int32_t _current_music = -1;
+
+    static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq);
 
     static constexpr bool is_music_channel(channel_id id)
     {
@@ -278,9 +302,127 @@ namespace openloco::audio
         call(0x00489F1B, regs);
     }
 
+    static ui::viewport_pos get_view_coords(loc16 loc, int32_t rotation)
+    {
+        ui::viewport_pos result;
+        switch (rotation & 3)
+        {
+            case 0:
+                result.x = loc.y - loc.x;
+                result.y = ((loc.y + loc.x) / 2) - loc.z;
+                break;
+            case 1:
+                result.x = -loc.x - loc.y;
+                result.y = ((loc.y - loc.x) / 2) - loc.z;
+                break;
+            case 2:
+                result.x = loc.x - loc.y;
+                result.y = ((-loc.y - loc.x) / 2) - loc.z;
+                break;
+            case 3:
+                result.x = loc.y + loc.x;
+                result.y = ((loc.x - loc.y) / 2) - loc.z;
+                break;
+        }
+        return result;
+    }
+
+    static viewport* find_best_viewport_for_sound(viewport_pos vpos)
+    {
+        auto w = windowmgr::find(window_type::main, 0);
+        if (w != nullptr)
+        {
+            auto viewport = w->viewports[0];
+            if (viewport != nullptr && viewport->contains(vpos))
+            {
+                return viewport;
+            }
+        }
+
+        for (auto i = (int32_t)windowmgr::num_windows(); i >= 0; i--)
+        {
+            w = windowmgr::get(i);
+            if (w != nullptr && w->type != window_type::main && w->type != window_type::unk_36)
+            {
+                auto viewport = w->viewports[0];
+                if (viewport != nullptr && viewport->contains(vpos))
+                {
+                    return viewport;
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
+    static int32_t get_volume_for_sound_id(sound_id id)
+    {
+        loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
+        return unk_4FEAB8[(int32_t)id];
+    }
+
+    constexpr bool is_object_sound_id(sound_id id)
+    {
+        return ((int32_t)id & 0x8000);
+    }
+
+    static sound_object* get_sound_object(sound_id id)
+    {
+        auto idx = (int32_t)id & 0x8000;
+        return objectmgr::get<sound_object>(idx);
+    }
+
+#ifndef __USE_NEW_MIXER__
+    static sound_entry* get_free_sound_entry()
+    {
+        const auto& cfg = config::get();
+        const auto max_sounds = std::min<size_t>(_sound_entries.size(), cfg.max_sound_instances);
+        for (size_t i = 0; i < max_sounds; i++)
+        {
+            auto& entry = _sound_entries[i];
+            if (entry.is_free())
+            {
+                return &entry;
+            }
+        }
+        return nullptr;
+    }
+#endif
+
+    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    {
+        auto zVol = 0;
+        auto tile = map::tilemgr::get(mpos);
+        auto surface = tile.surface();
+        if (surface != nullptr)
+        {
+            if ((surface->base_z() * 4) - 5 > mpos.z)
+            {
+                zVol = 8;
+            }
+        }
+
+        auto volume = ((-1024 * viewport.zoom - 1) << zVol) + 1;
+        if (is_object_sound_id(id))
+        {
+            auto obj = get_sound_object(id);
+            if (obj != nullptr)
+            {
+                volume += obj->volume;
+            }
+        }
+        else
+        {
+            volume += get_volume_for_sound_id(id);
+        }
+        return volume;
+    }
+
     // 0x00489CB5
+    // pan is in UI pixels or known constant
     void play_sound(sound_id id, loc16 loc, int32_t pan)
     {
+#ifdef __USE_OLD_CODE__
         registers regs;
         regs.eax = (int32_t)id;
         regs.cx = loc.x;
@@ -288,6 +430,58 @@ namespace openloco::audio
         regs.bp = loc.z;
         regs.ebx = pan;
         call(0x00489CB5, regs);
+#else
+        loco_global<uint8_t, 0x0050D555> unk_9AF59D;
+        loco_global<int32_t, 0x00e3f0b8> current_rotation;
+
+        if (unk_9AF59D & 1)
+        {
+            auto volume = 0;
+            if (pan == play_at_location)
+            {
+                auto vpos = get_view_coords(loc, current_rotation);
+                auto viewport = find_best_viewport_for_sound(vpos);
+                if (viewport == nullptr)
+                {
+                    return;
+                }
+
+                volume = calculate_volume_from_viewport(id, { loc.x, loc.y }, *viewport);
+                pan = viewport->map_to_ui(vpos).x;
+                if (volume < -10000)
+                {
+                    return;
+                }
+            }
+            else if (pan == play_at_centre)
+            {
+                pan = 0;
+            }
+
+            const auto& cfg = config::get();
+            if (cfg.var_1E == 0)
+            {
+                pan = 0;
+            }
+            else if (pan != 0)
+            {
+                auto uiWidth = std::max(64, ui::width());
+                pan = (((pan << 16) / uiWidth) - 0x8000) * 32;
+            }
+
+#ifdef __USE_NEW_MIXER__
+            mix_sound(id, 0, volume, pan, 0);
+#else
+            auto entry = get_free_sound_entry();
+            if (entry != nullptr)
+            {
+                entry->id = (int16_t)id;
+                prepare_sound(id, &entry->sound, 1, cfg.force_software_audio_mixer);
+                mix_sound(&entry->sound, 0, volume, pan, 0);
+            }
+#endif
+        }
+#endif
     }
 
     // 0x00404B68
@@ -301,12 +495,15 @@ namespace openloco::audio
     // 0x00404D7A
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log("mix_sound(0x%X, %d, %d, %d, %d)", (int32_t)sound, b, volume, pan, freq);
+        mix_sound((sound_id)sound->id, b, volume, pan, freq);
+    }
 
-        auto id = sound->id;
-        if (id >= 0 && id < (int32_t)_samples.size())
+    static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq)
+    {
+        console::log("mix_sound(%d, %d, %d, %d, %d)", (int32_t)id, b, volume, pan, freq);
+        if ((int32_t)id >= 0 && (int32_t)id < (int32_t)_samples.size())
         {
-            auto& sample = _samples[id];
+            auto& sample = _samples[(int32_t)id];
             if (sample.chunk != nullptr)
             {
                 auto channel = Mix_PlayChannel(-1, sample.chunk, 0);

@@ -54,7 +54,7 @@ namespace openloco::config
         uint8_t music_playing;                      // 0x23
         uint8_t construction_marker;                // 0x50AED8, 0x24
         uint8_t var_25;                             // 0x25
-        uint8_t var_26;                             // 0x26
+        uint8_t max_sound_instances;                // 0x26
         uint8_t sound_quality;                      // 0x27
         uint8_t measurement_format;                 // 0x50AEDC, 0x28
         uint8_t pad_29;                             // 0x29
