@@ -169,6 +169,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAG
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 SET(SDL2LIBS ${SDL2_LDFLAGS})
 
+PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
+
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 
@@ -196,7 +198,7 @@ else ()
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 
-target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
+target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS} ${SDL2MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 
 if (NOT MINGW)
