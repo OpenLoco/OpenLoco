@@ -2,8 +2,8 @@
 
 #include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
-#include "ui.h"
 #include "types.hpp"
+#include "ui.h"
 #include <cstdint>
 
 namespace openloco::ui
