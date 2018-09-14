@@ -557,7 +557,9 @@ namespace openloco::audio
             auto sdlv = volume_loco_to_sdl(volume);
             Mix_Volume(channel, sdlv);
 
+            // clang-format off
             auto [left, right] = pan_loco_to_sdl(pan);
+            // clang-format on
             Mix_SetPanning(channel, left, right);
         }
     }
