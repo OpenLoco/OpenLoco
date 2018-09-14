@@ -194,7 +194,12 @@ namespace openloco::audio
     {
         console::log("load_sounds_from_css(%s)", path.string().c_str());
         std::vector<sample> results;
+#ifdef _OPENLOCO_USE_BOOST_FS_
+        std::ifstream fs(path.string(), std::ios::in | std::ios::binary);
+#else
         std::ifstream fs(path, std::ios::in | std::ios::binary);
+#endif
+
         if (fs.is_open())
         {
             auto numSounds = read_value<uint32_t>(fs);

@@ -25,7 +25,11 @@ channel::~channel()
 bool channel::load(const fs::path& path)
 {
     Mix_FreeChunk(_chunk);
+#ifdef _OPENLOCO_USE_BOOST_FS_
+    _chunk = Mix_LoadWAV(path.string().c_str());
+#else
     _chunk = Mix_LoadWAV(path.u8string().c_str());
+#endif
     return _chunk != nullptr;
 }
 
