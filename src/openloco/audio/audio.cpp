@@ -67,7 +67,7 @@ namespace openloco::audio
 
         const void* pcm()
         {
-            return this + sizeof(sound_object_data);
+            return (void*)((uintptr_t)this + sizeof(sound_object_data));
         }
     };
 #pragma pack(pop)
