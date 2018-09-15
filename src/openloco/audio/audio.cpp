@@ -709,20 +709,31 @@ namespace openloco::audio
         return false;
     }
 
-    static void off_4FEB58(vehicle* v, int32_t x)
+    static void sub_48A274(vehicle* v)
     {
         registers regs;
         regs.esi = (int32_t)v;
+        call(0x0048A274, regs);
+    }
+
+    static void off_4FEB58(vehicle* v, int32_t x)
+    {
         switch (x)
         {
             case 0:
-                call(0x0048A262, regs);
+                v->var_4A &= ~1;
                 break;
             case 1:
-                call(0x0048A268, regs);
+                if (!(v->var_4A & 2))
+                {
+                    sub_48A274(v);
+                }
                 break;
             case 2:
-                call(0x0048A395, regs);
+                if (v->var_4A & 2)
+                {
+                    sub_48A274(v);
+                }
                 break;
             case 3:
                 play_sound(v);
