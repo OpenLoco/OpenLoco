@@ -11,6 +11,7 @@
 #include "../utility/stream.hpp"
 #include "../windowmgr.h"
 #include "channel.h"
+#include "music_channel.h"
 #include "vehicle_channel.h"
 #include <SDL2/SDL_mixer.h>
 #include <array>
@@ -89,10 +90,11 @@ namespace openloco::audio
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
     static std::array<vehicle_channel, 10> _vehicle_channels;
+    static music_channel _music_channel;
+    static channel_id _music_current_channel = channel_id::bgm;
+
     static std::vector<sample> _samples;
     static std::unordered_map<uint16_t, sample> _object_samples;
-    static Mix_Music* _music_track;
-    static int32_t _current_music = -1;
 
     static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
@@ -234,13 +236,6 @@ namespace openloco::audio
         std::generate(_vehicle_channels.begin(), _vehicle_channels.end(), []() { return vehicle_channel(); });
     }
 
-    static void dispose_music()
-    {
-        Mix_FreeMusic(_music_track);
-        _music_track = nullptr;
-        _current_music = -1;
-    }
-
     // 0x00404E53
     void initialise_dsound()
     {
@@ -279,7 +274,7 @@ namespace openloco::audio
 
         dispose_samples();
         dispose_channels();
-        dispose_music();
+        _music_channel = {};
         Mix_CloseAudio();
     }
 
@@ -612,11 +607,9 @@ namespace openloco::audio
         console::log("load_channel(%d, %s, %d)", id, path, c);
         if (is_music_channel(id))
         {
-            auto music = Mix_LoadMUS(path);
-            if (music != nullptr)
+            if (_music_channel.load(path))
             {
-                dispose_music();
-                _music_track = music;
+                _music_current_channel = id;
                 return true;
             }
         }
@@ -638,15 +631,9 @@ namespace openloco::audio
         console::log("play_channel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (is_music_channel(id))
         {
-            if (_music_track != nullptr)
+            if (_music_channel.play(loop != 0))
             {
-                auto loops = loop ? -1 : 1;
-                if (Mix_PlayMusic(_music_track, loops) == 0)
-                {
-                    set_channel_volume(id, volume);
-                    _current_music = (int32_t)id;
-                    return true;
-                }
+                _music_channel.set_volume(volume);
             }
         }
         else
@@ -668,10 +655,9 @@ namespace openloco::audio
         console::log("stop_channel(%d)", id);
         if (is_music_channel(id))
         {
-            if (_current_music == (int32_t)id)
+            if (_music_current_channel == id)
             {
-                Mix_HaltMusic();
-                _current_music = -1;
+                _music_channel.stop();
             }
         }
         else
@@ -690,7 +676,10 @@ namespace openloco::audio
         console::log("set_channel_volume(%d, %d)", id, volume);
         if (is_music_channel(id))
         {
-            Mix_VolumeMusic(volume_loco_to_sdl(volume));
+            if (_music_current_channel == id)
+            {
+                _music_channel.set_volume(volume);
+            }
         }
         else
         {
@@ -707,10 +696,7 @@ namespace openloco::audio
     {
         if (is_music_channel(id))
         {
-            if (_current_music == (int32_t)id)
-            {
-                return Mix_PlayingMusic() != 0;
-            }
+            return _music_current_channel == id && _music_channel.is_playing();
         }
         else
         {
