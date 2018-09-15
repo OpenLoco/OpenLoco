@@ -205,55 +205,56 @@ namespace openloco::localisation
         return str;
     }
 
+    static bool stringIsBuffer(int id)
+    {
+        return id == string_ids::buffer_337 || id == string_ids::buffer_338 || id == string_ids::buffer_1250 || id == string_ids::preferred_currency_buffer || id == string_ids::buffer_1719
+            || id == string_ids::buffer_2039 || id == string_ids::buffer_2040 || id == string_ids::buffer_2042 || id == string_ids::buffer_2045;
+    }
+
+    static bool loadLanguageStringTable(std::string languageFile)
+    {
+        try
+        {
+            YAML::Node node = YAML::LoadFile(languageFile);
+            node = node["strings"];
+
+            for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
+            {
+                int id = it->first.as<int>();
+                if (stringIsBuffer(id))
+                    continue;
+
+                std::string new_string = it->second.as<std::string>();
+                char* processed_string = readString(new_string.data(), new_string.length());
+
+                if (processed_string != nullptr)
+                    _strings[id] = processed_string;
+            }
+
+            return true;
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << e.what() << "\n";
+            return false;
+        }
+    }
+
     bool loadLanguageFile()
     {
+        // First, load en-GB for fallback strings.
+        fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data" / "language";
+        fs::path languageFile = languageDir / "en-GB.yml";
+        if (!loadLanguageStringTable(languageFile.string()))
+            return false;
+
+        // Determine the language currently selected.
         auto& config = config::get_new();
-        fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data/language";
-        fs::path languageFile = languageDir / (config.language + ".yml");
+        if (config.language == "en-GB")
+            return true;
 
-        if (!fs::exists(languageFile))
-        {
-            std::cerr << "Language file " << config.language << ".yml does not exist! ";
-            if (config.language == "en-GB")
-            {
-                std::cerr << "Unable to load...\n";
-                return false;
-            }
-
-            std::cerr << "Falling back to en-GB...\n";
-            config.language = "en-GB";
-            languageFile = languageDir / (config.language + ".yml");
-            if (!fs::exists(languageFile))
-            {
-                std::cerr << "Language file " << config.language << ".yml does not exist! Unable to load...\n";
-                return false;
-            }
-        }
-
-        YAML::Node node = YAML::LoadFile(languageFile.string());
-
-        node = node["strings"];
-        for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
-        {
-            int key2 = it->first.as<int>();
-
-            if (key2 == string_ids::buffer_337 || key2 == string_ids::buffer_338 || key2 == string_ids::buffer_1250 || key2 == string_ids::preferred_currency_buffer || key2 == string_ids::buffer_1719
-                || key2 == string_ids::buffer_2039 || key2 == string_ids::buffer_2040 || key2 == string_ids::buffer_2042 || key2 == string_ids::buffer_2045)
-            {
-                continue;
-            }
-
-            std::string str2 = it->second.as<std::string>();
-
-            char* str = readString(str2.data(), str2.length());
-
-            if (str != nullptr)
-            {
-                _strings[key2] = str;
-                // printf("%4d |%s|\n", key2, str);
-            }
-        }
-
-        return true;
+        // Now, load the language table for the language currently selected.
+        languageFile = languageDir / (config.language + ".yml");
+        return loadLanguageStringTable(languageFile.string());
     }
 }
