@@ -35,5 +35,4 @@ namespace openloco
 
     void main();
     void prompt_tick_loop(std::function<bool()> tickAction);
-    void sub_48A18C();
 }

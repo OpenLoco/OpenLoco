@@ -91,7 +91,12 @@ void vehicle_channel::update()
                 return;
             }
         }
-        _channel.stop();
-        free();
+        stop();
     }
+}
+
+void vehicle_channel::stop()
+{
+    _channel.stop();
+    _vehicle_id = thing_id::null;
 }

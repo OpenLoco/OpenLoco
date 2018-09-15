@@ -400,7 +400,7 @@ namespace openloco
             }
 
             input::handle_keyboard();
-            sub_48A18C();
+            audio::update_sounds();
 
             addr<0x0050C1AE, int32_t>()++;
             if (intro::is_active())
@@ -663,11 +663,6 @@ namespace openloco
                 // Idle loop for a 40 FPS
             } while (platform::get_time() - startTime < 25);
         }
-    }
-
-    void sub_48A18C()
-    {
-        call(0x0048A18C);
     }
 
     // 0x00406386

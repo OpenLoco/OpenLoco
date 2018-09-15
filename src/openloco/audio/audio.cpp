@@ -19,8 +19,6 @@
 #include <fstream>
 #include <unordered_map>
 
-#define __USE_NEW_MIXER__
-
 using namespace openloco::environment;
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -28,8 +26,6 @@ using namespace openloco::utility;
 
 namespace openloco::audio
 {
-    constexpr int16_t sound_entry_null = -1;
-
 #pragma pack(push, 1)
     struct WAVEFORMATEX
     {
@@ -41,23 +37,6 @@ namespace openloco::audio
         int16_t wBitsPerSample;
         int16_t cbSize;
     };
-
-    struct sound_instance
-    {
-        uint16_t id;
-        uint8_t pad_02[20 - 2];
-    };
-    static_assert(sizeof(sound_instance) == 20);
-
-    struct sound_entry
-    {
-        int16_t id;
-        sound_instance sound;
-
-        void free() { id = sound_entry_null; }
-        constexpr bool is_free() { return id == sound_entry_null; }
-    };
-    static_assert(sizeof(sound_entry) == 22);
 
     struct sound_object_data
     {
@@ -85,7 +64,6 @@ namespace openloco::audio
     constexpr int32_t num_sound_channels = 16;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
-    static loco_global<sound_entry[10], 0x0050D438> _sound_entries;
 
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
@@ -239,10 +217,6 @@ namespace openloco::audio
     // 0x00404E53
     void initialise_dsound()
     {
-#ifdef __USE_OLD_CODE__
-        call(0x00404E53);
-#endif
-
         auto& format = _outputFormat;
         format.frequency = MIX_DEFAULT_FREQUENCY;
         format.format = MIX_DEFAULT_FORMAT;
@@ -268,10 +242,6 @@ namespace openloco::audio
     // 0x00404E58
     void dispose_dsound()
     {
-#ifdef __USE_OLD_CODE__
-        call(0x00404E58);
-#endif
-
         dispose_samples();
         dispose_channels();
         _music_channel = {};
@@ -281,10 +251,6 @@ namespace openloco::audio
     // 0x004899E4
     void initialise()
     {
-#ifdef __USE_OLD_CODE__
-        call(0x004899E4);
-#endif
-
         auto css1path = environment::get_path(environment::path_id::css1);
         _samples = load_sounds_from_css(css1path);
         _audio_initialised = 1;
@@ -308,7 +274,6 @@ namespace openloco::audio
         return objectmgr::get<sound_object>(idx);
     }
 
-#ifndef __USE_OLD_CODE__
     static viewport* find_best_viewport_for_sound(viewport_pos vpos)
     {
         auto w = windowmgr::find(window_type::main, 0);
@@ -374,24 +339,6 @@ namespace openloco::audio
         }
         return volume;
     }
-#endif
-
-#ifndef __USE_NEW_MIXER__
-    static sound_entry* get_free_sound_entry()
-    {
-        const auto& cfg = config::get();
-        const auto max_sounds = std::min<size_t>(_sound_entries.size(), cfg.max_sound_instances);
-        for (size_t i = 0; i < max_sounds; i++)
-        {
-            auto& entry = _sound_entries[i];
-            if (entry.is_free())
-            {
-                return &entry;
-            }
-        }
-        return nullptr;
-    }
-#endif
 
     void play_sound(sound_id id, loc16 loc)
     {
@@ -403,7 +350,7 @@ namespace openloco::audio
         play_sound(id, {}, play_at_location);
     }
 
-    static vehicle_channel* get_free_vehicle_sound_instance()
+    static vehicle_channel* get_free_vehicle_channel()
     {
         for (auto& vc : _vehicle_channels)
         {
@@ -435,7 +382,7 @@ namespace openloco::audio
         if (v->var_4A & 1)
         {
             console::log("play_sound(vehicle #%d)", v->object_id);
-            auto vc = get_free_vehicle_sound_instance();
+            auto vc = get_free_vehicle_channel();
             if (vc != nullptr)
             {
                 vc->begin(v->id);
@@ -446,37 +393,15 @@ namespace openloco::audio
     // 0x00489F1B
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency)
     {
-#ifdef __USE_OLD_CODE__
-        registers regs;
-        regs.eax = (int32_t)id;
-        regs.ecx = loc.x;
-        regs.edx = loc.y;
-        regs.ebp = loc.z;
-        regs.ebx = frequency;
-        regs.edi = volume;
-        call(0x00489F1B, regs);
-#else
         play_sound(id, loc, volume, play_at_location, frequency);
-#endif
     }
 
     // 0x00489CB5
     void play_sound(sound_id id, loc16 loc, int32_t pan)
     {
-#ifdef __USE_OLD_CODE__
-        registers regs;
-        regs.eax = (int32_t)id;
-        regs.cx = loc.x;
-        regs.dx = loc.y;
-        regs.bp = loc.z;
-        regs.ebx = pan;
-        call(0x00489CB5, regs);
-#else
         play_sound(id, loc, 0, pan, 0);
-#endif
     }
 
-#ifndef __USE_OLD_CODE__
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
@@ -519,33 +444,8 @@ namespace openloco::audio
                 pan = (((pan << 16) / uiWidth) - 0x8000) >> 4;
             }
 
-#ifdef __USE_NEW_MIXER__
             mix_sound(id, 0, volume, pan, frequency);
-#else
-            auto entry = get_free_sound_entry();
-            if (entry != nullptr)
-            {
-                entry->id = (int16_t)id;
-                prepare_sound(id, &entry->sound, 1, cfg.force_software_audio_mixer);
-                mix_sound(&entry->sound, 0, volume, pan, frequency);
-            }
-#endif
         }
-    }
-#endif
-
-    // 0x00404B68
-    bool prepare_sound(sound_id id, sound_instance* sound, int32_t channels, int32_t software)
-    {
-        console::log("prepare_sound(%d, 0x%X, %d, %d)", id, (int32_t)sound, channels, software);
-        sound->id = (uint16_t)id;
-        return false;
-    }
-
-    // 0x00404D7A
-    void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq)
-    {
-        mix_sound((sound_id)sound->id, b, volume, pan, freq);
     }
 
     sample* get_sound_sample(sound_id id)
@@ -596,8 +496,8 @@ namespace openloco::audio
         }
     }
 
-    // 0x00404CD3
-    void stop_sound(sound_instance* sound)
+    // 0x0048A18C
+    void update_sounds()
     {
     }
 
@@ -763,15 +663,6 @@ namespace openloco::audio
         }
     }
 
-    // 0x0048A3A2
-    static void update_vehicle_sounds()
-    {
-        for (auto& vc : _vehicle_channels)
-        {
-            vc.update();
-        }
-    }
-
     // 0x48A73B
     void update_vehicle_noise()
     {
@@ -782,9 +673,21 @@ namespace openloco::audio
                 sub_48A1FA(0);
                 sub_48A1FA(1);
                 sub_48A1FA(2);
-                update_vehicle_sounds();
+                for (auto& vc : _vehicle_channels)
+                {
+                    vc.update();
+                }
                 sub_48A1FA(3);
             }
+        }
+    }
+
+    // 0x00489C6A
+    void stop_vehicle_noise()
+    {
+        for (auto& vc : _vehicle_channels)
+        {
+            vc.stop();
         }
     }
 

@@ -12,8 +12,6 @@ namespace openloco
 
 namespace openloco::audio
 {
-    struct sound_instance;
-
     struct sample
     {
         void* pcm{};
@@ -81,10 +79,7 @@ namespace openloco::audio
     void play_sound(sound_id id, loc16 loc, int32_t pan);
     void play_sound(sound_id id, int32_t pan);
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
-
-    bool prepare_sound(sound_id soundId, sound_instance* sound, int32_t channels, int32_t software);
-    void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq);
-    void stop_sound(sound_instance* sound);
+    void update_sounds();
 
     bool load_channel(channel_id id, const char* path, int32_t c);
     bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
@@ -93,6 +88,8 @@ namespace openloco::audio
     bool is_channel_playing(channel_id id);
 
     void update_vehicle_noise();
+    void stop_vehicle_noise();
+
     void update_ambient_noise();
     void play_background_music();
     void stop_background_music();

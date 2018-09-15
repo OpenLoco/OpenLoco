@@ -32,6 +32,6 @@ namespace openloco::audio
 
         void begin(thing_id_t vid);
         void update();
-        void free() { _vehicle_id = thing_id::null; }
+        void stop();
     };
 }

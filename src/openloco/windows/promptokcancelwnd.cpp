@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -52,7 +53,7 @@ namespace openloco::ui::windows
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
-                    sub_48A18C();
+                    audio::update_sounds();
                     windowmgr::dispatch_update_all();
                     call(0x004BEC5B);
                     windowmgr::update();

@@ -39,16 +39,6 @@ using namespace openloco;
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
-static int32_t CDECL audio_prepare_sound(int a0, int a1, int a2, int a3)
-{
-    return audio::prepare_sound((audio::sound_id)a0, (audio::sound_instance*)a1, a2, a3) ? 1 : 0;
-}
-
-static void CDECL audio_mix_sound(int a0, int a1, int a2, int a3, int a4)
-{
-    audio::mix_sound((audio::sound_instance*)a0, a1, a2, a3, a4);
-}
-
 static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
 {
     return audio::load_channel((audio::channel_id)a0, a1, a2) ? 1 : 0;
@@ -634,27 +624,30 @@ static void register_terraform_hooks()
     interop::write_nop(0x43A485, 0x43A490 - 0x43A485);
 }
 
-void openloco::interop::register_hooks()
+static void register_audio_hooks()
 {
-    using namespace openloco::ui::windows;
+    using namespace openloco::interop;
 
-    register_memory_hooks();
-
-#ifdef _NO_LOCO_WIN32_
-    register_no_win32_hooks();
-#endif // _NO_LOCO_WIN32_
-
-    register_terraform_hooks();
-
-    write_jmp(0x00404B68, (void*)&audio_prepare_sound);
-    write_jmp(0x00404D7A, (void*)&audio_mix_sound);
     write_jmp(0x0040194E, (void*)&audio_load_channel);
     write_jmp(0x00401999, (void*)&audio_play_channel);
     write_jmp(0x00401A05, (void*)&audio_stop_channel);
     write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
     write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
 
-#ifndef __USE_OLD_CODE__
+    write_ret(0x0048AB36);
+    write_ret(0x00404B40);
+    register_hook(
+        0x0048A18C,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::update_sounds();
+            return 0;
+        });
+    register_hook(
+        0x00489C6A,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::stop_vehicle_noise();
+            return 0;
+        });
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -673,7 +666,20 @@ void openloco::interop::register_hooks()
             audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
             return 0;
         });
-#endif
+}
+
+void openloco::interop::register_hooks()
+{
+    using namespace openloco::ui::windows;
+
+    register_memory_hooks();
+
+#ifdef _NO_LOCO_WIN32_
+    register_no_win32_hooks();
+#endif // _NO_LOCO_WIN32_
+
+    register_terraform_hooks();
+    register_audio_hooks();
 
     register_hook(
         0x004416B5,
