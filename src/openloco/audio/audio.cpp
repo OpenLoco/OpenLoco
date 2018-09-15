@@ -6,6 +6,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/sound_object.h"
+#include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../utility/stream.hpp"
 #include "../windowmgr.h"
@@ -109,7 +110,7 @@ namespace openloco::audio
     static int32_t _current_music = -1;
 
     static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
-    static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq);
+    static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     static constexpr bool is_music_channel(channel_id id)
     {
@@ -440,34 +441,34 @@ namespace openloco::audio
         return regs.eax;
     }
 
-    static int32_t get_unknown_thing(sound_id id)
+    static bool should_sound_loop(sound_id id)
     {
         loco_global<uint8_t[64], 0x0050D514> unk_50D514;
         if (is_object_sound_id(id))
         {
             auto obj = get_sound_object(id);
-            return obj->var_06;
+            return obj->var_06 != 0;
         }
         else
         {
-            return unk_50D514[(int32_t)id * 2];
+            return unk_50D514[(int32_t)id * 2] != 0;
         }
     }
 
     // 0x0048A4BF
     void play_sound(vehicle* v)
     {
-        console::log("play_sound(vehicle #%d)", v->object_id);
         if (v->var_4A & 1)
         {
+            console::log("play_sound(vehicle #%d)", v->object_id);
             auto vsi = get_free_vehicle_sound_instance();
             if (vsi != nullptr)
             {
                 vsi->var_00 = v->var_0A;
                 vsi->sid = sub_48A590(v, &vsi->volume, &vsi->pan, &vsi->freq);
 
-                auto unk = get_unknown_thing((sound_id)vsi->sid);
-                mix_sound((sound_id)vsi->sid, unk, vsi->volume, vsi->pan, vsi->freq);
+                auto loop = should_sound_loop((sound_id)vsi->sid);
+                mix_sound((sound_id)vsi->sid, loop, vsi->volume, vsi->pan, vsi->freq);
             }
         }
     }
@@ -607,13 +608,14 @@ namespace openloco::audio
         return nullptr;
     }
 
-    static void mix_sound(sound_id id, int32_t b, int32_t volume, int32_t pan, int32_t freq)
+    static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log("mix_sound(%d, %d, %d, %d, %d)", (int32_t)id, b, volume, pan, freq);
+        console::log("mix_sound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = get_sound_sample(id);
         if (sample != nullptr && sample->chunk != nullptr)
         {
-            auto channel = Mix_PlayChannel(-1, sample->chunk, 0);
+            auto loops = loop == 0 ? 0 : -1;
+            auto channel = Mix_PlayChannel(-1, sample->chunk, loops);
             auto sdlv = volume_loco_to_sdl(volume);
             Mix_Volume(channel, sdlv);
 
@@ -741,11 +743,47 @@ namespace openloco::audio
         return false;
     }
 
-    static void sub_48A1FA(int32_t x)
+    static void off_4FEB58(vehicle* v, int32_t x)
     {
         registers regs;
-        regs.ebp = x;
-        call(0x0048A1FA, regs);
+        regs.esi = (int32_t)v;
+        switch (x)
+        {
+            case 0:
+                call(0x0048A262, regs);
+                break;
+            case 1:
+                call(0x0048A268, regs);
+                break;
+            case 2:
+                call(0x0048A395, regs);
+                break;
+            case 3:
+                play_sound(v);
+                break;
+        }
+    }
+
+    static void sub_48A1FA(int32_t x)
+    {
+        if (x == 0)
+        {
+            addr<0x0112C666, uint8_t>() = 0;
+        }
+
+        auto v = thingmgr::first<vehicle>();
+        while (v != nullptr)
+        {
+            auto next = v->next_vehicle();
+            auto v2 = v->next_car()->next_car();
+            off_4FEB58(v2, x);
+            do
+            {
+                v2 = v2->next_car();
+            } while (v2->type != thing_type::vehicle_6);
+            off_4FEB58(v2, x);
+            v = next;
+        }
     }
 
     static void sub_48A3A2()
