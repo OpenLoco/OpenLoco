@@ -30,6 +30,12 @@ struct format_arg
         type = format_arg_type::ptr;
         ptr = (uintptr_t)value;
     }
+
+    format_arg(const char* value)
+    {
+        type = format_arg_type::ptr;
+        ptr = (uintptr_t)value;
+    }
 };
 
 namespace openloco::ui::dropdown

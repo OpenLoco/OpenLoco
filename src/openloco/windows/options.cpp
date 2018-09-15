@@ -678,9 +678,6 @@ namespace openloco::ui::options
         };
 
         static window_event_list _events;
-        static loco_global<int32_t, 0x0050D1E8> _currentSoundDevice;
-        static loco_global<int32_t, 0x005251F0> _numSoundDevices;
-        static loco_global<uintptr_t, 0x005251F4> _soundDevices;
 
         static void force_software_audio_mixer_mouse_up(window* w);
         static void sound_quality_mouse_down(ui::window* window);
@@ -707,14 +704,12 @@ namespace openloco::ui::options
 
             set_format_arg(0x0, string_id, string_ids::audio_device_none);
 
-#ifdef _WIN32
-            if (_currentSoundDevice != -1 && _numSoundDevices != 0)
+            auto audioDeviceName = audio::get_current_device_name();
+            if (audioDeviceName != nullptr)
             {
                 set_format_arg(0x0, string_id, string_ids::stringptr);
-                uintptr_t soundDevicePtr = _soundDevices + 0x10 + 0x210 * _currentSoundDevice;
-                set_format_arg(0x2, char*, (char*)soundDevicePtr);
+                set_format_arg(0x2, char*, (char*)audioDeviceName);
             }
-#endif
 
             static const string_id sound_quality_strings[] = {
                 string_ids::sound_quality_low,
@@ -842,36 +837,27 @@ namespace openloco::ui::options
         // 0x004C043D
         static void audio_device_mouse_down(ui::window* w)
         {
-#ifdef _WIN32
-            if (_numSoundDevices == 0)
-                return;
-
-            widget_t dropdown = w->widgets[widx::audio_device];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _numSoundDevices, 0x80);
-
-            uintptr_t dsoundPtr = _soundDevices + 0x10;
-            for (int i = 0; i < _numSoundDevices; i++)
+            const auto& devices = audio::get_devices();
+            if (devices.size() != 0)
             {
-                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, (char*)dsoundPtr });
-                dsoundPtr += 0x210;
+                widget_t dropdown = w->widgets[widx::audio_device];
+                dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], (int8_t)devices.size(), 0x80);
+                for (size_t i = 0; i < devices.size(); i++)
+                {
+                    auto name = devices[i].c_str();
+                    dropdown::add((int16_t)i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
+                }
+                dropdown::set_selection((int16_t)audio::get_current_device());
             }
-
-            dropdown::set_selection(_currentSoundDevice);
-#endif
         }
 
         // 0x004C04CA
         static void audio_device_dropdown(ui::window* window, int16_t itemIndex)
         {
-            if (itemIndex == -1)
-                return;
-
-#ifdef _WIN32
-            // Updates config, switches audio devices.
-            registers regs;
-            regs.eax = itemIndex;
-            call(0x00489A37, regs);
-#endif
+            if (itemIndex != -1)
+            {
+                audio::set_device(itemIndex);
+            }
         }
 
 #pragma mark -

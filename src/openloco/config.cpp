@@ -76,6 +76,13 @@ namespace openloco::config
             displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<resolution_t>();
         }
 
+        auto& audioNode = config["audio"];
+        if (audioNode && displayNode.IsMap())
+        {
+            auto& audioConfig = _new_config.audio;
+            audioConfig.device = audioNode["device"].as<std::string>();
+        }
+
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
         if (config["language"])
@@ -123,7 +130,11 @@ namespace openloco::config
         }
         displayNode["window_resolution"] = displayConfig.window_resolution;
         displayNode["fullscreen_resolution"] = displayConfig.fullscreen_resolution;
+
+
+
         node["display"] = displayNode;
+        node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
         node["language"] = _new_config.language;

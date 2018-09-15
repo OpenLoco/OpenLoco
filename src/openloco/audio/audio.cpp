@@ -13,6 +13,7 @@
 #include "channel.h"
 #include "music_channel.h"
 #include "vehicle_channel.h"
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <array>
 #include <cassert>
@@ -65,6 +66,7 @@ namespace openloco::audio
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
 
+    static std::vector<std::string> devices;
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
     static std::array<vehicle_channel, 10> _vehicle_channels;
@@ -217,11 +219,23 @@ namespace openloco::audio
     // 0x00404E53
     void initialise_dsound()
     {
+        if (SDL_Init(SDL_INIT_AUDIO) != 0)
+        {
+            console::error("Mix_OpenAudio failed: %s", SDL_GetError());
+            return;
+        }
+
+        const auto& cfg = config::get_new();
+        cfg.
+
+        const auto& devs = get_devices();
+        auto deviceName = devs[1].c_str();
+
         auto& format = _outputFormat;
         format.frequency = MIX_DEFAULT_FREQUENCY;
         format.format = MIX_DEFAULT_FORMAT;
         format.channels = MIX_DEFAULT_CHANNELS;
-        if (Mix_OpenAudio(format.frequency, format.format, format.channels, 1024) != 0)
+        if (Mix_OpenAudioDevice(format.frequency, format.format, format.channels, 1024, deviceName, 0) != 0)
         {
             console::error("Mix_OpenAudio failed: %s", Mix_GetError());
             return;
@@ -254,6 +268,46 @@ namespace openloco::audio
         auto css1path = environment::get_path(environment::path_id::css1);
         _samples = load_sounds_from_css(css1path);
         _audio_initialised = 1;
+    }
+
+    static const char* get_default_device_name()
+    {
+        return "(default)";
+    }
+
+    const std::vector<std::string>& get_devices()
+    {
+        devices.clear();
+        devices.push_back(get_default_device_name());
+        auto count = SDL_GetNumAudioDevices(0);
+        for (auto i = 0; i < count; i++)
+        {
+            auto name = SDL_GetAudioDeviceName(i, 0);
+            if (name != nullptr)
+            {
+                devices.push_back(name);
+            }
+        }
+        return devices;
+    }
+
+    const char* get_current_device_name()
+    {
+        auto index = get_current_device();
+        if (index == 0)
+        {
+            return get_default_device_name();
+        }
+        return SDL_GetAudioDeviceName(index - 1, 0);
+    }
+
+    size_t get_current_device()
+    {
+        return 0;
+    }
+
+    void set_device(size_t index)
+    {
     }
 
     // 0x00489C34

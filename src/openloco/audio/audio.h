@@ -2,6 +2,7 @@
 
 #include "../types.hpp"
 #include <tuple>
+#include <vector>
 
 struct Mix_Chunk;
 
@@ -68,6 +69,11 @@ namespace openloco::audio
     void initialise_dsound();
     void dispose_dsound();
     void initialise();
+
+    const std::vector<std::string>& get_devices();
+    const char* get_current_device_name();
+    size_t get_current_device();
+    void set_device(size_t index);
 
     sample* get_sound_sample(sound_id id);
     bool should_sound_loop(sound_id id);
