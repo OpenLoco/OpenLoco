@@ -74,7 +74,7 @@ namespace openloco::localisation
                     {
                         if (start != nullptr)
                         {
-                            commands.push_back(std::basic_string_view(start, pos - start));
+                            commands.push_back(std::string_view(start, pos - start));
                         }
                         start = nullptr;
                         continue;
@@ -84,7 +84,7 @@ namespace openloco::localisation
                     {
                         if (start != nullptr)
                         {
-                            commands.push_back(std::basic_string_view(start, pos - start));
+                            commands.push_back(std::string_view(start, pos - start));
                         }
                         break;
                     }
@@ -105,7 +105,7 @@ namespace openloco::localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (char)(123 + 8);
+                        *out = (unsigned char)(123 + 8);
                         out++;
                     }
                     else
@@ -151,10 +151,10 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "COLOUR")
                 {
-                    auto search = textColourNames.find(commands[1]);
-                    if (search != textColourNames.end())
+                    auto colour = textColourNames.find(commands[1]);
+                    if (colour != textColourNames.end())
                     {
-                        *out = search->second;
+                        *out = colour->second;
                         out++;
                     }
                     else
@@ -230,11 +230,7 @@ namespace openloco::localisation
             }
         }
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
         YAML::Node node = YAML::LoadFile(languageFile.string());
-#else
-        YAML::Node node = YAML::LoadFile(languageFile);
-#endif
 
         node = node["strings"];
         for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)

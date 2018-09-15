@@ -1457,12 +1457,14 @@ namespace openloco::ui::options
         static void language_mouse_down(window* w)
         {
             auto& lds = localisation::getLanguageDescriptors();
+            uint8_t num_languages = static_cast<uint8_t>(lds.size());
+
             widget_t dropdown = w->widgets[widx::language];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], lds.size() - 1, 0x80);
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
 
             std::string& current_language = config::get_new().language;
 
-            for (size_t index = 1; index < lds.size(); index++)
+            for (uint8_t index = 1; index < num_languages; index++)
             {
                 auto& ld = lds[index];
                 dropdown::add(index - 1, string_ids::dropdown_stringptr, (char*)ld.native_name.c_str());
