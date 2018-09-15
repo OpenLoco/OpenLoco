@@ -598,7 +598,7 @@ namespace openloco::audio
     // 0x00401999
     bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
-        console::log("play_music(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
+        console::log("play_channel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (is_music_channel(id))
         {
             if (_music_track != nullptr)
@@ -628,7 +628,7 @@ namespace openloco::audio
     // 0x00401A05
     void stop_channel(channel_id id)
     {
-        console::log("stop_music(%d)", id);
+        console::log("stop_channel(%d)", id);
         if (is_music_channel(id))
         {
             if (_current_music == (int32_t)id)
@@ -650,7 +650,7 @@ namespace openloco::audio
     // 0x00401AD3
     void set_channel_volume(channel_id id, int32_t volume)
     {
-        console::log("set_music_volume(%d, %d)", id, volume);
+        console::log("set_channel_volume(%d, %d)", id, volume);
         if (is_music_channel(id))
         {
             Mix_VolumeMusic(volume_loco_to_sdl(volume));
