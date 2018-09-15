@@ -97,6 +97,14 @@ namespace openloco
         constexpr uint8_t colour_pearlaqua = 156;
         constexpr uint8_t colour_palesilver = 157;
     }
+
+    namespace date_modifier
+    {
+        constexpr uint8_t dmy_full = 0;
+        constexpr uint8_t my_full = 4;
+        constexpr uint8_t my_abbr = 5;
+        constexpr uint8_t raw_my_abbr = 8;
+    }
 }
 
 namespace openloco::stringmgr

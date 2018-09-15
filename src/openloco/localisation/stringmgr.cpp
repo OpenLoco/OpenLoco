@@ -370,19 +370,19 @@ namespace openloco::stringmgr
 
                         switch (modifier)
                         {
-                            case 0:
+                            case date_modifier::dmy_full:
                                 buffer = format_date_dmy_full(totalDays, buffer);
                                 break;
 
-                            case 4:
+                            case date_modifier::my_full:
                                 buffer = format_date_my_full(totalDays, buffer);
                                 break;
 
-                            case 5:
+                            case date_modifier::my_abbr:
                                 buffer = format_date_my_abbrev(totalDays, buffer);
                                 break;
 
-                            case 8:
+                            case date_modifier::raw_my_abbr:
                                 buffer = format_raw_date_my_abbrev(totalDays, buffer);
                                 break;
 

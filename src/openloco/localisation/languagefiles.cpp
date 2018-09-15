@@ -143,11 +143,25 @@ namespace openloco::localisation
                         *out++ = (char)control_codes::int32_grouped;
                     }
                 }
-                else if (commands[0] == "RAWDATE")
+                else if (commands[0] == "RAWDATE" && commands.size() >= 2)
                 {
+                    *out++ = (char)control_codes::date;
+                    if (commands.size() == 3 && commands[1] == "MY" && commands[2] == "SHORT")
+                    {
+                        *out++ = date_modifier::raw_my_abbr;
+                    }
                 }
-                else if (commands[0] == "DATE")
+                else if (commands[0] == "DATE" && commands.size() == 2)
                 {
+                    *out++ = (char)control_codes::date;
+                    if (commands[1] == "DMY")
+                    {
+                        *out++ = date_modifier::dmy_full;
+                    }
+                    else if (commands[1] == "MY")
+                    {
+                        *out++ = date_modifier::my_full;
+                    }
                 }
                 else if (commands[0] == "COLOUR")
                 {
