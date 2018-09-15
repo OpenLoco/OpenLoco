@@ -847,16 +847,22 @@ namespace openloco::ui::options
                     auto name = devices[i].c_str();
                     dropdown::add((int16_t)i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
                 }
-                dropdown::set_selection((int16_t)audio::get_current_device());
+
+                auto currentDevice = audio::get_current_device();
+                if (currentDevice != std::numeric_limits<size_t>().max())
+                {
+                    dropdown::set_selection((int16_t)currentDevice);
+                }
             }
         }
 
         // 0x004C04CA
-        static void audio_device_dropdown(ui::window* window, int16_t itemIndex)
+        static void audio_device_dropdown(ui::window* w, int16_t itemIndex)
         {
             if (itemIndex != -1)
             {
                 audio::set_device(itemIndex);
+                windowmgr::invalidate_widget(w->type, w->number, widx::audio_device);
             }
         }
 

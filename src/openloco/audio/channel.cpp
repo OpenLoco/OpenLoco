@@ -52,29 +52,44 @@ bool channel::load(const fs::path& path)
 
 bool channel::play(bool loop)
 {
-    int loops = loop ? -1 : 0;
-    if (Mix_PlayChannel(_id, _chunk, loops) == -1)
+    if (!is_undefined())
     {
-        console::log("Error during Mix_PlayChannel: %s", Mix_GetError());
-        return false;
+        int loops = loop ? -1 : 0;
+        if (Mix_PlayChannel(_id, _chunk, loops) == -1)
+        {
+            console::log("Error during Mix_PlayChannel: %s", Mix_GetError());
+            return false;
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 void channel::stop()
 {
-    Mix_HaltChannel(_id);
+    if (!is_undefined())
+    {
+        Mix_HaltChannel(_id);
+    }
 }
 
 void channel::set_volume(int32_t volume)
 {
-    Mix_Volume(_id, volume_loco_to_sdl(volume));
+    if (!is_undefined())
+    {
+        Mix_Volume(_id, volume_loco_to_sdl(volume));
+    }
 }
 
 void channel::set_pan(int32_t pan)
 {
-    auto [left, right] = pan_loco_to_sdl(pan);
-    Mix_SetPanning(_id, left, right);
+    if (!is_undefined())
+    {
+        // clang-format off
+        auto[left, right] = pan_loco_to_sdl(pan);
+        // clang-format on
+        Mix_SetPanning(_id, left, right);
+    }
 }
 
 void channel::set_frequency(int32_t freq)
@@ -84,7 +99,7 @@ void channel::set_frequency(int32_t freq)
 
 bool channel::is_playing() const
 {
-    return Mix_Playing(_id) != 0;
+    return is_undefined() ? false : (Mix_Playing(_id) != 0);
 }
 
 void channel::dispose_chunk()

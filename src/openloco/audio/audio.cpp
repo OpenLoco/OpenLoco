@@ -66,7 +66,7 @@ namespace openloco::audio
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
 
-    static std::vector<std::string> devices;
+    static std::vector<std::string> _devices;
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
     static std::array<vehicle_channel, 10> _vehicle_channels;
@@ -216,20 +216,48 @@ namespace openloco::audio
         std::generate(_vehicle_channels.begin(), _vehicle_channels.end(), []() { return vehicle_channel(); });
     }
 
+    static void reinitialise()
+    {
+        dispose_dsound();
+        initialise_dsound();
+    }
+
+    static size_t get_device_index(const std::string_view& deviceName)
+    {
+        if (deviceName.empty())
+        {
+            return 0;
+        }
+
+        const auto& devices = _devices;
+        if (devices.empty())
+        {
+            get_devices();
+        }
+
+        auto fr = std::find(devices.begin(), devices.end(), deviceName);
+        if (fr != devices.end())
+        {
+            return fr - devices.begin();
+        }
+        return std::numeric_limits<size_t>().max();
+    }
+
     // 0x00404E53
     void initialise_dsound()
     {
-        if (SDL_Init(SDL_INIT_AUDIO) != 0)
-        {
-            console::error("Mix_OpenAudio failed: %s", SDL_GetError());
-            return;
-        }
-
+        const char* deviceName = nullptr;
         const auto& cfg = config::get_new();
-        cfg.
+        if (!cfg.audio.device.empty())
+        {
+            deviceName = cfg.audio.device.c_str();
 
-        const auto& devs = get_devices();
-        auto deviceName = devs[1].c_str();
+            // Use default device if config device could not be found
+            if (get_device_index(deviceName) == std::numeric_limits<size_t>().max())
+            {
+                deviceName = nullptr;
+            }
+        }
 
         auto& format = _outputFormat;
         format.frequency = MIX_DEFAULT_FREQUENCY;
@@ -251,6 +279,10 @@ namespace openloco::audio
         {
             _vehicle_channels[i] = vehicle_channel(channel(4 + i));
         }
+
+        auto css1path = environment::get_path(environment::path_id::css1);
+        _samples = load_sounds_from_css(css1path);
+        _audio_initialised = 1;
     }
 
     // 0x00404E58
@@ -259,15 +291,9 @@ namespace openloco::audio
         dispose_samples();
         dispose_channels();
         _music_channel = {};
+        _music_current_channel = (channel_id)-1;
         Mix_CloseAudio();
-    }
-
-    // 0x004899E4
-    void initialise()
-    {
-        auto css1path = environment::get_path(environment::path_id::css1);
-        _samples = load_sounds_from_css(css1path);
-        _audio_initialised = 1;
+        _audio_initialised = 0;
     }
 
     static const char* get_default_device_name()
@@ -277,18 +303,18 @@ namespace openloco::audio
 
     const std::vector<std::string>& get_devices()
     {
-        devices.clear();
-        devices.push_back(get_default_device_name());
+        _devices.clear();
+        _devices.push_back(get_default_device_name());
         auto count = SDL_GetNumAudioDevices(0);
         for (auto i = 0; i < count; i++)
         {
             auto name = SDL_GetAudioDeviceName(i, 0);
             if (name != nullptr)
             {
-                devices.push_back(name);
+                _devices.push_back(name);
             }
         }
-        return devices;
+        return _devices;
     }
 
     const char* get_current_device_name()
@@ -298,16 +324,33 @@ namespace openloco::audio
         {
             return get_default_device_name();
         }
-        return SDL_GetAudioDeviceName(index - 1, 0);
+
+        const auto& cfg = config::get_new();
+        return cfg.audio.device.c_str();
     }
 
     size_t get_current_device()
     {
-        return 0;
+        const auto& cfg = config::get_new();
+        return get_device_index(cfg.audio.device);
     }
 
     void set_device(size_t index)
     {
+        if (index < _devices.size())
+        {
+            auto& cfg = config::get_new();
+            if (index == 0)
+            {
+                cfg.audio.device = {};
+            }
+            else
+            {
+                cfg.audio.device = _devices[index];
+            }
+            config::write_new_config();
+            reinitialise();
+        }
     }
 
     // 0x00489C34
@@ -555,10 +598,9 @@ namespace openloco::audio
     {
     }
 
-    // 0x0040194E
-    bool load_channel(channel_id id, const char* path, int32_t c)
+    static bool load_channel(channel_id id, const fs::path& path, int32_t c)
     {
-        console::log("load_channel(%d, %s, %d)", id, path, c);
+        console::log("load_channel(%d, %s, %d)", id, path.string().c_str(), c);
         if (is_music_channel(id))
         {
             if (_music_channel.load(path))
@@ -577,6 +619,12 @@ namespace openloco::audio
             }
         }
         return false;
+    }
+
+    // 0x0040194E
+    bool load_channel(channel_id id, const char* path, int32_t c)
+    {
+        return load_channel(id, fs::path(path), c);
     }
 
     // 0x00401999
@@ -766,6 +814,24 @@ namespace openloco::audio
     // 0x0048AC66
     void play_title_screen_music()
     {
-        call(0x0048AC66);
+        loco_global<uint8_t, 0x0050D555> unk_50D555;
+        if (_audio_initialised && (unk_50D555 & 1) && is_title_mode())
+        {
+            if (!is_channel_playing(channel_id::title))
+            {
+                auto path = environment::get_path(path_id::css5);
+                if (load_channel(channel_id::title, path, 0))
+                {
+                    play_channel(channel_id::title, 1, -500, 0, 0);
+                }
+            }
+        }
+        else
+        {
+            if (is_channel_playing(channel_id::title))
+            {
+                stop_channel(channel_id::title);
+            }
+        }
     }
 }

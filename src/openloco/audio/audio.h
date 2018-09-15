@@ -68,7 +68,6 @@ namespace openloco::audio
 
     void initialise_dsound();
     void dispose_dsound();
-    void initialise();
 
     const std::vector<std::string>& get_devices();
     const char* get_current_device_name();

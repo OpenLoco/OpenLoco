@@ -80,7 +80,7 @@ namespace openloco::config
         if (audioNode && displayNode.IsMap())
         {
             auto& audioConfig = _new_config.audio;
-            audioConfig.device = audioNode["device"].as<std::string>();
+            audioConfig.device = audioNode["device"].as<std::string>("");
         }
 
         if (config["loco_install_path"])
@@ -117,6 +117,7 @@ namespace openloco::config
 
         auto& node = _config_yaml;
 
+        // Display
         const auto& displayConfig = _new_config.display;
         auto displayNode = node["display"];
         displayNode["mode"] = displayConfig.mode;
@@ -130,10 +131,20 @@ namespace openloco::config
         }
         displayNode["window_resolution"] = displayConfig.window_resolution;
         displayNode["fullscreen_resolution"] = displayConfig.fullscreen_resolution;
-
-
-
         node["display"] = displayNode;
+
+        // Audio
+        const auto& audioConfig = _new_config.audio;
+        auto audioNode = node["audio"];
+        audioNode["device"] = audioConfig.device;
+        if (audioConfig.device.empty())
+        {
+            audioNode.remove("device");
+        }
+        else
+        {
+            audioNode["device"] = audioConfig.device;
+        }
         node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
