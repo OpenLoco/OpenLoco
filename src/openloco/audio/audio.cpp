@@ -11,7 +11,9 @@
 #include "../utility/stream.hpp"
 #include "../windowmgr.h"
 #include "channel.h"
+#include "vehicle_channel.h"
 #include <SDL2/SDL_mixer.h>
+#include <array>
 #include <cassert>
 #include <fstream>
 #include <unordered_map>
@@ -68,17 +70,6 @@ namespace openloco::audio
             return (void*)((uintptr_t)this + sizeof(sound_object_data));
         }
     };
-
-    struct vehicle_sound_instance
-    {
-        uint16_t var_00;
-        uint16_t sid;
-        sound_instance sound;
-        int32_t volume;
-        int32_t pan;
-        int32_t freq;
-    };
-    static_assert(sizeof(vehicle_sound_instance) == 36);
 #pragma pack(pop)
 
     struct audio_format
@@ -86,13 +77,6 @@ namespace openloco::audio
         int32_t frequency{};
         int32_t format{};
         int32_t channels{};
-    };
-
-    struct sample
-    {
-        void* pcm{};
-        size_t len{};
-        Mix_Chunk* chunk{};
     };
 
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
@@ -103,7 +87,8 @@ namespace openloco::audio
     static loco_global<sound_entry[10], 0x0050D438> _sound_entries;
 
     static audio_format _outputFormat;
-    static std::vector<channel> _channels;
+    static std::array<channel, 4> _channels;
+    static std::array<vehicle_channel, 10> _vehicle_channels;
     static std::vector<sample> _samples;
     static std::unordered_map<uint16_t, sample> _object_samples;
     static Mix_Music* _music_track;
@@ -117,22 +102,19 @@ namespace openloco::audio
         return (id == channel_id::bgm || id == channel_id::title);
     }
 
-    static channel* get_channel(channel_id id)
-    {
-        while ((int32_t)_channels.size() <= (int32_t)id)
-        {
-            _channels.emplace_back((int32_t)_channels.size());
-        }
-        return &_channels[(int32_t)id];
-    }
-
     int32_t volume_loco_to_sdl(int32_t loco)
     {
         return (int)(SDL_MIX_MAXVOLUME * (SDL_pow(10, (float)loco / 2000)));
-        // constexpr auto range = 3500.0f;
-        // auto ratio = std::clamp(0.0f, (loco + range) / range, 1.0f);
-        // auto vol = (int32_t)(ratio * SDL_MIX_MAXVOLUME);
-        // return vol;
+    }
+
+    static channel* get_channel(channel_id id)
+    {
+        auto index = (size_t)id;
+        if (index < _channels.size())
+        {
+            return &_channels[index];
+        }
+        return nullptr;
     }
 
     static sample load_sound_from_wave_memory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
@@ -248,8 +230,8 @@ namespace openloco::audio
 
     static void dispose_channels()
     {
-        _channels.clear();
-        _channels.shrink_to_fit();
+        std::generate(_channels.begin(), _channels.end(), []() { return channel(); });
+        std::generate(_vehicle_channels.begin(), _vehicle_channels.end(), []() { return vehicle_channel(); });
     }
 
     static void dispose_music()
@@ -277,6 +259,15 @@ namespace openloco::audio
         }
         Mix_AllocateChannels(num_reserved_channels + num_sound_channels);
         Mix_ReserveChannels(num_reserved_channels);
+
+        for (size_t i = 0; i < _channels.size(); i++)
+        {
+            _channels[i] = channel(i);
+        }
+        for (size_t i = 0; i < _vehicle_channels.size(); i++)
+        {
+            _vehicle_channels[i] = vehicle_channel(channel(4 + i));
+        }
     }
 
     // 0x00404E58
@@ -307,13 +298,13 @@ namespace openloco::audio
     // 0x00489C34
     void pause_sound()
     {
-        // call(0x00489C34);
+        call(0x00489C34);
     }
 
     // 0x00489C58
     void unpause_sound()
     {
-        // call(0x00489C58);
+        call(0x00489C58);
     }
 
     static sound_object* get_sound_object(sound_id id)
@@ -417,31 +408,19 @@ namespace openloco::audio
         play_sound(id, {}, play_at_location);
     }
 
-    static vehicle_sound_instance* get_free_vehicle_sound_instance()
+    static vehicle_channel* get_free_vehicle_sound_instance()
     {
-        loco_global<vehicle_sound_instance[10], 0x0050D1F0> unk_50D1F0;
-        for (size_t i = 0; i < unk_50D1F0.size(); i++)
+        for (auto& vc : _vehicle_channels)
         {
-            if (unk_50D1F0[i].var_00 == 0xFFFF)
+            if (vc.is_free())
             {
-                return &unk_50D1F0[i];
+                return &vc;
             }
         }
         return nullptr;
     }
 
-    static int32_t sub_48A590(const vehicle* v, int32_t* volume, int32_t* pan, int32_t* freq)
-    {
-        registers regs;
-        regs.esi = (int32_t)v;
-        call(0x0048A590, regs);
-        *volume = regs.ecx;
-        *pan = regs.edx;
-        *freq = regs.ebx;
-        return regs.eax;
-    }
-
-    static bool should_sound_loop(sound_id id)
+    bool should_sound_loop(sound_id id)
     {
         loco_global<uint8_t[64], 0x0050D514> unk_50D514;
         if (is_object_sound_id(id))
@@ -461,14 +440,10 @@ namespace openloco::audio
         if (v->var_4A & 1)
         {
             console::log("play_sound(vehicle #%d)", v->object_id);
-            auto vsi = get_free_vehicle_sound_instance();
-            if (vsi != nullptr)
+            auto vc = get_free_vehicle_sound_instance();
+            if (vc != nullptr)
             {
-                vsi->var_00 = v->var_0A;
-                vsi->sid = sub_48A590(v, &vsi->volume, &vsi->pan, &vsi->freq);
-
-                auto loop = should_sound_loop((sound_id)vsi->sid);
-                mix_sound((sound_id)vsi->sid, loop, vsi->volume, vsi->pan, vsi->freq);
+                vc->begin(v->id);
             }
         }
     }
@@ -578,7 +553,7 @@ namespace openloco::audio
         mix_sound((sound_id)sound->id, b, volume, pan, freq);
     }
 
-    static sample* get_sound_sample(sound_id id)
+    sample* get_sound_sample(sound_id id)
     {
         if (is_object_sound_id(id))
         {
@@ -624,6 +599,11 @@ namespace openloco::audio
             // clang-format on
             Mix_SetPanning(channel, left, right);
         }
+    }
+
+    // 0x00404CD3
+    void stop_sound(sound_instance* sound)
+    {
     }
 
     // 0x0040194E
@@ -786,9 +766,13 @@ namespace openloco::audio
         }
     }
 
-    static void sub_48A3A2()
+    // 0x0048A3A2
+    static void update_vehicle_sounds()
     {
-        call(0x0048A3A2);
+        for (auto& vc : _vehicle_channels)
+        {
+            vc.update();
+        }
     }
 
     // 0x48A73B
@@ -801,7 +785,7 @@ namespace openloco::audio
                 sub_48A1FA(0);
                 sub_48A1FA(1);
                 sub_48A1FA(2);
-                sub_48A3A2();
+                update_vehicle_sounds();
                 sub_48A1FA(3);
             }
         }

@@ -3,6 +3,8 @@
 #include "../types.hpp"
 #include <tuple>
 
+struct Mix_Chunk;
+
 namespace openloco
 {
     struct vehicle;
@@ -11,6 +13,13 @@ namespace openloco
 namespace openloco::audio
 {
     struct sound_instance;
+
+    struct sample
+    {
+        void* pcm{};
+        size_t len{};
+        Mix_Chunk* chunk{};
+    };
 
     enum class sound_id
     {
@@ -54,12 +63,16 @@ namespace openloco::audio
         unk_1,
         ambient,
         title,
+        vehicle_0, // * 10
     };
-    constexpr int32_t num_reserved_channels = 4;
+    constexpr int32_t num_reserved_channels = 4 + 10;
 
     void initialise_dsound();
     void dispose_dsound();
     void initialise();
+
+    sample* get_sound_sample(sound_id id);
+    bool should_sound_loop(sound_id id);
 
     void pause_sound();
     void unpause_sound();
@@ -71,6 +84,7 @@ namespace openloco::audio
 
     bool prepare_sound(sound_id soundId, sound_instance* sound, int32_t channels, int32_t software);
     void mix_sound(sound_instance* sound, int32_t b, int32_t volume, int32_t pan, int32_t freq);
+    void stop_sound(sound_instance* sound);
 
     bool load_channel(channel_id id, const char* path, int32_t c);
     bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
