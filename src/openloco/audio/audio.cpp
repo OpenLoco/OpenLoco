@@ -6,6 +6,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/sound_object.h"
+#include "../things/vehicle.h"
 #include "../utility/stream.hpp"
 #include "../windowmgr.h"
 #include "channel.h"
@@ -39,12 +40,8 @@ namespace openloco::audio
 
     struct sound_instance
     {
-        void* dsbuffer;
         uint16_t id;
-        uint16_t var_8;
-        int32_t has_caps;
-        int32_t var_0C;
-        sound_instance* next;
+        uint8_t pad_02[20 - 2];
     };
     static_assert(sizeof(sound_instance) == 20);
 
@@ -70,6 +67,17 @@ namespace openloco::audio
             return (void*)((uintptr_t)this + sizeof(sound_object_data));
         }
     };
+
+    struct vehicle_sound_instance
+    {
+        uint16_t var_00;
+        uint16_t sid;
+        sound_instance sound;
+        int32_t volume;
+        int32_t pan;
+        int32_t freq;
+    };
+    static_assert(sizeof(vehicle_sound_instance) == 36);
 #pragma pack(pop)
 
     struct audio_format
@@ -408,13 +416,60 @@ namespace openloco::audio
         play_sound(id, {}, play_at_location);
     }
 
-    // 0x0048A4BF
-    void play_sound(thing* t)
+    static vehicle_sound_instance* get_free_vehicle_sound_instance()
     {
-        console::error("play_sound(thing*) not implemented");
-#ifdef DEBUG
-        assert(false);
-#endif
+        loco_global<vehicle_sound_instance[10], 0x0050D1F0> unk_50D1F0;
+        for (size_t i = 0; i < unk_50D1F0.size(); i++)
+        {
+            if (unk_50D1F0[i].var_00 == 0xFFFF)
+            {
+                return &unk_50D1F0[i];
+            }
+        }
+        return nullptr;
+    }
+
+    static int32_t sub_48A590(const vehicle* v, int32_t* volume, int32_t* pan, int32_t* freq)
+    {
+        registers regs;
+        regs.esi = (int32_t)v;
+        call(0x0048A590, regs);
+        *volume = regs.ecx;
+        *pan = regs.edx;
+        *freq = regs.ebx;
+        return regs.eax;
+    }
+
+    static int32_t get_unknown_thing(sound_id id)
+    {
+        loco_global<uint8_t[64], 0x0050D514> unk_50D514;
+        if (is_object_sound_id(id))
+        {
+            auto obj = get_sound_object(id);
+            return obj->var_06;
+        }
+        else
+        {
+            return unk_50D514[(int32_t)id * 2];
+        }
+    }
+
+    // 0x0048A4BF
+    void play_sound(vehicle* v)
+    {
+        console::log("play_sound(vehicle #%d)", v->object_id);
+        if (v->var_4A & 1)
+        {
+            auto vsi = get_free_vehicle_sound_instance();
+            if (vsi != nullptr)
+            {
+                vsi->var_00 = v->var_0A;
+                vsi->sid = sub_48A590(v, &vsi->volume, &vsi->pan, &vsi->freq);
+
+                auto unk = get_unknown_thing((sound_id)vsi->sid);
+                mix_sound((sound_id)vsi->sid, unk, vsi->volume, vsi->pan, vsi->freq);
+            }
+        }
     }
 
     // 0x00489F1B
@@ -455,10 +510,10 @@ namespace openloco::audio
     // pan is in UI pixels or known constant
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
     {
-        loco_global<uint8_t, 0x0050D555> unk_9AF59D;
+        loco_global<uint8_t, 0x0050D555> unk_50D555;
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
-        if (unk_9AF59D & 1)
+        if (unk_50D555 & 1)
         {
             volume += get_volume_for_sound_id(id);
             if (pan == play_at_location)
@@ -684,6 +739,34 @@ namespace openloco::audio
             }
         }
         return false;
+    }
+
+    static void sub_48A1FA(int32_t x)
+    {
+        registers regs;
+        regs.ebp = x;
+        call(0x0048A1FA, regs);
+    }
+
+    static void sub_48A3A2()
+    {
+        call(0x0048A3A2);
+    }
+
+    // 0x48A73B
+    void update_vehicle_noise()
+    {
+        if (addr<0x00525E28, uint32_t>() & 1)
+        {
+            if (addr<0x0050D554, uint8_t>() == 0 && (addr<0x0050D555, uint8_t>() & 1))
+            {
+                sub_48A1FA(0);
+                sub_48A1FA(1);
+                sub_48A1FA(2);
+                sub_48A3A2();
+                sub_48A1FA(3);
+            }
+        }
     }
 
     // 0x0048ACFD

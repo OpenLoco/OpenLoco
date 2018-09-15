@@ -551,7 +551,7 @@ namespace openloco
         sub_46FFCA();
         companymgr::update();
         invalidate_map_animations();
-        call(0x0048A73B);
+        audio::update_vehicle_noise();
         audio::update_ambient_noise();
         call(0x00444387);
 

@@ -32,7 +32,8 @@ namespace openloco
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;
-        uint8_t pad_47[0x4C - 0x47];
+        uint8_t pad_47[0x4A - 0x47];
+        uint16_t var_4A;
         uint8_t cargo_type; // 0x4C
         uint8_t pad_4D;
         uint16_t cargo_origin; // 0x4E
