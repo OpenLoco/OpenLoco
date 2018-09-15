@@ -237,7 +237,7 @@ namespace openloco::ui
 
         constexpr bool contains(const viewport_pos& vpos)
         {
-            return (vpos.y >= view_y && vpos.y < vpos.y + view_height && vpos.x >= view_x && vpos.x < vpos.x + view_width);
+            return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
         /**
