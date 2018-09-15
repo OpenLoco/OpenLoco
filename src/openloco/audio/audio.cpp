@@ -698,6 +698,12 @@ namespace openloco::audio
         call(0x0048A78D);
     }
 
+    // 0x0048AAE8
+    void stop_background_music()
+    {
+        call(0x0048AAE8);
+    }
+
     // 0x0048AC66
     void play_title_screen_music()
     {

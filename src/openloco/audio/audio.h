@@ -80,6 +80,7 @@ namespace openloco::audio
 
     void update_ambient_noise();
     void play_background_music();
+    void stop_background_music();
     void play_title_screen_music();
 
     /**

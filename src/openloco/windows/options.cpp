@@ -1143,7 +1143,7 @@ namespace openloco::ui::options
             cfg.music_playing = 0;
             config::write();
 
-            call(0x0048AAE8);
+            audio::stop_background_music();
 
             _currentSong = -1;
 
@@ -1169,7 +1169,7 @@ namespace openloco::ui::options
             if (config::get().music_playing == 0)
                 return;
 
-            call(0x0048AAE8);
+            audio::stop_background_music();
 
             _currentSong = -1;
 
@@ -1295,7 +1295,7 @@ namespace openloco::ui::options
             if (track == _currentSong)
                 return;
 
-            call(0x0048AAE8);
+            audio::stop_background_music();
 
             _currentSong = track;
             _50D435 = track;
