@@ -236,7 +236,7 @@ namespace openloco::localisation
         YAML::Node node = YAML::LoadFile(languageFile);
 #endif
 
-        [[maybe_unused]] auto type = node.Type();
+        node = node["strings"];
         for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
         {
             int key2 = it->first.as<int>();
@@ -254,7 +254,7 @@ namespace openloco::localisation
             if (str != nullptr)
             {
                 _strings[key2] = str;
-                printf("%4d |%s|\n", key2, str);
+                // printf("%4d |%s|\n", key2, str);
             }
         }
 

@@ -1456,14 +1456,15 @@ namespace openloco::ui::options
 
         static void language_mouse_down(window* w)
         {
+            auto& lds = localisation::getLanguageDescriptors();
             widget_t dropdown = w->widgets[widx::language];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], localisation::languages::count - 1, 0x80);
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], lds.size() - 1, 0x80);
 
             std::string& current_language = config::get_new().language;
 
-            for (int index = 1; index < localisation::languages::count; index++)
+            for (size_t index = 1; index < lds.size(); index++)
             {
-                auto& ld = localisation::language_descriptors[index];
+                auto& ld = lds[index];
                 dropdown::add(index - 1, string_ids::dropdown_stringptr, (char*)ld.native_name.c_str());
 
                 if (ld.locale == current_language)
@@ -1479,7 +1480,8 @@ namespace openloco::ui::options
                 return;
             }
 
-            auto& ld = localisation::language_descriptors[ax + 1];
+            auto& lds = localisation::getLanguageDescriptors();
+            auto& ld = lds[ax + 1];
             config::get_new().language = ld.locale;
             config::write();
             localisation::loadLanguageFile();
