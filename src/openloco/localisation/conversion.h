@@ -1,11 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace openloco::localisation
 {
     uint32_t convertLocoToUnicode(uint8_t loco_char);
     uint8_t convertUnicodeToLoco(uint32_t unicode);
+    std::string convertUnicodeToLoco(std::string unicode_string);
 
     namespace loco_polish
     {

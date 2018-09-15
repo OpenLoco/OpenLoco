@@ -1,5 +1,7 @@
 #include "conversion.h"
+#include "unicode.h"
 #include <cstdlib>
+#include <string>
 
 namespace openloco::localisation
 {
@@ -71,5 +73,17 @@ namespace openloco::localisation
             return unicode;
         else
             return '?';
+    }
+
+    std::string convertUnicodeToLoco(std::string unicode_string)
+    {
+        std::string out;
+        uint8_t* input = (uint8_t*)unicode_string.c_str();
+        while (uint32_t unicode_point = readCodePoint(&input))
+        {
+            out += convertUnicodeToLoco(unicode_point);
+        }
+
+        return out;
     }
 }
