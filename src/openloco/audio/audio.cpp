@@ -307,6 +307,12 @@ namespace openloco::audio
         // call(0x00489C58);
     }
 
+    static sound_object* get_sound_object(sound_id id)
+    {
+        auto idx = (int32_t)id & ~0x8000;
+        return objectmgr::get<sound_object>(idx);
+    }
+
 #ifndef __USE_OLD_CODE__
     static viewport* find_best_viewport_for_sound(viewport_pos vpos)
     {
@@ -334,12 +340,6 @@ namespace openloco::audio
         }
 
         return nullptr;
-    }
-
-    static sound_object* get_sound_object(sound_id id)
-    {
-        auto idx = (int32_t)id & ~0x8000;
-        return objectmgr::get<sound_object>(idx);
     }
 
     static int32_t get_volume_for_sound_id(sound_id id)
