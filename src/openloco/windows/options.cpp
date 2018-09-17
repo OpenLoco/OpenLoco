@@ -896,8 +896,8 @@ namespace openloco::ui::options
         {
             enum
             {
-                audio_device = 10,
-                audio_device_btn,
+                currently_playing = 10,
+                currently_playing_btn,
                 music_controls_stop,
                 music_controls_play,
                 music_controls_next,
@@ -929,8 +929,8 @@ namespace openloco::ui::options
         static void play_next_song(window* w);
         static void music_playlist_mouse_down(window* w);
         static void music_playlist_dropdown(window* w, int16_t ax);
-        static void audio_device_mouse_down(window* w);
-        static void audio_device_dropdown(window* w, int16_t ax);
+        static void currently_playing_mouse_down(window* w);
+        static void currently_playing_dropdown(window* w, int16_t ax);
 
         static window_event_list _events;
 
@@ -1025,7 +1025,7 @@ namespace openloco::ui::options
 
             common::draw_tabs(w, dpi);
 
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::audio_device_btn].top, 0, string_ids::currently_playing, nullptr);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
 
             gfx::draw_string_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
 
@@ -1078,8 +1078,8 @@ namespace openloco::ui::options
                 case widx::music_playlist_btn:
                     music_playlist_mouse_down(w);
                     break;
-                case widx::audio_device_btn:
-                    audio_device_mouse_down(w);
+                case widx::currently_playing_btn:
+                    currently_playing_mouse_down(w);
                     break;
                 case widx::volume:
                     volume_mouse_down(w);
@@ -1095,8 +1095,8 @@ namespace openloco::ui::options
                 case widx::music_playlist_btn:
                     music_playlist_dropdown(window, itemIndex);
                     break;
-                case widx::audio_device_btn:
-                    audio_device_dropdown(window, itemIndex);
+                case widx::currently_playing_btn:
+                    currently_playing_dropdown(window, itemIndex);
                     break;
             }
         }
@@ -1257,11 +1257,11 @@ namespace openloco::ui::options
         }
 
         // 0x004C0875
-        static void audio_device_mouse_down(window* w)
+        static void currently_playing_mouse_down(window* w)
         {
             auto tracks = get_available_tracks();
 
-            widget_t dropdown = w->widgets[widx::audio_device];
+            widget_t dropdown = w->widgets[widx::currently_playing];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], (int8_t)tracks.size(), 0x80);
 
             int index = -1;
@@ -1277,7 +1277,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C09F8
-        static void audio_device_dropdown(window* w, int16_t ax)
+        static void currently_playing_dropdown(window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -2313,8 +2313,8 @@ namespace openloco::ui::options
 #if !(defined(__APPLE__) && defined(__MACH__))
                 w->disabled_widgets = 0;
 #else
-                w->disabled_widgets = (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn);
-                w->enabled_widgets ^= (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn);
+                w->disabled_widgets = (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
+                w->enabled_widgets ^= (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
 #endif
                 w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;
@@ -2324,7 +2324,7 @@ namespace openloco::ui::options
                 break;
 
             case common::tab::music:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
                 w->holdable_widgets = (1 << music::widx::volume);
                 w->event_handlers = &music::_events;
                 w->widgets = music::_widgets;
