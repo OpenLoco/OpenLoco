@@ -49,7 +49,7 @@ namespace openloco::localisation
         { "GREEN", control_codes::colour_green },
     };
 
-    [[maybe_unused]] static char* readString(const char* value, size_t size)
+    static char* readString(const char* value, size_t size)
     {
         // Take terminating NULL character in account
         char* str = (char*)malloc(size + 1);
@@ -58,9 +58,11 @@ namespace openloco::localisation
         uint8_t* ptr = (uint8_t*)value;
         while (true)
         {
-            uint32_t readChar = readCodePoint(&ptr);
-            readChar = convertUnicodeToLoco(readChar);
+            uint32_t codepoint = readCodePoint(&ptr);
+            if (codepoint == unicode_symbols::variation_selector)
+                continue;
 
+            uint8_t readChar = convertUnicodeToLoco(codepoint);
             if (readChar == '{')
             {
                 std::vector<std::string_view> commands = {};

@@ -75,8 +75,9 @@ namespace openloco::localisation
         constexpr uint32_t air = 0x2601;
         constexpr uint32_t tick = 0x2713;
         constexpr uint32_t cross = 0x274C;
-        constexpr uint32_t road = 0xFE0F;
+        constexpr uint32_t variation_selector = 0xFE0F;
         constexpr uint32_t water = 0x1F30A;
+        constexpr uint32_t road = 0x1F6E3;
         constexpr uint32_t railway = 0x1F6E4;
     };
 }

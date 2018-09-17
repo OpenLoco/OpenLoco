@@ -26,8 +26,8 @@ namespace openloco::localisation
         }
         else if ((ptr[0] & 0b11111000) == 0b11110000)
         {
-            read = ((ptr[0] & 0b111) << 18) | ((ptr[1] & 0b111111) << 12) | ((ptr[1] & 0b111111) << 6)
-                | (ptr[2] & 0b111111);
+            read = ((ptr[0] & 0b111) << 18) | ((ptr[1] & 0b111111) << 12) | ((ptr[2] & 0b111111) << 6)
+                | (ptr[3] & 0b111111);
             *string += 4;
         }
 

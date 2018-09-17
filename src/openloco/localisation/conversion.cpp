@@ -37,8 +37,8 @@ namespace openloco::localisation
         { unicode_symbols::air, loco_symbols::air },
         { unicode_symbols::tick, loco_symbols::tick },
         { unicode_symbols::cross, loco_symbols::cross },
-        { unicode_symbols::road, loco_symbols::road },
         { unicode_symbols::water, loco_symbols::water },
+        { unicode_symbols::road, loco_symbols::road },
         { unicode_symbols::railway, loco_symbols::railway },
     };
 
