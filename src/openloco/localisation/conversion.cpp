@@ -1,4 +1,5 @@
 #include "conversion.h"
+#include "../utility/collection.hpp"
 #include "unicode.h"
 #include <cstdlib>
 #include <string>
@@ -11,8 +12,7 @@ namespace openloco::localisation
         uint8_t loco_code;
     };
 
-    static constexpr size_t numLocoEncodingExceptions = 27;
-    static const EncodingConvertEntry UnicodeToLocoTable[numLocoEncodingExceptions] = {
+    static const EncodingConvertEntry UnicodeToLocoTable[] = {
         { unicode_char::a_ogonek_uc, loco_char::a_ogonek_uc },
         { unicode_char::a_ogonek, loco_char::a_ogonek },
         { unicode_char::c_acute_uc, loco_char::c_acute_uc },
@@ -66,7 +66,7 @@ namespace openloco::localisation
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
-        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, numLocoEncodingExceptions, sizeof(EncodingConvertEntry), searchCompare);
+        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, utility::length(UnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
             return entry->loco_code;
         else if (unicode < 256)
