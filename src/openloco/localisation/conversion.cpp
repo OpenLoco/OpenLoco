@@ -7,44 +7,44 @@ namespace openloco::localisation
 {
     struct EncodingConvertEntry
     {
-        uint32_t unicode;
+        utf32_t unicode;
         uint8_t loco_code;
     };
 
     static constexpr size_t numLocoEncodingExceptions = 27;
     static const EncodingConvertEntry UnicodeToLocoTable[numLocoEncodingExceptions] = {
-        { unicode_polish::a_ogonek_uc, loco_polish::a_ogonek_uc },
-        { unicode_polish::a_ogonek, loco_polish::a_ogonek },
-        { unicode_polish::c_acute_uc, loco_polish::c_acute_uc },
-        { unicode_polish::c_acute, loco_polish::c_acute },
-        { unicode_polish::e_ogonek_uc, loco_polish::e_ogonek_uc },
-        { unicode_polish::e_ogonek, loco_polish::e_ogonek },
-        { unicode_polish::l_stroke_uc, loco_polish::l_stroke_uc },
-        { unicode_polish::l_stroke, loco_polish::l_stroke },
-        { unicode_polish::n_acute_uc, loco_polish::n_acute_uc },
-        { unicode_polish::n_acute, loco_polish::n_acute },
-        { unicode_polish::s_acute_uc, loco_polish::s_acute_uc },
-        { unicode_polish::s_acute, loco_polish::s_acute },
-        { unicode_polish::z_acute_uc, loco_polish::z_acute_uc },
-        { unicode_polish::z_acute, loco_polish::z_acute },
-        { unicode_polish::z_dot_uc, loco_polish::z_dot_uc },
-        { unicode_polish::z_dot, loco_polish::z_dot },
-        { unicode_symbols::up, loco_symbols::up },
-        { unicode_symbols::small_up, loco_symbols::small_up },
-        { unicode_symbols::right, loco_symbols::right },
-        { unicode_symbols::down, loco_symbols::down },
-        { unicode_symbols::small_down, loco_symbols::small_down },
-        { unicode_symbols::air, loco_symbols::air },
-        { unicode_symbols::tick, loco_symbols::tick },
-        { unicode_symbols::cross, loco_symbols::cross },
-        { unicode_symbols::water, loco_symbols::water },
-        { unicode_symbols::road, loco_symbols::road },
-        { unicode_symbols::railway, loco_symbols::railway },
+        { unicode_char::a_ogonek_uc, loco_char::a_ogonek_uc },
+        { unicode_char::a_ogonek, loco_char::a_ogonek },
+        { unicode_char::c_acute_uc, loco_char::c_acute_uc },
+        { unicode_char::c_acute, loco_char::c_acute },
+        { unicode_char::e_ogonek_uc, loco_char::e_ogonek_uc },
+        { unicode_char::e_ogonek, loco_char::e_ogonek },
+        { unicode_char::l_stroke_uc, loco_char::l_stroke_uc },
+        { unicode_char::l_stroke, loco_char::l_stroke },
+        { unicode_char::n_acute_uc, loco_char::n_acute_uc },
+        { unicode_char::n_acute, loco_char::n_acute },
+        { unicode_char::s_acute_uc, loco_char::s_acute_uc },
+        { unicode_char::s_acute, loco_char::s_acute },
+        { unicode_char::z_acute_uc, loco_char::z_acute_uc },
+        { unicode_char::z_acute, loco_char::z_acute },
+        { unicode_char::z_dot_uc, loco_char::z_dot_uc },
+        { unicode_char::z_dot, loco_char::z_dot },
+        { unicode_char::up, loco_char::up },
+        { unicode_char::small_up, loco_char::small_up },
+        { unicode_char::right, loco_char::right },
+        { unicode_char::down, loco_char::down },
+        { unicode_char::small_down, loco_char::small_down },
+        { unicode_char::air, loco_char::air },
+        { unicode_char::tick, loco_char::tick },
+        { unicode_char::cross, loco_char::cross },
+        { unicode_char::water, loco_char::water },
+        { unicode_char::road, loco_char::road },
+        { unicode_char::railway, loco_char::railway },
     };
 
     static int32_t searchCompare(const void* pKey, const void* pEntry)
     {
-        uint32_t key = *((uint32_t*)pKey);
+        utf32_t key = *((utf32_t*)pKey);
         EncodingConvertEntry* entry = (EncodingConvertEntry*)pEntry;
         if (key < entry->unicode)
             return -1;
@@ -53,7 +53,7 @@ namespace openloco::localisation
         return 0;
     }
 
-    uint32_t convertLocoToUnicode(uint8_t loco_code)
+    utf32_t convertLocoToUnicode(uint8_t loco_code)
     {
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
         for (const auto& entry : UnicodeToLocoTable)
@@ -64,7 +64,7 @@ namespace openloco::localisation
         return loco_code;
     }
 
-    uint8_t convertUnicodeToLoco(uint32_t unicode)
+    uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, numLocoEncodingExceptions, sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
@@ -79,7 +79,7 @@ namespace openloco::localisation
     {
         std::string out;
         uint8_t* input = (uint8_t*)unicode_string.c_str();
-        while (uint32_t unicode_point = readCodePoint(&input))
+        while (utf32_t unicode_point = readCodePoint(&input))
         {
             out += convertUnicodeToLoco(unicode_point);
         }

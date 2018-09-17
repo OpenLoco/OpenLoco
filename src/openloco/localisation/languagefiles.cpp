@@ -55,14 +55,14 @@ namespace openloco::localisation
         char* str = (char*)malloc(size + 1);
         char* out = str;
 
-        uint8_t* ptr = (uint8_t*)value;
+        utf8_t* ptr = (utf8_t*)value;
         while (true)
         {
-            uint32_t codepoint = readCodePoint(&ptr);
-            if (codepoint == unicode_symbols::variation_selector)
+            utf32_t codepoint = readCodePoint(&ptr);
+            if (codepoint == unicode_char::variation_selector)
                 continue;
 
-            uint8_t readChar = convertUnicodeToLoco(codepoint);
+            char readChar = convertUnicodeToLoco(codepoint);
             if (readChar == '{')
             {
                 std::vector<std::string_view> commands = {};
