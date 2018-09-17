@@ -11,6 +11,7 @@
 #include "unicode.h"
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 using namespace openloco::interop;
 
@@ -227,11 +228,11 @@ namespace openloco::localisation
             || id == string_ids::buffer_2039 || id == string_ids::buffer_2040 || id == string_ids::buffer_2042 || id == string_ids::buffer_2045;
     }
 
-    static bool loadLanguageStringTable(std::string languageFile)
+    static bool loadLanguageStringTable(fs::path languageFile)
     {
         try
         {
-            YAML::Node node = YAML::LoadFile(languageFile);
+            YAML::Node node = YAML::LoadFile(languageFile.string());
             node = node["strings"];
 
             for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
@@ -256,21 +257,22 @@ namespace openloco::localisation
         }
     }
 
-    bool loadLanguageFile()
+    void loadLanguageFile()
     {
         // First, load en-GB for fallback strings.
         fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data" / "language";
         fs::path languageFile = languageDir / "en-GB.yml";
-        if (!loadLanguageStringTable(languageFile.string()))
-            return false;
+        if (!loadLanguageStringTable(languageFile))
+            throw std::runtime_error("Could not load the en-GB language file!");
 
         // Determine the language currently selected.
         auto& config = config::get_new();
         if (config.language == "en-GB")
-            return true;
+            return;
 
         // Now, load the language table for the language currently selected.
         languageFile = languageDir / (config.language + ".yml");
-        return loadLanguageStringTable(languageFile.string());
+        if (!loadLanguageStringTable(languageFile))
+            throw std::runtime_error("Could not load the " + config.language + " language file!");
     }
 }
