@@ -22,6 +22,8 @@ after_build:
 
     Copy-Item CHANGELOG.md,LICENSE,bin\*.dll artefacts
 
+    Copy-Item data\language -Destination artefacts\data\language -Recurse
+
     Copy-Item loco.exe artefacts\openloco.exe
 
     Push-Location artefacts
