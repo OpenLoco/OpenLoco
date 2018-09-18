@@ -68,6 +68,9 @@ namespace openloco::localisation
         constexpr utf32_t z_dot_uc = 379;
         constexpr utf32_t z_dot = 380;
 
+        // Superscript
+        constexpr utf32_t superscript_minus = 0x207B;
+
         // Dingbats
         constexpr utf32_t up = 0x25B2;
         constexpr utf32_t small_up = 0x25B4;

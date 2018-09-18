@@ -381,4 +381,17 @@ namespace openloco::string_ids
 
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
+
+    constexpr string_id unit_mph = 2113;
+    constexpr string_id unit_kmh = 2114;
+    constexpr string_id unit_hour = 2115;
+    constexpr string_id unit_hours = 2116;
+    constexpr string_id unit_mins = 2117;
+    constexpr string_id unit_min = 2118;
+    constexpr string_id unit_secs = 2119;
+    constexpr string_id unit_units = 2120;
+    constexpr string_id unit_ft = 2121;
+    constexpr string_id unit_m = 2122;
+    constexpr string_id unit_hp = 2123;
+    constexpr string_id unit_kW = 2124;
 }

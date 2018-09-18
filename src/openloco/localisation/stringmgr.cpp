@@ -402,13 +402,11 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            // !!! TODO: Move to string id
-                            unit = "mph";
+                            unit = get_string(string_ids::unit_mph);
                         }
                         else
                         {
-                            // !!! TODO: Move to string id
-                            unit = "kmh\xB9";
+                            unit = get_string(string_ids::unit_kmh);
                             value = std::round(value * 1.609375);
                         }
 
@@ -442,14 +440,12 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            // !!! TODO: Move to string id
-                            unit = "ft";
+                            unit = get_string(string_ids::unit_ft);
                             value = std::round(value * 3.28125);
                         }
                         else
                         {
-                            // !!! TODO: Move to string id
-                            unit = "m";
+                            unit = get_string(string_ids::unit_m);
                         }
 
                         buffer = format_int32_grouped(value, buffer);
@@ -470,19 +466,16 @@ namespace openloco::stringmgr
 
                         if (show_height_as_units)
                         {
-                            // !!! TODO: move to string id
-                            unit = " units";
+                            unit = get_string(string_ids::unit_units);
                         }
                         else if (measurement_format == config::measurement_format::imperial)
                         {
-                            // !!! TODO: Move to string id
-                            unit = "ft";
+                            unit = get_string(string_ids::unit_ft);
                             value *= 16;
                         }
                         else
                         {
-                            // !!! TODO: Move to string id
-                            unit = "m";
+                            unit = get_string(string_ids::unit_m);
                             value *= 5;
                         }
 
@@ -502,13 +495,11 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            // !!! TODO: Move to string id
-                            unit = "hp";
+                            unit = get_string(string_ids::unit_hp);
                         }
                         else
                         {
-                            // !!! TODO: Move to string id
-                            unit = "kW";
+                            unit = get_string(string_ids::unit_kW);
                             value = std::round(value * 0.746);
                         }
 
