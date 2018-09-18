@@ -394,4 +394,6 @@ namespace openloco::string_ids
     constexpr string_id unit_m = 2122;
     constexpr string_id unit_hp = 2123;
     constexpr string_id unit_kW = 2124;
+
+    constexpr string_id options_language = 2125;
 }
