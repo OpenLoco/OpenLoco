@@ -1,0 +1,2179 @@
+header:
+  locale: ko-KR
+  english_name: Korean
+  native_name: Korean
+  loco_original_id: 9
+strings:
+  0: ""
+  1: "{POP16}"
+  2: 새 회사{POP16}
+  3: 이름 없음{POP16}
+  4: 열차 {INT16}
+  5: 버스 {INT16}
+  6: 트럭 {INT16}
+  7: 전차 {INT16}
+  8: 항공기 {INT16}
+  9: 선박 {INT16}
+
+  # Days
+  10: 1일
+  11: 2일
+  12: 3일
+  13: 4일
+  14: 5일
+  15: 6일
+  16: 7일
+  17: 8일
+  18: 9일
+  19: 10일
+  20: 11일
+  21: 12일
+  22: 13일
+  23: 14일
+  24: 15일
+  25: 16일
+  26: 17일
+  27: 18일
+  28: 19일
+  29: 20일
+  30: 21일
+  31: 22일
+  32: 23일
+  33: 24일
+  34: 25일
+  35: 26일
+  36: 27일
+  37: 28일
+  38: 29일
+  39: 30일
+  40: 31일
+
+  41: 1월
+  42: 2월
+  43: 3월
+  44: 4월
+  45: 5월
+  46: 6월
+  47: 7월
+  48: 8월
+  49: 9월
+  50: 10월
+  51: 11월
+  52: 12월
+
+  53: 그래픽 데이터 파일에 접근할 수 없습니다
+  54: 데이터 파일이 없거나 파일에 접근할 수 없습니다
+  55: 충분한 메모리를 할당할 수 없습니다
+  56: "{COLOUR BLACK}❌"
+  57: 이미 사용 중인 이름입니다
+  58: 이름이 너무 많이 지정되었습니다
+  59: 돈이 충분하지 않습니다 - {CURRENCY32} 이 필요합니다.
+  60: "{SMALLFONT}{COLOUR BLACK}창 닫기"
+  61: 게임 초기화 실패
+  62: 최소화된 상태에서 게임을 시작할 수 없습니다
+  63: 그래픽 시스템을 초기화할 수 없습니다
+  64: 시디키 코드 {INT32 RAW}는 이 로코모션 CD에 맞는 코드가 아닙니다!{COLOUR WINDOW_1}{COLOUR WINDOW_1}크리스 소이어의 로코모션을 제거한 뒤에 올바른 시디키 코드를 이용해서 재설치하시기 바랍니다.
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: "'크리스 소이어의 로코모션'에 대하여"
+  68: 크리스 소이어의 로코모션
+  69: "{COLOUR WINDOW_2}버전 4.02.176 (한국어)"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
+  71: "{COLOUR WINDOW_2}디자인 & 프로그램: Chris Sawyer"
+  72: "{COLOUR WINDOW_2}그래픽: Simon Foster"
+  73: "{COLOUR WINDOW_2}사운드 & 음악: Allister Brimble"
+  74: "{COLOUR WINDOW_2}타이틀 음악: John Broomhall"
+  75: "{COLOUR WINDOW_2}재구현: Jacqui Lyons at Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}감사한 분들: -"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: 너무 낮습니다!
+  99: 너무 높습니다!
+  100: 땅을 내릴 수 없습니다...
+  101: 땅을 올릴 수 없습니다...
+  102: 오브젝트가 중간에 있습니다
+  103: 게임 불러오기
+  104: 게임 저장하기
+  105: 시나리오 에디터 종료
+  106: 게임 종료
+  107: Screenshot{INT16}.BMP
+  108: 스크린 샷
+  109: 스크린 샷이 디스크에 '{STRINGID}'(으)로 저장되었습니다.
+  110: 스크린 샷 저장 실패!
+  111: 풍경 데이터 영역이 가득 찼습니다!
+  112: 일부분만 땅 위로 나오고 일부분만 지하에 들어가게 지을 수 없습니다
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}왼쪽 커브"
+  115: "{SMALLFONT}{COLOUR BLACK}오른쪽 커브"
+  116: "{SMALLFONT}{COLOUR BLACK}왼쪽 커브 (작은 반경)"
+  117: "{SMALLFONT}{COLOUR BLACK}오른쪽 커브 (작은 반경)"
+  118: "{SMALLFONT}{COLOUR BLACK}왼쪽 커브 (매우 작은 반경)"
+  119: "{SMALLFONT}{COLOUR BLACK}오른쪽 커브 (매우 작은 반경)"
+  120: "{SMALLFONT}{COLOUR BLACK}왼쪽 커브 (큰 반경)"
+  121: "{SMALLFONT}{COLOUR BLACK}오른쪽 커브 (큰 반경)"
+  122: "{SMALLFONT}{COLOUR BLACK}직진"
+  123: "{SMALLFONT}{COLOUR BLACK}왼쪽 'S'자 커브"
+  124: "{SMALLFONT}{COLOUR BLACK}오른쪽 'S'자 커브"
+  125: "{SMALLFONT}{COLOUR BLACK}복선 좌측 선로로 'S'자 커브"
+  126: "{SMALLFONT}{COLOUR BLACK}복선 우측 선로로 'S'자 커브"
+  127: "{SMALLFONT}{COLOUR BLACK}단선으로 'S'자 커브"
+  128: "{SMALLFONT}{COLOUR BLACK}회차선"
+  129: "{SMALLFONT}{COLOUR BLACK}(건설을 시작하려면 지형을 클릭하세요)"
+  130: "{SMALLFONT}{COLOUR BLACK}이 선로 조각을 건설"
+  131: "{SMALLFONT}{COLOUR BLACK}이전 선로 조각을 제거"
+  132: "{SMALLFONT}{COLOUR BLACK}급경사로 내려가기"
+  133: "{SMALLFONT}{COLOUR BLACK}내려가기"
+  134: "{SMALLFONT}{COLOUR BLACK}평지로"
+  135: "{SMALLFONT}{COLOUR BLACK}올라가기"
+  136: "{SMALLFONT}{COLOUR BLACK}급경사로 올라가기"
+  137: "{COLOUR WINDOW_2}건설하기..."
+  138: "{COLOUR WINDOW_2}가격: {COLOUR BLACK}{CURRENCY32}"
+  139: 여기에 신호기를 지을 수 없습니다...
+  140: 여기에 신호기를 지을 수 없습니다...
+  141: 신호기를 제거할 수 없습니다...
+  142: "{POP16}{POP16}{POP16}{STRINGID}(을)를 제거할 수 없습니다..."
+  143: "{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
+  144: 땅을 먼저 올리거나 내리세요
+  145: 지하 시점
+  146: 선로 & 도로 감추기
+  147: 정류장은 도로 끝에만 지을 수 있습니다
+  148: Wrong type of station for {STRINGID}
+  149: 역이 {STRINGID}와 호환되지 않습니다
+  150: 건널목이 중간에 있습니다
+  151: 건널목은 같은 높이의 직진 도로에만 지을 수 있습니다
+  152: 분기를 만들 수 없습니다
+  153: 분기는 전체가 평지 위에 있어야 합니다
+  154: "{STRINGID}(이)가 중간에 있습니다 / 분기에 적절하지 않은 높이입니다"
+  155: 이미 여기에 지어져 있습니다
+  156: Unable to cross or create junction with {STRINGID}
+  157: 분기를 만들 수 없습니다
+  158: 신호기
+  159: 역
+  160: 공항
+  161: 항구
+  162: 역이 중간에 있습니다
+  163: 신호기가 중간에 있습니다
+  164: 공항을 제거할 수 없습니다...
+  165: 항구를 제거할 수 없습니다...
+  166: 역을 제거할 수 없습니다...
+  167: 선로/도로의 종류가 잘못되었습니다!
+  168: 다리 종류가 일치해야 합니다
+  169: 이 분기에 쓸 수 없는 다리입니다!
+  170: 불가능한 선로 조합입니다
+  171: 게임에 오브젝트가 너무 많습니다
+  172: 시계 방향으로 회전
+  173: 반시계 방향으로 회전
+  174: "로코모션: 처음으로 실행 중입니다..."
+  175: "로코모션: 오브젝트 파일 체크 중..."
+  176: 게임 불러오기
+  177: 게임 종료
+  178: 게임 종료
+  179: 시나리오 에디터 종료
+  180: 풍경 불러오기
+  181: 불러오기 전에 저장하시겠습니까?
+  182: 종료하기 전에 저장하시겠습니까?
+  183: 종료하기 전에 저장하시겠습니까?
+  184: 저장
+  185: 저장 안 함
+  186: 취소
+  187: 확인
+
+  188: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 왼쪽으로 스크롤"
+  189: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 오른쪽으로 스크롤"
+  190: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 왼쪽으로 빠르게 스크롤"
+  191: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 오른쪽으로 빠르게 스크롤"
+  192: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 좌/우로 스크롤"
+  193: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위로 스크롤"
+  194: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 아래로 스크롤"
+  195: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위로 빠르게 스크롤"
+  196: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 아래로 빠르게 스크롤"
+  197: "{SMALLFONT}{COLOUR BLACK}{STRINGID}(을)를 위/아래로 스크롤"
+
+  198: 지도
+  199: 자동차 목록
+  200: 새 자동차 목록
+  201: 목록
+  202: 나무 목록
+  203: 경로 목록
+  204: 역 목록
+  205: 도시 목록
+  206: 산업 시설 목록
+  207: 새 산업 시설 목록
+  208: 건물 목록
+  209: 벽 목록
+  210: 등급 목록
+  211: 화물 목록
+  212: 메시지 목록
+  213: 회사 목록
+  214: 시나리오 목록
+  215: 크레딧 목록
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: 선택한 모드로 바꿀 수 없습니다
+  219: "{COLOUR WINDOW_2}가격: {COLOUR BLACK}{CURRENCY32}"
+  220: (플레이어 1)
+  221: (플레이어 2)
+  222: 색상을 변경할 수 없습니다...
+  223: 확대
+  224: 축소
+  225: 도시
+  226: 산업 시설
+  227: 공항
+  228: 항구
+  229: 지형 생성 설정
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - 상세 정보"
+  248: "{STRINGID} - 재정"
+  249: "{STRINGID} - 수송된 화물"
+  250: "{STRINGID} - 색상표"
+  251: "{STRINGID} - 목표"
+  252: "{SMALLFONT}{COLOUR BLACK}방향 변경"
+  253: "{SMALLFONT}{COLOUR BLACK}정지 신호 무시"
+  254: "{SMALLFONT}{COLOUR BLACK}선로/도로에서 {POP16}{STRINGID} 제거"
+  255: "{SMALLFONT}{COLOUR BLACK}선로/도로에 {POP16}{STRINGID} 놓기"
+  256: "{SMALLFONT}{COLOUR BLACK}공항에서 {POP16}{STRINGID} 제거"
+  257: "{SMALLFONT}{COLOUR BLACK}공항에 {POP16}{STRINGID} 놓기"
+  258: "{SMALLFONT}{COLOUR BLACK}물에서 {POP16}{STRINGID} 제거하기"
+  259: "{SMALLFONT}{COLOUR BLACK}항구에 {POP16}{STRINGID} 놓기"
+  260: "{POP16}{POP16}{POP16}{STRINGID} - 출발시킬 수 없습니다..."
+  261: "{POP16}{POP16}{POP16}{STRINGID} - 수동 운전 모드를 시작할 수 없습니다..."
+  262: "{POP16}{POP16}{POP16}{STRINGID} - 멈출 수 없습니다..."
+  263: "{VELOCITY}"
+  264: 무제한{POP16}
+  265: 정지
+  266: 출발
+  267: 수동 운전
+  268: "{SMALLFONT}{COLOUR BLACK}업그레이드할 선로/도로를 선택하세요"
+  269: "{SMALLFONT}{COLOUR BLACK}Stop/Start {POP16}{STRINGID}"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}선로/도로 건설"
+  272: "{SMALLFONT}{COLOUR BLACK}역 건설"
+  273: "{SMALLFONT}{COLOUR BLACK}신호기 건설"
+  274: "{SMALLFONT}{COLOUR BLACK}선로 전기 설비 및 기타 시설"
+  275: "{SMALLFONT}{COLOUR BLACK}신호기 종류 선택"
+  276: "{SMALLFONT}{COLOUR BLACK}신호기를 양쪽에 건설"
+  277: "{SMALLFONT}{COLOUR BLACK}신호기를 한 쪽에만 건설 (열차가 반대 편에서 진입할 수 없게 됩니다)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}최고 속력:  {STRINGID}{NEWLINE}최대 건설 높이:  {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}역 종류 선택"
+  280: 역 {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} North"
+  283: "{STRINGID} South"
+  284: "{STRINGID} East"
+  285: "{STRINGID} West"
+  286: "{STRINGID}중앙"
+  287: "{STRINGID} 환승"
+  288: "{STRINGID} 정류장"
+  289: "{STRINGID} 계곡"
+  290: "{STRINGID} 언덕"
+  291: "{STRINGID} 숲"
+  292: "{STRINGID} 호숫가"
+  293: "{STRINGID} 교환"
+  294: "{STRINGID} 공항"
+  295: "{STRINGID} 유전"
+  296: "{STRINGID} 광산"
+  297: "{STRINGID} 항구"
+  298: "{STRINGID} 별관"
+  299: "{STRINGID} 측선"
+  300: "{STRINGID} 지선"
+  301: 상부 {STRINGID}
+  302: 하부 {STRINGID}
+  303: "{STRINGID} 헬리포트"
+  304: "{STRINGID} 삼림"
+  305: "{STRINGID} 분기"
+  306: "{STRINGID} 교차"
+  307: "{STRINGID} 경관"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}무게: {COLOUR BLACK}{INT32}t"
+  329: "{COLOUR WINDOW_2}힘: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT32}t"
+  330: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
+  331: "{COLOUR WINDOW_2}최고 속력: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} 신뢰도: {COLOUR BLACK}{INT16}%"
+  332: "{SMALLFONT}{COLOUR BLACK}Sell {POP16}{STRINGID}{NEWLINE}(또는 여기로 각 차량을 드래그해서 판매)"
+  333: "{SMALLFONT}{COLOUR BLACK}이 {POP16}{STRINGID}(을)를 위해 새 차량 만들기"
+  334: "{COLOUR BLACK}({STRINGID}(을)를 시작 지점으로 설정해서 보려면 클릭하세요)"
+  335: 차량이 호환되지 않습니다
+  336: 게임에 차량이 너무 많습니다
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}건설:  {DATE MY}"
+  341: "{NEWLINE}가치:  {CURRENCY32}"
+  342: "{NEWLINE}힘:  {POWER}"
+  343: "{NEWLINE}무게:  {INT16}t"
+  344: "{NEWLINE}최고 속력:  {VELOCITY}"
+  345: " ({VELOCITY} / {STRINGID})"
+  346: "{NEWLINE}신뢰도:  {INT16}%"
+  347: "{STRINGID} {STRINGID}"
+  348: 단일 섹션
+  349: 블록 섹션
+  350: 전부 연결된 선로
+  351: "경고: 선로가 너무 많습니다!{NEWLINE}선택한 선로 중 일부는 업그레이드되지 않을 수도 있습니다"
+  352: "{SMALLFONT}{COLOUR BLACK}이 설비가 있는 선로로 업그레이드"
+  353: "{SMALLFONT}{COLOUR BLACK}(선택한 선로에 이 아이템을 추가하려면 클릭하세요)"
+  354: "{SMALLFONT}{COLOUR BLACK}선로에 추가할 아이템을 선택하세요"
+  355: "{SMALLFONT}{COLOUR BLACK}이 아이템이 있는 위치로 메인 화면을 이동합니다"
+  356: 지도 가장자리를 벗어납니다!
+  357: 일부분만 물 위로 나오고 일부분만 물 아래로 들어가게 지을 수 없습니다!
+  358: 수면에 너무 가깝습니다!
+  359: 수면 아래에 지을 수 없습니다!
+  360: 땅 위에만 지을 수 있습니다!
+  361: 평지에만 지을 수 있습니다
+  362: 게임 불러오기
+  363: 풍경 불러오기
+  364: 풍경 저장하기
+  365: 게임 저장하기
+  366: 시나리오 저장하기
+  367: 로코모션 게임 저장 파일
+  368: 로코모션 시나리오 파일
+  369: 로코모션 풍경 파일
+  370: 게임 저장 실패!
+  371: 게임 저장 파일을 불러오는 데 실패하였습니다...{NEWLINE}파일이 잘못된 데이터를 포함하고 있습니다!
+  372: 풍경 & 건물 감추기
+  373: 물 위에만 지을 수 있습니다!
+  374: 수상 산업 시설이 옆에 있는 경우에만 물 위에 지을 수 있습니다!
+  375: Name {STRINGID}
+  376: "이 {STRINGID}의 이름을 입력하세요:"
+  377: 이 차량의 이름을 바꿀 수 없습니다...
+  378: 다리가 필요합니다
+  379: 이 다리 종류로는 더 높게 지을 수 없습니다
+  380: 다리가 이미 지면 위 최대 높이까지 지어졌습니다
+  381: "{STRINGID} - 다리가 필요합니다"
+  382: 다리 종류가 이 설정에 적합하지 않습니다
+  383: 역 이름 바꾸기
+  384: "{STRINGID} 역의 이름을 입력하세요:"
+  385: 역 이름을 바꿀 수 없습니다...
+  386: 올바르지 않은 역 이름입니다
+  387: 차량을 옮길 수 없습니다...
+  388: 열차를 돌릴 수 없습니다...
+  389: 차량을 팔 수 없습니다...
+  390: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 팔 수 없습니다..."
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: "{STRINGID} 역 승강장"
+  394: "{STRINGID} 역 건물 / 버스 정류장"
+  395: "{SMALLFONT}{COLOUR BLACK}이 역의 역세권 보여주기"
+  396: 음소거
+  397: 배경음 재생
+  398: "{COLOUR RED}파산!"
+  399: "{STRINGID} - {STRINGID}에서 가득 싣도록 대기시킬 수 없습니다"
+  400: "{STRINGID} - 경사로에서 멈춰섰습니다"
+  401: "{STRINGID}에서 이제 {STRINGID}(을)를 받습니다"
+  402: "{STRINGID}에서 이제 {STRINGID}(을)를 받지 않습니다"
+  403: 새로운 운송 회사 등장!{NEWLINE}{STRINGID}(이)가 {STRINGID} 근처에서 건설을 시작했습니다!
+  404: "{STRINGID} - {STRINGID} 공항에 적합하지 않아서 착륙할 수 없습니다"
+  405: 시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID}(이)가 {STRINGID}에 도착했습니다!
+  406: 시민들이 축하하고 있습니다!{NEWLINE}첫 {STRINGID} 배송이 {STRINGID}에 도착했습니다!
+  407: 근로자들이 축하하고 있습니다!{NEWLINE}{STRINGID}(이)가 처음으로 {STRINGID}에 배송되었습니다!
+  408: 새로운 차량이 개발되었습니다 -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID} - “{STRINGID}에서 “{STRINGID}”으로 승격되었습니다!"
+  410: 새로운 {STRINGID}(이)가 {STRINGID} 근처에서 건설 중입니다!
+  411: 축하합니다!{NEWLINE}성공적으로 목표를 달성하셨습니다!
+  412: 실패!{NEWLINE}목표 달성에 실패하셨습니다!
+  413: 패배!{NEWLINE}{STRINGID}(이)가 목표를 먼저 달성했습니다!
+  414: 파산 경고!{NEWLINE}{STRINGID}(은)는 성취도를 올리지 않는다면 6개월 이내에 문이 닫힐 것입니다!
+  415: 마지막 경고!{NEWLINE}{STRINGID}(은)는 성취도를 올리지 않는다면 3개월 이내에 문이 닫힐 것입니다!
+  416: 파산!{NEWLINE}{STRINGID} - 파산이 선고되어 문을 닫았습니다!
+  417: 파산!{NEWLINE}{STRINGID} - 파산이 선고되어 문을 닫았습니다!
+  418: "{STRINGID} - 충돌하였습니다!"
+  419: 기업 비리!{NEWLINE}{STRINGID} - 뇌물 수수 시도로 감옥에 갔습니다
+  420: 신규 {STRINGID} 최고 속력 기록!{NEWLINE}{STRINGID}(이)가 {VELOCITY}의 역간 평균 속력을 달성하였습니다!
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: 선로 & 도로에 높이 표시
+  427: 땅에 높이 표시
+  428: 일방통행 화살표
+  429: 도시 이름 표시
+  430: 역 이름 표시
+  431: "{NEWLINE}{COLOUR WINDOW_3}받음"
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}생산"
+  441: "{NEWLINE}{COLOUR WINDOW_3}건설 중"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Owned by {STRINGID}"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: 제거할 수 없습니다...
+  446: 벽 & 울타리
+  447: 나무 심기
+  448: 여기에 놓을 수 없습니다...
+  449: 여기에 심을 수 없습니다...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}수정하려면 오른쪽 클릭"
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}제거하려면 오른쪽 클릭"
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: 멈추는 중{POP16}{POP16}
+  460: / 신호 대기중{POP16}{POP16}
+  461: "{VELOCITY}{POP16}"
+  462: "{COLOUR RED}충돌!{POP16}{POP16}"
+  463: "{COLOUR RED}끼임!{POP16}{POP16}"
+  464: "{COLOUR RED}고장남{POP16}{POP16}"
+  465: 멈춤{POP16}{POP16}
+  466: Loading at {STRINGID}
+  467: Unloading at {STRINGID}
+  468: Approaching {STRINGID}
+  469: Landing at {STRINGID}
+  470: Taxiing at {STRINGID}
+  471: Taking off from {STRINGID}
+  472: "목적지: {STRINGID}"
+  473: 목적지 없음{POP16}{POP16}
+  474: 운행 중{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: 물을 내릴 수 없습니다...
+  478: 물을 올릴 수 없습니다...
+  479: (없음)
+  480: "{STRING}"
+  481: "{COLOUR RED}Closed - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: 지면의 경사가 적절하지 않습니다
+  484: 물 아래에 지을 수 없습니다!
+  485: 지면의 종류가 적절하지 않습니다
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: 열차
+  489: 열차
+  490: 열차
+  491: 열차
+  492: "{INT16} 열차"
+  493: "{INT16} 열차"
+  494: 열차 {INT16}
+  495: 선박
+  496: 선박
+  497: 선박
+  498: 선박
+  499: "{INT16} 선박"
+  500: "{INT16} 선박"
+  501: 선박 {INT16}
+  502: 선로
+  503: 선로
+  504: 선로
+  505: 선로
+  506: "{INT16} 선로"
+  507: "{INT16} 선로"
+  508: 선로 {INT16}
+  509: 항구
+  510: 항구
+  511: 항구
+  512: 항구
+  513: "{INT16} 항구"
+  514: "{INT16} 항구"
+  515: 항구 {INT16}
+  516: 역
+  517: 역
+  518: 역
+  519: 역
+  520: "{INT16} 역"
+  521: "{INT16} 역"
+  522: 역 {INT16}
+  523: 자동차
+  524: 자동차
+  525: 자동차
+  526: 자동차
+  527: "{INT16} 자동차"
+  528: "{INT16} 자동차"
+  529: 자동차 {INT16}
+  530: 건물
+  531: 건물
+  532: 건물
+  533: 건물
+  534: "{INT16} 건물"
+  535: "{INT16} 건물"
+  536: 건물 {INT16}
+  537: 구조물
+  538: 구조물
+  539: 구조물
+  540: 구조물
+  541: "{INT16} 구조물"
+  542: "{INT16} 구조물"
+  543: 구조물 {INT16}
+  544: 선박
+  545: 선박
+  546: 선박
+  547: 선박
+  548: "{INT16} 선박"
+  549: "{INT16} 선박"
+  550: 선박 {INT16}
+  551: 도시
+  552: 도시
+  553: 도시
+  554: 도시
+  555: "{INT16} 도시"
+  556: "{INT16} 도시"
+  557: 도시 {INT16}
+  558: 산업 시설
+  559: 산업 시설
+  560: 산업 시설
+  561: 산업 시설
+  562: "{INT16} 산업 시설"
+  563: "{INT16} 산업 시설"
+  564: 산업 시설 {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}오브젝트를 90° 회전"
+  566: 평지가 필요합니다
+  567: 지형 종류를 변경할 수 없습니다...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}Show view of {POP16}{STRINGID}"
+  575: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 디자인과 설정 상세 보기"
+  576: "{SMALLFONT}{COLOUR BLACK}Show cargo/passengers in {POP16}{STRINGID}"
+  577: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 경로 상세 보기"
+  578: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID} 유지비와 수익 보기"
+  579: "{SMALLFONT}{COLOUR BLACK}새 건설 지점을 선택하세요"
+  580: "{SMALLFONT}{COLOUR BLACK}90° 회전"
+  581: "{STRINGID}(이)가 중간에 있습니다"
+  582: "{CURRENCY32}"
+  583: 여기에 지을 수 없습니다...
+  584: "{DATE MY}"
+  585: 크리스 소이어의 로코모션
+  586: 다음 드라이브에 로코모션 CD를 넣어주세요:-
+  587: "{COLOUR WINDOW_2}수익/지출"
+  588: 열차 수익
+  589: 열차 유지비
+  590: 버스 수익
+  591: 버스 유지비
+  592: 트럭 수익
+  593: 트럭 유지비
+  594: 전차 수익
+  595: 전차 유지비
+  596: 항공기 수익
+  597: 항공기 유지비
+  598: 선박 수익
+  599: 선박 유지비
+  600: 건설
+  601: 차량 구입
+  602: 차량 판매
+  603: 대출 이자
+  604: 기타
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}대출:"
+  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  610: 더 이상 대출을 받을 수 없습니다!
+  611: 돈이 부족합니다!
+  612: 대출을 갚을 수 없습니다!
+  613: "{SMALLFONT}{COLOUR BLACK}새 게임 시작하기"
+  614: "{SMALLFONT}{COLOUR BLACK}저장된 게임 불러오기"
+  615: "{SMALLFONT}{COLOUR BLACK}튜토리얼 보기"
+  616: "{SMALLFONT}{COLOUR BLACK}게임 종료하기"
+  617: 촌락
+  618: 마을
+  619: 도시
+  620: 대도시
+  621: 거대도시
+  622: 선로/도로가 적합하지 않습니다
+  623: 선로/도로가 역에 적합하지 않습니다
+  624: 교차로에 역을 지을 수 없습니다
+  625: 교차로에 신호기를 지을 수 없습니다
+  626: 역 안에 신호기를 지을 수 없습니다
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}재정:  {MOVE_X 81}{COLOUR RED}파산!"
+  631: "{COLOUR WINDOW_2}재정:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}재정:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}회사 가치: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}차량 수익: {COLOUR BLACK}{CURRENCY48}/월"
+
+  635: 1월
+  636: 2월
+  637: 3월
+  638: 4월
+  639: 5월
+  640: 6월
+  641: 7월
+  642: 8월
+  643: 9월
+  644: 10월
+  645: 11월
+  646: 12월
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: 시나리오로 새 게임 시작하기
+  649: ""
+  650: "{COLOUR WINDOW_2}사운드 품질:"
+  651: 낮음
+  652: 중간
+  653: 높음
+  654: 설정
+  655: "{COLOUR WINDOW_2}화폐 단위:"
+  656: "{COLOUR WINDOW_2}거리와 속력:"
+  657: "{COLOUR WINDOW_2}높이:"
+  658: 임페리얼법
+  659: 미터법
+  660: 유닛
+  661: 실제 값
+  662: "{COLOUR WINDOW_2}디스플레이 해상도:"
+  663: 지면 부드럽게
+  664: "{SMALLFONT}{COLOUR BLACK}지형 가장자리를 부드럽게 보여줍니다"
+  665: 지면에 그리드 라인 표시
+  666: "{SMALLFONT}{COLOUR BLACK}지면에 그리드 라인을 표시합니다"
+  667: 은행이 추가 대출을 거절하였습니다.
+  668: "{SMALLFONT}{COLOUR BLACK}나무와 건물을 제거하려면 지면을 클릭하세요"
+  669: "{SMALLFONT}{COLOUR BLACK}초기화 영역 크기 축소"
+  670: "{SMALLFONT}{COLOUR BLACK}초기화 영역 크기 확대"
+  671: "{SMALLFONT}{COLOUR BLACK}지형 편집 크기 축소"
+  672: "{SMALLFONT}{COLOUR BLACK}지형 편집 크기 확대"
+  673: "{SMALLFONT}{COLOUR BLACK}물 편집 크기 축소"
+  674: "{SMALLFONT}{COLOUR BLACK}물 편집 크기 확대"
+  675: 지형 편집
+  676: 물 편집
+  677: "{SMALLFONT}{COLOUR BLACK}수면을 올리거나 내리려면 지면을 클릭하고 위/아래로 드래그하세요"
+  678: "{SMALLFONT}{COLOUR BLACK}땅을 올리거나 내리려면 지면을 클릭하고 위/아래로 드래그하세요"
+  679: 영역 초기화
+  680: 영역 초기화
+  681: 땅 편집
+  682: 물 편집
+  683: 나무 심기
+  684: 벽 세우기
+  685: "{STRINGID} - 차량 상세 정보"
+  686: "{STRINGID} - 화물"
+  687: "{STRINGID} - 경로"
+  688: "{STRINGID} - 재정"
+  689: "{COLOUR WINDOW_2}열차: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}버스: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}트럭: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}전차: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}항공기: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}선박: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}목표 실패!"
+  696: "{NEWLINE}목표 달성!"
+  697: "{SMALLFONT}{COLOUR BLACK}성취도 지수: {INT16_1DP}% “{STRINGID}”"
+  698: "{SMALLFONT}{COLOUR BLACK}회사 가치: {CURRENCY48}{NEWLINE}차량 수익: {CURRENCY48}/월"
+  699: "{NEWLINE}목표 달성률: {INT16}%{STRINGID}"
+  700: "{NEWLINE}남은 시간: {COLOUR BLACK}{INT16}년 {INT16}개월"
+  701: 단축키 설정...
+  702: 키보드 단축키
+  703: 단축키 설정 초기화
+  704: "{SMALLFONT}{COLOUR BLACK}모든 키보드 단축키를 기본 설정으로 되돌립니다"
+  705: 최상단 창 닫기
+  706: 모든 창 닫기
+  707: 건설 모드 취소
+  708: 게임 일시 정지/해제
+  709: 화면 축소
+  710: 화면 확대
+  711: 화면 회전
+  712: 건설할 오브젝트 회전
+  713: 지하 보기
+  714: 선로 & 도로 숨기기
+  715: 풍경 숨기기
+  716: 표시 숨기기
+  717: 선로 & 도로 고도 표시 숨기기
+  718: 선로 & 도로 방향 화살표 숨기기
+  719: 땅 편집
+  720: 물 편집
+  721: 나무 심기
+  722: 영역 초기화
+  723: 선로 건설
+  724: 도로 건설
+  725: 공항 건설
+  726: 항만 건설
+  727: 새 차량 만들기
+  728: 차량 목록 보기
+  729: 역 목록 보기
+  730: 도시 목록 보기
+  731: 산업 시설 목록 보기
+  732: 지도 보기
+  733: 회사 목록 보기
+  734: 회사 정보 보기
+  735: 재정 보기
+  736: 알림 목록 보기
+  737: 스크린 샷
+  738: 마지막 알림 보기 또는 취소
+  739: 메시지 보내기 (1:1 플레이 모드)
+
+  # Virtual-Key Codes
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Backspace
+  749: Tab
+  750: ???
+  751: ???
+  752: Clear
+  753: ENTER
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt/Menu
+  759: Pause
+  760: Caps
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: ESC
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: 스페이스바
+  773: PgUp
+  774: PgDn
+  775: End
+  776: Home
+  777: Left
+  778: Up
+  779: Right
+  780: Down
+  781: Select
+  782: Print
+  783: Execute
+  784: Snapshot
+  785: Insert
+  786: Delete
+  787: Help
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menu
+  834: ???
+  835: ???
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: ???
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: NumLock
+  885: Scroll
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  997: "SHIFT + "
+  998: "CTRL + "
+  999: 키보드 단축키 변경
+  1000: "{COLOUR WINDOW_2}아래 기능에 지정할 새로운 단축키를 입력하세요:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1001: "{SMALLFONT}{COLOUR BLACK}새 단축키를 지정할 단축키 설명을 클릭하세요"
+  1002: 화면 가장자리에 마우스 커서를 가져가면 화면 스크롤
+  1003: "{SMALLFONT}{COLOUR BLACK}마우스 커서가 화면 가장자리에 가까이 가면 지도 화면을 스크롤할지 선택합니다"
+  1004: "{SMALLFONT}{COLOUR BLACK}단축키 설정을 보거나 변경합니다"
+  1005: 지도
+  1006: 지도 - 차량
+  1007: 지도 - 산업 시설
+  1008: 지도 - 운송 경로
+  1009: 지도 - 회사
+  1010: 강제 소프트웨어 버퍼 믹싱
+  1011: "{SMALLFONT}{COLOUR BLACK}만약 소리 시작이나 간섭이 들릴 때 게임이 살짝 멈춘다면 이 설정을 켜서 성능을 향상시킬 수 있습니다"
+  1012: 시나리오가 성공적으로 설치되었습니다
+  1013: 시나리오가 이미 설치되어 있습니다
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(직접 컨트롤하려면 키보드나 마우스를 누르세요)"
+  1016: 크리스 소이어의 로코모션이 이미 실행 중입니다
+
+  1017: 음악 저작권...
+  1018: 음악 저작권
+  1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}로코모션 타이틀 음악"
+  1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 연주)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 연주)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 연주)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 연주)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (Peter James Adcock 연주)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (트럼펫 연주: Brian Moore, 클라리넷 연주: John Glanfield)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (트럼펫 연주: Brian Moore)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: 저장된 게임을 불러올 수 업습니다...
+  1083: 파일이 잘못된 데이터를 포함하고 있습니다
+  1084: 싱글 플레이에서 저장한 게임이 아닙니다
+  1085: 1:1 플레이에서 저장한 게임이 아닙니다
+  1086: 잠시 기다려주세요...
+  1087: 초기화 중...
+  1088: 불러오는 중...
+  1089: "새로운 데이터 설치 중:"
+
+  1090: 흰색
+  1091: 반투명
+  1092: "{COLOUR WINDOW_2}건설 표시:"
+  1093: "{COLOUR WINDOW_2}차량을 표시할 최소 화면 크기:"
+  1094: "{COLOUR WINDOW_2}역 이름을 표시할 최소 화면 크기:"
+  1095: 전체
+  1096: 절반
+  1097: 1/4
+  1098: 1/8
+  1099: "{SMALLFONT}{COLOUR BLACK}차량을 표시할 최소 화면 크기를 선택하세요"
+  1100: "{SMALLFONT}{COLOUR BLACK}역 이름을 표시할 최소 화면 크기를 선택하세요"
+
+  1101: "{COLOUR WINDOW_2}메인 색상:"
+  1102: "{COLOUR BLACK}증기 기관차:"
+  1103: "{COLOUR BLACK}디젤 기관차:"
+  1104: "{COLOUR BLACK}전기 기관차:"
+  1105: "{COLOUR BLACK}중련:"
+  1106: "{COLOUR BLACK}승객 차량:"
+  1107: "{COLOUR BLACK}화물 차량:"
+  1108: "{COLOUR BLACK}버스:"
+  1109: "{COLOUR BLACK}트럭:"
+  1110: "{COLOUR BLACK}항공기:"
+  1111: "{COLOUR BLACK}선박:"
+  1112: "{SMALLFONT}{COLOUR BLACK}회사 본사 및 상세 정보"
+  1113: "{SMALLFONT}{COLOUR BLACK}회사 소유주 및 상태"
+  1114: "{SMALLFONT}{COLOUR BLACK}회사 재정 상태"
+  1115: "{SMALLFONT}{COLOUR BLACK}화물 배송"
+  1116: "{SMALLFONT}{COLOUR BLACK}회사 색상표"
+  1117: "{SMALLFONT}{COLOUR BLACK}이 게임에서의 회사 목표"
+  1118: "{COLOUR WINDOW_2}특수 색상표:"
+  1119: "{SMALLFONT}{COLOUR BLACK}메인 색상을 선택하세요"
+  1120: "{SMALLFONT}{COLOUR BLACK}부 색상을 선택하세요 (일부 차량 종류에만 사용)"
+  1121: "{SMALLFONT}{COLOUR BLACK}이 차량 종류에 다른 색상표를 사용할지 선택하세요"
+  1122: "{STRINGID} - 열차"
+  1123: "{STRINGID} - 버스"
+  1124: "{STRINGID} - 트럭"
+  1125: "{STRINGID} - 전차"
+  1126: "{STRINGID} - 항공기"
+  1127: "{STRINGID} - 선박"
+  1128: "{STRINGID} - 모든 역"
+  1129: "{STRINGID} - 철도 역"
+  1130: "{STRINGID} - 도로 정류장 역"
+  1131: "{STRINGID} - 공항"
+  1132: "{STRINGID} - 항구"
+  1133: 모든 역
+  1134: 철도 역
+  1135: 도로 정류장 역
+  1136: 공항
+  1137: 항구
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16}년"
+  1143: "{COLOUR WINDOW_2}{INT16}년"
+  1144: "{COLOUR WINDOW_2}{INT16}%"
+  1145: "{COLOUR BLACK}이름"
+  1146: "{COLOUR BLACK}이름 ▼"
+  1147: "{COLOUR BLACK}월 수익"
+  1148: "{COLOUR BLACK}월 수익 ▼"
+  1149: "{COLOUR BLACK}연식"
+  1150: "{COLOUR BLACK}연식 ▼"
+  1151: "{COLOUR BLACK}신뢰도"
+  1152: "{COLOUR BLACK}신뢰도 ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}이름 순으로 목록을 정렬"
+  1154: "{SMALLFONT}{COLOUR BLACK}수익 순으로 목록을 정렬"
+  1155: "{SMALLFONT}{COLOUR BLACK}연식 순으로 목록을 정렬"
+  1156: "{SMALLFONT}{COLOUR BLACK}신뢰도 순으로 목록을 정렬"
+  1157: 먼저 차량을 멈춰야 합니다!
+  1158: 차량이 충돌하였습니다!
+  1159: 차량이 고장났습니다!
+  1160: 차량이 끼었습니다!
+  1161: 공간이 부족하거나 차량이 중간에 있습니다
+  1162: 차량이 접근 중이거나 중간에 있습니다
+  1163: 여기에 {POP16}{POP16}{POP16}{STRINGID}(을)를 놓을 수 없습니다...
+  1164: "{POP16}{POP16}{POP16}{STRINGID}(을)를 제거할 수 없습니다..."
+  1165: 정지 신호를 무시할 수 없습니다...
+  1166: 이 차량은 {STRINGID}(이)가 필요합니다
+  1167: 열차에 차량이 없습니다!
+  1168: 열차에 운전실이 없습니다
+  1169: 열차에 기관차나 발전차가 필요합니다
+  1170: "도착: {STRINGID} / 출발: {STRINGID}"
+  1171: 비어 있음
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}수용량:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: 겡미에 역이 너무 많습니다!
+  1176: 역이 너무 큽니다!
+  1177: 도시를 먼저 지어야 합니다!
+  1178: "{SMALLFONT}{COLOUR BLACK}지도 전체 보기"
+  1179: "{SMALLFONT}{COLOUR BLACK}지도에 차량 종류 표시"
+  1180: "{SMALLFONT}{COLOUR BLACK}지도에 산업 시설 종류 표시"
+  1181: "{SMALLFONT}{COLOUR BLACK}지도에 차량 경로 표시"
+  1182: "{SMALLFONT}{COLOUR BLACK}지도에 회사 소유주 표시"
+  1183: 역이 너무 넓게 퍼져있습니다!
+  1184: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 {STRINGID}에 추가할 수 없습니다..."
+  1185: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}(을)를 지을 수 없습니다..."
+  1186: "{COLOUR BLACK}새 차량을 선택하세요"
+  1187: "{COLOUR BLACK}{STRINGID}{STRINGID}"
+  1188: "{SMALLFONT}{COLOUR BLACK}새로운 철도 차량 만들기"
+  1189: "{SMALLFONT}{COLOUR BLACK}새로운 버스 만들기"
+  1190: "{SMALLFONT}{COLOUR BLACK}새로운 트럭 만들기"
+  1191: "{SMALLFONT}{COLOUR BLACK}새로운 전차 만들기"
+  1192: "{SMALLFONT}{COLOUR BLACK}새로운 항공기 만들기"
+  1193: "{SMALLFONT}{COLOUR BLACK}새로운 선박 만들기"
+  1194: "{SMALLFONT}{COLOUR BLACK}열차"
+  1195: "{SMALLFONT}{COLOUR BLACK}버스"
+  1196: "{SMALLFONT}{COLOUR BLACK}트럭"
+  1197: "{SMALLFONT}{COLOUR BLACK}전차"
+  1198: "{SMALLFONT}{COLOUR BLACK}항공기"
+  1199: "{SMALLFONT}{COLOUR BLACK}선박"
+  1200: "{SMALLFONT}{COLOUR BLACK}모든 역"
+  1201: "{SMALLFONT}{COLOUR BLACK}철도 역"
+  1202: "{SMALLFONT}{COLOUR BLACK}도로 정류장"
+  1203: "{SMALLFONT}{COLOUR BLACK}공항"
+  1204: "{SMALLFONT}{COLOUR BLACK}항구"
+  1205: "{SMALLFONT}{COLOUR BLACK}지형 초기화"
+  1206: "{SMALLFONT}{COLOUR BLACK}나무"
+  1207: "{SMALLFONT}{COLOUR BLACK}지형을 만들거나 조정"
+  1208: "{SMALLFONT}{COLOUR BLACK}물을 만들거나 조정"
+  1209: "{SMALLFONT}{COLOUR BLACK}벽과 울타리"
+  1210: "{SMALLFONT}{COLOUR BLACK}오브젝트 색상 선택"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (출발:"
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: 차량 경로를 지정할 공간이 더 이상 없습니다!
+  1215: 이 차량에 경로가 너무 많습니다!
+  1216: "- - 완행 - -"
+  1217: "- - 급행 - -"
+  1218: "{COLOUR BLACK}- - 경로 없음 - -"
+  1219: "{COLOUR BLACK}- - 경로 목록 끝 - -"
+  1220: Stop at {STRINGID}
+  1221: Route through {STRINGID}
+  1222: 경유지 통과 중
+  1223: "{STRINGID}에서 모두 하차 중 {SPRITE}"
+  1224: "{STRINGID}에서 모무 적재 중 {SPRITE}"
+  1225: "{STRINGID}에서 모두 하차 중 {SPRITE}"
+  1226: "{STRINGID}에서 모무 적재 중 {SPRITE}"
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: 경로를 삽입할 수 없습니다...
+  1229: "{COLOUR WINDOW_3}여기에 있는 경유지를 통과하는{NEWLINE}새로운 경로를 삽입하려면 클릭하세요"
+  1230: "{COLOUR WINDOW_3}Click to insert new order to{NEWLINE}stop at {STRINGID}"
+  1231: "{COLOUR WINDOW_3}마지막 경로를 {STRINGID}(을)를 통과하는{NEWLINE}경로로 바꾸려면 클릭하세요"
+  1232: "{SMALLFONT}{COLOUR BLACK}화물을 가득 싣도록 하는 경로를 삽입합니다"
+  1233: "{SMALLFONT}{COLOUR BLACK}역에서 화물을 받지 않아도, 강제로 화물을 모두 내리도록 하는 경로를 삽입합니다"
+  1234: "{SMALLFONT}{COLOUR BLACK}목록의 다음 경로로 넘어갑니다"
+  1235: "{SMALLFONT}{COLOUR BLACK}마지막 또는 선택한 경로를 삭제합니다"
+  1236: "{COLOUR BLACK}경로에 추가하려면 역이나 경유지를 클릭하세요"
+  1237: "{SMALLFONT}{COLOUR BLACK}경로를 선택하려면 클릭하고, 역/경유지로 이동하려면 더블 클릭하세요"
+  1238: "{SMALLFONT}{COLOUR BLACK}선택한 차량에 경로를 복사하려면 클릭하세요"
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: 열차 만들기
+  1241: 버스 만들기
+  1242: 트럭 만들기
+  1243: 전차 만들기
+  1244: 항공기 만들기
+  1245: 선박 만들기
+  1246: "{STRINGID}에만 놓을 수 있습니다..."
+  1247: 도로
+  1248: "{COLOUR BLACK}사용할 수 있는 차량이 없습니다"
+  1249: "{COLOUR BLACK}No compatible vehicles available to add to {STRINGID}"
+  1250: ""
+  1251: "{COLOUR WINDOW_2} 가격: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} 필요: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} 힘: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} 최고 속력: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} 개발: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} 수송량: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " (경사로에 + {STRINGID})"
+  1260: " ({VELOCITY} on {STRINGID})"
+  1261: 또는 {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} 유지비: {COLOUR BLACK}{CURRENCY32}/월"
+  1263: " (개조 가능)"
+  1264: 열차 {INT16}대
+  1265: 버스 {INT16}대
+  1266: 트럭 {INT16}대
+  1267: 전차 {INT16}대
+  1268: 항공기 {INT16}대
+  1269: 선박 {INT16}대
+  1270: 열차 {INT16}대
+  1271: 버스 {INT16}대
+  1272: 트럭 {INT16}대
+  1273: 전차 {INT16}대
+  1274: 항공기 {INT16}대
+  1275: 선박 {INT16}대
+  1276: 열차
+  1277: 버스
+  1278: 트럭
+  1279: 전차
+  1280: 항공기
+  1281: 선박
+  1282: "{COLOUR WINDOW_2}전체: {COLOUR BLACK}{STRINGID}"
+  1283: 비어있음
+  1284: "{SMALLFONT}{COLOUR BLACK}적재:"
+  1285: Requires an extra {STRINGID}
+  1286: "{SMALLFONT}{COLOUR BLACK}Vehicles for {STRINGID}"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} 건설"
+  1290: "{STRINGID} 지역 당국이 그 행동을 거절하였습니다"
+  1291: 도시
+  1292: 새 도시 만들기
+  1293: 개별 도시 건물 만들기
+  1294: 기타 건물 만들기
+  1295: "{COLOUR BLACK}인구"
+  1296: "{COLOUR BLACK}인구 ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}인구 순으로 목록 정렬"
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}역"
+  1300: "{COLOUR BLACK}역 ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}역 개수 순으로 목록 정렬"
+  1302: "{COLOUR BLACK}도시"
+  1303: "{COLOUR BLACK}도시 ▼"
+  1304: "{STRINGID} 인구 {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}도시 종류 순으로 목록 정렬"
+  1306: "{COLOUR BLACK}종류"
+  1307: "{COLOUR BLACK}종류 ▼"
+  1308: 도시 이름
+  1309: "{STRINGID}의 새 도시 이름을 입력하세요:"
+  1310: "{COLOUR BLACK}{STRINGID} 인구 {INT32}"
+  1311: 도시 이름을 바꿀 수 없습니다...
+  1312: 새 역
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}역세권{NEWLINE}  받음:"
+  1315: "{COLOUR WINDOW_2}  생산:"
+  1316: "{COLOUR BLACK}없음"
+  1317: 산업 시설이 너무 많습니다
+  1318: 산업 시설
+  1319: 새 산업 시설에 투자
+  1320: 산업 시설 건설
+  1321: "{SMALLFONT}{COLOUR BLACK}도시 목록"
+  1322: "{SMALLFONT}{COLOUR BLACK}도시 만들기"
+  1323: "{SMALLFONT}{COLOUR BLACK}개별 도시 건물 만들기"
+  1324: "{SMALLFONT}{COLOUR BLACK}기타 건물 만들기"
+  1325: "{SMALLFONT}{COLOUR BLACK}산업 시설 목록"
+  1326: "{SMALLFONT}{COLOUR BLACK}새 산업 시설 투자"
+  1327: "{SMALLFONT}{COLOUR BLACK}산업 시설 만들기"
+  1328: 검은색
+  1329: 은색
+  1330: 아이보리색
+  1331: 남색
+  1332: 청록색
+  1333: 에메랄드색
+  1334: 금색
+  1335: 황색
+  1336: 갈색
+  1337: 암적색
+  1338: 진홍색
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: "{STRINGID} 운송"
+  1342: "{STRINGID} 고속"
+  1343: "{STRINGID} 노선"
+  1344: "{STRINGID} 트랙"
+  1345: "{STRINGID} 버스"
+  1346: "{STRINGID} 항공"
+  1347: "{STRINGID} 철도"
+  1348: "{STRINGID} 카트"
+  1349: "{STRINGID} 열차"
+  1350: "{STRINGID} 물류"
+  1351: "{STRINGID} 해운"
+  1352: "{STRINGID} 화물"
+  1353: "{STRINGID} 트럭"
+  1354: "{COLOUR WINDOW_2}본사"
+  1355: "{COLOUR WINDOW_2}소유주"
+  1356: "{COLOUR BLACK}연당 {INT16}% 금리"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - 인구"
+  1361: "{STRINGID} 지역 당국"
+  1362: "{STRINGID} - 월 생산량"
+  1363: "{STRINGID} - 통계"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}(이)가 산업 시설 파괴"
+  1366: 건설 중
+  1367: 생산 중
+  1368: 생산
+  1369: 생산
+  1370: " → 생산품:"
+  1371: "필요함:"
+  1372: "필요함:"
+  1373: ","
+  1374: " 또는"
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}산업 시설 상태 순으로 목록을 정렬"
+  1377: "{SMALLFONT}{COLOUR BLACK}생산품 수송률 순으로 목록을 정렬"
+  1378: "{COLOUR BLACK}상태"
+  1379: "{COLOUR BLACK}상태 ▼"
+  1380: "{COLOUR BLACK}수송된 생산품"
+  1381: "{COLOUR BLACK}수송된 생산품 ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}산업 시설 이름 순으로 목록을 정렬"
+  1383: "{COLOUR BLACK}산업 시설"
+  1384: "{COLOUR BLACK}산업 시설 ▼"
+  1385: "{COLOUR BLACK}이용 가능한 산업 시설 없음"
+  1386: "{SMALLFONT}{COLOUR BLACK}도시"
+  1387: "{SMALLFONT}{COLOUR BLACK}인구 그래프"
+  1388: "{SMALLFONT}{COLOUR BLACK}각 회사에 대한 도시의 평판"
+  1389: "{SMALLFONT}{COLOUR BLACK}산업 시설"
+  1390: "{SMALLFONT}{COLOUR BLACK}생산 그래프"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}이 도시를 완전히 파괴 (근처 산업 시설 포함)"
+  1393: 도시를 제거할 수 없습니다...
+  1394: 이 도시 근처의 모든 역을 먼저 제거해야 합니다
+  1395: 다른 도시와 너무 가깝습니다
+  1396: 도시가 너무 많습니다
+  1397: 다른 도시와 너무 가깝거나, 장소가 적합하지 않습니다
+  1398: "{SMALLFONT}{COLOUR BLACK}건설할 도시의 크기를 선택하세요"
+  1399: 1 (소규모)
+  1400: "2"
+  1401: 3 (중간 규모)
+  1402: "4"
+  1403: "5"
+  1404: 6 (거대 규모)
+  1405: "7"
+  1406: 8 (초거대 규모)
+  1407: "{COLOUR BLACK}도시 크기:"
+  1408: "{COLOUR BLACK}(새 도시를 만들 장소를 클릭하세요)"
+  1409: "{SMALLFONT}{COLOUR BLACK}이 도시 확장"
+  1410: 다른 산업 시설과 너무 가깝습니다
+  1411: 근처에 도시를 먼저 만들어야 합니다
+  1412: "{SMALLFONT}{COLOUR BLACK}선택한 나무를 무리지어 심습니다"
+  1413: "{SMALLFONT}{COLOUR BLACK}무작위로 나무를 무리지어 심습니다"
+  1414: "{SMALLFONT}{COLOUR BLACK}통계"
+  1415: "{COLOUR WINDOW_2}지난달 받은양:"
+  1416: "{COLOUR WINDOW_2}지난달 생산량:"
+  1417: "{COLOUR BLACK}{STRINGID} ({INT16}% 수송됨)"
+  1418: "{COLOUR BLACK}{INT16}%"
+  1419: 공장 폐쇄
+  1420: Belongs to {STRINGID}
+  1421: "{STRINGID} - {STRINGID} 소속입니다"
+  1422: 이 신호기는 {STRINGID} 소속입니다
+  1423: "{COLOUR BLACK}{INT16}%"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: 메시지
+  1426: "{SMALLFONT}{COLOUR BLACK}최근 메시지 보여주기"
+  1427: "{SMALLFONT}{COLOUR BLACK}메시지 설정"
+  1428: 메시지 설정
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " 대기중"
+  1432: 대기물 없음
+  1433: "{COLOUR BLACK}상태"
+  1434: "{COLOUR BLACK}상태 ▼"
+  1435: "{COLOUR BLACK}전체 대기량"
+  1436: "{COLOUR BLACK}전체 대기량 ▼"
+  1437: "{COLOUR BLACK}받음"
+  1438: "{COLOUR BLACK}받음 ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}역 상태 순으로 목록을 정렬"
+  1440: "{SMALLFONT}{COLOUR BLACK}전체 대기량으로 목록을 정렬"
+  1441: "{SMALLFONT}{COLOUR BLACK}받을 수 있는 화물 순으로 목록을 정렬"
+  1442: "{INT32} 단위"
+  1443: ", "
+  1444: "{NEWLINE}받음"
+  1445: "{COLOUR BLACK}받음:"
+  1446: 없음
+  1447: "{SMALLFONT}{COLOUR BLACK}역"
+  1448: "{SMALLFONT}{COLOUR BLACK}화물 대기 및 받음"
+  1449: "{SMALLFONT}{COLOUR BLACK}화물 등급"
+  1450: 철거할 수 없습니다
+  1451: 다른 회사가 여기에 지으려고 합니다
+  1452: 너무 깁니다!
+  1453: "{SMALLFONT}{COLOUR BLACK}본사를 짓거나 옮기세요"
+  1454: "{SMALLFONT}{COLOUR BLACK}소유주 이름 변경"
+  1455: "{COLOUR BLACK}(아직 건설 안 됨)"
+  1456: 회사 이름 변경
+  1457: "새 회사 이름을 입력하세요:"
+  1458: 회사 이름을 변경할 수 없습니다...
+  1459: 소유주 이름 변경
+  1460: "새 소유주 이름을 입력하세요:"
+  1461: 소유주 이름을 변경할 수 없습니다...
+  1462: 본사
+  1463: "{STRINGID} 본사"
+  1464: "{STRINGID} 지역 당국이 현재 사용 중인 도로의 제거를 허가하지 않았습니다"
+  1465: "{SMALLFONT}{COLOUR BLACK}회사 선택"
+  1466: 1:1 플레이 게임
+  1467: 1:1 플레이 게임 - 설정
+  1468: "{COLOUR BLACK}1:1 플레이 게임을 설정하려면, 한쪽 컴퓨터를 서버로 설정하고 다른 컴퓨터가 그 쪽으로 접속해야 합니다.{NEWLINE}{NEWLINE}선택하세요 :"
+  1469: ""
+  1470: "{COLOUR BLACK}이 컴퓨터에서 서버 열기..."
+  1471: "{COLOUR BLACK}오류: 이 컴퓨터에서 서버를 열 수 없습니다"
+  1472: "{COLOUR BLACK}서버 설정 완료 - 다른 컴퓨터의 접속을 기다리는 중입니다..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}접속 시도 중..."
+  1477: "{COLOUR BLACK}오류: 서버를 찾을 수 없거나 접속할 수 없습니다"
+  1478: "{COLOUR BLACK}성공!{NEWLINE}{STRINGID}"
+  1479: "{COLOUR BLACK}현재 접속 중인 서버: {STRINGID}{NEWLINE}{NEWLINE}접속을 끊고 싱글 플레이 모드로 돌아가려면 아래를 클릭하세요"
+  1480: "{COLOUR WINDOW_2}이 컴퓨터에서 서버 열기"
+  1481: "{COLOUR WINDOW_2}서버에 접속하기"
+  1482: "{COLOUR WINDOW_2}접속 끊기"
+  1483: 서버 주소 입력
+  1484: "접속하려는 서버의 IP 주소나 컴퓨터 이름을 입력하세요. 빈 칸으로 두면 로컬 네트워크를 검색합니다:"
+  1485: "{COLOUR RED}경고: 접속하려는 서버의 로코모션 버전이 다릅니다. 1:1 플레이에 문제가 있을 수 있습니다"
+
+  # Options
+  1486: "{SMALLFONT}{COLOUR BLACK}화면 설정"
+  1487: "{SMALLFONT}{COLOUR BLACK}사운드 설정"
+  1488: "{SMALLFONT}{COLOUR BLACK}음악 설정"
+  1489: "{SMALLFONT}{COLOUR BLACK}지역 설정"
+  1490: "{SMALLFONT}{COLOUR BLACK}컨트롤 설정"
+  1491: "{SMALLFONT}{COLOUR BLACK}기타 설정"
+  1492: 설정 - 화면
+  1493: 설정 - 사운드
+  1494: 설정 - 음악
+  1495: 설정 - 지역
+  1496: 설정 - 컨트롤
+  1497: 설정 - 기타
+
+  # Options/Currency
+  1498: 항상 선호 화폐 단위를 사용
+  1499: "{SMALLFONT}{COLOUR BLACK}선호하는 화폐 단위를 항상 사용합니다"
+  1500: 새 게임을 시작할 때 선호 화폐 단위를 사용
+  1501: "{SMALLFONT}{COLOUR BLACK}시나리오에서 기본 화폐 단위를 덮어씌우려면 이 설정을 사용하세요"
+  1502: "{SMALLFONT}{COLOUR BLACK}현재 게임에서 사용할 화폐 단위를 선택하세요"
+  1503: "{SMALLFONT}{COLOUR BLACK}새 시나리오를 만들 때 사용할 기본 화폐 단위를 선택하세요"
+  1504: "{COLOUR WINDOW_2}현재 화폐 단위:"
+  1505: "{COLOUR WINDOW_2}선호 화폐 단위:"
+  1506: ""
+
+  1507: "내 회사 주요 소식:"
+  1508: "다른 회사 주요 소식:"
+  1509: "내 회사 기타 소식:"
+  1510: "다른 회사 기타 소식:"
+  1511: "일반 소식:"
+  1512: "조언:"
+  1513: 끄기
+  1514: 뉴스 자막
+  1515: 뉴스 창
+  1516: "{COLOUR WINDOW_2}월 유지비: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}월 수익: {COLOUR BLACK}{CURRENCY32}"
+  1518: 열차
+  1519: 버스
+  1520: 트럭
+  1521: 전차
+  1522: 항공기
+  1523: 선박
+  1524: 공항
+  1525: 항구
+  1526: 경로 종류가 항공기에 적합하지 않습니다
+  1527: 경로 종류가 선박에 적합하지 않습니다
+  1528: 다른 회사 소유의 역입니다
+  1529: 물이 없습니다!
+  1530: 현재 선박 운행에 수로가 필요합니다
+  1531: 최소 한 대 이상의 차량이 이 시설을 사용 중입니다
+  1532: "{SMALLFONT}{COLOUR BLACK}다른 종류의 화물을 실을 수 있도로 차량을 개조"
+  1533: 다른 종류의 화물을 실을 수 있도로 차량을 개조할 수 없습니다
+  1534: 항구 앞은 물이어야 합니다
+
+  1535: "{COLOUR WINDOW_2}현재 재생 중:"
+  1536: "{SMALLFONT}{COLOUR BLACK}음악 중지"
+  1537: "{SMALLFONT}{COLOUR BLACK}음악 재생"
+  1538: "{SMALLFONT}{COLOUR BLACK}다음 음악 트랙 재생"
+  1539: 현재 시대의 음악만 재생
+  1540: 모든 음악 재생
+  1541: 사용자가 선택한 음악 재생
+  1542: 음악 목록 편집...
+  1543: "{SMALLFONT}{COLOUR BLACK}선택 음악 목록을 편집합니다"
+  1544: 음악 목록 편집
+  1545: "{SMALLFONT}{COLOUR BLACK}목록에 넣거나 빼려면 음악 트랙을 클릭하세요"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}음량:"
+  1548: "{SMALLFONT}{COLOUR BLACK}음악 음량 설정"
+  1549: 음악 설정
+  1550: Select Owner's Face for {STRINGID}
+  1551: "{SMALLFONT}{COLOUR BLACK}회사/소유주 얼굴을 선택하려면 클릭하세요"
+  1552: 이미 다른 회사가 선택하였습니다
+  1553: 얼굴을 선택할 수 없습니다...
+  1554: 공항
+  1555: 항구
+  1556: "{COLOUR WINDOW_2}회사 설립: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}성취도 지수: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”"
+  1558: "{COLOUR WINDOW_2}성취도 지수: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}성취도 지수: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1560: "{COLOUR WINDOW_2}소유주: {COLOUR BLACK}{STRINGID}"
+  1561: 낮음
+  1562: 중간
+  1563: 높음
+  1564: "{COLOUR WINDOW_2}지능: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}공격성: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}경쟁성: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}싱글 플레이와 1:1 플레이 모드 변경"
+  1568: "{OUTLINE}{COLOUR WINDOW_2}싱글 플레이 모드"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}1:1 플레이 모드: {STRINGID}에 접속 중"
+  1570: 초심자
+  1571: 쉬움
+  1572: 보통
+  1573: 도전
+  1574: 전문가
+  1575: 지역 / 오브젝트 선택
+  1576: 풍경 편집기
+  1577: 시나리오 설정
+  1578: 시나리오 저장
+  1579: "이전 단계로 돌아가기:"
+  1580: "다음 단계로 넘어가기:"
+  1581: 풍경 불러오기
+  1582: 풍경 저장하기
+  1583: 풍경을 생성 중입니다...
+  1584: 전체 영역을 초기화할 수 없습니다...
+  1585: 지형 생성 - 설정
+  1586: 지형 생성 - 지형
+  1587: 지형 생성 - 숲
+  1588: 지형 생성 - 도시
+  1589: 지형 생성 - 산업 시설
+  1590: "{SMALLFONT}{COLOUR BLACK}풍경 생성 일반 설정"
+  1591: "{SMALLFONT}{COLOUR BLACK}지형 생성 설정"
+  1592: "{SMALLFONT}{COLOUR BLACK}숲 생성 설정"
+  1593: "{SMALLFONT}{COLOUR BLACK}도시 생성 설정"
+  1594: "{SMALLFONT}{COLOUR BLACK}산업 시설 생성 설정"
+
+  1595: "[없음]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}시작 연도:"
+  1627: 게임을 시작할 때에만 무작위로 지형 생성
+  1628: "{SMALLFONT}{COLOUR BLACK}새 게임을 시작할 때마다 무작위로 지도를 생성합니다"
+  1629: 새 지형 생성
+  1630: "{SMALLFONT}{COLOUR BLACK}새로운 무작위 지형을 생성합니다 (현재 지형은 없어질 것입니다)"
+  1631: 확인
+  1632: 새 지형 생성
+  1633: 무작위 지형 설정
+  1634: 현재 지형을 버리고 새로운 지형을 생성하시겠습니까?
+  1635: 매 게임 시작마다 새로운 지형을 생성하시겠습니까?{NEWLINE}이 설정을 선택하면 현재 지형을 버리겠다는 것을 의미합니다
+  1636: "{COLOUR WINDOW_2}해수면:"
+  1637: +{INT16} 칸
+  1638: "{COLOUR WINDOW_2}숲 개수:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}최소 숲 반지름:"
+  1641: "{POP16}{INT16} 칸"
+  1642: "{COLOUR WINDOW_2}최대 숲 반지름:"
+  1643: "{POP16}{POP16}{INT16} 칸"
+  1644: "{COLOUR WINDOW_2}최소 숲 밀도:"
+  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1646: "{COLOUR WINDOW_2}최대 숲 밀도:"
+  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1648: "{COLOUR WINDOW_2}무작위 개별 나무 개수:"
+  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1650: "{COLOUR WINDOW_2}최소 수목 고도:"
+  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}최대 수목 고도:"
+  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}최소 지형 높이:"
+  1655: "{POP16}{INT16} 칸"
+  1656: "{COLOUR WINDOW_2}지형 종류:"
+  1657: 평지
+  1658: 작은 언덕
+  1659: 산지
+  1660: 산 절반, 언덕 절반
+  1661: 산 절반, 평지 절반
+  1662: "{COLOUR WINDOW_2}언덕 밀도:"
+  1663: "{POP16}{POP16}{INT16}%"
+  1664: "{COLOUR WINDOW_2}도시 개수:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}최대 도시 크기:"
+  1667: 낮음
+  1668: 중간
+  1669: 높음
+  1670: "{COLOUR WINDOW_2}산업 시설 개수:"
+  1671: 지으려면 최소한 도시가 한 개 이상 있어야 합니다
+  1672: 다음 편집기 단계로 넘어갈 수 없습니다...
+  1673: 아직 시나리오를 저장할 수 없습니다...
+  1674: "{SMALLFONT}{COLOUR BLACK}시나리오 설정"
+  1675: "{SMALLFONT}{COLOUR BLACK}시나리오 목표"
+  1676: "{SMALLFONT}{COLOUR BLACK}회사 설정"
+  1677: "{SMALLFONT}{COLOUR BLACK}재정 설정"
+  1678: 시나리오 설정
+  1679: 시나리오 목표
+  1680: 회사 설정
+  1681: 재정 설정
+  1682: "{COLOUR WINDOW_2}최대 경쟁사 수:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}경쟁사 등장까지 기다릴 시간:"
+  1685: "{POP16}{INT16}개월"
+  1686: "{COLOUR WINDOW_2}경쟁사가 사용할 교통 수단:"
+  1687: "{COLOUR WINDOW_2}선호 지능:"
+  1688: "{COLOUR WINDOW_2}선호 공격성:"
+  1689: "{COLOUR WINDOW_2}선호 경쟁성:"
+  1690: 임의
+  1691: 낮음
+  1692: 중간
+  1693: 높음
+  1694: "{COLOUR WINDOW_2}초기 대출:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}최대 대출 한도:"
+  1697: "{POP16}{POP16}{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}대출 금리:"
+  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1700: 변경...
+  1701: "{COLOUR WINDOW_2}시나리오 이름: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}시나리오 그룹:"
+  1703: "{COLOUR WINDOW_2}시나리오 설명:"
+  1704: 시나리오 이름
+  1705: 시나리오 이름을 입력하세요:-
+  1706: 시나리오 설명
+  1707: 이 시나리오의 설명을 입력하세요:-
+  1708: 상세 설명 없음
+  1709: 이름 없음
+  1710: 풍경 저장 실패!
+  1711: 시나리오 저장 실패!
+  1712: 다른 플레이어에게 데이터 전송 중...
+  1713: 다른 플레이어로부터 데이터 수신 중...
+  1714: 다른 플레이어가 게임을 저장하고 있습니다 - 기다려 주세요...
+  1715: 다른 플레이어가 게임을 불러오고 있습니다 - 기다려 주세요...
+  1716: 메시지 보내기
+  1717: 메시지 보내기
+  1718: "{STRINGID}에게 보낼 메시지를 입력하세요:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}접속 시간 초과:"
+  1721: "{INT16}초"
+  1722: 1:1 데이터 연결 실패!
+  1723: "{COLOUR WINDOW_2} 도입: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} 퇴역: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} 힘: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} 무게: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} 최대 속력: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} 수용량: {COLOUR BLACK}{STRINGID}"
+  1729: 연결 수립 중...
+  1730: 어디에나
+  1731: 아무데도
+  1732: 물에서 멀리
+  1733: 물 근처에
+  1734: 산 위에
+  1735: 산에서 멀리
+  1736: 작은 무작위 영역에
+  1737: 큰 무작위 영역에
+  1738: 절벽 근처에
+  1739: 지도의 가장자리까지 언덕을 만듭니다
+  1740: "{SMALLFONT}{COLOUR BLACK}시나리오 에디터"
+  1741: "{STRINGID} 운송"
+  1742: 지도
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}회사 목록"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
+  1745: 회사
+  1746: 회사 성취도 지수
+  1747: 월 화물 수송량
+  1748: 회사 가치
+  1749: 화물 수송 단가
+  1750: "{SMALLFONT}{COLOUR BLACK}회사 비교"
+  1751: "{SMALLFONT}{COLOUR BLACK}회사 성취도 지수 그래프"
+  1752: "{SMALLFONT}{COLOUR BLACK}각 회사의 화물 수송량 그래프"
+  1753: "{SMALLFONT}{COLOUR BLACK}회사 가치 그래프"
+  1754: "{SMALLFONT}{COLOUR BLACK}화물 수송 단가"
+  1755: "{SMALLFONT}{COLOUR BLACK}회사 이름 순으로 목록을 정렬"
+  1756: "{SMALLFONT}{COLOUR BLACK}회사 상태 순으로 목록을 정렬"
+  1757: "{SMALLFONT}{COLOUR BLACK}성취도 지수 순으로 목록을 정렬"
+  1758: "{SMALLFONT}{COLOUR BLACK}회사 가치 순으로 목록을 정렬"
+  1759: "{COLOUR BLACK}회사"
+  1760: "{COLOUR BLACK}회사 ▼"
+  1761: "{COLOUR BLACK}상태"
+  1762: "{COLOUR BLACK}상태 ▼"
+  1763: "{COLOUR BLACK}성취도 지수"
+  1764: "{COLOUR BLACK}성취도 지수 ▼"
+  1765: "{COLOUR BLACK}회사 가치"
+  1766: "{COLOUR BLACK}회사 가치 ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
+  1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: 선로공
+  1773: 엔지니어
+  1774: 교통 매니저
+  1775: 수송 조정자
+  1776: 노선 관리자
+  1777: 임원
+  1778: 최고 경영자
+  1779: 사장
+  1780: 회장
+  1781: 타이쿤
+  1782: 회사 {INT16}개
+  1783: 회사 {INT16}개
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP}%"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP}%"
+  1789: "         {INT16_1DP}% {SPRITE 2325}"
+  1790: "         {INT16_1DP}% {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: 공항 종류가 이 항공기에 적합하지 않습니다
+  1795: "{COLOUR BLACK}£"
+  1796: "{INT16}일"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}화물 {INT16} 단위를 {INT16}칸 거리만큼 수송할 때 받는 돈"
+  1799: "{SMALLFONT}{COLOUR BLACK}수송 시간"
+  1800: "*  일시 정지됨  *"
+  1801: 도시 당국이 여기에 건설 될 다른 공항을 원하지 않습니다
+  1802: 도시
+  1803: 산업 시설
+  1804: 도로
+  1805: 선로
+  1806: 역
+  1807: 초목
+  1808: 항공기 경로
+  1809: 선박 경로
+  1810: ""
+  1811: Building {STRINGID} near {STRINGID}
+  1812: Building {STRINGID} near {STRINGID}
+  1813: Building {STRINGID} near {STRINGID}
+  1814: Checking services near {STRINGID}
+  1815: Surveying landscape near {STRINGID}
+  1816: "{COLOUR RED}파산!"
+  1817: "{SMALLFONT}{COLOUR BLACK}게임 일시 정지"
+  1818: "{SMALLFONT}{COLOUR BLACK}보통 속도"
+  1819: "{SMALLFONT}{COLOUR BLACK}빠른 속도"
+  1820: "{SMALLFONT}{COLOUR BLACK}매우 빠른 속도"
+  1821: "{COLOUR BLACK}무작위로 생성된 지형"
+  1822: "{COLOUR WINDOW_2}시작 날짜: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}경쟁사: {COLOUR BLACK}없음"
+  1824: "{COLOUR WINDOW_2}경쟁사: {COLOUR BLACK}{INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}({INT16}개월까지는 시작 안 함)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}({INT16}개월까지는 시작 안 함)"
+  1827: "{COLOUR WINDOW_2}차량의 판매 가격: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}최근 수익: {COLOUR BLACK}없음"
+  1829: "{COLOUR WINDOW_2}최근 수익: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID}(을)를 {INT16}칸 & {INT16}일 만에 수송 = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2} 가장 빠른 건설 연도: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2} 가장 최근 건설 연도: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}지역 당국의 운송 회사의 평판:"
+  1834: 형편 없음
+  1835: 나쁨
+  1836: 보통
+  1837: 좋음
+  1838: 훌륭함
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: 회사 가치를 {CURRENCY32}{STRINGID}{STRINGID} 만큼 달성
+  1841: 차량 월 수익을 {CURRENCY32}{STRINGID}{STRINGID} 만큼 달성
+  1842: 성취도 지수를 {INT16_1DP}% 만큼 달성 (“{STRINGID}”){STRINGID}{STRINGID}
+  1843: Deliver {STRINGID}{STRINGID}{STRINGID}
+  1844: " & 성취도 1위 등극"
+  1845: " & 성취도 3위 이내로 진입"
+  1846: " & {INT16}년 이내"
+  1847: " & {UINT16 RAW} 말까지"
+  1848: "...& 성취도 1위 등극"
+  1849: "...& 성취도 3위 이내로 진입"
+  1850: "...& 시간 제한:"
+  1851: "{COLOUR WINDOW_2}목표:"
+  1852: "{COLOUR BLACK}  {STRINGID}"
+  1853: 특정 회사 가치 달성
+  1854: 특정 차량 월 수익 달성
+  1855: 특정 성취도 지수 달성
+  1856: 특정 양의 화물 수송
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP}%"
+  1859: "{INT32}"
+  1860: "{POP16}{POP16}{POP16}{INT16}년"
+  1861: "{SMALLFONT}({STRINGID}에 의해 {INT16}년 {INT16}월에 달성됨)"
+  1862: "{COLOUR WINDOW_2}성공!{NEWLINE}{COLOUR BLACK}  목표를 {INT16}년 {INT16}개월 만에 달성하였습니다"
+  1863: "{COLOUR WINDOW_2}실패!{NEWLINE}{COLOUR BLACK}  목표 달성에 실패하였습니다"
+  1864: "{COLOUR WINDOW_2}다른 플레이어가 먼저 목표를 달성하였습니다!{NEWLINE}{COLOUR BLACK}  목표가 {STRINGID}에 의해 {INT16}년 {INT16}개월 만에 달성되었습니다"
+  1865: "{COLOUR WINDOW_2}목표 달성 진행률: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}남은 시간: {COLOUR BLACK}{INT16}년 {INT16}개월"
+  1867: "{COLOUR WINDOW_2}수송된 화물:"
+  1868: "{COLOUR BLACK}없음"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}게임{NEWLINE}종료하기"
+
+  1870: 회사가 파산하였습니다!
+  1871: 게임 플레이 도중 산업 시설이 폐쇄될 수 있음
+  1872: 게임 플레이 도중 새 산업 시설이 생길 수 있음
+  1873: 사용자 회사/소유주 얼굴 공유
+  1874: "{SMALLFONT}{COLOUR BLACK}연결이 진행되는 도중에 다른 컴퓨터에게 사용자 회사/소유주 얼굴 데이터 파일을 전송하려면 이 설정을 선택하세요"
+  1875: "{COLOUR WINDOW_2}경쟁사가 사용하지 못 할 교통 수단:"
+  1876: "{COLOUR WINDOW_2}플레이어 회사가 사용하지 못 할 교통 수단:"
+  1877: "{NEWLINE}정차: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "튜토리얼 1: 도시 안에서 버스 서비스 시작하기"
+  1880: "튜토리얼 2: 두 도시 사이에 버스 서비스 만들기"
+  1881: "튜토리얼 3: 두 도시 사이에 열차 서비스 만들기"
+
+  # Tutorial 1
+  1882: "{SMALLFONT}{COLOUR BLACK}한 도시 안에서 승객을 수송할 버스 노선을 만들어 봅시다. 첫 번째 단계는 도시를 하나 고르는 것입니다..."
+  1883: "{SMALLFONT}{COLOUR BLACK}마우스 오른쪽 버튼을 누른 채로 마우스를 이동하여 화면을 스크롤하면서 도시를 둘러보세요..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay이 가장 큰 도시이므로, 가장 승객이 많이 모일 것입니다. 마우스 휠을 이용해서 화면을 확대하거나 확대 아이콘을 클릭하세요"
+  1885: "{SMALLFONT}{COLOUR BLACK}모든 도로 기반 건설은 도로 건설 창에서 이루어집니다..."
+  1886: "{SMALLFONT}{COLOUR BLACK}지금 만들 버스 노선에서는 이 도시 안에 새 도로를 놓을 필요가 없고, 버스 정류장만 놓으면 됩니다..."
+  1887: "{SMALLFONT}{COLOUR BLACK}우리 버스 노선은 도시 한 쪽에서 다른 쪽을 잇게 될 것입니다..."
+  1888: "{SMALLFONT}{COLOUR BLACK}파란색으로 하이라이트된 영역은 정류장에서 승객을 받을 수 있는 역세권입니다. 역세권에 건물이 많이 들어있을 수록 더 많은 승객이 정류장을 이용할 것입니다..."
+  1889: "{SMALLFONT}{COLOUR BLACK}승객을 받는 정류장의 위치를 확인하고 짓지 않으면 승객을 내릴 수 없고 수익을 얻을 수 없게 됩니다. 건설 창 아래에 있는 “역세권” 문구를 확인하세요."
+  1890: "{SMALLFONT}{COLOUR BLACK}좋은 위치를 찾았다면 왼쪽 마우스 버튼을 클릭해서 정류장을 건설하세요..."
+  1891: "{SMALLFONT}{COLOUR BLACK}도시 반대편에 두 번째 정류장도 지을 것입니다..."
+  1892: "{SMALLFONT}{COLOUR BLACK}이제 버스를 구입해야 합니다..."
+  1893: "{SMALLFONT}{COLOUR BLACK}우리가 사용할 수 있는 버스 종류가 2개 있습니다. 더 많은 승객을 수송하기 위해 더 최신 디자인을 고릅시다..."
+  1894: "{SMALLFONT}{COLOUR BLACK}버스를 도로 위에 놓으려면 마우스 커서를 움직여서 버스를 도로 위에 올려놓은 다음 마우스 왼쪽 버튼을 클릭해서 배치하세요..."
+  1895: "{SMALLFONT}{COLOUR BLACK}버스를 출발시키기 전에 버스가 어디를 운행할 지를 결정해줘야 하빈다. 차량 창에서 경로 상세 정보 탭을 클릭하세요..."
+  1896: "{SMALLFONT}{COLOUR BLACK}경로를 설정하려면, 게임 화면에서 역을 클릭하기만 하면 됩니다..."
+  1897: "{SMALLFONT}{COLOUR BLACK}이제 버스를 운행해도 됩니다..."
+  1898: "{SMALLFONT}{COLOUR BLACK}첫 승객을 태우는 모습을 지켜봅시다..."
+
+  # Tutorial 2
+  1899: "{SMALLFONT}{COLOUR BLACK}Boulder Bay와 Breakers Bridge 사이에 승객을 수송하는 버스 노선을 만들 것입니다. 두 도시를 잇는 도로가 없기 때문에, 도로를 하나 새로 만들어야 합니다..."
+  1900: "{SMALLFONT}{COLOUR BLACK}새 도로 조각의 방향을 선택하고, 건설을 시작하려면 게임 화면을 클릭하세요..."
+  1901: "{SMALLFONT}{COLOUR BLACK}'건설하기' 버튼을 클릭하면 같은 종류의 도로 조각을 더 추가할 수 있습니다..."
+  1902: "{SMALLFONT}{COLOUR BLACK}계속하기 전에, 도로 건설을 시작하는 더 빠른 방법을 알려드리겠습니다..."
+  1903: "{SMALLFONT}{COLOUR BLACK}확장하길 원하는 도로의 끝을 마우스로 오른쪽 클릭하기만 하면 됩니다..."
+  1904: "{SMALLFONT}{COLOUR BLACK}여기서 왼쪽으로 돌아야 하니, 좌회전 커브를 선택합니다..."
+  1905: "{SMALLFONT}{COLOUR BLACK}그리고 다시 직진 코스로 돌아옵니다..."
+  1906: "{SMALLFONT}{COLOUR BLACK}도로 건설은 이렇게 하면 됩니다. 이제 역을 지읍시다..."
+  1907: "{SMALLFONT}{COLOUR BLACK}이제 마지막으로 버스를 구입하고 운행해봅시다..."
+  1908: "{SMALLFONT}{COLOUR BLACK}매우 혼잡한 노선이 될 수도 있으니, 두 번째 버스도 구입을 하겠습니다..."
+  1909: "{SMALLFONT}{COLOUR BLACK}버스 1의 전체 경로를 버스 2에 빠르게 복사하려면, 버스 1의 '목록의 끝' 문구를 클릭하기만 하면 됩니다..."
+
+  # Tutorial 3
+  1910: "{SMALLFONT}{COLOUR BLACK}두 거대한 도시 사이에 승객을 수송하는 철도 노선을 만들어 봅시다..."
+  1911: "{SMALLFONT}{COLOUR BLACK}철도 역은 오직 직선 선로에만 지을 수 있고 열차 길이보다 충분히 길어야 합니다. 여기가 몇 분 뒤에 우리가 역 하나를 지을 장소입니다..."
+  1912: "{SMALLFONT}{COLOUR BLACK}이제 역을 지읍시다..."
+  1913: "{SMALLFONT}{COLOUR BLACK}이제 열차를 만듭시다. 먼저 열차와 승객을 실을 객차를 끌을 기관차를 구입해야 합니다..."
+  1914: "{SMALLFONT}{COLOUR BLACK}선로가 그냥 단선이기 때문에, 경로를 설정할 필요가 없습니다. 그냥 열차를 운행시켜보죠..."
+  1915: "{SMALLFONT}{COLOUR BLACK}분기를 새로 만들어서 선로를 확장하여 세 번째 도시까지 연결해보죠. 선로를 오른쪽 클릭하면 선로 건설 창이 뜨고 분기를 만들 준비가 됩니다..."
+  1916: "{SMALLFONT}{COLOUR BLACK}선로 구조가 이제 더이상 간단하지 않기 때문에 열차에 경로를 지정하도록 하겠습니다..."
+  1917: "{SMALLFONT}{COLOUR BLACK}이제 두 번째 열차를 추가할 수 있지만, 열차의 충돌을 방지하기 위해 먼저 신호기를 지어야 합니다..."
+  1918: "{SMALLFONT}{COLOUR BLACK}이제 신호가기 선로를 3개의 독립적인 '폐색 구간'으로 나누어 주었습니다. 한 폐색 구간에는 한 열차만 들어갈 수 있게 됩니다..."
+
+  # Options/Misc
+  1919: 새 게임 시작시 선호 소유주 이름을 사용
+  1920: "{SMALLFONT}{COLOUR BLACK}새 게임을 시작할 때마다 같은 회사 이름을 사용하도록 하려면 이 설정을 선택하세요"
+  1921: "{COLOUR WINDOW_2}선호 소유주 이름: {COLOUR BLACK}{STRINGID}"
+  1922: 선호 소유주 이름
+  1923: "선호 소유주 이름을 입력하세요:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}전진"
+  1925: "{COLOUR BLACK}{TINYFONT}브레이크"
+  1926: "{SMALLFONT}{COLOUR BLACK}목록에서 선택한 경로를 위로 옮깁니다"
+  1927: "{SMALLFONT}{COLOUR BLACK}목록에서 선택한 경로를 아래로 옮깁니다"
+  1928: 읽기 전용 미디어에서 곧바로 게임을 실행시킬 수 없습니다
+
+  1929: Atari Inc. 제작...
+  1930: "{COLOUR WINDOW_2}Atari Inc. 에 저작권이 있습니다"
+  1931: Atari Inc. 제작
+
+  1932: 게임 버전이 일치하지 않습니다 - 접속할 수 없습니다!
+  1933: "{SMALLFONT}{COLOUR BLACK}다른 플레이어에게 짧은 텍스트 메시지를 보냅니다"
+  1934: 다른 플레이어
+  1935: "다른 플레이어가 게임을 떠났습니다: 1:1 플레이 모드가 끊어졌습니다"
+
+  1936: "{COLOUR YELLOW}이 제품을 사용하는 것은 제품의 “ReadMe” 파일과 매뉴얼에 나와있는 라이선스에 해당합니다."
+  1937: "{COLOUR YELLOW}게임등급위원회 알림: 게임 성능이 온라인 플레이 시에는 달라질 수 있습니다"
+  1938: "{COLOUR TOPAZ}게임에 등장하는 일부 운송 수단의 이름은 그 실제 모델이 되는 차량의 이름과 비슷할 수 있습니다."
+  1939: "{COLOUR TOPAZ}이것은 게임의 허구적 세계와 관련된 플레이어를 돕는 장치입니다"
+  1940: "{COLOUR TOPAZ}차량과 관련된 다양한 특성(속도, 수송량, 신뢰도, 가격 등)은"
+  1941: "{COLOUR TOPAZ}게임 플레이를 위한 것이며, 실제 차량과 이름이 비슷하더라도"
+  1942: "{COLOUR TOPAZ}그 실제 운영중인 차량의 특성을 표현한 것은 아닙니다."
+
+  1943: "{COLOUR WINDOW_2}수석 프로듀서:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}수석 브랜드 매니저:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}총괄 프로듀서:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}기술 감독:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}홍보 감독:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}크리에이디브 서비스 감독:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}그래픽 디자이너:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}편집 & 문서 서비스 감독:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}문서 전문가:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}작가:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}매뉴얼 작가:  David Ellis"
+  1954: "{COLOUR WINDOW_2}배급 지원 감독:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Q.A. 매니저:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}Q.A. 관리자:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}I.T. 매니저/서부 지역:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}기술 지원 매니저:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}테스터 팀장:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}보조 테스터 팀장:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}테스터:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}호환성팀 관리자:  Dave Strang"
+  1963: "{COLOUR WINDOW_2}호환성 테스트 팀장:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}호환성 분석:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}엔지니어링 서비스 전문가:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}엔지니어링 서비스 기술자:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}감사한 분들:  John Billington, Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: 1개월당 거리 x 수송 화물량
+  1984: "{SMALLFONT}{COLOUR BLACK}각 회사별 화물 수송 거리 그래프"
+  1985: "{COLOUR WINDOW_2}마지막 운행 평균 속력: {COLOUR BLACK}{VELOCITY}"
+  1986: 땅
+  1987: 공중
+  1988: 물
+  1989: 열차
+  1990: 버스
+  1991: 트럭
+  1992: 전차
+  1993: 항공기
+  1994: 선박
+  1995: "{SMALLFONT}{COLOUR BLACK}속력 기록"
+  1996: 속력 기록
+  1997: "{COLOUR WINDOW_2}지표면 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}공중 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}수상 서비스 속력 기록: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}Achieved by {STRINGID} on {DATE DMY}"
+  2001: 디스플레이 모드 변경 확인
+  2002: "{COLOUR WINDOW_2}화면 해상도가 {UINT16 RAW} x {UINT16 RAW} 로 변경되었습니다"
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}파일 이름:"
+  2005: "{COLOUR WINDOW_2}폴더:  {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}상위 폴더로 이동"
+  2007: "{COLOUR WINDOW_2}회사: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}날짜: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}목표 달성률: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}목표: {COLOUR BLACK}달성"
+  2011: "{COLOUR WINDOW_2}목표: {COLOUR BLACK}실패"
+  2012: "파일을 덮어쓰시겠습니까?: “{STRINGID}”"
+  2013: 덮어쓰기
+  2014: "파일을 삭제하시겠습니까?: “{STRINGID}”"
+  2015: 삭제
+  2016: "오류: 올바르지 않은 파일 이름"
+  2017: 산업 시설 이름
+  2018: "{STRINGID}의 새 이름을 입력하세요:"
+  2019: 산업 시설 이름을 변경할 수 없습니다...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
+  2021: 중복된 CD키를 발견하였습니다 - 접속할 수 없습니다!
+  2022: "{COLOUR BLACK}{SMALLFONT}(컴퓨터 이름 = {STRINGID})"
+  2023: 1번째
+  2024: 2번째
+  2025: 3번째
+  2026: 4번째
+  2027: 5번째
+  2028: 6번째
+  2029: 7번째
+  2030: 8번째
+  2031: 9번째
+  2032: 10번째
+  2033: 11번째
+  2034: 12번째
+  2035: 13번째
+  2036: 14번째
+  2037: 15번째
+  2038: "{COLOUR BLACK}{INT16}개 선택됨 (최대 {INT16}개)"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "다음 오브젝트를 위한 데이터를 찾을 수 없음:"
+  2043: 그래픽을 위한 공간이 부족합니다
+  2044: 이 종류의 오브젝트를 너무 많이 선택하였습니다
+  2045: "다음 오브젝트를 먼저 선택해야합니다:"
+  2046: 이 오브젝트는 현재 사용 중입니다
+  2047: 이 오브젝트는 다른 오브젝트 사용시 필요합니다
+  2048: 이 오브젝트는 항상 필요합니다
+  2049: 이 오브젝트를 선택할 수 없습니다
+  2050: 이 오브젝트를 선택 해제할 수 없습니다
+  2051: 오브젝트 선택 목록이 올바르지 않습니다
+  2052: 오브젝트 선택 - {STRINGID}
+  2053: 인터페이스 스타일
+  2054: 사운드
+  2055: 화폐 단위
+  2056: 애니메이션 효과
+  2057: 땅 절벽
+  2058: 물
+  2059: 땅
+  2060: 도시 이름
+  2061: 화물
+  2062: 벽
+  2063: 신호기
+  2064: 건널목
+  2065: 도로 신호등
+  2066: 터널
+  2067: 다리
+  2068: 선로 역
+  2069: 선로 기타
+  2070: 선로
+  2071: 도로 정류장
+  2072: 도로 기타
+  2073: 도로
+  2074: 공항
+  2075: 항구
+  2076: 차량
+  2077: 나무
+  2078: 눈
+  2079: 기후
+  2080: 지도 생성 데이터
+  2081: 건물
+  2082: 받침대
+  2083: 산업 시설
+  2084: 지도 지역
+  2085: 회사 소유주
+  2086: 시나리오 설명
+  2087: 오브젝트 목록
+  2088: "오브젝트 데이터가 존재하지 않음, ID:"
+  2089: 게임 저장시 사용한 오브젝트를 같이 포함하여 저장
+  2090: "{SMALLFONT}{COLOUR BLACK}필요한 경우 내장된 오브젝트(기본 오브젝트가 아닌 사용자가 추가한 오브젝트)를 게임 저장 파일이나 시나리오 파일 내부에 함께 저장합니다. 이러면 그 추가 오브젝트를 갖고 있지 않은 다른 사람이 이 파일을 불러올 때 자동으로 그 오브젝트를 설치하게 됩니다."
+  2091: 최소한 하나 이상의 양방향 도로 종류를 선택해야 합니다
+  2092: 받침대 종류를 반드시 선택해야 합니다
+  2093: 고급
+  2094: "{SMALLFONT}{COLOUR BLACK}각 아이템의 고급 선택을 허용합니다"
+  2095: "{COLOUR WHITE}{BIGFONT}£"
+  2096: 새 오브젝트가 성공적으로 설치되었습니다
+  2097: 최소한 하나 이상의 산업 시설을 선택해야 합니다
+  2098: 최소한 하나 이상의 도시 건물을 선택해야 합니다
+  2099: 회사 본사 건물을 반드시 선택해야 합니다
+  2100: 회사 본사 건물은 반드시 하나만 선택해야 합니다
+  2101: 인터페이스 종류를 반드시 선택해야 합니다
+  2102: 최소한 하나 이상의 차량 종류를 선택해야 합니다
+  2103: 최소한 하나 이상의 땅 종류를 선택해야 합니다
+  2104: 화폐 단위를 반드시 선택해야 합니다
+  2105: 물 종류를 반드시 선택해야 합니다
+  2106: 도시 이름 스타일을 반드시 선택해야 합니다
+  2107: 최소한 하나 이상의 건널목 종류를 선택해야 합니다
+  2108: 도로 신호등을 반드시 선택해야 합니다
+  2109: (반드시 필요하지 않아도) 눈 종류를 반드시 선택해야 합니다
+  2110: 기후를 반드시 선택해야 합니다
+  2111: 지도 생성 데이터 종류를 반드시 선택해야 합니다
+  2112: 지역 종류를 반드시 선택해야 합니다
+  2113: mph
+  2114: kmh⁻¹
+  2115: "hour:"
+  2116: "hours:"
+  2117: mins
+  2118: "min:"
+  2119: secs
+  2120: " units"
+  2121: ft
+  2122: m
+  2123: hp
+  2124: kW
