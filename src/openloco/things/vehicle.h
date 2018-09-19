@@ -6,6 +6,7 @@
 namespace openloco
 {
     class thingmanager;
+    class objectmanager;
 
     namespace flags_5f
     {
@@ -55,21 +56,20 @@ namespace openloco
         uint8_t pad_6B[0x73 - 0x6B];
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
-        vehicle_object* object() const;
         vehicle* next_vehicle(thingmanager& thingmgr);
         vehicle* next_car(thingmanager& thingmgr);
 
-        void update_head(thingmanager& thingmgr);
+        void update_head(objectmanager& objectmgr, thingmanager& thingmgr);
         void sub_4BA8D4(thingmanager& thingmgr);
-        void secondary_animation_update(thingmanager& thingmgr);
+        void secondary_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
 
     private:
-        bool update(thingmanager& thingmgr);
+        bool update(objectmanager& objectmgr, thingmanager& thingmgr);
         void sub_4BAA76();
-        int32_t sub_4AA1D0(thingmanager& thingmgr);
-        void animation_update(thingmanager& thingmgr);
-        void sub_4AAB0B();
-        void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
+        int32_t sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject);
+        void animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
+        void sub_4AAB0B(vehicle_object& vehicleObject);
+        void sub_4AC255(vehicle_object& vehicleObject, vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
@@ -78,12 +78,12 @@ namespace openloco
         uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void steam_puffs_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
-        void diesel_exhaust1_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
-        void diesel_exhaust2_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
-        void electric_spark1_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
-        void electric_spark2_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
-        void ship_wake_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05);
+        void steam_puffs_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void diesel_exhaust1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void diesel_exhaust2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void electric_spark1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void electric_spark2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void ship_wake_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
     };
 #pragma pack(pop)
 }

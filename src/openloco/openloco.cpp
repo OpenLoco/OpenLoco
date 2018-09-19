@@ -544,7 +544,7 @@ namespace openloco
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
         g_industrymgr.update(g_companymgr);
-        g_thingmgr.update_vehicles();
+        g_thingmgr.update_vehicles(g_objectmgr);
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
         g_thingmgr.update_misc_things();

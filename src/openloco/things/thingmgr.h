@@ -6,6 +6,8 @@
 
 namespace openloco
 {
+    class objectmanager;
+
     constexpr size_t num_thing_lists = 6;
     constexpr size_t max_things = 20000;
 
@@ -32,7 +34,7 @@ namespace openloco
 
         thing_base* create_thing();
 
-        void update_vehicles();
+        void update_vehicles(objectmanager& objectmgr);
         void update_misc_things();
     };
 

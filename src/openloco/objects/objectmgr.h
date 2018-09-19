@@ -47,6 +47,8 @@ namespace openloco
     };
 
     struct industry;
+    struct vehicle;
+
     struct object;
     struct object_entry_extended;
     struct cargo_object;
@@ -103,6 +105,7 @@ namespace openloco
         T* get(size_t id);
 
         industry_object* get(const industry& i);
+        vehicle_object* get(const vehicle& v);
 
 #pragma pack(push, 1)
         struct header

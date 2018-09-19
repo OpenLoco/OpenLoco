@@ -1,6 +1,7 @@
 #include "objectmgr.h"
 #include "../industry.h"
 #include "../interop/interop.hpp"
+#include "../things/vehicle.h"
 #include <vector>
 
 using namespace openloco;
@@ -112,6 +113,11 @@ currency_object* objectmanager::get()
 industry_object* objectmanager::get(const industry& i)
 {
     return get<industry_object>(i.object_id);
+}
+
+vehicle_object* objectmanager::get(const vehicle& v)
+{
+    return get<vehicle_object>(v.object_id);
 }
 
 size_t objectmanager::get_max_objects(object_type type)
