@@ -5,6 +5,7 @@
 
 namespace openloco::config
 {
+    enum class screen_mode;
     struct display_config;
 }
 
@@ -51,6 +52,9 @@ namespace openloco::ui
     void updateFullscreenResolutions();
     std::vector<Resolution> getFullscreenResolutions();
     Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);
+#if true || !(defined(__APPLE__) && defined(__MACH__))
+    void set_screen_mode(config::screen_mode mode);
+#endif
 
     namespace viewport_interaction
     {

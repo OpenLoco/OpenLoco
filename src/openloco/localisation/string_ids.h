@@ -398,4 +398,9 @@ namespace openloco::string_ids
     constexpr string_id options_language = 2125;
 
     constexpr string_id disable_vehicle_breakdowns = 2126;
+
+    constexpr string_id options_screen_mode = 2127;
+    constexpr string_id options_mode_windowed = 2128;
+    constexpr string_id options_mode_fullscreen = 2129;
+    constexpr string_id options_mode_fullscreen_window = 2130;
 }
