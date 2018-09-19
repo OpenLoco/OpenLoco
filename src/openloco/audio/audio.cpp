@@ -318,10 +318,10 @@ namespace openloco::audio
         std::generate(_vehicle_channels.begin(), _vehicle_channels.end(), []() { return vehicle_channel(); });
     }
 
-    static void reinitialise()
+    static void reinitialise(const environment& env)
     {
         dispose_dsound();
-        initialise_dsound();
+        initialise_dsound(env);
     }
 
     static size_t get_device_index(const std::string_view& deviceName)
@@ -346,7 +346,7 @@ namespace openloco::audio
     }
 
     // 0x00404E53
-    void initialise_dsound()
+    void initialise_dsound(const environment& env)
     {
         const char* deviceName = nullptr;
         const auto& cfg = config::get_new();
@@ -382,7 +382,7 @@ namespace openloco::audio
             _vehicle_channels[i] = vehicle_channel(channel(4 + i));
         }
 
-        auto css1path = environment::get_path(environment::path_id::css1);
+        auto css1path = env.get_path(environment::path_id::css1);
         _samples = load_sounds_from_css(css1path);
         _audio_initialised = 1;
     }
@@ -465,8 +465,8 @@ namespace openloco::audio
             {
                 cfg.audio.device = _devices[index];
             }
-            config::write_new_config();
-            reinitialise();
+            config::write_new_config(g_env);
+            reinitialise(g_env);
         }
     }
 
@@ -930,7 +930,7 @@ namespace openloco::audio
     }
 
     // 0x0048AC66
-    void play_title_screen_music()
+    void play_title_screen_music(const environment& env)
     {
 #if defined(__APPLE__) && defined(__MACH__)
         call(0x0048AC66);
@@ -940,7 +940,7 @@ namespace openloco::audio
         {
             if (!is_channel_playing(channel_id::title))
             {
-                auto path = environment::get_path(path_id::css5);
+                auto path = env.get_path(environment::path_id::css5);
                 if (load_channel(channel_id::title, path, 0))
                 {
                     play_channel(channel_id::title, 1, -500, 0, 0);

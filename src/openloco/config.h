@@ -3,6 +3,11 @@
 #include <cstdint>
 #include <string>
 
+namespace openloco
+{
+    class environment;
+}
+
 namespace openloco::config
 {
 #pragma pack(push, 1)
@@ -114,7 +119,7 @@ namespace openloco::config
     new_config& get_new();
 
     config_t& read();
-    new_config& read_new_config();
+    new_config& read_new_config(const environment& env);
     void write();
-    void write_new_config();
+    void write_new_config(const environment& env);
 }

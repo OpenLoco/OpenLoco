@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include "console.h"
+#include "environment.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
@@ -341,7 +342,7 @@ namespace openloco::ui
         if (cfg.index != displayIndex)
         {
             cfg.index = displayIndex;
-            config::write_new_config();
+            config::write_new_config(g_env);
         }
     }
 
@@ -357,7 +358,7 @@ namespace openloco::ui
         {
             auto& cfg = config::get_new().display;
             cfg.window_resolution = { width, height };
-            config::write_new_config();
+            config::write_new_config(g_env);
         }
     }
 
@@ -760,7 +761,7 @@ namespace openloco::ui
         {
             auto& cfg = config::get_new();
             cfg.display.mode = mode;
-            config::write_new_config();
+            config::write_new_config(g_env);
         }
     }
 

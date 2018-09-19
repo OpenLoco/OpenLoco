@@ -4,6 +4,11 @@
 #include "../openloco.h"
 #include <cstdint>
 
+namespace openloco
+{
+    class environment;
+}
+
 namespace openloco::gfx
 {
 #pragma pack(push, 1)
@@ -78,7 +83,7 @@ namespace openloco::gfx
 
     drawpixelinfo_t& screen_dpi();
 
-    void load_g1();
+    void load_g1(const environment& env);
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
 

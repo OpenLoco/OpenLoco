@@ -8,6 +8,7 @@ struct Mix_Chunk;
 
 namespace openloco
 {
+    class environment;
     class thingmanager;
     struct vehicle;
 }
@@ -67,7 +68,7 @@ namespace openloco::audio
     };
     constexpr int32_t num_reserved_channels = 4 + 10;
 
-    void initialise_dsound();
+    void initialise_dsound(const environment& env);
     void dispose_dsound();
 
     const std::vector<std::string>& get_devices();
@@ -99,7 +100,7 @@ namespace openloco::audio
     void update_ambient_noise();
     void play_background_music();
     void stop_background_music();
-    void play_title_screen_music();
+    void play_title_screen_music(const environment& env);
 
     /**
      * Converts a Locomotion volume range to SDL2.

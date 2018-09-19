@@ -64,9 +64,9 @@ namespace openloco::gfx
     }
 
     // 0x0044733C
-    void load_g1()
+    void load_g1(const environment& env)
     {
-        auto g1Path = environment::get_path(environment::path_id::g1);
+        auto g1Path = env.get_path(environment::path_id::g1);
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ifstream stream(g1Path.make_preferred().string(), std::ios::in | std::ios::binary);
 #else
