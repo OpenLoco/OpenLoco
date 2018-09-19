@@ -396,4 +396,6 @@ namespace openloco::string_ids
     constexpr string_id unit_kW = 2124;
 
     constexpr string_id options_language = 2125;
+
+    constexpr string_id disable_vehicle_breakdowns = 2126;
 }

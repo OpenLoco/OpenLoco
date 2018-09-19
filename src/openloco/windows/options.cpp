@@ -1859,7 +1859,8 @@ namespace openloco::ui::options
         {
             enum
             {
-                use_preferred_owner_name = 10,
+                disable_vehicle_breakdowns = 10,
+                use_preferred_owner_name,
                 change_btn,
                 export_plugin_objects,
             };
@@ -1867,9 +1868,10 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
-            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
-            make_widget({ 335, 64 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
+            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disable_vehicle_breakdowns, string_ids::null),
+            make_widget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
+            make_widget({ 335, 79 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            make_widget({ 10, 94 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
             widget_end(),
         };
 
@@ -1880,6 +1882,7 @@ namespace openloco::ui::options
         static void change_preferred_name(window* w);
         static void set_preferred_name(window* w, char* str);
         static void use_preferred_owner_name_mouse_up(window* w);
+        static void disable_vehicle_breakdowns_mouse_up(window* w);
         static void export_plugin_objects_mouse_up(window* w);
 
         // 0x004C11B7
@@ -1898,6 +1901,11 @@ namespace openloco::ui::options
             w->widgets[common::widx::caption].right = w->width - 2;
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
+
+            if (config::get_new().breakdowns_disabled)
+                w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
+            else
+                w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
             if (config::get().flags & config::flags::export_objects_with_saves)
@@ -1954,6 +1962,10 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::tab_on_mouse_up(w, wi);
                     return;
+
+                case widx::disable_vehicle_breakdowns:
+                    disable_vehicle_breakdowns_mouse_up(w);
+                    break;
 
                 case widx::export_plugin_objects:
                     export_plugin_objects_mouse_up(w);
@@ -2029,6 +2041,14 @@ namespace openloco::ui::options
                     change_preferred_name(w);
                 }
             }
+        }
+
+        static void disable_vehicle_breakdowns_mouse_up(window* w)
+        {
+            auto& cfg = openloco::config::get_new();
+            cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
+            config::write();
+            w->invalidate();
         }
 
         static void export_plugin_objects_mouse_up(window* w)
@@ -2250,7 +2270,7 @@ namespace openloco::ui::options
 
             case common::tab::miscellaneous:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
                 w->event_handlers = &misc::_events;
                 w->widgets = misc::_widgets;
                 w->invalidate();
