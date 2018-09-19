@@ -541,14 +541,14 @@ namespace openloco
         date_tick();
         call(0x00463ABA);
         call(0x004C56F6);
-        townmgr::update();
-        industrymgr::update();
+        townmgr::update(g_companymgr);
+        g_industrymgr.update(g_companymgr);
         thingmgr::update_vehicles();
         sub_46FFCA();
-        stationmgr::update();
+        stationmgr::update(g_companymgr);
         thingmgr::update_misc_things();
         sub_46FFCA();
-        companymgr::update();
+        g_companymgr.update();
         invalidate_map_animations();
         audio::update_vehicle_noise();
         audio::update_ambient_noise();
@@ -584,7 +584,7 @@ namespace openloco
         {
             if (update_day_counter())
             {
-                stationmgr::update_daily();
+                stationmgr::update_daily(g_companymgr);
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);

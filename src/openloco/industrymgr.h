@@ -4,12 +4,20 @@
 #include <array>
 #include <cstddef>
 
-namespace openloco::industrymgr
+namespace openloco
 {
+    class companymanager;
+
     constexpr size_t max_industries = 128;
 
-    std::array<industry, max_industries>& industries();
-    industry* get(industry_id_t id);
-    void update();
-    void update_monthly();
+    class industrymanager
+    {
+    public:
+        std::array<industry, max_industries>& industries();
+        industry* get(industry_id_t id);
+        void update(companymanager& companymgr);
+        void update_monthly();
+    };
+
+    extern industrymanager g_industrymgr;
 }

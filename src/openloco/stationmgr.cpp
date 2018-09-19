@@ -30,7 +30,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048B1FA
-    void update()
+    void update(companymanager& companymgr)
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
@@ -38,7 +38,7 @@ namespace openloco::stationmgr
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
-                station->update();
+                station->update(companymgr);
             }
         }
     }
@@ -46,10 +46,10 @@ namespace openloco::stationmgr
     // 0x00437F29
     // arg0: ah
     // arg1: al
-    static void sub_437F29(company_id_t cid, uint8_t arg1)
+    static void sub_437F29(companymanager& companymgr, company_id_t cid, uint8_t arg1)
     {
         constexpr uint8_t byte_4F9462[] = { 0, 31, 10, 7, 31, 10, 31, 31, 11 };
-        auto company = companymgr::get(cid);
+        auto company = companymgr.get(cid);
         company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
@@ -67,7 +67,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048B244
-    void update_daily()
+    void update_daily(companymanager& companymgr)
     {
         for (auto& town : townmgr::towns())
         {
@@ -86,7 +86,7 @@ namespace openloco::stationmgr
                     station.var_29++;
                     if (station.var_29 != 5 && is_player_company(station.owner))
                     {
-                        sub_437F29(station.owner, 8);
+                        sub_437F29(companymgr, station.owner, 8);
                     }
                     if (station.var_29 >= 10)
                     {

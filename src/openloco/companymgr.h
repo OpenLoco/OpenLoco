@@ -4,15 +4,25 @@
 #include <array>
 #include <cstddef>
 
-namespace openloco::companymgr
+namespace openloco
 {
     constexpr size_t max_companies = 15;
 
-    company_id_t updating_company_id();
-    void updating_company_id(company_id_t id);
+    class companymanager
+    {
+    public:
+        company_id_t updating_company_id() const;
+        void updating_company_id(company_id_t id);
 
-    std::array<company, max_companies>& companies();
-    company* get(company_id_t id);
-    company_id_t get_controlling_id();
-    void update();
+        std::array<company, max_companies>& companies();
+        company* get(company_id_t id);
+        company_id_t get_controlling_id() const;
+        void update();
+
+    private:
+        void produce_companies();
+        void sub_42F9AC();
+    };
+
+    extern companymanager g_companymgr;
 }

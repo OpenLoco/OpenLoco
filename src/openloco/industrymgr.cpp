@@ -3,48 +3,48 @@
 #include "interop/interop.hpp"
 #include "openloco.h"
 
+using namespace openloco;
 using namespace openloco::interop;
 
-namespace openloco::industrymgr
+industrymanager openloco::g_industrymgr;
+
+static loco_global<industry[max_industries], 0x005C455C> _industries;
+
+std::array<industry, max_industries>& industrymanager::industries()
 {
-    static loco_global<industry[max_industries], 0x005C455C> _industries;
+    auto arr = (std::array<industry, max_industries>*)_industries.get();
+    return *arr;
+}
 
-    std::array<industry, max_industries>& industries()
+industry* industrymanager::get(industry_id_t id)
+{
+    if (id >= _industries.size())
     {
-        auto arr = (std::array<industry, max_industries>*)_industries.get();
-        return *arr;
+        return nullptr;
     }
+    return &_industries[id];
+}
 
-    industry* get(industry_id_t id)
+// 0x00453234
+void industrymanager::update(companymanager& companymgr)
+{
+    if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
     {
-        if (id >= _industries.size())
+        companymgr.updating_company_id(company_id::neutral);
+        for (auto& industry : industries())
         {
-            return nullptr;
-        }
-        return &_industries[id];
-    }
-
-    // 0x00453234
-    void update()
-    {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
-        {
-            companymgr::updating_company_id(company_id::neutral);
-            for (auto& industry : industries())
+            if (!industry.empty())
             {
-                if (!industry.empty())
-                {
-                    industry.update();
-                }
+                industry.update();
             }
         }
-
-        call(0x00453234);
     }
 
-    // 0x0045383B
-    void update_monthly()
-    {
-        call(0x0045383B);
-    }
+    call(0x00453234);
+}
+
+// 0x0045383B
+void industrymanager::update_monthly()
+{
+    call(0x0045383B);
 }

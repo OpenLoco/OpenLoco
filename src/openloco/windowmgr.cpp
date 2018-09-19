@@ -236,7 +236,7 @@ namespace openloco::ui::windowmgr
         register_hook(
             0x004CD3D0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                dispatch_update_all();
+                dispatch_update_all(g_companymgr);
                 return 0;
             });
 
@@ -626,10 +626,10 @@ namespace openloco::ui::windowmgr
     }
 
     // 0x004CD3D0
-    void dispatch_update_all()
+    void dispatch_update_all(companymanager& companymgr)
     {
         _523508++;
-        companymgr::updating_company_id(companymgr::get_controlling_id());
+        companymgr.updating_company_id(companymgr.get_controlling_id());
 
         for (ui::window* w = _windows_end - 1; w >= _windows; w--)
         {

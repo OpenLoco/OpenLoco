@@ -25,7 +25,7 @@ namespace openloco::townmgr
     }
 
     // 0x00496B6D
-    void update()
+    void update(companymanager& companymgr)
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
@@ -36,7 +36,7 @@ namespace openloco::townmgr
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    companymgr::updating_company_id(company_id::neutral);
+                    companymgr.updating_company_id(company_id::neutral);
                     town->update();
                 }
             }

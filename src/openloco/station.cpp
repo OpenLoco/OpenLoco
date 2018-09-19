@@ -30,7 +30,7 @@ namespace openloco
     }
 
     // 0x00492640
-    void station::update()
+    void station::update(companymanager& companymgr)
     {
         uint32_t currentAcceptedCargo = calc_accepted_cargo();
         uint32_t originallyAcceptedCargo = 0;
@@ -49,7 +49,7 @@ namespace openloco
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
         {
-            if (owner == companymgr::get_controlling_id())
+            if (owner == companymgr.get_controlling_id())
             {
                 for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
                 {

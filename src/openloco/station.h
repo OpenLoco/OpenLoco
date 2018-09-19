@@ -8,6 +8,8 @@
 
 namespace openloco
 {
+    class companymanager;
+
     using station_id_t = uint16_t;
 
     namespace station_id
@@ -64,7 +66,7 @@ namespace openloco
 
         bool empty() const { return name == string_ids::null; }
         station_id_t id() const;
-        void update();
+        void update(companymanager& companymgr);
         uint32_t calc_accepted_cargo(uint16_t ax = 0xFFFF);
         void sub_48F7D1();
         bool update_cargo();

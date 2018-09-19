@@ -7,7 +7,6 @@
 namespace openloco
 {
     struct building_object;
-    struct industry;
 }
 
 namespace openloco::map
@@ -211,7 +210,6 @@ namespace openloco::map
 
     public:
         uint8_t industry_id() const { return _4; }
-        openloco::industry* industry() const;
     };
 
     struct unk1_element : public tile_element_base

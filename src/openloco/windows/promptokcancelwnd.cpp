@@ -1,4 +1,5 @@
 #include "../audio/audio.h"
+#include "../companymgr.h"
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -54,7 +55,7 @@ namespace openloco::ui::windows
                 []() {
                     input::handle_keyboard();
                     audio::update_sounds();
-                    windowmgr::dispatch_update_all();
+                    windowmgr::dispatch_update_all(g_companymgr);
                     call(0x004BEC5B);
                     windowmgr::update();
                     call(0x004C98CF);
