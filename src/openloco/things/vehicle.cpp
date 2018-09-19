@@ -16,7 +16,6 @@
 
 using namespace openloco;
 using namespace openloco::interop;
-using namespace openloco::objectmgr;
 
 loco_global<vehicle*, 0x01136118> vehicle_1136118;
 loco_global<vehicle*, 0x01136124> vehicle_front_bogie;
@@ -74,7 +73,7 @@ vehicle* vehicle::next_car()
 
 vehicle_object* vehicle::object() const
 {
-    return objectmgr::get<vehicle_object>(object_id);
+    return g_objectmgr.get<vehicle_object>(object_id);
 }
 
 void vehicle::update_head()
@@ -1078,7 +1077,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
         return;
 
     var_55++;
-    steam_object* steam_obj = objectmgr::get<steam_object>(vehicleObject->animation[num].object_id);
+    steam_object* steam_obj = g_objectmgr.get<steam_object>(vehicleObject->animation[num].object_id);
     if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
     {
         var_55 = 0;

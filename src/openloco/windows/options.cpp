@@ -1327,7 +1327,7 @@ namespace openloco::ui::options
             }
 
             set_format_arg(0xC, string_id, current_measurement_format);
-            set_format_arg(0xA, string_id, objectmgr::get<currency_object>()->name);
+            set_format_arg(0xA, string_id, g_objectmgr.get<currency_object>()->name);
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
             if (config::get().flags & config::flags::preferred_currency_for_new_games)
@@ -1489,7 +1489,7 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : g_objectmgr.getAvailableObjects(object_type::currency))
             {
                 index++;
                 dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
@@ -1513,7 +1513,7 @@ namespace openloco::ui::options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : g_objectmgr.getAvailableObjects(object_type::currency))
             {
                 index++;
                 if (index == ax)
@@ -1552,7 +1552,7 @@ namespace openloco::ui::options
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : g_objectmgr.getAvailableObjects(object_type::currency))
             {
                 index++;
                 dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
@@ -1571,7 +1571,7 @@ namespace openloco::ui::options
             }
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : g_objectmgr.getAvailableObjects(object_type::currency))
             {
                 index++;
 
@@ -2078,7 +2078,7 @@ namespace openloco::ui::options
 
     static void sub_4BF8CD()
     {
-        auto ptr = malloc(objectmgr::getNumInstalledObjects());
+        auto ptr = malloc(g_objectmgr.getNumInstalledObjects());
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;
@@ -2152,7 +2152,7 @@ namespace openloco::ui::options
         window->frame_no = 0;
         window->var_840 = 0xFFFF;
 
-        auto interface = objectmgr::get<interface_skin_object>();
+        auto interface = g_objectmgr.get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 

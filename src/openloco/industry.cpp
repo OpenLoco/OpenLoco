@@ -16,11 +16,6 @@ namespace openloco
         return (industry_id_t)(this - first);
     }
 
-    industry_object* industry::object() const
-    {
-        return objectmgr::get<industry_object>(object_id);
-    }
-
     bool industry::empty() const
     {
         return name == string_ids::null;
@@ -46,7 +41,7 @@ namespace openloco
         if (!(flags & industry_flags::flag_01) && var_11 == 0xFF)
         {
             // Run tile loop for 100 iterations
-            auto obj = object();
+            auto obj = g_objectmgr.get(*this);
             for (int i = 0; i < 100; i++)
             {
                 const auto& surface = tilemgr::get(tile_loop.current()).surface();

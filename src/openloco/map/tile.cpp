@@ -22,11 +22,6 @@ bool tile_element_base::is_last() const
     return (_flags & element_flags::last) != 0;
 }
 
-building_object* building_element::object() const
-{
-    return objectmgr::get<building_object>(object_id());
-}
-
 tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
     : _data(data)
     , x(x)

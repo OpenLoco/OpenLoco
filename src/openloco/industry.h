@@ -48,7 +48,6 @@ namespace openloco
         uint8_t pad_1A7[0x453 - 0x1A7];
 
         industry_id_t id() const;
-        industry_object* object() const;
         bool empty() const;
 
         void update();

@@ -4,11 +4,6 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
-{
-    struct building_object;
-}
-
 namespace openloco::map
 {
     using coord_t = int16_t;
@@ -196,7 +191,6 @@ namespace openloco::map
         bool has_40() const { return (_type & 0x40) != 0; }
         bool has_80() const { return (_type & 0x80) != 0; }
         uint8_t object_id() const { return _4; }
-        building_object* object() const;
         uint8_t var_5b() const { return _5 & 3; }
     };
 

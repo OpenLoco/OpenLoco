@@ -261,7 +261,7 @@ namespace openloco
         call(0x004BE5DE);
         progressbar::end();
         config::read();
-        objectmgr::load_index();
+        g_objectmgr.load_index();
         scenariomgr::load_index(0);
         progressbar::begin(string_ids::loading, 0);
         progressbar::set_progress(60);

@@ -5,11 +5,10 @@
 #include "thingmgr.h"
 
 using namespace openloco;
-using namespace openloco::objectmgr;
 
 steam_object* openloco::exhaust::object() const
 {
-    return objectmgr::get<steam_object>(object_id & 0x7F);
+    return g_objectmgr.get<steam_object>(object_id & 0x7F);
 }
 
 // 0x0044080C
