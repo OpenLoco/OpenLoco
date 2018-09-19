@@ -8,6 +8,7 @@
 namespace openloco
 {
     class companymanager;
+    class townmanager;
 }
 
 namespace openloco
@@ -19,8 +20,8 @@ namespace openloco
     public:
         std::array<station, max_stations>& stations();
         station* get(station_id_t id);
-        void update(companymanager& companymgr);
-        void update_daily(companymanager& companymgr);
+        void update(companymanager& companymgr, messagemanager& messagemgr);
+        void update_daily(companymanager& companymgr, townmanager& townmgr);
 
     private:
         void sub_437F29(companymanager& companymgr, company_id_t cid, uint8_t arg1);

@@ -31,7 +31,7 @@ station* stationmanager::get(station_id_t id)
 }
 
 // 0x0048B1FA
-void stationmanager::update(companymanager& companymgr)
+void stationmanager::update(companymanager& companymgr, messagemanager& messagemgr)
 {
     if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
     {
@@ -39,7 +39,7 @@ void stationmanager::update(companymanager& companymgr)
         auto station = get(id);
         if (station != nullptr && !station->empty())
         {
-            station->update(companymgr);
+            station->update(companymgr, messagemgr);
         }
     }
 }
@@ -68,9 +68,9 @@ void stationmanager::sub_49E1F1(station_id_t id)
 }
 
 // 0x0048B244
-void stationmanager::update_daily(companymanager& companymgr)
+void stationmanager::update_daily(companymanager& companymgr, townmanager& townmgr)
 {
-    for (auto& town : townmgr::towns())
+    for (auto& town : townmgr.towns())
     {
         if (!town.empty())
         {
@@ -102,7 +102,7 @@ void stationmanager::update_daily(companymanager& companymgr)
             }
             if (station.update_cargo())
             {
-                auto town = townmgr::get(station.town);
+                auto town = townmgr.get(station.town);
                 if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
                 {
                     town->flags |= town_flags::rating_adjusted;

@@ -30,7 +30,7 @@ namespace openloco
     }
 
     // 0x00492640
-    void station::update(companymanager& companymgr)
+    void station::update(companymanager& companymgr, messagemanager& messagemgr)
     {
         uint32_t currentAcceptedCargo = calc_accepted_cargo();
         uint32_t originallyAcceptedCargo = 0;
@@ -57,7 +57,7 @@ namespace openloco
                     bool acceptedNow = (currentAcceptedCargo & (1 << cargoId)) != 0;
                     if (acceptedBefore && !acceptedNow)
                     {
-                        messagemgr::post(
+                        messagemgr.post(
                             message_type::cargo_no_longer_accepted,
                             owner,
                             id(),
@@ -65,7 +65,7 @@ namespace openloco
                     }
                     else if (!acceptedBefore && acceptedNow)
                     {
-                        messagemgr::post(
+                        messagemgr.post(
                             message_type::cargo_now_accepted,
                             owner,
                             id(),

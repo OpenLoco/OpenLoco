@@ -3,49 +3,49 @@
 #include "interop/interop.hpp"
 #include "openloco.h"
 
+using namespace openloco;
 using namespace openloco::interop;
 
-namespace openloco::townmgr
+townmanager openloco::g_townmgr;
+
+static loco_global<town[80], 0x005B825C> _towns;
+
+std::array<town, max_towns>& townmanager::towns()
 {
-    static loco_global<town[80], 0x005B825C> _towns;
+    auto arr = (std::array<town, max_towns>*)_towns.get();
+    return *arr;
+}
 
-    std::array<town, max_towns>& towns()
+town* townmanager::get(town_id_t id)
+{
+    if (id >= _towns.size())
     {
-        auto arr = (std::array<town, max_towns>*)_towns.get();
-        return *arr;
+        return nullptr;
     }
+    return &_towns[id];
+}
 
-    town* get(town_id_t id)
+// 0x00496B6D
+void townmanager::update(companymanager& companymgr)
+{
+    if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
     {
-        if (id >= _towns.size())
+        auto ticks = scenario_ticks();
+        if (ticks % 8 == 0)
         {
-            return nullptr;
-        }
-        return &_towns[id];
-    }
-
-    // 0x00496B6D
-    void update(companymanager& companymgr)
-    {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
-        {
-            auto ticks = scenario_ticks();
-            if (ticks % 8 == 0)
+            town_id_t id = (ticks / 8) % 0x7F;
+            auto town = get(id);
+            if (town != nullptr && !town->empty())
             {
-                town_id_t id = (ticks / 8) % 0x7F;
-                auto town = get(id);
-                if (town != nullptr && !town->empty())
-                {
-                    companymgr.updating_company_id(company_id::neutral);
-                    town->update();
-                }
+                companymgr.updating_company_id(company_id::neutral);
+                town->update();
             }
         }
     }
+}
 
-    // 0x0049748C
-    void update_monthly()
-    {
-        call(0x0049748C);
-    }
+// 0x0049748C
+void townmanager::update_monthly()
+{
+    call(0x0049748C);
 }

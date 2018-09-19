@@ -564,14 +564,14 @@ namespace openloco::stringmgr
         {
             id -= TOWN_NAMES_START;
             uint16_t town_id = args.pop16();
-            auto town = townmgr::get(town_id);
+            auto town = g_townmgr.get(town_id);
             void* town_name = (void*)&town->name;
             return format_string(buffer, id, town_name);
         }
         else if (id == TOWN_NAMES_END)
         {
             uint16_t town_id = args.pop16();
-            auto town = townmgr::get(town_id);
+            auto town = g_townmgr.get(town_id);
             return format_string(buffer, town->name, nullptr);
         }
         else

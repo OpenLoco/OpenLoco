@@ -31,6 +31,7 @@
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"
+#include "messagemgr.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "platform/platform.h"
@@ -76,7 +77,7 @@ namespace openloco
     static void tick_logic(int32_t count);
     static void tick_logic();
     static void tick_wait();
-    static void date_tick();
+    static void date_tick(companymanager& companymgr, stationmanager& stationmgr, townmanager& townmgr);
     static void sub_46FFCA();
 
     std::string get_version_info()
@@ -538,14 +539,14 @@ namespace openloco
         addr<0x00525FD0, uint32_t>() = _prng->srand_1();
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = addr<0x009C871C, uint8_t>();
-        date_tick();
+        date_tick(g_companymgr, g_stationmgr, g_townmgr);
         call(0x00463ABA);
         call(0x004C56F6);
-        townmgr::update(g_companymgr);
+        g_townmgr.update(g_companymgr);
         g_industrymgr.update(g_companymgr);
         thingmgr::update_vehicles();
         sub_46FFCA();
-        g_stationmgr.update(g_companymgr);
+        g_stationmgr.update(g_companymgr, g_messagemgr);
         thingmgr::update_misc_things();
         sub_46FFCA();
         g_companymgr.update();
@@ -578,13 +579,13 @@ namespace openloco
     }
 
     // 0x004968C7
-    static void date_tick()
+    static void date_tick(companymanager& companymgr, stationmanager& stationmgr, townmanager& townmgr)
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
             if (update_day_counter())
             {
-                g_stationmgr.update_daily(g_companymgr);
+                stationmgr.update_daily(companymgr, townmgr);
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
@@ -600,7 +601,7 @@ namespace openloco
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    townmgr::update_monthly();
+                    townmgr.update_monthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);
