@@ -5,6 +5,8 @@
 
 namespace openloco
 {
+    class thingmanager;
+
 #pragma pack(push, 1)
     struct exhaust : thing_base
     {
@@ -20,7 +22,7 @@ namespace openloco
 
         steam_object* object() const;
 
-        static exhaust* create(loc16 loc, uint8_t type);
+        static exhaust* create(thingmanager& thingmgr, loc16 loc, uint8_t type);
     };
 
     struct smoke : thing_base
@@ -28,7 +30,7 @@ namespace openloco
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;
 
-        static smoke* create(loc16 loc);
+        static smoke* create(thingmanager& thingmgr, loc16 loc);
     };
 #pragma pack(pop)
 }

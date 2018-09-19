@@ -61,14 +61,14 @@ constexpr int16_t factor503B50[] = {
     84
 };
 
-vehicle* vehicle::next_vehicle()
+vehicle* vehicle::next_vehicle(thingmanager& thingmgr)
 {
-    return thingmgr::get<vehicle>(next_thing_id);
+    return thingmgr.get<vehicle>(next_thing_id);
 }
 
-vehicle* vehicle::next_car()
+vehicle* vehicle::next_car(thingmanager& thingmgr)
 {
-    return thingmgr::get<vehicle>(next_car_id);
+    return thingmgr.get<vehicle>(next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -76,20 +76,20 @@ vehicle_object* vehicle::object() const
     return g_objectmgr.get<vehicle_object>(object_id);
 }
 
-void vehicle::update_head()
+void vehicle::update_head(thingmanager& thingmgr)
 {
     auto v = this;
     while (v != nullptr)
     {
-        if (v->update())
+        if (v->update(thingmgr))
         {
             break;
         }
-        v = v->next_car();
+        v = v->next_car(thingmgr);
     }
 }
 
-bool vehicle::update()
+bool vehicle::update(thingmanager& thingmgr)
 {
     int32_t result = 0;
     registers regs;
@@ -110,7 +110,7 @@ bool vehicle::update()
             break;
         case thing_type::vehicle_body_end:
         case thing_type::vehicle_body_cont:
-            result = sub_4AA1D0();
+            result = sub_4AA1D0(thingmgr);
             break;
         case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -122,7 +122,7 @@ bool vehicle::update()
 }
 
 // 0x004BA8D4
-void vehicle::sub_4BA8D4()
+void vehicle::sub_4BA8D4(thingmanager& thingmgr)
 {
     switch (var_5D)
     {
@@ -136,7 +136,7 @@ void vehicle::sub_4BA8D4()
             return;
     }
 
-    auto v = next_car()->next_car()->next_car();
+    auto v = next_car(thingmgr)->next_car(thingmgr)->next_car(thingmgr);
     if (v->type != thing_type::vehicle_6)
     {
         while (true)
@@ -145,8 +145,8 @@ void vehicle::sub_4BA8D4()
             {
                 if ((scenario_ticks() & 3) == 0)
                 {
-                    auto v2 = v->next_car()->next_car();
-                    smoke::create(loc16(v2->x, v2->y, v2->z + 4));
+                    auto v2 = v->next_car(thingmgr)->next_car(thingmgr);
+                    smoke::create(thingmgr, loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
 
@@ -160,13 +160,13 @@ void vehicle::sub_4BA8D4()
                     v->var_6A = 5;
                     sub_4BAA76();
 
-                    auto v2 = v->next_car()->next_car();
+                    auto v2 = v->next_car(thingmgr)->next_car(thingmgr);
                     auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
                     audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
                 }
             }
 
-            v = v->next_car()->next_car()->next_car();
+            v = v->next_car(thingmgr)->next_car(thingmgr)->next_car(thingmgr);
             vehicle* u;
             do
             {
@@ -174,9 +174,9 @@ void vehicle::sub_4BA8D4()
                 {
                     return;
                 }
-                u = v->next_car()->next_car();
+                u = v->next_car(thingmgr)->next_car(thingmgr);
                 if (u->type != thing_type::vehicle_body_end)
-                    v = u->next_car();
+                    v = u->next_car(thingmgr);
             } while (u->type != thing_type::vehicle_body_end);
         }
     }
@@ -190,14 +190,14 @@ void vehicle::sub_4BAA76()
 }
 
 // 0x004AA1D0
-int32_t openloco::vehicle::sub_4AA1D0()
+int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr)
 {
     registers regs;
     regs.esi = (int32_t)this;
 
     if (var_42 == 2 || var_42 == 3)
     {
-        animation_update();
+        animation_update(thingmgr);
         return 0;
     }
 
@@ -218,13 +218,13 @@ int32_t openloco::vehicle::sub_4AA1D0()
 
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
-    animation_update();
+    animation_update(thingmgr);
     sub_4AAB0B();
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
 
-void openloco::vehicle::animation_update()
+void openloco::vehicle::animation_update(thingmanager& thingmgr)
 {
     if (var_38 & (1 << 4))
         return;
@@ -247,28 +247,28 @@ void openloco::vehicle::animation_update()
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            steam_puffs_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            diesel_exhaust1_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            electric_spark1_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            electric_spark2_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            diesel_exhaust2_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            ship_wake_animation_update(thingmgr, 0, vehicleObject->var_24[var_54].var_05 - 0x80);
             break;
         default:
             assert(false);
             break;
     }
-    secondary_animation_update();
+    secondary_animation_update(thingmgr);
 }
 
 // 0x004AAB0B
@@ -962,7 +962,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 }
 
 // 0x004AB655
-void openloco::vehicle::secondary_animation_update()
+void openloco::vehicle::secondary_animation_update(thingmanager& thingmgr)
 {
     auto vehicleObject = object();
     uint8_t var_05 = vehicleObject->var_24[var_54].var_05;
@@ -978,22 +978,22 @@ void openloco::vehicle::secondary_animation_update()
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(1, var_05);
+            steam_puffs_animation_update(thingmgr, 1, var_05);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(1, var_05);
+            diesel_exhaust1_animation_update(thingmgr, 1, var_05);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(1, var_05);
+            electric_spark1_animation_update(thingmgr, 1, var_05);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(1, var_05);
+            electric_spark2_animation_update(thingmgr, 1, var_05);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(1, var_05);
+            diesel_exhaust2_animation_update(thingmgr, 1, var_05);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(1, var_05);
+            ship_wake_animation_update(thingmgr, 1, var_05);
             break;
         default:
             assert(false);
@@ -1002,7 +1002,7 @@ void openloco::vehicle::secondary_animation_update()
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     auto vehicleObject = object();
     vehicle* frontBogie = vehicle_front_bogie;
@@ -1072,7 +1072,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
 
@@ -1167,7 +1167,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust1_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1201,7 +1201,7 @@ void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var
             static_cast<int16_t>(y + yFactor),
             static_cast<int16_t>(z + vehicleObject->animation[num].height)
         };
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
     }
     else
     {
@@ -1248,12 +1248,12 @@ void openloco::vehicle::diesel_exhaust1_animation_update(uint8_t num, int8_t var
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
     }
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle::diesel_exhaust2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust2_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1324,11 +1324,11 @@ void openloco::vehicle::diesel_exhaust2_animation_update(uint8_t num, int8_t var
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle::electric_spark1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::electric_spark1_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1384,11 +1384,11 @@ void openloco::vehicle::electric_spark1_animation_update(uint8_t num, int8_t var
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle::electric_spark2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::electric_spark2_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1466,11 +1466,11 @@ void openloco::vehicle::electric_spark2_animation_update(uint8_t num, int8_t var
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle::ship_wake_animation_update(thingmanager& thingmgr, uint8_t num, int8_t var_05)
 {
     vehicle* veh_3 = vehicle_1136120;
     auto vehicleObject = object();
@@ -1520,7 +1520,7 @@ void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
 
     if (vehicleObject->var_113 == 0)
         return;
@@ -1536,5 +1536,5 @@ void openloco::vehicle::ship_wake_animation_update(uint8_t num, int8_t var_05)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    exhaust::create(thingmgr, loc, vehicleObject->animation[num].object_id);
 }

@@ -15,6 +15,7 @@
 #include "../input.h"
 #include "../platform/platform.h"
 #include "../station.h"
+#include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../ui.h"
 #include "../utility/string.hpp"
@@ -665,7 +666,7 @@ static void register_audio_hooks()
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((vehicle*)regs.esi);
+            audio::play_sound(*((vehicle*)regs.esi));
             return 0;
         });
     register_hook(
@@ -801,7 +802,7 @@ void openloco::interop::register_hooks()
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
-            v->sub_4BA8D4();
+            v->sub_4BA8D4(g_thingmgr);
             return 0;
         });
 
@@ -839,7 +840,7 @@ void openloco::interop::register_hooks()
         0x004AB655,
         [](registers& regs) -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
-            v->secondary_animation_update();
+            v->secondary_animation_update(g_thingmgr);
 
             return 0;
         });

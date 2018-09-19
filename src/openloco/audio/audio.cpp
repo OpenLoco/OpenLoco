@@ -591,15 +591,15 @@ namespace openloco::audio
     }
 
     // 0x0048A4BF
-    void play_sound(vehicle* v)
+    void play_sound(const vehicle& v)
     {
-        if (v->var_4A & 1)
+        if (v.var_4A & 1)
         {
-            console::log_verbose("play_sound(vehicle #%d)", v->object_id);
+            console::log_verbose("play_sound(vehicle #%d)", v->id);
             auto vc = get_free_vehicle_channel();
             if (vc != nullptr)
             {
-                vc->begin(v->id);
+                vc->begin(v);
             }
         }
     }
@@ -828,28 +828,28 @@ namespace openloco::audio
         return false;
     }
 
-    static void sub_48A274(vehicle* v)
+    static void sub_48A274(vehicle& v)
     {
         registers regs;
-        regs.esi = (int32_t)v;
+        regs.esi = (int32_t)&v;
         call(0x0048A274, regs);
     }
 
-    static void off_4FEB58(vehicle* v, int32_t x)
+    static void off_4FEB58(vehicle& v, int32_t x)
     {
         switch (x)
         {
             case 0:
-                v->var_4A &= ~1;
+                v.var_4A &= ~1;
                 break;
             case 1:
-                if (!(v->var_4A & 2))
+                if (!(v.var_4A & 2))
                 {
                     sub_48A274(v);
                 }
                 break;
             case 2:
-                if (v->var_4A & 2)
+                if (v.var_4A & 2)
                 {
                     sub_48A274(v);
                 }
@@ -860,43 +860,43 @@ namespace openloco::audio
         }
     }
 
-    static void sub_48A1FA(int32_t x)
+    static void sub_48A1FA(thingmanager& thingmgr, int32_t x)
     {
         if (x == 0)
         {
             addr<0x0112C666, uint8_t>() = 0;
         }
 
-        auto v = thingmgr::first<vehicle>();
+        auto v = thingmgr.first<vehicle>();
         while (v != nullptr)
         {
-            auto next = v->next_vehicle();
-            auto v2 = v->next_car()->next_car();
-            off_4FEB58(v2, x);
+            auto next = v->next_vehicle(thingmgr);
+            auto v2 = v->next_car(thingmgr)->next_car(thingmgr);
+            off_4FEB58(*v2, x);
             do
             {
-                v2 = v2->next_car();
+                v2 = v2->next_car(thingmgr);
             } while (v2->type != thing_type::vehicle_6);
-            off_4FEB58(v2, x);
+            off_4FEB58(*v2, x);
             v = next;
         }
     }
 
     // 0x48A73B
-    void update_vehicle_noise()
+    void update_vehicle_noise(thingmanager& thingmgr)
     {
         if (addr<0x00525E28, uint32_t>() & 1)
         {
             if (addr<0x0050D554, uint8_t>() == 0 && (addr<0x0050D555, uint8_t>() & 1))
             {
-                sub_48A1FA(0);
-                sub_48A1FA(1);
-                sub_48A1FA(2);
+                sub_48A1FA(thingmgr, 0);
+                sub_48A1FA(thingmgr, 1);
+                sub_48A1FA(thingmgr, 2);
                 for (auto& vc : _vehicle_channels)
                 {
-                    vc.update();
+                    vc.update(thingmgr);
                 }
-                sub_48A1FA(3);
+                sub_48A1FA(thingmgr, 3);
             }
         }
     }

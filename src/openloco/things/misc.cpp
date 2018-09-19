@@ -12,7 +12,7 @@ steam_object* openloco::exhaust::object() const
 }
 
 // 0x0044080C
-exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
+exhaust* openloco::exhaust::create(thingmanager& thingmgr, loc16 loc, uint8_t type)
 {
     if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
@@ -24,7 +24,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
     if (loc.z <= surface->base_z() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<exhaust*>(thingmgr::create_thing());
+    auto _exhaust = static_cast<exhaust*>(thingmgr.create_thing());
 
     if (_exhaust != nullptr)
     {
@@ -46,9 +46,9 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
 }
 
 // 0x00440BEB
-smoke* openloco::smoke::create(loc16 loc)
+smoke* openloco::smoke::create(thingmanager& thingmgr, loc16 loc)
 {
-    auto t = static_cast<smoke*>(thingmgr::create_thing());
+    auto t = static_cast<smoke*>(thingmgr.create_thing());
     if (t != nullptr)
     {
         t->var_14 = 44;

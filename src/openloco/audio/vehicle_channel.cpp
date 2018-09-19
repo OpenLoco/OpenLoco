@@ -9,10 +9,10 @@ using namespace openloco;
 using namespace openloco::audio;
 using namespace openloco::interop;
 
-static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
+static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle& v)
 {
     registers regs;
-    regs.esi = (int32_t)v;
+    regs.esi = (int32_t)&v;
     call(0x0048A590, regs);
     return std::make_tuple<sound_id, channel_attributes>((sound_id)regs.eax, { regs.ecx, regs.edx, regs.ebx });
 }
@@ -39,40 +39,36 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
     return *this;
 }
 
-void vehicle_channel::begin(thing_id_t vid)
+void vehicle_channel::begin(const vehicle& v)
 {
-    auto v = thingmgr::get<vehicle>(vid);
-    if (v != nullptr)
+    // clang-format off
+    auto [sid, sa] = sub_48A590(v);
+    // clang-format on
+    auto loop = audio::should_sound_loop(sid);
+    auto sample = audio::get_sound_sample(sid);
+    if (sample != nullptr)
     {
-        // clang-format off
-        auto [sid, sa] = sub_48A590(v);
-        // clang-format on
-        auto loop = audio::should_sound_loop(sid);
-        auto sample = audio::get_sound_sample(sid);
-        if (sample != nullptr)
-        {
-            _vehicle_id = vid;
-            _sound_id = sid;
-            _attributes = sa;
+        _vehicle_id = v.id;
+        _sound_id = sid;
+        _attributes = sa;
 
-            _channel.load(*sample);
-            _channel.play(loop);
-            _channel.set_volume(sa.volume);
-            _channel.set_pan(sa.pan);
-            _channel.set_frequency(sa.freq);
-        }
+        _channel.load(*sample);
+        _channel.play(loop);
+        _channel.set_volume(sa.volume);
+        _channel.set_pan(sa.pan);
+        _channel.set_frequency(sa.freq);
     }
 }
 
-void vehicle_channel::update()
+void vehicle_channel::update(thingmanager& thingmgr)
 {
     if (!is_free())
     {
-        auto v = thingmgr::get<vehicle>(_vehicle_id);
+        auto v = thingmgr.get<vehicle>(_vehicle_id);
         if (v != nullptr && v->var_00 == 0 && (v->type == thing_type::vehicle_2 || v->type == thing_type::vehicle_6) && (v->var_4A & 1))
         {
             // clang-format off
-            auto [sid, sa] = sub_48A590(v);
+            auto [sid, sa] = sub_48A590(*v);
             // clang-format on
             if (_sound_id == sid)
             {

@@ -8,6 +8,7 @@ struct Mix_Chunk;
 
 namespace openloco
 {
+    class thingmanager;
     struct vehicle;
 }
 
@@ -79,7 +80,7 @@ namespace openloco::audio
 
     void pause_sound();
     void unpause_sound();
-    void play_sound(vehicle* t);
+    void play_sound(const vehicle& v);
     void play_sound(sound_id id, loc16 loc);
     void play_sound(sound_id id, loc16 loc, int32_t pan);
     void play_sound(sound_id id, int32_t pan);
@@ -92,7 +93,7 @@ namespace openloco::audio
     void set_channel_volume(channel_id id, int32_t volume);
     bool is_channel_playing(channel_id id);
 
-    void update_vehicle_noise();
+    void update_vehicle_noise(thingmanager& thingmgr);
     void stop_vehicle_noise();
 
     void update_ambient_noise();

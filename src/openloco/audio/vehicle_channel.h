@@ -6,6 +6,11 @@
 #include "audio.h"
 #include "channel.h"
 
+namespace openloco
+{
+    class thingmanager;
+}
+
 namespace openloco::audio
 {
     struct channel_attributes
@@ -32,8 +37,8 @@ namespace openloco::audio
 
         bool is_free() const { return _vehicle_id == thing_id::null; }
 
-        void begin(thing_id_t vid);
-        void update();
+        void begin(const vehicle& v);
+        void update(thingmanager& thingmgr);
         void stop();
     };
 }

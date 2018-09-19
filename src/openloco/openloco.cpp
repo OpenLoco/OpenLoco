@@ -544,14 +544,14 @@ namespace openloco
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
         g_industrymgr.update(g_companymgr);
-        thingmgr::update_vehicles();
+        g_thingmgr.update_vehicles();
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
-        thingmgr::update_misc_things();
+        g_thingmgr.update_misc_things();
         sub_46FFCA();
         g_companymgr.update();
         invalidate_map_animations();
-        audio::update_vehicle_noise();
+        audio::update_vehicle_noise(g_thingmgr);
         audio::update_ambient_noise();
         call(0x00444387);
 
