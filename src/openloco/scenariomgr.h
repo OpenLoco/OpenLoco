@@ -2,7 +2,13 @@
 
 #include <cstdint>
 
-namespace openloco::scenariomgr
+namespace openloco
 {
-    void load_index(uint8_t al);
+    class scenariomanager
+    {
+    public:
+        void load_index(uint8_t al);
+    };
+
+    extern scenariomanager g_scenariomgr;
 }

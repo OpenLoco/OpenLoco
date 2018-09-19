@@ -262,7 +262,7 @@ namespace openloco
         progressbar::end();
         config::read();
         g_objectmgr.load_index();
-        scenariomgr::load_index(0);
+        g_scenariomgr.load_index(0);
         progressbar::begin(string_ids::loading, 0);
         progressbar::set_progress(60);
         gfx::load_g1();
@@ -545,7 +545,7 @@ namespace openloco
         g_industrymgr.update(g_companymgr);
         thingmgr::update_vehicles();
         sub_46FFCA();
-        stationmgr::update(g_companymgr);
+        g_stationmgr.update(g_companymgr);
         thingmgr::update_misc_things();
         sub_46FFCA();
         g_companymgr.update();
@@ -584,7 +584,7 @@ namespace openloco
         {
             if (update_day_counter())
             {
-                stationmgr::update_daily(g_companymgr);
+                g_stationmgr.update_daily(g_companymgr);
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
