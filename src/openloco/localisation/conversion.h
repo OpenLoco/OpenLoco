@@ -22,6 +22,10 @@ namespace openloco::localisation
         constexpr uint8_t z_dot_uc = 216;    // 0xD8
         constexpr uint8_t z_acute_uc = 215;  // 0xD7
 
+        // Quotation marks
+        constexpr uint8_t quote_open = 180;
+        constexpr uint8_t quote_close = 34;
+
         // Dingbats
         constexpr uint8_t up = 160;
         constexpr uint8_t down = 170;
@@ -67,6 +71,10 @@ namespace openloco::localisation
         constexpr utf32_t z_acute = 378;
         constexpr utf32_t z_dot_uc = 379;
         constexpr utf32_t z_dot = 380;
+
+        // Quotation marks
+        constexpr utf32_t quote_open = 0x201C;
+        constexpr utf32_t quote_close = 0x201D;
 
         // Superscript
         constexpr utf32_t superscript_minus = 0x207B;

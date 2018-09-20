@@ -29,6 +29,8 @@ namespace openloco::localisation
         { unicode_char::z_acute, loco_char::z_acute },
         { unicode_char::z_dot_uc, loco_char::z_dot_uc },
         { unicode_char::z_dot, loco_char::z_dot },
+        { unicode_char::quote_open, loco_char::quote_open },
+        { unicode_char::quote_close, loco_char::quote_close },
         { unicode_char::up, loco_char::up },
         { unicode_char::small_up, loco_char::small_up },
         { unicode_char::right, loco_char::right },
