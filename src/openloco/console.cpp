@@ -25,6 +25,16 @@ namespace openloco::console
         va_end(args);
     }
 
+    void log_verbose(const char* format, ...)
+    {
+#ifdef VERBOSE
+        va_list args;
+        va_start(args, format);
+        vwrite(stdout, format, args);
+        va_end(args);
+#endif
+    }
+
     void error(const char* format, ...)
     {
         va_list args;
