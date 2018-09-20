@@ -213,13 +213,15 @@ namespace openloco::ui::options
 
     namespace display
     {
-        static const gfx::ui_size_t _window_size = { 366, 144 };
+        static const gfx::ui_size_t _window_size = { 366, 159 };
 
         namespace widx
         {
             enum
             {
-                display_resolution = 10,
+                screen_mode = 10,
+                screen_mode_btn,
+                display_resolution,
                 display_resolution_btn,
                 landscape_smoothing,
                 gridlines_on_landscape,
@@ -234,16 +236,18 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_display),
-            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
+            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
-            make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
-            make_widget({ 183, 94 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
-            make_widget({ 344, 95 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
-            make_widget({ 183, 109 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
-            make_widget({ 344, 110 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
-            make_widget({ 183, 124 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            make_widget({ 344, 125 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
+            make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
+            make_widget({ 10, 95 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
+            make_widget({ 183, 109 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
+            make_widget({ 344, 110 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
+            make_widget({ 183, 124 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
+            make_widget({ 344, 125 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
+            make_widget({ 183, 139 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_widget({ 344, 140 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end(),
         };
 
@@ -402,6 +406,50 @@ namespace openloco::ui::options
             gfx::invalidate_screen();
         }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
+        static void screen_mode_toggle_enabled(window* w)
+        {
+            if (config::get_new().display.mode == config::screen_mode::fullscreen)
+            {
+                w->enabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
+                w->disabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
+            }
+            else
+            {
+                w->enabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
+                w->disabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
+            }
+        }
+#endif
+
+        static void screen_mode_mouse_down(window* w, widget_index wi)
+        {
+            widget_t dropdown = w->widgets[widx::screen_mode];
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
+
+            dropdown::add(0, string_ids::dropdown_stringid, string_ids::options_mode_windowed);
+            dropdown::add(1, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen);
+            dropdown::add(2, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen_window);
+
+            auto selection = static_cast<uint16_t>(config::get_new().display.mode);
+            dropdown::set_selection(selection);
+        }
+
+        static void screen_mode_dropdown(window* w, int16_t selection)
+        {
+            if (selection == -1)
+                return;
+
+            auto new_mode = static_cast<config::screen_mode>(selection);
+            if (new_mode == config::get_new().display.mode)
+                return;
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            ui::set_screen_mode(new_mode);
+            screen_mode_toggle_enabled(w);
+#endif
+        }
+
 #pragma mark - Resolution dropdown (Widget 11)
 
         // 0x004C0026
@@ -427,14 +475,19 @@ namespace openloco::ui::options
             if (index == -1)
                 return;
 
-            auto& config = config::get();
+            auto& config = config::get_new();
+            auto current_res = config.display.fullscreen_resolution;
 
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            if (config.resolution_width == resolutions[index].width && config.resolution_height == resolutions[index].height)
+            if (current_res.width == resolutions[index].width && current_res.height == resolutions[index].height)
                 return;
 
-            config.resolution_width = resolutions[index].width;
-            config.resolution_height = resolutions[index].height;
+            config.display.fullscreen_resolution = { resolutions[index].width, resolutions[index].height };
+
+            auto& old_config = config::get();
+            old_config.resolution_width = resolutions[index].width;
+            old_config.resolution_height = resolutions[index].height;
+
             openloco::config::write();
             windowmgr::invalidate_widget(w->type, w->number, widx::display_resolution);
         }
@@ -446,6 +499,9 @@ namespace openloco::ui::options
         {
             switch (wi)
             {
+                case widx::screen_mode_btn:
+                    screen_mode_mouse_down(w, wi);
+                    break;
                 case widx::display_resolution_btn:
                     resolution_mouse_down(w, wi);
                     break;
@@ -466,6 +522,9 @@ namespace openloco::ui::options
         {
             switch (wi)
             {
+                case widx::screen_mode_btn:
+                    screen_mode_dropdown(w, item_index);
+                    break;
                 case widx::display_resolution_btn:
                     resolution_dropdown(w, item_index);
                     break;
@@ -505,6 +564,21 @@ namespace openloco::ui::options
             w->widgets[common::widx::caption].right = w->width - 2;
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
+
+            string_id screen_mode_string_id = string_ids::empty;
+            switch (config::get_new().display.mode)
+            {
+                case config::screen_mode::window:
+                    screen_mode_string_id = string_ids::options_mode_windowed;
+                    break;
+                case config::screen_mode::fullscreen:
+                    screen_mode_string_id = string_ids::options_mode_fullscreen;
+                    break;
+                case config::screen_mode::fullscreen_borderless:
+                    screen_mode_string_id = string_ids::options_mode_fullscreen_window;
+                    break;
+            }
+            w->widgets[widx::screen_mode].text = screen_mode_string_id;
 
             set_format_arg(0x10, uint16_t, config::get().resolution_width);
             set_format_arg(0x12, uint16_t, config::get().resolution_height);
@@ -548,8 +622,11 @@ namespace openloco::ui::options
             common::draw_tabs(w, dpi);
 
             int16_t x = w->x + 10;
-            int16_t y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::display_resolution, nullptr);
+            int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
+            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
+
+            y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
+            draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
             draw_string_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
@@ -1859,7 +1936,8 @@ namespace openloco::ui::options
         {
             enum
             {
-                use_preferred_owner_name = 10,
+                disable_vehicle_breakdowns = 10,
+                use_preferred_owner_name,
                 change_btn,
                 export_plugin_objects,
             };
@@ -1867,9 +1945,10 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
-            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
-            make_widget({ 335, 64 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
+            make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disable_vehicle_breakdowns, string_ids::null),
+            make_widget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
+            make_widget({ 335, 79 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            make_widget({ 10, 94 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
             widget_end(),
         };
 
@@ -1880,6 +1959,7 @@ namespace openloco::ui::options
         static void change_preferred_name(window* w);
         static void set_preferred_name(window* w, char* str);
         static void use_preferred_owner_name_mouse_up(window* w);
+        static void disable_vehicle_breakdowns_mouse_up(window* w);
         static void export_plugin_objects_mouse_up(window* w);
 
         // 0x004C11B7
@@ -1898,6 +1978,11 @@ namespace openloco::ui::options
             w->widgets[common::widx::caption].right = w->width - 2;
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
+
+            if (config::get_new().breakdowns_disabled)
+                w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
+            else
+                w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
             if (config::get().flags & config::flags::export_objects_with_saves)
@@ -1954,6 +2039,10 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::tab_on_mouse_up(w, wi);
                     return;
+
+                case widx::disable_vehicle_breakdowns:
+                    disable_vehicle_breakdowns_mouse_up(w);
+                    break;
 
                 case widx::export_plugin_objects:
                     export_plugin_objects_mouse_up(w);
@@ -2029,6 +2118,14 @@ namespace openloco::ui::options
                     change_preferred_name(w);
                 }
             }
+        }
+
+        static void disable_vehicle_breakdowns_mouse_up(window* w)
+        {
+            auto& cfg = openloco::config::get_new();
+            cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
+            config::write();
+            w->invalidate();
         }
 
         static void export_plugin_objects_mouse_up(window* w)
@@ -2149,9 +2246,17 @@ namespace openloco::ui::options
         sub_4BF8CD();
         sub_4C1519();
 
-        // Returning to 0x004BF7CB (in windowmgr__open_options)
-        window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+        if (config::get_new().display.mode != config::screen_mode::fullscreen)
+            window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+
         window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+#if !(defined(__APPLE__) && defined(__MACH__))
+        window->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
+        display::screen_mode_toggle_enabled(window);
+#else
+        window->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+#endif
+
         window->holdable_widgets = 0;
         window->event_handlers = &display::_events;
         window->activated_widgets = 0;
@@ -2194,8 +2299,15 @@ namespace openloco::ui::options
         switch ((common::tab)w->current_tab)
         {
             case common::tab::display:
-                w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+                w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
+                display::screen_mode_toggle_enabled(w);
+#else
+                w->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+#endif
+
                 w->event_handlers = &display::_events;
                 w->widgets = display::_widgets;
                 w->invalidate();
@@ -2250,7 +2362,7 @@ namespace openloco::ui::options
 
             case common::tab::miscellaneous:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
                 w->event_handlers = &misc::_events;
                 w->widgets = misc::_widgets;
                 w->invalidate();

@@ -2178,3 +2178,8 @@ strings:
   2123: hp
   2124: kW
   2125: "{COLOUR WINDOW_2}Idioma:"
+
+  2127: "{COLOUR WINDOW_2}Modo de tela:"
+  2128: Janela
+  2129: Tela Cheia
+  2130: Tela Cheia Sem Borda

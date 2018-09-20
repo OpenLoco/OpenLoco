@@ -2178,3 +2178,8 @@ strings:
   2123: " PS"
   2124: " kW"
   2125: "{COLOUR WINDOW_2}Sprache:"
+
+  2127: "{COLOUR WINDOW_2}Bildschirmmodus:"
+  2128: Fenstermodus
+  2129: Vollbild
+  2130: Vollbild (Randlos)

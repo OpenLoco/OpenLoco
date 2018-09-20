@@ -737,7 +737,7 @@ namespace openloco::ui
     }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    static void set_screen_mode(config::screen_mode mode)
+    void set_screen_mode(config::screen_mode mode)
     {
         auto flags = 0;
         switch (mode)

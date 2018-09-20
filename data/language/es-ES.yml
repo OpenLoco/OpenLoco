@@ -2178,3 +2178,8 @@ strings:
   2123: " CV"
   2124: " kW"
   2125: "{COLOUR WINDOW_2}Idioma:"
+
+  2127: "{COLOUR WINDOW_2}Modo de pantalla:"
+  2128: Ventana
+  2129: Pantalla completa
+  2130: Pantalla completa (Sin bordes)

@@ -2178,3 +2178,8 @@ strings:
   2123: hp
   2124: kW
   2125: "{COLOUR WINDOW_2}Language:"
+  2126: "{COLOUR WINDOW_2}Disable vehicle breakdowns"
+  2127: "{COLOUR WINDOW_2}Screen mode:"
+  2128: Windowed
+  2129: Fullscreen
+  2130: Fullscreen (borderless window)

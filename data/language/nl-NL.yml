@@ -2178,3 +2178,8 @@ strings:
   2123: hp
   2124: kW
   2125: "{COLOUR WINDOW_2}Taal:"
+
+  2127: "{COLOUR WINDOW_2}Schermmodus:"
+  2128: Venster
+  2129: Volledig scherm
+  2130: Voll. sch. (randl. venster)
