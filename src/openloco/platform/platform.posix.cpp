@@ -1,5 +1,6 @@
 #ifndef _WIN32
 
+#include "../console.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "platform.h"
@@ -67,6 +68,32 @@ fs::path openloco::platform::get_user_directory()
 #endif
 
 #if !(defined(__APPLE__) && defined(__MACH__))
+fs::path openloco::platform::GetCurrentExecutablePath()
+{
+    char exePath[PATH_MAX] = { 0 };
+#ifdef __linux__
+    auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
+    if (bytesRead == -1)
+    {
+        console::error("failed to read /proc/self/exe");
+    }
+#elif defined(__FreeBSD__)
+    const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+    auto exeLen = sizeof(exePath);
+    if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
+    {
+        console::error("failed to get process path");
+    }
+#elif defined(__OpenBSD__)
+    // There is no way to get the path name of a running executable.
+    // If you are not using the port or package, you may have to change this line!
+    strlcpy(exePath, "/usr/local/bin/", sizeof(exePath));
+#else
+#error "Platform does not support full path exe retrieval"
+#endif
+    return exePath;
+}
+
 std::string openloco::platform::prompt_directory(const std::string& title)
 {
     std::string input;

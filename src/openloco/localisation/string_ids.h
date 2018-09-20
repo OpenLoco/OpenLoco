@@ -122,6 +122,9 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id buffer_337 = 337;
+    constexpr string_id buffer_338 = 338;
+
     constexpr string_id dropdown_stringid = 421;
     constexpr string_id dropdown_stringptr = 424;
 
@@ -132,7 +135,7 @@ namespace openloco::string_ids
     constexpr string_id wcolour2_stringid2 = 457;
 
     constexpr string_id audio_device_none = 479;
-    constexpr string_id audio_device_name = 480;
+    constexpr string_id stringptr = 480;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -260,6 +263,8 @@ namespace openloco::string_ids
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
 
+    constexpr string_id buffer_1250 = 1250;
+
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id display_options = 1486;
@@ -339,6 +344,7 @@ namespace openloco::string_ids
 
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
+    constexpr string_id buffer_1719 = 1719;
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
@@ -367,7 +373,27 @@ namespace openloco::string_ids
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
 
     constexpr string_id buffer_2039 = 2039;
+    constexpr string_id buffer_2040 = 2040;
+
+    constexpr string_id buffer_2042 = 2042;
+
+    constexpr string_id buffer_2045 = 2045;
 
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
+
+    constexpr string_id unit_mph = 2113;
+    constexpr string_id unit_kmh = 2114;
+    constexpr string_id unit_hour = 2115;
+    constexpr string_id unit_hours = 2116;
+    constexpr string_id unit_mins = 2117;
+    constexpr string_id unit_min = 2118;
+    constexpr string_id unit_secs = 2119;
+    constexpr string_id unit_units = 2120;
+    constexpr string_id unit_ft = 2121;
+    constexpr string_id unit_m = 2122;
+    constexpr string_id unit_hp = 2123;
+    constexpr string_id unit_kW = 2124;
+
+    constexpr string_id options_language = 2125;
 }
