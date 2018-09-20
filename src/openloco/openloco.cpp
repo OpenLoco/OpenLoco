@@ -249,30 +249,31 @@ namespace openloco
 
     static void initialise()
     {
+        progressbar progressb;
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
         environment::resolve_paths();
         localisation::enumerateLanguages();
         localisation::loadLanguageFile();
-        progressbar::begin(string_ids::loading, 0);
-        progressbar::set_progress(30);
+        progressb.begin(string_ids::loading, 0);
+        progressb.set_progress(30);
         startup_checks();
-        progressbar::set_progress(40);
+        progressb.set_progress(40);
         call(0x004BE5DE);
-        progressbar::end();
+        progressb.end();
         config::read();
         g_objectmgr.load_index();
         g_scenariomgr.load_index(0);
-        progressbar::begin(string_ids::loading, 0);
-        progressbar::set_progress(60);
+        progressb.begin(string_ids::loading, 0);
+        progressb.set_progress(60);
         gfx::load_g1(g_env);
-        progressbar::set_progress(220);
+        progressb.set_progress(220);
         call(0x004949BC);
-        progressbar::set_progress(235);
-        progressbar::set_progress(250);
+        progressb.set_progress(235);
+        progressb.set_progress(250);
         ui::initialise_cursors();
-        progressbar::end();
+        progressb.end();
         ui::initialise();
         initialise_viewports();
         call(0x004284C8);

@@ -3,9 +3,13 @@
 #include "localisation/stringmgr.h"
 #include <cstdint>
 
-namespace openloco::progressbar
+namespace openloco
 {
-    void begin(string_id stringId, int32_t edx);
-    void set_progress(int32_t value);
-    void end();
+    class progressbar
+    {
+    public:
+        void begin(string_id stringId, int32_t edx);
+        void set_progress(int32_t value);
+        void end();
+    };
 }
