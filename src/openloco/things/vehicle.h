@@ -59,16 +59,16 @@ namespace openloco
         vehicle* next_vehicle(thingmanager& thingmgr);
         vehicle* next_car(thingmanager& thingmgr);
 
-        void update_head(objectmanager& objectmgr, thingmanager& thingmgr);
+        void update_head(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
         void sub_4BA8D4(thingmanager& thingmgr);
         void secondary_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
 
     private:
-        bool update(objectmanager& objectmgr, thingmanager& thingmgr);
+        bool update(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
         void sub_4BAA76();
-        int32_t sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject);
+        int32_t sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
         void animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
-        void sub_4AAB0B(vehicle_object& vehicleObject);
+        void sub_4AAB0B(vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
         void sub_4AC255(vehicle_object& vehicleObject, vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
         uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);

@@ -20,7 +20,7 @@ void thing_base::move_to(loc16 loc)
 }
 
 // 0x004CBB01
-void openloco::thing_base::invalidate_sprite()
+void openloco::thing_base::invalidate_sprite(const ui::viewportmanager& viewportmgr)
 {
     if (sprite_left == (int16_t)0x8000u)
     {
@@ -31,7 +31,7 @@ void openloco::thing_base::invalidate_sprite()
     int16_t top = sprite_top;
     int16_t right = sprite_right;
     int16_t bottom = sprite_bottom;
-    for (auto& viewport : openloco::ui::viewportmgr::viewports())
+    for (const auto& viewport : viewportmgr.viewports())
     {
         if (viewport == nullptr)
             break;

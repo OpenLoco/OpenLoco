@@ -34,7 +34,7 @@ namespace openloco
 
         thing_base* create_thing();
 
-        void update_vehicles(objectmanager& objectmgr);
+        void update_vehicles(objectmanager& objectmgr, const ui::viewportmanager& viewportmgr);
         void update_misc_things();
     };
 

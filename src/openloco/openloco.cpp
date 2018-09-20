@@ -43,6 +43,7 @@
 #include "tutorial.h"
 #include "ui.h"
 #include "utility/numeric.hpp"
+#include "viewportmgr.h"
 #include "windowmgr.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
@@ -545,7 +546,7 @@ namespace openloco
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
         g_industrymgr.update(g_companymgr);
-        g_thingmgr.update_vehicles(g_objectmgr);
+        g_thingmgr.update_vehicles(g_objectmgr, ui::g_viewportmgr);
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
         g_thingmgr.update_misc_things();

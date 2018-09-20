@@ -20,6 +20,7 @@
 #include "../things/vehicle.h"
 #include "../ui.h"
 #include "../utility/string.hpp"
+#include "../viewportmgr.h"
 #include "../windowmgr.h"
 #include "interop.hpp"
 
@@ -808,7 +809,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            gui::init();
+            gui::init(ui::g_viewportmgr);
             return 0;
         });
 

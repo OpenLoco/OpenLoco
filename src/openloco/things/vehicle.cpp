@@ -71,12 +71,12 @@ vehicle* vehicle::next_car(thingmanager& thingmgr)
     return thingmgr.get<vehicle>(next_car_id);
 }
 
-void vehicle::update_head(objectmanager& objectmgr, thingmanager& thingmgr)
+void vehicle::update_head(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
 {
     auto v = this;
     while (v != nullptr)
     {
-        if (v->update(objectmgr, thingmgr))
+        if (v->update(objectmgr, thingmgr, viewportmgr))
         {
             break;
         }
@@ -84,7 +84,7 @@ void vehicle::update_head(objectmanager& objectmgr, thingmanager& thingmgr)
     }
 }
 
-bool vehicle::update(objectmanager& objectmgr, thingmanager& thingmgr)
+bool vehicle::update(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
 {
     auto vehicleObject = objectmgr.get(*this);
     assert(vehicleObject != nullptr);
@@ -108,7 +108,7 @@ bool vehicle::update(objectmanager& objectmgr, thingmanager& thingmgr)
             break;
         case thing_type::vehicle_body_end:
         case thing_type::vehicle_body_cont:
-            result = sub_4AA1D0(thingmgr, *vehicleObject);
+            result = sub_4AA1D0(thingmgr, *vehicleObject, viewportmgr);
             break;
         case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -188,7 +188,7 @@ void vehicle::sub_4BAA76()
 }
 
 // 0x004AA1D0
-int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject)
+int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr)
 {
     registers regs;
     regs.esi = (int32_t)this;
@@ -201,9 +201,9 @@ int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& ve
 
     if (vehicle_var_1136237 | vehicle_var_1136238)
     {
-        invalidate_sprite();
+        invalidate_sprite(viewportmgr);
         sub_4AC255(vehicleObject, vehicle_back_bogie, vehicle_front_bogie);
-        invalidate_sprite();
+        invalidate_sprite(viewportmgr);
     }
     uint32_t backup1136130 = vehicle_var_1136130;
     if (var_5E != 0)
@@ -217,7 +217,7 @@ int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& ve
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
     animation_update(thingmgr, vehicleObject);
-    sub_4AAB0B(vehicleObject);
+    sub_4AAB0B(vehicleObject, viewportmgr);
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
@@ -268,7 +268,7 @@ void openloco::vehicle::animation_update(thingmanager& thingmgr, vehicle_object&
 }
 
 // 0x004AAB0B
-void openloco::vehicle::sub_4AAB0B(vehicle_object& vehicle_object)
+void openloco::vehicle::sub_4AAB0B(vehicle_object& vehicle_object, const ui::viewportmanager& viewportmgr)
 {
     int32_t eax = vehicle_var_1136130 >> 3;
     if (var_38 & (1 << 1))
@@ -360,7 +360,7 @@ void openloco::vehicle::sub_4AAB0B(vehicle_object& vehicle_object)
     if (var_46 != al)
     {
         var_46 = al;
-        invalidate_sprite();
+        invalidate_sprite(viewportmgr);
     }
 }
 

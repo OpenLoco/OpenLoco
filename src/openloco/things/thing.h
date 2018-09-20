@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <limits>
 
+namespace openloco::ui
+{
+    class viewportmanager;
+}
+
 namespace openloco
 {
     using thing_id_t = uint16_t;
@@ -50,7 +55,7 @@ namespace openloco
         uint8_t sprite_pitch;  // 0x1F
 
         void move_to(loc16 loc);
-        void invalidate_sprite();
+        void invalidate_sprite(const ui::viewportmanager& viewportmgr);
     };
 
     struct vehicle_bogie;
