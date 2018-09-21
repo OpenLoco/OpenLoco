@@ -71,22 +71,22 @@ vehicle* vehicle::next_car(thingmanager& thingmgr)
     return thingmgr.get<vehicle>(next_car_id);
 }
 
-void vehicle::update_head(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
+void vehicle::update_head(context& ctx)
 {
     auto v = this;
     while (v != nullptr)
     {
-        if (v->update(objectmgr, tilemgr, thingmgr, viewportmgr))
+        if (v->update(ctx))
         {
             break;
         }
-        v = v->next_car(thingmgr);
+        v = v->next_car(ctx.get<thingmanager>());
     }
 }
 
-bool vehicle::update(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
+bool vehicle::update(context& ctx)
 {
-    auto vehicleObject = objectmgr.get(*this);
+    auto vehicleObject = ctx.get<objectmanager>().get(*this);
     assert(vehicleObject != nullptr);
 
     int32_t result = 0;
@@ -108,7 +108,7 @@ bool vehicle::update(objectmanager& objectmgr, const map::tilemanager& tilemgr, 
             break;
         case thing_type::vehicle_body_end:
         case thing_type::vehicle_body_cont:
-            result = sub_4AA1D0(tilemgr, thingmgr, *vehicleObject, viewportmgr);
+            result = sub_4AA1D0(ctx, *vehicleObject);
             break;
         case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -188,14 +188,16 @@ void vehicle::sub_4BAA76()
 }
 
 // 0x004AA1D0
-int32_t openloco::vehicle::sub_4AA1D0(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr)
+int32_t openloco::vehicle::sub_4AA1D0(context& ctx, vehicle_object& vehicleObject)
 {
+    auto& viewportmgr = ctx.get<ui::viewportmanager>();
+
     registers regs;
     regs.esi = (int32_t)this;
 
     if (var_42 == 2 || var_42 == 3)
     {
-        animation_update(tilemgr, thingmgr, vehicleObject);
+        animation_update(ctx, vehicleObject);
         return 0;
     }
 
@@ -216,13 +218,13 @@ int32_t openloco::vehicle::sub_4AA1D0(const map::tilemanager& tilemgr, thingmana
 
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
-    animation_update(tilemgr, thingmgr, vehicleObject);
+    animation_update(ctx, vehicleObject);
     sub_4AAB0B(vehicleObject, viewportmgr);
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
 
-void openloco::vehicle::animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject)
+void openloco::vehicle::animation_update(context& ctx, vehicle_object& vehicleObject)
 {
     if (var_38 & (1 << 4))
         return;
@@ -236,6 +238,8 @@ void openloco::vehicle::animation_update(const map::tilemanager& tilemgr, thingm
         return;
     }
 
+    auto& tilemgr = ctx.get<map::tilemanager>();
+    auto& thingmgr = ctx.get<thingmanager>();
     switch (vehicleObject.animation[0].type)
     {
         case simple_animation_type::none:
@@ -1068,7 +1072,7 @@ void openloco::vehicle::steam_puffs_animation_update(const map::tilemanager& til
         return;
 
     var_55++;
-    steam_object* steam_obj = g_objectmgr.get<steam_object>(vehicleObject.animation[num].object_id);
+    steam_object* steam_obj = g_ctx.get<objectmanager>().get<steam_object>(vehicleObject.animation[num].object_id);
     if (var_55 >= ((uint8_t)vehicleObject.animation[num].type) + 1)
     {
         var_55 = 0;

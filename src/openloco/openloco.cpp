@@ -56,9 +56,13 @@ using input_flags = openloco::input::input_flags;
 using input_state = openloco::input::input_state;
 using window_type = openloco::ui::window_type;
 
+context openloco::g_ctx;
+
 context::context()
 {
     _tilemgr = std::make_unique<map::tilemanager>();
+    _thingmgr = std::make_unique<thingmanager>();
+    _viewportmgr = std::make_unique<ui::viewportmanager>();
 }
 context::~context() {}
 
@@ -272,7 +276,7 @@ namespace openloco
         call(0x004BE5DE);
         progressb.end();
         config::read();
-        g_objectmgr.load_index();
+        g_ctx.get<objectmanager>().load_index();
         g_scenariomgr.load_index(0);
         progressb.begin(string_ids::loading, 0);
         progressb.set_progress(60);
@@ -543,8 +547,7 @@ namespace openloco
     // 0x0046ABCB
     static void tick_logic()
     {
-        context ctx;
-        auto tilemgr = ctx.get<map::tilemanager>();
+        auto& thingmgr = g_ctx.get<thingmanager>();
 
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
@@ -556,15 +559,15 @@ namespace openloco
         call(0x00463ABA);
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
-        g_industrymgr.update(g_companymgr, tilemgr);
-        g_thingmgr.update_vehicles(g_objectmgr, tilemgr, ui::g_viewportmgr);
+        g_industrymgr.update(g_ctx);
+        thingmgr.update_vehicles(g_ctx);
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
-        g_thingmgr.update_misc_things();
+        thingmgr.update_misc_things();
         sub_46FFCA();
         g_companymgr.update();
         invalidate_map_animations();
-        audio::update_vehicle_noise(g_thingmgr);
+        audio::update_vehicle_noise(thingmgr);
         audio::update_ambient_noise();
         call(0x00444387);
 

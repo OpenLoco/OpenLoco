@@ -26,16 +26,16 @@ industry* industrymanager::get(industry_id_t id)
 }
 
 // 0x00453234
-void industrymanager::update(companymanager& companymgr, map::tilemanager& tilemgr)
+void industrymanager::update(context& ctx)
 {
     if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
     {
-        companymgr.updating_company_id(company_id::neutral);
+        ctx.get<companymanager>().updating_company_id(company_id::neutral);
         for (auto& industry : industries())
         {
             if (!industry.empty())
             {
-                industry.update(tilemgr);
+                industry.update(ctx);
             }
         }
     }

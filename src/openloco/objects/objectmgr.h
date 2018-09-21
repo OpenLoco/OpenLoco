@@ -95,6 +95,9 @@ namespace openloco
     class objectmanager
     {
     public:
+        objectmanager() = default;
+        objectmanager(const objectmanager&) = delete;
+
         void load_index();
         size_t get_max_objects(object_type type);
 
@@ -163,6 +166,4 @@ namespace openloco
     industry_object* objectmanager::get(size_t id);
     template<>
     currency_object* objectmanager::get();
-
-    extern objectmanager g_objectmgr;
 }

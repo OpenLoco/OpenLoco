@@ -2,9 +2,11 @@
 #include "interop/interop.hpp"
 #include "map/tilemgr.h"
 #include "objects/objectmgr.h"
+#include "openloco.h"
 #include "utility/numeric.hpp"
 #include <algorithm>
 
+using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::map;
 
@@ -36,12 +38,13 @@ namespace openloco
     }
 
     // 0x00453275
-    void industry::update(const map::tilemanager& tilemgr)
+    void industry::update(context& ctx)
     {
         if (!(flags & industry_flags::flag_01) && var_11 == 0xFF)
         {
             // Run tile loop for 100 iterations
-            auto obj = g_objectmgr.get(*this);
+            auto obj = ctx.get<objectmanager>().get(*this);
+            auto& tilemgr = ctx.get<tilemanager>();
             for (int i = 0; i < 100; i++)
             {
                 const auto& surface = tilemgr.get(tile_loop.current()).surface();

@@ -10,6 +10,7 @@ namespace openloco::map
 
 namespace openloco
 {
+    class context;
     class thingmanager;
     class objectmanager;
 
@@ -64,15 +65,15 @@ namespace openloco
         vehicle* next_vehicle(thingmanager& thingmgr);
         vehicle* next_car(thingmanager& thingmgr);
 
-        void update_head(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
+        void update_head(context& ctx);
         void sub_4BA8D4(thingmanager& thingmgr);
         void secondary_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject);
 
     private:
-        bool update(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
+        bool update(context& ctx);
         void sub_4BAA76();
-        int32_t sub_4AA1D0(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
-        void animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject);
+        int32_t sub_4AA1D0(context& ctx, vehicle_object& vehicleObject);
+        void animation_update(context& ctx, vehicle_object& vehicleObject);
         void sub_4AAB0B(vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
         void sub_4AC255(vehicle_object& vehicleObject, vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);

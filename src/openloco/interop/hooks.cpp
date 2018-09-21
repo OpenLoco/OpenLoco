@@ -803,14 +803,14 @@ void openloco::interop::register_hooks()
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
-            v->sub_4BA8D4(g_thingmgr);
+            v->sub_4BA8D4(g_ctx.get<thingmanager>());
             return 0;
         });
 
     register_hook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            gui::init(ui::g_viewportmgr);
+            gui::init(g_ctx.get<ui::viewportmanager>());
             return 0;
         });
 
@@ -841,8 +841,8 @@ void openloco::interop::register_hooks()
         0x004AB655,
         [](registers& regs) -> uint8_t {
             auto v = *((openloco::vehicle*)regs.esi);
-            auto obj = *(g_objectmgr.get(v));
-            v.secondary_animation_update(map::g_tilemgr, g_thingmgr, obj);
+            auto& obj = *(g_ctx.get<objectmanager>().get(v));
+            v.secondary_animation_update(g_ctx.get<map::tilemanager>(), g_ctx.get<thingmanager>(), obj);
             return 0;
         });
 

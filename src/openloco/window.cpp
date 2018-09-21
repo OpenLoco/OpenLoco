@@ -112,7 +112,7 @@ namespace openloco::ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = g_thingmgr.get<thing_base>(config->viewport_target_sprite);
+                auto thing = g_ctx.get<thingmanager>().get<thing_base>(config->viewport_target_sprite);
 
                 int z = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
                 bool underground = (thing->z < z);

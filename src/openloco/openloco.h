@@ -10,12 +10,25 @@ namespace openloco::map
     class tilemanager;
 }
 
+namespace openloco::ui
+{
+    class viewportmanager;
+}
+
 namespace openloco
 {
+    class companymanager;
+    class objectmanager;
+    class thingmanager;
+
     class context
     {
     private:
+        std::unique_ptr<companymanager> _companymgr;
+        std::unique_ptr<objectmanager> _objectmgr;
         std::unique_ptr<map::tilemanager> _tilemgr;
+        std::unique_ptr<thingmanager> _thingmgr;
+        std::unique_ptr<ui::viewportmanager> _viewportmgr;
 
     public:
         context();
@@ -29,8 +42,18 @@ namespace openloco
         const T& get() const { return ((context*)this)->get<T>(); }
 
         template<>
+        companymanager& get() { return *_companymgr; }
+        template<>
+        objectmanager& get() { return *_objectmgr; }
+        template<>
         map::tilemanager& get() { return *_tilemgr; }
+        template<>
+        thingmanager& get() { return *_thingmgr; }
+        template<>
+        ui::viewportmanager& get() { return *_viewportmgr; }
     };
+
+    extern context g_ctx;
 
     namespace screen_flags
     {

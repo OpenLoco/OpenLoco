@@ -8,8 +8,6 @@
 using namespace openloco::ui;
 using namespace openloco::interop;
 
-viewportmanager openloco::ui::g_viewportmgr;
-
 static loco_global<viewport * [max_viewports], 0x0113D820> _viewports;
 
 const std::array<const viewport*, max_viewports> viewportmanager::viewports() const

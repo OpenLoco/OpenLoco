@@ -7,8 +7,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-objectmanager openloco::g_objectmgr;
-
 static loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
 static loco_global<interface_skin_object * [1], 0x0050C3D0> _interfaceObjects;
 static loco_global<sound_object * [128], 0x0050C3D4> _soundObjects;

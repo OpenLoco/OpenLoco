@@ -11,7 +11,7 @@ namespace openloco::map
 
 namespace openloco
 {
-    class companymanager;
+    class context;
 
     constexpr size_t max_industries = 128;
 
@@ -20,7 +20,7 @@ namespace openloco
     public:
         std::array<industry, max_industries>& industries();
         industry* get(industry_id_t id);
-        void update(companymanager& companymgr, map::tilemanager& tilemgr);
+        void update(context& ctx);
         void update_monthly();
     };
 

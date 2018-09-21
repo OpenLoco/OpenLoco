@@ -6,6 +6,7 @@
 
 namespace openloco
 {
+    class context;
     class objectmanager;
 
     constexpr size_t num_thing_lists = 6;
@@ -14,6 +15,9 @@ namespace openloco
     class thingmanager
     {
     public:
+        thingmanager() = default;
+        thingmanager(const thingmanager&) = delete;
+
         enum class thing_list
         {
             null,
@@ -34,9 +38,7 @@ namespace openloco
 
         thing_base* create_thing();
 
-        void update_vehicles(objectmanager& objectmgr, const map::tilemanager& tilemgr, const ui::viewportmanager& viewportmgr);
+        void update_vehicles(context& ctx);
         void update_misc_things();
     };
-
-    extern thingmanager g_thingmgr;
 }

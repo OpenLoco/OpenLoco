@@ -11,6 +11,9 @@ namespace openloco
     class companymanager
     {
     public:
+        companymanager() = default;
+        companymanager(const companymanager&) = delete;
+
         company_id_t updating_company_id() const;
         void updating_company_id(company_id_t id);
 

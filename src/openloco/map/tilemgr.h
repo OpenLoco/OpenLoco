@@ -9,6 +9,9 @@ namespace openloco::map
     class tilemanager
     {
     public:
+        tilemanager() = default;
+        tilemanager(const tilemanager&) = delete;
+
         tile get(map_pos pos);
         const tile get(map_pos pos) const;
         tile get(coord_t x, coord_t y);

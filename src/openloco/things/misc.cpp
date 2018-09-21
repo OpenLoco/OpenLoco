@@ -2,13 +2,14 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/steam_object.h"
+#include "../openloco.h"
 #include "thingmgr.h"
 
 using namespace openloco;
 
 steam_object* openloco::exhaust::object() const
 {
-    return g_objectmgr.get<steam_object>(object_id & 0x7F);
+    return g_ctx.get<objectmanager>().get<steam_object>(object_id & 0x7F);
 }
 
 // 0x0044080C

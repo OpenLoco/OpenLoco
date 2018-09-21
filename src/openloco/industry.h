@@ -15,6 +15,8 @@ namespace openloco::map
 
 namespace openloco
 {
+    class context;
+
     using namespace map;
     using industry_id_t = uint16_t;
 
@@ -55,7 +57,7 @@ namespace openloco
         industry_id_t id() const;
         bool empty() const;
 
-        void update(const map::tilemanager& tilemgr);
+        void update(context& ctx);
         void sub_454A43(coord_t x, coord_t y, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)

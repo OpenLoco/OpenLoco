@@ -73,7 +73,8 @@ namespace openloco::gui
             window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
             window->init_scroll_widgets();
 
-            auto skin = openloco::g_objectmgr.get<interface_skin_object>();
+            auto& objectmgr = g_ctx.get<objectmanager>();
+            auto skin = objectmgr.get<interface_skin_object>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_12;

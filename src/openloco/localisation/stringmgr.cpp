@@ -4,6 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
+#include "../openloco.h"
 #include "../townmgr.h"
 #include "argswrapper.hpp"
 #include "string_ids.h"
@@ -217,7 +218,7 @@ namespace openloco::stringmgr
             value = -value;
         }
 
-        currency_object* currency = g_objectmgr.get<currency_object>();
+        currency_object* currency = g_ctx.get<objectmanager>().get<currency_object>();
 
         int64_t localised_value = value * (1ULL << currency->factor);
 
