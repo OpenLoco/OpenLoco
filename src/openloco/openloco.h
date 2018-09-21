@@ -5,8 +5,33 @@
 #include <functional>
 #include <string>
 
+namespace openloco::map
+{
+    class tilemanager;
+}
+
 namespace openloco
 {
+    class context
+    {
+    private:
+        std::unique_ptr<map::tilemanager> _tilemgr;
+
+    public:
+        context();
+        context(const context&) = delete;
+        ~context();
+
+        template<typename T>
+        T& get();
+
+        template<typename T>
+        const T& get() const { return ((context*)this)->get<T>(); }
+
+        template<>
+        map::tilemanager& get() { return *_tilemgr; }
+    };
+
     namespace screen_flags
     {
         constexpr uint8_t title = 1 << 0;

@@ -49,11 +49,18 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
+using namespace openloco;
 using namespace openloco::interop;
 namespace windowmgr = openloco::ui::windowmgr;
 using input_flags = openloco::input::input_flags;
 using input_state = openloco::input::input_state;
 using window_type = openloco::ui::window_type;
+
+context::context()
+{
+    _tilemgr = std::make_unique<map::tilemanager>();
+}
+context::~context() {}
 
 namespace openloco
 {
@@ -536,6 +543,9 @@ namespace openloco
     // 0x0046ABCB
     static void tick_logic()
     {
+        context ctx;
+        auto tilemgr = ctx.get<map::tilemanager>();
+
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
         addr<0x00525FCC, uint32_t>() = _prng->srand_0();
@@ -546,8 +556,8 @@ namespace openloco
         call(0x00463ABA);
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
-        g_industrymgr.update(g_companymgr, map::g_tilemgr);
-        g_thingmgr.update_vehicles(g_objectmgr, map::g_tilemgr, ui::g_viewportmgr);
+        g_industrymgr.update(g_companymgr, tilemgr);
+        g_thingmgr.update_vehicles(g_objectmgr, tilemgr, ui::g_viewportmgr);
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
         g_thingmgr.update_misc_things();
