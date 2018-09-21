@@ -4,9 +4,17 @@
 #include <cstdint>
 #include <tuple>
 
-namespace openloco::map::tilemgr
+namespace openloco::map
 {
-    tile get(map_pos pos);
-    tile get(coord_t x, coord_t y);
-    std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y);
+    class tilemanager
+    {
+    public:
+        tile get(map_pos pos);
+        const tile get(map_pos pos) const;
+        tile get(coord_t x, coord_t y);
+        const tile get(coord_t x, coord_t y) const;
+        std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y) const;
+    };
+
+    extern tilemanager g_tilemgr;
 }

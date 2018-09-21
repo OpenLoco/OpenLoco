@@ -8,6 +8,11 @@
 #include <cstdint>
 #include <limits>
 
+namespace openloco::map
+{
+    class tilemanager;
+}
+
 namespace openloco
 {
     using namespace map;
@@ -50,7 +55,7 @@ namespace openloco
         industry_id_t id() const;
         bool empty() const;
 
-        void update();
+        void update(const map::tilemanager& tilemgr);
         void sub_454A43(coord_t x, coord_t y, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)

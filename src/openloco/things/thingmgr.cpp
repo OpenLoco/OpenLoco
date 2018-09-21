@@ -47,7 +47,7 @@ thing_base* thingmanager::create_thing()
 }
 
 // 0x004A8826
-void thingmanager::update_vehicles(objectmanager& objectmgr, const ui::viewportmanager& viewportmgr)
+void thingmanager::update_vehicles(objectmanager& objectmgr, const map::tilemanager& tilemgr, const ui::viewportmanager& viewportmgr)
 {
     if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
     {
@@ -55,7 +55,7 @@ void thingmanager::update_vehicles(objectmanager& objectmgr, const ui::viewportm
         while (v != nullptr)
         {
             auto next = v->next_vehicle(*this);
-            v->update_head(objectmgr, *this, viewportmgr);
+            v->update_head(objectmgr, tilemgr, *this, viewportmgr);
             v = next;
         }
     }

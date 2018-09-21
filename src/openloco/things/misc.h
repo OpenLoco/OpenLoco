@@ -3,6 +3,11 @@
 #include "../objects/steam_object.h"
 #include "thing.h"
 
+namespace openloco::map
+{
+    class tilemanager;
+}
+
 namespace openloco
 {
     class thingmanager;
@@ -22,7 +27,7 @@ namespace openloco
 
         steam_object* object() const;
 
-        static exhaust* create(thingmanager& thingmgr, loc16 loc, uint8_t type);
+        static exhaust* create(const map::tilemanager& tilemgr, thingmanager& thingmgr, loc16 loc, uint8_t type);
     };
 
     struct smoke : thing_base

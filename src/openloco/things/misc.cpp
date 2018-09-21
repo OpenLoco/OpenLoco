@@ -12,11 +12,11 @@ steam_object* openloco::exhaust::object() const
 }
 
 // 0x0044080C
-exhaust* openloco::exhaust::create(thingmanager& thingmgr, loc16 loc, uint8_t type)
+exhaust* openloco::exhaust::create(const map::tilemanager& tilemgr, thingmanager& thingmgr, loc16 loc, uint8_t type)
 {
     if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
-    auto surface = openloco::map::tilemgr::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
+    auto surface = tilemgr.get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
     if (surface == nullptr)
         return nullptr;

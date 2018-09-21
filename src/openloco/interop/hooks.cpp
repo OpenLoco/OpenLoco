@@ -13,6 +13,7 @@
 #include "../graphics/gfx.h"
 #include "../gui.h"
 #include "../input.h"
+#include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../platform/platform.h"
 #include "../station.h"
@@ -841,7 +842,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             auto v = *((openloco::vehicle*)regs.esi);
             auto obj = *(g_objectmgr.get(v));
-            v.secondary_animation_update(g_thingmgr, obj);
+            v.secondary_animation_update(map::g_tilemgr, g_thingmgr, obj);
             return 0;
         });
 

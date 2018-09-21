@@ -31,6 +31,7 @@
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"
+#include "map/tilemgr.h"
 #include "messagemgr.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
@@ -545,8 +546,8 @@ namespace openloco
         call(0x00463ABA);
         call(0x004C56F6);
         g_townmgr.update(g_companymgr);
-        g_industrymgr.update(g_companymgr);
-        g_thingmgr.update_vehicles(g_objectmgr, ui::g_viewportmgr);
+        g_industrymgr.update(g_companymgr, map::g_tilemgr);
+        g_thingmgr.update_vehicles(g_objectmgr, map::g_tilemgr, ui::g_viewportmgr);
         sub_46FFCA();
         g_stationmgr.update(g_companymgr, g_messagemgr);
         g_thingmgr.update_misc_things();

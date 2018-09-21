@@ -534,11 +534,11 @@ namespace openloco::audio
         }
     }
 
-    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const map::tilemanager& tilemgr, const viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
-        auto tile = map::tilemgr::get(mpos);
+        auto tile = tilemgr.get(mpos);
         if (!tile.is_null())
         {
             auto surface = tile.surface();
@@ -635,7 +635,7 @@ namespace openloco::audio
                     return;
                 }
 
-                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, *viewport);
+                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, map::g_tilemgr, *viewport);
                 pan = viewport->map_to_ui(vpos).x;
                 if (volume < -10000)
                 {

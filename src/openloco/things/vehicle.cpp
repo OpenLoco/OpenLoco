@@ -71,12 +71,12 @@ vehicle* vehicle::next_car(thingmanager& thingmgr)
     return thingmgr.get<vehicle>(next_car_id);
 }
 
-void vehicle::update_head(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
+void vehicle::update_head(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
 {
     auto v = this;
     while (v != nullptr)
     {
-        if (v->update(objectmgr, thingmgr, viewportmgr))
+        if (v->update(objectmgr, tilemgr, thingmgr, viewportmgr))
         {
             break;
         }
@@ -84,7 +84,7 @@ void vehicle::update_head(objectmanager& objectmgr, thingmanager& thingmgr, cons
     }
 }
 
-bool vehicle::update(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
+bool vehicle::update(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr)
 {
     auto vehicleObject = objectmgr.get(*this);
     assert(vehicleObject != nullptr);
@@ -108,7 +108,7 @@ bool vehicle::update(objectmanager& objectmgr, thingmanager& thingmgr, const ui:
             break;
         case thing_type::vehicle_body_end:
         case thing_type::vehicle_body_cont:
-            result = sub_4AA1D0(thingmgr, *vehicleObject, viewportmgr);
+            result = sub_4AA1D0(tilemgr, thingmgr, *vehicleObject, viewportmgr);
             break;
         case thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
@@ -188,14 +188,14 @@ void vehicle::sub_4BAA76()
 }
 
 // 0x004AA1D0
-int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr)
+int32_t openloco::vehicle::sub_4AA1D0(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr)
 {
     registers regs;
     regs.esi = (int32_t)this;
 
     if (var_42 == 2 || var_42 == 3)
     {
-        animation_update(thingmgr, vehicleObject);
+        animation_update(tilemgr, thingmgr, vehicleObject);
         return 0;
     }
 
@@ -216,13 +216,13 @@ int32_t openloco::vehicle::sub_4AA1D0(thingmanager& thingmgr, vehicle_object& ve
 
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
-    animation_update(thingmgr, vehicleObject);
+    animation_update(tilemgr, thingmgr, vehicleObject);
     sub_4AAB0B(vehicleObject, viewportmgr);
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
 
-void openloco::vehicle::animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject)
+void openloco::vehicle::animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject)
 {
     if (var_38 & (1 << 4))
         return;
@@ -243,28 +243,28 @@ void openloco::vehicle::animation_update(thingmanager& thingmgr, vehicle_object&
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            steam_puffs_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            diesel_exhaust1_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            electric_spark1_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            electric_spark2_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            diesel_exhaust2_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
+            ship_wake_animation_update(tilemgr, thingmgr, vehicleObject, 0, vehicleObject.var_24[var_54].var_05 - 0x80);
             break;
         default:
             assert(false);
             break;
     }
-    secondary_animation_update(thingmgr, vehicleObject);
+    secondary_animation_update(tilemgr, thingmgr, vehicleObject);
 }
 
 // 0x004AAB0B
@@ -955,7 +955,7 @@ uint8_t openloco::vehicle::vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t
 }
 
 // 0x004AB655
-void openloco::vehicle::secondary_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject)
+void openloco::vehicle::secondary_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject)
 {
     uint8_t var_05 = vehicleObject.var_24[var_54].var_05;
     if (var_05 == 0)
@@ -970,22 +970,22 @@ void openloco::vehicle::secondary_animation_update(thingmanager& thingmgr, vehic
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(thingmgr, vehicleObject, 1, var_05);
+            steam_puffs_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(thingmgr, vehicleObject, 1, var_05);
+            diesel_exhaust1_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(thingmgr, vehicleObject, 1, var_05);
+            electric_spark1_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(thingmgr, vehicleObject, 1, var_05);
+            electric_spark2_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(thingmgr, vehicleObject, 1, var_05);
+            diesel_exhaust2_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(thingmgr, vehicleObject, 1, var_05);
+            ship_wake_animation_update(tilemgr, thingmgr, vehicleObject, 1, var_05);
             break;
         default:
             assert(false);
@@ -994,7 +994,7 @@ void openloco::vehicle::secondary_animation_update(thingmanager& thingmgr, vehic
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::steam_puffs_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1063,7 +1063,7 @@ void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, veh
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id | (soundCode ? 0 : 0x80));
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
 
@@ -1079,7 +1079,7 @@ void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, veh
     // Looking for a bridge? or somthing ontop
     if (steam_obj->var_08 & (1 << 2))
     {
-        auto tile = map::tilemgr::get(frontBogie->tile_x, frontBogie->tile_y);
+        auto tile = tilemgr.get(frontBogie->tile_x, frontBogie->tile_y);
 
         for (auto& el : tile)
         {
@@ -1116,7 +1116,7 @@ void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, veh
 
         int32_t volume = 0 - (veh_3->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+        auto height = std::get<0>(tilemgr.get_height(loc.x, loc.y));
 
         if (loc.z <= height)
         {
@@ -1140,7 +1140,7 @@ void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, veh
 
         int32_t volume = 0 - (veh_3->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+        auto height = std::get<0>(tilemgr.get_height(loc.x, loc.y));
 
         if (loc.z <= height)
         {
@@ -1158,7 +1158,7 @@ void openloco::vehicle::steam_puffs_animation_update(thingmanager& thingmgr, veh
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle::diesel_exhaust1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust1_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1191,7 +1191,7 @@ void openloco::vehicle::diesel_exhaust1_animation_update(thingmanager& thingmgr,
             static_cast<int16_t>(y + yFactor),
             static_cast<int16_t>(z + vehicleObject.animation[num].height)
         };
-        exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+        exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
     }
     else
     {
@@ -1238,12 +1238,12 @@ void openloco::vehicle::diesel_exhaust1_animation_update(thingmanager& thingmgr,
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+        exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
     }
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle::diesel_exhaust2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::diesel_exhaust2_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1313,11 +1313,11 @@ void openloco::vehicle::diesel_exhaust2_animation_update(thingmanager& thingmgr,
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle::electric_spark1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::electric_spark1_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1372,11 +1372,11 @@ void openloco::vehicle::electric_spark1_animation_update(thingmanager& thingmgr,
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle::electric_spark2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::electric_spark2_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1453,11 +1453,11 @@ void openloco::vehicle::electric_spark2_animation_update(thingmanager& thingmgr,
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle::ship_wake_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
+void openloco::vehicle::ship_wake_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05)
 {
     vehicle* veh_3 = vehicle_1136120;
 
@@ -1506,7 +1506,7 @@ void openloco::vehicle::ship_wake_animation_update(thingmanager& thingmgr, vehic
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
 
     if (vehicleObject.var_113 == 0)
         return;
@@ -1522,5 +1522,5 @@ void openloco::vehicle::ship_wake_animation_update(thingmanager& thingmgr, vehic
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(thingmgr, loc, vehicleObject.animation[num].object_id);
+    exhaust::create(tilemgr, thingmgr, loc, vehicleObject.animation[num].object_id);
 }

@@ -4,6 +4,11 @@
 #include <array>
 #include <cstddef>
 
+namespace openloco::map
+{
+    class tilemanager;
+}
+
 namespace openloco
 {
     class companymanager;
@@ -15,7 +20,7 @@ namespace openloco
     public:
         std::array<industry, max_industries>& industries();
         industry* get(industry_id_t id);
-        void update(companymanager& companymgr);
+        void update(companymanager& companymgr, map::tilemanager& tilemgr);
         void update_monthly();
     };
 

@@ -100,6 +100,11 @@ surface_element* tile::surface()
     return result;
 }
 
+const surface_element* tile::surface() const
+{
+    return ((tile*)this)->surface();
+}
+
 namespace openloco::map
 {
     /**

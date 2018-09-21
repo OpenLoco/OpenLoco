@@ -3,6 +3,11 @@
 #include "../objects/vehicle_object.h"
 #include "thing.h"
 
+namespace openloco::map
+{
+    class tilemanager;
+}
+
 namespace openloco
 {
     class thingmanager;
@@ -59,15 +64,15 @@ namespace openloco
         vehicle* next_vehicle(thingmanager& thingmgr);
         vehicle* next_car(thingmanager& thingmgr);
 
-        void update_head(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
+        void update_head(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
         void sub_4BA8D4(thingmanager& thingmgr);
-        void secondary_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
+        void secondary_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject);
 
     private:
-        bool update(objectmanager& objectmgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
+        bool update(objectmanager& objectmgr, const map::tilemanager& tilemgr, thingmanager& thingmgr, const ui::viewportmanager& viewportmgr);
         void sub_4BAA76();
-        int32_t sub_4AA1D0(thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
-        void animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject);
+        int32_t sub_4AA1D0(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
+        void animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject);
         void sub_4AAB0B(vehicle_object& vehicleObject, const ui::viewportmanager& viewportmgr);
         void sub_4AC255(vehicle_object& vehicleObject, vehicle* back_bogie, vehicle* front_bogie);
         uint16_t sub_4BE368(uint32_t distance);
@@ -78,12 +83,12 @@ namespace openloco
         uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void steam_puffs_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
-        void diesel_exhaust1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
-        void diesel_exhaust2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
-        void electric_spark1_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
-        void electric_spark2_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
-        void ship_wake_animation_update(thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void steam_puffs_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void diesel_exhaust1_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void diesel_exhaust2_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void electric_spark1_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void electric_spark2_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
+        void ship_wake_animation_update(const map::tilemanager& tilemgr, thingmanager& thingmgr, vehicle_object& vehicleObject, uint8_t num, int8_t var_05);
     };
 #pragma pack(pop)
 }

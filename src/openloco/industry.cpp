@@ -21,7 +21,7 @@ namespace openloco
         return name == string_ids::null;
     }
 
-    static bool find_5(surface_element* surface)
+    static bool find_5(const surface_element* surface)
     {
         auto element = surface;
         while (!element->is_last())
@@ -36,7 +36,7 @@ namespace openloco
     }
 
     // 0x00453275
-    void industry::update()
+    void industry::update(const map::tilemanager& tilemgr)
     {
         if (!(flags & industry_flags::flag_01) && var_11 == 0xFF)
         {
@@ -44,7 +44,7 @@ namespace openloco
             auto obj = g_objectmgr.get(*this);
             for (int i = 0; i < 100; i++)
             {
-                const auto& surface = tilemgr::get(tile_loop.current()).surface();
+                const auto& surface = tilemgr.get(tile_loop.current()).surface();
                 if (surface != nullptr)
                 {
                     if (surface->data()[0] & 0x80)
