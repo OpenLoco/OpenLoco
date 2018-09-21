@@ -1466,7 +1466,7 @@ strings:
   1443: ', '
   1444: '{NEWLINE}Akceptuje '
   1445: '{COLOUR BLACK}Akceptuje: '
-  1446:  Nic
+  1446: Nic
   1447: '{SMALLFONT}{COLOUR BLACK}Stacja'
   1448: '{SMALLFONT}{COLOUR BLACK}Towary oczekujące i akceptowane'
   1449: '{SMALLFONT}{COLOUR BLACK}Oceny towarów'
