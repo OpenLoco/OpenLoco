@@ -2,7 +2,7 @@ header:
   locale: pl-PL
   english_name: Polish
   native_name: Polski
-  loco_original_id: 0
+  loco_original_id: 6
 strings:
   0: ""
   1: '{POP16}'
@@ -149,8 +149,8 @@ strings:
   139: Nie można tutaj postawić sygnału...
   140: Nie można tutaj postawić sygnałów...
   141: Nie można usunąć sygnału...
-  142: Nie można usunąć {POP16}{POP16}{POP16}{STRINGID}...
-  143: Nie można zbudować {POP16}{POP16}{POP16}{STRINGID}...
+  142: Nie można usunąć - {POP16}{POP16}{POP16}{STRINGID}
+  143: Nie można zbudować - {POP16}{POP16}{POP16}{STRINGID}
   144: Najpierw podnieś lub obniż teren
   145: Widok podziemny
   146: Ukryj tory i drogi
@@ -270,9 +270,9 @@ strings:
   257: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} na lotnisku'
   258: '{SMALLFONT}{COLOUR BLACK}Usuń {POP16}{STRINGID} z wody'
   259: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} w porcie'
-  260: Nie można uruchomić {POP16}{POP16}{POP16}{STRINGID}...
-  261: Nie można wybrać trybu ręcznego dla {POP16}{POP16}{POP16}{STRINGID}...
-  262: Nie można zatrzymać {POP16}{POP16}{POP16}{STRINGID}...
+  260: Nie można uruchomić - {POP16}{POP16}{POP16}{STRINGID}
+  261: Nie można wybrać trybu ręcznego - {POP16}{POP16}{POP16}{STRINGID}
+  262: Nie można zatrzymać - {POP16}{POP16}{POP16}{STRINGID}
   263: '{VELOCITY}'
   264: Brak{POP16}
   265: Stój
@@ -350,7 +350,7 @@ strings:
   337: ""
   338: ""
   339: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
-  340: '{NEWLINE}Zaprojektowany: {DATE MY}'
+  340: '{NEWLINE}Zakupiono: {DATE MY}'
   341: '{NEWLINE}Wartość: {CURRENCY32}'
   342: '{NEWLINE}Moc: {POWER}'
   343: '{NEWLINE}Waga: {INT16}t'
@@ -400,7 +400,7 @@ strings:
   387: Nie można ruszyć pojazdem...
   388: Nie można zawrócić pociągu...
   389: Nie można sprzedać pojazdu...
-  390: Nie można sprzedać {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  390: Nie można sprzedać - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}
   391: '{STRINGID}'
   392: '{STRINGID}'
   393: '{STRINGID} peron stacji'
@@ -1183,8 +1183,8 @@ strings:
   1160: Pojazd utknął!
   1161: Zbyt mało miejsca lub zbliża sie pojazd
   1162: Zbliża się pojazd lub jest w drodze
-  1163: Nie można umieścić tutaj {POP16}{POP16}{POP16}{STRINGID}...
-  1164: Nie można usunąć {POP16}{POP16}{POP16}{STRINGID}...
+  1163: Nie można umieścić - {POP16}{POP16}{POP16}{STRINGID}
+  1164: Nie można usunąć - {POP16}{POP16}{POP16}{STRINGID}
   1165: Nie można zignorować czerwonego sygnału...
   1166: Ten pojazd wymaga {STRINGID}
   1167: Pociąg nie ma pojazdów!
@@ -1204,8 +1204,8 @@ strings:
   1181: '{SMALLFONT}{COLOUR BLACK}Pokaż trasy pojazdów na mapie'
   1182: '{SMALLFONT}{COLOUR BLACK}Pokaż własność firm na mapie'
   1183: Stacja zbyt rozległa!
-  1184: Nie można dodać {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} do {STRINGID}...
-  1185: Nie można zbudować {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1184: Nie można dodać - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} do {STRINGID}
+  1185: Nie można zbudować - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}
   1186: '{COLOUR BLACK}Wybierz nowy pojazd'
   1187: '{COLOUR BLACK}Wybierz pojazd, aby dodać do {STRINGID}'
   1188: '{SMALLFONT}{COLOUR BLACK}Buduj nowe pojazdy kolejowe'
@@ -1972,7 +1972,7 @@ strings:
   1930: '{COLOUR WINDOW_2}Licencja Atari Inc.'
   1931: Twórcy Atari Inc.
 
-  1932: Wersje gry są niekompatybilne - Nie można się połączyć!
+  1932: Wersje gry są niezgodne - Nie można się połączyć!
   1933: '{SMALLFONT}{COLOUR BLACK}Wyślij krótką wiadomość do innego gracza'
   1934: inny gracz
   1935: 'Inny gracz wyszedł z gry: Tryb dla wielu graczy został zakończony'
