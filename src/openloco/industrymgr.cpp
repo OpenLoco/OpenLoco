@@ -6,8 +6,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-industrymanager openloco::g_industrymgr;
-
 static loco_global<industry[max_industries], 0x005C455C> _industries;
 
 std::array<industry, max_industries>& industrymanager::industries()

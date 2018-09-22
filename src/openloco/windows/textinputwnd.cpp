@@ -186,7 +186,7 @@ namespace openloco::ui::textinput
         {
             interface_skin_object* interface = g_ctx.get<objectmanager>().get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
-            window->var_884 = g_companymgr.get_controlling_id();
+            window->var_884 = g_ctx.get<companymanager>().get_controlling_id();
         }
 
         _widgets[widx::title].type = widget_type::caption_25;

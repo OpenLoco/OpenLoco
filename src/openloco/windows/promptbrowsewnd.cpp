@@ -107,7 +107,7 @@ namespace openloco::ui::prompt_browse
                 []() {
                     input::handle_keyboard();
                     audio::update_sounds();
-                    windowmgr::dispatch_update_all(g_companymgr);
+                    windowmgr::dispatch_update_all(g_ctx.get<companymanager>());
                     call(0x004BEC5B);
                     windowmgr::update();
                     call(0x004C98CF);

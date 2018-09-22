@@ -23,6 +23,4 @@ namespace openloco
         void update(context& ctx);
         void update_monthly();
     };
-
-    extern industrymanager g_industrymgr;
 }

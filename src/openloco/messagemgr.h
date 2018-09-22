@@ -27,6 +27,4 @@ namespace openloco
             uint16_t subjectIdB,
             uint16_t subjectIdC = 0xFFFF);
     };
-
-    extern messagemanager g_messagemgr;
 }

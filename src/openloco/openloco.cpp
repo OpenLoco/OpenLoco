@@ -60,6 +60,9 @@ context openloco::g_ctx;
 
 context::context()
 {
+    _companymgr = std::make_unique<companymanager>();
+    _industrymgr = std::make_unique<industrymanager>();
+    _messagemgr = std::make_unique<messagemanager>();
     _tilemgr = std::make_unique<map::tilemanager>();
     _thingmgr = std::make_unique<thingmanager>();
     _viewportmgr = std::make_unique<ui::viewportmanager>();
@@ -548,6 +551,7 @@ namespace openloco
     static void tick_logic()
     {
         auto& thingmgr = g_ctx.get<thingmanager>();
+        auto& companymgr = g_ctx.get<companymanager>();
 
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
@@ -555,17 +559,17 @@ namespace openloco
         addr<0x00525FD0, uint32_t>() = _prng->srand_1();
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = addr<0x009C871C, uint8_t>();
-        date_tick(g_companymgr, g_stationmgr, g_townmgr);
+        date_tick(companymgr, g_stationmgr, g_townmgr);
         call(0x00463ABA);
         call(0x004C56F6);
-        g_townmgr.update(g_companymgr);
-        g_industrymgr.update(g_ctx);
+        g_townmgr.update(companymgr);
+        g_ctx.get<industrymanager>().update(g_ctx);
         thingmgr.update_vehicles(g_ctx);
         sub_46FFCA();
-        g_stationmgr.update(g_companymgr, g_messagemgr);
+        g_stationmgr.update(companymgr, g_ctx.get<messagemanager>());
         thingmgr.update_misc_things();
         sub_46FFCA();
-        g_companymgr.update();
+        companymgr.update();
         invalidate_map_animations();
         audio::update_vehicle_noise(thingmgr);
         audio::update_ambient_noise();

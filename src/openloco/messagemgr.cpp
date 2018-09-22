@@ -4,8 +4,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-messagemanager openloco::g_messagemgr;
-
 void messagemanager::post(
     message_type type,
     company_id_t companyId,

@@ -5,8 +5,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-companymanager openloco::g_companymgr;
-
 static loco_global<company_id_t[2], 0x00525E3C> _player_company;
 static loco_global<company[max_companies], 0x00531784> _companies;
 static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;

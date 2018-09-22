@@ -236,7 +236,7 @@ namespace openloco::ui::windowmgr
         register_hook(
             0x004CD3D0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                dispatch_update_all(g_companymgr);
+                dispatch_update_all(g_ctx.get<companymanager>());
                 return 0;
             });
 

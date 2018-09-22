@@ -26,6 +26,4 @@ namespace openloco
         void produce_companies();
         void sub_42F9AC();
     };
-
-    extern companymanager g_companymgr;
 }
