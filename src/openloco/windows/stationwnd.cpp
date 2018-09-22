@@ -20,7 +20,7 @@ namespace openloco::ui::windows
 
     static station& get_station(const window& w)
     {
-        return *(g_stationmgr.get(get_station_id(w)));
+        return *(g_ctx.get<stationmanager>().get(get_station_id(w)));
     }
 
     // 0x0048EF02

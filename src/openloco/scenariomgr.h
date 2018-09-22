@@ -9,6 +9,4 @@ namespace openloco
     public:
         void load_index(uint8_t al);
     };
-
-    extern scenariomanager g_scenariomgr;
 }

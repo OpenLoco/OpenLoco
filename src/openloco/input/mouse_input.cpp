@@ -1178,7 +1178,7 @@ namespace openloco::input
         if (_mapSelectionFlags & (1 << 6))
         {
             _mapSelectionFlags &= (uint16_t) ~(1 << 6);
-            auto station = g_stationmgr.get(_F252A4);
+            auto station = g_ctx.get<stationmanager>().get(_F252A4);
             if (!station->empty())
             {
                 station->invalidate();

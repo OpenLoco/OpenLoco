@@ -4,8 +4,6 @@
 using namespace openloco::map;
 using namespace openloco::interop;
 
-tilemanager openloco::map::g_tilemgr;
-
 static loco_global<tile_element * [0x30004], 0x00E40134> _tiles;
 
 tile tilemanager::get(map_pos pos)

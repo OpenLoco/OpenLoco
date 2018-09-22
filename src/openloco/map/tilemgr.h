@@ -18,6 +18,4 @@ namespace openloco::map
         const tile get(coord_t x, coord_t y) const;
         std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y) const;
     };
-
-    extern tilemanager g_tilemgr;
 }

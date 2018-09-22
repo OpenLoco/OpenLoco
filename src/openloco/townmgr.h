@@ -17,6 +17,4 @@ namespace openloco
         void update(companymanager& companymgr);
         void update_monthly();
     };
-
-    extern townmanager g_townmgr;
 }

@@ -10,8 +10,6 @@ using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::ui;
 
-stationmanager openloco::g_stationmgr;
-
 static loco_global<station[max_stations], 0x005E6EDC> _stations;
 
 std::array<station, max_stations>& stationmanager::stations()

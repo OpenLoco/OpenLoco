@@ -27,6 +27,4 @@ namespace openloco
         void sub_437F29(companymanager& companymgr, company_id_t cid, uint8_t arg1);
         void sub_49E1F1(station_id_t id);
     };
-
-    extern stationmanager g_stationmgr;
 }

@@ -21,7 +21,10 @@ namespace openloco
     class industrymanager;
     class messagemanager;
     class objectmanager;
+    class scenariomanager;
+    class stationmanager;
     class thingmanager;
+    class townmanager;
 
     class context
     {
@@ -31,7 +34,10 @@ namespace openloco
         std::unique_ptr<objectmanager> _objectmgr;
         std::unique_ptr<map::tilemanager> _tilemgr;
         std::unique_ptr<messagemanager> _messagemgr;
+        std::unique_ptr<scenariomanager> _scenariomgr;
+        std::unique_ptr<stationmanager> _stationmgr;
         std::unique_ptr<thingmanager> _thingmgr;
+        std::unique_ptr<townmanager> _townmgr;
         std::unique_ptr<ui::viewportmanager> _viewportmgr;
 
     public:
@@ -56,7 +62,13 @@ namespace openloco
         template<>
         map::tilemanager& get() { return *_tilemgr; }
         template<>
+        scenariomanager& get() { return *_scenariomgr; }
+        template<>
+        stationmanager& get() { return *_stationmgr; }
+        template<>
         thingmanager& get() { return *_thingmgr; }
+        template<>
+        townmanager& get() { return *_townmgr; }
         template<>
         ui::viewportmanager& get() { return *_viewportmgr; }
     };

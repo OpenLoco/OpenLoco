@@ -6,8 +6,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-townmanager openloco::g_townmgr;
-
 static loco_global<town[80], 0x005B825C> _towns;
 
 std::array<town, max_towns>& townmanager::towns()

@@ -635,7 +635,7 @@ namespace openloco::audio
                     return;
                 }
 
-                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, map::g_tilemgr, *viewport);
+                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, g_ctx.get<map::tilemanager>(), *viewport);
                 pan = viewport->map_to_ui(vpos).x;
                 if (volume < -10000)
                 {
