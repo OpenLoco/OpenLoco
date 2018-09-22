@@ -465,8 +465,8 @@ namespace openloco::audio
             {
                 cfg.audio.device = _devices[index];
             }
-            config::write_new_config(g_env);
-            reinitialise(g_env);
+            config::write_new_config(g_ctx.get<environment>());
+            reinitialise(g_ctx.get<environment>());
         }
     }
 

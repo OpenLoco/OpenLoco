@@ -704,7 +704,7 @@ void openloco::interop::register_hooks()
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto buffer = (char*)0x009D0D72;
-            auto path = g_env.get_path((environment::path_id)regs.ebx);
+            auto path = g_ctx.get<environment>().get_path((environment::path_id)regs.ebx);
 #ifdef _OPENLOCO_USE_BOOST_FS_
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().string().c_str());

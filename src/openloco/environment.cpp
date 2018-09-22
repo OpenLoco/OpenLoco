@@ -12,8 +12,6 @@
 using namespace openloco;
 using namespace openloco::interop;
 
-environment openloco::g_env;
-
 static loco_global<char[260], 0x009D118E> _path_buffer;
 static loco_global<char[257], 0x0050B0CE> _path_install;
 static loco_global<char[257], 0x0050B1CF> _path_saves_single_player;

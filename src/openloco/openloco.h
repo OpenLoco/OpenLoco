@@ -18,6 +18,7 @@ namespace openloco::ui
 namespace openloco
 {
     class companymanager;
+    class environment;
     class industrymanager;
     class messagemanager;
     class objectmanager;
@@ -30,6 +31,7 @@ namespace openloco
     {
     private:
         std::unique_ptr<companymanager> _companymgr;
+        std::unique_ptr<environment> _environment;
         std::unique_ptr<industrymanager> _industrymgr;
         std::unique_ptr<objectmanager> _objectmgr;
         std::unique_ptr<map::tilemanager> _tilemgr;
@@ -53,6 +55,8 @@ namespace openloco
 
         template<>
         companymanager& get() { return *_companymgr; }
+        template<>
+        environment& get() { return *_environment; }
         template<>
         industrymanager& get() { return *_industrymgr; }
         template<>

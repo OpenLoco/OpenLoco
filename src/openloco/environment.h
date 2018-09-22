@@ -84,6 +84,4 @@ namespace openloco
         fs::path get_base_path(path_id id) const;
         fs::path get_sub_path(path_id id) const;
     };
-
-    extern environment g_env;
 }

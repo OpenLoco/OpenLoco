@@ -61,6 +61,7 @@ context openloco::g_ctx;
 context::context()
 {
     _companymgr = std::make_unique<companymanager>();
+    _environment = std::make_unique<environment>();
     _industrymgr = std::make_unique<industrymanager>();
     _objectmgr = std::make_unique<objectmanager>();
     _tilemgr = std::make_unique<map::tilemanager>();
@@ -287,7 +288,7 @@ namespace openloco
         g_ctx.get<scenariomanager>().load_index(0);
         progressb.begin(string_ids::loading, 0);
         progressb.set_progress(60);
-        gfx::load_g1(g_env);
+        gfx::load_g1(g_ctx.get<environment>());
         progressb.set_progress(220);
         call(0x004949BC);
         progressb.set_progress(235);
@@ -488,7 +489,7 @@ namespace openloco
                 addr<0x00525F62, int16_t>()++;
                 call(0x0043D9D4);
                 audio::play_background_music();
-                audio::play_title_screen_music(g_env);
+                audio::play_title_screen_music(g_ctx.get<environment>());
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() == 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
@@ -737,8 +738,9 @@ namespace openloco
         std::cout << versionInfo << std::endl;
         try
         {
-            const auto& cfg = config::read_new_config(g_env);
-            g_env.resolve_paths();
+            auto& env = g_ctx.get<environment>();
+            const auto& cfg = config::read_new_config(env);
+            env.resolve_paths();
 
             register_hooks();
             if (sub_4054B9())
@@ -747,7 +749,7 @@ namespace openloco
                 call(0x004078FE);
                 call(0x00407B26);
                 ui::initialise_input();
-                audio::initialise_dsound(g_env);
+                audio::initialise_dsound(env);
                 run();
                 audio::dispose_dsound();
                 ui::dispose_cursors();

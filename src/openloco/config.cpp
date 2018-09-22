@@ -15,6 +15,7 @@
 #include "config.h"
 #include "environment.h"
 #include "interop/interop.hpp"
+#include "openloco.h"
 #include "utility/yaml.hpp"
 
 using namespace openloco::interop;
@@ -52,7 +53,7 @@ namespace openloco::config
     void write()
     {
         call(0x00441BB8);
-        write_new_config(g_env);
+        write_new_config(g_ctx.get<environment>());
     }
 
     new_config& read_new_config(const environment& env)
