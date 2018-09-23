@@ -14,7 +14,9 @@ namespace openloco
 #pragma pack(push, 1)
     struct vehicle : thing_base
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_20;
+        uint8_t var_21;
+        uint8_t pad_22[0x28 - 0x22];
         uint16_t var_28;
         uint8_t pad_2A[0x2C - 0x2A];
         uint16_t var_2C;

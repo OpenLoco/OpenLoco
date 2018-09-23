@@ -32,6 +32,7 @@ namespace openloco::ui
         vehicle = 23,
         station = 24,
 
+        dragVehiclePart = 25,
         company = 26,
         vehicleList = 27,
         buildVehicle = 28,

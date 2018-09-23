@@ -35,7 +35,7 @@ namespace openloco
         thing_id_t next_thing_id; // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        thing_id_t id;
+        thing_id_t id; // 0x0A
         uint8_t pad_0C[0x0E - 0x0C];
         int16_t x; // 0x0E
         int16_t y; // 0x10
