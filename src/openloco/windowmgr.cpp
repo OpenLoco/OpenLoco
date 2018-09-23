@@ -1006,4 +1006,45 @@ namespace openloco::ui::windowmgr
             }
         }
     }
+
+    bool is_in_front(ui::window* w)
+    {
+        ui::window* window = w;
+
+        while (true)
+        {
+            window++;
+            if (window >= _windows_end)
+                return true;
+
+            if ((window->flags & window_flags::stick_to_front) != 0)
+                continue;
+
+            return false;
+        }
+
+        return false;
+    }
+
+    bool is_in_front_alt(ui::window* w)
+    {
+        ui::window* window = w;
+
+        while (true)
+        {
+            window++;
+            if (window >= _windows_end)
+                return true;
+
+            if ((window->flags & window_flags::stick_to_front) != 0)
+                continue;
+
+            if (window->type == window_type::build_vehicle)
+                continue;
+
+            return false;
+        }
+
+        return false;
+    }
 }
