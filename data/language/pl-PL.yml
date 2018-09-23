@@ -2,7 +2,7 @@ header:
   locale: pl-PL
   english_name: Polish
   native_name: Polski
-  loco_original_id: 6
+  loco_original_id: 0
 strings:
   0: ""
   1: '{POP16}'
