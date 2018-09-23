@@ -335,6 +335,7 @@ static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pU
     return DSERR_NODRIVER;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
 {
     console::log("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
@@ -361,6 +362,7 @@ static bool STDCALL lib_DeleteFileA(char* lpFileName)
     return false;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static bool STDCALL lib_WriteFile(
     FILE* hFile,
     char* buffer,
