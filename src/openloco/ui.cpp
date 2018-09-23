@@ -97,6 +97,7 @@ namespace openloco::ui
 
     static SDL_Window* window;
     static SDL_Surface* surface;
+    static SDL_Surface* RGBASurface;
     static SDL_Palette* palette;
     static std::vector<SDL_Cursor*> _cursors;
 
@@ -116,12 +117,12 @@ namespace openloco::ui
 
     int32_t width()
     {
-        return screen_info->width;
+        return (int32_t)(screen_info->width / config::get_new().scale_factor);
     }
 
     int32_t height()
     {
-        return screen_info->height;
+        return (int32_t)(screen_info->height / config::get_new().scale_factor);
     }
 
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
@@ -259,11 +260,19 @@ namespace openloco::ui
     void get_cursor_pos(int32_t& x, int32_t& y)
     {
         SDL_GetMouseState(&x, &y);
+
+        auto scale = config::get_new().scale_factor;
+        x /= scale;
+        y /= scale;
     }
 
     // 0x00407FEE
     void set_cursor_pos(int32_t x, int32_t y)
     {
+        auto scale = config::get_new().scale_factor;
+        x *= scale;
+        y *= scale;
+
         SDL_WarpMouseInWindow(window, x, y);
     }
 
@@ -306,7 +315,16 @@ namespace openloco::ui
         {
             SDL_FreeSurface(surface);
         }
+        if (RGBASurface != nullptr)
+        {
+            SDL_FreeSurface(RGBASurface);
+        }
+
         surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+
+        RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+        SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
+
         SDL_SetSurfacePalette(surface, palette);
 
         int32_t pitch = surface->pitch;
@@ -347,7 +365,11 @@ namespace openloco::ui
 
     void resize(int32_t width, int32_t height)
     {
-        update(width, height);
+        float scale_factor = config::get_new().scale_factor;
+        int32_t dst_width = (int)(width / scale_factor);
+        int32_t dst_height = (int)(height / scale_factor);
+
+        update(dst_width, dst_height);
         gui::resize();
         gfx::invalidate_screen();
 
@@ -387,8 +409,32 @@ namespace openloco::ui
                 SDL_UnlockSurface(surface);
             }
 
-            // Copy the surface to the window
-            SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr);
+            auto scale_factor = config::get_new().scale_factor;
+            if (scale_factor == 1 || scale_factor <= 0)
+            {
+                if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
+                {
+                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    exit(1);
+                }
+            }
+            else
+            {
+                // first blit to rgba surface to change the pixel format
+                if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
+                {
+                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    exit(1);
+                }
+                // then scale to window size. Without changing to RGBA first, SDL complains
+                // about blit configurations being incompatible.
+                if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
+                {
+                    console::error("SDL_BlitScaled %s", SDL_GetError());
+                    exit(1);
+                }
+            }
+
             SDL_UpdateWindowSurface(window);
         }
     }
