@@ -35,6 +35,12 @@ namespace openloco::ui::windowmgr
         };
     };
 
+    void init()
+    {
+        _windows_end = &_windows[0];
+        _523508 = 0;
+    }
+
     void register_hooks()
     {
         register_hook(

@@ -56,6 +56,8 @@ namespace openloco::input
         shift = 1 << 0,
     };
 
+    void init();
+    void init_mouse();
     bool has_flag(input_flags value);
     void set_flag(input_flags value);
     void reset_flag(input_flags value);
