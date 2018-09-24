@@ -382,9 +382,9 @@ strings:
   364: Save Landscape
   365: Save Game
   366: Save Scenario
-  367: Locomotion Saved Game File
-  368: Locomotion Scenario File
-  369: Locomotion Landscape File
+  367: OpenLoco Saved Game File
+  368: OpenLoco Scenario File
+  369: OpenLoco Landscape File
   370: Game Save Failed!
   371: Failed to load saved game...{NEWLINE}File contains invalid data!
   372: Hide foreground scenery & buildings
@@ -395,7 +395,7 @@ strings:
   377: Can't rename this vehicle...
   378: Bridge needed
   379: Too far above ground for this bridge type
-  380: Bridge is already at it's maximum height above ground
+  380: Bridge is already at its maximum height above ground
   381: "{STRINGID} requires a bridge"
   382: Bridge type unsuitable for this configuration
   383: Station Name
@@ -604,7 +604,7 @@ strings:
   582: "{CURRENCY32}"
   583: Can't build this here...
   584: "{DATE MY}"
-  585: Chris Sawyer's Locomotion
+  585: OpenLoco
   586: Please insert your Locomotion CD in the following drive:-
   587: "{COLOUR WINDOW_2}Expenditure/Income"
   588: Train Income
