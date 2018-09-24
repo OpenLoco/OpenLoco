@@ -4,6 +4,8 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "things/thing.h"
+#include "things/thingmgr.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/scrollview.h"
@@ -37,6 +39,8 @@ namespace openloco::ui::windowmgr
                 return &_windows[0];
         };
     };
+
+    static void sub_4B92A5(ui::window* window);
 
     void init()
     {
@@ -73,6 +77,15 @@ namespace openloco::ui::windowmgr
                 call_event_viewport_rotate_on_all_windows();
                 regs = backup;
 
+                return 0;
+            });
+
+        register_hook(
+            0x004B92A5,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                sub_4B92A5((ui::window*)regs.esi);
+                regs = backup;
                 return 0;
             });
 
@@ -872,6 +885,96 @@ namespace openloco::ui::windowmgr
                 }
             }
         }
+    }
+
+    static loco_global<int16_t, 0x01136268> _1136268;
+    static loco_global<uint16_t[1], 0x0113626A> _113626A;
+    static loco_global<int8_t[1], 0x011364F0> _11364F0;
+    static loco_global<int32_t, 0x011364E8> _11364E8;
+
+    static void sub_4B9165(uint8_t dl, uint8_t dh, void* esi)
+    {
+        registers regs;
+        regs.dl = dl;
+        regs.dh = dh;
+        regs.esi = (uintptr_t)esi;
+        if (esi == nullptr)
+        {
+            regs.esi = -1;
+        }
+
+        call(0x4B9165, regs);
+    }
+
+    /**
+     * 0x004B92A5
+     *
+     * @param window @<esi>
+     */
+    static void sub_4B92A5(ui::window* window)
+    {
+        ui::window* w = _windows_end;
+        while (true)
+        {
+            w--;
+
+            if (w < _windows)
+            {
+                if (_11364E8 != -1)
+                {
+                    _11364E8 = -1;
+                    window->var_83C = 0;
+                    window->invalidate();
+                }
+                break;
+            }
+
+            if (w->type != window_type::vehicle)
+                continue;
+
+            if (w->current_tab != 1)
+                continue;
+
+            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            if (vehicle->var_21 != companymgr::get_controlling_id())
+                continue;
+
+            if (_11364E8 != w->number)
+            {
+                _11364E8 = w->number;
+                window->var_83C = 0;
+                window->invalidate();
+                break;
+            }
+        }
+
+        uint8_t dl = window->current_tab;
+        uint8_t dh = _11364F0[window->var_874];
+
+        thing_base* thing = nullptr;
+        if (_11364E8 != -1)
+        {
+            thing = thingmgr::get<thing_base>(_11364E8);
+        }
+
+        sub_4B9165(dl, dh, thing);
+
+        int cx = _1136268;
+        if (window->var_83C == cx)
+            return;
+
+        uint16_t* src = _113626A;
+        uint16_t* dest = (uint16_t*)window->pad_6A;
+        window->var_83A = 0;
+        while (cx != 0)
+        {
+            *dest = *src;
+            dest++;
+            src++;
+            cx--;
+        }
+        window->var_840 = 0xFFFF;
+        window->invalidate();
     }
 
     // 0x004B93A5

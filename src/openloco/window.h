@@ -284,8 +284,10 @@ namespace openloco::ui
                 uint16_t max_height;               // 0x3e
                 window_number number;              // 0x40
                 uint32_t flags;                    // 0x42
-                scroll_area_t scroll_areas[3];     // 0x46
-                uint8_t pad_7C[0x83E - 0x7C];
+                scroll_area_t scroll_areas[2];     // 0x46
+                uint8_t pad_6A[0x83A - 0x6A];
+                uint16_t var_83A;
+                uint16_t var_83C;
                 uint16_t var_83E;
                 uint16_t var_840;
                 uint8_t pad_842[0x846 - 0x842];
@@ -298,7 +300,7 @@ namespace openloco::ui
                 uint8_t pad_85C[0x870 - 0x85C];
                 uint16_t current_tab; // 0x870
                 uint16_t frame_no;    // 0x872
-                uint8_t pad_874[0x876 - 0x874];
+                uint16_t var_874;
                 viewport_config viewport_configurations[2]; // 0x876
                 window_type type;                           // 0x882
                 uint8_t pad_883[1];
