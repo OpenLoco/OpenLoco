@@ -109,7 +109,7 @@ namespace openloco::ui::prompt_browse
                     windowmgr::dispatch_update_all();
                     call(0x004BEC5B);
                     windowmgr::update();
-                    call(0x004C98CF);
+                    windowmgr::sub_4C98CF();
                     call(0x004CF63B);
                     return windowmgr::find(window_type::prompt_browse) != nullptr;
                 });

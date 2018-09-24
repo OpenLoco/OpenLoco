@@ -18,6 +18,9 @@ namespace openloco::ui::windowmgr
         constexpr uint16_t by_type = 1 << 7;
     }
 
+    static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
+    static loco_global<ui::window_type, 0x00523392> _toolWindowType;
+    static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
     loco_global<uint32_t, 0x00523508> _523508;
     loco_global<window[12], 0x011370AC> _windows;
@@ -629,6 +632,82 @@ namespace openloco::ui::windowmgr
 
         w->call_prepare_draw();
         w->call_draw(&dpi);
+    }
+
+    // 0x004C6EE6
+    static input::mouse_button game_get_next_input(uint32_t* x, int16_t* y)
+    {
+        registers regs;
+        call(0x004c6ee6, regs);
+
+        *x = regs.eax;
+        *y = regs.bx;
+
+        return (input::mouse_button)regs.cx;
+    }
+
+    // 0x004CD422
+    static void process_mouse_tool(int16_t x, int16_t y)
+    {
+        if (!input::has_flag(input::input_flags::tool_active))
+        {
+            return;
+        }
+
+        auto window = find(_toolWindowType, _toolWindowNumber);
+        if (window != nullptr)
+        {
+            window->call_tool_update(_toolWidgetIdx, x, y);
+        }
+        else
+        {
+            input::cancel_tool();
+        }
+    }
+
+    // 0x004C98CF
+    void sub_4C98CF()
+    {
+        ui::window* window;
+
+        window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->call_8();
+        }
+
+        invalidate_all_windows_after_input();
+        call(0x004c6e65); // update_cursor_position
+
+        uint32_t x;
+        int16_t y;
+        input::mouse_button state;
+        while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+        {
+            input::handle_mouse(x, y, state);
+        }
+
+        if (input::has_flag(input::input_flags::flag5))
+        {
+            input::handle_mouse(x, y, state);
+        }
+        else if (x != 0x80000000)
+        {
+            x = std::clamp<int16_t>(x, 0, ui::width() - 1);
+            y = std::clamp<int16_t>(y, 0, ui::height() - 1);
+
+            input::handle_mouse(x, y, state);
+            input::process_mouse_over(x, y);
+            process_mouse_tool(x, y);
+        }
+
+        window = *_windows_end;
+        while (window > _windows)
+        {
+            window--;
+            window->call_9();
+        }
     }
 
     // 0x004CD3D0

@@ -108,6 +108,7 @@ namespace openloco::ui::windowmgr
     void all_wheel_input();
     bool is_in_front(ui::window* w);
     bool is_in_front_alt(ui::window* w);
+    void sub_4C98CF();
 }
 
 namespace openloco::ui::windows
