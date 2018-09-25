@@ -389,7 +389,7 @@ namespace openloco::ui
         get_map_coordinates_from_pos(mouse_x, mouse_y, 0, map_x, map_y);
 
         // Get viewport coordinates centring around the tile.
-        int32_t base_height = map::tile_element_height(*map_x, *map_y);
+        int32_t base_height = map::tile_element_height(*map_x, *map_y) & 0xFFFF;
         int16_t dest_x, dest_y;
         viewport* v = this->viewports[0];
         centre_2d_coordinates(*map_x, *map_y, base_height, &dest_x, &dest_y, v);
@@ -408,7 +408,7 @@ namespace openloco::ui
     {
         // Get viewport coordinates centring around the tile.
         int16_t dest_x, dest_y;
-        int32_t base_height = map::tile_element_height(map_x, map_y);
+        int32_t base_height = map::tile_element_height(map_x, map_y) & 0xFFFF;
         viewport* v = this->viewports[0];
         centre_2d_coordinates(map_x, map_y, base_height, &dest_x, &dest_y, v);
 
