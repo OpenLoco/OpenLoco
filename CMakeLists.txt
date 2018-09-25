@@ -4,6 +4,13 @@ set (PROJECT openloco)
 
 project(${PROJECT} CXX)
 
+if (APPLE)
+    # Detection of this variable seems to fail with CMake.
+    # Since we only support 32-bit builds at the moment, fix it this way.
+    # TODO: find out a proper fix for this.
+    set(CMAKE_SIZEOF_VOID_P 4)
+endif()
+
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 endif()
@@ -17,9 +24,7 @@ endif()
 
 option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
 
-if (APPLE)
-    set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/opt/openssl/lib/pkgconfig")
-endif (APPLE)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 # Describe current version in terms of closest tag
 execute_process(
@@ -166,12 +171,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -W
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
-PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
-SET(SDL2LIBS ${SDL2_LDFLAGS})
+find_package(SDL2 REQUIRED)
+if (NOT SDL2_LIBRARIES)
+	if (TARGET SDL2::SDL2-static)
+		set(SDL2_LIBRARIES SDL2::SDL2-static)
+	elseif (TARGET SDL2::SDL2)
+		set(SDL2_LIBRARIES SDL2::SDL2)
+	endif()
+endif()
 
-if (NOT APPLE)
-    PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
-endif ()
+find_package(SDL2_mixer REQUIRED)
 
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
@@ -200,10 +209,7 @@ else ()
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 
-target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
-if (NOT APPLE)
-    target_link_libraries(${PROJECT} ${SDL2MIXER_LIBRARIES})
-endif ()
+target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 
 if (NOT MINGW)
