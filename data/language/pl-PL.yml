@@ -73,7 +73,7 @@ strings:
   64: Numer Seryjny CD {INT32 RAW} jest nieprawidłowy dla twojej płyty Locomotion!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Proszę o ponowną instalację Locomotion z prawidłowym numerem seryjnym
   65: '{UINT16 RAW} x {UINT16 RAW}'
   66: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}'
-  67: O Grze Chris Sawyer's Locomotion
+  67: O 'Chris Sawyer's Locomotion'
   68: Chris Sawyer's Locomotion
   69: '{COLOUR WINDOW_2}Wersja 4.02.176 (English US)'
   70: '{COLOUR WINDOW_2}Prawa Autorskie © 2004 Chris Sawyer, Wszystkie Prawa Zastrzeżone'
@@ -181,8 +181,8 @@ strings:
   171: Zbyt wiele obiektów w grze
   172: Obróć Widok w Lewo
   173: Obróć Widok w Prawo
-  174: 'Locomotion: Pierwsze uruchomienie...'
-  175: 'Locomotion: Sprawdzanie plików obiektów...'
+  174: 'OpenLoco: Pierwsze uruchomienie...'
+  175: 'OpenLoco: Sprawdzanie plików obiektów...'
   176: Wczytaj Grę
   177: Zakończ Grę
   178: Zakończ Grę
@@ -377,16 +377,16 @@ strings:
   364: Zapisywanie Krajobrazu
   365: Zapisywanie Gry
   366: Zapisz Scenariusz
-  367: Plik Zapisanej Gry Locomotion
-  368: Plik Zapisanego Scenariusza Locomotion
-  369: Plik Zapisanego Krajobrazu Locomotion
+  367: Plik Zapisanej Gry OpenLoco
+  368: Plik Zapisanego Scenariusza OpenLoco
+  369: Plik Zapisanego Krajobrazu OpenLoco
   370: Błąd Zapisu Gry!
   371: Nie udało się załadować zapisanej gry...{NEWLINE}Plik zawiera nieprawidłowe dane!
   372: Ukryj scenerię i budynki
   373: Można zbudować tylko na wodzie!
   374: Można zbudować tylko obok zakładu na wodzie!
-  375: Nazwa Pojazdu
-  376: 'Wprowadź nową nazwę dla pojazdu:'
+  375: Zmiana Nazwy {STRINGID}
+  376: 'Wprowadź nową nazwę dla {STRINGID}:'
   377: Nie można zmienić nazwy tego pojazdu...
   378: Potrzebny most
   379: Zbyt daleko nad ziemią dla tego typu mostu
@@ -599,7 +599,7 @@ strings:
   582: '{CURRENCY32}'
   583: Nie można tego tutaj zbudować...
   584: '{DATE MY}'
-  585: Chris Sawyer's Locomotion
+  585: OpenLoco
   586: 'Proszę włożyć płytę CD Locomotion do napędu:'
   587: '{COLOUR WINDOW_2}Wydatki/Przychody'
   588: Dochód z pociągów
@@ -1842,7 +1842,7 @@ strings:
   1812: Budynek {STRINGID} w pobliżu {STRINGID}
   1813: Budynek {STRINGID} w pobliżu {STRINGID}
   1814: Kontroluje usługi w pobliżu {STRINGID}
-  1815: Sprawdza teren w pobliżu {STRINGID}
+  1815: Sprawdza krajobraz w pobliżu {STRINGID}
   1816: '{COLOUR RED}Upadłość!'
   1817: '{SMALLFONT}{COLOUR BLACK}Wstrzymaj grę'
   1818: '{SMALLFONT}{COLOUR BLACK}Normalna prędkość'
@@ -1869,7 +1869,7 @@ strings:
   1839: '{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})'
   1840: Osiągnij wartość firmy {CURRENCY32}{STRINGID}{STRINGID}
   1841: Osiągnij miesięczny zysk z pojazdów {CURRENCY32}{STRINGID}{STRINGID}
-  1842: Osiągnij wskaźnik wydajności {INT16_1DP}% ({STRINGID}){STRINGID}{STRINGID}
+  1842: Osiągnij wskaźnik wydajności {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
   1843: Dostarcz {STRINGID}{STRINGID}{STRINGID}
   1844: ' i bądź firmą osiągającą najlepsze wyniki'
   1845: ' i bądź jedną z 3 firm osiągających najlepsze wyniki'
