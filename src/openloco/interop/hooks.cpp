@@ -39,26 +39,31 @@ using namespace openloco;
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
+FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
 {
     return audio::load_channel((audio::channel_id)a0, a1, a2) ? 1 : 0;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_play_channel(int a0, int a1, int a2, int a3, int a4)
 {
     return audio::play_channel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL audio_stop_channel(int a0, int a1, int a2, int a3, int a4)
 {
     audio::stop_channel((audio::channel_id)a0);
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL audio_set_channel_volume(int a0, int a1)
 {
     audio::set_channel_volume((audio::channel_id)a0, a1);
 }
 
+FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_is_channel_playing(int a0)
 {
     return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
@@ -119,6 +124,7 @@ static uint32_t STDCALL lib_timeGetTime()
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
+FORCE_ALIGN_ARG_POINTER
 static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
 {
     STUB();
