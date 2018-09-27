@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interop/interop.hpp"
 #include "utility/prng.hpp"
 #include <cstdint>
 #include <functional>
@@ -32,6 +33,7 @@ namespace openloco
     bool is_paused();
     uint32_t scenario_ticks();
     utility::prng& gprng();
+    void do_game_command(int esi, interop::registers& registers);
 
     void main();
     void prompt_tick_loop(std::function<bool()> tickAction);

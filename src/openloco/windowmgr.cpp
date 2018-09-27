@@ -4,8 +4,10 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "map/tile.h"
 #include "things/thing.h"
 #include "things/thingmgr.h"
+#include "things/vehicle.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/scrollview.h"
@@ -25,6 +27,8 @@ namespace openloco::ui::windowmgr
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<uint8_t, 0x005233B6> _current_modal_type;
     loco_global<uint32_t, 0x00523508> _523508;
+    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+    loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     loco_global<window[12], 0x011370AC> _windows;
     loco_global<window*, 0x0113D754> _windows_end;
 
@@ -40,6 +44,7 @@ namespace openloco::ui::windowmgr
         };
     };
 
+    static void sub_4383ED();
     static void sub_4B92A5(ui::window* window);
 
     void init()
@@ -50,6 +55,15 @@ namespace openloco::ui::windowmgr
 
     void register_hooks()
     {
+        register_hook(
+            0x004383ED,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                sub_4383ED();
+                regs = backup;
+                return 0;
+            });
+
         register_hook(
             0x0045EFDB,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -1234,5 +1248,79 @@ namespace openloco::ui::windowmgr
         }
 
         return false;
+    }
+
+    static void sub_4383ED()
+    {
+        if (openloco::is_title_mode() || openloco::is_editor_mode())
+        {
+            return;
+        }
+
+        auto company = companymgr::get(_updating_company_id);
+        company->var_12 += 1;
+        if ((company->var_12 & 0x7F) != 0)
+            return;
+
+        for (window& w : WindowList())
+        {
+            if (w.type != window_type::vehicle)
+                continue;
+
+            auto vehicle = thingmgr::get<openloco::vehicle>(w.number);
+            if (vehicle->x == -0x8000)
+                continue;
+
+            if (vehicle->var_21 != _updating_company_id)
+                continue;
+
+            registers regs;
+            regs.bl = 1;
+            regs.ax = -2;
+            regs.cx = vehicle->id;
+            do_game_command(73, regs);
+            return;
+        }
+
+        auto main = get_main();
+        if (main == nullptr)
+            return;
+
+        auto viewport = main->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        int16_t posX = viewport->x + viewport->width / 2;
+        int16_t posY = viewport->y + viewport->height / 2;
+
+        registers r1;
+        r1.ax = posX;
+        r1.bx = posY;
+        call(0x0045F1A7, r1);
+        ui::viewport* vp = (ui::viewport*)r1.edi;
+
+        if (posX != -0x8000 && viewport == vp)
+        {
+            // The result of this function appears to be ignored
+            map::tile_element_height(posX, posY);
+        }
+        else
+        {
+            registers r2;
+
+            r2.ax = viewport->view_x + viewport->view_width / 2;
+            r2.bx = viewport->view_y + viewport->view_height / 2;
+            r2.edx = gCurrentRotation;
+            call(0x0045F997, r2);
+
+            posX = r2.ax;
+            posY = r2.bx;
+        }
+
+        registers regs;
+        regs.bl = 1;
+        regs.ax = posX;
+        regs.cx = posY;
+        do_game_command(73, regs);
     }
 }

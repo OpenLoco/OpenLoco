@@ -557,6 +557,12 @@ namespace openloco
         addr<0x010E7D64, uint32_t>() = 0xD900BF;
     }
 
+    void do_game_command(int esi, registers& registers)
+    {
+        registers.esi = esi;
+        call(0x00431315, registers);
+    }
+
     // 0x0046ABCB
     static void tick_logic()
     {
