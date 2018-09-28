@@ -141,6 +141,7 @@ namespace openloco::gfx
 
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void redraw_screen_rect(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
     bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
 }
