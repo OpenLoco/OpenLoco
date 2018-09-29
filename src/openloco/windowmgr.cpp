@@ -47,6 +47,7 @@ namespace openloco::ui::windowmgr
     static void sub_4383ED();
     static void sub_4B92A5(ui::window* window);
     static void sub_4C6A40(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
+    static void sub_4CF456();
 
     void init()
     {
@@ -307,6 +308,15 @@ namespace openloco::ui::windowmgr
                 sub_4CEE0B((ui::window*)regs.esi);
                 regs = backup;
 
+                return 0;
+            });
+
+        register_hook(
+            0x004CF456,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                sub_4CF456();
+                regs = backup;
                 return 0;
             });
     }
@@ -1405,5 +1415,21 @@ namespace openloco::ui::windowmgr
         regs.dx = dX;
         regs.bp = dY;
         call(0x004C6B09, regs); // openrct2: viewport_redraw_after_shift
+    }
+
+    static void sub_4CF456()
+    {
+        close(window_type::dropdown, 0);
+
+        for (ui::window* w = _windows_end - 1; w >= _windows; w--)
+        {
+            if ((w->flags & window_flags::stick_to_back) != 0)
+                continue;
+
+            if ((w->flags & window_flags::stick_to_front) != 0)
+                continue;
+
+            close(w);
+        }
     }
 }
