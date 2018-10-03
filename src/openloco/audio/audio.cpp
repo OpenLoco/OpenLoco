@@ -3,6 +3,7 @@
 #include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
+#include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/sound_object.h"
@@ -395,7 +396,7 @@ namespace openloco::audio
 
     static const char* get_default_device_name()
     {
-        return "(default)";
+        return stringmgr::get_string(string_ids::default_audio_device_name);
     }
 
     const std::vector<std::string>& get_devices()

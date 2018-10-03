@@ -403,4 +403,6 @@ namespace openloco::string_ids
     constexpr string_id options_mode_windowed = 2128;
     constexpr string_id options_mode_fullscreen = 2129;
     constexpr string_id options_mode_fullscreen_window = 2130;
+
+    constexpr string_id default_audio_device_name = 2131;
 }
