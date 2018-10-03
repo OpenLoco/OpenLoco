@@ -263,7 +263,7 @@ namespace openloco::audio
 
     static std::vector<sample> load_sounds_from_css(const fs::path& path)
     {
-        console::log("load_sounds_from_css(%s)", path.string().c_str());
+        console::log_verbose("load_sounds_from_css(%s)", path.string().c_str());
         std::vector<sample> results;
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ifstream fs(path.string(), std::ios::in | std::ios::binary);
@@ -576,7 +576,7 @@ namespace openloco::audio
     {
         if (v->var_4A & 1)
         {
-            console::log("play_sound(vehicle #%d)", v->object_id);
+            console::log_verbose("play_sound(vehicle #%d)", v->object_id);
             auto vc = get_free_vehicle_channel();
             if (vc != nullptr)
             {
@@ -675,7 +675,7 @@ namespace openloco::audio
 
     static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log("mix_sound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
+        console::log_verbose("mix_sound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = get_sound_sample(id);
         if (sample != nullptr && sample->chunk != nullptr)
         {
@@ -698,7 +698,7 @@ namespace openloco::audio
 
     static bool load_channel(channel_id id, const fs::path& path, int32_t c)
     {
-        console::log("load_channel(%d, %s, %d)", id, path.string().c_str(), c);
+        console::log_verbose("load_channel(%d, %s, %d)", id, path.string().c_str(), c);
         if (is_music_channel(id))
         {
             if (_music_channel.load(path))
@@ -728,7 +728,7 @@ namespace openloco::audio
     // 0x00401999
     bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
-        console::log("play_channel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
+        console::log_verbose("play_channel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (is_music_channel(id))
         {
             if (_music_channel.play(loop != 0))
@@ -752,7 +752,7 @@ namespace openloco::audio
     // 0x00401A05
     void stop_channel(channel_id id)
     {
-        console::log("stop_channel(%d)", id);
+        console::log_verbose("stop_channel(%d)", id);
         if (is_music_channel(id))
         {
             if (_music_current_channel == id)
@@ -773,7 +773,7 @@ namespace openloco::audio
     // 0x00401AD3
     void set_channel_volume(channel_id id, int32_t volume)
     {
-        console::log("set_channel_volume(%d, %d)", id, volume);
+        console::log_verbose("set_channel_volume(%d, %d)", id, volume);
         if (is_music_channel(id))
         {
             if (_music_current_channel == id)
