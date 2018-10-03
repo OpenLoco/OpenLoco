@@ -137,7 +137,7 @@ namespace openloco::localisation
                 }
                 else if (commands[0] == "INT32")
                 {
-                    if (commands.size() == 2 && commands[2] == "RAW")
+                    if (commands.size() == 2 && commands[1] == "RAW")
                     {
                         *out++ = (char)control_codes::int32_ungrouped;
                     }
