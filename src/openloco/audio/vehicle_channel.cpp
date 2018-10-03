@@ -1,3 +1,5 @@
+#if !(defined(__APPLE__) && defined(__MACH__))
+
 #include "vehicle_channel.h"
 #include "../interop/interop.hpp"
 #include "../things/thingmgr.h"
@@ -100,3 +102,5 @@ void vehicle_channel::stop()
     _channel.stop();
     _vehicle_id = thing_id::null;
 }
+
+#endif

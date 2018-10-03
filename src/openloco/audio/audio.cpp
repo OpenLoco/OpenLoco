@@ -14,7 +14,9 @@
 #include "music_channel.h"
 #include "vehicle_channel.h"
 #include <SDL2/SDL.h>
+#if !(defined(__APPLE__) && defined(__MACH__))
 #include <SDL2/SDL_mixer.h>
+#endif
 #include <array>
 #include <cassert>
 #include <fstream>
@@ -61,8 +63,103 @@ namespace openloco::audio
     };
 
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
-    constexpr int32_t play_at_location = 0x8001;
-    constexpr int32_t num_sound_channels = 16;
+    [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
+    [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
+
+#if defined(__APPLE__) && defined(__MACH__)
+    // 0x00404E53
+    void initialise_dsound()
+    {
+        call(0x00404E53);
+    }
+
+    // 0x00404E58
+    void dispose_dsound()
+    {
+        call(0x00404E58);
+    }
+
+    // 0x004899E4
+    void initialise()
+    {
+        call(0x004899E4);
+    }
+
+    // 0x00489C34
+    void pause_sound()
+    {
+        call(0x00489C34);
+    }
+
+    // 0x00489C58
+    void unpause_sound()
+    {
+        call(0x00489C58);
+    }
+
+    void play_sound(sound_id id, loc16 loc)
+    {
+        play_sound(id, loc, play_at_location);
+    }
+
+    void play_sound(sound_id id, int32_t pan)
+    {
+        play_sound(id, {}, play_at_location);
+    }
+
+    // 0x00489F1B
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency)
+    {
+        registers regs;
+        regs.eax = (int32_t)id;
+        regs.ecx = loc.x;
+        regs.edx = loc.y;
+        regs.ebp = loc.z;
+        regs.ebx = frequency;
+        regs.edi = volume;
+        call(0x00489F1B, regs);
+    }
+
+    // 0x00489CB5
+    void play_sound(sound_id id, loc16 loc, int32_t pan)
+    {
+        registers regs;
+        regs.eax = (int32_t)id;
+        regs.cx = loc.x;
+        regs.dx = loc.y;
+        regs.bp = loc.z;
+        regs.ebx = pan;
+        call(0x00489CB5, regs);
+    }
+
+    void set_device(size_t index) {}
+
+    const std::vector<std::string>& get_devices()
+    {
+        static std::vector<std::string> devices;
+        return devices;
+    }
+
+    // 0x0048A18C
+    void update_sounds() {}
+
+    size_t get_current_device()
+    {
+        return 0;
+    }
+
+    const char* get_current_device_name()
+    {
+        return "none";
+    }
+
+    // 0x48A73B
+    void update_vehicle_noise()
+    {
+        call(0x0048A73B);
+    }
+
+#else
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
 
@@ -792,6 +889,7 @@ namespace openloco::audio
             vc.stop();
         }
     }
+#endif
 
     // 0x0048ACFD
     void update_ambient_noise()
@@ -814,6 +912,9 @@ namespace openloco::audio
     // 0x0048AC66
     void play_title_screen_music()
     {
+#if defined(__APPLE__) && defined(__MACH__)
+        call(0x0048AC66);
+#else
         loco_global<uint8_t, 0x0050D555> unk_50D555;
         if (_audio_initialised && (unk_50D555 & 1) && is_title_mode())
         {
@@ -833,5 +934,6 @@ namespace openloco::audio
                 stop_channel(channel_id::title);
             }
         }
+#endif
     }
 }

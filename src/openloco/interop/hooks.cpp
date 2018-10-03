@@ -39,6 +39,8 @@ using namespace openloco;
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
+#if !(defined(__APPLE__) && defined(__MACH__))
+
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
 {
@@ -68,6 +70,8 @@ static int32_t CDECL audio_is_channel_playing(int a0)
 {
     return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
 }
+
+#endif
 
 static void STDCALL fn_40447f()
 {
@@ -634,6 +638,10 @@ static void register_audio_hooks()
 {
     using namespace openloco::interop;
 
+#if defined(__APPLE__) && defined(__MACH__)
+    write_ret(0x00489CB5);
+    write_ret(0x00489F1B);
+#else
     write_jmp(0x0040194E, (void*)&audio_load_channel);
     write_jmp(0x00401999, (void*)&audio_play_channel);
     write_jmp(0x00401A05, (void*)&audio_stop_channel);
@@ -672,6 +680,7 @@ static void register_audio_hooks()
             audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
             return 0;
         });
+#endif
 }
 
 void openloco::interop::register_hooks()

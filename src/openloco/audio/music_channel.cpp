@@ -1,3 +1,5 @@
+#if !(defined(__APPLE__) && defined(__MACH__))
+
 #include "music_channel.h"
 #include <SDL2/SDL_mixer.h>
 
@@ -60,3 +62,5 @@ void music_channel::dispose_music()
     _music_track = nullptr;
     _current_music = -1;
 }
+
+#endif

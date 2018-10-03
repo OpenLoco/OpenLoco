@@ -1,5 +1,7 @@
 #pragma once
 
+#if !(defined(__APPLE__) && defined(__MACH__))
+
 #ifdef _OPENLOCO_USE_BOOST_FS_
 #include <boost/filesystem.hpp>
 #else
@@ -50,3 +52,5 @@ namespace openloco::audio
         void dispose_chunk();
     };
 }
+
+#endif
