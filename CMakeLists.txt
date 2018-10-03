@@ -8,8 +8,6 @@ if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 endif()
 
-INCLUDE(FindPkgConfig)
-
 set(USE_BOOST_FS_DEFAULT OFF)
 if(APPLE OR MINGW)
 	set(USE_BOOST_FS_DEFAULT ON)
@@ -166,8 +164,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -W
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
-PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
-SET(SDL2LIBS ${SDL2_LDFLAGS})
+find_package(SDL2 REQUIRED)
 
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
