@@ -23,6 +23,10 @@
 #include <fstream>
 #include <unordered_map>
 
+#ifdef _WIN32
+#define __HAS_DEFAULT_DEVICE__
+#endif
+
 using namespace openloco::environment;
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -394,15 +398,19 @@ namespace openloco::audio
         _audio_initialised = 0;
     }
 
+#ifdef __HAS_DEFAULT_DEVICE__
     static const char* get_default_device_name()
     {
         return stringmgr::get_string(string_ids::default_audio_device_name);
     }
+#endif
 
     const std::vector<std::string>& get_devices()
     {
         _devices.clear();
+#ifdef __HAS_DEFAULT_DEVICE__
         _devices.push_back(get_default_device_name());
+#endif
         auto count = SDL_GetNumAudioDevices(0);
         for (auto i = 0; i < count; i++)
         {
@@ -417,11 +425,13 @@ namespace openloco::audio
 
     const char* get_current_device_name()
     {
+#ifdef __HAS_DEFAULT_DEVICE__
         auto index = get_current_device();
         if (index == 0)
         {
             return get_default_device_name();
         }
+#endif
 
         const auto& cfg = config::get_new();
         return cfg.audio.device.c_str();
@@ -438,11 +448,13 @@ namespace openloco::audio
         if (index < _devices.size())
         {
             auto& cfg = config::get_new();
+#ifdef __HAS_DEFAULT_DEVICE__
             if (index == 0)
             {
                 cfg.audio.device = {};
             }
             else
+#endif
             {
                 cfg.audio.device = _devices[index];
             }
