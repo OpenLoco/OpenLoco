@@ -65,7 +65,7 @@ strings:
   56: "{COLOUR BLACK}❌"
   57: Wybrana nazwa w użyciu
   58: Zdefiniowano zbyt wiele nazw
-  59: Brak pieniędzy - wymaga {CURRENCY32}
+  59: Brak pieniędzy - potrzeba {CURRENCY32}
   60: '{SMALLFONT}{COLOUR BLACK}Zamknij okno'
   61: Błąd Inicjalizacji Gry
   62: Brak możliwości rozpoczęcia gry w stanie zminimalizowanym
@@ -73,11 +73,10 @@ strings:
   64: Numer Seryjny CD {INT32 RAW} jest nieprawidłowy dla twojej płyty Locomotion!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Proszę o ponowną instalację Locomotion z prawidłowym numerem seryjnym
   65: '{UINT16 RAW} x {UINT16 RAW}'
   66: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}'
-  67: O Grze Chris Sawyer's Locomotion
+  67: O 'Chris Sawyer's Locomotion'
   68: Chris Sawyer's Locomotion
   69: '{COLOUR WINDOW_2}Wersja 4.02.176 (English US)'
-  70: '{COLOUR WINDOW_2}Prawa Autorskie © 2004 Chris Sawyer, Wszystkie Prawa
-    Zastrzeżone'
+  70: '{COLOUR WINDOW_2}Prawa Autorskie © 2004 Chris Sawyer, Wszystkie Prawa Zastrzeżone'
   71: '{COLOUR WINDOW_2}Projekt i Program Chris Sawyer'
   72: '{COLOUR WINDOW_2}Grafika Simon Foster'
   73: '{COLOUR WINDOW_2}Udźwiękowienie Allister Brimble'
@@ -114,47 +113,47 @@ strings:
   103: Wczytaj Grę
   104: Zapisz Grę
   105: Opuść Edytor Scenariuszy
-  106: Zakończ Grę
+  106: Opuść Grę
   107: Screenshot{INT16}.BMP
   108: Zrzut Ekranu
-  109: Zrzut ekranu zapisany na dysku jako "{STRINGID}".
+  109: Zrzut ekranu zapisany na dysku jako '{STRINGID}'
   110: 'Błąd: Zrzut ekranu nie został wykonany!'
-  111: Pełny obszar danych krajobrazowych!
+  111: Pełny obszar danych krajobrazowych
   112: Nie można budować częściowo nad i częściowo pod ziemią
   113: '{STRINGID}'
-  114: '{SMALLFONT}{COLOUR BLACK}Krzywa Lewoskrętna'
-  115: '{SMALLFONT}{COLOUR BLACK}Krzywa Prawoskrętna'
-  116: '{SMALLFONT}{COLOUR BLACK}Krzywa Lewoskrętna (Mały Promień)'
-  117: '{SMALLFONT}{COLOUR BLACK}Krzywa Prawoskrętna (Mały Promień)'
-  118: '{SMALLFONT}{COLOUR BLACK}Krzywa Lewoskrętna (Bardzo Mały Promień)'
-  119: '{SMALLFONT}{COLOUR BLACK}Krzywa Prawoskrętna (Bardzo Mały Promień)'
-  120: '{SMALLFONT}{COLOUR BLACK}Krzywa Lewoskrętna (Duży Promień)'
-  121: '{SMALLFONT}{COLOUR BLACK}Krzywa Prawoskrętna (Duży Pomień)'
+  114: '{SMALLFONT}{COLOUR BLACK}Krzywa lewoskrętna'
+  115: '{SMALLFONT}{COLOUR BLACK}Krzywa prawoskrętna'
+  116: '{SMALLFONT}{COLOUR BLACK}Krzywa lewoskrętna (mały promień)'
+  117: '{SMALLFONT}{COLOUR BLACK}Krzywa prawoskrętna (mały promień)'
+  118: '{SMALLFONT}{COLOUR BLACK}Krzywa lewoskrętna (bardzo mały promień)'
+  119: '{SMALLFONT}{COLOUR BLACK}Krzywa prawoskrętna (bardzo mały promień)'
+  120: '{SMALLFONT}{COLOUR BLACK}Krzywa lewoskrętna (duży promień)'
+  121: '{SMALLFONT}{COLOUR BLACK}Krzywa prawoskrętna (duży pomień)'
   122: '{SMALLFONT}{COLOUR BLACK}Prosta'
-  123: '{SMALLFONT}{COLOUR BLACK}''S'' Zgięcie Lewe'
-  124: '{SMALLFONT}{COLOUR BLACK}''S'' Zgięcie Prawe'
-  125: '{SMALLFONT}{COLOUR BLACK}''S'' Zgięcie Boczne Lewe'
-  126: '{SMALLFONT}{COLOUR BLACK}''S'' Zgięcie Boczne Prawe'
-  127: '{SMALLFONT}{COLOUR BLACK}''S'' Zgięcie do Pojedynczego Toru'
-  128: '{SMALLFONT}{COLOUR BLACK}Nawrót'
-  129: '{SMALLFONT}{COLOUR BLACK}(Kliknij na krajobraz, aby rozpocząć budowę)'
-  130: '{SMALLFONT}{COLOUR BLACK}Buduj Ten Odcinek Toru'
-  131: '{SMALLFONT}{COLOUR BLACK}Usuń Poprzedni Odcinek Toru'
-  132: '{SMALLFONT}{COLOUR BLACK}Strome Nachylenie w Dół'
-  133: '{SMALLFONT}{COLOUR BLACK}Nachylenie w Dół'
-  134: '{SMALLFONT}{COLOUR BLACK}Poziom'
-  135: '{SMALLFONT}{COLOUR BLACK}Nachylenie w Górę'
-  136: '{SMALLFONT}{COLOUR BLACK}Strome Nachylenie w Górę'
+  123: '{SMALLFONT}{COLOUR BLACK}Zgięcie lewe'
+  124: '{SMALLFONT}{COLOUR BLACK}Zgięcie prawe'
+  125: '{SMALLFONT}{COLOUR BLACK}Zgięcie boczne lewe'
+  126: '{SMALLFONT}{COLOUR BLACK}Zgięcie boczne prawe'
+  127: '{SMALLFONT}{COLOUR BLACK}Zgięcie do pojedynczego toru'
+  128: '{SMALLFONT}{COLOUR BLACK}Pętla'
+  129: '{SMALLFONT}{COLOUR BLACK}(kliknij na krajobraz, aby rozpocząć budowę)'
+  130: '{SMALLFONT}{COLOUR BLACK}Buduj ten odcinek toru'
+  131: '{SMALLFONT}{COLOUR BLACK}Usuń poprzedni odcinek toru'
+  132: '{SMALLFONT}{COLOUR BLACK}Strome nachylenie w dół'
+  133: '{SMALLFONT}{COLOUR BLACK}Nachylenie w dół'
+  134: '{SMALLFONT}{COLOUR BLACK}Poziomo'
+  135: '{SMALLFONT}{COLOUR BLACK}Nachylenie w górę'
+  136: '{SMALLFONT}{COLOUR BLACK}Strome nachylenie w górę'
   137: '{COLOUR WINDOW_2}Zbuduj to...'
   138: '{COLOUR WINDOW_2}Koszt: {COLOUR BLACK}{CURRENCY32}'
   139: Nie można tutaj postawić sygnału...
   140: Nie można tutaj postawić sygnałów...
   141: Nie można usunąć sygnału...
-  142: Nie można usunąć {POP16}{POP16}{POP16}{STRINGID}...
-  143: Nie można zbudować {POP16}{POP16}{POP16}{STRINGID}...
-  144: Najpierw podnieś lub opuść ziemię
+  142: Nie można usunąć - {POP16}{POP16}{POP16}{STRINGID}
+  143: Nie można zbudować - {POP16}{POP16}{POP16}{STRINGID}
+  144: Najpierw podnieś lub obniż teren
   145: Widok podziemny
-  146: Ukryj tory i drogi na pierwszym planie
+  146: Ukryj tory i drogi
   147: Typ stacji może być zbudowany tylko na końcu drogi
   148: Nieprawidłowy typ stacji dla {STRINGID}
   149: Stacja nie jest kompatybilna z {STRINGID}
@@ -162,7 +161,7 @@ strings:
   151: Przejazd kolejowy możliwy tylko z prostą drogą i torem na tym samym poziomie
   152: Połączenie nie jest możliwe
   153: Połączenie musi być całkowicie płaskie
-  154: '{STRINGID} na drodze / niewłaściwa wysokość dla skrzyżowania'
+  154: '{STRINGID} na drodze/niewłaściwa wysokość dla skrzyżowania'
   155: Już tutaj zbudowano
   156: Nie można skrzyżować lub utworzyć połączenia z {STRINGID}
   157: Skrzyżowanie nie jest możliwe
@@ -180,20 +179,20 @@ strings:
   169: Most nie nadaje się do połączeń
   170: Kombinacja toru nie jest możliwa
   171: Zbyt wiele obiektów w grze
-  172: Obrót w Prawo
-  173: Obrót w Lewo
-  174: 'Locomotion: Pierwszy start...'
-  175: 'Locomotion: Sprawdzanie plików obiektów...'
+  172: Obróć Widok w Lewo
+  173: Obróć Widok w Prawo
+  174: 'OpenLoco: Pierwsze uruchomienie...'
+  175: 'OpenLoco: Sprawdzanie plików obiektów...'
   176: Wczytaj Grę
   177: Zakończ Grę
   178: Zakończ Grę
   179: Opuść Edytor Scenariuszy
   180: Wczytaj Krajobraz
-  181: Zapisać to przed wczytaniem?
-  182: Zapisać to przed wyjściem?
-  183: Zapisać to przed wyjściem?
-  184: Zapisz
-  185: Nie Zapisuj
+  181: Czy chcesz zapisać grę przed wczytaniem?
+  182: Czy chcesz zapisać grę przed wyjściem?
+  183: Czy chcesz zapisać grę przed wyjściem?
+  184: Tak
+  185: Nie
   186: Anuluj
   187: Ok
 
@@ -208,34 +207,34 @@ strings:
   196: '{SMALLFONT}{COLOUR BLACK}Przewiń {STRINGID} szybko w dół'
   197: '{SMALLFONT}{COLOUR BLACK}Przewiń {STRINGID} w górę/dół'
 
-  198: mapa
-  199: lista pojazdów
-  200: lista nowych pojazdów
-  201: lista
-  202: lista drzew
-  203: lista rozkazów
-  204: lista stacji
-  205: lista miast
-  206: lista zakładów
-  207: nowa lista zakładów
-  208: lista budynków
-  209: lista ścian
-  210: lista ocen
-  211: lista ładunków
-  212: lista wiadomości
-  213: lista firm
-  214: lista scenariuszy
-  215: lista twórców
+  198: mapę
+  199: listę pojazdów
+  200: listę nowych pojazdów
+  201: listę
+  202: listę drzew
+  203: listę poleceń
+  204: listę stacji
+  205: listę miast
+  206: listę zakładów
+  207: nową listę zakładów
+  208: listę budynków
+  209: listę ścian
+  210: listę ocen
+  211: listę ładunków
+  212: listę wiadomości
+  213: listę firm
+  214: listę scenariuszy
+  215: listę twórców
 
-  216: '{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}'
-  217: '{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}'
-  218: Brak możliwości przełączenia na wybrany tryb
+  216: '{COLOUR WINDOW_2}▲{COLOUR BLACK} {CURRENCY32}'
+  217: '{COLOUR WINDOW_2}▼{COLOUR BLACK} {CURRENCY32}'
+  218: Brak możliwości przełączenia na wybraną rozdzielczość
   219: '{COLOUR WINDOW_2}Koszt: {COLOUR BLACK}{CURRENCY32}'
-  220: (player 1)
-  221: (player 2)
+  220: (gracz 1)
+  221: (gracz 2)
   222: Nie można zmienić schematu kolorów...
-  223: Przybliżenie
-  224: Oddalenie
+  223: Przybliż Widok
+  224: Oddal Widok
   225: Miasta
   226: Przemysł
   227: Lotnisko
@@ -260,27 +259,27 @@ strings:
   246: '{STRINGID}'
   247: '{STRINGID} - Szczegóły'
   248: '{STRINGID} - Finanse'
-  249: '{STRINGID} - Ładunek Dostarczony'
+  249: '{STRINGID} - Przewiezione Towary'
   250: '{STRINGID} - Schemat Kolorów'
   251: '{STRINGID} - Wyzwanie'
-  252: '{SMALLFONT}{COLOUR BLACK}Zmień kierunek'
+  252: '{SMALLFONT}{COLOUR BLACK}Zawróć pojazd'
   253: '{SMALLFONT}{COLOUR BLACK}Zignoruj sygnał'
   254: '{SMALLFONT}{COLOUR BLACK}Usuń {POP16}{STRINGID} z toru/drogi'
   255: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} na torze/drodze'
   256: '{SMALLFONT}{COLOUR BLACK}Usuń {POP16}{STRINGID} z lotniska'
   257: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} na lotnisku'
   258: '{SMALLFONT}{COLOUR BLACK}Usuń {POP16}{STRINGID} z wody'
-  259: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} w doku'
-  260: Nie można uruchomić {POP16}{POP16}{POP16}{STRINGID}...
-  261: Nie można wybrać trybu ręcznego dla {POP16}{POP16}{POP16}{STRINGID}...
-  262: Nie można zatrzymać {POP16}{POP16}{POP16}{STRINGID}...
+  259: '{SMALLFONT}{COLOUR BLACK}Umieść {POP16}{STRINGID} w porcie'
+  260: Nie można uruchomić - {POP16}{POP16}{POP16}{STRINGID}
+  261: Nie można wybrać trybu ręcznego - {POP16}{POP16}{POP16}{STRINGID}
+  262: Nie można zatrzymać - {POP16}{POP16}{POP16}{STRINGID}
   263: '{VELOCITY}'
-  264: Nieograniczony{POP16}
-  265: Stop
-  266: Start
+  264: Brak{POP16}
+  265: Stój
+  266: Jedź
   267: Ręczny
-  268: '{SMALLFONT}{COLOUR BLACK}Wybierz ilość torów/dróg do modernizacji'
-  269: '{SMALLFONT}{COLOUR BLACK}Stop/Start {POP16}{STRINGID}'
+  268: '{SMALLFONT}{COLOUR BLACK}Wybierz ilość elementów do modernizacji'
+  269: '{SMALLFONT}{COLOUR BLACK}Uruchom lub zatrzymaj pojazd'
   270: '{COLOUR BLACK}{STRINGID}'
   271: '{SMALLFONT}{COLOUR BLACK}Budowa toru/drogi'
   272: '{SMALLFONT}{COLOUR BLACK}Budowa stacji'
@@ -289,7 +288,7 @@ strings:
   275: '{SMALLFONT}{COLOUR BLACK}Wybierz typ sygnału'
   276: '{SMALLFONT}{COLOUR BLACK}Umieść sygnały w obu kierunkach'
   277: '{SMALLFONT}{COLOUR BLACK}Umieść sygnał w jednym kierunku (pociągi nie będą mogły jechać w drugim kierunku)'
-  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Prędkość Max.:  {STRINGID}{NEWLINE}Max. powyżej terenu:  {HEIGHT}"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Prędkość maks.: {STRINGID}{NEWLINE}Wysokość maks.: {HEIGHT}"
   279: '{SMALLFONT}{COLOUR BLACK}Wybierz typ stacji'
   280: Stacja {INT16}
   281: '{STRINGID}'
@@ -298,25 +297,25 @@ strings:
   284: '{STRINGID} Wschód'
   285: '{STRINGID} Zachód'
   286: '{STRINGID} Centrum'
-  287: '{STRINGID} Węzeł'
+  287: 'Węzeł {STRINGID}'
   288: '{STRINGID} Osobowy'
   289: '{STRINGID} Dolina'
   290: '{STRINGID} Wyżyny'
   291: '{STRINGID} Bory'
   292: '{STRINGID} Wybrzeże'
   293: '{STRINGID} Wymiana'
-  294: '{STRINGID} Port Lotniczy'
-  295: '{STRINGID} Pola Naftowe'
-  296: '{STRINGID} Kopalnie'
-  297: '{STRINGID} Port'
-  298: '{STRINGID} Obwodnica'
+  294: 'Port Lotniczy {STRINGID}'
+  295: 'Pola Naftowe {STRINGID}'
+  296: 'Kopalnia {STRINGID}'
+  297: 'Port {STRINGID}'
+  298: 'Obwodnica {STRINGID}'
   299: '{STRINGID} Przedmieście'
-  300: '{STRINGID} Zakłady'
-  301: Upper {STRINGID}
-  302: Lower {STRINGID}
+  300: 'Zakłady {STRINGID}'
+  301: '{STRINGID} Górny'
+  302: '{STRINGID} Dolny'
   303: '{STRINGID} Lądowisko'
-  304: '{STRINGID} Las'
-  305: '{STRINGID} Węzeł'
+  304: '{STRINGID} Podlesie'
+  305: '{STRINGID} Rozjazd'
   306: '{STRINGID} Skrzyżowanie'
   307: '{STRINGID} Wzgórza'
   308: '{STRINGID} 1'
@@ -341,32 +340,31 @@ strings:
   327: '{STRINGID} 20'
   328: '{COLOUR WINDOW_2}{POP16}Waga: {COLOUR BLACK}{INT32}t'
   329: '{COLOUR WINDOW_2}Moc całkowita: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Waga: {COLOUR BLACK}{INT32}t'
-  330: '{COLOUR WINDOW_2}Prędkość Max.: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Niezawodność: {COLOUR BLACK}{INT16}%'
-  331: '{COLOUR WINDOW_2}Prędkość Max.: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Niezawodność: {COLOUR BLACK}{INT16}%'
-  332: '{SMALLFONT}{COLOUR BLACK}Sprzedaj {POP16}{STRINGID}{NEWLINE}(Lub przeciągnij tutaj pojedynczy pojazd, aby go sprzedać)'
-  333: '{SMALLFONT}{COLOUR BLACK}Buduj nowy pojazd dla tego {POP16}{STRINGID}'
+  330: '{COLOUR WINDOW_2}Prędkość maks.: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Niezawodność: {COLOUR BLACK}{INT16}%'
+  331: '{COLOUR WINDOW_2}Prędkość maks.: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Niezawodność: {COLOUR BLACK}{INT16}%'
+  332: '{SMALLFONT}{COLOUR BLACK}Sprzedaj {POP16}{STRINGID}{NEWLINE}(lub przeciągnij tutaj pojedynczy pojazd, aby go sprzedać)'
+  333: '{SMALLFONT}{COLOUR BLACK}Buduj nowy pojazd dla {POP16}{STRINGID}'
   334: '{COLOUR BLACK}(kliknij na widok, aby ustawić pozycję startową {STRINGID})'
   335: Pojazdy nie są kompatybilne
   336: Zbyt wiele pojazdów w grze
   337: ""
   338: ""
   339: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
-  340: '{NEWLINE}Rocznik:  {DATE MY}'
-  341: '{NEWLINE}Wartość:  {CURRENCY32}'
-  342: '{NEWLINE}Moc:  {POWER}'
-  343: '{NEWLINE}Waga:  {INT16}t'
-  344: '{NEWLINE}Prędkość Max.:  {VELOCITY}'
+  340: '{NEWLINE}Zakupiono: {DATE MY}'
+  341: '{NEWLINE}Wartość: {CURRENCY32}'
+  342: '{NEWLINE}Moc: {POWER}'
+  343: '{NEWLINE}Waga: {INT16}t'
+  344: '{NEWLINE}Prędkość maks.: {VELOCITY}'
   345: ' ({VELOCITY} dnia {STRINGID})'
-  346: '{NEWLINE}Niezawodność:  {INT16}%'
+  346: '{NEWLINE}Niezawodność: {INT16}%'
   347: '{STRINGID} {STRINGID}'
-  348: Sekcja pojedyncza
+  348: Pojedyncza sekcja
   349: Sekcja blokowa
-  350: Wszystkie złączone tory
-  351: 'Ostrzeżenie: Zbyt dużo toru!{NEWLINE}Niektóre z wybranych odcinków mogły nie
-    zostać zmodernizowane'
+  350: Wszystko
+  351: 'Ostrzeżenie: Zbyt dużo torów!{NEWLINE}Niektóre z wybranych odcinków mogły nie zostać zmodernizowane'
   352: '{SMALLFONT}{COLOUR BLACK}Zmodernizuj tory tymi dodatkami'
   353: '{SMALLFONT}{COLOUR BLACK}(Kliknij na wybrany tor, aby to dodać)'
-  354: '{SMALLFONT}{COLOUR BLACK}Wybierz co dodać do toru'
+  354: '{SMALLFONT}{COLOUR BLACK}Wybierz dodatki torowe'
   355: '{SMALLFONT}{COLOUR BLACK}Przesuń główny widok, aby to pokazać'
   356: Poza krawędzią mapy!
   357: Nie można budować częściowo nad, a częściowo pod wodą!
@@ -374,24 +372,23 @@ strings:
   359: Nie można zbudować tego pod wodą!
   360: Można to zbudować tylko nad powierzchnią ziemi!
   361: Można to zbudować tylko na równym terenie
-  362: Wczytaj Grę
-  363: Wczytaj Krajobraz
-  364: Zapisz Krajobraz
-  365: Zapisz Grę
+  362: Wczytywanie Gry
+  363: Wczytywanie Krajobrazu
+  364: Zapisywanie Krajobrazu
+  365: Zapisywanie Gry
   366: Zapisz Scenariusz
-  367: Plik Zapisanej Gry Locomotion
-  368: Plik Zapisanego Scenariusza Locomotion
-  369: Plik Zapisanego Krajobrazu Locomotion
+  367: Plik Zapisanej Gry OpenLoco
+  368: Plik Zapisanego Scenariusza OpenLoco
+  369: Plik Zapisanego Krajobrazu OpenLoco
   370: Błąd Zapisu Gry!
-  371: Nie udało się załadować zapisanej gry...{NEWLINE}Plik zawiera nieprawidłowe
-    dane!
-  372: Ukryj scenerię i budynki na pierwszym planie
+  371: Nie udało się załadować zapisanej gry...{NEWLINE}Plik zawiera nieprawidłowe dane!
+  372: Ukryj scenerię i budynki
   373: Można zbudować tylko na wodzie!
   374: Można zbudować tylko obok zakładu na wodzie!
-  375: Nazwa {STRINGID}
+  375: Zmiana Nazwy {STRINGID}
   376: 'Wprowadź nową nazwę dla {STRINGID}:'
   377: Nie można zmienić nazwy tego pojazdu...
-  378: Konieczny most
+  378: Potrzebny most
   379: Zbyt daleko nad ziemią dla tego typu mostu
   380: Most jest już na maksymalnej wysokości nad ziemią
   381: '{STRINGID} wymaga mostu'
@@ -403,11 +400,11 @@ strings:
   387: Nie można ruszyć pojazdem...
   388: Nie można zawrócić pociągu...
   389: Nie można sprzedać pojazdu...
-  390: Nie można sprzedać {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  390: Nie można sprzedać - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}
   391: '{STRINGID}'
   392: '{STRINGID}'
   393: '{STRINGID} peron stacji'
-  394: '{STRINGID} budynek stacji / przystanek autobusowy'
+  394: '{STRINGID} budynek stacji/przystanek autobusowy'
   395: '{SMALLFONT}{COLOUR BLACK}Pokaż zasięg tej stacji'
   396: Wycisz
   397: Odtwarzaj Muzykę
@@ -421,8 +418,8 @@ strings:
   405: Mieszkańcy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID} dojeżdza do {STRINGID}!
   406: Mieszkańcy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID} dociera do {STRINGID}!
   407: Pracownicy Świętują!{NEWLINE}Pierwszy przewóz {STRINGID} dostarczono do {STRINGID}!
-  408: Wynaleziono Nowy Pojazd -{NEWLINE} “{STRINGID}” !
-  409: '{STRINGID} otrzymuje wyższą rangę z  “{STRINGID}” na  “{STRINGID}”!'
+  408: Wynaleziono Nowy Pojazd -{NEWLINE}“{STRINGID}”!
+  409: '{STRINGID} otrzymuje awans z “{STRINGID}” na “{STRINGID}”!'
   410: Rzopoczęcie nowej budowy - {STRINGID} w pobliżu {STRINGID}!
   411: Gratulacje!{NEWLINE}Pomyślnie zakończono wyzwanie!
   412: Porażka!{NEWLINE}Nie udało Ci się sprostać wyzwaniu!
@@ -433,7 +430,7 @@ strings:
   417: Upadłość!{NEWLINE}{STRINGID} idzie z torbami!
   418: '{STRINGID} uległ wypadkowi!'
   419: Skandal korporacyjny!{NEWLINE}{STRINGID} złapany za próbę rabunku!
-  420: Nowy {STRINGID} rekord prędkości!{NEWLINE}{STRINGID} osiąga średnią prędkość {VELOCITY} pomiędzy przystankami!
+  420: Nowy rekord prędkości {STRINGID}!{NEWLINE}{STRINGID} osiąga średnią prędkość - {VELOCITY}!
 
   421: "{MOVE_X 10}{STRINGID}"
   422: »{MOVE_X 10}{STRINGID}
@@ -443,55 +440,53 @@ strings:
   424: "{MOVE_X 10}{STRING}"
   425: »{MOVE_X 10}{STRING}
 
-  426: Znaczniki wysokości na torach i drogach
-  427: Znaczniki wysokości na terenie
-  428: Strzałki jednokierunkowe
+  426: Wyświetlaj znaczniki wysokości dróg i torów
+  427: Wyświetlaj znaczniki wysokości terenu
+  428: Wyświetlaj strzałki jednokierunkowe
   429: Wyświetlaj nazwy miast
   430: Wyświetlaj nazwy stacji
-  431: '{NEWLINE}{COLOUR WINDOW_3}Akceptuje'
-  432: 1/8
-  433: 1/4
-  434: 3/8
-  435: 1/2
-  436: 5/8
-  437: 3/4
-  438: 7/8
-  439: ','
-  440: '{NEWLINE}{COLOUR WINDOW_3}Zapewnia'
+  431: '{NEWLINE}{COLOUR WINDOW_3}Akceptuje '
+  432: '1/8 '
+  433: '1/4 '
+  434: '3/8 '
+  435: '1/2 '
+  436: '5/8 '
+  437: '3/4 '
+  438: '7/8 '
+  439: ', '
+  440: '{NEWLINE}{COLOUR WINDOW_3}Produkuje '
   441: '{NEWLINE}{COLOUR WINDOW_3}W budowie'
-  442: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Własność {STRINGID}'
+  442: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Należy do {STRINGID}'
   443: "{MOVE_X 10}{STRINGID}"
   444: ✓{MOVE_X 10}{STRINGID}
   445: Nie można tego usunąć...
-  446: Mury i ogrodzenia
-  447: Drzewa roślinne
+  446: Budowanie Ogrodzeń
+  447: Sadzenie Drzew
   448: Nie można umieścić tego tutaj...
   449: Nie można umieścić tego tutaj...
   450: '{OUTLINE}{COLOUR WINDOW_2}{STRINGID}'
-  451: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknięcie prawym przyciskiem myszy, aby
-    zmodyfikować'
-  452: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknięcie prawym przyciskiem myszy, aby
-    usunąć'
+  451: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknij prawym przyciskiem, aby zmodyfikować'
+  452: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknij prawym przyciskiem, aby usunąć'
   453: '{TINYFONT}{COLOUR BLACK}{STRINGID}'
   454: '{COLOUR RED}{STRINGID}'
   455: '{COLOUR BLACK}{STRINGID}'
   456: '{COLOUR BLACK}{STRINGID} {STRINGID}'
   457: '{COLOUR WINDOW_2}{STRINGID}'
   458: '{COLOUR WHITE}{STRINGID}'
-  459: Zatrzymanie{POP16}{POP16}}
-  460: / Oczekuje na sygnał{POP16}{POP16}
+  459: Zatrzymanie{POP16}{POP16}
+  460: / Czeka na wolną drogę{POP16}{POP16}
   461: '- {VELOCITY}{POP16}'
   462: '{COLOUR RED}Wypadek!{POP16}{POP16}'
   463: '{COLOUR RED}Utknął!{POP16}{POP16}'
   464: '{COLOUR RED}Uszkodzony{POP16}{POP16}'
-  465: Zatrzymany{POP16}{POP16}}
-  466: Załadunek w {STRINGID}
-  467: Rozładunek w {STRINGID}
-  468: Podjeżdża do {STRINGID}
+  465: Zatrzymany{POP16}{POP16}
+  466: Ładuje w {STRINGID}
+  467: Rozładowuje w {STRINGID}
+  468: Zbliża się do {STRINGID}
   469: Ląduje w {STRINGID}
   470: Kołuje w {STRINGID}
   471: Odlatuje z {STRINGID}
-  472: Jedzie do {STRINGID}
+  472: Kieruje się do {STRINGID}
   473: Brak pozycji{POP16}{POP16}
   474: Jedzie{POP16}{POP16}
   475: '{STRINGID} - {STRINGID}'
@@ -532,57 +527,57 @@ strings:
   510: nabrzeża portu
   511: Nabrzeże portu
   512: Nabrzeża portu
-  513: '{INT16} nabrzeże portu'
-  514: '{INT16} nabrzeża portu'
+  513: 'Porty: {INT16}'
+  514: 'Porty: {INT16}'
   515: Nabrzeże portu {INT16}
   516: stacja
   517: stacje
   518: Stacja
   519: Stacje
-  520: '{INT16} stacja'
-  521: '{INT16} stacje'
+  520: 'Stacje: {INT16}'
+  521: 'Stacje: {INT16}'
   522: Stacja {INT16}
   523: pojazd
   524: pojazdy
   525: Pojazd
   526: Pojazdy
-  527: '{INT16} pojazd'
-  528: '{INT16} pojazdy'
+  527: 'Pojazdy: {INT16}'
+  528: 'Pojazdy: {INT16}'
   529: Pojazd {INT16}
   530: budynek
   531: budynki
   532: Budynek
   533: Budynki
-  534: '{INT16} budynek'
-  535: '{INT16} budynki'
+  534: 'Budynki: {INT16}'
+  535: 'Budynki: {INT16}'
   536: Budynek {INT16}
   537: struktura
   538: struktury
   539: Struktura
   540: Struktury
-  541: '{INT16} struktura'
-  542: '{INT16} struktury'
+  541: 'Struktury: {INT16}'
+  542: 'Struktury: {INT16}'
   543: Struktura {INT16}
   544: statek
   545: statki
   546: Statek
   547: Statki
-  548: '{INT16} statek'
-  549: '{INT16} statki'
+  548: 'Statki: {INT16}'
+  549: 'Statki: {INT16}'
   550: Statek {INT16}
   551: miasto
   552: miasta
   553: Miasto
   554: Miasta
-  555: '{INT16} miasto'
-  556: '{INT16} miasta'
+  555: 'Miasta: {INT16}'
+  556: 'Miasta: {INT16}'
   557: Miasto {INT16}
   558: zakład
   559: zakłady
   560: Zakład
   561: Zakłady
-  562: '{INT16} zakład'
-  563: '{INT16} zakłady'
+  562: 'Zakłady: {INT16}'
+  563: 'Zakłady: {INT16}'
   564: Zakład {INT16}
   565: '{SMALLFONT}{COLOUR BLACK}Obróć obiekty o 90°'
   566: Wymagany płaski teren
@@ -593,36 +588,36 @@ strings:
   571: '{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}'
   572: '{CURRENCY48}'
   573: '{COLOUR RED}{CURRENCY48}'
-  574: '{SMALLFONT}{COLOUR BLACK}Pokaż widok {POP16}{STRINGID}'
-  575: '{SMALLFONT}{COLOUR BLACK}Pokaż {POP16}{STRINGID} szczegóły i opcje'
-  576: '{SMALLFONT}{COLOUR BLACK}Pokaż towary/pasażerów w {POP16}{STRINGID}'
-  577: '{SMALLFONT}{COLOUR BLACK}Pokaż {POP16}{STRINGID} szczegóły trasy'
-  578: '{SMALLFONT}{COLOUR BLACK}Pokaż {POP16}{STRINGID} koszty utrzymania i przychody'
-  579: '{SMALLFONT}{COLOUR BLACK}Wybierz nową pozycję startową dla budownictwa'
+  574: '{SMALLFONT}{COLOUR BLACK}Pokaż podgląd - {POP16}{STRINGID}'
+  575: '{SMALLFONT}{COLOUR BLACK}Pokaż szczegóły i opcje - {POP16}{STRINGID}'
+  576: '{SMALLFONT}{COLOUR BLACK}Pokaż towary/pasażerów - {POP16}{STRINGID}'
+  577: '{SMALLFONT}{COLOUR BLACK}Pokaż szczegóły trasy - {POP16}{STRINGID}'
+  578: '{SMALLFONT}{COLOUR BLACK}Pokaż koszty utrzymania i przychody - {POP16}{STRINGID}'
+  579: '{SMALLFONT}{COLOUR BLACK}Wybierz pozycję startową dla konstrukcji'
   580: '{SMALLFONT}{COLOUR BLACK}Obróć o 90°'
   581: '{STRINGID} na drodze'
   582: '{CURRENCY32}'
   583: Nie można tego tutaj zbudować...
   584: '{DATE MY}'
-  585: Chris Sawyer's Locomotion
+  585: OpenLoco
   586: 'Proszę włożyć płytę CD Locomotion do napędu:'
   587: '{COLOUR WINDOW_2}Wydatki/Przychody'
-  588: Dochód z Pociągów
-  589: Koszty Eksploatacji Pociągów
-  590: Dochód z Autobusów
-  591: Koszty Eksploatacji Autobusów
-  592: Dochód z Ciężarówek
-  593: Koszty Eksploatacji Ciężarówek
-  594: Dochód z Tramwajów
-  595: Koszty Eksploatacji Tramwajów
-  596: Dochód z Samolotów
-  597: Koszty Eksploatacji Samolotów
-  598: Dochód ze Statków
-  599: Koszty Eksploatacji Statków
-  600: Budownictwo
-  601: Zakup Pojazdów
-  602: Sprzedaż Pojazdów
-  603: Oprocentowanie Pożyczki
+  588: Dochód z pociągów
+  589: Koszt eksp. pociągów
+  590: Dochód z autobusów
+  591: Koszt eksp. autobusów
+  592: Dochód z ciężarówek
+  593: Koszt eksp. ciężarówek
+  594: Dochód z tramwajów
+  595: Koszt eksp. tramwajów
+  596: Dochód z samolotów
+  597: Koszt eksp. samolotów
+  598: Dochód ze statków
+  599: Koszt eksp. statków
+  600: Konstrukcje
+  601: Zakup pojazdów
+  602: Sprzedaż pojazdów
+  603: Odsetki pożyczki
   604: Różne
   605: '{UINT16 RAW}'
   606: +{CURRENCY48}
@@ -632,10 +627,10 @@ strings:
   610: Nie można pożyczyć więcej pieniędzy!
   611: Brak wystarczającej ilości gotówki!
   612: Nie można spłacić pożyczki!
-  613: '{SMALLFONT}{COLOUR BLACK}Rozpocznij Nową Grę'
-  614: '{SMALLFONT}{COLOUR BLACK}Wczytaj Zapisaną Grę'
-  615: '{SMALLFONT}{COLOUR BLACK}Pokaz Poradnik'
-  616: '{SMALLFONT}{COLOUR BLACK}Zakończ Grę'
+  613: '{SMALLFONT}{COLOUR BLACK}Rozpocznij nową grę'
+  614: '{SMALLFONT}{COLOUR BLACK}Wczytaj zapisaną grę'
+  615: '{SMALLFONT}{COLOUR BLACK}Pokaż poradnik'
+  616: '{SMALLFONT}{COLOUR BLACK}Zakończ i wyjdź do systemu'
   617: Osada
   618: Wieś
   619: Miejscowość
@@ -649,11 +644,11 @@ strings:
   627: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
   628: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
   629: '{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}'
-  630: '{COLOUR WINDOW_2}Kasę: {MOVE_X 81}{COLOUR RED}Upadłość!'
-  631: '{COLOUR WINDOW_2}Kasę: {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}'
-  632: '{COLOUR WINDOW_2}Kasę: {MOVE_X 81}{COLOUR RED}{CURRENCY48}'
-  633: '{COLOUR WINDOW_2}Wartość Firmy: {COLOUR BLACK}{CURRENCY48}'
-  634: '{COLOUR WINDOW_2}Zysk z Pojazdów: {COLOUR BLACK}{CURRENCY48} miesięcznie'
+  630: '{COLOUR WINDOW_2}Bilans: {MOVE_X 81}{COLOUR RED}Upadłość!'
+  631: '{COLOUR WINDOW_2}Bilans: {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}'
+  632: '{COLOUR WINDOW_2}Bilans: {MOVE_X 81}{COLOUR RED}{CURRENCY48}'
+  633: '{COLOUR WINDOW_2}Wartość firmy: {COLOUR BLACK}{CURRENCY48}'
+  634: '{COLOUR WINDOW_2}Zysk z pojazdów: {COLOUR BLACK}{CURRENCY48}/miesiąc'
 
   635: Styczeń
   636: Luty
@@ -669,24 +664,24 @@ strings:
   646: Grudzień
 
   647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
-  648: Wybierz Scenariusz dla Nowej Gry
+  648: Wybór Scenariusza dla Nowej Gry
   649: ""
-  650: '{COLOUR WINDOW_2}Jakość Dźwięku:'
+  650: '{COLOUR WINDOW_2}Jakość dźwięku:'
   651: Niska
   652: Średnia
   653: Wysoka
   654: Opcje
   655: '{COLOUR WINDOW_2}Waluta:'
-  656: '{COLOUR WINDOW_2}Dystans i Prędkość:'
+  656: '{COLOUR WINDOW_2}Dystans i szybkość:'
   657: '{COLOUR WINDOW_2}Wysokość:'
   658: Imperialne
   659: Metryczne
   660: Jednostki
   661: Wartości Rzeczywiste
   662: '{COLOUR WINDOW_2}Rozdzielczość ekranu:'
-  663: Wygładzanie Terenu
+  663: Wygładzanie terenu
   664: '{SMALLFONT}{COLOUR BLACK}Przełącz wygładzanie krawędzi terenu'
-  665: Siatka Terenu
+  665: Siatka terenu
   666: '{SMALLFONT}{COLOUR BLACK}Przełącz widoczność siatki terenu'
   667: Bank odmawia zwiększenia pożyczki!
   668: '{SMALLFONT}{COLOUR BLACK}Kliknij na krajobraz, aby usunąć drzewa i budynki'
@@ -696,16 +691,16 @@ strings:
   672: '{SMALLFONT}{COLOUR BLACK}Regulacja większego obszaru terenu'
   673: '{SMALLFONT}{COLOUR BLACK}Regulacja mniejszego obszaru wody'
   674: '{SMALLFONT}{COLOUR BLACK}Regulacja większego obszaru wody'
-  675: Dopasowanie terenu
-  676: Dopasowanie wody
+  675: Dopasowanie Terenu
+  676: Dopasowanie Wody
   677: '{SMALLFONT}{COLOUR BLACK}Kliknij na krajobraz i przeciągnij w górę/dół by podnieść/obniżyć poziom wody'
   678: '{SMALLFONT}{COLOUR BLACK}Kliknij na krajobraz i przeciągnij w górę/dół by podnieść/obniżyć poziom terenu'
-  679: Wyburzanie
-  680: Wyburzanie
-  681: Dopasowanie Terenu
-  682: Dopasowanie Wody
-  683: Sadzenie Drzew
-  684: Budowanie Ścian
+  679: Wyburzanie Obszaru
+  680: Wyczyść Obszar
+  681: Dopasuj Teren
+  682: Dopasuj Wodę
+  683: Zasadź Drzewa
+  684: Buduj Ogrodzenia
   685: '{STRINGID} - Szczegóły Pojazdu'
   686: '{STRINGID} - Ładunek'
   687: '{STRINGID} - Trasa'
@@ -718,15 +713,14 @@ strings:
   694: '{COLOUR WINDOW_2}Statków: {COLOUR BLACK}{INT16}'
   695: '{NEWLINE}Wyzwanie nie powiodło się!'
   696: '{NEWLINE}Wyzwanie zakończone!'
-  697: '{SMALLFONT}{COLOUR BLACK}Wskaźnik Wydajności: {INT16_1DP}% “{STRINGID}”'
-  698: '{SMALLFONT}{COLOUR BLACK}Wartość Firmy: {CURRENCY48}{NEWLINE} Zysk z pojazdów: {CURRENCY48}/miesiąc'
-  699: '{NEWLINE}Postęp Wyzwania: {INT16}%{STRINGID}'
-  700: '{NEWLINE}Pozostało: {COLOUR BLACK}{INT16} lat {INT16} miesięcy'
-  701: Dostosuj Klawisze...
+  697: '{SMALLFONT}{COLOUR BLACK}Wskaźnik wydajności: {INT16_1DP}% “{STRINGID}”'
+  698: '{SMALLFONT}{COLOUR BLACK}Wartość firmy: {CURRENCY48}{NEWLINE}Zysk z pojazdów: {CURRENCY48}/miesiąc'
+  699: '{NEWLINE}Postęp wyzwania: {INT16}%{STRINGID}'
+  700: '{NEWLINE}Pozostało: {COLOUR BLACK}{INT16} lat(a) {INT16} mies.'
+  701: Edytuj Skróty Klawiszowe...
   702: Skróty Klawiszowe
   703: Resetuj Klawisze
-  704: '{SMALLFONT}{COLOUR BLACK}Przywróć wszystkie skróty klawiszowe do ustawień
-    domyślnych'
+  704: '{SMALLFONT}{COLOUR BLACK}Przywróć wszystkie skróty klawiszowe do ustawień domyślnych'
   705: Zamknij Najwyższe Okno
   706: Zamknij Wszystkie Okna
   707: Opuść Tryb Budowy
@@ -735,12 +729,12 @@ strings:
   710: Przybliż Widok
   711: Obróć Widok
   712: Obróć Konstruowany Obiekt
-  713: Przełącz Widok Podziemny
-  714: Przełącz Ukrywanie Torów i Dróg Pierwszego Planu
-  715: Przełącz Ukrywanie Scenerii Pierwszego Planu
-  716: Przełącz Wskaźniki Wysokości Terenu
-  717: Przełącz Wskaźniki Wysokości Torów i Dróg
-  718: Przełącz Wskaźniki Kierunku Torów i Dróg
+  713: Widok Podziemny
+  714: Ukrywanie Torów i Dróg
+  715: Ukrywanie Scenerii i Budynków
+  716: Wskaźniki Wysokości Terenu
+  717: Wskaźniki Wysokości Torów i Dróg
+  718: Strzałki Kierunku
   719: Dopasowanie Terenu
   720: Dopasowanie Wody
   721: Sadzenie Drzew
@@ -808,9 +802,9 @@ strings:
   781: Zaznacz
   782: Drukuj
   783: Wykonaj
-  784: Migawka
-  785: Wstaw
-  786: Kasuj
+  784: Print Screen
+  785: Insert
+  786: Delete
   787: Pomoc
   788: ""
   789: "1"
@@ -1022,12 +1016,12 @@ strings:
   995: ???
 
   996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
-  997: SHIFT +
-  998: CTRL +
-  999: Zmień Skrót Klawiszowy
+  997: 'Shift + '
+  998: 'Ctrl + '
+  999: Zmiana Skrótu Klawiszowego
   1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
   1001: '{SMALLFONT}{COLOUR BLACK}Kliknij na opis skrótu, aby wybrać nowy klawisz'
-  1002: Przewijaj Widok Kursorem na Krawędzi Ekranu
+  1002: Przesuwaj kamerę kursorem na krawędzi ekranu
   1003: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy chcesz przewijać widok, gdy wskaźnik myszy znajduje się na krawędzi ekranu'
   1004: '{SMALLFONT}{COLOUR BLACK}Zobacz lub zmień przypisanie klawiszy'
   1005: Mapa
@@ -1035,7 +1029,7 @@ strings:
   1007: Mapa - Zakłady Przemysłowe
   1008: Mapa - Trasy Transportowe
   1009: Mapa - Firmy
-  1010: Wymuś Programowy Bufor Miksowania
+  1010: Wymuś programowy bufor miksowania
   1011: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby poprawić wydajność, jeśli występują problemy z grą podczas odtwarzania dźwięku'
   1012: Scenariusz został pomyślnie zainstalowany
   1013: Scenariusz jest już zainstalowany
@@ -1112,23 +1106,21 @@ strings:
   1083: Plik zawiera nieprawidłowe dane
   1084: Plik zapisu nie jest grą jednoosobową
   1085: Plik zapisu nie jest grą wieloosobową
-  1086: Proszę czekać...
+  1086: Proszę Czekać...
   1087: Inicjalizacja...
   1088: Ładowanie...
   1089: 'Instalacja nowych danych:'
   1090: Biały
   1091: Przezroczysty
-  1092: '{COLOUR WINDOW_2}Znacznik Konstrukcji:'
-  1093: '{COLOUR WINDOW_2}Min. skala wyświetlania pojazdów:'
-  1094: '{COLOUR WINDOW_2}Min. skala wyświetlania nazw stacji:'
-  1095: Pełna Skala
-  1096: Połowa Skali
-  1097: Ćwierć Skali
-  1098: Ośmina Skali
-  1099: '{SMALLFONT}{COLOUR BLACK}Wybierz minimalną skalę widoku, na którym widać
-    pojazdy'
-  1100: '{SMALLFONT}{COLOUR BLACK}Wybierz minimalną skalę widoku, na którym widać
-    nazwy stacji'
+  1092: '{COLOUR WINDOW_2}Znacznik konstrukcji:'
+  1093: '{COLOUR WINDOW_2}Min. skala wyśw. pojazdów:'
+  1094: '{COLOUR WINDOW_2}Min. skala wyśw. nazw stacji:'
+  1095: Pełna
+  1096: 1/2
+  1097: 1/4
+  1098: 1/8
+  1099: '{SMALLFONT}{COLOUR BLACK}Wybierz minimalną skalę widoku, na którym widać pojazdy'
+  1100: '{SMALLFONT}{COLOUR BLACK}Wybierz minimalną skalę widoku, na którym widać nazwy stacji'
   1101: '{COLOUR WINDOW_2}Główny schemat kolorów:'
   1102: '{COLOUR BLACK}Lokomotywy Parowe:'
   1103: '{COLOUR BLACK}Lokomotywy Spalinowe:'
@@ -1148,7 +1140,7 @@ strings:
   1117: '{SMALLFONT}{COLOUR BLACK}Wyzwanie firmy dla tej gry'
   1118: '{COLOUR WINDOW_2}Niestandardowe schematy kolorów:'
   1119: '{SMALLFONT}{COLOUR BLACK}Wybierz kolor główny'
-  1120: '{SMALLFONT}{COLOUR BLACK}Wybierz kolor drugorzędny (stosowany w niektórych typach pojazdów)'
+  1120: '{SMALLFONT}{COLOUR BLACK}Wybierz kolor drugorzędny (stosowany w niektórych pojazdach)'
   1121: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy dla tego typu pojazdu należy stosować inny kolor'
   1122: '{STRINGID} - Pociągi'
   1123: '{STRINGID} - Autobusy'
@@ -1158,12 +1150,12 @@ strings:
   1127: '{STRINGID} - Statki'
   1128: '{STRINGID} - Wszystkie Stacje'
   1129: '{STRINGID} - Stacje Kolejowe'
-  1130: '{STRINGID} - Stacje Drogowe'
+  1130: '{STRINGID} - Przystanki Drogowe'
   1131: '{STRINGID} - Lotniska'
   1132: '{STRINGID} - Porty'
   1133: Wszystkie Stacje
   1134: Stacje Kolejowe
-  1135: Stacje Drogowe
+  1135: Przystanki Drogowe
   1136: Lotniska
   1137: Porty
   1138: '{COLOUR WINDOW_2}{STRINGID} - {STRINGID}'
@@ -1171,7 +1163,7 @@ strings:
   1140: '{COLOUR WINDOW_2}{CURRENCY32}'
   1141: '{COLOUR RED}-{CURRENCY32}'
   1142: '{COLOUR WINDOW_2}{INT16} rok'
-  1143: '{COLOUR WINDOW_2}{INT16} lat/a'
+  1143: '{COLOUR WINDOW_2}{INT16} lat(a)'
   1144: '{COLOUR WINDOW_2}{INT16}%'
   1145: '{COLOUR BLACK}Nazwa'
   1146: '{COLOUR BLACK}Nazwa ▼'
@@ -1189,10 +1181,10 @@ strings:
   1158: Pojazd uległ wypadkowi!
   1159: Pojazd uszkodzony!
   1160: Pojazd utknął!
-  1161: Zbyt mało miejsca, lub pojazd w drodze
-  1162: Pojazd zbliża się lub jest w drodze
-  1163: Nie można umieścić {POP16}{POP16}{POP16}{STRINGID} tutaj...
-  1164: Nie można usunąć {POP16}{POP16}{POP16}{STRINGID}...
+  1161: Zbyt mało miejsca lub zbliża sie pojazd
+  1162: Zbliża się pojazd lub jest w drodze
+  1163: Nie można umieścić - {POP16}{POP16}{POP16}{STRINGID}
+  1164: Nie można usunąć - {POP16}{POP16}{POP16}{STRINGID}
   1165: Nie można zignorować czerwonego sygnału...
   1166: Ten pojazd wymaga {STRINGID}
   1167: Pociąg nie ma pojazdów!
@@ -1212,8 +1204,8 @@ strings:
   1181: '{SMALLFONT}{COLOUR BLACK}Pokaż trasy pojazdów na mapie'
   1182: '{SMALLFONT}{COLOUR BLACK}Pokaż własność firm na mapie'
   1183: Stacja zbyt rozległa!
-  1184: Nie można dodać {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} do {STRINGID}...
-  1185: Nie można zbudować {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1184: Nie można dodać - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} do {STRINGID}
+  1185: Nie można zbudować - {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}
   1186: '{COLOUR BLACK}Wybierz nowy pojazd'
   1187: '{COLOUR BLACK}Wybierz pojazd, aby dodać do {STRINGID}'
   1188: '{SMALLFONT}{COLOUR BLACK}Buduj nowe pojazdy kolejowe'
@@ -1229,81 +1221,81 @@ strings:
   1198: '{SMALLFONT}{COLOUR BLACK}Samoloty'
   1199: '{SMALLFONT}{COLOUR BLACK}Statki'
   1200: '{SMALLFONT}{COLOUR BLACK}Wszystkie stacje'
-  1201: '{SMALLFONT}{COLOUR BLACK}Stacje kolejowe'
+  1201: '{SMALLFONT}{COLOUR BLACK}Stacje kolejowe i tramwajowe'
   1202: '{SMALLFONT}{COLOUR BLACK}Przystanki drogowe'
   1203: '{SMALLFONT}{COLOUR BLACK}Lotniska'
-  1204: '{SMALLFONT}{COLOUR BLACK}Porty statków'
+  1204: '{SMALLFONT}{COLOUR BLACK}Porty'
   1205: '{SMALLFONT}{COLOUR BLACK}Wyczyść teren'
   1206: '{SMALLFONT}{COLOUR BLACK}Drzewa'
-  1207: '{SMALLFONT}{COLOUR BLACK}Dopasuj lub utwórz grunt'
+  1207: '{SMALLFONT}{COLOUR BLACK}Dopasuj lub zmień grunt'
   1208: '{SMALLFONT}{COLOUR BLACK}Dopasuj lub utwórz wodę'
   1209: '{SMALLFONT}{COLOUR BLACK}Ściany i ogrodzenia'
   1210: '{SMALLFONT}{COLOUR BLACK}Wybierz kolor obiektu'
   1211: '{COLOUR WINDOW_2}{STRINGID}'
-  1212: '{COLOUR WINDOW_2}{STRINGID} (po drodze z'
+  1212: '{COLOUR WINDOW_2}{STRINGID} (dowieziono z'
   1213: '{COLOUR WINDOW_2}{STRINGID})'
-  1214: Brak miejsca na więcej rozkazów pojazdu!
-  1215: Zbyt wiele rozkazów dla tego pojazdu!
+  1214: Brak miejsca na więcej poleceń pojazdu!
+  1215: Zbyt wiele poleceń dla tego pojazdu!
   1216: '- - Normalny - -'
   1217: '- - Pospieszny - -'
-  1218: '{COLOUR BLACK}- - Brak rozkazów - -'
-  1219: '{COLOUR BLACK}- - Koniec rozkazów - -'
+  1218: '{COLOUR BLACK}- - Brak poleceń - -'
+  1219: '{COLOUR BLACK}- - Koniec poleceń - -'
   1220: Zatrzymaj przy {STRINGID}
   1221: Jedź przez {STRINGID}
   1222: Jedź przez punkt orientacyjny
-  1223: Pełny rozładunek {STRINGID} {SPRITE}
+  1223: Czekaj na pełny rozładunek {STRINGID} {SPRITE}
   1224: Czekaj na pełny załadunek {STRINGID} {SPRITE}
   1225: Pełny rozładunek {STRINGID} {SPRITE}
-  1226: Czekaj na pełny załadunek {STRINGID} {SPRITE}
+  1226: Pełny załadunek {STRINGID} {SPRITE}
   1227: "{COLOUR WINDOW_2}▶"
-  1228: Nie można wstawić rozkazu...
-  1229: '{COLOUR WINDOW_3}Kliknij, aby wstawić nowy rozkaz do{NEWLINE}przejazdu przez punkt orientacyjny w tym miejscu'
-  1230: '{COLOUR WINDOW_3}Kliknąć, aby wstawić nowy rozkaz do{NEWLINE}zatrzymania na {STRINGID}.'
-  1231: '{COLOUR WINDOW_3}Kliknij ponownie, aby zmienić ostatni rozkaz na{NEWLINE} trasę przez {STRINGID}'
-  1232: '{SMALLFONT}{COLOUR BLACK}Wstawia rozkaz pełnego załadunku'
-  1233: '{SMALLFONT}{COLOUR BLACK}Wstawia rozkaz rozładunku, nawet jeśli ładunek nie jest akceptowany przez stację'
-  1234: '{SMALLFONT}{COLOUR BLACK}Przejdź do następnego rozkazu na liście'
-  1235: '{SMALLFONT}{COLOUR BLACK}Usuń ostatni lub wybrany rozkaz'
+  1228: Nie można wstawić polecenia...
+  1229: '{COLOUR WINDOW_3}Kliknij, aby wstawić nowe polecenie do{NEWLINE}przejazdu przez punkt orientacyjny w tym miejscu'
+  1230: '{COLOUR WINDOW_3}Kliknij, aby wstawić nowe polecenie do{NEWLINE}zatrzymania na {STRINGID}'
+  1231: '{COLOUR WINDOW_3}Kliknij ponownie, aby zmienić ostatnie polecenie na{NEWLINE}przejazd przez {STRINGID}'
+  1232: '{SMALLFONT}{COLOUR BLACK}Wstawia polecenie załadunku'
+  1233: '{SMALLFONT}{COLOUR BLACK}Wstawia polecenie rozładunku (nawet jeśli ładunek nie jest akceptowany przez stację)'
+  1234: '{SMALLFONT}{COLOUR BLACK}Przejdź do następnego polecenia na liście'
+  1235: '{SMALLFONT}{COLOUR BLACK}Usuń ostatnie lub wybrane polecenie'
   1236: '{COLOUR BLACK}Kliknij na stację lub punkt orientacyjny w celu ustalenia trasy'
-  1237: '{SMALLFONT}{COLOUR BLACK}Kliknij rozkaz, aby zaznaczyć. Kliknij dwukrotnie, aby przesunąć widok na stację/punkt orientacyjny'
-  1238: '{SMALLFONT}{COLOUR BLACK}Kliknij rozkaz, aby skopiować do wybranego pojazdu'
+  1237: '{SMALLFONT}{COLOUR BLACK}Kliknij polecenie, aby zaznaczyć. Kliknij dwukrotnie, aby przesunąć widok na stację/punkt orientacyjny'
+  1238: '{SMALLFONT}{COLOUR BLACK}Kliknij polecenie, aby skopiować do wybranego pojazdu'
   1239: '{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
-  1240: Buduj Pociągi
-  1241: Buduj Autobusy
-  1242: Buduj Ciężarówki
-  1243: Buduj Tramwaje
-  1244: Buduj Samolot
-  1245: Buduj Statki
+  1240: Budowa Pociągów
+  1241: Budowa Autobusów
+  1242: Budowa Ciężarówek
+  1243: Budowa Tramwajów
+  1244: Budowa Samolotów
+  1245: Budowa Statków
   1246: Może być umieszczony tylko na {STRINGID}...
   1247: Droga
   1248: '{COLOUR BLACK}Brak dostępnych pojazdów'
   1249: '{COLOUR BLACK}Brak pasujących pojazdów, które można by dodać do {STRINGID}'
   1250: ""
-  1251: '{COLOUR WINDOW_2} Koszt: {COLOUR BLACK}{CURRENCY32}'
-  1252: '{NEWLINE}{COLOUR WINDOW_2} Wymaga: {COLOUR BLACK}'
-  1253: '{NEWLINE}{COLOUR WINDOW_2} Moc: {COLOUR BLACK}{POWER}'
-  1254: '{NEWLINE}{COLOUR WINDOW_2} Waga: {COLOUR BLACK}{INT16}t'
-  1255: '{NEWLINE}{COLOUR WINDOW_2} Prędkość Max: {COLOUR BLACK}{VELOCITY}'
-  1256: '{NEWLINE}{COLOUR WINDOW_2} Zaprojektowany: {COLOUR BLACK}{UINT16 RAW}'
-  1257: '{NEWLINE}{COLOUR WINDOW_2} Pojemność: {COLOUR BLACK}{STRINGID}'
+  1251: '{COLOUR WINDOW_2}Koszt: {COLOUR BLACK}{CURRENCY32}'
+  1252: '{NEWLINE}{COLOUR WINDOW_2}Wymaga: {COLOUR BLACK}'
+  1253: '{NEWLINE}{COLOUR WINDOW_2}Moc: {COLOUR BLACK}{POWER}'
+  1254: '{NEWLINE}{COLOUR WINDOW_2}Waga: {COLOUR BLACK}{INT16}t'
+  1255: '{NEWLINE}{COLOUR WINDOW_2}Prędkość maks.: {COLOUR BLACK}{VELOCITY}'
+  1256: '{NEWLINE}{COLOUR WINDOW_2}Zaprojektowany: {COLOUR BLACK}{UINT16 RAW}'
+  1257: '{NEWLINE}{COLOUR WINDOW_2}Pojemność: {COLOUR BLACK}{STRINGID}'
   1258: ' + {STRINGID}'
   1259: ' ( + {STRINGID} dla stromych wzniesień)'
   1260: ' ({VELOCITY} dnia {STRINGID})'
   1261: lub {STRINGID}
-  1262: '{NEWLINE}{COLOUR WINDOW_2} Koszt utrzymania: {COLOUR BLACK}{CURRENCY32}/miesiąc'
+  1262: '{NEWLINE}{COLOUR WINDOW_2}Koszt utrzymania: {COLOUR BLACK}{CURRENCY32}/mies.'
   1263: ' (przebudowalny)'
-  1264: '{INT16} pociąg'
-  1265: '{INT16} autobus'
-  1266: '{INT16} ciężarówka'
-  1267: '{INT16} tramwaj'
-  1268: '{INT16} samolot'
-  1269: '{INT16} statek'
-  1270: '{INT16} pociągi'
-  1271: '{INT16} autobusy'
-  1272: '{INT16} ciężarówki'
-  1273: '{INT16} tramwaje'
-  1274: '{INT16} samolot'
-  1275: '{INT16} statki'
+  1264: 'Pociągi: {INT16}'
+  1265: 'Autobusy: {INT16}'
+  1266: 'Ciężarówki: {INT16}'
+  1267: 'Tramwaje: {INT16}'
+  1268: 'Samoloty: {INT16}'
+  1269: 'Statki: {INT16}'
+  1270: 'Pociągi: {INT16}'
+  1271: 'Autobusy: {INT16}'
+  1272: 'Ciężarówki: {INT16}'
+  1273: 'Tramwaje: {INT16}'
+  1274: 'Samoloty: {INT16}'
+  1275: 'Statki: {INT16}'
   1276: pociąg
   1277: autobus
   1278: ciężarówka
@@ -1312,17 +1304,17 @@ strings:
   1281: statek
   1282: '{COLOUR WINDOW_2}Razem: {COLOUR BLACK}{STRINGID}'
   1283: Pusty
-  1284: '{SMALLFONT}{COLOUR BLACK}Ładunek:'
+  1284: '{SMALLFONT}{COLOUR BLACK}Ładunek: '
   1285: Wymaga dodatkowo {STRINGID}
-  1286: '{SMALLFONT}{COLOUR BLACK}Pojazdów dla {STRINGID}'
+  1286: '{SMALLFONT}{COLOUR BLACK}Pojazdy przeznaczone na {STRINGID}'
   1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
   1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
-  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Construction"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Konstrukcja"
   1290: '{STRINGID} władze lokalne odmawiają zezwolenia!'
   1291: Miasta
-  1292: Buduj Nowe Miasta
-  1293: Buduj Poszczególne Budynki Miejskie
-  1294: Buduj Pozostałe Budynki
+  1292: Budowa Nowego Miasta
+  1293: Budowa Poszczególnych Budynków
+  1294: Budowa Pozostałych Obiektów
   1295: '{COLOUR BLACK}Ludność'
   1296: '{COLOUR BLACK}Ludność ▼'
   1297: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według ludności'
@@ -1332,30 +1324,30 @@ strings:
   1301: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według liczby stacji'
   1302: '{COLOUR BLACK}Miasto'
   1303: '{COLOUR BLACK}Miasto ▼'
-  1304: '{STRINGID} ludność {INT32}'
+  1304: '{STRINGID}. {INT32} Mieszkańców'
   1305: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według typu miejscowości'
   1306: '{COLOUR BLACK}Typ'
   1307: '{COLOUR BLACK}Typ ▼'
   1308: Nazwa Miasta
   1309: 'Wprowadź nową nazwę dla {STRINGID}:'
-  1310: '{COLOUR BLACK}{STRINGID} ludność {INT32}'
+  1310: '{COLOUR BLACK}{STRINGID}, ludność: {INT32}'
   1311: Nie można zmienić nazwy miasta...
   1312: Nowa Stacja
   1313: '{COLOUR BLACK}({STRINGID})'
-  1314: '{COLOUR WINDOW_2}Zasięg stacji{NEWLINE}  Akceptuje: '
-  1315: '{COLOUR WINDOW_2}  Wytwarza:'
+  1314: '{COLOUR WINDOW_2}Zasięg stacji{NEWLINE}Akceptuje: '
+  1315: '{COLOUR WINDOW_2}Wytwarza: '
   1316: '{COLOUR BLACK}Nic'
   1317: Zbyt wiele zakładów
   1318: Zakłady
-  1319: Buduj Nowe Zakłady
-  1320: Buduj Zakłady
+  1319: Budowa Nowego Zakładu
+  1320: Budowa Nowego Zakładu
   1321: '{SMALLFONT}{COLOUR BLACK}Lista miast'
-  1322: '{SMALLFONT}{COLOUR BLACK}Buduj Miasta'
-  1323: '{SMALLFONT}{COLOUR BLACK}Buduj poszczególne budynki miejskie'
-  1324: '{SMALLFONT}{COLOUR BLACK}Buduj budynki różne'
-  1325: '{SMALLFONT}{COLOUR BLACK}Lista Zakładów'
+  1322: '{SMALLFONT}{COLOUR BLACK}Buduj nowe miasta'
+  1323: '{SMALLFONT}{COLOUR BLACK}Buduj poszczególne obiekty miejskie'
+  1324: '{SMALLFONT}{COLOUR BLACK}Buduj pozostałe obiekty'
+  1325: '{SMALLFONT}{COLOUR BLACK}Lista zakładów'
   1326: '{SMALLFONT}{COLOUR BLACK}Buduj nowe zakłady'
-  1327: '{SMALLFONT}{COLOUR BLACK}Buduj zakłady'
+  1327: '{SMALLFONT}{COLOUR BLACK}Buduj nowe zakłady'
   1328: Hebanowe
   1329: Srebrne
   1330: Beżowe
@@ -1384,7 +1376,7 @@ strings:
   1353: '{STRINGID} Ciężarówki'
   1354: '{COLOUR WINDOW_2}Siedziba Główna'
   1355: '{COLOUR WINDOW_2}Właściciel'
-  1356: '{COLOUR BLACK}@ {INT16}% odsetek rocznie'
+  1356: '{COLOUR BLACK}@ {INT16}% odsetek/rok'
   1357: '{COLOUR BLACK}{SMALLFONT}{INT32}'
   1358: '{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}'
   1359: '{STRINGID}'
@@ -1395,15 +1387,15 @@ strings:
   1364: '{STRINGID} {STRINGID}'
   1365: '{SMALLFONT}{COLOUR BLACK}Wyburz ten zakład'
   1366: W budowie
-  1367: Produkuje
-  1368: Produkuje
+  1367: 'Produkuje '
+  1368: 'Produkuje '
   1369: Produkcja
-  1370: ' by wytworzyć'
-  1371: Wymaga
-  1372: Wymaga
-  1373: ' i'
-  1374: ' lub'
-  1375: ','
+  1370: ' by wytworzyć '
+  1371: 'Wymaga '
+  1372: 'Wymaga '
+  1373: ' i '
+  1374: ' lub '
+  1375: ', '
   1376: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według statusu'
   1377: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według procentowego przewozu'
   1378: '{COLOUR BLACK}Status'
@@ -1411,17 +1403,16 @@ strings:
   1380: '{COLOUR BLACK}Towary Przewiezione'
   1381: '{COLOUR BLACK}Towary Przewiezione ▼'
   1382: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według nazwy'
-  1383: '{COLOUR BLACK} Przemysł'
-  1384: '{COLOUR BLACK} Przemysł ▼'
-  1385: '{COLOUR BLACK} Brak dostępnych zakładów'
+  1383: '{COLOUR BLACK}Nazwa'
+  1384: '{COLOUR BLACK}Nazwa ▼'
+  1385: '{COLOUR BLACK}Brak dostępnych zakładów'
   1386: '{SMALLFONT}{COLOUR BLACK}Miasto'
   1387: '{SMALLFONT}{COLOUR BLACK}Wykres ludności'
   1388: '{SMALLFONT}{COLOUR BLACK}Ocena miast dla każdej firmy'
-  1389: '{SMALLFONT}{COLOUR BLACK}Przemysł'
+  1389: '{SMALLFONT}{COLOUR BLACK}Zakład'
   1390: '{SMALLFONT}{COLOUR BLACK}Wykres produkcji'
   1391: '{COLOUR BLACK}{SMALLFONT}({STRINGID})'
-  1392: '{SMALLFONT}{COLOUR BLACK} Całkowicie zburz to miasto (i wszelkie pobliskie
-    zakłady)'
+  1392: '{SMALLFONT}{COLOUR BLACK}Wyburz to miasto (oraz zależne fabryki)'
   1393: Nie można usunąć miasta...
   1394: Wszystkie stacje w pobliżu tego miasta muszą być najpierw usunięte
   1395: Zbyt blisko innego miasta
@@ -1437,7 +1428,7 @@ strings:
   1405: "7"
   1406: 8 (ogromne)
   1407: '{COLOUR BLACK}Rozmiar miasta:'
-  1408: '{COLOUR BLACK}(Kliknij na teren, aby zbudować nowe miasto)'
+  1408: '{COLOUR BLACK}(Kliknij na teren, aby zbudować miasto)'
   1409: '{SMALLFONT}{COLOUR BLACK}Rozbuduj to miasto'
   1410: Zbyt blisko innego zakładu
   1411: Należy najpierw wybudować miasto w pobliżu
@@ -1459,22 +1450,22 @@ strings:
   1427: '{SMALLFONT}{COLOUR BLACK}Opcje wiadomości'
   1428: Opcje Wiadomości
   1429: '{TINYFONT}{DATE DMY}'
-  1430: ' +'
-  1431: ' oczekuje'
+  1430: ' + '
+  1431: ''
   1432: Nic nie czeka
   1433: '{COLOUR BLACK}Status'
   1434: '{COLOUR BLACK}Status ▼'
-  1435: '{COLOUR BLACK}Całkowite oczekiwanie'
-  1436: '{COLOUR BLACK}Całkowite oczekiwanie ▼'
+  1435: '{COLOUR BLACK}Oczekuje'
+  1436: '{COLOUR BLACK}Oczekuje ▼'
   1437: '{COLOUR BLACK}Akceptuje'
   1438: '{COLOUR BLACK}Akceptuje  ▼'
   1439: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według stanu stacji'
-  1440: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według wszystkich oczekujących jednostek'
+  1440: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według sumy oczekujących towarów'
   1441: '{SMALLFONT}{COLOUR BLACK}Sortuj listę według przyjmowanych ładunków'
   1442: '{INT32} jednostek'
-  1443: ','
-  1444: '{NEWLINE}Akceptuje'
-  1445: '{COLOUR BLACK}Akceptuje:'
+  1443: ', '
+  1444: '{NEWLINE}Akceptuje '
+  1445: '{COLOUR BLACK}Akceptuje: '
   1446: Nic
   1447: '{SMALLFONT}{COLOUR BLACK}Stacja'
   1448: '{SMALLFONT}{COLOUR BLACK}Towary oczekujące i akceptowane'
@@ -1484,35 +1475,31 @@ strings:
   1452: Za długie!
   1453: '{SMALLFONT}{COLOUR BLACK}Zbuduj lub przenieś siedzibę główną'
   1454: '{SMALLFONT}{COLOUR BLACK}Zmień nazwę właściciela'
-  1455: '{COLOUR BLACK}(jeszcze nie skonstruowane)'
-  1456: Nazwij Firmę
+  1455: '{COLOUR BLACK}(jeszcze nie zbudowano)'
+  1456: Nazwa Firmy
   1457: 'Wprowadź nową nazwę firmy:'
-  1458: Nie można zmienić nazwy firmy.
-  1459: Nazwij Właściciela
+  1458: Nie można zmienić nazwy firmy
+  1459: Nazwa Właściciela
   1460: 'Wprowadź nową nazwę właściciela:'
   1461: Nie można zmienić nazwy właściciela...
   1462: Siedziba Główna
   1463: '{STRINGID} Siedziba Główna'
   1464: '{STRINGID} władze lokalne nie zezwolą na usunięcie używanych dróg'
   1465: '{SMALLFONT}{COLOUR BLACK}Wybierz firmę'
-  1466: Gra dla Wielu Graczy
-  1467: Gra dla Wielu Graczy - Opcje
-  1468: '{COLOUR BLACK} Aby skonfigurować grę dla wielu graczy, jeden komputer powinien
-    być skonfigurowany jako serwer, a następnie drugi powinien się z nim połączyć.{NEWLINE}{NEWLINE}Proszę
-    wybrać:'
+  1466: Gra Wieloosobowa
+  1467: Gra Wieloosobowa - Opcje
+  1468: '{COLOUR BLACK} Aby skonfigurować grę wieloosobową, jeden komputer powinien być skonfigurowany jako serwer, a drugi powinien się z nim połączyć.{NEWLINE}{NEWLINE}Wybierz opcję:'
   1469: ""
   1470: '{COLOUR BLACK}Ustawienie tego komputera jako serwer...'
   1471: '{COLOUR BLACK}Błąd: Nie można skonfigurować tego komputera jako serwer'
-  1472: '{COLOUR BLACK}Ukończona konfiguracja - Oczekiwanie na podłączenie drugiego
-    komputera...'
+  1472: '{COLOUR BLACK}Konfiguracja ukończona - oczekiwanie na podłączenie innego komputera...'
   1473: ""
   1474: ""
   1475: ""
   1476: '{COLOUR BLACK}Próba połączenia...'
   1477: '{COLOUR BLACK}Błąd: Nie można zlokalizować lub połączyć się z serwerem'
   1478: '{COLOUR BLACK}Sukces!{NEWLINE}Podłączono do: {STRINGID}'
-  1479: '{COLOUR BLACK}W chwili obecnej podłączono do: {STRINGID}{NEWLINE}{NEWLINE}Kliknij
-    poniżej, aby odłączyć i powrócić do trybu pojedynczego gracza'
+  1479: '{COLOUR BLACK}W chwili obecnej podłączono do: {STRINGID}{NEWLINE}{NEWLINE}Kliknij poniżej, aby odłączyć i powrócić do trybu pojedynczego gracza'
   1480: '{COLOUR WINDOW_2}Ustaw ten komputer jako serwer'
   1481: '{COLOUR WINDOW_2}Połącz się z serwerem'
   1482: '{COLOUR WINDOW_2}Rozłącz'
@@ -1521,7 +1508,7 @@ strings:
   1485: '{COLOUR RED}Ostrzeżenie: Jesteś podłączony do innej wersji Locomotion i niezawodność gry wieloosobowej może być ograniczona'
 
   # Options
-  1486: '{SMALLFONT}{COLOUR BLACK}Opcje wyświetlania'
+  1486: '{SMALLFONT}{COLOUR BLACK}Opcje obrazu'
   1487: '{SMALLFONT}{COLOUR BLACK}Opcje dźwięku'
   1488: '{SMALLFONT}{COLOUR BLACK}Opcje muzyki'
   1489: '{SMALLFONT}{COLOUR BLACK}Opcje regionalne'
@@ -1530,7 +1517,7 @@ strings:
   1492: Opcje - Ekran
   1493: Opcje - Dźwięk
   1494: Opcje - Muzyka
-  1495: Opcje - Regionalne
+  1495: Opcje - Region
   1496: Opcje - Sterowanie
   1497: Opcje - Pozostałe
 
@@ -1547,21 +1534,21 @@ strings:
 
   1507: 'Główne wiadomości własnej firmy:'
   1508: 'Ważne informacje o innej firmie:'
-  1509: 'Mniejsze wiadomości własnejfirmy:'
+  1509: 'Mniejsze wiadomości własnej firmy:'
   1510: 'Drobne wiadomości o innej firmaie:'
   1511: 'Ogólne wiadomości:'
-  1512: 'Porada:'
-  1513: Wył.
-  1514: Szybka Wiadomość
+  1512: 'Porady:'
+  1513: Wyłączone
+  1514: Szybki Komunikat
   1515: Okno Wiadomości
-  1516: '{COLOUR WINDOW_2}Miesięczny Koszt Eksploatacji: {COLOUR BLACK}{CURRENCY32}'
-  1517: '{COLOUR WINDOW_2}Miesięczny Zysk: {COLOUR BLACK}{CURRENCY32}'
-  1518: Pociągi
-  1519: Autobusy
-  1520: Ciężarówki
-  1521: Tramwaje
+  1516: '{COLOUR WINDOW_2}Miesięczny koszt eksploatacji: {COLOUR BLACK}{CURRENCY32}'
+  1517: '{COLOUR WINDOW_2}Miesięczny zysk: {COLOUR BLACK}{CURRENCY32}'
+  1518: Pociąg
+  1519: Autobus
+  1520: Ciężarówka
+  1521: Tramwaj
   1522: Samolot
-  1523: Statki
+  1523: Statek
   1524: Lotnisko
   1525: Port
   1526: Typ zamówienia nie pasuje do samolotu
@@ -1580,31 +1567,31 @@ strings:
   1538: '{SMALLFONT}{COLOUR BLACK}Następny utwór'
   1539: Odtwarzaj utwory na bieżącą epokę
   1540: Odtwarzaj wszystkie utwory
-  1541: Odtwarzaj indywidualnie dobrane utwory
-  1542: Edytuj wybór...
-  1543: '{SMALLFONT}{COLOUR BLACK}Edit the music track selection list'
-  1544: Edytuj Wybór Muzyki
+  1541: Odtwarzaj wybrane utwory
+  1542: Edytuj Listę Utworów...
+  1543: '{SMALLFONT}{COLOUR BLACK}Edyduj listę odtwarzanych utworów'
+  1544: Lista Utworów Muzycznych
   1545: '{SMALLFONT}{COLOUR BLACK}Kliknij na utwór muzyczny, aby przełączyć wybór'
   1546: ✓
   1547: '{COLOUR WINDOW_2}Głośność:'
   1548: '{SMALLFONT}{COLOUR BLACK}Ustaw głośność muzyki'
   1549: Opcje Muzyki
-  1550: Wybierz twarz właściciela dla {STRINGID}
+  1550: Wybór Twarzy Właściciela Firmy {STRINGID}
   1551: '{SMALLFONT}{COLOUR BLACK}Kliknij, aby wybrać twarz firmy/właściciela'
   1552: Już wybrano dla innej firmy
   1553: Nie można wybrać twarzy...
   1554: lotniska
   1555: porty
   1556: "{COLOUR WINDOW_2}Rozpoczęcie działalności: {COLOUR BLACK}{DATE MY}"
-  1557: '{COLOUR WINDOW_2}Wskaźnik Wydajności: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”'
-  1558: "{COLOUR WINDOW_2}Wskaźnik Wydajności: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
-  1559: "{COLOUR WINDOW_2}Wskaźnik Wydajności: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1557: '{COLOUR WINDOW_2}Wskaźnik wydajności: {COLOUR BLACK}{INT16_1DP}%{NEWLINE}  “{STRINGID}”'
+  1558: "{COLOUR WINDOW_2}Wskaźnik wydajności: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}Wskaźnik wydajności: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
   1560: '{COLOUR WINDOW_2}Właściciel: {COLOUR BLACK}{STRINGID}'
   1561: Niska
   1562: Średna
   1563: Wysoka
   1564: '{COLOUR WINDOW_2}Inteligencja: {COLOUR BLACK}{INT16} ({STRINGID})'
-  1565: '{COLOUR WINDOW_2}Agresja: {COLOUR BLACK}{INT16} ({STRINGID})'
+  1565: '{COLOUR WINDOW_2}Zaciekłość: {COLOUR BLACK}{INT16} ({STRINGID})'
   1566: '{COLOUR WINDOW_2}Konkurencyjność: {COLOUR BLACK}{INT16} ({STRINGID})'
   1567: '{SMALLFONT}{COLOUR BLACK}Przełącz między trybem jednego gracza a trybem dla wielu graczy'
   1568: '{OUTLINE}{COLOUR WINDOW_2}Tryb Jednego Gracza'
@@ -1614,22 +1601,22 @@ strings:
   1572: Średni
   1573: Wymagający
   1574: Trudny
-  1575: Region / Wybór Obiektu
-  1576: Edytor Krajobrazu
+  1575: Region/Wybór Obiektów
+  1576: Edycja Krajobrazu
   1577: Opcje Scenariusza
   1578: Zapisz Scenariusz
   1579: 'Przejdź do poprzedniego kroku:'
   1580: 'Przejdź do następnego kroku:'
   1581: Wczytaj Krajobraz
   1582: Zapisz Krajobraz
-  1583: Trwa tworzenie krajobrazu...
+  1583: Trwa Tworzenie Krajobrazu...
   1584: Nie można wyczyścić całego obszaru...
   1585: Tworzenie Krajobrazu - Opcje
   1586: Tworzenie Krajobrazu - Krajobraz
-  1587: Tworzenie Krajobrazu - Lasy
+  1587: Tworzenie Krajobrazu - Roślinność
   1588: Tworzenie Krajobrazu - Miasta
   1589: Tworzenie Krajobrazu - Przemysł
-  1590: '{SMALLFONT}{COLOUR BLACK}Opcje ogólne tworzenia krajobrazu'
+  1590: '{SMALLFONT}{COLOUR BLACK}Opcje ogólne'
   1591: '{SMALLFONT}{COLOUR BLACK}Opcje generowania terenu'
   1592: '{SMALLFONT}{COLOUR BLACK}Opcje tworzenia lasów'
   1593: '{SMALLFONT}{COLOUR BLACK}Opcje generowania miast'
@@ -1667,12 +1654,12 @@ strings:
   1624: Sandy Track Blues
   1625: '{UINT16 RAW}'
   1626: '{COLOUR WINDOW_2}Rok rozpoczęcia:'
-  1627: Generowanie losowego krajobrazu tylko w momencie rozpoczęcia gry
-  1628: '{SMALLFONT}{COLOUR BLACK}Generuj losowy krajobraz przy każdym rozpoczęciu nowej gry'
-  1629: Wyeneruj nowy krajobraz
-  1630: '{SMALLFONT}{COLOUR BLACK}Wyeneruj nowy losowy krajobraz (obecny krajobraz zostanie utracony)'
+  1627: Generuj losowy krajobraz w momencie rozpoczęcia nowej gry
+  1628: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy chcesz aby losować krajobraz przy rozpoczęciu nowej gry'
+  1629: Wygeneruj Nowy Krajobraz
+  1630: '{SMALLFONT}{COLOUR BLACK}Utwórz nowy losowy krajobraz (obecny krajobraz zostanie utracony)'
   1631: Ok
-  1632: Wyeneruj Nowy Krajobraz
+  1632: Generuj Nowy Krajobraz
   1633: Opcja Losowego Krajobrazu
   1634: Czy na pewno chcesz wygenerować nowy krajobraz, tracąc obecny?
   1635: Czy na pewno chcesz wygenerować nowy krajobraz na początku każdej gry? {NEWLINE}Wybranie tej opcji oznacza utratę obecnego krajobrazu
@@ -1697,11 +1684,11 @@ strings:
   1654: '{COLOUR WINDOW_2}Minimalna wysokość terenu:'
   1655: '{POP16}{INT16} jednostek'
   1656: '{COLOUR WINDOW_2}Styl topografii:'
-  1657: Płaska Ziemia
+  1657: Płaski Teren
   1658: Małe Wzgórza
   1659: Góry
-  1660: W Połowie Góry, W Połowie Wyżyny
-  1661: W Połowie Góry, W Połowie Wyżyny
+  1660: Góry/Płaski Teren
+  1661: Góry/Wzgórza
   1662: '{COLOUR WINDOW_2}Gęstość wzniesień:'
   1663: '{POP16}{POP16}{INT16}%'
   1664: '{COLOUR WINDOW_2}Liczba miast:'
@@ -1710,7 +1697,7 @@ strings:
   1667: Niska
   1668: Średnia
   1669: Wysoka
-  1670: '{COLOUR WINDOW_2}Liczba zakładów przemysłowych:'
+  1670: '{COLOUR WINDOW_2}Liczba fabryk:'
   1671: Należy zbudować co najmniej jedno miasto
   1672: Nie można przejść do następnego etapu edytora...
   1673: Nie można jeszcze zapisać scenariusza...
@@ -1724,12 +1711,11 @@ strings:
   1681: Opcje Finansowe
   1682: '{COLOUR WINDOW_2}Maksymalna ilość konkurencyjnych firm:'
   1683: '{INT16}'
-  1684: '{COLOUR WINDOW_2}Opóźnienie przed rozpoczęciem działalności przez konkurencyjne
-    przedsiębiorstwa:'
-  1685: '{POP16}{INT16} miesięcy'
+  1684: '{COLOUR WINDOW_2}Opóźnienie działalności konkurencyjnych firm:'
+  1685: '{POP16}{INT16} mies.'
   1686: '{COLOUR WINDOW_2}Wybór konkurencyjnych przedsiębiorstw:'
   1687: '{COLOUR WINDOW_2}Preferowana inteligencja:'
-  1688: '{COLOUR WINDOW_2}Preferowana agresja:'
+  1688: '{COLOUR WINDOW_2}Preferowana zaciekłość:'
   1689: '{COLOUR WINDOW_2}Preferowana konkurencyjność:'
   1690: Dowolna
   1691: Niska
@@ -1741,14 +1727,14 @@ strings:
   1697: '{POP16}{POP16}{CURRENCY32}'
   1698: '{COLOUR WINDOW_2}Stawka oprocentowania pożyczki:'
   1699: '{POP16}{POP16}{POP16}{POP16}{INT16}%'
-  1700: Zmień...
-  1701: '{COLOUR WINDOW_2}Nazwa Scenariusza: {COLOUR BLACK}{STRINGID}'
-  1702: '{COLOUR WINDOW_2}Grupa Scenariusza:'
-  1703: '{COLOUR WINDOW_2}Szczegóły Scenariusza:'
+  1700: Edytuj...
+  1701: '{COLOUR WINDOW_2}Nazwa scenariusza: {COLOUR BLACK}{STRINGID}'
+  1702: '{COLOUR WINDOW_2}Grupa scenariusza:'
+  1703: '{COLOUR WINDOW_2}Szczegóły scenariusza:'
   1704: Nazwa Scenariusza
-  1705: Wprowadź nazwę scenariusza:-
+  1705: 'Wprowadź nazwę scenariusza:'
   1706: Szczegóły Scenariusza
-  1707: Wprowadź opis tego scenariusza:-
+  1707: 'Wprowadź opis scenariusza:'
   1708: Brak szczegółowych informacji
   1709: Nienazwany
   1710: Zapisanie krajobrazu nie powiodło się!
@@ -1761,15 +1747,15 @@ strings:
   1717: Wyślij Wiadomość
   1718: 'Napisz wiadomość do {STRINGID}:'
   1719: ""
-  1720: '{COLOUR WINDOW_2}Połączenie przerwane - brak odpowiedzi:'
+  1720: '{COLOUR WINDOW_2}Czas oczekiwania na połączenie:'
   1721: '{INT16} sek.'
   1722: Połączenie gry wieloosobowej nie powiodło się!
-  1723: '{COLOUR WINDOW_2} Zaprojektowany w: {COLOUR BLACK}{UINT16 RAW}'
-  1724: '{COLOUR WINDOW_2} Wycofany w: {COLOUR BLACK}{UINT16 RAW}'
-  1725: '{COLOUR WINDOW_2} Moc: {COLOUR BLACK}{POWER}'
-  1726: '{COLOUR WINDOW_2} Waga: {COLOUR BLACK}{INT16}t'
-  1727: '{COLOUR WINDOW_2} Prędkość Max: {COLOUR BLACK}{VELOCITY}'
-  1728: '{COLOUR WINDOW_2} Pojemność: {COLOUR BLACK}{STRINGID}'
+  1723: '{COLOUR WINDOW_2}Zaprojektowany: {COLOUR BLACK}{UINT16 RAW}'
+  1724: '{COLOUR WINDOW_2}Wycofany w: {COLOUR BLACK}{UINT16 RAW}'
+  1725: '{COLOUR WINDOW_2}Moc: {COLOUR BLACK}{POWER}'
+  1726: '{COLOUR WINDOW_2}Waga: {COLOUR BLACK}{INT16}t'
+  1727: '{COLOUR WINDOW_2}Prędkość maks.: {COLOUR BLACK}{VELOCITY}'
+  1728: '{COLOUR WINDOW_2}Pojemność: {COLOUR BLACK}{STRINGID}'
   1729: Nawiązywanie połączenia...
   1730: Wszędzie
   1731: Nigdzie indziej
@@ -1780,17 +1766,17 @@ strings:
   1736: Na małych losowych obszarach
   1737: Na dużych losowych obszarach
   1738: Wokół urwisk
-  1739: Tworzenie wzgórz przy krawędzi mapy
-  1740: '{SMALLFONT}{COLOUR BLACK}Edytor Scenariuszy'
-  1741: '{STRINGID} Przewóz'
+  1739: Twórz wzgórza przy krawędzi mapy
+  1740: '{SMALLFONT}{COLOUR BLACK}Edytor scenariuszy'
+  1741: '{STRINGID} Transport'
   1742: Mapa
-  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Wykaz firm"
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Wykaz Firm"
   1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
   1745: Firmy
-  1746: Wskaźniki Wydajności Firm
-  1747: Jednostki Ładunku Dostarczone na Miesiąc
-  1748: Wartości Firmy
-  1749: Stawki Płatności za Towar
+  1746: Wykres Wydajności Firmy
+  1747: Wykres Ładunku Dostarczonego na Miesiąc
+  1748: Wykres Wartości Firmy
+  1749: Wykres Płatności za Towar
   1750: '{SMALLFONT}{COLOUR BLACK}Porównaj firmy'
   1751: '{SMALLFONT}{COLOUR BLACK}Wykresy wskaźników wydajności firmy'
   1752: '{SMALLFONT}{COLOUR BLACK}Wykresy ładunków dostarczonych przez każdą firmę'
@@ -1809,22 +1795,22 @@ strings:
   1765: '{COLOUR BLACK}Wartość Firmy'
   1766: '{COLOUR BLACK}Wartość Firmy ▼'
   1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
-  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%{NEWLINE 0 13}“{STRINGID}”"
   1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
   1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
   1771: "{NEWLINE 0 8}{CURRENCY48}"
-  1772: Robotnik
-  1773: Inżynier
-  1774: Kierownik Ruchu
-  1775: Koordynator Przewozów
-  1776: Nadzorca Tras
-  1777: Dyrektor
-  1778: Naczelny Wykonawca
-  1779: Przewodniczący
-  1780: Prezes
-  1781: Potentat Transportowy
-  1782: '{INT16} firma'
-  1783: '{INT16} firmy'
+  1772: 'Robotnik'
+  1773: 'Inżynier'
+  1774: 'Kierownik Ruchu'
+  1775: 'Koordynator Przewozów'
+  1776: 'Nadzorca Tras'
+  1777: 'Dyrektor'
+  1778: 'Naczelny Wykonawca'
+  1779: 'Przewodniczący'
+  1780: 'Prezes'
+  1781: 'Potentat Transportowy'
+  1782: 'Firmy: {INT16}'
+  1783: 'Firmy: {INT16}'
   1784: "{RAWDATE MY SHORT}"
   1785: '{INT16_1DP}%'
   1786: '{SMALLFONT}{COLOUR BLACK}{STRINGID}'
@@ -1839,10 +1825,9 @@ strings:
   1795: '{COLOUR BLACK}£'
   1796: '{INT16} dni'
   1797: '{CURRENCY32}'
-  1798: '{SMALLFONT}{COLOUR BLACK}Płatność za przewóz {INT16} jednostek ładunku na
-    odległość {INT16} kratek'
+  1798: '{SMALLFONT}{COLOUR BLACK}Płatność za przewóz {INT16} jednostek ładunku na odległość {INT16} kratek'
   1799: '{SMALLFONT}{COLOUR BLACK}Czas przejazdu'
-  1800: '*  Wstrzymany  *'
+  1800: '*  Gra Wstrzymana  *'
   1801: Władze nie pozwolą na budowę kolejnego lotniska
   1802: Miasta
   1803: Przemysł
@@ -1857,7 +1842,7 @@ strings:
   1812: Budynek {STRINGID} w pobliżu {STRINGID}
   1813: Budynek {STRINGID} w pobliżu {STRINGID}
   1814: Kontroluje usługi w pobliżu {STRINGID}
-  1815: Sprawdza teren w pobliżu {STRINGID}
+  1815: Sprawdza krajobraz w pobliżu {STRINGID}
   1816: '{COLOUR RED}Upadłość!'
   1817: '{SMALLFONT}{COLOUR BLACK}Wstrzymaj grę'
   1818: '{SMALLFONT}{COLOUR BLACK}Normalna prędkość'
@@ -1866,21 +1851,21 @@ strings:
   1821: '{COLOUR BLACK}Krajobraz Generowany Losowo'
   1822: '{COLOUR WINDOW_2}Data rozpoczęcia: {COLOUR BLACK}{UINT16 RAW}'
   1823: '{COLOUR WINDOW_2}Konkurencyjne firmy: {COLOUR BLACK}Brak'
-  1824: '{COLOUR WINDOW_2}Konkurencyjne firmy: {COLOUR BLACK}Co najwyżej {INT16}'
-  1825: '{COLOUR BLACK}{MOVE_X 10}(nie rozpoczyna przez {INT16} miesiąc)'
-  1826: '{COLOUR BLACK}{MOVE_X 10}(nie rozpoczyna przez {INT16} miesięcy)'
+  1824: '{COLOUR WINDOW_2}Konkurencyjne firmy: {COLOUR BLACK}{INT16}'
+  1825: '{COLOUR BLACK}{MOVE_X 10}(nie zaczynają przez {INT16} mies.)'
+  1826: '{COLOUR BLACK}{MOVE_X 10}(nie zaczynają przez {INT16} mies.)'
   1827: '{COLOUR WINDOW_2}Wartość sprzedaży pojazdu: {COLOUR BLACK}{CURRENCY32}'
-  1828: '{COLOUR WINDOW_2}Ostatni dochód: {COLOUR BLACK}N/A'
+  1828: '{COLOUR WINDOW_2}Ostatni dochód: {COLOUR BLACK}B/D'
   1829: '{COLOUR WINDOW_2}Ostatni dochód: {COLOUR BLACK}{DATE DMY}'
   1830: '{COLOUR BLACK}{STRINGID} przewieziono {INT16} kratek w {INT16} dni = {CURRENCY32}'
-  1831: '{COLOUR WINDOW_2} Najwcześniejszy rok budowy: {COLOUR BLACK}{UINT16 RAW}'
-  1832: '{COLOUR WINDOW_2} Ostatni rok budowy: {COLOUR BLACK}{UINT16 RAW}'
-  1833: '{COLOUR WINDOW_2}Oceny firm transportowych wystawione przez władze lokalne:'
+  1831: '{COLOUR WINDOW_2}Najwcześniejszy rok budowy: {COLOUR BLACK}{UINT16 RAW}'
+  1832: '{COLOUR WINDOW_2}Ostatni rok budowy: {COLOUR BLACK}{UINT16 RAW}'
+  1833: '{COLOUR WINDOW_2}Oceny przewoźników wystawione przez władze lokalne:'
   1834: Beznadziejne
   1835: Słabe
   1836: Średnie
   1837: Dobre
-  1838: Świetne
+  1838: Znakomite
   1839: '{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})'
   1840: Osiągnij wartość firmy {CURRENCY32}{STRINGID}{STRINGID}
   1841: Osiągnij miesięczny zysk z pojazdów {CURRENCY32}{STRINGID}{STRINGID}
@@ -1889,12 +1874,12 @@ strings:
   1844: ' i bądź firmą osiągającą najlepsze wyniki'
   1845: ' i bądź jedną z 3 firm osiągających najlepsze wyniki'
   1846: ' w ciągu {INT16} lat'
-  1847: ' do końca {UINT16 RAW}'
+  1847: ' do końca {UINT16 RAW} roku'
   1848: '...i bądź najlepszą firmą'
   1849: '...i znajdź się w czołówce 3 firm'
   1850: '...z limitem czasowym:'
   1851: '{COLOUR WINDOW_2}Wyzwanie:'
-  1852: '{COLOUR BLACK}  {STRINGID}'
+  1852: '{COLOUR BLACK} {STRINGID}'
   1853: Osiągnij określoną wartość firmy
   1854: Osiągnij określony miesięczy zysk z pojazdów
   1855: Osiągnij określony wskaźnik wydajności
@@ -1902,127 +1887,92 @@ strings:
   1857: '{CURRENCY32}'
   1858: '{INT16_1DP}%'
   1859: '{INT32}'
-  1860: '{POP16}{POP16}{POP16}{INT16} lat'
-  1861: '{SMALLFONT}(Ukończony przez {STRINGID} w {INT16} lat i {INT16} miesięcy)'
-  1862: '{COLOUR WINDOW_2}Sukces!{NEWLINE}{COLOUR BLACK}  Ukończono wyzwanie w {INT16} lat i {INT16} miesięcy'
+  1860: '{POP16}{POP16}{POP16}{INT16} lat(a)'
+  1861: '{SMALLFONT}(Ukończony przez {STRINGID} w {INT16} lat(a) i {INT16} mies.)'
+  1862: '{COLOUR WINDOW_2}Sukces!{NEWLINE}{COLOUR BLACK}  Ukończono wyzwanie w {INT16} lat(a) i {INT16} mies.'
   1863: '{COLOUR WINDOW_2}Porażka!{NEWLINE}{COLOUR BLACK}  Nie udało się zrealizować wyzwania'
-  1864: '{COLOUR WINDOW_2}Pokonał Cię inny gracz!{NEWLINE}{COLOUR BLACK}  Wyzwanie ukończone przez {STRINGID} w {INT16} lat i {INT16} miesięcy'
+  1864: '{COLOUR WINDOW_2}Pokonał Cię inny gracz!{NEWLINE}{COLOUR BLACK}  Wyzwanie ukończone przez {STRINGID} w {INT16} lat(a) i {INT16} mies.'
   1865: '{COLOUR WINDOW_2}Postęp w realizacji wyzwania: {COLOUR BLACK}{INT16}%'
-  1866: '{COLOUR WINDOW_2}Pozostało: {COLOUR BLACK}{INT16} lat i {INT16} miesięcy'
+  1866: '{COLOUR WINDOW_2}Pozostało: {COLOUR BLACK}{INT16} lat(a) i {INT16} mies.'
   1867: '{COLOUR WINDOW_2}Dostarczony towar:'
   1868: '{COLOUR BLACK}Brak'
 
-  1869: '{OUTLINE}{COLOUR WINDOW_2}Wyjdź'
+  1869: '{OUTLINE}{COLOUR WINDOW_2}Wyjdź{NEWLINE}z Gry'
 
   1870: Firma w stanie upadłości!
   1871: Pozwól zakładom na likwidację podczas gry
   1872: Pozwól na powstawanie nowych zakładów podczas gry
   1873: Udostępniaj dodatkowe twarze firmy/właściciela
-  1874: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby wysyłać niestandardowe pliki
-    twarzy firmy/właściciela do innego komputera podczas łączenia'
-  1875: '{COLOUR WINDOW_2}Zabroń firmom konkurencyjnym możliwość używania:'
-  1876: '{COLOUR WINDOW_2}Zabroń firmom gracza możliwość używania:'
+  1874: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby wysyłać niestandardowe pliki twarzy firmy/właściciela do innego komputera podczas łączenia'
+  1875: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmom konkurencyjnym:'
+  1876: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmie gracza:'
   1877: '{NEWLINE}Zatrzymuje się: {STRINGID}'
   1878: ', {STRINGID}'
-  1879: 'Przewodnik 1: Uruchomienie usługi autobusowej w mieście'
-  1880: 'Przewodnik 2: Budowa linii autobusowej pomiędzy dwoma miastami'
-  1881: 'Przewodnik 3: Budowa linii kolejowej pomiędzy dwoma miastami'
+  1879: 'Poradnik 1: Uruchomienie usługi autobusowej w mieście'
+  1880: 'Poradnik 2: Budowa linii autobusowej pomiędzy dwoma miastami'
+  1881: 'Poradnik 3: Budowa linii kolejowej pomiędzy dwoma miastami'
 
   # Tutorial 1
-  1882: '{SMALLFONT}{COLOUR BLACK}Zamierzamy uruchomić usługę autobusową do przewozu
-    pasażerów w obrębie miasta, więc pierwszym krokiem jest wybór miasta...'
-  1883: '{SMALLFONT}{COLOUR BLACK}Przesuń kamerę prawym przyciskiem myszy, aby spojrzeć
-    na miasta...'
-  1884: '{SMALLFONT}{COLOUR BLACK}Boulders Bay jest największym miastem, więc będzie
-    w nim najwięcej pasażerów. Powiększ za pomocą kółka myszy lub ikony powiększenia...'
-  1885: '{SMALLFONT}{COLOUR BLACK}Wszelka budowa dróg odbywa się przy użyciu okna
-    budowy dróg...'
-  1886: '{SMALLFONT}{COLOUR BLACK}Nie potrzebujemy żadnych nowych dróg w mieście do
-    obsługi autobusów, tylko przystanki autobusowe...'
+  1882: '{SMALLFONT}{COLOUR BLACK}Zamierzamy uruchomić usługę autobusową do przewozu pasażerów w obrębie miasta, więc pierwszym krokiem jest wybór miasta...'
+  1883: '{SMALLFONT}{COLOUR BLACK}Przesuń kamerę prawym przyciskiem myszy, aby spojrzeć na miasta...'
+  1884: '{SMALLFONT}{COLOUR BLACK}Boulders Bay jest największym miastem, więc będzie w nim najwięcej pasażerów. Powiększ za pomocą kółka myszy lub ikony powiększenia...'
+  1885: '{SMALLFONT}{COLOUR BLACK}Wszelka budowa dróg odbywa się przy użyciu okna budowy dróg...'
+  1886: '{SMALLFONT}{COLOUR BLACK}Nie potrzebujemy żadnych nowych dróg w mieście do obsługi autobusów, tylko przystanki autobusowe...'
   1887: '{SMALLFONT}{COLOUR BLACK}Nasz autobus kursuje z jednej strony miasta do drugiej.'
-  1888: '{SMALLFONT}{COLOUR BLACK}Obszar zaznaczony na niebiesko to obszar zasięgu
-    stacji. Im więcej budynków w okolicy, tym więcej pasażerów będzie korzystać z
-    Twojej stacji...'
-  1889: '{SMALLFONT}{COLOUR BLACK}Sprawdzaj także, czy stacja akceptuje pasażerów, w przeciwnym
-    razie nie będziesz w stanie ich rozładować i nie będziesz mógł zarobić. Zwróć
-    uwagę na tekst “Zasięg stacji” u dołu okna konstrukcyjnego...'
-  1890: '{SMALLFONT}{COLOUR BLACK}Kiedy jesteś zadowolony z lokalizacji, kliknij lewym
-    przyciskiem myszy, aby zbudować stację...'
+  1888: '{SMALLFONT}{COLOUR BLACK}Obszar zaznaczony na niebiesko to obszar zasięgu stacji. Im więcej budynków w okolicy, tym więcej pasażerów będzie korzystać z Twojej stacji...'
+  1889: '{SMALLFONT}{COLOUR BLACK}Sprawdzaj także, czy stacja akceptuje pasażerów, w przeciwnym razie nie będziesz w stanie ich rozładować i nie będziesz mógł zarobić. Zwróć uwagę na tekst “Zasięg stacji” u dołu okna konstrukcyjnego...'
+  1890: '{SMALLFONT}{COLOUR BLACK}Kiedy jesteś zadowolony z lokalizacji, kliknij lewym przyciskiem myszy, aby zbudować stację...'
   1891: '{SMALLFONT}{COLOUR BLACK}Zbudujemy drugą stację po przeciwnej stronie miasta...'
   1892: '{SMALLFONT}{COLOUR BLACK}Teraz musimy kupić autobus...'
-  1893: '{SMALLFONT}{COLOUR BLACK}Mamy do wyboru dwa typy autobusów. Wybierzmy nowszy
-    projekt, który przewozi więcej pasażerów...'
-  1894: '{SMALLFONT}{COLOUR BLACK}Skieruj kursor myszy, aby umieścić autobus na drodze
-    i kliknij lewym przyciskiem myszy, aby go umieścić...'
-  1895: '{SMALLFONT}{COLOUR BLACK}Przed ustawieniem autobusu kierowca musi wiedzieć,
-    dokąd ma jechać. Wybierz zakładkę Szczegóły trasy w oknie pojazdu...'
-  1896: '{SMALLFONT}{COLOUR BLACK}Aby ustawić trasę, wystarczy kliknąć na stację lub
-    przystanek...'
+  1893: '{SMALLFONT}{COLOUR BLACK}Mamy do wyboru dwa typy autobusów. Wybierzmy nowszy projekt, który przewozi więcej pasażerów...'
+  1894: '{SMALLFONT}{COLOUR BLACK}Skieruj kursor myszy, aby umieścić autobus na drodze i kliknij lewym przyciskiem myszy, aby go umieścić...'
+  1895: '{SMALLFONT}{COLOUR BLACK}Przed ustawieniem autobusu kierowca musi wiedzieć, dokąd ma jechać. Wybierz zakładkę Szczegóły trasy w oknie pojazdu...'
+  1896: '{SMALLFONT}{COLOUR BLACK}Aby ustawić trasę, wystarczy kliknąć na stację lub przystanek...'
   1897: '{SMALLFONT}{COLOUR BLACK}Teraz możemy ustawić jadący autobus...'
   1898: '{SMALLFONT}{COLOUR BLACK}Przyjrzyjmy się, jak zabiera pierwszych pasażerów...'
 
   # Tutorial 2
-  1899: '{SMALLFONT}{COLOUR BLACK}Chcemy zapewnić nową usługę autobusową do przewozu
-    pasażerów pomiędzy Boulder Bay i Breakers Bridge. Ponieważ nie ma dróg łączących
-    te miasta, będziemy musieli taką zbudować...'
-  1900: '{SMALLFONT}{COLOUR BLACK}Wybierz orientację nowego odcinka drogi i kliknij
-    na terenie aby rozpocząć budowę...'
-  1901: '{SMALLFONT}{COLOUR BLACK}Kliknięcie ikony ''zbuduj to'' spowoduje dodanie
-    kolejnych odcinków dróg tego samego typu...'
-  1902: '{SMALLFONT}{COLOUR BLACK}Zanim zaczniesz, przedstawię Ci szybszy sposób na
-    rozpoczęcie budowy drogi...'
-  1903: '{SMALLFONT}{COLOUR BLACK}Możesz kliknąć prawym przyciskiem myszy na końcu
-    drogi, którą chcesz przedłużyć...'
-  1904: '{SMALLFONT}{COLOUR BLACK}Chcemy skręcić tutaj w lewo, więc wybieramy krzywą
-    w lewo...'
+  1899: '{SMALLFONT}{COLOUR BLACK}Chcemy zapewnić nową usługę autobusową do przewozu pasażerów pomiędzy Boulder Bay i Breakers Bridge. Ponieważ nie ma dróg łączących te miasta, będziemy musieli taką zbudować...'
+  1900: '{SMALLFONT}{COLOUR BLACK}Wybierz orientację nowego odcinka drogi i kliknij na terenie aby rozpocząć budowę...'
+  1901: '{SMALLFONT}{COLOUR BLACK}Kliknięcie ikony ''Zbuduj to...'' spowoduje dodanie kolejnych odcinków dróg tego samego typu...'
+  1902: '{SMALLFONT}{COLOUR BLACK}Zanim zaczniesz, przedstawię Ci szybszy sposób na rozpoczęcie budowy drogi...'
+  1903: '{SMALLFONT}{COLOUR BLACK}Możesz kliknąć prawym przyciskiem myszy na końcu drogi, którą chcesz przedłużyć...'
+  1904: '{SMALLFONT}{COLOUR BLACK}Chcemy skręcić tutaj w lewo, więc wybieramy krzywą w lewo...'
   1905: '{SMALLFONT}{COLOUR BLACK}A teraz z powrotem do budynku prosto...'
   1906: '{SMALLFONT}{COLOUR BLACK}Więc droga zbudowana, teraz przystanki...'
   1907: '{SMALLFONT}{COLOUR BLACK}Wreszcie kupimy autobus i uruchomimy go...'
-  1908: '{SMALLFONT}{COLOUR BLACK}To może być dość popularna trasa, więc kupimy również
-    drugi autobus...'
-  1909: '{SMALLFONT}{COLOUR BLACK}Aby szybko skopiować cały rozkład jazdy autobusu
-    1 do autobusu 2, wystarczy kliknąć na tekst ''koniec rozkazów'' autobusu 1...'
+  1908: '{SMALLFONT}{COLOUR BLACK}To może być dość popularna trasa, więc kupimy również drugi autobus...'
+  1909: '{SMALLFONT}{COLOUR BLACK}Aby szybko skopiować cały rozkład jazdy autobusu 1 do autobusu 2, wystarczy kliknąć na tekst ''Koniec poleceń'' autobusu 1...'
 
   # Tutorial 3
-  1910: '{SMALLFONT}{COLOUR BLACK}Zacznijmy budowę linii kolejowej pomiędzy dwoma
-    największymi miastami...'
-  1911: '{SMALLFONT}{COLOUR BLACK}Stacje kolejowe mogą być budowane tylko na prostym
-    torze i muszą być wystarczająco długie dla naszego pociągu - to tutaj za kilka
-    minut zbudujemy jedną stację...'
+  1910: '{SMALLFONT}{COLOUR BLACK}Zacznijmy budowę linii kolejowej pomiędzy dwoma największymi miastami...'
+  1911: '{SMALLFONT}{COLOUR BLACK}Stacje kolejowe mogą być budowane tylko na prostym torze i muszą być wystarczająco długie dla naszego pociągu - to tutaj za kilka minut zbudujemy jedną stację...'
   1912: '{SMALLFONT}{COLOUR BLACK}Teraz zbudujmy stacje...'
-  1913: '{SMALLFONT}{COLOUR BLACK}...a następnie pociąg. Będziemy potrzebować lokomotywy
-    i wagonów do przewozu pasażerów...'
-  1914: '{SMALLFONT}{COLOUR BLACK}Ponieważ jest to jednotorowa linia, nie ma potrzeby
-    ustalania trasy - wystarczy uruchomić pociąg...'
-  1915: '{SMALLFONT}{COLOUR BLACK}Przedłużmy ten tor, aby utworzyć węzeł i skomunikować
-    trzecie miasto. Klikając prawym przyciskiem myszy na ścieżkę otwieramy okno konstrukcji
-    toru gotowe do budowy skrzyżowania...'
-  1916: '{SMALLFONT}{COLOUR BLACK}Ponieważ układ torów nie jest już prosty, musimy
-    podać naszemu pociągowi trasę...'
-  1917: '{SMALLFONT}{COLOUR BLACK}Możemy teraz dodać drugi pociąg, ale najpierw musimy
-    ustawić sygnały, aby zapobiec kolizjom pociągów...'
-  1918: '{SMALLFONT}{COLOUR BLACK}Sygnały dzielą tor na 3 oddzielne bloki sygnałowe
-    i tylko jeden pociąg będzie mógł wjechać na każdy odcinek jednocześnie...'
+  1913: '{SMALLFONT}{COLOUR BLACK}...a następnie pociąg. Będziemy potrzebować lokomotywy i wagonów do przewozu pasażerów...'
+  1914: '{SMALLFONT}{COLOUR BLACK}Ponieważ jest to jednotorowa linia, nie ma potrzeby ustalania trasy - wystarczy uruchomić pociąg...'
+  1915: '{SMALLFONT}{COLOUR BLACK}Przedłużmy ten tor, aby utworzyć węzeł i skomunikować trzecie miasto. Klikając prawym przyciskiem myszy na ścieżkę otwieramy okno konstrukcji toru gotowe do budowy skrzyżowania...'
+  1916: '{SMALLFONT}{COLOUR BLACK}Ponieważ układ torów nie jest już prosty, musimy podać naszemu pociągowi trasę...'
+  1917: '{SMALLFONT}{COLOUR BLACK}Możemy teraz dodać drugi pociąg, ale najpierw musimy ustawić sygnały, aby zapobiec kolizjom pociągów...'
+  1918: '{SMALLFONT}{COLOUR BLACK}Sygnały dzielą tor na 3 oddzielne bloki sygnałowe i tylko jeden pociąg będzie mógł wjechać na każdy odcinek jednocześnie...'
 
   # Options/Misc
   1919: Użyj preferowanej nazwy właściciela przy rozpoczęciu nowej gry
-  1920: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby używać tej samej nazwy właściciela
-    firmy przy każdym rozpoczęciu nowej gry'
+  1920: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby używać tej samej nazwy właściciela firmy przy każdym rozpoczęciu nowej gry'
   1921: '{COLOUR WINDOW_2}Preferowana nazwa właściciela: {COLOUR BLACK}{STRINGID}'
   1922: Preferowana Nazwa Właściciela
 
   1923: 'Wprowadź preferowaną nazwę właściciela:'
-  1924: '{COLOUR BLACK}{TINYFONT}Moc'
-  1925: '{COLOUR BLACK}{TINYFONT}Hamuj'
-  1926: '{SMALLFONT}{COLOUR BLACK}Przesuń zaznaczenie na górę listy'
-  1927: '{SMALLFONT}{COLOUR BLACK}Przesuń zaznaczenie na dół listy'
+  1924: '{COLOUR BLACK}{TINYFONT}Jazda'
+  1925: '{COLOUR BLACK}{TINYFONT}Hamowanie'
+  1926: '{SMALLFONT}{COLOUR BLACK}Przesuń na górę listy'
+  1927: '{SMALLFONT}{COLOUR BLACK}Przesuń na dół listy'
 
   1928: Nie można uruchamiać gry bezpośrednio z nośników tylko do odczytu
   1929: Twórcy Atari Inc. ...
   1930: '{COLOUR WINDOW_2}Licencja Atari Inc.'
   1931: Twórcy Atari Inc.
 
-  1932: Wersje gry są niekompatybilne - Nie można się połączyć!
+  1932: Wersje gry są niezgodne - Nie można się połączyć!
   1933: '{SMALLFONT}{COLOUR BLACK}Wyślij krótką wiadomość do innego gracza'
   1934: inny gracz
   1935: 'Inny gracz wyszedł z gry: Tryb dla wielu graczy został zakończony'
@@ -2075,12 +2025,12 @@ strings:
   1981: '{COLOUR WINDOW_2}'
   1982: '{COLOUR WINDOW_2}'
 
-  1983: Odległość x Jednostek ładunku dostarczonego na miesiąc
+  1983: Wykres Odległości x Jednostek Ładunku Dostarczonego na Miesiąc
   1984: '{SMALLFONT}{COLOUR BLACK}Wykresy ładunków na odległość dostarczonych przez każdą firmę'
   1985: '{COLOUR WINDOW_2}Średnia prędkość podróży: {COLOUR BLACK}{VELOCITY}'
-  1986: ląd
-  1987: powietrze
-  1988: woda
+  1986: na lądzie
+  1987: w powietrzu
+  1988: na wodzie
   1989: Pociąg
   1990: Autobus
   1991: Ciężarówka
@@ -2090,15 +2040,15 @@ strings:
   1995: '{SMALLFONT}{COLOUR BLACK}Rekordy prędkości'
   1996: Rekordy Prędkości
   1997: '{COLOUR WINDOW_2}Rekord prędkości usług na lądzie: {COLOUR BLACK}{VELOCITY}'
-  1998: '{COLOUR WINDOW_2}Rekord prędkości usługi powietrznej: {COLOUR BLACK}{VELOCITY}'
-  1999: '{COLOUR WINDOW_2}Rekord prędkości usługi wodnej: {COLOUR BLACK}{VELOCITY}'
+  1998: '{COLOUR WINDOW_2}Rekord prędkości usług w powietrzu: {COLOUR BLACK}{VELOCITY}'
+  1999: '{COLOUR WINDOW_2}Rekord prędkości usług na wodzie: {COLOUR BLACK}{VELOCITY}'
   2000: '{COLOUR BLACK}Osiągnięte przez {STRINGID} - {DATE DMY}'
   2001: Potwierdź zmianę trybu wyświetlania
   2002: '{COLOUR WINDOW_2}Rozdzielczość ekranu zmieniona na {UINT16 RAW} x {UINT16 RAW}'
   2003: '{COLOUR WINDOW_2}_'
   2004: '{COLOUR WINDOW_2}Nazwa pliku:'
   2005: "{COLOUR WINDOW_2}Folder: {COLOUR BLACK}{STRINGID}"
-  2006: '{SMALLFONT}{COLOUR BLACK}Przenieś jeden poziom do folderu nadrzędnego'
+  2006: '{SMALLFONT}{COLOUR BLACK}Przejdź do folderu nadrzędnego'
   2007: '{COLOUR WINDOW_2}Spółka: {COLOUR BLACK}{STRINGID}'
   2008: '{COLOUR WINDOW_2}Data: {COLOUR BLACK}{DATE DMY}'
   2009: '{COLOUR WINDOW_2}Postęp wyzwania: {COLOUR BLACK}{INT16}%'
@@ -2109,28 +2059,28 @@ strings:
   2014: 'Czy usunąć plik: “{STRINGID}”?'
   2015: Usuń
   2016: 'Błąd: Nieprawidłowa nazwa pliku'
-  2017: Nazwa zakładu
+  2017: Nazwa Zakładu
   2018: 'Wprowadź nową nazwę dla {STRINGID}:'
   2019: Nie można zmienić nazwy zakładu...
-  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. speed: {STRINGID}{NEWLINE 45 11}Height limit: {HEIGHT}"
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Limit prędkośći: {STRINGID}{NEWLINE 45 11}Limit wysokości: {HEIGHT}"
   2021: Znaleziono duplikat kluczy CD - Nie można się połączyć!
   2022: '{COLOUR BLACK}{SMALLFONT}(Nazwa Komputera = {STRINGID})'
-  2023: "1"
-  2024: "2"
-  2025: "3"
-  2026: "4"
-  2027: "5"
-  2028: "6"
-  2029: "7"
-  2030: "8"
-  2031: "9"
-  2032: "10"
-  2033: "11"
-  2034: "12"
-  2035: "13"
-  2036: "14"
-  2037: "15"
-  2038: '{COLOUR BLACK}{INT16} wybrano (maksymalnie {INT16})'
+  2023: 1szy
+  2024: 2gi
+  2025: 3ci
+  2026: 4ty
+  2027: 5ty
+  2028: 6ty
+  2029: 7my
+  2030: 8my
+  2031: 9ty
+  2032: 10ty
+  2033: 11ty
+  2034: 12ty
+  2035: 13ty
+  2036: 14ty
+  2037: 15ty
+  2038: '{COLOUR BLACK}Wybrano: {INT16} (maksymalnie: {INT16})'
   2039: ""
   2040: ""
   2041: '{COLOUR BLACK}(ID:'
@@ -2144,7 +2094,7 @@ strings:
   2049: Nie można wybrać tego obiektu
   2050: Nie można odznaczyć tego obiektu
   2051: Nieprawidłowy wybór obiektów
-  2052: Wybór obiektu - {STRINGID}
+  2052: Wybór Obiektów - {STRINGID}
   2053: Style Interfejsów
   2054: Dźwięki
   2055: Waluta
@@ -2154,7 +2104,7 @@ strings:
   2059: Teren
   2060: Nazwy Miejscowości
   2061: Towary
-  2062: Ściany
+  2062: Ogrodzenia
   2063: Sygnalizacja
   2064: Przejazdy Kolejowe
   2065: Oświetlenie Uliczne
@@ -2169,7 +2119,7 @@ strings:
   2074: Porty Lotnicze
   2075: Porty Okrętowe
   2076: Pojazdy
-  2077: Drzewa
+  2077: Roślinność
   2078: Śnieg
   2079: Klimat
   2080: Dane Generowania Map
@@ -2182,21 +2132,17 @@ strings:
   2087: lista obiektów
   2088: 'Brakujące dane obiektu, ID:'
   2089: Wyeksportuj dodatkowe obiekty z zapisanymi grami
-  2090: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy w zapisanych plikach gry lub scenariuszy
-    mają być zapisywane wymagane dodatkowe dane obiektu wtyczki (dane dodatkowe nie
-    dostarczane z produktem głównym), umożliwiając ich załadowanie przez osobę, która
-    nie posiada dodatkowych danych obiektu'
-  2091: Należy wybrać co najmniej jeden rodzaj ogólnej drogi dwukierunkowej
+  2090: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy w zapisanych plikach gry/scenariuszy mają być dołączane wtyczki{NEWLINE}(dodatki nie dostarczane wraz z grą), umożliwiając ich wczytanie na innym komputerze'
+  2091: Należy wybrać co najmniej jeden rodzaj drogi dwukierunkowej
   2092: Należy wybrać typ rusztowania
   2093: Zaawansowane
-  2094: '{SMALLFONT}{COLOUR BLACK}Umożliwia bardziej zaawansowany wybór poszczególnych
-    elementów'
+  2094: '{SMALLFONT}{COLOUR BLACK}Umożliwia bardziej zaawansowany wybór poszczególnych elementów'
   2095: "{COLOUR WHITE}{BIGFONT}£"
   2096: Nowe obiekty zainstalowano pomyślnie
   2097: Należy wybrać co najmniej jeden zakład
   2098: Należy wybrać co najmniej jeden budynek miejski
   2099: Należy wybrać typ budynku siedziby firmy
-  2100: Należy wybrać tylko jeden typ budynku siedziby firmy
+  2100: Należy wybrać typ budynku siedziby firmy
   2101: Należy wybrać typ interfejsu
   2102: Należy wybrać co najmniej jeden typ pojazdu
   2103: Należy wybrać co najmniej jeden typ terenu
@@ -2209,21 +2155,21 @@ strings:
   2110: Należy wybrać typ klimatu
   2111: Należy wybrać typ generatora mapy
   2112: Należy wybrać typ regionu
-  2113: mph
-  2114: kmh⁻¹
-  2115: 'hour:'
-  2116: 'hours:'
-  2117: mins
+  2113: mil/h
+  2114: km/h
+  2115: 'godzina:'
+  2116: 'godzin:'
+  2117: minut
   2118: 'min:'
-  2119: secs
-  2120: ' units'
-  2121: ft
+  2119: sek.
+  2120: ' jednostek'
+  2121: st
   2122: m
-  2123: hp
+  2123: KM
   2124: kW
   2125: "{COLOUR WINDOW_2}Język:"
-
-  2127: "{COLOUR WINDOW_2}Tryb pełnego ekranu:"
+  2126: Wyłącz awarie pojazdów
+  2127: "{COLOUR WINDOW_2}Tryb wyświetlania:"
   2128: Okno
-  2129: Pełny ekran
-  2130: Pełny ekran w oknie
+  2129: Pełen Ekran
+  2130: Bez Krawędzi
