@@ -2310,7 +2310,7 @@ namespace openloco::ui::options
             case common::tab::sound:
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
-#ifdef _WIN32
+#if !(defined(__APPLE__) && defined(__MACH__))
                 w->disabled_widgets = 0;
 #else
                 w->disabled_widgets = (1 << music::widx::audio_device) | (1 << music::widx::audio_device_btn);
