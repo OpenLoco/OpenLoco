@@ -54,7 +54,7 @@ namespace openloco::config
         uint8_t music_playing;                      // 0x23
         uint8_t construction_marker;                // 0x50AED8, 0x24
         uint8_t var_25;                             // 0x25
-        uint8_t var_26;                             // 0x26
+        uint8_t max_sound_instances;                // 0x26
         uint8_t sound_quality;                      // 0x27
         uint8_t measurement_format;                 // 0x50AEDC, 0x28
         uint8_t pad_29;                             // 0x29
@@ -94,9 +94,15 @@ namespace openloco::config
         resolution_t fullscreen_resolution;
     };
 
+    struct audio_config
+    {
+        std::string device;
+    };
+
     struct new_config
     {
         display_config display;
+        audio_config audio;
         std::string loco_install_path;
         std::string language = "en-GB";
         bool breakdowns_disabled = false;

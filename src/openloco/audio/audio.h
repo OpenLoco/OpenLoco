@@ -1,9 +1,25 @@
 #pragma once
 
 #include "../types.hpp"
+#include <tuple>
+#include <vector>
+
+struct Mix_Chunk;
+
+namespace openloco
+{
+    struct vehicle;
+}
 
 namespace openloco::audio
 {
+    struct sample
+    {
+        void* pcm{};
+        size_t len{};
+        Mix_Chunk* chunk{};
+    };
+
     enum class sound_id
     {
         click_down = 0,
@@ -40,18 +56,86 @@ namespace openloco::audio
         breakdown_6 = 31,
     };
 
+    enum class channel_id
+    {
+        bgm,
+        unk_1,
+        ambient,
+        title,
+        vehicle_0, // * 10
+    };
+    constexpr int32_t num_reserved_channels = 4 + 10;
+
     void initialise_dsound();
     void dispose_dsound();
-    void initialise();
+
+    const std::vector<std::string>& get_devices();
+    const char* get_current_device_name();
+    size_t get_current_device();
+    void set_device(size_t index);
+
+    sample* get_sound_sample(sound_id id);
+    bool should_sound_loop(sound_id id);
 
     void pause_sound();
     void unpause_sound();
+    void play_sound(vehicle* t);
     void play_sound(sound_id id, loc16 loc);
     void play_sound(sound_id id, loc16 loc, int32_t pan);
     void play_sound(sound_id id, int32_t pan);
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency, bool obj_sound);
+    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
+    void update_sounds();
+
+    bool load_channel(channel_id id, const char* path, int32_t c);
+    bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
+    void stop_channel(channel_id id);
+    void set_channel_volume(channel_id id, int32_t volume);
+    bool is_channel_playing(channel_id id);
+
+    void update_vehicle_noise();
+    void stop_vehicle_noise();
 
     void update_ambient_noise();
     void play_background_music();
+    void stop_background_music();
     void play_title_screen_music();
+
+    /**
+     * Converts a Locomotion volume range to SDL2.
+     * @remarks Not constexpr as it requires an SDL2 macro and we avoid
+     *          library header includes in our own headers.
+     */
+    int32_t volume_loco_to_sdl(int32_t loco);
+
+    constexpr bool is_object_sound_id(sound_id id)
+    {
+        return ((int32_t)id & 0x8000);
+    }
+
+    constexpr sound_id make_object_sound_id(sound_id id)
+    {
+        return (sound_id)((int32_t)id | 0x8000);
+    }
+
+    /**
+     * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
+     */
+    constexpr std::tuple<int32_t, int32_t> pan_loco_to_sdl(int32_t pan)
+    {
+        constexpr auto range = 2048.0f;
+        if (pan == 0)
+        {
+            return std::make_tuple(0, 0);
+        }
+        else if (pan < 0)
+        {
+            auto r = (int32_t)(255 - ((pan / -range) * 255));
+            return std::make_tuple(255, r);
+        }
+        else
+        {
+            auto r = (int32_t)(255 - ((pan / range) * 255));
+            return std::make_tuple(r, 255);
+        }
+    }
 }

@@ -169,6 +169,10 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAG
 PKG_CHECK_MODULES(SDL2 REQUIRED sdl2)
 SET(SDL2LIBS ${SDL2_LDFLAGS})
 
+if (NOT APPLE)
+    PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
+endif ()
+
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 
@@ -197,6 +201,9 @@ else ()
 endif ()
 
 target_link_libraries(${PROJECT} SDL2 ${SDL2LIBS})
+if (NOT APPLE)
+    target_link_libraries(${PROJECT} ${SDL2MIXER_LIBRARIES})
+endif ()
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 
 if (NOT MINGW)
@@ -213,7 +220,7 @@ else()
 endif()
 
 if (MINGW)
-	target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600)
+    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600 SDL_MAIN_HANDLED=1)
 endif()
 
 if (APPLE)

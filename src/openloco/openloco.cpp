@@ -273,12 +273,11 @@ namespace openloco
         ui::initialise_cursors();
         progressbar::end();
         ui::initialise();
-        audio::initialise();
         initialise_viewports();
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        addr<0x00508F14, int16_t>() |= 0x20;
+        _screen_flags = _screen_flags | screen_flags::unknown_5;
 #ifdef _SHOW_INTRO_
         intro::state(intro::intro_state::begin);
 #else
@@ -400,7 +399,7 @@ namespace openloco
             }
 
             input::handle_keyboard();
-            sub_48A18C();
+            audio::update_sounds();
 
             addr<0x0050C1AE, int32_t>()++;
             if (intro::is_active())
@@ -551,7 +550,7 @@ namespace openloco
         sub_46FFCA();
         companymgr::update();
         invalidate_map_animations();
-        call(0x0048A73B);
+        audio::update_vehicle_noise();
         audio::update_ambient_noise();
         call(0x00444387);
 
@@ -665,11 +664,6 @@ namespace openloco
         }
     }
 
-    void sub_48A18C()
-    {
-        call(0x0048A18C);
-    }
-
     // 0x00406386
     static void run()
     {
@@ -717,6 +711,7 @@ namespace openloco
         try
         {
             const auto& cfg = config::read_new_config();
+            environment::resolve_paths();
 
             register_hooks();
             if (sub_4054B9())

@@ -1030,4 +1030,29 @@ namespace openloco::ui
                 0x10);
         }
     }
+
+    viewport_pos viewport::map_from_3d(loc16 loc, int32_t rotation)
+    {
+        ui::viewport_pos result;
+        switch (rotation & 3)
+        {
+            case 0:
+                result.x = loc.y - loc.x;
+                result.y = ((loc.y + loc.x) / 2) - loc.z;
+                break;
+            case 1:
+                result.x = -loc.x - loc.y;
+                result.y = ((loc.y - loc.x) / 2) - loc.z;
+                break;
+            case 2:
+                result.x = loc.x - loc.y;
+                result.y = ((-loc.y - loc.x) / 2) - loc.z;
+                break;
+            case 3:
+                result.x = loc.y + loc.x;
+                result.y = ((loc.x - loc.y) / 2) - loc.z;
+                break;
+        }
+        return result;
+    }
 }

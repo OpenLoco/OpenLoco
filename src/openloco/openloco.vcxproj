@@ -54,6 +54,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <!-- Include our vcpkg root first, otherwise the machine installed vcpkg will be used -->
-  <Import Project="..\..\packages\OpenLoco.Dependencies.1.0.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.0.0\build\native\OpenLoco.Dependencies.targets')" />
+  <Import Project="..\..\packages\OpenLoco.Dependencies.1.1.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.1.0\build\native\OpenLoco.Dependencies.targets')" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

@@ -1133,7 +1133,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
             volume -= 1500;
         }
 
-        audio::play_sound(soundId, loc, volume, 22050, true);
+        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
     }
     else
     {
@@ -1163,7 +1163,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
             volume = -400;
         }
 
-        audio::play_sound(soundId, loc, volume, 22050, true);
+        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
     }
 }
 

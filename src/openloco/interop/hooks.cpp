@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../audio/audio.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../graphics/colours.h"
@@ -37,6 +38,41 @@ using namespace openloco;
 #pragma warning(push)
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+
+FORCE_ALIGN_ARG_POINTER
+static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
+{
+    return audio::load_channel((audio::channel_id)a0, a1, a2) ? 1 : 0;
+}
+
+FORCE_ALIGN_ARG_POINTER
+static int32_t CDECL audio_play_channel(int a0, int a1, int a2, int a3, int a4)
+{
+    return audio::play_channel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
+}
+
+FORCE_ALIGN_ARG_POINTER
+static void CDECL audio_stop_channel(int a0, int a1, int a2, int a3, int a4)
+{
+    audio::stop_channel((audio::channel_id)a0);
+}
+
+FORCE_ALIGN_ARG_POINTER
+static void CDECL audio_set_channel_volume(int a0, int a1)
+{
+    audio::set_channel_volume((audio::channel_id)a0, a1);
+}
+
+FORCE_ALIGN_ARG_POINTER
+static int32_t CDECL audio_is_channel_playing(int a0)
+{
+    return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
+}
+
+#endif
+
 static void STDCALL fn_40447f()
 {
     STUB();
@@ -92,6 +128,7 @@ static uint32_t STDCALL lib_timeGetTime()
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
+FORCE_ALIGN_ARG_POINTER
 static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
 {
     STUB();
@@ -504,10 +541,6 @@ static void register_no_win32_hooks()
     write_jmp(0x40832c, (void*)&fn_FindClose);
     write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
-    // sound
-    write_ret(0x489cb5); // audio::play_sound
-    write_ret(0x489f1b); // audio::play_sound
-
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
     {
@@ -601,6 +634,55 @@ static void register_terraform_hooks()
     interop::write_nop(0x43A485, 0x43A490 - 0x43A485);
 }
 
+static void register_audio_hooks()
+{
+    using namespace openloco::interop;
+
+#if defined(__APPLE__) && defined(__MACH__)
+    write_ret(0x00489CB5);
+    write_ret(0x00489F1B);
+#else
+    write_jmp(0x0040194E, (void*)&audio_load_channel);
+    write_jmp(0x00401999, (void*)&audio_play_channel);
+    write_jmp(0x00401A05, (void*)&audio_stop_channel);
+    write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
+    write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
+
+    write_ret(0x0048AB36);
+    write_ret(0x00404B40);
+    register_hook(
+        0x0048A18C,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::update_sounds();
+            return 0;
+        });
+    register_hook(
+        0x00489C6A,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::stop_vehicle_noise();
+            return 0;
+        });
+    register_hook(
+        0x0048A4BF,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((vehicle*)regs.esi);
+            return 0;
+        });
+    register_hook(
+        0x00489CB5,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            return 0;
+        });
+    register_hook(
+        0x00489F1B,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            return 0;
+        });
+#endif
+}
+
 void openloco::interop::register_hooks()
 {
     using namespace openloco::ui::windows;
@@ -612,6 +694,7 @@ void openloco::interop::register_hooks()
 #endif // _NO_LOCO_WIN32_
 
     register_terraform_hooks();
+    register_audio_hooks();
 
     register_hook(
         0x004416B5,

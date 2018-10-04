@@ -60,6 +60,12 @@ namespace openloco::objectmgr
     }
 
     template<>
+    sound_object* get(size_t id)
+    {
+        return _soundObjects[id];
+    }
+
+    template<>
     steam_object* get(size_t id)
     {
         return _steamObjects[id];
