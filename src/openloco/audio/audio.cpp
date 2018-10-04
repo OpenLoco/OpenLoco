@@ -425,13 +425,20 @@ namespace openloco::audio
 
     const char* get_current_device_name()
     {
-#ifdef __HAS_DEFAULT_DEVICE__
         auto index = get_current_device();
         if (index == 0)
         {
+#ifdef __HAS_DEFAULT_DEVICE__
             return get_default_device_name();
-        }
+#else
+            const auto& devices = _devices;
+            if (devices.empty())
+                get_devices();
+
+            if (!devices.empty())
+                return devices[0].c_str();
 #endif
+        }
 
         const auto& cfg = config::get_new();
         return cfg.audio.device.c_str();
