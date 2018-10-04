@@ -1,7 +1,5 @@
 #pragma once
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-
 #include "../things/thing.h"
 #include "audio.h"
 #include "channel.h"
@@ -37,5 +35,3 @@ namespace openloco::audio
         void stop();
     };
 }
-
-#endif
