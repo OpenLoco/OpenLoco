@@ -117,12 +117,12 @@ namespace openloco::ui
 
     int32_t width()
     {
-        return (int32_t)(screen_info->width / config::get_new().scale_factor);
+        return screen_info->width;
     }
 
     int32_t height()
     {
-        return (int32_t)(screen_info->height / config::get_new().scale_factor);
+        return screen_info->height;
     }
 
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
@@ -308,6 +308,11 @@ namespace openloco::ui
 
     void update(int32_t width, int32_t height)
     {
+        // Scale the width and height by configured scale factor
+        auto scale_factor = config::get_new().scale_factor;
+        width = (int32_t)(width / scale_factor);
+        height = (int32_t)(height / scale_factor);
+
         int32_t columns = 6;
         int32_t rows = 3;
 
@@ -365,11 +370,7 @@ namespace openloco::ui
 
     void resize(int32_t width, int32_t height)
     {
-        float scale_factor = config::get_new().scale_factor;
-        int32_t dst_width = (int)(width / scale_factor);
-        int32_t dst_height = (int)(height / scale_factor);
-
-        update(dst_width, dst_height);
+        update(width, height);
         gui::resize();
         gfx::invalidate_screen();
 
@@ -621,14 +622,23 @@ namespace openloco::ui
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    input::move_mouse(e.motion.x, e.motion.y, e.motion.xrel, e.motion.yrel);
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    auto x = (int32_t)(e.motion.x / scale_factor);
+                    auto y = (int32_t)(e.motion.y / scale_factor);
+                    auto xrel = (int32_t)(e.motion.xrel / scale_factor);
+                    auto yrel = (int32_t)(e.motion.yrel / scale_factor);
+                    input::move_mouse(x, y, xrel, yrel);
                     break;
+                }
                 case SDL_MOUSEWHEEL:
                     addr<0x00525330, int32_t>() += e.wheel.y * 128;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    addr<0x0113E9D4, int32_t>() = e.button.x;
-                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
+                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -644,9 +654,12 @@ namespace openloco::ui
                             break;
                     }
                     break;
+                }
                 case SDL_MOUSEBUTTONUP:
-                    addr<0x0113E9D4, int32_t>() = e.button.x;
-                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
+                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -662,6 +675,7 @@ namespace openloco::ui
                             break;
                     }
                     break;
+                }
                 case SDL_KEYDOWN:
                 {
                     auto keycode = e.key.keysym.sym;
