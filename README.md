@@ -64,8 +64,10 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 ### Linux / macOS:
 - cmake
 - make or ninja
+
+32Bit versions of the following:
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp) (lib32-yaml-cpp on arch)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp) 
 - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenRCT2/OpenLoco/wiki/Compilation-on-macOS))
 
 ---
