@@ -87,8 +87,8 @@ mkdir build
 cd build
 cmake ..
 make
+ln -s ../data 
 ```
-You will also need to copy the 'data' directory from the source to your build directory.
 
 ---
 
