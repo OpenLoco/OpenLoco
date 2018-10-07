@@ -3,8 +3,7 @@
 #include "interop/interop.hpp"
 #include "messagemgr.h"
 #include "openloco.h"
-#include "windowmgr.h"
-#include <algorithm>
+#include "ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -152,7 +151,7 @@ namespace openloco
 
         sub_4929DB();
 
-        auto w = windowmgr::find(window_type::station, id());
+        auto w = WindowManager::find(WindowType::station, id());
         if (w != nullptr && (w->current_tab == 2 || w->current_tab == 1 || quantityUpdated))
         {
             w->invalidate();
@@ -250,6 +249,6 @@ namespace openloco
 
     void station::invalidate_window()
     {
-        windowmgr::invalidate(window_type::station, id());
+        WindowManager::invalidate(WindowType::station, id());
     }
 }
