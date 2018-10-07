@@ -155,10 +155,10 @@ namespace openloco::string_ids
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
 
-    constexpr string_id sound_quality = 650;
-    constexpr string_id sound_quality_low = 651;
-    constexpr string_id sound_quality_medium = 652;
-    constexpr string_id sound_quality_high = 653;
+    constexpr string_id sound_quality = UNUSED_STR(650);
+    constexpr string_id sound_quality_low = UNUSED_STR(651);
+    constexpr string_id sound_quality_medium = UNUSED_STR(652);
+    constexpr string_id sound_quality_high = UNUSED_STR(653);
     constexpr string_id options = 654;
 
     constexpr string_id distance_and_speed = 656;
@@ -180,8 +180,8 @@ namespace openloco::string_ids
     constexpr string_id scroll_screen_edge_tip = 1003;
     constexpr string_id customise_keys_tip = 1004;
 
-    constexpr string_id forced_software_buffer_mixing = 1010;
-    constexpr string_id forced_software_buffer_mixing_tip = 1011;
+    constexpr string_id forced_software_buffer_mixing = UNUSED_STR(1010);
+    constexpr string_id forced_software_buffer_mixing_tip = UNUSED_STR(1011);
 
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;

@@ -653,7 +653,7 @@ namespace openloco::ui::options
 
     namespace sound
     {
-        static const gfx::ui_size_t _window_size = { 366, 97 };
+        static const gfx::ui_size_t _window_size = { 366, 69 };
 
         namespace widx
         {
@@ -661,9 +661,6 @@ namespace openloco::ui::options
             {
                 audio_device = 10,
                 audio_device_btn,
-                sound_quality,
-                sound_quality_btn,
-                force_software_audio_mixer
             };
         }
 
@@ -671,17 +668,11 @@ namespace openloco::ui::options
             common_options_widgets(_window_size, string_ids::options_title_sound),
             make_widget({ 10, 49 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::stringid),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid),
-            make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 79 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::forced_software_buffer_mixing, string_ids::forced_software_buffer_mixing_tip),
             widget_end(),
         };
 
         static window_event_list _events;
 
-        static void force_software_audio_mixer_mouse_up(window* w);
-        static void sound_quality_mouse_down(ui::window* window);
-        static void sound_quality_dropdown(ui::window* window, int16_t itemIndex);
         static void audio_device_mouse_down(ui::window* window);
         static void audio_device_dropdown(ui::window* window, int16_t itemIndex);
 
@@ -711,19 +702,6 @@ namespace openloco::ui::options
                 set_format_arg(0x2, char*, (char*)audioDeviceName);
             }
 
-            static const string_id sound_quality_strings[] = {
-                string_ids::sound_quality_low,
-                string_ids::sound_quality_medium,
-                string_ids::sound_quality_high,
-            };
-            set_format_arg(0xA, string_id, sound_quality_strings[openloco::config::get().sound_quality]);
-
-            w->activated_widgets &= ~(1 << widx::force_software_audio_mixer);
-            if (config::get().force_software_audio_mixer)
-            {
-                w->activated_widgets |= (1 << widx::force_software_audio_mixer);
-            }
-
             sub_4C13BE(w);
         }
 
@@ -734,7 +712,6 @@ namespace openloco::ui::options
             w->draw(dpi);
 
             common::draw_tabs(w, dpi);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::sound_quality].top + 1, 0, string_ids::sound_quality, nullptr);
         }
 
         static void on_mouse_up(window* w, widget_index wi)
@@ -753,10 +730,6 @@ namespace openloco::ui::options
                 case common::widx::tab_miscellaneous:
                     options::tab_on_mouse_up(w, wi);
                     return;
-
-                case widx::force_software_audio_mixer:
-                    force_software_audio_mixer_mouse_up(w);
-                    return;
             }
         }
 
@@ -766,10 +739,6 @@ namespace openloco::ui::options
             {
                 case widx::audio_device_btn:
                     audio_device_mouse_down(w);
-                    break;
-
-                case widx::sound_quality_btn:
-                    sound_quality_mouse_down(w);
                     break;
             }
         }
@@ -781,55 +750,7 @@ namespace openloco::ui::options
                 case widx::audio_device_btn:
                     audio_device_dropdown(window, itemIndex);
                     break;
-
-                case widx::sound_quality_btn:
-                    sound_quality_dropdown(window, itemIndex);
-                    break;
             }
-        }
-
-#pragma mark - Force software audio mixer (Widget 14)
-
-        // 0x004C0371
-        static void force_software_audio_mixer_mouse_up(window* w)
-        {
-            audio::pause_sound();
-
-            auto& cfg = openloco::config::get();
-            cfg.force_software_audio_mixer = !cfg.force_software_audio_mixer;
-            openloco::config::write();
-
-            audio::unpause_sound();
-            w->invalidate();
-        }
-
-#pragma mark - Widget 13
-
-        // 0x004C03A4
-        static void sound_quality_mouse_down(ui::window* w)
-        {
-            widget_t dropdown = w->widgets[widx::sound_quality];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
-
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::sound_quality_low);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::sound_quality_medium);
-            dropdown::add(2, string_ids::dropdown_stringid, string_ids::sound_quality_high);
-            dropdown::set_selection(config::get().sound_quality);
-        }
-
-        // 0x004C040A
-        static void sound_quality_dropdown(ui::window* w, int16_t itemIndex)
-        {
-            if (itemIndex == -1)
-                return;
-
-            auto& cfg = openloco::config::get();
-            cfg.sound_quality = itemIndex;
-            cfg.var_25 = _50D5B5[itemIndex];
-            cfg.max_sound_instances = _50D5B8[itemIndex];
-            openloco::config::write();
-
-            w->invalidate();
         }
 
 #pragma mark - Widget 11
@@ -2309,7 +2230,7 @@ namespace openloco::ui::options
 
             case common::tab::sound:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::sound_quality) | (1 << sound::widx::sound_quality_btn) | (1 << sound::widx::force_software_audio_mixer);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
 #if !(defined(__APPLE__) && defined(__MACH__))
                 w->disabled_widgets = 0;
 #else
