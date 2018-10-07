@@ -4,7 +4,7 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 namespace openloco::ui::about
 {
@@ -40,14 +40,14 @@ namespace openloco::ui::about
     // 0x0043B26C
     void open()
     {
-        if (windowmgr::bring_to_front(window_type::about, 0) != nullptr)
+        if (WindowManager::bringToFront(WindowType::about, 0) != nullptr)
             return;
 
         _events.on_mouse_up = on_mouse_up;
         _events.draw = draw;
 
-        auto window = windowmgr::create_window_centred(
-            window_type::about,
+        auto window = WindowManager::createWindowCentred(
+            WindowType::about,
             ww,
             wh,
             0,
@@ -68,7 +68,7 @@ namespace openloco::ui::about
         switch (widgetIndex)
         {
             case widx::close:
-                windowmgr::close(window->type);
+                WindowManager::close(window->type);
                 break;
 
             case widx::music_acknowledgements_btn:

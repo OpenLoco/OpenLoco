@@ -2,8 +2,8 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../window.h"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
 
@@ -21,8 +21,8 @@ namespace openloco::ui::windows
     {
         auto width = 512;
         auto height = 16;
-        auto window = openloco::ui::windowmgr::create_window(
-            window_type::openloco_version,
+        auto window = openloco::ui::WindowManager::createWindow(
+            WindowType::openLocoVersion,
             8,
             ui::height() - height,
             width,

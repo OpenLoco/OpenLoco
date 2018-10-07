@@ -10,7 +10,6 @@
 #include "widget.h"
 #include <cassert>
 #include <cinttypes>
-#include <cmath>
 
 using namespace openloco;
 using namespace openloco::interop;
@@ -850,7 +849,7 @@ namespace openloco::ui
         uint64_t pressed_widget = 0;
         if (input::state() == input::input_state::dropdown_active || input::state() == input::input_state::widget_pressed)
         {
-            if (this->type == addr<0x0052336F, window_type>() && this->number == addr<0x00523370, uint16_t>())
+            if (this->type == addr<0x0052336F, WindowType>() && this->number == addr<0x00523370, uint16_t>())
             {
                 if (input::has_flag((input::input_flags)(1 << 0)))
                 {
@@ -860,7 +859,7 @@ namespace openloco::ui
         }
 
         uint64_t tool_widget = 0;
-        if (this->type == addr<0x00523392, window_type>() && this->number == addr<0x00523390, uint16_t>())
+        if (this->type == addr<0x00523392, WindowType>() && this->number == addr<0x00523390, uint16_t>())
         {
             tool_widget = 1ULL << addr<0x00523394, uint32_t>();
         }

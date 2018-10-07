@@ -11,8 +11,8 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
 
@@ -86,7 +86,7 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
-        auto window = windowmgr::create_window_centred(window_type::prompt_browse, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, (ui::window_event_list*)0x004FB308);
+        auto window = WindowManager::createWindowCentred(WindowType::fileBrowserPrompt, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, (ui::window_event_list*)0x004FB308);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AD58;
@@ -101,19 +101,19 @@ namespace openloco::ui::prompt_browse
             sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
             window->colours[0] = colour::black;
             window->colours[1] = colour::saturated_green;
-            windowmgr::current_modal_type(window_type::prompt_browse);
+            WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
                     audio::update_sounds();
-                    windowmgr::dispatch_update_all();
+                    WindowManager::dispatchUpdateAll();
                     call(0x004BEC5B);
-                    windowmgr::update();
+                    WindowManager::update();
                     call(0x004C98CF);
                     call(0x004CF63B);
-                    return windowmgr::find(window_type::prompt_browse) != nullptr;
+                    return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
-            windowmgr::current_modal_type(window_type::undefined);
+            WindowManager::setCurrentModalType(WindowType::undefined);
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(szPath, _directory);
             if (szPath[0] != '\0')

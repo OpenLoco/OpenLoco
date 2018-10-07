@@ -3,7 +3,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 #include <algorithm>
 #include <cstring>
 
@@ -15,7 +15,7 @@ namespace openloco::ui::tooltip
 
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
-    static loco_global<window_type, 0x00523381> _tooltipWindowType;
+    static loco_global<WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<window_number, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
 
@@ -115,8 +115,8 @@ namespace openloco::ui::tooltip
 
         x = std::clamp(cursorX - (width / 2), 0, ui::width() - width);
 
-        auto tooltip = windowmgr::create_window(
-            window_type::tooltip,
+        auto tooltip = WindowManager::createWindow(
+            WindowType::tooltip,
             x,
             y,
             width,
@@ -130,7 +130,7 @@ namespace openloco::ui::tooltip
     // 0x004C906B
     void open(ui::window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
-        windowmgr::close(window_type::tooltip, 0);
+        WindowManager::close(WindowType::tooltip, 0);
         if (window == nullptr || widgetIndex == -1)
         {
             return;
@@ -152,7 +152,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        auto wnd = windowmgr::find(window_type::error, 0);
+        auto wnd = WindowManager::find(WindowType::error, 0);
         if (wnd != nullptr)
         {
             return;
@@ -166,7 +166,7 @@ namespace openloco::ui::tooltip
     // 0x004C9216
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        windowmgr::close(window_type::tooltip, 0);
+        WindowManager::close(WindowType::tooltip, 0);
 
         _tooltipWindowType = window->type;
         _tooltipWindowNumber = window->number;
@@ -178,7 +178,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        auto wnd = windowmgr::find(window_type::error, 0);
+        auto wnd = WindowManager::find(WindowType::error, 0);
         if (wnd != nullptr)
         {
             return;
