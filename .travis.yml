@@ -45,12 +45,12 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
+            - curl -L https://github.com/OpenRCT2/OpenLoco-Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
+            - unzip dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake ../
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
         - os: osx
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
@@ -59,12 +59,12 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
+            - curl -L https://github.com/OpenRCT2/OpenLoco-Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
+            - unzip dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake ../
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
 
 
