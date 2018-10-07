@@ -213,7 +213,7 @@ namespace openloco::ui::options
 
     namespace display
     {
-        static const gfx::ui_size_t _window_size = { 366, 159 };
+        static const gfx::ui_size_t _window_size = { 366, 184 };
 
         namespace widx
         {
@@ -223,6 +223,9 @@ namespace openloco::ui::options
                 screen_mode_btn,
                 display_resolution,
                 display_resolution_btn,
+                display_scale,
+                display_scale_down_btn,
+                display_scale_up_btn,
                 landscape_smoothing,
                 gridlines_on_landscape,
                 vehicles_min_scale,
@@ -240,14 +243,17 @@ namespace openloco::ui::options
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
             make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 80 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
-            make_widget({ 10, 95 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
-            make_widget({ 183, 109 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
-            make_widget({ 344, 110 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
-            make_widget({ 183, 124 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
-            make_widget({ 344, 125 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
-            make_widget({ 183, 139 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            make_widget({ 344, 140 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 183, 79 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_widget({ 333, 80 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::spinner_minus),
+            make_widget({ 344, 80 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::spinner_plus),
+            make_widget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
+            make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
+            make_widget({ 183, 133 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
+            make_widget({ 344, 134 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
+            make_widget({ 183, 148 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
+            make_widget({ 344, 149 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
+            make_widget({ 183, 163 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_widget({ 344, 164 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end(),
         };
 
@@ -494,6 +500,16 @@ namespace openloco::ui::options
 
 #pragma mark -
 
+        static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
+        {
+            auto& config = config::get_new();
+            config.scale_factor += adjust_by;
+
+            openloco::config::write();
+            gfx::invalidate_screen();
+            ui::trigger_resize();
+        }
+
         // 0x004BFBB7
         static void on_mouse_down(window* w, widget_index wi)
         {
@@ -513,6 +529,12 @@ namespace openloco::ui::options
                     break;
                 case widx::station_names_min_scale_btn:
                     station_names_scale_mouse_down(w, wi);
+                    break;
+                case widx::display_scale_down_btn:
+                    display_scale_mouse_down(w, wi, -0.25f);
+                    break;
+                case widx::display_scale_up_btn:
+                    display_scale_mouse_down(w, wi, 0.25f);
                     break;
             }
         }
@@ -636,6 +658,13 @@ namespace openloco::ui::options
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
             draw_string_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+
+            y = w->y + display::_widgets[display::widx::display_scale].top + 1;
+            draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
+
+            int scale = (int)(config::get_new().scale_factor * 100);
+            auto& scale_widget = w->widgets[widx::display_scale];
+            draw_string_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
         }
 
         static const window_event_list init_events()
@@ -2162,7 +2191,7 @@ namespace openloco::ui::options
         if (config::get_new().display.mode != config::screen_mode::fullscreen)
             window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 
-        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 #if !(defined(__APPLE__) && defined(__MACH__))
         window->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
         display::screen_mode_toggle_enabled(window);
@@ -2212,7 +2241,7 @@ namespace openloco::ui::options
         switch ((common::tab)w->current_tab)
         {
             case common::tab::display:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
                 w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);

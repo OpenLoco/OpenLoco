@@ -384,6 +384,13 @@ namespace openloco::ui
         }
     }
 
+    void trigger_resize()
+    {
+        int width, height;
+        SDL_GetWindowSize(window, &width, &height);
+        resize(width, height);
+    }
+
     void render()
     {
         if (window != nullptr && surface != nullptr)
