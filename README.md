@@ -59,6 +59,7 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
   - Desktop development with C++
   - Windows 10 SDK (10.0.14393.0)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
+- [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
 ### Linux / macOS:
@@ -66,6 +67,7 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 - make or ninja
 - 32-bit versions of the following:
   - [SDL2](https://www.libsdl.org/download-2.0.php)
+  - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
   - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
   - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenRCT2/OpenLoco/wiki/Compilation-on-macOS))
 
@@ -84,7 +86,7 @@ The standard CMake build procedure is to install the required libraries, then:
 ```
 mkdir build
 cd build
-cmake ..
+CXXFLAGS="-m32" cmake ..
 make
 ```
 
