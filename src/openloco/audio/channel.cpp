@@ -1,5 +1,3 @@
-#if !(defined(__APPLE__) && defined(__MACH__))
-
 #include "channel.h"
 #include "../console.h"
 #include "audio.h"
@@ -113,5 +111,3 @@ void channel::dispose_chunk()
     _chunk = nullptr;
     _chunk_owner = false;
 }
-
-#endif

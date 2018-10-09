@@ -2231,12 +2231,7 @@ namespace openloco::ui::options
             case common::tab::sound:
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
-#if !(defined(__APPLE__) && defined(__MACH__))
                 w->disabled_widgets = 0;
-#else
-                w->disabled_widgets = (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
-                w->enabled_widgets ^= (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
-#endif
                 w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;
                 w->invalidate();

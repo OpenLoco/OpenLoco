@@ -12,24 +12,24 @@ matrix:
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=release -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=release -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
             - DOCKERIMG=ubuntu-i686
         - os: linux
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
             - DOCKERIMG=ubuntu-i686
         - os: linux
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/  -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/ -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/"
             - DOCKERIMG=fedora-mingw32
         - os: linux
           before_install: []
           language: cpp
-          sudo: false 
+          sudo: false
           addons:
             apt:
               sources:
@@ -45,12 +45,12 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
+            - curl -L https://github.com/OpenRCT2/OpenLoco-Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
+            - unzip dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake ../
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
         - os: osx
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
@@ -59,12 +59,12 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/sdl2.rb
             - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v1/Formula/boost.rb
-            - brew install https://raw.githubusercontent.com/marijnvdwerf/openloco-dependencies/v3/Formula/yaml-cpp.rb
           script:
+            - curl -L https://github.com/OpenRCT2/OpenLoco-Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
+            - unzip dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake ../
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
 
 
