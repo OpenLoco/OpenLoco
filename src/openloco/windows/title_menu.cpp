@@ -10,8 +10,8 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../windowmgr.h"
 
 using namespace openloco::interop;
 
@@ -149,8 +149,8 @@ namespace openloco::ui::windows
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;
 
-        auto window = openloco::ui::windowmgr::create_window(
-            window_type::title_menu,
+        auto window = openloco::ui::WindowManager::createWindow(
+            WindowType::titleMenu,
             (ui::width() - ww) / 2,
             ui::height() - wh - 25,
             ww,
@@ -216,7 +216,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -231,7 +231,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::load_game_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::load_game_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -246,7 +246,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -263,7 +263,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_construct_24;
-            if (input::is_hovering(window_type::title_menu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
+            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
             {
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
@@ -396,7 +396,7 @@ namespace openloco::ui::windows
 
     static void sub_439163(ui::window* callingWindow, widget_index callingWidget)
     {
-        windowmgr::close(window_type::multiplayer);
+        WindowManager::close(WindowType::multiplayer);
 
         addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
 
@@ -463,7 +463,7 @@ namespace openloco::ui::windows
             return;
         }
 
-        auto multiplayer = windowmgr::find(window_type::multiplayer);
+        auto multiplayer = WindowManager::find(WindowType::multiplayer);
         if (multiplayer == nullptr)
         {
             call(0x0046e639); // window_multiplayer::open

@@ -12,8 +12,8 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../windowmgr.h"
 #include <cassert>
 
 using namespace openloco::interop;
@@ -259,7 +259,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -302,7 +302,7 @@ namespace openloco::ui::options
                     openloco::config::write();
                     gfx::invalidate_screen();
 
-                    auto main = windowmgr::get_main();
+                    auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
                     {
                         main->viewports[0]->var_12 &= ~(1 << 5);
@@ -489,7 +489,7 @@ namespace openloco::ui::options
             old_config.resolution_height = resolutions[index].height;
 
             openloco::config::write();
-            windowmgr::invalidate_widget(w->type, w->number, widx::display_resolution);
+            WindowManager::invalidateWidget(w->type, w->number, widx::display_resolution);
         }
 
 #pragma mark -
@@ -545,7 +545,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         // 0x004BFA04
@@ -719,7 +719,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -783,7 +783,7 @@ namespace openloco::ui::options
             if (itemIndex != -1)
             {
                 audio::set_device(itemIndex);
-                windowmgr::invalidate_widget(w->type, w->number, widx::audio_device);
+                WindowManager::invalidateWidget(w->type, w->number, widx::audio_device);
             }
         }
 
@@ -794,7 +794,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -961,7 +961,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -1118,7 +1118,7 @@ namespace openloco::ui::options
 
             call(0x048AA0C);
 
-            windowmgr::close(window_type::music_selection);
+            WindowManager::close(WindowType::musicSelection);
         }
 
 #pragma mark - Widget 11
@@ -1222,7 +1222,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1371,7 +1371,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -1707,7 +1707,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1785,7 +1785,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -1828,7 +1828,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -1941,7 +1941,7 @@ namespace openloco::ui::options
             switch (wi)
             {
                 case common::widx::close_button:
-                    windowmgr::close(w);
+                    WindowManager::close(w);
                     return;
 
                 case common::widx::tab_display:
@@ -2062,7 +2062,7 @@ namespace openloco::ui::options
         {
             w->frame_no += 1;
             w->call_prepare_draw();
-            windowmgr::invalidate_widget(w->type, w->number, w->current_tab + 4);
+            WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
         static void init_events()
@@ -2126,7 +2126,7 @@ namespace openloco::ui::options
     {
         window* window;
 
-        window = windowmgr::bring_to_front(window_type::options, 0);
+        window = WindowManager::bringToFront(WindowType::options, 0);
         if (window != nullptr)
             return window;
 
@@ -2139,8 +2139,8 @@ namespace openloco::ui::options
         misc::init_events();
 
         // 0x004BF833 (create_options_window)
-        window = windowmgr::create_window_centred(
-            window_type::options,
+        window = WindowManager::createWindowCentred(
+            WindowType::options,
             display::_window_size.width,
             display::_window_size.height,
             0,

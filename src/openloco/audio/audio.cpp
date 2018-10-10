@@ -9,8 +9,8 @@
 #include "../objects/sound_object.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
+#include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
-#include "../windowmgr.h"
 #include "channel.h"
 #include "music_channel.h"
 #include "vehicle_channel.h"
@@ -393,7 +393,7 @@ namespace openloco::audio
 
     static viewport* find_best_viewport_for_sound(viewport_pos vpos)
     {
-        auto w = windowmgr::find(window_type::main, 0);
+        auto w = WindowManager::find(WindowType::main, 0);
         if (w != nullptr)
         {
             auto viewport = w->viewports[0];
@@ -403,10 +403,10 @@ namespace openloco::audio
             }
         }
 
-        for (auto i = (int32_t)windowmgr::num_windows(); i >= 0; i--)
+        for (auto i = WindowManager::count(); i >= 0; i--)
         {
-            w = windowmgr::get(i);
-            if (w != nullptr && w->type != window_type::main && w->type != window_type::unk_36)
+            w = WindowManager::get(i);
+            if (w != nullptr && w->type != WindowType::main && w->type != WindowType::unk_36)
             {
                 auto viewport = w->viewports[0];
                 if (viewport != nullptr && viewport->contains(vpos))

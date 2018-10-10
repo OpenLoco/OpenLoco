@@ -5,8 +5,8 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../ui/WindowManager.h"
 #include "../win32.h"
-#include "../windowmgr.h"
 #include <cassert>
 
 #ifdef _WIN32
@@ -29,7 +29,7 @@ namespace openloco::ui::textinput
 
     static int16_t _callingWidget;
     static window_number _callingWindowNumber;
-    static loco_global<window_type, 0x523364> _callingWindowType;
+    static loco_global<WindowType, 0x523364> _callingWindowType;
 
     static char _formatArgs[16];
     static string_id _title;
@@ -85,7 +85,7 @@ namespace openloco::ui::textinput
             0x004CE6C9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4CE6C9((window_type)regs.cl, (window_number)regs.dx);
+                sub_4CE6C9((WindowType)regs.cl, (window_number)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -151,8 +151,8 @@ namespace openloco::ui::textinput
         _events.on_mouse_up = on_mouse_up;
         _events.on_update = on_update;
 
-        auto window = windowmgr::create_window_centred(
-            window_type::text_input,
+        auto window = WindowManager::createWindowCentred(
+            WindowType::textInput,
             330,
             90,
             window_flags::stick_to_front | window_flags::flag_12,
@@ -168,13 +168,13 @@ namespace openloco::ui::textinput
         _xOffset = 0;
         calculate_text_offset(_widgets[widx::input].width() - 2);
 
-        caller = windowmgr::find(_callingWindowType, _callingWindowNumber);
+        caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
         window->colours[0] = caller->colours[0];
         window->colours[1] = caller->colours[1];
         window->var_884 = caller->var_884;
 
-        if (caller->type == window_type::title_menu)
+        if (caller->type == WindowType::titleMenu)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[0] = interface->colour_0B;
@@ -182,7 +182,7 @@ namespace openloco::ui::textinput
             window->var_884 = -1;
         }
 
-        if (caller->type == window_type::toolbar_time)
+        if (caller->type == WindowType::timeToolbar)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
@@ -203,9 +203,9 @@ namespace openloco::ui::textinput
      * @param type @<cl>
      * @param number @<dx>
      */
-    void sub_4CE6C9(window_type type, window_number number)
+    void sub_4CE6C9(WindowType type, window_number number)
     {
-        auto window = windowmgr::find(window_type::text_input, 0);
+        auto window = WindowManager::find(WindowType::textInput, 0);
         if (window == nullptr)
             return;
 
@@ -220,7 +220,7 @@ namespace openloco::ui::textinput
      */
     void cancel()
     {
-        windowmgr::close(window_type::text_input);
+        WindowManager::close(WindowType::textInput);
     }
 
     /**
@@ -228,11 +228,11 @@ namespace openloco::ui::textinput
      */
     void sub_4CE6FF()
     {
-        auto window = windowmgr::find(window_type::text_input);
+        auto window = WindowManager::find(WindowType::textInput);
         if (window == nullptr)
             return;
 
-        window = windowmgr::find(_callingWindowType, _callingWindowNumber);
+        window = WindowManager::find(_callingWindowType, _callingWindowNumber);
         if (window == nullptr)
         {
             cancel();
@@ -301,16 +301,16 @@ namespace openloco::ui::textinput
         switch (widgetIndex)
         {
             case widx::close:
-                windowmgr::close(window);
+                WindowManager::close(window);
                 break;
             case widx::ok:
                 sanitize_input();
-                auto caller = windowmgr::find(_callingWindowType, _callingWindowNumber);
+                auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
                     caller->call_text_input(_callingWidget, _buffer.data());
                 }
-                windowmgr::close(window);
+                WindowManager::close(window);
                 break;
         }
     }
@@ -327,7 +327,7 @@ namespace openloco::ui::textinput
 
     void sub_4CE910(int eax, int ebx)
     {
-        auto w = windowmgr::find(window_type::text_input);
+        auto w = WindowManager::find(WindowType::textInput);
         if (w == nullptr)
         {
             return;
@@ -409,7 +409,7 @@ namespace openloco::ui::textinput
             cursor_position += 1;
         }
 
-        windowmgr::invalidate(window_type::text_input, 0);
+        WindowManager::invalidate(WindowType::textInput, 0);
         _cursorFrame = 0;
 
         int containerWidth = _widgets[widx::input].width() - 2;

@@ -1,6 +1,6 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 

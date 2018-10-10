@@ -35,8 +35,8 @@
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "ui.h"
+#include "ui/WindowManager.h"
 #include "utility/string.hpp"
-#include "windowmgr.h"
 
 using namespace openloco::interop;
 

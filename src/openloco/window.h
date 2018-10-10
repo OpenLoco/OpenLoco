@@ -4,13 +4,12 @@
 #include "localisation/stringmgr.h"
 #include "types.hpp"
 #include "ui.h"
-#include <cstdint>
+#include "ui/WindowType.h"
 
 namespace openloco::ui
 {
     using widget_index = int8_t;
     using window_number = uint16_t;
-    enum class window_type : uint8_t;
     enum class widget_type : uint8_t;
     struct window;
 
@@ -300,7 +299,7 @@ namespace openloco::ui
                 uint16_t frame_no;    // 0x872
                 uint8_t pad_874[0x876 - 0x874];
                 viewport_config viewport_configurations[2]; // 0x876
-                window_type type;                           // 0x882
+                WindowType type;                            // 0x882
                 uint8_t pad_883[1];
                 int8_t var_884;
                 uint8_t pad_885[1];

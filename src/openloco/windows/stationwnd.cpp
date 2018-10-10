@@ -5,7 +5,7 @@
 #include "../objects/cargo_object.h"
 #include "../objects/objectmgr.h"
 #include "../stationmgr.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 

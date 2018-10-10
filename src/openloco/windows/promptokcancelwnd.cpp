@@ -4,7 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 #include <cstring>
 
 using namespace openloco::interop;
@@ -37,7 +37,7 @@ namespace openloco::ui::windows
         std::memcpy(buffers.description, byte_112CE04, 512);
         _text_buffers = &buffers;
 
-        auto window = windowmgr::create_window_centred(window_type::prompt_ok_cancel, 280, 92, ui::window_flags::flag_12 | ui::window_flags::stick_to_front, (ui::window_event_list*)0x004FB37C);
+        auto window = WindowManager::createWindowCentred(WindowType::confirmationPrompt, 280, 92, ui::window_flags::flag_12 | ui::window_flags::stick_to_front, (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AE00;
@@ -48,20 +48,20 @@ namespace openloco::ui::windows
             window->flags |= ui::window_flags::transparent;
             _result = 0;
 
-            auto originalModal = windowmgr::current_modal_type();
-            windowmgr::current_modal_type(window_type::prompt_ok_cancel);
+            auto originalModal = WindowManager::getCurrentModalType();
+            WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
                     audio::update_sounds();
-                    windowmgr::dispatch_update_all();
+                    WindowManager::dispatchUpdateAll();
                     call(0x004BEC5B);
-                    windowmgr::update();
+                    WindowManager::update();
                     call(0x004C98CF);
                     call(0x004CF63B);
-                    return windowmgr::find(window_type::prompt_ok_cancel) != nullptr;
+                    return WindowManager::find(WindowType::confirmationPrompt) != nullptr;
                 });
-            windowmgr::current_modal_type(originalModal);
+            WindowManager::setCurrentModalType(originalModal);
             return _result != 0;
         }
         return false;
