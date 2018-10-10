@@ -178,13 +178,13 @@ namespace openloco::ui
                 uint32_t event_09;
                 uint32_t event_10;
                 uint32_t on_tool_down;
-                uint32_t event_12;
-                uint32_t event_13;
+                uint32_t on_tool_drag;
+                uint32_t on_tool_up;
                 uint32_t tool_abort;
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 uint32_t scroll_mouse_down;
-                uint32_t event_18;
+                uint32_t scroll_mouse_drag;
                 uint32_t scroll_mouse_over;
                 void (*text_input)(window*, widget_index, char*);
                 uint32_t viewport_rotate;
@@ -353,9 +353,12 @@ namespace openloco::ui
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
         void call_update();                                                                               // 7
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
+        void call_tool_drag(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 12
+        void call_tool_up(int16_t widget_index, int16_t xPos, int16_t yPos);                              // 13
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
+        void call_scroll_mouse_drag(int16_t x, int16_t y, uint8_t scroll_index);                          // 18
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         void call_text_input(widget_index caller, char* buffer);                                          // 20
         void call_viewport_rotate();                                                                      // 21

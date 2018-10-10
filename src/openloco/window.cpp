@@ -579,6 +579,26 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_tool_down, regs);
     }
 
+    void window::call_tool_drag(int16_t widget_index, int16_t xPos, int16_t yPos)
+    {
+        registers regs;
+        regs.ax = xPos;
+        regs.bx = yPos;
+        regs.dx = widget_index;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_tool_drag, regs);
+    }
+
+    void window::call_tool_up(int16_t widget_index, int16_t xPos, int16_t yPos)
+    {
+        registers regs;
+        regs.ax = xPos;
+        regs.bx = yPos;
+        regs.dx = widget_index;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_tool_up, regs);
+    }
+
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
     {
         registers regs;
@@ -723,6 +743,16 @@ namespace openloco::ui
         regs.cx = xPos;
         regs.dx = yPos;
         call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+    }
+
+    void window::call_scroll_mouse_drag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    {
+        registers regs;
+        regs.ax = scroll_index;
+        regs.esi = (int32_t)this;
+        regs.cx = xPos;
+        regs.dx = yPos;
+        call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
     }
 
     void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
