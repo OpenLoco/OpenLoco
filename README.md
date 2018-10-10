@@ -79,7 +79,8 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenRCT2/OpenLoco-Dependencies/releases).
 3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenRCT2`).
 4. Run `msbuild openloco.sln`
-5. Run the game, `bin\openloco`
+5. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
+6. Run the game, `bin\openloco`
 
 ### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
