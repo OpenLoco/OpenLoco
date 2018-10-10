@@ -176,7 +176,7 @@ namespace openloco::ui
                 void (*on_update)(window*);
                 uint32_t event_08;
                 uint32_t event_09;
-                uint32_t event_10;
+                uint32_t on_tool_update;
                 uint32_t on_tool_down;
                 uint32_t event_12;
                 uint32_t event_13;
@@ -284,8 +284,10 @@ namespace openloco::ui
                 uint16_t max_height;               // 0x3e
                 window_number number;              // 0x40
                 uint32_t flags;                    // 0x42
-                scroll_area_t scroll_areas[3];     // 0x46
-                uint8_t pad_7C[0x83E - 0x7C];
+                scroll_area_t scroll_areas[2];     // 0x46
+                uint8_t pad_6A[0x83A - 0x6A];
+                uint16_t var_83A;
+                uint16_t var_83C;
                 uint16_t var_83E;
                 uint16_t var_840;
                 uint8_t pad_842[0x846 - 0x842];
@@ -298,7 +300,7 @@ namespace openloco::ui
                 uint8_t pad_85C[0x870 - 0x85C];
                 uint16_t current_tab; // 0x870
                 uint16_t frame_no;    // 0x872
-                uint8_t pad_874[0x876 - 0x874];
+                uint16_t var_874;
                 viewport_config viewport_configurations[2]; // 0x876
                 window_type type;                           // 0x882
                 uint8_t pad_883[1];
@@ -352,6 +354,9 @@ namespace openloco::ui
         void call_on_mouse_down(int8_t widget_index);                                                     // 4
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
         void call_update();                                                                               // 7
+        void call_8();                                                                                    // 8
+        void call_9();                                                                                    // 9
+        void call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos);                          // 10
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16

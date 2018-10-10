@@ -134,6 +134,11 @@ namespace openloco::gfx
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
+    g1_element* get_g1_element(uint32_t image)
+    {
+        return &_g1Elements[image];
+    }
+
     // 0x00447485
     // edi: dpi
     // ebp: fill
@@ -708,6 +713,17 @@ namespace openloco::gfx
         regs.dx = right;
         regs.bp = bottom;
         call(0x004C5C69, regs);
+    }
+
+    // 0x004C5DD5
+    void redraw_screen_rect(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    {
+        registers regs;
+        regs.ax = left;
+        regs.bx = top;
+        regs.dx = right;
+        regs.bp = bottom;
+        call(0x004C5DD5, regs);
     }
 
     void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)

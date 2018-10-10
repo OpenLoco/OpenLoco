@@ -110,5 +110,5 @@ namespace openloco
 namespace openloco::stringmgr
 {
     const char* get_string(string_id id);
-    char* format_string(char* buffer, string_id id, void* args);
+    char* format_string(char* buffer, string_id id, void* args = nullptr);
 }

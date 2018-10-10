@@ -56,6 +56,8 @@ namespace openloco::input
         shift = 1 << 0,
     };
 
+    void init();
+    void init_mouse();
     bool has_flag(input_flags value);
     void set_flag(input_flags value);
     void reset_flag(input_flags value);
@@ -68,6 +70,8 @@ namespace openloco::input
 
     bool is_pressed(ui::window_type type, ui::window_number number, ui::widget_index index);
 
+    bool is_tool_active(ui::window_type, ui::window_number);
+    void cancel_tool();
     void cancel_tool(ui::window_type, ui::window_number);
 
     bool has_key_modifier(key_modifier modifier);

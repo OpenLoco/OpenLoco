@@ -79,6 +79,7 @@ namespace openloco::gfx
     drawpixelinfo_t& screen_dpi();
 
     void load_g1();
+    g1_element* get_g1_element(uint32_t image);
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
 
@@ -140,6 +141,7 @@ namespace openloco::gfx
 
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void redraw_screen_rect(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
     bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
 }

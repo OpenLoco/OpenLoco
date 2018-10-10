@@ -20,6 +20,12 @@ namespace openloco::input
     static int32_t _cursor_drag_start_y;
     loco_global<uint32_t, 0x00525374> _cursor_drag_state;
 
+    void init()
+    {
+        _flags = 0;
+        _state = 0;
+    }
+
     bool has_flag(input_flags value)
     {
         return (_flags & (uint32_t)value) != 0;

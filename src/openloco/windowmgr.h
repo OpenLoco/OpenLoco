@@ -34,7 +34,7 @@ namespace openloco::ui
         title_logo = 22,
         vehicle = 23,
         station = 24,
-
+        drag_vehicle_part = 25,
         company = 26,
         vehicle_list = 27,
         build_vehicle = 28,
@@ -74,6 +74,7 @@ namespace openloco::ui
 
 namespace openloco::ui::windowmgr
 {
+    void init();
     void register_hooks();
     window_type current_modal_type();
     void current_modal_type(window_type type);
@@ -105,6 +106,9 @@ namespace openloco::ui::windowmgr
     void sub_4B93A5(window_number number);
     void close_topmost();
     void all_wheel_input();
+    bool is_in_front(ui::window* w);
+    bool is_in_front_alt(ui::window* w);
+    void sub_4C98CF();
 }
 
 namespace openloco::ui::windows
@@ -172,4 +176,9 @@ namespace openloco::ui::tooltip
     void register_hooks();
     void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+}
+
+namespace openloco::ui::vehicle
+{
+    void register_hooks();
 }

@@ -116,6 +116,19 @@ namespace openloco::input
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
     };
 
+    void init_mouse()
+    {
+        _pressedWindowType = window_type::undefined;
+
+        _tooltipNotShownTicks = -1;
+        _hoverWindowType = window_type::undefined;
+
+        _5233AE = 0;
+        _5233B2 = 0;
+
+        _mapSelectionFlags = 0;
+    }
+
     bool is_hovering(ui::window_type type)
     {
         return *_hoverWindowType == type;
@@ -148,15 +161,26 @@ namespace openloco::input
         return _pressedWidgetIndex == index;
     }
 
-    void cancel_tool(ui::window_type type, ui::window_number number)
+    bool is_tool_active(ui::window_type type, ui::window_number number)
     {
         if (!has_flag(input_flags::tool_active))
+            return false;
+
+        return (*_toolWindowType == type && _toolWindowNumber == number);
+    }
+
+    // 0x004CE3D6
+    void cancel_tool()
+    {
+        call(0x004CE3D6);
+    }
+
+    void cancel_tool(ui::window_type type, ui::window_number number)
+    {
+        if (!is_tool_active(type, number))
             return;
 
-        if (*_toolWindowType == type && _toolWindowNumber == number)
-        {
-            call(0x004CE3D6);
-        }
+        cancel_tool();
     }
 
 #pragma mark - Mouse input
