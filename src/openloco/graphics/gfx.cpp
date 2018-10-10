@@ -461,9 +461,9 @@ namespace openloco::gfx
         }
 
         _textColours[0] = palette_index::transparent;
-        _textColours[1] = colour::get_shade(colour::dark_purple, 5);
-        _textColours[2] = colour::get_shade(colour::bright_pink, 5);
-        _textColours[3] = colour::get_shade(colour::light_blue, 5);
+        _textColours[1] = colour::get_shade(colour::darkViolet, 5);
+        _textColours[2] = colour::get_shade(colour::magenta, 5);
+        _textColours[3] = colour::get_shade(colour::blue, 5);
 
         if (colour & format_flags::textflag_5)
         {

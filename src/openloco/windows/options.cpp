@@ -623,19 +623,19 @@ namespace openloco::ui::options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
+            draw_string_494B3F(*dpi, x, y, colour::darkGrey, string_ids::options_screen_mode, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
+            draw_string_494B3F(*dpi, x + 14, y, colour::darkGrey, string_ids::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
+            draw_string_494B3F(*dpi, x, y, colour::darkGrey, string_ids::construction_marker, nullptr);
 
             y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
+            draw_string_494B3F(*dpi, x, y, colour::darkGrey, string_ids::vehicles_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+            draw_string_494B3F(*dpi, x, y, colour::darkGrey, string_ids::station_names_min_scale, nullptr);
         }
 
         static const window_event_list init_events()

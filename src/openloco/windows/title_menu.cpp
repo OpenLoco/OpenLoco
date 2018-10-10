@@ -163,8 +163,8 @@ namespace openloco::ui::windows
 
         window->init_scroll_widgets();
 
-        window->colours[0] = colour::translucent(colour::saturated_green);
-        window->colours[1] = colour::translucent(colour::saturated_green);
+        window->colours[0] = colour::translucent(colour::palegreen);
+        window->colours[1] = colour::translucent(colour::palegreen);
         window->var_846 = 0;
 
         return window;
@@ -290,7 +290,7 @@ namespace openloco::ui::windows
                 string = string_ids::two_player_mode_connected;
             }
 
-            draw_string_centred_clipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
+            draw_string_centred_clipped(*dpi, x, y, ww - 4, colour::darkGrey, string, (char*)0x112c826);
         }
     }
 
