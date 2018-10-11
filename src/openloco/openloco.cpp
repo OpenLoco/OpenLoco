@@ -543,7 +543,30 @@ namespace openloco
         call(0x004C56F6);
         townmgr::update();
         industrymgr::update();
+
+        uintptr_t start = 0x506000;
+        uintptr_t end   = 0x1143000;
+
+        save_state beforeVanilla1 = save_state(start, end);
+        call(0x004A8826);
+        save_state afterVanilla1 = save_state(start, end);
+        beforeVanilla1.reset();
+
+        save_state beforeCpp1 = save_state(start, end);
         thingmgr::update_vehicles();
+        save_state afterCpp1 = save_state(start, end);
+        beforeCpp1.reset();
+
+        printf("Before diff:\n");
+        printf("===\n");
+        save_state::log_diff(beforeVanilla1, beforeCpp1);
+        printf("===\n");
+
+        printf("After diff:\n");
+        printf("===\n");
+        save_state::log_diff(afterVanilla1, afterCpp1);
+        printf("===\n");
+
         sub_46FFCA();
         stationmgr::update();
         thingmgr::update_misc_things();

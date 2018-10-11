@@ -2,6 +2,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <stdexcept>
+#include <iostream>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -300,7 +301,7 @@ namespace openloco::interop
             &registers.ebp);
     }
 
-    void read_memory(uint32_t address, void* data, size_t size)
+    void read_memory(uintptr_t address, void* data, size_t size)
     {
 #ifdef _WIN32
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -313,7 +314,7 @@ namespace openloco::interop
 #endif // _WIN32
     }
 
-    void write_memory(uint32_t address, const void* data, size_t size)
+    void write_memory(uintptr_t address, const void* data, size_t size)
     {
 #ifdef _WIN32
         if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -330,12 +331,38 @@ namespace openloco::interop
         : begin(begin)
         , end(end)
     {
+        // std::cout << "(end - begin) = " << (end - begin) << std::endl;
         state.resize(end - begin);
+        std::cout << "Saving state from begin: " << begin
+                << " with data pointer: " << state.data()
+                << " and size " << state.size()
+                << std::endl;
         read_memory(begin, state.data(), state.size());
+
+        auto copydata = state.data();
+        for (size_t i = 0; i < (end - begin); i++)
+        {
+            if (copydata[i] != *((std::byte*)(begin + i)))
+            {
+                std::cout << "Found mismatch at offset " << i << " in copy\n";
+                return;
+            }
+        }
+        // bool result = std::equal(
+        //     state.begin(),
+        //     state.end(),
+        //     begin,
+        //     end);
+
+        std::cout << "Original memory is equal to saved state" << std::endl;
     }
 
     void save_state::reset()
     {
+        std::cout << "Restoring state from begin: " << begin
+                << " with data pointer: " << state.data()
+                << " and size " << state.size()
+                << std::endl;
         interop::write_memory(begin, state.data(), state.size());
     }
 
@@ -344,6 +371,7 @@ namespace openloco::interop
         // TODO should we allow different base addresses?
         //      if so then we need to do extra work for that.
         auto length = std::min(lhs.state.size(), rhs.state.size());
+        int lastError = -1;
         for (size_t i = 0; i < length; i++)
         {
             auto left = lhs.state[i];
@@ -351,6 +379,11 @@ namespace openloco::interop
             if (left != right)
             {
                 uint32_t addr = lhs.begin + i;
+                if (lastError != -1 && lastError != (int)i - 1)
+                {
+                    std::printf("...\n");
+                }
+                lastError = i;
                 std::printf("0x%06" PRIX32 ": %02" PRIX8 "  %02" PRIX8 "\n", addr, (uint8_t)left, (uint8_t)right);
             }
         }

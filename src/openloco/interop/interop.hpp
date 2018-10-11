@@ -357,8 +357,8 @@ namespace openloco::interop
     bool operator==(const save_state& lhs, const save_state& rhs);
     bool operator!=(const save_state& lhs, const save_state& rhs);
 
-    void read_memory(uint32_t address, void* data, size_t size);
-    void write_memory(uint32_t address, const void* data, size_t size);
+    void read_memory(uintptr_t address, void* data, size_t size);
+    void write_memory(uintptr_t address, const void* data, size_t size);
 
     using hook_function = uint8_t (*)(registers& regs);
 
