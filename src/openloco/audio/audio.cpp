@@ -1,6 +1,7 @@
 #include "audio.h"
 #include "../config.h"
 #include "../console.h"
+#include "../date.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
@@ -56,6 +57,15 @@ namespace openloco::audio
             return (void*)((uintptr_t)this + sizeof(sound_object_data));
         }
     };
+
+    struct music_info
+    {
+        uint32_t unk_00;
+        uint32_t unk_04;
+        uint16_t start_year;
+        uint16_t end_year;
+        uint16_t path_id;
+    };
 #pragma pack(pop)
 
     struct audio_format
@@ -68,8 +78,15 @@ namespace openloco::audio
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
     [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
+    
+    static constexpr int32_t num_music_tracks = 29;
+    static constexpr uint8_t no_song = 0xFF;
+
+    static loco_global<music_info[num_music_tracks], 0x004FE910> MusicInfo;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
+    static loco_global<uint8_t, 0x0050D434> _currentSong;
+    static loco_global<uint8_t, 0x0050D435> _lastSong;
 
     static std::vector<std::string> _devices;
     static audio_format _outputFormat;
@@ -819,16 +836,125 @@ namespace openloco::audio
         call(0x0048ACFD);
     }
 
+    static int32_t choose_next_music_track(int32_t excludeTrack)
+    {
+        using music_playlist_type = config::music_playlist_type;
+
+        static std::vector<uint8_t> playlist;
+        playlist.clear();
+
+        auto cfg = config::get();
+        switch (cfg.music_playlist)
+        {
+            case music_playlist_type::current_era:
+            {
+                auto currentYear = current_year();
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    const auto& mi = MusicInfo[i];
+                    if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                    {
+                        if (i != excludeTrack)
+                        {
+                            playlist.push_back(i);
+                        }
+                    }
+                }
+                break;
+            }
+            case music_playlist_type::all:
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack)
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+                break;
+            case music_playlist_type::custom:
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack && (cfg.enabled_music[i] & 1))
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+                break;
+        }
+
+        if (playlist.size() == 0)
+        {
+            if (excludeTrack == no_song)
+            {
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack)
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+            }
+            else
+            {
+                const auto& mi = MusicInfo[excludeTrack];
+                auto currentYear = current_year();
+                if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                {
+                    playlist.push_back(excludeTrack);
+                }
+            }
+        }
+
+        auto r = std::rand() % playlist.size();
+        auto track = playlist[r];
+        return track;
+    }
+
     // 0x0048A78D
     void play_background_music()
     {
-        call(0x0048A78D);
+        if (!_audio_initialised || addr<0x0050D554, uint8_t>() != 0 || !(addr<0x0050D555, uint8_t>() & 1))
+        {
+            return;
+        }
+
+        auto cfg = config::get();
+        if (cfg.music_playing == 0 || is_title_mode() || is_editor_mode())
+        {
+            return;
+        }
+
+        if (!_music_channel.is_playing())
+        {
+            _currentSong = choose_next_music_track(_lastSong);
+            _lastSong = _currentSong;
+
+            const auto& mi = MusicInfo[_currentSong];
+            auto path = environment::get_path((path_id)mi.path_id);
+            if (_music_channel.load(path))
+            {
+                _music_current_channel = channel_id::bgm;
+                if (!_music_channel.play(false))
+                {
+                    cfg.music_playing = 0;
+                }
+            }
+            else
+            {
+                cfg.music_playing = 0;
+            }
+
+            WindowManager::invalidate(WindowType::options);
+        }
     }
 
     // 0x0048AAE8
     void stop_background_music()
     {
-        call(0x0048AAE8);
+        if (_audio_initialised && _music_channel.is_playing())
+        {
+            _music_channel.stop();
+        }
     }
 
     // 0x0048AC66

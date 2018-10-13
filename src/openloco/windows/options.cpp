@@ -916,7 +916,7 @@ namespace openloco::ui::options
                 string_ids::play_custom_music_selection,
             };
 
-            set_format_arg(2, string_id, playlist_string_ids[config::get().music_playlist]);
+            set_format_arg(2, string_id, playlist_string_ids[(uint8_t)config::get().music_playlist]);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
             w->activated_widgets |= (1 << widx::music_controls_stop);
@@ -930,7 +930,7 @@ namespace openloco::ui::options
             }
 
             w->disabled_widgets |= (1 << widx::edit_selection);
-            if (config::get().music_playlist == 2)
+            if (config::get().music_playlist == config::music_playlist_type::custom)
             {
                 w->disabled_widgets &= ~(1 << widx::edit_selection);
             }
@@ -1101,7 +1101,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::play_all_music);
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::play_custom_music_selection);
 
-            dropdown::set_selection(config::get().music_playlist);
+            dropdown::set_selection((uint8_t)config::get().music_playlist);
         }
 
         // 0x004C084A
@@ -1111,7 +1111,7 @@ namespace openloco::ui::options
                 return;
 
             auto& cfg = openloco::config::get();
-            cfg.music_playlist = ax;
+            cfg.music_playlist = (config::music_playlist_type)ax;
             config::write();
 
             w->invalidate();
@@ -1137,7 +1137,7 @@ namespace openloco::ui::options
         {
             auto vector = std::vector<int>();
 
-            if (config::get().music_playlist == 0)
+            if (config::get().music_playlist == config::music_playlist_type::current_era)
             {
                 uint16_t year = current_year();
                 for (int i = 0; i < 29; i++)
@@ -1148,14 +1148,14 @@ namespace openloco::ui::options
                     }
                 }
             }
-            else if (config::get().music_playlist == 1)
+            else if (config::get().music_playlist == config::music_playlist_type::all)
             {
                 for (int i = 0; i < 29; i++)
                 {
                     vector.push_back(i);
                 }
             }
-            else if (config::get().music_playlist == 2)
+            else if (config::get().music_playlist == config::music_playlist_type::custom)
             {
                 for (int i = 0; i < 29; i++)
                 {
