@@ -1,6 +1,7 @@
 #include "audio.h"
 #include "../config.h"
 #include "../console.h"
+#include "../date.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
@@ -65,11 +66,23 @@ namespace openloco::audio
         int32_t channels{};
     };
 
+    struct music_info
+    {
+        environment::path_id path_id;
+        uint16_t start_year;
+        uint16_t end_year;
+    };
+
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
     [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
 
+    static constexpr int32_t num_music_tracks = 29;
+    static constexpr uint8_t no_song = 0xFF;
+
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
+    static loco_global<uint8_t, 0x0050D434> _currentSong;
+    static loco_global<uint8_t, 0x0050D435> _lastSong;
 
     static std::vector<std::string> _devices;
     static audio_format _outputFormat;
@@ -83,6 +96,39 @@ namespace openloco::audio
 
     static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
+
+    // 0x004FE910
+    static const music_info MusicInfo[] = {
+        { path_id::music_20s1, 1925, 1933 },
+        { path_id::music_20s2, 1927, 1935 },
+        { path_id::music_20s4, 1932, 1940 },
+        { path_id::music_50s1, 1956, 1964 },
+        { path_id::music_50s2, 1953, 1961 },
+        { path_id::music_70s1, 1976, 1984 },
+        { path_id::music_70s2, 1973, 1981 },
+        { path_id::music_70s3, 1970, 1978 },
+        { path_id::music_80s1, 1990, 9999 },
+        { path_id::music_90s1, 1993, 9999 },
+        { path_id::music_90s2, 1996, 9999 },
+        { path_id::music_rag3, 1912, 1920 },
+        { path_id::music_chrysanthemum, 0, 1911 },
+        { path_id::music_eugenia, 0, 1908 },
+        { path_id::music_rag2, 1909, 1917 },
+        { path_id::music_rag1, 0, 1914 },
+        { path_id::music_20s3, 1929, 1937 },
+        { path_id::music_40s1, 1940, 1948 },
+        { path_id::music_40s2, 1943, 1951 },
+        { path_id::music_50s3, 1950, 1958 },
+        { path_id::music_40s3, 1946, 1954 },
+        { path_id::music_80s2, 1980, 1988 },
+        { path_id::music_60s1, 1960, 1968 },
+        { path_id::music_80s3, 1983, 1991 },
+        { path_id::music_60s2, 1963, 1971 },
+        { path_id::music_60s3, 1966, 1974 },
+        { path_id::music_80s4, 1986, 1994 },
+        { path_id::music_20s5, 1918, 1926 },
+        { path_id::music_20s6, 1921, 1929 }
+    };
 
     static constexpr bool is_music_channel(channel_id id)
     {
@@ -819,16 +865,125 @@ namespace openloco::audio
         call(0x0048ACFD);
     }
 
+    static int32_t choose_next_music_track(int32_t excludeTrack)
+    {
+        using music_playlist_type = config::music_playlist_type;
+
+        static std::vector<uint8_t> playlist;
+        playlist.clear();
+
+        auto cfg = config::get();
+        switch (cfg.music_playlist)
+        {
+            case music_playlist_type::current_era:
+            {
+                auto currentYear = current_year();
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    const auto& mi = MusicInfo[i];
+                    if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                    {
+                        if (i != excludeTrack)
+                        {
+                            playlist.push_back(i);
+                        }
+                    }
+                }
+                break;
+            }
+            case music_playlist_type::all:
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack)
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+                break;
+            case music_playlist_type::custom:
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack && (cfg.enabled_music[i] & 1))
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+                break;
+        }
+
+        if (playlist.size() == 0)
+        {
+            if (excludeTrack == no_song)
+            {
+                for (auto i = 0; i < num_music_tracks; i++)
+                {
+                    if (i != excludeTrack)
+                    {
+                        playlist.push_back(i);
+                    }
+                }
+            }
+            else
+            {
+                const auto& mi = MusicInfo[excludeTrack];
+                auto currentYear = current_year();
+                if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                {
+                    playlist.push_back(excludeTrack);
+                }
+            }
+        }
+
+        auto r = std::rand() % playlist.size();
+        auto track = playlist[r];
+        return track;
+    }
+
     // 0x0048A78D
     void play_background_music()
     {
-        call(0x0048A78D);
+        if (!_audio_initialised || addr<0x0050D554, uint8_t>() != 0 || !(addr<0x0050D555, uint8_t>() & 1))
+        {
+            return;
+        }
+
+        auto cfg = config::get();
+        if (cfg.music_playing == 0 || is_title_mode() || is_editor_mode())
+        {
+            return;
+        }
+
+        if (!_music_channel.is_playing())
+        {
+            _currentSong = choose_next_music_track(_lastSong);
+            _lastSong = _currentSong;
+
+            const auto& mi = MusicInfo[_currentSong];
+            auto path = environment::get_path((path_id)mi.path_id);
+            if (_music_channel.load(path))
+            {
+                _music_current_channel = channel_id::bgm;
+                if (!_music_channel.play(false))
+                {
+                    cfg.music_playing = 0;
+                }
+            }
+            else
+            {
+                cfg.music_playing = 0;
+            }
+
+            WindowManager::invalidate(WindowType::options);
+        }
     }
 
     // 0x0048AAE8
     void stop_background_music()
     {
-        call(0x0048AAE8);
+        if (_audio_initialised && _music_channel.is_playing())
+        {
+            _music_channel.stop();
+        }
     }
 
     // 0x0048AC66

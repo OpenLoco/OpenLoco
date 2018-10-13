@@ -39,6 +39,13 @@ namespace openloco::config
         fullscreen_borderless
     };
 
+    enum class music_playlist_type : uint8_t
+    {
+        current_era,
+        all,
+        custom,
+    };
+
     struct config_t
     {
         uint32_t flags;                             // 0x50AEB4, 0x00
@@ -62,7 +69,7 @@ namespace openloco::config
         uint8_t edge_scrolling;                     // 0x70
         uint8_t vehicles_min_scale;                 // 0x71
         uint8_t var_72;                             // 0x50AF26, 0x72
-        uint8_t music_playlist;                     // 0x50AF27, 0x73
+        music_playlist_type music_playlist;         // 0x50AF27, 0x73
         uint16_t height_marker_offset;              // 0x50AF28, 0x74
         uint8_t news_settings[6];                   // 0x50AF30, 0x76
         uint8_t preferred_currency[16];             // 0x7C

@@ -247,6 +247,7 @@ namespace openloco
 
     static void initialise()
     {
+        std::srand(std::time(0));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
