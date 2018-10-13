@@ -57,15 +57,6 @@ namespace openloco::audio
             return (void*)((uintptr_t)this + sizeof(sound_object_data));
         }
     };
-
-    struct music_info
-    {
-        uint32_t unk_00;
-        uint32_t unk_04;
-        uint16_t start_year;
-        uint16_t end_year;
-        uint16_t path_id;
-    };
 #pragma pack(pop)
 
     struct audio_format
@@ -75,14 +66,19 @@ namespace openloco::audio
         int32_t channels{};
     };
 
+    struct music_info
+    {
+        environment::path_id path_id;
+        uint16_t start_year;
+        uint16_t end_year;
+    };
+
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
     [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
-    
+
     static constexpr int32_t num_music_tracks = 29;
     static constexpr uint8_t no_song = 0xFF;
-
-    static loco_global<music_info[num_music_tracks], 0x004FE910> MusicInfo;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
     static loco_global<uint8_t, 0x0050D434> _currentSong;
@@ -100,6 +96,39 @@ namespace openloco::audio
 
     static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
+
+    // 0x004FE910
+    static const music_info MusicInfo[] = {
+        { path_id::music_20s1, 1925, 1933 },
+        { path_id::music_20s2, 1927, 1935 },
+        { path_id::music_20s4, 1932, 1940 },
+        { path_id::music_50s1, 1956, 1964 },
+        { path_id::music_50s2, 1953, 1961 },
+        { path_id::music_70s1, 1976, 1984 },
+        { path_id::music_70s2, 1973, 1981 },
+        { path_id::music_70s3, 1970, 1978 },
+        { path_id::music_80s1, 1990, 9999 },
+        { path_id::music_90s1, 1993, 9999 },
+        { path_id::music_90s2, 1996, 9999 },
+        { path_id::music_rag3, 1912, 1920 },
+        { path_id::music_chrysanthemum, 0, 1911 },
+        { path_id::music_eugenia, 0, 1908 },
+        { path_id::music_rag2, 1909, 1917 },
+        { path_id::music_rag1, 0, 1914 },
+        { path_id::music_20s3, 1929, 1937 },
+        { path_id::music_40s1, 1940, 1948 },
+        { path_id::music_40s2, 1943, 1951 },
+        { path_id::music_50s3, 1950, 1958 },
+        { path_id::music_40s3, 1946, 1954 },
+        { path_id::music_80s2, 1980, 1988 },
+        { path_id::music_60s1, 1960, 1968 },
+        { path_id::music_80s3, 1983, 1991 },
+        { path_id::music_60s2, 1963, 1971 },
+        { path_id::music_60s3, 1966, 1974 },
+        { path_id::music_80s4, 1986, 1994 },
+        { path_id::music_20s5, 1918, 1926 },
+        { path_id::music_20s6, 1921, 1929 }
+    };
 
     static constexpr bool is_music_channel(channel_id id)
     {
