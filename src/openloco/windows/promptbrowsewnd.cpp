@@ -9,6 +9,7 @@
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
@@ -165,29 +166,23 @@ namespace openloco::ui::prompt_browse
     // 0x004467E1
     static void on_update(ui::window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x004467E1, regs);
+        addr<0x011370A9, uint8_t>()++;
+        if ((addr<0x011370A9, uint8_t>() & 0x0F) == 0)
+        {
+            window->invalidate();
+        }
     }
 
     // 0x004464A1
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        registers regs;
-        regs.eax = (int32_t)scrollIndex;
-        regs.esi = (int32_t)window;
-        call(0x004464A1, regs);
-        *scrollWidth = regs.cx;
-        *scrollHeight = regs.dx;
+        *scrollHeight = window->var_83E * addr<0x009D1084, int16_t>();
     }
 
     // 0x004467D7
     static void tooltip(ui::window* window, widget_index widgetIndex)
     {
-        registers regs;
-        regs.edx = (int32_t)widgetIndex;
-        regs.esi = (int32_t)window;
-        call(0x004467D7, regs);
+        addr<0x0112C826, string_id>() = string_ids::tooltip_scroll_list;
     }
 
     // 0x00445C8F
