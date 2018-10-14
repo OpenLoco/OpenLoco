@@ -33,12 +33,22 @@ namespace openloco::ui::prompt_browse
         landscape
     };
 
-    loco_global<uint8_t, 0x009D9D63> _type;
-    loco_global<uint8_t, 0x009DA284> _fileType;
-    loco_global<char[256], 0x009D9D64> _title;
-    loco_global<char[32], 0x009D9E64> _filter;
-    loco_global<char[512], 0x009D9E84> _directory;
-    loco_global<char[512], 0x011369A0> _text_input_buffer;
+    static window_event_list _events;
+    static loco_global<uint8_t, 0x009D9D63> _type;
+    static loco_global<uint8_t, 0x009DA284> _fileType;
+    static loco_global<char[256], 0x009D9D64> _title;
+    static loco_global<char[32], 0x009D9E64> _filter;
+    static loco_global<char[512], 0x009D9E84> _directory;
+    static loco_global<char[512], 0x011369A0> _text_input_buffer;
+
+    static void on_close(window* window);
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
+    static void on_update(ui::window* window);
+    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void prepare_draw(window* window);
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
 
     static void sub_446A93()
     {
@@ -63,6 +73,18 @@ namespace openloco::ui::prompt_browse
         const char* filter,
         const char* title)
     {
+        _events.on_close = on_close;
+        _events.on_mouse_up = on_mouse_up;
+        _events.on_resize = (uint32_t)0x004467F6;
+        _events.on_update = on_update;
+        _events.get_scroll_size = get_scroll_size;
+        _events.scroll_mouse_down = (uint32_t)0x004464F7;
+        _events.scroll_mouse_over = (uint32_t)0x004464B1;
+        _events.tooltip = tooltip;
+        _events.prepare_draw = prepare_draw;
+        _events.draw = draw;
+        _events.draw_scroll = draw_scroll;
+
         auto path = fs::path(szPath);
         auto directory = get_directory(path);
         auto baseName = get_basename(path);
@@ -86,7 +108,7 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         sub_446A93();
-        auto window = WindowManager::createWindowCentred(WindowType::fileBrowserPrompt, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, (ui::window_event_list*)0x004FB308);
+        auto window = WindowManager::createWindowCentred(WindowType::fileBrowserPrompt, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, &_events);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AD58;
@@ -122,6 +144,77 @@ namespace openloco::ui::prompt_browse
             }
         }
         return false;
+    }
+
+    // 0x0044647C
+    static void on_close(window*)
+    {
+        call(0x00446CF4);
+        call(0x00447174);
+    }
+
+    // 0x00446465
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    {
+        registers regs;
+        regs.edx = (int32_t)widgetIndex;
+        regs.esi = (int32_t)window;
+        call(0x00446465, regs);
+    }
+
+    // 0x004467E1
+    static void on_update(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        call(0x004467E1, regs);
+    }
+
+    // 0x004464A1
+    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    {
+        registers regs;
+        regs.eax = (int32_t)scrollIndex;
+        regs.esi = (int32_t)window;
+        call(0x004464A1, regs);
+        *scrollWidth = regs.cx;
+        *scrollHeight = regs.dx;
+    }
+
+    // 0x004467D7
+    static void tooltip(ui::window* window, widget_index widgetIndex)
+    {
+        registers regs;
+        regs.edx = (int32_t)widgetIndex;
+        regs.esi = (int32_t)window;
+        call(0x004467D7, regs);
+    }
+
+    // 0x00445C8F
+    static void prepare_draw(ui::window* window)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        call(0x00445C8F, regs);
+    }
+
+    // 0x00445E38
+    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        regs.edi = (int32_t)dpi;
+        call(0x00445E38, regs);
+    }
+
+    // 0x00446314
+    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    {
+        registers regs;
+        regs.eax = (int32_t)scrollIndex;
+        regs.esi = (int32_t)window;
+        regs.edi = (int32_t)dpi;
+        call(0x00446314, regs);
     }
 
     static fs::path get_directory(const fs::path& path)
