@@ -31,7 +31,8 @@ namespace openloco::ui::prompt_browse
     enum class browse_file_type
     {
         saved_game,
-        landscape
+        landscape,
+        unk_2,
     };
 
     static window_event_list _events;
@@ -50,6 +51,8 @@ namespace openloco::ui::prompt_browse
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void up_one_level();
+    static void sub_446574();
 
     static void sub_446A93()
     {
@@ -157,10 +160,20 @@ namespace openloco::ui::prompt_browse
     // 0x00446465
     static void on_mouse_up(ui::window* window, widget_index widgetIndex)
     {
-        registers regs;
-        regs.edx = (int32_t)widgetIndex;
-        regs.esi = (int32_t)window;
-        call(0x00446465, regs);
+        switch (widgetIndex)
+        {
+        case 2:
+            _directory[0] = '\0';
+            WindowManager::close(window);
+            break;
+        case 6:
+            sub_446574();
+            break;
+        case 4:
+            up_one_level();
+            window->invalidate();
+            break;
+        }
     }
 
     // 0x004467E1
@@ -322,5 +335,30 @@ namespace openloco::ui::prompt_browse
                 append_directory((char*)regs.ebp);
                 return 0;
             });
+    }
+
+    static int sub_446F1D()
+    {
+        return call(0x00446F1D) & X86_FLAG_CARRY;
+    }
+
+    // 0x00446574
+    static void sub_446574()
+    {
+        if (_type != (uint8_t)browse_file_type::unk_2)
+        {
+            call(0x00446689);
+        }
+        else
+        {
+            if (sub_446F1D())
+            {
+                windows::show_error(string_ids::error_invalid_filename, 0xFFFF);
+            }
+            else
+            {
+                call(0x00446598);
+            }
+        }
     }
 }

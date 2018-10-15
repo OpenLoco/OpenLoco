@@ -1005,3 +1005,15 @@ namespace openloco::ui::WindowManager
         }
     }
 }
+
+namespace openloco::ui::windows
+{
+    // 0x00431A8A
+    void show_error(string_id title, string_id message)
+    {
+        registers regs;
+        regs.bx = (uint16_t)title;
+        regs.dx = (uint16_t)message;
+        call(0x00431A8A, regs);
+    }
+}

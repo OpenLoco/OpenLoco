@@ -248,6 +248,7 @@ namespace openloco::string_ids
     constexpr string_id dont_lose_your_rag_credit = 1079;
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
+    constexpr string_id error_unable_to_load_saved_game = 1082;
 
     constexpr string_id loading = 1088;
 
@@ -371,6 +372,8 @@ namespace openloco::string_ids
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
     constexpr string_id text_input_cursor = UNUSED_STR(2003);
+
+    constexpr string_id error_invalid_filename = 2016;
 
     constexpr string_id buffer_2039 = 2039;
     constexpr string_id buffer_2040 = 2040;
