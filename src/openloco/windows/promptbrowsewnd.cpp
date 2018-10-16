@@ -7,6 +7,7 @@
 #endif
 #include "../audio/audio.h"
 #include "../graphics/colours.h"
+#include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
@@ -35,6 +36,37 @@ namespace openloco::ui::prompt_browse
         unk_2,
     };
 
+#pragma pack(push, 1)
+    struct file_entry
+    {
+    private:
+        static constexpr uint8_t flag_directory = 1 << 4;
+
+        uint8_t flags;
+        uint8_t unk_01[0x2C - 0x01];
+        char filename[0x140 - 0x2C];
+
+    public:
+        constexpr bool is_directory()
+        {
+            return flags & flag_directory;
+        }
+
+        std::string_view get_name()
+        {
+            if (!is_directory())
+            {
+                auto end = std::strchr(filename, '.');
+                if (end != nullptr)
+                {
+                    return std::string_view(filename, end - filename);
+                }
+            }
+            return filename;
+        }
+    };
+#pragma pack(pop)
+
     static window_event_list _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<uint8_t, 0x009DA284> _fileType;
@@ -42,6 +74,8 @@ namespace openloco::ui::prompt_browse
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
     static loco_global<char[512], 0x011369A0> _text_input_buffer;
+    static loco_global<int16_t, 0x009D1084> _numFiles;
+    static loco_global<file_entry*, 0x0050AEA4> _files;
 
     static void on_close(window* window);
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
@@ -162,17 +196,17 @@ namespace openloco::ui::prompt_browse
     {
         switch (widgetIndex)
         {
-        case 2:
-            _directory[0] = '\0';
-            WindowManager::close(window);
-            break;
-        case 6:
-            sub_446574();
-            break;
-        case 4:
-            up_one_level();
-            window->invalidate();
-            break;
+            case 2:
+                _directory[0] = '\0';
+                WindowManager::close(window);
+                break;
+            case 6:
+                sub_446574();
+                break;
+            case 4:
+                up_one_level();
+                window->invalidate();
+                break;
         }
     }
 
@@ -189,7 +223,7 @@ namespace openloco::ui::prompt_browse
     // 0x004464A1
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->var_83E * addr<0x009D1084, int16_t>();
+        *scrollHeight = window->var_83E * _numFiles;
     }
 
     // 0x004467D7
@@ -218,11 +252,52 @@ namespace openloco::ui::prompt_browse
     // 0x00446314
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        registers regs;
-        regs.eax = (int32_t)scrollIndex;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x00446314, regs);
+        loco_global<uint8_t[256], 0x001136BA4> byte_1136BA4;
+        loco_global<char[16], 0x0112C826> _commonFormatArgs;
+
+        static std::string _nameBuffer;
+
+        // Background
+        auto paletteId = byte_1136BA4[window->colours[1] * 8];
+        gfx::clear_single(*dpi, paletteId);
+
+        // Directories / files
+        auto y = 0;
+        auto lineHeight = window->var_83E;
+        for (auto i = 0; i < _numFiles; i++)
+        {
+            if (y + lineHeight >= dpi->y && y <= dpi->y + dpi->height)
+            {
+                auto file = _files[i];
+
+                // Draw the row highlight
+                auto stringId = string_ids::white_stringid2;
+                if (i == window->var_85A)
+                {
+                    gfx::draw_rect(dpi, 0, y, window->width, lineHeight, 0x2000000 | 48);
+                    stringId = string_ids::wcolour2_stringid2;
+                }
+
+                // Draw the folder icon
+                auto x = 1;
+                if (file.is_directory())
+                {
+                    gfx::draw_image(dpi, x, y, image_ids::icon_folder);
+                    x += 14;
+                }
+
+                // Copy name to our work buffer
+                _nameBuffer = file.get_name();
+
+                // Draw the name
+                auto name = _nameBuffer.c_str();
+                auto stringId2 = string_ids::stringptr;
+                std::memcpy(_commonFormatArgs, &stringId2, sizeof(stringId2));
+                std::memcpy(_commonFormatArgs + 2, &name, sizeof(name));
+                gfx::draw_string_494B3F(*dpi, x, y, 0, stringId, _commonFormatArgs);
+            }
+            y += lineHeight;
+        }
     }
 
     static fs::path get_directory(const fs::path& path)
