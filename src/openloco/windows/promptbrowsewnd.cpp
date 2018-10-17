@@ -15,6 +15,7 @@
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
+#include "../platform/platform.h"
 
 using namespace openloco::interop;
 
@@ -42,17 +43,27 @@ namespace openloco::ui::prompt_browse
     private:
         static constexpr uint8_t flag_directory = 1 << 4;
 
-        uint8_t flags;
-        uint8_t unk_01[0x2C - 0x01];
-        char filename[0x140 - 0x2C];
+        uint8_t flags{};
+        uint8_t unk_01[0x2C - 0x01]{};
+        char filename[0x140 - 0x2C]{};
 
     public:
-        constexpr bool is_directory()
+        file_entry()
+        {
+        }
+
+        file_entry(const std::string_view& p, bool isDirectory)
+        {
+            p.copy(filename, sizeof(filename) - 1, 0);
+            flags = isDirectory ? flag_directory : 0;
+        }
+
+        constexpr bool is_directory() const
         {
             return flags & flag_directory;
         }
 
-        std::string_view get_name()
+        std::string_view get_name() const
         {
             if (!is_directory())
             {
@@ -77,6 +88,8 @@ namespace openloco::ui::prompt_browse
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
 
+    static std::vector<file_entry> _newFiles;
+
     static void on_close(window* window);
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_update(ui::window* window);
@@ -87,11 +100,7 @@ namespace openloco::ui::prompt_browse
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void up_one_level();
     static void sub_446574();
-
-    static void sub_446A93()
-    {
-        call(0x00446A93);
-    }
+    static void refresh_directory_list();
 
     static void sub_4CEB67(int16_t dx)
     {
@@ -145,7 +154,7 @@ namespace openloco::ui::prompt_browse
 #endif
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
-        sub_446A93();
+        refresh_directory_list();
         auto window = WindowManager::createWindowCentred(WindowType::fileBrowserPrompt, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, &_events);
         if (window != nullptr)
         {
@@ -187,7 +196,10 @@ namespace openloco::ui::prompt_browse
     // 0x0044647C
     static void on_close(window*)
     {
-        call(0x00446CF4);
+        _newFiles = {};
+        _numFiles = 0;
+        _files = (file_entry*)-1;
+
         call(0x00447174);
     }
 
@@ -339,7 +351,54 @@ namespace openloco::ui::prompt_browse
     // 0x00446A93
     static void refresh_directory_list()
     {
-        call(0x00446A93);
+        // All our filters are probably *.something so just truncate the *
+        // and treat as an extension filter
+        auto filterExtension = std::string(_filter);
+        if (filterExtension[0] == '*')
+        {
+            filterExtension = filterExtension.substr(1);
+        }
+
+        _newFiles.clear();
+        if (_directory[0] == '\0')
+        {
+            auto drives = platform::get_drives();
+            for (auto& drive : drives)
+            {
+                auto name = drive.u8string();
+                _newFiles.emplace_back(name, true);
+            }
+        }
+        else
+        {
+            auto directory = fs::path((char*)_directory);
+            for (auto& f : fs::directory_iterator(directory))
+            {
+                bool isDirectory = fs::is_directory(f);
+                if (!isDirectory)
+                {
+                    auto extension = f.path().extension().u8string();
+                    if (!utility::iequals(extension, filterExtension))
+                    {
+                        continue;
+                    }
+                }
+
+                auto name = f.path().stem().u8string();
+                _newFiles.emplace_back(name, isDirectory);
+            }
+        }
+
+        std::sort(_newFiles.begin(), _newFiles.end(), [](const file_entry& a, const file_entry& b) -> bool {
+            if (!a.is_directory() && b.is_directory())
+                return false;
+            if (a.is_directory() && !b.is_directory())
+                return true;
+            return a.get_name() < b.get_name();
+        });
+
+        _numFiles = (int16_t)_newFiles.size();
+        _files = _newFiles.data();
     }
 
     // 0x00446E2F
@@ -394,13 +453,6 @@ namespace openloco::ui::prompt_browse
                     (const char*)regs.edx,
                     (const char*)regs.ebx);
                 regs.eax = result ? 1 : 0;
-                return 0;
-            });
-
-        register_hook(
-            0x00446E2F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                up_one_level();
                 return 0;
             });
 
