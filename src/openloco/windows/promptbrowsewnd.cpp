@@ -12,10 +12,10 @@
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
+#include "../platform/platform.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "../platform/platform.h"
 
 using namespace openloco::interop;
 
@@ -91,6 +91,7 @@ namespace openloco::ui::prompt_browse
     static std::vector<file_entry> _newFiles;
 
     static void on_close(window* window);
+    static void on_resize(window* window);
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_update(ui::window* window);
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -122,7 +123,7 @@ namespace openloco::ui::prompt_browse
     {
         _events.on_close = on_close;
         _events.on_mouse_up = on_mouse_up;
-        _events.on_resize = (uint32_t)0x004467F6;
+        _events.on_resize = on_resize;
         _events.on_update = on_update;
         _events.get_scroll_size = get_scroll_size;
         _events.scroll_mouse_down = (uint32_t)0x004464F7;
@@ -201,6 +202,12 @@ namespace openloco::ui::prompt_browse
         _files = (file_entry*)-1;
 
         call(0x00447174);
+    }
+
+    // 0x004467F6
+    static void on_resize(window* window)
+    {
+        window->cap_size(400, 300, 640, 800);
     }
 
     // 0x00446465
