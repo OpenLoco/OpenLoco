@@ -87,6 +87,9 @@ namespace openloco::ui::prompt_browse
     static loco_global<char[512], 0x011369A0> _text_input_buffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
+    static loco_global<int16_t, 0x01136FA2> _textInputCaret;
+    static loco_global<uint8_t, 0x01136FA4> _textInputLeft;
+    static loco_global<uint8_t, 0x011370A9> _textInputFlags;
 
     static std::vector<file_entry> _newFiles;
 
@@ -98,6 +101,7 @@ namespace openloco::ui::prompt_browse
     static void tooltip(ui::window* window, widget_index widgetIndex);
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void up_one_level();
     static void sub_446574();
@@ -162,9 +166,9 @@ namespace openloco::ui::prompt_browse
             window->widgets = (widget_t*)0x0050AD58;
             window->enabled_widgets = (1 << 2) | (1 << 4) | (1 << 6);
             window->init_scroll_widgets();
-            addr<0x01136FA2, int16_t>() = -1;
-            addr<0x011370A9, uint8_t>() = 0;
-            addr<0x01136FA4, int16_t>() = 0;
+            _textInputCaret = -1;
+            _textInputFlags = 0;
+            _textInputLeft = 0;
             window->var_83E = 11;
             window->var_85A = 0xFFFF;
             addr<0x009DA285, uint8_t>() = 0;
@@ -232,8 +236,8 @@ namespace openloco::ui::prompt_browse
     // 0x004467E1
     static void on_update(ui::window* window)
     {
-        addr<0x011370A9, uint8_t>()++;
-        if ((addr<0x011370A9, uint8_t>() & 0x0F) == 0)
+        _textInputFlags++;
+        if ((_textInputFlags & 0x0F) == 0)
         {
             window->invalidate();
         }
@@ -259,13 +263,136 @@ namespace openloco::ui::prompt_browse
         call(0x00445C8F, regs);
     }
 
+    static void set_common_args_stringptr(const char* buffer)
+    {
+        loco_global<char[16], 0x0112C826> _commonFormatArgs;
+        auto stringptrId = string_ids::stringptr;
+        std::memcpy(_commonFormatArgs, &stringptrId, sizeof(stringptrId));
+        std::memcpy(_commonFormatArgs + 2, &buffer, sizeof(buffer));
+    }
+
     // 0x00445E38
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x00445E38, regs);
+        loco_global<char[16], 0x0112C826> _commonFormatArgs;
+        static std::string _nameBuffer;
+
+        // {
+        //     registers regs;
+        //     regs.esi = (int32_t)window;
+        //     regs.edi = (int32_t)dpi;
+        //     call(0x00445E38, regs);
+        //     if (&regs != nullptr)
+        //         return;
+        // }
+
+        window->draw(dpi);
+
+        auto folder = (const char*)0x9DA084;
+        set_common_args_stringptr(folder);
+        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[4].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
+
+        auto selectedIndex = window->var_85A;
+        if (selectedIndex != 0xFFFF)
+        {
+            auto& selectedFile = _files[selectedIndex];
+            if (!selectedFile.is_directory())
+            {
+                const auto& widget = window->widgets[7];
+
+                auto height = 201;
+                auto width = window->width - widget.right - 8;
+                auto x = window->x + widget.right + 3;
+                auto y = window->y + 45;
+
+                _nameBuffer = selectedFile.get_name();
+                set_common_args_stringptr(_nameBuffer.c_str());
+                gfx::draw_string_centred_clipped(
+                    *dpi,
+                    x + (width / 2),
+                    y,
+                    width,
+                    0,
+                    string_ids::wcolour2_stringid2,
+                    _commonFormatArgs);
+                y += 12;
+
+                if (_fileType == (uint8_t)browse_file_type::saved_game)
+                {
+                    // Preview image
+                    auto data = (const uint8_t*)0x50AEA8;
+                    if (data != (const uint8_t*)-1)
+                    {
+                        gfx::fill_rect_inset(dpi, x, y, x + width, y + height, window->colours[1], 0x30);
+                    }
+                    y += 207;
+
+                    // Company
+                    auto companyName = *((const char**)0x50AEA8);
+                    set_common_args_stringptr(companyName);
+                    gfx::draw_string_495224(*dpi, x, y, 0, string_ids::window_browse_company, _commonFormatArgs);
+                    y += 10;
+
+                    // Owner
+                    auto ownerName = (const char*)(companyName + 0x100);
+                    set_common_args_stringptr(ownerName);
+                    gfx::draw_string_495224(*dpi, x, y, 0, string_ids::owner_label, _commonFormatArgs);
+                }
+            }
+        }
+
+        const auto& widget5 = window->widgets[5];
+        if (widget5.type != widget_type::none)
+        {
+            // Draw filename label
+            gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + 2, 0, string_ids::window_browse_filename, nullptr);
+
+            // Clip to text box
+            gfx::drawpixelinfo_t* dpi2;
+            if (gfx::clip_drawpixelinfo(
+                    &dpi2,
+                    dpi,
+                    window->x + widget5.left + 1,
+                    window->y + widget5.top + 1,
+                    widget5.right - widget5.left - 1,
+                    widget5.bottom - widget5.top - 1))
+            {
+                draw_text_input(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
+            }
+        }
+    }
+
+    static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret)
+    {
+        loco_global<char[16], 0x0112C826> _commonFormatArgs;
+        loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
+        static std::string gbuffer;
+
+        // Draw text box text
+        gfx::point_t origin = { 0, 1 };
+        set_common_args_stringptr(text);
+        gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::white_stringid2, _commonFormatArgs);
+
+        if (showCaret)
+        {
+            if (caret == -1)
+            {
+                // Draw horizontal caret
+                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::window_browse_input_caret, nullptr);
+            }
+            else
+            {
+                // Draw text[0:caret] over the top
+                // TODO this should really just be measuring the string
+                gbuffer = std::string_view(text, caret);
+                set_common_args_stringptr(gbuffer.c_str());
+                origin = { 0, 1 };
+                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::white_stringid2, _commonFormatArgs);
+
+                // Draw vertical caret
+                gfx::draw_rect(&dpi, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
+            }
+        }
     }
 
     // 0x00446314
@@ -309,10 +436,7 @@ namespace openloco::ui::prompt_browse
                 _nameBuffer = file.get_name();
 
                 // Draw the name
-                auto name = _nameBuffer.c_str();
-                auto stringId2 = string_ids::stringptr;
-                std::memcpy(_commonFormatArgs, &stringId2, sizeof(stringId2));
-                std::memcpy(_commonFormatArgs + 2, &name, sizeof(name));
+                set_common_args_stringptr(_nameBuffer.c_str());
                 gfx::draw_string_494B3F(*dpi, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;

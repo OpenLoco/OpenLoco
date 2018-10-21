@@ -306,6 +306,8 @@ namespace openloco::string_ids
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
 
+    constexpr string_id owner_label = 1560;
+
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
@@ -371,7 +373,15 @@ namespace openloco::string_ids
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
-    constexpr string_id text_input_cursor = UNUSED_STR(2003);
+    constexpr string_id window_browse_input_caret = 2003;
+    constexpr string_id window_browse_filename = 2004;
+    constexpr string_id window_browse_folder = 2005;
+
+    constexpr string_id window_browse_company = 2007;
+    constexpr string_id window_browse_date = 2008;
+    constexpr string_id window_browse_challenge_progress = 2009;
+    constexpr string_id window_browse_challenge_completed = 2010;
+    constexpr string_id window_browse_challenge_failed = 2011;
 
     constexpr string_id error_invalid_filename = 2016;
 

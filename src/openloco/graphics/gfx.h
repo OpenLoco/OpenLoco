@@ -87,6 +87,13 @@ namespace openloco::gfx
 
     gfx::point_t draw_string(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str);
 
+    void draw_string_495224(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void* args);
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,
         int16_t x,
