@@ -18,7 +18,7 @@ namespace openloco
     void town::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = (intptr_t)this;
         call(0x0049742F, regs);
     }
 

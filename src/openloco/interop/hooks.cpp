@@ -31,8 +31,13 @@ using namespace openloco;
 #define STDCALL __stdcall
 #define CDECL __cdecl
 #elif defined(__GNUC__)
+#if defined(__i386__)
 #define STDCALL __attribute__((stdcall))
 #define CDECL __attribute__((cdecl))
+#else
+#define STDCALL
+#define CDECL
+#endif
 #else
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
@@ -421,7 +426,7 @@ static bool STDCALL lib_WriteFile(
 #define TRUNCATE_EXISTING 5
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t STDCALL lib_CreateFileA(
+static intptr_t STDCALL lib_CreateFileA(
     char* lpFileName,
     uint32_t dwDesiredAccess,
     uint32_t dwShareMode,
@@ -451,7 +456,7 @@ static int32_t STDCALL lib_CreateFileA(
         return -1;
     }
 
-    return (int32_t)pFILE;
+    return (intptr_t)pFILE;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -710,7 +715,7 @@ void openloco::interop::register_hooks()
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 #endif
-            regs.ebx = (int32_t)buffer;
+            regs.ebx = (intptr_t)buffer;
             return 0;
         });
 
@@ -779,7 +784,7 @@ void openloco::interop::register_hooks()
             registers backup = regs;
             char* buffer = stringmgr::format_string((char*)regs.edi, regs.eax, (void*)regs.ecx);
             regs = backup;
-            regs.edi = (uint32_t)buffer;
+            regs.edi = (intptr_t)buffer;
             return 0;
         });
 

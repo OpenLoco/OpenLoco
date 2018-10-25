@@ -40,7 +40,7 @@ namespace openloco::ui::windows::construction
 
         registers regs;
         regs.edx = widgetIndex;
-        regs.esi = (int32_t)&w;
+        regs.esi = (intptr_t)&w;
         switch (widgetIndex)
         {
             case widget_idx::close:

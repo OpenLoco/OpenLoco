@@ -269,9 +269,9 @@ namespace openloco::input
 
         registers regs;
         regs.ebp = (int32_t)state();
-        regs.esi = (uint32_t)window;
+        regs.esi = (intptr_t)window;
         regs.edx = widgetIndex;
-        regs.edi = (uint32_t)widget;
+        regs.edi = (intptr_t)widget;
         regs.cx = (uint16_t)button;
         regs.ax = x;
         regs.bx = y;

@@ -88,8 +88,8 @@ namespace openloco::stringmgr
     static char* format_int32_grouped(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = (intptr_t)value;
+        regs.edi = (intptr_t)buffer;
 
         call(0x00495F35, regs);
         return (char*)regs.edi;
@@ -98,8 +98,8 @@ namespace openloco::stringmgr
     static char* format_int32_ungrouped(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = (intptr_t)value;
+        regs.edi = (intptr_t)buffer;
 
         call(0x495E2A, regs);
         return (char*)regs.edi;
@@ -108,10 +108,10 @@ namespace openloco::stringmgr
     static char* format_int48_grouped(uint64_t value, char* buffer, uint8_t separator)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = (uint32_t)buffer;
-        regs.ebx = (uint32_t)separator;
+        regs.eax = (intptr_t)value;
+        regs.edx = (intptr_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
+        regs.edi = (intptr_t)buffer;
+        regs.ebx = (intptr_t)separator;
 
         call(0x496052, regs);
         return (char*)regs.edi;
@@ -121,7 +121,7 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (intptr_t)buffer;
 
         call(0x4963FC, regs);
         return (char*)regs.edi;
@@ -131,7 +131,7 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (intptr_t)buffer;
 
         call(0x4962F1, regs);
         return (char*)regs.edi;
@@ -356,7 +356,7 @@ namespace openloco::stringmgr
 
                     case control_codes::string_ptr:
                     {
-                        const char* str = (char*)args.pop32();
+                        const char* str = (char*)((intptr_t)args.pop32());
                         strcpy(buffer, str);
                         buffer += strlen(str);
                         break;

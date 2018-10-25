@@ -79,7 +79,7 @@ namespace openloco::ui::tooltip
         {
             // gfx_get_string_width_new_lined
             registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
+            regs.esi = (intptr_t)&byte_112CC04[0];
             call(0x00495715, regs);
             strWidth = regs.cx;
         }
@@ -89,7 +89,7 @@ namespace openloco::ui::tooltip
         {
             // gfx_wrap_string
             registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
+            regs.esi = (intptr_t)&byte_112CC04[0];
             regs.di = strWidth + 1;
             call(0x00495301, regs);
             strWidth = regs.cx;
@@ -215,8 +215,8 @@ namespace openloco::ui::tooltip
             regs.dx = y + 1;
             regs.al = 0;
             regs.bp = _lineBreakCount;
-            regs.edi = (uint32_t)dpi;
-            regs.esi = (uint32_t)&_text[0];
+            regs.edi = (intptr_t)dpi;
+            regs.esi = (intptr_t)&_text[0];
             call(0x00494E33, regs);
         }
     }

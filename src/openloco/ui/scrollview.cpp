@@ -22,8 +22,8 @@ namespace openloco::ui::scrollview
         registers regs;
         regs.ax = x;
         regs.bx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)widget;
+        regs.esi = (intptr_t)window;
+        regs.edi = (intptr_t)widget;
 
         call(0x004C8EF0, regs);
 

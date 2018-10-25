@@ -606,7 +606,7 @@ namespace openloco::ui::WindowManager
     window* bringToFront(window* w)
     {
         registers regs;
-        regs.esi = (uint32_t)w;
+        regs.esi = (intptr_t)w;
         call(0x004CC750, regs);
 
         return (window*)regs.esi;

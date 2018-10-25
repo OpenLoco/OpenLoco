@@ -15,7 +15,7 @@
 #include "interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
-#define PLATFORM_X86
+//#define PLATFORM_X86
 
 #if defined(__GNUC__)
 #ifdef __clang__
@@ -284,13 +284,13 @@ namespace openloco::interop
     {
         return call_byref(
             address,
-            &registers.eax,
-            &registers.ebx,
-            &registers.ecx,
-            &registers.edx,
-            &registers.esi,
-            &registers.edi,
-            &registers.ebp);
+            (int32_t*)&registers.eax,
+            (int32_t*)&registers.ebx,
+            (int32_t*)&registers.ecx,
+            (int32_t*)&registers.edx,
+            (int32_t*)&registers.esi,
+            (int32_t*)&registers.edi,
+            (int32_t*)&registers.ebp);
     }
 
     void read_memory(uint32_t address, void* data, size_t size)
@@ -302,7 +302,7 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy(data, (void*)address, size);
+        std::memcpy(data, (void*)((intptr_t)address), size);
 #endif // _WIN32
     }
 
@@ -315,7 +315,7 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy((void*)address, data, size);
+        std::memcpy((void*)((intptr_t)address), data, size);
 #endif // _WIN32
     }
 

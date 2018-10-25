@@ -51,7 +51,7 @@ namespace openloco::gfx
 
         g1_element() = default;
         g1_element(const g1_element32_t& src)
-            : offset((uint8_t*)src.offset)
+            : offset((uint8_t*)((intptr_t)src.offset))
             , width(src.width)
             , height(src.height)
             , x_offset(src.x_offset)

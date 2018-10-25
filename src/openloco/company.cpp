@@ -35,7 +35,7 @@ namespace openloco
     void company::ai_think()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = (intptr_t)this;
         call(0x00430762, regs);
     }
 }
