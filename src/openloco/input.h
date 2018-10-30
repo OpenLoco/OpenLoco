@@ -67,6 +67,8 @@ namespace openloco::input
 
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
 
+    bool is_tool_active(ui::WindowType, ui::window_number);
+    void cancel_tool();
     void cancel_tool(ui::WindowType, ui::window_number);
 
     bool has_key_modifier(key_modifier modifier);

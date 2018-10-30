@@ -148,15 +148,26 @@ namespace openloco::input
         return _pressedWidgetIndex == index;
     }
 
-    void cancel_tool(ui::WindowType type, ui::window_number number)
+    bool is_tool_active(ui::WindowType type, ui::window_number number)
     {
         if (!has_flag(input_flags::tool_active))
+            return false;
+
+        return (*_toolWindowType == type && _toolWindowNumber == number);
+    }
+
+    // 0x004CE3D6
+    void cancel_tool()
+    {
+        call(0x004CE3D6);
+    }
+
+    void cancel_tool(ui::WindowType type, ui::window_number number)
+    {
+        if (!is_tool_active(type, number))
             return;
 
-        if (*_toolWindowType == type && _toolWindowNumber == number)
-        {
-            call(0x004CE3D6);
-        }
+        cancel_tool();
     }
 
 #pragma mark - Mouse input
