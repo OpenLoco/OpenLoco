@@ -79,6 +79,7 @@ namespace openloco::gfx
     drawpixelinfo_t& screen_dpi();
 
     void load_g1();
+    g1_element* get_g1_element(uint32_t image);
     void clear(drawpixelinfo_t& dpi, uint32_t fill);
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
 

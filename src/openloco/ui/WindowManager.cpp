@@ -35,6 +35,12 @@ namespace openloco::ui::WindowManager
         };
     };
 
+    void init()
+    {
+        _windowsEnd = &_windows[0];
+        _523508 = 0;
+    }
+
     void registerHooks()
     {
         register_hook(

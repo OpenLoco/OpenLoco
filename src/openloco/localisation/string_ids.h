@@ -90,6 +90,7 @@ namespace openloco::string_ids
 
     constexpr string_id dropdown = 96;
 
+    constexpr string_id label_button_cancel = 186;
     constexpr string_id label_button_ok = 187;
 
     constexpr string_id tooltip_scroll_left = 188;

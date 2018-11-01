@@ -57,6 +57,8 @@ namespace openloco::input
         constexpr uint8_t cheat = 1 << 7;
     };
 
+    void init();
+    void init_mouse();
     bool has_flag(input_flags value);
     void set_flag(input_flags value);
     void reset_flag(input_flags value);

@@ -32,6 +32,7 @@ namespace openloco
     bool is_paused();
     uint32_t scenario_ticks();
     utility::prng& gprng();
+    void initialise_viewports();
 
     void main();
     void prompt_tick_loop(std::function<bool()> tickAction);

@@ -10,11 +10,22 @@ using namespace openloco::interop;
 
 namespace openloco::ui::viewportmgr
 {
-    loco_global<viewport * [max_viewports], 0x0113D820> _viewports;
+    loco_global<viewport[max_viewports], 0x0113D758> _viewports;
+    loco_global<viewport * [max_viewports], 0x0113D820> _viewportPointers;
+
+    void init()
+    {
+        for (size_t i = 0; i < max_viewports; i++)
+        {
+            _viewports[i].width = 0;
+        }
+
+        _viewportPointers[0] = nullptr;
+    }
 
     std::array<viewport*, max_viewports> viewports()
     {
-        auto arr = (std::array<viewport*, max_viewports>*)_viewports.get();
+        auto arr = (std::array<viewport*, max_viewports>*)_viewportPointers.get();
         return *arr;
     }
 
