@@ -24,6 +24,7 @@
 #include "date.h"
 #include "environment.h"
 #include "graphics/gfx.h"
+#include "gui.h"
 #include "industrymgr.h"
 #include "input.h"
 #include "interop/interop.hpp"
@@ -276,7 +277,7 @@ namespace openloco
         intro::state(intro::intro_state::end);
 #endif
         call(0x0046AD7D);
-        call(0x00438A6C);
+        gui::init();
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
