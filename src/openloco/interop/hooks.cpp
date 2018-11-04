@@ -13,6 +13,7 @@
 #include "../graphics/gfx.h"
 #include "../gui.h"
 #include "../input.h"
+#include "../map/tile.h"
 #include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
@@ -838,6 +839,22 @@ void openloco::interop::register_hooks()
     ui::vehicle::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
+
+    // Part of 0x004691FA
+    register_hook(
+        0x0046959C,
+        [](registers& regs) -> uint8_t {
+            registers backup = regs;
+            int16_t x = regs.eax;
+            int16_t i = regs.ebx / 6;
+            int16_t y = regs.ecx;
+            map::surface_element* surface = (map::surface_element*)regs.esi;
+
+            surface->createWave(x, y, i);
+
+            regs = backup;
+            return 0;
+        });
 
     register_hook(
         0x004AB655,

@@ -1007,6 +1007,27 @@ namespace openloco::ui::WindowManager
 
         return true;
     }
+
+    // 0x0046960C
+    ui::window* findWindowShowing(map::map_pos position)
+    {
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
+        {
+            if (w->viewports[0] == nullptr)
+                continue;
+
+            auto viewport = w->viewports[0];
+            if (viewport->zoom != 0)
+                continue;
+
+            if (!viewport->contains({ position.x, position.y }))
+                continue;
+
+            return w;
+        }
+
+        return nullptr;
+    }
 }
 
 namespace openloco::ui::windows

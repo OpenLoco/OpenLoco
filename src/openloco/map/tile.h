@@ -78,6 +78,7 @@ namespace openloco::map
     namespace element_flags
     {
         constexpr uint8_t flag_4 = 1 << 4;
+        constexpr uint8_t flag_6 = 1 << 6;
         constexpr uint8_t last = 1 << 7;
     }
 
@@ -105,6 +106,7 @@ namespace openloco::map
         uint8_t clear_z() const { return _clear_z; }
 
         bool is_flag_4() const { return _flags & element_flags::flag_4; }
+        void set_flag_6() { _flags |= element_flags::flag_6; }
         bool is_last() const;
     };
 
@@ -170,6 +172,7 @@ namespace openloco::map
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t industry_id() const { return _industry; }
+        void createWave(int16_t x, int16_t y, int animationIndex);
     };
 
     struct station_element : public tile_element_base
