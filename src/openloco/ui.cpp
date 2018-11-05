@@ -508,6 +508,7 @@ namespace openloco::ui
             case SDL_SCANCODE_RSHIFT: return 0x36;
             case SDL_SCANCODE_LCTRL: return 0x1D;
             case SDL_SCANCODE_RCTRL: return 0x9D;
+            case SDL_SCANCODE_INSERT: return 0xD2;
             default: return 0;
         }
     }
@@ -579,26 +580,29 @@ namespace openloco::ui
     // 0x0040477F
     static void read_keyboard_state()
     {
+        addr<0x005251CC, uint8_t>() = 0;
         auto dstSize = _keyboard_state.size();
         auto dst = _keyboard_state.get();
 
         int numKeys;
+
+        std::fill_n(dst, dstSize, 0);
         auto keyboardState = SDL_GetKeyboardState(&numKeys);
         if (keyboardState != nullptr)
         {
             for (int scanCode = 0; scanCode < numKeys; scanCode++)
             {
                 bool isDown = keyboardState[scanCode] != 0;
+                if (!isDown)
+                    continue;
+
                 auto dinputCode = convert_sdl_scancode_to_dinput(scanCode);
                 if (dinputCode != 0)
                 {
-                    dst[dinputCode] = (isDown ? 0x80 : 0);
+                    dst[dinputCode] = 0x80;
                 }
             }
-        }
-        else
-        {
-            std::fill_n(dst, dstSize, 0);
+            addr<0x005251CC, uint8_t>() = 1;
         }
     }
 

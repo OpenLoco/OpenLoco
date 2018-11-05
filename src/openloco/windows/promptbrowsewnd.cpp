@@ -198,7 +198,7 @@ namespace openloco::ui::prompt_browse
                     input::handle_keyboard();
                     audio::update_sounds();
                     WindowManager::dispatchUpdateAll();
-                    call(0x004BEC5B);
+                    input::process_keyboard_input();
                     WindowManager::update();
                     call(0x004C98CF);
                     call(0x004CF63B);
