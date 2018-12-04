@@ -782,4 +782,13 @@ namespace openloco::gfx
 
         return *dst != nullptr;
     }
+
+    g1_element* get_g1element(uint32_t id)
+    {
+        if (id < _g1Elements.size())
+        {
+            return &_g1Elements[id];
+        }
+        return nullptr;
+    }
 }

@@ -76,6 +76,21 @@ namespace openloco::ui::prompt_browse
             return filename;
         }
     };
+
+    struct saveinfo
+    {
+        char company[256];              // 0x000
+        char owner[256];                // 0x100
+        uint32_t date;                  // 0x200
+        uint8_t pad_204[0x246 - 0x204]; // 0x204
+        uint16_t challenge_progress;    // 0x246
+        uint8_t image[250 * 200];       // 0x248
+        uint32_t challenge_flags;       // 0xC598
+
+        static constexpr uint32_t challenge_flag_completed = (1 << 6);
+        static constexpr uint32_t challenge_flag_failed = (1 << 7);
+        static constexpr uint32_t challenge_flag_enabled = (1 << 8);
+    };
 #pragma pack(pop)
 
     static window_event_list _events;
@@ -101,6 +116,7 @@ namespace openloco::ui::prompt_browse
     static void tooltip(ui::window* window, widget_index widgetIndex);
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const saveinfo& saveInfo);
     static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void up_one_level();
@@ -320,23 +336,11 @@ namespace openloco::ui::prompt_browse
                 if (_fileType == (uint8_t)browse_file_type::saved_game)
                 {
                     // Preview image
-                    auto data = (const uint8_t*)0x50AEA8;
-                    if (data != (const uint8_t*)-1)
+                    auto saveInfo = *((const saveinfo**)0x50AEA8);
+                    if (saveInfo != (void*)-1)
                     {
-                        gfx::fill_rect_inset(dpi, x, y, x + width, y + height, window->colours[1], 0x30);
+                        draw_save_preview(*window, *dpi, x, y, width, height, *saveInfo);
                     }
-                    y += 207;
-
-                    // Company
-                    auto companyName = *((const char**)0x50AEA8);
-                    set_common_args_stringptr(companyName);
-                    gfx::draw_string_495224(*dpi, x, y, 0, string_ids::window_browse_company, _commonFormatArgs);
-                    y += 10;
-
-                    // Owner
-                    auto ownerName = (const char*)(companyName + 0x100);
-                    set_common_args_stringptr(ownerName);
-                    gfx::draw_string_495224(*dpi, x, y, 0, string_ids::owner_label, _commonFormatArgs);
                 }
             }
         }
@@ -359,6 +363,60 @@ namespace openloco::ui::prompt_browse
             {
                 draw_text_input(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
             }
+        }
+    }
+
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const saveinfo& saveInfo)
+    {
+        loco_global<char[16], 0x0112C826> _commonFormatArgs;
+
+        gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
+
+        auto imageId = 0;
+        auto g1 = gfx::get_g1element(imageId);
+        if (g1 != nullptr)
+        {
+            // Temporarily substitute a g1 for the image data in the saved game
+            auto backupg1 = *g1;
+            *g1 = {};
+            g1->offset = (uint8_t*)saveInfo.image;
+            g1->width = 250;
+            g1->height = 200;
+            gfx::draw_image(&dpi, x + 1, y + 1, imageId);
+            *g1 = backupg1;
+        }
+        y += 207;
+
+        // Company
+        set_common_args_stringptr(saveInfo.company);
+        gfx::draw_string_495224(dpi, x, y, 0, string_ids::window_browse_company, _commonFormatArgs);
+        y += 10;
+
+        // Owner
+        set_common_args_stringptr(saveInfo.owner);
+        gfx::draw_string_495224(dpi, x, y, 0, string_ids::owner_label, _commonFormatArgs);
+        y += 10;
+
+        // Date
+        gfx::draw_string_495224(dpi, x, y, 0, string_ids::window_browse_date, &saveInfo.date);
+        y += 10;
+
+        // Challenge progress
+        auto flags = saveInfo.challenge_flags;
+        if (!(flags & saveinfo::challenge_flag_enabled))
+        {
+            auto stringId = string_ids::window_browse_challenge_completed;
+            auto progress = (uint16_t)0;
+            if (!(flags & saveinfo::challenge_flag_completed))
+            {
+                stringId = string_ids::window_browse_challenge_failed;
+                if (!(flags & saveinfo::challenge_flag_failed))
+                {
+                    stringId = string_ids::window_browse_challenge_progress;
+                    progress = saveInfo.challenge_progress;
+                }
+            }
+            gfx::draw_string_495224(dpi, x, y, 0, stringId, &progress);
         }
     }
 
