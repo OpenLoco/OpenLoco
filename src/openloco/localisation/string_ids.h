@@ -351,6 +351,8 @@ namespace openloco::string_ids
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
+    constexpr string_id randomly_generated_landscape = 1821;
+
     constexpr string_id title_exit_game = 1869;
 
     constexpr string_id tutorial_1 = 1879;

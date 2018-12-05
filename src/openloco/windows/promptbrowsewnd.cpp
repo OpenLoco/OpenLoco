@@ -117,6 +117,7 @@ namespace openloco::ui::prompt_browse
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const saveinfo& saveInfo);
+    static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
     static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void up_one_level();
@@ -316,7 +317,6 @@ namespace openloco::ui::prompt_browse
             {
                 const auto& widget = window->widgets[7];
 
-                auto height = 201;
                 auto width = window->width - widget.right - 8;
                 auto x = window->x + widget.right + 3;
                 auto y = window->y + 45;
@@ -339,8 +339,12 @@ namespace openloco::ui::prompt_browse
                     auto saveInfo = *((const saveinfo**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
-                        draw_save_preview(*window, *dpi, x, y, width, height, *saveInfo);
+                        draw_save_preview(*window, *dpi, x, y, width, 201, *saveInfo);
                     }
+                }
+                else if (_fileType == (uint8_t)browse_file_type::landscape)
+                {
+                    draw_landscape_preview(*window, *dpi, x, y, width, 129);
                 }
             }
         }
@@ -417,6 +421,39 @@ namespace openloco::ui::prompt_browse
                 }
             }
             gfx::draw_string_495224(dpi, x, y, 0, stringId, &progress);
+        }
+    }
+
+    static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
+    {
+        gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
+
+        if (addr<0x009CCA5A, int16_t>() & 1)
+        {
+            // Height map
+            auto imageId = 0;
+            auto g1 = gfx::get_g1element(imageId);
+            if (g1 != nullptr)
+            {
+                // Temporarily substitute a g1 for the height map image data in the saved game
+                auto backupg1 = *g1;
+                *g1 = {};
+                g1->offset = (uint8_t*)0x9CCBDE;
+                g1->width = 128;
+                g1->height = 128;
+                gfx::draw_image(&dpi, x + 1, y + 1, imageId);
+                *g1 = backupg1;
+
+                gfx::draw_image(&dpi, x, y + 1, image_ids::height_map_compass);
+            }
+        }
+        else
+        {
+            // Randomly generated landscape
+            auto imageId = image_ids::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
+            gfx::draw_image(&dpi, x, y, imageId);
+            gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
+            gfx::draw_string_centred_wrapped(&dpi, &origin, 128, 0, string_ids::randomly_generated_landscape, nullptr);
         }
     }
 
