@@ -294,15 +294,6 @@ namespace openloco::ui::prompt_browse
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         static std::string _nameBuffer;
 
-        // {
-        //     registers regs;
-        //     regs.esi = (int32_t)window;
-        //     regs.edi = (int32_t)dpi;
-        //     call(0x00445E38, regs);
-        //     if (&regs != nullptr)
-        //         return;
-        // }
-
         window->draw(dpi);
 
         auto folder = (const char*)0x9DA084;
