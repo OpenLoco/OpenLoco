@@ -582,7 +582,11 @@ namespace openloco::ui::prompt_browse
             auto drives = platform::get_drives();
             for (auto& drive : drives)
             {
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                auto name = drive.string();
+#else
                 auto name = drive.u8string();
+#endif
                 _newFiles.emplace_back(name, true);
             }
         }
@@ -594,14 +598,22 @@ namespace openloco::ui::prompt_browse
                 bool isDirectory = fs::is_directory(f);
                 if (!isDirectory)
                 {
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                    auto extension = f.path().extension().string();
+#else
                     auto extension = f.path().extension().u8string();
+#endif
                     if (!utility::iequals(extension, filterExtension))
                     {
                         continue;
                     }
                 }
 
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                auto name = f.path().stem().string();
+#else
                 auto name = f.path().stem().u8string();
+#endif
                 _newFiles.emplace_back(name, isDirectory);
             }
         }
