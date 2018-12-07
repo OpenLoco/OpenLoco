@@ -99,6 +99,22 @@ namespace openloco::platform
     {
         return WIN32_GetModuleFileNameW(nullptr);
     }
+
+    std::vector<fs::path> get_drives()
+    {
+        char drive[4] = { 'A', ':', '\0' };
+        std::vector<fs::path> drives;
+        auto driveMask = GetLogicalDrives();
+        for (auto i = 0; i < 26; i++)
+        {
+            if (driveMask & (1 << i))
+            {
+                drive[0] = 'A' + i;
+                drives.push_back(drive);
+            }
+        }
+        return drives;
+    }
 }
 
 #endif

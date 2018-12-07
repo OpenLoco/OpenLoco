@@ -35,7 +35,7 @@ namespace openloco::ui::windows
         switch (widgetIndex)
         {
             case widget_idx::close:
-                call(0x004CC6EA, regs);
+                WindowManager::close(&w);
                 break;
             case widget_idx::tab_0:
             case widget_idx::tab_1:

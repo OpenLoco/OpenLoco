@@ -28,6 +28,49 @@ namespace openloco::ui
         return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
     }
 
+    void window::cap_size(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight)
+    {
+        auto w = this->width;
+        auto h = this->height;
+        auto shouldInvalidateBefore = false;
+        auto shouldInvalidateAfter = false;
+        if (w < minWidth)
+        {
+            w = minWidth;
+            shouldInvalidateAfter = true;
+        }
+        if (h < minHeight)
+        {
+            h = minHeight;
+            shouldInvalidateAfter = true;
+        }
+        if (w > maxWidth)
+        {
+            shouldInvalidateBefore = true;
+            w = maxWidth;
+        }
+        if (h > maxHeight)
+        {
+            shouldInvalidateBefore = true;
+            h = maxHeight;
+        }
+
+        if (shouldInvalidateBefore)
+        {
+            invalidate();
+        }
+        this->width = w;
+        this->height = h;
+        this->min_width = minWidth;
+        this->min_height = minHeight;
+        this->max_width = maxWidth;
+        this->max_height = maxHeight;
+        if (shouldInvalidateAfter)
+        {
+            invalidate();
+        }
+    }
+
     bool window::is_enabled(int8_t widget_index)
     {
         return (this->enabled_widgets & (1ULL << widget_index)) != 0;
@@ -643,11 +686,21 @@ namespace openloco::ui
 
     ui::window* window::call_on_resize()
     {
-        registers regs;
-        regs.esi = (uint32_t)this;
-        call((uint32_t)this->event_handlers->on_resize, regs);
-
-        return (window*)regs.esi;
+        auto handler = event_handlers->on_resize;
+        if (handler != nullptr)
+        {
+            if (is_interop_event(handler))
+            {
+                registers regs;
+                regs.esi = (int32_t)this;
+                call((uint32_t)handler, regs);
+            }
+            else
+            {
+                handler(this);
+            }
+        }
+        return this;
     }
 
     void window::call_3(int8_t widget_index)

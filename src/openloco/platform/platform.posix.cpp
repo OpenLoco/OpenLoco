@@ -28,6 +28,11 @@ uint32_t openloco::platform::get_time()
     return spec.tv_nsec / 1000000;
 }
 
+std::vector<fs::path> openloco::platform::get_drives()
+{
+    return {};
+}
+
 #if !(defined(__APPLE__) && defined(__MACH__))
 static std::string GetEnvironmentVariable(const std::string& name)
 {

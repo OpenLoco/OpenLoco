@@ -248,6 +248,7 @@ namespace openloco::string_ids
     constexpr string_id dont_lose_your_rag_credit = 1079;
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
+    constexpr string_id error_unable_to_load_saved_game = 1082;
 
     constexpr string_id loading = 1088;
 
@@ -305,6 +306,8 @@ namespace openloco::string_ids
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
 
+    constexpr string_id owner_label = 1560;
+
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
@@ -348,6 +351,8 @@ namespace openloco::string_ids
 
     constexpr string_id title_menu_scenario_editor = 1740;
 
+    constexpr string_id randomly_generated_landscape = 1821;
+
     constexpr string_id title_exit_game = 1869;
 
     constexpr string_id tutorial_1 = 1879;
@@ -370,7 +375,17 @@ namespace openloco::string_ids
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
 
-    constexpr string_id text_input_cursor = UNUSED_STR(2003);
+    constexpr string_id window_browse_input_caret = 2003;
+    constexpr string_id window_browse_filename = 2004;
+    constexpr string_id window_browse_folder = 2005;
+
+    constexpr string_id window_browse_company = 2007;
+    constexpr string_id window_browse_date = 2008;
+    constexpr string_id window_browse_challenge_progress = 2009;
+    constexpr string_id window_browse_challenge_completed = 2010;
+    constexpr string_id window_browse_challenge_failed = 2011;
+
+    constexpr string_id error_invalid_filename = 2016;
 
     constexpr string_id buffer_2039 = 2039;
     constexpr string_id buffer_2040 = 2040;

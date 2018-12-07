@@ -15,4 +15,5 @@ namespace openloco::platform
     fs::path get_user_directory();
     std::string prompt_directory(const std::string& title);
     fs::path GetCurrentExecutablePath();
+    std::vector<fs::path> get_drives();
 }

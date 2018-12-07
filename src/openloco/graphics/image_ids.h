@@ -7,6 +7,8 @@
 namespace openloco::image_ids
 {
     constexpr uint32_t text_palette = 2169;
+
+    constexpr uint32_t icon_folder = 2311;
     constexpr uint32_t close_button = 2321;
 
     constexpr uint32_t music_controls_stop = 2383;
@@ -67,6 +69,9 @@ namespace openloco::image_ids
     constexpr uint32_t tab_music_15 = 2442;
 
     constexpr uint32_t tab = 2387;
+
+    constexpr uint32_t random_map_watermark = 2468;
+    constexpr uint32_t height_map_compass = 2469;
 
     constexpr uint32_t volume_slider_track = 3543;
     constexpr uint32_t volume_slider_thumb = 3544;

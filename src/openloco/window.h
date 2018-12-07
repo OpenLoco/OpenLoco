@@ -167,7 +167,7 @@ namespace openloco::ui
             {
                 void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
-                uint32_t on_resize;
+                void (*on_resize)(window*);
                 uint32_t event_03;
                 void (*on_mouse_down)(window*, widget_index);
                 void (*on_dropdown)(window*, widget_index, int16_t);
@@ -326,6 +326,7 @@ namespace openloco::ui
         bool is_activated(widget_index index);
         bool is_holdable(widget_index index);
         bool can_resize();
+        void cap_size(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
         void viewports_update_position();
         void invalidate_pressed_image_buttons();
         void invalidate();
