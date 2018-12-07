@@ -39,8 +39,7 @@ namespace openloco::ui::windows::station
     // 0x0048ED2F
     void tab_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi)
     {
-        auto paletteId = byte_1136BA4[w.colours[1] * 8];
-        gfx::clear_single(dpi, paletteId);
+        gfx::clear_single(dpi, colour::get_shade(w.colours[1], 4));
 
         const auto station = stationmgr::get(w.number);
         int16_t y = 0;
