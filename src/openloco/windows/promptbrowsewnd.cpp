@@ -593,28 +593,31 @@ namespace openloco::ui::prompt_browse
         else
         {
             auto directory = fs::path((char*)_directory);
-            for (auto& f : fs::directory_iterator(directory))
+            if (fs::is_directory(directory))
             {
-                bool isDirectory = fs::is_directory(f);
-                if (!isDirectory)
+                for (auto& f : fs::directory_iterator(directory))
                 {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                    auto extension = f.path().extension().string();
-#else
-                    auto extension = f.path().extension().u8string();
-#endif
-                    if (!utility::iequals(extension, filterExtension))
+                    bool isDirectory = fs::is_directory(f);
+                    if (!isDirectory)
                     {
-                        continue;
+#ifdef _OPENLOCO_USE_BOOST_FS_
+                        auto extension = f.path().extension().string();
+#else
+                        auto extension = f.path().extension().u8string();
+#endif
+                        if (!utility::iequals(extension, filterExtension))
+                        {
+                            continue;
+                        }
                     }
-                }
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
-                auto name = f.path().stem().string();
+                    auto name = f.path().stem().string();
 #else
-                auto name = f.path().stem().u8string();
+                    auto name = f.path().stem().u8string();
 #endif
-                _newFiles.emplace_back(name, isDirectory);
+                    _newFiles.emplace_back(name, isDirectory);
+                }
             }
         }
 
