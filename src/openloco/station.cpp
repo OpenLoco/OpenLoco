@@ -4,6 +4,7 @@
 #include "messagemgr.h"
 #include "openloco.h"
 #include "ui/WindowManager.h"
+#include "viewportmgr.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;
@@ -242,9 +243,7 @@ namespace openloco
     // 0x004CBA2D
     void station::invalidate()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call(0x004CBA2D, regs);
+        ui::viewportmgr::invalidate(this);
     }
 
     void station::invalidate_window()

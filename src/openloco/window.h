@@ -220,6 +220,14 @@ namespace openloco::ui
         }
     };
 
+    struct ViewportRect
+    {
+        int16_t left = 0;
+        int16_t top = 0;
+        int16_t bottom = 0;
+        int16_t right = 0;
+    };
+
     struct viewport
     {
         int16_t width;       // 0x00
@@ -239,6 +247,23 @@ namespace openloco::ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
+        constexpr bool intersects(const ViewportRect& vpos)
+        {
+            if (vpos.right <= view_x)
+                return false;
+
+            if (vpos.bottom <= view_y)
+                return false;
+
+            if (vpos.left >= view_x + view_width)
+                return false;
+
+            if (vpos.top >= view_y + view_height)
+                return false;
+
+            return true;
+        }
+
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
@@ -250,6 +275,7 @@ namespace openloco::ui
         }
 
         static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
+        void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
     };
 
     struct viewport_config

@@ -6,6 +6,7 @@
 #include "../interop/interop.hpp"
 #include "../tutorial.h"
 #include "../ui.h"
+#include "../viewportmgr.h"
 #include "scrollview.h"
 
 using namespace openloco::interop;
@@ -675,7 +676,7 @@ namespace openloco::ui::WindowManager
             memmove(window, window + 1, windowCount * sizeof(ui::window));
         }
 
-        call(0x004CEC25); // viewport_update_pointers
+        viewportmgr::updatePointers();
     }
 
     // 0x0045F18B
