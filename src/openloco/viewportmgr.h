@@ -16,6 +16,8 @@ namespace openloco::ui::viewportmgr
         eight = 3,
     };
 
+    constexpr int16_t viewportsPerWindow = 2;
+
     void init();
     void registerHooks();
     void updatePointers();

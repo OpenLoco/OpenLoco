@@ -264,6 +264,17 @@ namespace openloco::ui
             return true;
         }
 
+        constexpr ViewportRect intersection(const ViewportRect& rect)
+        {
+            auto out = ViewportRect();
+            out.left = std::max(rect.left, view_x);
+            out.right = std::min<int16_t>(rect.right, view_x + view_width);
+            out.top = std::max(rect.top, view_y);
+            out.bottom = std::min<int16_t>(rect.bottom, view_y + view_height);
+
+            return out;
+        }
+
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */

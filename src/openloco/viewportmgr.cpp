@@ -22,8 +22,6 @@ namespace openloco::ui::viewportmgr
     static loco_global<int32_t, 0x00E3F0B8> currentRotation;
 
     static void create(registers regs, int index);
-    void init();
-    void updatePointers();
 
     void init()
     {
@@ -52,9 +50,9 @@ namespace openloco::ui::viewportmgr
         vp->width = size.width;
         vp->height = size.height;
 
-        vp->view_width = size.width << (uint8_t)zoom;
-        vp->view_height = size.height << (uint8_t)zoom;
-        vp->zoom = (uint8_t)zoom;
+        vp->view_width = size.width << static_cast<uint8_t>(zoom);
+        vp->view_height = size.height << static_cast<uint8_t>(zoom);
+        vp->zoom = static_cast<uint8_t>(zoom);
         vp->var_12 = 0;
 
         auto& cfg = openloco::config::get();
@@ -68,6 +66,7 @@ namespace openloco::ui::viewportmgr
 
     static void focusViewportOn(window* w, int index, thing_id_t dx)
     {
+        assert(index >= 0 && index < viewportsPerWindow);
         viewport* viewport = w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
@@ -84,6 +83,7 @@ namespace openloco::ui::viewportmgr
 
     static void focusViewportOn(window* w, int index, map::map_pos3 tile)
     {
+        assert(index >= 0 && index < viewportsPerWindow);
         viewport* viewport = w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
@@ -196,17 +196,13 @@ namespace openloco::ui::viewportmgr
             if (!viewport->intersects(rect))
                 continue;
 
-            // Get intersection
-            auto left = std::max(rect.left, viewport->view_x);
-            auto right = std::min<int16_t>(rect.right, viewport->view_x + viewport->view_width);
-            auto top = std::max(rect.top, viewport->view_y);
-            auto bottom = std::min<int16_t>(rect.bottom, viewport->view_y + viewport->view_height);
+            ViewportRect intersection = viewport->intersection(rect);
 
             // offset rect by (negative) viewport origin
-            left -= viewport->view_x;
-            right -= viewport->view_x;
-            top -= viewport->view_y;
-            bottom -= viewport->view_y;
+            auto left = intersection.left - viewport->view_x;
+            auto right = intersection.right - viewport->view_x;
+            auto top = intersection.top - viewport->view_y;
+            auto bottom = intersection.bottom - viewport->view_y;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -248,17 +244,13 @@ namespace openloco::ui::viewportmgr
             if (!viewport->intersects(rect))
                 continue;
 
-            // Get intersection
-            auto left = std::max(rect.left, viewport->view_x);
-            auto right = std::min<int16_t>(rect.right, viewport->view_x + viewport->view_width);
-            auto top = std::max(rect.top, viewport->view_y);
-            auto bottom = std::min<int16_t>(rect.bottom, viewport->view_y + viewport->view_height);
+            ViewportRect intersection = viewport->intersection(rect);
 
             // offset rect by (negative) viewport origin
-            left -= viewport->view_x;
-            right -= viewport->view_x;
-            top -= viewport->view_y;
-            bottom -= viewport->view_y;
+            auto left = intersection.left - viewport->view_x;
+            auto right = intersection.right - viewport->view_x;
+            auto top = intersection.top - viewport->view_y;
+            auto bottom = intersection.bottom - viewport->view_y;
 
             // apply zoom
             left = left >> viewport->zoom;
