@@ -48,8 +48,7 @@ namespace openloco::ui::about
 
         auto window = WindowManager::createWindowCentred(
             WindowType::about,
-            ww,
-            wh,
+            { ww, wh },
             0,
             &_events);
 

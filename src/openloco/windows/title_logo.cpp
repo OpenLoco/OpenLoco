@@ -35,10 +35,8 @@ namespace openloco::ui::windows
 
         auto window = openloco::ui::WindowManager::createWindow(
             WindowType::title_logo,
-            0,
-            0,
-            window_size.width,
-            window_size.height,
+            { 0, 0 },
+            window_size,
             window_flags::stick_to_front | window_flags::transparent,
             &_events);
 

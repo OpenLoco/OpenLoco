@@ -39,10 +39,8 @@ namespace openloco::ui::windows
 
         auto window = openloco::ui::WindowManager::createWindow(
             WindowType::titleExit,
-            ui::width() - window_size.width,
-            ui::height() - window_size.height,
-            window_size.width,
-            window_size.height,
+            gfx::point_t(ui::width() - window_size.width, ui::height() - window_size.height),
+            window_size,
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
 

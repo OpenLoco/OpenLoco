@@ -17,8 +17,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows
 {
-    static const uint16_t btn_main_size = 74;
-    static const uint16_t btn_sub_height = 18;
+    static const uint8_t btn_main_size = 74;
+    static const uint8_t btn_sub_height = 18;
     static const uint16_t ww = btn_main_size * 4;
     static const uint16_t wh = btn_main_size + btn_sub_height;
 
@@ -151,10 +151,8 @@ namespace openloco::ui::windows
 
         auto window = openloco::ui::WindowManager::createWindow(
             WindowType::titleMenu,
-            (ui::width() - ww) / 2,
-            ui::height() - wh - 25,
-            ww,
-            wh,
+            gfx::point_t((ui::width() - ww) / 2, ui::height() - wh - 25),
+            { ww, wh },
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
 

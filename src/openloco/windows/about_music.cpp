@@ -59,8 +59,7 @@ namespace openloco::ui::about_music
 
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,
-            ww,
-            wh,
+            { ww, wh },
             0,
             &_events);
 

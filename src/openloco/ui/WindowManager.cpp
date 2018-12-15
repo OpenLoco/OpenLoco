@@ -523,27 +523,25 @@ namespace openloco::ui::WindowManager
     // 0x004C9F5D
     window* createWindow(
         WindowType type,
-        int32_t x,
-        int32_t y,
-        int32_t width,
-        int32_t height,
-        int32_t flags,
+        gfx::point_t origin,
+        gfx::ui_size_t size,
+        uint32_t flags,
         window_event_list* events)
     {
         registers regs;
-        regs.eax = (y << 16) | (x & 0xFFFF);
-        regs.ebx = (height << 16) | (width & 0xFFFF);
+        regs.eax = (origin.y << 16) | (origin.x & 0xFFFF);
+        regs.ebx = (size.height << 16) | (size.width & 0xFFFF);
         regs.ecx = (uint8_t)type | (flags << 8);
         regs.edx = (int32_t)events;
         call(0x004C9F5D, regs);
         return (window*)regs.esi;
     }
 
-    window* createWindowCentred(WindowType type, int32_t width, int32_t height, int32_t flags, window_event_list* events)
+    window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events)
     {
-        auto x = (ui::width() / 2) - (width / 2);
-        auto y = std::max(28, (ui::height() / 2) - (height / 2));
-        return createWindow(type, x, y, width, height, flags, events);
+        auto x = (ui::width() / 2) - (size.width / 2);
+        auto y = std::max(28, (ui::height() / 2) - (size.height / 2));
+        return createWindow(type, gfx::point_t(x, y), size, flags, events);
     }
 
     // 0x004C5FC8
