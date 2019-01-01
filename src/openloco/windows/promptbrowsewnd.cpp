@@ -121,7 +121,7 @@ namespace openloco::ui::prompt_browse
     static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void up_one_level();
-    static void sub_446574();
+    static void sub_446574(ui::window* window);
     static void refresh_directory_list();
 
     static void sub_4CEB67(int16_t dx)
@@ -241,7 +241,7 @@ namespace openloco::ui::prompt_browse
                 WindowManager::close(window);
                 break;
             case 6:
-                sub_446574();
+                sub_446574(window);
                 break;
             case 4:
                 up_one_level();
@@ -702,7 +702,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00446574
-    static void sub_446574()
+    static void sub_446574(ui::window* window)
     {
         if (_type != (uint8_t)browse_file_type::unk_2)
         {
@@ -716,7 +716,9 @@ namespace openloco::ui::prompt_browse
             }
             else
             {
-                call(0x00446598);
+                registers regs;
+                regs.esi = (int32_t)window;
+                call(0x00446598, regs);
             }
         }
     }
