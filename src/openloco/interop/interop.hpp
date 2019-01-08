@@ -2,6 +2,7 @@
 
 #include "../compat.h"
 #include "../utility/string.hpp"
+#include "i386.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -365,15 +366,6 @@ namespace openloco::interop
 
     void read_memory(uint32_t address, void* data, size_t size);
     void write_memory(uint32_t address, const void* data, size_t size);
-
-    using hook_function = uint8_t (*)(registers& regs);
-
-    void register_hook(uintptr_t address, hook_function function);
-    void write_ret(uint32_t address);
-    void write_jmp(uint32_t address, void* fn);
-    void write_nop(uint32_t address, size_t count);
-    void hook_dump(uint32_t address, void* fn);
-    void hook_lib(uint32_t address, void* fn);
 
     void register_hooks();
     void load_sections();

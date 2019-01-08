@@ -3,7 +3,7 @@ cmake_policy(VERSION 3.9)
 
 set (PROJECT openloco)
 
-project(${PROJECT} CXX)
+project(${PROJECT} C CXX)
 
 if (APPLE)
     # Detection of this variable seems to fail with CMake.
@@ -25,6 +25,7 @@ endif()
 
 option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
 option(STRICT "Build with warnings as errors" YES)
+option(I386 "Compile for native x86" ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -100,6 +101,9 @@ set(COMMON_COMPILE_OPTIONS
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
 
+if (I386)
+    set(TARGET_M "-m32")
+endif ()
 
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
@@ -120,7 +124,19 @@ if (UNIX)
     )
     add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
     if (APPLE)
-        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -Xlinker -map -Xlinker \"${CMAKE_BINARY_DIR}/openloco.map\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -sectcreate loco_data __data \"${OLOCO_DATA}\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr loco_data 0x4d7000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segprot loco_data rwx rwx")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr loco_text 0x401000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segprot loco_text rwx rwx")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr __TEXT 0x2000000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -read_only_relocs suppress")
+        if (NOT I386)
+            set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -pagezero_size 10000 -image_base 100000000")
+        endif()
     else ()
         # For Linux we have to use objcopy to wrap regular binaries into a linkable
         # format. We use specific section names which are then referenced in a
@@ -157,8 +173,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 # include lib
 include_directories("lib/")
 # add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/openloco/*.cpp")
+file(GLOB_RECURSE OLOCO_HEADERS "src/openloco/*.h" "src/openloco/*.hpp")
 
 
 if (APPLE)
@@ -167,13 +183,16 @@ if (APPLE)
 endif ()
 
 set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
 
 # set necessary flags to compile code as is
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -Wnon-virtual-dtor")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
+
+file(GLOB_RECURSE LIB_SRCS "src/x86emu/*.c")
+add_library(x86emu ${LIB_SRCS})
+target_include_directories(x86emu INTERFACE "src/x86emu/include")
 
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
@@ -210,6 +229,7 @@ if (MINGW)
     target_link_libraries(${PROJECT} winmm)
 else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+    target_link_libraries(${PROJECT} x86emu)
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 

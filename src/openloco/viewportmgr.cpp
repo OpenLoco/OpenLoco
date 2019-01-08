@@ -67,7 +67,7 @@ namespace openloco::ui::viewportmgr
     static void focusViewportOn(window* w, int index, thing_id_t dx)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        viewport* viewport = w->viewports[index];
+        auto viewport = (ui::viewport*)(uintptr_t )w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
@@ -84,7 +84,7 @@ namespace openloco::ui::viewportmgr
     static void focusViewportOn(window* w, int index, map::map_pos3 tile)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        viewport* viewport = w->viewports[index];
+        auto viewport = (ui::viewport*)(uintptr_t )w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
 
@@ -98,7 +98,7 @@ namespace openloco::ui::viewportmgr
 
     static void create(registers regs, int index)
     {
-        ui::window* window = (ui::window*)regs.esi;
+        ui::window* window = (ui::window*)(uintptr_t)regs.esi;
         ZoomLevel zoom = ZoomLevel::full;
         if (regs.edx & (1 << 30))
         {
@@ -148,7 +148,7 @@ namespace openloco::ui::viewportmgr
         if (viewport == nullptr)
             return;
 
-        window->viewports[viewportIndex] = viewport;
+        window->viewports[viewportIndex] = (loco_ptr )viewport;
         focusViewportOn(window, viewportIndex, thing_id);
 
         collectGarbage();
@@ -176,7 +176,7 @@ namespace openloco::ui::viewportmgr
         if (viewport == nullptr)
             return;
 
-        window->viewports[viewportIndex] = viewport;
+        window->viewports[viewportIndex] = (loco_ptr)viewport;
         focusViewportOn(window, viewportIndex, tile);
 
         collectGarbage();
@@ -351,31 +351,31 @@ namespace openloco::ui::viewportmgr
         register_hook(
             0x004CBA2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((station*)regs.esi);
+                invalidate((station*)(uintptr_t)regs.esi);
                 return 0;
             });
         register_hook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((Thing*)regs.esi, ZoomLevel::eighth);
+                invalidate((Thing*)(uintptr_t)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
         register_hook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((Thing*)regs.esi, ZoomLevel::quarter);
+                invalidate((Thing*)(uintptr_t)regs.esi, ZoomLevel::quarter);
                 return 0;
             });
         register_hook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((Thing*)regs.esi, ZoomLevel::half);
+                invalidate((Thing*)(uintptr_t)regs.esi, ZoomLevel::half);
                 return 0;
             });
         register_hook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((Thing*)regs.esi, ZoomLevel::full);
+                invalidate((Thing*)(uintptr_t)regs.esi, ZoomLevel::full);
                 return 0;
             });
         register_hook(

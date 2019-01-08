@@ -11,6 +11,6 @@ namespace openloco::ui::windows::industry_list
     {
         registers regs;
         call(0x004577FF, regs);
-        return (window*)regs.esi;
+        return (window*)(uintptr_t )regs.esi;
     }
 }

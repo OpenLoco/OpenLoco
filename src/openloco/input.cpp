@@ -53,7 +53,9 @@ namespace openloco::input
     // 0x00406FEC
     void enqueue_mouse_button(mouse_button button)
     {
+#ifdef __i386__
         ((void (*)(int))0x00406FEC)((int32_t)button);
+#endif
     }
 
     void sub_407218()

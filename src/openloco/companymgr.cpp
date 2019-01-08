@@ -165,7 +165,7 @@ namespace openloco::companymgr
         if (main == nullptr)
             return;
 
-        auto viewport = main->viewports[0];
+        auto viewport = main->getViewport();
         if (viewport == nullptr)
             return;
 
@@ -177,7 +177,7 @@ namespace openloco::companymgr
         r1.ax = screenPosition.x;
         r1.bx = screenPosition.y;
         call(0x0045F1A7, r1);
-        ui::viewport* vp = (ui::viewport*)r1.edi;
+        ui::viewport* vp = (ui::viewport*)(uintptr_t) r1.edi;
         auto mapPosition = map::map_pos(r1.ax, r1.bx);
 
         // Happens if center of viewport is obstructed. Probably estimates the centre location

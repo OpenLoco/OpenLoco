@@ -25,10 +25,22 @@ matrix:
           services:
             - docker
           env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DI386=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
+            - DOCKERIMG=ubuntu-i686
+        - os: linux
+          services:
+            - docker
+          env:
             - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
             - DOCKERIMG=ubuntu-i686
         - os: linux
           name: Fedora i686 MinGW32
+          services:
+            - docker
+          env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DI386=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp"
+            - DOCKERIMG=ubuntu-i686
+        - os: linux
           services:
             - docker
           env:

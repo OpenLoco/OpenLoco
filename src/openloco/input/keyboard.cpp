@@ -117,7 +117,7 @@ namespace openloco::input
     {
         registers regs;
         call(0x00407028, regs);
-        return (key*)regs.eax;
+        return (key*)(uintptr_t) regs.eax;
     }
 
     static bool try_shortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
@@ -360,7 +360,7 @@ namespace openloco::input
         if (openloco::is_title_mode())
             return;
 
-        auto viewport = main->viewports[0];
+        auto viewport = main->getViewport();
         if (viewport == nullptr)
             return;
 
@@ -406,7 +406,7 @@ namespace openloco::input
         if (openloco::is_title_mode())
             return;
 
-        auto viewport = main->viewports[0];
+        auto viewport = main->getViewport();
         if (viewport == nullptr)
             return;
 

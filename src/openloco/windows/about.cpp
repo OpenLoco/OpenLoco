@@ -52,7 +52,7 @@ namespace openloco::ui::about
             0,
             &_events);
 
-        window->widgets = _widgets;
+        window->widgets = (loco_ptr)_widgets;
         window->enabled_widgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
         window->init_scroll_widgets();
 

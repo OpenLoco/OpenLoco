@@ -457,7 +457,7 @@ namespace openloco::audio
         auto w = WindowManager::find(WindowType::main, 0);
         if (w != nullptr)
         {
-            auto viewport = w->viewports[0];
+            auto viewport = (ui::viewport*)(uintptr_t )w->viewports[0];
             if (viewport != nullptr && viewport->contains(vpos))
             {
                 return viewport;
@@ -469,7 +469,7 @@ namespace openloco::audio
             w = WindowManager::get(i);
             if (w != nullptr && w->type != WindowType::main && w->type != WindowType::news)
             {
-                auto viewport = w->viewports[0];
+                auto viewport = (ui::viewport*)(uintptr_t )w->viewports[0];
                 if (viewport != nullptr && viewport->contains(vpos))
                 {
                     return viewport;
@@ -811,9 +811,9 @@ namespace openloco::audio
         auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
 
         auto main = WindowManager::getMainWindow();
-        if (main != nullptr && main->viewports[0] != nullptr)
+        if (main != nullptr && main->getViewport() != nullptr)
         {
-            auto viewport = main->viewports[0];
+            auto viewport = main->getViewport();
             ViewportRect extendedViewport = {};
 
             auto quarterWidth = viewport->view_width / 4;
@@ -847,7 +847,7 @@ namespace openloco::audio
             if (w->type == WindowType::news)
                 continue;
 
-            auto viewport = w->viewports[0];
+            auto viewport = w->getViewport();
             if (viewport == nullptr)
                 continue;
 

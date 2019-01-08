@@ -96,7 +96,7 @@ namespace openloco::ui::TimePanel
             gfx::ui_size_t(window_size.width, window_size.height),
             ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
             &_events);
-        window->widgets = _widgets;
+        window->widgets = (loco_ptr) _widgets;
         window->enabled_widgets = (1 << widx::map_chat_menu) | (1 << widx::date_btn) | (1 << widx::pause_btn) | (1 << widx::normal_speed_btn) | (1 << widx::fast_forward_btn) | (1 << widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->var_856 = 0;

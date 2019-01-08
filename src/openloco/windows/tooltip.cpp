@@ -41,31 +41,31 @@ namespace openloco::ui::tooltip
         register_hook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::open((ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                ui::tooltip::open((ui::window*)(uintptr_t)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         register_hook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::update((ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                ui::tooltip::update((ui::window*)(uintptr_t)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
         register_hook(
             0x004C9397,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                draw((ui::window*)regs.esi, (gfx::drawpixelinfo_t*)regs.edi);
+                draw((ui::window*)(uintptr_t)regs.esi, (gfx::drawpixelinfo_t*)(uintptr_t)regs.edi);
                 return 0;
             });
         register_hook(
             0x004C94F7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                on_close((ui::window*)regs.esi);
+                on_close((ui::window*)(uintptr_t)regs.esi);
                 return 0;
             });
         register_hook(
             0x004C94FF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                update((ui::window*)regs.esi);
+                update((ui::window*)(uintptr_t)regs.esi);
                 return 0;
             });
     }
@@ -79,7 +79,7 @@ namespace openloco::ui::tooltip
         {
             // gfx_get_string_width_new_lined
             registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
+            regs.esi = (loco_ptr)&byte_112CC04[0];
             call(0x00495715, regs);
             strWidth = regs.cx;
         }
@@ -89,7 +89,7 @@ namespace openloco::ui::tooltip
         {
             // gfx_wrap_string
             registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
+            regs.esi = (loco_ptr)&byte_112CC04[0];
             regs.di = strWidth + 1;
             call(0x00495301, regs);
             strWidth = regs.cx;
@@ -121,7 +121,7 @@ namespace openloco::ui::tooltip
             gfx::ui_size_t(width, height),
             window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
             (ui::window_event_list*)0x504774);
-        tooltip->widgets = _widgets;
+        tooltip->widgets = (loco_ptr)_widgets;
         _tooltipNotShownTicks = 0;
     }
 
@@ -135,7 +135,7 @@ namespace openloco::ui::tooltip
         }
 
         window->call_prepare_draw();
-        if (window->widgets[widgetIndex].tooltip == string_ids::null)
+        if (window->getWidget(widgetIndex)->tooltip == string_ids::null)
         {
             return;
         }
@@ -158,7 +158,7 @@ namespace openloco::ui::tooltip
 
         _currentTooltipStringId = -1;
 
-        common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY);
+        common(window, widgetIndex, window->getWidget(widgetIndex)->tooltip, cursorX, cursorY);
     }
 
     // 0x004C9216
@@ -215,8 +215,8 @@ namespace openloco::ui::tooltip
             regs.dx = y + 1;
             regs.al = 0;
             regs.bp = _lineBreakCount;
-            regs.edi = (uint32_t)dpi;
-            regs.esi = (uint32_t)&_text[0];
+            regs.edi = (loco_ptr)dpi;
+            regs.esi = (loco_ptr)&_text[0];
             call(0x00494E33, regs);
         }
     }

@@ -40,7 +40,7 @@ namespace openloco::ui::windows
             window_flags::stick_to_front | window_flags::transparent,
             &_events);
 
-        window->widgets = _widgets;
+        window->widgets = (loco_ptr)_widgets;
         window->enabled_widgets = 1 << widx::logo;
 
         window->init_scroll_widgets();

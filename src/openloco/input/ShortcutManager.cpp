@@ -220,7 +220,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::underground_view;
         window->invalidate();
     }
@@ -232,7 +232,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
         window->invalidate();
     }
@@ -244,7 +244,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
         window->invalidate();
     }
@@ -256,7 +256,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::height_marks_on_land;
         window->invalidate();
     }
@@ -268,7 +268,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
         window->invalidate();
     }
@@ -280,7 +280,7 @@ namespace openloco::input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
         viewport->flags ^= viewport_flags::one_way_direction_arrows;
         window->invalidate();
     }

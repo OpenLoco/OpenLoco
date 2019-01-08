@@ -58,7 +58,7 @@ namespace openloco::ui::EditKeyboardShortcut
 
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, { 280, 72 }, 0, &_events);
 
-        window->widgets = _widgets;
+        window->widgets = (loco_ptr)_widgets;
         window->enabled_widgets = 1 << widx::close;
         window->init_scroll_widgets();
 

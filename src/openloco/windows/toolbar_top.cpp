@@ -111,7 +111,7 @@ namespace openloco::ui::windows::toolbar_top
             gfx::ui_size_t(ui::width(), 28),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
             &_events);
-        window->widgets = _widgets;
+        window->widgets =(loco_ptr) _widgets;
         window->enabled_widgets = (1 << widx::loadsave_menu) | (1 << widx::audio_menu) | (1 << widx::zoom_menu) | (1 << widx::rotate_menu) | (1 << widx::view_menu) | (1 << widx::terraform_menu) | (1 << widx::railroad_menu) | (1 << widx::road_menu) | (1 << widx::port_menu) | (1 << widx::build_vehicles_menu) | (1 << widx::vehicles_menu) | (1 << widx::stations_menu) | (1 << widx::towns_menu);
         window->init_scroll_widgets();
 
@@ -265,19 +265,19 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
 
         auto mainWindow = WindowManager::getMainWindow();
-        if (mainWindow->viewports[0]->zoom == 0)
+        if (mainWindow->getViewport()->zoom == 0)
         {
             dropdown::set_item_disabled(0);
             dropdown::set_highlighted_item(1);
         }
 
-        if (mainWindow->viewports[0]->zoom == 3)
+        if (mainWindow->getViewport()->zoom == 3)
         {
             dropdown::set_item_disabled(1);
             zoom_ticks = 1000;
         }
 
-        if (mainWindow->viewports[0]->zoom != 3 && zoom_ticks <= 32)
+        if (mainWindow->getViewport()->zoom != 3 && zoom_ticks <= 32)
             dropdown::set_highlighted_item(1);
     }
 
@@ -359,7 +359,7 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(9, string_ids::dropdown_without_checkmark, string_ids::menu_station_names_displayed);
         dropdown::show_below(window, widgetIndex, 10);
 
-        uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
+        uint32_t current_viewport_flags = WindowManager::getMainWindow()->getViewport()->flags;
 
         if (current_viewport_flags & viewport_flags::underground_view)
             dropdown::set_item_selected(0);
@@ -395,7 +395,7 @@ namespace openloco::ui::windows::toolbar_top
             itemIndex = dropdown::get_highlighted_item();
 
         window = WindowManager::getMainWindow();
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        auto viewport = WindowManager::getMainWindow()->getViewport();
 
         if (itemIndex == 0)
             viewport->flags ^= viewport_flags::underground_view;
@@ -468,7 +468,7 @@ namespace openloco::ui::windows::toolbar_top
     {
         // Load objects.
         registers regs;
-        regs.edi = (uint32_t)&available_objects[0];
+        regs.edi = (loco_ptr)&available_objects[0];
         call(0x004A6841, regs);
 
         // Sanity check: any objects available?
@@ -529,7 +529,7 @@ namespace openloco::ui::windows::toolbar_top
     {
         // Load objects.
         registers regs;
-        regs.edi = (uint32_t)&available_objects[0];
+        regs.edi =(loco_ptr)&available_objects[0];
         call(0x00478265, regs);
 
         // Sanity check: any objects available?

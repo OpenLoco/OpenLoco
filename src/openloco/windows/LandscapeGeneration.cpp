@@ -125,16 +125,16 @@ namespace openloco::ui::windows::LandscapeGeneration
         {
             switchTabWidgets(window);
 
-            window->widgets[widx::frame].right = window->width - 1;
-            window->widgets[widx::frame].bottom = window->height - 1;
+            window->getWidget(widx::frame)->right = window->width - 1;
+            window->getWidget(widx::frame)->bottom = window->height - 1;
 
-            window->widgets[widx::panel].right = window->width - 1;
-            window->widgets[widx::panel].bottom = window->height - 1;
+            window->getWidget(widx::panel)->right = window->width - 1;
+            window->getWidget(widx::panel)->bottom = window->height - 1;
 
-            window->widgets[widx::caption].right = window->width - 2;
+            window->getWidget(widx::caption)->right = window->width - 2;
 
-            window->widgets[widx::close_button].left = window->width - 15;
-            window->widgets[widx::close_button].right = window->width - 3;
+            window->getWidget(widx::close_button)->left = window->width - 15;
+            window->getWidget(widx::close_button)->right = window->width - 3;
         }
 
         static void update(window* window)
@@ -177,7 +177,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::start_year].top,
+                window->y + window->getWidget(widx::start_year)->top,
                 colour::black,
                 string_ids::start_year);
         }
@@ -304,7 +304,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         if (window == nullptr)
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &options::events);
-            window->widgets = options::widgets;
+            window->widgets = (loco_ptr)options::widgets;
             window->enabled_widgets = options::enabled_widgets;
             window->number = 0;
             window->current_tab = 0;
@@ -376,28 +376,28 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::sea_level].top,
+                window->y + window->getWidget(widx::sea_level)->top,
                 colour::black,
                 string_ids::sea_level);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::min_land_height].top,
+                window->y + window->getWidget(widx::min_land_height)->top,
                 colour::black,
                 string_ids::min_land_height);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::topography_style].top,
+                window->y + window->getWidget(widx::topography_style)->top,
                 colour::black,
                 string_ids::topography_style);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::hill_density].top,
+                window->y + window->getWidget(widx::hill_density)->top,
                 colour::black,
                 string_ids::hill_density);
         }
@@ -522,7 +522,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
                 case widx::topography_style_btn:
                 {
-                    widget_t& target = window->widgets[widx::topography_style];
+                    widget_t& target = *window->getWidget(widx::topography_style);
                     dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
@@ -602,9 +602,9 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             window->row_hover = landIndex;
 
-            audio::play_sound(audio::sound_id::click_down, window->widgets[widx::scrollview].right);
+            audio::play_sound(audio::sound_id::click_down, window->getWidget(widx::scrollview)->right);
 
-            const widget_t& target = window->widgets[widx::scrollview];
+            const widget_t& target =* window->getWidget(widx::scrollview);
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].v_top;
             dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
@@ -625,7 +625,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
-            window->widgets[widx::topography_style].text = topographyStyleIds[options.topographyStyle];
+            window->getWidget(widx::topography_style)->text = topographyStyleIds[options.topographyStyle];
 
             if ((options.scenarioFlags & scenario::flags::hills_edge_of_map) != 0)
                 window->activated_widgets |= (1 << widx::hills_edge_of_map);
@@ -724,56 +724,56 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::number_of_forests].top,
+                window->y + window->getWidget(widx::number_of_forests)->top,
                 colour::black,
                 string_ids::number_of_forests);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::min_forest_radius].top,
+                window->y + window->getWidget(widx::min_forest_radius)->top,
                 colour::black,
                 string_ids::min_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::max_forest_radius].top,
+                window->y + window->getWidget(widx::max_forest_radius)->top,
                 colour::black,
                 string_ids::max_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::min_forest_density].top,
+                window->y + window->getWidget(widx::min_forest_density)->top,
                 colour::black,
                 string_ids::min_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::max_forest_density].top,
+                window->y + window->getWidget(widx::max_forest_density)->top,
                 colour::black,
                 string_ids::max_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::number_random_trees].top,
+                window->y + window->getWidget(widx::number_random_trees)->top,
                 colour::black,
                 string_ids::number_random_trees);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::min_altitude_for_trees].top,
+                window->y + window->getWidget(widx::min_altitude_for_trees)->top,
                 colour::black,
                 string_ids::min_altitude_for_trees);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::max_altitude_for_trees].top,
+                window->y + window->getWidget(widx::max_altitude_for_trees)->top,
                 colour::black,
                 string_ids::max_altitude_for_trees);
         }
@@ -963,14 +963,14 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::number_of_towns].top,
+                window->y + window->getWidget(widx::number_of_towns)->top,
                 colour::black,
                 string_ids::number_of_towns);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::max_town_size].top,
+                window->y + window->getWidget(widx::max_town_size)->top,
                 colour::black,
                 string_ids::max_town_size);
         }
@@ -1021,7 +1021,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
                 case widx::max_town_size_btn:
                 {
-                    widget_t& target = window->widgets[widx::max_town_size];
+                    widget_t& target = *window->getWidget(widx::max_town_size);
                     dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
@@ -1105,7 +1105,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::num_industries].top,
+                window->y + window->getWidget(widx::num_industries)->top,
                 colour::black,
                 string_ids::number_of_industries);
         }
@@ -1132,7 +1132,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             if (widgetIndex != widx::num_industries_btn)
                 return;
 
-            widget_t& target = window->widgets[widx::num_industries];
+            widget_t& target = *window->getWidget(widx::num_industries);
             dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
@@ -1219,9 +1219,9 @@ namespace openloco::ui::windows::LandscapeGeneration
             };
 
             widget_t* newWidgets = widgetCollectionsByTabId[window->current_tab];
-            if (window->widgets != newWidgets)
+            if (window->widgets != (uintptr_t )newWidgets)
             {
-                window->widgets = newWidgets;
+                window->widgets =(loco_ptr) newWidgets;
                 window->init_scroll_widgets();
             }
 
@@ -1276,7 +1276,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 &industries::events,
             };
 
-            window->event_handlers = eventsByTab[window->current_tab];
+            window->_event_handlers =  (loco_ptr)eventsByTab[window->current_tab];
 
             switchTabWidgets(window);
 

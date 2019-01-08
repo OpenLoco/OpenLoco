@@ -5,6 +5,7 @@
 #ifndef _WIN32
 #include <sys/mman.h>
 #include <unistd.h>
+#include <cinttypes>
 #endif
 #include "../audio/audio.h"
 #include "../console.h"
@@ -35,6 +36,13 @@ using namespace openloco;
 #define CDECL __attribute__((cdecl))
 #else
 #error Unknown compiler, please define STDCALL and CDECL
+#endif
+
+#ifdef __x86_64__
+#undef STDCALL
+#define STDCALL
+#undef CDECL
+#define CDECL
 #endif
 
 #pragma warning(push)
@@ -176,35 +184,42 @@ static void CDECL fn_4081ad(int32_t wParam)
 
 ///endregion
 
+
+struct FileWrapper {
+    FILE* file;
+};
+
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekSet(FileWrapper* a0, int32_t distance)
 {
     console::log_verbose("seek %d bytes from start", distance);
-    fseek(a0, distance, SEEK_SET);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_SET);
+    return ftell(a0->file);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekFromCurrent(FileWrapper* a0, int32_t distance)
 {
     console::log_verbose("seek %d bytes from current", distance);
-    fseek(a0, distance, SEEK_CUR);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_CUR);
+    return ftell(a0->file);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekFromEnd(FileWrapper* a0, int32_t distance)
 {
     console::log_verbose("seek %d bytes from end", distance);
-    fseek(a0, distance, SEEK_END);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_END);
+    return ftell(a0->file);
 }
 
+
+
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
+static int32_t CDECL fn_FileRead(FileWrapper* a0, char* buffer, int32_t size)
 {
-    console::log_verbose("read %d bytes (%d)", size, fileno(a0));
-    size = fread(buffer, 1, size, a0);
+    console::log_verbose("read %d bytes (%d)", size, fileno(a0->file));
+    size = fread(buffer, 1, size, a0->file);
 
     return size;
 }
@@ -335,15 +350,17 @@ static void CDECL fn_FindClose(Session* data)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void* CDECL fn_malloc(uint32_t size)
+static uint32_t CDECL fn_malloc(uint32_t size)
 {
-    return malloc(size);
+    void *pVoid = malloc(size);
+    console::log("Allocated 0x%X bytes at 0x%" PRIXPTR, size, (uintptr_t)pVoid);
+    return (loco_ptr) pVoid;
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void* CDECL fn_realloc(void* block, uint32_t size)
+static uint32_t CDECL fn_realloc(void* block, uint32_t size)
 {
-    return realloc(block, size);
+    return (loco_ptr)realloc(block, size);
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -451,7 +468,9 @@ static int32_t STDCALL lib_CreateFileA(
         return -1;
     }
 
-    return (int32_t)pFILE;
+    auto wrapper = new FileWrapper;
+    wrapper->file = pFILE;
+    return (loco_ptr)wrapper;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -486,9 +505,9 @@ static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitial
 FORCE_ALIGN_ARG_POINTER
 static bool STDCALL lib_CloseHandle(void* hObject)
 {
-    auto file = (FILE*)hObject;
+    auto file = (FileWrapper*)hObject;
 
-    return fclose(file) == 0;
+    return fclose(file->file) == 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -505,9 +524,9 @@ static void register_memory_hooks()
 
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
-    write_jmp(0x4d1401, (void*)&fn_malloc);
-    write_jmp(0x4D1B28, (void*)&fn_realloc);
-    write_jmp(0x4D1355, (void*)&fn_free);
+    hookFunction(0x4d1401, CallingConvention::cdecl, 1, (void (*)()) & fn_malloc);
+    hookFunction(0x4d1401, CallingConvention::cdecl, 2, (void (*)()) & fn_realloc);
+    hookFunction(0x4d1401, CallingConvention::cdecl, 1, (void (*)()) & fn_free);
 }
 
 #ifdef _NO_LOCO_WIN32_
@@ -515,55 +534,55 @@ static void register_no_win32_hooks()
 {
     using namespace openloco::interop;
 
-    write_jmp(0x40447f, (void*)&fn_40447f);
-    write_jmp(0x404b68, (void*)&fn_404b68);
-    write_jmp(0x404e8c, (void*)&get_num_dsound_devices);
-    write_jmp(0x4054b9, (void*)&fn_4054b9);
-    write_jmp(0x4064fa, (void*)&fn0);
-    write_jmp(0x40726d, (void*)&fn_40726d);
-    write_jmp(0x4054a3, (void*)&fn_4054a3);
-    write_jmp(0x4072ec, (void*)&fn0);
-    write_jmp(0x4078be, (void*)&fn_4078be);
-    write_jmp(0x4078fe, (void*)&fn_4078fe);
-    write_jmp(0x407b26, (void*)&fn_407b26);
-    write_jmp(0x4080bb, (void*)&fn_4080bb);
-    write_jmp(0x408163, (void*)&fn_408163);
-    write_jmp(0x40817b, (void*)&fn_40817b);
-    write_jmp(0x4081ad, (void*)&fn_4081ad);
-    write_jmp(0x4081c5, (void*)&fn_FileSeekSet);
-    write_jmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
-    write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
-    write_jmp(0x4081fe, (void*)&fn_FileRead);
-    write_jmp(0x40830e, (void*)&fn_FindFirstFile);
-    write_jmp(0x40831d, (void*)&fn_FindNextFile);
-    write_jmp(0x40832c, (void*)&fn_FindClose);
-    write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
+    hookFunction(0x40447f, CallingConvention::stdcall, 0, (void (*)()) & fn_40447f);
+    hookFunction(0x404b68, CallingConvention::stdcall, 4, (void (*)()) & fn_404b68);
+    hookFunction(0x404e8c, CallingConvention::stdcall, 0, (void (*)()) & get_num_dsound_devices);
+    hookFunction(0x4054b9, CallingConvention::stdcall, 0, (void (*)()) & fn_4054b9);
+    hookFunction(0x4064fa, CallingConvention::stdcall, 0, (void (*)()) & fn0);
+    hookFunction(0x40726d, CallingConvention::stdcall, 0, (void (*)()) & fn_40726d);
+    hookFunction(0x4054a3, CallingConvention::cdecl, 3, (void (*)()) & fn_4054a3);
+    hookFunction(0x4072ec, CallingConvention::stdcall, 0, (void (*)()) & fn0);
+    hookFunction(0x4078be, CallingConvention::stdcall, 0, (void (*)()) & fn_4078be);
+    hookFunction(0x4078fe, CallingConvention::stdcall, 0, (void (*)()) & fn_4078fe);
+    hookFunction(0x407b26, CallingConvention::stdcall, 0, (void (*)()) & fn_407b26);
+    hookFunction(0x4080bb, CallingConvention::cdecl, 2, (void (*)()) & fn_4080bb);
+    hookFunction(0x408163, CallingConvention::cdecl, 0, (void (*)()) & fn_408163);
+    hookFunction(0x40817b, CallingConvention::cdecl, 1, (void (*)()) & fn_40817b);
+    hookFunction(0x4081ad, CallingConvention::cdecl, 1, (void (*)()) & fn_4081ad);
+    hookFunction(0x4081c5, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekSet);
+    hookFunction(0x4081d8, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekFromCurrent);
+    hookFunction(0x4081eb, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekFromEnd);
+    hookFunction(0x4081fe, CallingConvention::cdecl, 3, (void (*)()) & fn_FileRead);
+    hookFunction(0x40830e, CallingConvention::cdecl, 2, (void (*)()) & fn_FindFirstFile);
+    hookFunction(0x40831d, CallingConvention::cdecl, 2, (void (*)()) & fn_FindNextFile);
+    hookFunction(0x40832c, CallingConvention::cdecl, 1, (void (*)()) & fn_FindClose);
+    hookFunction(0x4d0fac, CallingConvention::stdcall, 2, (void (*)()) & fn_DirectSoundEnumerateA);
 
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
     {
-        hook_dump(i, (void*)&fn_dump);
+        hookLibrary(i, CallingConvention::stdcall, 0, (void (*)()) & fn_dump);
     }
 
     // dsound.dll
-    hook_lib(0x4d7024, (void*)&lib_DirectSoundCreate);
+    hookLibrary(0x4d7024, CallingConvention::stdcall, 3, (void (*)()) & lib_DirectSoundCreate);
 
     // gdi32.dll
-    hook_lib(0x4d7078, (void*)&lib_CreateRectRgn);
+    hookLibrary(0x4d7078, CallingConvention::stdcall, 4, (void (*)()) & lib_CreateRectRgn);
 
     // kernel32.dll
-    hook_lib(0x4d70e0, (void*)&lib_CreateMutexA);
-    hook_lib(0x4d70e4, (void*)&lib_OpenMutexA);
-    hook_lib(0x4d70f0, (void*)&lib_WriteFile);
-    hook_lib(0x4d70f4, (void*)&lib_DeleteFileA);
-    hook_lib(0x4d70f8, (void*)&lib_SetFileAttributesA);
-    hook_lib(0x4d70fC, (void*)&lib_CreateFileA);
+    hookLibrary(0x4d70e0, CallingConvention::stdcall, 3, (void (*)()) & lib_CreateMutexA);
+    hookLibrary(0x4d70e4, CallingConvention::stdcall, 3, (void (*)()) & lib_OpenMutexA);
+    hookLibrary(0x4d70f0, CallingConvention::stdcall, 5, (void (*)()) & lib_WriteFile);
+    hookLibrary(0x4d70f4, CallingConvention::stdcall, 1, (void (*)()) & lib_DeleteFileA);
+    hookLibrary(0x4d70f8, CallingConvention::stdcall, 2, (void (*)()) & lib_SetFileAttributesA);
+    hookLibrary(0x4d70fC, CallingConvention::stdcall, 7, (void (*)()) & lib_CreateFileA);
 
     // user32.dll
-    hook_lib(0x4d71e8, (void*)&lib_PostQuitMessage);
-    hook_lib(0x4d714c, (void*)&lib_CloseHandle);
-    hook_lib(0x4d7248, (void*)&lib_GetUpdateRgn);
-    hook_lib(0x4d72b0, (void*)&lib_timeGetTime);
+    hookLibrary(0x4d71e8, CallingConvention::stdcall, 1, (void (*)()) & lib_PostQuitMessage);
+    hookLibrary(0x4d714c, CallingConvention::stdcall, 1, (void (*)()) & lib_CloseHandle);
+    hookLibrary(0x4d7248, CallingConvention::stdcall, 3, (void (*)()) & lib_GetUpdateRgn);
+    hookLibrary(0x4d72b0, CallingConvention::stdcall, 0, (void (*)()) & lib_timeGetTime);
 }
 #endif // _NO_LOCO_WIN32_
 
@@ -633,11 +652,11 @@ static void register_audio_hooks()
 {
     using namespace openloco::interop;
 
-    write_jmp(0x0040194E, (void*)&audio_load_channel);
-    write_jmp(0x00401999, (void*)&audio_play_channel);
-    write_jmp(0x00401A05, (void*)&audio_stop_channel);
-    write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
-    write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
+    hookFunction(0x0040194E, CallingConvention::cdecl, 5, (void (*)()) & audio_load_channel);
+    hookFunction(0x00401999, CallingConvention::cdecl, 5, (void (*)()) & audio_play_channel);
+    hookFunction(0x00401A05, CallingConvention::cdecl, 5, (void (*)()) & audio_stop_channel);
+    hookFunction(0x00401AD3, CallingConvention::cdecl, 2, (void (*)()) & audio_set_channel_volume);
+    hookFunction(0x00401B10, CallingConvention::cdecl, 1, (void (*)()) & audio_is_channel_playing);
 
     write_ret(0x0048AB36);
     write_ret(0x00404B40);
@@ -656,7 +675,7 @@ static void register_audio_hooks()
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((vehicle*)regs.esi);
+            audio::play_sound((vehicle*)(uintptr_t)regs.esi);
             return 0;
         });
     register_hook(
@@ -710,7 +729,7 @@ void openloco::interop::register_hooks()
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 #endif
-            regs.ebx = (int32_t)buffer;
+            regs.ebx = (loco_ptr)buffer;
             return 0;
         });
 
@@ -757,7 +776,7 @@ void openloco::interop::register_hooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = gfx::draw_string((gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
+            auto pos = gfx::draw_string((gfx::drawpixelinfo_t*)(uintptr_t)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)(uintptr_t)regs.esi);
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -777,16 +796,16 @@ void openloco::interop::register_hooks()
         0x004958C6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            char* buffer = stringmgr::format_string((char*)regs.edi, regs.eax, (void*)regs.ecx);
+            char* buffer = stringmgr::format_string((char*)(uintptr_t)regs.edi, regs.eax, (void*)(uintptr_t)regs.ecx);
             regs = backup;
-            regs.edi = (uint32_t)buffer;
+            regs.edi = (loco_ptr)buffer;
             return 0;
         });
 
     register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::construction::on_mouse_up(*((ui::window*)regs.esi), regs.dx);
+            ui::windows::construction::on_mouse_up(*((ui::window*)(uintptr_t)regs.esi), regs.dx);
             return 0;
         });
 
@@ -794,15 +813,22 @@ void openloco::interop::register_hooks()
         0x0048ED2F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             ui::windows::station::tab_2_scroll_paint(
-                *((ui::window*)regs.esi),
-                *((gfx::drawpixelinfo_t*)regs.edi));
+                *((ui::window*)(uintptr_t)regs.esi),
+                *((gfx::drawpixelinfo_t*)(uintptr_t)regs.edi));
+            return 0;
+        });
+
+    register_hook(
+        0x00498E9B,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            openloco::ui::windows::sub_498E9B((openloco::ui::window*)(uintptr_t)regs.esi);
             return 0;
         });
 
     register_hook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (openloco::vehicle*)regs.esi;
+            auto v = (openloco::vehicle*)(uintptr_t)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });
@@ -818,8 +844,8 @@ void openloco::interop::register_hooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
-            auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
+            auto window = (ui::window*)(uintptr_t)regs.esi;
+            auto dpi = (gfx::drawpixelinfo_t*)(uintptr_t)regs.edi;
             window->draw(dpi);
             regs = backup;
             return 0;
@@ -841,7 +867,7 @@ void openloco::interop::register_hooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            openloco::map::surface_element* surface = (openloco::map::surface_element*)regs.esi;
+            openloco::map::surface_element* surface = (openloco::map::surface_element*)(uintptr_t)regs.esi;
 
             surface->createWave(x, y, i);
 
@@ -852,7 +878,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004AB655,
         [](registers& regs) -> uint8_t {
-            auto v = (openloco::vehicle*)regs.esi;
+            auto v = (openloco::vehicle*)(uintptr_t)regs.esi;
             v->secondary_animation_update();
 
             return 0;
@@ -869,7 +895,7 @@ void openloco::interop::register_hooks()
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::window*)(uintptr_t)regs.esi;
             window->viewports_update_position();
             regs = backup;
             return 0;
@@ -879,7 +905,7 @@ void openloco::interop::register_hooks()
         0x004C9513,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::window*)(uintptr_t)regs.esi;
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
@@ -889,11 +915,11 @@ void openloco::interop::register_hooks()
             regs.edx = widgetIndex;
             if (widgetIndex == -1)
             {
-                regs.edi = (uintptr_t)&window->widgets[0];
+                regs.edi = (uintptr_t)&((ui::widget_t*)(uintptr_t )window->widgets)[0];
             }
             else
             {
-                regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+                regs.edi = (uintptr_t)&((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex];
             }
 
             return 0;
@@ -903,7 +929,7 @@ void openloco::interop::register_hooks()
         0x004CA115,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::window*)(uintptr_t)regs.esi;
             window->update_scroll_widgets();
             regs = backup;
 
@@ -914,7 +940,7 @@ void openloco::interop::register_hooks()
         0x004CA17F,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (ui::window*)(uintptr_t)regs.esi;
             window->init_scroll_widgets();
             regs = backup;
 

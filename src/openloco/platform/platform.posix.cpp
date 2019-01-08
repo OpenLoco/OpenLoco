@@ -1,6 +1,7 @@
 #ifndef _WIN32
 
 #include "../console.h"
+#include "../interop/emu.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "platform.h"
@@ -15,6 +16,7 @@
 
 int main(int argc, const char** argv)
 {
+    emu_init();
     openloco::interop::load_sections();
     openloco::lpCmdLine((char*)argv[0]);
     openloco::main();

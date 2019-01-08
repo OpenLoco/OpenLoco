@@ -278,13 +278,13 @@ namespace openloco::ui
 
     struct window
     {
-        window_event_list* event_handlers;                 // 0x00
-        ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
+        uint32_t _event_handlers;                          // 0x00
+        uint32_t viewports[2] = { 0, 0 };                  // 0x04
         uint64_t enabled_widgets = 0;                      // 0x0C
         uint64_t disabled_widgets = 0;                     // 0x14
         uint64_t activated_widgets = 0;                    // 0x1C
         uint64_t holdable_widgets = 0;                     // 0x24
-        widget_t* widgets;                                 // 0x2C
+        uint32_t widgets;                                  // 0x2C
         int16_t x;                                         // 0x30
         int16_t y;                                         // 0x32
         uint16_t width;                                    // 0x34
@@ -342,6 +342,22 @@ namespace openloco::ui
         constexpr void set_size(gfx::ui_size_t size)
         {
             set_size(size, size);
+        }
+
+        ui::widget_t * getWidget(widget_index index) {
+#ifdef __i386__
+            return &this->widgets[index];
+#else
+            return &((ui::widget_t*)(uintptr_t )this->widgets)[index];
+#endif
+        }
+
+        ui::viewport * getViewport(uint8_t index = 0) {
+#ifdef __i386__
+            return this->viewport[index];
+#else
+            return (ui::viewport*)(uintptr_t )this->viewports[index];
+#endif
         }
 
         bool is_enabled(int8_t widget_index);

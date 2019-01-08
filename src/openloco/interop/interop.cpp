@@ -1,3 +1,4 @@
+#include "emu.h"
 #include <algorithm>
 #include <cinttypes>
 #include <cstring>
@@ -15,7 +16,10 @@
 #include "interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
+
+#ifdef __i386__
 #define PLATFORM_X86
+#endif
 
 #if defined(__GNUC__)
 #ifdef __clang__
@@ -95,6 +99,7 @@ namespace openloco::interop
 
     static int32_t DISABLE_OPT call_byref(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
+        printf("Calling %x\n", address);
 #ifdef _LOG_INTEROP_CALLS_
         openloco::console::group("0x%x", address);
 #endif
@@ -249,7 +254,39 @@ namespace openloco::interop
             );
 // clang-format on
 #endif
-#endif // PLATFORM_X86
+#else // PLATFORM_X86
+
+        console::log("===");
+        emu->max_instr = 5;
+
+        auto temp = x86emu_clone(emu);
+        x86emu_reset(temp);
+        x86emu_set_seg_register(temp, temp->x86.R_CS_SEL, 0);
+        temp->x86.R_CS_ACC |= (1 << 10);
+        temp->x86.R_CS_ACC |= (1 << 11);
+        temp->x86.R_CS_BASE = 0;
+        temp->x86.seg[3].limit = UINT32_MAX;
+        temp->x86.R_EIP = address;
+        temp->x86.R_EAX = *_eax;
+        temp->x86.R_EBX = *_ebx;
+        temp->x86.R_ECX = *_ecx;
+        temp->x86.R_EDX = *_edx;
+        temp->x86.R_ESI = *_esi;
+        temp->x86.R_EDI = *_edi;
+        temp->x86.R_EBP = *_ebp;
+        x86emu_run(temp, 0);
+        x86emu_clear_log(temp, true);
+        *_eax = temp->x86.R_EAX;
+        *_ebx = temp->x86.R_EBX;
+        *_ecx = temp->x86.R_ECX;
+        *_edx = temp->x86.R_EDX;
+        *_esi = temp->x86.R_ESI;
+        *_edi = temp->x86.R_EDI;
+        *_ebp = temp->x86.R_EBP;
+
+       x86emu_done(temp);
+        console::log("===");
+#endif
         _originalAddress = 0;
 
 #ifdef _LOG_INTEROP_CALLS_
@@ -302,7 +339,7 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy(data, (void*)address, size);
+        std::memcpy(data, (void*)(uintptr_t)address, size);
 #endif // _WIN32
     }
 
@@ -315,7 +352,7 @@ namespace openloco::interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy((void*)address, data, size);
+        std::memcpy((void*)(uintptr_t)address, data, size);
 #endif // _WIN32
     }
 

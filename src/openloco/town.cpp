@@ -1,5 +1,6 @@
 #include "town.h"
 #include "interop/interop.hpp"
+#include "openloco.h"
 #include <algorithm>
 
 using namespace openloco::interop;
@@ -18,7 +19,7 @@ namespace openloco
     void town::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = (loco_ptr)this;
         call(0x0049742F, regs);
     }
 

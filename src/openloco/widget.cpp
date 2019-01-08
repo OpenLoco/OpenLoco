@@ -45,9 +45,9 @@ namespace openloco::ui::widget
         regs.bx = width;
         regs.cx = x;
         regs.dx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)dpi;
-        regs.ebp = (uint32_t)widget;
+        regs.esi = (loco_ptr)window;
+        regs.edi = (loco_ptr)dpi;
+        regs.ebp = (loco_ptr)widget;
         call(0x004CF3EB, regs);
     }
 
@@ -778,7 +778,7 @@ namespace openloco::ui::widget
     // 0x004CF194
     void draw_tab(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
     {
-        auto widget = &w->widgets[index];
+        auto widget = w->getWidget(index);
 
         gfx::point_t pos = {};
         pos.x = widget->left + w->x;

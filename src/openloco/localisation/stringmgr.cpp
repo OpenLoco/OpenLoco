@@ -4,6 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
+#include "../openloco.h"
 #include "../townmgr.h"
 #include "argswrapper.hpp"
 #include "string_ids.h"
@@ -89,20 +90,20 @@ namespace openloco::stringmgr
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (loco_ptr)buffer;
 
         call(0x00495F35, regs);
-        return (char*)regs.edi;
+        return (char*)(uintptr_t)regs.edi;
     }
 
     static char* format_int32_ungrouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (loco_ptr)buffer;
 
         call(0x495E2A, regs);
-        return (char*)regs.edi;
+        return (char*)(uintptr_t)regs.edi;
     }
 
     static char* format_int48_grouped(uint64_t value, char* buffer, uint8_t separator)
@@ -110,31 +111,31 @@ namespace openloco::stringmgr
         registers regs;
         regs.eax = (uint32_t)value;
         regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (loco_ptr)buffer;
         regs.ebx = (uint32_t)separator;
 
         call(0x496052, regs);
-        return (char*)regs.edi;
+        return (char*)(uintptr_t)regs.edi;
     }
 
     static char* format_short_with_decimals(int16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (loco_ptr)buffer;
 
         call(0x4963FC, regs);
-        return (char*)regs.edi;
+        return (char*)(uintptr_t)regs.edi;
     }
 
     static char* format_int_with_decimals(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = (loco_ptr)buffer;
 
         call(0x4962F1, regs);
-        return (char*)regs.edi;
+        return (char*)(uintptr_t)regs.edi;
     }
 
     // 0x00495D09
@@ -356,7 +357,7 @@ namespace openloco::stringmgr
 
                     case control_codes::string_ptr:
                     {
-                        const char* str = (char*)args.pop32();
+                        const char* str = (char*)(uintptr_t)args.pop32();
                         strcpy(buffer, str);
                         buffer += strlen(str);
                         break;

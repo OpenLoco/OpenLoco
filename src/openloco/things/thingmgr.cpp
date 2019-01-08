@@ -36,7 +36,7 @@ namespace openloco::thingmgr
     {
         registers regs;
         call(0x004700A5, regs);
-        return (thing_base*)regs.esi;
+        return (thing_base*)(uintptr_t)regs.esi;
     }
 
     // 0x004A8826

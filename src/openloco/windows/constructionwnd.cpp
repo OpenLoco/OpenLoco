@@ -24,7 +24,7 @@ namespace openloco::ui::windows::construction
         registers regs;
         regs.ecx = flags;
         call(0x004A3B0D, regs);
-        return (window*)regs.esi;
+        return (window*)(uintptr_t )regs.esi;
     }
 
     // 0x0049D3F6
@@ -40,7 +40,7 @@ namespace openloco::ui::windows::construction
 
         registers regs;
         regs.edx = widgetIndex;
-        regs.esi = (int32_t)&w;
+        regs.esi = (loco_ptr)&w;
         switch (widgetIndex)
         {
             case widget_idx::close:

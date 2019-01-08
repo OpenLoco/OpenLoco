@@ -15,7 +15,7 @@ void thing_base::move_to(loc16 loc)
     regs.ax = loc.x;
     regs.cx = loc.y;
     regs.dx = loc.z;
-    regs.esi = (int32_t)this;
+    regs.esi = (loco_ptr)this;
     call(0x0046FC83, regs);
 }
 

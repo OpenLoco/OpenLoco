@@ -44,7 +44,7 @@ namespace openloco::ui::windows
             (ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
-            window->widgets = (widget_t*)0x0050AE00;
+            window->widgets = (loco_ptr)(widget_t*)0x0050AE00;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->init_scroll_widgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);

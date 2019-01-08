@@ -139,9 +139,9 @@ namespace openloco::ui::dropdown
         registers regs;
         regs.ah = height;
         regs.bx = static_cast<uint8_t>(count) + (1 << 14);
-        regs.esi = (int32_t)window;
+        regs.esi = (loco_ptr)window;
         regs.edx = widgetIndex;
-        regs.edi = (int32_t)&window->widgets[widgetIndex];
+        regs.edi = (loco_ptr)window->getWidget(widgetIndex);
 
         call(0x4CC989, regs);
     }
@@ -153,9 +153,9 @@ namespace openloco::ui::dropdown
 
         registers regs;
         regs.bx = static_cast<uint8_t>(count);
-        regs.esi = (int32_t)window;
+        regs.esi = (loco_ptr)window;
         regs.edx = widgetIndex;
-        regs.edi = (int32_t)&window->widgets[widgetIndex];
+        regs.edi = (loco_ptr)window->getWidget(widgetIndex);
 
         call(0x4CC989, regs);
     }
@@ -217,8 +217,8 @@ namespace openloco::ui::dropdown
     {
         registers regs;
         // regs.edx = widgetIndex;
-        regs.edi = (int32_t)widget;
-        regs.esi = (int32_t)window;
+        regs.edi = (loco_ptr)widget;
+        regs.esi = (loco_ptr)window;
 
         call(0x004CF2B3, regs);
     }

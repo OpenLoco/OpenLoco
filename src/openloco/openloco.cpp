@@ -167,32 +167,6 @@ namespace openloco
         return regs.eax != 0;
     }
 
-#ifdef _NO_LOCO_WIN32_
-    /**
-     * Use this to allocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* malloc(size_t size)
-    {
-        return ((void* (*)(size_t))0x004D1401)(size);
-    }
-
-    /**
-     * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* realloc(void* address, size_t size)
-    {
-        return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
-    }
-
-    /**
-     * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
-     */
-    [[maybe_unused]] static void free(void* address)
-    {
-        ((void (*)(void*))0x004D1355)(address);
-    }
-#endif // _NO_LOCO_WIN32_
-
     static void sub_4062D1()
     {
         call(0x004062D1);
@@ -200,7 +174,9 @@ namespace openloco
 
     static void sub_406417()
     {
+#ifdef __i386__
         ((void (*)())0x00406417)();
+#endif
     }
 
     static void sub_40567E()
@@ -220,15 +196,23 @@ namespace openloco
 
     static bool sub_4034FC(int32_t& a, int32_t& b)
     {
+#ifdef __i386__
         auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
         return result != 0;
+#else
+        return false;
+#endif
     }
 
     // 0x00407FFD
     static bool is_already_running(const char* mutexName)
     {
+#ifdef __i386__
         auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
+#else
+        return false;
+#endif
     }
 
     // 0x004BE621
@@ -301,7 +285,7 @@ namespace openloco
         progressbar::set_progress(60);
         gfx::load_g1();
         progressbar::set_progress(220);
-        call(0x004949BC);
+//        call(0x004949BC);
         progressbar::set_progress(235);
         progressbar::set_progress(250);
         ui::initialise_cursors();

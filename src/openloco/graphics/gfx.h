@@ -10,7 +10,7 @@ namespace openloco::gfx
 
     struct drawpixelinfo_t
     {
-        uint8_t* bits;       // 0x00
+        uint32_t bits;       // 0x00
         int16_t x;           // 0x04
         int16_t y;           // 0x06
         int16_t width;       // 0x08
@@ -51,7 +51,7 @@ namespace openloco::gfx
 
         g1_element() = default;
         g1_element(const g1_element32_t& src)
-            : offset((uint8_t*)src.offset)
+            : offset((uint8_t*)(uintptr_t)(src.offset))
             , width(src.width)
             , height(src.height)
             , x_offset(src.x_offset)

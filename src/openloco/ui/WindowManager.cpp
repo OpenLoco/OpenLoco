@@ -85,7 +85,7 @@ namespace openloco::ui::WindowManager
             0x0045EFDB,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::window*)(uintptr_t)regs.esi;
                 window->viewport_zoom_in(false);
                 regs = backup;
                 return 0;
@@ -95,7 +95,7 @@ namespace openloco::ui::WindowManager
             0x0045F015,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::window*)(uintptr_t)regs.esi;
                 window->viewport_zoom_out(false);
                 regs = backup;
                 return 0;
@@ -135,7 +135,7 @@ namespace openloco::ui::WindowManager
             0x004C5FC8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::window*)(uintptr_t)regs.esi;
 
                 // Make a copy to prevent overwriting from nested calls
                 auto regs2 = regs;
@@ -200,7 +200,7 @@ namespace openloco::ui::WindowManager
                     w = find((WindowType)regs.cx, regs.dx);
                 }
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = (loco_ptr)w;
                 if (w == nullptr)
                 {
                     return X86_FLAG_ZERO;
@@ -251,7 +251,7 @@ namespace openloco::ui::WindowManager
             0x004CC6EA,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = (ui::window*)regs.esi;
+                auto window = (ui::window*)(uintptr_t)regs.esi;
                 close(window);
                 regs = backup;
                 return 0;
@@ -279,7 +279,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) -> uint8_t {
                 auto w = getMainWindow();
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = (loco_ptr)w;
                 if (w == nullptr)
                 {
                     return X86_FLAG_CARRY;
@@ -292,7 +292,7 @@ namespace openloco::ui::WindowManager
             0x004CEE0B,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                sub_4CEE0B((ui::window*)regs.esi);
+                sub_4CEE0B((ui::window*)(uintptr_t)regs.esi);
                 regs = backup;
 
                 return 0;
@@ -303,7 +303,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, gfx::point_t(regs.ax, regs.eax >> 16), gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (window_event_list*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, gfx::point_t(regs.ax, regs.eax >> 16), gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (window_event_list*)(uintptr_t) regs.edx);
                 regs = backup;
 
                 regs.esi = (uintptr_t)w;
@@ -315,7 +315,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (window_event_list*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (window_event_list*)(uintptr_t)regs.edx);
                 regs = backup;
 
                 regs.esi = (uintptr_t)w;
@@ -544,7 +544,7 @@ namespace openloco::ui::WindowManager
             if (w->number != number)
                 continue;
 
-            auto widget = w->widgets[widget_index];
+            auto &widget = *w->getWidget(widget_index);
 
             if (widget.left != -2)
             {
@@ -606,10 +606,10 @@ namespace openloco::ui::WindowManager
     window* bringToFront(window* w)
     {
         registers regs;
-        regs.esi = (uint32_t)w;
+        regs.esi = (loco_ptr)w;
         call(0x004CC750, regs);
 
-        return (window*)regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 
     // 0x004CD3A9
@@ -620,7 +620,7 @@ namespace openloco::ui::WindowManager
         regs.dx = id;
         call(0x004CD3A9, regs);
 
-        return (window*)regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 
     /**
@@ -898,7 +898,7 @@ namespace openloco::ui::WindowManager
             audio::play_sound(audio::sound_id::open_window, origin.x + size.width / 2);
         }
 
-        window.event_handlers = events;
+        window._event_handlers = (loco_ptr) events;
 
         size_t length = _windowsEnd - (_windows + dstIndex);
         memmove(_windows + dstIndex + 1, _windows + dstIndex, length * sizeof(ui::window));
@@ -1024,16 +1024,18 @@ namespace openloco::ui::WindowManager
         if (window == nullptr)
             return;
 
-        if (window->viewports[0] != nullptr)
+        if (window->viewports[0] != 0)
         {
-            window->viewports[0]->width = 0;
-            window->viewports[0] = nullptr;
+            auto vp = (ui::viewport*)(uintptr_t )window->viewports[0];
+            vp->width = 0;
+            window->viewports[0] = 0;
         }
 
-        if (window->viewports[1] != nullptr)
+        if (window->viewports[1] != 0)
         {
-            window->viewports[1]->width = 0;
-            window->viewports[1] = nullptr;
+            auto vp = (ui::viewport*)(uintptr_t )window->viewports[1];
+            vp->width = 0;
+            window->viewports[1] = 0;
         }
 
         window->invalidate();
@@ -1101,16 +1103,18 @@ namespace openloco::ui::WindowManager
                 newLocation += 8;
 
                 // Adjust the viewports if required.
-                if (w->viewports[0] != nullptr)
+                if (w->getViewport(0) != nullptr)
                 {
-                    w->viewports[0]->x -= oldX - w->x;
-                    w->viewports[0]->y -= oldY - w->y;
+                    auto vp = w->getViewport(0);
+                    vp->x -= oldX - w->x;
+                    vp->y -= oldY - w->y;
                 }
 
-                if (w->viewports[1] != nullptr)
+                if (w->getViewport(1) != nullptr)
                 {
-                    w->viewports[1]->x -= oldX - w->x;
-                    w->viewports[1]->y -= oldY - w->y;
+                    auto vp = w->getViewport(1);
+                    vp->x -= oldX - w->x;
+                    vp->y -= oldY - w->y;
                 }
             }
         }
@@ -1155,15 +1159,15 @@ namespace openloco::ui::WindowManager
                 w->y += dY;
                 w->invalidate();
 
-                if (w->viewports[0] != nullptr)
-                {
-                    w->viewports[0]->y += dY;
-                }
-
-                if (w->viewports[1] != nullptr)
-                {
-                    w->viewports[1]->y += dY;
-                }
+                // if (w->viewports[0] != nullptr)
+                // {
+                //     w->viewports[0]->y += dY;
+                // }
+                //
+                // if (w->viewports[1] != nullptr)
+                // {
+                //     w->viewports[1]->y += dY;
+                // }
             }
         }
     }
@@ -1217,7 +1221,7 @@ namespace openloco::ui::WindowManager
     {
         int scrollIndex = window->get_scroll_data_index(widgetIndex);
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
-        ui::widget_t* widget = &window->widgets[widgetIndex];
+        ui::widget_t* widget = &((ui::widget_t*)(uintptr_t) window->widgets)[widgetIndex];
 
         if (window->scroll_areas[scrollIndex].flags & 0b10000)
         {
@@ -1245,7 +1249,7 @@ namespace openloco::ui::WindowManager
     {
         int widgetIndex = -1;
         int scrollIndex = -1;
-        for (widget_t* widget = window->widgets; widget->type != widget_type::end; widget++)
+        for (widget_t* widget = (ui::widget_t*)(uintptr_t) window->widgets; widget->type != widget_type::end; widget++)
         {
             widgetIndex++;
 
@@ -1349,7 +1353,7 @@ namespace openloco::ui::WindowManager
                 auto widgetIndex = window->find_widget_at(cursorPosition.x, cursorPosition.y);
                 if (widgetIndex != -1)
                 {
-                    if (window->widgets[widgetIndex].type == widget_type::scrollview)
+                    if (((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex].type == widget_type::scrollview)
                     {
                         auto scrollIndex = window->get_scroll_data_index(widgetIndex);
                         if (window->scroll_areas[scrollIndex].flags & 0b10001)
@@ -1410,10 +1414,10 @@ namespace openloco::ui::WindowManager
     {
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            if (w->viewports[0] == nullptr)
+            if (w->getViewport() == nullptr)
                 continue;
 
-            auto viewport = w->viewports[0];
+            auto viewport = w->getViewport();
             if (viewport->zoom != 0)
                 continue;
 

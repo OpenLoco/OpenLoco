@@ -197,7 +197,7 @@ namespace openloco::ui::prompt_browse
 
         if (window != nullptr)
         {
-            window->widgets = widgets;
+            window->widgets = (loco_ptr) widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->init_scroll_widgets();
 
@@ -301,51 +301,51 @@ namespace openloco::ui::prompt_browse
         char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
         strcpy(buffer, _title);
 
-        self->widgets[widx::frame].right = self->width - 1;
-        self->widgets[widx::frame].bottom = self->height - 1;
+        self->getWidget(widx::frame)->right = self->width - 1;
+        self->getWidget(widx::frame)->bottom = self->height - 1;
 
-        self->widgets[widx::panel].right = self->width - 1;
-        self->widgets[widx::panel].bottom = self->height - 1;
+        self->getWidget(widx::panel)->right = self->width - 1;
+        self->getWidget(widx::panel)->bottom = self->height - 1;
 
-        self->widgets[widx::caption].right = self->width - 2;
+        self->getWidget(widx::caption)->right = self->width - 2;
 
-        self->widgets[widx::close_button].left = self->width - 15;
-        self->widgets[widx::close_button].right = self->width - 3;
+        self->getWidget(widx::close_button)->left = self->width - 15;
+        self->getWidget(widx::close_button)->right = self->width - 3;
 
         if (*_type == browse_type::save)
         {
-            self->widgets[widx::ok_button].left = self->width - 86;
-            self->widgets[widx::ok_button].right = self->width - 16;
-            self->widgets[widx::ok_button].top = self->height - 15;
-            self->widgets[widx::ok_button].bottom = self->height - 4;
-            self->widgets[widx::ok_button].type = widget_type::wt_11;
+            self->getWidget(widx::ok_button)->left = self->width - 86;
+            self->getWidget(widx::ok_button)->right = self->width - 16;
+            self->getWidget(widx::ok_button)->top = self->height - 15;
+            self->getWidget(widx::ok_button)->bottom = self->height - 4;
+            self->getWidget(widx::ok_button)->type = widget_type::wt_11;
 
-            self->widgets[widx::text_filename].right = self->width - 4;
-            self->widgets[widx::text_filename].top = self->height - 31;
-            self->widgets[widx::text_filename].bottom = self->height - 18;
-            self->widgets[widx::text_filename].type = widget_type::wt_17;
+            self->getWidget(widx::text_filename)->right = self->width - 4;
+            self->getWidget(widx::text_filename)->top = self->height - 31;
+            self->getWidget(widx::text_filename)->bottom = self->height - 18;
+            self->getWidget(widx::text_filename)->type = widget_type::wt_17;
 
-            self->widgets[widx::scrollview].bottom = self->height - 34;
+            self->getWidget(widx::scrollview)->bottom = self->height - 34;
         }
         else
         {
-            self->widgets[widx::ok_button].type = widget_type::none;
-            self->widgets[widx::text_filename].type = widget_type::none;
+            self->getWidget(widx::ok_button)->type = widget_type::none;
+            self->getWidget(widx::text_filename)->type = widget_type::none;
 
-            self->widgets[widx::scrollview].bottom = self->height - 4;
+            self->getWidget(widx::scrollview)->bottom = self->height - 4;
         }
 
-        self->widgets[widx::scrollview].right = self->width - 259;
+        self->getWidget(widx::scrollview)->right = self->width - 259;
         if (*_fileType != browse_file_type::saved_game)
-            self->widgets[widx::scrollview].right += 122;
+            self->getWidget(widx::scrollview)->right += 122;
 
-        self->widgets[widx::parent_button].left = self->width - 26;
-        self->widgets[widx::parent_button].right = self->width - 3;
+        self->getWidget(widx::parent_button)->left = self->width - 26;
+        self->getWidget(widx::parent_button)->right = self->width - 3;
 
         // Resume the original prepare_draw routine beyond the widget repositioning.
         registers regs;
-        regs.edi = (int32_t)buffer;
-        regs.esi = (int32_t)self;
+        regs.edi = (loco_ptr)buffer;
+        regs.esi = (loco_ptr)self;
         call(0x00445D91, regs);
     }
 
@@ -367,7 +367,7 @@ namespace openloco::ui::prompt_browse
 
         auto folder = (const char*)0x9DA084;
         set_common_args_stringptr(folder);
-        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
+        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->getWidget(widx::parent_button)->top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
         if (selectedIndex != 0xFFFF)
@@ -375,7 +375,7 @@ namespace openloco::ui::prompt_browse
             auto& selectedFile = _files[selectedIndex];
             if (!selectedFile.is_directory())
             {
-                const auto& widget = window->widgets[widx::scrollview];
+                const auto& widget = *window->getWidget(widx::scrollview);
 
                 auto width = window->width - widget.right - 8;
                 auto x = window->x + widget.right + 3;
@@ -409,7 +409,7 @@ namespace openloco::ui::prompt_browse
             }
         }
 
-        const auto& filenameBox = window->widgets[widx::text_filename];
+        const auto& filenameBox = *window->getWidget(widx::text_filename);
         if (filenameBox.type != widget_type::none)
         {
             // Draw filename label
@@ -451,7 +451,7 @@ namespace openloco::ui::prompt_browse
         }
         y += 207;
 
-        uint16_t maxWidth = window.width - window.widgets[widx::scrollview].right;
+        uint16_t maxWidth = window.width - window.getWidget(widx::scrollview)->right;
 
         // Company
         set_common_args_stringptr(saveInfo.company);
@@ -747,9 +747,9 @@ namespace openloco::ui::prompt_browse
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto result = open(
                     (browse_type)regs.al,
-                    (char*)regs.ecx,
-                    (const char*)regs.edx,
-                    (const char*)regs.ebx);
+                    (char*)(uintptr_t)regs.ecx,
+                    (const char*)(uintptr_t)regs.edx,
+                    (const char*)(uintptr_t)regs.ebx);
                 regs.eax = result ? 1 : 0;
                 return 0;
             });
@@ -757,7 +757,7 @@ namespace openloco::ui::prompt_browse
         register_hook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                append_directory((char*)regs.ebp);
+                append_directory((char*)(uintptr_t)regs.ebp);
                 return 0;
             });
     }
@@ -783,7 +783,7 @@ namespace openloco::ui::prompt_browse
             else
             {
                 registers regs;
-                regs.esi = (int32_t)window;
+                regs.esi = (loco_ptr)window;
                 call(0x00446598, regs);
             }
         }

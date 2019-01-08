@@ -76,7 +76,7 @@ namespace openloco::ui::textinput
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                open_textinput((ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                open_textinput((ui::window*)(uintptr_t)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -146,7 +146,7 @@ namespace openloco::ui::textinput
             { 330, 90 },
             window_flags::stick_to_front | window_flags::flag_12,
             &_events);
-        window->widgets = _widgets;
+        window->widgets = (loco_ptr)_widgets;
         window->enabled_widgets |= 1ULL << widx::close;
         window->enabled_widgets |= 1ULL << widx::ok;
         window->init_scroll_widgets();

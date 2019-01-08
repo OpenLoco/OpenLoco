@@ -22,8 +22,8 @@ namespace openloco::ui::scrollview
         registers regs;
         regs.ax = x;
         regs.bx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)widget;
+        regs.esi = (loco_ptr)window;
+        regs.edi = (loco_ptr)widget;
 
         call(0x004C8EF0, regs);
 
@@ -38,9 +38,9 @@ namespace openloco::ui::scrollview
     {
         registers regs;
 
-        regs.esi = (uintptr_t)window;
+        regs.esi = (loco_ptr)window;
         regs.ebx = window->get_scroll_data_index(widgetIndex) * sizeof(scroll_area_t);
-        regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+        regs.edi = (loco_ptr)&((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex];
         call(0x4CA1ED, regs);
     }
 }

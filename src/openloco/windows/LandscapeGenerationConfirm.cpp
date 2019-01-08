@@ -82,7 +82,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
         if (window == nullptr)
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, window_size, 0, &events);
-            window->widgets = widgets;
+            window->widgets = (loco_ptr)widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->init_scroll_widgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
@@ -95,9 +95,9 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
 
         window->var_846 = prompt_type;
         if (prompt_type == 0)
-            window->widgets[widx::caption].text = string_ids::title_generate_new_landscape;
+            window->getWidget(widx::caption)->text = string_ids::title_generate_new_landscape;
         else
-            window->widgets[widx::caption].text = string_ids::title_random_landscape_option;
+            window->getWidget(widx::caption)->text = string_ids::title_random_landscape_option;
 
         return window;
     }

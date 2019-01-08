@@ -30,8 +30,8 @@ namespace openloco::ui::windows::station
         regs.al = amount;
         regs.cx = x;
         regs.dx = y;
-        regs.esi = (int32_t)&w;
-        regs.edi = (int32_t)&dpi;
+        regs.esi = (loco_ptr)&w;
+        regs.edi = (loco_ptr)&dpi;
         regs.ebp = colour;
         call(0x0048EF02, regs);
     }
