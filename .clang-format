@@ -58,6 +58,10 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+  - FOR_ALL_WINDOWS_FROM_FRONT
+  - FOR_ALL_WINDOWS_FROM_FRONT_FROM
+  - FOR_ALL_WINDOWS_FROM_BACK
+  - FOR_ALL_WINDOWS_FROM_BACK_FROM
 IncludeCategories: 
   - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
     Priority:        2
