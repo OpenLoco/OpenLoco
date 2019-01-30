@@ -151,7 +151,7 @@ namespace openloco::input
             else
             {
                 _keyModifier |= key_modifier::cheat;
-                _cheatBuffer.empty();
+                _cheatBuffer.clear();
                 return;
             }
         }
