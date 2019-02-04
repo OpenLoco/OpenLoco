@@ -397,7 +397,7 @@ namespace openloco::gfx
                 default:
                     if (!offscreen)
                     {
-                        // We are offscreen in the y dimension. No requirement to keep pos.x correct
+                        // When offscreen in the y dimension there is no requirement to keep pos.x correct
                         if (chr >= 32)
                         {
                             gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
