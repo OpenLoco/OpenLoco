@@ -13,7 +13,7 @@
 #include "../stationmgr.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
-#include "../windowmgr.h"
+#include "../ui/WindowManager.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include "vehicle.h"
@@ -1230,7 +1230,7 @@ bool vehicle_0::sub_4A9348(uint32_t unk_1, uint16_t target_z)
                 messagemgr::post(
                     message_type::unable_to_land_at_airport,
                     owner,
-                    var_0A,
+                    id,
                     station_index);
             }
 
@@ -3048,7 +3048,7 @@ void vehicle_0::sub_4B980A()
         vehType2->y,
         static_cast<int16_t>(vehType2->z + 22)
     };
-    audio::play_sound(_sound_id, loc, volume, 22050, true);
+    audio::play_sound(audio::make_object_sound_id(_sound_id), loc, volume, 22050);
 }
 
 void vehicle_0::sub_4AA625()
@@ -3103,7 +3103,7 @@ void vehicle_0::sub_4B9987()
     }
 
     var_4A = unk_1;
-    ui::windowmgr::sub_4B93A5(var_0A);
+    ui::WindowManager::sub_4B93A5(id);
 }
 
 void vehicle_0::sub_4BACAF()
@@ -3164,7 +3164,7 @@ void vehicle_0::sub_4707C0()
     if (_var_4A != var_4A)
     {
         var_4A = _var_4A;
-        ui::windowmgr::sub_4B93A5(var_0A);
+        ui::WindowManager::sub_4B93A5(id);
     }
 }
 
@@ -3767,7 +3767,7 @@ void vehicle_0::sub_42750E()
         static_cast<int16_t>(vehType2->z + 22)
     };
 
-    audio::play_sound(soundId, loc, 0, 22050, true);
+    audio::play_sound(audio::make_object_sound_id(soundId), loc, 0, 22050);
 }
 
 void vehicle_0::sub_427214(int32_t& _var_68)
