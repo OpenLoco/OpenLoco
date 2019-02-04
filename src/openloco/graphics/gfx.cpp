@@ -197,14 +197,22 @@ namespace openloco::gfx
         setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
     }
 
+    // 0x00451189
     static gfx::point_t loop_newline(drawpixelinfo_t* context, gfx::point_t origin, uint8_t* str)
     {
         gfx::point_t pos = origin;
-
         while (true)
         {
-            // Removed detection of offscreen-drawing
-
+            // When offscreen in y dimension don't draw text
+            // In original this check only performed if pos.y updated instead of every loop
+            bool offscreen = true;
+            if (pos.y + 19 > context->y)
+            {
+                if (context->y + context->height > pos.y)
+                {
+                    offscreen = false;
+                }
+            }
             uint8_t chr = *str;
             str++;
 
@@ -387,15 +395,19 @@ namespace openloco::gfx
                     break;
 
                 default:
-                    if (chr >= 32)
+                    if (!offscreen)
                     {
-                        gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
-                        pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
-                    }
-                    else
-                    {
-                        // Unhandled control code
-                        assert(false);
+                        // We are offscreen in the y dimension. No requirement to keep pos.x correct
+                        if (chr >= 32)
+                        {
+                            gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                            pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
+                        }
+                        else
+                        {
+                            // Unhandled control code
+                            assert(false);
+                        }
                     }
                     break;
             }
