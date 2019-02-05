@@ -503,7 +503,7 @@ namespace openloco::ui::options
         static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
         {
             auto& config = config::get_new();
-            config.scale_factor += adjust_by;
+            config.scale_factor = std::clamp(config.scale_factor + adjust_by, 1.0f, 4.0f);
 
             openloco::config::write();
             gfx::invalidate_screen();
@@ -531,10 +531,10 @@ namespace openloco::ui::options
                     station_names_scale_mouse_down(w, wi);
                     break;
                 case widx::display_scale_down_btn:
-                    display_scale_mouse_down(w, wi, -0.25f);
+                    display_scale_mouse_down(w, wi, -1.0f);
                     break;
                 case widx::display_scale_up_btn:
-                    display_scale_mouse_down(w, wi, 0.25f);
+                    display_scale_mouse_down(w, wi, 1.0f);
                     break;
             }
         }
