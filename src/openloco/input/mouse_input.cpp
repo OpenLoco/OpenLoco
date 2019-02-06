@@ -745,8 +745,8 @@ namespace openloco::input
         if (windowType != *_hoverWindowType || windowNumber != *_hoverWindowNumber || widgetIndex != *_hoverWidgetIdx)
         {
             widget_over_flatbutton_invalidate();
-            _hoverWindowType = window->type;
-            _hoverWindowNumber = window->number;
+            _hoverWindowType = windowType;
+            _hoverWindowNumber = windowNumber;
             _hoverWidgetIdx = widgetIndex;
             widget_over_flatbutton_invalidate();
         }

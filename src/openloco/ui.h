@@ -46,6 +46,7 @@ namespace openloco::ui
     void hide_cursor();
     void show_cursor();
     void update();
+    void trigger_resize();
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);

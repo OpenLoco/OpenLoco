@@ -97,6 +97,7 @@ namespace openloco::ui
 
     static SDL_Window* window;
     static SDL_Surface* surface;
+    static SDL_Surface* RGBASurface;
     static SDL_Palette* palette;
     static std::vector<SDL_Cursor*> _cursors;
 
@@ -259,11 +260,19 @@ namespace openloco::ui
     void get_cursor_pos(int32_t& x, int32_t& y)
     {
         SDL_GetMouseState(&x, &y);
+
+        auto scale = config::get_new().scale_factor;
+        x /= scale;
+        y /= scale;
     }
 
     // 0x00407FEE
     void set_cursor_pos(int32_t x, int32_t y)
     {
+        auto scale = config::get_new().scale_factor;
+        x *= scale;
+        y *= scale;
+
         SDL_WarpMouseInWindow(window, x, y);
     }
 
@@ -299,6 +308,11 @@ namespace openloco::ui
 
     void update(int32_t width, int32_t height)
     {
+        // Scale the width and height by configured scale factor
+        auto scale_factor = config::get_new().scale_factor;
+        width = (int32_t)(width / scale_factor);
+        height = (int32_t)(height / scale_factor);
+
         int32_t columns = 6;
         int32_t rows = 3;
 
@@ -306,7 +320,16 @@ namespace openloco::ui
         {
             SDL_FreeSurface(surface);
         }
+        if (RGBASurface != nullptr)
+        {
+            SDL_FreeSurface(RGBASurface);
+        }
+
         surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+
+        RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+        SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
+
         SDL_SetSurfacePalette(surface, palette);
 
         int32_t pitch = surface->pitch;
@@ -361,6 +384,13 @@ namespace openloco::ui
         }
     }
 
+    void trigger_resize()
+    {
+        int width, height;
+        SDL_GetWindowSize(window, &width, &height);
+        resize(width, height);
+    }
+
     void render()
     {
         if (window != nullptr && surface != nullptr)
@@ -387,8 +417,32 @@ namespace openloco::ui
                 SDL_UnlockSurface(surface);
             }
 
-            // Copy the surface to the window
-            SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr);
+            auto scale_factor = config::get_new().scale_factor;
+            if (scale_factor == 1 || scale_factor <= 0)
+            {
+                if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
+                {
+                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    exit(1);
+                }
+            }
+            else
+            {
+                // first blit to rgba surface to change the pixel format
+                if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
+                {
+                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    exit(1);
+                }
+                // then scale to window size. Without changing to RGBA first, SDL complains
+                // about blit configurations being incompatible.
+                if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
+                {
+                    console::error("SDL_BlitScaled %s", SDL_GetError());
+                    exit(1);
+                }
+            }
+
             SDL_UpdateWindowSurface(window);
         }
     }
@@ -575,14 +629,23 @@ namespace openloco::ui
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    input::move_mouse(e.motion.x, e.motion.y, e.motion.xrel, e.motion.yrel);
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    auto x = (int32_t)(e.motion.x / scale_factor);
+                    auto y = (int32_t)(e.motion.y / scale_factor);
+                    auto xrel = (int32_t)(e.motion.xrel / scale_factor);
+                    auto yrel = (int32_t)(e.motion.yrel / scale_factor);
+                    input::move_mouse(x, y, xrel, yrel);
                     break;
+                }
                 case SDL_MOUSEWHEEL:
                     addr<0x00525330, int32_t>() += e.wheel.y * 128;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    addr<0x0113E9D4, int32_t>() = e.button.x;
-                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
+                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -598,9 +661,12 @@ namespace openloco::ui
                             break;
                     }
                     break;
+                }
                 case SDL_MOUSEBUTTONUP:
-                    addr<0x0113E9D4, int32_t>() = e.button.x;
-                    addr<0x0113E9D8, int32_t>() = e.button.y;
+                {
+                    auto scale_factor = config::get_new().scale_factor;
+                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
+                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -616,6 +682,7 @@ namespace openloco::ui
                             break;
                     }
                     break;
+                }
                 case SDL_KEYDOWN:
                 {
                     auto keycode = e.key.keysym.sym;
