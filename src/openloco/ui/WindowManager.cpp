@@ -435,6 +435,11 @@ namespace openloco::ui::WindowManager
         return nullptr;
     }
 
+    window* findAt(gfx::point_t point)
+    {
+        return findAt(point.x, point.y);
+    }
+
     // 0x004C9AFA
     window* findAtAlt(int16_t x, int16_t y)
     {
@@ -1277,9 +1282,8 @@ namespace openloco::ui::WindowManager
             return;
         }
 
-        int32_t x = addr<0x0113E72C, int32_t>();
-        int32_t y = addr<0x0113E730, int32_t>();
-        auto window = findAt(x, y);
+        const gfx::point_t cursorPosition = input::getMouseLocation();
+        auto window = findAt(cursorPosition);
 
         if (window != nullptr)
         {
@@ -1303,7 +1307,7 @@ namespace openloco::ui::WindowManager
             }
             else
             {
-                auto widgetIndex = window->find_widget_at(x, y);
+                auto widgetIndex = window->find_widget_at(cursorPosition.x, cursorPosition.y);
                 if (widgetIndex != -1)
                 {
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)

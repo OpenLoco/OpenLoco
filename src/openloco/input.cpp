@@ -56,14 +56,6 @@ namespace openloco::input
         ((void (*)(int))0x00406FEC)((int32_t)button);
     }
 
-    void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
-    {
-        addr<0x0113E72C, int32_t>() = x;
-        addr<0x0113E730, int32_t>() = y;
-        addr<0x0114084C, int32_t>() = relX;
-        addr<0x01140840, int32_t>() = relY;
-    }
-
     void sub_407218()
     {
         if (_cursor_drag_state == 0)

@@ -537,15 +537,21 @@ namespace openloco::ui
     {
         switch (scancode)
         {
-            case SDL_SCANCODE_UP: return 0xC8;
-            case SDL_SCANCODE_LEFT: return 0xCB;
-            case SDL_SCANCODE_RIGHT: return 0xCD;
-            case SDL_SCANCODE_DOWN: return 0xD0;
-            case SDL_SCANCODE_LSHIFT: return 0x2A;
-            case SDL_SCANCODE_RSHIFT: return 0x36;
-            case SDL_SCANCODE_LCTRL: return 0x1D;
-            case SDL_SCANCODE_RCTRL: return 0x9D;
-            case SDL_SCANCODE_INSERT: return 0xD2;
+            case SDL_SCANCODE_UP: return DIK_UP;
+            case SDL_SCANCODE_LEFT: return DIK_LEFT;
+            case SDL_SCANCODE_RIGHT: return DIK_RIGHT;
+            case SDL_SCANCODE_DOWN: return DIK_DOWN;
+            case SDL_SCANCODE_LSHIFT: return DIK_LSHIFT;
+            case SDL_SCANCODE_RSHIFT: return DIK_RSHIFT;
+            case SDL_SCANCODE_LCTRL: return DIK_LCONTROL;
+            case SDL_SCANCODE_RCTRL: return DIK_RCONTROL;
+            case SDL_SCANCODE_INSERT:
+                return DIK_INSERT;
+
+            // Simulate INSERT for smaller keyboards
+            case SDL_SCANCODE_LALT: return DIK_INSERT;
+            case SDL_SCANCODE_RALT: return DIK_INSERT;
+
             default: return 0;
         }
     }
