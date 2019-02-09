@@ -251,7 +251,7 @@ namespace openloco::input
                 continue;
             }
 
-            if (_modalWindowType == WindowType::fileBrowserPrompt)
+            if (*_modalWindowType == WindowType::fileBrowserPrompt)
             {
                 ti = WindowManager::find(WindowType::fileBrowserPrompt);
                 if (ti != nullptr)
@@ -267,7 +267,7 @@ namespace openloco::input
                 }
             }
 
-            if (_modalWindowType == WindowType::confirmationPrompt)
+            if (*_modalWindowType == WindowType::confirmationPrompt)
             {
                 ti = WindowManager::find(WindowType::confirmationPrompt);
                 if (ti != nullptr)
