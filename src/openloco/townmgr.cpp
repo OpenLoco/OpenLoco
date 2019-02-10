@@ -113,21 +113,18 @@ namespace openloco::townmgr
             {
                 edx = -edx;
                 currTown.unk_14C -= edx;
+                edx /= 50;
 
                 for (int i = 0; i < currTown.history_size; i++)
                 {
-                    currTown.history[i] += edx / 50;
+                    currTown.history[i] += edx;
                 }
             }
 
             int16_t ax = -1;
             uint32_t ebx = currTown.unk_198;
-            while (true)
+            while (ebx != 0)
             {
-                if (ebx == 0)
-                {
-                    break;
-                }
                 int ecx;
                 for (ecx = 0; ecx < 32; ecx++)
                 {
@@ -146,6 +143,6 @@ namespace openloco::townmgr
             memset(&currTown.unk_158, 0, 20 * sizeof(uint16_t));
         }
 
-        ui::WindowManager::invalidate((ui::WindowType)0x61);
+        ui::WindowManager::invalidate(ui::WindowType::town);
     }
 }
