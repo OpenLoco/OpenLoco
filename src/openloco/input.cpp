@@ -13,7 +13,6 @@ using namespace openloco::interop;
 
 namespace openloco::input
 {
-    loco_global<uint8_t, 0x00508F18> _keyModifier;
     loco_global<uint32_t, 0x00523368> _flags;
     static loco_global<uint8_t, 0x0052336D> _state;
     static int32_t _cursor_drag_start_x;
@@ -43,11 +42,6 @@ namespace openloco::input
     void state(input_state state)
     {
         _state = (uint8_t)state;
-    }
-
-    bool has_key_modifier(key_modifier modifier)
-    {
-        return _keyModifier;
     }
 
     // 0x004BE92A

@@ -78,16 +78,6 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
-            0x004BF089,
-            [](registers& regs) -> uint8_t {
-                registers backup = regs;
-                closeTopmost();
-                regs = backup;
-
-                return 0;
-            });
-
-        register_hook(
             0x004C5FC8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
@@ -1003,6 +993,35 @@ namespace openloco::ui::WindowManager
                 return;
             }
         }
+    }
+
+    bool isInFront(ui::window* w)
+    {
+        for (auto window = w; window < _windowsEnd; window++)
+        {
+            if ((window->flags & window_flags::stick_to_front) != 0)
+                continue;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    bool isInFrontAlt(ui::window* w)
+    {
+        for (auto window = w; window < _windowsEnd; window++)
+        {
+            if ((window->flags & window_flags::stick_to_front) != 0)
+                continue;
+
+            if (window->type == WindowType::buildVehicle)
+                continue;
+
+            return false;
+        }
+
+        return true;
     }
 }
 

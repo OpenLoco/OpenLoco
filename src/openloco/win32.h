@@ -19,6 +19,8 @@
 #define VK_SNAPSHOT 0x2C
 #define VK_INSERT 0x2D
 #define VK_DELETE 0x2E
+#define VK_LWIN 0x5B
+#define VK_RWIN 0x5C
 #define VK_APPS 0x5D
 #define VK_NUMPAD0 0x60
 #define VK_NUMPAD1 0x61
@@ -38,6 +40,7 @@
 #define VK_DIVIDE 0x6F
 #define VK_F1 0x70
 #define VK_F12 0x7B
+#define VK_NUMLOCK 0x90
 #define VK_OEM_1 0xBA
 #define VK_OEM_PLUS 0xBB
 #define VK_OEM_COMMA 0xBC

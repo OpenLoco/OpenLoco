@@ -98,16 +98,6 @@ namespace openloco::ui::textinput
                 regs = backup;
                 return 0;
             });
-
-        register_hook(
-            0x004CE910,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_4CE910(regs.eax, regs.ebx);
-                regs = backup;
-
-                return 0;
-            });
     }
 
     static void prepare_draw(ui::window* window);

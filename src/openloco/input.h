@@ -50,9 +50,11 @@ namespace openloco::input
         VSCROLLBAR_DOWN_PRESSED = (1 << 7),
     };
 
-    enum class key_modifier
+    namespace key_modifier
     {
-        shift = 1 << 0,
+        constexpr uint8_t shift = 1 << 0;
+        constexpr uint8_t control = 1 << 1;
+        constexpr uint8_t cheat = 1 << 7;
     };
 
     bool has_flag(input_flags value);
@@ -67,9 +69,11 @@ namespace openloco::input
 
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
 
+    bool is_tool_active(ui::WindowType, ui::window_number);
+    void cancel_tool();
     void cancel_tool(ui::WindowType, ui::window_number);
 
-    bool has_key_modifier(key_modifier modifier);
+    bool has_key_modifier(uint8_t modifier);
 
     void handle_keyboard();
     void handle_mouse(int16_t x, int16_t y, mouse_button button);
@@ -78,4 +82,5 @@ namespace openloco::input
     void sub_407218();
     void sub_407231();
     void process_mouse_over(int16_t x, int16_t y);
+    void process_keyboard_input();
 }

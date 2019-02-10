@@ -797,6 +797,13 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
+        0x004BEC5B,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            input::process_keyboard_input();
+            return 0;
+        });
+
+    register_hook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             gui::init();
@@ -824,6 +831,7 @@ void openloco::interop::register_hooks()
     ui::prompt_browse::register_hooks();
     ui::textinput::register_hooks();
     ui::tooltip::register_hooks();
+    ui::vehicle::registerHooks();
     ui::WindowManager::registerHooks();
 
     register_hook(
