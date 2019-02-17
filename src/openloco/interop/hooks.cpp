@@ -688,6 +688,16 @@ void openloco::interop::register_hooks()
     register_audio_hooks();
 
     register_hook(
+        0x00431695,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+
+            openloco::sub_431695(0);
+            regs = backup;
+            return 0;
+        });
+
+    register_hook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             using namespace openloco::environment;
@@ -793,13 +803,6 @@ void openloco::interop::register_hooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
             v->sub_4BA8D4();
-            return 0;
-        });
-
-    register_hook(
-        0x004BEC5B,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            input::process_keyboard_input();
             return 0;
         });
 

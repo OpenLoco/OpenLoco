@@ -188,7 +188,7 @@ namespace openloco::ui::windows
         window->widgets[widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
         window->widgets[widx::chat_btn].type = ui::widget_type::none;
 
-        if (openloco::get_screen_flags() & screen_flags::unknown_2)
+        if (openloco::isNetworked())
         {
             window->widgets[widx::tutorial_btn].type = ui::widget_type::none;
             window->widgets[widx::scenario_editor_btn].type = ui::widget_type::none;
@@ -277,7 +277,7 @@ namespace openloco::ui::windows
 
             string_id string = string_ids::single_player_mode;
 
-            if ((openloco::get_screen_flags() & screen_flags::unknown_2) != 0)
+            if (openloco::isNetworked())
             {
                 // char[512+1]
                 auto buffer = stringmgr::get_string(string_ids::buffer_2039);
