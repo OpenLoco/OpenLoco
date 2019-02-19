@@ -96,8 +96,6 @@ set(LINKER_SCRIPT "ld_script_i386.xc")
 
 
 # Handle creating the rct2 text and data files on OS X and Linux
-# See details in src/openrct2.c:openrct2_setup_rct2_segment for how the values
-# were derived.
 if (UNIX)
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
     set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)

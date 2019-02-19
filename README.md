@@ -17,7 +17,7 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 ### Build Status
 |             | Windows | Linux / Mac | Download |
 |-------------|---------|-------------|----------|
-| **master**  | [![AppVeyor](https://ci.appveyor.com/api/projects/status/fpq6ptmma5d3e389?svg=true)](https://ci.appveyor.com/project/IntelOrca/OpenLoco) | [![Travis CI](https://travis-ci.org/OpenRCT2/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenRCT2/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenRCT2/OpenLoco.svg)](https://github.com/OpenRCT2/OpenLoco/releases) |
+| **master**  | [![AppVeyor](https://ci.appveyor.com/api/projects/status/fpq6ptmma5d3e389?svg=true)](https://ci.appveyor.com/project/IntelOrca/OpenLoco) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
 
 ### Chat
 You only need a GitHub or Twitter account to access these channels.
@@ -28,12 +28,12 @@ If you need help, want to talk to the developers, or just want to stay up to dat
 
 | Language | Non Developer | Developer |
 |----------|---------------|-----------|
-| English | [![Gitter](https://img.shields.io/badge/gitter-general-blue.svg)](https://gitter.im/OpenRCT2/OpenRCT2/non-dev) | [![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenRCT2/OpenLoco) |
+| English | [![Gitter](https://img.shields.io/badge/gitter-general-blue.svg)](https://gitter.im/OpenRCT2/OpenRCT2/non-dev) | [![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenLoco/OpenLoco) |
 ---
 
 # 1 Introduction
 
-**OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](http://openttd.org) improved Transport Tycoon and [OpenRCT2](http://openrct2.website) improved RollerCoaster Tycoon.
+**OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](http://openttd.org) improved Transport Tycoon and [OpenRCT2](http://openrct2.io) improved RollerCoaster Tycoon.
 
 Chris Sawyer's Locomotion was written by Chris Sawyer in x86 assembly building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. This means that only select areas of the game such as the update logic should be written. The engine code such as audio, drawing and the window system should be left alone as it would only repeat the work that has already been done for OpenRCT2. It is more beneficial to share as much code as possible between OpenRCT2 and OpenLoco.
 
@@ -43,7 +43,7 @@ Chris Sawyer's Locomotion was written by Chris Sawyer in x86 assembly building o
 
 OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](http://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
 
-The latest release can be found on [GitHub](https://github.com/OpenRCT2/OpenLoco/releases).
+The latest release can be found on [GitHub](https://github.com/OpenLoco/OpenLoco/releases).
 
 ---
 
@@ -69,15 +69,15 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
   - [SDL2](https://www.libsdl.org/download-2.0.php)
   - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
   - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-  - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenRCT2/OpenLoco/wiki/Compilation-on-macOS))
+  - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenLoco/OpenLoco/wiki/Compilation-on-macOS))
 
 ---
 
 ## 3.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenRCT2/OpenLoco-Dependencies/releases).
-3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenRCT2`).
+2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenLoco/OpenLoco-Dependencies/releases).
+3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 4. Run `msbuild openloco.sln`
 5. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
 6. Run the game, `bin\openloco`
@@ -105,6 +105,6 @@ cp -r ../data ./data
 ---
 
 # 5 More information
-- [GitHub](https://github.com/OpenRCT2/OpenLoco)
+- [GitHub](https://github.com/OpenLoco/OpenLoco)
 - [TT-Forums](https://www.tt-forums.net)
 - [Locomotion subreddit](https://www.reddit.com/r/locomotion/)
