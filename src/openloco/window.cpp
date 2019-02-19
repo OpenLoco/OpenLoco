@@ -1,4 +1,5 @@
 #include "window.h"
+#include "config.h"
 #include "console.h"
 #include "graphics/colours.h"
 #include "input.h"
@@ -439,7 +440,7 @@ namespace openloco::ui
         int16_t saved_map_y = 0;
         int16_t offset_x = 0;
         int16_t offset_y = 0;
-        if (toCursor)
+        if (toCursor && config::get_new().zoom_to_cursor)
         {
             this->viewport_get_map_coords_by_cursor(&saved_map_x, &saved_map_y, &offset_x, &offset_y);
         }
@@ -465,7 +466,7 @@ namespace openloco::ui
         }
 
         // Zooming to cursor? Centre around the tile we were hovering over just now.
-        if (toCursor)
+        if (toCursor && config::get_new().zoom_to_cursor)
         {
             this->viewport_centre_tile_around_cursor(saved_map_x, saved_map_y, offset_x, offset_y);
         }

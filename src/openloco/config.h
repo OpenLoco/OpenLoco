@@ -114,6 +114,7 @@ namespace openloco::config
         std::string language = "en-GB";
         bool breakdowns_disabled = false;
         float scale_factor = 1.0f;
+        bool zoom_to_cursor = true;
     };
 
 #pragma pack(pop)
