@@ -425,4 +425,7 @@ namespace openloco::string_ids
     constexpr string_id spinner_plus = 2133;
     constexpr string_id spinner_minus = 2134;
     constexpr string_id scale_formatted = 2135;
+
+    constexpr string_id zoom_to_cursor = 2136;
+    constexpr string_id zoom_to_cursor_tip = 2137;
 }

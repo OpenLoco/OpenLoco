@@ -1758,20 +1758,23 @@ namespace openloco::ui::options
             enum
             {
                 edge_scrolling = 10,
+                zoom_to_cursor,
                 customize_keys
             };
         }
 
-        static const gfx::ui_size_t _window_size = { 366, 87 };
+        static const gfx::ui_size_t _window_size = { 366, 99 };
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_controls),
-            make_widget({ 10, 50 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::scroll_screen_edge, string_ids::scroll_screen_edge_tip),
-            make_widget({ 26, 64 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::customise_keys, string_ids::customise_keys_tip),
+            make_widget({ 10, 49 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::scroll_screen_edge, string_ids::scroll_screen_edge_tip),
+            make_widget({ 10, 64 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::zoom_to_cursor, string_ids::zoom_to_cursor_tip),
+            make_widget({ 26, 79 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::customise_keys, string_ids::customise_keys_tip),
             widget_end(),
         };
 
         static void edge_scrolling_mouse_up(window* w);
+        static void zoom_to_cursor_mouse_up(window* w);
         static void open_keyboard_shortcuts();
 
         static window_event_list _events;
@@ -1792,10 +1795,14 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            w->activated_widgets &= ~(1 << widx::edge_scrolling);
+            w->activated_widgets &= ~(1 << widx::edge_scrolling | 1 << widx::zoom_to_cursor);
             if (config::get().edge_scrolling)
             {
                 w->activated_widgets |= (1 << widx::edge_scrolling);
+            }
+            if (config::get_new().zoom_to_cursor)
+            {
+                w->activated_widgets |= (1 << widx::zoom_to_cursor);
             }
 
             sub_4C13BE(w);
@@ -1833,6 +1840,10 @@ namespace openloco::ui::options
                 case widx::edge_scrolling:
                     edge_scrolling_mouse_up(w);
                     break;
+
+                case widx::zoom_to_cursor:
+                    zoom_to_cursor_mouse_up(w);
+                    break;
             }
         }
 
@@ -1841,6 +1852,15 @@ namespace openloco::ui::options
         {
             auto& cfg = openloco::config::get();
             cfg.edge_scrolling = !cfg.edge_scrolling;
+            config::write();
+
+            w->invalidate();
+        }
+
+        static void zoom_to_cursor_mouse_up(window* w)
+        {
+            auto& cfg = openloco::config::get_new();
+            cfg.zoom_to_cursor = !cfg.zoom_to_cursor;
             config::write();
 
             w->invalidate();
@@ -2290,7 +2310,7 @@ namespace openloco::ui::options
 
             case common::tab::controls:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
                 w->event_handlers = &controls::_events;
                 w->widgets = controls::_widgets;
                 w->invalidate();
