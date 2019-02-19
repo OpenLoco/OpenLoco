@@ -76,7 +76,7 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 ## 3.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenLoco/OpenLoco-Dependencies/releases).
+2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenLoco/Dependencies/releases).
 3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 4. Run `msbuild openloco.sln`
 5. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
