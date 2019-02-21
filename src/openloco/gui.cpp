@@ -35,7 +35,13 @@ namespace openloco::gui
             (ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        openloco::ui::viewportmgr::create(window, 0, { window->x, window->y }, { window->width, window->height }, viewportmgr::ZoomLevel::full, { (map::map_rows * map::tile_size) / 2 - 1, (map::map_rows * map::tile_size) / 2 - 1, 480 });
+        openloco::ui::viewportmgr::create(
+            window,
+            0,
+            { window->x, window->y },
+            { window->width, window->height },
+            viewportmgr::ZoomLevel::full,
+            { (map::map_rows * map::tile_size) / 2 - 1, (map::map_rows * map::tile_size) / 2 - 1, 480 });
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;
