@@ -449,7 +449,7 @@ namespace openloco::audio
             }
         }
 
-        for (auto i = (int32_t)WindowManager::count(); i >= 0; i--)
+        for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
         {
             w = WindowManager::get(i);
             if (w != nullptr && w->type != WindowType::main && w->type != WindowType::unk_36)

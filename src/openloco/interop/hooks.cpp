@@ -934,6 +934,16 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(
+        0x004C57C0,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+
+            initialise_viewports();
+            regs = backup;
+            return 0;
+        });
+
     // Remove the set window pos function, we do not want it as it
     // keeps moving the process window to 0, 0
     // Can be removed when WindowManager:update() is hooked

@@ -23,7 +23,9 @@
 #include "config.h"
 #include "date.h"
 #include "environment.h"
+#include "graphics/colours.h"
 #include "graphics/gfx.h"
+#include "gui.h"
 #include "industrymgr.h"
 #include "input.h"
 #include "interop/interop.hpp"
@@ -43,6 +45,7 @@
 #include "ui.h"
 #include "ui/WindowManager.h"
 #include "utility/numeric.hpp"
+#include "viewportmgr.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -69,8 +72,14 @@ namespace openloco
     loco_global<uint8_t, 0x00508F14> _screen_flags;
     loco_global<uint8_t, 0x00508F17> paused_state;
     loco_global<uint8_t, 0x00508F1A> game_speed;
+    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
+    static loco_global<int32_t, 0x0052339C> _52339C;
+    static loco_global<int8_t, 0x0052336E> _52336E; // bool
     loco_global<utility::prng, 0x00525E18> _prng;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
+    static loco_global<char[256], 0x011367A0> _11367A0;
+    static loco_global<char[256], 0x011368A0> _11368A0;
 
     static void tick_logic(int32_t count);
     static void tick_logic();
@@ -232,9 +241,28 @@ namespace openloco
     }
 
     // 0x004C57C0
-    static void initialise_viewports()
+    void initialise_viewports()
     {
-        call(0x004C57C0);
+        _mapTooltipFormatArguments = string_ids::null;
+        _mapTooltipOwner = company_id::null;
+
+        colour::init_colour_map();
+        ui::WindowManager::init();
+        ui::viewportmgr::init();
+
+        input::init();
+        input::init_mouse();
+
+        // rain-related
+        _52339C = -1;
+
+        // tooltip-related
+        _52336E = 0;
+
+        ui::textinput::cancel();
+
+        stringmgr::format_string(_11367A0, string_ids::label_button_ok);
+        stringmgr::format_string(_11368A0, string_ids::label_button_cancel);
     }
 
     static void initialise()
@@ -276,7 +304,7 @@ namespace openloco
         intro::state(intro::intro_state::end);
 #endif
         call(0x0046AD7D);
-        call(0x00438A6C);
+        gui::init();
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 

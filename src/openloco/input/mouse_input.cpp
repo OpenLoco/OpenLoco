@@ -116,6 +116,19 @@ namespace openloco::input
         { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
     };
 
+    void init_mouse()
+    {
+        _pressedWindowType = ui::WindowType::undefined;
+
+        _tooltipNotShownTicks = -1;
+        _hoverWindowType = ui::WindowType::undefined;
+
+        _5233AE = 0;
+        _5233B2 = 0;
+
+        _mapSelectionFlags = 0;
+    }
+
     bool is_hovering(ui::WindowType type)
     {
         return *_hoverWindowType == type;

@@ -7,6 +7,7 @@
 
 namespace openloco::ui::WindowManager
 {
+    void init();
     void registerHooks();
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
