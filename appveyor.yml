@@ -20,7 +20,7 @@ after_build:
 - ps: >-
     New-Item -ItemType Directory artefacts | Out-Null
 
-    Copy-Item CHANGELOG.md,LICENSE,bin\*.dll artefacts
+    Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll artefacts
 
     Copy-Item data\language -Destination artefacts\data\language -Recurse
 
