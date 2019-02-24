@@ -6,7 +6,7 @@ install:
 - ps: >-
     mkdir $env:TEMP\openloco
 
-    Invoke-WebRequest https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.1.1.0.nupkg -OutFile $env:TEMP\openloco\openloco.dependencies.1.1.0.nupkg
+    Invoke-WebRequest https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/openloco.dependencies.1.1.1.nupkg -OutFile $env:TEMP\openloco\openloco.dependencies.1.1.1.nupkg
 
     Get-ChildItem $env:TEMP\openloco
 
