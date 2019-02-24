@@ -2190,3 +2190,4 @@ strings:
   2135: "{COLOUR BLACK}{INT32_1DP}"
   2136: "{COLOUR WINDOW_2}Zoom to cursor position (experimental)"
   2137: "{SMALLFONT}{COLOUR BLACK}When enabled, zooming in will centre around the cursor, as opposed to the screen centre."
+  2138: "{COLOUR WINDOW_2}Play title screen music"

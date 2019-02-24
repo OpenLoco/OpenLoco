@@ -682,7 +682,7 @@ namespace openloco::ui::options
 
     namespace sound
     {
-        static const gfx::ui_size_t _window_size = { 366, 69 };
+        static const gfx::ui_size_t _window_size = { 366, 84 };
 
         namespace widx
         {
@@ -690,6 +690,7 @@ namespace openloco::ui::options
             {
                 audio_device = 10,
                 audio_device_btn,
+                play_title_music,
             };
         }
 
@@ -697,6 +698,7 @@ namespace openloco::ui::options
             common_options_widgets(_window_size, string_ids::options_title_sound),
             make_widget({ 10, 49 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::stringid),
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::play_title_music),
             widget_end(),
         };
 
@@ -704,6 +706,7 @@ namespace openloco::ui::options
 
         static void audio_device_mouse_down(ui::window* window);
         static void audio_device_dropdown(ui::window* window, int16_t itemIndex);
+        static void play_title_music_on_mouse_up(ui::window* window);
 
         // 0x004C0217
         static void prepare_draw(window* w)
@@ -730,6 +733,11 @@ namespace openloco::ui::options
                 set_format_arg(0x0, string_id, string_ids::stringptr);
                 set_format_arg(0x2, char*, (char*)audioDeviceName);
             }
+
+            if (config::get_new().audio.play_title_music)
+                w->activated_widgets |= (1 << widx::play_title_music);
+            else
+                w->activated_widgets &= ~(1 << widx::play_title_music);
 
             sub_4C13BE(w);
         }
@@ -758,6 +766,10 @@ namespace openloco::ui::options
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
                     options::tab_on_mouse_up(w, wi);
+                    return;
+
+                case widx::play_title_music:
+                    play_title_music_on_mouse_up(w);
                     return;
             }
         }
@@ -817,6 +829,17 @@ namespace openloco::ui::options
         }
 
 #pragma mark -
+
+        static void play_title_music_on_mouse_up(window* w)
+        {
+            auto& cfg = config::get_new();
+            cfg.audio.play_title_music = !cfg.audio.play_title_music;
+            config::write();
+
+            audio::play_title_screen_music();
+
+            w->invalidate();
+        }
 
         // 0x004C04E0
         static void on_update(window* w)
@@ -2279,7 +2302,7 @@ namespace openloco::ui::options
 
             case common::tab::sound:
                 w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
                 w->disabled_widgets = 0;
                 w->event_handlers = &sound::_events;
                 w->widgets = sound::_widgets;

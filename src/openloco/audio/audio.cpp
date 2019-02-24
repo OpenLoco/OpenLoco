@@ -569,10 +569,10 @@ namespace openloco::audio
     // pan is in UI pixels or known constant
     void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
     {
-        loco_global<uint8_t, 0x0050D555> unk_50D555;
+        loco_global<uint8_t, 0x0050D555> enable_sound;
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
-        if (unk_50D555 & 1)
+        if (enable_sound & 1)
         {
             volume += get_volume_for_sound_id(id);
             if (pan == play_at_location)
@@ -989,8 +989,8 @@ namespace openloco::audio
     // 0x0048AC66
     void play_title_screen_music()
     {
-        loco_global<uint8_t, 0x0050D555> unk_50D555;
-        if (_audio_initialised && (unk_50D555 & 1) && is_title_mode())
+        loco_global<uint8_t, 0x0050D555> enable_sound;
+        if (is_title_mode() && _audio_initialised && (enable_sound & 1) && config::get_new().audio.play_title_music)
         {
             if (!is_channel_playing(channel_id::title))
             {

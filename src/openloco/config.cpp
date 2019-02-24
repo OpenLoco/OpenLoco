@@ -81,6 +81,8 @@ namespace openloco::config
         {
             auto& audioConfig = _new_config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
+            if (audioNode["play_title_music"])
+                audioConfig.play_title_music = audioNode["play_title_music"].as<bool>();
         }
 
         if (config["loco_install_path"])
@@ -89,6 +91,10 @@ namespace openloco::config
             _new_config.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
             _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
+        if (config["scale_factor"])
+            _new_config.scale_factor = config["scale_factor"].as<float>();
+        if (config["zoom_to_cursor"])
+            _new_config.zoom_to_cursor = config["zoom_to_cursor"].as<bool>();
 
         return _new_config;
     }
@@ -144,12 +150,15 @@ namespace openloco::config
         else
         {
             audioNode["device"] = audioConfig.device;
+            audioNode["play_title_music"] = audioConfig.play_title_music;
         }
         node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
         node["language"] = _new_config.language;
         node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
+        node["scale_factor"] = _new_config.scale_factor;
+        node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
 
 #ifdef _OPENLOCO_USE_BOOST_FS_
         std::ofstream stream(configPath.string());
