@@ -1,9 +1,15 @@
 18.02+ (in development)
 ------------------------------------------------------------------------
 - Feature: [#163] Remove terraforming limits outside of scenario editor.
+- Feature: [#192] The option window now includes OpenLoco-specific settings.
+- Feature: [#203] Support multiple languages by loading text strings from YAML files.
 - Feature: [#212] Add fullscreen support.
+- Feature: [#221, #236] Implement audio through SDL2 mixer, introducing audio on Linux and macOS.
+- Feature: [#237] Allow nearest neighbour scaling the game on integer intervals.
+- Feature: [#275] Allow disabling the title screen music.
 - Fix: Tooltips were calling the wrong event.
 - Fix: [#219, #257] Prevent text from being drawn off-screen.
+- Change: [#107] Show git branch and short sha1 hash in version info line.
 - Change: [#211] Store configuration file as YAML.
 
 18.02 (2018-02-15)
