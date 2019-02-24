@@ -23,11 +23,6 @@ namespace openloco::ui::WindowManager
     static loco_global<window[12], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
-#define FOR_ALL_WINDOWS_FROM_FRONT_FROM(w, start) for (ui::window* w = start; w >= _windows; w--)
-#define FOR_ALL_WINDOWS_FROM_FRONT(w) FOR_ALL_WINDOWS_FROM_FRONT_FROM (w, _windowsEnd - 1)
-#define FOR_ALL_WINDOWS_FROM_BACK_FROM(w, start) for (ui::window* w = start; w != _windowsEnd; w++)
-#define FOR_ALL_WINDOWS_FROM_BACK(w) FOR_ALL_WINDOWS_FROM_BACK_FROM (w, &_windows[0])
-
     void init()
     {
         _windowsEnd = &_windows[0];
@@ -289,7 +284,7 @@ namespace openloco::ui::WindowManager
     // 0x004C9B56
     window* find(WindowType type)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type == type)
             {
@@ -303,7 +298,7 @@ namespace openloco::ui::WindowManager
     // 0x004C9B56
     window* find(WindowType type, window_number number)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type == type && w->number == number)
             {
@@ -317,7 +312,7 @@ namespace openloco::ui::WindowManager
     // 0x004C9A95
     window* findAt(int16_t x, int16_t y)
     {
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             if (x < w->x)
                 continue;
@@ -356,7 +351,7 @@ namespace openloco::ui::WindowManager
     // 0x004C9AFA
     window* findAtAlt(int16_t x, int16_t y)
     {
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             if (x < w->x)
                 continue;
@@ -392,7 +387,7 @@ namespace openloco::ui::WindowManager
     // 0x004CB966
     void invalidate(WindowType type)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type != type)
                 continue;
@@ -404,7 +399,7 @@ namespace openloco::ui::WindowManager
     // 0x004CB966
     void invalidate(WindowType type, window_number number)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type != type)
                 continue;
@@ -419,7 +414,7 @@ namespace openloco::ui::WindowManager
     // 0x004CB966
     void invalidateWidget(WindowType type, window_number number, uint8_t widget_index)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type != type)
                 continue;
@@ -448,7 +443,7 @@ namespace openloco::ui::WindowManager
             _523508++;
         }
 
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             w->update_scroll_widgets();
             w->invalidate_pressed_image_buttons();
@@ -463,7 +458,7 @@ namespace openloco::ui::WindowManager
         while (repeat)
         {
             repeat = false;
-            FOR_ALL_WINDOWS_FROM_BACK (w)
+            for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
             {
                 if (w->type != type)
                     continue;
@@ -611,7 +606,7 @@ namespace openloco::ui::WindowManager
         _523508++;
         companymgr::updating_company_id(companymgr::get_controlling_id());
 
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             w->call_update();
         }
@@ -667,7 +662,7 @@ namespace openloco::ui::WindowManager
     // 0x0045F18B
     void callViewportRotateEventOnAllWindows()
     {
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             w->call_viewport_rotate();
         }
@@ -677,7 +672,7 @@ namespace openloco::ui::WindowManager
     void relocateWindows()
     {
         int16_t newLocation = 8;
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             // Work out if the window requires moving
             bool extendsX = (w->x + 10) >= ui::width();
@@ -723,7 +718,7 @@ namespace openloco::ui::WindowManager
         int top = self->y;
         int bottom = self->y + self->height;
 
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w == self)
                 continue;
@@ -770,7 +765,7 @@ namespace openloco::ui::WindowManager
     // 0x004B93A5
     void sub_4B93A5(window_number number)
     {
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->type != WindowType::vehicle)
                 continue;
@@ -790,7 +785,7 @@ namespace openloco::ui::WindowManager
     {
         close(WindowType::dropdown, 0);
 
-        FOR_ALL_WINDOWS_FROM_BACK (w)
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             if (w->flags & window_flags::stick_to_back)
                 continue;
@@ -974,7 +969,7 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        FOR_ALL_WINDOWS_FROM_FRONT (w)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             if (windowWheelInput(w, wheel))
             {
@@ -985,7 +980,7 @@ namespace openloco::ui::WindowManager
 
     bool isInFront(ui::window* window)
     {
-        FOR_ALL_WINDOWS_FROM_BACK_FROM (w, window + 1)
+        for (ui::window* w = window + 1; w != _windowsEnd; w++)
         {
             if ((w->flags & window_flags::stick_to_front) != 0)
                 continue;
@@ -998,7 +993,7 @@ namespace openloco::ui::WindowManager
 
     bool isInFrontAlt(ui::window* window)
     {
-        FOR_ALL_WINDOWS_FROM_BACK_FROM (w, window + 1)
+        for (ui::window* w = window + 1; w != _windowsEnd; w++)
         {
             if ((w->flags & window_flags::stick_to_front) != 0)
                 continue;
