@@ -429,4 +429,6 @@ namespace openloco::string_ids
 
     constexpr string_id zoom_to_cursor = 2136;
     constexpr string_id zoom_to_cursor_tip = 2137;
+
+    constexpr string_id play_title_music = 2138;
 }

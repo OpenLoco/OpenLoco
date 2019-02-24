@@ -104,6 +104,7 @@ namespace openloco::config
     struct audio_config
     {
         std::string device;
+        bool play_title_music = true;
     };
 
     struct new_config

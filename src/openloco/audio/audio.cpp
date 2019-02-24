@@ -990,7 +990,7 @@ namespace openloco::audio
     void play_title_screen_music()
     {
         loco_global<uint8_t, 0x0050D555> enable_sound;
-        if (_audio_initialised && (enable_sound & 1) && is_title_mode())
+        if (is_title_mode() && _audio_initialised && (enable_sound & 1) && config::get_new().audio.play_title_music)
         {
             if (!is_channel_playing(channel_id::title))
             {
