@@ -17,7 +17,9 @@ namespace openloco
     struct company
     {
         uint16_t var_00;
-        uint8_t pad_02[0x8BB0 - 0x02];
+        uint8_t pad_02[0x08 - 0x02];
+        uint32_t var_08;
+        uint8_t pad_0C[0x8BB0 - 0x0C];
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8FA8 - 0x8BB9];
 

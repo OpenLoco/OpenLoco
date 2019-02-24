@@ -50,9 +50,8 @@
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 using namespace openloco::interop;
-namespace windowmgr = openloco::ui::WindowManager;
-using input_flags = openloco::input::input_flags;
-using input_state = openloco::input::input_state;
+using namespace openloco::ui;
+using namespace openloco::input;
 
 namespace openloco
 {
@@ -77,7 +76,10 @@ namespace openloco
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
     loco_global<utility::prng, 0x00525E18> _prng;
+    static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
+    static loco_global<int16_t, 0x00525F62> _525F62;
+    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
 
@@ -124,6 +126,11 @@ namespace openloco
     bool is_title_mode()
     {
         return (_screen_flags & screen_flags::title) != 0;
+    }
+
+    bool isNetworked()
+    {
+        return (_screen_flags & screen_flags::networked) != 0;
     }
 
     bool is_unknown_4_mode()
@@ -308,6 +315,126 @@ namespace openloco
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
 
+    // 0x00428E47
+    static void sub_428E47()
+    {
+        call(0x00428E47);
+    }
+
+    // 0x004C96E7
+    static void handle_input()
+    {
+        call(0x004C96E7);
+    }
+
+    // 0x004383ED
+    static void sub_4383ED()
+    {
+        call(0x004383ED);
+    }
+
+    // 0x0046E388
+    static void sub_46E388()
+    {
+        call(0x0046E388);
+    }
+
+    // 0x004317BD
+    static uint32_t sub_4317BD()
+    {
+        registers regs;
+        call(0x004317BD, regs);
+
+        return regs.eax;
+    }
+
+    // 0x0046E4E3
+    static void sub_46E4E3()
+    {
+        call(0x0046E4E3);
+    }
+
+    void sub_431695(uint16_t var_F253A0)
+    {
+        if (!isNetworked())
+        {
+            _updating_company_id = companymgr::get_controlling_id();
+            for (auto i = 0; i < var_F253A0; i++)
+            {
+                sub_428E47();
+                WindowManager::dispatchUpdateAll();
+            }
+
+            input::process_keyboard_input();
+            WindowManager::update();
+            handle_input();
+            sub_4383ED();
+            return;
+        }
+
+        // Only run every other tick?
+        if (_525F62 % 2 != 0)
+        {
+            return;
+        }
+
+        // Host/client?
+        if ((get_screen_flags() & screen_flags::unknown_3) != 0)
+        {
+            _updating_company_id = companymgr::get_controlling_id();
+
+            // run twice as often as var_F253A0
+            for (auto i = 0; i < var_F253A0 * 2; i++)
+            {
+                sub_428E47();
+                WindowManager::dispatchUpdateAll();
+            }
+
+            input::process_keyboard_input();
+            WindowManager::update();
+            WindowManager::update();
+            handle_input();
+            sub_4383ED();
+            sub_46E388();
+
+            _updating_company_id = _player_company[1];
+            sub_4317BD();
+        }
+        else
+        {
+            _updating_company_id = _player_company[1];
+            auto eax = sub_4317BD();
+
+            _updating_company_id = _player_company[0];
+            if (!is_title_mode())
+            {
+                auto edx = _prng->srand_0();
+                edx ^= companymgr::get(0)->var_08;
+                edx ^= companymgr::get(1)->var_08;
+                if (edx != eax)
+                {
+                    // disconnect?
+                    sub_46E4E3();
+                    return;
+                }
+            }
+
+            // run twice as often as var_F253A0
+            for (auto i = 0; i < var_F253A0 * 2; i++)
+            {
+                sub_428E47();
+                WindowManager::dispatchUpdateAll();
+            }
+
+            input::process_keyboard_input();
+            WindowManager::update();
+            WindowManager::update();
+            handle_input();
+            sub_4383ED();
+            sub_46E388();
+        }
+    }
+
     // 0x0046A794
     static void tick()
     {
@@ -429,11 +556,11 @@ namespace openloco
             else
             {
                 uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
-                if (windowmgr::find(ui::WindowType::multiplayer, 0) != nullptr)
+                if (WindowManager::find(ui::WindowType::multiplayer, 0) != nullptr)
                 {
                     numUpdates = 1;
                 }
-                if ((_screen_flags & screen_flags::unknown_2) != 0)
+                if (isNetworked())
                 {
                     numUpdates = 1;
                 }
@@ -469,8 +596,8 @@ namespace openloco
                 {
                     numUpdates = 0;
                 }
-                addr<0x00F253A0, uint16_t>() = std::max<uint16_t>(1, numUpdates);
-                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + addr<0x00F253A0, int16_t>());
+                uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
+                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + var_F253A0);
                 if (game_speed != 0)
                 {
                     numUpdates *= 3;
@@ -483,7 +610,7 @@ namespace openloco
                 sub_46FFCA();
                 tick_logic(numUpdates);
 
-                addr<0x00525F62, int16_t>()++;
+                _525F62++;
                 call(0x0043D9D4);
                 audio::play_background_music();
                 audio::play_title_screen_music();
@@ -496,7 +623,7 @@ namespace openloco
                     return; // won't be reached
                 }
 
-                call(0x00431695);
+                sub_431695(var_F253A0);
                 call(0x00452B5F);
                 sub_46FFCA();
                 if (config::get().countdown != 0xFF)
