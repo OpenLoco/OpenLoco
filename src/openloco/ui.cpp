@@ -9,6 +9,8 @@
 #include <vector>
 
 #ifdef _WIN32
+#include "..\..\resources\resource.h"
+
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -101,6 +103,7 @@ namespace openloco::ui
     static SDL_Palette* palette;
     static std::vector<SDL_Cursor*> _cursors;
 
+    static void set_window_icon();
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
@@ -195,11 +198,32 @@ namespace openloco::ui
         _hwnd = wmInfo.info.win.window;
 #endif
 
+        set_window_icon();
+
         // Create a palette for the window
         palette = SDL_AllocPalette(256);
         set_palette_callback = update_palette;
 
         update(desc.width, desc.height);
+#endif
+    }
+
+    static void set_window_icon()
+    {
+#ifdef _WIN32
+        auto win32module = GetModuleHandleA("openloco.dll");
+        if (win32module != nullptr)
+        {
+            auto icon = LoadIconA(win32module, MAKEINTRESOURCEA(IDI_ICON));
+            if (icon != nullptr)
+            {
+                auto hwnd = (HWND)*_hwnd;
+                if (hwnd != nullptr)
+                {
+                    SendMessageA(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
+                }
+            }
+        }
 #endif
     }
 

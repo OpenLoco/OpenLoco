@@ -24,8 +24,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\resources\resource.h" />
     <ClInclude Include="**\*.h" />
     <ClInclude Include="**\*.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\resources\OpenLoco.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\resources\logo\icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
