@@ -167,7 +167,7 @@ namespace openloco::ui::vehicle
             w->invalidate();
 
             registers regs2;
-            regs.esi = (uintptr_t)vehicle;
+            regs2.esi = (uintptr_t)vehicle;
             call(0x00470824, regs2);
         }
     }

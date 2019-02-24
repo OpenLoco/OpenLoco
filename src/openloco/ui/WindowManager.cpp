@@ -1003,7 +1003,7 @@ namespace openloco::ui::WindowManager
 
     bool isInFront(ui::window* w)
     {
-        for (auto window = w; window < _windowsEnd; window++)
+        for (auto window = w + 1; window < _windowsEnd; window++)
         {
             if ((window->flags & window_flags::stick_to_front) != 0)
                 continue;
@@ -1016,7 +1016,7 @@ namespace openloco::ui::WindowManager
 
     bool isInFrontAlt(ui::window* w)
     {
-        for (auto window = w; window < _windowsEnd; window++)
+        for (auto window = w + 1; window < _windowsEnd; window++)
         {
             if ((window->flags & window_flags::stick_to_front) != 0)
                 continue;
