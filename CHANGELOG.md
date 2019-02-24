@@ -7,6 +7,7 @@
 - Feature: [#221, #236] Implement audio through SDL2 mixer, introducing audio on Linux and macOS.
 - Feature: [#237] Allow nearest neighbour scaling the game on integer intervals.
 - Feature: [#275] Allow disabling the title screen music.
+- Feature: [#279] Use OpenLoco logo for window icon. (Logo created by [Zcooger](https://github.com/Zcooger))
 - Fix: Tooltips were calling the wrong event.
 - Fix: [#219, #257] Prevent text from being drawn off-screen.
 - Change: [#107] Show git branch and short sha1 hash in version info line.
