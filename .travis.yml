@@ -58,6 +58,8 @@ matrix:
             - mkdir build && cd build
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
             - make -j2
+            - zip -r openloco-macos.zip openloco.app
+            - curl --progress-bar --upload-file openloco-macos.zip https://transfer.sh/openloco-macos.zip; echo;
         - os: osx
           name: macOS 10.12 Clang (Xcode 9.2)
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
