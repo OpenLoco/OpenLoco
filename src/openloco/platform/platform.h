@@ -16,4 +16,7 @@ namespace openloco::platform
     std::string prompt_directory(const std::string& title);
     fs::path GetCurrentExecutablePath();
     std::vector<fs::path> get_drives();
+#if defined(__APPLE__) && defined(__MACH__)
+    fs::path GetBundlePath();
+#endif
 }

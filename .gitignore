@@ -1,6 +1,8 @@
 artefacts/
 bin.*/
+boost/
 lib/
+vcpkg/
 
 ## Visual Studio Code
 .vscode/

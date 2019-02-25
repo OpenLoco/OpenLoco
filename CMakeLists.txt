@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
+cmake_policy(VERSION 3.9)
 
 set (PROJECT openloco)
 
@@ -229,6 +230,54 @@ endif()
 
 if (APPLE)
     target_link_libraries(${PROJECT} "-framework Cocoa")
+
+    set_target_properties(${PROJECT} PROPERTIES
+        MACOSX_BUNDLE ON
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/Info.plist.in)
+
+    set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
+    set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
+    set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
+
+    if(${OPENLOCO_BRANCH} EQUAL master)
+        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
+    else()
+        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG} ${OPENLOCO_BRANCH}")
+    endif()
+
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_BINARY_DIR})
+    set(ICON_TARGET "${CMAKE_BINARY_DIR}/AppIcon.iconset")
+    set(ICON_OUTPUT "${CMAKE_BINARY_DIR}/AppIcon.icns")
+    set(SOURCE_ICON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/logo")
+
+    add_custom_command(OUTPUT ${ICON_OUTPUT}
+        COMMAND cp icon_x16.png   ${ICON_TARGET}/icon_16x16.png
+        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_16x16@2x.png
+        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_32x32.png
+        COMMAND cp icon_x64.png   ${ICON_TARGET}/icon_32x32@2x.png
+        COMMAND cp icon_x128.png  ${ICON_TARGET}/icon_128x128.png
+        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_128x128@2x.png
+        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_256x256.png
+        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_256x256@2x.png
+        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_512x512.png
+        COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
+        COMMAND iconutil -c icns ${ICON_TARGET}
+        WORKING_DIRECTORY ${SOURCE_ICON_DIR})
+
+    set(BUNDLE_RESOURCES ${ICON_OUTPUT})
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.MD)
+    set_target_properties(${PROJECT} PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
+    target_sources(${PROJECT} PUBLIC ${BUNDLE_RESOURCES})
+
+    file(GLOB BUNDLE_LANGUAGES "${CMAKE_CURRENT_SOURCE_DIR}/data/language/*")
+    target_sources(${PROJECT} PUBLIC ${BUNDLE_LANGUAGES})
+    set_property(
+        SOURCE ${BUNDLE_LANGUAGES}
+        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
+    )
 
     try_compile(SUPPORT_STD_BYTE ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/std_byte.cpp CXX_STANDARD 17)
     if (NOT SUPPORT_STD_BYTE)

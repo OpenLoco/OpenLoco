@@ -260,7 +260,7 @@ namespace openloco::localisation
     void loadLanguageFile()
     {
         // First, load en-GB for fallback strings.
-        fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data" / "language";
+        fs::path languageDir = environment::get_path(environment::path_id::language_files);
         fs::path languageFile = languageDir / "en-GB.yml";
         if (!loadLanguageStringTable(languageFile))
             throw std::runtime_error("Could not load the en-GB language file!");

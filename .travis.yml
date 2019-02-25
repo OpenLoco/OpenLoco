@@ -53,7 +53,9 @@ matrix:
             - brew install https://raw.githubusercontent.com/OpenLoco/Dependencies/master/macos/boost.rb
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
-            - unzip dependencies.zip -d vcpkg/
+            - unzip -q dependencies.zip -d vcpkg/
+            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
+            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
@@ -68,7 +70,9 @@ matrix:
             - brew install https://raw.githubusercontent.com/OpenLoco/Dependencies/master/macos/boost.rb
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
-            - unzip dependencies.zip -d vcpkg/
+            - unzip -q dependencies.zip -d vcpkg/
+            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
+            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
