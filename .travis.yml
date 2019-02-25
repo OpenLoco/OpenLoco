@@ -81,3 +81,13 @@ matrix:
 script:
     - mkdir build
     - docker run -v $(pwd):/openloco -w /openloco/build -i -t openrct2/openloco:$DOCKERIMG bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0"
+
+deploy:
+    provider: releases
+    api_key:
+        secure: Kuzqa3+lCSDyGu3HE4k/fRmqoBTs6DYiVnO7olAnvaqJxzE+BNAlgPbZmO+mw83xJY7u6mKrrM2y7chzbsmUqVFgRig9OC2K7aCVTRkxiXwDFGjksedXnYc35kGE+p9wv7sk8JLcoqjrqkhpLAqjdgsT8V+VvlSVWjp4J0DYbR7M4COBSMGxdvmeQwG6VrXjdRy90c4FEffLuWG79J879hqYVkXNW4GnYan6YW7sX/YkUmXTbbrT618Whb90jZwu1njn+qTWRyIb2EQaPdAhjGBBDt9QIhauv6AkyZOgL9C79ltizr1l24pnYexcQVv7QZ5ipBPk4weAzbSeJRaMS15qG7w+qOwwlduBB8YHO3DKKlyvAlXtVdeOj4LeaTIGctGKIO/2320rZeIzAIA59uyveKVyIqJpYlay5AMdoNvy//a4+huSdu9gHnNZJOACMRKUvRW+7T3clW8rBw4d7aO9siabps45Usbu+U1s/XKxVWMR65fXhxQwVh4u+NACUMK5/01L7SNKztw/x3eKf15ekxu+I2yBmWQRNWk0TRl4MV+qHt09hcJUU3rThaeJfHAM+/asgVDUn1e5rzktSGw8xxi1G3vjsBEAKts27+3AdDQRWVWPS9zfr+FNAG9W1C56uDQsnEMHbBXOLQ0Q7b7jxqdnS4kuZIjYPugkYTw=
+    file: build/openloco-macos.zip
+    skip_cleanup: true
+    on:
+        tags: true
+        repo: OpenLoco/OpenLoco
