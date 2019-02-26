@@ -207,6 +207,12 @@ namespace openloco::environment
             case path_id::scores:
             case path_id::openloco_yml:
                 return platform::get_user_directory();
+            case path_id::language_files:
+#if defined(__APPLE__) && defined(__MACH__)
+                return platform::GetBundlePath();
+#else
+                return platform::GetCurrentExecutablePath().parent_path() / "data";
+#endif
             default:
                 return get_loco_install_path();
         }
@@ -263,7 +269,8 @@ namespace openloco::environment
             "Data/TUT800_1.DAT",
             "Data/TUT800_2.DAT",
             "Data/TUT800_3.DAT",
-            "openloco.yml"
+            "openloco.yml",
+            "language",
         };
 
         size_t index = (size_t)id;

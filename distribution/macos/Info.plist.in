@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Executable file -->
+	<key>CFBundleExecutable</key>
+	<string>${MACOSX_BUNDLE_EXECUTABLE_NAME}</string>
+
+	<key>CFBundleGetInfoString</key>
+	<string>${MACOSX_BUNDLE_INFO_STRING}</string>
+
+	<!-- Icon file -->
+	<key>CFBundleIconFile</key>
+	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
+
+	<!-- Bundle identifier -->
+	<key>CFBundleIdentifier</key>
+	<string>${MACOSX_BUNDLE_GUI_IDENTIFIER}</string>
+
+	<!-- InfoDictionary version -->
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+
+	<!-- Bundle name -->
+	<key>CFBundleName</key>
+	<string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
+
+	<!-- Bundle OS Type code -->
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+
+	<!-- Bundle versions string, short -->
+	<key>CFBundleShortVersionString</key>
+	<string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
+
+	<key>CFBundleSignature</key>
+	<string>????</string>
+
+	<!-- Bundle version -->
+	<key>CFBundleVersion</key>
+	<string>${MACOSX_BUNDLE_BUNDLE_VERSION}</string>
+
+	<!-- Resources should be file-mapped -->
+	<key>CSResourcesFileMapped</key>
+	<true/>
+
+	<!--High Resolution Capable-->
+	<key>NSHighResolutionCapable</key>
+	<true/>
+
+	<!--Copyright (human-readable)-->
+	<key>NSHumanReadableCopyright</key>
+	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+</dict>
+</plist>

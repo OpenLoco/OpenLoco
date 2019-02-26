@@ -50,13 +50,16 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/OpenLoco/Dependencies/master/macos/boost.rb
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
-            - unzip dependencies.zip -d vcpkg/
+            - unzip -q dependencies.zip -d vcpkg/
+            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
+            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
             - make -j2
+            - zip -r openloco-macos.zip openloco.app
+            - curl --progress-bar --upload-file openloco-macos.zip https://transfer.sh/openloco-macos.zip; echo;
         - os: osx
           name: macOS 10.12 Clang (Xcode 9.2)
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
@@ -65,15 +68,26 @@ matrix:
             - export HOMEBREW_NO_AUTO_UPDATE=1
           install:
             - brew uninstall --ignore-dependencies boost
-            - brew install https://raw.githubusercontent.com/OpenLoco/Dependencies/master/macos/boost.rb
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
-            - unzip dependencies.zip -d vcpkg/
+            - unzip -q dependencies.zip -d vcpkg/
+            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
+            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
             - make -j2
 
 
 script:
     - mkdir build
     - docker run -v $(pwd):/openloco -w /openloco/build -i -t openrct2/openloco:$DOCKERIMG bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0"
+
+deploy:
+    provider: releases
+    api_key:
+        secure: Kuzqa3+lCSDyGu3HE4k/fRmqoBTs6DYiVnO7olAnvaqJxzE+BNAlgPbZmO+mw83xJY7u6mKrrM2y7chzbsmUqVFgRig9OC2K7aCVTRkxiXwDFGjksedXnYc35kGE+p9wv7sk8JLcoqjrqkhpLAqjdgsT8V+VvlSVWjp4J0DYbR7M4COBSMGxdvmeQwG6VrXjdRy90c4FEffLuWG79J879hqYVkXNW4GnYan6YW7sX/YkUmXTbbrT618Whb90jZwu1njn+qTWRyIb2EQaPdAhjGBBDt9QIhauv6AkyZOgL9C79ltizr1l24pnYexcQVv7QZ5ipBPk4weAzbSeJRaMS15qG7w+qOwwlduBB8YHO3DKKlyvAlXtVdeOj4LeaTIGctGKIO/2320rZeIzAIA59uyveKVyIqJpYlay5AMdoNvy//a4+huSdu9gHnNZJOACMRKUvRW+7T3clW8rBw4d7aO9siabps45Usbu+U1s/XKxVWMR65fXhxQwVh4u+NACUMK5/01L7SNKztw/x3eKf15ekxu+I2yBmWQRNWk0TRl4MV+qHt09hcJUU3rThaeJfHAM+/asgVDUn1e5rzktSGw8xxi1G3vjsBEAKts27+3AdDQRWVWPS9zfr+FNAG9W1C56uDQsnEMHbBXOLQ0Q7b7jxqdnS4kuZIjYPugkYTw=
+    file: build/openloco-macos.zip
+    skip_cleanup: true
+    on:
+        tags: true
+        repo: OpenLoco/OpenLoco

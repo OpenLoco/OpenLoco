@@ -1,4 +1,5 @@
 #include "languages.h"
+#include "../environment.h"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "conversion.h"
@@ -26,7 +27,7 @@ namespace openloco::localisation
         language_descriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
-        fs::path languageDir = platform::GetCurrentExecutablePath().parent_path() / "data" / "language";
+        fs::path languageDir = environment::get_path(environment::path_id::language_files);
         for (auto& entry : fs::directory_iterator(languageDir))
         {
             auto filename = entry.path().string();

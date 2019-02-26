@@ -53,4 +53,21 @@ fs::path openloco::platform::GetCurrentExecutablePath()
     }
 }
 
+fs::path openloco::platform::GetBundlePath()
+{
+    @autoreleasepool
+    {
+        NSBundle * bundle = [NSBundle mainBundle];
+        if (bundle)
+        {
+            auto resources = bundle.resourcePath.UTF8String;
+            if (fs::exists(resources))
+            {
+                return resources;
+            }
+        }
+        return fs::path();
+    }
+}
+
 #endif
