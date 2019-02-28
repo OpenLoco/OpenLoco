@@ -31,6 +31,36 @@ namespace openloco
 
     namespace interface_skin::image_ids
     {
+        constexpr uint32_t toolbar_loadsave = 3;
+        constexpr uint32_t toolbar_loadsave_hover = 4;
+        constexpr uint32_t toolbar_zoom = 5;
+        constexpr uint32_t toolbar_zoom_hover = 6;
+        constexpr uint32_t toolbar_rotate = 7;
+        constexpr uint32_t toolbar_rotate_hover = 8;
+        constexpr uint32_t toolbar_terraform = 9;
+        constexpr uint32_t toolbar_terraform_hover = 10;
+        constexpr uint32_t toolbar_audio_active = 11;
+        constexpr uint32_t toolbar_audio_active_hover = 12;
+        constexpr uint32_t toolbar_audio_inactive = 13;
+        constexpr uint32_t toolbar_audio_inactive_hover = 14;
+        constexpr uint32_t toolbar_view = 15;
+        constexpr uint32_t toolbar_view_hover = 16;
+        constexpr uint32_t toolbar_towns = 17;
+        constexpr uint32_t toolbar_towns_hover = 18;
+        constexpr uint32_t toolbar_empty_opaque = 19;
+        constexpr uint32_t toolbar_empty_opaque_hover = 20;
+        constexpr uint32_t toolbar_empty_transparent = 21;
+        constexpr uint32_t toolbar_empty_transparent_hover = 22;
+        constexpr uint32_t toolbar_industries = 23;
+        constexpr uint32_t toolbar_industries_hover = 24;
+        constexpr uint32_t toolbar_airports = 25;
+        constexpr uint32_t toolbar_airports_hover = 26;
+        constexpr uint32_t toolbar_ports = 27;
+        constexpr uint32_t toolbar_ports_hover = 28;
+
+        constexpr uint32_t toolbar_stations = 43;
+        constexpr uint32_t toolbar_stations_hover = 44;
+
         constexpr uint32_t phone = 188;
     }
 #pragma pack(pop)
