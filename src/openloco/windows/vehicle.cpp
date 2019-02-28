@@ -93,7 +93,7 @@ namespace openloco::ui::vehicle
         {
             if (w->number == _1136156)
             {
-                if (WindowManager::find(WindowType::dragVehiclePart) != nullptr)
+                if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
                     _1136156 = -1;
                     _113614E = -1;
