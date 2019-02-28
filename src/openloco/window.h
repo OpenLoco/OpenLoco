@@ -170,7 +170,7 @@ namespace openloco::ui
                 void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
                 void (*on_resize)(window*);
-                uint32_t event_03;
+                void (*event_03)(window*, widget_index);
                 void (*on_mouse_down)(window*, widget_index);
                 void (*on_dropdown)(window*, widget_index, int16_t);
                 void (*on_periodic_update)(window*);

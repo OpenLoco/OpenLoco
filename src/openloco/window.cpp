@@ -722,11 +722,20 @@ namespace openloco::ui
 
     void window::call_3(int8_t widget_index)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        regs.edi = (uint32_t) & this->widgets[widget_index];
-        call((uint32_t)this->event_handlers->event_03, regs);
+        if (event_handlers->event_03 == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->event_03))
+        {
+            registers regs;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            regs.edi = (uint32_t) & this->widgets[widget_index];
+            call((uint32_t)this->event_handlers->event_03, regs);
+            return;
+        }
+
+        event_handlers->event_03(this, widget_index);
     }
 
     void window::call_on_mouse_down(ui::widget_index widget_index)

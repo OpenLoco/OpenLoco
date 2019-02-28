@@ -107,6 +107,11 @@ namespace openloco::ui::title_options
     window* open();
 }
 
+namespace openloco::ui::windows::toolbar_top
+{
+    void open();
+}
+
 namespace openloco::ui::tooltip
 {
     void register_hooks();

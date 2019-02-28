@@ -62,25 +62,7 @@ namespace openloco::gui
         }
         else
         {
-
-            window = WindowManager::createWindow(
-                WindowType::topToolbar,
-                { 0, 0 },
-                gfx::ui_size_t(uiWidth, 28),
-                ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (ui::window_event_list*)0x4fa180);
-            window->widgets = (ui::widget_t*)0x509c34;
-            window->enabled_widgets = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12);
-            window->init_scroll_widgets();
-
-            auto skin = openloco::objectmgr::get<interface_skin_object>();
-            if (skin != nullptr)
-            {
-                window->colours[0] = skin->colour_12;
-                window->colours[1] = skin->colour_13;
-                window->colours[2] = skin->colour_14;
-                window->colours[3] = skin->colour_15;
-            }
+            windows::toolbar_top::open();
 
             window = WindowManager::createWindow(
                 WindowType::playerInfoToolbar,
@@ -93,6 +75,7 @@ namespace openloco::gui
             window->var_854 = 0;
             window->init_scroll_widgets();
 
+            auto skin = openloco::objectmgr::get<interface_skin_object>();
             if (skin != nullptr)
             {
                 window->colours[0] = colour::translucent(skin->colour_16);
