@@ -1,4 +1,4 @@
-18.02+ (in development)
+19.03 (2019-03-01)
 ------------------------------------------------------------------------
 - Feature: [#163] Remove terraforming limits outside of scenario editor.
 - Feature: [#192] The option window now includes OpenLoco-specific settings.
