@@ -24,6 +24,7 @@ if(APPLE OR MINGW)
 endif()
 
 option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
+option(STRICT "Build with warnings as errors" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -64,7 +65,11 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Werror -Wall")
+set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall")
+
+if (STRICT)
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+endif ()
 
 # Poke some holes in -Wall:
 set(COMMON_COMPILE_OPTIONS
