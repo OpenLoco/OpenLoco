@@ -117,6 +117,10 @@ namespace openloco::objectmgr
     industry_object* get(size_t id);
     template<>
     currency_object* get();
+    template<>
+    track_object* get(size_t id);
+    template<>
+    road_object* get(size_t id);
 
 #pragma pack(push, 1)
     struct header

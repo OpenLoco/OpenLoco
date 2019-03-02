@@ -28,6 +28,7 @@ namespace openloco
         uint8_t colour_16;
         uint8_t colour_17;
     };
+#pragma pack(pop)
 
     namespace interface_skin::image_ids
     {
@@ -63,5 +64,4 @@ namespace openloco
 
         constexpr uint32_t phone = 188;
     }
-#pragma pack(pop)
 }

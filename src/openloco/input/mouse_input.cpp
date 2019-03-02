@@ -144,6 +144,20 @@ namespace openloco::input
         return _hoverWidgetIdx;
     }
 
+    bool is_dropdown_active(ui::WindowType type, ui::widget_index index)
+    {
+        if (state() != input_state::dropdown_active)
+            return false;
+
+        if (*_pressedWindowType != type)
+            return false;
+
+        if (!has_flag(input_flags::widget_pressed))
+            return false;
+
+        return _pressedWidgetIndex == index;
+    }
+
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index)
     {
         if (state() != input_state::widget_pressed)
