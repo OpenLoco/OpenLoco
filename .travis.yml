@@ -5,7 +5,7 @@ before_install:
 
 install:
     - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
-    - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*
+    - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
     - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch; fi
 
 sudo: required
