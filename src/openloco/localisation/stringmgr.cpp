@@ -283,43 +283,43 @@ namespace openloco::stringmgr
                 {
                     case control_codes::int32_grouped:
                     {
-                        int32_t value = args.pop32();
+                        int32_t value = args.popS32();
                         buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
                     case control_codes::int32_ungrouped:
                     {
-                        int32_t value = args.pop32();
+                        int32_t value = args.popS32();
                         buffer = format_int32_ungrouped(value, buffer);
                         break;
                     }
 
                     case control_codes::int16_decimals:
                     {
-                        int16_t value = args.pop16();
+                        int16_t value = args.popS16();
                         buffer = format_short_with_decimals(value, buffer);
                         break;
                     }
 
                     case control_codes::int32_decimals:
                     {
-                        int32_t value = args.pop32();
+                        int32_t value = args.popS32();
                         buffer = format_int_with_decimals(value, buffer);
                         break;
                     }
 
                     case control_codes::int16_grouped:
                     {
-                        int16_t value = args.pop16();
+                        int16_t value = args.popS16();
                         buffer = format_int32_grouped(value, buffer);
                         break;
                     }
 
                     case control_codes::uint16_ungrouped:
                     {
-                        uint16_t value = args.pop16();
-                        buffer = format_int32_ungrouped((int32_t)value, buffer);
+                        int32_t value = args.pop16();
+                        buffer = format_int32_ungrouped(value, buffer);
                         break;
                     }
 
@@ -333,7 +333,7 @@ namespace openloco::stringmgr
                     case control_codes::currency48:
                     {
                         uint32_t value_low = (uint32_t)args.pop32();
-                        int32_t value_high = (int16_t)args.pop16();
+                        int32_t value_high = args.popS16();
                         int64_t value = (value_high * (1ULL << 32)) | value_low;
                         buffer = formatCurrency(value, buffer);
                         break;
@@ -397,7 +397,7 @@ namespace openloco::stringmgr
                     {
                         auto measurement_format = config::get().measurement_format;
 
-                        uint32_t value = args.pop16();
+                        int32_t value = args.popS16();
 
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
@@ -458,7 +458,7 @@ namespace openloco::stringmgr
 
                     case control_codes::height:
                     {
-                        int32_t value = (int16_t)args.pop16();
+                        int32_t value = args.popS16();
 
                         bool show_height_as_units = config::get().flags & config::flags::show_height_as_units;
                         uint8_t measurement_format = config::get().measurement_format;

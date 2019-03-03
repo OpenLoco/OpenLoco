@@ -33,6 +33,16 @@ namespace openloco::stringmgr
             return value;
         }
 
+        int16_t popS16()
+        {
+            if (args == nullptr)
+                return 0;
+
+            uint16_t value = *(int16_t*)args;
+            args = (int16_t*)args + 1;
+            return value;
+        }
+
         uint32_t pop32()
         {
             if (args == nullptr)
@@ -40,6 +50,16 @@ namespace openloco::stringmgr
 
             uint32_t value = *(uint32_t*)args;
             args = (uint32_t*)args + 1;
+            return value;
+        }
+
+        int32_t popS32()
+        {
+            if (args == nullptr)
+                return 0;
+
+            int32_t value = *(int32_t*)args;
+            args = (int32_t*)args + 1;
             return value;
         }
 
