@@ -28,12 +28,12 @@ namespace openloco
 
     date current_date()
     {
-        return date(_current_year, (month_id)(*_current_month), _current_day_of_month);
+        return date(_current_year, (month_id)(*_current_month), _current_day_of_month + 1);
     }
 
     void set_date(const date& date)
     {
-        _current_day_of_month = date.day;
+        _current_day_of_month = date.day - 1;
         _current_month = (int8_t)date.month;
         _current_year = date.year;
     }
@@ -101,7 +101,6 @@ namespace openloco
     {
         // clang-format off
         static constexpr std::pair<month_id, uint8_t> month_table[] = {
-            { month_id::january, 0 },
             { month_id::january, 1 },
             { month_id::january, 2 },
             { month_id::january, 3 },
@@ -132,7 +131,7 @@ namespace openloco
             { month_id::january, 28 },
             { month_id::january, 29 },
             { month_id::january, 30 },
-            { month_id::february, 0 },
+            { month_id::january, 31 },
             { month_id::february, 1 },
             { month_id::february, 2 },
             { month_id::february, 3 },
@@ -161,7 +160,7 @@ namespace openloco
             { month_id::february, 26 },
             { month_id::february, 27 },
             { month_id::february, 28 },
-            { month_id::march, 0 },
+            { month_id::february, 29 },
             { month_id::march, 1 },
             { month_id::march, 2 },
             { month_id::march, 3 },
@@ -192,7 +191,7 @@ namespace openloco
             { month_id::march, 28 },
             { month_id::march, 29 },
             { month_id::march, 30 },
-            { month_id::april, 0 },
+            { month_id::march, 31 },
             { month_id::april, 1 },
             { month_id::april, 2 },
             { month_id::april, 3 },
@@ -222,7 +221,7 @@ namespace openloco
             { month_id::april, 27 },
             { month_id::april, 28 },
             { month_id::april, 29 },
-            { month_id::may, 0 },
+            { month_id::april, 30 },
             { month_id::may, 1 },
             { month_id::may, 2 },
             { month_id::may, 3 },
@@ -253,7 +252,7 @@ namespace openloco
             { month_id::may, 28 },
             { month_id::may, 29 },
             { month_id::may, 30 },
-            { month_id::june, 0 },
+            { month_id::may, 31 },
             { month_id::june, 1 },
             { month_id::june, 2 },
             { month_id::june, 3 },
@@ -283,7 +282,7 @@ namespace openloco
             { month_id::june, 27 },
             { month_id::june, 28 },
             { month_id::june, 29 },
-            { month_id::july, 0 },
+            { month_id::june, 30 },
             { month_id::july, 1 },
             { month_id::july, 2 },
             { month_id::july, 3 },
@@ -314,7 +313,7 @@ namespace openloco
             { month_id::july, 28 },
             { month_id::july, 29 },
             { month_id::july, 30 },
-            { month_id::august, 0 },
+            { month_id::july, 31 },
             { month_id::august, 1 },
             { month_id::august, 2 },
             { month_id::august, 3 },
@@ -345,7 +344,7 @@ namespace openloco
             { month_id::august, 28 },
             { month_id::august, 29 },
             { month_id::august, 30 },
-            { month_id::september, 0 },
+            { month_id::august, 31 },
             { month_id::september, 1 },
             { month_id::september, 2 },
             { month_id::september, 3 },
@@ -375,7 +374,7 @@ namespace openloco
             { month_id::september, 27 },
             { month_id::september, 28 },
             { month_id::september, 29 },
-            { month_id::october, 0 },
+            { month_id::september, 30 },
             { month_id::october, 1 },
             { month_id::october, 2 },
             { month_id::october, 3 },
@@ -406,7 +405,7 @@ namespace openloco
             { month_id::october, 28 },
             { month_id::october, 29 },
             { month_id::october, 30 },
-            { month_id::november, 0 },
+            { month_id::october, 31 },
             { month_id::november, 1 },
             { month_id::november, 2 },
             { month_id::november, 3 },
@@ -436,7 +435,7 @@ namespace openloco
             { month_id::november, 27 },
             { month_id::november, 28 },
             { month_id::november, 29 },
-            { month_id::december, 0 },
+            { month_id::november, 30 },
             { month_id::december, 1 },
             { month_id::december, 2 },
             { month_id::december, 3 },
@@ -467,6 +466,7 @@ namespace openloco
             { month_id::december, 28 },
             { month_id::december, 29 },
             { month_id::december, 30 },
+            { month_id::december, 31 },
         };
         // clang-format on
         return month_table[dayOfYear];
