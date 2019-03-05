@@ -5,7 +5,8 @@ before_install:
 
 install:
     - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
-    - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --unshallow; fi
+    - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
+    - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --tags; fi
 
 sudo: required
 dist: trusty
@@ -55,7 +56,8 @@ matrix:
           install:
             - brew uninstall --ignore-dependencies boost
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
-            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --unshallow; fi
+            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
+            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --tags; fi
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
@@ -75,7 +77,8 @@ matrix:
           install:
             - brew uninstall --ignore-dependencies boost
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
-            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --unshallow; fi
+            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
+            - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --tags; fi
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
