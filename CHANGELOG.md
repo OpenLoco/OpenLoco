@@ -1,3 +1,7 @@
+19.03+ (in development)
+------------------------------------------------------------------------
+- Fix: [#296] Correctly show challenge progression in save previews
+
 19.03 (2019-03-01)
 ------------------------------------------------------------------------
 - Feature: [#163] Remove terraforming limits outside of scenario editor.
