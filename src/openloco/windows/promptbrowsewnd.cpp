@@ -79,18 +79,22 @@ namespace openloco::ui::prompt_browse
 
     struct saveinfo
     {
-        char company[256];              // 0x000
-        char owner[256];                // 0x100
-        uint32_t date;                  // 0x200
-        uint8_t pad_204[0x246 - 0x204]; // 0x204
-        uint16_t challenge_progress;    // 0x246
-        uint8_t image[250 * 200];       // 0x248
-        uint32_t challenge_flags;       // 0xC598
+        char company[256];                   // 0x000
+        char owner[256];                     // 0x100
+        uint32_t date;                       // 0x200
+        uint16_t var_204;                    // 0x204 (from [company+0x16])
+        char scenario[0x40];                 // 0x206
+        uint8_t challenge_progress;          // 0x246
+        std::byte pad_247;                   // 0x247
+        uint8_t image[250 * 200];            // 0x248
+        uint32_t challenge_flags;            // 0xC598 (from [company+0x4])
+        std::byte pad_C59C[0xC618 - 0xC59C]; // 0xC59C
 
-        static constexpr uint32_t challenge_flag_completed = (1 << 6);
-        static constexpr uint32_t challenge_flag_failed = (1 << 7);
-        static constexpr uint32_t challenge_flag_enabled = (1 << 8);
+        static constexpr uint32_t challenge_flag_completed = (1 << 6); // 0x40
+        static constexpr uint32_t challenge_flag_failed = (1 << 7);    // 0x80
+        static constexpr uint32_t challenge_flag_enabled = (1 << 8);   // 0x100
     };
+    static_assert(sizeof(saveinfo) == 0xC618);
 #pragma pack(pop)
 
     static window_event_list _events;
@@ -401,7 +405,7 @@ namespace openloco::ui::prompt_browse
         if (!(flags & saveinfo::challenge_flag_enabled))
         {
             auto stringId = string_ids::window_browse_challenge_completed;
-            auto progress = (uint16_t)0;
+            int16_t progress = 0;
             if (!(flags & saveinfo::challenge_flag_completed))
             {
                 stringId = string_ids::window_browse_challenge_failed;
