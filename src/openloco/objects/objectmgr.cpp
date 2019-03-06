@@ -166,7 +166,7 @@ namespace openloco::objectmgr
 
     object_index_entry object_index_entry::read(std::byte** ptr)
     {
-        object_index_entry entry = { 0 };
+        object_index_entry entry{};
 
         entry._header = (header*)*ptr;
         *ptr += sizeof(header);
