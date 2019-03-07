@@ -57,7 +57,7 @@ namespace openloco::platform
         if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
             auto titleW = utility::to_utf16(title);
-            BROWSEINFOW bi = { 0 };
+            BROWSEINFOW bi{};
             bi.lpszTitle = titleW.c_str();
             bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
 
