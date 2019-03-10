@@ -365,6 +365,14 @@ namespace openloco::ui
         return scrollIndex;
     }
 
+    void window::set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets)
+    {
+        registers regs;
+        regs.eax = (int32_t)_disabled_widgets;
+        regs.esi = (int32_t)this;
+        call(0x004CC7CB, regs);
+    }
+
     // 0x00459E54
     // TODO: needs expansion in terms of (output) parameters.
     static void get_map_coordinates_from_pos(int32_t screenX, int32_t screenY, int32_t flags, int16_t* x, int16_t* y)

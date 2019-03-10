@@ -95,20 +95,78 @@ namespace openloco::ui::windows::toolbar_top
         }
     }
 
+    // 0x0043A17E
     static void on_resize(window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x43A17E, regs);
+        auto main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            window->set_disabled_widgets_and_invalidate(1 << 2 | 1 << 3);
+        else
+            window->set_disabled_widgets_and_invalidate(0);
     }
 
+    // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
         registers regs;
         regs.esi = (int32_t)window;
         regs.edx = widgetIndex;
         regs.edi = (int32_t)&window->widgets[widgetIndex];
-        call(0x43A071, regs);
+
+        switch (widgetIndex)
+        {
+            case widx::loadsave_menu:
+                call(0x43B0F7, regs);
+                break;
+
+            case widx::audio_menu:
+                call(0x43B04B, regs);
+                break;
+
+            case widx::zoom_menu:
+                call(0x43A78E, regs);
+                break;
+
+            case widx::rotate_menu:
+                call(0x43A5C5, regs);
+                break;
+
+            case widx::view_menu:
+                call(0x43ADF6, regs);
+                break;
+
+            case widx::terraform_menu:
+                call(0x43A3C3, regs);
+                break;
+
+            case widx::railroad_menu:
+                call(0x43A2B0, regs);
+                break;
+
+            case widx::road_menu:
+                call(0x43A19F, regs);
+                break;
+
+            case widx::port_menu:
+                call(0x43A965, regs);
+                break;
+
+            case widx::build_vehicles_menu:
+                call(0x43AD1F, regs);
+                break;
+
+            case widx::vehicles_menu:
+                call(0x43ABCB, regs);
+                break;
+
+            case widx::stations_menu:
+                call(0x43A4E9, regs);
+                break;
+
+            case widx::towns_menu:
+                call(0x43A8CE, regs);
+                break;
+        }
     }
 
     static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
@@ -117,7 +175,61 @@ namespace openloco::ui::windows::toolbar_top
         regs.esi = (int32_t)window;
         regs.edx = widgetIndex;
         regs.ax = itemIndex;
-        call(0x43A0F4, regs);
+
+        switch (widgetIndex)
+        {
+            case widx::loadsave_menu:
+                call(0x43B154, regs);
+                break;
+
+            case widx::audio_menu:
+                call(0x43B0B8, regs);
+                break;
+
+            case widx::zoom_menu:
+                call(0x43A86D, regs);
+                break;
+
+            case widx::rotate_menu:
+                call(0x43A624, regs);
+                break;
+
+            case widx::view_menu:
+                call(0x43AF37, regs);
+                break;
+
+            case widx::terraform_menu:
+                call(0x43A4A8, regs);
+                break;
+
+            case widx::railroad_menu:
+                call(0x43A39F, regs);
+                break;
+
+            case widx::road_menu:
+                call(0x43A28C, regs);
+                break;
+
+            case widx::port_menu:
+                call(0x43AA0A, regs);
+                break;
+
+            case widx::build_vehicles_menu:
+                call(0x43ADC7, regs);
+                break;
+
+            case widx::vehicles_menu:
+                call(0x43ACEF, regs);
+                break;
+
+            case widx::stations_menu:
+                call(0x43A596, regs);
+                break;
+
+            case widx::towns_menu:
+                call(0x43A932, regs);
+                break;
+        }
     }
 
     static void on_update(window* window)
