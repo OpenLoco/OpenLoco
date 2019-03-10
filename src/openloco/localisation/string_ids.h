@@ -58,6 +58,7 @@ namespace openloco::string_ids
     constexpr string_id display_resolution_dropdown_format = 65;
     constexpr string_id display_resolution_label_format = 66;
 
+    constexpr string_id menu_about = 67;
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;
     constexpr string_id about_locomotion_70 = 70;
@@ -89,6 +90,18 @@ namespace openloco::string_ids
     constexpr string_id arg20_stringid = 95;
 
     constexpr string_id dropdown = 96;
+
+    constexpr string_id menu_load_game = 103;
+    constexpr string_id menu_save_game = 104;
+    constexpr string_id menu_quit_scenario_editor = 105;
+    constexpr string_id menu_quit_game = 106;
+    constexpr string_id screenshot_filename_template = 107;
+    constexpr string_id menu_screenshot = 108;
+    constexpr string_id screenshot_saved_as = 109;
+    constexpr string_id screenshot_failed = 110;
+
+    constexpr string_id menu_rotate_clockwise = 172;
+    constexpr string_id menu_rotate_anti_clockwise = 173;
 
     constexpr string_id label_button_cancel = 186;
     constexpr string_id label_button_ok = 187;
@@ -126,8 +139,14 @@ namespace openloco::string_ids
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
+    constexpr string_id menu_mute = 396;
+    constexpr string_id menu_play_music = 397;
+
     constexpr string_id dropdown_stringid = 421;
     constexpr string_id dropdown_stringptr = 424;
+
+    constexpr string_id dropdown_without_checkmark = 443;
+    constexpr string_id dropdown_with_checkmark = 444;
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
@@ -267,6 +286,10 @@ namespace openloco::string_ids
 
     constexpr string_id buffer_1250 = 1250;
 
+    constexpr string_id menu_sprite_stringid = 1287;
+    constexpr string_id menu_nosprite_stringid = 1288;
+    constexpr string_id menu_sprite_stringid_construction = 1289;
+
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id display_options = 1486;
@@ -306,6 +329,7 @@ namespace openloco::string_ids
 
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
+    constexpr string_id menu_music_options = 1549;
 
     constexpr string_id owner_label = 1560;
 

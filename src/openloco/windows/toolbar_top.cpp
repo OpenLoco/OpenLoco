@@ -9,6 +9,7 @@
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 
@@ -105,6 +106,39 @@ namespace openloco::ui::windows::toolbar_top
             window->set_disabled_widgets_and_invalidate(0);
     }
 
+    // 0x0043B0F7
+    static void loadsave_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        dropdown::add(0, string_ids::menu_load_game);
+        dropdown::add(1, string_ids::menu_save_game);
+        dropdown::add(2, 0);
+        dropdown::add(3, string_ids::menu_about);
+        dropdown::add(4, string_ids::options);
+        dropdown::add(5, string_ids::menu_screenshot);
+        dropdown::add(6, 0);
+        dropdown::add(7, string_ids::menu_quit_game);
+        dropdown::show_below(window, widgetIndex, 8);
+        dropdown::set_highlighted_item(1);
+    }
+
+    // 0x0043B04B
+    static void audio_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
+        dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_play_music);
+        dropdown::add(2, 0);
+        dropdown::add(3, string_ids::menu_music_options);
+        dropdown::show_below(window, widgetIndex, 4);
+
+        if (addr<0x50D555, bool>())
+            dropdown::set_selection(0);
+
+        if (addr<0x50AED7, bool>())
+            dropdown::set_selection(1);
+
+        dropdown::set_highlighted_item(0);
+    }
+
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -116,11 +150,11 @@ namespace openloco::ui::windows::toolbar_top
         switch (widgetIndex)
         {
             case widx::loadsave_menu:
-                call(0x43B0F7, regs);
+                loadsave_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::audio_menu:
-                call(0x43B04B, regs);
+                audio_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::zoom_menu:

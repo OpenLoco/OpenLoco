@@ -1,6 +1,7 @@
 #include "dropdown.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
+#include "../window.h"
 
 #include <cassert>
 #include <cstdarg>
@@ -60,9 +61,14 @@ namespace openloco::ui::dropdown
         add(index, title, { l });
     }
 
+    void set_highlighted_item(int16_t index)
+    {
+        _dropdownHighlightedIndex = index;
+    }
+
     void set_selection(int16_t index)
     {
-        _dropdownSelection = (1 << index);
+        _dropdownSelection = _dropdownSelection | (1 << index);
     }
 
     /**
@@ -88,6 +94,18 @@ namespace openloco::ui::dropdown
         regs.di = height;
 
         call(0x004CC807, regs);
+    }
+
+    // 0x004CC989
+    void show_below(window* window, widget_index widgetIndex, int8_t count)
+    {
+        registers regs;
+        regs.bx = count;
+        regs.esi = (int32_t)window;
+        regs.edx = widgetIndex;
+        regs.edi = (int32_t)&window->widgets[widgetIndex];
+
+        call(0x4CC989, regs);
     }
 
     /**
