@@ -510,7 +510,7 @@ namespace openloco::audio
 
     void play_sound(sound_id id, int32_t pan)
     {
-        play_sound(id, {}, play_at_location);
+        play_sound(id, {}, pan);
     }
 
     static vehicle_channel* get_free_vehicle_channel()

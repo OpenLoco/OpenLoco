@@ -1,6 +1,7 @@
 19.03+ (in development)
 ------------------------------------------------------------------------
 - Fix: [#296] Correctly show challenge progression in save previews
+- Fix: [#297] Menu click sound not played.
 - Fix: [#303] Play title music preference is not saved.
 
 19.03 (2019-03-01)
