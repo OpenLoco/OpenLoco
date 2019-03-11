@@ -150,8 +150,8 @@ namespace openloco::config
         else
         {
             audioNode["device"] = audioConfig.device;
-            audioNode["play_title_music"] = audioConfig.play_title_music;
         }
+        audioNode["play_title_music"] = audioConfig.play_title_music;
         node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
