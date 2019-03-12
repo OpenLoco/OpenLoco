@@ -77,7 +77,7 @@ namespace openloco::config
         }
 
         auto& audioNode = config["audio"];
-        if (audioNode && displayNode.IsMap())
+        if (audioNode && audioNode.IsMap())
         {
             auto& audioConfig = _new_config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
@@ -146,10 +146,6 @@ namespace openloco::config
         if (audioConfig.device.empty())
         {
             audioNode.remove("device");
-        }
-        else
-        {
-            audioNode["device"] = audioConfig.device;
         }
         audioNode["play_title_music"] = audioConfig.play_title_music;
         node["audio"] = audioNode;
