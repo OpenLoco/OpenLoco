@@ -64,6 +64,8 @@ namespace openloco
 
         constexpr uint32_t toolbar_menu_zoom_in = 175;
         constexpr uint32_t toolbar_menu_zoom_out = 176;
+        constexpr uint32_t toolbar_menu_rotate_clockwise = 177;
+        constexpr uint32_t toolbar_menu_rotate_anti_clockwise = 178;
 
         constexpr uint32_t phone = 188;
 

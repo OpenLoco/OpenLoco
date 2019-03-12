@@ -163,10 +163,24 @@ namespace openloco::ui::windows::toolbar_top
 
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow->viewports[0]->zoom == 0)
+        {
             dropdown::set_disabled_item(0);
+            dropdown::set_highlighted_item(1);
+        }
 
         if (mainWindow->viewports[0]->zoom == 3)
             dropdown::set_disabled_item(1);
+    }
+
+    // 0x0043A5C5
+    static void rotate_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto interface = objectmgr::get<interface_skin_object>();
+
+        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_rotate_clockwise, string_ids::menu_rotate_clockwise });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_rotate_anti_clockwise, string_ids::menu_rotate_anti_clockwise });
+        dropdown::show_below(window, widgetIndex, 2, 25);
+        dropdown::set_highlighted_item(0);
     }
 
     // 0x0043A071
@@ -192,7 +206,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::rotate_menu:
-                call(0x43A5C5, regs);
+                rotate_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::view_menu:
