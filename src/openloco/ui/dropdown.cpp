@@ -12,6 +12,7 @@ namespace openloco::ui::dropdown
 {
     static constexpr int bytes_per_item = 8;
 
+    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
 
@@ -41,6 +42,14 @@ namespace openloco::ui::dropdown
                     break;
                 }
 
+                case format_arg_type::u32:
+                {
+                    uint32_t* ptr = (uint32_t*)args;
+                    *ptr = arg.u32;
+                    args += 4;
+                    break;
+                }
+
                 case format_arg_type::ptr:
                 {
                     uintptr_t* ptr = (uintptr_t*)args;
@@ -59,6 +68,11 @@ namespace openloco::ui::dropdown
     void add(int16_t index, string_id title, format_arg l)
     {
         add(index, title, { l });
+    }
+
+    void set_disabled_item(int16_t index)
+    {
+        _dropdownDisabledItems = _dropdownDisabledItems | (1 << index);
     }
 
     void set_highlighted_item(int16_t index)
@@ -94,6 +108,19 @@ namespace openloco::ui::dropdown
         regs.di = height;
 
         call(0x004CC807, regs);
+    }
+
+    // 0x004CC989
+    void show_below(window* window, widget_index widgetIndex, int8_t count, int8_t height)
+    {
+        registers regs;
+        regs.ah = height;
+        regs.bx = count + (1 << 14);
+        regs.esi = (int32_t)window;
+        regs.edx = widgetIndex;
+        regs.edi = (int32_t)&window->widgets[widgetIndex];
+
+        call(0x4CC989, regs);
     }
 
     // 0x004CC989

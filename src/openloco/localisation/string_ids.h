@@ -136,6 +136,9 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id menu_zoom_in = 223;
+    constexpr string_id menu_zoom_out = 224;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
@@ -375,6 +378,8 @@ namespace openloco::string_ids
     constexpr string_id buffer_1719 = 1719;
 
     constexpr string_id title_menu_scenario_editor = 1740;
+
+    constexpr string_id menu_map = 1742;
 
     constexpr string_id randomly_generated_landscape = 1821;
 

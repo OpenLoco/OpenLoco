@@ -139,6 +139,36 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A78E
+    static void zoom_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto interface = objectmgr::get<interface_skin_object>();
+
+        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_zoom_in, string_ids::menu_zoom_in });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_zoom_out, string_ids::menu_zoom_out });
+
+        static uint32_t map_sprites_by_rotation[] = {
+            interface_skin::image_ids::toolbar_menu_map_north,
+            interface_skin::image_ids::toolbar_menu_map_west,
+            interface_skin::image_ids::toolbar_menu_map_south,
+            interface_skin::image_ids::toolbar_menu_map_east,
+        };
+
+        loco_global<int32_t, 0x00e3f0b8> current_rotation;
+        uint32_t map_sprite = map_sprites_by_rotation[current_rotation];
+
+        dropdown::add(2, string_ids::menu_sprite_stringid, { interface->img + map_sprite, string_ids::menu_map });
+        dropdown::show_below(window, widgetIndex, 3, 25);
+        dropdown::set_highlighted_item(0);
+
+        auto mainWindow = WindowManager::getMainWindow();
+        if (mainWindow->viewports[0]->zoom == 0)
+            dropdown::set_disabled_item(0);
+
+        if (mainWindow->viewports[0]->zoom == 3)
+            dropdown::set_disabled_item(1);
+    }
+
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -158,7 +188,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::zoom_menu:
-                call(0x43A78E, regs);
+                zoom_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::rotate_menu:

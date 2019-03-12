@@ -62,6 +62,14 @@ namespace openloco
         constexpr uint32_t toolbar_stations = 43;
         constexpr uint32_t toolbar_stations_hover = 44;
 
+        constexpr uint32_t toolbar_menu_zoom_in = 175;
+        constexpr uint32_t toolbar_menu_zoom_out = 176;
+
         constexpr uint32_t phone = 188;
+
+        constexpr uint32_t toolbar_menu_map_north = 466;
+        constexpr uint32_t toolbar_menu_map_west = 467;
+        constexpr uint32_t toolbar_menu_map_south = 468;
+        constexpr uint32_t toolbar_menu_map_east = 469;
     }
 }
