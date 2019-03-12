@@ -183,6 +183,50 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043ADF6
+    static void view_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_underground_view);
+        dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_hide_foreground_tracks_roads);
+        dropdown::add(2, string_ids::dropdown_without_checkmark, string_ids::menu_hide_foreground_scenery_buildings);
+        dropdown::add(3, 0);
+        dropdown::add(4, string_ids::dropdown_without_checkmark, string_ids::menu_height_marks_on_land);
+        dropdown::add(5, string_ids::dropdown_without_checkmark, string_ids::menu_height_marks_on_tracks_roads);
+        dropdown::add(6, string_ids::dropdown_without_checkmark, string_ids::menu_one_way_direction_arrows);
+        dropdown::add(7, 0);
+        dropdown::add(8, string_ids::dropdown_without_checkmark, string_ids::menu_town_names_displayed);
+        dropdown::add(9, string_ids::dropdown_without_checkmark, string_ids::menu_station_names_displayed);
+        dropdown::show_below(window, widgetIndex, 10);
+
+        uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
+
+        if (current_viewport_flags & viewport_flags::underground_view)
+            dropdown::set_selection(0);
+
+        if (current_viewport_flags & viewport_flags::hide_foreground_tracks_roads)
+            dropdown::set_selection(1);
+
+        if (current_viewport_flags & viewport_flags::hide_foreground_scenery_buildings)
+            dropdown::set_selection(2);
+
+        if (current_viewport_flags & viewport_flags::height_marks_on_tracks_roads)
+            dropdown::set_selection(4);
+
+        if (current_viewport_flags & viewport_flags::height_marks_on_land)
+            dropdown::set_selection(5);
+
+        if (current_viewport_flags & viewport_flags::one_way_direction_arrows)
+            dropdown::set_selection(6);
+
+        if (!(current_viewport_flags & viewport_flags::town_names_displayed))
+            dropdown::set_selection(8);
+
+        if (!(current_viewport_flags & viewport_flags::station_names_displayed))
+            dropdown::set_selection(9);
+
+        dropdown::set_highlighted_item(0);
+    }
+
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -210,7 +254,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::view_menu:
-                call(0x43ADF6, regs);
+                view_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::terraform_menu:

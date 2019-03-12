@@ -100,6 +100,9 @@ namespace openloco::string_ids
     constexpr string_id screenshot_saved_as = 109;
     constexpr string_id screenshot_failed = 110;
 
+    constexpr string_id menu_underground_view = 145;
+    constexpr string_id menu_hide_foreground_tracks_roads = 146;
+
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
 
@@ -145,8 +148,16 @@ namespace openloco::string_ids
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
 
+    constexpr string_id menu_hide_foreground_scenery_buildings = 372;
+
     constexpr string_id dropdown_stringid = 421;
     constexpr string_id dropdown_stringptr = 424;
+
+    constexpr string_id menu_height_marks_on_tracks_roads = 426;
+    constexpr string_id menu_height_marks_on_land = 427;
+    constexpr string_id menu_one_way_direction_arrows = 428;
+    constexpr string_id menu_town_names_displayed = 429;
+    constexpr string_id menu_station_names_displayed = 430;
 
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
