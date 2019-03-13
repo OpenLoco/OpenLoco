@@ -245,6 +245,36 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A4E9
+    static void stations_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto interface = objectmgr::get<interface_skin_object>();
+        uint32_t sprite_base = interface->img;
+
+        // Apply company colours.
+        loco_global<uint8_t[16], 0x009C645C> company_colours;
+        uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+        sprite_base |= (1 << 29) | (colour << 19);
+
+        dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::rail_stations, string_ids::rail_stations });
+        dropdown::add(2, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::road_stations, string_ids::road_stations });
+        dropdown::add(3, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::airports, string_ids::airports });
+        dropdown::add(4, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::ship_ports, string_ids::ship_ports });
+        dropdown::show_below(window, widgetIndex, 5, 25);
+        dropdown::set_highlighted_item(0);
+    }
+
+    // 0x0043A8CE
+    static void towns_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto interface = objectmgr::get<interface_skin_object>();
+        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_towns, string_ids::menu_towns });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_industries, string_ids::menu_industries });
+        dropdown::show_below(window, widgetIndex, 2, 25);
+        dropdown::set_highlighted_item(0);
+    }
+
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -300,11 +330,11 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::stations_menu:
-                call(0x43A4E9, regs);
+                stations_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::towns_menu:
-                call(0x43A8CE, regs);
+                towns_menu_mouse_down(window, widgetIndex);
                 break;
         }
     }

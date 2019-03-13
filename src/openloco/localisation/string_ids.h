@@ -142,6 +142,9 @@ namespace openloco::string_ids
     constexpr string_id menu_zoom_in = 223;
     constexpr string_id menu_zoom_out = 224;
 
+    constexpr string_id menu_towns = 225;
+    constexpr string_id menu_industries = 226;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
@@ -304,6 +307,12 @@ namespace openloco::string_ids
     constexpr string_id eighth_scale = 1098;
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
+
+    constexpr string_id all_stations = 1133;
+    constexpr string_id rail_stations = 1134;
+    constexpr string_id road_stations = 1135;
+    constexpr string_id airports = 1136;
+    constexpr string_id ship_ports = 1137;
 
     constexpr string_id buffer_1250 = 1250;
 

@@ -69,8 +69,16 @@ namespace openloco
         constexpr uint32_t toolbar_menu_plant_trees = 179;
         constexpr uint32_t toolbar_menu_bulldozer = 180;
 
+        constexpr uint32_t all_stations = 182;
+        constexpr uint32_t rail_stations = 183;
+        constexpr uint32_t road_stations = 184;
+        constexpr uint32_t airports = 185;
+        constexpr uint32_t ship_ports = 185;
         constexpr uint32_t toolbar_menu_build_walls = 187;
         constexpr uint32_t phone = 188;
+        constexpr uint32_t toolbar_menu_towns = 189;
+
+        constexpr uint32_t toolbar_menu_industries = 191;
 
         constexpr uint32_t toolbar_menu_map_north = 466;
         constexpr uint32_t toolbar_menu_map_west = 467;
