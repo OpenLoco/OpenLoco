@@ -121,6 +121,10 @@ namespace openloco::objectmgr
     track_object* get(size_t id);
     template<>
     road_object* get(size_t id);
+    template<>
+    land_object* get(size_t id);
+    template<>
+    water_object* get();
 
 #pragma pack(push, 1)
     struct header

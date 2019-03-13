@@ -627,9 +627,6 @@ static void register_terraform_hooks()
     --------------------*/
     // Don't disable fences tab
     interop::write_nop(0x4BCF6B, 0x4BCF7B - 0x4BCF6B);
-
-    // Show in menu
-    interop::write_nop(0x43A485, 0x43A490 - 0x43A485);
 }
 
 static void register_audio_hooks()

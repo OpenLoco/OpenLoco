@@ -5,9 +5,11 @@
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
+#include "../objects/land_object.h"
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
+#include "../objects/water_object.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
@@ -227,6 +229,22 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A3C3
+    static void terraform_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto interface = objectmgr::get<interface_skin_object>();
+        auto land = objectmgr::get<land_object>(addr<0x00525FB6, uint8_t>());
+        auto water = objectmgr::get<water_object>();
+
+        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_bulldozer, string_ids::menu_clear_area });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { land->var_16 + land::image_ids::toolbar_terraform_land, string_ids::menu_adjust_land });
+        dropdown::add(2, string_ids::menu_sprite_stringid, { water->var_06 + water::image_ids::toolbar_terraform_water, string_ids::menu_adjust_water });
+        dropdown::add(3, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_plant_trees, string_ids::menu_plant_trees });
+        dropdown::add(4, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_build_walls, string_ids::menu_build_walls });
+        dropdown::show_below(window, widgetIndex, 5, 25);
+        dropdown::set_highlighted_item(0);
+    }
+
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -258,7 +276,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::terraform_menu:
-                call(0x43A3C3, regs);
+                terraform_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::railroad_menu:

@@ -208,6 +208,13 @@ namespace openloco::string_ids
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
 
+    constexpr string_id clear_area = 679;
+    constexpr string_id menu_clear_area = 680;
+    constexpr string_id menu_adjust_land = 681;
+    constexpr string_id menu_adjust_water = 682;
+    constexpr string_id menu_plant_trees = 683;
+    constexpr string_id menu_build_walls = 684;
+
     constexpr string_id customise_keys = 701;
 
     constexpr string_id scroll_screen_edge = 1002;
