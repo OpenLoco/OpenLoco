@@ -42,9 +42,7 @@ void vehicle_channel::begin(thing_id_t vid)
     auto v = thingmgr::get<vehicle>(vid);
     if (v != nullptr)
     {
-        // clang-format off
         auto [sid, sa] = sub_48A590(v);
-        // clang-format on
         auto loop = audio::should_sound_loop(sid);
         auto sample = audio::get_sound_sample(sid);
         if (sample != nullptr)
@@ -69,9 +67,7 @@ void vehicle_channel::update()
         auto v = thingmgr::get<vehicle>(_vehicle_id);
         if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->type == vehicle_thing_type::vehicle_2 || v->type == vehicle_thing_type::vehicle_6) && (v->var_4A & 1))
         {
-            // clang-format off
             auto [sid, sa] = sub_48A590(v);
-            // clang-format on
             if (_sound_id == sid)
             {
                 v->var_4A &= ~1;
