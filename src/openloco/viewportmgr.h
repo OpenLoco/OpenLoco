@@ -13,17 +13,17 @@ namespace openloco::ui::viewportmgr
         full = 0,
         half = 1,
         quarter = 2,
-        eight = 3,
+        eighth = 3,
     };
 
     constexpr int16_t viewportsPerWindow = 2;
 
     void init();
     void registerHooks();
-    void updatePointers();
+    void collectGarbage();
     void create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id);
     void create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile);
     void invalidate(station* station);
     void invalidate(thing_base* t, ZoomLevel zoom);
-    void invalidate(map::map_pos pos, map::coord_t di, map::coord_t si, ZoomLevel zoom = ZoomLevel::eight, int range = 32);
+    void invalidate(map::map_pos pos, map::coord_t zMin, map::coord_t zMax, ZoomLevel zoom = ZoomLevel::eighth, int radius = 32);
 }

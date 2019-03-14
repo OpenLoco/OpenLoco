@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
+#include <algorithm>
 
 namespace openloco::ui
 {
@@ -228,6 +229,11 @@ namespace openloco::ui
         int16_t right = 0;
     };
 
+    namespace viewport_flags
+    {
+        constexpr uint32_t gridlines_on_landscape = 1 << 5;
+    }
+
     struct viewport
     {
         int16_t width;       // 0x00
@@ -240,7 +246,7 @@ namespace openloco::ui
         int16_t view_height; // 0x0E
         uint8_t zoom;        // 0x10
         uint8_t pad_11;
-        uint16_t var_12; // 0x12, maybe flags
+        uint16_t flags; // 0x12
 
         constexpr bool contains(const viewport_pos& vpos)
         {
@@ -264,7 +270,7 @@ namespace openloco::ui
             return true;
         }
 
-        constexpr ViewportRect intersection(const ViewportRect& rect)
+        constexpr ViewportRect getIntersection(const ViewportRect& rect)
         {
             auto out = ViewportRect();
             out.left = std::max(rect.left, view_x);

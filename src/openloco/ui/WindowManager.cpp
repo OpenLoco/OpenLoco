@@ -676,7 +676,7 @@ namespace openloco::ui::WindowManager
             memmove(window, window + 1, windowCount * sizeof(ui::window));
         }
 
-        viewportmgr::updatePointers();
+        viewportmgr::collectGarbage();
     }
 
     // 0x0045F18B

@@ -29,7 +29,7 @@ namespace openloco::ui::viewportmgr
     }
 
     // 0x004CEC25
-    void updatePointers()
+    void collectGarbage()
     {
         _viewports.erase(
             std::remove_if(
@@ -53,12 +53,12 @@ namespace openloco::ui::viewportmgr
         vp->view_width = size.width << static_cast<uint8_t>(zoom);
         vp->view_height = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
-        vp->var_12 = 0;
+        vp->flags = 0;
 
         auto& cfg = openloco::config::get();
         if ((cfg.flags & config::flags::gridlines_on_landscape) != 0)
         {
-            vp->var_12 |= (1 << 5);
+            vp->flags |= viewport_flags::gridlines_on_landscape;
         }
 
         return vp;
@@ -99,11 +99,11 @@ namespace openloco::ui::viewportmgr
     static void create(registers regs, int index)
     {
         ui::window* window = (ui::window*)regs.esi;
-        uint8_t zoom = 0;
+        ZoomLevel zoom = ZoomLevel::full;
         if (regs.edx & (1 << 30))
         {
             regs.edx &= ~(1 << 30);
-            zoom = regs.cl;
+            zoom = (ZoomLevel)regs.cl;
         }
 
         int16_t x = regs.ax;
@@ -114,14 +114,15 @@ namespace openloco::ui::viewportmgr
         if (regs.edx & (1 << 31))
         {
             thing_id_t id = regs.dx;
-            create(window, index, { x, y }, { width, height }, (ZoomLevel)zoom, id);
+            create(window, index, { x, y }, { width, height }, zoom, id);
         }
         else
         {
-            int16_t tile_x = regs.dx;
-            int16_t tile_y = regs.edx >> 16;
-            int16_t tile_z = regs.ecx >> 16;
-            create(window, index, { x, y }, { width, height }, (ZoomLevel)zoom, { tile_x, tile_y, tile_z });
+            map::map_pos3 tile;
+            tile.x = regs.dx;
+            tile.y = regs.edx >> 16;
+            tile.z = regs.ecx >> 16;
+            create(window, index, { x, y }, { width, height }, zoom, tile);
         }
     }
 
@@ -150,7 +151,7 @@ namespace openloco::ui::viewportmgr
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, thing_id);
 
-        updatePointers();
+        collectGarbage();
     }
 
     /* 0x004CA2D0
@@ -178,31 +179,36 @@ namespace openloco::ui::viewportmgr
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, tile);
 
-        updatePointers();
+        collectGarbage();
     }
 
     static void invalidate(const ViewportRect& rect, ZoomLevel zoom)
     {
-        for (auto& i : _viewports)
+        bool doGarbageCollect = false;
+
+        for (auto& viewport : _viewports)
         {
-            auto viewport = i.get();
+            // TODO: check for invalid viewports
+            if (viewport->width == 0)
+            {
+                doGarbageCollect = true;
+                continue;
+            }
 
-            if (viewport == nullptr)
-                break;
-
+            // Skip if zoomed out further than zoom argument
             if (viewport->zoom > (uint8_t)zoom)
                 continue;
 
             if (!viewport->intersects(rect))
                 continue;
 
-            ViewportRect intersection = viewport->intersection(rect);
+            auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            auto left = intersection.left - viewport->view_x;
-            auto right = intersection.right - viewport->view_x;
-            auto top = intersection.top - viewport->view_y;
-            auto bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->view_x;
+            int16_t right = intersection.right - viewport->view_x;
+            int16_t top = intersection.top - viewport->view_y;
+            int16_t bottom = intersection.bottom - viewport->view_y;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -218,23 +224,32 @@ namespace openloco::ui::viewportmgr
 
             gfx::set_dirty_blocks(left, top, right, bottom);
         }
+
+        if (doGarbageCollect)
+        {
+            collectGarbage();
+        }
     }
 
     // 0x004CBA2D
     void invalidate(station* station)
     {
-        for (auto& i : _viewports)
-        {
-            auto viewport = i.get();
+        bool doGarbageCollect = false;
 
-            if (viewport == nullptr)
-                break;
+        for (auto& viewport : _viewports)
+        {
+            // TODO: check for invalid viewports
+            if (viewport->width == 0)
+            {
+                doGarbageCollect = true;
+                continue;
+            }
 
             ViewportRect rect;
-            rect.left = station->var_08[viewport->zoom];
-            rect.top = station->var_18[viewport->zoom];
-            rect.right = station->var_10[viewport->zoom] + 1;
-            rect.bottom = station->var_20[viewport->zoom] + 1;
+            rect.left = station->label_left[viewport->zoom];
+            rect.top = station->label_top[viewport->zoom];
+            rect.right = station->label_right[viewport->zoom] + 1;
+            rect.bottom = station->label_bottom[viewport->zoom] + 1;
 
             rect.left <<= viewport->zoom;
             rect.top <<= viewport->zoom;
@@ -244,13 +259,13 @@ namespace openloco::ui::viewportmgr
             if (!viewport->intersects(rect))
                 continue;
 
-            ViewportRect intersection = viewport->intersection(rect);
+            auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            auto left = intersection.left - viewport->view_x;
-            auto right = intersection.right - viewport->view_x;
-            auto top = intersection.top - viewport->view_y;
-            auto bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->view_x;
+            int16_t right = intersection.right - viewport->view_x;
+            int16_t top = intersection.top - viewport->view_y;
+            int16_t bottom = intersection.bottom - viewport->view_y;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -266,8 +281,22 @@ namespace openloco::ui::viewportmgr
 
             gfx::set_dirty_blocks(left, top, right, bottom);
         }
+
+        if (doGarbageCollect)
+        {
+            collectGarbage();
+        }
     }
 
+    /**
+     * 0x004CBB01 (eight)
+     * 0x004CBBD2 (quarter)
+     * 0x004CBCAC (half)
+     * 0x004CBD86 (full)
+     * 
+     * @param t @<esi>
+     * @param zoom
+     */
     void invalidate(thing_base* t, ZoomLevel zoom)
     {
         if (t->sprite_left == (int16_t)0x8000u)
@@ -279,17 +308,18 @@ namespace openloco::ui::viewportmgr
         rect.right = t->sprite_right;
         rect.bottom = t->sprite_bottom;
 
-        invalidate(rect, (ZoomLevel)std::min(config::get().vehicles_min_scale, (uint8_t)zoom));
+        auto level = (ZoomLevel)std::min(config::get().vehicles_min_scale, (uint8_t)zoom);
+        invalidate(rect, level);
     }
 
-    void invalidate(const map::map_pos pos, map::coord_t di, map::coord_t si, ZoomLevel zoom, int range)
+    void invalidate(const map::map_pos pos, map::coord_t zMin, map::coord_t zMax, ZoomLevel zoom, int radius)
     {
-        auto axbx = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, si, currentRotation);
-        axbx.x -= range;
-        axbx.y -= range;
-        auto dxbp = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, di, currentRotation);
-        dxbp.x += range;
-        dxbp.y += range;
+        auto axbx = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
+        axbx.x -= radius;
+        axbx.y -= radius;
+        auto dxbp = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, zMin, currentRotation);
+        dxbp.x += radius;
+        dxbp.y += radius;
 
         ViewportRect rect = {};
         rect.left = axbx.x;
@@ -327,7 +357,7 @@ namespace openloco::ui::viewportmgr
         register_hook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing*)regs.esi, ZoomLevel::eight);
+                invalidate((thing*)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
         register_hook(
@@ -352,21 +382,21 @@ namespace openloco::ui::viewportmgr
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
-                invalidate(pos, 0, 1088, ZoomLevel::eight);
+                invalidate(pos, 0, 1088, ZoomLevel::eighth);
                 return 0;
             });
         register_hook(
             0x004CBFBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::eight, 56);
+                invalidate(pos, regs.di, regs.si, ZoomLevel::eighth, 56);
                 return 0;
             });
         register_hook(
             0x004CC098,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
-                invalidate(pos, regs.di, regs.si, ZoomLevel::eight);
+                invalidate(pos, regs.di, regs.si, ZoomLevel::eighth);
                 return 0;
             });
         register_hook(
@@ -394,7 +424,7 @@ namespace openloco::ui::viewportmgr
             0x004CEC25,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                updatePointers();
+                collectGarbage();
                 regs = backup;
                 return 0;
             });

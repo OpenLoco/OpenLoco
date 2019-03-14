@@ -128,9 +128,9 @@ namespace openloco::ui
     }
 
     // 0x004CA444
-    void viewport::centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY)
+    void viewport::centre_2d_coordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
     {
-        auto centre = coordinate_3d_to_2d(x, y, z, gCurrentRotation);
+        auto centre = coordinate_3d_to_2d(_x, _y, _z, gCurrentRotation);
 
         *outX = centre.x - view_width / 2;
         *outY = centre.y - view_height / 2;
