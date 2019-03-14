@@ -143,8 +143,7 @@ namespace openloco::ui::textinput
 
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
-            330,
-            90,
+            { 330, 90 },
             window_flags::stick_to_front | window_flags::flag_12,
             &_events);
         window->widgets = _widgets;

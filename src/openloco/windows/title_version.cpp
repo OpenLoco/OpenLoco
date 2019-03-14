@@ -23,10 +23,8 @@ namespace openloco::ui::windows
         auto height = 16;
         auto window = openloco::ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
-            8,
-            ui::height() - height,
-            width,
-            height,
+            gfx::point_t(8, ui::height() - height),
+            gfx::ui_size_t(width, height),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
         window->widgets = widgets;

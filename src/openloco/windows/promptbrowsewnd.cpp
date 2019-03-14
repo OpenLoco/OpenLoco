@@ -181,7 +181,11 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         refresh_directory_list();
-        auto window = WindowManager::createWindowCentred(WindowType::fileBrowserPrompt, 500, 380, ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12, &_events);
+        auto window = WindowManager::createWindowCentred(
+            WindowType::fileBrowserPrompt,
+            { 500, 380 },
+            ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12,
+            &_events);
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AD58;
