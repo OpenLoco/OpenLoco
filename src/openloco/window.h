@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
+#include <algorithm>
 
 namespace openloco::ui
 {
@@ -220,6 +221,19 @@ namespace openloco::ui
         }
     };
 
+    struct ViewportRect
+    {
+        int16_t left = 0;
+        int16_t top = 0;
+        int16_t bottom = 0;
+        int16_t right = 0;
+    };
+
+    namespace viewport_flags
+    {
+        constexpr uint32_t gridlines_on_landscape = 1 << 5;
+    }
+
     struct viewport
     {
         int16_t width;       // 0x00
@@ -232,11 +246,39 @@ namespace openloco::ui
         int16_t view_height; // 0x0E
         uint8_t zoom;        // 0x10
         uint8_t pad_11;
-        uint16_t var_12; // 0x12, maybe flags
+        uint16_t flags; // 0x12
 
         constexpr bool contains(const viewport_pos& vpos)
         {
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
+        }
+
+        constexpr bool intersects(const ViewportRect& vpos)
+        {
+            if (vpos.right <= view_x)
+                return false;
+
+            if (vpos.bottom <= view_y)
+                return false;
+
+            if (vpos.left >= view_x + view_width)
+                return false;
+
+            if (vpos.top >= view_y + view_height)
+                return false;
+
+            return true;
+        }
+
+        constexpr ViewportRect getIntersection(const ViewportRect& rect)
+        {
+            auto out = ViewportRect();
+            out.left = std::max(rect.left, view_x);
+            out.right = std::min<int16_t>(rect.right, view_x + view_width);
+            out.top = std::max(rect.top, view_y);
+            out.bottom = std::min<int16_t>(rect.bottom, view_y + view_height);
+
+            return out;
         }
 
         /**
@@ -250,6 +292,7 @@ namespace openloco::ui
         }
 
         static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
+        void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
     };
 
     struct viewport_config

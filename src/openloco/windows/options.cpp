@@ -311,11 +311,11 @@ namespace openloco::ui::options
                     auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
                     {
-                        main->viewports[0]->var_12 &= ~(1 << 5);
+                        main->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
 
                         if ((cfg.flags & config::flags::gridlines_on_landscape) != 0)
                         {
-                            main->viewports[0]->var_12 |= (1 << 5);
+                            main->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
                         }
                     }
 
