@@ -940,7 +940,7 @@ namespace openloco::input
             default:
                 if (window->is_enabled(widgetIndex) && !window->is_disabled(widgetIndex))
                 {
-                    audio::play_sound(audio::sound_id::click_up, window->x + widget->mid_x());
+                    audio::play_sound(audio::sound_id::click_down, window->x + widget->mid_x());
 
                     // Set new cursor down widget
                     _pressedWidgetIndex = widgetIndex;
