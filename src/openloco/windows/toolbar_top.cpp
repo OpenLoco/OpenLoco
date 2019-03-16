@@ -60,6 +60,8 @@ namespace openloco::ui::windows::toolbar_top
 
     static window_event_list _events;
 
+    static loco_global<uint8_t[40], 0x00113DB20> menu_options;
+
     static void on_resize(window* window);
     static void on_mouse_down(window* window, widget_index widgetIndex);
     static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
@@ -245,6 +247,37 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A965
+    static void port_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        uint8_t ddIndex = 0;
+        auto interface = objectmgr::get<interface_skin_object>();
+        if (addr<0x525FAC, int8_t>() != -1)
+        {
+            dropdown::add(ddIndex, string_ids::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_airport, string_ids::menu_airport });
+            menu_options[ddIndex] = 0;
+            ddIndex++;
+        }
+
+        if (addr<0x525FAD, int8_t>() != -1)
+        {
+            dropdown::add(ddIndex, string_ids::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_ship_port, string_ids::menu_ship_port });
+            menu_options[ddIndex * 2] = 1;
+            ddIndex++;
+        }
+
+        if (ddIndex == 0)
+            return;
+
+        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+
+        ddIndex = 0;
+        if (addr<0x9C870D, uint8_t>() != menu_options[0])
+            ddIndex++;
+
+        dropdown::set_highlighted_item(ddIndex);
+    }
+
     // 0x0043A4E9
     static void stations_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -318,7 +351,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::port_menu:
-                call(0x43A965, regs);
+                port_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::build_vehicles_menu:

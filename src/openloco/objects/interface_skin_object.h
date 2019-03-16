@@ -62,6 +62,9 @@ namespace openloco
         constexpr uint32_t toolbar_stations = 43;
         constexpr uint32_t toolbar_stations_hover = 44;
 
+        constexpr uint32_t toolbar_menu_airport = 46;
+        constexpr uint32_t toolbar_menu_ship_port = 47;
+
         constexpr uint32_t toolbar_menu_zoom_in = 175;
         constexpr uint32_t toolbar_menu_zoom_out = 176;
         constexpr uint32_t toolbar_menu_rotate_clockwise = 177;

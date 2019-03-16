@@ -144,6 +144,8 @@ namespace openloco::string_ids
 
     constexpr string_id menu_towns = 225;
     constexpr string_id menu_industries = 226;
+    constexpr string_id menu_airport = 227;
+    constexpr string_id menu_ship_port = 228;
 
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
