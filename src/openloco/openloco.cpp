@@ -327,12 +327,6 @@ namespace openloco
         call(0x00428E47);
     }
 
-    // 0x004383ED
-    static void sub_4383ED()
-    {
-        call(0x004383ED);
-    }
-
     // 0x0046E388
     static void sub_46E388()
     {
@@ -368,7 +362,7 @@ namespace openloco
             input::process_keyboard_input();
             WindowManager::update();
             ui::handleInput();
-            sub_4383ED();
+            companymgr::updateOwnerStatus();
             return;
         }
 
@@ -394,7 +388,7 @@ namespace openloco
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
-            sub_4383ED();
+            companymgr::updateOwnerStatus();
             sub_46E388();
 
             _updating_company_id = _player_company[1];
@@ -430,7 +424,7 @@ namespace openloco
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
-            sub_4383ED();
+            companymgr::updateOwnerStatus();
             sub_46E388();
         }
     }
