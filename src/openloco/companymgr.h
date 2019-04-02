@@ -14,5 +14,6 @@ namespace openloco::companymgr
     std::array<company, max_companies>& companies();
     company* get(company_id_t id);
     company_id_t get_controlling_id();
+    uint8_t get_player_company_colours();
     void update();
 }

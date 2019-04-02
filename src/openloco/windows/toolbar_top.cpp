@@ -1,3 +1,4 @@
+#include "../companymgr.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
@@ -285,8 +286,7 @@ namespace openloco::ui::windows::toolbar_top
         uint32_t sprite_base = interface->img;
 
         // Apply company colours.
-        loco_global<uint8_t[16], 0x009C645C> company_colours;
-        uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+        uint32_t colour = companymgr::get_player_company_colours();
         sprite_base |= (1 << 29) | (colour << 19);
 
         dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
@@ -468,8 +468,7 @@ namespace openloco::ui::windows::toolbar_top
             }
 
             // Apply company colours.
-            loco_global<uint8_t[16], 0x009C645C> company_colours;
-            uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+            uint32_t colour = companymgr::get_player_company_colours();
             fg_image |= colour << 19;
 
             y--;
@@ -510,8 +509,7 @@ namespace openloco::ui::windows::toolbar_top
             }
 
             // Apply company colours.
-            loco_global<uint8_t[16], 0x009C645C> company_colours;
-            uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+            uint32_t colour = companymgr::get_player_company_colours();
             fg_image |= colour << 19;
 
             auto interface = objectmgr::get<interface_skin_object>();
@@ -563,8 +561,7 @@ namespace openloco::ui::windows::toolbar_top
             fg_image += (1 << 29) | interface->img;
 
             // Apply company colours.
-            loco_global<uint8_t[16], 0x009C645C> company_colours;
-            uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+            uint32_t colour = companymgr::get_player_company_colours();
             fg_image |= colour << 19;
 
             uint32_t bg_image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_empty_transparent);
@@ -594,8 +591,7 @@ namespace openloco::ui::windows::toolbar_top
             fg_image += (1 << 29) | (interface->img + 0x1F);
 
             // Apply company colours.
-            loco_global<uint8_t[16], 0x009C645C> company_colours;
-            uint32_t colour = company_colours[addr<0x00525E3C, uint8_t>()];
+            uint32_t colour = companymgr::get_player_company_colours();
             fg_image |= colour << 19;
 
             uint32_t bg_image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_empty_transparent);
