@@ -95,6 +95,18 @@ namespace openloco
 
         constexpr uint32_t build_vehicle_ship = 331;
 
+        constexpr uint32_t vehicle_train = 418;
+
+        constexpr uint32_t vehicle_aircraft = 426;
+
+        constexpr uint32_t vehicle_bus = 434;
+
+        constexpr uint32_t vehicle_truck = 450;
+
+        constexpr uint32_t vehicle_tram = 442;
+
+        constexpr uint32_t vehicle_ship = 458;
+
         constexpr uint32_t toolbar_menu_map_north = 466;
         constexpr uint32_t toolbar_menu_map_west = 467;
         constexpr uint32_t toolbar_menu_map_south = 468;

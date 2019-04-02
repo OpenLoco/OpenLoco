@@ -12,6 +12,7 @@
 #include "../objects/track_object.h"
 #include "../objects/water_object.h"
 #include "../things/thingmgr.h"
+#include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
@@ -327,6 +328,81 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(last_build_vehicles_option);
     }
 
+    // 0x0043ABCB
+    static void vehicles_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto player_company_id = companymgr::get_controlling_id();
+        auto company = companymgr::get(player_company_id);
+        uint16_t available_vehicles = company->available_vehicles;
+
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto interface = objectmgr::get<interface_skin_object>();
+
+        uint16_t vehicle_counts[thingmgr::num_thing_lists]{ 0 };
+        for (openloco::vehicle* v = thingmgr::first<openloco::vehicle>(); v != nullptr; v = v->next_vehicle())
+        {
+            if (v->owner != player_company_id)
+                continue;
+
+            if ((v->var_38 & (1 << 4)) != 0)
+                continue;
+
+            vehicle_counts[v->var_5E]++;
+        }
+
+        uint8_t ddIndex = 0;
+        for (uint16_t vehicleIdx = 0; vehicleIdx < thingmgr::num_thing_lists; vehicleIdx++)
+        {
+            if ((available_vehicles & (1 << vehicleIdx)) == 0)
+                continue;
+
+            static const uint32_t vehicle_images[] = {
+                interface_skin::image_ids::vehicle_train,
+                interface_skin::image_ids::vehicle_bus,
+                interface_skin::image_ids::vehicle_truck,
+                interface_skin::image_ids::vehicle_tram,
+                interface_skin::image_ids::vehicle_aircraft,
+                interface_skin::image_ids::vehicle_ship,
+            };
+
+            uint32_t vehicle_image = company_colour | vehicle_images[vehicleIdx];
+
+            static const string_id num_singular[] = {
+                string_ids::num_trains_singular,
+                string_ids::num_buses_singular,
+                string_ids::num_trucks_singular,
+                string_ids::num_trams_singular,
+                string_ids::num_aircrafts_singular,
+                string_ids::num_ships_singular,
+            };
+
+            static const string_id num_plural[] = {
+                string_ids::num_trains_plural,
+                string_ids::num_buses_plural,
+                string_ids::num_trucks_plural,
+                string_ids::num_trams_plural,
+                string_ids::num_aircraft_plural,
+                string_ids::num_ships_plural,
+            };
+
+            uint16_t vehicle_count = vehicle_counts[vehicleIdx];
+
+            string_id vehicle_string_id;
+            if (vehicle_count == 1)
+                vehicle_string_id = num_singular[vehicleIdx];
+            else
+                vehicle_string_id = num_plural[vehicleIdx];
+
+            dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
+            ddIndex++;
+        }
+
+        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+
+        uint8_t last_vehicles_option = addr<0x00525FAF, uint8_t>();
+        dropdown::set_highlighted_item(last_vehicles_option);
+    }
+
     // 0x0043A4E9
     static void stations_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -407,7 +483,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::vehicles_menu:
-                call(0x43ABCB, regs);
+                vehicles_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::stations_menu:
@@ -580,33 +656,19 @@ namespace openloco::ui::windows::toolbar_top
         {
             uint32_t x = _widgets[widx::vehicles_menu].left + window->x;
             uint32_t y = _widgets[widx::vehicles_menu].top + window->y;
-            uint32_t fg_image = 0;
 
-            // Figure out what icon to show on the button face.
-            uint8_t ebx = addr<0x00525FAF, uint8_t>();
-            switch (ebx)
-            {
-                case 0:
-                    fg_image = 0x1A2;
-                    break;
-                case 1:
-                    fg_image = 0x1B2;
-                    break;
-                case 2:
-                    fg_image = 0x1C2;
-                    break;
-                case 3:
-                    fg_image = 0x1BA;
-                    break;
-                case 4:
-                    fg_image = 0x1AA;
-                    break;
-                case 5:
-                    fg_image = 0x1CA;
-            }
+            static uint32_t button_face_image_ids[] = {
+                interface_skin::image_ids::vehicle_train,
+                interface_skin::image_ids::vehicle_bus,
+                interface_skin::image_ids::vehicle_truck,
+                interface_skin::image_ids::vehicle_tram,
+                interface_skin::image_ids::vehicle_aircraft,
+                interface_skin::image_ids::vehicle_ship,
+            };
 
             auto interface = objectmgr::get<interface_skin_object>();
-            fg_image += (1 << 29) | interface->img;
+            uint32_t last_vehicles_option = addr<0x00525FAF, uint8_t>();
+            uint32_t fg_image = (1 << 29) | (interface->img + button_face_image_ids[last_vehicles_option]);
 
             // Apply company colours.
             uint32_t colour = companymgr::get_player_company_colours();

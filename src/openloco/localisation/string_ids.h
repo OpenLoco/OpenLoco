@@ -325,6 +325,19 @@ namespace openloco::string_ids
 
     constexpr string_id buffer_1250 = 1250;
 
+    constexpr string_id num_trains_singular = 1264;
+    constexpr string_id num_buses_singular = 1265;
+    constexpr string_id num_trucks_singular = 1266;
+    constexpr string_id num_trams_singular = 1267;
+    constexpr string_id num_aircrafts_singular = 1268;
+    constexpr string_id num_ships_singular = 1269;
+    constexpr string_id num_trains_plural = 1270;
+    constexpr string_id num_buses_plural = 1271;
+    constexpr string_id num_trucks_plural = 1272;
+    constexpr string_id num_trams_plural = 1273;
+    constexpr string_id num_aircraft_plural = 1274;
+    constexpr string_id num_ships_plural = 1275;
+
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
