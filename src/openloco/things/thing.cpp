@@ -22,5 +22,5 @@ void thing_base::move_to(loc16 loc)
 // 0x004CBB01
 void openloco::thing_base::invalidate_sprite()
 {
-    ui::viewportmgr::invalidate(this, ui::viewportmgr::ZoomLevel::eighth);
+    ui::viewportmgr::invalidate((Thing*)this, ui::viewportmgr::ZoomLevel::eighth);
 }
