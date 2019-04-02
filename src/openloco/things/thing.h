@@ -41,7 +41,6 @@ namespace openloco
         thing_id_t next_thing_id; // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        thing_id_t id;
         uint8_t pad_0A[0x0C - 0x0A];
         uint16_t var_0C;
         int16_t x; // 0x0E
@@ -57,7 +56,7 @@ namespace openloco
         uint8_t sprite_pitch;  // 0x1F
 
     private:
-        uint8_t pad_20[128 - 0x20];
+        uint8_t pad_20[0x80 - 0x20];
         template<typename TType, thing_base_type TClass>
         TType* as() const
         {
@@ -68,5 +67,6 @@ namespace openloco
         vehicle_base* as_vehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
         misc_thing* as_misc() const { return as<misc_thing, thing_base_type::misc>(); }
     };
+    static_assert(sizeof(Thing) == 0x80);
 #pragma pack(pop)
 }
