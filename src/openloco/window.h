@@ -298,8 +298,8 @@ namespace openloco::ui
     struct viewport_config
     {
         uint16_t viewport_target_sprite; // 0x0
-        uint16_t saved_view_x;           // 0x2
-        uint16_t saved_view_y;           // 0x4
+        int16_t saved_view_x;            // 0x2
+        int16_t saved_view_y;            // 0x4
     };
 
     struct window
