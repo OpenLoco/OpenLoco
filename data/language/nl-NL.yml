@@ -1600,7 +1600,7 @@ strings:
   1564: "{COLOUR WINDOW_2}Intelligentie: {COLOUR BLACK}{INT16} ({STRINGID})"
   1565: "{COLOUR WINDOW_2}Agressiviteit: {COLOUR BLACK}{INT16} ({STRINGID})"
   1566: "{COLOUR WINDOW_2}Competitiveness: {COLOUR BLACK}{INT16} ({STRINGID})"
-  1567: "{SMALLFONT}{COLOUR BLACK}Toggle between single player and two player mode"
+  1567: "{SMALLFONT}{COLOUR BLACK}Wisselen tussen single player en multiplayer"
   1568: "{OUTLINE}{COLOUR WINDOW_2}Singleplayer-modus"
   1569: "{OUTLINE}{COLOUR WINDOW_2}Multiplayer-modus: verbonden met {STRINGID}"
   1570: Beginner
@@ -1617,7 +1617,7 @@ strings:
   1581: Landschap laden
   1582: Landschap opslaan
   1583: Landschap genereren...
-  1584: Can't clear entire area...
+  1584: Kan niet het hele gebied ontruimen...
   1585: Landschap genereren - Opties
   1586: Landschap genereren - Land
   1587: Landschap genereren - Bossen
@@ -1846,9 +1846,9 @@ strings:
   1808: Vliegroutes
   1809: Vaarroutes
   1810: ""
-  1811: Building {STRINGID} near {STRINGID}
-  1812: Building {STRINGID} near {STRINGID}
-  1813: Building {STRINGID} near {STRINGID}
+  1811: Bouwt {STRINGID} in de buurt van {STRINGID}
+  1812: Bouwt {STRINGID} in de buurt van {STRINGID}
+  1813: Bouwt {STRINGID} in de buurt van {STRINGID}
   1814: Checking services near {STRINGID}
   1815: Surveying landscape near {STRINGID}
   1816: "{COLOUR RED}Failliet!"
@@ -1968,8 +1968,8 @@ strings:
   1919: Use preferred owner name when starting a new game
   1920: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company owner name every time you start a new game"
   1921: "{COLOUR WINDOW_2}Preferred owner name: {COLOUR BLACK}{STRINGID}"
-  1922: Preferred Owner Name
-  1923: "Enter the preferred owner name:"
+  1922: Voorkeursnaam eigenaar
+  1923: "Voer de voorkeursnaam voor de eigenaar in:"
 
   1924: "{COLOUR BLACK}{TINYFONT}Power"
   1925: "{COLOUR BLACK}{TINYFONT}Brake"
@@ -1983,7 +1983,7 @@ strings:
 
   1932: Game versions are incompatible - Unable to connect!
   1933: "{SMALLFONT}{COLOUR BLACK}Send a short text message to the other player"
-  1934: the other player
+  1934: de andere speler
   1935: "The other player has exited the game: Two player mode has been disconnected"
 
   1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
@@ -2039,7 +2039,7 @@ strings:
   1984: "{SMALLFONT}{COLOUR BLACK}Graphs of distance cargo delivered by each company"
   1985: "{COLOUR WINDOW_2}Gemiddelde snelheid van laatste rit: {COLOUR BLACK}{VELOCITY}"
   1986: land
-  1987: air
+  1987: lucht
   1988: water
   1989: Trein
   1990: Bus
@@ -2132,7 +2132,7 @@ strings:
   2077: Bomen
   2078: Sneeuw
   2079: Klimaat
-  2080: Map Generation Data
+  2080: Data voor kaartgenerator
   2081: Gebouwen
   2082: Scaffolding
   2083: Industrieën
@@ -2178,8 +2178,16 @@ strings:
   2123: " pk"
   2124: " kW"
   2125: "{COLOUR WINDOW_2}Taal:"
-
+  2126: "{COLOUR WINDOW_2}Voertuigdefecten uitschakelen"
   2127: "{COLOUR WINDOW_2}Schermmodus:"
   2128: Venster
   2129: Volledig scherm
   2130: Voll. sch. (randl. venster)
+  2131: Standaard audio-apparaat
+  2132: "{COLOUR WINDOW_2}Vergrotingsfactor:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Zoomen op aanwijzerpositie (experimenteel)"
+  2137: "{SMALLFONT}{COLOUR BLACK}Als dit ingeschakeld, zal er worden ingezoomd op de locatie van de aanwijzer, in plaats van in het midden van het scherm."
+  2138: "{COLOUR WINDOW_2}Muziek afspelen op titelscherm"
