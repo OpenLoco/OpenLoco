@@ -11,6 +11,7 @@
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
 #include "../objects/water_object.h"
+#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
@@ -279,6 +280,53 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(ddIndex);
     }
 
+    // 0x0043AD1F
+    static void build_vehicles_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        auto company = companymgr::get(companymgr::get_controlling_id());
+        uint16_t available_vehicles = company->available_vehicles;
+
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto interface = objectmgr::get<interface_skin_object>();
+
+        uint8_t ddIndex = 0;
+        for (uint8_t vehicleIdx = 0; vehicleIdx < thingmgr::num_thing_lists; vehicleIdx++)
+        {
+            if ((available_vehicles & (1 << vehicleIdx)) == 0)
+                continue;
+
+            static const uint32_t vehicle_images[] = {
+                interface_skin::image_ids::build_vehicle_train,
+                interface_skin::image_ids::build_vehicle_bus,
+                interface_skin::image_ids::build_vehicle_truck,
+                interface_skin::image_ids::build_vehicle_tram,
+                interface_skin::image_ids::build_vehicle_aircraft,
+                interface_skin::image_ids::build_vehicle_ship,
+            };
+
+            uint32_t vehicle_image = company_colour | vehicle_images[vehicleIdx];
+
+            static const string_id vehicle_string_ids[] = {
+                string_ids::build_trains,
+                string_ids::build_buses,
+                string_ids::build_trucks,
+                string_ids::build_trams,
+                string_ids::build_aircraft,
+                string_ids::build_ships,
+            };
+
+            string_id vehicle_string_id = vehicle_string_ids[vehicleIdx];
+
+            dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id });
+            ddIndex++;
+        }
+
+        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+
+        uint8_t last_build_vehicles_option = addr<0x0052622C, uint8_t>();
+        dropdown::set_highlighted_item(last_build_vehicles_option);
+    }
+
     // 0x0043A4E9
     static void stations_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -355,7 +403,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::build_vehicles_menu:
-                call(0x43AD1F, regs);
+                build_vehicles_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::vehicles_menu:

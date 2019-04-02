@@ -316,6 +316,13 @@ namespace openloco::string_ids
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
 
+    constexpr string_id build_trains = 1240;
+    constexpr string_id build_buses = 1241;
+    constexpr string_id build_trucks = 1242;
+    constexpr string_id build_trams = 1243;
+    constexpr string_id build_aircraft = 1244;
+    constexpr string_id build_ships = 1245;
+
     constexpr string_id buffer_1250 = 1250;
 
     constexpr string_id menu_sprite_stringid = 1287;
