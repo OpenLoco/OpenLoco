@@ -11,8 +11,10 @@
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
 #include "../objects/water_object.h"
+#include "../stationmgr.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
@@ -179,6 +181,32 @@ namespace openloco::ui::windows::toolbar_top
             dropdown::set_disabled_item(1);
     }
 
+    // 0x0043A86D
+    static void zoom_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        window = WindowManager::getMainWindow();
+
+        if (itemIndex == 0)
+        {
+            window->viewport_zoom_out(false);
+            townmgr::update_labels();
+            stationmgr::update_labels();
+        }
+        else if (itemIndex == 1)
+        {
+            window->viewport_zoom_in(false);
+            townmgr::update_labels();
+            stationmgr::update_labels();
+        }
+        else if (itemIndex == 2)
+        {
+            windows::map_open();
+        }
+    }
+
     // 0x0043A5C5
     static void rotate_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -188,6 +216,30 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_rotate_anti_clockwise, string_ids::menu_rotate_anti_clockwise });
         dropdown::show_below(window, widgetIndex, 2, 25);
         dropdown::set_highlighted_item(0);
+    }
+
+    // 0x0043A624
+    static void rotate_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        window = WindowManager::getMainWindow();
+
+        if (itemIndex == 0)
+        {
+            window->viewport_rotate_right();
+            townmgr::update_labels();
+            stationmgr::update_labels();
+            windows::map_center_on_view_point();
+        }
+        else if (itemIndex == 1)
+        {
+            window->viewport_rotate_left();
+            townmgr::update_labels();
+            stationmgr::update_labels();
+            windows::map_center_on_view_point();
+        }
     }
 
     // 0x0043ADF6
@@ -232,6 +284,35 @@ namespace openloco::ui::windows::toolbar_top
             dropdown::set_selection(9);
 
         dropdown::set_highlighted_item(0);
+    }
+
+    // 0x0043AF37
+    static void view_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        window = WindowManager::getMainWindow();
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+
+        if (itemIndex == 0)
+            viewport->flags ^= viewport_flags::underground_view;
+        else if (itemIndex == 1)
+            viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
+        else if (itemIndex == 2)
+            viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
+        else if (itemIndex == 4)
+            viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
+        else if (itemIndex == 5)
+            viewport->flags ^= viewport_flags::height_marks_on_land;
+        else if (itemIndex == 6)
+            viewport->flags ^= viewport_flags::one_way_direction_arrows;
+        else if (itemIndex == 8)
+            viewport->flags ^= viewport_flags::town_names_displayed;
+        else if (itemIndex == 9)
+            viewport->flags ^= viewport_flags::station_names_displayed;
+
+        window->invalidate();
     }
 
     // 0x0043A3C3
@@ -514,15 +595,15 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::zoom_menu:
-                call(0x43A86D, regs);
+                zoom_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::rotate_menu:
-                call(0x43A624, regs);
+                rotate_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::view_menu:
-                call(0x43AF37, regs);
+                view_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::terraform_menu:

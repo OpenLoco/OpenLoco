@@ -51,6 +51,7 @@ namespace openloco::ui::dropdown
     void add(int16_t index, string_id title);
     void add(int16_t index, string_id title, std::initializer_list<format_arg> l);
     void add(int16_t index, string_id title, format_arg l);
+    int16_t get_highlighted_item();
     void set_disabled_item(int16_t index);
     void set_highlighted_item(int16_t index);
     void set_selection(int16_t index);

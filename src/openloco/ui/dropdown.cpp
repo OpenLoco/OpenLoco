@@ -70,6 +70,11 @@ namespace openloco::ui::dropdown
         add(index, title, { l });
     }
 
+    int16_t get_highlighted_item()
+    {
+        return _dropdownHighlightedIndex;
+    }
+
     void set_disabled_item(int16_t index)
     {
         _dropdownDisabledItems = _dropdownDisabledItems | (1 << index);

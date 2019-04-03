@@ -59,6 +59,8 @@ namespace openloco::ui::windows
     void sub_498E9B(window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
+
+    void map_open();
     void map_center_on_view_point();
 
     void show_error(string_id title, string_id message);

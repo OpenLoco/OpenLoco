@@ -5,6 +5,8 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../stationmgr.h"
+#include "../townmgr.h"
 #include "../tutorial.h"
 #include "../ui.h"
 #include "../viewportmgr.h"
@@ -886,22 +888,6 @@ namespace openloco::ui::WindowManager
         return false;
     }
 
-    // TODO: Move
-    // 0x0049771C
-    static void sub_49771C()
-    {
-        // Might have something to do with town labels
-        call(0x0049771C);
-    }
-
-    // TODO: Move
-    // 0x0048DDC3
-    static void sub_48DDC3()
-    {
-        // Might have something to do with station labels
-        call(0x0048DDC3);
-    }
-
     // 0x004C6202
     void allWheelInput()
     {
@@ -952,8 +938,8 @@ namespace openloco::ui::WindowManager
                 {
                     main->viewport_rotate_left();
                 }
-                sub_49771C();
-                sub_48DDC3();
+                townmgr::update_labels();
+                stationmgr::update_labels();
                 windows::map_center_on_view_point();
             }
 
@@ -979,8 +965,8 @@ namespace openloco::ui::WindowManager
                 {
                     window->viewport_zoom_out(true);
                 }
-                sub_49771C();
-                sub_48DDC3();
+                townmgr::update_labels();
+                stationmgr::update_labels();
 
                 return;
             }
