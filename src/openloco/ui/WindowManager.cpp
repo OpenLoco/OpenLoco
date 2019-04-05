@@ -4,6 +4,7 @@
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../intro.h"
 #include "../tutorial.h"
 #include "../ui.h"
 #include "../viewportmgr.h"
@@ -18,9 +19,14 @@ namespace openloco::ui::WindowManager
         constexpr uint16_t by_type = 1 << 7;
     }
 
+    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
+    static loco_global<WindowType, 0x00523364> _callingWindowType;
+    static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00525330> _cursorWheel;
+    static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<window[12], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
@@ -92,16 +98,6 @@ namespace openloco::ui::WindowManager
                     }
                     window++;
                 }
-
-                return 0;
-            });
-
-        register_hook(
-            0x004C6202,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                allWheelInput();
-                regs = backup;
 
                 return 0;
             });
@@ -273,7 +269,63 @@ namespace openloco::ui::WindowManager
     // 0x004C6118
     void update()
     {
-        call(0x004C6118);
+        _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
+
+        // Has to do with graphics mode switching. Remove?
+        _9DA3D4 = _9DA3D4 + 1;
+        if (_9DA3D4 == 224 && ui::dirty_blocks_initialised())
+        {
+            if (*_callingWindowType != WindowType::undefined)
+            {
+                _9DA3D4 = _9DA3D4 - 1;
+            }
+            else
+            {
+                // set_window_pos_wrapper();
+            }
+        }
+
+        if (!ui::dirty_blocks_initialised())
+        {
+            return;
+        }
+
+        if (!intro::is_active())
+        {
+            gfx::draw_dirty_blocks();
+        }
+
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
+        {
+            w->viewports_update_position();
+        }
+
+        // 1000 tick update
+        _thousandthTickCounter = _thousandthTickCounter + time_since_last_tick;
+        if (_thousandthTickCounter >= 1000)
+        {
+            _thousandthTickCounter = 0;
+            for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
+            {
+                w->call_on_periodic_update();
+            }
+        }
+
+        // Border flash invalidation
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
+        {
+            if ((w->flags & window_flags::white_border_mask) != 0)
+            {
+                // TODO: Replace with countdown
+                w->flags -= window_flags::white_border_one;
+                if ((w->flags & window_flags::white_border_mask) == 0)
+                {
+                    w->invalidate();
+                }
+            }
+        }
+
+        allWheelInput();
     }
 
     // 0x004CE438

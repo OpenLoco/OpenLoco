@@ -752,6 +752,12 @@ namespace openloco::gfx
         call(0x004C5C69, regs);
     }
 
+    // 0x004C5CFA
+    void draw_dirty_blocks()
+    {
+        call(0x004C5CFA);
+    }
+
     void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
     {
         registers regs;

@@ -596,6 +596,22 @@ namespace openloco::ui
         event_handlers->on_close(this);
     }
 
+    void window::call_on_periodic_update()
+    {
+        if (event_handlers->on_periodic_update == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_periodic_update))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_periodic_update, regs);
+            return;
+        }
+
+        event_handlers->on_periodic_update(this);
+    }
+
     void window::call_update()
     {
         if (event_handlers->on_update == nullptr)
