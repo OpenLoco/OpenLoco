@@ -321,12 +321,6 @@ namespace openloco
         call(0x00428E47);
     }
 
-    // 0x004C96E7
-    static void handle_input()
-    {
-        call(0x004C96E7);
-    }
-
     // 0x004383ED
     static void sub_4383ED()
     {
@@ -367,7 +361,7 @@ namespace openloco
 
             input::process_keyboard_input();
             WindowManager::update();
-            handle_input();
+            WindowManager::handleInput();
             sub_4383ED();
             return;
         }
@@ -393,7 +387,7 @@ namespace openloco
             input::process_keyboard_input();
             WindowManager::update();
             WindowManager::update();
-            handle_input();
+            WindowManager::handleInput();
             sub_4383ED();
             sub_46E388();
 
@@ -429,7 +423,7 @@ namespace openloco
             input::process_keyboard_input();
             WindowManager::update();
             WindowManager::update();
-            handle_input();
+            WindowManager::handleInput();
             sub_4383ED();
             sub_46E388();
         }
@@ -542,7 +536,7 @@ namespace openloco
             if (addr<0x00525340, int32_t>() == 1)
             {
                 addr<0x00525340, int32_t>() = 0;
-                addr<0x00508F10, uint16_t>() |= (1 << 1);
+                WindowManager::set_508F10(WindowManager::flags_508F10::flag_1);
             }
 
             input::handle_keyboard();

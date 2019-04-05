@@ -449,7 +449,7 @@ namespace openloco::ui::windows
             return;
         }
 
-        if ((addr<0x00508F10, uint16_t>() & 0x300) == 0)
+        if (!has_508F10(WindowManager::flags_508F10::flag_8) && !has_508F10(WindowManager::flags_508F10::flag_9))
         {
             window->invalidate();
             return;
