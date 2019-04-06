@@ -3,6 +3,8 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 
 ---
 
+![](https://user-images.githubusercontent.com/604665/55420349-1a2aea00-5577-11e9-87da-78fe5cdb09e1.png)
+
 # Contents
 - 1 - [Introduction](#1-introduction)
 - 2 - [Downloading the game (pre-built)](#2-downloading-the-game-pre-built)
