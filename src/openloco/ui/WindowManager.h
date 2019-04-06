@@ -118,3 +118,8 @@ namespace openloco::ui::vehicle
 {
     void registerHooks();
 }
+
+namespace openloco::ui::build_vehicle
+{
+    void registerHooks();
+}

@@ -837,6 +837,7 @@ void openloco::interop::register_hooks()
     ui::textinput::register_hooks();
     ui::tooltip::register_hooks();
     ui::vehicle::registerHooks();
+    ui::build_vehicle::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
 
