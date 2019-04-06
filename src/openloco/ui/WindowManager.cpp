@@ -26,7 +26,6 @@ namespace openloco::ui::WindowManager
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00525330> _cursorWheel;
-    static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<window[12], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
@@ -270,20 +269,6 @@ namespace openloco::ui::WindowManager
     void update()
     {
         _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
-
-        // Has to do with graphics mode switching. Remove?
-        _9DA3D4 = _9DA3D4 + 1;
-        if (_9DA3D4 == 224 && ui::dirty_blocks_initialised())
-        {
-            if (*_callingWindowType != WindowType::undefined)
-            {
-                _9DA3D4 = _9DA3D4 - 1;
-            }
-            else
-            {
-                // set_window_pos_wrapper();
-            }
-        }
 
         if (!ui::dirty_blocks_initialised())
         {
