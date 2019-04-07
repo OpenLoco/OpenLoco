@@ -70,6 +70,9 @@ namespace openloco::ui::windows::toolbar_top
 
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
+    static loco_global<uint8_t, 0x009C870C> last_town_option;
+    static loco_global<uint8_t, 0x009C870D> last_port_option;
+
     static void on_resize(window* window);
     static void on_mouse_down(window* window, widget_index widgetIndex);
     static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
@@ -453,7 +456,7 @@ namespace openloco::ui::windows::toolbar_top
         if (addr<0x525FAD, int8_t>() != -1)
         {
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_ship_port, string_ids::menu_ship_port });
-            menu_options[ddIndex * 2] = 1;
+            menu_options[ddIndex] = 1;
             ddIndex++;
         }
 
@@ -463,10 +466,28 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::show_below(window, widgetIndex, ddIndex, 25);
 
         ddIndex = 0;
-        if (addr<0x9C870D, uint8_t>() != menu_options[0])
+        if (last_port_option != menu_options[0])
             ddIndex++;
 
         dropdown::set_highlighted_item(ddIndex);
+    }
+
+    // 0x0043AA0A
+    static void port_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        last_port_option = menu_options[itemIndex];
+
+        if (last_port_option == 0)
+        {
+            construction::open_with_flags(1 << 31);
+        }
+        else if (last_port_option == 1)
+        {
+            construction::open_with_flags(1 << 30);
+        }
     }
 
     // 0x0043AD1F
@@ -622,8 +643,6 @@ namespace openloco::ui::windows::toolbar_top
         windows::station_list::open(companymgr::get_controlling_id(), itemIndex);
     }
 
-    loco_global<uint8_t, 0x009C870C> last_town_option;
-
     // 0x0043A8CE
     static void towns_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -758,7 +777,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::port_menu:
-                call(0x43AA0A, regs);
+                port_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::build_vehicles_menu:
@@ -958,9 +977,8 @@ namespace openloco::ui::windows::toolbar_top
             _widgets[widx::audio_menu].image = (1 << 29) | colour | (interface->img + interface_skin::image_ids::toolbar_audio_active);
         }
 
-        loco_global<bool, 0x009C870D> _9C870D;
-        if (!_9C870D && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
-            _9C870D = true;
+        if (last_port_option == 0 && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
+            last_port_option = 1;
 
         _widgets[widx::loadsave_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_loadsave);
         _widgets[widx::zoom_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_zoom);
@@ -981,7 +999,7 @@ namespace openloco::ui::windows::toolbar_top
         else
             _widgets[widx::towns_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_industries);
 
-        if (!_9C870D)
+        if (last_port_option == 0)
             _widgets[widx::port_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_airports);
         else
             _widgets[widx::port_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_ports);

@@ -47,8 +47,6 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
-
-    void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
     window* open_title_version();
@@ -74,6 +72,12 @@ namespace openloco::ui::about
 namespace openloco::ui::about_music
 {
     void open();
+}
+
+namespace openloco::ui::windows::construction
+{
+    window* open_with_flags(uint32_t flags);
+    void on_mouse_up(window& w, uint16_t widgetIndex);
 }
 
 namespace openloco::ui::windows::industry_list
