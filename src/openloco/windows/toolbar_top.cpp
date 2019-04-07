@@ -367,6 +367,36 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A4A8
+    static void terraform_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        switch (itemIndex)
+        {
+            case 0:
+                windows::terraform::open_clear_area();
+                break;
+
+            case 1:
+                windows::terraform::open_adjust_land();
+                break;
+
+            case 2:
+                windows::terraform::open_adjust_water();
+                break;
+
+            case 3:
+                windows::terraform::open_plant_trees();
+                break;
+
+            case 4:
+                windows::terraform::open_build_walls();
+                break;
+        }
+    }
+
     // 0x0043A965
     static void port_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -643,7 +673,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::terraform_menu:
-                call(0x43A4A8, regs);
+                terraform_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::railroad_menu:

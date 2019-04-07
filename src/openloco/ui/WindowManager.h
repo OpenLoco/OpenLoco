@@ -93,6 +93,16 @@ namespace openloco::ui::prompt_browse
     void register_hooks();
 }
 
+namespace openloco::ui::windows::terraform
+{
+    window* open();
+    void open_clear_area();
+    void open_adjust_land();
+    void open_adjust_water();
+    void open_plant_trees();
+    void open_build_walls();
+}
+
 namespace openloco::ui::textinput
 {
     void register_hooks();
