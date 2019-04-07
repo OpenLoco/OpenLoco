@@ -7,36 +7,42 @@
 namespace openloco
 {
     using thing_id_t = uint16_t;
+    struct Thing;
+    struct vehicle_base;
+    struct misc_thing;
 
     namespace thing_id
     {
         constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
     }
 
-    enum class thing_type : uint8_t
+    enum class thing_base_type : uint8_t
     {
-        exhaust = 0,
-        vehicle_1,
-        vehicle_2,
-        vehicle_bogie,
-        vehicle_body_end,
-        vehicle_body_cont,
-        vehicle_6,
-        smoke = 8
+        vehicle = 0,
+        misc
     };
 
 #pragma pack(push, 1)
     struct thing_base
     {
-        uint8_t var_00;
-        thing_type type;
+        thing_base_type base_type;
+
+        void move_to(loc16 loc);
+        void invalidate_sprite();
+    };
+
+    // Max size of a thing. Use when needing to know thing size
+    struct Thing : thing_base
+    {
+    public:
+        uint8_t type;
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        thing_id_t id;
-        uint8_t pad_0C[0x0E - 0x0C];
+        uint8_t pad_0A[0x0C - 0x0A];
+        uint16_t var_0C;
         int16_t x; // 0x0E
         int16_t y; // 0x10
         int16_t z; // 0x12
@@ -49,36 +55,18 @@ namespace openloco
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
 
-        void move_to(loc16 loc);
-        void invalidate_sprite();
-    };
-
-    struct vehicle_bogie;
-    struct vehicle_body;
-    struct smoke;
-    struct exhaust;
-    // Max size of a thing. Use when needing to know thing size
-    struct thing : thing_base
-    {
     private:
-        uint8_t pad_20[128 - 0x20];
-        template<typename TType, thing_type TClass>
+        uint8_t pad_20[0x80 - 0x20];
+        template<typename TType, thing_base_type TClass>
         TType* as() const
         {
-            return type == TClass ? (TType*)this : nullptr;
+            return base_type == TClass ? (TType*)this : nullptr;
         }
 
     public:
-        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, thing_type::vehicle_bogie>(); }
-        vehicle_body* as_vehicle_body() const
-        {
-            auto vehicle = as<vehicle_body, thing_type::vehicle_body_end>();
-            if (vehicle != nullptr)
-                return vehicle;
-            return as<vehicle_body, thing_type::vehicle_body_cont>();
-        }
-        smoke* as_smoke() const { return as<smoke, thing_type::smoke>(); }
-        exhaust* as_exahust() const { return as<exhaust, thing_type::exhaust>(); }
+        vehicle_base* as_vehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
+        misc_thing* as_misc() const { return as<misc_thing, thing_base_type::misc>(); }
     };
+    static_assert(sizeof(Thing) == 0x80);
 #pragma pack(pop)
 }

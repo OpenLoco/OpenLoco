@@ -825,7 +825,7 @@ namespace openloco::audio
             do
             {
                 v2 = v2->next_car();
-            } while (v2->type != thing_type::vehicle_6);
+            } while (v2->type != vehicle_thing_type::vehicle_6);
             off_4FEB58(v2, x);
             v = next;
         }

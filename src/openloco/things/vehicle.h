@@ -6,14 +6,68 @@
 
 namespace openloco
 {
+    struct vehicle_bogie;
+    struct vehicle_body;
+
     namespace flags_5f
     {
         constexpr uint8_t breakdown_pending = 1 << 1;
         constexpr uint8_t broken_down = 1 << 2;
     }
 
+    enum class vehicle_thing_type : uint8_t
+    {
+        vehicle_0 = 0,
+        vehicle_1,
+        vehicle_2,
+        vehicle_bogie,
+        vehicle_body_end,
+        vehicle_body_cont,
+        vehicle_6,
+    };
+
 #pragma pack(push, 1)
-    struct vehicle : thing_base
+    struct vehicle_base : thing_base
+    {
+        vehicle_thing_type type;
+        uint8_t pad_02;
+        uint8_t pad_03;
+        thing_id_t next_thing_id; // 0x04
+        uint8_t pad_06[0x09 - 0x06];
+        uint8_t var_09;
+        thing_id_t id; // 0x0A
+        uint16_t var_0C;
+        int16_t x; // 0x0E
+        int16_t y; // 0x10
+        int16_t z; // 0x12
+        uint8_t var_14;
+        uint8_t var_15;
+        int16_t sprite_left;   // 0x16
+        int16_t sprite_top;    // 0x18
+        int16_t sprite_right;  // 0x1A
+        int16_t sprite_bottom; // 0x1C
+        uint8_t sprite_yaw;    // 0x1E
+        uint8_t sprite_pitch;  // 0x1F
+
+    private:
+        template<typename TType, vehicle_thing_type TClass>
+        TType* as() const
+        {
+            return type == TClass ? (TType*)this : nullptr;
+        }
+
+    public:
+        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, vehicle_thing_type::vehicle_bogie>(); }
+        vehicle_body* as_vehicle_body() const
+        {
+            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_end>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
+        }
+    };
+
+    struct vehicle : vehicle_base
     {
         uint8_t pad_20;
         company_id_t owner; // 0x21

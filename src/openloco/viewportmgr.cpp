@@ -71,7 +71,7 @@ namespace openloco::ui::viewportmgr
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
-        auto t = thingmgr::get<thing>(dx);
+        auto t = thingmgr::get<Thing>(dx);
 
         int16_t dest_x, dest_y;
         viewport->centre_2d_coordinates(t->x, t->y, t->z, &dest_x, &dest_y);
@@ -297,7 +297,7 @@ namespace openloco::ui::viewportmgr
      * @param t @<esi>
      * @param zoom
      */
-    void invalidate(thing_base* t, ZoomLevel zoom)
+    void invalidate(Thing* t, ZoomLevel zoom)
     {
         if (t->sprite_left == (int16_t)0x8000u)
             return;
@@ -357,25 +357,25 @@ namespace openloco::ui::viewportmgr
         register_hook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing*)regs.esi, ZoomLevel::eighth);
+                invalidate((Thing*)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
         register_hook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing*)regs.esi, ZoomLevel::quarter);
+                invalidate((Thing*)regs.esi, ZoomLevel::quarter);
                 return 0;
             });
         register_hook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing*)regs.esi, ZoomLevel::half);
+                invalidate((Thing*)regs.esi, ZoomLevel::half);
                 return 0;
             });
         register_hook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing*)regs.esi, ZoomLevel::full);
+                invalidate((Thing*)regs.esi, ZoomLevel::full);
                 return 0;
             });
         register_hook(

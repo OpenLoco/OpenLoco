@@ -97,23 +97,23 @@ bool vehicle::update()
     regs.esi = (int32_t)this;
     switch (type)
     {
-        case thing_type::exhaust:
+        case vehicle_thing_type::vehicle_0:
             result = call(0x004A8B81, regs);
             break;
-        case thing_type::vehicle_1:
+        case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);
             break;
-        case thing_type::vehicle_2:
+        case vehicle_thing_type::vehicle_2:
             result = call(0x004A9B0B, regs);
             break;
-        case thing_type::vehicle_bogie:
+        case vehicle_thing_type::vehicle_bogie:
             result = call(0x004AA008, regs);
             break;
-        case thing_type::vehicle_body_end:
-        case thing_type::vehicle_body_cont:
+        case vehicle_thing_type::vehicle_body_end:
+        case vehicle_thing_type::vehicle_body_cont:
             result = sub_4AA1D0();
             break;
-        case thing_type::vehicle_6:
+        case vehicle_thing_type::vehicle_6:
             result = call(0x004AA24A, regs);
             break;
         default:
@@ -138,7 +138,7 @@ void vehicle::sub_4BA8D4()
     }
 
     auto v = next_car()->next_car()->next_car();
-    if (v->type != thing_type::vehicle_6)
+    if (v->type != vehicle_thing_type::vehicle_6)
     {
         while (true)
         {
@@ -171,14 +171,14 @@ void vehicle::sub_4BA8D4()
             vehicle* u;
             do
             {
-                if (v->type == thing_type::vehicle_6)
+                if (v->type == vehicle_thing_type::vehicle_6)
                 {
                     return;
                 }
                 u = v->next_car()->next_car();
-                if (u->type != thing_type::vehicle_body_end)
+                if (u->type != vehicle_thing_type::vehicle_body_end)
                     v = u->next_car();
-            } while (u->type != thing_type::vehicle_body_end);
+            } while (u->type != vehicle_thing_type::vehicle_body_end);
         }
     }
 }
