@@ -1,6 +1,7 @@
 #include "../audio/audio.h"
 #include "../companymgr.h"
 #include "../config.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
@@ -130,6 +131,46 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(7, string_ids::menu_quit_game);
         dropdown::show_below(window, widgetIndex, 8);
         dropdown::set_highlighted_item(1);
+    }
+
+    // 0x0043B154
+    static void loadsave_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        switch (itemIndex)
+        {
+            case 0:
+                // Load game
+                game_commands::do_21(1, 0, 0);
+                break;
+
+            case 1:
+                // Save game
+                call(0x0043B1C4);
+                break;
+
+            case 3:
+                about::open();
+                break;
+
+            case 4:
+                options::open();
+                break;
+
+            case 5:
+            {
+                loco_global<uint8_t, 0x00508F16> screenshot_countdown;
+                screenshot_countdown = 10;
+                break;
+            }
+
+            case 7:
+                // Return to title screen
+                game_commands::do_21(1, 0, 1);
+                break;
+        }
     }
 
     // 0x0043B04B
@@ -653,7 +694,7 @@ namespace openloco::ui::windows::toolbar_top
         switch (widgetIndex)
         {
             case widx::loadsave_menu:
-                call(0x43B154, regs);
+                loadsave_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::audio_menu:
