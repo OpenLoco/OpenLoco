@@ -1,4 +1,6 @@
+#include "../audio/audio.h"
 #include "../companymgr.h"
+#include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
@@ -139,13 +141,47 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(3, string_ids::menu_music_options);
         dropdown::show_below(window, widgetIndex, 4);
 
-        if (addr<0x50D555, bool>())
+        if (audio::isAllAudioDisabled())
             dropdown::set_selection(0);
 
-        if (addr<0x50AED7, bool>())
+        if (config::get().music_playing)
             dropdown::set_selection(1);
 
         dropdown::set_highlighted_item(0);
+    }
+
+    // 0x0043B0B8
+    static void audio_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        switch (itemIndex)
+        {
+            case 0:
+                audio::toggle_sound();
+                break;
+
+            case 1:
+            {
+                auto& config = config::get();
+                if (config.music_playing)
+                {
+                    config.music_playing = false;
+                    audio::stop_background_music();
+                }
+                else
+                {
+                    config.music_playing = true;
+                }
+                config::write();
+                break;
+            }
+
+            case 3:
+                options::open_music_settings();
+                break;
+        }
     }
 
     // 0x0043A78E
@@ -591,7 +627,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::audio_menu:
-                call(0x43B0B8, regs);
+                audio_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::zoom_menu:
@@ -808,8 +844,7 @@ namespace openloco::ui::windows::toolbar_top
         auto interface = objectmgr::get<interface_skin_object>();
         uint32_t colour = window->colours[0] << 19;
 
-        loco_global<bool, 0x0050D555> enable_sound;
-        if (enable_sound)
+        if (audio::isAllAudioDisabled())
         {
             window->activated_widgets |= (1 << widx::audio_menu);
             _widgets[widx::audio_menu].image = (1 << 29) | colour | (interface->img + interface_skin::image_ids::toolbar_audio_inactive);
