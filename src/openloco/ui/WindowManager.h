@@ -76,6 +76,11 @@ namespace openloco::ui::about_music
     void open();
 }
 
+namespace openloco::ui::windows::industry_list
+{
+    window* open();
+}
+
 namespace openloco::ui::options
 {
     window* open();
@@ -91,6 +96,11 @@ namespace openloco::ui::prompt_browse
     };
     bool open(browse_type type, char* path, const char* filter, const char* title);
     void register_hooks();
+}
+
+namespace openloco::ui::windows::station_list
+{
+    window* open(uint16_t playerId, uint8_t type);
 }
 
 namespace openloco::ui::windows::terraform
@@ -129,6 +139,11 @@ namespace openloco::ui::tooltip
     void register_hooks();
     void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+}
+
+namespace openloco::ui::windows::town_list
+{
+    window* open();
 }
 
 namespace openloco::ui::vehicle

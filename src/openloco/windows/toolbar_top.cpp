@@ -610,6 +610,20 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::set_highlighted_item(0);
     }
 
+    // 0x0043A596
+    static void stations_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex > 4)
+            return;
+
+        windows::station_list::open(companymgr::get_controlling_id(), itemIndex);
+    }
+
+    loco_global<uint8_t, 0x009C870C> last_town_option;
+
     // 0x0043A8CE
     static void towns_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -617,7 +631,25 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_towns, string_ids::menu_towns });
         dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_industries, string_ids::menu_industries });
         dropdown::show_below(window, widgetIndex, 2, 25);
-        dropdown::set_highlighted_item(0);
+        dropdown::set_highlighted_item(last_town_option);
+    }
+
+    // 0x0043A932
+    static void towns_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex == 0)
+        {
+            windows::town_list::open();
+            last_town_option = 0;
+        }
+        else if (itemIndex == 1)
+        {
+            windows::industry_list::open();
+            last_town_option = 1;
+        }
     }
 
     // 0x0043A071
@@ -738,11 +770,11 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::stations_menu:
-                call(0x43A596, regs);
+                stations_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::towns_menu:
-                call(0x43A932, regs);
+                towns_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
@@ -944,7 +976,7 @@ namespace openloco::ui::windows::toolbar_top
         _widgets[widx::vehicles_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_empty_opaque);
         _widgets[widx::stations_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_stations);
 
-        if (addr<0x009C870C, int8_t>() == 0)
+        if (last_town_option == 0)
             _widgets[widx::towns_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_towns);
         else
             _widgets[widx::towns_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_industries);
