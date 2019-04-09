@@ -70,6 +70,8 @@ namespace openloco::ui::windows::toolbar_top
 
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
+    static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+
     static loco_global<uint8_t, 0x009C870C> last_town_option;
     static loco_global<uint8_t, 0x009C870D> last_port_option;
 
@@ -603,13 +605,27 @@ namespace openloco::ui::windows::toolbar_top
                 vehicle_string_id = num_plural[vehicleIdx];
 
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
+            menu_options[ddIndex] = vehicleIdx;
             ddIndex++;
         }
 
         dropdown::show_below(window, widgetIndex, ddIndex, 25);
-
-        uint8_t last_vehicles_option = addr<0x00525FAF, uint8_t>();
         dropdown::set_highlighted_item(last_vehicles_option);
+    }
+
+    // 0x0043ACEF
+    static void vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex == -1)
+            return;
+
+        auto vehicleType = menu_options[itemIndex];
+        last_vehicles_option = vehicleType;
+
+        windows::vehicle_list::open(companymgr::get_controlling_id(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -785,7 +801,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::vehicles_menu:
-                call(0x43ACEF, regs);
+                vehicles_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::stations_menu:
@@ -906,7 +922,6 @@ namespace openloco::ui::windows::toolbar_top
             };
 
             auto interface = objectmgr::get<interface_skin_object>();
-            uint32_t last_vehicles_option = addr<0x00525FAF, uint8_t>();
             uint32_t fg_image = (1 << 29) | (interface->img + button_face_image_ids[last_vehicles_option]);
 
             // Apply company colours.

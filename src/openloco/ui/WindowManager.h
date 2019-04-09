@@ -155,6 +155,11 @@ namespace openloco::ui::vehicle
     void registerHooks();
 }
 
+namespace openloco::ui::windows::vehicle_list
+{
+    window* open(uint16_t companyId, uint8_t type);
+}
+
 namespace openloco::ui::build_vehicle
 {
     void registerHooks();
