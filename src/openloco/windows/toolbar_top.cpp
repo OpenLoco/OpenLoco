@@ -71,6 +71,7 @@ namespace openloco::ui::windows::toolbar_top
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
     static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+    static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static loco_global<uint8_t, 0x009C870C> last_town_option;
     static loco_global<uint8_t, 0x009C870D> last_port_option;
@@ -530,13 +531,29 @@ namespace openloco::ui::windows::toolbar_top
             string_id vehicle_string_id = vehicle_string_ids[vehicleIdx];
 
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id });
+            menu_options[ddIndex] = vehicleIdx;
             ddIndex++;
         }
 
         dropdown::show_below(window, widgetIndex, ddIndex, 25);
-
-        uint8_t last_build_vehicles_option = addr<0x0052622C, uint8_t>();
         dropdown::set_highlighted_item(last_build_vehicles_option);
+    }
+
+    // 0x0043ADC7
+    static void build_vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex == -1)
+            return;
+
+        itemIndex = menu_options[itemIndex];
+        last_build_vehicles_option = itemIndex;
+
+        registers regs;
+        regs.eax = (1 << 31) | itemIndex;
+        call(0x004C1AF7, regs);
     }
 
     // 0x0043ABCB
@@ -797,7 +814,7 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::build_vehicles_menu:
-                call(0x43ADC7, regs);
+                build_vehicles_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::vehicles_menu:
@@ -949,7 +966,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t y = _widgets[widx::build_vehicles_menu].top + window->y;
 
             // Figure out what icon to show on the button face.
-            uint32_t fg_image = addr<0x0052622C, uint8_t>();
+            uint32_t fg_image = *last_build_vehicles_option;
             fg_image <<= 1;
             auto interface = objectmgr::get<interface_skin_object>();
             fg_image += (1 << 29) | (interface->img + 0x1F);
