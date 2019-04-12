@@ -55,6 +55,8 @@ namespace openloco::audio
         breakdown_4 = 29,
         breakdown_5 = 30,
         breakdown_6 = 31,
+
+        null = 0xFF
     };
 
     enum class channel_id

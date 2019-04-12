@@ -1,7 +1,10 @@
 #pragma once
 
+#include "../audio/audio.h"
 #include "../company.h"
 #include "../objects/vehicle_object.h"
+#include "../ui/WindowType.h"
+#include "../window.h"
 #include "thing.h"
 
 namespace openloco
@@ -154,9 +157,9 @@ namespace openloco
         uint8_t pad_20[0x44 - 0x20];
         uint8_t sound_id; // 0x44
         uint8_t pad_45[0x4A - 0x45];
-        uint16_t var_4A;
-        uint16_t var_4C;
-        uint8_t var_4E;
+        uint16_t var_4A;                       // sound-related flag(s)
+        ui::window_number sound_window_number; // 0x4C
+        ui::WindowType sound_window_type;      // 0x4E
     };
 #pragma pack(pop)
 }

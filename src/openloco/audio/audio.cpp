@@ -84,7 +84,7 @@ namespace openloco::audio
     static loco_global<uint8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _lastSong;
 
-    static uint8_t _112C666;
+    static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
@@ -785,14 +785,14 @@ namespace openloco::audio
         if (v == nullptr)
             return;
 
-        if (v->sound_id == 0xFF)
+        if (v->sound_id == (uint8_t)sound_id::null)
             return;
 
         // TODO: left or top?
         if (v->sprite_left == (int16_t)0x8000u)
             return;
 
-        if (_112C666 >= config::get().max_vehicle_sounds)
+        if (_numActiveVehicleSounds >= config::get().max_vehicle_sounds)
             return;
 
         auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
@@ -813,10 +813,10 @@ namespace openloco::audio
             if (extendedViewport.contains(spritePosition))
             {
                 // jump + return
-                _112C666 += 1;
+                _numActiveVehicleSounds += 1;
                 v->var_4A |= 1;
-                v->var_4E = (uint8_t)main->type;
-                v->var_4C = main->number;
+                v->sound_window_type = main->type;
+                v->sound_window_number = main->number;
                 return;
             }
         }
@@ -840,10 +840,10 @@ namespace openloco::audio
 
             if (viewport->contains(spritePosition))
             {
-                _112C666 += 1;
+                _numActiveVehicleSounds += 1;
                 v->var_4A |= 1;
-                v->var_4E = (uint8_t)w->type;
-                v->var_4C = w->number;
+                v->sound_window_type = w->type;
+                v->sound_window_number = w->number;
                 return;
             }
         }
@@ -878,7 +878,7 @@ namespace openloco::audio
     {
         if (x == 0)
         {
-            _112C666 = 0;
+            _numActiveVehicleSounds = 0;
         }
 
         auto v = thingmgr::first<vehicle>();
