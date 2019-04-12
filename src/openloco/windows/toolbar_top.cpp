@@ -70,11 +70,15 @@ namespace openloco::ui::windows::toolbar_top
 
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
+    static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
+    static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static loco_global<uint8_t, 0x009C870C> last_town_option;
     static loco_global<uint8_t, 0x009C870D> last_port_option;
+
+    static loco_global<int8_t[18], 0x0050A006> available_objects;
 
     static void on_resize(window* window);
     static void on_mouse_down(window* window, widget_index widgetIndex);
@@ -444,6 +448,128 @@ namespace openloco::ui::windows::toolbar_top
         }
     }
 
+    // 0x0043A2B0
+    static void railroad_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        // Load objects.
+        registers regs;
+        regs.edi = (uint32_t)&available_objects[0];
+        call(0x004A6841, regs);
+
+        // Sanity check: any objects available?
+        uint32_t i = 0;
+        while (available_objects[i] != -1 && i < std::size(available_objects))
+            i++;
+        if (i == 0)
+            return;
+
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+
+        // Add available objects to dropdown.
+        uint16_t highlighted_item = 0;
+        for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
+        {
+            uint32_t obj_image;
+            uint16_t obj_string_id;
+
+            int objIndex = available_objects[i];
+            if ((objIndex & (1 << 7)) != 0)
+            {
+                auto road = objectmgr::get<road_object>(objIndex & 0x7F);
+                obj_string_id = road->name;
+                obj_image = company_colour | road->var_0E;
+            }
+            else
+            {
+                auto track = objectmgr::get<track_object>(objIndex);
+                obj_string_id = track->name;
+                obj_image = company_colour | track->var_1E;
+            }
+
+            dropdown::add(i, string_ids::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+
+            if (objIndex == last_railroad_option)
+                highlighted_item = i;
+        }
+
+        dropdown::show_below(window, widgetIndex, i, 25);
+        dropdown::set_highlighted_item(highlighted_item);
+    }
+
+    // 0x0043A39F
+    static void railroad_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex == -1)
+            return;
+
+        uint8_t objIndex = available_objects[itemIndex];
+        construction::open_with_flags(objIndex);
+    }
+
+    // 0x0043A19F
+    static void road_menu_mouse_down(window* window, widget_index widgetIndex)
+    {
+        // Load objects.
+        registers regs;
+        regs.edi = (uint32_t)&available_objects[0];
+        call(0x00478265, regs);
+
+        // Sanity check: any objects available?
+        uint32_t i = 0;
+        while (available_objects[i] != -1 && i < std::size(available_objects))
+            i++;
+        if (i == 0)
+            return;
+
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+
+        // Add available objects to dropdown.
+        uint16_t highlighted_item = 0;
+        for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
+        {
+            uint32_t obj_image;
+            uint16_t obj_string_id;
+
+            int objIndex = available_objects[i];
+            if ((objIndex & (1 << 7)) != 0)
+            {
+                auto road = objectmgr::get<road_object>(objIndex & 0x7F);
+                obj_string_id = road->name;
+                obj_image = company_colour | road->var_0E;
+            }
+            else
+            {
+                auto track = objectmgr::get<track_object>(objIndex);
+                obj_string_id = track->name;
+                obj_image = company_colour | track->var_1E;
+            }
+
+            dropdown::add(i, string_ids::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+
+            if (objIndex == last_road_option)
+                highlighted_item = i;
+        }
+
+        dropdown::show_below(window, widgetIndex, i, 25);
+        dropdown::set_highlighted_item(highlighted_item);
+    }
+
+    // 0x0043A28C
+    static void road_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (itemIndex == -1)
+            itemIndex = dropdown::get_highlighted_item();
+
+        if (itemIndex == -1)
+            return;
+
+        uint8_t objIndex = available_objects[itemIndex];
+        construction::open_with_flags(objIndex);
+    }
+
     // 0x0043A965
     static void port_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -707,11 +833,6 @@ namespace openloco::ui::windows::toolbar_top
     // 0x0043A071
     static void on_mouse_down(window* window, widget_index widgetIndex)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edx = widgetIndex;
-        regs.edi = (int32_t)&window->widgets[widgetIndex];
-
         switch (widgetIndex)
         {
             case widx::loadsave_menu:
@@ -739,11 +860,11 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::railroad_menu:
-                call(0x43A2B0, regs);
+                railroad_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::road_menu:
-                call(0x43A19F, regs);
+                road_menu_mouse_down(window, widgetIndex);
                 break;
 
             case widx::port_menu:
@@ -770,11 +891,6 @@ namespace openloco::ui::windows::toolbar_top
 
     static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edx = widgetIndex;
-        regs.ax = itemIndex;
-
         switch (widgetIndex)
         {
             case widx::loadsave_menu:
@@ -802,11 +918,11 @@ namespace openloco::ui::windows::toolbar_top
                 break;
 
             case widx::railroad_menu:
-                call(0x43A39F, regs);
+                railroad_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::road_menu:
-                call(0x43A28C, regs);
+                road_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::port_menu:
@@ -850,7 +966,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
-            uint8_t ebx = addr<0x00525FAB, uint8_t>();
+            uint8_t ebx = last_road_option;
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
@@ -891,7 +1007,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
-            uint8_t ebx = addr<0x00525FAA, uint8_t>();
+            uint8_t ebx = last_railroad_option;
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
@@ -1036,12 +1152,12 @@ namespace openloco::ui::windows::toolbar_top
         else
             _widgets[widx::port_menu].image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_ports);
 
-        if (addr<0x00525FAB, int8_t>() != -1)
+        if (last_road_option != 0xFF)
             _widgets[widx::road_menu].type = widget_type::wt_7;
         else
             _widgets[widx::road_menu].type = widget_type::none;
 
-        if (addr<0x00525FAA, int8_t>() != -1)
+        if (last_railroad_option != 0xFF)
             _widgets[widx::railroad_menu].type = widget_type::wt_7;
         else
             _widgets[widx::railroad_menu].type = widget_type::none;
