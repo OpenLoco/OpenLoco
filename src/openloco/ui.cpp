@@ -128,6 +128,11 @@ namespace openloco::ui
         return screen_info->height;
     }
 
+    bool dirty_blocks_initialised()
+    {
+        return screen_info->dirty_blocks_initialised != 0;
+    }
+
     void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
 
     static sdl_window_desc get_window_desc(const config::display_config& cfg)

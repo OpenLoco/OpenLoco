@@ -33,6 +33,7 @@ namespace openloco::ui
 #endif
     int32_t width();
     int32_t height();
+    bool dirty_blocks_initialised();
 
     void create_window(const config::display_config& cfg);
     void initialise();
