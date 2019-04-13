@@ -677,9 +677,7 @@ namespace openloco::ui::windows::toolbar_top
         itemIndex = menu_options[itemIndex];
         last_build_vehicles_option = itemIndex;
 
-        registers regs;
-        regs.eax = (1 << 31) | itemIndex;
-        call(0x004C1AF7, regs);
+        build_vehicle::open(itemIndex, 1 << 31);
     }
 
     // 0x0043ABCB

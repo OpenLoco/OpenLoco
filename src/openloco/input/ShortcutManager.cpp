@@ -276,31 +276,66 @@ namespace openloco::input::ShortcutManager
     // 0x004BF232
     static void buildTracks()
     {
-        call(0x004BF232);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAA> last_railroad_option;
+        if (last_railroad_option == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(*last_railroad_option);
     }
 
     // 0x004BF24F
     static void buildRoads()
     {
-        call(0x004BF24F);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        loco_global<uint8_t, 0x00525FAB> last_road_option;
+        if (last_road_option == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(*last_road_option);
     }
 
     // 0x004BF276
     static void buildAirports()
     {
-        call(0x004BF276);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAC> have_airports;
+        if (have_airports == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(1 << 31);
     }
 
     // 0x004BF295
     static void buildShipPorts()
     {
-        call(0x004BF295);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAD> have_ship_ports;
+        if (have_ship_ports == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(1 << 30);
     }
 
     // 0x004BF2B4
     static void buildNewVehicles()
     {
-        call(0x004BF2B4);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
+        if (last_build_vehicles_option == 0xFF)
+            return;
+
+        build_vehicle::open(last_build_vehicles_option, 1 << 31);
     }
 
     // 0x004BF2D1

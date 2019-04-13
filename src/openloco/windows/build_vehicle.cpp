@@ -16,6 +16,14 @@ namespace openloco::ui::build_vehicle
 
     static void sub_4B92A5(ui::window* window);
 
+    window* open(uint32_t vehicle, uint32_t flags)
+    {
+        registers regs;
+        regs.eax = vehicle | flags;
+        call(0x004C1AF7, regs);
+        return (window*)regs.esi;
+    }
+
     void registerHooks()
     {
         register_hook(
