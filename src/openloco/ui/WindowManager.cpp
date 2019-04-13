@@ -618,12 +618,10 @@ namespace openloco::ui::WindowManager
             return;
         }
 
-        loco_global<uint8_t[32], 0x9C645C> byte9C645C;
-
-        // Company colour?
+        // Company colour
         if (w->var_884 != -1)
         {
-            w->colours[0] = byte9C645C[w->var_884];
+            w->colours[0] = companymgr::get_company_colours(w->var_884);
         }
 
         addr<0x1136F9C, int16_t>() = w->x;

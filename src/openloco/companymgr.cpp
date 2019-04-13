@@ -13,7 +13,7 @@ namespace openloco::companymgr
     static loco_global<uint8_t, 0x00525E3C> _byte_525E3C;
     static loco_global<uint8_t, 0x00525E3D> _byte_525E3D;
     static loco_global<company[max_companies], 0x00531784> _companies;
-    static loco_global<uint8_t[16], 0x009C645C> _company_colours;
+    static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
     static void produce_companies();
@@ -47,6 +47,11 @@ namespace openloco::companymgr
     company_id_t get_controlling_id()
     {
         return _player_company[0];
+    }
+
+    uint8_t get_company_colours(company_id_t id)
+    {
+        return _company_colours[id];
     }
 
     uint8_t get_player_company_colours()
