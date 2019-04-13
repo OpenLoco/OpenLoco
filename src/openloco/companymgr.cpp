@@ -49,12 +49,12 @@ namespace openloco::companymgr
         return _player_company[0];
     }
 
-    uint8_t get_company_colours(company_id_t id)
+    uint8_t get_company_colour(company_id_t id)
     {
         return _company_colours[id];
     }
 
-    uint8_t get_player_company_colours()
+    uint8_t get_player_company_colour()
     {
         return _company_colours[_player_company[0]];
     }

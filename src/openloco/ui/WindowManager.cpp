@@ -621,7 +621,7 @@ namespace openloco::ui::WindowManager
         // Company colour
         if (w->var_884 != -1)
         {
-            w->colours[0] = companymgr::get_company_colours(w->var_884);
+            w->colours[0] = companymgr::get_company_colour(w->var_884);
         }
 
         addr<0x1136F9C, int16_t>() = w->x;

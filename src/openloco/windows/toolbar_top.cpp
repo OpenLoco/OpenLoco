@@ -463,7 +463,7 @@ namespace openloco::ui::windows::toolbar_top
         if (i == 0)
             return;
 
-        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colour() << 19);
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;
@@ -524,7 +524,7 @@ namespace openloco::ui::windows::toolbar_top
         if (i == 0)
             return;
 
-        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colour() << 19);
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;
@@ -625,7 +625,7 @@ namespace openloco::ui::windows::toolbar_top
         auto company = companymgr::get(companymgr::get_controlling_id());
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colour() << 19);
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint8_t ddIndex = 0;
@@ -689,7 +689,7 @@ namespace openloco::ui::windows::toolbar_top
         auto company = companymgr::get(player_company_id);
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = (1 << 29) | (companymgr::get_player_company_colours() << 19);
+        auto company_colour = (1 << 29) | (companymgr::get_player_company_colour() << 19);
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint16_t vehicle_counts[thingmgr::num_thing_lists]{ 0 };
@@ -778,7 +778,7 @@ namespace openloco::ui::windows::toolbar_top
         uint32_t sprite_base = interface->img;
 
         // Apply company colours.
-        uint32_t colour = companymgr::get_player_company_colours();
+        uint32_t colour = companymgr::get_player_company_colour();
         sprite_base |= (1 << 29) | (colour << 19);
 
         dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
@@ -980,7 +980,7 @@ namespace openloco::ui::windows::toolbar_top
             }
 
             // Apply company colours.
-            uint32_t colour = companymgr::get_player_company_colours();
+            uint32_t colour = companymgr::get_player_company_colour();
             fg_image |= colour << 19;
 
             y--;
@@ -1021,7 +1021,7 @@ namespace openloco::ui::windows::toolbar_top
             }
 
             // Apply company colours.
-            uint32_t colour = companymgr::get_player_company_colours();
+            uint32_t colour = companymgr::get_player_company_colour();
             fg_image |= colour << 19;
 
             auto interface = objectmgr::get<interface_skin_object>();
@@ -1058,7 +1058,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t fg_image = (1 << 29) | (interface->img + button_face_image_ids[last_vehicles_option]);
 
             // Apply company colours.
-            uint32_t colour = companymgr::get_player_company_colours();
+            uint32_t colour = companymgr::get_player_company_colour();
             fg_image |= colour << 19;
 
             uint32_t bg_image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_empty_transparent);
@@ -1088,7 +1088,7 @@ namespace openloco::ui::windows::toolbar_top
             fg_image += (1 << 29) | (interface->img + 0x1F);
 
             // Apply company colours.
-            uint32_t colour = companymgr::get_player_company_colours();
+            uint32_t colour = companymgr::get_player_company_colour();
             fg_image |= colour << 19;
 
             uint32_t bg_image = (1 << 29) | (interface->img + interface_skin::image_ids::toolbar_empty_transparent);
