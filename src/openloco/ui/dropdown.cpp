@@ -75,9 +75,9 @@ namespace openloco::ui::dropdown
         return _dropdownHighlightedIndex;
     }
 
-    void set_disabled_item(int16_t index)
+    void set_item_disabled(int16_t index)
     {
-        _dropdownDisabledItems = _dropdownDisabledItems | (1 << index);
+        _dropdownDisabledItems |= (1U << index);
     }
 
     void set_highlighted_item(int16_t index)
@@ -85,9 +85,9 @@ namespace openloco::ui::dropdown
         _dropdownHighlightedIndex = index;
     }
 
-    void set_selection(int16_t index)
+    void set_item_selected(int16_t index)
     {
-        _dropdownSelection = _dropdownSelection | (1 << index);
+        _dropdownSelection |= (1U << index);
     }
 
     /**

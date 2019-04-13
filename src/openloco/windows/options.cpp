@@ -334,7 +334,7 @@ namespace openloco::ui::options
 
             dropdown::add(0, string_ids::dropdown_stringid, string_ids::white);
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::translucent);
-            dropdown::set_selection(config::get().construction_marker);
+            dropdown::set_item_selected(config::get().construction_marker);
         }
 
         // 0x004BFE98
@@ -364,7 +364,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::half_scale);
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::quarter_scale);
             dropdown::add(3, string_ids::dropdown_stringid, string_ids::eighth_scale);
-            dropdown::set_selection(config::get().vehicles_min_scale);
+            dropdown::set_item_selected(config::get().vehicles_min_scale);
         }
 
         // 0x004BFF4C
@@ -394,7 +394,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::half_scale);
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::quarter_scale);
             dropdown::add(3, string_ids::dropdown_stringid, string_ids::eighth_scale);
-            dropdown::set_selection(config::get().station_names_min_scale);
+            dropdown::set_item_selected(config::get().station_names_min_scale);
         }
 
         // 0x004C0000
@@ -438,7 +438,7 @@ namespace openloco::ui::options
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen_window);
 
             auto selection = static_cast<uint16_t>(config::get_new().display.mode);
-            dropdown::set_selection(selection);
+            dropdown::set_item_selected(selection);
         }
 
         static void screen_mode_dropdown(window* w, int16_t selection)
@@ -471,7 +471,7 @@ namespace openloco::ui::options
             {
                 dropdown::add((int16_t)i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
                 if (cfg.resolution_width == resolutions[i].width && cfg.resolution_height == resolutions[i].height)
-                    dropdown::set_selection((int16_t)i);
+                    dropdown::set_item_selected((int16_t)i);
             }
         }
 
@@ -813,7 +813,7 @@ namespace openloco::ui::options
                 auto currentDevice = audio::get_current_device();
                 if (currentDevice != std::numeric_limits<size_t>().max())
                 {
-                    dropdown::set_selection((int16_t)currentDevice);
+                    dropdown::set_item_selected((int16_t)currentDevice);
                 }
             }
         }
@@ -1153,7 +1153,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::play_all_music);
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::play_custom_music_selection);
 
-            dropdown::set_selection((uint8_t)config::get().music_playlist);
+            dropdown::set_item_selected((uint8_t)config::get().music_playlist);
         }
 
         // 0x004C084A
@@ -1244,7 +1244,7 @@ namespace openloco::ui::options
                 dropdown::add(index, string_ids::dropdown_stringid, music_ids_to_string_id[track]);
                 if (track == _currentSong)
                 {
-                    dropdown::set_selection(index);
+                    dropdown::set_item_selected(index);
                 }
             }
         }
@@ -1513,7 +1513,7 @@ namespace openloco::ui::options
                 dropdown::add(index - 1, string_ids::dropdown_stringptr, (char*)ld.native_name.c_str());
 
                 if (ld.locale == current_language)
-                    dropdown::set_selection(index - 1);
+                    dropdown::set_item_selected(index - 1);
             }
         }
 
@@ -1548,7 +1548,7 @@ namespace openloco::ui::options
 
                 if (_11364A0[object.first] & 1)
                 {
-                    dropdown::set_selection(index);
+                    dropdown::set_item_selected(index);
                 }
             }
         }
@@ -1689,7 +1689,7 @@ namespace openloco::ui::options
 
             dropdown::add(0, string_ids::dropdown_stringid, string_ids::imperial);
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::metric);
-            dropdown::set_selection(config::get().measurement_format);
+            dropdown::set_item_selected(config::get().measurement_format);
         }
 
         // 0x004C0FB3
@@ -1726,7 +1726,7 @@ namespace openloco::ui::options
             {
                 selectedItem = 1;
             }
-            dropdown::set_selection(selectedItem);
+            dropdown::set_item_selected(selectedItem);
         }
 
         // 0x004C106C

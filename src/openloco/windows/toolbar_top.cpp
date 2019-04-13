@@ -193,10 +193,10 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::show_below(window, widgetIndex, 4);
 
         if (audio::isAllAudioDisabled())
-            dropdown::set_selection(0);
+            dropdown::set_item_selected(0);
 
         if (config::get().music_playing)
-            dropdown::set_selection(1);
+            dropdown::set_item_selected(1);
 
         dropdown::set_highlighted_item(0);
     }
@@ -260,12 +260,12 @@ namespace openloco::ui::windows::toolbar_top
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow->viewports[0]->zoom == 0)
         {
-            dropdown::set_disabled_item(0);
+            dropdown::set_item_disabled(0);
             dropdown::set_highlighted_item(1);
         }
 
         if (mainWindow->viewports[0]->zoom == 3)
-            dropdown::set_disabled_item(1);
+            dropdown::set_item_disabled(1);
     }
 
     // 0x0043A86D
@@ -347,28 +347,28 @@ namespace openloco::ui::windows::toolbar_top
         uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
         if (current_viewport_flags & viewport_flags::underground_view)
-            dropdown::set_selection(0);
+            dropdown::set_item_selected(0);
 
         if (current_viewport_flags & viewport_flags::hide_foreground_tracks_roads)
-            dropdown::set_selection(1);
+            dropdown::set_item_selected(1);
 
         if (current_viewport_flags & viewport_flags::hide_foreground_scenery_buildings)
-            dropdown::set_selection(2);
+            dropdown::set_item_selected(2);
 
         if (current_viewport_flags & viewport_flags::height_marks_on_tracks_roads)
-            dropdown::set_selection(4);
+            dropdown::set_item_selected(4);
 
         if (current_viewport_flags & viewport_flags::height_marks_on_land)
-            dropdown::set_selection(5);
+            dropdown::set_item_selected(5);
 
         if (current_viewport_flags & viewport_flags::one_way_direction_arrows)
-            dropdown::set_selection(6);
+            dropdown::set_item_selected(6);
 
         if (!(current_viewport_flags & viewport_flags::town_names_displayed))
-            dropdown::set_selection(8);
+            dropdown::set_item_selected(8);
 
         if (!(current_viewport_flags & viewport_flags::station_names_displayed))
-            dropdown::set_selection(9);
+            dropdown::set_item_selected(9);
 
         dropdown::set_highlighted_item(0);
     }
