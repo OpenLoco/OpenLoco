@@ -430,7 +430,7 @@ namespace openloco::audio
 
         stop_vehicle_noise();
         stop_background_music();
-        call(0x0048ABE3);
+        stop_ambient_noise();
         stop_title_music();
     }
 
@@ -443,7 +443,7 @@ namespace openloco::audio
         _audioIsPaused = true;
         stop_vehicle_noise();
         stop_background_music();
-        call(0x0048ABE3);
+        stop_ambient_noise();
     }
 
     // 0x00489C58
@@ -882,7 +882,21 @@ namespace openloco::audio
     // 0x0048ACFD
     void update_ambient_noise()
     {
-        call(0x0048ACFD);
+        if (!_audio_initialised || _audioIsPaused || _audioIsDisabled)
+            return;
+
+        call(0x0048AD25);
+    }
+
+    // 0x0048ABE3
+    void stop_ambient_noise()
+    {
+        loco_global<uint32_t, 0x0050D5AC> _50D5AC;
+        if (_audio_initialised && _50D5AC != 1)
+        {
+            stop_channel(channel_id::ambient);
+            _50D5AC = 1;
+        }
     }
 
     static int32_t choose_next_music_track(int32_t excludeTrack)
@@ -1032,7 +1046,7 @@ namespace openloco::audio
     // 0x0048AC2B
     void stop_title_music()
     {
-        call(0x0048AC2B);
+        stop_channel(channel_id::title);
     }
 
     bool isAllAudioDisabled()

@@ -98,6 +98,7 @@ namespace openloco::audio
     void stop_vehicle_noise();
 
     void update_ambient_noise();
+    void stop_ambient_noise();
     void play_background_music();
     void stop_background_music();
     void play_title_screen_music();
