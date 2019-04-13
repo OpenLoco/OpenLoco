@@ -938,7 +938,7 @@ namespace openloco::ui::WindowManager
                 }
                 townmgr::update_labels();
                 stationmgr::update_labels();
-                windows::map_center_on_view_point();
+                windows::map::center_on_view_point();
             }
 
             return;

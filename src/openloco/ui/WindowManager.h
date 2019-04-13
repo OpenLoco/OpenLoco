@@ -58,9 +58,6 @@ namespace openloco::ui::windows
 
     bool prompt_ok_cancel(string_id okButtonStringId);
 
-    void map_open();
-    void map_center_on_view_point();
-
     void show_error(string_id title, string_id message);
 }
 
@@ -83,6 +80,12 @@ namespace openloco::ui::windows::construction
 namespace openloco::ui::windows::industry_list
 {
     window* open();
+}
+
+namespace openloco::ui::windows::map
+{
+    void open();
+    void center_on_view_point();
 }
 
 namespace openloco::ui::options

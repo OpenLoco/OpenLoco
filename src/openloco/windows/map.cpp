@@ -3,16 +3,16 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::windows
+namespace openloco::ui::windows::map
 {
     // 0x0046B490
-    void map_open()
+    void open()
     {
         call(0x0046B490);
     }
 
     // 0x0046B5C0
-    void map_center_on_view_point()
+    void center_on_view_point()
     {
         call(0x0046B5C0);
     }
