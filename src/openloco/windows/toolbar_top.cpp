@@ -278,13 +278,13 @@ namespace openloco::ui::windows::toolbar_top
 
         if (itemIndex == 0)
         {
-            window->viewport_zoom_out(false);
+            window->viewport_zoom_in(false);
             townmgr::update_labels();
             stationmgr::update_labels();
         }
         else if (itemIndex == 1)
         {
-            window->viewport_zoom_in(false);
+            window->viewport_zoom_out(false);
             townmgr::update_labels();
             stationmgr::update_labels();
         }

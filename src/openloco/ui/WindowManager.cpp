@@ -44,7 +44,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_out(false);
+                window->viewport_zoom_in(false);
                 regs = backup;
                 return 0;
             });
@@ -54,7 +54,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_in(false);
+                window->viewport_zoom_out(false);
                 regs = backup;
                 return 0;
             });
@@ -957,11 +957,11 @@ namespace openloco::ui::WindowManager
 
                 if (wheel > 0)
                 {
-                    window->viewport_zoom_in(true);
+                    window->viewport_zoom_out(true);
                 }
                 else if (wheel < 0)
                 {
-                    window->viewport_zoom_out(true);
+                    window->viewport_zoom_in(true);
                 }
                 townmgr::update_labels();
                 stationmgr::update_labels();

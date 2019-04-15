@@ -482,22 +482,22 @@ namespace openloco::ui
         this->invalidate();
     }
 
-    // 0x0045F015
+    // 0x0045EFDB
     void window::viewport_zoom_in(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
 
-        this->viewport_zoom_set(this->viewports[0]->zoom + 1, toCursor);
+        this->viewport_zoom_set(this->viewports[0]->zoom - 1, toCursor);
     }
 
-    // 0x0045EFDB
+    // 0x0045F015
     void window::viewport_zoom_out(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
 
-        this->viewport_zoom_set(this->viewports[0]->zoom - 1, toCursor);
+        this->viewport_zoom_set(this->viewports[0]->zoom + 1, toCursor);
     }
 
     // 0x0045F04F
