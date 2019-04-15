@@ -92,6 +92,10 @@ namespace openloco::ui::windows::toolbar_top
     // 0x00438B26
     void open()
     {
+        zoom_ticks = 0;
+        last_town_option = 0;
+        last_port_option = 0;
+
         _events.on_resize = on_resize;
         _events.event_03 = on_mouse_down;
         _events.on_mouse_down = on_mouse_down;

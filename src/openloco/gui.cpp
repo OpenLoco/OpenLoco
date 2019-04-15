@@ -45,9 +45,6 @@ namespace openloco::gui
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;
-        addr<0x009c86f8, int32_t>() = 0;
-        addr<0x009c870C, int8_t>() = 0; // Something to do with tutorial
-        addr<0x009c870D, int8_t>() = 0;
         addr<0x009c870E, int8_t>() = 1;
         addr<0x009c870F, int8_t>() = 2;
         addr<0x009c8710, int8_t>() = 1;
