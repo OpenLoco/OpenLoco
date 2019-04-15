@@ -823,7 +823,7 @@ namespace openloco::ui::WindowManager
     {
         close(WindowType::dropdown, 0);
 
-        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
             if (w->flags & window_flags::stick_to_back)
                 continue;
