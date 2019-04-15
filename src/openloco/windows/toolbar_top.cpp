@@ -480,7 +480,7 @@ namespace openloco::ui::windows::toolbar_top
         for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
         {
             uint32_t obj_image;
-            uint16_t obj_string_id;
+            string_id obj_string_id;
 
             int objIndex = available_objects[i];
             if ((objIndex & (1 << 7)) != 0)
@@ -541,7 +541,7 @@ namespace openloco::ui::windows::toolbar_top
         for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
         {
             uint32_t obj_image;
-            uint16_t obj_string_id;
+            string_id obj_string_id;
 
             int objIndex = available_objects[i];
             if ((objIndex & (1 << 7)) != 0)
@@ -639,9 +639,9 @@ namespace openloco::ui::windows::toolbar_top
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint8_t ddIndex = 0;
-        for (uint8_t vehicleIdx = 0; vehicleIdx < thingmgr::num_thing_lists; vehicleIdx++)
+        for (uint8_t vehicleType = 0; vehicleType < vehicle_category_count; vehicleType++)
         {
-            if ((available_vehicles & (1 << vehicleIdx)) == 0)
+            if ((available_vehicles & (1 << vehicleType)) == 0)
                 continue;
 
             static const uint32_t vehicle_images[] = {
@@ -653,7 +653,7 @@ namespace openloco::ui::windows::toolbar_top
                 interface_skin::image_ids::build_vehicle_ship,
             };
 
-            uint32_t vehicle_image = gfx::recolour(vehicle_images[vehicleIdx], company_colour);
+            uint32_t vehicle_image = gfx::recolour(vehicle_images[vehicleType], company_colour);
 
             static const string_id vehicle_string_ids[] = {
                 string_ids::build_trains,
@@ -664,10 +664,10 @@ namespace openloco::ui::windows::toolbar_top
                 string_ids::build_ships,
             };
 
-            string_id vehicle_string_id = vehicle_string_ids[vehicleIdx];
+            string_id vehicle_string_id = vehicle_string_ids[vehicleType];
 
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id });
-            menu_options[ddIndex] = vehicleIdx;
+            menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
 
@@ -700,7 +700,7 @@ namespace openloco::ui::windows::toolbar_top
         auto company_colour = companymgr::get_player_company_colour();
         auto interface = objectmgr::get<interface_skin_object>();
 
-        uint16_t vehicle_counts[thingmgr::num_thing_lists]{ 0 };
+        uint16_t vehicle_counts[vehicle_category_count]{ 0 };
         for (openloco::vehicle* v = thingmgr::first<openloco::vehicle>(); v != nullptr; v = v->next_vehicle())
         {
             if (v->owner != player_company_id)
@@ -713,9 +713,9 @@ namespace openloco::ui::windows::toolbar_top
         }
 
         uint8_t ddIndex = 0;
-        for (uint16_t vehicleIdx = 0; vehicleIdx < thingmgr::num_thing_lists; vehicleIdx++)
+        for (uint16_t vehicleType = 0; vehicleType < vehicle_category_count; vehicleType++)
         {
-            if ((available_vehicles & (1 << vehicleIdx)) == 0)
+            if ((available_vehicles & (1 << vehicleType)) == 0)
                 continue;
 
             static const uint32_t vehicle_images[] = {
@@ -727,7 +727,7 @@ namespace openloco::ui::windows::toolbar_top
                 interface_skin::image_ids::vehicle_ship,
             };
 
-            uint32_t vehicle_image = gfx::recolour(vehicle_images[vehicleIdx], company_colour);
+            uint32_t vehicle_image = gfx::recolour(vehicle_images[vehicleType], company_colour);
 
             static const string_id num_singular[] = {
                 string_ids::num_trains_singular,
@@ -747,16 +747,17 @@ namespace openloco::ui::windows::toolbar_top
                 string_ids::num_ships_plural,
             };
 
-            uint16_t vehicle_count = vehicle_counts[vehicleIdx];
+            uint16_t vehicle_count = vehicle_counts[vehicleType];
 
+            // TODO: replace with locale-based plurals.
             string_id vehicle_string_id;
             if (vehicle_count == 1)
-                vehicle_string_id = num_singular[vehicleIdx];
+                vehicle_string_id = num_singular[vehicleType];
             else
-                vehicle_string_id = num_plural[vehicleIdx];
+                vehicle_string_id = num_plural[vehicleType];
 
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
-            menu_options[ddIndex] = vehicleIdx;
+            menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
 
