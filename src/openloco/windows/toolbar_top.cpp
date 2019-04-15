@@ -75,6 +75,8 @@ namespace openloco::ui::windows::toolbar_top
     static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
+    static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
+
     static loco_global<uint8_t, 0x009C870C> last_town_option;
     static loco_global<uint8_t, 0x009C870D> last_port_option;
 
@@ -265,7 +267,13 @@ namespace openloco::ui::windows::toolbar_top
         }
 
         if (mainWindow->viewports[0]->zoom == 3)
+        {
             dropdown::set_item_disabled(1);
+            zoom_ticks = 1000;
+        }
+
+        if (mainWindow->viewports[0]->zoom != 3 && zoom_ticks <= 32)
+            dropdown::set_highlighted_item(1);
     }
 
     // 0x0043A86D
@@ -284,6 +292,7 @@ namespace openloco::ui::windows::toolbar_top
         }
         else if (itemIndex == 1)
         {
+            zoom_ticks = 0;
             window->viewport_zoom_out(false);
             townmgr::update_labels();
             stationmgr::update_labels();
@@ -947,8 +956,7 @@ namespace openloco::ui::windows::toolbar_top
 
     static void on_update(window* window)
     {
-        loco_global<int32_t, 0x9C86F8> _9C86F8;
-        _9C86F8++;
+        zoom_ticks++;
     }
 
     // 0x00439DE4
