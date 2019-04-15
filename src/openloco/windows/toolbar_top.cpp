@@ -320,18 +320,19 @@ namespace openloco::ui::windows::toolbar_top
         if (itemIndex == -1)
             itemIndex = dropdown::get_highlighted_item();
 
+        auto mouseButtonUsed = input::getLastKnownButtonState();
         window = WindowManager::getMainWindow();
 
-        if (itemIndex == 0)
+        if (itemIndex == 1 || mouseButtonUsed == input::mouse_button::right_pressed)
         {
-            window->viewport_rotate_right();
+            window->viewport_rotate_left();
             townmgr::update_labels();
             stationmgr::update_labels();
             windows::map::center_on_view_point();
         }
-        else if (itemIndex == 1)
+        else if (itemIndex == 0)
         {
-            window->viewport_rotate_left();
+            window->viewport_rotate_right();
             townmgr::update_labels();
             stationmgr::update_labels();
             windows::map::center_on_view_point();
