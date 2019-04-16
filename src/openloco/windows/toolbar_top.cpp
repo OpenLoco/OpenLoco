@@ -1079,18 +1079,24 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t x = _widgets[widx::build_vehicles_menu].left + window->x;
             uint32_t y = _widgets[widx::build_vehicles_menu].top + window->y;
 
-            // Figure out what icon to show on the button face.
-            uint32_t fg_image = *last_build_vehicles_option;
-            fg_image <<= 1;
-            auto interface = objectmgr::get<interface_skin_object>();
-            fg_image += gfx::recolour(interface->img + 0x1F, company_colour);
+            static uint32_t build_vehicle_images[] = {
+                interface_skin::image_ids::toolbar_build_vehicle_train,
+                interface_skin::image_ids::toolbar_build_vehicle_bus,
+                interface_skin::image_ids::toolbar_build_vehicle_truck,
+                interface_skin::image_ids::toolbar_build_vehicle_tram,
+                interface_skin::image_ids::toolbar_build_vehicle_airplane,
+                interface_skin::image_ids::toolbar_build_vehicle_boat,
+            };
 
+            // Figure out what icon to show on the button face.
+            auto interface = objectmgr::get<interface_skin_object>();
+            uint32_t fg_image = gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
             uint32_t bg_image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[2]);
 
             y--;
             if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::build_vehicles_menu))
             {
-                y++;
+                fg_image++;
                 bg_image++;
             }
 
