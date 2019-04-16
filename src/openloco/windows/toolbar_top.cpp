@@ -249,7 +249,7 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_zoom_in, string_ids::menu_zoom_in });
         dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_zoom_out, string_ids::menu_zoom_out });
 
-        static uint32_t map_sprites_by_rotation[] = {
+        static const uint32_t map_sprites_by_rotation[] = {
             interface_skin::image_ids::toolbar_menu_map_north,
             interface_skin::image_ids::toolbar_menu_map_west,
             interface_skin::image_ids::toolbar_menu_map_south,
@@ -1049,7 +1049,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t x = _widgets[widx::vehicles_menu].left + window->x;
             uint32_t y = _widgets[widx::vehicles_menu].top + window->y;
 
-            static uint32_t button_face_image_ids[] = {
+            static const uint32_t button_face_image_ids[] = {
                 interface_skin::image_ids::vehicle_train,
                 interface_skin::image_ids::vehicle_bus,
                 interface_skin::image_ids::vehicle_truck,
@@ -1079,7 +1079,7 @@ namespace openloco::ui::windows::toolbar_top
             uint32_t x = _widgets[widx::build_vehicles_menu].left + window->x;
             uint32_t y = _widgets[widx::build_vehicles_menu].top + window->y;
 
-            static uint32_t build_vehicle_images[] = {
+            static const uint32_t build_vehicle_images[] = {
                 interface_skin::image_ids::toolbar_build_vehicle_train,
                 interface_skin::image_ids::toolbar_build_vehicle_bus,
                 interface_skin::image_ids::toolbar_build_vehicle_truck,
