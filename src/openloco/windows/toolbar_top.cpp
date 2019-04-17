@@ -1091,19 +1091,11 @@ namespace openloco::ui::windows::toolbar_top
             // Figure out what icon to show on the button face.
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t fg_image = gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
-            uint32_t bg_image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[2]);
 
-            y--;
             if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::build_vehicles_menu))
-            {
                 fg_image++;
-                bg_image++;
-            }
 
             gfx::draw_image(dpi, x, y, fg_image);
-
-            y = _widgets[widx::build_vehicles_menu].top + window->y;
-            gfx::draw_image(dpi, x, y, bg_image);
         }
     }
 
