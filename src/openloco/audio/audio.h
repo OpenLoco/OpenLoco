@@ -78,6 +78,7 @@ namespace openloco::audio
     sample* get_sound_sample(sound_id id);
     bool should_sound_loop(sound_id id);
 
+    void toggle_sound();
     void pause_sound();
     void unpause_sound();
     void play_sound(vehicle* t);
@@ -97,9 +98,13 @@ namespace openloco::audio
     void stop_vehicle_noise();
 
     void update_ambient_noise();
+    void stop_ambient_noise();
     void play_background_music();
     void stop_background_music();
     void play_title_screen_music();
+    void stop_title_music();
+
+    bool isAllAudioDisabled();
 
     /**
      * Converts a Locomotion volume range to SDL2.

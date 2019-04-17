@@ -43,6 +43,12 @@ namespace openloco::townmgr
         }
     }
 
+    // 0x0049771C
+    void update_labels()
+    {
+        call(0x0049771C);
+    }
+
     // 0x0049748C
     void update_monthly()
     {

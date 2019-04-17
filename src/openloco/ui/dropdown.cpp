@@ -1,6 +1,7 @@
 #include "dropdown.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
+#include "../window.h"
 
 #include <cassert>
 #include <cstdarg>
@@ -11,6 +12,7 @@ namespace openloco::ui::dropdown
 {
     static constexpr int bytes_per_item = 8;
 
+    static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
 
@@ -40,6 +42,14 @@ namespace openloco::ui::dropdown
                     break;
                 }
 
+                case format_arg_type::u32:
+                {
+                    uint32_t* ptr = (uint32_t*)args;
+                    *ptr = arg.u32;
+                    args += 4;
+                    break;
+                }
+
                 case format_arg_type::ptr:
                 {
                     uintptr_t* ptr = (uintptr_t*)args;
@@ -60,9 +70,24 @@ namespace openloco::ui::dropdown
         add(index, title, { l });
     }
 
-    void set_selection(int16_t index)
+    int16_t get_highlighted_item()
     {
-        _dropdownSelection = (1 << index);
+        return _dropdownHighlightedIndex;
+    }
+
+    void set_item_disabled(int16_t index)
+    {
+        _dropdownDisabledItems |= (1U << index);
+    }
+
+    void set_highlighted_item(int16_t index)
+    {
+        _dropdownHighlightedIndex = index;
+    }
+
+    void set_item_selected(int16_t index)
+    {
+        _dropdownSelection |= (1U << index);
     }
 
     /**
@@ -88,6 +113,31 @@ namespace openloco::ui::dropdown
         regs.di = height;
 
         call(0x004CC807, regs);
+    }
+
+    // 0x004CC989
+    void show_below(window* window, widget_index widgetIndex, int8_t count, int8_t height)
+    {
+        registers regs;
+        regs.ah = height;
+        regs.bx = count + (1 << 14);
+        regs.esi = (int32_t)window;
+        regs.edx = widgetIndex;
+        regs.edi = (int32_t)&window->widgets[widgetIndex];
+
+        call(0x4CC989, regs);
+    }
+
+    // 0x004CC989
+    void show_below(window* window, widget_index widgetIndex, int8_t count)
+    {
+        registers regs;
+        regs.bx = count;
+        regs.esi = (int32_t)window;
+        regs.edx = widgetIndex;
+        regs.edi = (int32_t)&window->widgets[widgetIndex];
+
+        call(0x4CC989, regs);
     }
 
     /**

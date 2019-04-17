@@ -365,6 +365,14 @@ namespace openloco::ui
         return scrollIndex;
     }
 
+    void window::set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets)
+    {
+        registers regs;
+        regs.eax = (int32_t)_disabled_widgets;
+        regs.esi = (int32_t)this;
+        call(0x004CC7CB, regs);
+    }
+
     // 0x00459E54
     // TODO: needs expansion in terms of (output) parameters.
     static void get_map_coordinates_from_pos(int32_t screenX, int32_t screenY, int32_t flags, int16_t* x, int16_t* y)
@@ -474,22 +482,22 @@ namespace openloco::ui
         this->invalidate();
     }
 
-    // 0x0045F015
+    // 0x0045EFDB
     void window::viewport_zoom_in(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
 
-        this->viewport_zoom_set(this->viewports[0]->zoom + 1, toCursor);
+        this->viewport_zoom_set(this->viewports[0]->zoom - 1, toCursor);
     }
 
-    // 0x0045EFDB
+    // 0x0045F015
     void window::viewport_zoom_out(bool toCursor)
     {
         if (this->viewports[0] == nullptr)
             return;
 
-        this->viewport_zoom_set(this->viewports[0]->zoom - 1, toCursor);
+        this->viewport_zoom_set(this->viewports[0]->zoom + 1, toCursor);
     }
 
     // 0x0045F04F
@@ -722,11 +730,20 @@ namespace openloco::ui
 
     void window::call_3(int8_t widget_index)
     {
-        registers regs;
-        regs.edx = widget_index;
-        regs.esi = (uint32_t)this;
-        regs.edi = (uint32_t) & this->widgets[widget_index];
-        call((uint32_t)this->event_handlers->event_03, regs);
+        if (event_handlers->event_03 == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->event_03))
+        {
+            registers regs;
+            regs.edx = widget_index;
+            regs.esi = (uint32_t)this;
+            regs.edi = (uint32_t) & this->widgets[widget_index];
+            call((uint32_t)this->event_handlers->event_03, regs);
+            return;
+        }
+
+        event_handlers->event_03(this, widget_index);
     }
 
     void window::call_on_mouse_down(ui::widget_index widget_index)

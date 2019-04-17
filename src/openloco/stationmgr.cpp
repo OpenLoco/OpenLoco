@@ -43,6 +43,12 @@ namespace openloco::stationmgr
         }
     }
 
+    // 0x0048DDC3
+    void update_labels()
+    {
+        call(0x0048DDC3);
+    }
+
     // 0x00437F29
     // arg0: ah
     // arg1: al

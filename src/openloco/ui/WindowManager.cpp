@@ -5,6 +5,8 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../stationmgr.h"
+#include "../townmgr.h"
 #include "../tutorial.h"
 #include "../ui.h"
 #include "../viewportmgr.h"
@@ -42,7 +44,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_out(false);
+                window->viewport_zoom_in(false);
                 regs = backup;
                 return 0;
             });
@@ -52,7 +54,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_in(false);
+                window->viewport_zoom_out(false);
                 regs = backup;
                 return 0;
             });
@@ -616,12 +618,10 @@ namespace openloco::ui::WindowManager
             return;
         }
 
-        loco_global<uint8_t[32], 0x9C645C> byte9C645C;
-
-        // Company colour?
+        // Company colour
         if (w->var_884 != -1)
         {
-            w->colours[0] = byte9C645C[w->var_884];
+            w->colours[0] = companymgr::get_company_colour(w->var_884);
         }
 
         addr<0x1136F9C, int16_t>() = w->x;
@@ -886,22 +886,6 @@ namespace openloco::ui::WindowManager
         return false;
     }
 
-    // TODO: Move
-    // 0x0049771C
-    static void sub_49771C()
-    {
-        // Might have something to do with town labels
-        call(0x0049771C);
-    }
-
-    // TODO: Move
-    // 0x0048DDC3
-    static void sub_48DDC3()
-    {
-        // Might have something to do with station labels
-        call(0x0048DDC3);
-    }
-
     // 0x004C6202
     void allWheelInput()
     {
@@ -952,9 +936,9 @@ namespace openloco::ui::WindowManager
                 {
                     main->viewport_rotate_left();
                 }
-                sub_49771C();
-                sub_48DDC3();
-                windows::map_center_on_view_point();
+                townmgr::update_labels();
+                stationmgr::update_labels();
+                windows::map::center_on_view_point();
             }
 
             return;
@@ -973,14 +957,14 @@ namespace openloco::ui::WindowManager
 
                 if (wheel > 0)
                 {
-                    window->viewport_zoom_in(true);
+                    window->viewport_zoom_out(true);
                 }
                 else if (wheel < 0)
                 {
-                    window->viewport_zoom_out(true);
+                    window->viewport_zoom_in(true);
                 }
-                sub_49771C();
-                sub_48DDC3();
+                townmgr::update_labels();
+                stationmgr::update_labels();
 
                 return;
             }

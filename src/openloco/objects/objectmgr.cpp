@@ -107,6 +107,30 @@ namespace openloco::objectmgr
         return _currencyObjects[0];
     }
 
+    template<>
+    track_object* get(size_t id)
+    {
+        return _trackObjects[id];
+    }
+
+    template<>
+    road_object* get(size_t id)
+    {
+        return _roadObjects[id];
+    }
+
+    template<>
+    land_object* get(size_t id)
+    {
+        return _landObjects[id];
+    }
+
+    template<>
+    water_object* get()
+    {
+        return _waterObjects[0];
+    }
+
     size_t get_max_objects(object_type type)
     {
         static size_t counts[] = {

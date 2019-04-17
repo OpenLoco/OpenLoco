@@ -58,6 +58,7 @@ namespace openloco::string_ids
     constexpr string_id display_resolution_dropdown_format = 65;
     constexpr string_id display_resolution_label_format = 66;
 
+    constexpr string_id menu_about = 67;
     constexpr string_id about_locomotion_caption = 68;
     constexpr string_id about_locomotion_69 = 69;
     constexpr string_id about_locomotion_70 = 70;
@@ -89,6 +90,21 @@ namespace openloco::string_ids
     constexpr string_id arg20_stringid = 95;
 
     constexpr string_id dropdown = 96;
+
+    constexpr string_id menu_load_game = 103;
+    constexpr string_id menu_save_game = 104;
+    constexpr string_id menu_quit_scenario_editor = 105;
+    constexpr string_id menu_quit_game = 106;
+    constexpr string_id screenshot_filename_template = 107;
+    constexpr string_id menu_screenshot = 108;
+    constexpr string_id screenshot_saved_as = 109;
+    constexpr string_id screenshot_failed = 110;
+
+    constexpr string_id menu_underground_view = 145;
+    constexpr string_id menu_hide_foreground_tracks_roads = 146;
+
+    constexpr string_id menu_rotate_clockwise = 172;
+    constexpr string_id menu_rotate_anti_clockwise = 173;
 
     constexpr string_id label_button_cancel = 186;
     constexpr string_id label_button_ok = 187;
@@ -123,11 +139,33 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id menu_zoom_in = 223;
+    constexpr string_id menu_zoom_out = 224;
+
+    constexpr string_id menu_towns = 225;
+    constexpr string_id menu_industries = 226;
+    constexpr string_id menu_airport = 227;
+    constexpr string_id menu_ship_port = 228;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
+    constexpr string_id menu_mute = 396;
+    constexpr string_id menu_play_music = 397;
+
+    constexpr string_id menu_hide_foreground_scenery_buildings = 372;
+
     constexpr string_id dropdown_stringid = 421;
     constexpr string_id dropdown_stringptr = 424;
+
+    constexpr string_id menu_height_marks_on_tracks_roads = 426;
+    constexpr string_id menu_height_marks_on_land = 427;
+    constexpr string_id menu_one_way_direction_arrows = 428;
+    constexpr string_id menu_town_names_displayed = 429;
+    constexpr string_id menu_station_names_displayed = 430;
+
+    constexpr string_id dropdown_without_checkmark = 443;
+    constexpr string_id dropdown_with_checkmark = 444;
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
@@ -174,6 +212,13 @@ namespace openloco::string_ids
     constexpr string_id landscape_smoothing_tip = 664;
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
+
+    constexpr string_id clear_area = 679;
+    constexpr string_id menu_clear_area = 680;
+    constexpr string_id menu_adjust_land = 681;
+    constexpr string_id menu_adjust_water = 682;
+    constexpr string_id menu_plant_trees = 683;
+    constexpr string_id menu_build_walls = 684;
 
     constexpr string_id customise_keys = 701;
 
@@ -265,7 +310,37 @@ namespace openloco::string_ids
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
 
+    constexpr string_id all_stations = 1133;
+    constexpr string_id rail_stations = 1134;
+    constexpr string_id road_stations = 1135;
+    constexpr string_id airports = 1136;
+    constexpr string_id ship_ports = 1137;
+
+    constexpr string_id build_trains = 1240;
+    constexpr string_id build_buses = 1241;
+    constexpr string_id build_trucks = 1242;
+    constexpr string_id build_trams = 1243;
+    constexpr string_id build_aircraft = 1244;
+    constexpr string_id build_ships = 1245;
+
     constexpr string_id buffer_1250 = 1250;
+
+    constexpr string_id num_trains_singular = 1264;
+    constexpr string_id num_buses_singular = 1265;
+    constexpr string_id num_trucks_singular = 1266;
+    constexpr string_id num_trams_singular = 1267;
+    constexpr string_id num_aircrafts_singular = 1268;
+    constexpr string_id num_ships_singular = 1269;
+    constexpr string_id num_trains_plural = 1270;
+    constexpr string_id num_buses_plural = 1271;
+    constexpr string_id num_trucks_plural = 1272;
+    constexpr string_id num_trams_plural = 1273;
+    constexpr string_id num_aircraft_plural = 1274;
+    constexpr string_id num_ships_plural = 1275;
+
+    constexpr string_id menu_sprite_stringid = 1287;
+    constexpr string_id menu_nosprite_stringid = 1288;
+    constexpr string_id menu_sprite_stringid_construction = 1289;
 
     constexpr string_id station_cargo_rating_percent = 1423;
 
@@ -306,6 +381,7 @@ namespace openloco::string_ids
 
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
+    constexpr string_id menu_music_options = 1549;
 
     constexpr string_id owner_label = 1560;
 
@@ -351,6 +427,8 @@ namespace openloco::string_ids
     constexpr string_id buffer_1719 = 1719;
 
     constexpr string_id title_menu_scenario_editor = 1740;
+
+    constexpr string_id menu_map = 1742;
 
     constexpr string_id randomly_generated_landscape = 1821;
 

@@ -38,6 +38,8 @@ namespace openloco::input
 
 #pragma mark - Input
 
+    static loco_global<mouse_button, 0x001136FA0> _lastKnownButtonState;
+
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
 
     static loco_global<int8_t, 0x0050A040> _50A040;
@@ -144,6 +146,20 @@ namespace openloco::input
         return _hoverWidgetIdx;
     }
 
+    bool is_dropdown_active(ui::WindowType type, ui::widget_index index)
+    {
+        if (state() != input_state::dropdown_active)
+            return false;
+
+        if (*_pressedWindowType != type)
+            return false;
+
+        if (!has_flag(input_flags::widget_pressed))
+            return false;
+
+        return _pressedWidgetIndex == index;
+    }
+
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index)
     {
         if (state() != input_state::widget_pressed)
@@ -188,7 +204,7 @@ namespace openloco::input
     // 0x004C7174
     void handle_mouse(int16_t x, int16_t y, mouse_button button)
     {
-        loco_global<uint16_t, 0x001136fa0>() = (uint16_t)button;
+        _lastKnownButtonState = button;
 
         ui::window* window = WindowManager::findAt(x, y);
 
@@ -278,6 +294,11 @@ namespace openloco::input
                 call(0x004C76A7, regs);
                 break;
         }
+    }
+
+    mouse_button getLastKnownButtonState()
+    {
+        return _lastKnownButtonState;
     }
 
     // 0x004C7722

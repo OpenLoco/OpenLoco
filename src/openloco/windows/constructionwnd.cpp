@@ -4,7 +4,7 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::windows
+namespace openloco::ui::windows::construction
 {
     namespace widget_idx
     {
@@ -18,8 +18,17 @@ namespace openloco::ui::windows
         constexpr uint16_t place = 30;
     }
 
+    // 0x004A3B0D
+    window* open_with_flags(uint32_t flags)
+    {
+        registers regs;
+        regs.ecx = flags;
+        call(0x004A3B0D, regs);
+        return (window*)regs.esi;
+    }
+
     // 0x0049D3F6
-    void construction_mouse_up(window& w, uint16_t widgetIndex)
+    void on_mouse_up(window& w, uint16_t widgetIndex)
     {
         // Allow shift key to repeat the action multiple times
         // This is useful for building very long tracks.

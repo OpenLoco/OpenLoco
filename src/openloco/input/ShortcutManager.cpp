@@ -1,6 +1,9 @@
 #include "ShortcutManager.h"
+#include "../companymgr.h"
 #include "../game_commands.h"
 #include "../interop/interop.hpp"
+#include "../stationmgr.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include <array>
 
@@ -83,6 +86,8 @@ namespace openloco::input::ShortcutManager
         sendMessage,
     } };
 
+    static loco_global<uint8_t, 0x009C8714> _editor_step;
+
     void execute(Shortcut s)
     {
         _shortcuts[s]();
@@ -120,19 +125,38 @@ namespace openloco::input::ShortcutManager
     // 0x004BF0FE
     static void zoomViewOut()
     {
-        call(0x004BF0FE);
+        window* main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            return;
+
+        main->viewport_zoom_out(false);
+        townmgr::update_labels();
+        stationmgr::update_labels();
     }
 
     // 0x004BF115
     static void zoomViewIn()
     {
-        call(0x004BF115);
+        window* main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            return;
+
+        main->viewport_zoom_in(false);
+        townmgr::update_labels();
+        stationmgr::update_labels();
     }
 
     // 0x004BF12C
     static void rotateView()
     {
-        call(0x004BF12C);
+        window* main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            return;
+
+        main->viewport_rotate_right();
+        townmgr::update_labels();
+        stationmgr::update_labels();
+        windows::map::center_on_view_point();
     }
 
     // 0x004BF148
@@ -144,121 +168,220 @@ namespace openloco::input::ShortcutManager
     // 0x004BF18A
     static void toggleUndergroundView()
     {
-        call(0x004BF18A);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::underground_view;
+        window->invalidate();
     }
 
     // 0x004BF194
     static void toggleHideForegroundTracks()
     {
-        call(0x004BF194);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
+        window->invalidate();
     }
 
     // 0x004BF19E
     static void toggleHideForegroundScenery()
     {
-        call(0x004BF19E);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
+        window->invalidate();
     }
 
     // 0x004BF1A8
     static void toggleHeightMarksOnLand()
     {
-        call(0x004BF1A8);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::height_marks_on_land;
+        window->invalidate();
     }
 
     // 0x004BF1B2
     static void toggleHeightMarksOnTracks()
     {
-        call(0x004BF1B2);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
+        window->invalidate();
     }
 
     // 0x004BF1BC
     static void toggleDirArrowsOnTracks()
     {
-        call(0x004BF1BC);
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= viewport_flags::one_way_direction_arrows;
+        window->invalidate();
     }
 
     // 0x004BF1C6
     static void adjustLand()
     {
-        call(0x004BF1C6);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::terraform::open_adjust_land();
     }
 
     // 0x004BF1E1
     static void adjustWater()
     {
-        call(0x004BF1E1);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::terraform::open_adjust_water();
     }
 
     // 0x004BF1FC
     static void plantTrees()
     {
-        call(0x004BF1FC);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::terraform::open_plant_trees();
     }
 
     // 0x004BF217
     static void bulldozeArea()
     {
-        call(0x004BF217);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::terraform::open_clear_area();
     }
 
     // 0x004BF232
     static void buildTracks()
     {
-        call(0x004BF232);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAA> last_railroad_option;
+        if (last_railroad_option == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(*last_railroad_option);
     }
 
     // 0x004BF24F
     static void buildRoads()
     {
-        call(0x004BF24F);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        loco_global<uint8_t, 0x00525FAB> last_road_option;
+        if (last_road_option == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(*last_road_option);
     }
 
     // 0x004BF276
     static void buildAirports()
     {
-        call(0x004BF276);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAC> have_airports;
+        if (have_airports == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(1 << 31);
     }
 
     // 0x004BF295
     static void buildShipPorts()
     {
-        call(0x004BF295);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAD> have_ship_ports;
+        if (have_ship_ports == 0xFF)
+            return;
+
+        windows::construction::open_with_flags(1 << 30);
     }
 
     // 0x004BF2B4
     static void buildNewVehicles()
     {
-        call(0x004BF2B4);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
+        if (last_build_vehicles_option == 0xFF)
+            return;
+
+        build_vehicle::open(last_build_vehicles_option, 1 << 31);
     }
 
     // 0x004BF2D1
     static void showVehiclesList()
     {
-        call(0x004BF2D1);
+        if (is_editor_mode())
+            return;
+
+        loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+        windows::vehicle_list::open(companymgr::get_controlling_id(), *last_vehicles_option);
     }
 
     // 0x004BF2F0
     static void showStationsList()
     {
-        call(0x004BF2F0);
+        if (is_editor_mode())
+            return;
+
+        windows::station_list::open(companymgr::get_controlling_id(), 0);
     }
 
     // 0x004BF308
     static void showTownsList()
     {
-        call(0x004BF308);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::town_list::open();
     }
 
     // 0x004BF323
     static void showIndustriesList()
     {
-        call(0x004BF323);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::industry_list::open();
     }
 
     // 0x004BF33E
     static void showMap()
     {
-        call(0x004BF33E);
+        if (is_editor_mode() && _editor_step == 0)
+            return;
+
+        windows::map::open();
     }
 
     // 0x004BF359

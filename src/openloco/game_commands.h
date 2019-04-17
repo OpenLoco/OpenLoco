@@ -13,7 +13,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = bl; // [ 1 ]
         regs.dl = dl; // [ 0, 2 ]
-        regs.di = di; // [ 0, 1, 2 ]
+        regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
         do_command(21, regs);
     }
 

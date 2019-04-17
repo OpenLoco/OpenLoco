@@ -170,7 +170,7 @@ namespace openloco::ui
                 void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
                 void (*on_resize)(window*);
-                uint32_t event_03;
+                void (*event_03)(window*, widget_index);
                 void (*on_mouse_down)(window*, widget_index);
                 void (*on_dropdown)(window*, widget_index, int16_t);
                 void (*on_periodic_update)(window*);
@@ -232,7 +232,17 @@ namespace openloco::ui
 
     namespace viewport_flags
     {
+        constexpr uint32_t underground_view = 1 << 0;
+        constexpr uint32_t hide_foreground_tracks_roads = 1 << 1;
+        constexpr uint32_t height_marks_on_tracks_roads = 1 << 2;
+        constexpr uint32_t height_marks_on_land = 1 << 3;
+        constexpr uint32_t one_way_direction_arrows = 1 << 4;
         constexpr uint32_t gridlines_on_landscape = 1 << 5;
+        constexpr uint32_t hide_foreground_scenery_buildings = 1 << 6;
+        constexpr uint32_t flag_7 = 1 << 7;
+        constexpr uint32_t flag_8 = 1 << 8;
+        constexpr uint32_t town_names_displayed = 1 << 9;
+        constexpr uint32_t station_names_displayed = 1 << 10;
     }
 
     struct viewport
@@ -379,6 +389,7 @@ namespace openloco::ui
         void update_scroll_widgets();
         void init_scroll_widgets();
         int8_t get_scroll_data_index(widget_index index);
+        void set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
         void viewport_zoom_set(int8_t zoomLevel, bool toCursor);

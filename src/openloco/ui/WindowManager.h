@@ -47,8 +47,6 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
-
-    void construction_mouse_up(window& w, uint16_t widgetIndex);
     void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
     window* open_title_version();
@@ -59,7 +57,6 @@ namespace openloco::ui::windows
     void sub_498E9B(window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
-    void map_center_on_view_point();
 
     void show_error(string_id title, string_id message);
 }
@@ -72,6 +69,23 @@ namespace openloco::ui::about
 namespace openloco::ui::about_music
 {
     void open();
+}
+
+namespace openloco::ui::windows::construction
+{
+    window* open_with_flags(uint32_t flags);
+    void on_mouse_up(window& w, uint16_t widgetIndex);
+}
+
+namespace openloco::ui::windows::industry_list
+{
+    window* open();
+}
+
+namespace openloco::ui::windows::map
+{
+    void open();
+    void center_on_view_point();
 }
 
 namespace openloco::ui::options
@@ -91,6 +105,21 @@ namespace openloco::ui::prompt_browse
     void register_hooks();
 }
 
+namespace openloco::ui::windows::station_list
+{
+    window* open(uint16_t companyId, uint8_t type);
+}
+
+namespace openloco::ui::windows::terraform
+{
+    window* open();
+    void open_clear_area();
+    void open_adjust_land();
+    void open_adjust_water();
+    void open_plant_trees();
+    void open_build_walls();
+}
+
 namespace openloco::ui::textinput
 {
     void register_hooks();
@@ -107,6 +136,11 @@ namespace openloco::ui::title_options
     window* open();
 }
 
+namespace openloco::ui::windows::toolbar_top
+{
+    void open();
+}
+
 namespace openloco::ui::tooltip
 {
     void register_hooks();
@@ -114,12 +148,23 @@ namespace openloco::ui::tooltip
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
 }
 
+namespace openloco::ui::windows::town_list
+{
+    window* open();
+}
+
 namespace openloco::ui::vehicle
 {
     void registerHooks();
 }
 
+namespace openloco::ui::windows::vehicle_list
+{
+    window* open(uint16_t companyId, uint8_t type);
+}
+
 namespace openloco::ui::build_vehicle
 {
+    window* open(uint32_t vehicle, uint32_t flags);
     void registerHooks();
 }

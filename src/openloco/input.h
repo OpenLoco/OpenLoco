@@ -69,6 +69,7 @@ namespace openloco::input
     bool is_hovering(ui::WindowType, ui::window_number);
     ui::widget_index get_hovered_widget_index();
 
+    bool is_dropdown_active(ui::WindowType type, ui::widget_index index);
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
 
     bool is_tool_active(ui::WindowType, ui::window_number);
@@ -79,6 +80,7 @@ namespace openloco::input
 
     void handle_keyboard();
     void handle_mouse(int16_t x, int16_t y, mouse_button button);
+    mouse_button getLastKnownButtonState();
     void enqueue_mouse_button(mouse_button button);
     void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();

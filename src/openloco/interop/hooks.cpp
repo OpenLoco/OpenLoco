@@ -627,9 +627,6 @@ static void register_terraform_hooks()
     --------------------*/
     // Don't disable fences tab
     interop::write_nop(0x4BCF6B, 0x4BCF7B - 0x4BCF6B);
-
-    // Show in menu
-    interop::write_nop(0x43A485, 0x43A490 - 0x43A485);
 }
 
 static void register_audio_hooks()
@@ -780,7 +777,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0049D3F6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::construction_mouse_up(*((ui::window*)regs.esi), regs.dx);
+            ui::windows::construction::on_mouse_up(*((ui::window*)regs.esi), regs.dx);
             return 0;
         });
 
@@ -849,7 +846,7 @@ void openloco::interop::register_hooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            map::surface_element* surface = (map::surface_element*)regs.esi;
+            openloco::map::surface_element* surface = (openloco::map::surface_element*)regs.esi;
 
             surface->createWave(x, y, i);
 

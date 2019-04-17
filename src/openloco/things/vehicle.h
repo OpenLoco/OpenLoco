@@ -26,6 +26,9 @@ namespace openloco
         vehicle_6,
     };
 
+    // Unrelated to vehicle_thing_type -- we should probably consider renaming when things become clearer.
+    constexpr uint8_t vehicle_category_count = 6;
+
 #pragma pack(push, 1)
     struct vehicle_base : thing_base
     {
