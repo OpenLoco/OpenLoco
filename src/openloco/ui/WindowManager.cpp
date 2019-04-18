@@ -541,6 +541,21 @@ namespace openloco::ui::WindowManager
         return (window*)regs.esi;
     }
 
+    // 0x004C9C68
+    window* createWindow(
+        WindowType type,
+        gfx::ui_size_t size,
+        uint32_t flags,
+        window_event_list* events)
+    {
+        registers regs;
+        regs.ebx = (size.height << 16) | (size.width & 0xFFFF);
+        regs.ecx = (uint8_t)type | (flags << 8);
+        regs.edx = (int32_t)events;
+        call(0x004C9C68, regs);
+        return (window*)regs.esi;
+    }
+
     // 0x004C9F5D
     window* createWindow(
         WindowType type,
