@@ -378,7 +378,9 @@ namespace openloco::string_ids
 
     constexpr string_id edit_music_selection = 1542;
     constexpr string_id edit_music_selection_tip = 1543;
-
+    constexpr string_id music_selection_title = 1544;
+    constexpr string_id music_selection_tooltip = 1545;
+    constexpr string_id checkmark = 1546;
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
     constexpr string_id menu_music_options = 1549;

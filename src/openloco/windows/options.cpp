@@ -111,6 +111,8 @@ namespace openloco::ui::options
             };
         }
 
+        static_assert(widx::tab_music == widx::tab_display + tab_offset_music);
+
         enum tab
         {
             display,
@@ -896,7 +898,6 @@ namespace openloco::ui::options
         };
 
         static void volume_mouse_down(window* w);
-        static void open_music_selection();
         static void stop_music(window* w);
         static void play_music(window* w);
         static void play_next_song(window* w);
@@ -1038,7 +1039,7 @@ namespace openloco::ui::options
                     return;
 
                 case widx::edit_selection:
-                    open_music_selection();
+                    windows::music_selection::open();
                     return;
             }
         }
@@ -1090,12 +1091,6 @@ namespace openloco::ui::options
             call(0x0048AA67, regs);
 
             w->invalidate();
-        }
-
-        // 0x004C0770
-        static void open_music_selection()
-        {
-            call(0x004C1602); // Open music selection
         }
 
         // 0x004C0778

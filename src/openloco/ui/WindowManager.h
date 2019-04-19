@@ -89,10 +89,16 @@ namespace openloco::ui::windows::map
     void center_on_view_point();
 }
 
+namespace openloco::ui::windows::music_selection
+{
+    window* open();
+}
+
 namespace openloco::ui::options
 {
     window* open();
     window* open_music_settings();
+    constexpr uint8_t tab_offset_music = 2;
 }
 
 namespace openloco::ui::prompt_browse
