@@ -115,7 +115,7 @@ namespace openloco::audio
     void play_title_screen_music();
     void stop_title_music();
 
-    bool isAllAudioDisabled();
+    bool isAudioEnabled();
 
     const music_info* getMusicInfo(music_id track);
     constexpr int32_t num_music_tracks = 29;

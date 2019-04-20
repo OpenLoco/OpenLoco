@@ -76,7 +76,7 @@ namespace openloco::audio
     static loco_global<uint8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _lastSong;
     static loco_global<bool, 0x0050D554> _audioIsPaused;
-    static loco_global<bool, 0x0050D555> _audioIsDisabled;
+    static loco_global<bool, 0x0050D555> _audioIsEnabled;
 
     static std::vector<std::string> _devices;
     static audio_format _outputFormat;
@@ -416,14 +416,15 @@ namespace openloco::audio
     // 0x00489C0A
     void toggle_sound()
     {
-        _audioIsDisabled = !_audioIsDisabled;
-        if (!_audioIsDisabled)
+        _audioIsEnabled = !_audioIsEnabled;
+        if (_audioIsEnabled)
             return;
 
         stop_vehicle_noise();
         stop_background_music();
         stop_ambient_noise();
         stop_title_music();
+        config::write();
     }
 
     // 0x00489C34
@@ -584,7 +585,7 @@ namespace openloco::audio
     {
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
-        if (!_audioIsDisabled)
+        if (_audioIsEnabled)
         {
             volume += get_volume_for_sound_id(id);
             if (pan == play_at_location)
@@ -848,7 +849,7 @@ namespace openloco::audio
     {
         if (addr<0x00525E28, uint32_t>() & 1)
         {
-            if (!_audioIsPaused && !_audioIsDisabled)
+            if (!_audioIsPaused && _audioIsEnabled)
             {
                 sub_48A1FA(0);
                 sub_48A1FA(1);
@@ -874,7 +875,7 @@ namespace openloco::audio
     // 0x0048ACFD
     void update_ambient_noise()
     {
-        if (!_audio_initialised || _audioIsPaused || _audioIsDisabled)
+        if (!_audio_initialised || _audioIsPaused || !_audioIsEnabled)
             return;
 
         call(0x0048AD25);
@@ -968,7 +969,7 @@ namespace openloco::audio
     // 0x0048A78D
     void play_background_music()
     {
-        if (!_audio_initialised || _audioIsPaused || _audioIsDisabled)
+        if (!_audio_initialised || _audioIsPaused || !_audioIsEnabled)
         {
             return;
         }
@@ -1015,7 +1016,7 @@ namespace openloco::audio
     // 0x0048AC66
     void play_title_screen_music()
     {
-        if (is_title_mode() && _audio_initialised && !_audioIsDisabled && config::get_new().audio.play_title_music)
+        if (is_title_mode() && _audio_initialised && _audioIsEnabled && config::get_new().audio.play_title_music)
         {
             if (!is_channel_playing(channel_id::title))
             {
@@ -1041,9 +1042,9 @@ namespace openloco::audio
         stop_channel(channel_id::title);
     }
 
-    bool isAllAudioDisabled()
+    bool isAudioEnabled()
     {
-        return _audioIsDisabled;
+        return _audioIsEnabled;
     }
 
     const music_info* getMusicInfo(music_id track)
