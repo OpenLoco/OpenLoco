@@ -66,18 +66,10 @@ namespace openloco::audio
         int32_t channels{};
     };
 
-    struct music_info
-    {
-        environment::path_id path_id;
-        uint16_t start_year;
-        uint16_t end_year;
-    };
-
     [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
     [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
     [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
 
-    static constexpr int32_t num_music_tracks = 29;
     static constexpr uint8_t no_song = 0xFF;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
@@ -101,35 +93,35 @@ namespace openloco::audio
 
     // 0x004FE910
     static const music_info MusicInfo[] = {
-        { path_id::music_20s1, 1925, 1933 },
-        { path_id::music_20s2, 1927, 1935 },
-        { path_id::music_20s4, 1932, 1940 },
-        { path_id::music_50s1, 1956, 1964 },
-        { path_id::music_50s2, 1953, 1961 },
-        { path_id::music_70s1, 1976, 1984 },
-        { path_id::music_70s2, 1973, 1981 },
-        { path_id::music_70s3, 1970, 1978 },
-        { path_id::music_80s1, 1990, 9999 },
-        { path_id::music_90s1, 1993, 9999 },
-        { path_id::music_90s2, 1996, 9999 },
-        { path_id::music_rag3, 1912, 1920 },
-        { path_id::music_chrysanthemum, 0, 1911 },
-        { path_id::music_eugenia, 0, 1908 },
-        { path_id::music_rag2, 1909, 1917 },
-        { path_id::music_rag1, 0, 1914 },
-        { path_id::music_20s3, 1929, 1937 },
-        { path_id::music_40s1, 1940, 1948 },
-        { path_id::music_40s2, 1943, 1951 },
-        { path_id::music_50s3, 1950, 1958 },
-        { path_id::music_40s3, 1946, 1954 },
-        { path_id::music_80s2, 1980, 1988 },
-        { path_id::music_60s1, 1960, 1968 },
-        { path_id::music_80s3, 1983, 1991 },
-        { path_id::music_60s2, 1963, 1971 },
-        { path_id::music_60s3, 1966, 1974 },
-        { path_id::music_80s4, 1986, 1994 },
-        { path_id::music_20s5, 1918, 1926 },
-        { path_id::music_20s6, 1921, 1929 }
+        { path_id::music_20s1, string_ids::music_chuggin_along, 1925, 1933 },
+        { path_id::music_20s2, string_ids::music_long_dusty_road, 1927, 1935 },
+        { path_id::music_20s4, string_ids::music_flying_high, 1932, 1940 },
+        { path_id::music_50s1, string_ids::music_gettin_on_the_gas, 1956, 1964 },
+        { path_id::music_50s2, string_ids::music_jumpin_the_rails, 1953, 1961 },
+        { path_id::music_70s1, string_ids::music_smooth_running, 1976, 1984 },
+        { path_id::music_70s2, string_ids::music_traffic_jam, 1973, 1981 },
+        { path_id::music_70s3, string_ids::music_never_stop_til_you_get_there, 1970, 1978 },
+        { path_id::music_80s1, string_ids::music_soaring_away, 1990, 9999 },
+        { path_id::music_90s1, string_ids::music_techno_torture, 1993, 9999 },
+        { path_id::music_90s2, string_ids::music_everlasting_high_rise, 1996, 9999 },
+        { path_id::music_rag3, string_ids::music_solace, 1912, 1920 },
+        { path_id::music_chrysanthemum, string_ids::music_chrysanthemum, 0, 1911 },
+        { path_id::music_eugenia, string_ids::music_eugenia, 0, 1908 },
+        { path_id::music_rag2, string_ids::music_the_ragtime_dance, 1909, 1917 },
+        { path_id::music_rag1, string_ids::music_easy_winners, 0, 1914 },
+        { path_id::music_20s3, string_ids::music_setting_off, 1929, 1937 },
+        { path_id::music_40s1, string_ids::music_a_travellers_seranade, 1940, 1948 },
+        { path_id::music_40s2, string_ids::music_latino_trip, 1943, 1951 },
+        { path_id::music_50s3, string_ids::music_a_good_head_of_steam, 1950, 1958 },
+        { path_id::music_40s3, string_ids::music_hop_to_the_bop, 1946, 1954 },
+        { path_id::music_80s2, string_ids::music_the_city_lights, 1980, 1988 },
+        { path_id::music_60s1, string_ids::music_steamin_down_town, 1960, 1968 },
+        { path_id::music_80s3, string_ids::music_bright_expectations, 1983, 1991 },
+        { path_id::music_60s2, string_ids::music_mo_station, 1963, 1971 },
+        { path_id::music_60s3, string_ids::music_far_out, 1966, 1974 },
+        { path_id::music_80s4, string_ids::music_running_on_time, 1986, 1994 },
+        { path_id::music_20s5, string_ids::music_get_me_to_gladstone_bay, 1918, 1926 },
+        { path_id::music_20s6, string_ids::music_sandy_track_blues, 1921, 1929 }
     };
 
     static constexpr bool is_music_channel(channel_id id)
@@ -1052,5 +1044,10 @@ namespace openloco::audio
     bool isAllAudioDisabled()
     {
         return _audioIsDisabled;
+    }
+
+    const music_info* getMusicInfo(music_id track)
+    {
+        return &MusicInfo[track];
     }
 }

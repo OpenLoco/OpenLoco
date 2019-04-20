@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -15,7 +16,6 @@ namespace openloco::ui::windows::music_selection
     static const gfx::ui_size_t window_size = { 360, 238 };
 
     static const uint8_t rowHeight = 12; // CJK: 15
-    static const uint8_t numTracks = 29;
 
     enum widx
     {
@@ -82,7 +82,7 @@ namespace openloco::ui::windows::music_selection
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 
-        window->row_count = numTracks;
+        window->row_count = audio::num_music_tracks;
         window->row_hover = -1;
 
         return window;
@@ -100,38 +100,6 @@ namespace openloco::ui::windows::music_selection
     {
         auto shade = colour::get_shade(window->colours[1], 4);
         gfx::clear_single(*dpi, shade);
-
-        static const string_id music_ids_to_string_id[] = {
-            string_ids::music_chuggin_along,
-            string_ids::music_long_dusty_road,
-            string_ids::music_flying_high,
-            string_ids::music_gettin_on_the_gas,
-            string_ids::music_jumpin_the_rails,
-            string_ids::music_smooth_running,
-            string_ids::music_traffic_jam,
-            string_ids::music_never_stop_til_you_get_there,
-            string_ids::music_soaring_away,
-            string_ids::music_techno_torture,
-            string_ids::music_everlasting_high_rise,
-            string_ids::music_solace,
-            string_ids::music_chrysanthemum,
-            string_ids::music_eugenia,
-            string_ids::music_the_ragtime_dance,
-            string_ids::music_easy_winners,
-            string_ids::music_setting_off,
-            string_ids::music_a_travellers_seranade,
-            string_ids::music_latino_trip,
-            string_ids::music_a_good_head_of_steam,
-            string_ids::music_hop_to_the_bop,
-            string_ids::music_the_city_lights,
-            string_ids::music_steamin_down_town,
-            string_ids::music_bright_expectations,
-            string_ids::music_mo_station,
-            string_ids::music_far_out,
-            string_ids::music_running_on_time,
-            string_ids::music_get_me_to_gladstone_bay,
-            string_ids::music_sandy_track_blues,
-        };
 
         auto config = config::get();
 
@@ -155,7 +123,8 @@ namespace openloco::ui::windows::music_selection
                 gfx::draw_string_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid2, (void*)&string_ids::checkmark);
 
             // Draw track name.
-            gfx::draw_string_494B3F(*dpi, 15, y, window->colours[1], text_colour_id, (void*)&music_ids_to_string_id[i]);
+            string_id music_title_id = audio::getMusicInfo(i)->title_id;
+            gfx::draw_string_494B3F(*dpi, 15, y, window->colours[1], text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }
@@ -164,7 +133,7 @@ namespace openloco::ui::windows::music_selection
     // 0x004C176C
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * numTracks;
+        *scrollHeight = rowHeight * audio::num_music_tracks;
     }
 
     // 0x004C1757
@@ -192,7 +161,7 @@ namespace openloco::ui::windows::music_selection
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
-        for (uint8_t i = 0; i < numTracks; i++)
+        for (uint8_t i = 0; i < audio::num_music_tracks; i++)
             anyEnabled |= config.enabled_music[i];
 
         // Ensure at least this track is enabled.

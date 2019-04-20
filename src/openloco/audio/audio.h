@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../environment.h"
 #include "../types.hpp"
 #include <string>
 #include <tuple>
@@ -67,6 +68,16 @@ namespace openloco::audio
     };
     constexpr int32_t num_reserved_channels = 4 + 10;
 
+    using music_id = uint8_t;
+
+    struct music_info
+    {
+        environment::path_id path_id;
+        string_id title_id;
+        uint16_t start_year;
+        uint16_t end_year;
+    };
+
     void initialise_dsound();
     void dispose_dsound();
 
@@ -105,6 +116,9 @@ namespace openloco::audio
     void stop_title_music();
 
     bool isAllAudioDisabled();
+
+    const music_info* getMusicInfo(music_id track);
+    constexpr int32_t num_music_tracks = 29;
 
     /**
      * Converts a Locomotion volume range to SDL2.

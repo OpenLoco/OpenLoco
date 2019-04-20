@@ -4,6 +4,8 @@
 
 namespace openloco
 {
+    using string_id = uint16_t;
+
     template<typename T>
     struct location2
     {
