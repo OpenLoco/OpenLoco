@@ -1131,7 +1131,7 @@ namespace openloco::ui::options
 
             w->invalidate();
 
-            call(0x048AA0C);
+            audio::revalidateCurrentTrack();
 
             WindowManager::close(WindowType::musicSelection);
         }

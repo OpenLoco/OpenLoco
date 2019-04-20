@@ -892,6 +892,44 @@ namespace openloco::audio
         }
     }
 
+    // 0x0048AA0C
+    void revalidateCurrentTrack()
+    {
+        using music_playlist_type = config::music_playlist_type;
+        auto cfg = config::get();
+
+        if (_currentSong == no_song)
+            return;
+
+        bool trackStillApplies = true;
+        switch (cfg.music_playlist)
+        {
+            case music_playlist_type::current_era:
+            {
+                auto currentYear = current_year();
+                auto info = MusicInfo[_currentSong];
+                if (currentYear < info.start_year || currentYear > info.end_year)
+                    trackStillApplies = false;
+                break;
+            }
+
+            case music_playlist_type::all:
+                return;
+
+            case music_playlist_type::custom:
+                if (!cfg.enabled_music[_currentSong])
+                    trackStillApplies = false;
+                break;
+        }
+
+        if (!trackStillApplies)
+        {
+            stop_background_music();
+            _currentSong = no_song;
+            _lastSong = no_song;
+        }
+    }
+
     static int32_t choose_next_music_track(int32_t excludeTrack)
     {
         using music_playlist_type = config::music_playlist_type;

@@ -169,7 +169,7 @@ namespace openloco::ui::windows::music_selection
             config.enabled_music[currentTrack] = true;
 
         config::write();
-        call(0x048AA0C);
+        audio::revalidateCurrentTrack();
         window->invalidate();
     }
 
