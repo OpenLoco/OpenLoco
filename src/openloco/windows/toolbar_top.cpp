@@ -198,7 +198,7 @@ namespace openloco::ui::windows::toolbar_top
         dropdown::add(3, string_ids::menu_music_options);
         dropdown::show_below(window, widgetIndex, 4);
 
-        if (audio::isAllAudioDisabled())
+        if (!audio::isAudioEnabled())
             dropdown::set_item_selected(0);
 
         if (config::get().music_playing)
@@ -1104,7 +1104,7 @@ namespace openloco::ui::windows::toolbar_top
     {
         auto interface = objectmgr::get<interface_skin_object>();
 
-        if (audio::isAllAudioDisabled())
+        if (!audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << widx::audio_menu);
             _widgets[widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);

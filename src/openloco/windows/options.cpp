@@ -111,6 +111,8 @@ namespace openloco::ui::options
             };
         }
 
+        static_assert(widx::tab_music == widx::tab_display + tab_offset_music);
+
         enum tab
         {
             display,
@@ -896,7 +898,6 @@ namespace openloco::ui::options
         };
 
         static void volume_mouse_down(window* w);
-        static void open_music_selection();
         static void stop_music(window* w);
         static void play_music(window* w);
         static void play_next_song(window* w);
@@ -906,38 +907,6 @@ namespace openloco::ui::options
         static void currently_playing_dropdown(window* w, int16_t ax);
 
         static window_event_list _events;
-
-        static const string_id music_ids_to_string_id[] = {
-            string_ids::music_chuggin_along,
-            string_ids::music_long_dusty_road,
-            string_ids::music_flying_high,
-            string_ids::music_gettin_on_the_gas,
-            string_ids::music_jumpin_the_rails,
-            string_ids::music_smooth_running,
-            string_ids::music_traffic_jam,
-            string_ids::music_never_stop_til_you_get_there,
-            string_ids::music_soaring_away,
-            string_ids::music_techno_torture,
-            string_ids::music_everlasting_high_rise,
-            string_ids::music_solace,
-            string_ids::music_chrysanthemum,
-            string_ids::music_eugenia,
-            string_ids::music_the_ragtime_dance,
-            string_ids::music_easy_winners,
-            string_ids::music_setting_off,
-            string_ids::music_a_travellers_seranade,
-            string_ids::music_latino_trip,
-            string_ids::music_a_good_head_of_steam,
-            string_ids::music_hop_to_the_bop,
-            string_ids::music_the_city_lights,
-            string_ids::music_steamin_down_town,
-            string_ids::music_bright_expectations,
-            string_ids::music_mo_station,
-            string_ids::music_far_out,
-            string_ids::music_running_on_time,
-            string_ids::music_get_me_to_gladstone_bay,
-            string_ids::music_sandy_track_blues,
-        };
 
         static void prepare_draw(window* w)
         {
@@ -958,7 +927,7 @@ namespace openloco::ui::options
             string_id songName = string_ids::music_none;
             if (_currentSong != -1)
             {
-                songName = music_ids_to_string_id[_currentSong];
+                songName = audio::getMusicInfo(_currentSong)->title_id;
             }
             set_format_arg(0, string_id, songName);
 
@@ -1038,7 +1007,7 @@ namespace openloco::ui::options
                     return;
 
                 case widx::edit_selection:
-                    open_music_selection();
+                    windows::music_selection::open();
                     return;
             }
         }
@@ -1090,12 +1059,6 @@ namespace openloco::ui::options
             call(0x0048AA67, regs);
 
             w->invalidate();
-        }
-
-        // 0x004C0770
-        static void open_music_selection()
-        {
-            call(0x004C1602); // Open music selection
         }
 
         // 0x004C0778
@@ -1168,22 +1131,12 @@ namespace openloco::ui::options
 
             w->invalidate();
 
-            call(0x048AA0C);
+            audio::revalidateCurrentTrack();
 
             WindowManager::close(WindowType::musicSelection);
         }
 
 #pragma mark - Widget 11
-
-        struct unk1_t
-        {
-            uint8_t pad_0[0x8];
-            uint16_t var_8;
-            uint16_t var_A;
-            uint16_t var_C;
-        };
-
-        static loco_global<unk1_t[29], 0x004FE910> _4FE910;
 
         static std::vector<int> get_available_tracks()
         {
@@ -1192,9 +1145,10 @@ namespace openloco::ui::options
             if (config::get().music_playlist == config::music_playlist_type::current_era)
             {
                 uint16_t year = current_year();
-                for (int i = 0; i < 29; i++)
+                for (int i = 0; i < audio::num_music_tracks; i++)
                 {
-                    if (year >= _4FE910[i].var_8 && year <= _4FE910[i].var_A)
+                    auto info = audio::getMusicInfo(i);
+                    if (year >= info->start_year && year <= info->end_year)
                     {
                         vector.push_back(i);
                     }
@@ -1202,14 +1156,14 @@ namespace openloco::ui::options
             }
             else if (config::get().music_playlist == config::music_playlist_type::all)
             {
-                for (int i = 0; i < 29; i++)
+                for (int i = 0; i < audio::num_music_tracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
             else if (config::get().music_playlist == config::music_playlist_type::custom)
             {
-                for (int i = 0; i < 29; i++)
+                for (int i = 0; i < audio::num_music_tracks; i++)
                 {
                     if (config::get().enabled_music[i] & 1)
                     {
@@ -1219,7 +1173,7 @@ namespace openloco::ui::options
 
                 if (vector.size() == 0)
                 {
-                    for (int i = 0; i < 29; i++)
+                    for (int i = 0; i < audio::num_music_tracks; i++)
                     {
                         vector.push_back(i);
                     }
@@ -1241,7 +1195,7 @@ namespace openloco::ui::options
             for (auto track : tracks)
             {
                 index++;
-                dropdown::add(index, string_ids::dropdown_stringid, music_ids_to_string_id[track]);
+                dropdown::add(index, string_ids::dropdown_stringid, audio::getMusicInfo(track)->title_id);
                 if (track == _currentSong)
                 {
                     dropdown::set_item_selected(index);
@@ -2221,7 +2175,7 @@ namespace openloco::ui::options
         window->number = 0;
         window->current_tab = 0;
         window->frame_no = 0;
-        window->var_840 = 0xFFFF;
+        window->row_hover = -1;
 
         auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
@@ -2296,7 +2250,7 @@ namespace openloco::ui::options
                 w->widgets = display::_widgets;
                 w->invalidate();
                 w->set_size(display::_window_size);
-                w->var_840 = 0xFFFF;
+                w->row_hover = -1;
                 break;
 
             case common::tab::sound:
@@ -2307,7 +2261,7 @@ namespace openloco::ui::options
                 w->widgets = sound::_widgets;
                 w->invalidate();
                 w->set_size(sound::_window_size);
-                w->var_840 = 0xFFFF;
+                w->row_hover = -1;
                 break;
 
             case common::tab::music:
@@ -2317,7 +2271,7 @@ namespace openloco::ui::options
                 w->widgets = music::_widgets;
                 w->invalidate();
                 w->set_size(music::_window_size);
-                w->var_840 = 0xFFFF;
+                w->row_hover = -1;
                 break;
 
             case common::tab::regional:

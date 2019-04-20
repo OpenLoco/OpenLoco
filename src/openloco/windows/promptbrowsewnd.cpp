@@ -151,8 +151,8 @@ namespace openloco::ui::prompt_browse
         _events.on_resize = on_resize;
         _events.on_update = on_update;
         _events.get_scroll_size = get_scroll_size;
-        _events.scroll_mouse_down = (uint32_t)0x004464F7;
-        _events.scroll_mouse_over = (uint32_t)0x004464B1;
+        _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464F7);
+        _events.scroll_mouse_over = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464B1);
         _events.tooltip = tooltip;
         _events.prepare_draw = prepare_draw;
         _events.draw = draw;

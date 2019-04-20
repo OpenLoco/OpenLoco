@@ -30,6 +30,7 @@ namespace openloco::ui::WindowManager
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
     void close(window* window);
+    window* createWindow(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     window* createWindow(WindowType type, gfx::point_t origin, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     void drawSingle(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
@@ -88,10 +89,16 @@ namespace openloco::ui::windows::map
     void center_on_view_point();
 }
 
+namespace openloco::ui::windows::music_selection
+{
+    window* open();
+}
+
 namespace openloco::ui::options
 {
     window* open();
     window* open_music_settings();
+    constexpr uint8_t tab_offset_music = 2;
 }
 
 namespace openloco::ui::prompt_browse

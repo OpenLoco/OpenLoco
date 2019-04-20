@@ -803,22 +803,40 @@ namespace openloco::ui
 
     void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)this;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+        if (event_handlers->scroll_mouse_down == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->scroll_mouse_down))
+        {
+            registers regs;
+            regs.ax = scroll_index;
+            regs.esi = (int32_t)this;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+            return;
+        }
+
+        this->event_handlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
     }
 
     void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)this;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
+        if (event_handlers->scroll_mouse_over == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->scroll_mouse_over))
+        {
+            registers regs;
+            regs.ax = scroll_index;
+            regs.esi = (int32_t)this;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
+            return;
+        }
+
+        this->event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
     }
 
     void window::call_viewport_rotate()
