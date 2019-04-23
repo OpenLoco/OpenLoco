@@ -1,5 +1,6 @@
 #pragma once
 
+#include "company.h"
 #include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
 #include "types.hpp"
@@ -152,8 +153,10 @@ namespace openloco::ui
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t resizable = 1 << 9;
+        constexpr uint32_t no_auto_close = 1 << 10;
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
+        constexpr uint32_t flag_13 = 1 << 13;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_one = (1 << 17);
@@ -350,10 +353,15 @@ namespace openloco::ui
                 uint16_t row_hover; // 0x840
                 uint8_t pad_842[0x846 - 0x842];
                 uint16_t var_846;
-                uint8_t pad_848[0x854 - 0x848];
+                uint16_t var_848;
+                uint16_t var_84A;
+                uint16_t var_84C;
+                uint16_t var_84E;
+                uint16_t var_850;
+                uint16_t var_852;
                 uint16_t var_854;
                 uint16_t var_856;
-                uint8_t pad_858[0x85A - 0x858];
+                uint16_t var_858;
                 uint16_t var_85A;
                 uint8_t pad_85C[0x870 - 0x85C];
                 uint16_t current_tab; // 0x870
@@ -362,8 +370,8 @@ namespace openloco::ui
                 viewport_config viewport_configurations[2]; // 0x876
                 WindowType type;                            // 0x882
                 uint8_t pad_883[1];
-                int8_t var_884;
-                uint8_t pad_885[1];
+                company_id_t owner;
+                uint8_t var_885;
                 uint8_t colours[4]; // 0x886
                 int16_t var_88A;
                 int16_t var_88C;

@@ -161,25 +161,25 @@ namespace openloco::ui::textinput
 
         window->colours[0] = caller->colours[0];
         window->colours[1] = caller->colours[1];
-        window->var_884 = caller->var_884;
+        window->owner = caller->owner;
 
         if (caller->type == WindowType::titleMenu)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[0] = interface->colour_0B;
             window->colours[1] = interface->colour_0C;
-            window->var_884 = -1;
+            window->owner = -1;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
-            window->var_884 = companymgr::get_controlling_id();
+            window->owner = companymgr::get_controlling_id();
         }
 
         _widgets[widx::title].type = widget_type::caption_25;
-        if (window->var_884 != -1)
+        if (window->owner != company_id::null)
         {
             window->flags |= window_flags::flag_11;
             _widgets[widx::title].type = widget_type::caption_24;
