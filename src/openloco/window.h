@@ -371,7 +371,7 @@ namespace openloco::ui
         int16_t var_88A;
         int16_t var_88C;
 
-        window(int16_t x, int16_t y, uint16_t width, uint16_t height);
+        window(gfx::point_t position, gfx::ui_size_t size);
 
         constexpr void set_size(gfx::ui_size_t size)
         {

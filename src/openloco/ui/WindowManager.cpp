@@ -1,7 +1,6 @@
 #include "WindowManager.h"
 #include "../audio/audio.h"
 #include "../companymgr.h"
-#include "../console.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../input.h"
@@ -30,6 +29,8 @@ namespace openloco::ui::WindowManager
         constexpr uint16_t by_type = 1 << 7;
     }
 
+    constexpr size_t max_windows = 12;
+
     static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
     static loco_global<WindowType, 0x00523364> _callingWindowType;
@@ -47,7 +48,7 @@ namespace openloco::ui::WindowManager
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-    static loco_global<window[12], 0x011370AC> _windows;
+    static loco_global<window[max_windows], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
     void sub_4C6B09(window* window, viewport* viewport, int16_t x, int16_t y);
@@ -271,7 +272,6 @@ namespace openloco::ui::WindowManager
             0x004C9F5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                console::log("create_window 0x%08X", regs.edx);
 
                 auto w = createWindow((WindowType)regs.cl, gfx::point_t(regs.ax, regs.eax >> 16), gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (window_event_list*)regs.edx);
                 regs = backup;
@@ -284,7 +284,7 @@ namespace openloco::ui::WindowManager
             0x004C9C68,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                console::log("create window alt");
+
                 auto w = createWindow((WindowType)regs.cl, gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (window_event_list*)regs.edx);
                 regs = backup;
 
@@ -630,7 +630,7 @@ namespace openloco::ui::WindowManager
     }
 
     // 0x004C9F27
-    static window* foundSpace(
+    static window* createWindowOnScreen(
         WindowType type,
         gfx::point_t origin,
         gfx::ui_size_t size,
@@ -679,22 +679,22 @@ namespace openloco::ui::WindowManager
         position.x = 0;  // dx
         position.y = 30; // ax
         if (window_fits_within_space(position, size))
-            return foundSpace(type, position, size, flags, events);
+            return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = ui::width() - size.width;
         position.y = 30;
         if (window_fits_within_space(position, size))
-            return foundSpace(type, position, size, flags, events);
+            return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = 0;
         position.y = ui::height() - size.height - 29;
         if (window_fits_within_space(position, size))
-            return foundSpace(type, position, size, flags, events);
+            return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = ui::width() - size.width;
         position.y = ui::height() - size.height - 29;
         if (window_fits_within_space(position, size))
-            return foundSpace(type, position, size, flags, events);
+            return createWindowOnScreen(type, position, size, flags, events);
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
@@ -704,37 +704,37 @@ namespace openloco::ui::WindowManager
             position.x = w->x + w->width + 2;
             position.y = w->y;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y + w->height + 2;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y - size.height - 2;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x + w->width + 2;
             position.y = w->y + w->height - size.height;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y + w->height - size.height;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x + w->width - size.width;
             position.y = w->y - size.height - 2;
             if (window_fits_within_space(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
         }
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -745,22 +745,22 @@ namespace openloco::ui::WindowManager
             position.x = w->x + w->width + 2;
             position.y = w->y;
             if (window_fits_on_screen(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y;
             if (window_fits_on_screen(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y + w->height + 2;
             if (window_fits_on_screen(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y - size.height - 2;
             if (window_fits_on_screen(position, size))
-                return foundSpace(type, position, size, flags, events);
+                return createWindowOnScreen(type, position, size, flags, events);
         }
 
         position.x = 0;
@@ -783,7 +783,7 @@ namespace openloco::ui::WindowManager
             }
         } while (loop);
 
-        return foundSpace(type, position, size, flags, events);
+        return createWindowOnScreen(type, position, size, flags, events);
     }
 
     /**
@@ -803,9 +803,7 @@ namespace openloco::ui::WindowManager
         uint32_t flags,
         window_event_list* events)
     {
-        console::log("Creating Window (%d, 0x%08X)", type, (uintptr_t)events);
-
-        if (count() == 12)
+        if (count() == max_windows)
         {
             for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
             {
@@ -823,9 +821,14 @@ namespace openloco::ui::WindowManager
             }
         }
 
+        bool stickToBack = (flags & window_flags::stick_to_back) != 0;
+        bool stickToFront = (flags & window_flags::stick_to_front) != 0;
+        bool hasFlag12 = (flags & window_flags::flag_12) != 0;
+        bool hasFlag13 = (flags & window_flags::flag_13) != 0;
+
         // Find right position to insert new window
         size_t dstIndex = 0;
-        if ((flags & window_flags::stick_to_back) != 0)
+        if (stickToBack)
         {
             for (size_t i = 0; i < count(); i++)
             {
@@ -835,7 +838,7 @@ namespace openloco::ui::WindowManager
                 }
             }
         }
-        else if ((flags & window_flags::stick_to_front) != 0)
+        else if (stickToFront)
         {
             dstIndex = count();
         }
@@ -851,17 +854,11 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        auto window = ui::window(origin.x, origin.y, size.width, size.height);
+        auto window = ui::window(origin, size);
         window.type = type;
         window.flags = flags;
-        if ((flags & window_flags::flag_12) != 0)
+        if (hasFlag12 || (!stickToBack && !stickToFront && !hasFlag13))
         {
-            window.flags |= window_flags::white_border_mask;
-            audio::play_sound(audio::sound_id::open_window, origin.x + size.width / 2);
-        }
-        else if (((flags & window_flags::stick_to_back) == 0) && ((flags & window_flags::stick_to_front) == 0) && ((flags & window_flags::flag_13) == 0))
-        {
-            // FIXME: Same as previous case, but need a nice way to make the if clear
             window.flags |= window_flags::white_border_mask;
             audio::play_sound(audio::sound_id::open_window, origin.x + size.width / 2);
         }
