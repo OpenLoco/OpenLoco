@@ -16,7 +16,7 @@ namespace openloco
         diesel_exhaust2,
         ship_wake
     };
-
+#pragma pack(push, 1)
     struct simple_animation
     {
         uint8_t object_id;          // 0x00 (object loader fills this in)
@@ -84,4 +84,5 @@ namespace openloco
         uint8_t numsnd; // 0x15A
         uint8_t pad_15B[0x15E - 0x15B];
     };
+#pragma pack(pop)
 }

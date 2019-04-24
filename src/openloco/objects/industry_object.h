@@ -4,6 +4,7 @@
 
 namespace openloco
 {
+#pragma pack(push, 1)
     struct industry_object
     {
         string_id name;
@@ -20,4 +21,5 @@ namespace openloco
         uint8_t var_EF;
         uint8_t var_F0;
     };
+#pragma pack(pop)
 }
