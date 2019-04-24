@@ -4,6 +4,24 @@
 
 namespace openloco
 {
+    enum class vehicle_class : uint8_t
+    {
+        rail = 0,
+        road,
+        air,
+        water
+    };
+
+    enum class vehicle_type : uint8_t
+    {
+        train = 0,
+        bus,
+        truck,
+        tram,
+        plane,
+        ship
+    };
+
     enum class simple_animation_type : uint8_t
     {
         none = 0,
@@ -17,6 +35,54 @@ namespace openloco
         ship_wake
     };
 #pragma pack(push, 1)
+    struct vehicle_object_sound_1
+    {
+        uint8_t sound_object_id;
+        uint32_t var_01;
+        uint8_t var_05;
+        uint16_t var_06;
+        uint8_t var_08;
+        uint8_t var_09;
+        uint8_t var_0A;
+    };
+
+    struct vehicle_object_sound_2
+    {
+        uint8_t sound_object_id;
+        uint16_t var_01;
+        uint8_t var_03;
+        uint16_t var_04;
+        uint8_t var_06;
+        uint16_t var_07;
+        uint8_t var_09;
+        uint16_t var_0A;
+        uint16_t var_0C;
+        uint8_t var_0E;
+        uint8_t var_0F;
+        uint8_t var_10;
+    };
+
+    struct vehicle_object_sound_3
+    {
+        uint8_t sound_object_id;
+        uint16_t var_01;
+        uint8_t var_03;
+        uint16_t var_04;
+        uint16_t var_06;
+        uint16_t var_08;
+        uint16_t var_0A;
+        uint16_t var_0C;
+        uint16_t var_0E;
+        uint16_t var_10;
+        uint8_t var_12;
+        uint8_t var_13;
+        uint16_t var_14;
+        uint16_t var_16;
+        uint8_t var_18;
+        uint8_t var_19;
+        uint8_t var_1A;
+    };
+
     struct simple_animation
     {
         uint8_t object_id;          // 0x00 (object loader fills this in)
@@ -53,8 +119,8 @@ namespace openloco
     struct vehicle_object
     {
         string_id name;        // 0x00 probably not confirmed
-        uint8_t vehicle_class; // 0x02
-        uint8_t type;          // 0x03
+        vehicle_class v_class; // 0x02
+        vehicle_type type;     // 0x03
         uint8_t pad_04[0x6 - 0x4];
         uint8_t num_mods;      // 0x06
         uint8_t cost_ind;      // 0x07
@@ -80,9 +146,15 @@ namespace openloco
         uint16_t obsolete; // 0x116
         uint8_t pad_118;
         uint8_t startsnd_type; // 0x119
-        uint8_t pad_11A[0x15A - 0x11A];
-        uint8_t numsnd; // 0x15A
-        uint8_t pad_15B[0x15E - 0x15B];
+        union
+        {
+            vehicle_object_sound_1 type_1;
+            vehicle_object_sound_2 type_2;
+            vehicle_object_sound_3 type_3;
+        } sound;
+        uint8_t pad_135[0x15A - 0x135];
+        uint8_t num_sounds;             // 0x15A  possibly something else stuffed in (1<<7)
+        uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
     };
 #pragma pack(pop)
 }

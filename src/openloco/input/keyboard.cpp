@@ -91,7 +91,7 @@ namespace openloco::input
             if (t->owner != companymgr::get_controlling_id())
                 continue;
 
-            if (t->var_42 != 0)
+            if (t->v_class != vehicle_class::rail)
                 continue;
 
             registers regs;
