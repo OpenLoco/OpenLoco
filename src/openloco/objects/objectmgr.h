@@ -122,6 +122,8 @@ namespace openloco::objectmgr
     template<>
     road_object* get(size_t id);
     template<>
+    airport_object* get(size_t id);
+    template<>
     land_object* get(size_t id);
     template<>
     water_object* get();

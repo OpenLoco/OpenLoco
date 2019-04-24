@@ -4,6 +4,7 @@
 
 namespace openloco
 {
+#pragma pack(push, 1)
     struct steam_object
     {
         string_id name; // 0x00 probably not confirmed
@@ -16,4 +17,5 @@ namespace openloco
         uint8_t sound_effect; // 0x1E probably not confirmed
         uint8_t var_1F[9];    // size tbc
     };
+#pragma pack(pop)
 }
