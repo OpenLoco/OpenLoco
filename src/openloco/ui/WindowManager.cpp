@@ -851,59 +851,31 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        // TODO: use actual desired index.
-        dstIndex = count();
-        //        _windows.insert(_windows.begin() + dstIndex, std::make_unique<window>());
-        auto window = &_windows[dstIndex];
-        //        console::log("Count: %d", _windows.size());
-        _windowsEnd = _windows + dstIndex + 1;
-
-        window->type = type;
-        window->owner = company_id::null;
-        window->var_885 = 0xFF;
-        window->flags = flags;
+        auto window = ui::window(origin.x, origin.y, size.width, size.height);
+        window.type = type;
+        window.flags = flags;
         if ((flags & window_flags::flag_12) != 0)
         {
-            window->flags |= window_flags::white_border_mask;
+            window.flags |= window_flags::white_border_mask;
             audio::play_sound(audio::sound_id::open_window, origin.x + size.width / 2);
         }
         else if (((flags & window_flags::stick_to_back) == 0) && ((flags & window_flags::stick_to_front) == 0) && ((flags & window_flags::flag_13) == 0))
         {
             // FIXME: Same as previous case, but need a nice way to make the if clear
-            window->flags |= window_flags::white_border_mask;
+            window.flags |= window_flags::white_border_mask;
             audio::play_sound(audio::sound_id::open_window, origin.x + size.width / 2);
         }
 
-        window->number = 0;
-        window->x = origin.x;
-        window->y = origin.y;
-        window->width = size.width;
-        window->height = size.height;
-        window->viewports[0] = nullptr;
-        window->viewports[1] = nullptr;
-        window->event_handlers = events;
+        window.event_handlers = events;
 
-        window->enabled_widgets = 0;
-        window->disabled_widgets = 0;
-        window->activated_widgets = 0;
-        window->holdable_widgets = 0;
+        size_t length = _windowsEnd - (_windows + dstIndex);
+        memmove(_windows + dstIndex + 1, _windows + dstIndex, length * sizeof(ui::window));
+        _windowsEnd = _windowsEnd + 1;
+        _windows[dstIndex] = window;
 
-        window->var_846 = 0;
-        window->var_848 = 0;
-        window->var_84A = 0;
-        window->var_84C = 0;
-        window->var_84E = 0;
-        window->var_850 = 0;
-        window->var_852 = 0;
-        window->var_854 = 0;
-        window->var_856 = 0;
-        window->var_858 = 0;
-        window->current_tab = 0;
-        window->frame_no = 0;
+        _windows[dstIndex].invalidate();
 
-        window->invalidate();
-
-        return window;
+        return &_windows[dstIndex];
     }
 
     window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events)

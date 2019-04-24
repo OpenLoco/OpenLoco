@@ -328,55 +328,57 @@ namespace openloco::ui
             uint8_t pad_all[0x88E];
             struct
             {
-                window_event_list* event_handlers; // 0x00
-                ui::viewport* viewports[2];        // 0x04
-                uint64_t enabled_widgets;          // 0x0C
-                uint64_t disabled_widgets;         // 0x14
-                uint64_t activated_widgets;        // 0x1C
-                uint64_t holdable_widgets;         // 0x24
-                widget_t* widgets;                 // 0x2C
-                int16_t x;                         // 0x30
-                int16_t y;                         // 0x32
-                uint16_t width;                    // 0x34
-                uint16_t height;                   // 0x36
-                uint16_t min_width;                // 0x38
-                uint16_t max_width;                // 0x3a
-                uint16_t min_height;               // 0x3c
-                uint16_t max_height;               // 0x3e
-                window_number number;              // 0x40
-                uint32_t flags;                    // 0x42
-                scroll_area_t scroll_areas[2];     // 0x46
+                window_event_list* event_handlers;                 // 0x00
+                ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
+                uint64_t enabled_widgets = 0;                      // 0x0C
+                uint64_t disabled_widgets = 0;                     // 0x14
+                uint64_t activated_widgets = 0;                    // 0x1C
+                uint64_t holdable_widgets = 0;                     // 0x24
+                widget_t* widgets;                                 // 0x2C
+                int16_t x;                                         // 0x30
+                int16_t y;                                         // 0x32
+                uint16_t width;                                    // 0x34
+                uint16_t height;                                   // 0x36
+                uint16_t min_width;                                // 0x38
+                uint16_t max_width;                                // 0x3a
+                uint16_t min_height;                               // 0x3c
+                uint16_t max_height;                               // 0x3e
+                window_number number = 0;                          // 0x40
+                uint32_t flags;                                    // 0x42
+                scroll_area_t scroll_areas[2];                     // 0x46
                 uint8_t pad_6A[0x83A - 0x6A];
                 uint16_t row_count; // 0x83A
                 uint16_t var_83C;
                 uint16_t var_83E;
                 uint16_t row_hover; // 0x840
                 uint8_t pad_842[0x846 - 0x842];
-                uint16_t var_846;
-                uint16_t var_848;
-                uint16_t var_84A;
-                uint16_t var_84C;
-                uint16_t var_84E;
-                uint16_t var_850;
-                uint16_t var_852;
-                uint16_t var_854;
-                uint16_t var_856;
-                uint16_t var_858;
+                uint16_t var_846 = 0;
+                uint16_t var_848 = 0;
+                uint16_t var_84A = 0;
+                uint16_t var_84C = 0;
+                uint16_t var_84E = 0;
+                uint16_t var_850 = 0;
+                uint16_t var_852 = 0;
+                uint16_t var_854 = 0;
+                uint16_t var_856 = 0;
+                uint16_t var_858 = 0;
                 uint16_t var_85A;
                 uint8_t pad_85C[0x870 - 0x85C];
-                uint16_t current_tab; // 0x870
-                uint16_t frame_no;    // 0x872
+                uint16_t current_tab = 0; // 0x870
+                uint16_t frame_no = 0;    // 0x872
                 uint16_t var_874;
                 viewport_config viewport_configurations[2]; // 0x876
                 WindowType type;                            // 0x882
                 uint8_t pad_883[1];
-                company_id_t owner;
-                uint8_t var_885;
+                company_id_t owner = company_id::null;
+                uint8_t var_885 = 0xFF;
                 uint8_t colours[4]; // 0x886
                 int16_t var_88A;
                 int16_t var_88C;
             };
         };
+
+        window(int16_t x, int16_t y, uint16_t width, uint16_t height);
 
         constexpr void set_size(gfx::ui_size_t size)
         {
@@ -440,5 +442,6 @@ namespace openloco::ui
         void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
         void call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                           // 28
     };
+    static_assert(sizeof(window) == 0x88E);
 #pragma pack(pop)
 }

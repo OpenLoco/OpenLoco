@@ -1185,6 +1185,13 @@ namespace openloco::ui
                 0x10);
         }
     }
+    window::window(int16_t x, int16_t y, uint16_t width, uint16_t height)
+        : x(x)
+        , y(y)
+        , width(width)
+        , height(height)
+    {
+    }
 
     viewport_pos viewport::map_from_3d(loc16 loc, int32_t rotation)
     {
