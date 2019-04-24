@@ -120,6 +120,12 @@ namespace openloco::objectmgr
     }
 
     template<>
+    airport_object* get(size_t id)
+    {
+        return _airportObjects[id];
+    }
+
+    template<>
     land_object* get(size_t id)
     {
         return _landObjects[id];
