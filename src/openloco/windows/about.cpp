@@ -38,7 +38,7 @@ namespace openloco::ui::about
     // 0x0043B26C
     void open()
     {
-        if (WindowManager::bringToFront(WindowType::about, 0) != nullptr)
+        if (WindowManager::bringToFront(WindowType::about) != nullptr)
             return;
 
         initEvents();

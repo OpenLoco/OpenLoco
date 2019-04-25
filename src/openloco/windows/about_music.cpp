@@ -44,7 +44,7 @@ namespace openloco::ui::about_music
     // 0x0043B4AF
     void open()
     {
-        if (WindowManager::bringToFront(WindowType::aboutMusic, 0) != nullptr)
+        if (WindowManager::bringToFront(WindowType::aboutMusic) != nullptr)
             return;
 
         initEvents();

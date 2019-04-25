@@ -304,7 +304,7 @@ namespace openloco::input
                 {
                     if (button == mouse_button::left_pressed)
                     {
-                        WindowManager::bringToFront(_modalWindowType, 0);
+                        WindowManager::bringToFront(_modalWindowType);
                         audio::play_sound(audio::sound_id::error, x);
                         return;
                     }

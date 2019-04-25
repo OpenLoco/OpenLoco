@@ -2134,7 +2134,7 @@ namespace openloco::ui::options
     {
         window* window;
 
-        window = WindowManager::bringToFront(WindowType::options, 0);
+        window = WindowManager::bringToFront(WindowType::options);
         if (window != nullptr)
             return window;
 
