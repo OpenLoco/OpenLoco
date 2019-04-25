@@ -310,11 +310,27 @@ namespace openloco::string_ids
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
 
+    constexpr string_id stringid_all_stations = 1128;
+    constexpr string_id stringid_rail_stations = 1129;
+    constexpr string_id stringid_road_stations = 1130;
+    constexpr string_id stringid_airports = 1131;
+    constexpr string_id stringid_ship_ports = 1132;
     constexpr string_id all_stations = 1133;
     constexpr string_id rail_stations = 1134;
     constexpr string_id road_stations = 1135;
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
+
+    constexpr string_id tooltip_sort_by_name = 1153;
+    constexpr string_id tooltip_sort_by_profit = 1154;
+    constexpr string_id tooltip_sort_by_age = 1155;
+    constexpr string_id tooltip_sort_by_reliability = 1156;
+
+    constexpr string_id tooltip_all_stations = 1200;
+    constexpr string_id tooltip_rail_stations = 1201;
+    constexpr string_id tooltip_road_stations = 1202;
+    constexpr string_id tooltip_airports = 1203;
+    constexpr string_id tooltip_ship_ports = 1204;
 
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;
@@ -343,6 +359,18 @@ namespace openloco::string_ids
     constexpr string_id menu_sprite_stringid_construction = 1289;
 
     constexpr string_id station_cargo_rating_percent = 1423;
+
+    constexpr string_id table_header_status = 1433;
+    constexpr string_id table_header_status_desc = 1434;
+    constexpr string_id table_header_total_waiting = 1435;
+    constexpr string_id table_header_total_waiting_desc = 1436;
+    constexpr string_id table_header_accepts = 1437;
+    constexpr string_id table_header_accepts_desc = 1438;
+    constexpr string_id tooltip_sort_by_station_status = 1439;
+    constexpr string_id tooltip_sort_by_total_units_waiting = 1440;
+    constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
+
+    constexpr string_id tooltip_select_company = 1465;
 
     constexpr string_id display_options = 1486;
     constexpr string_id sound_options = 1487;

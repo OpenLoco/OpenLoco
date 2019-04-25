@@ -117,6 +117,7 @@ namespace openloco::ui::prompt_browse
 
 namespace openloco::ui::windows::station_list
 {
+    window* open(uint16_t companyId);
     window* open(uint16_t companyId, uint8_t type);
 }
 

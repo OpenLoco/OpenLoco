@@ -162,6 +162,7 @@ namespace openloco::ui
         constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_one = (1 << 17);
         constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
+        constexpr uint32_t flag_19 = 1 << 19;
     }
 
     struct window_event_list
@@ -347,7 +348,8 @@ namespace openloco::ui
         uint16_t var_83C;
         uint16_t var_83E;
         uint16_t row_hover; // 0x840
-        uint8_t pad_842[0x846 - 0x842];
+        uint8_t pad_842[0x844 - 0x842];
+        uint16_t var_844;
         uint16_t var_846 = 0;
         uint16_t var_848 = 0;
         uint16_t var_84A = 0;
@@ -373,7 +375,6 @@ namespace openloco::ui
         int16_t var_88C;
 
         window(gfx::point_t position, gfx::ui_size_t size);
-
         constexpr void set_size(gfx::ui_size_t size)
         {
             this->min_width = size.width;
