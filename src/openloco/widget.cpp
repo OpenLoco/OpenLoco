@@ -15,6 +15,11 @@ namespace openloco::ui
         return (this->left + this->right) / 2;
     }
 
+    int16_t widget_t::mid_y() const
+    {
+        return (this->top + this->bottom) / 2;
+    }
+
     uint16_t widget_t::width() const
     {
         return (this->right - this->left) + 1;
