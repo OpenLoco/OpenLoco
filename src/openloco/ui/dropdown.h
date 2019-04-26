@@ -47,11 +47,17 @@ struct format_arg
     }
 };
 
+namespace openloco
+{
+    class FormatArguments;
+}
+
 namespace openloco::ui::dropdown
 {
     void add(size_t index, string_id title);
     void add(size_t index, string_id title, std::initializer_list<format_arg> l);
     void add(size_t index, string_id title, format_arg l);
+    void add(size_t index, string_id title, FormatArguments& fArgs);
     int16_t get_highlighted_item();
     void set_item_disabled(size_t index);
     void set_highlighted_item(size_t index);

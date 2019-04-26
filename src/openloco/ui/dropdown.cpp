@@ -2,6 +2,7 @@
 #include "../companymgr.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../window.h"
 
 #include <cassert>
@@ -20,6 +21,7 @@ namespace openloco::ui::dropdown
 
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
+    static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
 
     void add(size_t index, string_id title)
     {
@@ -68,6 +70,22 @@ namespace openloco::ui::dropdown
                     console::error("Unknown format: %d", arg.type);
                     break;
             }
+        }
+    }
+
+    void add(size_t index, string_id title, FormatArguments& fArgs)
+    {
+        add(index, title);
+        std::byte* args = _dropdownItemArgs[index];
+
+        int32_t copyLength = std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index]));
+
+        memcpy(args, &fArgs, copyLength);
+        copyLength = std::min(fArgs.getLength() - sizeof(_dropdownItemArgs[index]), sizeof(_dropdownItemArgs2[index]));
+        if (copyLength > 0)
+        {
+            args = _dropdownItemArgs2[index];
+            memcpy(args, reinterpret_cast<const std::byte*>(&fArgs) + sizeof(_dropdownItemArgs[index]), copyLength);
         }
     }
 

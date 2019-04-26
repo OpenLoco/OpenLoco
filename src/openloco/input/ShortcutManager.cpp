@@ -447,13 +447,19 @@ namespace openloco::input::ShortcutManager
     // 0x004BF382
     static void showFinances()
     {
-        call(0x004BF382);
+        if (is_editor_mode())
+            return;
+
+        windows::CompanyWindow::openFinances(companymgr::get_controlling_id());
     }
 
     // 0x004BF39A
     static void showAnnouncementsList()
     {
-        call(0x004BF39A);
+        if (is_editor_mode())
+            return;
+
+        MessageWindow::open();
     }
 
     // 0x004BF3AB

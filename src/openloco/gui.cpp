@@ -61,23 +61,7 @@ namespace openloco::gui
         {
             windows::toolbar_top::open();
 
-            window = WindowManager::createWindow(
-                WindowType::playerInfoToolbar,
-                gfx::point_t(0, uiHeight - 27),
-                gfx::ui_size_t(140, 27),
-                ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (ui::window_event_list*)0x4fa024);
-            window->widgets = (ui::widget_t*)0x509d08;
-            window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
-            window->var_854 = 0;
-            window->init_scroll_widgets();
-
-            auto skin = openloco::objectmgr::get<interface_skin_object>();
-            if (skin != nullptr)
-            {
-                window->colours[0] = colour::translucent(skin->colour_16);
-                window->colours[1] = colour::translucent(skin->colour_16);
-            }
+            PlayerInfoPanel::open();
             TimePanel::open();
 
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
@@ -92,6 +76,7 @@ namespace openloco::gui
                 window->widgets = (ui::widget_t*)0x509de0;
                 window->init_scroll_widgets();
 
+                auto skin = openloco::objectmgr::get<interface_skin_object>();
                 if (skin != nullptr)
                 {
                     window->colours[0] = colour::translucent(skin->colour_06);
@@ -143,7 +128,7 @@ namespace openloco::gui
         window = WindowManager::find(WindowType::playerInfoToolbar);
         if (window)
         {
-            window->y = uiHeight - 27;
+            window->y = uiHeight - window->height;
         }
 
         window = WindowManager::find(WindowType::timeToolbar);

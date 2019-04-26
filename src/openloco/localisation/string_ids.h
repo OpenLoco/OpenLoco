@@ -260,7 +260,8 @@ namespace openloco::string_ids
 
     constexpr string_id challenge_failed = 695;
     constexpr string_id challenge_completed = 696;
-
+    constexpr string_id tooltip_performance_index = 697;
+    constexpr string_id tooltip_company_value = 698;
     constexpr string_id challenge_progress = 699;
     constexpr string_id challenge_time_left = 700;
 
@@ -750,6 +751,19 @@ namespace openloco::string_ids
     constexpr string_id title_menu_scenario_editor = 1740;
 
     constexpr string_id menu_map = 1742;
+    constexpr string_id dropdown_companies_list = 1743;
+    constexpr string_id dropdown_company_performance = 1744;
+
+    constexpr string_id str_1772 = 1772; // Platelayer
+    constexpr string_id str_1773 = 1773; // Engineer
+    constexpr string_id str_1774 = 1774; // Traffic Manager
+    constexpr string_id str_1775 = 1775; // Transport Coordin
+    constexpr string_id str_1776 = 1776; // Route Supervisor
+    constexpr string_id str_1777 = 1777; // Director
+    constexpr string_id str_1778 = 1778; // Chief Executive
+    constexpr string_id str_1779 = 1779; // Chairman
+    constexpr string_id str_1780 = 1780; // President
+    constexpr string_id str_1781 = 1781; // Tycoon
 
     constexpr string_id toolbar_status_paused = 1800;
 
@@ -820,6 +834,22 @@ namespace openloco::string_ids
     constexpr string_id window_browse_challenge_failed = 2011;
 
     constexpr string_id error_invalid_filename = 2016;
+
+    constexpr string_id position_1st = 2023;
+    constexpr string_id position_2nd = 2024;
+    constexpr string_id position_3rd = 2025;
+    constexpr string_id position_4th = 2026;
+    constexpr string_id position_5th = 2027;
+    constexpr string_id position_6th = 2028;
+    constexpr string_id position_7th = 2029;
+    constexpr string_id position_8th = 2030;
+    constexpr string_id position_9th = 2031;
+    constexpr string_id position_10th = 2032;
+    constexpr string_id position_11th = 2033;
+    constexpr string_id position_12th = 2034;
+    constexpr string_id position_13th = 2035;
+    constexpr string_id position_14th = 2036;
+    constexpr string_id position_15th = 2037;
 
     constexpr string_id buffer_2039 = 2039;
     constexpr string_id buffer_2040 = 2040;

@@ -10,7 +10,9 @@ namespace openloco::image_ids
 
     constexpr uint32_t text_palette = 2169;
 
+    constexpr uint32_t company_list_dropdown_icon = 2309;
     constexpr uint32_t icon_parent_folder = 2310;
+
     constexpr uint32_t icon_folder = 2311;
 
     constexpr uint32_t close_button = 2321;
