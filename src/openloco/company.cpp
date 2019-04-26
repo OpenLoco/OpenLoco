@@ -1,5 +1,6 @@
 #include "company.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include <algorithm>
 #include <array>
 
@@ -27,7 +28,7 @@ namespace openloco
 
     bool company::empty() const
     {
-        return var_00 == 0;
+        return var_00 == string_ids::empty;
     }
 
     // 0x00430762
