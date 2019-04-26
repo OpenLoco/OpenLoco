@@ -4,6 +4,7 @@
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "localisation/FormatArguments.hpp"
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
@@ -995,7 +996,8 @@ namespace openloco::ui
             return regs.ax != (int16_t)string_ids::null;
         }
 
-        event_handlers->tooltip(this, widget_index);
+        auto args = FormatArguments();
+        event_handlers->tooltip(args, this, widget_index);
         return true;
     }
 

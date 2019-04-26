@@ -48,6 +48,8 @@ namespace openloco
         constexpr int16_t null = (int16_t)0x8000u;
     }
 
+    class FormatArguments;
+
     enum class ZoomLevel : uint8_t
     {
         full = 0,

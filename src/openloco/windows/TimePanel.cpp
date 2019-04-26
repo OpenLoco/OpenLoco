@@ -62,7 +62,7 @@ namespace openloco::ui::TimePanel
     static void text_input(window* w, widget_index widgetIndex, char* str);
     static void on_dropdown(window* w, widget_index widgetIndex, int16_t item_index);
     static ui::cursor_id on_cursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
     static void text_input(window* w, widget_index widgetIndex, char* str);
     static void on_update(window* w);
 
@@ -317,7 +317,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x00439955
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {

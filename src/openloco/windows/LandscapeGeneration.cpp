@@ -3,6 +3,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/land_object.h"
@@ -634,9 +635,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E2A2
-        static void tooltip(ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            commonFormatArgs[0] = string_ids::tooltip_scroll_list;
+            args.push(string_ids::tooltip_scroll_list);
         }
 
         // 0x0043E3D9
