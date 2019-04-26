@@ -158,6 +158,7 @@ namespace openloco::ui
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
         constexpr uint32_t flag_13 = 1 << 13;
+        constexpr uint32_t flag_14 = 1 << 14;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_one = (1 << 17);

@@ -59,8 +59,8 @@ namespace openloco::ui::windows::station_list
 
     static window_event_list _events;
 
-    // static void call_8(window* window);
-    // static void call_9(window* window);
+    static void event_08(window* window);
+    static void event_09(window* window);
     // static void cursor(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     // static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
@@ -76,8 +76,8 @@ namespace openloco::ui::windows::station_list
 
     static void init_events()
     {
-        // _events.call_8 = call_8;
-        // _events.call_9 = call_9;
+        _events.event_08 = event_08;
+        _events.event_09 = event_09;
         // _events.cursor = cursor;
         _events.draw = draw;
         // _events.draw_scroll = draw_scroll;
@@ -137,7 +137,7 @@ namespace openloco::ui::windows::station_list
             window->min_height = min_dimensions.height;
             window->max_width = max_dimensions.width;
             window->max_height = max_dimensions.height;
-            window->flags = window_flags::stick_to_back | window_flags::scrolling_to_location;
+            window->flags |= window_flags::stick_to_back | window_flags::scrolling_to_location;
 
             auto interface = objectmgr::get<interface_skin_object>();
             window->colours[0] = companymgr::get_company_colour(companyId);
@@ -182,6 +182,25 @@ namespace openloco::ui::windows::station_list
         station_list->call_on_mouse_up(target);
 
         return station_list;
+    }
+
+    // 0x0049196F
+    static void event_08(window* window)
+    {
+        window->flags |= window_flags::flag_14;
+    }
+
+    // 0x00491977
+    static void event_09(window* window)
+    {
+        if ((window->flags & window_flags::flag_14) == 0)
+            return;
+
+        if (window->row_hover == 0xFFFF)
+            return;
+
+        window->row_hover = -1;
+        window->invalidate();
     }
 
     // 0x00491344
