@@ -65,12 +65,12 @@ namespace openloco::ui::windows::station_list
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     // static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    // static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    // static void on_mouse_down(ui::window* window, widget_index widgetIndex);
-    // static void on_mouse_up(ui::window* window, widget_index widgetIndex);
+    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     // static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     // static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    // static void on_update(window* window);
+    static void on_update(window* window);
     static void prepare_draw(ui::window* window);
     static void tooltip(ui::window* window, widget_index widgetIndex);
 
@@ -82,10 +82,10 @@ namespace openloco::ui::windows::station_list
         _events.draw = draw;
         // _events.draw_scroll = draw_scroll;
         _events.get_scroll_size = get_scroll_size;
-        // _events.on_dropdown = on_dropdown;
-        // _events.on_mouse_down = on_mouse_down;
-        // _events.on_mouse_up = on_mouse_up;
-        // _events.on_update = on_update;
+        _events.on_dropdown = on_dropdown;
+        _events.on_mouse_down = on_mouse_down;
+        _events.on_mouse_up = on_mouse_up;
+        _events.on_update = on_update;
         // _events.scroll_mouse_down = on_scroll_mouse_down;
         // _events.scroll_mouse_over = on_scroll_mouse_over;
         _events.prepare_draw = prepare_draw;
@@ -203,10 +203,114 @@ namespace openloco::ui::windows::station_list
         regs.edi = (int32_t)dpi;
 
         // This sub is only used in this drawing routine. Integrate.
-        call(0x004914DD, regs);
+        call(0x00491A76, regs);
 
         // Continue drawing with the original routine.
         call(0x004914E2, regs);
+    }
+
+    // 0x004917BB
+    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (widgetIndex == widx::company_select)
+        {
+            registers regs;
+            regs.edx = (int32_t)widgetIndex;
+            regs.esi = (int32_t)window;
+            regs.ax = itemIndex;
+
+            call(0x004917C2);
+        }
+    }
+
+    // 0x004917B0
+    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
+    {
+        if (widgetIndex == widx::company_select)
+        {
+            registers regs;
+            regs.edx = widgetIndex;
+            regs.edi = (int32_t)&_widgets[widgetIndex];
+            regs.esi = (int32_t)window;
+
+            call(0x004CF2B3, regs);
+        }
+    }
+
+    // 0x00491785
+    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    {
+        switch (widgetIndex)
+        {
+            case widx::close_button:
+                WindowManager::close(window);
+                break;
+
+            case tab_all_stations:
+            case tab_rail_stations:
+            case tab_road_stations:
+            case tab_airports:
+            case tab_ship_ports:
+            {
+                if (input::is_tool_active(window->type, window->number))
+                    input::cancel_tool();
+
+                window->current_tab = widgetIndex - widx::tab_all_stations;
+                window->frame_no = 0;
+
+                window->invalidate();
+
+                window->var_83C = 0;
+                window->row_hover = -1;
+
+                sub_4910E8(window);
+
+                window->call_on_resize();
+                window->call_prepare_draw();
+                window->init_scroll_widgets();
+
+                registers regs;
+                regs.esi = (int32_t)window;
+                regs.edx = widgetIndex;
+                call(0x004CD320, regs);
+                break;
+            }
+
+            case sort_name:
+            case sort_status:
+            case sort_total_waiting:
+            case sort_accepts:
+            {
+                auto sort_mode = widgetIndex - widx::sort_name;
+                if (window->var_844 == sort_mode)
+                    return;
+
+                window->var_844 = sort_mode;
+                window->invalidate();
+                window->var_83C = 0;
+                window->row_hover = -1;
+
+                call(0x004910E8, regs);
+                break;
+            }
+        }
+    }
+
+    // 0x0049193F
+    static void on_update(window* window)
+    {
+        window->frame_no++;
+
+        window->call_prepare_draw();
+        WindowManager::invalidate(WindowType::stationList, window->number);
+
+        registers regs;
+        regs.esi = (int32_t)window;
+
+        // Why is this called three times??
+        call(0x0049111A, regs);
+        call(0x0049111A, regs);
+        call(0x0049111A, regs);
     }
 
     // 0x00491999
