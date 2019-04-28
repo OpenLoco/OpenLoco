@@ -119,9 +119,9 @@ namespace openloco
 
     struct vehicle_object
     {
-        string_id name;        // 0x00 probably not confirmed
-        TransportMode mode;    // 0x02
-        VehicleType type;      // 0x03
+        string_id name;     // 0x00 probably not confirmed
+        TransportMode mode; // 0x02
+        VehicleType type;   // 0x03
         uint8_t pad_04[0x6 - 0x4];
         uint8_t num_mods;      // 0x06
         uint8_t cost_ind;      // 0x07
