@@ -26,7 +26,7 @@ namespace openloco
         vehicle_6,
     };
 
-    // Related to vehicle_type
+    // Related to VehicleType
     constexpr uint8_t vehicle_category_count = 6;
 
 #pragma pack(push, 1)
@@ -88,7 +88,7 @@ namespace openloco
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
-        vehicle_class v_class;
+        TransportMode mode;
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;

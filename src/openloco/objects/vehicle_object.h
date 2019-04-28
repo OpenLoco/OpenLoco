@@ -4,7 +4,7 @@
 
 namespace openloco
 {
-    enum class vehicle_class : uint8_t
+    enum class TransportMode : uint8_t
     {
         rail = 0,
         road,
@@ -12,14 +12,15 @@ namespace openloco
         water
     };
 
-    enum class vehicle_type : uint8_t
+    enum class VehicleType : uint8_t
     {
         train = 0,
         bus,
         truck,
         tram,
         plane,
-        ship
+        ship,
+        Count
     };
 
     enum class simple_animation_type : uint8_t
@@ -119,8 +120,8 @@ namespace openloco
     struct vehicle_object
     {
         string_id name;        // 0x00 probably not confirmed
-        vehicle_class v_class; // 0x02
-        vehicle_type type;     // 0x03
+        TransportMode mode;    // 0x02
+        VehicleType type;      // 0x03
         uint8_t pad_04[0x6 - 0x4];
         uint8_t num_mods;      // 0x06
         uint8_t cost_ind;      // 0x07

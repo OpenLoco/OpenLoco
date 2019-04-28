@@ -196,7 +196,7 @@ int32_t openloco::vehicle::sub_4AA1D0()
     registers regs;
     regs.esi = (int32_t)this;
 
-    if (v_class == vehicle_class::air || v_class == vehicle_class::water)
+    if (mode == TransportMode::air || mode == TransportMode::water)
     {
         animation_update();
         return 0;
