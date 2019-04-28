@@ -1109,7 +1109,7 @@ void openloco::vehicle::steam_puffs_animation_update(uint8_t num, int8_t var_05)
             if (elUnk1->unk_z() != loc.z)
                 continue;
 
-            if (!elUnk1->has_80())
+            if (!elUnk1->has_station_element())
                 continue;
 
             if (!elUnk1->is_last())
