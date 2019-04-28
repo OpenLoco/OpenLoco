@@ -704,7 +704,7 @@ namespace openloco::ui::windows::toolbar_top
         auto company_colour = companymgr::get_player_company_colour();
         auto interface = objectmgr::get<interface_skin_object>();
 
-        uint16_t vehicle_counts[vehicle_category_count]{ 0 };
+        uint16_t vehicle_counts[static_cast<uint8_t>(VehicleType::Count)]{ 0 };
         for (openloco::vehicle* v = thingmgr::first<openloco::vehicle>(); v != nullptr; v = v->next_vehicle())
         {
             if (v->owner != player_company_id)
