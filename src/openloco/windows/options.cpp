@@ -14,6 +14,7 @@
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../widget.h"
 #include <cassert>
 
 using namespace openloco::interop;
@@ -43,53 +44,6 @@ namespace openloco::ui::options
     static void on_close(window* w)
     {
         free(__11364A0);
-    }
-
-    // 0x004CF194
-    static void draw_tab(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
-    {
-        auto widget = &w->widgets[index];
-
-        gfx::point_t pos = {};
-        pos.x = widget->left + w->x;
-        pos.y = widget->top + w->y;
-
-        if (w->is_disabled(index))
-        {
-            return; // 0x8000
-        }
-
-        bool isActivated = false;
-        if (w->is_activated(index))
-        {
-            isActivated = true;
-        }
-        else if (input::state() == input::input_state::widget_pressed)
-        {
-            isActivated = input::is_pressed(w->type, w->number, index);
-        }
-
-        if (imageId == -1)
-        {
-            return;
-        }
-
-        if (isActivated)
-        {
-            if (imageId != -2)
-            {
-                gfx::draw_image(ctx, pos.x, pos.y, imageId);
-            }
-        }
-        else
-        {
-            if (imageId != -2)
-            {
-                gfx::draw_image(ctx, pos.x, pos.y + 1, imageId);
-            }
-            gfx::draw_image(ctx, pos.x, pos.y, 0x40000000 | (51 << 19) | 2387);
-            gfx::draw_rect(ctx, pos.x, pos.y + 26, 31, 1, colour::get_shade(w->colours[1], 7));
-        }
     }
 
     namespace common
@@ -125,8 +79,8 @@ namespace openloco::ui::options
 
         static void draw_tabs(window* w, gfx::drawpixelinfo_t* ctx)
         {
-            draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
-            draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
+            widget::draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
+            widget::draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
 
             static const uint32_t music_tab_ids[] = {
                 image_ids::tab_music_0,
@@ -151,7 +105,7 @@ namespace openloco::ui::options
             {
                 imageId = music_tab_ids[(w->frame_no / 4) % 16];
             }
-            draw_tab(w, ctx, imageId, widx::tab_music);
+            widget::draw_tab(w, ctx, imageId, widx::tab_music);
 
             static const uint32_t globe_tab_ids[] = {
                 image_ids::tab_globe_0,
@@ -192,10 +146,10 @@ namespace openloco::ui::options
             {
                 imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
-            draw_tab(w, ctx, imageId, widx::tab_regional);
+            widget::draw_tab(w, ctx, imageId, widx::tab_regional);
 
-            draw_tab(w, ctx, image_ids::tab_control, widx::tab_controls);
-            draw_tab(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
+            widget::draw_tab(w, ctx, image_ids::tab_control, widx::tab_controls);
+            widget::draw_tab(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
 #define common_options_widgets(window_size, window_caption_id)                                                                                              \

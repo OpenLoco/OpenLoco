@@ -34,4 +34,6 @@ namespace openloco::ui::widget
     void draw_27_label(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool disabled);
 
     void draw_29(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget);
+
+    void draw_tab(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index);
 }

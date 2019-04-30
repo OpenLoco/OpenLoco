@@ -755,4 +755,51 @@ namespace openloco::ui::widget
         int bottom = window->y + widget->bottom;
         gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(colour::black, 5));
     }
+
+    // 0x004CF194
+    void draw_tab(window* w, gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
+    {
+        auto widget = &w->widgets[index];
+
+        gfx::point_t pos = {};
+        pos.x = widget->left + w->x;
+        pos.y = widget->top + w->y;
+
+        if (w->is_disabled(index))
+        {
+            return; // 0x8000
+        }
+
+        bool isActivated = false;
+        if (w->is_activated(index))
+        {
+            isActivated = true;
+        }
+        else if (input::state() == input::input_state::widget_pressed)
+        {
+            isActivated = input::is_pressed(w->type, w->number, index);
+        }
+
+        if (imageId == -1)
+        {
+            return;
+        }
+
+        if (isActivated)
+        {
+            if (imageId != -2)
+            {
+                gfx::draw_image(ctx, pos.x, pos.y, imageId);
+            }
+        }
+        else
+        {
+            if (imageId != -2)
+            {
+                gfx::draw_image(ctx, pos.x, pos.y + 1, imageId);
+            }
+            gfx::draw_image(ctx, pos.x, pos.y, 0x40000000 | (51 << 19) | 2387);
+            gfx::draw_rect(ctx, pos.x, pos.y + 26, 31, 1, colour::get_shade(w->colours[1], 7));
+        }
+    }
 }
