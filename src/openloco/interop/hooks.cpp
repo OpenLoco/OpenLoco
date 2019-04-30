@@ -793,7 +793,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0048ED2F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::station_2_scroll_paint(
+            ui::windows::station::tab_2_scroll_paint(
                 *((ui::window*)regs.esi),
                 *((gfx::drawpixelinfo_t*)regs.edi));
             return 0;

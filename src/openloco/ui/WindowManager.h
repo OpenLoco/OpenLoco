@@ -51,7 +51,6 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
-    void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
     window* open_town_window(uint16_t townId);
     window* open_title_version();
     window* open_title_exit();
@@ -113,6 +112,12 @@ namespace openloco::ui::prompt_browse
     };
     bool open(browse_type type, char* path, const char* filter, const char* title);
     void register_hooks();
+}
+
+namespace openloco::ui::windows::station
+{
+    window* open(uint16_t id);
+    void tab_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
 }
 
 namespace openloco::ui::windows::station_list

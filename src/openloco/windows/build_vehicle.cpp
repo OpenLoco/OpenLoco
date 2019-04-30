@@ -109,7 +109,7 @@ namespace openloco::ui::build_vehicle
             return;
 
         uint16_t* src = _113626A;
-        uint16_t* dest = (uint16_t*)window->pad_6A;
+        uint16_t* dest = window->row_info;
         window->var_83C = cx;
         window->row_count = 0;
         while (cx != 0)

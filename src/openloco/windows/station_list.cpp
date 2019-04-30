@@ -80,33 +80,33 @@ namespace openloco::ui::windows::station_list
 
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    // static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void event_08(window* window);
     static void event_09(window* window);
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_mouse_down(ui::window* window, widget_index widgetIndex);
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    // static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    // static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_update(window* window);
     static void prepare_draw(ui::window* window);
     static void tooltip(ui::window* window, widget_index widgetIndex);
 
     static void init_events()
     {
-        _events.event_08 = event_08;
-        _events.event_09 = event_09;
         _events.cursor = cursor;
         _events.draw = draw;
-        // _events.draw_scroll = draw_scroll;
+        _events.draw_scroll = draw_scroll;
+        _events.event_08 = event_08;
+        _events.event_09 = event_09;
         _events.get_scroll_size = get_scroll_size;
         _events.on_dropdown = on_dropdown;
         _events.on_mouse_down = on_mouse_down;
         _events.on_mouse_up = on_mouse_up;
         _events.on_update = on_update;
-        // _events.scroll_mouse_down = on_scroll_mouse_down;
-        // _events.scroll_mouse_over = on_scroll_mouse_over;
+        _events.scroll_mouse_down = on_scroll_mouse_down;
+        _events.scroll_mouse_over = on_scroll_mouse_over;
         _events.prepare_draw = prepare_draw;
         _events.tooltip = tooltip;
     }
@@ -291,6 +291,16 @@ namespace openloco::ui::windows::station_list
         }
     }
 
+    // 0x0049157F
+    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        regs.edi = (int32_t)dpi;
+        regs.eax = (int32_t)scrollIndex;
+        call(0x0049157F, regs);
+    }
+
     // 00491A76
     static void draw_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
@@ -414,6 +424,38 @@ namespace openloco::ui::windows::station_list
                 break;
             }
         }
+    }
+
+    // 0x00491A0C
+    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    {
+        uint16_t currentRow = y / rowHeight;
+        if (currentRow > window->var_83C)
+            return;
+
+        int16_t currentStation = window->row_info[currentRow];
+        if (currentStation == -1)
+            return;
+
+        windows::station::open(currentStation);
+    }
+
+    // 0x004919D1
+    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    {
+        window->flags &= ~(window_flags::flag_14);
+
+        uint16_t currentRow = y / rowHeight;
+        uint16_t currentStation = 0xFFFF;
+
+        if (currentRow < window->var_83C)
+            currentStation = window->row_info[currentRow];
+
+        if (currentStation == window->row_hover)
+            return;
+
+        window->row_hover = currentStation;
+        window->invalidate();
     }
 
     // 0x0049193F
