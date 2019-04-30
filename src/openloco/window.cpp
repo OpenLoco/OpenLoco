@@ -744,7 +744,7 @@ namespace openloco::ui
             return (cursor_id)regs.ebx;
         }
 
-        return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
+        return event_handlers->cursor(this, widgetIdx, xPos, yPos, fallback);
     }
 
     void window::call_on_mouse_up(widget_index widgetIndex)

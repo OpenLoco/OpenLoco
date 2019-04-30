@@ -197,7 +197,7 @@ namespace openloco::ui
                 uint32_t viewport_rotate;
                 uint32_t event_22;
                 void (*tooltip)(window*, widget_index);
-                ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
+                ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, gfx::drawpixelinfo_t*);

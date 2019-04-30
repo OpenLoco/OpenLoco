@@ -78,11 +78,11 @@ namespace openloco::ui::windows::station_list
 
     loco_global<uint16_t[2], 0x112C826> _common_format_args;
 
-    static void event_08(window* window);
-    static void event_09(window* window);
-    // static void cursor(window* window);
+    static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     // static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void event_08(window* window);
+    static void event_09(window* window);
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void on_mouse_down(ui::window* window, widget_index widgetIndex);
@@ -97,7 +97,7 @@ namespace openloco::ui::windows::station_list
     {
         _events.event_08 = event_08;
         _events.event_09 = event_09;
-        // _events.cursor = cursor;
+        _events.cursor = cursor;
         _events.draw = draw;
         // _events.draw_scroll = draw_scroll;
         _events.get_scroll_size = get_scroll_size;
@@ -191,6 +191,19 @@ namespace openloco::ui::windows::station_list
         station_list->call_on_mouse_up(target);
 
         return station_list;
+    }
+
+    // 0x004919A4
+    static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    {
+        if (widgetIdx != widx::scrollview)
+            return fallback;
+
+        uint16_t currentIndex = yPos / rowHeight;
+        if (currentIndex < window->var_83C && window->row_info[currentIndex] != 0xFFFF)
+            return cursor_id::hand_pointer;
+
+        return fallback;
     }
 
     // 0x0049196F
