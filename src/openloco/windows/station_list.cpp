@@ -114,14 +114,14 @@ namespace openloco::ui::windows::station_list
     // 0x00490F6C
     window* open(uint16_t companyId)
     {
-        window* window = WindowManager::bringToFront(WindowType::stationList, 0);
+        window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
         {
             if (input::is_tool_active(window->type, window->number))
                 input::cancel_tool();
 
             // Still active?
-            window = WindowManager::bringToFront(WindowType::stationList, 0);
+            window = WindowManager::bringToFront(WindowType::stationList, companyId);
         }
 
         if (window == nullptr)
@@ -130,7 +130,7 @@ namespace openloco::ui::windows::station_list
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 window_size,
-                window_flags::flag_19,
+                window_flags::flag_11,
                 &_events);
 
             window->number = companyId;
@@ -147,10 +147,9 @@ namespace openloco::ui::windows::station_list
             window->min_height = min_dimensions.height;
             window->max_width = max_dimensions.width;
             window->max_height = max_dimensions.height;
-            window->flags |= window_flags::stick_to_back | window_flags::scrolling_to_location;
+            window->flags |= window_flags::resizable;
 
             auto interface = objectmgr::get<interface_skin_object>();
-            window->colours[0] = companymgr::get_company_colour(companyId);
             window->colours[1] = interface->colour_0A;
         }
 
