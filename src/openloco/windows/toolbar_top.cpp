@@ -637,18 +637,19 @@ namespace openloco::ui::windows::toolbar_top
     struct VehicleTypeInterfaceParam
     {
         uint32_t image;
+        uint32_t build_image;
         string_id build_string;
         string_id num_singular;
         string_id num_plural;
     };
 
-    const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
-        { VehicleType::bus, { interface_skin::image_ids::build_vehicle_bus, string_ids::build_buses, string_ids::num_buses_singular, string_ids::num_buses_plural } },
-        { VehicleType::plane, { interface_skin::image_ids::build_vehicle_aircraft, string_ids::build_aircraft, string_ids::num_aircrafts_singular, string_ids::num_aircrafts_plural } },
-        { VehicleType::ship, { interface_skin::image_ids::build_vehicle_ship, string_ids::build_ships, string_ids::num_ships_singular, string_ids::num_ships_plural } },
-        { VehicleType::train, { interface_skin::image_ids::build_vehicle_train, string_ids::build_trains, string_ids::num_trains_singular, string_ids::num_trains_plural } },
-        { VehicleType::tram, { interface_skin::image_ids::build_vehicle_tram, string_ids::build_trams, string_ids::num_trams_singular, string_ids::num_trams_plural } },
-        { VehicleType::truck, { interface_skin::image_ids::build_vehicle_truck, string_ids::build_trucks, string_ids::num_trucks_singular, string_ids::num_trucks_plural } },
+    static const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
+        { VehicleType::bus, { interface_skin::image_ids::vehicle_bus, interface_skin::image_ids::build_vehicle_bus, string_ids::build_buses, string_ids::num_buses_singular, string_ids::num_buses_plural } },
+        { VehicleType::plane, { interface_skin::image_ids::vehicle_aircraft, interface_skin::image_ids::build_vehicle_aircraft, string_ids::build_aircraft, string_ids::num_aircrafts_singular, string_ids::num_aircrafts_plural } },
+        { VehicleType::ship, { interface_skin::image_ids::vehicle_ship, interface_skin::image_ids::build_vehicle_ship, string_ids::build_ships, string_ids::num_ships_singular, string_ids::num_ships_plural } },
+        { VehicleType::train, { interface_skin::image_ids::vehicle_train, interface_skin::image_ids::build_vehicle_train, string_ids::build_trains, string_ids::num_trains_singular, string_ids::num_trains_plural } },
+        { VehicleType::tram, { interface_skin::image_ids::vehicle_tram, interface_skin::image_ids::build_vehicle_tram, string_ids::build_trams, string_ids::num_trams_singular, string_ids::num_trams_plural } },
+        { VehicleType::truck, { interface_skin::image_ids::vehicle_truck, interface_skin::image_ids::build_vehicle_truck, string_ids::build_trucks, string_ids::num_trucks_singular, string_ids::num_trucks_plural } },
     };
 
     // 0x0043AD1F
@@ -661,14 +662,14 @@ namespace openloco::ui::windows::toolbar_top
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint8_t ddIndex = 0;
-        for (uint8_t vehicleType = 0; vehicleType < static_cast<uint8_t>(VehicleType::Count); vehicleType++)
+        for (uint8_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
             if ((available_vehicles & (1 << vehicleType)) == 0)
                 continue;
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = gfx::recolour(interface_param.image, company_colour);
+            uint32_t vehicle_image = gfx::recolour(interface_param.build_image, company_colour);
 
             dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
             menu_options[ddIndex] = vehicleType;
@@ -704,7 +705,7 @@ namespace openloco::ui::windows::toolbar_top
         auto company_colour = companymgr::get_player_company_colour();
         auto interface = objectmgr::get<interface_skin_object>();
 
-        uint16_t vehicle_counts[static_cast<uint8_t>(VehicleType::Count)]{ 0 };
+        uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
         for (openloco::vehicle* v = thingmgr::first<openloco::vehicle>(); v != nullptr; v = v->next_vehicle())
         {
             if (v->owner != player_company_id)
@@ -717,7 +718,7 @@ namespace openloco::ui::windows::toolbar_top
         }
 
         uint8_t ddIndex = 0;
-        for (uint16_t vehicleType = 0; vehicleType < static_cast<uint8_t>(VehicleType::Count); vehicleType++)
+        for (uint16_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
             if ((available_vehicles & (1 << vehicleType)) == 0)
                 continue;

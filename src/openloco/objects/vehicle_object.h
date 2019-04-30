@@ -19,9 +19,10 @@ namespace openloco
         truck,
         tram,
         plane,
-        ship,
-        Count
+        ship
     };
+
+    constexpr uint8_t vehicleTypeCount = 6;
 
     enum class simple_animation_type : uint8_t
     {
