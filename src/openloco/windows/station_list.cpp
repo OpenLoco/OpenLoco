@@ -4,6 +4,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -282,8 +283,16 @@ namespace openloco::ui::windows::station_list
         // This sub is only used in this drawing routine. Integrate.
         call(0x00491A76, regs);
 
-        // Continue drawing with the original routine.
-        call(0x004914E2, regs);
+        // Draw company owner image.
+        auto company = companymgr::get(window->number);
+        auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+        uint32_t image = gfx::recolour(competitor->images[company->var_19], company->colour.primary);
+        uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
+        uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
+        gfx::draw_image(dpi, x, y, image);
+
+        // Continue
+        call(0x00491538, regs);
     }
 
     // 0x004917BB
