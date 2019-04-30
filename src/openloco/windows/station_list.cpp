@@ -1,5 +1,6 @@
 #include "../companymgr.h"
 #include "../graphics/colours.h"
+#include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -68,7 +69,7 @@ namespace openloco::ui::windows::station_list
         tab_ship_ports,
     };
 
-    loco_global<string_id, 0x112C826> _common_format_args;
+    loco_global<uint16_t[2], 0x112C826> _common_format_args;
 
     static void event_08(window* window);
     static void event_09(window* window);
@@ -273,7 +274,7 @@ namespace openloco::ui::windows::station_list
     // 0x004914D8
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        // // Draw widgets.
+        // Draw widgets.
         window->draw(dpi);
 
         registers regs;
@@ -291,8 +292,13 @@ namespace openloco::ui::windows::station_list
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
         gfx::draw_image(dpi, x, y, image);
 
-        // Continue
-        call(0x00491538, regs);
+        // TODO: locale-based pluralisation.
+        _common_format_args[0] = window->var_83C == 1 ? string_ids::status_num_stations_singular : string_ids::status_num_stations_plural;
+        _common_format_args[1] = window->var_83C;
+
+        // Draw number of stations.
+        gfx::point_t origin = { (int16_t)(window->x + 4), (int16_t)(window->y + window->height - 12) };
+        gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::white_stringid2, &*_common_format_args);
     }
 
     // 0x004917BB

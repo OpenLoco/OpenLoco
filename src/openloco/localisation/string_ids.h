@@ -176,6 +176,9 @@ namespace openloco::string_ids
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
+    constexpr string_id status_num_stations_singular = 520;
+    constexpr string_id status_num_stations_plural = 521;
+
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
