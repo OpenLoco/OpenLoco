@@ -321,6 +321,15 @@ namespace openloco::string_ids
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
 
+    constexpr string_id table_header_name = 1145;
+    constexpr string_id table_header_name_desc = 1146;
+    constexpr string_id table_header_monthly_profit = 1147;
+    constexpr string_id table_header_monthly_profit_desc = 1148;
+    constexpr string_id table_header_age = 1149;
+    constexpr string_id table_header_age_desc = 1150;
+    constexpr string_id table_header_reliability = 1151;
+    constexpr string_id table_header_reliability_desc = 1152;
+
     constexpr string_id tooltip_sort_by_name = 1153;
     constexpr string_id tooltip_sort_by_profit = 1154;
     constexpr string_id tooltip_sort_by_age = 1155;

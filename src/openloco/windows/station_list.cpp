@@ -59,6 +59,16 @@ namespace openloco::ui::windows::station_list
 
     static window_event_list _events;
 
+    static widx type_to_widx[] = {
+        tab_all_stations,
+        tab_rail_stations,
+        tab_road_stations,
+        tab_airports,
+        tab_ship_ports,
+    };
+
+    loco_global<string_id, 0x112C826> _common_format_args;
+
     static void event_08(window* window);
     static void event_09(window* window);
     // static void cursor(window* window);
@@ -169,15 +179,6 @@ namespace openloco::ui::windows::station_list
             throw std::domain_error("Unexpected station type");
 
         window* station_list = open(companyId);
-
-        static widx type_to_widx[] = {
-            tab_all_stations,
-            tab_rail_stations,
-            tab_road_stations,
-            tab_airports,
-            tab_ship_ports,
-        };
-
         widx target = type_to_widx[type];
         station_list->call_on_mouse_up(target);
 
@@ -206,9 +207,67 @@ namespace openloco::ui::windows::station_list
     // 0x00491344
     static void prepare_draw(ui::window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x00491344, regs);
+        // Reset active tab.
+        window->activated_widgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
+        window->activated_widgets |= (1ULL << type_to_widx[window->current_tab]);
+
+        // Set company name.
+        auto company = companymgr::get(window->number);
+        *_common_format_args = company->var_00;
+
+        // Resize general window widgets.
+        window->widgets[widx::frame].right = window->width - 1;
+        window->widgets[widx::frame].bottom = window->height - 1;
+
+        window->widgets[widx::panel].right = window->width - 1;
+        window->widgets[widx::panel].bottom = window->height - 1;
+
+        window->widgets[widx::caption].right = window->width - 2;
+
+        window->widgets[widx::close_button].left = window->width - 15;
+        window->widgets[widx::close_button].right = window->width - 3;
+
+        window->widgets[widx::scrollview].right = window->width - 4;
+        window->widgets[widx::scrollview].bottom = window->height - 14;
+
+        // Reposition header buttons.
+        window->widgets[widx::sort_name].right = std::min(203, window->width - 4);
+
+        window->widgets[widx::sort_status].left = std::min(204, window->width - 4);
+        window->widgets[widx::sort_status].right = std::min(403, window->width - 4);
+
+        window->widgets[widx::sort_total_waiting].left = std::min(404, window->width - 4);
+        window->widgets[widx::sort_total_waiting].right = std::min(493, window->width - 4);
+
+        window->widgets[widx::sort_accepts].left = std::min(494, window->width - 4);
+        window->widgets[widx::sort_accepts].right = std::min(613, window->width - 4);
+
+        // Reposition company selection.
+        window->widgets[widx::company_select].left = window->width - 28;
+        window->widgets[widx::company_select].right = window->width - 3;
+
+        // Set header button captions.
+        window->widgets[widx::sort_name].text = window->var_844 == 0 ? string_ids::table_header_name_desc : string_ids::table_header_name;
+        window->widgets[widx::sort_status].text = window->var_844 == 1 ? string_ids::table_header_status_desc : string_ids::table_header_status;
+        window->widgets[widx::sort_total_waiting].text = window->var_844 == 2 ? string_ids::table_header_total_waiting_desc : string_ids::table_header_total_waiting;
+        window->widgets[widx::sort_accepts].text = window->var_844 == 3 ? string_ids::table_header_accepts_desc : string_ids::table_header_accepts;
+
+        // Reposition tabs (0x00491A39 / 0x00491A3F)
+        widget_index tabs[] = { widx::tab_all_stations, widx::tab_rail_stations, widx::tab_road_stations, widx::tab_airports, widx::tab_ship_ports };
+        int16_t new_tab_x = window->widgets[widx::tab_all_stations].left;
+        int16_t tab_width = window->widgets[widx::tab_all_stations].right - new_tab_x;
+
+        for (auto widgetIndex : tabs)
+        {
+            if (window->is_disabled(widgetIndex))
+                continue;
+
+            widget_t& tab = window->widgets[widgetIndex];
+
+            tab.left = new_tab_x;
+            new_tab_x += tab_width;
+            tab.right = new_tab_x++;
+        }
     }
 
     // 0x004914D8
@@ -249,7 +308,7 @@ namespace openloco::ui::windows::station_list
         {
             registers regs;
             regs.edx = widgetIndex;
-            regs.edi = (int32_t)&_widgets[widgetIndex];
+            regs.edi = (int32_t)&window->widgets[widgetIndex];
             regs.esi = (int32_t)window;
 
             call(0x004CF2B3, regs);
@@ -341,7 +400,6 @@ namespace openloco::ui::windows::station_list
     // 0x00491841
     static void tooltip(ui::window* window, widget_index widgetIndex)
     {
-        loco_global<string_id, 0x112C826> common_format_args;
-        *common_format_args = string_ids::tooltip_scroll_station_list;
+        *_common_format_args = string_ids::tooltip_scroll_station_list;
     }
 }
