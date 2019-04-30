@@ -10,6 +10,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -61,12 +62,18 @@ namespace openloco::ui::windows::station_list
 
     static window_event_list _events;
 
-    static widx type_to_widx[] = {
-        tab_all_stations,
-        tab_rail_stations,
-        tab_road_stations,
-        tab_airports,
-        tab_ship_ports,
+    struct TabDetails
+    {
+        widx widgetIndex;
+        uint32_t imageId;
+    };
+
+    static TabDetails tabInformationByType[] = {
+        { tab_all_stations, interface_skin::image_ids::all_stations },
+        { tab_rail_stations, interface_skin::image_ids::rail_stations },
+        { tab_road_stations, interface_skin::image_ids::road_stations },
+        { tab_airports, interface_skin::image_ids::airports },
+        { tab_ship_ports, interface_skin::image_ids::ship_ports }
     };
 
     loco_global<uint16_t[2], 0x112C826> _common_format_args;
@@ -180,7 +187,7 @@ namespace openloco::ui::windows::station_list
             throw std::domain_error("Unexpected station type");
 
         window* station_list = open(companyId);
-        widx target = type_to_widx[type];
+        widx target = tabInformationByType[type].widgetIndex;
         station_list->call_on_mouse_up(target);
 
         return station_list;
@@ -210,7 +217,7 @@ namespace openloco::ui::windows::station_list
     {
         // Reset active tab.
         window->activated_widgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
-        window->activated_widgets |= (1ULL << type_to_widx[window->current_tab]);
+        window->activated_widgets |= (1ULL << tabInformationByType[window->current_tab].widgetIndex);
 
         // Set company name.
         auto company = companymgr::get(window->number);
@@ -271,18 +278,26 @@ namespace openloco::ui::windows::station_list
         }
     }
 
+    // 00491A76
+    static void draw_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    {
+        auto skin = objectmgr::get<interface_skin_object>();
+        auto companyColour = companymgr::get_company_colour(window->number);
+
+        for (uint8_t stationType = 0; stationType < std::size(tabInformationByType); stationType++)
+        {
+            TabDetails tab = tabInformationByType[stationType];
+            uint32_t image = gfx::recolour(skin->img + tab.imageId, companyColour);
+            widget::draw_tab(window, dpi, image, tab.widgetIndex);
+        }
+    }
+
     // 0x004914D8
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        // Draw widgets.
+        // Draw widgets and tabs.
         window->draw(dpi);
-
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-
-        // This sub is only used in this drawing routine. Integrate.
-        call(0x00491A76, regs);
+        draw_tabs(window, dpi);
 
         // Draw company owner image.
         auto company = companymgr::get(window->number);
