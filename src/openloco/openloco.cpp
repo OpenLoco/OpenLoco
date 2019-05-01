@@ -33,6 +33,7 @@
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"
+#include "multiplayer.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "platform/platform.h"
@@ -536,7 +537,7 @@ namespace openloco
             if (addr<0x00525340, int32_t>() == 1)
             {
                 addr<0x00525340, int32_t>() = 0;
-                WindowManager::set_508F10(WindowManager::flags_508F10::flag_1);
+                multiplayer::set_flag(multiplayer::flags::flag_1);
             }
 
             input::handle_keyboard();

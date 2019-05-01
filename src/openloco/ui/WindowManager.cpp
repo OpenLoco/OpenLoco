@@ -6,6 +6,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../multiplayer.h"
 #include "../stationmgr.h"
 #include "../townmgr.h"
 #include "../tutorial.h"
@@ -26,7 +27,6 @@ namespace openloco::ui::WindowManager
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
-    static loco_global<uint16_t, 0x00508F10> _508F10;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00525330> _cursorWheel;
@@ -690,33 +690,12 @@ namespace openloco::ui::WindowManager
         }
     }
 
-    bool has_508F10(flags_508F10 i)
-    {
-        return (((uint16_t)_508F10) & (1 << ((uint8_t)i))) != 0;
-    }
-
-    bool set_508F10(flags_508F10 i)
-    {
-        bool val = (((uint16_t)_508F10) & (1 << ((uint8_t)i))) != 0;
-
-        _508F10 = _508F10 | ~(1 << ((uint8_t)i));
-        return val;
-    }
-
-    static bool reset_508F10(flags_508F10 i)
-    {
-        bool val = (((uint16_t)_508F10) & (1 << ((uint8_t)i))) != 0;
-
-        _508F10 = _508F10 & ~(1 << ((uint8_t)i));
-        return val;
-    }
-
     // 0x004C96E7
     void handleInput()
     {
         bool set;
 
-        if (reset_508F10(flags_508F10::flag_10))
+        if (multiplayer::reset_flag(multiplayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
@@ -734,7 +713,7 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        if (reset_508F10(flags_508F10::flag_5))
+        if (multiplayer::reset_flag(multiplayer::flags::flag_5))
         {
             registers regs;
             regs.bl = 1;
@@ -743,9 +722,9 @@ namespace openloco::ui::WindowManager
             game_commands::do_command(21, regs);
         }
 
-        if (has_508F10(flags_508F10::flag_0) && has_508F10(flags_508F10::flag_4))
+        if (multiplayer::has_flag(multiplayer::flags::flag_0) && multiplayer::has_flag(multiplayer::flags::flag_4))
         {
-            if (reset_508F10(flags_508F10::flag_2))
+            if (multiplayer::reset_flag(multiplayer::flags::flag_2))
             {
                 call(0x004A0AB0);
                 call(0x004CF456);
@@ -754,7 +733,7 @@ namespace openloco::ui::WindowManager
                 game_commands::do_command(69, regs);
             }
 
-            if (reset_508F10(flags_508F10::flag_3))
+            if (multiplayer::reset_flag(multiplayer::flags::flag_3))
             {
                 call(0x004A0AB0);
                 call(0x004CF456);
@@ -764,20 +743,20 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        if (reset_508F10(flags_508F10::flag_4))
+        if (multiplayer::reset_flag(multiplayer::flags::flag_4))
         {
             registers regs;
             regs.bl = 1;
             game_commands::do_command(72, regs);
         }
 
-        if (reset_508F10(flags_508F10::flag_0))
+        if (multiplayer::reset_flag(multiplayer::flags::flag_0))
         {
             // window_close_construction_windows();
             call(0x004CF456);
         }
 
-        if (reset_508F10(flags_508F10::flag_1))
+        if (multiplayer::reset_flag(multiplayer::flags::flag_1))
         {
             registers regs;
             regs.bl = 1;
