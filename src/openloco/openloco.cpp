@@ -833,6 +833,11 @@ namespace openloco
         }
 #endif
 
+        // Call tick before ui::process_messages to ensure initialise is called
+        // otherwise window events can end up using an uninitialised window manager.
+        // This can be removed when initialise is moved out of tick().
+        tick();
+
         while (ui::process_messages())
         {
             if (addr<0x005252AC, uint32_t>() != 0)
