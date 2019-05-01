@@ -175,8 +175,8 @@ namespace openloco::ui
                 void (*on_dropdown)(window*, widget_index, int16_t);
                 void (*on_periodic_update)(window*);
                 void (*on_update)(window*);
-                uint32_t event_08;
-                uint32_t event_09;
+                void (*event_08)(window*);
+                void (*event_09)(window*);
                 uint32_t on_tool_update;
                 uint32_t on_tool_down;
                 uint32_t event_12;

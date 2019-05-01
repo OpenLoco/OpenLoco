@@ -638,7 +638,7 @@ namespace openloco::ui
 
     void window::call_8()
     {
-        if (event_handlers->event_08 == (uint32_t) nullptr)
+        if (event_handlers->event_08 == nullptr)
             return;
 
         if (is_interop_event(event_handlers->event_08))
@@ -649,12 +649,12 @@ namespace openloco::ui
             return;
         }
 
-        assert(false);
+        event_handlers->event_08(this);
     }
 
     void window::call_9()
     {
-        if (event_handlers->event_09 == (uint32_t) nullptr)
+        if (event_handlers->event_09 == nullptr)
             return;
 
         if (is_interop_event(event_handlers->event_09))
@@ -665,7 +665,7 @@ namespace openloco::ui
             return;
         }
 
-        assert(false);
+        event_handlers->event_09(this);
     }
 
     void window::call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos)
