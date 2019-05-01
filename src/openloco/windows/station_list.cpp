@@ -11,6 +11,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../stationmgr.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../widget.h"
 
@@ -78,7 +79,7 @@ namespace openloco::ui::windows::station_list
         { tab_ship_ports, interface_skin::image_ids::ship_ports }
     };
 
-    loco_global<uint16_t[2], 0x112C826> _common_format_args;
+    loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
@@ -464,11 +465,90 @@ namespace openloco::ui::windows::station_list
     // 0x0049157F
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
+        /*
         registers regs;
         regs.esi = (int32_t)window;
         regs.edi = (int32_t)dpi;
         regs.eax = (int32_t)scrollIndex;
         call(0x0049157F, regs);
+        return;
+        */
+
+        auto shade = colour::get_shade(window->colours[1], 4);
+        gfx::clear_single(*dpi, shade);
+
+        uint16_t ax = 0;
+        uint16_t dx = 0;
+        while (ax < window->var_83C)
+        {
+            uint16_t cx = dx + 10;
+            station_id_t stationId = window->row_info[ax];
+
+            // Skip items outside of view, or irrelevant to the current filter.
+            if (cx < dpi->y || dx >= cx + dpi->height || stationId == (uint16_t)-1)
+            {
+                dx += 10;
+                ax += 1;
+                continue;
+            }
+
+            string_id text_colour_id = string_ids::white_stringid2;
+
+            // Highlight selection.
+            if (stationId == window->row_hover)
+            {
+                gfx::draw_rect(dpi, 0, dx, window->width, rowHeight, 0x2000030);
+                text_colour_id = string_ids::wcolour2_stringid2;
+            }
+
+            auto station = stationmgr::get(stationId);
+
+            // First, draw the town name.
+            static const string_id label_icons[] = {
+                string_ids::label_icons_none,
+                string_ids::label_icons_rail,
+                string_ids::label_icons_road,
+                string_ids::label_icons_rail_road,
+                string_ids::label_icons_air,
+                string_ids::label_icons_rail_air,
+                string_ids::label_icons_road_air,
+                string_ids::label_icons_rail_road_air,
+                string_ids::label_icons_water,
+                string_ids::label_icons_rail_water,
+                string_ids::label_icons_road_water,
+                string_ids::label_icons_rail_road_water,
+                string_ids::label_icons_air_water,
+                string_ids::label_icons_rail_air_water,
+                string_ids::label_icons_road_air_water,
+                string_ids::label_icons_rail_road_air_water,
+            };
+
+            // TODO(avgeffen): I'm not seeing the town name drawn on screen.
+            _common_format_args[0] = string_ids::stringid_stringid;
+            _common_format_args[1] = station->name;
+            _common_format_args[2] = townmgr::get(station->town)->name;
+            _common_format_args[3] = label_icons[station->var_2A & 0x0F];
+
+            gfx::draw_string_494BBF(*dpi, 0, dx, 198, colour::black, text_colour_id, &*_common_format_args);
+
+            // Then the station's current status.
+            // TODO(avgeffen): implement this.
+            registers regs;
+            regs.dx = (int32_t)stationId;
+            call(0x00492A98, regs);
+
+            _common_format_args[0] = string_ids::buffer_1250;
+            gfx::draw_string_494BBF(*dpi, 200, dx, 198, colour::black, text_colour_id, &*_common_format_args);
+
+            // Total units waiting.
+            // TODO(avgeffen): implement this.
+
+            // And, finally, what goods the station accepts.
+            // TODO(avgeffen): implement this.
+
+            dx += 10;
+            ax += 1;
+        }
     }
 
     // 00491A76

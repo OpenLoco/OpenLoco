@@ -147,8 +147,27 @@ namespace openloco::string_ids
     constexpr string_id menu_airport = 227;
     constexpr string_id menu_ship_port = 228;
 
+    constexpr string_id label_icons_none = 230;
+    constexpr string_id label_icons_rail = 231;
+    constexpr string_id label_icons_road = 232;
+    constexpr string_id label_icons_rail_road = 233;
+    constexpr string_id label_icons_air = 234;
+    constexpr string_id label_icons_rail_air = 235;
+    constexpr string_id label_icons_road_air = 236;
+    constexpr string_id label_icons_rail_road_air = 237;
+    constexpr string_id label_icons_water = 238;
+    constexpr string_id label_icons_rail_water = 239;
+    constexpr string_id label_icons_road_water = 240;
+    constexpr string_id label_icons_rail_road_water = 241;
+    constexpr string_id label_icons_air_water = 242;
+    constexpr string_id label_icons_rail_air_water = 243;
+    constexpr string_id label_icons_road_air_water = 244;
+    constexpr string_id label_icons_rail_road_air_water = 245;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
+
+    constexpr string_id stringid_stringid = 347;
 
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
