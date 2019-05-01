@@ -5,10 +5,12 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
+#include "../stationmgr.h"
 #include "../ui/WindowManager.h"
 #include "../widget.h"
 
@@ -114,10 +116,178 @@ namespace openloco::ui::windows::station_list
     // 0x004910E8
     static void sub_4910E8(window* window)
     {
-        // This sub is only called from events in this window.
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x004910E8, regs);
+        for (auto station : stationmgr::stations())
+        {
+            if (station.empty())
+                continue;
+
+            if (station.owner == window->number)
+            {
+                station.var_2A &= ~0b10000;
+            }
+        }
+    }
+
+    //sort_name
+    // 0x004911FD
+    static bool sub_4911FD(const openloco::station& lhs, const openloco::station& rhs)
+    {
+        char lhsString[256] = { 0 };
+        stringmgr::format_string(lhsString, lhs.name);
+
+        char rhsString[256] = { 0 };
+        stringmgr::format_string(rhsString, rhs.name);
+
+        return strcmp(lhsString, rhsString) < 0;
+    }
+
+    // sort_total_waiting, sort_status
+    // 0x00491281, 0x00491247
+    static bool sub_491281(const openloco::station& lhs, const openloco::station& rhs)
+    {
+        uint32_t lhsSum = 0;
+        for (auto cargo : lhs.cargo_stats)
+        {
+            lhsSum += cargo.quantity;
+        }
+
+        uint32_t rhsSum = 0;
+        for (auto cargo : rhs.cargo_stats)
+        {
+            rhsSum += cargo.quantity;
+        }
+
+        return lhsSum < rhsSum;
+    }
+
+    // sort_accepts
+    // 0x004912BB
+    static bool sub_4912BB(const openloco::station& lhs, const openloco::station& rhs)
+    {
+        char* ptr;
+
+        char lhsString[256] = { 0 };
+        ptr = &lhsString[0];
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            if ((lhs.cargo_stats[cargoId].flags & 1) != 0)
+            {
+                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+            }
+        }
+
+        char rhsString[256] = { 0 };
+        ptr = &rhsString[0];
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            if ((rhs.cargo_stats[cargoId].flags & 1) != 0)
+            {
+                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+            }
+        }
+
+        return strcmp(lhsString, rhsString) < 0;
+    }
+
+    // 0x004911FD, 0x00491247, 0x00491281, 0x004912BB
+    static bool sub_4FEEC4(int i, const openloco::station& lhs, const openloco::station& rhs)
+    {
+        switch (i)
+        {
+            case sort_name - sort_name:
+                return sub_4911FD(lhs, rhs);
+
+            case sort_status - sort_name:
+            case sort_total_waiting - sort_name:
+                return sub_491281(lhs, rhs);
+
+            case sort_accepts - sort_name:
+                return sub_4912BB(lhs, rhs);
+        }
+
+        return false;
+    }
+
+    static uint8_t stationMask[] = {
+        0b1111,
+        0b0001,
+        0b0010,
+        0b0100,
+        0b1000,
+    };
+
+    // 0x0049111A
+    static void sub_49111A(window* window)
+    {
+        auto edi = -1;
+
+        auto i = -1;
+
+        for (auto& station : stationmgr::stations())
+        {
+            i++;
+            if (station.empty())
+                continue;
+
+            if (station.owner != window->number)
+                continue;
+
+            if ((station.var_2A & (1 << 5)) != 0)
+                continue;
+
+            if ((station.var_2A & stationMask[window->current_tab]) == 0)
+                continue;
+
+            if ((station.var_2A & (1 << 4)) != 0)
+                continue;
+
+            if (edi == -1)
+            {
+                edi = i;
+                continue;
+            }
+
+            if (sub_4FEEC4(window->var_844, station, *stationmgr::get(edi)))
+            {
+                edi = i;
+            }
+        }
+
+        if (edi != -1)
+        {
+            bool dl = false;
+
+            stationmgr::get(edi)->var_2A |= 0x10;
+
+            auto ebp = window->row_count;
+            if (edi != window->row_info[ebp])
+            {
+                window->row_info[ebp] = edi;
+                dl = true;
+            }
+
+            window->row_count += 1;
+            if (window->row_count > window->var_83C)
+            {
+                window->var_83C = window->row_count;
+                dl = true;
+            }
+
+            if (dl)
+            {
+                window->invalidate();
+            }
+        }
+        else
+        {
+            if (window->var_83C != window->row_count)
+            {
+                window->var_83C = window->row_count;
+                window->invalidate();
+            }
+
+            sub_4910E8(window);
+        }
     }
 
     // 0x00490F6C
@@ -420,7 +590,7 @@ namespace openloco::ui::windows::station_list
                 window->var_83C = 0;
                 window->row_hover = -1;
 
-                call(0x004910E8, regs);
+                sub_4910E8(window);
                 break;
             }
         }
@@ -469,10 +639,10 @@ namespace openloco::ui::windows::station_list
         registers regs;
         regs.esi = (int32_t)window;
 
-        // Why is this called three times??
-        call(0x0049111A, regs);
-        call(0x0049111A, regs);
-        call(0x0049111A, regs);
+        // Add three stations every tick.
+        sub_49111A(window);
+        sub_49111A(window);
+        sub_49111A(window);
     }
 
     // 0x00491999
