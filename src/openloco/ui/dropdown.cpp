@@ -1,4 +1,5 @@
 #include "dropdown.h"
+#include "../companymgr.h"
 #include "../console.h"
 #include "../interop/interop.hpp"
 #include "../window.h"
@@ -186,5 +187,28 @@ namespace openloco::ui::dropdown
         regs.di = height;
 
         call(0x4CCC7C, regs);
+    }
+
+    // 0x004CF2B3
+    void populateCompanySelect(window* window, widget_t* widget)
+    {
+        registers regs;
+        // regs.edx = widgetIndex;
+        regs.edi = (int32_t)widget;
+        regs.esi = (int32_t)window;
+
+        call(0x004CF2B3, regs);
+    }
+
+    // 0x004CF284
+    company_id_t getCompanyIdFromSelection(int16_t itemIndex)
+    {
+        registers regs;
+        // regs.edx = (int32_t)widgetIndex;
+        // regs.esi = (int32_t)window;
+        regs.ax = itemIndex;
+
+        call(0x004CF284, regs);
+        return regs.eax;
     }
 }

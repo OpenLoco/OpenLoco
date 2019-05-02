@@ -13,6 +13,7 @@
 #include "../stationmgr.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 #include "../widget.h"
 
 using namespace openloco::interop;
@@ -592,29 +593,42 @@ namespace openloco::ui::windows::station_list
     // 0x004917BB
     static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
     {
-        if (widgetIndex == widx::company_select)
-        {
-            registers regs;
-            regs.edx = (int32_t)widgetIndex;
-            regs.esi = (int32_t)window;
-            regs.ax = itemIndex;
+        if (widgetIndex != widx::company_select)
+            return;
 
-            call(0x004917C2);
-        }
+        uint32_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+
+        // Try to find an open station list for this company.
+        auto companyWindow = WindowManager::bringToFront(WindowType::stationList, companyId);
+        if (companyWindow != nullptr)
+            return;
+
+        // If not, we'll turn this window into a window for the company selected.
+        auto company = companymgr::get(companyId);
+        if (company->var_00 == string_ids::empty)
+            return;
+
+        window->number = companyId;
+        window->owner = companyId;
+        window->var_844 = 0;
+        window->row_count = 0;
+
+        sub_4910E8(window);
+
+        window->var_83C = 0;
+        window->row_hover = 0xFFFF;
+
+        window->call_on_resize();
+        window->call_prepare_draw();
+        window->init_scroll_widgets();
+        window->invalidate();
     }
 
     // 0x004917B0
     static void on_mouse_down(ui::window* window, widget_index widgetIndex)
     {
         if (widgetIndex == widx::company_select)
-        {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.edi = (int32_t)&window->widgets[widgetIndex];
-            regs.esi = (int32_t)window;
-
-            call(0x004CF2B3, regs);
-        }
+            dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
     }
 
     // 0x00491785
