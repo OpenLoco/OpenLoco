@@ -67,15 +67,15 @@ namespace openloco::map
 
     enum class element_type
     {
-        surface,   // 0x00
-        unk_1,     // 0x04
-        station,   // 0x08
-        unk_3,     // 0x0C
-        building,  // 0x10
-        industry,  // 0x14
-        unk_6,     // 0x18
-        unk_7,     // 0x1C
-        unk_8,     // 0x20
+        surface,  // 0x00
+        unk_1,    // 0x04
+        station,  // 0x08
+        unk_3,    // 0x0C
+        building, // 0x10
+        industry, // 0x14
+        unk_6,    // 0x18
+        unk_7,    // 0x1C
+        unk_8,    // 0x20
     };
 
     namespace element_flags
