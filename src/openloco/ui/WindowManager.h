@@ -35,6 +35,8 @@ namespace openloco::ui::WindowManager
     window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     void drawSingle(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
+    void callEvent8OnAllWindows();
+    void callEvent9OnAllWindows();
     void callViewportRotateEventOnAllWindows();
     void relocateWindows();
     void sub_4CEE0B(window* self);

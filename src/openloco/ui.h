@@ -57,6 +57,8 @@ namespace openloco::ui
 #if true || !(defined(__APPLE__) && defined(__MACH__))
     void set_screen_mode(config::screen_mode mode);
 #endif
+    void handleInput();
+    void minimalHandleInput();
 
     namespace viewport_interaction
     {

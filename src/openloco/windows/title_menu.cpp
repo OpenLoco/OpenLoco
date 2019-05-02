@@ -6,6 +6,7 @@
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"
+#include "../multiplayer.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -449,7 +450,7 @@ namespace openloco::ui::windows
             return;
         }
 
-        if ((addr<0x00508F10, uint16_t>() & 0x300) == 0)
+        if (!multiplayer::has_flag(multiplayer::flags::flag_8) && !multiplayer::has_flag(multiplayer::flags::flag_9))
         {
             window->invalidate();
             return;

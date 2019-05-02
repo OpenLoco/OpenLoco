@@ -1,10 +1,12 @@
 #include "WindowManager.h"
 #include "../companymgr.h"
 #include "../console.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../multiplayer.h"
 #include "../stationmgr.h"
 #include "../townmgr.h"
 #include "../tutorial.h"
@@ -710,6 +712,22 @@ namespace openloco::ui::WindowManager
         }
 
         viewportmgr::collectGarbage();
+    }
+
+    void callEvent8OnAllWindows()
+    {
+        for (window* window = _windowsEnd - 1; window >= _windows; window--)
+        {
+            window->call_8();
+        }
+    }
+
+    void callEvent9OnAllWindows()
+    {
+        for (window* window = _windowsEnd - 1; window >= _windows; window--)
+        {
+            window->call_9();
+        }
     }
 
     // 0x0045F18B

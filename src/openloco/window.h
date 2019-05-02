@@ -175,9 +175,9 @@ namespace openloco::ui
                 void (*on_dropdown)(window*, widget_index, int16_t);
                 void (*on_periodic_update)(window*);
                 void (*on_update)(window*);
-                uint32_t event_08;
-                uint32_t event_09;
-                uint32_t event_10;
+                void (*event_08)(window*);
+                void (*event_09)(window*);
+                uint32_t on_tool_update;
                 uint32_t on_tool_down;
                 uint32_t event_12;
                 uint32_t event_13;
@@ -415,6 +415,9 @@ namespace openloco::ui
         void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
         void call_on_periodic_update();                                                                   // 6
         void call_update();                                                                               // 7
+        void call_8();                                                                                    // 8
+        void call_9();                                                                                    // 9
+        void call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos);                          // 10
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16

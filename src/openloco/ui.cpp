@@ -31,11 +31,15 @@
 
 #include "config.h"
 #include "console.h"
+#include "game_commands.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"
 #include "interop/interop.hpp"
+#include "intro.h"
+#include "multiplayer.h"
 #include "openloco.h"
+#include "tutorial.h"
 #include "ui.h"
 #include "ui/WindowManager.h"
 #include "utility/string.hpp"
@@ -91,7 +95,11 @@ namespace openloco::ui
     loco_global<void*, 0x00525320> _hwnd;
 #endif // _WIN32
     loco_global<screen_info_t, 0x0050B884> screen_info;
+    static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
+    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
+    static loco_global<uint32_t, 0x00525E28> _525E28;
     loco_global<uint8_t[256], 0x01140740> _keyboard_state;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -877,4 +885,178 @@ namespace openloco::ui
         }
     }
 #endif
+
+    // 0x004C6EE6
+    static input::mouse_button game_get_next_input(uint32_t* x, int16_t* y)
+    {
+        registers regs;
+        call(0x004c6ee6, regs);
+
+        *x = regs.eax;
+        *y = regs.bx;
+
+        return (input::mouse_button)regs.cx;
+    }
+
+    // 0x004CD422
+    static void process_mouse_tool(int16_t x, int16_t y)
+    {
+        if (!input::has_flag(input::input_flags::tool_active))
+        {
+            return;
+        }
+
+        auto toolWindow = WindowManager::find(_toolWindowType, _toolWindowNumber);
+        if (toolWindow != nullptr)
+        {
+            toolWindow->call_tool_update(_toolWidgetIdx, x, y);
+        }
+        else
+        {
+            input::cancel_tool();
+        }
+    }
+
+    // 0x004C96E7
+    void handleInput()
+    {
+        if (multiplayer::reset_flag(multiplayer::flags::flag_10))
+        {
+            call(0x00435ACC);
+        }
+
+        bool set = _525E28 & (1 << 2);
+        *_525E28 &= ~(1 << 2);
+        if (set)
+        {
+            if (!is_title_mode() && !is_editor_mode())
+            {
+                if (tutorial::state() == tutorial::tutorial_state::none)
+                {
+                    call(0x4C95A6);
+                }
+            }
+        }
+
+        if (multiplayer::reset_flag(multiplayer::flags::flag_5))
+        {
+            game_commands::do_21(1, 2, 1);
+        }
+
+        if (!multiplayer::has_flag(multiplayer::flags::flag_0) && !multiplayer::has_flag(multiplayer::flags::flag_4))
+        {
+            if (multiplayer::reset_flag(multiplayer::flags::flag_2))
+            {
+                call(0x004A0AB0);
+                call(0x004CF456);
+                registers regs;
+                regs.bl = 1;
+                game_commands::do_command(69, regs);
+            }
+
+            if (multiplayer::reset_flag(multiplayer::flags::flag_3))
+            {
+                call(0x004A0AB0);
+                call(0x004CF456);
+                registers regs;
+                regs.bl = 1;
+                game_commands::do_command(70, regs);
+            }
+        }
+
+        if (multiplayer::reset_flag(multiplayer::flags::flag_4))
+        {
+            registers regs;
+            regs.bl = 1;
+            game_commands::do_command(72, regs);
+        }
+
+        if (multiplayer::reset_flag(multiplayer::flags::flag_0))
+        {
+            call(0x004A0AB0);
+            call(0x004CF456);
+        }
+
+        if (multiplayer::reset_flag(multiplayer::flags::flag_1))
+        {
+            game_commands::do_21(1, 0, 2);
+        }
+
+        if (ui::dirty_blocks_initialised())
+        {
+            WindowManager::callEvent8OnAllWindows();
+
+            WindowManager::invalidateAllWindowsAfterInput();
+            call(0x004c6e65); // update_cursor_position
+
+            uint32_t x;
+            int16_t y;
+            input::mouse_button state;
+            while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+            {
+                if (is_title_mode() && intro::is_active() && state == input::mouse_button::left_pressed)
+                {
+                    if (intro::state() == intro::intro_state::state_9)
+                    {
+                        intro::state(intro::intro_state::end);
+                        continue;
+                    }
+                    else
+                    {
+                        intro::state(intro::intro_state::state_8);
+                    }
+                }
+                input::handle_mouse(x, y, state);
+            }
+
+            if (input::has_flag(input::input_flags::flag5))
+            {
+                input::handle_mouse(x, y, state);
+            }
+            else if (x != 0x80000000)
+            {
+                x = std::clamp<int16_t>(x, 0, ui::width() - 1);
+                y = std::clamp<int16_t>(y, 0, ui::height() - 1);
+
+                input::handle_mouse(x, y, state);
+                input::process_mouse_over(x, y);
+                process_mouse_tool(x, y);
+            }
+        }
+
+        WindowManager::callEvent9OnAllWindows();
+    }
+
+    // 0x004C98CF
+    void minimalHandleInput()
+    {
+        WindowManager::callEvent8OnAllWindows();
+
+        WindowManager::invalidateAllWindowsAfterInput();
+        call(0x004c6e65); // update_cursor_position
+
+        uint32_t x;
+        int16_t y;
+        input::mouse_button state;
+        while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+        {
+            input::handle_mouse(x, y, state);
+        }
+
+        if (input::has_flag(input::input_flags::flag5))
+        {
+            input::handle_mouse(x, y, state);
+        }
+        else if (x != 0x80000000)
+        {
+            x = std::clamp<int16_t>(x, 0, ui::width() - 1);
+            y = std::clamp<int16_t>(y, 0, ui::height() - 1);
+
+            input::handle_mouse(x, y, state);
+            input::process_mouse_over(x, y);
+            process_mouse_tool(x, y);
+        }
+
+        WindowManager::callEvent9OnAllWindows();
+    }
 }
