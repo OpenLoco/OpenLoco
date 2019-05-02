@@ -6,6 +6,8 @@ namespace openloco::intro
     {
         none,
         begin,
+        state_8 = 8,
+        state_9 = 9,
         end = 254,
     };
 

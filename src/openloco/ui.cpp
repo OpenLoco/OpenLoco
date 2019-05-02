@@ -920,18 +920,16 @@ namespace openloco::ui
     // 0x004C96E7
     void handleInput()
     {
-        bool set;
-
         if (multiplayer::reset_flag(multiplayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
 
-        set = _525E28 & (1 << 2);
+        bool set = _525E28 & (1 << 2);
         *_525E28 &= ~(1 << 2);
         if (set)
         {
-            if ((get_screen_flags() & 3) == 0)
+            if (!is_title_mode() && !is_editor_mode())
             {
                 if (tutorial::state() == tutorial::tutorial_state::none)
                 {
@@ -945,7 +943,7 @@ namespace openloco::ui
             game_commands::do_21(1, 2, 1);
         }
 
-        if (multiplayer::has_flag(multiplayer::flags::flag_0) && multiplayer::has_flag(multiplayer::flags::flag_4))
+        if (!multiplayer::has_flag(multiplayer::flags::flag_0) && !multiplayer::has_flag(multiplayer::flags::flag_4))
         {
             if (multiplayer::reset_flag(multiplayer::flags::flag_2))
             {
@@ -975,7 +973,7 @@ namespace openloco::ui
 
         if (multiplayer::reset_flag(multiplayer::flags::flag_0))
         {
-            // window_close_construction_windows();
+            call(0x004A0AB0);
             call(0x004CF456);
         }
 
@@ -998,14 +996,14 @@ namespace openloco::ui
             {
                 if (is_title_mode() && intro::is_active() && state == input::mouse_button::left_pressed)
                 {
-                    if (intro::state() == (intro::intro_state)9)
+                    if (intro::state() == intro::intro_state::state_9)
                     {
                         intro::state(intro::intro_state::end);
                         continue;
                     }
                     else
                     {
-                        intro::state((intro::intro_state)8);
+                        intro::state(intro::intro_state::state_8);
                     }
                 }
                 input::handle_mouse(x, y, state);
