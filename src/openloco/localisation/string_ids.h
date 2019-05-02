@@ -335,7 +335,7 @@ namespace openloco::string_ids
     constexpr string_id num_buses_plural = 1271;
     constexpr string_id num_trucks_plural = 1272;
     constexpr string_id num_trams_plural = 1273;
-    constexpr string_id num_aircraft_plural = 1274;
+    constexpr string_id num_aircrafts_plural = 1274;
     constexpr string_id num_ships_plural = 1275;
 
     constexpr string_id menu_sprite_stringid = 1287;
