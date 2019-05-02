@@ -391,6 +391,9 @@ namespace openloco::string_ids
 
     constexpr string_id station_cargo_rating_percent = 1423;
 
+    constexpr string_id waiting_cargo_separator = 1430;
+    constexpr string_id waiting = 1431;
+    constexpr string_id nothing_waiting = 1432;
     constexpr string_id table_header_status = 1433;
     constexpr string_id table_header_status_desc = 1434;
     constexpr string_id table_header_total_waiting = 1435;
@@ -400,6 +403,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_station_status = 1439;
     constexpr string_id tooltip_sort_by_total_units_waiting = 1440;
     constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
+    constexpr string_id num_units = 1442;
+    constexpr string_id unit_separator = 1443;
 
     constexpr string_id tooltip_select_company = 1465;
 

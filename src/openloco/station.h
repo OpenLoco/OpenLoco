@@ -71,6 +71,7 @@ namespace openloco
         void update();
         uint32_t calc_accepted_cargo(uint16_t ax = 0xFFFF);
         void sub_48F7D1();
+        void getStatusString(const char* buffer);
         bool update_cargo();
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
         void invalidate();

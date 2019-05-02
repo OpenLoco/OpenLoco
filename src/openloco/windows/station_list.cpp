@@ -533,19 +533,40 @@ namespace openloco::ui::windows::station_list
             gfx::draw_string_494BBF(*dpi, 0, dx, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
-            // TODO(avgeffen): implement this.
-            registers regs;
-            regs.dx = (int32_t)stationId;
-            call(0x00492A98, regs);
+            const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+            station->getStatusString((char*)buffer);
 
             _common_format_args[0] = string_ids::buffer_1250;
             gfx::draw_string_494BBF(*dpi, 200, dx, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
-            // TODO(avgeffen): implement this.
+            uint16_t totalUnits = 0;
+            for (auto stats : station->cargo_stats)
+                totalUnits += stats.quantity;
+
+            _common_format_args[0] = string_ids::num_units;
+            *(uint32_t*)&_common_format_args[1] = totalUnits;
+            gfx::draw_string_494BBF(*dpi, 400, dx, 88, colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
-            // TODO(avgeffen): implement this.
+            char* ptr = (char*)buffer;
+            *ptr = '\0';
+
+            for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+            {
+                auto stats = station->cargo_stats[cargoId];
+
+                if ((stats.flags & 1) == 0)
+                    continue;
+
+                if (*buffer != '\0')
+                    ptr = stringmgr::format_string(ptr, string_ids::unit_separator);
+
+                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+            }
+
+            _common_format_args[0] = string_ids::buffer_1250;
+            gfx::draw_string_494BBF(*dpi, 490, dx, 118, colour::black, text_colour_id, &*_common_format_args);
 
             dx += 10;
             ax += 1;
