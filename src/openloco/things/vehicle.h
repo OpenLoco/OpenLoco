@@ -1,13 +1,17 @@
 #pragma once
 
+#include "../audio/audio.h"
 #include "../company.h"
 #include "../objects/vehicle_object.h"
+#include "../ui/WindowType.h"
+#include "../window.h"
 #include "thing.h"
 
 namespace openloco
 {
     struct vehicle_bogie;
     struct vehicle_body;
+    struct vehicle_26;
 
     namespace flags_5f
     {
@@ -64,6 +68,13 @@ namespace openloco
             if (vehicle != nullptr)
                 return vehicle;
             return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
+        }
+        vehicle_26* as_vehicle_2or6() const
+        {
+            auto vehicle = as<vehicle_26, vehicle_thing_type::vehicle_2>();
+            if (vehicle != nullptr)
+                return vehicle;
+            return as<vehicle_26, vehicle_thing_type::vehicle_6>();
         }
     };
 
@@ -139,6 +150,16 @@ namespace openloco
         void electric_spark1_animation_update(uint8_t num, int8_t var_05);
         void electric_spark2_animation_update(uint8_t num, int8_t var_05);
         void ship_wake_animation_update(uint8_t num, int8_t var_05);
+    };
+
+    struct vehicle_26 : vehicle_base
+    {
+        uint8_t pad_20[0x44 - 0x20];
+        uint8_t sound_id; // 0x44
+        uint8_t pad_45[0x4A - 0x45];
+        uint16_t var_4A;                       // sound-related flag(s)
+        ui::window_number sound_window_number; // 0x4C
+        ui::WindowType sound_window_type;      // 0x4E
     };
 #pragma pack(pop)
 }

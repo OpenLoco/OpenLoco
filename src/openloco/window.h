@@ -228,6 +228,11 @@ namespace openloco::ui
         int16_t top = 0;
         int16_t bottom = 0;
         int16_t right = 0;
+
+        constexpr bool contains(const viewport_pos& vpos)
+        {
+            return (left < vpos.x && top < vpos.y && right >= vpos.x && bottom >= vpos.y);
+        }
     };
 
     namespace viewport_flags

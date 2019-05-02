@@ -78,6 +78,7 @@ namespace openloco::audio
     static loco_global<bool, 0x0050D554> _audioIsPaused;
     static loco_global<bool, 0x0050D555> _audioIsEnabled;
 
+    static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
     static audio_format _outputFormat;
     static std::array<channel, 4> _channels;
@@ -790,11 +791,75 @@ namespace openloco::audio
         return false;
     }
 
-    static void sub_48A274(vehicle* v)
+    static void sub_48A274(vehicle* baseVehicle)
     {
-        registers regs;
-        regs.esi = (int32_t)v;
-        call(0x0048A274, regs);
+        // TODO: move vehicle_26 cast up
+        auto v = baseVehicle->as_vehicle_2or6();
+        if (v == nullptr)
+            return;
+
+        if (v->sound_id == (uint8_t)sound_id::null)
+            return;
+
+        // TODO: left or top?
+        if (v->sprite_left == (int16_t)0x8000u)
+            return;
+
+        if (_numActiveVehicleSounds >= config::get().max_vehicle_sounds)
+            return;
+
+        auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
+
+        auto main = WindowManager::getMainWindow();
+        if (main != nullptr && main->viewports[0] != nullptr)
+        {
+            auto viewport = main->viewports[0];
+            ViewportRect extendedViewport = {};
+
+            auto quarterWidth = viewport->view_width / 4;
+            auto quarterHeight = viewport->view_height / 4;
+            extendedViewport.left = viewport->view_x - quarterWidth;
+            extendedViewport.top = viewport->view_y - quarterHeight;
+            extendedViewport.right = viewport->view_x + viewport->view_width + quarterWidth;
+            extendedViewport.right = viewport->view_y + viewport->view_height + quarterHeight;
+
+            if (extendedViewport.contains(spritePosition))
+            {
+                // jump + return
+                _numActiveVehicleSounds += 1;
+                v->var_4A |= 1;
+                v->sound_window_type = main->type;
+                v->sound_window_number = main->number;
+                return;
+            }
+        }
+
+        if (WindowManager::count() == 0)
+            return;
+
+        for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
+        {
+            auto w = WindowManager::get(i);
+
+            if (w->type == WindowType::main)
+                continue;
+
+            if (w->type == WindowType::unk_36)
+                continue;
+
+            auto viewport = w->viewports[0];
+            if (viewport == nullptr)
+                continue;
+
+            if (viewport->contains(spritePosition))
+            {
+                _numActiveVehicleSounds += 1;
+                v->var_4A |= 1;
+                v->sound_window_type = w->type;
+                v->sound_window_number = w->number;
+                return;
+            }
+        }
     }
 
     static void off_4FEB58(vehicle* v, int32_t x)
@@ -826,7 +891,7 @@ namespace openloco::audio
     {
         if (x == 0)
         {
-            addr<0x0112C666, uint8_t>() = 0;
+            _numActiveVehicleSounds = 0;
         }
 
         auto v = thingmgr::first<vehicle>();

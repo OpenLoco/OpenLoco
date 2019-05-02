@@ -60,7 +60,7 @@ namespace openloco::config
         uint32_t force_software_audio_mixer;        // 0x1F
         uint8_t music_playing;                      // 0x23
         uint8_t construction_marker;                // 0x50AED8, 0x24
-        uint8_t var_25;                             // 0x25
+        uint8_t max_vehicle_sounds;                 // 0x25
         uint8_t max_sound_instances;                // 0x26
         uint8_t sound_quality;                      // 0x27
         uint8_t measurement_format;                 // 0x50AEDC, 0x28
