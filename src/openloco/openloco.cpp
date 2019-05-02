@@ -362,7 +362,7 @@ namespace openloco
 
             input::process_keyboard_input();
             WindowManager::update();
-            WindowManager::handleInput();
+            ui::handleInput();
             sub_4383ED();
             return;
         }
@@ -388,7 +388,7 @@ namespace openloco
             input::process_keyboard_input();
             WindowManager::update();
             WindowManager::update();
-            WindowManager::handleInput();
+            ui::handleInput();
             sub_4383ED();
             sub_46E388();
 
@@ -424,7 +424,7 @@ namespace openloco
             input::process_keyboard_input();
             WindowManager::update();
             WindowManager::update();
-            WindowManager::handleInput();
+            ui::handleInput();
             sub_4383ED();
             sub_46E388();
         }

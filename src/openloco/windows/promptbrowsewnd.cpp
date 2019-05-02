@@ -208,7 +208,7 @@ namespace openloco::ui::prompt_browse
                     WindowManager::dispatchUpdateAll();
                     input::process_keyboard_input();
                     WindowManager::update();
-                    WindowManager::minimalHandleInput();
+                    ui::minimalHandleInput();
                     call(0x004CF63B);
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
