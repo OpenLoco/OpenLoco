@@ -821,7 +821,7 @@ namespace openloco::audio
             extendedViewport.left = viewport->view_x - quarterWidth;
             extendedViewport.top = viewport->view_y - quarterHeight;
             extendedViewport.right = viewport->view_x + viewport->view_width + quarterWidth;
-            extendedViewport.right = viewport->view_y + viewport->view_height + quarterHeight;
+            extendedViewport.bottom = viewport->view_y + viewport->view_height + quarterHeight;
 
             if (extendedViewport.contains(spritePosition))
             {
