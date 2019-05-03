@@ -6,6 +6,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../tutorial.h"
@@ -46,8 +47,9 @@ namespace openloco::input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<uint8_t, 0x00508F18> _keyModifier;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
+    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
+    static loco_global<uint8_t, 0x00508F18> _keyModifier;
     static loco_global<ui::WindowType, 0x005233B6> _modalWindowType;
     static std::string _cheatBuffer; // 0x0011364A5
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
@@ -319,5 +321,165 @@ namespace openloco::input
             if (try_shortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                 continue;
         }
+    }
+
+    static void edgeScroll()
+    {
+        if (tutorial::state() != tutorial::tutorial_state::none)
+            return;
+
+        if (config::get().edge_scrolling == 0)
+            return;
+
+        if (input::state() != input_state::normal && input::state() != input_state::dropdown_active)
+            return;
+
+        if (has_key_modifier(key_modifier::shift) || has_key_modifier(key_modifier::control))
+            return;
+
+        gfx::point_t delta = { 0, 0 };
+        auto cursor = getMouseLocation();
+
+        if (cursor.x == 0)
+            delta.x -= 12;
+
+        if (cursor.x == ui::width() - 1)
+            delta.x += 12;
+
+        if (cursor.y == 0)
+            delta.y -= 12;
+
+        if (cursor.y == ui::height() - 1)
+            delta.y += 12;
+
+        if (delta.x == 0 && delta.y == 0)
+            return;
+
+        auto main = WindowManager::getMainWindow();
+        if ((main->flags & window_flags::flag_2) != 0)
+            return;
+
+        if (openloco::is_title_mode())
+            return;
+
+        auto viewport = main->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        delta.x *= 1 << viewport->zoom;
+        delta.y *= 1 << viewport->zoom;
+        main->viewport_configurations[0].saved_view_x += delta.x;
+        main->viewport_configurations[0].saved_view_y += delta.y;
+        input::set_flag(input_flags::viewport_scrolling);
+    }
+
+    static void keyScroll()
+    {
+        if (tutorial::state() != tutorial::tutorial_state::none)
+            return;
+
+        if (_modalWindowType != WindowType::undefined)
+            return;
+
+        if (WindowManager::find(WindowType::textInput) != nullptr)
+            return;
+
+        gfx::point_t delta = { 0, 0 };
+
+        if (_keyboardState[DIK_LEFT] & 0x80)
+            delta.x -= 8;
+
+        if (_keyboardState[DIK_UP] & 0x80)
+            delta.y -= 8;
+
+        if (_keyboardState[DIK_DOWN] & 0x80)
+            delta.y += 8;
+
+        if (_keyboardState[DIK_RIGHT] & 0x80)
+            delta.x += 8;
+
+        if (delta.x == 0 && delta.y == 0)
+            return;
+
+        auto main = WindowManager::getMainWindow();
+        if ((main->flags & window_flags::flag_2) != 0)
+            return;
+
+        if (openloco::is_title_mode())
+            return;
+
+        auto viewport = main->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        delta.x *= 1 << viewport->zoom;
+        delta.y *= 1 << viewport->zoom;
+        main->viewport_configurations[0].saved_view_x += delta.x;
+        main->viewport_configurations[0].saved_view_y += delta.y;
+        input::set_flag(input_flags::viewport_scrolling);
+    }
+
+    // 0x00452667
+    static int16_t saveScreenshot()
+    {
+        registers regs;
+
+        auto result = call(0x00452667, regs);
+        bool cf = (result & (1 << 8)) != 0;
+
+        if (cf)
+        {
+            throw std::runtime_error("Failed to save screenshot");
+        }
+
+        return regs.ax;
+    }
+
+    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
+
+    // 0x004BE92A
+    void handle_keyboard()
+    {
+        if (_screenshotCountdown != 0)
+        {
+            _screenshotCountdown--;
+            if (_screenshotCountdown == 0)
+            {
+                try
+                {
+                    auto index = saveScreenshot();
+                    *((string_id*)(&_commonFormatArgs[0])) = string_ids::screenshot_filename_template;
+                    *((int16_t*)(&_commonFormatArgs[2])) = index;
+                    windows::show_error(string_ids::screenshot_saved_as, string_ids::null, false);
+                }
+                catch (const std::exception& e)
+                {
+                    windows::show_error(string_ids::screenshot_failed);
+                }
+            }
+        }
+
+        edgeScroll();
+
+        _keyModifier = _keyModifier & ~(key_modifier::shift | key_modifier::control | key_modifier::unknown);
+
+        if (addr<0x005251CC, uint8_t>() != 1)
+        {
+            return;
+        }
+
+        if (_keyboardState[DIK_LSHIFT] & 0x80)
+            _keyModifier |= key_modifier::shift;
+
+        if (_keyboardState[DIK_RSHIFT] & 0x80)
+            _keyModifier |= key_modifier::shift;
+
+        if (_keyboardState[DIK_LCONTROL] & 0x80)
+            _keyModifier |= key_modifier::control;
+
+        if (_keyboardState[DIK_RCONTROL] & 0x80)
+            _keyModifier |= key_modifier::control;
+
+        keyScroll();
     }
 }

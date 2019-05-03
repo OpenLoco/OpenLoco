@@ -720,7 +720,7 @@ namespace openloco::ui::prompt_browse
         {
             if (sub_446F1D())
             {
-                windows::show_error(string_ids::error_invalid_filename, 0xFFFF);
+                windows::show_error(string_ids::error_invalid_filename);
             }
             else
             {
