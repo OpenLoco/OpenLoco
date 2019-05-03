@@ -24,6 +24,14 @@ namespace openloco::ui
         return (uint32_t)e < 0x004D7000;
     }
 
+    window::window(gfx::point_t position, gfx::ui_size_t size)
+        : x(position.x)
+        , y(position.y)
+        , width(size.width)
+        , height(size.height)
+    {
+    }
+
     bool window::can_resize()
     {
         return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
