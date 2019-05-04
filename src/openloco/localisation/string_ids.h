@@ -195,6 +195,9 @@ namespace openloco::string_ids
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
+    constexpr string_id spinner_up = 486;
+    constexpr string_id spinner_down = 487;
+
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
@@ -501,6 +504,16 @@ namespace openloco::string_ids
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
 
+    constexpr string_id title_landscape_generation_options = 1585;
+    constexpr string_id title_landscape_generation_land = 1586;
+    constexpr string_id title_landscape_generation_forests = 1587;
+    constexpr string_id title_landscape_generation_towns = 1588;
+    constexpr string_id title_landscape_generation_industries = 1589;
+    constexpr string_id tooltip_landscape_generation_options = 1590;
+    constexpr string_id tooltip_landscape_generation_land = 1591;
+    constexpr string_id tooltip_landscape_generation_forests = 1592;
+    constexpr string_id tooltip_landscape_generation_towns = 1593;
+    constexpr string_id tooltip_landscape_generation_industries = 1594;
     constexpr string_id music_none = 1595;
     constexpr string_id music_chuggin_along = 1596;
     constexpr string_id music_long_dusty_road = 1597;
@@ -531,6 +544,47 @@ namespace openloco::string_ids
     constexpr string_id music_running_on_time = 1622;
     constexpr string_id music_get_me_to_gladstone_bay = 1623;
     constexpr string_id music_sandy_track_blues = 1624;
+    constexpr string_id uint16_raw = 1625;
+    constexpr string_id start_year = 1626;
+    constexpr string_id label_generate_random_landscape_when_game_starts = 1627;
+    constexpr string_id tooltip_generate_random_landscape_when_game_starts = 1628;
+    constexpr string_id button_generate_landscape = 1629;
+    constexpr string_id tooltip_generate_random_landscape = 1630;
+    constexpr string_id sea_level = 1636;
+    constexpr string_id sea_level_units = 1637;
+    constexpr string_id number_of_forests = 1638;
+    constexpr string_id number_of_forests_value = 1639;
+    constexpr string_id minimum_forest_radius = 1640;
+    constexpr string_id minimum_forest_radius_blocks = 1641;
+    constexpr string_id maximum_forest_radius = 1642;
+    constexpr string_id maximum_forest_radius_blocks = 1643;
+    constexpr string_id minimum_forest_density = 1644;
+    constexpr string_id minimum_forest_density_pct = 1645;
+    constexpr string_id maximum_forest_density = 1646;
+    constexpr string_id maximum_forest_density_pct = 1647;
+    constexpr string_id number_random_trees = 1648;
+    constexpr string_id number_random_trees_value = 1649;
+    constexpr string_id min_altitude_for_trees = 1650;
+    constexpr string_id min_altitude_for_trees_height = 1651;
+    constexpr string_id max_altitude_for_trees = 1652;
+    constexpr string_id max_altitude_for_trees_height = 1653;
+    constexpr string_id min_land_height = 1654;
+    constexpr string_id min_land_height_units = 1655;
+    constexpr string_id topography_style = 1656;
+    constexpr string_id flat_land = 1657;
+    constexpr string_id small_hills = 1658;
+    constexpr string_id mountains = 1659;
+    constexpr string_id half_mountains_half_hills = 1660;
+    constexpr string_id half_mountains_half_flat = 1661;
+    constexpr string_id hill_density = 1662;
+    constexpr string_id hill_density_pct = 1663;
+    constexpr string_id number_of_towns = 1664;
+    constexpr string_id number_of_towns_value = 1665;
+    constexpr string_id maximum_town_size = 1666;
+    constexpr string_id low = 1667;
+    constexpr string_id medium = 1668;
+    constexpr string_id high = 1669;
+    constexpr string_id number_of_industries = 1670;
 
     constexpr string_id change = 1700;
 
@@ -538,6 +592,7 @@ namespace openloco::string_ids
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
 
+    constexpr string_id create_hills_right_up_to_edge_of_map = 1739;
     constexpr string_id title_menu_scenario_editor = 1740;
 
     constexpr string_id menu_map = 1742;
@@ -545,6 +600,9 @@ namespace openloco::string_ids
     constexpr string_id randomly_generated_landscape = 1821;
 
     constexpr string_id title_exit_game = 1869;
+
+    constexpr string_id allow_industries_to_close_down_during_game = 1871;
+    constexpr string_id allow_new_industries_to_start_up_during_game = 1872;
 
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;

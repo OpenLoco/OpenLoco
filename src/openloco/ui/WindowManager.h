@@ -96,6 +96,11 @@ namespace openloco::ui::windows::industry_list
     window* open();
 }
 
+namespace openloco::ui::windows::LandscapeGeneration
+{
+    window* open();
+}
+
 namespace openloco::ui::windows::map
 {
     void open();
