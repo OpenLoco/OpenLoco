@@ -17,9 +17,16 @@ namespace openloco::ui::windows::LandscapeGeneration
     static const gfx::ui_size_t window_size = { 366, 217 };
     static const gfx::ui_size_t land_tab_size = { 366, 232 };
 
+    static loco_global<uint16_t, 0x00525FB2> seaLevel;
+
     static loco_global<uint8_t, 0x00526247> industryFlags;
+
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+
+    static loco_global<uint8_t, 0x009C8898> minimumLandHeight;
+    static loco_global<uint8_t, 0x009C8899> topographyStyle;
+    static loco_global<uint8_t, 0x009C889A> hillDensity;
 
     static loco_global<uint16_t, 0x009C888E> numberOfForests;
     static loco_global<uint8_t, 0x009C8890> minimumForestRadius;
@@ -298,9 +305,25 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     namespace land
     {
-        // TODO(avgeffen): widx
-        uint64_t enabled_widgets = 0b111011110110111110100;
-        uint64_t holdable_widgets = 0b11000110110000000000;
+        enum widx
+        {
+            sea_level = 9,
+            sea_level_up,
+            sea_level_down,
+            min_land_height,
+            min_land_height_up,
+            min_land_height_down,
+            topography_style,
+            topography_style_btn,
+            hill_density,
+            hill_density_up,
+            hill_density_down,
+            hills_edge_of_map,
+            scrollview,
+        };
+
+        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
+        uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static widget_t widgets[] = {
             common_options_widgets(232, string_ids::title_landscape_generation_land),
@@ -321,6 +344,192 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         static window_event_list events;
+
+        // 0x0043DF89
+        static void draw(window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::sea_level].top,
+                colour::black,
+                string_ids::sea_level,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::min_land_height].top,
+                colour::black,
+                string_ids::min_land_height,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::topography_style].top,
+                colour::black,
+                string_ids::topography_style,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::hill_density].top,
+                colour::black,
+                string_ids::hill_density,
+                nullptr);
+        }
+
+        static const string_id topographyStyleIds[] = {
+            string_ids::flat_land,
+            string_ids::small_hills,
+            string_ids::mountains,
+            string_ids::half_mountains_half_hills,
+            string_ids::half_mountains_half_flat,
+        };
+
+        // 0x0043E1BA
+        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::topography_style_btn:
+                    if (itemIndex != -1)
+                    {
+                        *topographyStyle = itemIndex;
+                        window->invalidate();
+                    }
+                    break;
+
+                case widx::scrollview:
+                    // TODO(avgeffen): see 0x0043E27D
+                    break;
+            }
+        }
+
+        // 0x0043E173
+        static void on_mouse_down(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::sea_level_up:
+                    *seaLevel = std::min(*seaLevel + 1, 28);
+                    break;
+
+                case widx::sea_level_down:
+                    *seaLevel = std::max(0, *seaLevel - 1);
+                    break;
+
+                case widx::min_land_height_up:
+                    *minimumLandHeight = std::min(*minimumLandHeight + 1, 15);
+                    break;
+
+                case widx::min_land_height_down:
+                    *minimumLandHeight = std::max(1, *minimumLandHeight - 1);
+                    break;
+
+                case widx::topography_style_btn:
+                {
+                    for (size_t i = 0; i < std::size(topographyStyleIds); i++)
+                    {
+                        int16_t index = static_cast<int16_t>(i);
+                        dropdown::add(index, topographyStyleIds[index]);
+                    }
+
+                    widget_t& target = window->widgets[widx::topography_style];
+                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(topographyStyleIds)), 0x80);
+                    dropdown::set_highlighted_item(*topographyStyle);
+                    break;
+                }
+
+                case widx::hill_density_up:
+                    *hillDensity = std::min(*hillDensity + 1, 100);
+                    break;
+
+                case widx::hill_density_down:
+                    *hillDensity = std::max(0, *hillDensity - 1);
+                    break;
+            }
+        }
+
+        // 0x0043E14E
+        static void on_mouse_up(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(window);
+                    break;
+
+                case common::widx::tab_options:
+                case common::widx::tab_land:
+                case common::widx::tab_forests:
+                case common::widx::tab_towns:
+                case common::widx::tab_industries:
+                    common::switchTab(window, widgetIndex);
+                    break;
+
+                case widx::hills_edge_of_map:
+                    if ((*scenarioFlags & (1 << 1)) == 0)
+                        *scenarioFlags |= (1 << 1);
+                    else
+                        *scenarioFlags &= ~(1 << 1);
+                    window->invalidate();
+                    break;
+            }
+        }
+
+        // 0x0043DEBF
+        static void prepare_draw(window* window)
+        {
+            common::prepare_draw(window);
+
+            commonFormatArgs[0] = *seaLevel;
+            commonFormatArgs[1] = *minimumLandHeight;
+            commonFormatArgs[2] = *hillDensity;
+
+            window->widgets[widx::topography_style].text = topographyStyleIds[*topographyStyle];
+
+            if ((*scenarioFlags & (1 << 1)) != 0)
+                window->activated_widgets |= (1 << widx::hills_edge_of_map);
+            else
+                window->activated_widgets &= ~(1 << widx::hills_edge_of_map);
+        }
+
+        // 0x0043E2A2
+        static void tooltip(ui::window* window, widget_index widgetIndex)
+        {
+            commonFormatArgs[0] = string_ids::tooltip_scroll_list;
+        }
+
+        // 0x0043E3D9
+        static void update(window* window)
+        {
+            common::update(window);
+
+            auto dropdown = WindowManager::find(WindowType::dropdown, 0);
+            if (dropdown != nullptr && window->row_hover != 0xFFFF)
+            {
+                window->row_hover = 0xFFFF;
+                window->invalidate();
+            }
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            // events.draw_scroll = draw_scroll;
+            // events.get_scroll_size = get_scroll_size;
+            events.prepare_draw = prepare_draw;
+            events.on_dropdown = on_dropdown;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
+            events.on_update = update;
+            events.tooltip = tooltip;
+        }
     }
 
     namespace forests
@@ -890,6 +1099,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             options::initEvents();
+            land::initEvents();
             forests::initEvents();
             towns::initEvents();
             industries::initEvents();
