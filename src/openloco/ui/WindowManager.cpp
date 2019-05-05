@@ -1166,6 +1166,15 @@ namespace openloco::ui::WindowManager
         }
     }
 
+    // 0x004A0AB0
+    void closeConstructionWindows()
+    {
+        close(WindowType::construction);
+        close(WindowType::companyFaceSelection);
+        input::cancel_tool();
+        addr<0x00522096, uint8_t>() = 0;
+    }
+
     // 0x004BF089
     void closeTopmost()
     {

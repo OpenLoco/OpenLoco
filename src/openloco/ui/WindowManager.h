@@ -43,6 +43,7 @@ namespace openloco::ui::WindowManager
     void relocateWindows();
     void sub_4CEE0B(window* self);
     void sub_4B93A5(window_number number);
+    void closeConstructionWindows();
     void closeTopmost();
     void allWheelInput();
     bool isInFront(ui::window* w);
@@ -99,6 +100,11 @@ namespace openloco::ui::windows::industry_list
 namespace openloco::ui::windows::LandscapeGeneration
 {
     window* open();
+}
+
+namespace openloco::ui::windows::LandscapeGenerationConfirm
+{
+    window* open(int32_t prompt_type);
 }
 
 namespace openloco::ui::windows::map

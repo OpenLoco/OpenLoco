@@ -53,6 +53,8 @@ namespace openloco::string_ids
     constexpr string_id month_short_november = 51;
     constexpr string_id month_short_december = 52;
 
+    constexpr string_id close_window_cross = 56;
+
     constexpr string_id tooltip_close_window = 60;
 
     constexpr string_id display_resolution_dropdown_format = 65;
@@ -550,6 +552,11 @@ namespace openloco::string_ids
     constexpr string_id tooltip_generate_random_landscape_when_game_starts = 1628;
     constexpr string_id button_generate_landscape = 1629;
     constexpr string_id tooltip_generate_random_landscape = 1630;
+    constexpr string_id label_ok = 1631;
+    constexpr string_id title_generate_new_landscape = 1632;
+    constexpr string_id title_random_landscape_option = 1633;
+    constexpr string_id prompt_confirm_generate_landscape = 1634;
+    constexpr string_id prompt_confirm_random_landscape = 1635;
     constexpr string_id sea_level = 1636;
     constexpr string_id sea_level_units = 1637;
     constexpr string_id number_of_forests = 1638;
