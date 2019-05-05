@@ -6,6 +6,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../scenario.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
@@ -19,6 +20,8 @@ namespace openloco::ui::windows::LandscapeGeneration
     static loco_global<uint8_t, 0x00526247> industryFlags;
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+    static loco_global<uint8_t, 0x009C889B> numberOfTowns;
+    static loco_global<uint8_t, 0x009C889C> maxTownSize;
     static loco_global<uint8_t, 0x009C889D> numberOfIndustries;
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
@@ -350,13 +353,21 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     namespace towns
     {
-        // TODO(avgeffen): widx
-        uint64_t enabled_widgets = 0b11110111110100;
-        uint64_t holdable_widgets = 0b110000000000;
+        enum widx
+        {
+            number_of_towns = 9,
+            number_of_towns_up,
+            number_of_towns_down,
+            max_town_size,
+            max_town_size_btn,
+        };
+
+        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
+        uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
-            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::min_land_height_units),
+            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::number_of_towns_value),
             make_widget({ 344, 53 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
             make_widget({ 344, 58 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
             make_widget({ 176, 67 }, { 180, 12 }, widget_type::wt_18, 1),
@@ -365,6 +376,125 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         static window_event_list events;
+
+        // 0x0043E9A3
+        static void draw(window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::number_of_towns].top,
+                colour::black,
+                string_ids::number_of_towns,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::max_town_size].top,
+                colour::black,
+                string_ids::maximum_town_size,
+                nullptr);
+        }
+
+        static const string_id townSizeLabels[] = {
+            string_ids::town_size_1,
+            string_ids::town_size_2,
+            string_ids::town_size_3,
+            string_ids::town_size_4,
+            string_ids::town_size_5,
+            string_ids::town_size_6,
+            string_ids::town_size_7,
+            string_ids::town_size_8,
+        };
+
+        // 0x0043EBF8
+        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
+                return;
+
+            *maxTownSize = itemIndex;
+            window->invalidate();
+        }
+
+        // 0x0043EBF1
+        static void on_mouse_down(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::number_of_towns_up:
+                {
+                    uint16_t newNumTowns = std::min<uint16_t>(*numberOfTowns + 1, townmgr::max_towns);
+                    *numberOfTowns = newNumTowns;
+                    window->invalidate();
+                    break;
+                }
+
+                case widx::number_of_towns_down:
+                {
+                    uint16_t newNumTowns = std::max<uint16_t>(0, *numberOfTowns - 1);
+                    *numberOfTowns = newNumTowns;
+                    window->invalidate();
+                    break;
+                }
+
+                case widx::max_town_size_btn:
+                {
+                    for (size_t i = 0; i < std::size(townSizeLabels); i++)
+                    {
+                        int16_t index = static_cast<int16_t>(i);
+                        dropdown::add(index, townSizeLabels[index]);
+                    }
+
+                    widget_t& target = window->widgets[widx::max_town_size];
+                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(townSizeLabels)), 0x80);
+                    dropdown::set_highlighted_item(*maxTownSize);
+                    break;
+                }
+            }
+        }
+
+        // 0x0043EBCA
+        static void on_mouse_up(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(window);
+                    break;
+
+                case common::widx::tab_options:
+                case common::widx::tab_land:
+                case common::widx::tab_forests:
+                case common::widx::tab_towns:
+                case common::widx::tab_industries:
+                    common::switchTab(window, widgetIndex);
+                    break;
+            }
+        }
+
+        // 0x0043EAEB
+        static void prepare_draw(window* window)
+        {
+            common::prepare_draw(window);
+
+            commonFormatArgs[0] = *numberOfTowns;
+
+            widgets[widx::max_town_size].text = townSizeLabels[*maxTownSize];
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.prepare_draw = prepare_draw;
+            events.on_dropdown = on_dropdown;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
+        }
     }
 
     namespace industries
@@ -478,7 +608,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         {
             common::prepare_draw(window);
 
-            window->widgets[widx::num_industries].text  = numIndustriesLabels[*numberOfIndustries];
+            widgets[widx::num_industries].text = numIndustriesLabels[*numberOfIndustries];
 
             window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (industryFlags & (1 << 0))
@@ -503,6 +633,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             options::initEvents();
+            towns::initEvents();
             industries::initEvents();
         }
 

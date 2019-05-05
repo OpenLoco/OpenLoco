@@ -440,6 +440,15 @@ namespace openloco::string_ids
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
 
+    constexpr string_id town_size_1 = 1399;
+    constexpr string_id town_size_2 = 1400;
+    constexpr string_id town_size_3 = 1401;
+    constexpr string_id town_size_4 = 1402;
+    constexpr string_id town_size_5 = 1403;
+    constexpr string_id town_size_6 = 1404;
+    constexpr string_id town_size_7 = 1405;
+    constexpr string_id town_size_8 = 1406;
+
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id waiting_cargo_separator = 1430;
