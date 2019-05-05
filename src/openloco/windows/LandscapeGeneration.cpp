@@ -4,6 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
+#include "../objects/land_object.h"
 #include "../objects/objectmgr.h"
 #include "../scenario.h"
 #include "../townmgr.h"
@@ -23,6 +24,8 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+
+    static loco_global<uint8_t[32], 0x009C871E> landObjectDiversity;
 
     static loco_global<uint8_t, 0x009C8898> minimumLandHeight;
     static loco_global<uint8_t, 0x009C8899> topographyStyle;
@@ -383,6 +386,69 @@ namespace openloco::ui::windows::LandscapeGeneration
                 nullptr);
         }
 
+        static const string_id landDiversityLabelIds[] = {
+            string_ids::everywhere,
+            string_ids::nowhere,
+            string_ids::far_from_water,
+            string_ids::near_water,
+            string_ids::on_mountains,
+            string_ids::far_from_mountains,
+            string_ids::in_small_random_areas,
+            string_ids::in_large_random_areas,
+            string_ids::around_cliffs,
+        };
+
+        // 0x0043E01C
+        static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        {
+            uint16_t yPos = 0;
+            for (int i = 0; i < 32; i++)
+            {
+                auto landObject = objectmgr::get<land_object>(i);
+                if (landObject == nullptr)
+                    continue;
+
+                // Draw tile icon.
+                const uint32_t imageId = landObject->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                gfx::draw_image(dpi, 2, yPos + 1, imageId);
+
+                // Draw land description.
+                commonFormatArgs[0] = landObject->name;
+                gfx::draw_string_494BBF(*dpi, 24, yPos + 5, 121, colour::black, string_ids::wcolour2_stringid2, &*commonFormatArgs);
+
+                // Draw rectangle.
+                gfx::fill_rect_inset(dpi, 150, 340, yPos + 5, yPos + 16, window->colours[1], 0b110000);
+
+                // Draw current diversity setting.
+                const string_id diversityId = landDiversityLabelIds[landObjectDiversity[i]];
+                commonFormatArgs[0] = diversityId;
+                gfx::draw_string_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
+
+                // Draw rectangle (knob).
+                gfx::fill_rect_inset(dpi, 329, 339, yPos + 6, yPos + 15, window->colours[1], 0); // flags iff condition is met: 0b110000
+
+                // Draw triangle (knob).
+                gfx::draw_string_494B3F(*dpi, 330, yPos + 6, colour::black, string_ids::dropdown, nullptr);
+
+                yPos += 22;
+            }
+        }
+
+        // 0x0043E2AC
+        static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        {
+            *scrollHeight = 0;
+
+            for (int i = 0; i < 32; i++)
+            {
+                auto landObject = objectmgr::get<land_object>(i);
+                if (landObject == nullptr)
+                    continue;
+
+                *scrollHeight += 22;
+            }
+        }
+
         static const string_id topographyStyleIds[] = {
             string_ids::flat_land,
             string_ids::small_hills,
@@ -521,8 +587,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            // events.draw_scroll = draw_scroll;
-            // events.get_scroll_size = get_scroll_size;
+            events.draw_scroll = draw_scroll;
+            events.get_scroll_size = get_scroll_size;
             events.prepare_draw = prepare_draw;
             events.on_dropdown = on_dropdown;
             events.on_mouse_down = on_mouse_down;

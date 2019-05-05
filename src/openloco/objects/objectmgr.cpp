@@ -128,7 +128,10 @@ namespace openloco::objectmgr
     template<>
     land_object* get(size_t id)
     {
-        return _landObjects[id];
+        if (_landObjects[id] != (land_object*)-1)
+            return _landObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

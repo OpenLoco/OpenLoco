@@ -608,6 +608,15 @@ namespace openloco::string_ids
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
 
+    constexpr string_id everywhere = 1730;
+    constexpr string_id nowhere = 1731;
+    constexpr string_id far_from_water = 1732;
+    constexpr string_id near_water = 1733;
+    constexpr string_id on_mountains = 1734;
+    constexpr string_id far_from_mountains = 1735;
+    constexpr string_id in_small_random_areas = 1736;
+    constexpr string_id in_large_random_areas = 1737;
+    constexpr string_id around_cliffs = 1738;
     constexpr string_id create_hills_right_up_to_edge_of_map = 1739;
     constexpr string_id title_menu_scenario_editor = 1740;
 
