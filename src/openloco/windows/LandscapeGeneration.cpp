@@ -7,6 +7,7 @@
 #include "../objects/objectmgr.h"
 #include "../scenario.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 
@@ -15,8 +16,10 @@ namespace openloco::ui::windows::LandscapeGeneration
     static const gfx::ui_size_t window_size = { 366, 217 };
     static const gfx::ui_size_t land_tab_size = { 366, 232 };
 
+    static loco_global<uint8_t, 0x00526247> industryFlags;
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+    static loco_global<uint8_t, 0x009C889D> numberOfIndustries;
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
@@ -49,6 +52,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         make_remap_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
+        static void initEvents();
         static void switchTabWidgets(window* window);
         static void switchTab(window* window, widget_index widgetIndex);
 
@@ -82,6 +86,13 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             window->widgets[widx::close_button].left = window->width - 15;
             window->widgets[widx::close_button].right = window->width - 3;
+        }
+
+        static void update(window* window)
+        {
+            window->frame_no++;
+            window->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->current_tab + 4);
         }
     }
 
@@ -220,12 +231,13 @@ namespace openloco::ui::windows::LandscapeGeneration
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
             events.prepare_draw = prepare_draw;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
         }
     }
 
@@ -242,7 +254,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // TODO(avgeffen): only needs to be called once.
-        options::init_events();
+        common::initEvents();
 
         // Start of 0x0043DAEA
         window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &options::events);
@@ -357,12 +369,19 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     namespace industries
     {
-        // TODO(avgeffen): widx
-        uint64_t enabled_widgets = 0b1111111110100;
+        enum widx
+        {
+            num_industries = 9,
+            num_industries_btn,
+            check_allow_industries_close_down,
+            check_allow_industries_start_up,
+        };
+
+        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
         uint64_t holdable_widgets = 0;
 
         static widget_t widgets[] = {
-            common_options_widgets(217, string_ids::title_landscape_generation_towns),
+            common_options_widgets(217, string_ids::title_landscape_generation_industries),
             make_widget({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
             make_widget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_industries_to_close_down_during_game),
@@ -371,10 +390,122 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         static window_event_list events;
+
+        // 0x0043EB9D
+        static void draw(window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::num_industries].top,
+                colour::black,
+                string_ids::number_of_industries,
+                nullptr);
+        }
+
+        static const string_id numIndustriesLabels[] = {
+            string_ids::low,
+            string_ids::medium,
+            string_ids::high,
+        };
+
+        // 0x0043EBF8
+        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
+                return;
+
+            *numberOfIndustries = itemIndex;
+            window->invalidate();
+        }
+
+        // 0x0043EBF1
+        static void on_mouse_down(window* window, widget_index widgetIndex)
+        {
+            if (widgetIndex != widx::num_industries_btn)
+                return;
+
+            for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
+            {
+                int16_t index = static_cast<int16_t>(i);
+                dropdown::add(index, numIndustriesLabels[index]);
+            }
+
+            widget_t& target = window->widgets[widx::num_industries];
+            dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(numIndustriesLabels)), 0x80);
+            dropdown::set_highlighted_item(*numberOfIndustries);
+        }
+
+        // 0x0043EBCA
+        static void on_mouse_up(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(window);
+                    break;
+
+                case common::widx::tab_options:
+                case common::widx::tab_land:
+                case common::widx::tab_forests:
+                case common::widx::tab_towns:
+                case common::widx::tab_industries:
+                    common::switchTab(window, widgetIndex);
+                    break;
+
+                case widx::check_allow_industries_close_down:
+                    if ((*industryFlags & (1 << 0)) == 0)
+                        *industryFlags |= 1 << 0;
+                    else
+                        *industryFlags &= ~(1 << 0);
+                    window->invalidate();
+                    break;
+
+                case widx::check_allow_industries_start_up:
+                    if ((*industryFlags & (1 << 1)) == 0)
+                        *industryFlags |= 1 << 1;
+                    else
+                        *industryFlags &= ~(1 << 1);
+                    window->invalidate();
+                    break;
+            }
+        }
+
+        // 0x0043EAEB
+        static void prepare_draw(window* window)
+        {
+            common::prepare_draw(window);
+
+            window->widgets[widx::num_industries].text  = numIndustriesLabels[*numberOfIndustries];
+
+            window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
+            if (industryFlags & (1 << 0))
+                window->activated_widgets |= 1 << widx::check_allow_industries_close_down;
+            if (industryFlags & (1 << 1))
+                window->activated_widgets |= 1 << widx::check_allow_industries_start_up;
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.prepare_draw = prepare_draw;
+            events.on_dropdown = on_dropdown;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
+        }
     };
 
     namespace common
     {
+        static void initEvents()
+        {
+            options::initEvents();
+            industries::initEvents();
+        }
+
         static void switchTabWidgets(window* window)
         {
             static widget_t* widgetCollectionsByTabId[] = {
@@ -434,6 +565,16 @@ namespace openloco::ui::windows::LandscapeGeneration
             };
 
             window->holdable_widgets = *holdableWidgetsByTab[window->current_tab];
+
+            static window_event_list* eventsByTab[] = {
+                &options::events,
+                &land::events,
+                &forests::events,
+                &towns::events,
+                &industries::events,
+            };
+
+            window->event_handlers = eventsByTab[window->current_tab];
 
             switchTabWidgets(window);
 
