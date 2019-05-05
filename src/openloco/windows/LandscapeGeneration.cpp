@@ -20,6 +20,16 @@ namespace openloco::ui::windows::LandscapeGeneration
     static loco_global<uint8_t, 0x00526247> industryFlags;
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+
+    static loco_global<uint16_t, 0x009C888E> numberOfForests;
+    static loco_global<uint8_t, 0x009C8890> minimumForestRadius;
+    static loco_global<uint8_t, 0x009C8891> maximumForestRadius;
+    static loco_global<uint8_t, 0x009C8892> minimumForestDensity;
+    static loco_global<uint8_t, 0x009C8893> maximumForestDensity;
+    static loco_global<uint16_t, 0x009C8894> numberRandomTrees;
+    static loco_global<uint8_t, 0x009C8896> minAltitudeForTrees;
+    static loco_global<uint8_t, 0x009C8897> maxAltitudeForTrees;
+
     static loco_global<uint8_t, 0x009C889B> numberOfTowns;
     static loco_global<uint8_t, 0x009C889C> maxTownSize;
     static loco_global<uint8_t, 0x009C889D> numberOfIndustries;
@@ -315,9 +325,37 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     namespace forests
     {
-        // TODO(avgeffen): widx
-        uint64_t enabled_widgets = 0b110110110110110110110110111110100;
-        uint64_t holdable_widgets = 0b10110110110110110110110000000000;
+        enum widx
+        {
+            number_of_forests = 9,
+            number_of_forests_up,
+            number_of_forests_down,
+            minimum_forest_radius,
+            minimum_forest_radius_up,
+            minimum_forest_radius_down,
+            maximum_forest_radius,
+            maximum_forest_radius_up,
+            maximum_forest_radius_down,
+            minimum_forest_density,
+            minimum_forest_density_up,
+            minimum_forest_density_down,
+            maximum_forest_density,
+            maximum_forest_density_up,
+            maximum_forest_density_down,
+            number_random_trees,
+            number_random_trees_up,
+            number_random_trees_down,
+            min_altitude_for_trees,
+            min_altitude_for_trees_up,
+            min_altitude_for_trees_down,
+            max_altitude_for_trees,
+            max_altitude_for_trees_up,
+            max_altitude_for_trees_down,
+        };
+
+        // TODO(avgeffen) shift overflow for last widget. Should fit in uint64_t, but problematic on 32-bits arch?
+        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up); // | (1 << widx::max_altitude_for_trees_down);
+        uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up);                          // | (1 << widx::max_altitude_for_trees_down);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
@@ -349,6 +387,225 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         static window_event_list events;
+
+        // 0x0043E53A
+        static void draw(window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::number_of_forests].top,
+                colour::black,
+                string_ids::number_of_forests,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::minimum_forest_radius].top,
+                colour::black,
+                string_ids::minimum_forest_radius,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::maximum_forest_radius].top,
+                colour::black,
+                string_ids::maximum_forest_radius,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::minimum_forest_density].top,
+                colour::black,
+                string_ids::minimum_forest_density,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::maximum_forest_density].top,
+                colour::black,
+                string_ids::maximum_forest_density,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::number_random_trees].top,
+                colour::black,
+                string_ids::number_random_trees,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::min_altitude_for_trees].top,
+                colour::black,
+                string_ids::min_altitude_for_trees,
+                nullptr);
+
+            gfx::draw_string_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::max_altitude_for_trees].top,
+                colour::black,
+                string_ids::max_altitude_for_trees,
+                nullptr);
+        }
+
+        // 0x0043E670
+        static void on_mouse_down(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::number_of_forests_up:
+                {
+                    *numberOfForests = std::min(*numberOfForests + 10, 990);
+                    break;
+                }
+                case widx::number_of_forests_down:
+                {
+                    *numberOfForests = std::max(0, *numberOfForests - 10);
+                    break;
+                }
+                case widx::minimum_forest_radius_up:
+                {
+                    *minimumForestRadius = std::min(*minimumForestRadius + 1, 40);
+                    if (*minimumForestRadius > *maximumForestRadius)
+                        *maximumForestRadius = *minimumForestRadius;
+                    break;
+                }
+                case widx::minimum_forest_radius_down:
+                {
+                    *minimumForestRadius = std::max(4, *minimumForestRadius - 1);
+                    break;
+                }
+                case widx::maximum_forest_radius_up:
+                {
+                    *maximumForestRadius = std::clamp(*maximumForestRadius + 1, 4, 40);
+                    break;
+                }
+                case widx::maximum_forest_radius_down:
+                {
+                    *maximumForestRadius = std::clamp(*maximumForestRadius - 1, 4, 40);
+                    if (*maximumForestRadius < *minimumForestRadius)
+                        *minimumForestRadius = *maximumForestRadius;
+                    break;
+                }
+                case widx::minimum_forest_density_up:
+                {
+                    *minimumForestDensity = std::min(*minimumForestDensity + 1, 7);
+                    if (*minimumForestDensity > *maximumForestDensity)
+                        *maximumForestDensity = *minimumForestDensity;
+                    break;
+                }
+                case widx::minimum_forest_density_down:
+                {
+                    *minimumForestDensity = std::max(1, *minimumForestDensity - 1);
+                    break;
+                }
+                case widx::maximum_forest_density_up:
+                {
+                    *maximumForestDensity = std::min(*maximumForestDensity + 1, 7);
+                    break;
+                }
+                case widx::maximum_forest_density_down:
+                {
+                    *maximumForestDensity = std::max(1, *maximumForestDensity - 1);
+                    if (*maximumForestDensity < *minimumForestDensity)
+                        *minimumForestDensity = *maximumForestDensity;
+                    break;
+                }
+                case widx::number_random_trees_up:
+                {
+                    *numberRandomTrees = std::min(*numberRandomTrees + 25, 20000);
+                    break;
+                }
+                case widx::number_random_trees_down:
+                {
+                    *numberRandomTrees = std::max(0, *numberRandomTrees - 25);
+                    break;
+                }
+                case widx::min_altitude_for_trees_up:
+                {
+                    *minAltitudeForTrees = std::min(*minAltitudeForTrees + 1, 40);
+                    if (*minAltitudeForTrees > *maxAltitudeForTrees)
+                        *maxAltitudeForTrees = *minAltitudeForTrees;
+                    break;
+                }
+                case widx::min_altitude_for_trees_down:
+                {
+                    *minAltitudeForTrees = std::max(0, *minAltitudeForTrees - 1);
+                    break;
+                }
+                case widx::max_altitude_for_trees_up:
+                {
+                    *maxAltitudeForTrees = std::min(*maxAltitudeForTrees + 1, 40);
+                    break;
+                }
+                case widx::max_altitude_for_trees_down:
+                {
+                    *maxAltitudeForTrees = std::max(0, *maxAltitudeForTrees - 1);
+                    if (*maxAltitudeForTrees < *minAltitudeForTrees)
+                        *minAltitudeForTrees = *maxAltitudeForTrees;
+                    break;
+                }
+                default:
+                    // Nothing was changed, don't invalidate.
+                    return;
+            }
+
+            // After changing any of the options, invalidate the window.
+            window->invalidate();
+        }
+
+        // 0x0043E655
+        static void on_mouse_up(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(window);
+                    break;
+
+                case common::widx::tab_options:
+                case common::widx::tab_land:
+                case common::widx::tab_forests:
+                case common::widx::tab_towns:
+                case common::widx::tab_industries:
+                    common::switchTab(window, widgetIndex);
+                    break;
+            }
+        }
+
+        // 0x0043E44F
+        static void prepare_draw(window* window)
+        {
+            common::prepare_draw(window);
+
+            commonFormatArgs[0] = numberOfForests;
+            commonFormatArgs[1] = minimumForestRadius;
+            commonFormatArgs[2] = maximumForestRadius;
+            commonFormatArgs[3] = minimumForestDensity * 14;
+            commonFormatArgs[4] = maximumForestDensity * 14;
+            commonFormatArgs[5] = numberRandomTrees;
+            commonFormatArgs[6] = minAltitudeForTrees;
+            commonFormatArgs[7] = maxAltitudeForTrees;
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.prepare_draw = prepare_draw;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
+        }
     }
 
     namespace towns
@@ -633,6 +890,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             options::initEvents();
+            forests::initEvents();
             towns::initEvents();
             industries::initEvents();
         }
