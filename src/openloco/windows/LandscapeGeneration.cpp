@@ -5,6 +5,7 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../scenario.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
@@ -12,6 +13,12 @@ using namespace openloco::interop;
 namespace openloco::ui::windows::LandscapeGeneration
 {
     static const gfx::ui_size_t window_size = { 366, 217 };
+    static const gfx::ui_size_t land_tab_size = { 366, 232 };
+
+    static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
+    static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+
+    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
     namespace common
     {
@@ -41,6 +48,10 @@ namespace openloco::ui::windows::LandscapeGeneration
         make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_towns),   \
         make_remap_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_industries)
 
+        // Defined at the bottom of this file.
+        static void switchTabWidgets(window* window);
+        static void switchTab(window* window, widget_index widgetIndex);
+
         // 0x0043ECA4
         static void draw_tabs(window* window, gfx::drawpixelinfo_t* dpi)
         {
@@ -55,6 +66,22 @@ namespace openloco::ui::windows::LandscapeGeneration
         {
             window->draw(dpi);
             draw_tabs(window, dpi);
+        }
+
+        static void prepare_draw(window* window)
+        {
+            switchTabWidgets(window);
+
+            window->widgets[widx::frame].right = window->width - 1;
+            window->widgets[widx::frame].bottom = window->height - 1;
+
+            window->widgets[widx::panel].right = window->width - 1;
+            window->widgets[widx::panel].bottom = window->height - 1;
+
+            window->widgets[widx::caption].right = window->width - 2;
+
+            window->widgets[widx::close_button].left = window->width - 15;
+            window->widgets[widx::close_button].right = window->width - 3;
         }
     }
 
@@ -84,6 +111,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static window_event_list events;
 
+        // 0x0043DC30
         static void draw(window* window, gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
@@ -97,11 +125,86 @@ namespace openloco::ui::windows::LandscapeGeneration
                 nullptr);
         }
 
+        // 0x0043DB76
+        static void prepare_draw(window* window)
+        {
+            common::prepare_draw(window);
+
+            commonFormatArgs[0] = *scenarioStartYear;
+
+            if ((scenarioFlags & scenario::flags::landscape_generation_done) == 0)
+            {
+                window->activated_widgets |= (1 << widx::generate_when_game_starts);
+                window->disabled_widgets |= (1 << widx::generate_now);
+            }
+            else
+            {
+                window->activated_widgets &= ~(1 << widx::generate_when_game_starts);
+                window->disabled_widgets &= ~(1 << widx::generate_now);
+            }
+        }
+
+        // 0x0043DC83
+        static void on_mouse_down(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::start_year_up:
+                    if (*scenarioStartYear + 1 <= scenario::max_year)
+                        *scenarioStartYear += 1;
+                    window->invalidate();
+                    break;
+
+                case widx::start_year_down:
+                    if (*scenarioStartYear - 1 >= scenario::min_year)
+                        *scenarioStartYear -= 1;
+                    window->invalidate();
+                    break;
+            }
+        }
+
+        // 0x0043DC58
+        static void on_mouse_up(window* window, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(window);
+                    break;
+
+                case common::widx::tab_options:
+                case common::widx::tab_land:
+                case common::widx::tab_forests:
+                case common::widx::tab_towns:
+                case common::widx::tab_industries:
+                    common::switchTab(window, widgetIndex);
+                    break;
+
+                case widx::generate_when_game_starts:
+                    if ((scenarioFlags & scenario::landscape_generation_done) == 0)
+                    {
+                        *scenarioFlags |= scenario::landscape_generation_done;
+                        scenario::generateLandscape();
+                    }
+                    else
+                    {
+                        // TODO(avgeffen): this is not yet the equivalent of what happens around 0x0043DE44.
+                        *scenarioFlags &= ~(scenario::landscape_generation_done);
+                    }
+                    break;
+
+                case widx::generate_now:
+                    // TODO(avgeffen)
+                    break;
+            }
+        }
+
         static void init_events()
         {
             events.draw = draw;
-            // events.prepare_draw = prepare_draw;
-            // events.mouse_up = mouse_up;
+            events.prepare_draw = prepare_draw;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
         }
     }
 
@@ -137,13 +240,22 @@ namespace openloco::ui::windows::LandscapeGeneration
         window->width = window_size.width;
         window->height = window_size.height;
 
+        window->activated_widgets = 0;
         window->holdable_widgets = options::holdable_widgets;
+
+        window->call_on_resize();
+        window->call_prepare_draw();
+        window->init_scroll_widgets();
 
         return window;
     }
 
     namespace land
     {
+        // TODO(avgeffen): widx
+        uint64_t enabled_widgets = 0b111011110110111110100;
+        uint64_t holdable_widgets = 0b11000110110000000000;
+
         static widget_t widgets[] = {
             common_options_widgets(232, string_ids::title_landscape_generation_land),
             make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::sea_level_units),
@@ -161,10 +273,16 @@ namespace openloco::ui::windows::LandscapeGeneration
             make_widget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
             widget_end()
         };
+
+        static window_event_list events;
     }
 
     namespace forests
     {
+        // TODO(avgeffen): widx
+        uint64_t enabled_widgets = 0b110110110110110110110110111110100;
+        uint64_t holdable_widgets = 0b10110110110110110110110000000000;
+
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
             make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::number_of_forests_value),
@@ -193,10 +311,16 @@ namespace openloco::ui::windows::LandscapeGeneration
             make_widget({ 344, 163 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
             widget_end()
         };
+
+        static window_event_list events;
     }
 
     namespace towns
     {
+        // TODO(avgeffen): widx
+        uint64_t enabled_widgets = 0b11110111110100;
+        uint64_t holdable_widgets = 0b110000000000;
+
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
             make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::min_land_height_units),
@@ -206,10 +330,16 @@ namespace openloco::ui::windows::LandscapeGeneration
             make_widget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end()
         };
+
+        static window_event_list events;
     }
 
     namespace industries
     {
+        // TODO(avgeffen): widx
+        uint64_t enabled_widgets = 0b1111111110100;
+        uint64_t holdable_widgets = 0;
+
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
             make_widget({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
@@ -218,6 +348,87 @@ namespace openloco::ui::windows::LandscapeGeneration
             make_widget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_new_industries_to_start_up_during_game),
             widget_end()
         };
+
+        static window_event_list events;
     };
 
+    namespace common
+    {
+        static void switchTabWidgets(window* window)
+        {
+            static widget_t* widgetCollectionsByTabId[] = {
+                options::widgets,
+                land::widgets,
+                forests::widgets,
+                towns::widgets,
+                industries::widgets,
+            };
+
+            widget_t* newWidgets = widgetCollectionsByTabId[window->current_tab];
+            if (window->widgets != newWidgets)
+            {
+                window->widgets = newWidgets;
+                window->init_scroll_widgets();
+            }
+
+            static const widx tabWidgetIdxByTabId[] = {
+                tab_options,
+                tab_land,
+                tab_forests,
+                tab_towns,
+                tab_industries,
+            };
+
+            window->activated_widgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
+            window->activated_widgets |= (1ULL << tabWidgetIdxByTabId[window->current_tab]);
+        }
+
+        // 0x0043DC98
+        static void switchTab(window* window, widget_index widgetIndex)
+        {
+            if (input::is_tool_active(window->type, window->number))
+                input::cancel_tool();
+
+            window->current_tab = widgetIndex - widx::tab_options;
+            window->frame_no = 0;
+            window->flags &= ~(window_flags::flag_16);
+            window->disabled_widgets = 0;
+
+            static uint64_t* enabledWidgetsByTab[] = {
+                &options::enabled_widgets,
+                &land::enabled_widgets,
+                &forests::enabled_widgets,
+                &towns::enabled_widgets,
+                &industries::enabled_widgets,
+            };
+
+            window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
+
+            static uint64_t* holdableWidgetsByTab[] = {
+                &options::holdable_widgets,
+                &land::holdable_widgets,
+                &forests::holdable_widgets,
+                &towns::holdable_widgets,
+                &industries::holdable_widgets,
+            };
+
+            window->holdable_widgets = *holdableWidgetsByTab[window->current_tab];
+
+            switchTabWidgets(window);
+
+            window->invalidate();
+
+            const gfx::ui_size_t* newSize = &window_size;
+            if (widgetIndex == widx::tab_land)
+                newSize = &land_tab_size;
+
+            window->min_width = window->max_width = window->width = newSize->width;
+            window->min_height = window->max_height = window->height = newSize->height;
+
+            window->call_on_resize();
+            window->call_prepare_draw();
+            window->init_scroll_widgets();
+            window->moveInsideScreenEdges();
+        }
+    }
 }
