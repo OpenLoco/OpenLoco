@@ -452,7 +452,7 @@ namespace openloco::input
                     *((int16_t*)(&_commonFormatArgs[2])) = index;
                     windows::show_error(string_ids::screenshot_saved_as, string_ids::null, false);
                 }
-                catch (const std::exception& e)
+                catch (const std::exception&)
                 {
                     windows::show_error(string_ids::screenshot_failed);
                 }
