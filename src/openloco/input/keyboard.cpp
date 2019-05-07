@@ -378,7 +378,7 @@ namespace openloco::input
         if (tutorial::state() != tutorial::tutorial_state::none)
             return;
 
-        if (_modalWindowType != WindowType::undefined)
+        if (*_modalWindowType != WindowType::undefined)
             return;
 
         if (WindowManager::find(WindowType::textInput) != nullptr)
