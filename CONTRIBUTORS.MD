@@ -24,6 +24,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Polish - (Zcooger)
 * Portuguese (BR) - (Kynake)
 * Spanish - extracted from original game
+* Slovak - Peter Gaál (petergaal)
 
 ## Graphics
 * OpenLoco Logo - Zcooger (zcooger)

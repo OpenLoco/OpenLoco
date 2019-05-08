@@ -2179,3 +2179,16 @@ strings:
   2123: ks
   2124: kW
   2125: "{COLOUR WINDOW_2}Jazyk:"
+  2126: "{COLOUR WINDOW_2}Vypnúť poruchy vozidla"
+  2127: "{COLOUR WINDOW_2}Režim obrazovky:"
+  2128: V okne
+  2129: Celá obrazovka
+  2130: Celá obrazovka (okno bez okrajov)
+  2131: Predvolené zvukové zariadenie
+  2132: "{COLOUR WINDOW_2}Faktor mierky okna:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Priblížiť k polohe kurzora (experimentálne)"
+  2137: "{SMALLFONT}{COLOUR BLACK}Ak je táto možnosť povolená, priblíženie sa bude orientovať okolo kurzora na rozdiel od stredu obrazovky."
+  2138: "{COLOUR WINDOW_2}Prehrávať úvodnú hudbu"
