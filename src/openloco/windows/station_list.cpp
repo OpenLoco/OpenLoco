@@ -526,10 +526,9 @@ namespace openloco::ui::windows::station_list
                 string_ids::label_icons_rail_road_air_water,
             };
 
-            // TODO(avgeffen): I'm not seeing the town name drawn on screen.
             _common_format_args[0] = string_ids::stringid_stringid;
             _common_format_args[1] = station->name;
-            _common_format_args[2] = townmgr::get(station->town)->name;
+            _common_format_args[2] = station->town;
             _common_format_args[3] = label_icons[station->var_2A & 0x0F];
 
             gfx::draw_string_494BBF(*dpi, 0, dx, 198, colour::black, text_colour_id, &*_common_format_args);
