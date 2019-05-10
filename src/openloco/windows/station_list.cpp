@@ -137,10 +137,10 @@ namespace openloco::ui::windows::station_list
     static bool sub_4911FD(const openloco::station& lhs, const openloco::station& rhs)
     {
         char lhsString[256] = { 0 };
-        stringmgr::format_string(lhsString, lhs.name);
+        stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
 
         char rhsString[256] = { 0 };
-        stringmgr::format_string(rhsString, rhs.name);
+        stringmgr::format_string(rhsString, rhs.name, (void*)&rhs.town);
 
         return strcmp(lhsString, rhsString) < 0;
     }
