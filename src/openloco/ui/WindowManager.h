@@ -62,7 +62,7 @@ namespace openloco::ui::windows
 
     bool prompt_ok_cancel(string_id okButtonStringId);
 
-    void show_error(string_id title, string_id message);
+    void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
 }
 
 namespace openloco::ui::about

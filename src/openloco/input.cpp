@@ -50,12 +50,6 @@ namespace openloco::input
         _state = (uint8_t)state;
     }
 
-    // 0x004BE92A
-    void handle_keyboard()
-    {
-        call(0x004BE92A);
-    }
-
     // 0x00406FEC
     void enqueue_mouse_button(mouse_button button)
     {

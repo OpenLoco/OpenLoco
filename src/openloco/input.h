@@ -54,6 +54,7 @@ namespace openloco::input
     {
         constexpr uint8_t shift = 1 << 0;
         constexpr uint8_t control = 1 << 1;
+        constexpr uint8_t unknown = 1 << 2;
         constexpr uint8_t cheat = 1 << 7;
     };
 
@@ -65,6 +66,7 @@ namespace openloco::input
     input_state state();
     void state(input_state);
 
+    gfx::point_t getMouseLocation();
     bool is_hovering(ui::WindowType);
     bool is_hovering(ui::WindowType, ui::window_number);
     ui::widget_index get_hovered_widget_index();

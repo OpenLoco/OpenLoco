@@ -1386,12 +1386,21 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
+    static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
+
     // 0x00431A8A
-    void show_error(string_id title, string_id message)
+    void show_error(string_id title, string_id message, bool sound)
     {
+        if (!sound)
+        {
+            suppressErrorSound = true;
+        }
+
         registers regs;
         regs.bx = (uint16_t)title;
         regs.dx = (uint16_t)message;
         call(0x00431A8A, regs);
+
+        suppressErrorSound = false;
     }
 }

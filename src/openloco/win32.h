@@ -54,3 +54,14 @@
 #define VK_OEM_7 0xDE
 #define VK_OEM_8 0xDF
 #endif
+
+// These are defined in <Dinput.h> on Windows, but decided against including it.
+#define DIK_LCONTROL 0x1D
+#define DIK_LSHIFT 0x2A
+#define DIK_RSHIFT 0x36
+#define DIK_RCONTROL 0x9D
+#define DIK_UP 0xC8
+#define DIK_LEFT 0xCB
+#define DIK_RIGHT 0xCD
+#define DIK_DOWN 0xD0
+#define DIK_INSERT 0xD2

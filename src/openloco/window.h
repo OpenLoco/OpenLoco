@@ -147,6 +147,7 @@ namespace openloco::ui
     {
         constexpr uint32_t stick_to_back = 1 << 0;
         constexpr uint32_t stick_to_front = 1 << 1;
+        constexpr uint32_t flag_2 = 1 << 2;
         constexpr uint32_t scrolling_to_location = 1 << 3;
         constexpr uint32_t transparent = 1 << 4;
         constexpr uint32_t no_background = 1 << 5;

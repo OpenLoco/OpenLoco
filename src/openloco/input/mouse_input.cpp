@@ -51,6 +51,9 @@ namespace openloco::input
 
     static loco_global<int8_t, 0x0052336C> _52336C;
 
+    static loco_global<int32_t, 0x0113E72C> _cursorX;
+    static loco_global<int32_t, 0x0113E730> _cursorY;
+
     static loco_global<ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
@@ -1339,5 +1342,10 @@ namespace openloco::input
             _52336C = (int8_t)cursorId;
             ui::set_cursor(cursorId);
         }
+    }
+
+    gfx::point_t getMouseLocation()
+    {
+        return gfx::point_t(_cursorX, _cursorY);
     }
 }
