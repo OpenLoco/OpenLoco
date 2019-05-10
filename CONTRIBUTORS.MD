@@ -23,6 +23,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Korean - (telk5093)
 * Polish - (Zcooger)
 * Portuguese (BR) - (Kynake)
+* Slovak - Peter Gaál (petergaal)
 * Spanish - extracted from original game
 
 ## Graphics

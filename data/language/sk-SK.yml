@@ -1,0 +1,2194 @@
+---
+header:
+  locale: sk-SK
+  english_name: Slovak
+  native_name: Slovenský
+  loco_original_id: 0
+strings:
+  0: ""
+  1: "{POP16}"
+  2: Nová spoločnosť{POP16}
+  3: Nemenovaný{POP16}
+  4: Vlak {INT16}
+  5: Autobus {INT16}
+  6: Nákladné auto {INT16}
+  7: Električka {INT16}
+  8: Lietadlo {INT16}
+  9: Loď {INT16}
+
+  # Days
+  10: "1"
+  11: "2"
+  12: "3"
+  13: "4"
+  14: "5"
+  15: "6"
+  16: "7"
+  17: "8"
+  18: "9"
+  19: "10"
+  20: "11"
+  21: "12"
+  22: "13"
+  23: "14"
+  24: "15"
+  25: "16"
+  26: "17"
+  27: "18"
+  28: "19"
+  29: "20"
+  30: "21"
+  31: "22"
+  32: "23"
+  33: "24"
+  34: "25"
+  35: "26"
+  36: "27"
+  37: "28"
+  38: "29"
+  39: "30"
+  40: "31"
+
+  41: Jan
+  42: Feb
+  43: Mar
+  44: Apr
+  45: Máj
+  46: Jún
+  47: Júl
+  48: Aug
+  49: Sep
+  50: Okt
+  51: Nov
+  52: Dec
+
+  53: Nie je možné získať prístup k súboru s grafickými dátami
+  54: Dátový súbor chýba alebo je neprístupný
+  55: Nie je možné alokovať dostatok pamäte
+  56: "{COLOUR BLACK}❌"
+  57: Zvolený názov sa už používa
+  58: Príliš veľa názvov je definovaných 
+  59: Nedostatočná hotovosť - potrebuje {CURRENCY32}
+  60: "{SMALLFONT}{COLOUR BLACK}Zatvoriť okno"
+  61: Inicializácia hry zlyhala
+  62: Nie je možné spustiť hru v minimalizovanom stave
+  63: Nie je možné inicializovať grafický systém
+  64: CD kľúč {INT32 RAW} nie je platný pre váš Locomotion CD!{COLOUR WINDOW_1}{COLOUR WINDOW_1}Odinštalujte Chris Sawyer's Locomotion a preinštalujte so správnym CD kľúčom
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: O 'Chris Sawyer's Locomotion'
+  68: Chris Sawyer's Locomotion
+  69: "{COLOUR WINDOW_2}Verzia 4.02.176 (Americká angličtina)"
+  70: "{COLOUR WINDOW_2}Autorské práva © 2004 Chris Sawyer, všetky práva vyhradené"
+  71: "{COLOUR WINDOW_2}Dizajn a programovanie: Chris Sawyer"
+  72: "{COLOUR WINDOW_2}Grafika: Simon Foster"
+  73: "{COLOUR WINDOW_2}Zvukové efekty a hudba: Allister Brimble"
+  74: "{COLOUR WINDOW_2}Úvodná hudba: John Broomhall"
+  75: "{COLOUR WINDOW_2}Zastúpenie: Jacqui Lyons, firma: Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}Poďakovanie:"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: Príliš nízko!
+  99: Príliš vysoko!
+  100: Nie je možné tu znížiť terén...
+  101: Nie je možné tu zvýšiť terén...
+  102: Objekt v ceste
+  103: Načítať hru
+  104: Uložiť hru
+  105: Ukončiť editor scenára
+  106: Ukončiť hru
+  107: Screenshot{INT16}.BMP
+  108: Snímka obrazovky
+  109: Snímka obrazovky uložená pod názvom '{STRINGID}'
+  110: Nepodarilo sa vytvoriť snímku obrazovky!
+  111: Plná oblasť dát na mape!
+  112: Nie je možné stavať čiastočne nad a čiastočne pod zemou
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}Ľavá zákruta"
+  115: "{SMALLFONT}{COLOUR BLACK}Pravá zákruta"
+  116: "{SMALLFONT}{COLOUR BLACK}Ľavá zákruta (malý polomer)"
+  117: "{SMALLFONT}{COLOUR BLACK}Pravá zákruta (malý polomer)"
+  118: "{SMALLFONT}{COLOUR BLACK}Ľavá zákruta (veľmi malý polomer)"
+  119: "{SMALLFONT}{COLOUR BLACK}Pravá zákruta (veľmi malý polomer)"
+  120: "{SMALLFONT}{COLOUR BLACK}Ľavá zákruta (veľký polomer)"
+  121: "{SMALLFONT}{COLOUR BLACK}Pravá zákruta (veľký polomer)"
+  122: "{SMALLFONT}{COLOUR BLACK}Rovno"
+  123: "{SMALLFONT}{COLOUR BLACK}'S' Ohnúť vľavo"
+  124: "{SMALLFONT}{COLOUR BLACK}'S' Ohnúť vpravo"
+  125: "{SMALLFONT}{COLOUR BLACK}'S' Ohnúť na ľavú stranu dvojitej koľaji"
+  126: "{SMALLFONT}{COLOUR BLACK}'S' Ohnúť na pravú stranu dvojitej koľaji"
+  127: "{SMALLFONT}{COLOUR BLACK}'S' Ohnúť na samostatnú koľaj"
+  128: "{SMALLFONT}{COLOUR BLACK}Slučka"
+  129: "{SMALLFONT}{COLOUR BLACK}(Kliknite na mapu pre začatie výstavby)"
+  130: "{SMALLFONT}{COLOUR BLACK}Vytvoriť tento úsek trasy"
+  131: "{SMALLFONT}{COLOUR BLACK}Odstrániť predošlý úsek trasy"
+  132: "{SMALLFONT}{COLOUR BLACK}Strmý sklon nadol"
+  133: "{SMALLFONT}{COLOUR BLACK}Sklon nadol"
+  134: "{SMALLFONT}{COLOUR BLACK}Rovina"
+  135: "{SMALLFONT}{COLOUR BLACK}Sklon nahor"
+  136: "{SMALLFONT}{COLOUR BLACK}Strmý skon nahor"
+  137: "{COLOUR WINDOW_2}Vybudovať to..."
+  138: "{COLOUR WINDOW_2}Cena: {COLOUR BLACK}{CURRENCY32}"
+  139: Nie je možné tu postaviť semafor...
+  140: Nie je možné tu postaviť semafory...
+  141: Nie je možné odstrániť semafor...
+  142: Nie je možné odstrániť {POP16}{POP16}{POP16}{STRINGID}...
+  143: Nie je možné postaviť {POP16}{POP16}{POP16}{STRINGID}...
+  144: Najprv zvýšte alebo znížte terén
+  145: Podzemné zobrazenie
+  146: Skryť koľaje a cesty v popredí
+  147: Typ stanice je možné postaviť len na konci cesty
+  148: Nesprávny typ stanice pre {STRINGID}
+  149: Stanica nie je kompatibilná s {STRINGID}
+  150: Železničné priecestie v ceste
+  151: Železničné priecestie je možné len s rovnou cestou a koľajnicami na tej istej úrovni
+  152: Križovatka nie je možná
+  153: Križovatka musí byt na tej istej úrovni
+  154: "{STRINGID} v ceste / nesprávna výška pre križovatku"
+  155: Už tu bolo postavené
+  156: Nie je možné krížiť alebo vytvoriť križovatku s {STRINGID}
+  157: Križovatky nie sú možné
+  158: Semafor
+  159: Stanica
+  160: Letisko
+  161: Prístav
+  162: Stanica v ceste
+  163: Semafor v ceste
+  164: Nie je možné odstrániť letisko...
+  165: Nie je možné odstrániť prístav...
+  166: Nie je možné odstrániť stanicu...
+  167: Nesprávny typ koľají/cesty!
+  168: Typy mostov sa musia zhodovať
+  169: Most nie je vhodný pre križovatku
+  170: Kombinácia koľajníc nie je možná
+  171: Príliš veľa objektov v hre
+  172: Otočiť vľavo (CHECK!)
+  173: Otočiť vpravo (CHECK!)
+  174: "OpenLoco: Prvé spustenie..."
+  175: "OpenLoco: Kontrola súborov objektov..."
+  176: Načítať hru
+  177: Ukončiť hru
+  178: Ukončiť hru
+  179: Ukončiť editor scenára
+  180: Načítať terén
+  181: Uložiť hru pred načítaním?
+  182: Uložiť hru pred ukončením?
+  183: Uložiť hru pred ukončením?
+  184: Uložiť
+  185: Neuložiť
+  186: Zrušiť
+  187: OK
+
+  188: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} vľavo"
+  189: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} vpravo"
+  190: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} rýchlo vľavo"
+  191: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} rýchlo vpravo"
+  192: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} vľavo/vpravo"
+  193: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} hore"
+  194: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} dole"
+  195: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} rýchlo hore"
+  196: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} rýchlo dole"
+  197: "{SMALLFONT}{COLOUR BLACK}Posunúť {STRINGID} hore/dole"
+
+  198: mapa
+  199: zoznam vozidiel
+  200: zoznam nových vozidiel
+  201: zoznam
+  202: zoznam stromov
+  203: zoznam príkazov
+  204: zoznam staníc
+  205: zoznam miest
+  206: zoznam priemyslu
+  207: zoznam nového priemyslu
+  208: zoznam budov
+  209: zoznam stien
+  210: zoznam hodnotení
+  211: zoznam nákladu
+  212: zoznam správ
+  213: zoznam spoločností
+  214: zoznam scenárov
+  215: zoznam zásluh
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: Nie je možné prepnúť do zvoleného režimu
+  219: "{COLOUR WINDOW_2}Cena: {COLOUR BLACK}{CURRENCY32}"
+  220: (hráč 1)
+  221: (hráč 2)
+  222: Farebnú schému nie je možné zmeniť...
+  223: Priblížiť
+  224: Oddialiť
+  225: Mestá
+  226: Priemysle
+  227: Letisko
+  228: Prístav
+  229: Možností generovania krajiny
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - Podrobnosti"
+  248: "{STRINGID} - Financie (účtovníctvo)"
+  249: "{STRINGID} - Dodávka nákladu"
+  250: "{STRINGID} - Farebná schéma"
+  251: "{STRINGID} - Výzva"
+  252: "{SMALLFONT}{COLOUR BLACK}Zmeniť smer"
+  253: "{SMALLFONT}{COLOUR BLACK}Prejsť semafor pri nebezpečenstve"
+  254: "{SMALLFONT}{COLOUR BLACK}Odstrániť {POP16}{STRINGID} z koľaje/cesty"
+  255: "{SMALLFONT}{COLOUR BLACK}Položiť {POP16}{STRINGID} na koľaj/cestu"
+  256: "{SMALLFONT}{COLOUR BLACK}Odstrániť {POP16}{STRINGID} z letiska"
+  257: "{SMALLFONT}{COLOUR BLACK}Položiť {POP16}{STRINGID} na letisko"
+  258: "{SMALLFONT}{COLOUR BLACK}Odstrániť {POP16}{STRINGID} z vody"
+  259: "{SMALLFONT}{COLOUR BLACK}Položiť {POP16}{STRINGID} do lodenice"
+  260: Nie je možné naštartovať {POP16}{POP16}{POP16}{STRINGID}...
+  261: Nie je možné vybrať manuálny režim pre {POP16}{POP16}{POP16}{STRINGID}...
+  262: Nie je možné zastaviť {POP16}{POP16}{POP16}{STRINGID}...
+  263: "{VELOCITY}"
+  264: Neobmedzený{POP16}
+  265: Zastaviť
+  266: Naštartovať
+  267: Manuál
+  268: "{SMALLFONT}{COLOUR BLACK}Vybrať množstvo koľaji/ciest na vylepšenie"
+  269: "{SMALLFONT}{COLOUR BLACK}Zastaviť/Naštartovať {POP16}{STRINGID}"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}Výstavba koľají/ciest"
+  272: "{SMALLFONT}{COLOUR BLACK}Výstavba stanice"
+  273: "{SMALLFONT}{COLOUR BLACK}Výstavba semaforu"
+  274: "{SMALLFONT}{COLOUR BLACK}Elektrifikácia trate a ďalšie vylepšenia"
+  275: "{SMALLFONT}{COLOUR BLACK}Vybrať typ semaforu"
+  276: "{SMALLFONT}{COLOUR BLACK}Vybudovať semafory oboch smeroch"
+  277: "{SMALLFONT}{COLOUR BLACK}Vybudovať semafor len v jednom smere (vlaky môžu jazdiť len v jednom smere)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}Max. rýchlosť:  {STRINGID}{NEWLINE}Max. výska nad zemou:  {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}Vybrať typ stanice"
+  280: Stanica {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} Sever"
+  283: "{STRINGID} Juh"
+  284: "{STRINGID} Východ"
+  285: "{STRINGID} Západ"
+  286: "{STRINGID} Stred"
+  287: "{STRINGID} Rázcestie"
+  288: "{STRINGID} Za horou"
+  289: "{STRINGID} Údolie"
+  290: "{STRINGID} Na kopci"
+  291: "{STRINGID} Lesy"
+  292: "{STRINGID} Jazerá"
+  293: "{STRINGID} Predmestie"
+  294: "Letisko {STRINGID}"
+  295: "Vrtná plošina {STRINGID}"
+  296: "{STRINGID} Bane"
+  297: "Prístav {STRINGID}"
+  298: "Zastávka {STRINGID}"
+  299: "{STRINGID} Vidiek"
+  300: "{STRINGID} Konečná"
+  301: Horný {STRINGID}
+  302: Dolný {STRINGID}
+  303: "Heliport {STRINGID}"
+  304: "{STRINGID} Les"
+  305: "{STRINGID} Uzol"
+  306: "{STRINGID} Kríž"
+  307: "{STRINGID} Rozhľady"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}Hmotnosť: {COLOUR BLACK}{INT32}t"
+  329: "{COLOUR WINDOW_2}Celkový výkon: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} Hmotnosť: {COLOUR BLACK}{INT32}t"
+  330: "{COLOUR WINDOW_2}Max. rýchlosť: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} Spoľahlivosť: {COLOUR BLACK}{INT16}%"
+  331: "{COLOUR WINDOW_2}Max. rýchlosť: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} Spoľahlivosť: {COLOUR BLACK}{INT16}%"
+  332: "{SMALLFONT}{COLOUR BLACK}Predať {POP16}{STRINGID}{NEWLINE}(Alebo presunúť jednotlivé vozidlo sem na predaj)"
+  333: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové vozidlo pre {POP16}{STRINGID}"
+  334: "{COLOUR BLACK}(?? Kliknite na zobrazenie pre {STRINGID} začiatočnú pozíciu)"
+  335: Vozidlá nie sú kompatibilné
+  336: Príliš veľa vozidiel v hre
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}Vyrobené:  {DATE MY}"
+  341: "{NEWLINE}Hodnota:  {CURRENCY32}"
+  342: "{NEWLINE}Výkon:  {POWER}"
+  343: "{NEWLINE}Hmotnosť:  {INT16}t"
+  344: "{NEWLINE}Max. rýchlosť:  {VELOCITY}"
+  345: " ({VELOCITY} v {STRINGID})"
+  346: "{NEWLINE}Spoľahlivosť:  {INT16}%"
+  347: "{STRINGID} {STRINGID}"
+  348: Jedna sekcia
+  349: Sekcia bloku
+  350: Všetky pripojené trate
+  351: "Pozor: Príliš veľa tratí!{NEWLINE}Niektoré z vybraných tratí nemuseli byť vylepšené"
+  352: "{SMALLFONT}{COLOUR BLACK}Vylepšiť trať s týmito vylepšeniami"
+  353: "{SMALLFONT}{COLOUR BLACK}(Kliknúť na vybranú trať a pridať nasledujúce)"
+  354: "{SMALLFONT}{COLOUR BLACK}Vybrať, čo pridať na trať"
+  355: "{SMALLFONT}{COLOUR BLACK}Presunúť hlavné zobrazenie pre zobrazenie tohto"
+  356: Mimo okraju mapy!
+  357: Nie je možné postaviť čiastočne nad a čiastočne pod vodou!
+  358: Príliš blízko k hladine vody!
+  359: Nie je to možné postaviť pod vodou!
+  360: Je to možné postaviť len nad zemou!
+  361: Je to možné postaviť len na rovine
+  362: Načítať hru
+  363: Načítať terén
+  364: Uložiť terén
+  365: Uložiť hru
+  366: Uložiť scenár
+  367: Uložený súbor hry OpenLoco
+  368: Súbor scenára OpenLoco
+  369: Súbor terénu OpenLoco
+  370: Nepodarilo sa uložiť hru!
+  371: Nepodarilo sa načitať uloženú hru...{NEWLINE}Súbor obsahuje neplatné dáta!
+  372: Skryť krajinu a budovy v popredí
+  373: Vyrobiť je možné len na vode!
+  374: Vyrobiť je možné len na vode ak je blízko priemyslu na vode!
+  375: Meno {STRINGID}
+  376: "Zadať nový názov pre {STRINGID}:"
+  377: Nie je možné premenovať toto vozidlo...
+  378: Potrebný most
+  379: Príliš vysoko nad zemou pre tento typ mostu
+  380: Most je už v maximálnej výške nad zemou
+  381: "{STRINGID} vyžaduje most"
+  382: Nevhodný typ mostu pre túto konfiguráciu
+  383: Názov stanice
+  384: "Zadať nový názov pre stanicu {STRINGID}:"
+  385: Stanicu nie je možné premenovať...
+  386: Neplatný názov stanice
+  387: Nie je možné presunúť vozdilo...
+  388: Nie je možné otočiť vlak...
+  389: Nie je možné predať vozidlo...
+  390: Nie je možné predať {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: "{STRINGID} nástupište stanice"
+  394: "{STRINGID} budova stanice / zastávka autobusu"
+  395: "{SMALLFONT}{COLOUR BLACK}Zvýrazniť oblasť pokrytia pre túto stanicu"
+  396: Stlmiť
+  397: Prehrávať hudbu
+  398: "{COLOUR RED}V konkurze!"
+  399: "{STRINGID} nemôže čakať na plné naloženie v {STRINGID}"
+  400: "{STRINGID} sa zastavil na svahu"
+  401: "{STRINGID} teraz prijíma {STRINGID}"
+  402: "{STRINGID} už neprijíma {STRINGID}"
+  403: Nová dopravná spoločnosť!{NEWLINE}{STRINGID} začína stavba blízko {STRINGID}!
+  404: "{STRINGID} nie je schopné pristáť na {STRINGID} pretože letisko je nevhodné"
+  405: Občania oslavujú!{NEWLINE}Prvý {STRINGID} prišiel do mesta {STRINGID}!
+  406: Občania oslavujú!{NEWLINE}Prvý {STRINGID} náklad prišiel do mesta {STRINGID}!
+  407: Pracovníci oslavujú!{NEWLINE}Prvý {STRINGID} prišiel do {STRINGID}!
+  408: Nové vozidlo vyvinuté -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID} je povýšené z “{STRINGID}” na “{STRINGID}”!"
+  410: Nový {STRINGID} vo výstavbe blízko {STRINGID}!
+  411: Blahoželáme!{NEWLINE}Úspešne ste dokončili vašu výzvu!
+  412: Neúspech!{NEWLINE}Vašu výzvu ste nedokončili úspešne!
+  413: Porazený!{NEWLINE}{STRINGID} dokončil výzvu!
+  414: Výstraha - konkurz!{NEWLINE}{STRINGID} bude zatvorený ak sa nezlepší výkon do 6 mesiacov!
+  415: Posledná výstraha!{NEWLINE}{STRINGID} bude zatvorený ak sa nezlepší výkon do 3 mesiacov!
+  416: Konkurz!{NEWLINE}{STRINGID} vyhlásil konkurz a bude zatvorený!
+  417: Konkurz!{NEWLINE}{STRINGID} vyhlásil konkurz a bude zatvorený!
+  418: "{STRINGID} havaroval!"
+  419: Firemný škandál!{NEWLINE}{STRINGID} uväznený za pokus o lúpež!
+  420: Nový {STRINGID} rýchlostný rekord!{NEWLINE}{STRINGID} dosiahol priemernú rýchlosť {VELOCITY} medzi zastávkami!
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: Výškové značky na tratiach a cestách
+  427: Výškové značky na teréne
+  428: Šípky pre jednosmerné cesty a trate
+  429: Zobrazenie názvu miest
+  430: Zobrazenie názvu staníc
+  431: "{NEWLINE}{COLOUR WINDOW_3}Príjíma "
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}Produkuje "
+  441: "{NEWLINE}{COLOUR WINDOW_3}Vo výstavbe"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Vo vlastníctve {STRINGID}"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: Nie je to možné odstrániť...
+  446: Steny a ploty
+  447: Sadiť stromy
+  448: Nie je to možné tu umiestniť...
+  449: Nie je to možné tu sadiť...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknúť pravým tlačidlom myši pre zmenu"
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}Kliknúť pravým tlačidlom myši pre odstránenie"
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: Zastavuje{POP16}{POP16}
+  460: / Čaká na semafor{POP16}{POP16}
+  461: at {VELOCITY}{POP16}
+  462: "{COLOUR RED}Havaroval!{POP16}{POP16}"
+  463: "{COLOUR RED}Uviazol!{POP16}{POP16}"
+  464: "{COLOUR RED}Pokazil sa{POP16}{POP16}"
+  465: Zastavený{POP16}{POP16}
+  466: Nakladá v {STRINGID}
+  467: Vykladá v {STRINGID}
+  468: Ďalšia zastávka {STRINGID}
+  469: Pristáva na {STRINGID}
+  470: Roluje na dráhe v {STRINGID}
+  471: Odlieta z {STRINGID}
+  472: Ide v smere {STRINGID}
+  473: Žiadna pozícia{POP16}{POP16}
+  474: Cestuje{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: Nie je možné tu znížiť hladinu vody...
+  478: Nie je možné tu zvýšiť hladinu vody...
+  479: (Žiadny)
+  480: "{STRING}"
+  481: "{COLOUR RED}Zatvorený - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: Nevyhovujúce naklonenie terénu
+  484: Nie je to možné stavať pod vodou!
+  485: Typ terénu nevyhovuje
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: vlak
+  489: vlaky
+  490: Vlak
+  491: Vlaky
+  492: "{INT16} vlak"
+  493: "{INT16} vlaky"
+  494: Vlak {INT16}
+  495: loď
+  496: lode
+  497: Loď
+  498: Lode
+  499: "{INT16} loď"
+  500: "{INT16} lode"
+  501: Loď {INT16}
+  502: trať
+  503: trate
+  504: Trať
+  505: Trate
+  506: "{INT16} trať"
+  507: "{INT16} trate"
+  508: Trať {INT16}
+  509: lodenica
+  510: lodenice
+  511: Lodenica
+  512: Lodenice
+  513: "{INT16} lodenica"
+  514: "{INT16} lodenice"
+  515: Lodenica {INT16}
+  516: stanica
+  517: stanice
+  518: Stanica
+  519: Stanice
+  520: "{INT16} stanica"
+  521: "{INT16} stanice"
+  522: Stanica {INT16}
+  523: vozidlo
+  524: vozidlá
+  525: Vozidlo
+  526: Vozidlá
+  527: "{INT16} vozidlo"
+  528: "{INT16} vozidlá"
+  529: Vozidlo {INT16}
+  530: budova
+  531: budovy
+  532: Budova
+  533: Budovy
+  534: "{INT16} budova"
+  535: "{INT16} budovy"
+  536: Budova {INT16}
+  537: štruktúra
+  538: štruktúry
+  539: Štruktúra
+  540: Štruktúry
+  541: "{INT16} štruktúra"
+  542: "{INT16} štruktúry"
+  543: Štruktúra {INT16}
+  544: loď
+  545: lode
+  546: Loď
+  547: Lode
+  548: "{INT16} loď"
+  549: "{INT16} lode"
+  550: Loď {INT16}
+  551: mesto
+  552: mestá
+  553: Mesto
+  554: Mestá
+  555: "{INT16} mesto"
+  556: "{INT16} mestá"
+  557: Mesto {INT16}
+  558: priemysel
+  559: priemysle
+  560: Priemysel
+  561: Priemysle
+  562: "{INT16} priemysel"
+  563: "{INT16} priemysle"
+  564: Priemysel {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}otočiť objekt o 90°"
+  566: Potrebný rovinný terén
+  567: Nie je možné zmeniť typ terénu...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}Zobraziť pohľad - {POP16}{STRINGID}"
+  575: "{SMALLFONT}{COLOUR BLACK}Zobraziť podrobnosti dizajnu a možnosti - {POP16}{STRINGID}"
+  576: "{SMALLFONT}{COLOUR BLACK}Zobraziť náklad / cestujúcich - {POP16}{STRINGID}"
+  577: "{SMALLFONT}{COLOUR BLACK}Zobraziť podrobnosti trasy - {POP16}{STRINGID}"
+  578: "{SMALLFONT}{COLOUR BLACK}Zobraziť prevádzkové náklady a príjmy - {POP16}{STRINGID}"
+  579: "{SMALLFONT}{COLOUR BLACK}Vybrať novú počiatočnú pozíciu pre výstavbu"
+  580: "{SMALLFONT}{COLOUR BLACK}Otočiť o 90°"
+  581: "{STRINGID} na ceste"
+  582: "{CURRENCY32}"
+  583: Nie je to možné tu postaviť...
+  584: "{DATE MY}"
+  585: OpenLoco
+  586: Vložte Locomotion CD do nasledujúcej jednotky:-
+  587: "{COLOUR WINDOW_2}Výdavky/Príjmy"
+  588: Príjmy z vlakov
+  589: Prevádzkové náklady vlakov
+  590: Príjmy z autobusov
+  591: Prevádzkové náklady autobusov
+  592: Príjmy z nákladných áut
+  593: Prevádzkové náklady nákladných áut
+  594: Príjmy z električiek
+  595: Prevádzkové náklady električiek
+  596: Príjmy z lietadiel
+  597: Prevádzkové náklady lietadiel
+  598: Príjmy z lodí
+  599: Prevádzkové náklady lodí
+  600: Výstavba
+  601: Nákupy vozidiel
+  602: Predaje vozidiel
+  603: Úroky z úverov
+  604: Rôzne
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}´Úver:"
+  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  610: Nemôžete si požičať viac peňazí!
+  611: Nie je k dispozícii dostatok hotovosti!
+  612: Nemôžete splatiť úver!
+  613: "{SMALLFONT}{COLOUR BLACK}Začať novú hru"
+  614: "{SMALLFONT}{COLOUR BLACK}Načítať uloženú hru"
+  615: "{SMALLFONT}{COLOUR BLACK}Zobraziť výuku"
+  616: "{SMALLFONT}{COLOUR BLACK}Ukončiť hru"
+  617: Osada
+  618: Dedina
+  619: Mesto
+  620: Veľkomesto
+  621: Metropola
+  622: Nevhodná trať / cesta
+  623: Nevhodná trať / cesta pre stanicu
+  624: Nie je možné postaviť stanicu na križovatke
+  625: Nie je možné postaviť semafor na križovatke
+  626: Semafory nie je možné postaviť v staniciach
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}Hotovosť:  {MOVE_X 81}{COLOUR RED}V konkurze!"
+  631: "{COLOUR WINDOW_2}Hotovosť:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}Hotovosť:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}Hodnota spoločností: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}Zisk z vozidiel: {COLOUR BLACK}{CURRENCY48} / mesiac"
+
+  635: Január
+  636: Február
+  637: Marec
+  638: Apríl
+  639: Máj
+  640: Jún
+  641: Júl
+  642: August
+  643: September
+  644: Október
+  645: November
+  646: December
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: Vybrať scenár pre novú hru
+  649: ""
+  650: "{COLOUR WINDOW_2}Kvalita zvuku:"
+  651: Nízka
+  652: Stredná
+  653: Vysoká
+  654: Možnosti
+  655: "{COLOUR WINDOW_2}Mena:"
+  656: "{COLOUR WINDOW_2}Vzdialenosť a rýchlosť:"
+  657: "{COLOUR WINDOW_2}Výška:"
+  658: Imperialná
+  659: Metrická
+  660: Jednotky
+  661: Reálne hodnoty
+  662: "{COLOUR WINDOW_2}Rozlíšenie displeja:"
+  663: Vyrovnanie terénu
+  664: "{SMALLFONT}{COLOUR BLACK}Vyrovnanie hrán na dlaždici terénu zapnuté/vypnuté"
+  665: Mriežka na teréne
+  666: "{SMALLFONT}{COLOUR BLACK}Zapnúť/vypnúť mriežku na teréne"
+  667: Banka odmieta zvýšiť Váš úver!
+  668: "{SMALLFONT}{COLOUR BLACK}Kliknutím na terén odstránite stromov a budov"
+  669: "{SMALLFONT}{COLOUR BLACK}Demolácia menšej plochy"
+  670: "{SMALLFONT}{COLOUR BLACK}Demolácia väčšej plochy"
+  671: "{SMALLFONT}{COLOUR BLACK}Úprava menšej plochy terénu"
+  672: "{SMALLFONT}{COLOUR BLACK}Úprava väčšej plochy terénu"
+  673: "{SMALLFONT}{COLOUR BLACK}Úprava menšej plochy vody"
+  674: "{SMALLFONT}{COLOUR BLACK}Úprava väčšej plochy vody"
+  675: Úprava terénu
+  676: Úprava vody
+  677: "{SMALLFONT}{COLOUR BLACK}Kliknite na terén a potiahnite nahor/nadol pre zvýšenie/zníženie hladiny vody"
+  678: "{SMALLFONT}{COLOUR BLACK}Kliknite na terén a potiahnite nahor/nadol pre zvýšenie/zníženie terénu"
+  679: Demolovať oblasť
+  680: Vyčistiť oblasť
+  681: Upraviť terén
+  682: Upraviť vodu
+  683: Sadiť stromy
+  684: Postaviť stenu
+  685: "{STRINGID} - Podrobnosti o vozidle"
+  686: "{STRINGID} - Náklad"
+  687: "{STRINGID} - Trasa"
+  688: "{STRINGID} - Financie"
+  689: "{COLOUR WINDOW_2}Vlaky: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}Autobusy: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}Nákladné autá: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}Električky: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}Lietadlá: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}Lode: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}Výzva neúspešná!"
+  696: "{NEWLINE}Výzva dokončená!"
+  697: "{SMALLFONT}{COLOUR BLACK}Index výkonnosti: {INT16_1DP}% “{STRINGID}”"
+  698: "{SMALLFONT}{COLOUR BLACK}Hodnota spoločnosti: {CURRENCY48}{NEWLINE}Zisk z vozidiel: {CURRENCY48}/mesiac"
+  699: "{NEWLINE}Priebeh výzvy: {INT16}%{STRINGID}"
+  700: "{NEWLINE}Zostávajúci čas: {COLOUR BLACK}{INT16} roky {INT16} mesiace"
+  701: Upraviť klávesové skratky...
+  702: Klávesové skratky
+  703: Štandardné klávesové skratky
+  704: "{SMALLFONT}{COLOUR BLACK}Nastaviť všetky klávesové skratky späť na predvolené nastavenie"
+  705: Zatvoriť najvrchnejšie okno
+  706: Zatvoriť vsetky plávajúce okná
+  707: Zrušiť režim výstavby
+  708: Pozastavenie/pokračovanie hry
+  709: Oddialiť zobrazenie
+  710: Priblížiť zobrazenie
+  711: Otočiť zobrazenie
+  712: Otočiť objekt vo výstavbe
+  713: Prepnúť podzemné zobrazenie
+  714: Skryť trate a cesty
+  715: Skryť prírodu a budovy
+  716: Výškové značky na teréne
+  717: Výškové značky na tratiach a cestách
+  718: Šípky pre jednosmerné cesty a trate
+  719: Upraviť terén
+  720: Upraviť vodu
+  721: Sadiť stromy
+  722: Demolovať terén
+  723: Výstavba trate
+  724: Výstavba cesty
+  725: Výstavba letiská
+  726: Výstavba prístavov
+  727: Vyrobiť nové vozidlá
+  728: Zobraziť zoznam vozidiel
+  729: Zobraziť zoznam staníc
+  730: Zobraziť zoznam miest
+  731: Zobraziť zoznam priemyslu
+  732: Zobraziť mapu
+  733: Zobraziť zoznam spoločností
+  734: Zobraziť informácie o spoločnosti
+  735: Zobraziť financie
+  736: Zobraziť zoznam oznámení
+  737: Snímka obrazovky
+  738: Zrušiť alebo zobraziť posledné oznámenie
+  739: Poslať správu (v režime viacerých hráčov)
+
+  # Virtual-Key Codes
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Backspace
+  749: Tab
+  750: ???
+  751: ???
+  752: Clear
+  753: Return
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt/Menu
+  759: Pause
+  760: Caps
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: Escape
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: Spacebar
+  773: PgUp
+  774: PgDn
+  775: End
+  776: Home
+  777: Left
+  778: Up
+  779: Right
+  780: Down
+  781: Select
+  782: Print
+  783: Execute
+  784: Snapshot
+  785: Insert
+  786: Delete
+  787: Help
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menu
+  834: ???
+  835: ???
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: ???
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: NumLock
+  885: Scroll Lock
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  997: "SHIFT + "
+  998: "CTRL + "
+  999: Zmeniť klávesovú skratku
+  1000: "{COLOUR WINDOW_2}Stlačte novú klávesovú skratku pre:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1001: "{SMALLFONT}{COLOUR BLACK}Kliknutím na popis skratky vyberte novú klávesu"
+  1002: Posúvať zobrazenie keď kurzor je na okraji obrazovky
+  1003: "{SMALLFONT}{COLOUR BLACK}Vyberte, či sa má posúvať zobrazenie keď kurzor myši je na okraji obrazovky"
+  1004: "{SMALLFONT}{COLOUR BLACK}Zobrazenie alebo zmena v priradení kláves na ovládanie"
+  1005: Mapa
+  1006: Mapa - Vozidlá
+  1007: Mapa - Priemysle
+  1008: Mapa - Dopravné trasy
+  1009: Mapa - Spoločnosti
+  1010: Vynútené softvérové zmiešavanie zvukových efektov
+  1011: "{SMALLFONT}{COLOUR BLACK}Vyberte túto voľbu na zlepšenie výkonu keď sa hra zastaví na krátky čas po prehratí zvuku alebo je počuť rušenie"
+  1012: Scenár bol úspešne nainštalovaný
+  1013: Scenár je už nainštalovaný
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(Stlačte klávesu alebo tlačidlo myši na prevzatie ovládania)"
+  1016: Chris Sawyer's Locomotion už beží v pamäti počítača
+
+  1017: Poďakovania za hudbu...
+  1018: Poďakovania za hudbu
+  1019: "{COLOUR BLACK}Autorské práva © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}Úvodná hudba Locomotion"
+  1021: "{COLOUR BLACK}John Broomhall (Gitara - Keith Thompson)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (Trúbka - Brian Moore)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (V predstavení Peter James Adcock)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (V predstavení Peter James Adcock)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (V predstavení Peter James Adcock)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (V predstavení Peter James Adcock)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (V predstavení Peter James Adcock)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (Trúbka - Brian Moore, Klarinet - John Glanfield)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (Trúbka - Brian Moore)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: Nepodarilo sa načítať uloženú hru...
+  1083: Súbor obsahuje neplatné dáta
+  1084: Súbor nie je uložená hra pre jedného hráča
+  1085: Súbor nie je uložená hra pre dvoch hráčov
+  1086: Prosím čakajte...
+  1087: Inicializácia...
+  1088: Načítavanie...
+  1089: "Inštalácia nových dát: "
+
+  1090: Biely
+  1091: Priehľadný
+  1092: "{COLOUR WINDOW_2}Značka výstavby:"
+  1093: "{COLOUR WINDOW_2}Minimálna škála vozidlá:"
+  1094: "{COLOUR WINDOW_2}Minimálna škála pre názvy staníc:"
+  1095: Plná škála
+  1096: Polovičná škála
+  1097: Štvrtinová škála
+  1098: Osminová škála
+  1099: "{SMALLFONT}{COLOUR BLACK}Vybrať minimálnu mierku zobrazovania, na ktorej sa budú vozidlá zobrazovať"
+  1100: "{SMALLFONT}{COLOUR BLACK}Vybrať minimálnu mierku zobrazovania, na ktorej sa budú zobrazovať názvy staníc"
+
+  1101: "{COLOUR WINDOW_2}Hlavná farebná schéma:"
+  1102: "{COLOUR BLACK}Parné lokomotívy:"
+  1103: "{COLOUR BLACK}Dieselové lokomotívy:"
+  1104: "{COLOUR BLACK}Elektrické lokomotívy:"
+  1105: "{COLOUR BLACK}Viac jednotiek:"
+  1106: "{COLOUR BLACK}Osobné vozidlá:"
+  1107: "{COLOUR BLACK}Nákladné vozidlá:"
+  1108: "{COLOUR BLACK}Autobusy:"
+  1109: "{COLOUR BLACK}Nákladné autá:"
+  1110: "{COLOUR BLACK}Lietadlá:"
+  1111: "{COLOUR BLACK}Lode:"
+  1112: "{SMALLFONT}{COLOUR BLACK}Sídlo spoločnosti a podrobnosti"
+  1113: "{SMALLFONT}{COLOUR BLACK}Vlastník a štatút spoločnosti"
+  1114: "{SMALLFONT}{COLOUR BLACK}Financie spoločnosti"
+  1115: "{SMALLFONT}{COLOUR BLACK}Dodávka nákladu"
+  1116: "{SMALLFONT}{COLOUR BLACK}Farebná schéma spoločnosti"
+  1117: "{SMALLFONT}{COLOUR BLACK}Výzva spoločnosti pre túto hru"
+  1118: "{COLOUR WINDOW_2}Špeciálne farebné schémy používané pre:"
+  1119: "{SMALLFONT}{COLOUR BLACK}Vybrať hlavnú farbu"
+  1120: '{SMALLFONT}{COLOUR BLACK}Vybrať druhotnú farbu (používa sa len na niektorých typoch vozidiel)'
+  1121: '{SMALLFONT}{COLOUR BLACK}Vybrať, ci sa má pre tento typ vozidla použiť iná farebná schéma'
+  1122: "{STRINGID} - Vlaky"
+  1123: "{STRINGID} - Autobusy"
+  1124: "{STRINGID} - Nákladné autá"
+  1125: "{STRINGID} - Električky"
+  1126: "{STRINGID} - Lietadlá"
+  1127: "{STRINGID} - Lode"
+  1128: "{STRINGID} - Všetky stanice"
+  1129: "{STRINGID} - Železničné stanice"
+  1130: "{STRINGID} - Cestné zastávky"
+  1131: "{STRINGID} - Letiská"
+  1132: "{STRINGID} - Prístavy"
+  1133: Všetky stanice
+  1134: Železničné stanice
+  1135: Cestné zastávky
+  1136: Letiská
+  1137: Prístavy
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16} rok"
+  1143: "{COLOUR WINDOW_2}{INT16} roky"
+  1144: "{COLOUR WINDOW_2}{INT16}%"
+  1145: "{COLOUR BLACK}Názov"
+  1146: "{COLOUR BLACK}Názov ▼"
+  1147: "{COLOUR BLACK}Mesačný zisk"
+  1148: "{COLOUR BLACK}Mesačný zisk ▼"
+  1149: "{COLOUR BLACK}Vek"
+  1150: "{COLOUR BLACK}Vek ▼"
+  1151: "{COLOUR BLACK}Spoľahlivosť"
+  1152: "{COLOUR BLACK}Spoľahlivosť ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa názvu"
+  1154: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa zisku"
+  1155: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa veku"
+  1156: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa spoľahlivosti"
+  1157: Vozidlo sa musí najprv zastaviť!
+  1158: Vozidlo malo nehodu!
+  1159: Vozidlo sa pokazilo!
+  1160: Vozidlo je zaseknuté!
+  1161: Nie je dostatok miesta alebo vozidlo je v ceste
+  1162: Vozidlo sa blíži alebo je v ceste
+  1163: Nie je možné umiestniť {POP16}{POP16}{POP16}{STRINGID} sem...
+  1164: Nie je možné odstrániť {POP16}{POP16}{POP16}{STRINGID}...
+  1165: Nie je možné ignorovať červenú na semafore...
+  1166: Toto vozidlo vyžaduje {STRINGID}
+  1167: Vlak nemá žiadne vozidlá!
+  1168: Vlak nemá kabínu vodiča
+  1169: Vlak potrebuje lokomotívu alebo motorový vozeň
+  1170: "{STRINGID} from {STRINGID}"
+  1171: Prázdny
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}Kapacita:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: Príliš veľa staníc v hre!
+  1176: Stanica je príliš veľká!
+  1177: Najprv mesto musí byť postavené!
+  1178: "{SMALLFONT}{COLOUR BLACK}Zobraziť celkovú mapu"
+  1179: "{SMALLFONT}{COLOUR BLACK}Zobraziť typy vozidiel na mape"
+  1180: "{SMALLFONT}{COLOUR BLACK}Zobraziť typy priemyslu na mape"
+  1181: "{SMALLFONT}{COLOUR BLACK}Zobraziť trasy vozidiel na mape"
+  1182: "{SMALLFONT}{COLOUR BLACK}Zobraziť vlastníctvo spoločnosti na mape"
+  1183: Stanica je príliš rozsiahla!
+  1184: Nie je možné pridať {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID} do {STRINGID}...
+  1185: Nie je možné postaviť {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1186: "{COLOUR BLACK}Vybrať nové vozidlo"
+  1187: "{COLOUR BLACK}Vybrať vozidlo pre pridanie do {STRINGID}"
+  1188: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové vlaky"
+  1189: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové autobusy"
+  1190: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové nákladné autá"
+  1191: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové električky"
+  1192: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové lietadlá"
+  1193: "{SMALLFONT}{COLOUR BLACK}Vyrobiť nové lode"
+  1194: "{SMALLFONT}{COLOUR BLACK}Vlaky"
+  1195: "{SMALLFONT}{COLOUR BLACK}Autobusy"
+  1196: "{SMALLFONT}{COLOUR BLACK}Nákladné autá"
+  1197: "{SMALLFONT}{COLOUR BLACK}Električky"
+  1198: "{SMALLFONT}{COLOUR BLACK}Lietadlá"
+  1199: "{SMALLFONT}{COLOUR BLACK}Lode"
+  1200: "{SMALLFONT}{COLOUR BLACK}Všetky stanice"
+  1201: "{SMALLFONT}{COLOUR BLACK}Železničné stanice"
+  1202: "{SMALLFONT}{COLOUR BLACK}Cestné zastávky"
+  1203: "{SMALLFONT}{COLOUR BLACK}Letiská"
+  1204: "{SMALLFONT}{COLOUR BLACK}Prístavy"
+  1205: "{SMALLFONT}{COLOUR BLACK}Vyčistiť plochu na teréne"
+  1206: "{SMALLFONT}{COLOUR BLACK}Stromy"
+  1207: "{SMALLFONT}{COLOUR BLACK}Upraviť alebo vytvoriť terén"
+  1208: "{SMALLFONT}{COLOUR BLACK}upraviť alebo vytvoriť vodu"
+  1209: "{SMALLFONT}{COLOUR BLACK}Steny a ploty"
+  1210: "{SMALLFONT}{COLOUR BLACK}Vyberte farbu objektu"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (na trase od"
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: Nie je priestor pre viac príkazov vozidiel!
+  1215: Príliš veľa príkazov pre toto vozidlo!
+  1216: "- - Normálny - -"
+  1217: "- - Rýchlik - -"
+  1218: "{COLOUR BLACK}- - Nie je definovaná žiadna trasa - -"
+  1219: "{COLOUR BLACK}- - Koniec zoznamu trás - -"
+  1220: "Zastávka v: {STRINGID}"
+  1221: "Trasa cez: {STRINGID}"
+  1222: Trasa cez orientačný bod
+  1223: Vyložiť všetko {STRINGID} {SPRITE}
+  1224: Počkať na plné naloženie z {STRINGID} {SPRITE}
+  1225: Vyložiť všetko {STRINGID} {SPRITE}
+  1226: Počkať na plné naloženie z {STRINGID} {SPRITE}
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: Nie je možné vložiť príkaz...
+  1229: "{COLOUR WINDOW_3}Kliknite pre vloženie nového príkazu, ktorý{NEWLINE}má prejsť cez orientačný bod na tejto pozícii"
+  1230: "{COLOUR WINDOW_3}Kliknite pre vloženie nového príkazu, ktorý má zastaviť v {STRINGID}"
+  1231: "{COLOUR WINDOW_3}Kliknite znovu pre zmenu posledného príkazu na{NEWLINE}trasu cez {STRINGID}"
+  1232: "{SMALLFONT}{COLOUR BLACK}Vložiť príkaz na čakanie na plné naloženie nákladu"
+  1233: "{SMALLFONT}{COLOUR BLACK}Vložiť príkaz na vynútené vyloženie nákladu, a to aj v prípade ak stanica neprijíma náklad"
+  1234: "{SMALLFONT}{COLOUR BLACK}Preskočiť na ďalší príkaz v zozname"
+  1235: "{SMALLFONT}{COLOUR BLACK}Odstrániť posledný alebo vybraný príkaz"
+  1236: "{COLOUR BLACK}Kliknite na pozíciu alebo stanicu pre nastavenie trasy"
+  1237: "{SMALLFONT}{COLOUR BLACK}Click on order to select it, click twice to move view to show station/waypoint"
+  1238: "{SMALLFONT}{COLOUR BLACK}Click on order to copy it to selected vehicle"
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: Vyrobiť vlaky
+  1241: Vyrobiť autobusy
+  1242: Vyrobiť nákladné autá
+  1243: Vyrobiť električky
+  1244: Vyrobiť lietadlá
+  1245: Vyrobiť lode
+  1246: Je možné umiestniť iba na {STRINGID}...
+  1247: cesta
+  1248: "{COLOUR BLACK}Nie sú k dispozícii žiadne vozidlá"
+  1249: "{COLOUR BLACK}Nie sú k dispozícii kompatibilné vozidlá k {STRINGID}"
+  1250: ""
+  1251: "{COLOUR WINDOW_2} Cena: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} Vyžaduje: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} Výkon: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} Hmotnosť: {COLOUR BLACK}{INT16}t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} Max. rýchlosť: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} Navrhnutý: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} Kapacita: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " ( + {STRINGID} pre strmé svahy)"
+  1260: " ({VELOCITY} na {STRINGID})"
+  1261: alebo {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} Prevádzkové náklady: {COLOUR BLACK}{CURRENCY32}/mesiac"
+  1263: " (premontovateľný)"
+  1264: "{INT16} vlak"
+  1265: "{INT16} autobus"
+  1266: "{INT16} nákladné auto"
+  1267: "{INT16} električka"
+  1268: "{INT16} lietadlo"
+  1269: "{INT16} loď"
+  1270: "{INT16} vlaky"
+  1271: "{INT16} autobusy"
+  1272: "{INT16} nákladné autá"
+  1273: "{INT16} električky"
+  1274: "{INT16} lietadlá"
+  1275: "{INT16} lode"
+  1276: vlak
+  1277: autobus
+  1278: nákladné auto
+  1279: električka
+  1280: lietadlo
+  1281: loď
+  1282: "{COLOUR WINDOW_2}Celkom: {COLOUR BLACK}{STRINGID}"
+  1283: Prázdny
+  1284: "{SMALLFONT}{COLOUR BLACK}Náklad: "
+  1285: Vyžaduje extra {STRINGID}
+  1286: "{SMALLFONT}{COLOUR BLACK}vozidlá pre {STRINGID}"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} Výstavba"
+  1290: "{STRINGID} miestny úrad odmieta povolenie!"
+  1291: Mestá
+  1292: Výstavba nových miest
+  1293: Výstavba jednotlivých mestských budov
+  1294: Výstavba rôznych budov
+  1295: "{COLOUR BLACK}Populácia"
+  1296: "{COLOUR BLACK}Populácia ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa populácie"
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}Stanice"
+  1300: "{COLOUR BLACK}Stanice ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa počtu staníc"
+  1302: "{COLOUR BLACK}Mesto"
+  1303: "{COLOUR BLACK}Mesto ▼"
+  1304: "{STRINGID} populácia {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa typu mesta"
+  1306: "{COLOUR BLACK}Typ"
+  1307: "{COLOUR BLACK}Typ ▼"
+  1308: Názov mesta
+  1309: "Zadajte nový názov pre {STRINGID}:"
+  1310: "{COLOUR BLACK}{STRINGID} populácia {INT32}"
+  1311: Nie je možné premenovať mesto...
+  1312: Nová stanica
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}Spádová oblasť{NEWLINE}  Prijíma: "
+  1315: "{COLOUR WINDOW_2}  Produkuje: "
+  1316: "{COLOUR BLACK}Nič"
+  1317: Príliš veľa priemyslu
+  1318: Priemysle
+  1319: Financovať nové priemysle
+  1320: Výstavba priemysle
+  1321: "{SMALLFONT}{COLOUR BLACK}Zoznam miest"
+  1322: "{SMALLFONT}{COLOUR BLACK}Výstavba miest"
+  1323: "{SMALLFONT}{COLOUR BLACK}Výstavba jednotlivých mestských budov"
+  1324: "{SMALLFONT}{COLOUR BLACK}Výstavba rôznych budov"
+  1325: "{SMALLFONT}{COLOUR BLACK}Zoznam priemysle"
+  1326: "{SMALLFONT}{COLOUR BLACK}Financovať nové priemysle"
+  1327: "{SMALLFONT}{COLOUR BLACK}Výstavba priemysle"
+  1328: Eben
+  1329: Strieborný
+  1330: Slonovinový
+  1331: Indigo
+  1332: Zafírový
+  1333: Smaragdový
+  1334: Zlatý
+  1335: Jantárový
+  1336: Bronzový
+  1337: Bordový
+  1338: Purpurový
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: "{STRINGID} Transport"
+  1342: "{STRINGID} Express"
+  1343: "{STRINGID} Lines"
+  1344: "{STRINGID} Tracks"
+  1345: "{STRINGID} Coaches"
+  1346: "{STRINGID} Air"
+  1347: "{STRINGID} Rail"
+  1348: "{STRINGID} Carts"
+  1349: "{STRINGID} Trains"
+  1350: "{STRINGID} Haulage"
+  1351: "{STRINGID} Shipping"
+  1352: "{STRINGID} Freight"
+  1353: "{STRINGID} Trucks"
+  1354: "{COLOUR WINDOW_2}Ústredie"
+  1355: "{COLOUR WINDOW_2}Majiteľ"
+  1356: "{COLOUR BLACK}@ {INT16}% úroky ročne"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - Populácia"
+  1361: "{STRINGID} Miestny úrad"
+  1362: "{STRINGID} - Mesačná produkcia"
+  1363: "{STRINGID} - Štatistika"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}Demolovať tento priemysel"
+  1366: Vo výstavbe
+  1367: "Produkuje "
+  1368: "Produkuje "
+  1369: "Produkovať "
+  1370: " pre produkciu "
+  1371: "Vyžaduje "
+  1372: "Vyžadovať "
+  1373: " a "
+  1374: " alebo "
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa stavu priemyslu"
+  1377: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa percenta prepravenej produkcie"
+  1378: "{COLOUR BLACK}Stav"
+  1379: "{COLOUR BLACK}Stav ▼"
+  1380: "{COLOUR BLACK}Prepravená produkcia"
+  1381: "{COLOUR BLACK}Prepravená produkcia ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa názvu priemyslu"
+  1383: "{COLOUR BLACK}Priemysel"
+  1384: "{COLOUR BLACK}Priemysel ▼"
+  1385: "{COLOUR BLACK}Nie je k dispozícii žiadny priemysel"
+  1386: "{SMALLFONT}{COLOUR BLACK}Mesto"
+  1387: "{SMALLFONT}{COLOUR BLACK}Graf populácie"
+  1388: "{SMALLFONT}{COLOUR BLACK}Mestský rating každej spoločnosti"
+  1389: "{SMALLFONT}{COLOUR BLACK}Priemysel"
+  1390: "{SMALLFONT}{COLOUR BLACK}Graf produkcie"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}Úplne zdemolovať toto mesto (a všetky blízke priemysle)"
+  1393: Nie je možné odstrániť mesto...
+  1394: Všetky stanice v blízkosti mesta musia byť najskôr odstránené
+  1395: Príliš blízko k inému mestu
+  1396: Príliš veľa miest
+  1397: Príliš blízko k inému mestu alebo pozícia je nevhodná
+  1398: "{SMALLFONT}{COLOUR BLACK}Vyberte veľkosť mesta na výstavbu"
+  1399: 1 (malá)
+  1400: "2"
+  1401: 3 (stredná)
+  1402: "4"
+  1403: "5"
+  1404: 6 (veľká)
+  1405: "7"
+  1406: 8 (obrovská)
+  1407: "{COLOUR BLACK}Veľkosť mesta:"
+  1408: "{COLOUR BLACK}(Kliknutím na terén postavíte nové mesto)"
+  1409: "{SMALLFONT}{COLOUR BLACK}Rozšírit toto mesto"
+  1410: Príliš blízko k inému priemyslu
+  1411: Najprv musí byť blízko postavené mesto
+  1412: "{SMALLFONT}{COLOUR BLACK}Vysadiť skupinu stromov vybraného typu"
+  1413: "{SMALLFONT}{COLOUR BLACK}Vysadiť náhodnú skupinu stromov"
+  1414: "{SMALLFONT}{COLOUR BLACK}Štatistika"
+  1415: "{COLOUR WINDOW_2}Prijaté posledný mesiac:"
+  1416: "{COLOUR WINDOW_2}Vyprodukované posledný mesiac:"
+  1417: "{COLOUR BLACK}{STRINGID} ({INT16}% prepravený)"
+  1418: "{COLOUR BLACK}{INT16}%"
+  1419: Zatvára sa
+  1420: Patrí k {STRINGID}
+  1421: "{STRINGID} patrí k {STRINGID}"
+  1422: Semafor patrí k {STRINGID}
+  1423: "{COLOUR BLACK}{INT16}%"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: Správy
+  1426: "{SMALLFONT}{COLOUR BLACK}Zobraziť posledné správy"
+  1427: "{SMALLFONT}{COLOUR BLACK}Možnosti správ"
+  1428: Možnosti správ
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " čaká"
+  1432: Nečaká nič
+  1433: "{COLOUR BLACK}Stav"
+  1434: "{COLOUR BLACK}Stav ▼"
+  1435: "{COLOUR BLACK}Čaká celkom"
+  1436: "{COLOUR BLACK}Čaká celkom ▼"
+  1437: "{COLOUR BLACK}Prijíma"
+  1438: "{COLOUR BLACK}Prijíma ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa stavu stanice"
+  1440: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa čakajúcich jednotiek"
+  1441: "{SMALLFONT}{COLOUR BLACK}Zoradit zoznam podľa prijímaného nákladu"
+  1442: "{INT32} jednotky"
+  1443: ", "
+  1444: "{NEWLINE}Prijíma "
+  1445: "{COLOUR BLACK}Prijíma: "
+  1446: Nič
+  1447: "{SMALLFONT}{COLOUR BLACK}Stanica"
+  1448: "{SMALLFONT}{COLOUR BLACK}Náklad čakajúci a prijatý"
+  1449: "{SMALLFONT}{COLOUR BLACK}Hodnotenie nákladu"
+  1450: Demolácia nie je povolená
+  1451: Tu sa chystá iná spoločnosť na výstavbu
+  1452: Príliš dlhý!
+  1453: "{SMALLFONT}{COLOUR BLACK}Postaviť alebo presunúť ústredie"
+  1454: "{SMALLFONT}{COLOUR BLACK}Zmeniť meno vlastníka"
+  1455: "{COLOUR BLACK}(ešte nebolo postavené)"
+  1456: Názov spoločnosti
+  1457: "Zadajte nový názov spoločnosti:"
+  1458: Túto spoločnosť nie je možné premenovať...
+  1459: Meno vlastníka
+  1460: "Zadajte nový názov pre vlastníka:"
+  1461: Meno vlastníka nie je možné zmeniť...
+  1462: Ústredie
+  1463: "{STRINGID} Ústredie"
+  1464: "{STRINGID} miestny úrad nepovolí odstránenie ciest, ktoré sa práve používajú"
+  1465: "{SMALLFONT}{COLOUR BLACK}Vyberte spoločnosť"
+  1466: Hra pre dvoch hráčov
+  1467: Hra pre dvoch hráčov - Možnosti
+  1468: "{COLOUR BLACK}Ak chcete nastaviť hru pre dvoch hráčov, jeden počítač by mal byť nastavený ako hostiteľ a potom by sa druhý mal k nemu pripojiť.{NEWLINE}{NEWLINE}Prosím vyberte :"
+  1469: ""
+  1470: "{COLOUR BLACK}Nastavenie tohto počítača ako hostiteľa..."
+  1471: "{COLOUR BLACK}Chyba: Nie je možné nastaviť tento počítač ako hostiteľa"
+  1472: "{COLOUR BLACK}Nastavenie hostiteľa dokončené - Čaká sa na pripojenie druhého počítača..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}Pokus o pripojenie..."
+  1477: "{COLOUR BLACK}Chyba: Nie je možné nájsť alebo sa pripojiť k hostiteľovi"
+  1478: "{COLOUR BLACK}Úspech!{NEWLINE}Teraz ste pripojený k: {STRINGID}"
+  1479: "{COLOUR BLACK}Momentálne ste pripojený k: {STRINGID}{NEWLINE}{NEWLINE}Kliknite bližšie, ak sa chcete odpojiť a vrátiť sa do režimu pre jedného hráča"
+  1480: "{COLOUR WINDOW_2}Nastaviť tento počítač ako hostiteľa"
+  1481: "{COLOUR WINDOW_2}Pripojiť sa k hostiteľovi"
+  1482: "{COLOUR WINDOW_2}Odpojiť sa"
+  1483: Zadajte adresu hostiteľa
+  1484: "Zadajte IP adresu alebo názov počítača hostiteľa, ku ktorému sa chcete pripojiť, alebo ponechajte prázdne, ak chcete vyhľadávať v lokálnej sieti:"
+  1485: "{COLOUR RED}Upozornenie: Ste pripojený k inej verzi Chris Sawyer's Locomotion a výkon hry v režime dvoch hráčov nemusí byť spoľahlivý"
+
+  # Options
+  1486: "{SMALLFONT}{COLOUR BLACK}Možnosti - Obraz"
+  1487: "{SMALLFONT}{COLOUR BLACK}Možnosti - Zvuk"
+  1488: "{SMALLFONT}{COLOUR BLACK}Možnosti - Hudba"
+  1489: "{SMALLFONT}{COLOUR BLACK}Možnosti - Miestne nastavenia"
+  1490: "{SMALLFONT}{COLOUR BLACK}Možnosti - Ovládanie"
+  1491: "{SMALLFONT}{COLOUR BLACK}Možnosti - Rôzne"
+  1492: Možnosti - Obraz
+  1493: Možnosti - Zvuk
+  1494: Možnosti - Hudba
+  1495: Možnosti - Miestne nastavenia
+  1496: Možnosti - Ovládanie
+  1497: Možnosti - Rôzne
+
+  # Options/Currency
+  1498: Používať vždy preferovanú menu
+  1499: "{SMALLFONT}{COLOUR BLACK}Vždy používať preferovanú menu"
+  1500: Používať preferovanú menu pri spustení novej hry
+  1501: "{SMALLFONT}{COLOUR BLACK}Vyberte túto možnosť, ak chcete v scenári prepísať predvolenú menu"
+  1502: "{SMALLFONT}{COLOUR BLACK}Vyberte menu pre aktuálnu hru"
+  1503: "{SMALLFONT}{COLOUR BLACK}Vyberte predvolenú menu pri vytvorení nových scenárov"
+  1504: "{COLOUR WINDOW_2}Aktuálna mena:"
+  1505: "{COLOUR WINDOW_2}Preferovaná mena:"
+  1506: ""
+
+  1507: "Hlavné novinky vlastnej spoločnosti:"
+  1508: "Hlavné novinky ďalšej spoločnosti:"
+  1509: "Vedľajšie novinky vlastnej spoločnosti:"
+  1510: "Vedľajšie novinky ďalšej spoločnosti:"
+  1511: "Všeobecné správy:"
+  1512: "Rada:"
+  1513: Vypnutý
+  1514: Rýchla správa
+  1515: Okno noviniek
+  1516: "{COLOUR WINDOW_2}Mesačné prevádzkové náklady: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}Mesačný zisk: {COLOUR BLACK}{CURRENCY32}"
+  1518: Vlaky
+  1519: Autobusy
+  1520: Nákladné autá
+  1521: Električky
+  1522: Lietadlá
+  1523: Lode
+  1524: Letisko
+  1525: Prístav
+  1526: Neplatný typ príkazu pre lietadlá
+  1527: Neplatný typ príkazu pre lode
+  1528: Stanica je vo vlastníctve inej spoločnosti
+  1529: Žiadna voda!
+  1530: Lode potrebujú v súčastnosti vodný kanál
+  1531: Momentálne používa aspoň jedno vozidlo
+  1532: "{SMALLFONT}{COLOUR BLACK}Premontovať vozidlo na prepravu iného typu nákladu"
+  1533: Nie je možné premontovať vozidlo na prepravu iného typu nákladu
+  1534: Vyžaduje vodu pred lodenicou
+
+  1535: "{COLOUR WINDOW_2}Momentálne hrá:"
+  1536: "{SMALLFONT}{COLOUR BLACK}Zastaviť hudbu"
+  1537: "{SMALLFONT}{COLOUR BLACK}Prehrávať hudbu"
+  1538: "{SMALLFONT}{COLOUR BLACK}Nasledujúca skladba"
+  1539: Prehrávať iba hudbu z aktuálnej éry
+  1540: Prehrávať všetku hudbu
+  1541: Prehrávať vlastný výber hudby
+  1542: Upraviť výber...
+  1543: "{SMALLFONT}{COLOUR BLACK}Upraviť zoznam výberu skladieb"
+  1544: Úprava výberu hudby
+  1545: "{SMALLFONT}{COLOUR BLACK}Kliknutím na skladbu zapnete / vypnete výber"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}Hlasitosť:"
+  1548: "{SMALLFONT}{COLOUR BLACK}Nastavenie hlasitosti hudby"
+  1549: Možnosti hudby
+  1550: Vybrať tvár vlastníka {STRINGID}
+  1551: "{SMALLFONT}{COLOUR BLACK}Kliknutím vyberte tvár spoločnosti alebo vlastníka"
+  1552: Už vybrané pre inú spoločnosť
+  1553: Nie je možné vybrať tvár...
+  1554: letiská
+  1555: lodenice
+  1556: "{COLOUR WINDOW_2}Spoločnosť založená: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}Index výkonnosti: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”"
+  1558: "{COLOUR WINDOW_2}Index výkonnosti: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}Index výkonnosti: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1560: "{COLOUR WINDOW_2}Vlastník: {COLOUR BLACK}{STRINGID}"
+  1561: nízky
+  1562: stredný
+  1563: vysoký
+  1564: "{COLOUR WINDOW_2}Inteligencia: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}Agresivita: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}Konkurencieschopnosť: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}Prepnúť medzi režimom pre jedného hráča a režimom pre dvoch hráčov"
+  1568: "{OUTLINE}{COLOUR WINDOW_2}Režim jedného hráča"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}Režim dvoch hráčov: Pripojený k {STRINGID}"
+  1570: Začiatočník
+  1571: Ľahký
+  1572: Stredný
+  1573: Náročný
+  1574: Expert
+  1575: Výber regiónu / objektu
+  1576: Editor terénu
+  1577: Možnosti scenára
+  1578: Uložiť scenár
+  1579: "Späť na predchádzajúci krok:"
+  1580: "Dopredu na ďalší krok:"
+  1581: Načítať terén
+  1582: Uložiť terén
+  1583: Generovanie terénu...
+  1584: Nie je možné vymazať celú oblasť...
+  1585: Generovanie terénu - Možnosti
+  1586: Generovanie terénu - Terén
+  1587: Generovanie terénu - Lesy
+  1588: Generovanie terénu - Mestá
+  1589: Generovanie terénu - Priemysle
+  1590: "{SMALLFONT}{COLOUR BLACK}Všeobecné možnosti generovania terénu"
+  1591: "{SMALLFONT}{COLOUR BLACK}Možnosti generovania terénu"
+  1592: "{SMALLFONT}{COLOUR BLACK}Možnosti generovania lesu"
+  1593: "{SMALLFONT}{COLOUR BLACK}Možnosti generovania mesta"
+  1594: "{SMALLFONT}{COLOUR BLACK}Možnosti generovania priemyslu"
+
+  1595: "[Žiadny]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}Začiatočný rok:"
+  1627: Generovať náhodný terén len keď začína hra
+  1628: "{SMALLFONT}{COLOUR BLACK}Generovanie náhodného terénu vždy, keď je začatá nová hra"
+  1629: Generovať nový terén
+  1630: "{SMALLFONT}{COLOUR BLACK}Generovanie nového náhodného terénu (aktuálny terén sa stratí)"
+  1631: OK
+  1632: Generovať nový terén
+  1633: Možnosti náhodného terénu
+  1634: Ste si istý, že chcete generovať nový terén a stratiť súčasný?
+  1635: Ste si istý, že chcete generovať nový terén vždy, keď je začatá nová hra?{NEWLINE}Vybratím tejto možnosti stratíte aktuálny terén
+  1636: "{COLOUR WINDOW_2}Hladina mora:"
+  1637: +{INT16} jednotky
+  1638: "{COLOUR WINDOW_2}Počet lesov:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}Minimálny polomer lesa:"
+  1641: "{POP16}{INT16} blokov"
+  1642: "{COLOUR WINDOW_2}Maximálny polomer lesa:"
+  1643: "{POP16}{POP16}{INT16} blokov"
+  1644: "{COLOUR WINDOW_2}Minimálna hustota lesa:"
+  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1646: "{COLOUR WINDOW_2}Maximálna hustota lesa:"
+  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1648: "{COLOUR WINDOW_2}Počet náhodných jednotlivých stromov:"
+  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1650: "{COLOUR WINDOW_2}Minimálna nadmorská výška pre stromy:"
+  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}Maximálna nadmorská výška pre stromy:"
+  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}Minimálna výška terénu (pôdy):"
+  1655: "{POP16}{INT16} jednotiek"
+  1656: "{COLOUR WINDOW_2}Štýl topografie:"
+  1657: Rovina
+  1658: Malé kopce
+  1659: Hory
+  1660: Polovica hory, polovica kopce
+  1661: Polovica hory, polovica rovina
+  1662: "{COLOUR WINDOW_2}Hustota kopca:"
+  1663: "{POP16}{POP16}{INT16}%"
+  1664: "{COLOUR WINDOW_2}Počet miest:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}Maximálna veľkosť mesta:"
+  1667: Nízka
+  1668: Stredná
+  1669: Vysoká
+  1670: "{COLOUR WINDOW_2}Počet priemyslov:"
+  1671: Je potrebné vybudovať aspoň jedno mesto
+  1672: Nie je možné prejsť na ďalšiu fázu editora...
+  1673: Zatiaľ nie je možné uložiť scenár...
+  1674: "{SMALLFONT}{COLOUR BLACK}Možnosti scenára"
+  1675: "{SMALLFONT}{COLOUR BLACK}Výzvy scenára"
+  1676: "{SMALLFONT}{COLOUR BLACK}Možnosti spoločnosti"
+  1677: "{SMALLFONT}{COLOUR BLACK}Finančné možnosti"
+  1678: Možnosti scenára
+  1679: Výzvy scenára
+  1680: Výzvy spoločnosti
+  1681: Finančné možnosti
+  1682: "{COLOUR WINDOW_2}Maximálny počet konkurenčných spoločností:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}Oneskorenie, pokiaľ začnú konkurenčné spoločnosti:"
+  1685: "{POP16}{INT16} mesiace"
+  1686: "{COLOUR WINDOW_2}Výber konkurenčných spoločností:"
+  1687: "{COLOUR WINDOW_2}Preferovaná inteligencia:"
+  1688: "{COLOUR WINDOW_2}Preferovaná agresivita:"
+  1689: "{COLOUR WINDOW_2}Preferovaná konkurencieschopnosť:"
+  1690: Ľubovoľná
+  1691: Nízka
+  1692: Stredná
+  1693: Vysoká
+  1694: "{COLOUR WINDOW_2}Počiatočný úver:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}Maximálna veľkosť úveru:"
+  1697: "{POP16}{POP16}{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}Úroková sadzba úveru:"
+  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1700: Zmeniť...
+  1701: "{COLOUR WINDOW_2}Názov scenára: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}Skupina scenára:"
+  1703: "{COLOUR WINDOW_2}Podrobnosti scenára:"
+  1704: Názov scenára
+  1705: Zadajte názov pre scenár:-
+  1706: Podrobnosti scenára
+  1707: Zadajte popis tohto scenára:-
+  1708: Zatiaľ žiadne podrobnosti
+  1709: Bez názvu
+  1710: Uloženie terénu zlyhalo!
+  1711: Uloženie scenára zlyhalo!
+  1712: Prenos dát k druhému hráčovi...
+  1713: Príjem dát od druhého hráča...
+  1714: Prosím čakajte - hra sa ukladá u druhého hráča...
+  1715: Prosím čakajte - hra sa načítava u druhého hráča...
+  1716: Poslať správu
+  1717: Poslať správu
+  1718: "Zadajte správa, ktorá má byť odoslaná k {STRINGID}:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}Časový limit na vypršanie spojenia:"
+  1721: "{INT16} sekúnd."
+  1722: Dátové pripojenie pre dvoch hráčov zlyhalo!
+  1723: "{COLOUR WINDOW_2} Navrhnuté v : {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} Zastaralé od: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} Výkon: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} Hmotnosť: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} Max. rýchlosť: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} Kapacita: {COLOUR BLACK}{STRINGID}"
+  1729: Vytvorenie spojenia...
+  1730: Všade
+  1731: Nikde
+  1732: Ďaleko od vody
+  1733: V blízkosti vody
+  1734: Na horách
+  1735: Ďaleko od hôr
+  1736: V malých náhodných oblastiach
+  1737: Vo veľkých náhodných oblastiach
+  1738: Okolo útesov
+  1739: Vytvoriť kopce až po okraj mapy
+  1740: "{SMALLFONT}{COLOUR BLACK}Editor scenára"
+  1741: "{STRINGID} Doprava"
+  1742: Mapa
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}Zoznam spoločností"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
+  1745: Spoločnosti
+  1746: Index výkonnosti spoločnosti
+  1747: Jednotky nákladu dodávaného za mesiac
+  1748: Hodnoty spoločnosti
+  1749: Sadzby platieb za náklad
+  1750: "{SMALLFONT}{COLOUR BLACK}Porovnanie spoločností"
+  1751: "{SMALLFONT}{COLOUR BLACK}Graf indexu výkonnosti spoločnosti"
+  1752: "{SMALLFONT}{COLOUR BLACK}Graf dodaného nákladu každou spoločnosťou"
+  1753: "{SMALLFONT}{COLOUR BLACK}Grafy hodnoty spoločnosti"
+  1754: "{SMALLFONT}{COLOUR BLACK}Sadzby platieb za náklad"
+  1755: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa názvu spoločnosti"
+  1756: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa stavu spoločnosti"
+  1757: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa indexu výkonnosti"
+  1758: "{SMALLFONT}{COLOUR BLACK}Zoradiť zoznam podľa hodnoty spoločnosti"
+  1759: "{COLOUR BLACK}Spoločnosť"
+  1760: "{COLOUR BLACK}Spoločnosť ▼"
+  1761: "{COLOUR BLACK}Stav"
+  1762: "{COLOUR BLACK}Stav ▼"
+  1763: "{COLOUR BLACK}Index výkonnosti"
+  1764: "{COLOUR BLACK}Index výkonnosti ▼"
+  1765: "{COLOUR BLACK}Hodnota spoločnosti"
+  1766: "{COLOUR BLACK}Hodnota spoločnosti ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
+  1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: Robotník
+  1773: Inžinier
+  1774: Dopravný manažér
+  1775: Koordinátor dopravy
+  1776: Vedúci trasy
+  1777: Riaditeľ
+  1778: Výkonný riaditeľ
+  1779: Predseda
+  1780: Prezident
+  1781: Dopravný magnát
+  1782: "{INT16} spoločnosť"
+  1783: "{INT16} spoločností"
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP}%"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP}%"
+  1789: "         {INT16_1DP}% {SPRITE 2325}"
+  1790: "         {INT16_1DP}% {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: Nevhodný typ letiska pre toto lietadlo
+  1795: "{COLOUR BLACK}£"
+  1796: "{INT16} dni"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}Platba za prepravu {INT16} jednotiek nákladu vo vzdialenosti {INT16} blokov"
+  1799: "{SMALLFONT}{COLOUR BLACK}Čas tranzitu"
+  1800: "*  Pozastavené  *"
+  1801: Mestský úrad nedovolí, aby tu bolo vybudované ďalšie letisko
+  1802: Mestá
+  1803: Priemysle
+  1804: Cesty
+  1805: Železnice
+  1806: Stanice
+  1807: Vegetácia
+  1808: Letecké trasy
+  1809: Lodné trasy
+  1810: ""
+  1811: Výstavba {STRINGID} blízko {STRINGID}
+  1812: Výstavba {STRINGID} blízko {STRINGID}
+  1813: Výstavba {STRINGID} blízko {STRINGID}
+  1814: Kontrola služieb v blízkosti {STRINGID}
+  1815: Vymeranie terénu v blízkosti  {STRINGID}
+  1816: "{COLOUR RED}V konkurze!"
+  1817: "{SMALLFONT}{COLOUR BLACK}Pozastaviť hru"
+  1818: "{SMALLFONT}{COLOUR BLACK}Normálna rýchlosť"
+  1819: "{SMALLFONT}{COLOUR BLACK}Rýchlo vpred"
+  1820: "{SMALLFONT}{COLOUR BLACK}Extra rýchlo vpred"
+  1821: "{COLOUR BLACK}Náhodne generovaný terén"
+  1822: "{COLOUR WINDOW_2}Dátum začiatku: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}Konkurenčné spoločnosti: {COLOUR BLACK}Žiadne"
+  1824: "{COLOUR WINDOW_2}Konkurenčné spoločnosti: {COLOUR BLACK}Najviac {INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}(nezačínajú {INT16} mesiac)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}(nezačínajú {INT16} mesiace)"
+  1827: "{COLOUR WINDOW_2}Predajná hodnota vozidla: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}Posledný príjem: {COLOUR BLACK}N/A"
+  1829: "{COLOUR WINDOW_2}Posledný príjem v: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID} prepravené {INT16} bloky za {INT16} dni = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2} Prvý rok výstavby: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2} Posledný rok výstavby: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}Hodnotenie dopravných spoločností od miestneho úradu:"
+  1834: Otrasné
+  1835: Biedne
+  1836: Priemerné
+  1837: Dobré
+  1838: Vynikajúce
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: Dosiahnite hodnotu spoločnosti {CURRENCY32}{STRINGID}{STRINGID}
+  1841: Dosiahnite mesačný zisk z vozidiel {CURRENCY32}{STRINGID}{STRINGID}
+  1842: Dosiahnite index výkonnosti {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}
+  1843: Doručte {STRINGID}{STRINGID}{STRINGID}
+  1844: " a buďte najvýkonnejšia spoločnosť"
+  1845: " a buďte jednou z troch najvýkonnejších spoločností"
+  1846: " do {INT16} rokov"
+  1847: " do konca roku {UINT16 RAW}"
+  1848: ...a buďte špičková spoločnosť
+  1849: ...a buďte medzi top 3 spoločností
+  1850: "...v rámci časového limitu:"
+  1851: "{COLOUR WINDOW_2}Výzva:"
+  1852: "{COLOUR BLACK}  {STRINGID}"
+  1853: Dosiahnuť určitú hodnotu spoločnosti
+  1854: Dosiahnuť určitý mesačný zisk z vozidiel
+  1855: Dosiahnuť určitý index výkonnosti
+  1856: Dodať určité množstvo nákladu
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP}%"
+  1859: "{INT32}"
+  1860: "{POP16}{POP16}{POP16}{INT16} roky"
+  1861: "{SMALLFONT}(Dokončila spoločnosť {STRINGID} za {INT16} roky {INT16} mesiace)"
+  1862: "{COLOUR WINDOW_2}Úspech!{NEWLINE}{COLOUR BLACK}  Dokončili ste výzvu za {INT16} roky {INT16} mesiace"
+  1863: "{COLOUR WINDOW_2}Zlyhanie!{NEWLINE}{COLOUR BLACK}  Nepodarilo sa vám dokončiť výzvu"
+  1864: "{COLOUR WINDOW_2}Boli ste porazený druhým hráčom!{NEWLINE}{COLOUR BLACK}  Výzva dokončená spoločnosťou  {STRINGID} za {INT16} roky {INT16} mesiace"
+  1865: "{COLOUR WINDOW_2}Priebeh plnenia výzvy: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}Zostávajúci čas: {COLOUR BLACK}{INT16} roky {INT16} mesiace"
+  1867: "{COLOUR WINDOW_2}Dodaný náklad:"
+  1868: "{COLOUR BLACK}Žiadny"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}Ukončiť{NEWLINE}hru"
+
+  1870: Spoločnosť je v konkurze!
+  1871: Umožniť priemyslom zatvoriť počas hry
+  1872: Umožniť spustenie nových priemyslov počas hry
+  1873: Zdieľať ďalšie tváre spoločností/vlastníkov
+  1874: "{SMALLFONT}{COLOUR BLACK}Vyberte túto možnosť, ak chcete počas procesu pripojenia odoslať všetky dáta s  prispôsobenými tvárami na iný počítač"
+  1875: "{COLOUR WINDOW_2}Zakázať konkurenčným spoločnostiam používať:"
+  1876: "{COLOUR WINDOW_2}Zakázať spoločnostiam hráčov používať:"
+  1877: "{NEWLINE}Zastaví sa na: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "Výuka č. 1: Spustenie autobusovej dopravy v rámci mesta"
+  1880: "Výuka 2: Budovanie autobusovej dopravy medzi dvoma mestami"
+  1881: "Výuka 3: Budovanie železničnej dopravy medzi dvoma mestami"
+
+  # Tutorial 1
+  1882: "{SMALLFONT}{COLOUR BLACK}Ideme budovať autobusovú dopravu na prepravu cestujúcich v rámci mesta, takže prvým krokom je výber mesta..."
+  1883: "{SMALLFONT}{COLOUR BLACK}Držte pravé tlačidlo myši a pohybujte myšou pre posúvanie zobrazenia a pozrite sa na mestá..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay je najväčšie mesto, takže bude produkovať najviac cestujúcich. Priblížte pomocou kolieska myši alebo ikony priblíženia..."
+  1885: "{SMALLFONT}{COLOUR BLACK}Všetky cestné stavby sú vykonané pomocou okna pre výstavby ciest..."
+  1886: "{SMALLFONT}{COLOUR BLACK}Nepotrebujeme žiadne nové cesty v meste pre našu autobusovú dopravu, len stanice autobusovej zastávky..."
+  1887: "{SMALLFONT}{COLOUR BLACK}Naša autobusová doprava pôjde z jednej strany mesta do druhej strany..."
+  1888: "{SMALLFONT}{COLOUR BLACK}Modro označená oblasť je spádová oblasť stanice. Čím viac budov bude v spádovej oblasti, tým viac cestujúcich bude používať vašu stanicu..."
+  1889: "{SMALLFONT}{COLOUR BLACK}Skontrolujte, či stanica prijíma cestujúcich, inak ich nebudete môcť vyložiť a nedostanete zaplatené. Sledujte text “Spádová oblasť” v spodnej časti okna výstavby..."
+  1890: "{SMALLFONT}{COLOUR BLACK}Ak ste spokojní s umiestnením, kliknite na ľavé tlačidlo myši a vybudujte stanicu..."
+  1891: "{SMALLFONT}{COLOUR BLACK}Druhú stanicu postavíme na opačnej strane mesta..."
+  1892: "{SMALLFONT}{COLOUR BLACK}Teraz musíme kúpiť autobus..."
+  1893: "{SMALLFONT}{COLOUR BLACK}Máme na výber dva typy autobusov. Vyberme si novší dizajn, ktorý prepraví viac cestujúcich..."
+  1894: "{SMALLFONT}{COLOUR BLACK}Pohybom kurzora myši umiestnite autobus na cestu a kliknutím na ľavé tlačidlo ho tam položíte..."
+  1895: "{SMALLFONT}{COLOUR BLACK}Pred tým, než naštartujeme autobus, musí vedieť, kam má ísť. Vyberte kartu podrobností trasy v okne vozidla..."
+  1896: "{SMALLFONT}{COLOUR BLACK}Ak chcete nastaviť trasu, stačí kliknúť na stanice v zobrazení..."
+  1897: "{SMALLFONT}{COLOUR BLACK}Teraz môžeme naštartovať autobus..."
+  1898: "{SMALLFONT}{COLOUR BLACK}Pozrime sa, ako vyzdvihne svojich prvých cestujúcich..."
+
+  # Tutorial 2
+  1899: "{SMALLFONT}{COLOUR BLACK}Ideme budovať autobusovú dopravu na prepravu cestujúcich medzi Boulder Bay a Breakers Bridge. Keďže tu nie sú cesty spájajúce tieto mestá, budeme musieť vybudovať cestu medzi nimi..."
+  1900: "{SMALLFONT}{COLOUR BLACK}Vyberte orientáciu nového úseku cesty a kliknutím na zobrazenie spustite výstavbu..."
+  1901: "{SMALLFONT}{COLOUR BLACK}Kliknutím na ikonu 'Vystavať toto' sa pridajú ďalšie cestné úseky rovnakého typu..."
+  1902: "{SMALLFONT}{COLOUR BLACK}Pred tým, než budeme pokračovať, je tu rýchlejší spôsob začatia výstavby ciest..."
+  1903: "{SMALLFONT}{COLOUR BLACK}Stačí kliknúť pravým tlačidlom myši na koniec cesty, ktorú chcete rozšíriť..."
+  1904: "{SMALLFONT}{COLOUR BLACK}Musíme tu odbočiť doľava, takže vyberte ľavú krivku..."
+  1905: "{SMALLFONT}{COLOUR BLACK}A teraz späť na výstavbu rovno..."
+  1906: "{SMALLFONT}{COLOUR BLACK}To bola stavba cesty, teraz stanice..."
+  1907: "{SMALLFONT}{COLOUR BLACK}A nakoniec si kúpime autobus a nastavíme ho..."
+  1908: "{SMALLFONT}{COLOUR BLACK}To by mohla byť dosť vyťažená trasa, takže si kúpime aj druhý autobus..."
+  1909: "{SMALLFONT}{COLOUR BLACK}Ak chcete rýchlo skopírovať celú trasu Autobus 1 do Autobusu 2, stačí kliknúť na text 'Koniec trasy' v Autobus 1..."
+
+  # Tutorial 3
+  1910: "{SMALLFONT}{COLOUR BLACK}Začnime budovaním železničnej osobnej dopravy medzi dvoma najväčšími mestami..."
+  1911: "{SMALLFONT}{COLOUR BLACK}Železničné stanice môžu byť postavené len na priamej trati a musia byť dostatočné dlhé pre náš vlak - Tu je miesto, kde budeme stavať jednu stanicu za pár minút..."
+  1912: "{SMALLFONT}{COLOUR BLACK}Teraz postavíme stanice..."
+  1913: "{SMALLFONT}{COLOUR BLACK}Teraz vyrobíme vlak. Budeme potrebovať lokomotívu na ťahanie vlaku a vozňov na prepravu cestujúcich..."
+  1914: "{SMALLFONT}{COLOUR BLACK}Pretože trať je len priama čiara, nie je potrebné nastaviť trasu - Stačí naštartovať vlak..."
+  1915: "{SMALLFONT}{COLOUR BLACK}Poďme rozšíriť trať vytvorením križovatky a vedľajšej koľaji do tretieho mesta. Kliknutím pravým tlačidlom myši na trať sa otvorí okno výstavby na vybudovanie križovatky..."
+  1916: "{SMALLFONT}{COLOUR BLACK}Pretože rozloženie trate už nie je jednoduché, nášmu vlaku musíme dať trasu..."
+  1917: "{SMALLFONT}{COLOUR BLACK}Teraz by sme mohli pridať druhý vlak, ale najprv musíme vybudovať semafory, aby sa zabránilo kolíziám vlakov..."
+  1918: "{SMALLFONT}{COLOUR BLACK}Semafory rozdeľujú trať do 3 samostatných 'blokovaných úsekov' a do jedného úseku sa môže naraz dostať len jeden vlak..."
+
+  # Options/Misc
+  1919: Pri začatí novej hry použiť preferované meno vlastníka
+  1920: "{SMALLFONT}{COLOUR BLACK}Vyberte túto možnosť, ak chcete pri každom začatí novej hry použiť rovnaké meno vlastníka spoločnosti"
+  1921: "{COLOUR WINDOW_2}Preferované meno vlastníka: {COLOUR BLACK}{STRINGID}"
+  1922: Preferované meno vlastníka
+  1923: "Zadajte preferované meno vlastníka:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}Výkon"
+  1925: "{COLOUR BLACK}{TINYFONT}Brzda"
+  1926: "{SMALLFONT}{COLOUR BLACK}Presunúť vybraný príkaz nahor v zozname"
+  1927: "{SMALLFONT}{COLOUR BLACK}Presunúť vybraný príkaz nadol v zozname"
+  1928: Nie je možné spustiť hru priamo z médií určených len na čítanie
+
+  1929: Tvorba Atari Inc. ...
+  1930: "{COLOUR WINDOW_2}Licencované pre Atari Inc."
+  1931: Tvorba Atari Inc.
+
+  1932: Verzie hier nie sú kompatibilné - nepodarilo sa pripojiť!
+  1933: "{SMALLFONT}{COLOUR BLACK}Pošlite krátku správu druhému hráčovi"
+  1934: druhý hráč
+  1935: "Druhý hráč opustil hru: Režim dvoch hráčov bol odpojený"
+
+  1936: "{COLOUR YELLOW}Používanie tohto produktu podlieha podmienkam licenčnej zmluvy,{NEWLINE}ktorá sa nachádza v súbore “ReadMe” a v návode"
+  1937: "{COLOUR YELLOW}Upozornenie ESRB: Počas online hry sa môže zmeniť herný zážitok"
+  1938: "{COLOUR TOPAZ}Niektoré dopravné prostriedky v tejto hre majú názvy, ktoré môžu byť podobné názvom skutočných vozidiel."
+  1939: "{COLOUR TOPAZ}Je to nástroj, ktorý pomáha hráčom sa preniesť do fiktívneho herného sveta."
+  1940: "{COLOUR TOPAZ}Kvality (vrátane rýchlosti, kapacity, spoľahlivosti a nákladov), ktoré boli pripísané rôznym vozidlám,"
+  1941: "{COLOUR TOPAZ}sú určené len na herné účely a nie sú určené na reprezentáciu skutočných komerčne dostupných"
+  1942: "{COLOUR TOPAZ}strojov bez ohľadu na to, či sú pomenované podobne alebo nie."
+
+  1943: "{COLOUR WINDOW_2}Nadriadený producent:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}Nadriadený manažér značky:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}Výkonný producent:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}Technický riaditeľ:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}Riaditeľ marketingu:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}Riaditeľ divízie kreatívnych služieb:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}Grafický dizajnér:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}Riaditeľ redakčných a dokumentačných služieb:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}Špecialista na dokumentáciu:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}Textár:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}Návod:  David Ellis"
+  1954: "{COLOUR WINDOW_2}Riaditeľ podpory vydavateľstva:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Manažéri zabezpečenia kvality:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}Vedúci zabezpečenia kvality:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}IT manažér/západný región:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}Manažér technickej podpory:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}Hlavný tester:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}Zástupca hlavného testera:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}Testeri:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}Vedúci laboratória kompatibility:  Dave Strang "
+  1963: "{COLOUR WINDOW_2}Hlavný tester kompatibility:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}Analytici kompatibility:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}Špecialista inžinierskych služieb:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}Technici inžinierskych služieb:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}Špeciálne poďakovanie:  John Billington, Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: Vzdialenosť krát jednotky dodaného nákladu za mesiac
+  1984: "{SMALLFONT}{COLOUR BLACK}Graf vzdialenosti dodaného nákladu každou spoločnosťou"
+  1985: "{COLOUR WINDOW_2}Priemerná rýchlosť poslednej cesty: {COLOUR BLACK}{VELOCITY}"
+  1986: zem
+  1987: vzduch
+  1988: voda
+  1989: Vlak
+  1990: Autobus
+  1991: Nákladné auto
+  1992: Električka
+  1993: Lietadlo
+  1994: Loď
+  1995: "{SMALLFONT}{COLOUR BLACK}Rýchlostné rekordy"
+  1996: Rýchlostné rekordy
+  1997: "{COLOUR WINDOW_2}Rýchlostný rekord dopravy po ceste: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}Rýchlostný rekord leteckej dopravy: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}Rýchlostný rekord lodnej dopravy: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}{STRINGID} dosiahol {DATE DMY}"
+  2001: Potvrdiť zmenu režimu displeja
+  2002: "{COLOUR WINDOW_2}Rozlíšenie displeja sa zmenilo na {UINT16 RAW} x {UINT16 RAW}"
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}Názov súboru:"
+  2005: "{COLOUR WINDOW_2}Priečinok: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}O jednu úroveň nadradeného priečinku"
+  2007: "{COLOUR WINDOW_2}Spoločnosť: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}Dátum: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}Priebeh výzvy: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}Výzva: {COLOUR BLACK}Dokončená"
+  2011: "{COLOUR WINDOW_2}Výzva: {COLOUR BLACK}Neúspešná"
+  2012: "Prepísať existujúci súbor: “{STRINGID}”?"
+  2013: Prepísať
+  2014: "Vymazať súbor: “{STRINGID}”?"
+  2015: Vymazať
+  2016: "Chyba: Neplatný názov súboru"
+  2017: Názov priemyslu
+  2018: "Zadajte nový názov pre {STRINGID}:"
+  2019: Priemysel nie je možné premenovať...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}Max. rýchlosť: {STRINGID}{NEWLINE 45 11}Hranica výšky: {HEIGHT}"
+  2021: Nájdené duplicitné kľúče CD - Nepodarilo sa pripojiť!
+  2022: "{COLOUR BLACK}{SMALLFONT}(Názov počítača = {STRINGID})"
+  2023: "1."
+  2024: "2."
+  2025: "3."
+  2026: "4."
+  2027: "5."
+  2028: "6."
+  2029: "7."
+  2030: "8."
+  2031: "9."
+  2032: "10."
+  2033: "11."
+  2034: "12."
+  2035: "13."
+  2036: "14."
+  2037: "15."
+  2038: "{COLOUR BLACK}{INT16} vybrané (maximálne {INT16})"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "Dáta pre nasledujúci objekt neboli nájdené: "
+  2043: Nie je dostatok miesta pre grafiku
+  2044: Bolo vybratých príliš veľa objektov tohto typu
+  2045: "Najprv je potrebné vybrať nasledujúci objekt: "
+  2046: Tento objekt sa momentálne používa
+  2047: Tento objekt je vyžadovaný iným objektom
+  2048: Tento objekt je vždy vyžadovaný
+  2049: Tento objekt nie je možné vybrať
+  2050: Nepodarilo sa zrušiť výber tohto objektu
+  2051: Neplatný výber objektov
+  2052: Výber objektu - {STRINGID}
+  2053: Štýl rozhrania
+  2054: Zvuky
+  2055: Mena
+  2056: Animačné efekty
+  2057: Vertikálne oblasti
+  2058: Voda
+  2059: Terén
+  2060: Názvy miest
+  2061: Náklad
+  2062: Steny
+  2063: Semafory
+  2064: Priecestia
+  2065: Pouličné svetlá
+  2066: Tunely
+  2067: Mosty
+  2068: Železničné stanice
+  2069: Železničné doplnky
+  2070: Trate
+  2071: Cestné stanice
+  2072: Cestné doplnky
+  2073: Cesty
+  2074: Letiská
+  2075: Prístavy
+  2076: Vozidlá
+  2077: Stromy
+  2078: Sneh
+  2079: Podnebie
+  2080: Údaje na generovanie mapy
+  2081: Budovy
+  2082: Lešenie
+  2083: Priemysle
+  2084: Svetový región
+  2085: Vlastníci spoločností
+  2086: Popisy scenára
+  2087: zoznam objektov
+  2088: "Chýbajúce dáta o objekte, ID: "
+  2089: Exportovať doplnkové objekty s uloženými hrami
+  2090: "{SMALLFONT}{COLOUR BLACK}Vyberte, či sa majú v uložených súboroch hier alebo scenárov ukladať ďalšie požadované dáta o doplnkových objektoch (doplnkové dáta, ktoré neboli dodané s hlavným produktom), čo umožní načítať ich niekým, kto nemá ďalšie dáta o objekte"
+  2091: Musí byť vybratý aspoň jeden druh obojsmerného typy cesty
+  2092: Musí byť zvolený typ lešenia
+  2093: Pokročilý
+  2094: "{SMALLFONT}{COLOUR BLACK}Povoliť pokročilejší výber jednotlivých položiek"
+  2095: "{COLOUR WHITE}{BIGFONT}£"
+  2096: Nové objekty boli úspešne nainštalované
+  2097: Musí byť vybratý aspoň jeden priemysel
+  2098: Musí byť vybraná aspoň jedna budova mesta
+  2099: Musí sa vybrať typ budovy ústredia spoločností
+  2100: Musí sa vybrať len jeden typ budovy ústredia spoločností
+  2101: Musí byť zvolený typ rozhrania
+  2102: Musí byť zvolený aspoň jeden typ vozidla
+  2103: Musí sa vybrať aspoň jeden typ terénu
+  2104: Musí byť zvolený typ meny
+  2105: Musí byť zvolený typ vody
+  2106: Musí byť zvolený štýl názvu mesta
+  2107: Musí byť zvolený aspoň jeden typ priecestia
+  2108: Musí byť zvolený typ pouličného osvetlenia
+  2109: Musí byť zvolený typ snehu (aj keď to nebude potrebné)
+  2110: Musí byť zvolený typ podnebia
+  2111: Musí sa vybrať typ údajov generovania mapy
+  2112: Musí sa vybrať typ oblasť
+  2113: míl/h
+  2114: km/h
+  2115: "hodina:"
+  2116: "hodiny:"
+  2117: minúty
+  2118: "min:"
+  2119: sekundy
+  2120: " jednotky"
+  2121: st
+  2122: m
+  2123: ks
+  2124: kW
+  2125: "{COLOUR WINDOW_2}Jazyk:"
+  2126: "{COLOUR WINDOW_2}Vypnúť poruchy vozidla"
+  2127: "{COLOUR WINDOW_2}Režim obrazovky:"
+  2128: V okne
+  2129: Celá obrazovka
+  2130: Celá obrazovka (okno bez okrajov)
+  2131: Predvolené zvukové zariadenie
+  2132: "{COLOUR WINDOW_2}Faktor mierky okna:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Priblížiť k polohe kurzora (experimentálne)"
+  2137: "{SMALLFONT}{COLOUR BLACK}Ak je táto možnosť povolená, priblíženie sa bude orientovať okolo kurzora na rozdiel od stredu obrazovky."
+  2138: "{COLOUR WINDOW_2}Prehrávať úvodnú hudbu"
