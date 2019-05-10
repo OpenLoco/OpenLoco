@@ -61,7 +61,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             tab_industries,
         };
 
-        uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
+        const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
 
 #define common_options_widgets(frame_height, window_caption_id)                                                                            \
     make_widget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                   \
@@ -130,8 +130,8 @@ namespace openloco::ui::windows::LandscapeGeneration
             generate_now,
         };
 
-        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::start_year_up) | (1 << widx::start_year_down) | (1 << widx::generate_when_game_starts) | (1 << widx::generate_now);
-        uint64_t holdable_widgets = (1 << widx::start_year_up) | (1 << widx::start_year_down);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::start_year_up) | (1 << widx::start_year_down) | (1 << widx::generate_when_game_starts) | (1 << widx::generate_now);
+        const uint64_t holdable_widgets = (1 << widx::start_year_up) | (1 << widx::start_year_down);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_options),
@@ -325,8 +325,8 @@ namespace openloco::ui::windows::LandscapeGeneration
             scrollview,
         };
 
-        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
-        uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
+        const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static widget_t widgets[] = {
             common_options_widgets(232, string_ids::title_landscape_generation_land),
@@ -630,8 +630,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // TODO(avgeffen) shift overflow for last widget. Should fit in uint64_t, but problematic on 32-bits arch?
-        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up); // | (1 << widx::max_altitude_for_trees_down);
-        uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up);                          // | (1 << widx::max_altitude_for_trees_down);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up); // | (1 << widx::max_altitude_for_trees_down);
+        const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up);                          // | (1 << widx::max_altitude_for_trees_down);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
@@ -895,8 +895,8 @@ namespace openloco::ui::windows::LandscapeGeneration
             max_town_size_btn,
         };
 
-        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
-        uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
+        const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
@@ -1041,8 +1041,8 @@ namespace openloco::ui::windows::LandscapeGeneration
             check_allow_industries_start_up,
         };
 
-        uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
-        uint64_t holdable_widgets = 0;
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
+        const uint64_t holdable_widgets = 0;
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_industries),
@@ -1214,7 +1214,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             window->flags &= ~(window_flags::flag_16);
             window->disabled_widgets = 0;
 
-            static uint64_t* enabledWidgetsByTab[] = {
+            static const uint64_t* enabledWidgetsByTab[] = {
                 &options::enabled_widgets,
                 &land::enabled_widgets,
                 &forests::enabled_widgets,
@@ -1224,7 +1224,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
 
-            static uint64_t* holdableWidgetsByTab[] = {
+            static const uint64_t* holdableWidgetsByTab[] = {
                 &options::holdable_widgets,
                 &land::holdable_widgets,
                 &forests::holdable_widgets,
