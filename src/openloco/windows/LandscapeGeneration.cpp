@@ -519,7 +519,14 @@ namespace openloco::ui::windows::LandscapeGeneration
                 case widx::hill_density_down:
                     *hillDensity = std::max(0, *hillDensity - 1);
                     break;
+
+                default:
+                    // Nothing was changed, don't invalidate.
+                    return;
             }
+
+            // After changing any of the options, invalidate the window.
+            window->invalidate();
         }
 
         // 0x0043E14E
