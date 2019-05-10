@@ -118,7 +118,9 @@ namespace openloco::ui::windows::station_list
     // 0x004910E8
     static void sub_4910E8(window* window)
     {
-        for (auto station : stationmgr::stations())
+        window->row_count = 0;
+
+        for (auto& station : stationmgr::stations())
         {
             if (station.empty())
                 continue;
@@ -259,7 +261,7 @@ namespace openloco::ui::windows::station_list
         {
             bool dl = false;
 
-            stationmgr::get(edi)->var_2A |= 0x10;
+            stationmgr::get(edi)->var_2A |= (1 << 4);
 
             auto ebp = window->row_count;
             if (edi != window->row_info[ebp])
