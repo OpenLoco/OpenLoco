@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -284,7 +285,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         window->number = 0;
         window->current_tab = 0;
         window->frame_no = 0;
-        window->row_hover = 0xFFFF;
+        window->row_hover = -1;
 
         auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
@@ -417,7 +418,8 @@ namespace openloco::ui::windows::LandscapeGeneration
                 gfx::draw_string_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
-                gfx::fill_rect_inset(dpi, 329, 339, yPos + 6, yPos + 15, window->colours[1], 0); // flags iff condition is met: 0b110000
+                const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
+                gfx::fill_rect_inset(dpi, 329, 339, yPos + 6, yPos + 15, window->colours[1], flags);
 
                 // Draw triangle (knob).
                 gfx::draw_string_494B3F(*dpi, 330, yPos + 6, colour::black, string_ids::dropdown, nullptr);
@@ -463,7 +465,11 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::scrollview:
-                    // TODO(avgeffen): see 0x0043E27D
+                    if (itemIndex != -1 && window->row_hover != -1)
+                    {
+                        landObjectDiversity[window->row_hover] = itemIndex;
+                        window->invalidate();
+                    }
                     break;
             }
         }
@@ -548,6 +554,51 @@ namespace openloco::ui::windows::LandscapeGeneration
             }
         }
 
+        // 0x0043E421
+        static int16_t scrollPosToLandIndex(int16_t xPos, int16_t yPos)
+        {
+            if (xPos < 150)
+                return -1;
+
+            for (int i = 0; i < 32; i++)
+            {
+                auto landObject = objectmgr::get<land_object>(i);
+                if (landObject == nullptr)
+                    continue;
+
+                yPos -= 22;
+                if (yPos < 0)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        // 0x0043E1CF
+        static void scroll_mouse_down(window* window, int16_t xPos, int16_t yPos, uint8_t scrollIndex)
+        {
+            int16_t landIndex = scrollPosToLandIndex(xPos, yPos);
+            if (landIndex == -1)
+                return;
+
+            window->row_hover = landIndex;
+
+            audio::play_sound(audio::sound_id::click_down, window->widgets[widx::scrollview].right);
+
+            const widget_t& target = window->widgets[widx::scrollview];
+            const int16_t dropdownX = window->x + target.left + 151;
+            const int16_t dropdownY = window->y + target.top + 6 + landIndex * 22 - window->scroll_areas[0].v_top;
+            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], static_cast<int8_t>(std::size(landDiversityLabelIds)), 0x80);
+
+            for (size_t i = 0; i < std::size(landDiversityLabelIds); i++)
+            {
+                int16_t index = static_cast<int16_t>(i);
+                dropdown::add(index, string_ids::dropdown_stringid, landDiversityLabelIds[index]);
+            }
+
+            dropdown::set_item_selected(landObjectDiversity[landIndex]);
+        }
+
         // 0x0043DEBF
         static void prepare_draw(window* window)
         {
@@ -577,9 +628,9 @@ namespace openloco::ui::windows::LandscapeGeneration
             common::update(window);
 
             auto dropdown = WindowManager::find(WindowType::dropdown, 0);
-            if (dropdown != nullptr && window->row_hover != 0xFFFF)
+            if (dropdown == nullptr && window->row_hover != -1)
             {
-                window->row_hover = 0xFFFF;
+                window->row_hover = -1;
                 window->invalidate();
             }
         }
@@ -594,6 +645,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
             events.on_update = update;
+            events.scroll_mouse_down = scroll_mouse_down;
             events.tooltip = tooltip;
         }
     }
