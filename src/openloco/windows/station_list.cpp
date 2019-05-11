@@ -374,7 +374,7 @@ namespace openloco::ui::windows::station_list
             return fallback;
 
         uint16_t currentIndex = yPos / rowHeight;
-        if (currentIndex < window->var_83C && window->row_info[currentIndex] != 0xFFFF)
+        if (currentIndex < window->var_83C && window->row_info[currentIndex] != -1)
             return cursor_id::hand_pointer;
 
         return fallback;
@@ -392,7 +392,7 @@ namespace openloco::ui::windows::station_list
         if ((window->flags & window_flags::flag_14) == 0)
             return;
 
-        if (window->row_hover == 0xFFFF)
+        if (window->row_hover == -1)
             return;
 
         window->row_hover = -1;
@@ -625,7 +625,7 @@ namespace openloco::ui::windows::station_list
         sub_4910E8(window);
 
         window->var_83C = 0;
-        window->row_hover = 0xFFFF;
+        window->row_hover = -1;
 
         window->call_on_resize();
         window->call_prepare_draw();

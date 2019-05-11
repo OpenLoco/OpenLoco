@@ -344,11 +344,11 @@ namespace openloco::ui
         window_number number = 0;                          // 0x40
         uint32_t flags;                                    // 0x42
         scroll_area_t scroll_areas[2];                     // 0x46
-        uint16_t row_info[1000];                           // 0x6A
+        int16_t row_info[1000];                            // 0x6A
         uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
         uint16_t var_83E;
-        uint16_t row_hover; // 0x840
+        int16_t row_hover; // 0x840
         uint8_t pad_842[0x844 - 0x842];
         uint16_t var_844;
         uint16_t var_846 = 0;
