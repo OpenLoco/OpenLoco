@@ -671,11 +671,7 @@ namespace openloco::ui::windows::station_list
                 window->call_on_resize();
                 window->call_prepare_draw();
                 window->init_scroll_widgets();
-
-                registers regs;
-                regs.esi = (int32_t)window;
-                regs.edx = widgetIndex;
-                call(0x004CD320, regs);
+                window->moveInsideScreenEdges();
                 break;
             }
 

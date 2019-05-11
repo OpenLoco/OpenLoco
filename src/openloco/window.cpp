@@ -7,6 +7,7 @@
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
+#include "ui.h"
 #include "ui/scrollview.h"
 #include "widget.h"
 #include <cassert>
@@ -551,6 +552,51 @@ namespace openloco::ui
         this->invalidate();
 
         return true;
+    }
+
+    // 0x004CD320
+    void window::moveInsideScreenEdges()
+    {
+        int16_t xOffset = 0, yOffset = 0;
+
+        const int16_t xOvershoot = this->x + this->width - ui::width();
+
+        // Over the edge on the right?
+        if (xOvershoot > 0)
+            xOffset -= xOvershoot;
+
+        // If not, on the left?
+        if (this->x < 0)
+            xOffset -= this->x;
+
+        const int16_t yOvershoot = this->y + this->height - (ui::height() - 27);
+
+        // Over the edge at the bottom?
+        if (yOvershoot > 0)
+            yOffset -= yOvershoot;
+
+        // Maybe at the top?
+        if (this->y - 28 < 0)
+            yOffset -= this->y - 28;
+
+        if (xOffset == 0 && yOffset == 0)
+            return;
+
+        this->invalidate();
+        this->x += xOffset;
+        this->y += yOffset;
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += xOffset;
+            this->viewports[0]->y += yOffset;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += xOffset;
+            this->viewports[1]->y += yOffset;
+        }
     }
 
     // 0x004C9513
