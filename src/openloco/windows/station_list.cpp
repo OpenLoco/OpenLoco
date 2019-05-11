@@ -69,15 +69,16 @@ namespace openloco::ui::windows::station_list
     struct TabDetails
     {
         widx widgetIndex;
+        string_id windowTitleId;
         uint32_t imageId;
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, interface_skin::image_ids::all_stations },
-        { tab_rail_stations, interface_skin::image_ids::rail_stations },
-        { tab_road_stations, interface_skin::image_ids::road_stations },
-        { tab_airports, interface_skin::image_ids::airports },
-        { tab_ship_ports, interface_skin::image_ids::ship_ports }
+        { tab_all_stations, string_ids::stringid_all_stations, interface_skin::image_ids::all_stations },
+        { tab_rail_stations, string_ids::stringid_rail_stations, interface_skin::image_ids::rail_stations },
+        { tab_road_stations, string_ids::stringid_road_stations, interface_skin::image_ids::road_stations },
+        { tab_airports, string_ids::stringid_airports, interface_skin::image_ids::airports },
+        { tab_ship_ports, string_ids::stringid_ship_ports, interface_skin::image_ids::ship_ports }
     };
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
@@ -409,6 +410,9 @@ namespace openloco::ui::windows::station_list
         // Set company name.
         auto company = companymgr::get(window->number);
         *_common_format_args = company->name;
+
+        // Set window title.
+        window->widgets[widx::caption].text = tabInformationByType[window->current_tab].windowTitleId;
 
         // Resize general window widgets.
         window->widgets[widx::frame].right = window->width - 1;
