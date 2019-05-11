@@ -124,8 +124,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         enum widx
         {
             start_year = 9,
-            start_year_up,
             start_year_down,
+            start_year_up,
             generate_when_game_starts,
             generate_now,
         };
@@ -135,9 +135,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_options),
-            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::uint16_raw),
-            make_widget({ 344, 53 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 58 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
+            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::uint16_raw),
             make_widget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::label_generate_random_landscape_when_game_starts, string_ids::tooltip_generate_random_landscape_when_game_starts),
             make_widget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::button_generate_landscape, string_ids::tooltip_generate_random_landscape),
             widget_end()
@@ -311,16 +309,16 @@ namespace openloco::ui::windows::LandscapeGeneration
         enum widx
         {
             sea_level = 9,
-            sea_level_up,
             sea_level_down,
+            sea_level_up,
             min_land_height,
-            min_land_height_up,
             min_land_height_down,
+            min_land_height_up,
             topography_style,
             topography_style_btn,
             hill_density,
-            hill_density_up,
             hill_density_down,
+            hill_density_up,
             hills_edge_of_map,
             scrollview,
         };
@@ -330,17 +328,11 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(232, string_ids::title_landscape_generation_land),
-            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::sea_level_units),
-            make_widget({ 344, 53 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 58 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::min_land_height_units),
-            make_widget({ 344, 68 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 73 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
+            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::sea_level_units),
+            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_land_height_units),
             make_widget({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
             make_widget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 256, 97 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::hill_density_pct),
-            make_widget({ 344, 98 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 103 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
+            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_pct),
             make_widget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::create_hills_right_up_to_edge_of_map),
             make_widget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
             widget_end()
@@ -611,61 +603,45 @@ namespace openloco::ui::windows::LandscapeGeneration
         enum widx
         {
             number_of_forests = 9,
-            number_of_forests_up,
             number_of_forests_down,
+            number_of_forests_up,
             minimum_forest_radius,
-            minimum_forest_radius_up,
             minimum_forest_radius_down,
+            minimum_forest_radius_up,
             maximum_forest_radius,
-            maximum_forest_radius_up,
             maximum_forest_radius_down,
+            maximum_forest_radius_up,
             minimum_forest_density,
-            minimum_forest_density_up,
             minimum_forest_density_down,
+            minimum_forest_density_up,
             maximum_forest_density,
-            maximum_forest_density_up,
             maximum_forest_density_down,
+            maximum_forest_density_up,
             number_random_trees,
-            number_random_trees_up,
             number_random_trees_down,
+            number_random_trees_up,
             min_altitude_for_trees,
-            min_altitude_for_trees_up,
             min_altitude_for_trees_down,
+            min_altitude_for_trees_up,
             max_altitude_for_trees,
-            max_altitude_for_trees_up,
             max_altitude_for_trees_down,
+            max_altitude_for_trees_up,
         };
 
         // TODO(avgeffen) shift overflow for last widget. Should fit in uint64_t, but problematic on 32-bits arch?
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up); // | (1 << widx::max_altitude_for_trees_down);
-        const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_up);                          // | (1 << widx::max_altitude_for_trees_down);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down); // | (1 << widx::max_altitude_for_trees_up);
+        const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down);                          // | (1 << widx::max_altitude_for_trees_up);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
-            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::number_of_forests_value),
-            make_widget({ 344, 53 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 58 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::minimum_forest_radius_blocks),
-            make_widget({ 344, 68 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 73 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::maximum_forest_radius_blocks),
-            make_widget({ 344, 83 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 88 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 97 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::minimum_forest_density_pct),
-            make_widget({ 344, 98 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 103 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::maximum_forest_density_pct),
-            make_widget({ 344, 113 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 118 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 127 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::number_random_trees_value),
-            make_widget({ 344, 128 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 133 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 142 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::min_altitude_for_trees_height),
-            make_widget({ 344, 143 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 148 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
-            make_widget({ 256, 157 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_altitude_for_trees_height),
-            make_widget({ 344, 158 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 163 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
+            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_forests_value),
+            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::minimum_forest_radius_blocks),
+            make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::maximum_forest_radius_blocks),
+            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::minimum_forest_density_pct),
+            make_stepper_widgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::maximum_forest_density_pct),
+            make_stepper_widgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_random_trees_value),
+            make_stepper_widgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_altitude_for_trees_height),
+            make_stepper_widgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_altitude_for_trees_height),
             widget_end()
         };
 
@@ -896,8 +872,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         enum widx
         {
             number_of_towns = 9,
-            number_of_towns_up,
             number_of_towns_down,
+            number_of_towns_up,
             max_town_size,
             max_town_size_btn,
         };
@@ -907,9 +883,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
-            make_widget({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::number_of_towns_value),
-            make_widget({ 344, 53 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_up),
-            make_widget({ 344, 58 }, { 11, 5 }, widget_type::wt_11, 1, string_ids::spinner_down),
+            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_towns_value),
             make_widget({ 176, 67 }, { 180, 12 }, widget_type::wt_18, 1),
             make_widget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end()

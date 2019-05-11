@@ -696,8 +696,8 @@ namespace openloco::string_ids
     constexpr string_id default_audio_device_name = 2131;
 
     constexpr string_id window_scale_factor = 2132;
-    constexpr string_id spinner_plus = 2133;
-    constexpr string_id spinner_minus = 2134;
+    constexpr string_id stepper_plus = 2133;
+    constexpr string_id stepper_minus = 2134;
     constexpr string_id scale_formatted = 2135;
 
     constexpr string_id zoom_to_cursor = 2136;
