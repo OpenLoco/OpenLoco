@@ -42,7 +42,7 @@ namespace openloco
         scaffolding,
         industry,
         region,
-        competitors,
+        competitor,
         scenario_text,
     };
 
@@ -80,7 +80,7 @@ namespace openloco
     struct scaffolding_object;
     struct industry_object;
     struct region_object;
-    struct competitors_object;
+    struct competitor_object;
     struct scenario_text_object;
 
     struct object_repository_item

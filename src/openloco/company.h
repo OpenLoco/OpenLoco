@@ -1,5 +1,7 @@
 #pragma once
 
+#include "localisation/stringmgr.h"
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 
@@ -14,22 +16,53 @@ namespace openloco
     }
 
 #pragma pack(push, 1)
+    struct currency48_t
+    {
+        uint32_t var_00;
+        uint16_t var_04;
+    };
+#pragma pack(pop)
+    static_assert(sizeof(currency48_t) == 6);
+
+#pragma pack(push, 1)
     struct company
     {
-        uint16_t var_00;
-        uint8_t pad_02[0x08 - 0x02];
-        uint32_t var_08;
-        uint8_t pad_0C[0x50 - 0x0C];
+        string_id var_00;
+        string_id var_02;
+        uint32_t var_04;
+        currency48_t var_08;
+        uint8_t pad_0E[0x16 - 0x0E];
+        int16_t performance_index; // 0x16
+        uint8_t competitor_id;     // 0x18
+        uint8_t var_19;            // 0x19
+        struct
+        {
+            uint8_t primary;   // 0x1A
+            uint8_t secondary; // 0x1B
+        } colour;
+        uint8_t pad_1C[0x50 - 0x1C];
         uint16_t available_vehicles; // 0x50
-        uint8_t pad_52[0x8BB0 - 0x52];
+        uint8_t pad_52[0x88CE - 0x52];
+        currency48_t companyValue; // 0x88CE
+        uint8_t pad_88D4[0x8B9E - 0x88D4];
+        currency48_t vehicleProfit; // 0x8B9E
+        uint8_t pad_8BA4[0x8BB0 - 0x8BA4];
         uint8_t var_8BB0[9];
-        uint8_t pad_8BB9[0x8FA8 - 0x8BB9];
+        uint8_t pad_8BB9[0x8C4E - 0x8BB9];
+        uint8_t var_8C4E;
+        uint8_t pad_8C4F[0x8FA8 - 0x8C4F];
 
         company_id_t id() const;
         bool empty() const;
         void ai_think();
     };
 #pragma pack(pop)
+
+    static_assert(sizeof(company) == 0x8FA8);
+    static_assert(offsetof(company, companyValue) == 0x88CE);
+    static_assert(offsetof(company, vehicleProfit) == 0x8B9E);
+    static_assert(offsetof(company, var_8C4E) == 0x8C4E);
+    static_assert(offsetof(company, var_8BB0) == 0x8BB0);
 
     bool is_player_company(company_id_t id);
 }

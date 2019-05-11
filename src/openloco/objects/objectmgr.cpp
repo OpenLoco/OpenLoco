@@ -39,7 +39,7 @@ namespace openloco::objectmgr
     loco_global<scaffolding_object * [1], 0x0050D070> _scaffoldingObjects;
     loco_global<industry_object * [16], 0x0050D074> _industryObjects;
     loco_global<region_object * [1], 0x0050D0B4> _regionObjects;
-    loco_global<competitors_object * [32], 0x0050D0B8> _competitorsObjects;
+    loco_global<competitor_object * [32], 0x0050D0B8> _competitorObjects;
     loco_global<scenario_text_object * [1], 0x0050D138> _scenarioTextObjects;
 
     // 0x00470F3C
@@ -172,7 +172,7 @@ namespace openloco::objectmgr
             1,   // scaffolding,
             16,  // industry,
             1,   // region,
-            32,  // competitors,
+            32,  // competitor,
             1    // scenario_text,
         };
         return counts[(size_t)type];
