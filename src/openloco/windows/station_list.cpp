@@ -408,7 +408,7 @@ namespace openloco::ui::windows::station_list
 
         // Set company name.
         auto company = companymgr::get(window->number);
-        *_common_format_args = company->var_00;
+        *_common_format_args = company->name;
 
         // Resize general window widgets.
         window->widgets[widx::frame].right = window->width - 1;
@@ -614,7 +614,7 @@ namespace openloco::ui::windows::station_list
 
         // If not, we'll turn this window into a window for the company selected.
         auto company = companymgr::get(companyId);
-        if (company->var_00 == string_ids::empty)
+        if (company->name == string_ids::empty)
             return;
 
         window->number = companyId;

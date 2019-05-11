@@ -27,7 +27,7 @@ namespace openloco
 #pragma pack(push, 1)
     struct company
     {
-        string_id var_00;
+        string_id name;
         string_id var_02;
         uint32_t var_04;
         currency48_t var_08;
