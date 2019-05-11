@@ -295,7 +295,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x00490F6C
-    window* open(uint16_t companyId)
+    window* open(company_id_t companyId)
     {
         window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
@@ -355,7 +355,7 @@ namespace openloco::ui::windows::station_list
         return window;
     }
 
-    window* open(uint16_t companyId, uint8_t type)
+    window* open(company_id_t companyId, uint8_t type)
     {
         if (type > 4)
             throw std::domain_error("Unexpected station type");
@@ -468,30 +468,18 @@ namespace openloco::ui::windows::station_list
     // 0x0049157F
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        /*
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        regs.eax = (int32_t)scrollIndex;
-        call(0x0049157F, regs);
-        return;
-        */
-
         auto shade = colour::get_shade(window->colours[1], 4);
         gfx::clear_single(*dpi, shade);
 
-        uint16_t ax = 0;
-        uint16_t dx = 0;
-        while (ax < window->var_83C)
+        uint16_t yPos = 0;
+        for (uint16_t i = 0; i < window->var_83C; i++)
         {
-            uint16_t cx = dx + 10;
-            station_id_t stationId = window->row_info[ax];
+            station_id_t stationId = window->row_info[i];
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (cx < dpi->y || dx >= cx + dpi->height || stationId == (uint16_t)-1)
+            if (yPos + 10 < dpi->y || yPos >= yPos + 10 + dpi->height || stationId == (uint16_t)-1)
             {
-                dx += 10;
-                ax += 1;
+                yPos += 10;
                 continue;
             }
 
@@ -500,7 +488,7 @@ namespace openloco::ui::windows::station_list
             // Highlight selection.
             if (stationId == window->row_hover)
             {
-                gfx::draw_rect(dpi, 0, dx, window->width, rowHeight, 0x2000030);
+                gfx::draw_rect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
                 text_colour_id = string_ids::wcolour2_stringid2;
             }
 
@@ -531,14 +519,14 @@ namespace openloco::ui::windows::station_list
             _common_format_args[2] = station->town;
             _common_format_args[3] = label_icons[station->var_2A & 0x0F];
 
-            gfx::draw_string_494BBF(*dpi, 0, dx, 198, colour::black, text_colour_id, &*_common_format_args);
+            gfx::draw_string_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
             const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
             station->getStatusString((char*)buffer);
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::draw_string_494BBF(*dpi, 200, dx, 198, colour::black, text_colour_id, &*_common_format_args);
+            gfx::draw_string_494BBF(*dpi, 200, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -547,7 +535,7 @@ namespace openloco::ui::windows::station_list
 
             _common_format_args[0] = string_ids::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
-            gfx::draw_string_494BBF(*dpi, 400, dx, 88, colour::black, text_colour_id, &*_common_format_args);
+            gfx::draw_string_494BBF(*dpi, 400, yPos, 88, colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
             char* ptr = (char*)buffer;
@@ -567,10 +555,9 @@ namespace openloco::ui::windows::station_list
             }
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::draw_string_494BBF(*dpi, 490, dx, 118, colour::black, text_colour_id, &*_common_format_args);
+            gfx::draw_string_494BBF(*dpi, 490, yPos, 118, colour::black, text_colour_id, &*_common_format_args);
 
-            dx += 10;
-            ax += 1;
+            yPos += 10;
         }
     }
 
@@ -618,7 +605,7 @@ namespace openloco::ui::windows::station_list
         if (widgetIndex != widx::company_select)
             return;
 
-        uint32_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+        company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::stationList, companyId);
@@ -750,10 +737,7 @@ namespace openloco::ui::windows::station_list
         window->frame_no++;
 
         window->call_prepare_draw();
-        WindowManager::invalidate(WindowType::stationList, window->number);
-
-        registers regs;
-        regs.esi = (int32_t)window;
+        WindowManager::invalidateWidget(WindowType::stationList, window->number, window->current_tab + 4);
 
         // Add three stations every tick.
         sub_49111A(window);

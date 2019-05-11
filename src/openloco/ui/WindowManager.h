@@ -122,8 +122,8 @@ namespace openloco::ui::windows::station
 
 namespace openloco::ui::windows::station_list
 {
-    window* open(uint16_t companyId);
-    window* open(uint16_t companyId, uint8_t type);
+    window* open(company_id_t companyId);
+    window* open(company_id_t companyId, uint8_t type);
 }
 
 namespace openloco::ui::windows::terraform

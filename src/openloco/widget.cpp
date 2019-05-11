@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "graphics/colours.h"
+#include "graphics/image_ids.h"
 #include "input.h"
 #include "interop/interop.hpp"
 #include "window.h"
@@ -798,7 +799,7 @@ namespace openloco::ui::widget
             {
                 gfx::draw_image(ctx, pos.x, pos.y + 1, imageId);
             }
-            gfx::draw_image(ctx, pos.x, pos.y, 0x40000000 | (51 << 19) | 2387);
+            gfx::draw_image(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | image_ids::tab);
             gfx::draw_rect(ctx, pos.x, pos.y + 26, 31, 1, colour::get_shade(w->colours[1], 7));
         }
     }
