@@ -106,9 +106,9 @@ namespace openloco
 
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            auto stats = this->cargo_stats[cargoId];
+            auto& stats = cargo_stats[cargoId];
 
-            if (stats.flags == 0 || stats.quantity == 0)
+            if (stats.quantity == 0)
                 continue;
 
             if (*buffer != '\0')

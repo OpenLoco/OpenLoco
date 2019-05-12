@@ -24,7 +24,7 @@ namespace openloco::ui::windows::station_list
     static const gfx::ui_size_t max_dimensions = { 640, 1200 };
     static const gfx::ui_size_t min_dimensions = { 192, 100 };
 
-    static const uint8_t rowHeight = 10;
+    static const uint8_t rowHeight = 10; // CJK: 13
 
     enum widx
     {
@@ -175,7 +175,7 @@ namespace openloco::ui::windows::station_list
         ptr = &lhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if ((lhs.cargo_stats[cargoId].flags & 1) != 0)
+            if (lhs.cargo_stats[cargoId].is_accepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -185,7 +185,7 @@ namespace openloco::ui::windows::station_list
         ptr = &rhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if ((rhs.cargo_stats[cargoId].flags & 1) != 0)
+            if (rhs.cargo_stats[cargoId].is_accepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -452,16 +452,15 @@ namespace openloco::ui::windows::station_list
         window->widgets[widx::sort_accepts].text = window->var_844 == 3 ? string_ids::table_header_accepts_desc : string_ids::table_header_accepts;
 
         // Reposition tabs (0x00491A39 / 0x00491A3F)
-        widget_index tabs[] = { widx::tab_all_stations, widx::tab_rail_stations, widx::tab_road_stations, widx::tab_airports, widx::tab_ship_ports };
         int16_t new_tab_x = window->widgets[widx::tab_all_stations].left;
         int16_t tab_width = window->widgets[widx::tab_all_stations].right - new_tab_x;
 
-        for (auto widgetIndex : tabs)
+        for (auto& tabInfo : tabInformationByType)
         {
-            if (window->is_disabled(widgetIndex))
+            if (window->is_disabled(tabInfo.widgetIndex))
                 continue;
 
-            widget_t& tab = window->widgets[widgetIndex];
+            widget_t& tab = window->widgets[tabInfo.widgetIndex];
 
             tab.left = new_tab_x;
             new_tab_x += tab_width;
@@ -481,9 +480,9 @@ namespace openloco::ui::windows::station_list
             station_id_t stationId = window->row_info[i];
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + 10 < dpi->y || yPos >= yPos + 10 + dpi->height || stationId == (uint16_t)-1)
+            if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || stationId == (uint16_t)-1)
             {
-                yPos += 10;
+                yPos += rowHeight;
                 continue;
             }
 
@@ -547,9 +546,9 @@ namespace openloco::ui::windows::station_list
 
             for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
             {
-                auto stats = station->cargo_stats[cargoId];
+                auto& stats = station->cargo_stats[cargoId];
 
-                if ((stats.flags & 1) == 0)
+                if (!stats.is_accepted())
                     continue;
 
                 if (*buffer != '\0')
@@ -561,7 +560,7 @@ namespace openloco::ui::windows::station_list
             _common_format_args[0] = string_ids::buffer_1250;
             gfx::draw_string_494BBF(*dpi, 490, yPos, 118, colour::black, text_colour_id, &*_common_format_args);
 
-            yPos += 10;
+            yPos += rowHeight;
         }
     }
 
@@ -571,9 +570,8 @@ namespace openloco::ui::windows::station_list
         auto skin = objectmgr::get<interface_skin_object>();
         auto companyColour = companymgr::get_company_colour(window->number);
 
-        for (uint8_t stationType = 0; stationType < std::size(tabInformationByType); stationType++)
+        for (auto tab : tabInformationByType)
         {
-            TabDetails tab = tabInformationByType[stationType];
             uint32_t image = gfx::recolour(skin->img + tab.imageId, companyColour);
             widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
@@ -599,7 +597,7 @@ namespace openloco::ui::windows::station_list
         _common_format_args[1] = window->var_83C;
 
         // Draw number of stations.
-        gfx::point_t origin = { (int16_t)(window->x + 4), (int16_t)(window->y + window->height - 12) };
+        auto origin = gfx::point_t(window->x + 4, window->y + window->height - 12);
         gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::white_stringid2, &*_common_format_args);
     }
 
@@ -719,7 +717,7 @@ namespace openloco::ui::windows::station_list
         window->flags &= ~(window_flags::flag_14);
 
         uint16_t currentRow = y / rowHeight;
-        uint16_t currentStation = 0xFFFF;
+        int16_t currentStation = -1;
 
         if (currentRow < window->var_83C)
             currentStation = window->row_info[currentRow];
