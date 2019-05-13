@@ -410,7 +410,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 gfx::draw_string_494BBF(*dpi, 24, yPos + 5, 121, colour::black, string_ids::wcolour2_stringid2, &*commonFormatArgs);
 
                 // Draw rectangle.
-                gfx::fill_rect_inset(dpi, 150, 340, yPos + 5, yPos + 16, window->colours[1], 0b110000);
+                gfx::fill_rect_inset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
 
                 // Draw current diversity setting.
                 const string_id diversityId = landDiversityLabelIds[landObjectDiversity[i]];
@@ -419,7 +419,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
-                gfx::fill_rect_inset(dpi, 329, 339, yPos + 6, yPos + 15, window->colours[1], flags);
+                gfx::fill_rect_inset(dpi, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
 
                 // Draw triangle (knob).
                 gfx::draw_string_494B3F(*dpi, 330, yPos + 6, colour::black, string_ids::dropdown, nullptr);
