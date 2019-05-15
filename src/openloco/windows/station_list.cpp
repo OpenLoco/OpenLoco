@@ -71,14 +71,15 @@ namespace openloco::ui::windows::station_list
         widx widgetIndex;
         string_id windowTitleId;
         uint32_t imageId;
+        uint16_t stationMask;
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, string_ids::stringid_all_stations, interface_skin::image_ids::all_stations },
-        { tab_rail_stations, string_ids::stringid_rail_stations, interface_skin::image_ids::rail_stations },
-        { tab_road_stations, string_ids::stringid_road_stations, interface_skin::image_ids::road_stations },
-        { tab_airports, string_ids::stringid_airports, interface_skin::image_ids::airports },
-        { tab_ship_ports, string_ids::stringid_ship_ports, interface_skin::image_ids::ship_ports }
+        { tab_all_stations, string_ids::stringid_all_stations, interface_skin::image_ids::all_stations, station_mask_all_modes },
+        { tab_rail_stations, string_ids::stringid_rail_stations, interface_skin::image_ids::rail_stations, station_flags::transport_mode_rail },
+        { tab_road_stations, string_ids::stringid_road_stations, interface_skin::image_ids::road_stations, station_flags::transport_mode_road },
+        { tab_airports, string_ids::stringid_airports, interface_skin::image_ids::airports, station_flags::transport_mode_air },
+        { tab_ship_ports, string_ids::stringid_ship_ports, interface_skin::image_ids::ship_ports, station_flags::transport_mode_water }
     };
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
@@ -128,7 +129,7 @@ namespace openloco::ui::windows::station_list
 
             if (station.owner == window->number)
             {
-                station.var_2A &= ~0b10000;
+                station.flags &= ~station_flags::flag_4;
             }
         }
     }
@@ -213,14 +214,6 @@ namespace openloco::ui::windows::station_list
         return false;
     }
 
-    static uint8_t stationMask[] = {
-        0b1111,
-        0b0001,
-        0b0010,
-        0b0100,
-        0b1000,
-    };
-
     // 0x0049111A
     static void sub_49111A(window* window)
     {
@@ -237,13 +230,14 @@ namespace openloco::ui::windows::station_list
             if (station.owner != window->number)
                 continue;
 
-            if ((station.var_2A & (1 << 5)) != 0)
+            if ((station.flags & station_flags::flag_5) != 0)
                 continue;
 
-            if ((station.var_2A & stationMask[window->current_tab]) == 0)
+            const uint16_t mask = tabInformationByType[window->current_tab].stationMask;
+            if ((station.flags & mask) == 0)
                 continue;
 
-            if ((station.var_2A & (1 << 4)) != 0)
+            if ((station.flags & station_flags::flag_4) != 0)
                 continue;
 
             if (edi == -1)
@@ -262,7 +256,7 @@ namespace openloco::ui::windows::station_list
         {
             bool dl = false;
 
-            stationmgr::get(edi)->var_2A |= (1 << 4);
+            stationmgr::get(edi)->flags |= station_flags::flag_4;
 
             auto ebp = window->row_count;
             if (edi != window->row_info[ebp])
@@ -520,7 +514,7 @@ namespace openloco::ui::windows::station_list
             _common_format_args[0] = string_ids::stringid_stringid;
             _common_format_args[1] = station->name;
             _common_format_args[2] = station->town;
-            _common_format_args[3] = label_icons[station->var_2A & 0x0F];
+            _common_format_args[3] = label_icons[station->flags & 0x0F];
 
             gfx::draw_string_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 

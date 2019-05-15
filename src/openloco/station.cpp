@@ -237,7 +237,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 && is_player_company(owner))
+        if (flags != (station_flags::flag_7 | station_flags::flag_8) && is_player_company(owner))
         {
             rating += 120;
         }
