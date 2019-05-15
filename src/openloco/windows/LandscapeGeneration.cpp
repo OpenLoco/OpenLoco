@@ -540,10 +540,10 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::hills_edge_of_map:
-                    if ((*scenarioFlags & (1 << 1)) == 0)
-                        *scenarioFlags |= (1 << 1);
+                    if ((*scenarioFlags & scenario::flags::hills_edge_of_map) == 0)
+                        *scenarioFlags |= scenario::flags::hills_edge_of_map;
                     else
-                        *scenarioFlags &= ~(1 << 1);
+                        *scenarioFlags &= ~scenario::flags::hills_edge_of_map;
                     window->invalidate();
                     break;
             }
@@ -602,7 +602,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             window->widgets[widx::topography_style].text = topographyStyleIds[*topographyStyle];
 
-            if ((*scenarioFlags & (1 << 1)) != 0)
+            if ((*scenarioFlags & scenario::flags::hills_edge_of_map) != 0)
                 window->activated_widgets |= (1 << widx::hills_edge_of_map);
             else
                 window->activated_widgets &= ~(1 << widx::hills_edge_of_map);
@@ -1129,18 +1129,18 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    if ((*industryFlags & (1 << 0)) == 0)
-                        *industryFlags |= 1 << 0;
+                    if ((*industryFlags & scenario::industry_flags::allow_industries_close_down) == 0)
+                        *industryFlags |= scenario::industry_flags::allow_industries_close_down;
                     else
-                        *industryFlags &= ~(1 << 0);
+                        *industryFlags &= ~scenario::industry_flags::allow_industries_close_down;
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    if ((*industryFlags & (1 << 1)) == 0)
-                        *industryFlags |= 1 << 1;
+                    if ((*industryFlags & scenario::industry_flags::allow_industries_start_up) == 0)
+                        *industryFlags |= scenario::industry_flags::allow_industries_start_up;
                     else
-                        *industryFlags &= ~(1 << 1);
+                        *industryFlags &= ~scenario::industry_flags::allow_industries_start_up;
                     window->invalidate();
                     break;
             }
@@ -1154,9 +1154,9 @@ namespace openloco::ui::windows::LandscapeGeneration
             widgets[widx::num_industries].text = numIndustriesLabels[*numberOfIndustries];
 
             window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if (industryFlags & (1 << 0))
+            if (industryFlags & scenario::industry_flags::allow_industries_close_down)
                 window->activated_widgets |= 1 << widx::check_allow_industries_close_down;
-            if (industryFlags & (1 << 1))
+            if (industryFlags & scenario::industry_flags::allow_industries_start_up)
                 window->activated_widgets |= 1 << widx::check_allow_industries_start_up;
         }
 
