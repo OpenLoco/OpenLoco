@@ -28,7 +28,7 @@ namespace openloco
 
     bool company::empty() const
     {
-        return var_00 == string_ids::empty;
+        return name == string_ids::empty;
     }
 
     // 0x00430762

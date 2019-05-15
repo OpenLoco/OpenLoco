@@ -27,14 +27,14 @@ namespace openloco
 #pragma pack(push, 1)
     struct company
     {
-        string_id var_00;
+        string_id name;
         string_id var_02;
         uint32_t var_04;
         currency48_t var_08;
         uint8_t pad_0E[0x16 - 0x0E];
         int16_t performance_index; // 0x16
         uint8_t competitor_id;     // 0x18
-        uint8_t var_19;            // 0x19
+        uint8_t owner_emotion;     // 0x19
         struct
         {
             uint8_t primary;   // 0x1A

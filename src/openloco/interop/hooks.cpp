@@ -730,6 +730,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    // Keep until editor toolbar has been implemented.
     register_hook(
         0x0043B26C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -764,6 +765,14 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    // Until handling of input_state::viewport_left has been implemented in mouse_input...
+    register_hook(
+        0x00490F6C,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            ui::windows::station_list::open(regs.ax);
+            return 0;
+        });
+
     register_hook(
         0x004958C6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -784,7 +793,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x0048ED2F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::station_2_scroll_paint(
+            ui::windows::station::tab_2_scroll_paint(
                 *((ui::window*)regs.esi),
                 *((gfx::drawpixelinfo_t*)regs.edi));
             return 0;
@@ -919,6 +928,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    // Keep until editor toolbar has been implemented.
     register_hook(
         0x00004BF7B9,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -927,6 +937,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    // Keep until editor toolbar has been implemented.
     register_hook(
         0x00004BF7B9,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {

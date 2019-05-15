@@ -147,8 +147,27 @@ namespace openloco::string_ids
     constexpr string_id menu_airport = 227;
     constexpr string_id menu_ship_port = 228;
 
+    constexpr string_id label_icons_none = 230;
+    constexpr string_id label_icons_rail = 231;
+    constexpr string_id label_icons_road = 232;
+    constexpr string_id label_icons_rail_road = 233;
+    constexpr string_id label_icons_air = 234;
+    constexpr string_id label_icons_rail_air = 235;
+    constexpr string_id label_icons_road_air = 236;
+    constexpr string_id label_icons_rail_road_air = 237;
+    constexpr string_id label_icons_water = 238;
+    constexpr string_id label_icons_rail_water = 239;
+    constexpr string_id label_icons_road_water = 240;
+    constexpr string_id label_icons_rail_road_water = 241;
+    constexpr string_id label_icons_air_water = 242;
+    constexpr string_id label_icons_rail_air_water = 243;
+    constexpr string_id label_icons_road_air_water = 244;
+    constexpr string_id label_icons_rail_road_air_water = 245;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
+
+    constexpr string_id stringid_stringid = 347;
 
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
@@ -175,6 +194,9 @@ namespace openloco::string_ids
 
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
+
+    constexpr string_id status_num_stations_singular = 520;
+    constexpr string_id status_num_stations_plural = 521;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -310,11 +332,36 @@ namespace openloco::string_ids
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
 
+    constexpr string_id stringid_all_stations = 1128;
+    constexpr string_id stringid_rail_stations = 1129;
+    constexpr string_id stringid_road_stations = 1130;
+    constexpr string_id stringid_airports = 1131;
+    constexpr string_id stringid_ship_ports = 1132;
     constexpr string_id all_stations = 1133;
     constexpr string_id rail_stations = 1134;
     constexpr string_id road_stations = 1135;
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
+
+    constexpr string_id table_header_name = 1145;
+    constexpr string_id table_header_name_desc = 1146;
+    constexpr string_id table_header_monthly_profit = 1147;
+    constexpr string_id table_header_monthly_profit_desc = 1148;
+    constexpr string_id table_header_age = 1149;
+    constexpr string_id table_header_age_desc = 1150;
+    constexpr string_id table_header_reliability = 1151;
+    constexpr string_id table_header_reliability_desc = 1152;
+
+    constexpr string_id tooltip_sort_by_name = 1153;
+    constexpr string_id tooltip_sort_by_profit = 1154;
+    constexpr string_id tooltip_sort_by_age = 1155;
+    constexpr string_id tooltip_sort_by_reliability = 1156;
+
+    constexpr string_id tooltip_all_stations = 1200;
+    constexpr string_id tooltip_rail_stations = 1201;
+    constexpr string_id tooltip_road_stations = 1202;
+    constexpr string_id tooltip_airports = 1203;
+    constexpr string_id tooltip_ship_ports = 1204;
 
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;
@@ -343,6 +390,23 @@ namespace openloco::string_ids
     constexpr string_id menu_sprite_stringid_construction = 1289;
 
     constexpr string_id station_cargo_rating_percent = 1423;
+
+    constexpr string_id waiting_cargo_separator = 1430;
+    constexpr string_id waiting = 1431;
+    constexpr string_id nothing_waiting = 1432;
+    constexpr string_id table_header_status = 1433;
+    constexpr string_id table_header_status_desc = 1434;
+    constexpr string_id table_header_total_waiting = 1435;
+    constexpr string_id table_header_total_waiting_desc = 1436;
+    constexpr string_id table_header_accepts = 1437;
+    constexpr string_id table_header_accepts_desc = 1438;
+    constexpr string_id tooltip_sort_by_station_status = 1439;
+    constexpr string_id tooltip_sort_by_total_units_waiting = 1440;
+    constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
+    constexpr string_id num_units = 1442;
+    constexpr string_id unit_separator = 1443;
+
+    constexpr string_id tooltip_select_company = 1465;
 
     constexpr string_id display_options = 1486;
     constexpr string_id sound_options = 1487;

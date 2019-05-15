@@ -76,6 +76,42 @@ namespace openloco::gfx
             , y(y)
         {
         }
+
+        bool operator==(const point_t& rhs)
+        {
+            return x == rhs.x && y == rhs.y;
+        }
+
+        bool operator==(const int16_t rhs)
+        {
+            return x == rhs && y == rhs;
+        }
+
+        point_t& operator+=(const point_t& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            return *this;
+        }
+
+        point_t& operator-=(const point_t& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            return *this;
+        }
+
+        friend point_t operator+(point_t lhs, const point_t& rhs)
+        {
+            lhs += rhs;
+            return lhs;
+        }
+
+        friend point_t operator-(point_t lhs, const point_t& rhs)
+        {
+            lhs -= rhs;
+            return lhs;
+        }
     };
 
     struct ui_size_t

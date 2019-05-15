@@ -137,6 +137,12 @@ namespace openloco::objectmgr
         return _waterObjects[0];
     }
 
+    template<>
+    competitor_object* get(size_t id)
+    {
+        return _competitorObjects[id];
+    }
+
     size_t get_max_objects(object_type type)
     {
         static size_t counts[] = {

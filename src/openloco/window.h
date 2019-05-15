@@ -158,10 +158,12 @@ namespace openloco::ui
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
         constexpr uint32_t flag_13 = 1 << 13;
+        constexpr uint32_t flag_14 = 1 << 14;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_one = (1 << 17);
         constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
+        constexpr uint32_t flag_19 = 1 << 19;
     }
 
     struct window_event_list
@@ -195,7 +197,7 @@ namespace openloco::ui
                 uint32_t viewport_rotate;
                 uint32_t event_22;
                 void (*tooltip)(window*, widget_index);
-                ui::cursor_id (*cursor)(int16_t, int16_t, int16_t, ui::cursor_id);
+                ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, gfx::drawpixelinfo_t*);
@@ -342,12 +344,13 @@ namespace openloco::ui
         window_number number = 0;                          // 0x40
         uint32_t flags;                                    // 0x42
         scroll_area_t scroll_areas[2];                     // 0x46
-        uint8_t pad_6A[0x83A - 0x6A];
-        uint16_t row_count; // 0x83A
+        int16_t row_info[1000];                            // 0x6A
+        uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
         uint16_t var_83E;
-        uint16_t row_hover; // 0x840
-        uint8_t pad_842[0x846 - 0x842];
+        int16_t row_hover; // 0x840
+        uint8_t pad_842[0x844 - 0x842];
+        uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
         uint16_t var_848 = 0;
         uint16_t var_84A = 0;
@@ -373,7 +376,6 @@ namespace openloco::ui
         int16_t var_88C;
 
         window(gfx::point_t position, gfx::ui_size_t size);
-
         constexpr void set_size(gfx::ui_size_t size)
         {
             this->min_width = size.width;
@@ -408,6 +410,7 @@ namespace openloco::ui
         void viewport_rotate_left();
 
         bool move(int16_t dx, int16_t dy);
+        void moveInsideScreenEdges();
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 

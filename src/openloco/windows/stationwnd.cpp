@@ -9,18 +9,18 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::windows
+namespace openloco::ui::windows::station
 {
     static loco_global<uint8_t[256], 0x001136BA4> byte_1136BA4;
 
-    static station_id_t get_station_id(const window& w)
+    // 0x0048F210
+    window* open(uint16_t id)
     {
-        return w.number;
-    }
+        registers regs;
+        regs.dx = id;
+        call(0x0048F210, regs);
 
-    static station& get_station(const window& w)
-    {
-        return *(stationmgr::get(get_station_id(w)));
+        return (window*)regs.esi;
     }
 
     // 0x0048EF02
@@ -37,16 +37,16 @@ namespace openloco::ui::windows
     }
 
     // 0x0048ED2F
-    void station_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi)
+    void tab_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi)
     {
         auto paletteId = byte_1136BA4[w.colours[1] * 8];
         gfx::clear_single(dpi, paletteId);
 
-        const auto& station = get_station(w);
+        const auto station = stationmgr::get(w.number);
         int16_t y = 0;
         for (int i = 0; i < 32; i++)
         {
-            auto& cargo = station.cargo_stats[i];
+            auto& cargo = station->cargo_stats[i];
             if (!cargo.empty())
             {
                 auto cargoObj = objectmgr::get<cargo_object>(i);

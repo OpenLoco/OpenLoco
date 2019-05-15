@@ -1,7 +1,10 @@
 #include "station.h"
 #include "companymgr.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include "messagemgr.h"
+#include "objects/cargo_object.h"
+#include "objects/objectmgr.h"
 #include "openloco.h"
 #include "ui/WindowManager.h"
 #include "viewportmgr.h"
@@ -93,6 +96,34 @@ namespace openloco
         registers regs;
         regs.ebx = id();
         call(0x0048F7D1, regs);
+    }
+
+    // 0x00492A98
+    void station::getStatusString(const char* buffer)
+    {
+        char* ptr = (char*)buffer;
+        *ptr = '\0';
+
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            auto& stats = cargo_stats[cargoId];
+
+            if (stats.quantity == 0)
+                continue;
+
+            if (*buffer != '\0')
+                ptr = stringmgr::format_string(ptr, string_ids::waiting_cargo_separator);
+
+            loco_global<uint32_t, 0x112C826> _common_format_args;
+            *_common_format_args = stats.quantity;
+
+            auto cargo = objectmgr::get<cargo_object>(cargoId);
+            string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
+            ptr = stringmgr::format_string(ptr, unit_name, &*_common_format_args);
+        }
+
+        string_id suffix = *buffer == '\0' ? string_ids::nothing_waiting : string_ids::waiting;
+        ptr = stringmgr::format_string(ptr, suffix);
     }
 
     // 0x00492793
@@ -206,7 +237,7 @@ namespace openloco
             }
         }
 
-        if (var_2A != 384 && is_player_company(owner))
+        if (flags != (station_flags::flag_7 | station_flags::flag_8) && is_player_company(owner))
         {
             rating += 120;
         }

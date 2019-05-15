@@ -7,6 +7,7 @@
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
+#include "ui.h"
 #include "ui/scrollview.h"
 #include "widget.h"
 #include <cassert>
@@ -553,6 +554,51 @@ namespace openloco::ui
         return true;
     }
 
+    // 0x004CD320
+    void window::moveInsideScreenEdges()
+    {
+        gfx::point_t offset = { 0, 0 };
+
+        const int16_t xOvershoot = this->x + this->width - ui::width();
+
+        // Over the edge on the right?
+        if (xOvershoot > 0)
+            offset.x -= xOvershoot;
+
+        // If not, on the left?
+        if (this->x < 0)
+            offset.x -= this->x;
+
+        const int16_t yOvershoot = this->y + this->height - (ui::height() - 27);
+
+        // Over the edge at the bottom?
+        if (yOvershoot > 0)
+            offset.y -= yOvershoot;
+
+        // Maybe at the top?
+        if (this->y - 28 < 0)
+            offset.y -= this->y - 28;
+
+        if (offset == 0)
+            return;
+
+        this->invalidate();
+        this->x += offset.x;
+        this->y += offset.y;
+
+        if (this->viewports[0] != nullptr)
+        {
+            this->viewports[0]->x += offset.x;
+            this->viewports[0]->y += offset.y;
+        }
+
+        if (this->viewports[1] != nullptr)
+        {
+            this->viewports[1]->x += offset.x;
+            this->viewports[1]->y += offset.y;
+        }
+    }
+
     // 0x004C9513
     widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
     {
@@ -744,7 +790,7 @@ namespace openloco::ui
             return (cursor_id)regs.ebx;
         }
 
-        return event_handlers->cursor(widgetIdx, xPos, yPos, fallback);
+        return event_handlers->cursor(this, widgetIdx, xPos, yPos, fallback);
     }
 
     void window::call_on_mouse_up(widget_index widgetIndex)
