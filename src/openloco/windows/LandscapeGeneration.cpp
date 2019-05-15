@@ -28,15 +28,15 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     static loco_global<uint8_t[32], 0x009C871E> landObjectDiversity;
 
-    static loco_global<uint8_t, 0x009C8898> minimumLandHeight;
+    static loco_global<uint8_t, 0x009C8898> minLandHeight;
     static loco_global<uint8_t, 0x009C8899> topographyStyle;
     static loco_global<uint8_t, 0x009C889A> hillDensity;
 
     static loco_global<uint16_t, 0x009C888E> numberOfForests;
-    static loco_global<uint8_t, 0x009C8890> minimumForestRadius;
-    static loco_global<uint8_t, 0x009C8891> maximumForestRadius;
-    static loco_global<uint8_t, 0x009C8892> minimumForestDensity;
-    static loco_global<uint8_t, 0x009C8893> maximumForestDensity;
+    static loco_global<uint8_t, 0x009C8890> minForestRadius;
+    static loco_global<uint8_t, 0x009C8891> maxForestRadius;
+    static loco_global<uint8_t, 0x009C8892> minForestDensity;
+    static loco_global<uint8_t, 0x009C8893> maxForestDensity;
     static loco_global<uint16_t, 0x009C8894> numberRandomTrees;
     static loco_global<uint8_t, 0x009C8896> minAltitudeForTrees;
     static loco_global<uint8_t, 0x009C8897> maxAltitudeForTrees;
@@ -338,7 +338,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_land_height_units),
             make_widget({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
             make_widget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_pct),
+            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_percent),
             make_widget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::create_hills_right_up_to_edge_of_map),
             make_widget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
             widget_end()
@@ -489,11 +489,11 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::min_land_height_up:
-                    *minimumLandHeight = std::min(*minimumLandHeight + 1, 15);
+                    *minLandHeight = std::min(*minLandHeight + 1, 15);
                     break;
 
                 case widx::min_land_height_down:
-                    *minimumLandHeight = std::max(1, *minimumLandHeight - 1);
+                    *minLandHeight = std::max(1, *minLandHeight - 1);
                     break;
 
                 case widx::topography_style_btn:
@@ -606,7 +606,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             common::prepare_draw(window);
 
             commonFormatArgs[0] = *seaLevel;
-            commonFormatArgs[1] = *minimumLandHeight;
+            commonFormatArgs[1] = *minLandHeight;
             commonFormatArgs[2] = *hillDensity;
 
             window->widgets[widx::topography_style].text = topographyStyleIds[*topographyStyle];
@@ -658,18 +658,18 @@ namespace openloco::ui::windows::LandscapeGeneration
             number_of_forests = 9,
             number_of_forests_down,
             number_of_forests_up,
-            minimum_forest_radius,
-            minimum_forest_radius_down,
-            minimum_forest_radius_up,
-            maximum_forest_radius,
-            maximum_forest_radius_down,
-            maximum_forest_radius_up,
-            minimum_forest_density,
-            minimum_forest_density_down,
-            minimum_forest_density_up,
-            maximum_forest_density,
-            maximum_forest_density_down,
-            maximum_forest_density_up,
+            min_forest_radius,
+            min_forest_radius_down,
+            min_forest_radius_up,
+            max_forest_radius,
+            max_forest_radius_down,
+            max_forest_radius_up,
+            min_forest_density,
+            min_forest_density_down,
+            min_forest_density_up,
+            max_forest_density,
+            max_forest_density_down,
+            max_forest_density_up,
             number_random_trees,
             number_random_trees_down,
             number_random_trees_up,
@@ -682,16 +682,16 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // TODO(avgeffen) shift overflow for last widget. Should fit in uint64_t, but problematic on 32-bits arch?
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down); // | (1 << widx::max_altitude_for_trees_up);
-        const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::minimum_forest_radius_up) | (1 << widx::minimum_forest_radius_down) | (1 << widx::maximum_forest_radius_up) | (1 << widx::maximum_forest_radius_down) | (1 << widx::minimum_forest_density_up) | (1 << widx::minimum_forest_density_down) | (1 << widx::maximum_forest_density_up) | (1 << widx::maximum_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down);                          // | (1 << widx::max_altitude_for_trees_up);
+        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down); // | (1 << widx::max_altitude_for_trees_up);
+        const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down);                          // | (1 << widx::max_altitude_for_trees_up);
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
             make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_forests_value),
-            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::minimum_forest_radius_blocks),
-            make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::maximum_forest_radius_blocks),
-            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::minimum_forest_density_pct),
-            make_stepper_widgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::maximum_forest_density_pct),
+            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_radius_blocks),
+            make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_radius_blocks),
+            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_density_percent),
+            make_stepper_widgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_density_percent),
             make_stepper_widgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_random_trees_value),
             make_stepper_widgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_altitude_for_trees_height),
             make_stepper_widgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_altitude_for_trees_height),
@@ -715,30 +715,30 @@ namespace openloco::ui::windows::LandscapeGeneration
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::minimum_forest_radius].top,
+                window->y + window->widgets[widx::min_forest_radius].top,
                 colour::black,
-                string_ids::minimum_forest_radius);
+                string_ids::min_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::maximum_forest_radius].top,
+                window->y + window->widgets[widx::max_forest_radius].top,
                 colour::black,
-                string_ids::maximum_forest_radius);
+                string_ids::max_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::minimum_forest_density].top,
+                window->y + window->widgets[widx::min_forest_density].top,
                 colour::black,
-                string_ids::minimum_forest_density);
+                string_ids::min_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
-                window->y + window->widgets[widx::maximum_forest_density].top,
+                window->y + window->widgets[widx::max_forest_density].top,
                 colour::black,
-                string_ids::maximum_forest_density);
+                string_ids::max_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
@@ -777,52 +777,52 @@ namespace openloco::ui::windows::LandscapeGeneration
                     *numberOfForests = std::max(0, *numberOfForests - 10);
                     break;
                 }
-                case widx::minimum_forest_radius_up:
+                case widx::min_forest_radius_up:
                 {
-                    *minimumForestRadius = std::min(*minimumForestRadius + 1, 40);
-                    if (*minimumForestRadius > *maximumForestRadius)
-                        *maximumForestRadius = *minimumForestRadius;
+                    *minForestRadius = std::min(*minForestRadius + 1, 40);
+                    if (*minForestRadius > *maxForestRadius)
+                        *maxForestRadius = *minForestRadius;
                     break;
                 }
-                case widx::minimum_forest_radius_down:
+                case widx::min_forest_radius_down:
                 {
-                    *minimumForestRadius = std::max(4, *minimumForestRadius - 1);
+                    *minForestRadius = std::max(4, *minForestRadius - 1);
                     break;
                 }
-                case widx::maximum_forest_radius_up:
+                case widx::max_forest_radius_up:
                 {
-                    *maximumForestRadius = std::clamp(*maximumForestRadius + 1, 4, 40);
+                    *maxForestRadius = std::clamp(*maxForestRadius + 1, 4, 40);
                     break;
                 }
-                case widx::maximum_forest_radius_down:
+                case widx::max_forest_radius_down:
                 {
-                    *maximumForestRadius = std::clamp(*maximumForestRadius - 1, 4, 40);
-                    if (*maximumForestRadius < *minimumForestRadius)
-                        *minimumForestRadius = *maximumForestRadius;
+                    *maxForestRadius = std::clamp(*maxForestRadius - 1, 4, 40);
+                    if (*maxForestRadius < *minForestRadius)
+                        *minForestRadius = *maxForestRadius;
                     break;
                 }
-                case widx::minimum_forest_density_up:
+                case widx::min_forest_density_up:
                 {
-                    *minimumForestDensity = std::min(*minimumForestDensity + 1, 7);
-                    if (*minimumForestDensity > *maximumForestDensity)
-                        *maximumForestDensity = *minimumForestDensity;
+                    *minForestDensity = std::min(*minForestDensity + 1, 7);
+                    if (*minForestDensity > *maxForestDensity)
+                        *maxForestDensity = *minForestDensity;
                     break;
                 }
-                case widx::minimum_forest_density_down:
+                case widx::min_forest_density_down:
                 {
-                    *minimumForestDensity = std::max(1, *minimumForestDensity - 1);
+                    *minForestDensity = std::max(1, *minForestDensity - 1);
                     break;
                 }
-                case widx::maximum_forest_density_up:
+                case widx::max_forest_density_up:
                 {
-                    *maximumForestDensity = std::min(*maximumForestDensity + 1, 7);
+                    *maxForestDensity = std::min(*maxForestDensity + 1, 7);
                     break;
                 }
-                case widx::maximum_forest_density_down:
+                case widx::max_forest_density_down:
                 {
-                    *maximumForestDensity = std::max(1, *maximumForestDensity - 1);
-                    if (*maximumForestDensity < *minimumForestDensity)
-                        *minimumForestDensity = *maximumForestDensity;
+                    *maxForestDensity = std::max(1, *maxForestDensity - 1);
+                    if (*maxForestDensity < *minForestDensity)
+                        *minForestDensity = *maxForestDensity;
                     break;
                 }
                 case widx::number_random_trees_up:
@@ -893,10 +893,10 @@ namespace openloco::ui::windows::LandscapeGeneration
             common::prepare_draw(window);
 
             commonFormatArgs[0] = numberOfForests;
-            commonFormatArgs[1] = minimumForestRadius;
-            commonFormatArgs[2] = maximumForestRadius;
-            commonFormatArgs[3] = minimumForestDensity * 14;
-            commonFormatArgs[4] = maximumForestDensity * 14;
+            commonFormatArgs[1] = minForestRadius;
+            commonFormatArgs[2] = maxForestRadius;
+            commonFormatArgs[3] = minForestDensity * 14;
+            commonFormatArgs[4] = maxForestDensity * 14;
             commonFormatArgs[5] = numberRandomTrees;
             commonFormatArgs[6] = minAltitudeForTrees;
             commonFormatArgs[7] = maxAltitudeForTrees;
@@ -953,7 +953,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
                 colour::black,
-                string_ids::maximum_town_size);
+                string_ids::max_town_size);
         }
 
         static const string_id townSizeLabels[] = {
