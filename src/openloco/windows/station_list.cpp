@@ -82,6 +82,14 @@ namespace openloco::ui::windows::station_list
         { tab_ship_ports, string_ids::stringid_ship_ports, interface_skin::image_ids::ship_ports, station_flags::transport_mode_water }
     };
 
+    enum SortMode : uint16_t
+    {
+        Name,
+        Status,
+        TotalUnitsWaiting,
+        CargoAccepted,
+    };
+
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
@@ -118,7 +126,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x004910E8
-    static void sub_4910E8(window* window)
+    static void refreshStationList(window* window)
     {
         window->row_count = 0;
 
@@ -134,9 +142,8 @@ namespace openloco::ui::windows::station_list
         }
     }
 
-    //sort_name
     // 0x004911FD
-    static bool sub_4911FD(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByName(const openloco::station& lhs, const openloco::station& rhs)
     {
         char lhsString[256] = { 0 };
         stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
@@ -147,9 +154,8 @@ namespace openloco::ui::windows::station_list
         return strcmp(lhsString, rhsString) < 0;
     }
 
-    // sort_total_waiting, sort_status
     // 0x00491281, 0x00491247
-    static bool sub_491281(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByQuantity(const openloco::station& lhs, const openloco::station& rhs)
     {
         uint32_t lhsSum = 0;
         for (auto cargo : lhs.cargo_stats)
@@ -166,9 +172,8 @@ namespace openloco::ui::windows::station_list
         return rhsSum < lhsSum;
     }
 
-    // sort_accepts
     // 0x004912BB
-    static bool sub_4912BB(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByAccepts(const openloco::station& lhs, const openloco::station& rhs)
     {
         char* ptr;
 
@@ -196,26 +201,26 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x004911FD, 0x00491247, 0x00491281, 0x004912BB
-    static bool sub_4FEEC4(int i, const openloco::station& lhs, const openloco::station& rhs)
+    static bool getOrder(const SortMode mode, const openloco::station& lhs, const openloco::station& rhs)
     {
-        switch (i)
+        switch (mode)
         {
-            case sort_name - sort_name:
-                return sub_4911FD(lhs, rhs);
+            case SortMode::Name:
+                return orderByName(lhs, rhs);
 
-            case sort_status - sort_name:
-            case sort_total_waiting - sort_name:
-                return sub_491281(lhs, rhs);
+            case SortMode::Status:
+            case SortMode::TotalUnitsWaiting:
+                return orderByQuantity(lhs, rhs);
 
-            case sort_accepts - sort_name:
-                return sub_4912BB(lhs, rhs);
+            case SortMode::CargoAccepted:
+                return orderByAccepts(lhs, rhs);
         }
 
         return false;
     }
 
     // 0x0049111A
-    static void sub_49111A(window* window)
+    static void updateStationList(window* window)
     {
         auto edi = -1;
 
@@ -246,7 +251,7 @@ namespace openloco::ui::windows::station_list
                 continue;
             }
 
-            if (sub_4FEEC4(window->var_844, station, *stationmgr::get(edi)))
+            if (getOrder(SortMode(window->sort_mode), station, *stationmgr::get(edi)))
             {
                 edi = i;
             }
@@ -285,7 +290,7 @@ namespace openloco::ui::windows::station_list
                 window->invalidate();
             }
 
-            sub_4910E8(window);
+            refreshStationList(window);
         }
     }
 
@@ -315,11 +320,11 @@ namespace openloco::ui::windows::station_list
             window->owner = companyId;
             window->current_tab = 0;
             window->frame_no = 0;
-            window->var_844 = 0;
+            window->sort_mode = 0;
             window->var_83C = 0;
             window->row_hover = -1;
 
-            sub_4910E8(window);
+            refreshStationList(window);
 
             window->min_width = min_dimensions.width;
             window->min_height = min_dimensions.height;
@@ -440,10 +445,10 @@ namespace openloco::ui::windows::station_list
         window->widgets[widx::company_select].right = window->width - 3;
 
         // Set header button captions.
-        window->widgets[widx::sort_name].text = window->var_844 == 0 ? string_ids::table_header_name_desc : string_ids::table_header_name;
-        window->widgets[widx::sort_status].text = window->var_844 == 1 ? string_ids::table_header_status_desc : string_ids::table_header_status;
-        window->widgets[widx::sort_total_waiting].text = window->var_844 == 2 ? string_ids::table_header_total_waiting_desc : string_ids::table_header_total_waiting;
-        window->widgets[widx::sort_accepts].text = window->var_844 == 3 ? string_ids::table_header_accepts_desc : string_ids::table_header_accepts;
+        window->widgets[widx::sort_name].text = window->sort_mode == SortMode::Name ? string_ids::table_header_name_desc : string_ids::table_header_name;
+        window->widgets[widx::sort_status].text = window->sort_mode == SortMode::Status ? string_ids::table_header_status_desc : string_ids::table_header_status;
+        window->widgets[widx::sort_total_waiting].text = window->sort_mode == SortMode::TotalUnitsWaiting ? string_ids::table_header_total_waiting_desc : string_ids::table_header_total_waiting;
+        window->widgets[widx::sort_accepts].text = window->sort_mode == SortMode::CargoAccepted ? string_ids::table_header_accepts_desc : string_ids::table_header_accepts;
 
         // Reposition tabs (0x00491A39 / 0x00491A3F)
         int16_t new_tab_x = window->widgets[widx::tab_all_stations].left;
@@ -615,10 +620,10 @@ namespace openloco::ui::windows::station_list
 
         window->number = companyId;
         window->owner = companyId;
-        window->var_844 = 0;
+        window->sort_mode = 0;
         window->row_count = 0;
 
-        sub_4910E8(window);
+        refreshStationList(window);
 
         window->var_83C = 0;
         window->row_hover = -1;
@@ -662,7 +667,7 @@ namespace openloco::ui::windows::station_list
                 window->var_83C = 0;
                 window->row_hover = -1;
 
-                sub_4910E8(window);
+                refreshStationList(window);
 
                 window->call_on_resize();
                 window->call_prepare_draw();
@@ -677,15 +682,15 @@ namespace openloco::ui::windows::station_list
             case sort_accepts:
             {
                 auto sort_mode = widgetIndex - widx::sort_name;
-                if (window->var_844 == sort_mode)
+                if (window->sort_mode == sort_mode)
                     return;
 
-                window->var_844 = sort_mode;
+                window->sort_mode = sort_mode;
                 window->invalidate();
                 window->var_83C = 0;
                 window->row_hover = -1;
 
-                sub_4910E8(window);
+                refreshStationList(window);
                 break;
             }
         }
@@ -732,9 +737,9 @@ namespace openloco::ui::windows::station_list
         WindowManager::invalidateWidget(WindowType::stationList, window->number, window->current_tab + 4);
 
         // Add three stations every tick.
-        sub_49111A(window);
-        sub_49111A(window);
-        sub_49111A(window);
+        updateStationList(window);
+        updateStationList(window);
+        updateStationList(window);
     }
 
     // 0x00491999

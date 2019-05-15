@@ -350,7 +350,7 @@ namespace openloco::ui
         uint16_t var_83E;
         int16_t row_hover; // 0x840
         uint8_t pad_842[0x844 - 0x842];
-        uint16_t var_844;
+        uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
         uint16_t var_848 = 0;
         uint16_t var_84A = 0;
