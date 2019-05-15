@@ -34,7 +34,7 @@ namespace openloco
         uint8_t pad_0E[0x16 - 0x0E];
         int16_t performance_index; // 0x16
         uint8_t competitor_id;     // 0x18
-        uint8_t var_19;            // 0x19
+        uint8_t owner_emotion;     // 0x19
         struct
         {
             uint8_t primary;   // 0x1A
