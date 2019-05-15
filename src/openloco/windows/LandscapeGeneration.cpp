@@ -279,21 +279,26 @@ namespace openloco::ui::windows::LandscapeGeneration
         common::initEvents();
 
         // Start of 0x0043DAEA
-        window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &options::events);
-        window->widgets = options::widgets;
-        window->enabled_widgets = options::enabled_widgets;
-        window->number = 0;
-        window->current_tab = 0;
-        window->frame_no = 0;
-        window->row_hover = -1;
+        if (window == nullptr)
+        {
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &options::events);
+            window->widgets = options::widgets;
+            window->enabled_widgets = options::enabled_widgets;
+            window->number = 0;
+            window->current_tab = 0;
+            window->frame_no = 0;
+            window->row_hover = -1;
 
-        auto interface = objectmgr::get<interface_skin_object>();
-        window->colours[0] = interface->colour_0B;
-        window->colours[1] = interface->colour_0E;
+            auto interface = objectmgr::get<interface_skin_object>();
+            window->colours[0] = interface->colour_0B;
+            window->colours[1] = interface->colour_0E;
+        }
         // End of 0x0043DAEA
 
         window->width = window_size.width;
         window->height = window_size.height;
+
+        window->invalidate();
 
         window->activated_widgets = 0;
         window->holdable_widgets = options::holdable_widgets;
@@ -1285,8 +1290,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             if (widgetIndex == widx::tab_land)
                 newSize = &land_tab_size;
 
-            window->min_width = window->max_width = window->width = newSize->width;
-            window->min_height = window->max_height = window->height = newSize->height;
+            window->set_size(*newSize);
 
             window->call_on_resize();
             window->call_prepare_draw();

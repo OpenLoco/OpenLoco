@@ -45,7 +45,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
         string_id prompt = window->var_846 == 0 ? string_ids::prompt_confirm_generate_landscape : string_ids::prompt_confirm_random_landscape;
         *commonFormatArgs = prompt;
 
-        gfx::point_t origin = { (int16_t)(window->x + (window->width / 2)), int16_t(window->y + 41) };
+        auto origin = gfx::point_t(window->x + (window->width / 2), window->y + 41);
         gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::black, string_ids::wcolour2_stringid2, (const char*)&*commonFormatArgs);
     }
 
