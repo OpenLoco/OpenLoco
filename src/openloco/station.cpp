@@ -192,6 +192,7 @@ namespace openloco
         return atLeastOneGoodRating;
     }
 
+    // 0x004927F6
     int32_t station::calculate_cargo_rating(const station_cargo_stats& cargo) const
     {
         int32_t rating = 0;
@@ -237,9 +238,9 @@ namespace openloco
             }
         }
 
-        if (flags != (station_flags::flag_7 | station_flags::flag_8) && is_player_company(owner))
+        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !is_player_company(owner))
         {
-            rating += 120;
+            rating = 120;
         }
 
         int32_t unk3 = std::min<uint8_t>(cargo.var_36, 250);
