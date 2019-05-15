@@ -144,20 +144,20 @@ namespace openloco::gfx
         int16_t y,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_494B3F(
         drawpixelinfo_t& dpi,
         point_t* origin,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_494BBF(
         drawpixelinfo_t& dpi,
         int16_t x,
@@ -165,14 +165,14 @@ namespace openloco::gfx
         int16_t width,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_centred(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_centred_clipped(
         drawpixelinfo_t& dpi,
         int16_t x,
@@ -180,7 +180,7 @@ namespace openloco::gfx
         int16_t width,
         uint8_t colour,
         string_id stringId,
-        const void* args);
+        const void* args = nullptr);
     void draw_string_centred_wrapped(
         drawpixelinfo_t* context,
         point_t* origin,

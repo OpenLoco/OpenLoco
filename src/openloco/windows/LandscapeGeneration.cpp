@@ -356,32 +356,28 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::sea_level].top,
                 colour::black,
-                string_ids::sea_level,
-                nullptr);
+                string_ids::sea_level);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_land_height].top,
                 colour::black,
-                string_ids::min_land_height,
-                nullptr);
+                string_ids::min_land_height);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::topography_style].top,
                 colour::black,
-                string_ids::topography_style,
-                nullptr);
+                string_ids::topography_style);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::hill_density].top,
                 colour::black,
-                string_ids::hill_density,
-                nullptr);
+                string_ids::hill_density);
         }
 
         static const string_id landDiversityLabelIds[] = {
@@ -714,64 +710,56 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_forests].top,
                 colour::black,
-                string_ids::number_of_forests,
-                nullptr);
+                string_ids::number_of_forests);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::minimum_forest_radius].top,
                 colour::black,
-                string_ids::minimum_forest_radius,
-                nullptr);
+                string_ids::minimum_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::maximum_forest_radius].top,
                 colour::black,
-                string_ids::maximum_forest_radius,
-                nullptr);
+                string_ids::maximum_forest_radius);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::minimum_forest_density].top,
                 colour::black,
-                string_ids::minimum_forest_density,
-                nullptr);
+                string_ids::minimum_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::maximum_forest_density].top,
                 colour::black,
-                string_ids::maximum_forest_density,
-                nullptr);
+                string_ids::maximum_forest_density);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::number_random_trees].top,
                 colour::black,
-                string_ids::number_random_trees,
-                nullptr);
+                string_ids::number_random_trees);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_altitude_for_trees].top,
                 colour::black,
-                string_ids::min_altitude_for_trees,
-                nullptr);
+                string_ids::min_altitude_for_trees);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_altitude_for_trees].top,
                 colour::black,
-                string_ids::max_altitude_for_trees,
-                nullptr);
+                string_ids::max_altitude_for_trees);
         }
 
         // 0x0043E670
@@ -958,16 +946,14 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_towns].top,
                 colour::black,
-                string_ids::number_of_towns,
-                nullptr);
+                string_ids::number_of_towns);
 
             gfx::draw_string_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
                 colour::black,
-                string_ids::maximum_town_size,
-                nullptr);
+                string_ids::maximum_town_size);
         }
 
         static const string_id townSizeLabels[] = {
@@ -1103,8 +1089,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::num_industries].top,
                 colour::black,
-                string_ids::number_of_industries,
-                nullptr);
+                string_ids::number_of_industries);
         }
 
         static const string_id numIndustriesLabels[] = {
