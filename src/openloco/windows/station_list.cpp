@@ -163,7 +163,7 @@ namespace openloco::ui::windows::station_list
             rhsSum += cargo.quantity;
         }
 
-        return lhsSum < rhsSum;
+        return rhsSum < lhsSum;
     }
 
     // sort_accepts
