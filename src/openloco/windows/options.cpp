@@ -418,12 +418,12 @@ namespace openloco::ui::options
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
             widget_t dropdown = w->widgets[widx::display_resolution];
-            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], (int8_t)resolutions.size(), 0x80);
+            dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
             auto& cfg = config::get();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
-                dropdown::add((int16_t)i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
                 if (cfg.resolution_width == resolutions[i].width && cfg.resolution_height == resolutions[i].height)
                     dropdown::set_item_selected((int16_t)i);
             }
@@ -757,11 +757,11 @@ namespace openloco::ui::options
             if (devices.size() != 0)
             {
                 widget_t dropdown = w->widgets[widx::audio_device];
-                dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], (int8_t)devices.size(), 0x80);
+                dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
                     auto name = devices[i].c_str();
-                    dropdown::add((int16_t)i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
+                    dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
                 }
 
                 auto currentDevice = audio::get_current_device();
@@ -1141,7 +1141,7 @@ namespace openloco::ui::options
             auto tracks = get_available_tracks();
 
             widget_t dropdown = w->widgets[widx::currently_playing];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], (int8_t)tracks.size(), 0x80);
+            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
 
             int index = -1;
             for (auto track : tracks)

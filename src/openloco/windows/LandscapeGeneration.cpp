@@ -496,13 +496,10 @@ namespace openloco::ui::windows::LandscapeGeneration
                 case widx::topography_style_btn:
                 {
                     widget_t& target = window->widgets[widx::topography_style];
-                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(topographyStyleIds)), 0x80);
+                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
-                    {
-                        int16_t index = static_cast<int16_t>(i);
-                        dropdown::add(index, topographyStyleIds[index]);
-                    }
+                        dropdown::add(i, topographyStyleIds[i]);
 
                     dropdown::set_highlighted_item(*topographyStyle);
                     break;
@@ -586,13 +583,10 @@ namespace openloco::ui::windows::LandscapeGeneration
             const widget_t& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * 22 - window->scroll_areas[0].v_top;
-            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], static_cast<int8_t>(std::size(landDiversityLabelIds)), 0x80);
+            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDiversityLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDiversityLabelIds); i++)
-            {
-                int16_t index = static_cast<int16_t>(i);
-                dropdown::add(index, string_ids::dropdown_stringid, landDiversityLabelIds[index]);
-            }
+                dropdown::add(i, string_ids::dropdown_stringid, landDiversityLabelIds[i]);
 
             dropdown::set_item_selected(landObjectDiversity[landIndex]);
         }
@@ -998,13 +992,10 @@ namespace openloco::ui::windows::LandscapeGeneration
                 case widx::max_town_size_btn:
                 {
                     widget_t& target = window->widgets[widx::max_town_size];
-                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(townSizeLabels)), 0x80);
+                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
-                    {
-                        int16_t index = static_cast<int16_t>(i);
-                        dropdown::add(index, townSizeLabels[index]);
-                    }
+                        dropdown::add(i, townSizeLabels[i]);
 
                     dropdown::set_highlighted_item(*maxTownSize);
                     break;
@@ -1112,13 +1103,10 @@ namespace openloco::ui::windows::LandscapeGeneration
                 return;
 
             widget_t& target = window->widgets[widx::num_industries];
-            dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], static_cast<int8_t>(std::size(numIndustriesLabels)), 0x80);
+            dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
-            {
-                int16_t index = static_cast<int16_t>(i);
-                dropdown::add(index, numIndustriesLabels[index]);
-            }
+                dropdown::add(i, numIndustriesLabels[i]);
 
             dropdown::set_highlighted_item(*numberOfIndustries);
         }
