@@ -64,20 +64,9 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
                 WindowManager::close(window);
 
                 if (status == 0)
-                {
-                    // 0x0043EDA7
                     scenario::generateLandscape();
-                }
                 else
-                {
-                    // 0x0043EDAD
-                    *scenarioFlags &= ~(scenario::flags::landscape_generation_done);
-                    WindowManager::invalidate(WindowType::landscapeGeneration, 0);
-                    call(0x0043C88C);
-                    addr<0x009C871C, uint8_t>() = 0;
-                    addr<0x00F25374, uint8_t>() = 0;
-                    gfx::invalidate_screen();
-                }
+                    scenario::eraseLandscape();
                 break;
         }
     }

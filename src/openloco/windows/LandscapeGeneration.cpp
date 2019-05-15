@@ -179,7 +179,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void confirmResetLandscape(int32_t eax)
         {
-            bool madeAnyChanges = addr<0x009C871C, int32_t>();
+            bool madeAnyChanges = addr<0x009C871C, uint8_t>();
             if (madeAnyChanges)
             {
                 LandscapeGenerationConfirm::open(eax);
@@ -188,13 +188,10 @@ namespace openloco::ui::windows::LandscapeGeneration
             {
                 WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
 
-                // 0x0043EDAD
-                *scenarioFlags &= ~(scenario::flags::landscape_generation_done);
-                WindowManager::invalidate(WindowType::landscapeGeneration, 0);
-                call(0x0043C88C);
-                addr<0x009C871C, uint8_t>() = 0;
-                addr<0x00F25374, uint8_t>() = 0;
-                gfx::invalidate_screen();
+                if (eax == 0)
+                    scenario::generateLandscape();
+                else
+                    scenario::eraseLandscape();
             }
         }
 

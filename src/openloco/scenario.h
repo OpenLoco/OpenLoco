@@ -12,5 +12,6 @@ namespace openloco::scenario
     constexpr uint16_t min_year = 1900;
     constexpr uint16_t max_year = 2100;
 
+    void eraseLandscape();
     void generateLandscape();
 }
