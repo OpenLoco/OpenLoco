@@ -11,6 +11,7 @@
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -20,6 +21,8 @@ namespace openloco::ui::windows::LandscapeGeneration
     static const gfx::ui_size_t land_tab_size = { 366, 232 };
 
     static loco_global<uint16_t, 0x00525FB2> seaLevel;
+
+    static loco_global<uint8_t, 0x00525FB6> primaryLandObjectIndex;
 
     static loco_global<uint8_t, 0x00526247> industryFlags;
 
@@ -83,11 +86,50 @@ namespace openloco::ui::windows::LandscapeGeneration
         // 0x0043ECA4
         static void draw_tabs(window* window, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)window;
+            auto skin = objectmgr::get<interface_skin_object>();
 
-            call(0x0043ECA4, regs);
+            // Options tab
+            {
+                static const uint32_t optionTabImageIds[] = {
+                    interface_skin::image_ids::tab_cogs_frame0,
+                    interface_skin::image_ids::tab_cogs_frame1,
+                    interface_skin::image_ids::tab_cogs_frame2,
+                    interface_skin::image_ids::tab_cogs_frame3,
+                };
+
+                uint32_t imageId = skin->img;
+                if (window->current_tab == widx::tab_options - widx::tab_options)
+                    imageId += optionTabImageIds[(window->frame_no / 2) % std::size(optionTabImageIds)];
+                else
+                    imageId += optionTabImageIds[0];
+
+                widget::draw_tab(window, dpi, imageId, widx::tab_options);
+            }
+
+            // Land tab
+            {
+                auto land = objectmgr::get<land_object>(*primaryLandObjectIndex);
+                const uint32_t imageId = land->var_16 + land::image_ids::toolbar_terraform_land;
+                widget::draw_tab(window, dpi, imageId, widx::tab_land);
+            }
+
+            // Forest tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::toolbar_menu_plant_trees;
+                widget::draw_tab(window, dpi, imageId, widx::tab_forests);
+            }
+
+            // Towns tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::toolbar_menu_towns;
+                widget::draw_tab(window, dpi, imageId, widx::tab_towns);
+            }
+
+            // Industries tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::toolbar_menu_industries;
+                widget::draw_tab(window, dpi, imageId, widx::tab_industries);
+            }
         }
 
         static void draw(window* window, gfx::drawpixelinfo_t* dpi)
