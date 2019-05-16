@@ -2,6 +2,7 @@
 #include "../companymgr.h"
 #include "../game_commands.h"
 #include "../interop/interop.hpp"
+#include "../localisation/string_ids.h"
 #include "../stationmgr.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
@@ -12,6 +13,8 @@ using namespace openloco::ui;
 
 namespace openloco::input::ShortcutManager
 {
+    static constexpr size_t _count = 35;
+
     static void closeTopmostWindow();
     static void closeAllFloatingWindows();
     static void cancelConstructionMode();
@@ -48,7 +51,7 @@ namespace openloco::input::ShortcutManager
     static void toggleLastAnnouncement();
     static void sendMessage();
 
-    static std::array<void (*)(), 35> _shortcuts = { {
+    static std::array<void (*)(), _count> _shortcuts = { {
         closeTopmostWindow,
         closeAllFloatingWindows,
         cancelConstructionMode,
@@ -86,11 +89,59 @@ namespace openloco::input::ShortcutManager
         sendMessage,
     } };
 
+    static std::array<string_id, _count> _shortcutNames = { {
+        string_ids::shortcut_close_topmost_window,
+        string_ids::shortcut_close_all_floating_windows,
+        string_ids::shortcut_cancel_construction_mode,
+        string_ids::shortcut_pause_unpause_game,
+        string_ids::shortcut_zoom_view_out,
+        string_ids::shortcut_zoom_view_in,
+        string_ids::shortcut_rotate_view,
+        string_ids::shortcut_rotate_construction_object,
+        string_ids::shortcut_toggle_underground_view,
+        string_ids::shortcut_toggle_hide_foreground_tracks,
+        string_ids::shortcut_toggle_hide_foreground_scenery,
+        string_ids::shortcut_toggle_height_marks_on_land,
+        string_ids::shortcut_toggle_height_marks_on_tracks,
+        string_ids::shortcut_toggle_dir_arrows_on_tracks,
+        string_ids::shortcut_adjust_land,
+        string_ids::shortcut_adjust_water,
+        string_ids::shortcut_plant_trees,
+        string_ids::shortcut_bulldoze_area,
+        string_ids::shortcut_build_tracks,
+        string_ids::shortcut_build_roads,
+        string_ids::shortcut_build_airports,
+        string_ids::shortcut_build_ship_ports,
+        string_ids::shortcut_build_new_vehicles,
+        string_ids::shortcut_show_vehicles_list,
+        string_ids::shortcut_show_stations_list,
+        string_ids::shortcut_show_towns_list,
+        string_ids::shortcut_show_industries_list,
+        string_ids::shortcut_show_map,
+        string_ids::shortcut_show_companies_list,
+        string_ids::shortcut_show_company_information,
+        string_ids::shortcut_show_finances,
+        string_ids::shortcut_show_announcements_list,
+        string_ids::shortcut_screenshot,
+        string_ids::shortcut_toggle_last_announcement,
+        string_ids::shortcut_send_message,
+    } };
+
     static loco_global<uint8_t, 0x009C8714> _editor_step;
+
+    size_t count()
+    {
+        return _count;
+    }
 
     void execute(Shortcut s)
     {
         _shortcuts[s]();
+    }
+
+    string_id getName(Shortcut s)
+    {
+        return _shortcutNames[s];
     }
 
     // 0x004BF089

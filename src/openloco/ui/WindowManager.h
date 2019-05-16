@@ -20,6 +20,7 @@ namespace openloco::ui::WindowManager
     window* find(WindowType type);
     window* find(WindowType type, window_number number);
     window* findAt(int16_t x, int16_t y);
+    window* findAt(gfx::point_t point);
     window* findAtAlt(int16_t x, int16_t y);
     window* bringToFront(window* window);
     window* bringToFront(WindowType type, uint16_t id);
@@ -67,6 +68,16 @@ namespace openloco::ui::windows
 namespace openloco::ui::about
 {
     void open();
+}
+
+namespace openloco::ui::KeyboardShortcuts
+{
+    window* open();
+}
+
+namespace openloco::ui::EditKeyboardShortcut
+{
+    window* open(uint8_t shortcutIndex);
 }
 
 namespace openloco::ui::about_music

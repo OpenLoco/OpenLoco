@@ -25,8 +25,6 @@
 #include <windows.h>
 #endif
 
-#define DIK_INSERT 0xD2
-
 using namespace openloco::interop;
 using namespace openloco::ui;
 

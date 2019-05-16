@@ -635,7 +635,7 @@ namespace openloco::gfx
         int16_t y,
         uint8_t colour,
         string_id stringId,
-        const char* args)
+        const void* args)
     {
         registers regs;
         regs.al = colour;
@@ -653,7 +653,7 @@ namespace openloco::gfx
         int16_t width,
         uint8_t colour,
         string_id stringId,
-        const char* args)
+        const void* args)
     {
         registers regs;
         regs.edi = (int32_t)&dpi;
@@ -682,7 +682,7 @@ namespace openloco::gfx
         uint16_t width,
         uint8_t colour,
         string_id stringId,
-        const char* args)
+        const void* args)
     {
         registers regs;
         regs.edi = (uintptr_t)context;

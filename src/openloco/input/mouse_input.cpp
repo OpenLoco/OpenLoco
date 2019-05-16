@@ -134,6 +134,14 @@ namespace openloco::input
         _mapSelectionFlags = 0;
     }
 
+    void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
+    {
+        _cursorX = x;
+        _cursorY = y;
+        addr<0x0114084C, int32_t>() = relX;
+        addr<0x01140840, int32_t>() = relY;
+    }
+
     bool is_hovering(ui::WindowType type)
     {
         return *_hoverWindowType == type;

@@ -1800,7 +1800,7 @@ namespace openloco::ui::options
         // 0x004C118D
         static void open_keyboard_shortcuts()
         {
-            call(0x004BE6C7);
+            KeyboardShortcuts::open();
         }
 
         // 0x004C1195
