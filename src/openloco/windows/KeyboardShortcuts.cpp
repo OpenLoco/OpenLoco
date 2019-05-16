@@ -38,13 +38,13 @@ namespace openloco::ui::KeyboardShortcuts
             close_button,
             panel,
             list,
-            customize_keys_btn,
+            reset_keys_btn,
         };
     }
 
     static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
     static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-    static void on_mouse_up(window* self, widget_index i);
+    static void on_mouse_up(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
     static void tooltip(window*, widget_index);
     static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -77,7 +77,7 @@ namespace openloco::ui::KeyboardShortcuts
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::customize_keys_btn);
+        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::reset_keys_btn);
         window->init_scroll_widgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
@@ -140,15 +140,15 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void on_mouse_up(window* self, widget_index i)
+    static void on_mouse_up(window* self, widget_index widgetIndex)
     {
-        switch (i)
+        switch (widgetIndex)
         {
             case widx::close_button:
                 WindowManager::close(self);
                 return;
 
-            case widx::customize_keys_btn:
+            case widx::reset_keys_btn:
                 loc_4BE832(self);
                 return;
         }
