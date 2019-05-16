@@ -206,3 +206,13 @@ namespace openloco::ui::build_vehicle
     window* open(uint32_t vehicle, uint32_t flags);
     void registerHooks();
 }
+
+namespace openloco::ui::MessageWindow
+{
+    void open();
+}
+
+namespace openloco::ui::TimePanel
+{
+    window* open();
+}

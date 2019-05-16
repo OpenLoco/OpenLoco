@@ -113,4 +113,9 @@ namespace openloco::companymgr
             }
         }
     }
+
+    company* getOpponent()
+    {
+        return &_companies[_player_company[1]];
+    }
 }

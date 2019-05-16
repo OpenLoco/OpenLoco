@@ -6,6 +6,7 @@
 
 namespace openloco::image_ids
 {
+    constexpr uint32_t null = 0xFFFFFFFF;
     constexpr uint32_t text_palette = 2169;
 
     constexpr uint32_t icon_folder = 2311;
@@ -70,6 +71,14 @@ namespace openloco::image_ids
 
     constexpr uint32_t tab = 2387;
 
+    constexpr uint32_t speed_pause = 2460;
+    constexpr uint32_t speed_pause_active = 2461;
+    constexpr uint32_t speed_normal = 2462;
+    constexpr uint32_t speed_normal_active = 2463;
+    constexpr uint32_t speed_fast_forward = 2464;
+    constexpr uint32_t speed_fast_forward_active = 2465;
+    constexpr uint32_t speed_extra_fast_forward = 2466;
+    constexpr uint32_t speed_extra_fast_forward_active = 2467;
     constexpr uint32_t random_map_watermark = 2468;
     constexpr uint32_t height_map_compass = 2469;
 

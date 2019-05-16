@@ -168,9 +168,7 @@ namespace openloco::input::ShortcutManager
         if (is_editor_mode())
             return;
 
-        registers regs;
-        regs.bl = 1;
-        game_commands::do_command(20, regs);
+        game_commands::do_20();
     }
 
     // 0x004BF0FE

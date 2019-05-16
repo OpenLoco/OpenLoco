@@ -405,7 +405,7 @@ namespace openloco::ui::windows
 
     static void sub_43918F(char string[512])
     {
-        addr<0x009C68E8, int16_t>() = 0;
+        addr<0x009C68E8, string_id>() = string_ids::empty;
 
         for (int i = 0; i < 32; i++)
         {
