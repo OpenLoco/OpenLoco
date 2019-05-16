@@ -1,4 +1,3 @@
-
 #if defined(__APPLE__) && defined(__MACH__)
 
 #include "platform.h"
@@ -7,66 +6,68 @@
 
 #import <Cocoa/Cocoa.h>
 
-fs::path openloco::platform::get_user_directory()
+namespace openloco::platform
 {
-    @autoreleasepool
+    fs::path get_user_directory()
     {
-        NSFileManager * filemanager = [NSFileManager defaultManager];
-        NSURL *url = [[filemanager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
-        url = [url URLByAppendingPathComponent:@"OpenLoco"];
-        return url.path.UTF8String;
-    }
-}
-
-std::string openloco::platform::prompt_directory(const std::string &title)
-{
-
-    @autoreleasepool
-    {
-        NSOpenPanel *panel = [NSOpenPanel openPanel];
-        panel.canChooseFiles = false;
-        panel.canChooseDirectories = true;
-        panel.allowsMultipleSelection = false;
-        if ([panel runModal] == NSModalResponseOK)
+        @autoreleasepool
         {
-            NSString *selectedPath = panel.URL.path;
-            const char *path = selectedPath.UTF8String;
-            return path;
-        } else {
-            return "";
+            NSFileManager* filemanager = [NSFileManager defaultManager];
+            NSURL* url = [[filemanager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+            url = [url URLByAppendingPathComponent:@"OpenLoco"];
+            return url.path.UTF8String;
         }
     }
-}
 
-fs::path openloco::platform::GetCurrentExecutablePath()
-{
-    char exePath[PATH_MAX];
-    uint32_t size = PATH_MAX;
-    int result = _NSGetExecutablePath(exePath, &size);
-    if (result == 0)
+    std::string prompt_directory(const std::string &title)
     {
-        return exePath;
-    }
-    else
-    {
-        return fs::path();
-    }
-}
-
-fs::path openloco::platform::GetBundlePath()
-{
-    @autoreleasepool
-    {
-        NSBundle * bundle = [NSBundle mainBundle];
-        if (bundle)
+        @autoreleasepool
         {
-            auto resources = bundle.resourcePath.UTF8String;
-            if (fs::exists(resources))
+            NSOpenPanel* panel = [NSOpenPanel openPanel];
+            panel.canChooseFiles = false;
+            panel.canChooseDirectories = true;
+            panel.allowsMultipleSelection = false;
+            if ([panel runModal] == NSModalResponseOK)
             {
-                return resources;
+                NSString* selectedPath = panel.URL.path;
+                const char* path = selectedPath.UTF8String;
+                return path;
+            } else {
+                return "";
             }
         }
-        return fs::path();
+    }
+
+    fs::path GetCurrentExecutablePath()
+    {
+        char exePath[PATH_MAX];
+        uint32_t size = PATH_MAX;
+        int result = _NSGetExecutablePath(exePath, &size);
+        if (result == 0)
+        {
+            return exePath;
+        }
+        else
+        {
+            return fs::path();
+        }
+    }
+
+    fs::path GetBundlePath()
+    {
+        @autoreleasepool
+        {
+            NSBundle* bundle = [NSBundle mainBundle];
+            if (bundle)
+            {
+                auto resources = bundle.resourcePath.UTF8String;
+                if (fs::exists(resources))
+                {
+                    return resources;
+                }
+            }
+            return fs::path();
+        }
     }
 }
 
