@@ -652,7 +652,7 @@ namespace openloco::string_ids
     constexpr string_id window_browse_input_caret = 2003;
     constexpr string_id window_browse_filename = 2004;
     constexpr string_id window_browse_folder = 2005;
-
+    constexpr string_id window_browse_parent_folder_tooltip = 2006;
     constexpr string_id window_browse_company = 2007;
     constexpr string_id window_browse_date = 2008;
     constexpr string_id window_browse_challenge_progress = 2009;

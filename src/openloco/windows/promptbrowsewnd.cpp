@@ -109,6 +109,18 @@ namespace openloco::ui::prompt_browse
         scrollview,
     };
 
+    static widget_t widgets[] = {
+        make_widget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
+        make_widget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, string_ids::buffer_2039),
+        make_widget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        make_widget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
+        make_widget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
+        make_widget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
+        make_widget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
+        make_widget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
+        widget_end(),
+    };
+
     static window_event_list _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<uint8_t, 0x009DA284> _fileType;
@@ -202,7 +214,7 @@ namespace openloco::ui::prompt_browse
 
         if (window != nullptr)
         {
-            window->widgets = (widget_t*)0x0050AD58;
+            window->widgets = widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->init_scroll_widgets();
 
@@ -300,11 +312,60 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00445C8F
-    static void prepare_draw(ui::window* window)
+    static void prepare_draw(ui::window* self)
     {
+        // TODO: replace with a fixed length!
+        char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+        strcpy(buffer, _title);
+
+        self->widgets[widx::frame].right = self->width - 1;
+        self->widgets[widx::frame].bottom = self->height - 1;
+
+        self->widgets[widx::panel].right = self->width - 1;
+        self->widgets[widx::panel].bottom = self->height - 1;
+
+        self->widgets[widx::caption].right = self->width - 2;
+
+        self->widgets[widx::close_button].left = self->width - 15;
+        self->widgets[widx::close_button].right = self->width - 3;
+
+        if (*_type == (uint8_t)browse_file_type::unk_2)
+        {
+            self->widgets[widx::ok_button].top = self->height - 16;
+            self->widgets[widx::ok_button].bottom = self->height - 5;
+
+            self->widgets[widx::text_filename].right = self->width - 6;
+            self->widgets[widx::text_filename].top = self->height - 32;
+            self->widgets[widx::text_filename].bottom = self->height - 19;
+
+            self->widgets[widx::text_filename].bottom = self->height - 35;
+
+            self->widgets[widx::ok_button].type = widget_type::wt_11;
+            self->widgets[widx::text_filename].type = widget_type::wt_17;
+        }
+        else
+        {
+            self->widgets[widx::text_filename].bottom = self->height - 4;
+
+            self->widgets[widx::ok_button].type = widget_type::none;
+            self->widgets[widx::text_filename].type = widget_type::none;
+        }
+
+        self->widgets[widx::scrollview].right = self->width - 261;
+        if (*_fileType != (uint8_t)browse_file_type::saved_game)
+            self->widgets[widx::scrollview].right += 122;
+
+        self->widgets[widx::text_filename].left = self->width - 86;
+        self->widgets[widx::text_filename].right = self->width - 16;
+
+        self->widgets[widx::parent_button].left = self->width - 26;
+        self->widgets[widx::parent_button].right = self->width - 3;
+
+        // Resume the original prepare_draw routine beyond the widget repositioning.
         registers regs;
-        regs.esi = (int32_t)window;
-        call(0x00445C8F, regs);
+        regs.edi = (int32_t)buffer;
+        regs.esi = (int32_t)self;
+        call(0x00445D91, regs);
     }
 
     static void set_common_args_stringptr(const char* buffer)
