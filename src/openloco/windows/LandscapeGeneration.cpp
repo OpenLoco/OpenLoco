@@ -20,6 +20,8 @@ namespace openloco::ui::windows::LandscapeGeneration
     static const gfx::ui_size_t window_size = { 366, 217 };
     static const gfx::ui_size_t land_tab_size = { 366, 232 };
 
+    static const uint8_t rowHeight = 22; // CJK: 22
+
     static loco_global<uint16_t, 0x00525FB2> seaLevel;
 
     static loco_global<uint8_t, 0x00525FB6> primaryLandObjectIndex;
@@ -28,8 +30,10 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
     static loco_global<uint16_t, 0x009C871A> scenarioFlags;
+    static loco_global<bool, 0x009C871C> madeAnyChanges;
 
-    static loco_global<uint8_t[32], 0x009C871E> landObjectDiversity;
+    static constexpr size_t maxLandObjects = objectmgr::get_max_objects(object_type::land);
+    static loco_global<uint8_t[maxLandObjects], 0x009C871E> landDistributionPatterns;
 
     static loco_global<uint8_t, 0x009C8898> minLandHeight;
     static loco_global<uint8_t, 0x009C8899> topographyStyle;
@@ -158,7 +162,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         {
             window->frame_no++;
             window->call_prepare_draw();
-            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->current_tab + 4);
+            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->current_tab + widx::tab_options);
         }
     }
 
@@ -178,7 +182,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_options),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::uint16_raw),
+            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::start_year_value),
             make_widget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::label_generate_random_landscape_when_game_starts, string_ids::tooltip_generate_random_landscape_when_game_starts),
             make_widget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::button_generate_landscape, string_ids::tooltip_generate_random_landscape),
             widget_end()
@@ -196,8 +200,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::start_year].top,
                 colour::black,
-                string_ids::start_year,
-                nullptr);
+                string_ids::start_year);
         }
 
         // 0x0043DB76
@@ -219,18 +222,17 @@ namespace openloco::ui::windows::LandscapeGeneration
             }
         }
 
-        static void confirmResetLandscape(int32_t eax)
+        static void confirmResetLandscape(int32_t promptType)
         {
-            bool madeAnyChanges = addr<0x009C871C, uint8_t>();
-            if (madeAnyChanges)
+            if (*madeAnyChanges)
             {
-                LandscapeGenerationConfirm::open(eax);
+                LandscapeGenerationConfirm::open(promptType);
             }
             else
             {
                 WindowManager::close(WindowType::landscapeGenerationConfirm, 0);
 
-                if (eax == 0)
+                if (promptType == 0)
                     scenario::generateLandscape();
                 else
                     scenario::eraseLandscape();
@@ -419,23 +421,23 @@ namespace openloco::ui::windows::LandscapeGeneration
                 string_ids::hill_density);
         }
 
-        static const string_id landDiversityLabelIds[] = {
-            string_ids::everywhere,
-            string_ids::nowhere,
-            string_ids::far_from_water,
-            string_ids::near_water,
-            string_ids::on_mountains,
-            string_ids::far_from_mountains,
-            string_ids::in_small_random_areas,
-            string_ids::in_large_random_areas,
-            string_ids::around_cliffs,
+        static const string_id landDistributionLabelIds[] = {
+            string_ids::land_distribution_everywhere,
+            string_ids::land_distribution_nowhere,
+            string_ids::land_distribution_far_from_water,
+            string_ids::land_distribution_near_water,
+            string_ids::land_distribution_on_mountains,
+            string_ids::land_distribution_far_from_mountains,
+            string_ids::land_distribution_in_small_random_areas,
+            string_ids::land_distribution_in_large_random_areas,
+            string_ids::land_distribution_around_cliffs,
         };
 
         // 0x0043E01C
         static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
-            for (int i = 0; i < 32; i++)
+            for (uint16_t i = 0; i < maxLandObjects; i++)
             {
                 auto landObject = objectmgr::get<land_object>(i);
                 if (landObject == nullptr)
@@ -452,9 +454,9 @@ namespace openloco::ui::windows::LandscapeGeneration
                 // Draw rectangle.
                 gfx::fill_rect_inset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
 
-                // Draw current diversity setting.
-                const string_id diversityId = landDiversityLabelIds[landObjectDiversity[i]];
-                commonFormatArgs[0] = diversityId;
+                // Draw current distribution setting.
+                const string_id distributionId = landDistributionLabelIds[landDistributionPatterns[i]];
+                commonFormatArgs[0] = distributionId;
                 gfx::draw_string_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
@@ -464,7 +466,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 // Draw triangle (knob).
                 gfx::draw_string_494B3F(*dpi, 330, yPos + 6, colour::black, string_ids::dropdown, nullptr);
 
-                yPos += 22;
+                yPos += rowHeight;
             }
         }
 
@@ -473,13 +475,13 @@ namespace openloco::ui::windows::LandscapeGeneration
         {
             *scrollHeight = 0;
 
-            for (int i = 0; i < 32; i++)
+            for (uint16_t i = 0; i < maxLandObjects; i++)
             {
                 auto landObject = objectmgr::get<land_object>(i);
                 if (landObject == nullptr)
                     continue;
 
-                *scrollHeight += 22;
+                *scrollHeight += rowHeight;
             }
         }
 
@@ -507,7 +509,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 case widx::scrollview:
                     if (itemIndex != -1 && window->row_hover != -1)
                     {
-                        landObjectDiversity[window->row_hover] = itemIndex;
+                        landDistributionPatterns[window->row_hover] = itemIndex;
                         window->invalidate();
                     }
                     break;
@@ -520,19 +522,19 @@ namespace openloco::ui::windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    *seaLevel = std::min(*seaLevel + 1, 28);
+                    *seaLevel = std::min<int8_t>(*seaLevel + 1, scenario::max_sea_level);
                     break;
 
                 case widx::sea_level_down:
-                    *seaLevel = std::max(0, *seaLevel - 1);
+                    *seaLevel = std::max<int8_t>(scenario::min_sea_level, *seaLevel - 1);
                     break;
 
                 case widx::min_land_height_up:
-                    *minLandHeight = std::min(*minLandHeight + 1, 15);
+                    *minLandHeight = std::min<int8_t>(*minLandHeight + 1, scenario::max_base_land_height);
                     break;
 
                 case widx::min_land_height_down:
-                    *minLandHeight = std::max(1, *minLandHeight - 1);
+                    *minLandHeight = std::max<int8_t>(scenario::min_base_land_height, *minLandHeight - 1);
                     break;
 
                 case widx::topography_style_btn:
@@ -548,11 +550,11 @@ namespace openloco::ui::windows::LandscapeGeneration
                 }
 
                 case widx::hill_density_up:
-                    *hillDensity = std::min(*hillDensity + 1, 100);
+                    *hillDensity = std::min<int8_t>(*hillDensity + 1, scenario::max_hill_density);
                     break;
 
                 case widx::hill_density_down:
-                    *hillDensity = std::max(0, *hillDensity - 1);
+                    *hillDensity = std::max<int8_t>(scenario::min_hill_density, *hillDensity - 1);
                     break;
 
                 default:
@@ -582,10 +584,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::hills_edge_of_map:
-                    if ((*scenarioFlags & scenario::flags::hills_edge_of_map) == 0)
-                        *scenarioFlags |= scenario::flags::hills_edge_of_map;
-                    else
-                        *scenarioFlags &= ~scenario::flags::hills_edge_of_map;
+                    *scenarioFlags ^= scenario::flags::hills_edge_of_map;
                     window->invalidate();
                     break;
             }
@@ -597,13 +596,13 @@ namespace openloco::ui::windows::LandscapeGeneration
             if (xPos < 150)
                 return -1;
 
-            for (int i = 0; i < 32; i++)
+            for (uint16_t i = 0; i < maxLandObjects; i++)
             {
                 auto landObject = objectmgr::get<land_object>(i);
                 if (landObject == nullptr)
                     continue;
 
-                yPos -= 22;
+                yPos -= rowHeight;
                 if (yPos < 0)
                     return i;
             }
@@ -624,13 +623,13 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             const widget_t& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
-            const int16_t dropdownY = window->y + target.top + 6 + landIndex * 22 - window->scroll_areas[0].v_top;
-            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDiversityLabelIds), 0x80);
+            const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].v_top;
+            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
 
-            for (size_t i = 0; i < std::size(landDiversityLabelIds); i++)
-                dropdown::add(i, string_ids::dropdown_stringid, landDiversityLabelIds[i]);
+            for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
+                dropdown::add(i, string_ids::dropdown_stringid, landDistributionLabelIds[i]);
 
-            dropdown::set_item_selected(landObjectDiversity[landIndex]);
+            dropdown::set_item_selected(landDistributionPatterns[landIndex]);
         }
 
         // 0x0043DEBF
@@ -802,92 +801,92 @@ namespace openloco::ui::windows::LandscapeGeneration
             {
                 case widx::number_of_forests_up:
                 {
-                    *numberOfForests = std::min(*numberOfForests + 10, 990);
+                    *numberOfForests = std::min<int16_t>(*numberOfForests + 10, scenario::max_num_forests);
                     break;
                 }
                 case widx::number_of_forests_down:
                 {
-                    *numberOfForests = std::max(0, *numberOfForests - 10);
+                    *numberOfForests = std::max<int16_t>(scenario::min_num_forests, *numberOfForests - 10);
                     break;
                 }
                 case widx::min_forest_radius_up:
                 {
-                    *minForestRadius = std::min(*minForestRadius + 1, 40);
+                    *minForestRadius = std::min<int16_t>(*minForestRadius + 1, scenario::max_forest_radius);
                     if (*minForestRadius > *maxForestRadius)
                         *maxForestRadius = *minForestRadius;
                     break;
                 }
                 case widx::min_forest_radius_down:
                 {
-                    *minForestRadius = std::max(4, *minForestRadius - 1);
+                    *minForestRadius = std::max<int8_t>(scenario::min_forest_radius, *minForestRadius - 1);
                     break;
                 }
                 case widx::max_forest_radius_up:
                 {
-                    *maxForestRadius = std::clamp(*maxForestRadius + 1, 4, 40);
+                    *maxForestRadius = std::clamp<int8_t>(*maxForestRadius + 1, scenario::min_forest_radius, scenario::max_forest_radius);
                     break;
                 }
                 case widx::max_forest_radius_down:
                 {
-                    *maxForestRadius = std::clamp(*maxForestRadius - 1, 4, 40);
+                    *maxForestRadius = std::clamp<int8_t>(*maxForestRadius - 1, scenario::min_forest_radius, scenario::max_forest_radius);
                     if (*maxForestRadius < *minForestRadius)
                         *minForestRadius = *maxForestRadius;
                     break;
                 }
                 case widx::min_forest_density_up:
                 {
-                    *minForestDensity = std::min(*minForestDensity + 1, 7);
+                    *minForestDensity = std::min<int8_t>(*minForestDensity + 1, scenario::max_forest_density);
                     if (*minForestDensity > *maxForestDensity)
                         *maxForestDensity = *minForestDensity;
                     break;
                 }
                 case widx::min_forest_density_down:
                 {
-                    *minForestDensity = std::max(1, *minForestDensity - 1);
+                    *minForestDensity = std::max<int8_t>(scenario::min_forest_density, *minForestDensity - 1);
                     break;
                 }
                 case widx::max_forest_density_up:
                 {
-                    *maxForestDensity = std::min(*maxForestDensity + 1, 7);
+                    *maxForestDensity = std::min<int8_t>(*maxForestDensity + 1, scenario::max_forest_density);
                     break;
                 }
                 case widx::max_forest_density_down:
                 {
-                    *maxForestDensity = std::max(1, *maxForestDensity - 1);
+                    *maxForestDensity = std::max<int8_t>(scenario::min_forest_density, *maxForestDensity - 1);
                     if (*maxForestDensity < *minForestDensity)
                         *minForestDensity = *maxForestDensity;
                     break;
                 }
                 case widx::number_random_trees_up:
                 {
-                    *numberRandomTrees = std::min(*numberRandomTrees + 25, 20000);
+                    *numberRandomTrees = std::min<int16_t>(*numberRandomTrees + 25, scenario::max_num_trees);
                     break;
                 }
                 case widx::number_random_trees_down:
                 {
-                    *numberRandomTrees = std::max(0, *numberRandomTrees - 25);
+                    *numberRandomTrees = std::max<int16_t>(scenario::min_num_trees, *numberRandomTrees - 25);
                     break;
                 }
                 case widx::min_altitude_for_trees_up:
                 {
-                    *minAltitudeForTrees = std::min(*minAltitudeForTrees + 1, 40);
+                    *minAltitudeForTrees = std::min<int8_t>(*minAltitudeForTrees + 1, scenario::max_altitude_trees);
                     if (*minAltitudeForTrees > *maxAltitudeForTrees)
                         *maxAltitudeForTrees = *minAltitudeForTrees;
                     break;
                 }
                 case widx::min_altitude_for_trees_down:
                 {
-                    *minAltitudeForTrees = std::max(0, *minAltitudeForTrees - 1);
+                    *minAltitudeForTrees = std::max<int8_t>(scenario::min_altitude_trees, *minAltitudeForTrees - 1);
                     break;
                 }
                 case widx::max_altitude_for_trees_up:
                 {
-                    *maxAltitudeForTrees = std::min(*maxAltitudeForTrees + 1, 40);
+                    *maxAltitudeForTrees = std::min<int8_t>(*maxAltitudeForTrees + 1, scenario::max_altitude_trees);
                     break;
                 }
                 case widx::max_altitude_for_trees_down:
                 {
-                    *maxAltitudeForTrees = std::max(0, *maxAltitudeForTrees - 1);
+                    *maxAltitudeForTrees = std::max<int8_t>(scenario::min_altitude_trees, *maxAltitudeForTrees - 1);
                     if (*maxAltitudeForTrees < *minAltitudeForTrees)
                         *minAltitudeForTrees = *maxAltitudeForTrees;
                     break;
@@ -1123,9 +1122,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         static const string_id numIndustriesLabels[] = {
-            string_ids::low,
-            string_ids::medium,
-            string_ids::high,
+            string_ids::industry_size_low,
+            string_ids::industry_size_medium,
+            string_ids::industry_size_high,
         };
 
         // 0x0043EBF8
@@ -1171,18 +1170,12 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    if ((*industryFlags & scenario::industry_flags::allow_industries_close_down) == 0)
-                        *industryFlags |= scenario::industry_flags::allow_industries_close_down;
-                    else
-                        *industryFlags &= ~scenario::industry_flags::allow_industries_close_down;
+                    *industryFlags ^= scenario::industry_flags::allow_industries_close_down;
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    if ((*industryFlags & scenario::industry_flags::allow_industries_start_up) == 0)
-                        *industryFlags |= scenario::industry_flags::allow_industries_start_up;
-                    else
-                        *industryFlags &= ~scenario::industry_flags::allow_industries_start_up;
+                    *industryFlags ^= scenario::industry_flags::allow_industries_start_up;
                     window->invalidate();
                     break;
             }
@@ -1226,6 +1219,8 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void switchTabWidgets(window* window)
         {
+            window->activated_widgets = 0;
+
             static widget_t* widgetCollectionsByTabId[] = {
                 options::widgets,
                 land::widgets,
@@ -1307,6 +1302,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             window->call_on_resize();
             window->call_prepare_draw();
             window->init_scroll_widgets();
+            window->invalidate();
             window->moveInsideScreenEdges();
         }
     }
