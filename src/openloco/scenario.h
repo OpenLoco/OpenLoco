@@ -16,6 +16,15 @@ namespace openloco::scenario
         allow_industries_start_up = (1 << 1),
     };
 
+    enum objective_flags : uint8_t
+    {
+        flag_0 = (1 << 0),
+        be_top_company = (1 << 1),
+        be_within_top_three_companies = (1 << 2),
+        flag_3 = (1 << 3),
+        within_time_limit = (1 << 4),
+    };
+
     constexpr uint16_t min_year = 1900;
     constexpr uint16_t max_year = 2100;
 
