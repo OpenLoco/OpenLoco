@@ -390,19 +390,18 @@ namespace openloco::ui::prompt_browse
         }
         y += 207;
 
+        uint16_t maxWidth = window.width - window.widgets[7].right;
+
         // Company
         set_common_args_stringptr(saveInfo.company);
-        gfx::draw_string_495224(dpi, x, y, 0, string_ids::window_browse_company, _commonFormatArgs);
-        y += 10;
+        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_company, _commonFormatArgs);
 
         // Owner
         set_common_args_stringptr(saveInfo.owner);
-        gfx::draw_string_495224(dpi, x, y, 0, string_ids::owner_label, _commonFormatArgs);
-        y += 10;
+        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::owner_label, _commonFormatArgs);
 
         // Date
-        gfx::draw_string_495224(dpi, x, y, 0, string_ids::window_browse_date, &saveInfo.date);
-        y += 10;
+        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
@@ -419,7 +418,7 @@ namespace openloco::ui::prompt_browse
                     progress = saveInfo.challenge_progress;
                 }
             }
-            gfx::draw_string_495224(dpi, x, y, 0, stringId, &progress);
+            gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, stringId, &progress);
         }
     }
 
