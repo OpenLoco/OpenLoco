@@ -51,7 +51,7 @@ namespace openloco::ui
         musicSelection = 41,
         companyFaceSelection = 42,
         landscapeGeneration = 43,
-
+        landscapeGenerationConfirm = 44,
         scenarioOptions = 45,
 
         wt_47 = 47,

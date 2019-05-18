@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <cstdarg>
+#include <limits>
 
 using namespace openloco::interop;
 
@@ -20,13 +21,17 @@ namespace openloco::ui::dropdown
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
 
-    void add(int16_t index, string_id title)
+    void add(size_t index, string_id title)
     {
+        assert(index < std::numeric_limits<uint8_t>::max());
+
         _dropdownItemFormats[index] = title;
     }
 
-    void add(int16_t index, string_id title, std::initializer_list<format_arg> l)
+    void add(size_t index, string_id title, std::initializer_list<format_arg> l)
     {
+        assert(index < std::numeric_limits<uint8_t>::max());
+
         _dropdownItemFormats[index] = title;
 
         std::byte* args = _dropdownItemArgs[index];
@@ -66,9 +71,11 @@ namespace openloco::ui::dropdown
         }
     }
 
-    void add(int16_t index, string_id title, format_arg l)
+    void add(size_t index, string_id title, format_arg l)
     {
-        add(index, title, { l });
+        assert(index < std::numeric_limits<uint8_t>::max());
+
+        add(static_cast<uint8_t>(index), title, { l });
     }
 
     int16_t get_highlighted_item()
@@ -76,19 +83,25 @@ namespace openloco::ui::dropdown
         return _dropdownHighlightedIndex;
     }
 
-    void set_item_disabled(int16_t index)
+    void set_item_disabled(size_t index)
     {
-        _dropdownDisabledItems |= (1U << index);
+        assert(index < std::numeric_limits<uint8_t>::max());
+
+        _dropdownDisabledItems |= (1U << static_cast<uint8_t>(index));
     }
 
-    void set_highlighted_item(int16_t index)
+    void set_highlighted_item(size_t index)
     {
-        _dropdownHighlightedIndex = index;
+        assert(index < std::numeric_limits<uint8_t>::max());
+
+        _dropdownHighlightedIndex = static_cast<uint8_t>(index);
     }
 
-    void set_item_selected(int16_t index)
+    void set_item_selected(size_t index)
     {
-        _dropdownSelection |= (1U << index);
+        assert(index < std::numeric_limits<uint8_t>::max());
+
+        _dropdownSelection |= (1U << static_cast<uint8_t>(index));
     }
 
     /**
@@ -102,13 +115,15 @@ namespace openloco::ui::dropdown
      * @param count
      * @param flags
      */
-    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, uint8_t flags)
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
+        assert(count < std::numeric_limits<uint8_t>::max());
+
         registers regs;
         regs.cx = x;
         regs.dx = y;
         regs.al = colour;
-        regs.bl = count;
+        regs.bl = static_cast<uint8_t>(count);
         regs.bh = flags;
         regs.bp = width;
         regs.di = height;
@@ -117,11 +132,13 @@ namespace openloco::ui::dropdown
     }
 
     // 0x004CC989
-    void show_below(window* window, widget_index widgetIndex, int8_t count, int8_t height)
+    void show_below(window* window, widget_index widgetIndex, size_t count, int8_t height)
     {
+        assert(count < std::numeric_limits<uint8_t>::max());
+
         registers regs;
         regs.ah = height;
-        regs.bx = count + (1 << 14);
+        regs.bx = static_cast<uint8_t>(count) + (1 << 14);
         regs.esi = (int32_t)window;
         regs.edx = widgetIndex;
         regs.edi = (int32_t)&window->widgets[widgetIndex];
@@ -130,10 +147,12 @@ namespace openloco::ui::dropdown
     }
 
     // 0x004CC989
-    void show_below(window* window, widget_index widgetIndex, int8_t count)
+    void show_below(window* window, widget_index widgetIndex, size_t count)
     {
+        assert(count < std::numeric_limits<uint8_t>::max());
+
         registers regs;
-        regs.bx = count;
+        regs.bx = static_cast<uint8_t>(count);
         regs.esi = (int32_t)window;
         regs.edx = widgetIndex;
         regs.edi = (int32_t)&window->widgets[widgetIndex];
@@ -151,13 +170,15 @@ namespace openloco::ui::dropdown
      * count @<bl>
      * flags @<bh>
      */
-    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, uint8_t flags)
+    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
+        assert(count < std::numeric_limits<uint8_t>::max());
+
         registers regs;
         regs.cx = x;
         regs.dx = y;
         regs.al = colour;
-        regs.bl = count;
+        regs.bl = static_cast<uint8_t>(count);
         regs.bh = flags;
         regs.bp = width;
         regs.di = height;
@@ -175,13 +196,15 @@ namespace openloco::ui::dropdown
      * count @<bl>
      * flags @<bh>
      */
-    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, int8_t count, uint8_t flags)
+    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
+        assert(count < std::numeric_limits<uint8_t>::max());
+
         registers regs;
         regs.cx = x;
         regs.dx = y;
         regs.al = colour;
-        regs.bl = count;
+        regs.bl = static_cast<uint8_t>(count);
         regs.bh = flags;
         regs.bp = width;
         regs.di = height;

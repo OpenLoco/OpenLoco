@@ -170,6 +170,12 @@ namespace openloco::interop
             return *this;
         }
 
+        loco_global& operator^=(const_reference v)
+        {
+            addr<TAddress, T>() ^= v;
+            return *this;
+        }
+
         loco_global& operator-=(const_reference v)
         {
             addr<TAddress, T>() -= v;

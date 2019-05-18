@@ -62,6 +62,16 @@ namespace openloco::ui::WindowManager
     void registerHooks()
     {
         register_hook(
+            0x0043DA43,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                windows::LandscapeGeneration::open();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x0045EFDB,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -1154,6 +1164,15 @@ namespace openloco::ui::WindowManager
 
             w->invalidate();
         }
+    }
+
+    // 0x004A0AB0
+    void closeConstructionWindows()
+    {
+        close(WindowType::construction);
+        close(WindowType::companyFaceSelection);
+        input::cancel_tool();
+        addr<0x00522096, uint8_t>() = 0;
     }
 
     // 0x004BF089

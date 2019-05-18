@@ -953,7 +953,7 @@ namespace openloco::ui
         {
             if (multiplayer::reset_flag(multiplayer::flags::flag_2))
             {
-                call(0x004A0AB0);
+                WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
                 regs.bl = 1;
@@ -962,7 +962,7 @@ namespace openloco::ui
 
             if (multiplayer::reset_flag(multiplayer::flags::flag_3))
             {
-                call(0x004A0AB0);
+                WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
                 regs.bl = 1;
@@ -979,7 +979,7 @@ namespace openloco::ui
 
         if (multiplayer::reset_flag(multiplayer::flags::flag_0))
         {
-            call(0x004A0AB0);
+            WindowManager::closeConstructionWindows();
             call(0x004CF456);
         }
 

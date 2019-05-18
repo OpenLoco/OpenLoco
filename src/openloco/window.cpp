@@ -585,6 +585,7 @@ namespace openloco::ui
         this->invalidate();
         this->x += offset.x;
         this->y += offset.y;
+        this->invalidate();
 
         if (this->viewports[0] != nullptr)
         {
