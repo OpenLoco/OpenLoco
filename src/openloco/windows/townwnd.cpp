@@ -13,7 +13,7 @@ namespace openloco::ui::windows
 #ifdef _DISABLE_TOWN_RENAME_
         if (is_editor_mode())
         {
-            w->enabled_widgets &= ~2;
+            w->enabled_widgets &= ~(1 << 1);
         }
 #endif
     }

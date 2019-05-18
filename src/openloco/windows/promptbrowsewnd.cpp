@@ -97,6 +97,18 @@ namespace openloco::ui::prompt_browse
     static_assert(sizeof(saveinfo) == 0xC618);
 #pragma pack(pop)
 
+    enum widx
+    {
+        frame,
+        caption,
+        close_button,
+        panel,
+        parent_button,
+        text_filename,
+        ok_button,
+        scrollview,
+    };
+
     static window_event_list _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<uint8_t, 0x009DA284> _fileType;
@@ -181,25 +193,32 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         refresh_directory_list();
+
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
             ui::window_flags::stick_to_front | ui::window_flags::resizable | ui::window_flags::flag_12,
             &_events);
+
         if (window != nullptr)
         {
             window->widgets = (widget_t*)0x0050AD58;
-            window->enabled_widgets = (1 << 2) | (1 << 4) | (1 << 6);
+            window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->init_scroll_widgets();
+
             _textInputCaret = -1;
             _textInputFlags = 0;
             _textInputLeft = 0;
+
             window->var_83E = 11;
             window->var_85A = 0xFFFF;
+
             addr<0x009DA285, uint8_t>() = 0;
             sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
+
             window->colours[0] = colour::black;
             window->colours[1] = colour::saturated_green;
+
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             prompt_tick_loop(
                 []() {
@@ -244,16 +263,16 @@ namespace openloco::ui::prompt_browse
     {
         switch (widgetIndex)
         {
-            case 2:
+            case widx::close_button:
                 _directory[0] = '\0';
                 WindowManager::close(window);
                 break;
-            case 6:
-                sub_446574(window);
-                break;
-            case 4:
+            case widx::parent_button:
                 up_one_level();
                 window->invalidate();
+                break;
+            case widx::ok_button:
+                sub_446574(window);
                 break;
         }
     }
@@ -306,7 +325,7 @@ namespace openloco::ui::prompt_browse
 
         auto folder = (const char*)0x9DA084;
         set_common_args_stringptr(folder);
-        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[4].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
+        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
         if (selectedIndex != 0xFFFF)
@@ -314,7 +333,7 @@ namespace openloco::ui::prompt_browse
             auto& selectedFile = _files[selectedIndex];
             if (!selectedFile.is_directory())
             {
-                const auto& widget = window->widgets[7];
+                const auto& widget = window->widgets[widx::scrollview];
 
                 auto width = window->width - widget.right - 8;
                 auto x = window->x + widget.right + 3;
@@ -348,8 +367,8 @@ namespace openloco::ui::prompt_browse
             }
         }
 
-        const auto& widget5 = window->widgets[5];
-        if (widget5.type != widget_type::none)
+        const auto& filenameBox = window->widgets[widx::text_filename];
+        if (filenameBox.type != widget_type::none)
         {
             // Draw filename label
             gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + 2, 0, string_ids::window_browse_filename, nullptr);
@@ -359,10 +378,10 @@ namespace openloco::ui::prompt_browse
             if (gfx::clip_drawpixelinfo(
                     &dpi2,
                     dpi,
-                    window->x + widget5.left + 1,
-                    window->y + widget5.top + 1,
-                    widget5.right - widget5.left - 1,
-                    widget5.bottom - widget5.top - 1))
+                    window->x + filenameBox.left + 1,
+                    window->y + filenameBox.top + 1,
+                    filenameBox.right - filenameBox.left - 1,
+                    filenameBox.bottom - filenameBox.top - 1))
             {
                 draw_text_input(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
             }
@@ -390,7 +409,7 @@ namespace openloco::ui::prompt_browse
         }
         y += 207;
 
-        uint16_t maxWidth = window.width - window.widgets[7].right;
+        uint16_t maxWidth = window.width - window.widgets[widx::scrollview].right;
 
         // Company
         set_common_args_stringptr(saveInfo.company);
