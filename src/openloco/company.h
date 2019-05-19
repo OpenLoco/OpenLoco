@@ -15,6 +15,13 @@ namespace openloco
         constexpr company_id_t null = std::numeric_limits<company_id_t>::max();
     }
 
+    enum company_flags
+    {
+        challenge_completed = (1 << 6),
+        challenge_failed = (1 << 7),
+        challenge_flag8 = (1 << 8),
+    };
+
 #pragma pack(push, 1)
     struct currency48_t
     {
@@ -29,7 +36,7 @@ namespace openloco
     {
         string_id name;
         string_id var_02;
-        uint32_t var_04;
+        uint32_t flags;
         currency48_t var_08;
         uint8_t pad_0E[0x16 - 0x0E];
         int16_t performance_index; // 0x16

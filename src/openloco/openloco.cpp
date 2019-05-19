@@ -144,6 +144,11 @@ namespace openloco
         return paused_state;
     }
 
+    uint8_t get_pause_flags()
+    {
+        return paused_state;
+    }
+
     uint32_t scenario_ticks()
     {
         return _scenario_ticks;

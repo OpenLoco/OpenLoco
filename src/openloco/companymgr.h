@@ -17,4 +17,6 @@ namespace openloco::companymgr
     uint8_t get_company_colour(company_id_t id);
     uint8_t get_player_company_colour();
     void update();
+
+    company* getOpponent();
 }

@@ -78,24 +78,7 @@ namespace openloco::gui
                 window->colours[0] = colour::translucent(skin->colour_16);
                 window->colours[1] = colour::translucent(skin->colour_16);
             }
-
-            window = WindowManager::createWindow(
-                WindowType::timeToolbar,
-                gfx::point_t(uiWidth - 140, uiHeight - 27),
-                gfx::ui_size_t(140, 27),
-                ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                (ui::window_event_list*)0x4fa098);
-            window->widgets = (ui::widget_t*)0x509d5c;
-            window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
-            window->var_854 = 0;
-            window->var_856 = 0;
-            window->init_scroll_widgets();
-
-            if (skin != nullptr)
-            {
-                window->colours[0] = colour::translucent(skin->colour_17);
-                window->colours[1] = colour::translucent(skin->colour_17);
-            }
+            TimePanel::open();
 
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
             {
@@ -166,8 +149,8 @@ namespace openloco::gui
         window = WindowManager::find(WindowType::timeToolbar);
         if (window)
         {
-            window->y = uiHeight - 27;
-            window->x = std::max(uiWidth, 640) - 140;
+            window->y = uiHeight - window->height;
+            window->x = std::max(uiWidth, 640) - window->width;
         }
 
         window = WindowManager::find(WindowType::titleMenu);

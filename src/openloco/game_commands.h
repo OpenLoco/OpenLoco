@@ -8,6 +8,13 @@ namespace openloco::game_commands
 {
     inline void do_command(int esi, registers& registers);
 
+    inline void do_20()
+    {
+        registers regs;
+        regs.bl = 1;
+        do_command(20, regs);
+    }
+
     inline void do_21(uint8_t bl, uint8_t dl, uint8_t di)
     {
         registers regs;

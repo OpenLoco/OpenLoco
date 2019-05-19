@@ -642,6 +642,7 @@ namespace openloco::gfx
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
+        regs.esi = (int32_t)args;
         regs.edi = (int32_t)&dpi;
         call(0x00494DE8, regs);
     }
@@ -735,6 +736,12 @@ namespace openloco::gfx
         call(0x004C58C7, regs);
     }
 
+    void draw_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
+    {
+        // This makes the function signature more like a drawing application
+        fill_rect_inset(dpi, x, y, x + dx - 1, y + dy - 1, colour, flags);
+    }
+
     // 0x004CD406
     void invalidate_screen()
     {
@@ -766,6 +773,11 @@ namespace openloco::gfx
         regs.ebx = image;
         regs.edi = (uint32_t)dpi;
         call(0x00448C79, regs);
+    }
+
+    uint32_t recolour(uint32_t image)
+    {
+        return (1 << 29) | image;
     }
 
     uint32_t recolour(uint32_t image, uint8_t colour)

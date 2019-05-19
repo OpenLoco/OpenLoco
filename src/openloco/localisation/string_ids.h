@@ -203,6 +203,8 @@ namespace openloco::string_ids
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
+    constexpr string_id date_monthyear = 584;
+
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
@@ -220,6 +222,8 @@ namespace openloco::string_ids
     constexpr string_id month_long_october = 644;
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
+
+    constexpr string_id tooltip_daymonthyear_challenge = 647;
 
     constexpr string_id sound_quality = UNUSED_STR(650);
     constexpr string_id sound_quality_low = UNUSED_STR(651);
@@ -246,6 +250,12 @@ namespace openloco::string_ids
     constexpr string_id menu_adjust_water = 682;
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
+
+    constexpr string_id challenge_failed = 695;
+    constexpr string_id challenge_completed = 696;
+
+    constexpr string_id challenge_progress = 699;
+    constexpr string_id challenge_time_left = 700;
 
     constexpr string_id customise_keys = 701;
     constexpr string_id keyboard_shortcuts = 702;
@@ -604,6 +614,7 @@ namespace openloco::string_ids
 
     constexpr string_id change = 1700;
 
+    constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
@@ -622,6 +633,12 @@ namespace openloco::string_ids
 
     constexpr string_id menu_map = 1742;
 
+    constexpr string_id toolbar_status_paused = 1800;
+
+    constexpr string_id tooltip_speed_pause = 1817;
+    constexpr string_id tooltip_speed_normal = 1818;
+    constexpr string_id tooltip_speed_fast_forward = 1819;
+    constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
 
     constexpr string_id title_exit_game = 1869;
