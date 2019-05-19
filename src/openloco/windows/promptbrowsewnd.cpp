@@ -13,6 +13,8 @@
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../platform/platform.h"
+#include "../scenario.h"
+#include "../sv5.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
@@ -76,25 +78,6 @@ namespace openloco::ui::prompt_browse
             return filename;
         }
     };
-
-    struct saveinfo
-    {
-        char company[256];                   // 0x000
-        char owner[256];                     // 0x100
-        uint32_t date;                       // 0x200
-        uint16_t var_204;                    // 0x204 (from [company+0x16])
-        char scenario[0x40];                 // 0x206
-        uint8_t challenge_progress;          // 0x246
-        std::byte pad_247;                   // 0x247
-        uint8_t image[250 * 200];            // 0x248
-        uint32_t challenge_flags;            // 0xC598 (from [company+0x4])
-        std::byte pad_C59C[0xC618 - 0xC59C]; // 0xC59C
-
-        static constexpr uint32_t challenge_flag_completed = (1 << 6); // 0x40
-        static constexpr uint32_t challenge_flag_failed = (1 << 7);    // 0x80
-        static constexpr uint32_t challenge_flag_enabled = (1 << 8);   // 0x100
-    };
-    static_assert(sizeof(saveinfo) == 0xC618);
 #pragma pack(pop)
 
     enum widx
@@ -144,7 +127,7 @@ namespace openloco::ui::prompt_browse
     static void tooltip(ui::window* window, widget_index widgetIndex);
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const saveinfo& saveInfo);
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const sv5::saveinfo& saveInfo);
     static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
     static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
@@ -413,7 +396,7 @@ namespace openloco::ui::prompt_browse
                 if (*_fileType == browse_file_type::saved_game)
                 {
                     // Preview image
-                    auto saveInfo = *((const saveinfo**)0x50AEA8);
+                    auto saveInfo = *((const sv5::saveinfo**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
                         draw_save_preview(*window, *dpi, x, y, width, 201, *saveInfo);
@@ -447,7 +430,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const saveinfo& saveInfo)
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const sv5::saveinfo& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -483,14 +466,14 @@ namespace openloco::ui::prompt_browse
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
-        if (!(flags & saveinfo::challenge_flag_enabled))
+        if (!(flags & company_flags::challenge_enabled))
         {
             auto stringId = string_ids::window_browse_challenge_completed;
             int16_t progress = 0;
-            if (!(flags & saveinfo::challenge_flag_completed))
+            if (!(flags & company_flags::challenge_completed))
             {
                 stringId = string_ids::window_browse_challenge_failed;
-                if (!(flags & saveinfo::challenge_flag_failed))
+                if (!(flags & company_flags::challenge_failed))
                 {
                     stringId = string_ids::window_browse_challenge_progress;
                     progress = saveInfo.challenge_progress;
@@ -504,7 +487,7 @@ namespace openloco::ui::prompt_browse
     {
         gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
-        if (addr<0x009CCA5A, int16_t>() & 1)
+        if (addr<0x009CCA5A, int16_t>() & scenario::flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;
