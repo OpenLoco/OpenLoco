@@ -4,6 +4,7 @@
 - Fix: [#297] Menu click sound not played.
 - Fix: [#303] Play title music preference is not saved.
 - Fix: [#340] Cargo rating is calculated incorrectly in some edge cases.
+- Fix: Strings were not wrapping properly in the file browser window.
 
 19.03 (2019-03-01)
 ------------------------------------------------------------------------

@@ -525,15 +525,17 @@ namespace openloco::gfx
 
     // 0x00495224
     // al: colour
+    // bp: width
     // bx: string id
     // cx: x
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_495224(
+    int16_t draw_string_495224(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
+        int16_t width,
         uint8_t colour,
         string_id stringId,
         const void* args)
@@ -541,11 +543,14 @@ namespace openloco::gfx
         registers regs;
         regs.al = colour;
         regs.bx = stringId;
+        regs.bp = width;
         regs.cx = x;
         regs.dx = y;
         regs.esi = (int32_t)args;
         regs.edi = (int32_t)&dpi;
         call(0x00495224, regs);
+
+        return regs.dx;
     }
 
     // 0x00494B3F

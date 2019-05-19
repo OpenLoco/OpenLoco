@@ -130,7 +130,7 @@ namespace openloco::ui::windows::toolbar_top
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
-            window->set_disabled_widgets_and_invalidate(1 << 2 | 1 << 3);
+            window->set_disabled_widgets_and_invalidate(widx::zoom_menu | widx::rotate_menu);
         else
             window->set_disabled_widgets_and_invalidate(0);
     }

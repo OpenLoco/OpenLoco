@@ -817,20 +817,18 @@ namespace openloco::ui
 
     ui::window* window::call_on_resize()
     {
-        auto handler = event_handlers->on_resize;
-        if (handler != nullptr)
+        if (event_handlers->on_resize == nullptr)
+            return this;
+
+        if (is_interop_event(event_handlers->on_resize))
         {
-            if (is_interop_event(handler))
-            {
-                registers regs;
-                regs.esi = (int32_t)this;
-                call((uint32_t)handler, regs);
-            }
-            else
-            {
-                handler(this);
-            }
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uint32_t)event_handlers->on_resize, regs);
+            return (window*)regs.esi;
         }
+
+        event_handlers->on_resize(this);
         return this;
     }
 

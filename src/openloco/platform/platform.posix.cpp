@@ -21,91 +21,94 @@ int main(int argc, const char** argv)
     return 0;
 }
 
-uint32_t openloco::platform::get_time()
+namespace openloco::platform
 {
-    struct timespec spec;
-    clock_gettime(CLOCK_REALTIME, &spec);
-    return spec.tv_nsec / 1000000;
-}
+    uint32_t get_time()
+    {
+        struct timespec spec;
+        clock_gettime(CLOCK_REALTIME, &spec);
+        return spec.tv_nsec / 1000000;
+    }
 
-std::vector<fs::path> openloco::platform::get_drives()
-{
-    return {};
-}
+    std::vector<fs::path> getDrives()
+    {
+        return {};
+    }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-static std::string GetEnvironmentVariable(const std::string& name)
-{
-    auto result = getenv(name.c_str());
-    return result == nullptr ? std::string() : result;
-}
-
-static fs::path get_home_directory()
-{
-    auto pw = getpwuid(getuid());
-    if (pw != nullptr)
+    static std::string GetEnvironmentVariable(const std::string& name)
     {
-        return pw->pw_dir;
+        auto result = getenv(name.c_str());
+        return result == nullptr ? std::string() : result;
     }
-    else
-    {
-        return GetEnvironmentVariable("HOME");
-    }
-}
 
-fs::path openloco::platform::get_user_directory()
-{
-    auto path = fs::path(GetEnvironmentVariable("XDG_CONFIG_HOME"));
-    if (path.empty())
+    static fs::path get_home_directory()
     {
-        path = get_home_directory();
-        if (path.empty())
+        auto pw = getpwuid(getuid());
+        if (pw != nullptr)
         {
-            path = "/";
+            return pw->pw_dir;
         }
         else
         {
-            path = path / fs::path(".config");
+            return GetEnvironmentVariable("HOME");
         }
     }
-    return path / fs::path("OpenLoco");
-}
+
+    fs::path get_user_directory()
+    {
+        auto path = fs::path(GetEnvironmentVariable("XDG_CONFIG_HOME"));
+        if (path.empty())
+        {
+            path = get_home_directory();
+            if (path.empty())
+            {
+                path = "/";
+            }
+            else
+            {
+                path = path / fs::path(".config");
+            }
+        }
+        return path / fs::path("OpenLoco");
+    }
 #endif
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-fs::path openloco::platform::GetCurrentExecutablePath()
-{
-    char exePath[PATH_MAX] = { 0 };
+    fs::path GetCurrentExecutablePath()
+    {
+        char exePath[PATH_MAX] = { 0 };
 #ifdef __linux__
-    auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
-    if (bytesRead == -1)
-    {
-        console::error("failed to read /proc/self/exe");
-    }
+        auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
+        if (bytesRead == -1)
+        {
+            console::error("failed to read /proc/self/exe");
+        }
 #elif defined(__FreeBSD__)
-    const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
-    auto exeLen = sizeof(exePath);
-    if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
-    {
-        console::error("failed to get process path");
-    }
+        const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+        auto exeLen = sizeof(exePath);
+        if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
+        {
+            console::error("failed to get process path");
+        }
 #elif defined(__OpenBSD__)
-    // There is no way to get the path name of a running executable.
-    // If you are not using the port or package, you may have to change this line!
-    strlcpy(exePath, "/usr/local/bin/", sizeof(exePath));
+        // There is no way to get the path name of a running executable.
+        // If you are not using the port or package, you may have to change this line!
+        strlcpy(exePath, "/usr/local/bin/", sizeof(exePath));
 #else
 #error "Platform does not support full path exe retrieval"
-#endif
-    return exePath;
-}
+#endif // __linux__
+        return exePath;
+    }
 
-std::string openloco::platform::prompt_directory(const std::string& title)
-{
-    std::string input;
-    std::cout << "Type your Locomotion path: ";
-    std::cin >> input;
-    return input;
+    std::string prompt_directory(const std::string& title)
+    {
+        std::string input;
+        std::cout << "Type your Locomotion path: ";
+        std::cin >> input;
+        return input;
+    }
+#endif // !(defined(__APPLE__) && defined(__MACH__))
 }
-#endif
 
 #endif

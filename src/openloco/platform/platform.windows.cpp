@@ -100,7 +100,7 @@ namespace openloco::platform
         return WIN32_GetModuleFileNameW(nullptr);
     }
 
-    std::vector<fs::path> get_drives()
+    std::vector<fs::path> getDrives()
     {
         char drive[4] = { 'A', ':', '\0' };
         std::vector<fs::path> drives;
