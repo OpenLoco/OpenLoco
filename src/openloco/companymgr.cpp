@@ -139,8 +139,8 @@ namespace openloco::companymgr
             return;
         }
 
-        company->var_12 += 1;
-        if ((company->var_12 & 0x7F) != 0)
+        company->update_counter += 1;
+        if ((company->update_counter % 128) != 0)
             return;
 
         for (size_t i = 0; i < WindowManager::count(); i++)
