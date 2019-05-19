@@ -25,8 +25,31 @@ namespace openloco::scenario
         within_time_limit = (1 << 4),
     };
 
+    enum objective_type : uint8_t
+    {
+        company_value,
+        vehicle_profit,
+        performance_index,
+        cargo_delivery,
+    };
+
     constexpr uint16_t min_year = 1900;
     constexpr uint16_t max_year = 2100;
+
+    constexpr uint8_t min_objective_year_limit = 2;
+    constexpr uint8_t max_objective_year_limit = 100;
+
+    constexpr uint32_t min_objective_company_value = 100000;
+    constexpr uint32_t max_objective_company_value = 200000000;
+
+    constexpr uint32_t min_objective_monthly_profit_from_vehicles = 1000;
+    constexpr uint32_t max_objective_monthly_profit_from_vehicles = 1000000;
+
+    constexpr uint32_t min_objective_performance_index = 10;
+    constexpr uint32_t max_objective_performance_index = 100;
+
+    constexpr uint32_t min_objective_delivered_cargo = 100;
+    constexpr uint32_t max_objective_delivered_cargo = 200000000;
 
     constexpr uint8_t min_sea_level = 0;
     constexpr uint8_t max_sea_level = 28;

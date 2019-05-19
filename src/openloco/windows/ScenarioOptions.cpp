@@ -8,6 +8,7 @@
 #include "../objects/objectmgr.h"
 #include "../scenario.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 
@@ -23,8 +24,10 @@ namespace openloco::ui::windows::ScenarioOptions
     static loco_global<uint32_t, 0x00526236> objectiveMonthlyVehicleProfit;
     static loco_global<uint8_t, 0x0052623A> objectivePerformanceIndex;
     static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
-    static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoPercentage;
+    static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
+
+    static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
@@ -128,12 +131,188 @@ namespace openloco::ui::windows::ScenarioOptions
             gfx::draw_string_495224(*dpi, xPos, yPos, window->width - 10, colour::black, string_ids::challenge_value, &*commonFormatArgs);
         }
 
+        static const string_id objectiveTypeLabelIds[] = {
+            string_ids::achieve_a_certain_company_value,
+            string_ids::achieve_a_certain_monthly_profit_from_vehicles,
+            string_ids::achieve_a_certain_performance_index,
+            string_ids::deliver_a_certain_amount_of_cargo,
+        };
+
+        // 0x0043FD51
+        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+                return;
+
+            switch (widgetIndex)
+            {
+                case widx::objective_type_btn:
+                    *objectiveType = itemIndex;
+                    self->invalidate();
+                    break;
+
+                case widx::objective_cargo_btn:
+                {
+                    uint16_t cargoIdx = dropdown::get_argument_at(itemIndex, 1);
+                    *objectiveDeliveredCargoType = cargoIdx;
+                    self->invalidate();
+                }
+            }
+        }
+
         // 0x0043FD14
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
-                // TODO(avgeffen): Implement.
+                case widx::objective_type_btn:
+                {
+                    widget_t& target = self->widgets[widx::objective_type];
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
+
+                    for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
+                        dropdown::add(i, string_ids::dropdown_stringid, objectiveTypeLabelIds[i]);
+
+                    dropdown::set_item_selected(*objectiveType);
+                    break;
+                }
+
+                case widx::objective_value_down:
+                {
+                    switch (*objectiveType)
+                    {
+                        case scenario::objective_type::company_value:
+                            *objectiveCompanyValue = std::max<uint32_t>(*objectiveCompanyValue - 100000, scenario::min_objective_company_value);
+                            break;
+
+                        case scenario::objective_type::vehicle_profit:
+                            *objectiveMonthlyVehicleProfit = std::max<uint32_t>(*objectiveMonthlyVehicleProfit - 1000, scenario::min_objective_monthly_profit_from_vehicles);
+                            break;
+
+                        case scenario::objective_type::performance_index:
+                            *objectivePerformanceIndex = std::max<uint8_t>(*objectivePerformanceIndex - 5, scenario::min_objective_performance_index);
+                            break;
+
+                        case scenario::objective_type::cargo_delivery:
+                        {
+                            uint32_t newDeliveredCargoAmount = *objectiveDeliveredCargoAmount;
+                            newDeliveredCargoAmount -= 100;
+                            uint16_t divisor = 100;
+
+                            if (*_clickRepeatTicks >= 100)
+                            {
+                                newDeliveredCargoAmount -= 900;
+                                divisor = 1000;
+                            }
+                            if (*_clickRepeatTicks >= 200)
+                            {
+                                newDeliveredCargoAmount -= 9000;
+                                divisor = 10000;
+                            }
+
+                            // Round it off to the nearest multiple of the divisor.
+                            uint16_t quotient = newDeliveredCargoAmount / divisor;
+                            newDeliveredCargoAmount = quotient * divisor;
+
+                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, scenario::min_objective_delivered_cargo);
+                            break;
+                        }
+                    }
+
+                    self->invalidate();
+                    break;
+                }
+
+                case widx::objective_value_up:
+                {
+                    switch (*objectiveType)
+                    {
+                        case scenario::objective_type::company_value:
+                            *objectiveCompanyValue = std::min<uint32_t>(*objectiveCompanyValue + 100000, scenario::max_objective_company_value);
+                            break;
+
+                        case scenario::objective_type::vehicle_profit:
+                            *objectiveMonthlyVehicleProfit = std::min<uint32_t>(*objectiveMonthlyVehicleProfit + 1000, scenario::max_objective_monthly_profit_from_vehicles);
+                            break;
+
+                        case scenario::objective_type::performance_index:
+                            *objectivePerformanceIndex = std::min<uint8_t>(*objectivePerformanceIndex + 5, scenario::max_objective_performance_index);
+                            break;
+
+                        case scenario::objective_type::cargo_delivery:
+                        {
+                            uint32_t newDeliveredCargoAmount = *objectiveDeliveredCargoAmount;
+                            newDeliveredCargoAmount += 100;
+                            uint16_t divisor = 100;
+
+                            if (*_clickRepeatTicks >= 100)
+                            {
+                                newDeliveredCargoAmount += 900;
+                                divisor = 1000;
+                            }
+                            if (*_clickRepeatTicks >= 200)
+                            {
+                                newDeliveredCargoAmount += 9000;
+                                divisor = 10000;
+                            }
+
+                            // Round it off to the nearest multiple of the divisor.
+                            uint16_t quotient = newDeliveredCargoAmount / divisor;
+                            newDeliveredCargoAmount = quotient * divisor;
+
+                            *objectiveDeliveredCargoAmount = std::min<uint32_t>(newDeliveredCargoAmount, scenario::max_objective_delivered_cargo);
+                            break;
+                        }
+                    }
+
+                    self->invalidate();
+                    break;
+                }
+
+                case widx::objective_cargo_btn:
+                {
+                    const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::get_max_objects(object_type::cargo));
+                    uint16_t numCargoObjects = 0;
+                    for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
+                    {
+                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        if (cargoObject != nullptr)
+                            numCargoObjects++;
+                    }
+
+                    widget_t& target = self->widgets[widx::objective_cargo];
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], numCargoObjects, 0x80);
+
+                    uint16_t ddIdx = 0;
+                    for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
+                    {
+                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        if (cargoObject == nullptr)
+                            continue;
+
+                        dropdown::add(ddIdx, string_ids::dropdown_stringid, { cargoObject->name, cargoIdx });
+
+                        if (cargoIdx == *objectiveDeliveredCargoType)
+                            dropdown::set_item_selected(ddIdx);
+
+                        ddIdx++;
+                    }
+                    break;
+                }
+
+                case widx::time_limit_value_down:
+                {
+                    *objectiveTimeLimitYears = std::max<uint8_t>(*objectiveTimeLimitYears - 1, scenario::min_objective_year_limit);
+                    self->invalidate();
+                    break;
+                }
+
+                case widx::time_limit_value_up:
+                {
+                    *objectiveTimeLimitYears = std::min<uint8_t>(*objectiveTimeLimitYears + 1, scenario::max_objective_year_limit);
+                    self->invalidate();
+                    break;
+                }
             }
         }
 
@@ -170,15 +349,7 @@ namespace openloco::ui::windows::ScenarioOptions
         {
             common::prepare_draw(self);
 
-            static string_id objectiveLabelIds[] = {
-                string_ids::achieve_a_certain_company_value,
-                string_ids::achieve_a_certain_monthly_profit_from_vehicles,
-                string_ids::achieve_a_certain_performance_index,
-                string_ids::deliver_a_certain_amount_of_cargo,
-            };
-
-            widgets[widx::objective_type].text = objectiveLabelIds[*objectiveType];
-
+            widgets[widx::objective_type].text = objectiveTypeLabelIds[*objectiveType];
             widgets[widx::objective_cargo].type = widget_type::none;
             widgets[widx::objective_cargo_btn].type = widget_type::none;
             widgets[widx::time_limit_value].type = widget_type::none;
@@ -187,24 +358,23 @@ namespace openloco::ui::windows::ScenarioOptions
 
             switch (*objectiveType)
             {
-                // TODO(avgeffen): Use a constant for each objective type.
-                case 0:
+                case scenario::objective_type::company_value:
                     *(uint32_t*)&*commonFormatArgs = *objectiveCompanyValue;
                     widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
                     break;
 
-                case 1:
+                case scenario::objective_type::vehicle_profit:
                     *(uint32_t*)&*commonFormatArgs = *objectiveMonthlyVehicleProfit;
                     widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
                     break;
 
-                case 2:
+                case scenario::objective_type::performance_index:
                     *(uint16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
                     widgets[widx::objective_value].text = string_ids::challenge_performance_index;
                     break;
 
-                case 3:
-                    *(uint32_t*)&*commonFormatArgs = *objectiveDeliveredCargoPercentage;
+                case scenario::objective_type::cargo_delivery:
+                    *(uint32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
                     widgets[widx::objective_value].text = string_ids::challenge_delivered_cargo;
 
                     auto cargo = objectmgr::get<cargo_object>(*objectiveDeliveredCargoType);
@@ -235,6 +405,7 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
+            events.on_dropdown = on_dropdown;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
             events.prepare_draw = prepare_draw;

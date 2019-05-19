@@ -74,7 +74,10 @@ namespace openloco::objectmgr
     template<>
     cargo_object* get(size_t id)
     {
-        return _cargoObjects[id];
+        if (_cargoObjects[id] != (cargo_object*)-1)
+            return _cargoObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
