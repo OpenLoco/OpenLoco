@@ -38,4 +38,9 @@ namespace openloco
 
     using xy32 = location2<int32_t>;
     using loc16 = location3<int16_t>;
+
+    namespace location
+    {
+        constexpr int16_t null = (int16_t)0x8000u;
+    }
 }

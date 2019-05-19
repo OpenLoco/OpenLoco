@@ -802,7 +802,7 @@ namespace openloco::audio
             return;
 
         // TODO: left or top?
-        if (v->sprite_left == (int16_t)0x8000u)
+        if (v->sprite_left == location::null)
             return;
 
         if (_numActiveVehicleSounds >= config::get().max_vehicle_sounds)

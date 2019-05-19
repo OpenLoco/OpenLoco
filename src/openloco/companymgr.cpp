@@ -151,7 +151,7 @@ namespace openloco::companymgr
                 continue;
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
-            if (vehicle->x == -0x8000)
+            if (vehicle->x == location::null)
                 continue;
 
             if (vehicle->owner != _updating_company_id)
@@ -181,7 +181,7 @@ namespace openloco::companymgr
         auto mapPosition = map::map_pos(r1.ax, r1.bx);
 
         // Happens if center of viewport is obstructed. Probably estimates the centre location
-        if (mapPosition.x == -0x8000 || viewport != vp)
+        if (mapPosition.x == location::null || viewport != vp)
         {
             registers r2;
 
