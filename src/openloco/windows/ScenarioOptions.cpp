@@ -13,7 +13,9 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::ScenarioOptions
 {
-    static const gfx::ui_size_t window_size = { 366, 217 };
+    static const gfx::ui_size_t challengeWindowSize = { 366, 197 };
+    static const gfx::ui_size_t companiesWindowSize = { 366, 327 };
+    static const gfx::ui_size_t otherWindowSize = { 366, 217 };
 
     static loco_global<uint8_t, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -70,6 +72,8 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         static void prepare_draw(window* self);
+
+        static void switchTab(window* self, widget_index widgetIndex);
     }
 
     namespace challenge
@@ -124,17 +128,47 @@ namespace openloco::ui::windows::ScenarioOptions
             gfx::draw_string_495224(*dpi, xPos, yPos, window->width - 10, colour::black, string_ids::challenge_value, &*commonFormatArgs);
         }
 
+        // 0x0043FD14
+        static void on_mouse_down(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                // TODO(avgeffen): Implement.
+            }
+        }
+
+        // 0x0043FCED
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::tab_challenge:
+                case common::widx::tab_companies:
+                case common::widx::tab_finances:
+                case common::widx::tab_scenario:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case check_be_top_company:
+                    *objectiveFlags ^= scenario::objective_flags::be_top_company;
+                    self->invalidate();
+                    break;
+
+                case check_be_within_top_three_companies:
+                    *objectiveFlags ^= scenario::objective_flags::be_within_top_three_companies;
+                    self->invalidate();
+                    break;
+
+                case check_time_limit:
+                    *objectiveFlags ^= scenario::objective_flags::within_time_limit;
+                    self->invalidate();
+                    break;
+            }
+        }
+
         static void prepare_draw(window* self)
         {
             common::prepare_draw(self);
-
-            widgets[common::widx::frame].right = self->width - 1;
-            widgets[common::widx::frame].bottom = self->height - 1;
-
-            widgets[common::widx::caption].right = self->width - 2;
-
-            widgets[common::widx::panel].right = self->width - 1;
-            widgets[common::widx::panel].bottom = self->height - 1;
 
             static string_id objectiveLabelIds[] = {
                 string_ids::achieve_a_certain_company_value,
@@ -201,6 +235,8 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
+            events.on_mouse_down = on_mouse_down;
+            events.on_mouse_up = on_mouse_up;
             events.prepare_draw = prepare_draw;
         }
     }
@@ -220,7 +256,7 @@ namespace openloco::ui::windows::ScenarioOptions
         if (window == nullptr)
         {
             // 0x0043EEFF start
-            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, window_size, 0, &challenge::events);
+            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, otherWindowSize, 0, &challenge::events);
             window->widgets = challenge::widgets;
             window->enabled_widgets = challenge::enabledWidgets;
             window->number = 0;
@@ -235,8 +271,8 @@ namespace openloco::ui::windows::ScenarioOptions
             }
             // 0x0043EEFF end
 
-            window->width = window_size.width;
-            window->height = window_size.height;
+            window->width = otherWindowSize.width;
+            window->height = otherWindowSize.height;
         }
 
         // TODO(avgeffen): only needs to be called once.
@@ -284,6 +320,47 @@ namespace openloco::ui::windows::ScenarioOptions
             make_widget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
             widget_end(),
         };
+
+        const uint64_t enabledWidgets = 0b1111111111111111111101101111000;
+        const uint64_t holdableWidgets = 0;
+
+        static window_event_list events;
+
+        static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::tab_challenge:
+                case common::widx::tab_companies:
+                case common::widx::tab_finances:
+                case common::widx::tab_scenario:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                    // TODO(avgeffen): Implement.
+            }
+        }
+
+        static void prepare_draw(window* self)
+        {
+            common::prepare_draw(self);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepare_draw;
+        }
     }
 
     namespace finances
@@ -295,6 +372,47 @@ namespace openloco::ui::windows::ScenarioOptions
             make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::loan_interest_rate_value),
             widget_end(),
         };
+
+        const uint64_t enabledWidgets = 0b1101101101111000;
+        const uint64_t holdableWidgets = 0b1101100000000;
+
+        static window_event_list events;
+
+        static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::tab_challenge:
+                case common::widx::tab_companies:
+                case common::widx::tab_finances:
+                case common::widx::tab_scenario:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                    // TODO(avgeffen): Implement.
+            }
+        }
+
+        static void prepare_draw(window* self)
+        {
+            common::prepare_draw(self);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepare_draw;
+        }
     }
 
     namespace scenario
@@ -307,6 +425,47 @@ namespace openloco::ui::windows::ScenarioOptions
             make_widget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
             widget_end(),
         };
+
+        const uint64_t enabledWidgets = 0b11111111000;
+        const uint64_t holdableWidgets = 0b1101101100000000;
+
+        static window_event_list events;
+
+        static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+        {
+            common::draw(window, dpi);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::tab_challenge:
+                case common::widx::tab_companies:
+                case common::widx::tab_finances:
+                case common::widx::tab_scenario:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                    // TODO(avgeffen): Implement.
+            }
+        }
+
+        static void prepare_draw(window* self)
+        {
+            common::prepare_draw(self);
+
+            // TODO(avgeffen): Implement.
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepare_draw;
+        }
     }
 
     namespace common
@@ -314,14 +473,17 @@ namespace openloco::ui::windows::ScenarioOptions
         struct TabInformation
         {
             widget_t* widgets;
-            widx tab;
+            const widx widgetIndex;
+            window_event_list* events;
+            const uint64_t* enabledWidgets;
+            const uint64_t* holdableWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { challenge::widgets, widx::tab_challenge },
-            { companies::widgets, widx::tab_companies },
-            { finances::widgets, widx::tab_finances },
-            { scenario::widgets, widx::tab_scenario }
+            { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::holdableWidgets },
+            { companies::widgets, widx::tab_companies, &companies::events, &companies::enabledWidgets, &companies::holdableWidgets },
+            { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::holdableWidgets },
+            { scenario::widgets, widx::tab_scenario, &scenario::events, &scenario::enabledWidgets, &scenario::holdableWidgets }
         };
 
         static void prepare_draw(window* self)
@@ -336,13 +498,64 @@ namespace openloco::ui::windows::ScenarioOptions
 
             // Activate the current tab.
             self->activated_widgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_challenge) | (1 << widx::tab_scenario));
-            widx tab = tabInformationByTabOffset[self->current_tab].tab;
-            self->activated_widgets |= (1ULL << tab);
+            widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
+            self->activated_widgets |= (1ULL << widgetIndex);
+
+            // Resize common widgets.
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+        }
+
+        // 0x0043F16B
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+
+            textinput::sub_4CE6C9(self->type, self->number);
+
+            self->current_tab = widgetIndex - widx::tab_challenge;
+            self->frame_no = 0;
+            self->flags &= ~(window_flags::flag_16);
+            self->disabled_widgets = 0;
+
+            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];
+
+            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->holdable_widgets = *tabInfo.holdableWidgets;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+
+            self->invalidate();
+
+            const gfx::ui_size_t* newSize;
+            if (widgetIndex == widx::tab_challenge)
+                newSize = &challengeWindowSize;
+            else if (widgetIndex == widx::tab_companies)
+                newSize = &companiesWindowSize;
+            else
+                newSize = &otherWindowSize;
+
+            self->set_size(*newSize);
+            self->call_on_resize();
+            self->call_prepare_draw();
+            self->init_scroll_widgets();
+            self->invalidate();
+            self->moveInsideScreenEdges();
         }
 
         static void initEvents()
         {
             challenge::initEvents();
+            companies::initEvents();
+            finances::initEvents();
+            scenario::initEvents();
         }
     }
 }
