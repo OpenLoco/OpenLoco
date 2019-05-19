@@ -775,6 +775,11 @@ namespace openloco::gfx
         call(0x00448C79, regs);
     }
 
+    uint32_t recolour(uint32_t image)
+    {
+        return (1 << 29) | image;
+    }
+
     uint32_t recolour(uint32_t image, uint8_t colour)
     {
         return (1 << 29) | (colour << 19) | image;

@@ -203,7 +203,7 @@ namespace openloco::string_ids
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
-    constexpr string_id str_584 = 584; // "{DATE MY}"
+    constexpr string_id date_monthyear = 584;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -223,7 +223,7 @@ namespace openloco::string_ids
     constexpr string_id month_long_november = 645;
     constexpr string_id month_long_december = 646;
 
-    constexpr string_id STR_647 = 647; //  "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+    constexpr string_id tooltip_daymonthyear_challenge = 647;
 
     constexpr string_id sound_quality = UNUSED_STR(650);
     constexpr string_id sound_quality_low = UNUSED_STR(651);
@@ -251,10 +251,11 @@ namespace openloco::string_ids
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
 
-    constexpr string_id str_695 = 695; // "{NEWLINE}Challenge failed!"
-    constexpr string_id str_696 = 696; // "{NEWLINE}Challenge completed!"
-    constexpr string_id str_699 = 699; // "{NEWLINE}Challenge progress: {INT16}%{STRINGID}"
-    constexpr string_id str_700 = 700; // "{NEWLINE}Time left: {COLOUR BLACK}{INT16} years {INT16} months"
+    constexpr string_id challenge_failed = 695;
+    constexpr string_id challenge_completed = 696;
+
+    constexpr string_id challenge_progress = 699;
+    constexpr string_id challenge_time_left = 700;
 
     constexpr string_id customise_keys = 701;
     constexpr string_id keyboard_shortcuts = 702;
@@ -613,7 +614,7 @@ namespace openloco::string_ids
 
     constexpr string_id change = 1700;
 
-    constexpr string_id str_1716 = 1716; // Send Message
+    constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
@@ -632,12 +633,12 @@ namespace openloco::string_ids
 
     constexpr string_id menu_map = 1742;
 
-    constexpr string_id str_1800 = 1800; // "*  Paused  *"
+    constexpr string_id toolbar_status_paused = 1800;
 
-    constexpr string_id tooltip_speed_pause = 1817;              // "{SMALLFONT}{COLOUR BLACK}Pause game"
-    constexpr string_id tooltip_speed_normal = 1818;             // "{SMALLFONT}{COLOUR BLACK}Normal speed"
-    constexpr string_id tooltip_speed_fast_forward = 1819;       // "{SMALLFONT}{COLOUR BLACK}Fast forward"
-    constexpr string_id tooltip_speed_extra_fast_forward = 1820; // "{SMALLFONT}{COLOUR BLACK}Extra fast forward"
+    constexpr string_id tooltip_speed_pause = 1817;
+    constexpr string_id tooltip_speed_normal = 1818;
+    constexpr string_id tooltip_speed_fast_forward = 1819;
+    constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
 
     constexpr string_id title_exit_game = 1869;
