@@ -185,6 +185,8 @@ endif()
 
 find_package(SDL2_mixer REQUIRED)
 
+find_package(PNG REQUIRED)
+
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Free|Net|Open|DragonFly)BSD")
     find_package(yaml-cpp REQUIRED)
@@ -221,6 +223,8 @@ endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
+
 
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
