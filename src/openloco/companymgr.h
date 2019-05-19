@@ -19,4 +19,5 @@ namespace openloco::companymgr
     void update();
 
     company* getOpponent();
+    void updateOwnerStatus();
 }

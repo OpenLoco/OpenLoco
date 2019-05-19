@@ -38,7 +38,8 @@ namespace openloco
         string_id var_02;
         uint32_t flags;
         currency48_t var_08;
-        uint8_t pad_0E[0x16 - 0x0E];
+        uint8_t pad_0E[0x12 - 0x0E];
+        uint32_t update_counter;   // 0x12
         int16_t performance_index; // 0x16
         uint8_t competitor_id;     // 0x18
         uint8_t owner_emotion;     // 0x19

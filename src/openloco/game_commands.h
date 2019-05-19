@@ -1,6 +1,8 @@
 #pragma once
 
 #include "interop/interop.hpp"
+#include "map/tile.h"
+#include "things/thing.h"
 
 using namespace openloco::interop;
 
@@ -35,6 +37,24 @@ namespace openloco::game_commands
         memcpy(&regs.ebp, &string[8], 4);
         memcpy(&regs.edi, &string[12], 4);
         do_command(71, regs);
+    }
+
+    inline void do_73(thing_id_t id)
+    {
+        registers regs;
+        regs.bl = 1;
+        regs.ax = -2;
+        regs.cx = id;
+        do_command(73, regs);
+    }
+
+    inline void do_73(map::map_pos position)
+    {
+        registers regs;
+        regs.bl = 1;
+        regs.ax = position.x;
+        regs.cx = position.y;
+        do_command(73, regs);
     }
 
     inline void do_command(int esi, registers& registers)

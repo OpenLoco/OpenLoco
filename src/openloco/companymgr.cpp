@@ -1,8 +1,14 @@
 #include "companymgr.h"
+#include "game_commands.h"
 #include "interop/interop.hpp"
+#include "map/tile.h"
 #include "openloco.h"
+#include "things/thingmgr.h"
+#include "things/vehicle.h"
+#include "ui/WindowManager.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui;
 
 namespace openloco::companymgr
 {
@@ -117,5 +123,77 @@ namespace openloco::companymgr
     company* getOpponent()
     {
         return &_companies[_player_company[1]];
+    }
+
+    // 0x004383ED
+    void updateOwnerStatus()
+    {
+        if (openloco::is_title_mode() || openloco::is_editor_mode())
+        {
+            return;
+        }
+
+        auto company = companymgr::get(_updating_company_id);
+        if (company == nullptr)
+        {
+            return;
+        }
+
+        company->update_counter += 1;
+        if ((company->update_counter % 128) != 0)
+            return;
+
+        for (size_t i = 0; i < WindowManager::count(); i++)
+        {
+            auto w = WindowManager::get(i);
+
+            if (w->type != WindowType::vehicle)
+                continue;
+
+            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            if (vehicle->x == location::null)
+                continue;
+
+            if (vehicle->owner != _updating_company_id)
+                continue;
+
+            game_commands::do_73(vehicle->id);
+            return;
+        }
+
+        auto main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            return;
+
+        auto viewport = main->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        gfx::point_t screenPosition;
+        screenPosition.x = viewport->x + viewport->width / 2;
+        screenPosition.y = viewport->y + viewport->height / 2;
+
+        registers r1;
+        r1.ax = screenPosition.x;
+        r1.bx = screenPosition.y;
+        call(0x0045F1A7, r1);
+        ui::viewport* vp = (ui::viewport*)r1.edi;
+        auto mapPosition = map::map_pos(r1.ax, r1.bx);
+
+        // Happens if center of viewport is obstructed. Probably estimates the centre location
+        if (mapPosition.x == location::null || viewport != vp)
+        {
+            registers r2;
+
+            r2.ax = viewport->view_x + viewport->view_width / 2;
+            r2.bx = viewport->view_y + viewport->view_height / 2;
+            r2.edx = viewport->getRotation();
+            call(0x0045F997, r2);
+
+            mapPosition.x = r2.ax;
+            mapPosition.y = r2.bx;
+        }
+
+        game_commands::do_73(mapPosition);
     }
 }

@@ -2,6 +2,7 @@
 
 #include "company.h"
 #include "graphics/gfx.h"
+#include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"
 #include "types.hpp"
@@ -327,6 +328,11 @@ namespace openloco::ui
             out.bottom = std::min<int16_t>(rect.bottom, view_y + view_height);
 
             return out;
+        }
+
+        constexpr int getRotation()
+        {
+            return interop::addr<0x00e3f0b8, int32_t>();
         }
 
         /**
