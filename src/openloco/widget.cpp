@@ -409,7 +409,7 @@ namespace openloco::ui::widget
     // 0x4CB2D6
     void draw_15(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool disabled)
     {
-        if (widget->content == -1)
+        if (widget->content == -1 || widget->content == -2)
         {
             return;
         }
