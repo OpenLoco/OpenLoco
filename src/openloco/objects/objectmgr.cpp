@@ -149,6 +149,15 @@ namespace openloco::objectmgr
         return _competitorObjects[id];
     }
 
+    template<>
+    scenario_text_object* get()
+    {
+        if (_scenarioTextObjects[0] != (scenario_text_object*)-1)
+            return _scenarioTextObjects[0];
+        else
+            return nullptr;
+    }
+
     /*
     static void printHeader(header data)
     {

@@ -6,6 +6,7 @@
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../objects/scenario_text_object.h"
 #include "../scenario.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -46,6 +47,9 @@ namespace openloco::ui::windows::ScenarioOptions
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
     static loco_global<uint8_t, 0x009C8715> scenarioGroup;
+
+    static loco_global<char[64], 0x009C873E> scenarioTitle;
+    static loco_global<char[256], 0x009C877E> scenarioDetails;
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
@@ -916,7 +920,7 @@ namespace openloco::ui::windows::ScenarioOptions
     {
         enum widx
         {
-            change_title_btn = 7,
+            change_name_btn = 7,
             scenario_group,
             scenario_group_btn,
             change_details_btn,
@@ -931,7 +935,7 @@ namespace openloco::ui::windows::ScenarioOptions
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::change_title_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;
 
         static window_event_list events;
@@ -942,12 +946,19 @@ namespace openloco::ui::windows::ScenarioOptions
             common::draw(window, dpi);
 
             {
-                // TODO(avgeffen): Prepare title text.
+                // Prepare scenario name text.
+                char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                strncpy(buffer, scenarioTitle, 512);
+                commonFormatArgs[0] = string_ids::buffer_2039;
+
+                auto* stex = objectmgr::get<scenario_text_object>();
+                if (stex != nullptr)
+                    commonFormatArgs[0] = stex->name;
 
                 const int16_t xPos = window->x + 10;
-                int16_t yPos = window->y + widgets[widx::change_title_btn].top + 1;
-                int16_t width = widgets[widx::change_title_btn].left - 20;
-                gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::scenario_name_stringid);
+                int16_t yPos = window->y + widgets[widx::change_name_btn].top + 1;
+                int16_t width = widgets[widx::change_name_btn].left - 20;
+                gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::scenario_name_stringid, &*commonFormatArgs);
             }
 
             {
@@ -962,7 +973,19 @@ namespace openloco::ui::windows::ScenarioOptions
                 gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_details);
             }
 
-            // TODO(avgeffen): Prepare and draw details text.
+            {
+                // Prepare scenario details text.
+                char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                strncpy(buffer, scenarioDetails, 512);
+                commonFormatArgs[0] = string_ids::buffer_2039;
+
+                auto* stex = objectmgr::get<scenario_text_object>();
+                if (stex != nullptr)
+                    commonFormatArgs[0] = stex->details;
+
+                auto& target = window->widgets[widx::change_details_btn];
+                gfx::draw_string_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
+            }
         }
 
         static string_id scenarioGroupLabelIds[] = {
@@ -1010,21 +1033,55 @@ namespace openloco::ui::windows::ScenarioOptions
                     common::switchTab(self, widgetIndex);
                     break;
 
-                case widx::change_title_btn:
-                    // TODO(avgeffen): Implement.
+                case widx::change_name_btn:
+                {
+                    char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                    strncpy(buffer, scenarioTitle, 512);
+
+                    textinput::open_textinput(self, string_ids::scenario_name_title, string_ids::enter_name_for_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
                     break;
+                }
 
                 case widx::change_details_btn:
-                    // TODO(avgeffen): Implement.
+                {
+                    char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                    strncpy(buffer, scenarioDetails, 512);
+
+                    textinput::open_textinput(self, string_ids::scenario_details_title, string_ids::enter_description_of_this_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
                     break;
+                }
             }
         }
 
+        // 0x0043EF8B
         static void prepare_draw(window* self)
         {
             common::prepare_draw(self);
 
             widgets[widx::scenario_group].text = scenarioGroupLabelIds[*scenarioGroup];
+        }
+
+        // 0x0043F156
+        static void text_input(window* self, widget_index callingWidget, char* input)
+        {
+            switch (callingWidget)
+            {
+                case widx::change_name_btn:
+                {
+                    // TODO(avgeffen): sizeof() doesn't like our loco globals
+                    strncpy(&*scenarioTitle, input, 64);
+                    self->invalidate();
+                    break;
+                }
+
+                case widx::change_details_btn:
+                {
+                    // TODO(avgeffen): sizeof() doesn't like our loco globals
+                    strncpy(&*scenarioDetails, input, 256);
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         static void initEvents()
@@ -1035,6 +1092,7 @@ namespace openloco::ui::windows::ScenarioOptions
             events.on_mouse_up = on_mouse_up;
             events.on_update = common::update;
             events.prepare_draw = prepare_draw;
+            events.text_input = text_input;
         }
     }
 

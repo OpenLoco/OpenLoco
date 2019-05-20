@@ -169,6 +169,8 @@ namespace openloco::objectmgr
     water_object* get();
     template<>
     competitor_object* get(size_t id);
+    template<>
+    scenario_text_object* get();
 
 #pragma pack(push, 1)
     struct header
