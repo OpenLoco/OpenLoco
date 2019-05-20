@@ -57,6 +57,15 @@ namespace openloco::scenario
     constexpr uint8_t min_competitor_start_delay = 0;
     constexpr uint8_t max_competitor_start_delay = 240;
 
+    constexpr uint16_t min_start_loan_units = 50;
+    constexpr uint16_t max_start_loan_units = 1250;
+
+    constexpr uint16_t min_loan_size_units = 50;
+    constexpr uint16_t max_loan_size_units = 5000;
+
+    constexpr uint16_t min_loan_interest_units = 5;
+    constexpr uint16_t max_loan_interest_units = 25;
+
     constexpr uint8_t min_sea_level = 0;
     constexpr uint8_t max_sea_level = 28;
 

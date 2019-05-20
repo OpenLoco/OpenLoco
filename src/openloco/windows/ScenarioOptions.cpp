@@ -18,12 +18,18 @@ namespace openloco::ui::windows::ScenarioOptions
     static const gfx::ui_size_t companiesWindowSize = { 366, 327 };
     static const gfx::ui_size_t otherWindowSize = { 366, 217 };
 
+    static loco_global<uint32_t, 0x00525E5E> currencyMultiplicationFactor;
+
     static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
+
+    static loco_global<uint8_t, 0x00525FC6> loanInterestRate;
 
     static loco_global<uint8_t, 0x00526214> competitorStartDelay;
     static loco_global<uint8_t, 0x00526215> preferredAIIntelligence;
     static loco_global<uint8_t, 0x00526216> preferredAIAggressiveness;
     static loco_global<uint8_t, 0x00526217> preferredAICompetitiveness;
+    static loco_global<uint16_t, 0x00526218> startingLoanSize;
+    static loco_global<uint16_t, 0x0052621A> maxLoanSize;
 
     static loco_global<uint8_t, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -764,6 +770,19 @@ namespace openloco::ui::windows::ScenarioOptions
 
     namespace finances
     {
+        enum widx
+        {
+            starting_loan = 7,
+            starting_loan_down,
+            starting_loan_up,
+            max_loan_size,
+            max_loan_size_down,
+            max_loan_size_up,
+            loan_interest_rate,
+            loan_interest_rate_down,
+            loan_interest_rate_up,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(217, string_ids::title_financial_options),
             make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::starting_loan_value),
@@ -772,16 +791,69 @@ namespace openloco::ui::windows::ScenarioOptions
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = 0b1101101101111000;
-        const uint64_t holdableWidgets = 0b1101100000000;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
+        const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
 
         static window_event_list events;
 
+        // 0x0043F97D
         static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
-            // TODO(avgeffen): Implement.
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::starting_loan].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::starting_loan);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::max_loan_size].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_loan_size);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::loan_interest_rate].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::loan_interest_rate);
+            }
+        }
+
+        static void on_mouse_down(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::starting_loan_down:
+                    *startingLoanSize = std::max<int16_t>(*startingLoanSize - 50, scenario::min_start_loan_units);
+                    break;
+
+                case widx::starting_loan_up:
+                    *startingLoanSize = std::min<uint16_t>(*startingLoanSize + 50, scenario::max_start_loan_units);
+                    if (*startingLoanSize > *maxLoanSize)
+                        *maxLoanSize = *startingLoanSize;
+                    break;
+
+                case widx::max_loan_size_down:
+                    *maxLoanSize = std::max<int16_t>(*maxLoanSize - 50, scenario::min_loan_size_units);
+                    if (*startingLoanSize > *maxLoanSize)
+                        *startingLoanSize = *maxLoanSize;
+                    break;
+
+                case widx::max_loan_size_up:
+                    *maxLoanSize = std::min<uint16_t>(*maxLoanSize + 50, scenario::max_loan_size_units);
+                    break;
+
+                case widx::loan_interest_rate_down:
+                    *loanInterestRate = std::max<int16_t>(*loanInterestRate - 1, scenario::min_loan_interest_units);
+                    break;
+
+                case widx::loan_interest_rate_up:
+                    *loanInterestRate = std::min<uint16_t>(*loanInterestRate + 1, scenario::max_loan_interest_units);
+                    break;
+            }
+
+            self->invalidate();
         }
 
         static void on_mouse_up(window* self, widget_index widgetIndex)
@@ -794,21 +866,34 @@ namespace openloco::ui::windows::ScenarioOptions
                 case common::widx::tab_scenario:
                     common::switchTab(self, widgetIndex);
                     break;
-
-                    // TODO(avgeffen): Implement.
             }
         }
 
+        // 0x0046E306
+        static uint32_t getLoanSizeInCurrency()
+        {
+            uint64_t loanSizeInCurrency = ((*startingLoanSize * *currencyMultiplicationFactor) >> 8ULL) / 100 * 100;
+            return static_cast<uint32_t>(loanSizeInCurrency);
+        }
+
+        // 0x0043F8CF
         static void prepare_draw(window* self)
         {
             common::prepare_draw(self);
 
-            // TODO(avgeffen): Implement.
+            uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
+            *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
+
+            uint64_t maxLoanSizeInCurrency = ((*maxLoanSize * *currencyMultiplicationFactor) >> 8ULL) / 100 * 100;
+            *(uint32_t*)&commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
+
+            *(uint32_t*)&commonFormatArgs[4] = *loanInterestRate;
         }
 
         static void initEvents()
         {
             events.draw = draw;
+            events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
             events.prepare_draw = prepare_draw;
         }
