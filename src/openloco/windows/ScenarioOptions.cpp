@@ -45,6 +45,8 @@ namespace openloco::ui::windows::ScenarioOptions
 
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
+    static loco_global<uint8_t, 0x009C8715> scenarioGroup;
+
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
     namespace common
@@ -901,6 +903,14 @@ namespace openloco::ui::windows::ScenarioOptions
 
     namespace scenario
     {
+        enum widx
+        {
+            change_title_btn = 7,
+            scenario_group,
+            scenario_group_btn,
+            change_details_btn,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(217, string_ids::title_scenario_options),
             make_widget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
@@ -910,18 +920,74 @@ namespace openloco::ui::windows::ScenarioOptions
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = 0b11111111000;
-        const uint64_t holdableWidgets = 0b1101101100000000;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::change_title_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
+        const uint64_t holdableWidgets = 0;
 
         static window_event_list events;
 
+        // 0x0043F004
         static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
-            // TODO(avgeffen): Implement.
+            {
+                // TODO(avgeffen): Prepare title text.
+
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::change_title_btn].top + 1;
+                int16_t width = widgets[widx::change_title_btn].left - 20;
+                gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::scenario_name_stringid);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::scenario_group].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_group);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::change_details_btn].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_details);
+            }
+
+            // TODO(avgeffen): Prepare and draw details text.
         }
 
+        static string_id scenarioGroupLabelIds[] = {
+            string_ids::scenario_group_beginner,
+            string_ids::scenario_group_easy,
+            string_ids::scenario_group_medium,
+            string_ids::scenario_group_challenging,
+            string_ids::scenario_group_expert,
+        };
+
+        // 0x0043F14B
+        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
+            {
+                *scenarioGroup = itemIndex;
+                self->invalidate();
+            }
+        }
+
+        // 0x0043F140
+        static void on_mouse_down(window* self, widget_index widgetIndex)
+        {
+            if (widgetIndex == widx::scenario_group_btn)
+            {
+                widget_t& target = self->widgets[widx::scenario_group];
+                dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
+
+                for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
+                    dropdown::add(i, string_ids::dropdown_stringid, scenarioGroupLabelIds[i]);
+
+                dropdown::set_item_selected(*scenarioGroup);
+            }
+        }
+
+        // 0x0043F11F
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
@@ -933,7 +999,13 @@ namespace openloco::ui::windows::ScenarioOptions
                     common::switchTab(self, widgetIndex);
                     break;
 
+                case widx::change_title_btn:
                     // TODO(avgeffen): Implement.
+                    break;
+
+                case widx::change_details_btn:
+                    // TODO(avgeffen): Implement.
+                    break;
             }
         }
 
@@ -941,12 +1013,14 @@ namespace openloco::ui::windows::ScenarioOptions
         {
             common::prepare_draw(self);
 
-            // TODO(avgeffen): Implement.
+            widgets[widx::scenario_group].text = scenarioGroupLabelIds[*scenarioGroup];
         }
 
         static void initEvents()
         {
             events.draw = draw;
+            events.on_dropdown = on_dropdown;
+            events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
             events.prepare_draw = prepare_draw;
         }

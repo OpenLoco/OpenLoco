@@ -531,6 +531,11 @@ namespace openloco::string_ids
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
+    constexpr string_id scenario_group_beginner = 1570;
+    constexpr string_id scenario_group_easy = 1571;
+    constexpr string_id scenario_group_medium = 1572;
+    constexpr string_id scenario_group_challenging = 1573;
+    constexpr string_id scenario_group_expert = 1574;
 
     constexpr string_id title_landscape_generation_options = 1585;
     constexpr string_id title_landscape_generation_land = 1586;
@@ -646,6 +651,15 @@ namespace openloco::string_ids
     constexpr string_id loan_interest_rate = 1698;
     constexpr string_id loan_interest_rate_value = 1699;
     constexpr string_id change = 1700;
+    constexpr string_id scenario_name_stringid = 1701;
+    constexpr string_id scenario_group = 1702;
+    constexpr string_id scenario_details = 1703;
+    constexpr string_id scenario_name_title = 1704;
+    constexpr string_id enter_name_for_scenario = 1705;
+    constexpr string_id scenario_details_title = 1706;
+    constexpr string_id enter_description_of_this_scenario = 1707;
+    constexpr string_id no_details_yet = 1708;
+    constexpr string_id unnamed = 1709;
 
     constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;
