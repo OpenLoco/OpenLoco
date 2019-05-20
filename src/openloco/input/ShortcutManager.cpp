@@ -127,8 +127,6 @@ namespace openloco::input::ShortcutManager
         string_ids::shortcut_send_message,
     } };
 
-    static loco_global<uint8_t, 0x009C8714> _editor_step;
-
     size_t count()
     {
         return _count;

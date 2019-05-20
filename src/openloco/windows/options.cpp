@@ -26,8 +26,6 @@ namespace openloco::ui::options
     static void sub_4C1519();
     static void sub_4BF935();
 
-    static loco_global<uint8_t, 0x009C8714> _9C8714;
-
     static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _50D435;

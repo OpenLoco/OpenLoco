@@ -487,7 +487,7 @@ namespace openloco::ui::prompt_browse
     {
         gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
-        if (addr<0x009CCA5A, int16_t>() & scenario::flags::landscape_generation_done)
+        if (_9CCA5A & scenario::flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;

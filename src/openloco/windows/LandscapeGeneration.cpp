@@ -28,29 +28,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
     static loco_global<uint8_t, 0x00526247> industryFlags;
 
-    static loco_global<uint16_t, 0x009C8716> scenarioStartYear;
-    static loco_global<uint16_t, 0x009C871A> scenarioFlags;
-    static loco_global<bool, 0x009C871C> madeAnyChanges;
-
     static constexpr size_t maxLandObjects = objectmgr::get_max_objects(object_type::land);
-    static loco_global<uint8_t[maxLandObjects], 0x009C871E> landDistributionPatterns;
-
-    static loco_global<uint8_t, 0x009C8898> minLandHeight;
-    static loco_global<uint8_t, 0x009C8899> topographyStyle;
-    static loco_global<uint8_t, 0x009C889A> hillDensity;
-
-    static loco_global<uint16_t, 0x009C888E> numberOfForests;
-    static loco_global<uint8_t, 0x009C8890> minForestRadius;
-    static loco_global<uint8_t, 0x009C8891> maxForestRadius;
-    static loco_global<uint8_t, 0x009C8892> minForestDensity;
-    static loco_global<uint8_t, 0x009C8893> maxForestDensity;
-    static loco_global<uint16_t, 0x009C8894> numberRandomTrees;
-    static loco_global<uint8_t, 0x009C8896> minAltitudeForTrees;
-    static loco_global<uint8_t, 0x009C8897> maxAltitudeForTrees;
-
-    static loco_global<uint8_t, 0x009C889B> numberOfTowns;
-    static loco_global<uint8_t, 0x009C889C> maxTownSize;
-    static loco_global<uint8_t, 0x009C889D> numberOfIndustries;
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 

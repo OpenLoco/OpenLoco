@@ -14,8 +14,6 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
 {
     static const gfx::ui_size_t window_size = { 280, 92 };
 
-    static loco_global<uint16_t, 0x009C871A> scenarioFlags;
-
     enum widx
     {
         panel = 0,
