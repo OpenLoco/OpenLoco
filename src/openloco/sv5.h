@@ -8,38 +8,51 @@ namespace openloco::sv5
 #pragma pack(push, 1)
     struct ScenarioConfiguration
     {
-        uint8_t editor_step; // 0x00
-        uint8_t pad_1;
+        uint8_t editor_step;        // 0x00
+        uint8_t difficulty;         // 0x01
         uint16_t scenarioStartYear; // 0x02
         uint8_t pad_4[2];
         uint16_t scenarioFlags; // 0x06
         uint8_t madeAnyChanges; // 0x08
         uint8_t pad_9[1];
-        uint8_t landObjectDiversity[32]; // 0x0A
-        uint8_t scenarioName[64];        // 0x2A
-        uint8_t scenarioDetails[256];    // 0x6A
-        objectmgr::header scenarioText;  // 0x16A
-        uint16_t numberOfForests;        // 0x17a
-        uint8_t minForestRadius;         // 0x17C
-        uint8_t maxForestRadius;         // 0x17D
-        uint8_t minForestDensity;        // 0x17E
-        uint8_t maxForestDensity;        // 0x17F
-        uint16_t numberRandomTrees;      // 0x180
-        uint8_t minAltitudeForTrees;     // 0x182
-        uint8_t maxAltitudeForTrees;     // 0x183
-        uint8_t minLandHeight;           // 0x184
-        uint8_t topographyStyle;         // 0x185
-        uint8_t hillDensity;             // 0x186
-        uint8_t numberOfTowns;           // 0x187
-        uint8_t maxTownSize;             // 0x188
-        uint8_t numberOfIndustries;      // 0x189
-        uint8_t preview[128][128];       // 0x18A
-        uint8_t pad_418A[400];
+        uint8_t landObjectDiversity[32];                // 0x0A
+        uint8_t scenarioName[64];                       // 0x2A
+        uint8_t scenarioDetails[256];                   // 0x6A
+        objectmgr::header scenarioText;                 // 0x16A
+        uint16_t numberOfForests;                       // 0x17a
+        uint8_t minForestRadius;                        // 0x17C
+        uint8_t maxForestRadius;                        // 0x17D
+        uint8_t minForestDensity;                       // 0x17E
+        uint8_t maxForestDensity;                       // 0x17F
+        uint16_t numberRandomTrees;                     // 0x180
+        uint8_t minAltitudeForTrees;                    // 0x182
+        uint8_t maxAltitudeForTrees;                    // 0x183
+        uint8_t minLandHeight;                          // 0x184
+        uint8_t topographyStyle;                        // 0x185
+        uint8_t hillDensity;                            // 0x186
+        uint8_t numberOfTowns;                          // 0x187
+        uint8_t maxTownSize;                            // 0x188
+        uint8_t numberOfIndustries;                     // 0x189
+        uint8_t preview[128][128];                      // 0x18A
+        uint8_t copy_maxCompetingCompanies;             // 0x418A
+        uint8_t copy_competitorStartDelay;              // 0x418B
+        uint8_t copy_objectiveType;                     // 0x418C
+        uint8_t copy_objectiveFlags;                    // 0x418D
+        uint32_t copy_objectiveCompanyValue;            // 0x418E
+        uint32_t copy_objectiveMonthlyVehicleProfit;    // 0x4192
+        uint8_t copy_objectivePerformanceIndex;         // 0x4196
+        uint8_t copy_objectiveDeliveredCargoType;       // 0x4197
+        uint32_t copy_objectiveDeliveredCargoAmount;    // 0x4198
+        uint8_t copy_objectiveTimeLimitYears;           // 0x419C
+        objectmgr::header copy_objectiveDeliveredCargo; // 0x419D
+        objectmgr::header copy_currency;                // 0x41AD
+        std::byte pad_41BD[349];
     };
 #pragma pack(pop)
 
     static_assert(sizeof(ScenarioConfiguration) == 0x431A);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, editor_step) == 0x009C8714);
+    static_assert(0x009C8715 + offsetof(ScenarioConfiguration, difficulty) == 0x009C8715);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioStartYear) == 0x009C8716);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioFlags) == 0x009C871A);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, madeAnyChanges) == 0x009C871C);
