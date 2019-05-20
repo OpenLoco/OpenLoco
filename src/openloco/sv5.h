@@ -1,6 +1,7 @@
 #pragma once
 
 #include "compat.h"
+#include "objects/objectmgr.h"
 #include <cstdint>
 namespace openloco::sv5
 {
@@ -12,25 +13,27 @@ namespace openloco::sv5
         uint16_t scenarioStartYear; // 0x02
         uint8_t pad_4[2];
         uint16_t scenarioFlags; // 0x06
-        uint8_t var_9C871C;     // 0x08
+        uint8_t madeAnyChanges; // 0x08
         uint8_t pad_9[1];
         uint8_t landObjectDiversity[32]; // 0x0A
-        uint8_t pad_2A[336];
-        uint16_t numberOfForests;    // 0x17a
-        uint8_t minForestRadius;     // 0x17C
-        uint8_t maxForestRadius;     // 0x17D
-        uint8_t minForestDensity;    // 0x17E
-        uint8_t maxForestDensity;    // 0x17F
-        uint16_t numberRandomTrees;  // 0x180
-        uint8_t minAltitudeForTrees; // 0x182
-        uint8_t maxAltitudeForTrees; // 0x183
-        uint8_t minLandHeight;       // 0x184
-        uint8_t topographyStyle;     // 0x185
-        uint8_t hillDensity;         // 0x186
-        uint8_t numberOfTowns;       // 0x187
-        uint8_t maxTownSize;         // 0x188
-        uint8_t numberOfIndustries;  // 0x189
-        uint8_t preview[128][128];   // 0x18A
+        uint8_t scenarioName[64];        // 0x2A
+        uint8_t scenarioDetails[256];    // 0x6A
+        objectmgr::header scenarioText;  // 0x16A
+        uint16_t numberOfForests;        // 0x17a
+        uint8_t minForestRadius;         // 0x17C
+        uint8_t maxForestRadius;         // 0x17D
+        uint8_t minForestDensity;        // 0x17E
+        uint8_t maxForestDensity;        // 0x17F
+        uint16_t numberRandomTrees;      // 0x180
+        uint8_t minAltitudeForTrees;     // 0x182
+        uint8_t maxAltitudeForTrees;     // 0x183
+        uint8_t minLandHeight;           // 0x184
+        uint8_t topographyStyle;         // 0x185
+        uint8_t hillDensity;             // 0x186
+        uint8_t numberOfTowns;           // 0x187
+        uint8_t maxTownSize;             // 0x188
+        uint8_t numberOfIndustries;      // 0x189
+        uint8_t preview[128][128];       // 0x18A
         uint8_t pad_418A[400];
     };
 #pragma pack(pop)
@@ -39,7 +42,7 @@ namespace openloco::sv5
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, editor_step) == 0x009C8714);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioStartYear) == 0x009C8716);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioFlags) == 0x009C871A);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, var_9C871C) == 0x009C871C);
+    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, madeAnyChanges) == 0x009C871C);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, landObjectDiversity) == 0x009C871E);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfForests) == 0x009C888E);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, minForestRadius) == 0x009C8890);
@@ -55,6 +58,8 @@ namespace openloco::sv5
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfTowns) == 0x009C889B);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, maxTownSize) == 0x009C889C);
     static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfIndustries) == 0x009C889D);
+    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioName) == 0x009C873E);
+    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioDetails) == 0x009C877E);
 
     static_assert(0x009CCA54 + offsetof(ScenarioConfiguration, scenarioFlags) == 0x009CCA5A);
     static_assert(0x009CCA54 + offsetof(ScenarioConfiguration, preview) == 0x009CCBDE);
