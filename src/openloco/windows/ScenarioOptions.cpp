@@ -76,6 +76,14 @@ namespace openloco::ui::windows::ScenarioOptions
         // Defined at the bottom of this file.
         static void initEvents();
 
+        // 0x00440082
+        static void update(window* window)
+        {
+            window->frame_no++;
+            window->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::scenarioOptions, window->number, window->current_tab + widx::tab_challenge);
+        }
+
         // 0x004400A4
         static void drawTabs(window* window, gfx::drawpixelinfo_t* dpi)
         {
@@ -426,6 +434,7 @@ namespace openloco::ui::windows::ScenarioOptions
             events.on_dropdown = on_dropdown;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
         }
     }
@@ -766,6 +775,7 @@ namespace openloco::ui::windows::ScenarioOptions
             events.on_dropdown = on_dropdown;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
         }
     }
@@ -897,6 +907,7 @@ namespace openloco::ui::windows::ScenarioOptions
             events.draw = draw;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
         }
     }
@@ -1022,6 +1033,7 @@ namespace openloco::ui::windows::ScenarioOptions
             events.on_dropdown = on_dropdown;
             events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
         }
     }
