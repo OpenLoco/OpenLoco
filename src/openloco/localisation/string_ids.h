@@ -631,7 +631,14 @@ namespace openloco::string_ids
     constexpr string_id max_competing_companies_value = 1683;
     constexpr string_id delay_before_competing_companies_start = 1684;
     constexpr string_id delay_before_competing_companies_start_months = 1685;
-
+    constexpr string_id selection_of_competing_companies = 1686;
+    constexpr string_id preferred_intelligence = 1687;
+    constexpr string_id preferred_aggressiveness = 1688;
+    constexpr string_id preferred_competitiveness = 1689;
+    constexpr string_id preference_any = 1690;
+    constexpr string_id preference_low = 1691;
+    constexpr string_id preference_medium = 1692;
+    constexpr string_id preference_high = 1693;
     constexpr string_id starting_loan = 1694;
     constexpr string_id starting_loan_value = 1695;
     constexpr string_id max_loan_size = 1696;
@@ -685,6 +692,9 @@ namespace openloco::string_ids
 
     constexpr string_id allow_industries_to_close_down_during_game = 1871;
     constexpr string_id allow_new_industries_to_start_up_during_game = 1872;
+
+    constexpr string_id forbid_competing_companies_from_using = 1875;
+    constexpr string_id forbid_player_companies_from_using = 1876;
 
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;

@@ -51,6 +51,12 @@ namespace openloco::scenario
     constexpr uint32_t min_objective_delivered_cargo = 100;
     constexpr uint32_t max_objective_delivered_cargo = 200000000;
 
+    constexpr uint8_t min_competing_companies = 0;
+    constexpr uint8_t max_competing_companies = 14;
+
+    constexpr uint8_t min_competitor_start_delay = 0;
+    constexpr uint8_t max_competitor_start_delay = 240;
+
     constexpr uint8_t min_sea_level = 0;
     constexpr uint8_t max_sea_level = 28;
 

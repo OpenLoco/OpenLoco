@@ -18,6 +18,13 @@ namespace openloco::ui::windows::ScenarioOptions
     static const gfx::ui_size_t companiesWindowSize = { 366, 327 };
     static const gfx::ui_size_t otherWindowSize = { 366, 217 };
 
+    static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
+
+    static loco_global<uint8_t, 0x00526214> competitorStartDelay;
+    static loco_global<uint8_t, 0x00526215> preferredAIIntelligence;
+    static loco_global<uint8_t, 0x00526216> preferredAIAggressiveness;
+    static loco_global<uint8_t, 0x00526217> preferredAICompetitiveness;
+
     static loco_global<uint8_t, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
     static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
@@ -26,6 +33,9 @@ namespace openloco::ui::windows::ScenarioOptions
     static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
     static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
+
+    static loco_global<uint16_t, 0x00526248> forbiddenVehiclesPlayers;
+    static loco_global<uint16_t, 0x0052624A> forbiddenVehiclesCompetitors;
 
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
@@ -467,6 +477,34 @@ namespace openloco::ui::windows::ScenarioOptions
 
     namespace companies
     {
+        enum widx
+        {
+            max_competing_companies = 7,
+            max_competing_companies_down,
+            max_competing_companies_up,
+            delay_before_competing_companies_start,
+            delay_before_competing_companies_start_down,
+            delay_before_competing_companies_start_up,
+            preferred_intelligence,
+            preferred_intelligence_btn,
+            preferred_aggressiveness,
+            preferred_aggressiveness_btn,
+            preferred_competitiveness,
+            preferred_competitiveness_btn,
+            competitor_forbid_trains,
+            competitor_forbid_buses,
+            competitor_forbid_trucks,
+            competitor_forbid_trams,
+            competitor_forbid_aircraft,
+            competitor_forbid_ships,
+            player_forbid_trains,
+            player_forbid_buses,
+            player_forbid_trucks,
+            player_forbid_trams,
+            player_forbid_aircraft,
+            player_forbid_ships,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(327, string_ids::title_company_options),
             make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_competing_companies_value),
@@ -492,18 +530,160 @@ namespace openloco::ui::windows::ScenarioOptions
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = 0b1111111111111111111101101111000;
-        const uint64_t holdableWidgets = 0;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
+        const uint64_t holdableWidgets = (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up);
 
         static window_event_list events;
 
+        // 0x0043F4EB
         static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
-            // TODO(avgeffen): Implement.
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::max_competing_companies].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_competing_companies);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::delay_before_competing_companies_start].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::delay_before_competing_companies_start);
+            }
+
+            {
+                const int16_t xPos = window->x + 15;
+                int16_t yPos = window->y + widgets[widx::preferred_intelligence].top - 14;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::selection_of_competing_companies);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::preferred_intelligence].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_intelligence);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::preferred_aggressiveness].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_aggressiveness);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::preferred_competitiveness].top + 1;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_competitiveness);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::competitor_forbid_trains].top - 12;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_competing_companies_from_using);
+            }
+
+            {
+                const int16_t xPos = window->x + 10;
+                int16_t yPos = window->y + widgets[widx::player_forbid_trains].top - 12;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_player_companies_from_using);
+            }
         }
 
+        static string_id preferenceLabelIds[] = {
+            string_ids::preference_any,
+            string_ids::preference_low,
+            string_ids::preference_medium,
+            string_ids::preference_high,
+        };
+
+        // 0x0043F67C
+        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+                return;
+
+            switch (widgetIndex)
+            {
+                case widx::preferred_intelligence_btn:
+                    *preferredAIIntelligence = itemIndex;
+                    break;
+
+                case widx::preferred_aggressiveness_btn:
+                    *preferredAIAggressiveness = itemIndex;
+                    break;
+
+                case widx::preferred_competitiveness_btn:
+                    *preferredAICompetitiveness = itemIndex;
+                    break;
+            }
+
+            self->invalidate();
+        }
+
+        // 0x0043F639
+        static void on_mouse_down(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::max_competing_companies_down:
+                    *maxCompetingCompanies = std::max<int8_t>(*maxCompetingCompanies - 1, scenario::min_competing_companies);
+                    self->invalidate();
+                    break;
+
+                case widx::max_competing_companies_up:
+                    *maxCompetingCompanies = std::min<uint8_t>(*maxCompetingCompanies + 1, scenario::max_competing_companies);
+                    self->invalidate();
+                    break;
+
+                case widx::delay_before_competing_companies_start_down:
+                    *competitorStartDelay = std::max<int8_t>(*competitorStartDelay - 1, scenario::min_competitor_start_delay);
+                    self->invalidate();
+                    break;
+
+                case widx::delay_before_competing_companies_start_up:
+                    *competitorStartDelay = std::min<uint8_t>(*competitorStartDelay + 1, scenario::max_competitor_start_delay);
+                    self->invalidate();
+                    break;
+
+                case widx::preferred_intelligence_btn:
+                {
+                    widget_t& target = self->widgets[widx::preferred_intelligence];
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+
+                    for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+
+                    dropdown::set_item_selected(*preferredAIIntelligence);
+                    break;
+                }
+
+                case widx::preferred_aggressiveness_btn:
+                {
+                    widget_t& target = self->widgets[widx::preferred_aggressiveness];
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+
+                    for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+
+                    dropdown::set_item_selected(*preferredAIAggressiveness);
+                    break;
+                }
+
+                case widx::preferred_competitiveness_btn:
+                {
+                    widget_t& target = self->widgets[widx::preferred_competitiveness];
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+
+                    for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
+                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+
+                    dropdown::set_item_selected(*preferredAICompetitiveness);
+                    break;
+                }
+            }
+        }
+
+        // 0x0043F60C
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
@@ -515,20 +695,68 @@ namespace openloco::ui::windows::ScenarioOptions
                     common::switchTab(self, widgetIndex);
                     break;
 
-                    // TODO(avgeffen): Implement.
+                case widx::competitor_forbid_trains:
+                case widx::competitor_forbid_buses:
+                case widx::competitor_forbid_trucks:
+                case widx::competitor_forbid_trams:
+                case widx::competitor_forbid_aircraft:
+                case widx::competitor_forbid_ships:
+                {
+                    uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::competitor_forbid_trains);
+                    uint16_t newForbiddenVehicles = *forbiddenVehiclesCompetitors ^ (1 << targetVehicle);
+                    // TODO(avgeffen): Add a constant for this mask.
+                    if (newForbiddenVehicles != 0b111111)
+                    {
+                        *forbiddenVehiclesCompetitors = newForbiddenVehicles;
+                        self->invalidate();
+                    }
+                    break;
+                }
+
+                case widx::player_forbid_trains:
+                case widx::player_forbid_buses:
+                case widx::player_forbid_trucks:
+                case widx::player_forbid_trams:
+                case widx::player_forbid_aircraft:
+                case widx::player_forbid_ships:
+                {
+                    uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::player_forbid_trains);
+                    uint16_t newForbiddenVehicles = *forbiddenVehiclesPlayers ^ (1 << targetVehicle);
+                    // TODO(avgeffen): Add a constant for this mask.
+                    if (newForbiddenVehicles != 0b111111)
+                    {
+                        *forbiddenVehiclesPlayers = newForbiddenVehicles;
+                        self->invalidate();
+                    }
+                    break;
+                }
             }
         }
 
+        // 0x0043F40C
         static void prepare_draw(window* self)
         {
             common::prepare_draw(self);
 
-            // TODO(avgeffen): Implement.
+            commonFormatArgs[0] = *maxCompetingCompanies;
+            commonFormatArgs[1] = *competitorStartDelay;
+
+            self->widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
+            self->widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
+            self->widgets[widx::preferred_competitiveness].text = preferenceLabelIds[*preferredAICompetitiveness];
+
+            self->activated_widgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
+
+            // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
+            self->activated_widgets |= *forbiddenVehiclesCompetitors << static_cast<uint64_t>(widx::competitor_forbid_trains);
+            self->activated_widgets |= *forbiddenVehiclesPlayers << static_cast<uint64_t>(widx::player_forbid_trains);
         }
 
         static void initEvents()
         {
             events.draw = draw;
+            events.on_dropdown = on_dropdown;
+            events.on_mouse_down = on_mouse_down;
             events.on_mouse_up = on_mouse_up;
             events.prepare_draw = prepare_draw;
         }
