@@ -162,10 +162,10 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         static const string_id objectiveTypeLabelIds[] = {
-            string_ids::achieve_a_certain_company_value,
-            string_ids::achieve_a_certain_monthly_profit_from_vehicles,
-            string_ids::achieve_a_certain_performance_index,
-            string_ids::deliver_a_certain_amount_of_cargo,
+            string_ids::objective_achieve_a_certain_company_value,
+            string_ids::objective_achieve_a_certain_monthly_profit_from_vehicles,
+            string_ids::objective_achieve_a_certain_performance_index,
+            string_ids::objective_deliver_a_certain_amount_of_cargo,
         };
 
         // 0x0043FD51
@@ -198,7 +198,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::objective_type_btn:
                 {
                     widget_t& target = self->widgets[widx::objective_type];
-                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, objectiveTypeLabelIds[i]);
@@ -311,7 +311,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     }
 
                     widget_t& target = self->widgets[widx::objective_cargo];
-                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], numCargoObjects, 0x80);
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], numCargoObjects, 0x80);
 
                     uint16_t ddIdx = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
@@ -389,22 +389,22 @@ namespace openloco::ui::windows::ScenarioOptions
             switch (*objectiveType)
             {
                 case scenario::objective_type::company_value:
-                    *(uint32_t*)&*commonFormatArgs = *objectiveCompanyValue;
+                    *(int32_t*)&*commonFormatArgs = *objectiveCompanyValue;
                     widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
                     break;
 
                 case scenario::objective_type::vehicle_profit:
-                    *(uint32_t*)&*commonFormatArgs = *objectiveMonthlyVehicleProfit;
+                    *(int32_t*)&*commonFormatArgs = *objectiveMonthlyVehicleProfit;
                     widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
                     break;
 
                 case scenario::objective_type::performance_index:
-                    *(uint16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
+                    *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
                     widgets[widx::objective_value].text = string_ids::challenge_performance_index;
                     break;
 
                 case scenario::objective_type::cargo_delivery:
-                    *(uint32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
+                    *(int32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
                     widgets[widx::objective_value].text = string_ids::challenge_delivered_cargo;
 
                     auto cargo = objectmgr::get<cargo_object>(*objectiveDeliveredCargoType);
@@ -669,7 +669,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::preferred_intelligence_btn:
                 {
                     widget_t& target = self->widgets[widx::preferred_intelligence];
-                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
@@ -681,7 +681,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::preferred_aggressiveness_btn:
                 {
                     widget_t& target = self->widgets[widx::preferred_aggressiveness];
-                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
@@ -693,7 +693,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::preferred_competitiveness_btn:
                 {
                     widget_t& target = self->widgets[widx::preferred_competitiveness];
-                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
@@ -1012,7 +1012,7 @@ namespace openloco::ui::windows::ScenarioOptions
             if (widgetIndex == widx::scenario_group_btn)
             {
                 widget_t& target = self->widgets[widx::scenario_group];
-                dropdown::show(self->x + target.left, self->y + target.top, target.width() - 3, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
+                dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
                     dropdown::add(i, string_ids::dropdown_stringid, scenarioGroupLabelIds[i]);

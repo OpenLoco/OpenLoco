@@ -693,10 +693,10 @@ namespace openloco::string_ids
     constexpr string_id with_a_time_limit = 1850;
     constexpr string_id challenge_label = 1851;
     constexpr string_id challenge_value = 1852;
-    constexpr string_id achieve_a_certain_company_value = 1853;
-    constexpr string_id achieve_a_certain_monthly_profit_from_vehicles = 1854;
-    constexpr string_id achieve_a_certain_performance_index = 1855;
-    constexpr string_id deliver_a_certain_amount_of_cargo = 1856;
+    constexpr string_id objective_achieve_a_certain_company_value = 1853;
+    constexpr string_id objective_achieve_a_certain_monthly_profit_from_vehicles = 1854;
+    constexpr string_id objective_achieve_a_certain_performance_index = 1855;
+    constexpr string_id objective_deliver_a_certain_amount_of_cargo = 1856;
     constexpr string_id challenge_monetary_value = 1857;
     constexpr string_id challenge_performance_index = 1858;
     constexpr string_id challenge_delivered_cargo = 1859;
