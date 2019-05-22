@@ -78,11 +78,46 @@ namespace openloco
         constexpr uint32_t toolbar_menu_airport = 46;
         constexpr uint32_t toolbar_menu_ship_port = 47;
 
+        constexpr uint32_t tab_finances_frame0 = 113;
+        constexpr uint32_t tab_finances_frame1 = 114;
+        constexpr uint32_t tab_finances_frame2 = 115;
+        constexpr uint32_t tab_finances_frame3 = 116;
+        constexpr uint32_t tab_finances_frame4 = 117;
+        constexpr uint32_t tab_finances_frame5 = 118;
+        constexpr uint32_t tab_finances_frame6 = 119;
+        constexpr uint32_t tab_finances_frame7 = 120;
+        constexpr uint32_t tab_finances_frame8 = 121;
+        constexpr uint32_t tab_finances_frame9 = 122;
+        constexpr uint32_t tab_finances_frame10 = 123;
+        constexpr uint32_t tab_finances_frame11 = 124;
+        constexpr uint32_t tab_finances_frame12 = 125;
+        constexpr uint32_t tab_finances_frame13 = 126;
+        constexpr uint32_t tab_finances_frame14 = 127;
+        constexpr uint32_t tab_finances_frame15 = 128;
+        constexpr uint32_t tab_cup_frame0 = 129;
+        constexpr uint32_t tab_cup_frame1 = 130;
+        constexpr uint32_t tab_cup_frame2 = 131;
+        constexpr uint32_t tab_cup_frame3 = 132;
+        constexpr uint32_t tab_cup_frame4 = 133;
+        constexpr uint32_t tab_cup_frame5 = 134;
+        constexpr uint32_t tab_cup_frame6 = 135;
+        constexpr uint32_t tab_cup_frame7 = 136;
+        constexpr uint32_t tab_cup_frame8 = 137;
+        constexpr uint32_t tab_cup_frame9 = 138;
+        constexpr uint32_t tab_cup_frame10 = 139;
+        constexpr uint32_t tab_cup_frame11 = 140;
+        constexpr uint32_t tab_cup_frame12 = 141;
+        constexpr uint32_t tab_cup_frame13 = 142;
+        constexpr uint32_t tab_cup_frame14 = 143;
+        constexpr uint32_t tab_cup_frame15 = 144;
+
         constexpr uint32_t tab_cogs_frame0 = 168;
         constexpr uint32_t tab_cogs_frame1 = 169;
         constexpr uint32_t tab_cogs_frame2 = 170;
         constexpr uint32_t tab_cogs_frame3 = 171;
-
+        constexpr uint32_t tab_scenario_details = 172;
+        constexpr uint32_t tab_company = 173;
+        constexpr uint32_t tab_companies = 174;
         constexpr uint32_t toolbar_menu_zoom_in = 175;
         constexpr uint32_t toolbar_menu_zoom_out = 176;
         constexpr uint32_t toolbar_menu_rotate_clockwise = 177;

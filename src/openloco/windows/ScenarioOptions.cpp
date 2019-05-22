@@ -10,6 +10,7 @@
 #include "../scenario.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -91,11 +92,79 @@ namespace openloco::ui::windows::ScenarioOptions
         // 0x004400A4
         static void drawTabs(window* window, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)window;
+            auto skin = objectmgr::get<interface_skin_object>();
 
-            call(0x004400A4, regs);
+            // Challenge tab
+            {
+                static const uint32_t challengeTabImageIds[] = {
+                    interface_skin::image_ids::tab_cup_frame0,
+                    interface_skin::image_ids::tab_cup_frame1,
+                    interface_skin::image_ids::tab_cup_frame2,
+                    interface_skin::image_ids::tab_cup_frame3,
+                    interface_skin::image_ids::tab_cup_frame4,
+                    interface_skin::image_ids::tab_cup_frame5,
+                    interface_skin::image_ids::tab_cup_frame6,
+                    interface_skin::image_ids::tab_cup_frame7,
+                    interface_skin::image_ids::tab_cup_frame8,
+                    interface_skin::image_ids::tab_cup_frame9,
+                    interface_skin::image_ids::tab_cup_frame10,
+                    interface_skin::image_ids::tab_cup_frame11,
+                    interface_skin::image_ids::tab_cup_frame12,
+                    interface_skin::image_ids::tab_cup_frame13,
+                    interface_skin::image_ids::tab_cup_frame14,
+                    interface_skin::image_ids::tab_cup_frame15,
+                };
+
+                uint32_t imageId = skin->img;
+                if (window->current_tab == widx::tab_challenge - widx::tab_challenge)
+                    imageId += challengeTabImageIds[(window->frame_no / 4) % std::size(challengeTabImageIds)];
+                else
+                    imageId += challengeTabImageIds[0];
+
+                widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
+            }
+
+            // Companies tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_companies;
+                widget::draw_tab(window, dpi, imageId, widx::tab_companies);
+            }
+
+            // Finances tab
+            {
+                static const uint32_t financesTabImageIds[] = {
+                    interface_skin::image_ids::tab_finances_frame0,
+                    interface_skin::image_ids::tab_finances_frame1,
+                    interface_skin::image_ids::tab_finances_frame2,
+                    interface_skin::image_ids::tab_finances_frame3,
+                    interface_skin::image_ids::tab_finances_frame4,
+                    interface_skin::image_ids::tab_finances_frame5,
+                    interface_skin::image_ids::tab_finances_frame6,
+                    interface_skin::image_ids::tab_finances_frame7,
+                    interface_skin::image_ids::tab_finances_frame8,
+                    interface_skin::image_ids::tab_finances_frame9,
+                    interface_skin::image_ids::tab_finances_frame10,
+                    interface_skin::image_ids::tab_finances_frame11,
+                    interface_skin::image_ids::tab_finances_frame12,
+                    interface_skin::image_ids::tab_finances_frame13,
+                    interface_skin::image_ids::tab_finances_frame14,
+                    interface_skin::image_ids::tab_finances_frame15,
+                };
+
+                uint32_t imageId = skin->img;
+                if (window->current_tab == widx::tab_finances - widx::tab_challenge)
+                    imageId += financesTabImageIds[(window->frame_no / 2) % std::size(financesTabImageIds)];
+                else
+                    imageId += financesTabImageIds[0];
+
+                widget::draw_tab(window, dpi, imageId, widx::tab_finances);
+            }
+
+            // Scenario details tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_scenario_details;
+                widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
+            }
         }
 
         static void draw(window* window, gfx::drawpixelinfo_t* dpi)
