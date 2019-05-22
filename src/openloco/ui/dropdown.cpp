@@ -78,11 +78,6 @@ namespace openloco::ui::dropdown
         add(static_cast<uint8_t>(index), title, { l });
     }
 
-    int16_t get_argument_at(size_t index, uint8_t offset)
-    {
-        return *(int16_t*)&_dropdownItemArgs[index][offset * 2];
-    }
-
     int16_t get_highlighted_item()
     {
         return _dropdownHighlightedIndex;

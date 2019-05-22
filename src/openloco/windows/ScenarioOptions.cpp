@@ -168,6 +168,9 @@ namespace openloco::ui::windows::ScenarioOptions
             string_ids::objective_deliver_a_certain_amount_of_cargo,
         };
 
+        static const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::get_max_objects(object_type::cargo));
+        static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
+
         // 0x0043FD51
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
@@ -183,8 +186,7 @@ namespace openloco::ui::windows::ScenarioOptions
 
                 case widx::objective_cargo_btn:
                 {
-                    uint16_t cargoIdx = dropdown::get_argument_at(itemIndex, 1);
-                    *objectiveDeliveredCargoType = cargoIdx;
+                    *objectiveDeliveredCargoType = cargoByDropdownIndex[itemIndex];
                     self->invalidate();
                 }
             }
@@ -287,7 +289,6 @@ namespace openloco::ui::windows::ScenarioOptions
 
                 case widx::objective_cargo_btn:
                 {
-                    const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::get_max_objects(object_type::cargo));
                     uint16_t numCargoObjects = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
@@ -299,19 +300,20 @@ namespace openloco::ui::windows::ScenarioOptions
                     widget_t& target = self->widgets[widx::objective_cargo];
                     dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], numCargoObjects, 0x80);
 
-                    uint16_t ddIdx = 0;
+                    uint16_t dropdownIndex = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
                         auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
                         if (cargoObject == nullptr)
                             continue;
 
-                        dropdown::add(ddIdx, string_ids::dropdown_stringid, { cargoObject->name, cargoIdx });
+                        dropdown::add(dropdownIndex, string_ids::dropdown_stringid, cargoObject->name);
+                        cargoByDropdownIndex[dropdownIndex] = cargoIdx;
 
                         if (cargoIdx == *objectiveDeliveredCargoType)
-                            dropdown::set_item_selected(ddIdx);
+                            dropdown::set_item_selected(dropdownIndex);
 
-                        ddIdx++;
+                        dropdownIndex++;
                     }
                     break;
                 }
