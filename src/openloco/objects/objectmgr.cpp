@@ -74,7 +74,10 @@ namespace openloco::objectmgr
     template<>
     cargo_object* get(size_t id)
     {
-        return _cargoObjects[id];
+        if (_cargoObjects[id] != (cargo_object*)-1)
+            return _cargoObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
@@ -144,6 +147,15 @@ namespace openloco::objectmgr
     competitor_object* get(size_t id)
     {
         return _competitorObjects[id];
+    }
+
+    template<>
+    scenario_text_object* get()
+    {
+        if (_scenarioTextObjects[0] != (scenario_text_object*)-1)
+            return _scenarioTextObjects[0];
+        else
+            return nullptr;
     }
 
     /*

@@ -501,6 +501,13 @@ namespace openloco::string_ids
     constexpr string_id new_game_currency = 1505;
     constexpr string_id preferred_currency_buffer = 1506;
 
+    constexpr string_id forbid_trains = 1518;
+    constexpr string_id forbid_buses = 1519;
+    constexpr string_id forbid_trucks = 1520;
+    constexpr string_id forbid_trams = 1521;
+    constexpr string_id forbid_aircraft = 1522;
+    constexpr string_id forbid_ships = 1523;
+
     constexpr string_id currently_playing = 1535;
     constexpr string_id music_controls_stop_tip = 1536;
     constexpr string_id music_controls_play_tip = 1537;
@@ -524,6 +531,11 @@ namespace openloco::string_ids
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
     constexpr string_id two_player_mode_connected = 1569;
+    constexpr string_id scenario_group_beginner = 1570;
+    constexpr string_id scenario_group_easy = 1571;
+    constexpr string_id scenario_group_medium = 1572;
+    constexpr string_id scenario_group_challenging = 1573;
+    constexpr string_id scenario_group_expert = 1574;
 
     constexpr string_id title_landscape_generation_options = 1585;
     constexpr string_id title_landscape_generation_land = 1586;
@@ -612,7 +624,42 @@ namespace openloco::string_ids
     constexpr string_id industry_size_high = 1669;
     constexpr string_id number_of_industries = 1670;
 
+    constexpr string_id tooltip_scenario_options = 1674;
+    constexpr string_id tooltip_scenario_challenge = 1675;
+    constexpr string_id tooltip_company_options = 1676;
+    constexpr string_id tooltip_financial_options = 1677;
+    constexpr string_id title_scenario_options = 1678;
+    constexpr string_id title_scenario_challenge = 1679;
+    constexpr string_id title_company_options = 1680;
+    constexpr string_id title_financial_options = 1681;
+    constexpr string_id max_competing_companies = 1682;
+    constexpr string_id max_competing_companies_value = 1683;
+    constexpr string_id delay_before_competing_companies_start = 1684;
+    constexpr string_id delay_before_competing_companies_start_months = 1685;
+    constexpr string_id selection_of_competing_companies = 1686;
+    constexpr string_id preferred_intelligence = 1687;
+    constexpr string_id preferred_aggressiveness = 1688;
+    constexpr string_id preferred_competitiveness = 1689;
+    constexpr string_id preference_any = 1690;
+    constexpr string_id preference_low = 1691;
+    constexpr string_id preference_medium = 1692;
+    constexpr string_id preference_high = 1693;
+    constexpr string_id starting_loan = 1694;
+    constexpr string_id starting_loan_value = 1695;
+    constexpr string_id max_loan_size = 1696;
+    constexpr string_id max_loan_size_value = 1697;
+    constexpr string_id loan_interest_rate = 1698;
+    constexpr string_id loan_interest_rate_value = 1699;
     constexpr string_id change = 1700;
+    constexpr string_id scenario_name_stringid = 1701;
+    constexpr string_id scenario_group = 1702;
+    constexpr string_id scenario_details = 1703;
+    constexpr string_id scenario_name_title = 1704;
+    constexpr string_id enter_name_for_scenario = 1705;
+    constexpr string_id scenario_details_title = 1706;
+    constexpr string_id enter_description_of_this_scenario = 1707;
+    constexpr string_id no_details_yet = 1708;
+    constexpr string_id unnamed = 1709;
 
     constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;
@@ -641,10 +688,27 @@ namespace openloco::string_ids
     constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
 
+    constexpr string_id and_be_the_top_company = 1848;
+    constexpr string_id and_be_within_the_top_companies = 1849;
+    constexpr string_id with_a_time_limit = 1850;
+    constexpr string_id challenge_label = 1851;
+    constexpr string_id challenge_value = 1852;
+    constexpr string_id objective_achieve_a_certain_company_value = 1853;
+    constexpr string_id objective_achieve_a_certain_monthly_profit_from_vehicles = 1854;
+    constexpr string_id objective_achieve_a_certain_performance_index = 1855;
+    constexpr string_id objective_deliver_a_certain_amount_of_cargo = 1856;
+    constexpr string_id challenge_monetary_value = 1857;
+    constexpr string_id challenge_performance_index = 1858;
+    constexpr string_id challenge_delivered_cargo = 1859;
+    constexpr string_id time_limit_years_value = 1860;
+
     constexpr string_id title_exit_game = 1869;
 
     constexpr string_id allow_industries_to_close_down_during_game = 1871;
     constexpr string_id allow_new_industries_to_start_up_during_game = 1872;
+
+    constexpr string_id forbid_competing_companies_from_using = 1875;
+    constexpr string_id forbid_player_companies_from_using = 1876;
 
     constexpr string_id tutorial_1 = 1879;
     constexpr string_id tutorial_2 = 1880;

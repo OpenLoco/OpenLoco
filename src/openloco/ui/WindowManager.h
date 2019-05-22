@@ -136,6 +136,11 @@ namespace openloco::ui::prompt_browse
     void register_hooks();
 }
 
+namespace openloco::ui::windows::ScenarioOptions
+{
+    window* open();
+}
+
 namespace openloco::ui::windows::station
 {
     window* open(uint16_t id);
