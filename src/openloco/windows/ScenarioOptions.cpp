@@ -225,24 +225,17 @@ namespace openloco::ui::windows::ScenarioOptions
 
                         case scenario::objective_type::cargo_delivery:
                         {
-                            uint32_t newDeliveredCargoAmount = *objectiveDeliveredCargoAmount;
-                            newDeliveredCargoAmount -= 100;
-                            uint16_t divisor = 100;
+                            uint16_t stepSize{};
+                            if (*_clickRepeatTicks < 100)
+                                stepSize = 100;
+                            else if (*_clickRepeatTicks >= 100)
+                                stepSize = 1000;
+                            else if (*_clickRepeatTicks >= 200)
+                                stepSize = 10000;
 
-                            if (*_clickRepeatTicks >= 100)
-                            {
-                                newDeliveredCargoAmount -= 900;
-                                divisor = 1000;
-                            }
-                            if (*_clickRepeatTicks >= 200)
-                            {
-                                newDeliveredCargoAmount -= 9000;
-                                divisor = 10000;
-                            }
-
-                            // Round it off to the nearest multiple of the divisor.
-                            uint16_t quotient = newDeliveredCargoAmount / divisor;
-                            newDeliveredCargoAmount = quotient * divisor;
+                            // Round off cargo to the nearest multiple of the step size.
+                            uint16_t cargoFactor = (*objectiveDeliveredCargoAmount - stepSize) / stepSize;
+                            uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
                             *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, scenario::min_objective_delivered_cargo);
                             break;
@@ -271,26 +264,19 @@ namespace openloco::ui::windows::ScenarioOptions
 
                         case scenario::objective_type::cargo_delivery:
                         {
-                            uint32_t newDeliveredCargoAmount = *objectiveDeliveredCargoAmount;
-                            newDeliveredCargoAmount += 100;
-                            uint16_t divisor = 100;
+                            uint16_t stepSize{};
+                            if (*_clickRepeatTicks < 100)
+                                stepSize = 100;
+                            else if (*_clickRepeatTicks >= 100)
+                                stepSize = 1000;
+                            else if (*_clickRepeatTicks >= 200)
+                                stepSize = 10000;
 
-                            if (*_clickRepeatTicks >= 100)
-                            {
-                                newDeliveredCargoAmount += 900;
-                                divisor = 1000;
-                            }
-                            if (*_clickRepeatTicks >= 200)
-                            {
-                                newDeliveredCargoAmount += 9000;
-                                divisor = 10000;
-                            }
+                            // Round off cargo to the nearest multiple of the step size.
+                            uint16_t cargoFactor = (*objectiveDeliveredCargoAmount + stepSize) / stepSize;
+                            uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            // Round it off to the nearest multiple of the divisor.
-                            uint16_t quotient = newDeliveredCargoAmount / divisor;
-                            newDeliveredCargoAmount = quotient * divisor;
-
-                            *objectiveDeliveredCargoAmount = std::min<uint32_t>(newDeliveredCargoAmount, scenario::max_objective_delivered_cargo);
+                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, scenario::min_objective_delivered_cargo);
                             break;
                         }
                     }
