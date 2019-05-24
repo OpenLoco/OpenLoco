@@ -436,9 +436,9 @@ namespace openloco::ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                if (this->scroll_areas[s].h_right != scrollWidth + 1)
+                if (this->scroll_areas[s].contentWidth != scrollWidth + 1)
                 {
-                    this->scroll_areas[s].h_right = scrollWidth + 1;
+                    this->scroll_areas[s].contentWidth = scrollWidth + 1;
                     invalidate = true;
                 }
             }
@@ -480,8 +480,8 @@ namespace openloco::ui
 
             uint16_t scrollWidth = 0, scrollHeight = 0;
             this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
-            this->scroll_areas[s].h_left = 0;
-            this->scroll_areas[s].h_right = scrollWidth + 1;
+            this->scroll_areas[s].contentOffsetX = 0;
+            this->scroll_areas[s].contentWidth = scrollWidth + 1;
             this->scroll_areas[s].v_top = 0;
             this->scroll_areas[s].v_bottom = scrollHeight + 1;
 

@@ -1419,8 +1419,8 @@ namespace openloco::ui::WindowManager
             int size = widget->right - widget->left - 1;
             if (scroll->flags & scrollview::scroll_flags::VSCROLLBAR_VISIBLE)
                 size -= 11;
-            size = std::max(0, scroll->h_right - size);
-            scroll->h_left = std::clamp(scroll->h_left + wheel, 0, size);
+            size = std::max(0, scroll->contentWidth - size);
+            scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
         ui::scrollview::update_thumbs(window, widgetIndex);

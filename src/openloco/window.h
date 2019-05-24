@@ -165,8 +165,8 @@ namespace openloco::ui
     struct scroll_area_t
     {
         uint16_t flags;          // 0x00
-        int16_t h_left;          // 0x02
-        int16_t h_right;         // 0x04
+        int16_t contentOffsetX;  // 0x02
+        int16_t contentWidth;    // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
         int16_t v_top;           // 0x0A

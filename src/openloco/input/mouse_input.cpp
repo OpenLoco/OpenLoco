@@ -1000,9 +1000,9 @@ namespace openloco::input
         w->flags |= ui::window_flags::flag_15;
         w->call_on_resize();
         w->call_prepare_draw();
-        w->scroll_areas[0].h_right = -1;
+        w->scroll_areas[0].contentWidth = -1;
         w->scroll_areas[0].v_bottom = -1;
-        w->scroll_areas[1].h_right = -1;
+        w->scroll_areas[1].contentWidth = -1;
         w->scroll_areas[1].v_bottom = -1;
         window->update_scroll_widgets();
         w->invalidate();
@@ -1655,7 +1655,7 @@ namespace openloco::input
 
 #pragma mark - Window positioning
 
-    // 0x00C877D
+    // 0x004C877D
     static void window_position_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index)
     {
         state(input_state::positioning_window);

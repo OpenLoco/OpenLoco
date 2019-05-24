@@ -51,7 +51,7 @@ namespace openloco::ui::scrollview
     static void hButtonLeft(ui::window* const w, const int16_t scrollAreaIndex, const widget_index widgetIndex)
     {
         w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_LEFT_PRESSED;
-        w->scroll_areas[scrollAreaIndex].h_left = std::max(w->scroll_areas[scrollAreaIndex].h_left - SCROLLBAR_BUTTON_CLICK_STEP, 0);
+        w->scroll_areas[scrollAreaIndex].contentOffsetX = std::max(w->scroll_areas[scrollAreaIndex].contentOffsetX - SCROLLBAR_BUTTON_CLICK_STEP, 0);
         scrollview::update_thumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
@@ -65,8 +65,8 @@ namespace openloco::ui::scrollview
         {
             widgetWidth -= SCROLLBAR_WIDTH + 1;
         }
-        int16_t widgetContentWidth = std::max(w->scroll_areas[scrollAreaIndex].h_right - widgetWidth, 0);
-        w->scroll_areas[scrollAreaIndex].h_left = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].h_left + SCROLLBAR_BUTTON_CLICK_STEP, widgetContentWidth);
+        int16_t widgetContentWidth = std::max(w->scroll_areas[scrollAreaIndex].contentWidth - widgetWidth, 0);
+        w->scroll_areas[scrollAreaIndex].contentOffsetX = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].contentOffsetX + SCROLLBAR_BUTTON_CLICK_STEP, widgetContentWidth);
         scrollview::update_thumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
@@ -79,7 +79,7 @@ namespace openloco::ui::scrollview
         {
             widgetWidth -= SCROLLBAR_WIDTH + 1;
         }
-        w->scroll_areas[scrollAreaIndex].h_left = std::max(w->scroll_areas[scrollAreaIndex].h_left - widgetWidth, 0);
+        w->scroll_areas[scrollAreaIndex].contentOffsetX = std::max(w->scroll_areas[scrollAreaIndex].contentOffsetX - widgetWidth, 0);
         scrollview::update_thumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
@@ -92,8 +92,8 @@ namespace openloco::ui::scrollview
         {
             widgetWidth -= SCROLLBAR_WIDTH + 1;
         }
-        int16_t widgetContentWidth = std::max(w->scroll_areas[scrollAreaIndex].h_right - widgetWidth, 0);
-        w->scroll_areas[scrollAreaIndex].h_left = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].h_left + widgetWidth, widgetContentWidth);
+        int16_t widgetContentWidth = std::max(w->scroll_areas[scrollAreaIndex].contentWidth - widgetWidth, 0);
+        w->scroll_areas[scrollAreaIndex].contentOffsetX = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].contentOffsetX + widgetWidth, widgetContentWidth);
         scrollview::update_thumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
