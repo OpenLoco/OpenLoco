@@ -1406,18 +1406,18 @@ namespace openloco::ui::WindowManager
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
         ui::widget_t* widget = &window->widgets[widgetIndex];
 
-        if (window->scroll_areas[scrollIndex].flags & 0b10000)
+        if (window->scroll_areas[scrollIndex].flags & scrollview::scroll_flags::VSCROLLBAR_VISIBLE)
         {
             int size = widget->bottom - widget->top - 1;
-            if (scroll->flags & 0b1)
+            if (scroll->flags & scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll->v_bottom - size);
             scroll->v_top = std::clamp(scroll->v_top + wheel, 0, size);
         }
-        else if (window->scroll_areas[scrollIndex].flags & 0b1)
+        else if (window->scroll_areas[scrollIndex].flags & scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
         {
             int size = widget->right - widget->left - 1;
-            if (scroll->flags & 0b10000)
+            if (scroll->flags & scrollview::scroll_flags::VSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll->h_right - size);
             scroll->h_left = std::clamp(scroll->h_left + wheel, 0, size);
@@ -1440,7 +1440,8 @@ namespace openloco::ui::WindowManager
                 continue;
 
             scrollIndex++;
-            if (window->scroll_areas[scrollIndex].flags & 0b10001)
+            constexpr uint16_t scrollbarFlags = scrollview::scroll_flags::HSCROLLBAR_VISIBLE | scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
+            if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
                 return true;
@@ -1539,7 +1540,8 @@ namespace openloco::ui::WindowManager
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)
                     {
                         auto scrollIndex = window->get_scroll_data_index(widgetIndex);
-                        if (window->scroll_areas[scrollIndex].flags & 0b10001)
+                        constexpr uint16_t scrollbarFlags = scrollview::scroll_flags::HSCROLLBAR_VISIBLE | scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
+                        if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
                         {
                             windowScrollWheelInput(window, widgetIndex, wheel);
                             return;
