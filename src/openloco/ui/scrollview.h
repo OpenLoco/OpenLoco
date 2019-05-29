@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::scrollview
 {
-    enum class scroll_part
+    enum class scroll_part : int16_t
     {
         none = -1,
         view = 0,
@@ -35,6 +35,9 @@ namespace openloco::ui::scrollview
 
     constexpr uint8_t SCROLLBAR_WIDTH = 10;
     constexpr uint8_t SCROLLBAR_BUTTON_CLICK_STEP = 3;
+
+    void scroll_5_follow(WindowType, window_number, widget_index, size_t, int16_t ax);
+    void scroll_10_follow(WindowType, window_number, widget_index, size_t, int16_t ax);
 
     void get_part(
         ui::window* window,

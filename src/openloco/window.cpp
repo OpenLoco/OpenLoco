@@ -1143,6 +1143,25 @@ namespace openloco::ui
         this->event_handlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
     }
 
+    void window::call_scroll_mouse_drag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    {
+        if (event_handlers->scroll_mouse_drag == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->scroll_mouse_drag))
+        {
+            registers regs;
+            regs.ax = scroll_index;
+            regs.esi = (int32_t)this;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
+            return;
+        }
+
+        this->event_handlers->scroll_mouse_drag(this, xPos, yPos, scroll_index);
+    }
+
     void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
         if (event_handlers->scroll_mouse_over == nullptr)

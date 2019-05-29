@@ -2,14 +2,60 @@
 #include "../interop/interop.hpp"
 #include "../ui.h"
 #include "WindowManager.h"
+#include <cmath>
 
 using namespace openloco::interop;
 
 namespace openloco::ui::scrollview
 {
-    static loco_global<uint16_t, 0x00523396> _currentScrollArea;
+    static loco_global<ui::scrollview::scroll_part, 0x00523396> _currentScrollArea;
     // TODO: Convert to a scrollIndex when all scroll functions implemented
     static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
+
+    static constexpr uint16_t thumbSize = 10;
+    static constexpr uint16_t barWidth = 11;
+
+    // 0x004C87E1
+    void scroll_5_follow(WindowType _pressedWindowType, window_number _pressedWindowNumber, widget_index _pressedWidgetIndex, size_t currentScrollOffset, int16_t ax)
+    {
+        auto window = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
+        if (window == nullptr)
+            return;
+
+        scroll_area_t& scrollArea = window->scroll_areas[currentScrollOffset];
+        auto& w = window->widgets[_pressedWidgetIndex];
+
+        scrollArea.flags |= scroll_flags::HSCROLLBAR_THUMB_PRESSED;
+
+        uint16_t trackWidth = w.width() - 2 - thumbSize - thumbSize;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            trackWidth -= barWidth;
+        }
+
+        ax = ax * scrollArea.contentWidth / trackWidth;
+
+        int16_t newOffset = scrollArea.contentOffsetX + ax;
+
+        int frameWidth = w.width() - 2;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            frameWidth -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentWidth - frameWidth;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetX = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(window, _pressedWidgetIndex);
+        WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+    }
+
+    // 0x004C8898
+    void scroll_10_follow(WindowType _pressedWindowType, window_number _pressedWindowNumber, widget_index _pressedWidgetIndex, size_t currentScrollOffset, int16_t ax)
+    {
+    }
 
     // 0x004C8EF0
     void get_part(
@@ -158,7 +204,7 @@ namespace openloco::ui::scrollview
 
         ui::scrollview::get_part(w, widget, x, y, &outX, &outY, &scrollArea, &scrollAreaOffset);
 
-        _currentScrollArea = (uint16_t)scrollArea;
+        _currentScrollArea = scrollArea;
         _currentScrollOffset = scrollAreaOffset;
         int16_t scrollAreaIndex = scrollAreaOffset / sizeof(ui::scroll_area_t);
 
@@ -207,7 +253,7 @@ namespace openloco::ui::scrollview
 
         ui::scrollview::get_part(w, widget, x, y, &outX, &outY, &scrollArea, &scrollAreaOffset);
 
-        _currentScrollArea = (uint16_t)scrollArea;
+        _currentScrollArea = scrollArea;
         _currentScrollOffset = scrollAreaOffset;
         int16_t scrollAreaIndex = scrollAreaOffset / sizeof(ui::scroll_area_t);
 
