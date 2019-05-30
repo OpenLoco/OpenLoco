@@ -369,10 +369,10 @@ namespace openloco::ui
         int16_t y;                                         // 0x32
         uint16_t width;                                    // 0x34
         uint16_t height;                                   // 0x36
-        uint16_t min_width;                                // 0x38
-        uint16_t max_width;                                // 0x3a
-        uint16_t min_height;                               // 0x3c
-        uint16_t max_height;                               // 0x3e
+        uint16_t min_width = 0;                            // 0x38
+        uint16_t max_width = 0;                            // 0x3A
+        uint16_t min_height = 0;                           // 0x3C
+        uint16_t max_height = 0;                           // 0x3E
         window_number number = 0;                          // 0x40
         uint32_t flags;                                    // 0x42
         scroll_area_t scroll_areas[2];                     // 0x46
