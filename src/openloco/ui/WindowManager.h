@@ -127,7 +127,7 @@ namespace openloco::ui::options
 
 namespace openloco::ui::prompt_browse
 {
-    enum class browse_type
+    enum browse_type : uint8_t
     {
         load = 1,
         save = 2
