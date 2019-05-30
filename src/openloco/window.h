@@ -380,7 +380,7 @@ namespace openloco::ui
         uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
         uint16_t var_83E;
-        int16_t row_hover; // 0x840
+        int16_t row_hover = -1; // 0x840
         uint8_t pad_842[0x844 - 0x842];
         uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
