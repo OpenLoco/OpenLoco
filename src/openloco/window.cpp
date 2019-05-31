@@ -30,6 +30,10 @@ namespace openloco::ui
         , y(position.y)
         , width(size.width)
         , height(size.height)
+        , min_width(size.width)
+        , max_width(size.width)
+        , min_height(size.height)
+        , max_height(size.height)
     {
     }
 
