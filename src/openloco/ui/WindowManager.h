@@ -53,13 +53,11 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
-    window* open_town_window(uint16_t townId);
     window* open_title_version();
     window* open_title_exit();
     window* open_title_menu();
     window* open_title_logo();
     void open_about_window();
-    void sub_498E9B(window* w);
 
     bool prompt_ok_cancel(string_id okButtonStringId);
 
@@ -189,6 +187,16 @@ namespace openloco::ui::tooltip
     void register_hooks();
     void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+}
+
+namespace openloco::ui::windows::town
+{
+    // Can be removed once on_resize events have been implemented.
+    namespace common
+    {
+        void sub_498E9B(window* w);
+    }
+    window* open(uint16_t townId);
 }
 
 namespace openloco::ui::windows::town_list
