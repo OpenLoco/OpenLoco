@@ -1,15 +1,36 @@
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
+#include "../input.h"
 #include "../localisation/string_ids.h"
+#include "../objects/interface_skin_object.h"
+#include "../objects/objectmgr.h"
 #include "../openloco.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 
 namespace openloco::ui::windows::town
 {
+    static const gfx::ui_size_t windowSize = { 223, 161 };
+
+    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
+
     namespace common
     {
+        enum widx
+        {
+            frame,
+            caption,
+            close_button,
+            panel,
+            tab_town,
+            tab_population,
+            tab_company_ratings,
+        };
+
+        const uint64_t enabledWidgets = (1 << close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
+
         // 0x00498E9B
         void sub_498E9B(window* w)
         {
@@ -32,11 +53,22 @@ namespace openloco::ui::windows::town
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
+        static void prepare_draw(window* self);
+        static void repositionTabs(window* self);
         static void initEvents();
     }
 
     namespace town
     {
+        enum widx
+        {
+            viewport = 7,
+            unk_8,
+            centre_on_viewport,
+            expand_town,
+            demolish_town,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(223, 161, string_ids::title_town),
             make_widget({ 3, 44 }, { 195, 104 }, widget_type::viewport, 1, 0xFFFFFFFE),
@@ -47,14 +79,46 @@ namespace openloco::ui::windows::town
             widget_end(),
         };
 
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
+
         static window_event_list events;
 
         // 0x00498EAF
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00498EAF, regs);
+            common::prepare_draw(self);
+
+            self->widgets[widx::viewport].right = self->width - 26;
+            self->widgets[widx::viewport].bottom = self->height - 14;
+
+            self->widgets[widx::unk_8].top = self->height - 12;
+            self->widgets[widx::unk_8].bottom = self->height - 3;
+            self->widgets[widx::unk_8].right = self->width - 14;
+
+            self->widgets[widx::expand_town].right = self->width - 2;
+            self->widgets[widx::expand_town].left = self->width - 25;
+
+            self->widgets[widx::demolish_town].right = self->width - 2;
+            self->widgets[widx::demolish_town].left = self->width - 25;
+
+            if (is_editor_mode())
+            {
+                self->widgets[widx::expand_town].type = widget_type::wt_9;
+                self->widgets[widx::demolish_town].type = widget_type::wt_9;
+            }
+            else
+            {
+                self->widgets[widx::expand_town].type = widget_type::none;
+                self->widgets[widx::demolish_town].type = widget_type::none;
+                self->widgets[widx::viewport].right += 22;
+            }
+
+            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
+            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
+            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
+            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+
+            common::repositionTabs(self);
         }
 
         // 0x00498FFE
@@ -111,17 +175,80 @@ namespace openloco::ui::windows::town
             events.prepare_draw = prepare_draw;
             events.text_input = text_input;
         }
+
+        // 0x00499A87
+        static void initViewport(window* self)
+        {
+            if (self->current_tab != 0)
+                return;
+
+            self->call_prepare_draw();
+
+            auto town = townmgr::get(self->number);
+
+            registers regs;
+            regs.ax = town->x;
+            regs.cx = town->y;
+            regs.esi = (int32_t)self;
+            call(0x00499AB2, regs);
+        }
     }
 
     // 0x00499B7E
-    // dx: townId
-    // esi: {return}
     window* open(uint16_t townId)
     {
-        registers regs;
-        regs.dx = townId;
-        call(0x00499B7E, regs);
-        return (window*)regs.esi;
+        auto window = WindowManager::bringToFront(WindowType::town, townId);
+        if (window != nullptr)
+        {
+            if (input::is_tool_active(window->type, window->number))
+                input::cancel_tool();
+
+            window = WindowManager::bringToFront(WindowType::town, townId);
+        }
+
+        if (window == nullptr)
+        {
+            // 0x00499C0D start
+            window = WindowManager::createWindowCentred(WindowType::town, windowSize, 0, &town::events);
+            window->widgets = town::widgets;
+            window->enabled_widgets = town::enabledWidgets;
+            window->number = townId;
+            window->current_tab = 0;
+            window->frame_no = 0;
+            window->disabled_widgets = 0;
+            window->min_width = 192;
+            window->min_height = 161;
+            window->max_width = 600;
+            window->max_height = 440;
+            window->flags |= window_flags::resizable;
+
+            auto skin = objectmgr::get<interface_skin_object>();
+            if (skin != nullptr)
+            {
+                window->colours[0] = skin->colour_0B;
+                window->colours[1] = skin->colour_0C;
+            }
+            // 0x00499C0D end
+
+            window->var_848 = -1;
+        }
+
+        // TODO(avgeffen): only needs to be called once.
+        common::initEvents();
+
+        window->current_tab = 0;
+        window->invalidate();
+
+        window->widgets = town::widgets;
+        window->enabled_widgets = town::enabledWidgets;
+        window->holdable_widgets = 0;
+        window->event_handlers = &town::events;
+        window->activated_widgets = 0;
+        window->disabled_widgets = 0;
+        window->init_scroll_widgets();
+        town::initViewport(window);
+
+        return window;
     }
 
     namespace population
@@ -272,6 +399,68 @@ namespace openloco::ui::windows::town
 
     namespace common
     {
+        struct TabInformation
+        {
+            widget_t* widgets;
+            const widx widgetIndex;
+            window_event_list* events;
+            const uint64_t* enabledWidgets;
+        };
+
+        static TabInformation tabInformationByTabOffset[] = {
+            { town::widgets, widx::tab_town, &town::events, &town::enabledWidgets },
+            { population::widgets, widx::tab_population, &population::events, &common::enabledWidgets },
+            { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &common::enabledWidgets }
+        };
+
+        static void prepare_draw(window* self)
+        {
+            // Reset tab widgets if needed.
+            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            if (self->widgets != tabWidgets)
+            {
+                self->widgets = tabWidgets;
+                self->init_scroll_widgets();
+            }
+
+            // Activate the current tab.
+            self->activated_widgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
+            widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
+            self->activated_widgets |= (1ULL << widgetIndex);
+
+            // Put town name in place.
+            commonFormatArgs[0] = townmgr::get(self->number)->name;
+
+            // Resize common widgets.
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+        }
+
+        // 0x004999A7, 0x004999AD
+        static void repositionTabs(window* self)
+        {
+            int16_t xPos = self->widgets[widx::tab_town].left;
+            const int16_t tabWidth = self->widgets[widx::tab_town].right - xPos;
+
+            for (uint8_t i = widx::tab_town; i <= widx::tab_company_ratings; i++)
+            {
+                if (self->is_disabled(i))
+                    continue;
+
+                self->widgets[i].left = xPos;
+                self->widgets[i].right = xPos + tabWidth;
+                xPos = self->widgets[i].right + 1;
+            }
+        }
+
         static void initEvents()
         {
             town::initEvents();
