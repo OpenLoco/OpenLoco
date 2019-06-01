@@ -268,6 +268,7 @@ namespace openloco::map
 
     public:
         uint8_t unk_4_F() const { return _4 & 0xF; }
+        uint8_t road_object_id() const { return _5 >> 4; } // _5u
     };
 #pragma pack(pop)
 

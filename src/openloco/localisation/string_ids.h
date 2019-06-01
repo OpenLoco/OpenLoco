@@ -486,6 +486,9 @@ namespace openloco::string_ids
 
     constexpr string_id expand_this_town = 1409;
 
+    constexpr string_id str_1420 = 1420; //  Belongs to {STRINGID}
+    constexpr string_id str_1421 = 1421; // "{STRINGID} belongs to {STRINGID}"
+    constexpr string_id str_1422 = 1422; // Signal belongs to {STRINGID}
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id waiting_cargo_separator = 1430;
