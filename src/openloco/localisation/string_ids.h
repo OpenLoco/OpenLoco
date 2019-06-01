@@ -211,6 +211,11 @@ namespace openloco::string_ids
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
     constexpr string_id title_menu_exit_from_game = 616;
+    constexpr string_id town_size_hamlet = 617;
+    constexpr string_id town_size_village = 618;
+    constexpr string_id town_size_town = 619;
+    constexpr string_id town_size_city = 620;
+    constexpr string_id town_size_metropolis = 621;
 
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
@@ -451,6 +456,8 @@ namespace openloco::string_ids
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
+
+    constexpr string_id status_town_population = 1310;
 
     constexpr string_id title_town = 1359;
     constexpr string_id title_town_population = 1360;

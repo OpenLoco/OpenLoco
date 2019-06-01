@@ -1,3 +1,4 @@
+#include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../input.h"
@@ -124,10 +125,27 @@ namespace openloco::ui::windows::town
         // 0x00498FFE
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00498FFE, regs);
+            self->draw(dpi);
+            // TODO(avgeffen) draw tabs
+            // TODO(avgeffen) render viewport
+            // TODO(avgeffen) viewport_4CF487
+
+            static string_id townSizeLabelIds[] = {
+                string_ids::town_size_hamlet,
+                string_ids::town_size_village,
+                string_ids::town_size_town,
+                string_ids::town_size_city,
+                string_ids::town_size_metropolis,
+            };
+
+            auto town = townmgr::get(self->number);
+            commonFormatArgs[0] = townSizeLabelIds[(uint8_t)town->size];
+            commonFormatArgs[1] = town->population;
+
+            const uint16_t xPos = self->x + self->widgets[widx::unk_8].left;
+            const uint16_t yPos = self->y + self->widgets[widx::unk_8].top;
+            const uint16_t width = self->widgets[widx::unk_8].right - self->widgets[widx::unk_8].left;
+            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::status_town_population, &*commonFormatArgs);
         }
 
         // 0x00499079
