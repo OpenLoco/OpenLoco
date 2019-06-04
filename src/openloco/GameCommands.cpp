@@ -224,9 +224,10 @@ namespace openloco::game_commands
 
             switch (tile->type())
             {
-                case element_type::unk_1: // 4
+                case element_type::track: // 4
                 {
-                    track_object* pObject = objectmgr::get<track_object>(tile->as_unk1()->track_object_id());
+                    track_element* trackElement = tile->as_track();
+                    track_object* pObject = objectmgr::get<track_object>(trackElement->track_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -236,9 +237,10 @@ namespace openloco::game_commands
                     return 0x80000000;
                 }
 
-                case element_type::unk_7: //0x1C
+                case element_type::road: //0x1C
                 {
-                    road_object* pObject = objectmgr::get<road_object>(tile->as_unk7()->road_object_id());
+                    road_element* roadElement = tile->as_road();
+                    road_object* pObject = objectmgr::get<road_object>(roadElement->road_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -250,7 +252,8 @@ namespace openloco::game_commands
 
                 case element_type::station: // 8
                 {
-                    station* pStation = stationmgr::get(tile->as_station()->station_id());
+                    station_element* stationElement = tile->as_station();
+                    station* pStation = stationmgr::get(stationElement->station_id());
                     if (pStation == nullptr)
                         break;
 
