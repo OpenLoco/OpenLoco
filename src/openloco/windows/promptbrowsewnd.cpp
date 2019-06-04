@@ -30,7 +30,7 @@ namespace openloco::ui::prompt_browse
     static fs::path get_directory(const fs::path& path);
     static std::string get_basename(const fs::path& path);
 
-    enum class browse_file_type
+    enum browse_file_type : uint8_t
     {
         saved_game,
         landscape,
@@ -188,11 +188,11 @@ namespace openloco::ui::prompt_browse
 
         textinput::cancel();
 
-        _type = (uint8_t)type;
-        _fileType = (uint8_t)browse_file_type::saved_game;
+        *_type = type;
+        *_fileType = browse_file_type::saved_game;
         if (utility::iequals(filter, "*.sc5"))
         {
-            _fileType = (uint8_t)browse_file_type::landscape;
+            *_fileType = browse_file_type::landscape;
         }
         utility::strcpy_safe(_title, title);
         utility::strcpy_safe(_filter, filter);
@@ -329,34 +329,32 @@ namespace openloco::ui::prompt_browse
         self->widgets[widx::close_button].left = self->width - 15;
         self->widgets[widx::close_button].right = self->width - 3;
 
-        if (*_type == (uint8_t)browse_file_type::unk_2)
+        if (*_type == browse_type::save)
         {
-            self->widgets[widx::ok_button].top = self->height - 16;
-            self->widgets[widx::ok_button].bottom = self->height - 5;
-
-            self->widgets[widx::text_filename].right = self->width - 6;
-            self->widgets[widx::text_filename].top = self->height - 32;
-            self->widgets[widx::text_filename].bottom = self->height - 19;
-
-            self->widgets[widx::text_filename].bottom = self->height - 35;
-
+            self->widgets[widx::ok_button].left = self->width - 86;
+            self->widgets[widx::ok_button].right = self->width - 16;
+            self->widgets[widx::ok_button].top = self->height - 15;
+            self->widgets[widx::ok_button].bottom = self->height - 4;
             self->widgets[widx::ok_button].type = widget_type::wt_11;
+
+            self->widgets[widx::text_filename].right = self->width - 4;
+            self->widgets[widx::text_filename].top = self->height - 31;
+            self->widgets[widx::text_filename].bottom = self->height - 18;
             self->widgets[widx::text_filename].type = widget_type::wt_17;
+
+            self->widgets[widx::scrollview].bottom = self->height - 34;
         }
         else
         {
-            self->widgets[widx::text_filename].bottom = self->height - 4;
-
             self->widgets[widx::ok_button].type = widget_type::none;
             self->widgets[widx::text_filename].type = widget_type::none;
+
+            self->widgets[widx::scrollview].bottom = self->height - 4;
         }
 
-        self->widgets[widx::scrollview].right = self->width - 261;
-        if (*_fileType != (uint8_t)browse_file_type::saved_game)
+        self->widgets[widx::scrollview].right = self->width - 259;
+        if (*_fileType != browse_file_type::saved_game)
             self->widgets[widx::scrollview].right += 122;
-
-        self->widgets[widx::text_filename].left = self->width - 86;
-        self->widgets[widx::text_filename].right = self->width - 16;
 
         self->widgets[widx::parent_button].left = self->width - 26;
         self->widgets[widx::parent_button].right = self->width - 3;
@@ -412,7 +410,7 @@ namespace openloco::ui::prompt_browse
                     _commonFormatArgs);
                 y += 12;
 
-                if (_fileType == (uint8_t)browse_file_type::saved_game)
+                if (*_fileType == browse_file_type::saved_game)
                 {
                     // Preview image
                     auto saveInfo = *((const saveinfo**)0x50AEA8);
@@ -421,7 +419,7 @@ namespace openloco::ui::prompt_browse
                         draw_save_preview(*window, *dpi, x, y, width, 201, *saveInfo);
                     }
                 }
-                else if (_fileType == (uint8_t)browse_file_type::landscape)
+                else if (*_fileType == browse_file_type::landscape)
                 {
                     draw_landscape_preview(*window, *dpi, x, y, width, 129);
                 }
@@ -432,7 +430,7 @@ namespace openloco::ui::prompt_browse
         if (filenameBox.type != widget_type::none)
         {
             // Draw filename label
-            gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + 2, 0, string_ids::window_browse_filename, nullptr);
+            gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, string_ids::window_browse_filename, nullptr);
 
             // Clip to text box
             gfx::drawpixelinfo_t* dpi2;
@@ -789,7 +787,7 @@ namespace openloco::ui::prompt_browse
     // 0x00446574
     static void sub_446574(ui::window* window)
     {
-        if (_type != (uint8_t)browse_file_type::unk_2)
+        if (*_type != browse_file_type::unk_2)
         {
             call(0x00446689);
         }
