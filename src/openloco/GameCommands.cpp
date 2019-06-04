@@ -1,0 +1,281 @@
+#include "audio/audio.h"
+#include "company.h"
+#include "companymgr.h"
+#include "game_commands.h"
+#include "map/tile.h"
+#include "objects/objectmgr.h"
+#include "objects/road_object.h"
+#include "objects/track_object.h"
+#include "stationmgr.h"
+#include "ui/WindowManager.h"
+
+using namespace openloco::ui;
+using namespace openloco::map;
+
+namespace openloco::game_commands
+{
+    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+    static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
+    static loco_global<company_id_t[2], 0x00525E3C> _player_company;
+    static loco_global<uint8_t, 0x00508F17> paused_state;
+    static loco_global<uint8_t, 0x00508F1A> game_speed;
+    static loco_global<uint16_t, 0x0050A004> _50A004;
+
+    static uint16_t _gameCommandFlags;
+    static loco_global<string_id, 0x009C68E6> _9C68E6;
+    static loco_global<uintptr_t[80], 0x004F9548> _4F9548;
+    static loco_global<uint8_t[80], 0x004F9688> _4F9688;
+
+    static loco_global<tile_element*, 0x009C68D0> _9C68D0;
+
+    static loco_global<coord_t, 0x009C68E4> _game_command_map_z;
+    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
+    static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
+    static loco_global<string_id, 0x009C68E8> _9C68E8;
+
+    void registerHooks()
+    {
+        register_hook(
+            0x00431315,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto ebx = do_command(regs.esi, backup);
+
+                regs = backup;
+                regs.ebx = ebx;
+                return 0;
+            });
+    }
+
+    static uint32_t loc_4314EA();
+    static uint32_t loc_4313C6(const registers& regs);
+
+    // 0x00431315
+    uint32_t do_command(int esi, const registers& regs)
+    {
+        uint16_t flags = regs.bx;
+
+        _gameCommandFlags = regs.bx;
+        if (game_command_nest_level != 0)
+            return loc_4313C6(regs);
+
+        if ((flags & 1) == 0)
+        {
+            return loc_4313C6(regs);
+        }
+
+        if ((flags & 0x50) != 0
+            && _4F9688[regs.esi] == 1
+            && _updating_company_id == _player_company[0])
+        {
+            if (get_pause_flags() & 1)
+            {
+                paused_state = paused_state ^ 1;
+                WindowManager::invalidate(WindowType::timeToolbar);
+                audio::unpause_sound();
+                _50A004 = _50A004 | 1;
+            }
+
+            if (game_speed != 0)
+            {
+                game_speed = 0;
+                WindowManager::invalidate(WindowType::timeToolbar);
+            }
+
+            if (is_paused())
+            {
+                _9C68E6 = string_ids::empty;
+                return 0x80000000;
+            }
+        }
+
+        if (_updating_company_id == _player_company[0] && isNetworked())
+        {
+            call(0x0046E34A); // some network stuff. should have variables set but meh
+        }
+
+        return loc_4313C6(regs);
+    }
+
+    static uint32_t loc_4313C6(const registers& regs)
+    {
+        uint16_t flags = regs.bx;
+        _9C68E6 = string_ids::null;
+        game_command_nest_level++;
+
+        auto addr = _4F9548[regs.esi];
+
+        uint16_t flagsBackup = _gameCommandFlags;
+        registers fnRegs = regs;
+        fnRegs.bl &= ~1;
+        call(addr, fnRegs);
+        uint32_t ebx = fnRegs.ebx;
+        _gameCommandFlags = flagsBackup;
+
+        if (ebx != 0x80000000)
+        {
+            if (is_editor_mode())
+                ebx = 0;
+
+            if (game_command_nest_level == 1)
+            {
+                if ((_gameCommandFlags & 4) == 0
+                    && (_gameCommandFlags & 0x20) == 0
+                    && ebx != 0)
+                {
+                    registers regs2;
+                    regs2.ebp = ebx;
+                    call(0x0046DD06, regs2);
+                    ebx = regs2.ebp;
+                }
+            }
+        }
+
+        if (ebx == 0x80000000)
+        {
+            if (flags & 1)
+            {
+                return loc_4314EA();
+            }
+            else
+            {
+                game_command_nest_level--;
+                return ebx;
+            }
+        }
+
+        if ((flags & 1) == 0)
+        {
+            game_command_nest_level--;
+            return ebx;
+        }
+
+        uint16_t flagsBackup2 = _gameCommandFlags;
+        registers fnRegs2 = regs;
+        call(addr, fnRegs2);
+        uint32_t ebx2 = fnRegs2.ebx;
+        _gameCommandFlags = flagsBackup2;
+
+        if (ebx2 == 0x80000000)
+        {
+            return loc_4314EA();
+        }
+
+        if (is_editor_mode())
+        {
+            ebx = 0;
+        }
+
+        if (ebx2 < ebx)
+        {
+            ebx = ebx2;
+        }
+
+        game_command_nest_level--;
+        if (game_command_nest_level == 0)
+            return ebx;
+
+        if ((flagsBackup2 & 0x20) != 0)
+            return ebx;
+
+        call(0x0046DE2B);
+
+        if (ebx != 0 && _updating_company_id == _player_company[0])
+        {
+            _game_command_map_z = _game_command_map_z + 24;
+            call(0x0046DC9F);
+            _game_command_map_z = _game_command_map_z - 24;
+        }
+
+        return ebx;
+    }
+
+    static void sub_431908(company_id_t al, string_id dx)
+    {
+
+        registers regs;
+        regs.al = al;
+        regs.dx = dx;
+        call(0x431908, regs);
+    }
+
+    static uint32_t loc_4314EA()
+    {
+        game_command_nest_level--;
+        if (game_command_nest_level != 0)
+            return 0x80000000;
+
+        if (_updating_company_id != _player_company[0])
+            return 0x80000000;
+
+        if (_gameCommandFlags & 8)
+            return 0x80000000;
+
+        if (_9C68E6 != 0xFFFE)
+        {
+            windows::show_error(_9C68E8, _9C68E6);
+            return 0x80000000;
+        }
+
+        // advanced errors
+        if (_9C68D0 != (void*)-1)
+        {
+            auto tile = (tile_element*)_9C68D0;
+
+            switch (tile->type())
+            {
+                case element_type::unk_1: // 4
+                {
+                    track_object* pObject = objectmgr::get<track_object>(tile->as_unk1()->track_object_id());
+                    if (pObject == nullptr)
+                        break;
+
+                    _commonFormatArgs[0] = pObject->name;
+                    _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
+                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    return 0x80000000;
+                }
+
+                case element_type::unk_7: //0x1C
+                {
+                    road_object* pObject = objectmgr::get<road_object>(tile->as_unk7()->road_object_id());
+                    if (pObject == nullptr)
+                        break;
+
+                    _commonFormatArgs[0] = pObject->name;
+                    _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
+                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    return 0x80000000;
+                }
+
+                case element_type::station: // 8
+                {
+                    station* pStation = stationmgr::get(tile->as_station()->station_id());
+                    if (pStation == nullptr)
+                        break;
+
+                    _commonFormatArgs[0] = pStation->name;
+                    _commonFormatArgs[1] = pStation->town;
+                    _commonFormatArgs[2] = companymgr::get(_errorCompanyId)->name;
+                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    return 0x80000000;
+                }
+
+                case element_type::unk_3: // 0x0C
+                {
+                    _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
+                    sub_431908(_errorCompanyId, string_ids::str_1422);
+                    return 0x80000000;
+                }
+
+                default:
+                    break;
+            }
+        }
+
+        // fallback
+        _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
+        sub_431908(_errorCompanyId, string_ids::str_1420);
+        return 0x80000000;
+    }
+}

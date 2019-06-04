@@ -8,7 +8,7 @@ using namespace openloco::interop;
 
 namespace openloco::game_commands
 {
-    inline void do_command(int esi, registers& registers);
+    uint32_t do_command(int esi, const registers& registers);
 
     inline void do_20()
     {
@@ -76,11 +76,5 @@ namespace openloco::game_commands
         regs.ax = position.x;
         regs.cx = position.y;
         do_command(73, regs);
-    }
-
-    inline void do_command(int esi, registers& registers)
-    {
-        registers.esi = esi;
-        call(0x00431315, registers);
     }
 }

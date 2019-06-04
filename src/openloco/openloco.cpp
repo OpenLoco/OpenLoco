@@ -21,7 +21,6 @@
 #include "audio/audio.h"
 #include "companymgr.h"
 #include "config.h"
-#include "console.h"
 #include "date.h"
 #include "environment.h"
 #include "graphics/colours.h"
@@ -36,8 +35,6 @@
 #include "localisation/string_ids.h"
 #include "multiplayer.h"
 #include "objects/objectmgr.h"
-#include "objects/road_object.h"
-#include "objects/track_object.h"
 #include "openloco.h"
 #include "platform/platform.h"
 #include "progressbar.h"
@@ -68,7 +65,6 @@ namespace openloco
 #endif
 
     loco_global<char[256], 0x005060D0> gCDKey;
-    static uint32_t do_gc(registers& regs);
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> last_tick_time;
@@ -285,14 +281,6 @@ namespace openloco
 
     static void initialise()
     {
-        register_hook(
-            0x00431315,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto ebx = do_gc(backup);
-                regs.ebx = ebx;
-                return 0;
-            });
         std::srand(std::time(0));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
@@ -895,253 +883,6 @@ namespace openloco
         {
             std::cerr << ex.what() << std::endl;
         }
-    }
-
-    static uint16_t _gameCommandFlags;
-    static loco_global<string_id, 0x009C68E6> _9C68E6;
-    static loco_global<uintptr_t[80], 0x004F9548> _4F9548;
-    static loco_global<uint8_t[80], 0x004F9688> _4F9688;
-
-    static loco_global<tile_element*, 0x009C68D0> _9C68D0;
-
-    static loco_global<coord_t, 0x009C68E4> _game_command_map_z;
-    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
-    static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
-    static loco_global<string_id, 0x009C68E8> _9C68E8;
-
-    static uint32_t loc_4314EA();
-    static uint32_t loc_4313C6(registers& regs);
-
-    static uint32_t do_gc(registers& regs)
-    {
-        uint16_t flags = regs.bx;
-
-        _gameCommandFlags = regs.bx;
-        if (game_command_nest_level != 0)
-            return loc_4313C6(regs);
-
-        console::log("Do game command %d", regs.esi);
-        if ((flags & 1) == 0)
-        {
-            return loc_4313C6(regs);
-        }
-
-        if ((flags & 0x50) != 0
-            && _4F9688[regs.esi] == 1
-            && _updating_company_id == _player_company[0])
-        {
-            if (get_pause_flags() & 1)
-            {
-                paused_state = paused_state ^ 1;
-                WindowManager::invalidate(WindowType::timeToolbar);
-                audio::unpause_sound();
-                addr<0x0050A004, uint16_t>() |= 1;
-            }
-
-            if (game_speed != 0)
-            {
-                game_speed = 0;
-                WindowManager::invalidate(WindowType::timeToolbar);
-            }
-
-            if (is_paused())
-            {
-                _9C68E6 = string_ids::empty;
-                return 0x80000000;
-            }
-        }
-
-        if (_updating_company_id == _player_company[0] && isNetworked())
-        {
-            call(0x0046E34A); // some network stuff. should have variables set but meh
-        }
-
-        return loc_4313C6(regs);
-    }
-
-    static uint32_t loc_4313C6(registers& regs)
-    {
-        uint16_t flags = regs.bx;
-        _9C68E6 = string_ids::null;
-        game_command_nest_level++;
-
-        auto addr = _4F9548[regs.esi];
-
-        uint16_t flagsBackup = _gameCommandFlags;
-        registers fnRegs = regs;
-        fnRegs.bl &= ~1;
-        console::log("addr %d (0x%X) [EAX:%X EBX:%X ECX:%X EDX:%X EDI:%X EBP:%X]", fnRegs.esi, addr, fnRegs.eax, fnRegs.ebx, fnRegs.ecx, fnRegs.edx, fnRegs.edi, fnRegs.ebp);
-        call(addr, fnRegs);
-        uint32_t ebx = fnRegs.ebx;
-        _gameCommandFlags = flagsBackup;
-
-        console::log("EBX: %X", ebx);
-        if (ebx != 0x80000000)
-        {
-            if (is_editor_mode())
-                ebx = 0;
-
-            if (game_command_nest_level == 1)
-            {
-                if ((_gameCommandFlags & 4) == 0
-                    && (_gameCommandFlags & 0x20) == 0
-                    && ebx != 0)
-                {
-                    registers regs2;
-                    regs2.ebp = ebx;
-                    call(0x0046DD06, regs2);
-                    ebx = regs2.ebp;
-                }
-            }
-        }
-
-        if (ebx == 0x80000000)
-        {
-            if (flags & 1)
-            {
-                return loc_4314EA();
-            }
-            else
-            {
-                game_command_nest_level--;
-                return ebx;
-            }
-        }
-
-        if ((flags & 1) == 0)
-        {
-            game_command_nest_level--;
-            return ebx;
-        }
-
-        uint16_t flagsBackup2 = _gameCommandFlags;
-        registers fnRegs2 = regs;
-        console::log("addr %d (0x%X) [EAX:%X EBX:%X ECX:%X EDX:%X EDI:%X EBP:%X]", fnRegs2.esi, addr, fnRegs2.eax, fnRegs2.ebx, fnRegs2.ecx, fnRegs2.edx, fnRegs2.edi, fnRegs2.ebp);
-        call(addr, fnRegs2);
-        uint32_t ebx2 = fnRegs2.ebx;
-        _gameCommandFlags = flagsBackup2;
-
-        if (ebx2 == 0x80000000)
-        {
-            return loc_4314EA();
-        }
-
-        if (is_editor_mode())
-        {
-            ebx = 0;
-        }
-
-        if (ebx2 < ebx)
-        {
-            ebx = ebx2;
-        }
-
-        game_command_nest_level--;
-        if (game_command_nest_level == 0)
-            return ebx;
-
-        if ((flagsBackup2 & 0x20) != 0)
-            return ebx;
-
-        call(0x0046DE2B);
-
-        if (ebx != 0 && _updating_company_id == _player_company[0])
-        {
-            _game_command_map_z = _game_command_map_z + 24;
-            call(0x0046DC9F);
-            _game_command_map_z = _game_command_map_z - 24;
-        }
-
-        return ebx;
-    }
-
-    static void sub_431908(company_id_t al, string_id dx)
-    {
-
-        registers regs;
-        regs.al = al;
-        regs.dx = dx;
-        call(0x431908, regs);
-    }
-
-    static uint32_t loc_4314EA()
-    {
-        game_command_nest_level--;
-        if (game_command_nest_level != 0)
-            return 0x80000000;
-
-        if (_updating_company_id != _player_company[0])
-            return 0x80000000;
-
-        if (_gameCommandFlags & 8)
-            return 0x80000000;
-
-        if (_9C68E6 != 0xFFFE)
-        {
-            windows::show_error(_9C68E8, _9C68E6);
-            return 0x80000000;
-        }
-
-        // advanced errors
-        if (_9C68D0 != (void*)-1)
-        {
-            auto tile = (tile_element*)_9C68D0;
-
-            switch (tile->type())
-            {
-                case element_type::unk_1: // 4
-                {
-                    track_object* pObject = objectmgr::get<track_object>(tile->as_unk1()->track_object_id());
-                    if (pObject == nullptr)
-                        break;
-
-                    _commonFormatArgs[0] = pObject->name;
-                    _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
-                    return 0x80000000;
-                }
-
-                case element_type::unk_7: //0x1C
-                {
-                    road_object* pObject = objectmgr::get<road_object>(tile->as_unk7()->road_object_id());
-                    if (pObject == nullptr)
-                        break;
-
-                    _commonFormatArgs[0] = pObject->name;
-                    _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
-                    return 0x80000000;
-                }
-
-                case element_type::station: // 8
-                {
-                    station* pStation = stationmgr::get(tile->as_station()->station_id());
-                    if (pStation == nullptr)
-                        break;
-
-                    _commonFormatArgs[0] = pStation->name;
-                    _commonFormatArgs[1] = pStation->town;
-                    _commonFormatArgs[2] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
-                    return 0x80000000;
-                }
-
-                case element_type::unk_3: // 0x0C
-                {
-                    _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1422);
-                    return 0x80000000;
-                }
-
-                default:
-                    break;
-            }
-        }
-
-        // fallback
-        _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-        sub_431908(_errorCompanyId, string_ids::str_1420);
-        return 0x80000000;
     }
 }
 
