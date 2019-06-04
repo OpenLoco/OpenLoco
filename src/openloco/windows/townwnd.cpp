@@ -8,6 +8,7 @@
 #include "../openloco.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -56,6 +57,7 @@ namespace openloco::ui::windows::town
         // Defined at the bottom of this file.
         static void prepare_draw(window* self);
         static void repositionTabs(window* self);
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
@@ -126,7 +128,7 @@ namespace openloco::ui::windows::town
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            // TODO(avgeffen) draw tabs
+            common::drawTabs(self, dpi);
             // TODO(avgeffen) render viewport
             // TODO(avgeffen) viewport_4CF487
 
@@ -476,6 +478,70 @@ namespace openloco::ui::windows::town
                 self->widgets[i].left = xPos;
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;
+            }
+        }
+
+        // 0x004999E1
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            auto skin = objectmgr::get<interface_skin_object>();
+
+            // Town tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::toolbar_menu_towns;
+                widget::draw_tab(self, dpi, imageId, widx::tab_town);
+            }
+
+            // Population tab
+            {
+                static const uint32_t populationTabImageIds[] = {
+                    interface_skin::image_ids::tab_population_frame0,
+                    interface_skin::image_ids::tab_population_frame1,
+                    interface_skin::image_ids::tab_population_frame2,
+                    interface_skin::image_ids::tab_population_frame3,
+                    interface_skin::image_ids::tab_population_frame4,
+                    interface_skin::image_ids::tab_population_frame5,
+                    interface_skin::image_ids::tab_population_frame6,
+                    interface_skin::image_ids::tab_population_frame7,
+                };
+
+                uint32_t imageId = gfx::recolour(skin->img, self->colours[1]);
+                if (self->current_tab == widx::tab_population - widx::tab_town)
+                    imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
+                else
+                    imageId += populationTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_population);
+            }
+
+            // Company ratings tab
+            {
+                static const uint32_t ratingsTabImageIds[] = {
+                    interface_skin::image_ids::tab_ratings_frame0,
+                    interface_skin::image_ids::tab_ratings_frame1,
+                    interface_skin::image_ids::tab_ratings_frame2,
+                    interface_skin::image_ids::tab_ratings_frame3,
+                    interface_skin::image_ids::tab_ratings_frame4,
+                    interface_skin::image_ids::tab_ratings_frame5,
+                    interface_skin::image_ids::tab_ratings_frame6,
+                    interface_skin::image_ids::tab_ratings_frame7,
+                    interface_skin::image_ids::tab_ratings_frame8,
+                    interface_skin::image_ids::tab_ratings_frame9,
+                    interface_skin::image_ids::tab_ratings_frame10,
+                    interface_skin::image_ids::tab_ratings_frame11,
+                    interface_skin::image_ids::tab_ratings_frame12,
+                    interface_skin::image_ids::tab_ratings_frame13,
+                    interface_skin::image_ids::tab_ratings_frame14,
+                    interface_skin::image_ids::tab_ratings_frame15,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_company_ratings - widx::tab_town)
+                    imageId += ratingsTabImageIds[(self->frame_no / 4) % std::size(ratingsTabImageIds)];
+                else
+                    imageId += ratingsTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_company_ratings);
             }
         }
 

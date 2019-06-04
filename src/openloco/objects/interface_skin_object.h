@@ -78,6 +78,15 @@ namespace openloco
         constexpr uint32_t toolbar_menu_airport = 46;
         constexpr uint32_t toolbar_menu_ship_port = 47;
 
+        constexpr uint32_t tab_population_frame0 = 57;
+        constexpr uint32_t tab_population_frame1 = 58;
+        constexpr uint32_t tab_population_frame2 = 59;
+        constexpr uint32_t tab_population_frame3 = 60;
+        constexpr uint32_t tab_population_frame4 = 61;
+        constexpr uint32_t tab_population_frame5 = 62;
+        constexpr uint32_t tab_population_frame6 = 63;
+        constexpr uint32_t tab_population_frame7 = 64;
+
         constexpr uint32_t tab_finances_frame0 = 113;
         constexpr uint32_t tab_finances_frame1 = 114;
         constexpr uint32_t tab_finances_frame2 = 115;
@@ -110,6 +119,22 @@ namespace openloco
         constexpr uint32_t tab_cup_frame13 = 142;
         constexpr uint32_t tab_cup_frame14 = 143;
         constexpr uint32_t tab_cup_frame15 = 144;
+        constexpr uint32_t tab_ratings_frame0 = 145;
+        constexpr uint32_t tab_ratings_frame1 = 146;
+        constexpr uint32_t tab_ratings_frame2 = 147;
+        constexpr uint32_t tab_ratings_frame3 = 148;
+        constexpr uint32_t tab_ratings_frame4 = 149;
+        constexpr uint32_t tab_ratings_frame5 = 150;
+        constexpr uint32_t tab_ratings_frame6 = 151;
+        constexpr uint32_t tab_ratings_frame7 = 152;
+        constexpr uint32_t tab_ratings_frame8 = 153;
+        constexpr uint32_t tab_ratings_frame9 = 154;
+        constexpr uint32_t tab_ratings_frame10 = 155;
+        constexpr uint32_t tab_ratings_frame11 = 156;
+        constexpr uint32_t tab_ratings_frame12 = 157;
+        constexpr uint32_t tab_ratings_frame13 = 158;
+        constexpr uint32_t tab_ratings_frame14 = 159;
+        constexpr uint32_t tab_ratings_frame15 = 160;
 
         constexpr uint32_t tab_cogs_frame0 = 168;
         constexpr uint32_t tab_cogs_frame1 = 169;
