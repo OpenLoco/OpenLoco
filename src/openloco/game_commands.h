@@ -8,6 +8,7 @@ using namespace openloco::interop;
 
 namespace openloco::game_commands
 {
+    void registerHooks();
     uint32_t do_command(int esi, const registers& registers);
 
     inline void do_20()

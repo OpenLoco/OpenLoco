@@ -10,6 +10,7 @@
 #include "../console.h"
 #include "../core/FileSystem.hpp"
 #include "../environment.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../gui.h"
@@ -818,6 +819,7 @@ void openloco::interop::register_hooks()
     ui::build_vehicle::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
+    game_commands::registerHooks();
 
     // Part of 0x004691FA
     register_hook(

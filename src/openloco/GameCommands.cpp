@@ -8,6 +8,7 @@
 #include "objects/track_object.h"
 #include "stationmgr.h"
 #include "ui/WindowManager.h"
+#include <cassert>
 
 using namespace openloco::ui;
 using namespace openloco::map;
@@ -226,10 +227,8 @@ namespace openloco::game_commands
             {
                 case element_type::track: // 4
                 {
-                    track_element* trackElement = tile->as_track();
-                    assert(trackElement != nullptr);
-
-                    track_object* pObject = objectmgr::get<track_object>(trackElement->track_object_id());
+                    track_element& trackElement = *tile->as_track();
+                    track_object* pObject = objectmgr::get<track_object>(trackElement.track_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -241,10 +240,8 @@ namespace openloco::game_commands
 
                 case element_type::road: //0x1C
                 {
-                    road_element* roadElement = tile->as_road();
-                    assert(roadElement != nullptr);
-
-                    road_object* pObject = objectmgr::get<road_object>(roadElement->road_object_id());
+                    road_element& roadElement = *tile->as_road();
+                    road_object* pObject = objectmgr::get<road_object>(roadElement.road_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -256,10 +253,8 @@ namespace openloco::game_commands
 
                 case element_type::station: // 8
                 {
-                    station_element* stationElement = tile->as_station();
-                    assert(stationElement != nullptr);
-
-                    station* pStation = stationmgr::get(stationElement->station_id());
+                    station_element& stationElement = *tile->as_station();
+                    station* pStation = stationmgr::get(stationElement.station_id());
                     if (pStation == nullptr)
                         break;
 
