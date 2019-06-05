@@ -800,13 +800,6 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
-        0x00498E9B,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::ui::windows::town::common::sub_498E9B((openloco::ui::window*)regs.esi);
-            return 0;
-        });
-
-    register_hook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;

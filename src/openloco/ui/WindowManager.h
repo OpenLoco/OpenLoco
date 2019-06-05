@@ -191,11 +191,6 @@ namespace openloco::ui::tooltip
 
 namespace openloco::ui::windows::town
 {
-    // Can be removed once on_resize events have been implemented.
-    namespace common
-    {
-        void sub_498E9B(window* w);
-    }
     window* open(uint16_t townId);
 }
 

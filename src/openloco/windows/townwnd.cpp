@@ -31,19 +31,7 @@ namespace openloco::ui::windows::town
             tab_company_ratings,
         };
 
-        const uint64_t enabledWidgets = (1 << close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
-
-        // 0x00498E9B
-        void sub_498E9B(window* w)
-        {
-            w->enabled_widgets |= (1 << 1);
-#ifdef _DISABLE_TOWN_RENAME_
-            if (is_editor_mode())
-            {
-                w->enabled_widgets &= ~(1 << 1);
-            }
-#endif
-        }
+        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
@@ -130,7 +118,7 @@ namespace openloco::ui::windows::town
             self->draw(dpi);
             common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::sub_4CF487(dpi, self, (widget_index)widx::viewport);
+            widget::sub_4CF487(dpi, self, (widget_index)widx::centre_on_viewport);
 
             static string_id townSizeLabelIds[] = {
                 string_ids::town_size_hamlet,
@@ -142,7 +130,7 @@ namespace openloco::ui::windows::town
 
             auto town = townmgr::get(self->number);
             commonFormatArgs[0] = townSizeLabelIds[(uint8_t)town->size];
-            commonFormatArgs[1] = town->population;
+            *(int32_t*)&commonFormatArgs[1] = town->population;
 
             const uint16_t xPos = self->x + self->widgets[widx::unk_8].left;
             const uint16_t yPos = self->y + self->widgets[widx::unk_8].top;
@@ -173,17 +161,66 @@ namespace openloco::ui::windows::town
         // 0x0049938B
         static void update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0049938B, regs);
+            self->frame_no++;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::station, self->number);
         }
+
+        static void initViewport(window* self);
 
         // 0x004993A5
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004993A5, regs);
+            // Call to sub_498E9B has been deliberately omitted.
+
+            // Are these resets strictly necessary?
+            self->min_width = 192;
+            self->min_height = 161;
+            self->max_width = 600;
+            self->max_height = 440;
+
+            if (self->width < self->min_width)
+            {
+                self->width = self->min_width;
+                self->invalidate();
+            }
+            else if (self->width > self->max_width)
+            {
+                self->width = self->max_width;
+                self->invalidate();
+            }
+
+            if (self->height < self->min_height)
+            {
+                self->height = self->min_height;
+                self->invalidate();
+            }
+            else if (self->height > self->max_height)
+            {
+                self->height = self->max_height;
+                self->invalidate();
+            }
+
+            if (self->viewports[0] != nullptr)
+            {
+                uint16_t newWidth = self->width - 30;
+                if (is_editor_mode())
+                    newWidth += 22;
+
+                uint16_t newHeight = self->height - 59;
+
+                auto& viewport = self->viewports[0];
+                if (newWidth != viewport->width || newHeight != viewport->height)
+                {
+                    viewport->width = newWidth;
+                    viewport->height = newHeight;
+                    viewport->view_width = newWidth << viewport->zoom;
+                    viewport->view_height = newHeight << viewport->zoom;
+                    self->var_848 = -1;
+                }
+            }
+
+            initViewport(self);
         }
 
         // 0x00499A87
@@ -207,10 +244,10 @@ namespace openloco::ui::windows::town
         {
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
-            // events.on_resize = on_resize;
-            // events.on_update = update;
+            events.on_resize = on_resize;
+            events.on_update = update;
             events.prepare_draw = prepare_draw;
-            // events.text_input = text_input;
+            events.text_input = text_input;
             events.viewport_rotate = initViewport;
         }
     }
