@@ -1,12 +1,25 @@
 #pragma once
 
-#include "compat.h"
-#include "objects/objectmgr.h"
+#include "../objects/objectmgr.h"
 #include <cstdint>
+
 namespace openloco::s5
 {
 #pragma pack(push, 1)
-    struct ScenarioConfiguration
+    struct Header
+    {
+        std::byte var_0;
+        std::byte var_1;
+        uint16_t var_2;
+        uint32_t var_4;
+        uint32_t var_8;
+        std::byte pad_C[20];
+    };
+#pragma pack(pop)
+    static_assert(sizeof(Header) == 0x20);
+
+#pragma pack(push, 1)
+    struct Options
     {
         uint8_t editor_step;        // 0x00
         uint8_t difficulty;         // 0x01
@@ -16,8 +29,8 @@ namespace openloco::s5
         uint8_t madeAnyChanges; // 0x08
         uint8_t pad_9[1];
         uint8_t landObjectDiversity[32];                // 0x0A
-        uint8_t scenarioName[64];                       // 0x2A
-        uint8_t scenarioDetails[256];                   // 0x6A
+        char scenarioName[64];                          // 0x2A
+        char scenarioDetails[256];                      // 0x6A
         objectmgr::header scenarioText;                 // 0x16A
         uint16_t numberOfForests;                       // 0x17a
         uint8_t minForestRadius;                        // 0x17C
@@ -50,35 +63,35 @@ namespace openloco::s5
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(ScenarioConfiguration) == 0x431A);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, editor_step) == 0x009C8714);
-    static_assert(0x009C8715 + offsetof(ScenarioConfiguration, difficulty) == 0x009C8715);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioStartYear) == 0x009C8716);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioFlags) == 0x009C871A);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, madeAnyChanges) == 0x009C871C);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, landObjectDiversity) == 0x009C871E);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfForests) == 0x009C888E);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, minForestRadius) == 0x009C8890);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, maxForestRadius) == 0x009C8891);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, minForestDensity) == 0x009C8892);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, maxForestDensity) == 0x009C8893);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberRandomTrees) == 0x009C8894);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, minAltitudeForTrees) == 0x009C8896);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, maxAltitudeForTrees) == 0x009C8897);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, minLandHeight) == 0x009C8898);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, topographyStyle) == 0x009C8899);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, hillDensity) == 0x009C889A);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfTowns) == 0x009C889B);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, maxTownSize) == 0x009C889C);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, numberOfIndustries) == 0x009C889D);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioName) == 0x009C873E);
-    static_assert(0x009C8714 + offsetof(ScenarioConfiguration, scenarioDetails) == 0x009C877E);
+    static_assert(sizeof(Options) == 0x431A);
+    static_assert(0x009C8714 + offsetof(Options, editor_step) == 0x009C8714);
+    static_assert(0x009C8714 + offsetof(Options, difficulty) == 0x009C8715);
+    static_assert(0x009C8714 + offsetof(Options, scenarioStartYear) == 0x009C8716);
+    static_assert(0x009C8714 + offsetof(Options, scenarioFlags) == 0x009C871A);
+    static_assert(0x009C8714 + offsetof(Options, madeAnyChanges) == 0x009C871C);
+    static_assert(0x009C8714 + offsetof(Options, landObjectDiversity) == 0x009C871E);
+    static_assert(0x009C8714 + offsetof(Options, numberOfForests) == 0x009C888E);
+    static_assert(0x009C8714 + offsetof(Options, minForestRadius) == 0x009C8890);
+    static_assert(0x009C8714 + offsetof(Options, maxForestRadius) == 0x009C8891);
+    static_assert(0x009C8714 + offsetof(Options, minForestDensity) == 0x009C8892);
+    static_assert(0x009C8714 + offsetof(Options, maxForestDensity) == 0x009C8893);
+    static_assert(0x009C8714 + offsetof(Options, numberRandomTrees) == 0x009C8894);
+    static_assert(0x009C8714 + offsetof(Options, minAltitudeForTrees) == 0x009C8896);
+    static_assert(0x009C8714 + offsetof(Options, maxAltitudeForTrees) == 0x009C8897);
+    static_assert(0x009C8714 + offsetof(Options, minLandHeight) == 0x009C8898);
+    static_assert(0x009C8714 + offsetof(Options, topographyStyle) == 0x009C8899);
+    static_assert(0x009C8714 + offsetof(Options, hillDensity) == 0x009C889A);
+    static_assert(0x009C8714 + offsetof(Options, numberOfTowns) == 0x009C889B);
+    static_assert(0x009C8714 + offsetof(Options, maxTownSize) == 0x009C889C);
+    static_assert(0x009C8714 + offsetof(Options, numberOfIndustries) == 0x009C889D);
+    static_assert(0x009C8714 + offsetof(Options, scenarioName) == 0x009C873E);
+    static_assert(0x009C8714 + offsetof(Options, scenarioDetails) == 0x009C877E);
 
-    static_assert(0x009CCA54 + offsetof(ScenarioConfiguration, scenarioFlags) == 0x009CCA5A);
-    static_assert(0x009CCA54 + offsetof(ScenarioConfiguration, preview) == 0x009CCBDE);
+    static_assert(0x009CCA54 + offsetof(Options, scenarioFlags) == 0x009CCA5A);
+    static_assert(0x009CCA54 + offsetof(Options, preview) == 0x009CCBDE);
 
 #pragma pack(push, 1)
-    struct saveinfo
+    struct SaveDetails
     {
         char company[256];                   // 0x000
         char owner[256];                     // 0x100
@@ -92,18 +105,7 @@ namespace openloco::s5
         std::byte pad_C59C[0xC618 - 0xC59C]; // 0xC59C
     };
 #pragma pack(pop)
-    static_assert(sizeof(saveinfo) == 0xC618);
+    static_assert(sizeof(SaveDetails) == 0xC618);
 
-#pragma pack(push, 1)
-    struct ScenarioHeader
-    {
-        std::byte var_0;
-        std::byte var_1;
-        uint16_t var_2;
-        uint32_t var_4;
-        uint32_t var_8;
-        std::byte pad_C[20];
-    };
-#pragma pack(pop)
-    static_assert(sizeof(ScenarioHeader) == 0x20);
+    Options& getOptions();
 }
