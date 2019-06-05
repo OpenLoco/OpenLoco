@@ -186,16 +186,6 @@ namespace openloco::ui::windows::town
             call(0x004993A5, regs);
         }
 
-        static void initEvents()
-        {
-            events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
-        }
-
         // 0x00499A87
         static void initViewport(window* self)
         {
@@ -211,6 +201,17 @@ namespace openloco::ui::windows::town
             regs.cx = town->y;
             regs.esi = (int32_t)self;
             call(0x00499AB2, regs);
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            // events.on_resize = on_resize;
+            // events.on_update = update;
+            events.prepare_draw = prepare_draw;
+            // events.text_input = text_input;
+            events.viewport_rotate = initViewport;
         }
     }
 

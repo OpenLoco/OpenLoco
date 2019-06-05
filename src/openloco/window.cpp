@@ -946,13 +946,6 @@ namespace openloco::ui
         this->event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
     }
 
-    void window::call_viewport_rotate()
-    {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call((int32_t)this->event_handlers->viewport_rotate, regs);
-    }
-
     void window::call_text_input(widget_index caller, char* buffer)
     {
         if (event_handlers->text_input == nullptr)
@@ -970,6 +963,22 @@ namespace openloco::ui
         }
 
         this->event_handlers->text_input(this, caller, buffer);
+    }
+
+    void window::call_viewport_rotate()
+    {
+        if (event_handlers->viewport_rotate == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->viewport_rotate))
+        {
+            registers regs;
+            regs.esi = (int32_t)this;
+            call((uintptr_t)this->event_handlers->viewport_rotate, regs);
+            return;
+        }
+
+        this->event_handlers->viewport_rotate(this);
     }
 
     bool window::call_tooltip(int16_t widget_index)

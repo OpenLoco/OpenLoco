@@ -222,7 +222,7 @@ namespace openloco::ui
                 uint32_t event_18;
                 void (*scroll_mouse_over)(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*text_input)(window*, widget_index, char*);
-                uint32_t viewport_rotate;
+                void (*viewport_rotate)(window*);
                 uint32_t event_22;
                 void (*tooltip)(window*, widget_index);
                 ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
