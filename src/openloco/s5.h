@@ -106,8 +106,4 @@ namespace openloco::s5
     };
 #pragma pack(pop)
     static_assert(sizeof(ScenarioHeader) == 0x20);
-
-    static loco_global<ScenarioConfiguration, 0x009C8714> _config;
-    static loco_global<ScenarioHeader, 0x009CCA34> _config;
-    static loco_global<ScenarioConfiguration, 0x009CCA54> _config;
 }
