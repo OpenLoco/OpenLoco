@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "types.hpp"
 #include <algorithm>
@@ -113,6 +114,7 @@ namespace openloco::ui
             return { uiX, uiY };
         }
 
+        void render(gfx::drawpixelinfo_t* dpi, gfx::point_t origin, gfx::ui_size_t size);
         static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
         void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
     };

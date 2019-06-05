@@ -105,6 +105,16 @@ namespace openloco::ui
         return (this->holdable_widgets & (1ULL << index)) != 0;
     }
 
+    // 0x0045A0B3
+    void window::drawViewports(gfx::drawpixelinfo_t* dpi)
+    {
+        if (viewports[0] != nullptr)
+            viewports[0]->render(dpi, gfx::point_t(dpi->x, dpi->y), gfx::ui_size_t(dpi->width, dpi->height));
+
+        if (viewports[1] != nullptr)
+            viewports[1]->render(dpi, gfx::point_t(dpi->x, dpi->y), gfx::ui_size_t(dpi->width, dpi->height));
+    }
+
     static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
     {
         registers regs;

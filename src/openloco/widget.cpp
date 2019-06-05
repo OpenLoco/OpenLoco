@@ -51,6 +51,15 @@ namespace openloco::ui::widget
         call(0x004CF3EB, regs);
     }
 
+    void sub_4CF487(gfx::drawpixelinfo_t* dpi, const window* window, const widget_index index)
+    {
+        registers regs;
+        regs.edx = index;
+        regs.esi = (uint32_t)window;
+        regs.edi = (uint32_t)dpi;
+        call(0x004CF487, regs);
+    }
+
     // 0x004CAB8E
     static void draw_resize_handle(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint8_t colour)
     {
