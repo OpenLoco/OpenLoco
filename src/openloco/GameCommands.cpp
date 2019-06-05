@@ -49,7 +49,7 @@ namespace openloco::game_commands
     }
 
     static uint32_t loc_4314EA();
-    static uint32_t loc_4313C6(const registers& regs);
+    static uint32_t loc_4313C6(int esi, const registers& regs);
 
     // 0x00431315
     uint32_t do_command(int esi, const registers& regs)
@@ -58,15 +58,15 @@ namespace openloco::game_commands
 
         _gameCommandFlags = regs.bx;
         if (game_command_nest_level != 0)
-            return loc_4313C6(regs);
+            return loc_4313C6(esi, regs);
 
         if ((flags & 1) == 0)
         {
-            return loc_4313C6(regs);
+            return loc_4313C6(esi, regs);
         }
 
         if ((flags & 0x50) != 0
-            && _4F9688[regs.esi] == 1
+            && _4F9688[esi] == 1
             && _updating_company_id == _player_company[0])
         {
             if (get_pause_flags() & 1)
@@ -92,25 +92,27 @@ namespace openloco::game_commands
 
         if (_updating_company_id == _player_company[0] && isNetworked())
         {
-            call(0x0046E34A); // some network stuff. should have variables set but meh
+            assert(false);
+            registers fnRegs = regs;
+            call(0x0046E34A, fnRegs); // some network stuff. Untested
         }
 
-        return loc_4313C6(regs);
+        return loc_4313C6(esi, regs);
     }
 
-    static uint32_t loc_4313C6(const registers& regs)
+    static uint32_t loc_4313C6(int esi, const registers& regs)
     {
         uint16_t flags = regs.bx;
         _9C68E6 = string_ids::null;
         game_command_nest_level++;
 
-        auto addr = _4F9548[regs.esi];
+        auto addr = _4F9548[esi];
 
         uint16_t flagsBackup = _gameCommandFlags;
-        registers fnRegs = regs;
-        fnRegs.bl &= ~1;
-        call(addr, fnRegs);
-        uint32_t ebx = fnRegs.ebx;
+        registers fnRegs1 = regs;
+        fnRegs1.bl &= ~1;
+        call(addr, fnRegs1);
+        uint32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
         if (ebx != 0x80000000)
@@ -173,18 +175,26 @@ namespace openloco::game_commands
         }
 
         game_command_nest_level--;
-        if (game_command_nest_level == 0)
+        if (game_command_nest_level != 0)
             return ebx;
 
         if ((flagsBackup2 & 0x20) != 0)
             return ebx;
 
-        call(0x0046DE2B);
+        {
+            // Apply to company money
+            registers fnRegs;
+            fnRegs.ebx = ebx;
+            call(0x0046DE2B, fnRegs);
+        }
 
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
+            // Add flying cost text
+            registers fnRegs;
+            fnRegs.ebx = ebx;
             _game_command_map_z = _game_command_map_z + 24;
-            call(0x0046DC9F);
+            call(0x0046DC9F, fnRegs);
             _game_command_map_z = _game_command_map_z - 24;
         }
 
@@ -227,8 +237,11 @@ namespace openloco::game_commands
             {
                 case element_type::track: // 4
                 {
-                    track_element& trackElement = *tile->as_track();
-                    track_object* pObject = objectmgr::get<track_object>(trackElement.track_object_id());
+                    auto trackElement = tile->as_track();
+                    if (trackElement == nullptr)
+                        break; // throw exception?
+
+                    track_object* pObject = objectmgr::get<track_object>(trackElement->track_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -240,8 +253,11 @@ namespace openloco::game_commands
 
                 case element_type::road: //0x1C
                 {
-                    road_element& roadElement = *tile->as_road();
-                    road_object* pObject = objectmgr::get<road_object>(roadElement.road_object_id());
+                    auto roadElement = tile->as_road();
+                    if (roadElement == nullptr)
+                        break; // throw exception?
+
+                    road_object* pObject = objectmgr::get<road_object>(roadElement->road_object_id());
                     if (pObject == nullptr)
                         break;
 
@@ -253,8 +269,11 @@ namespace openloco::game_commands
 
                 case element_type::station: // 8
                 {
-                    station_element& stationElement = *tile->as_station();
-                    station* pStation = stationmgr::get(stationElement.station_id());
+                    auto stationElement = tile->as_station();
+                    if (stationElement == nullptr)
+                        break; // throw exception?
+
+                    station* pStation = stationmgr::get(stationElement->station_id());
                     if (pStation == nullptr)
                         break;
 
