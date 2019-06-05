@@ -47,11 +47,6 @@ namespace openloco::ui::windows::ScenarioOptions
 
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
-    static loco_global<uint8_t, 0x009C8715> scenarioGroup;
-
-    static loco_global<char[64], 0x009C873E> scenarioTitle;
-    static loco_global<char[256], 0x009C877E> scenarioDetails;
-
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
     namespace common
