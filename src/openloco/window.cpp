@@ -127,8 +127,6 @@ namespace openloco::ui
         call(0x4C641F, regs);
     }
 
-    loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
-
     // 0x004C68E4
     static void viewport_move(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
     {
@@ -138,15 +136,6 @@ namespace openloco::ui
         regs.esi = (uint32_t)w;
         regs.edi = (uint32_t)vp;
         call(0x004C68E4, regs);
-    }
-
-    // 0x004CA444
-    void viewport::centre_2d_coordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
-    {
-        auto centre = coordinate_3d_to_2d(_x, _y, _z, gCurrentRotation);
-
-        *outX = centre.x - view_width / 2;
-        *outY = centre.y - view_height / 2;
     }
 
     // 0x004C6456
@@ -184,7 +173,7 @@ namespace openloco::ui
                 int16_t midX = config->saved_view_x + (viewport->view_width / 2);
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                sub_45FD41(midX, midY, 128, gCurrentRotation, &outX, &outY, &outZ);
+                sub_45FD41(midX, midY, 128, viewport->getRotation(), &outX, &outY, &outZ);
                 viewport_set_underground_flag(false, this, viewport);
 
                 bool atMapEdge = false;
@@ -211,7 +200,7 @@ namespace openloco::ui
 
                 if (atMapEdge)
                 {
-                    auto coord_2d = coordinate_3d_to_2d(outX, outY, 128, gCurrentRotation);
+                    auto coord_2d = coordinate_3d_to_2d(outX, outY, 128, viewport->getRotation());
 
                     config->saved_view_x = coord_2d.x - viewport->view_width / 2;
                     config->saved_view_y = coord_2d.y - viewport->view_height / 2;
@@ -1241,30 +1230,5 @@ namespace openloco::ui
                 colour::white,
                 0x10);
         }
-    }
-
-    viewport_pos viewport::map_from_3d(loc16 loc, int32_t rotation)
-    {
-        ui::viewport_pos result;
-        switch (rotation & 3)
-        {
-            case 0:
-                result.x = loc.y - loc.x;
-                result.y = ((loc.y + loc.x) / 2) - loc.z;
-                break;
-            case 1:
-                result.x = -loc.x - loc.y;
-                result.y = ((loc.y - loc.x) / 2) - loc.z;
-                break;
-            case 2:
-                result.x = loc.x - loc.y;
-                result.y = ((-loc.y - loc.x) / 2) - loc.z;
-                break;
-            case 3:
-                result.x = loc.y + loc.x;
-                result.y = ((loc.x - loc.y) / 2) - loc.z;
-                break;
-        }
-        return result;
     }
 }
