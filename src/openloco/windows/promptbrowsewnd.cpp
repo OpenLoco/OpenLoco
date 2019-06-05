@@ -14,7 +14,7 @@
 #include "../openloco.h"
 #include "../platform/platform.h"
 #include "../scenario.h"
-#include "../sv5.h"
+#include "../s5.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
@@ -127,7 +127,7 @@ namespace openloco::ui::prompt_browse
     static void tooltip(ui::window* window, widget_index widgetIndex);
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const sv5::saveinfo& saveInfo);
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::saveinfo& saveInfo);
     static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
     static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
@@ -396,7 +396,7 @@ namespace openloco::ui::prompt_browse
                 if (*_fileType == browse_file_type::saved_game)
                 {
                     // Preview image
-                    auto saveInfo = *((const sv5::saveinfo**)0x50AEA8);
+                    auto saveInfo = *((const s5::saveinfo**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
                         draw_save_preview(*window, *dpi, x, y, width, 201, *saveInfo);
@@ -430,7 +430,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const sv5::saveinfo& saveInfo)
+    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::saveinfo& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 

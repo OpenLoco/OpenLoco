@@ -3,7 +3,7 @@
 #include "compat.h"
 #include "objects/objectmgr.h"
 #include <cstdint>
-namespace openloco::sv5
+namespace openloco::s5
 {
 #pragma pack(push, 1)
     struct ScenarioConfiguration
