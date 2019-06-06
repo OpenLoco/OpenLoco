@@ -25,7 +25,7 @@ namespace openloco::ui::windows::terraform
     {
         registers regs;
         call(0x004BB4A3, regs);
-        return (window*)regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 
     // 0x004BB566

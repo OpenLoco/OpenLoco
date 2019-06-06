@@ -20,7 +20,7 @@ namespace openloco::ui::windows::station
         regs.dx = id;
         call(0x0048F210, regs);
 
-        return (window*)regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 
     // 0x0048EF02

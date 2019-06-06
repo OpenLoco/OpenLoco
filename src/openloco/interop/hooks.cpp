@@ -445,7 +445,7 @@ static int32_t STDCALL lib_CreateFileA(
     uint32_t dwFlagsAndAttributes,
     uintptr_t hTemplateFile)
 {
-    console::log_verbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
+    console::log("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
     FILE* pFILE = nullptr;
     if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
@@ -523,8 +523,8 @@ static void register_memory_hooks()
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
     hookFunction(0x4d1401, CallingConvention::cdecl, 1, (void (*)()) & fn_malloc);
-    hookFunction(0x4d1401, CallingConvention::cdecl, 2, (void (*)()) & fn_realloc);
-    hookFunction(0x4d1401, CallingConvention::cdecl, 1, (void (*)()) & fn_free);
+    hookFunction(0x4D1B28, CallingConvention::cdecl, 2, (void (*)()) & fn_realloc);
+    hookFunction(0x4D1355, CallingConvention::cdecl, 1, (void (*)()) & fn_free);
 }
 
 #ifdef _NO_LOCO_WIN32_

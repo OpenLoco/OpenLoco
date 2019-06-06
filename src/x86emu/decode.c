@@ -85,7 +85,6 @@ API_SYM unsigned x86emu_run(x86emu_t *emu, unsigned flags)
 #endif
 
   for(;;) {
-    printf("> 0x%08X\n", emu->x86.R_EIP);
     *(emu->x86.disasm_ptr = emu->x86.disasm_buf) = 0;
 
     emu->x86.instr_len = 0;
@@ -247,7 +246,6 @@ API_SYM unsigned x86emu_run(x86emu_t *emu, unsigned flags)
       if(rs) x86emu_stop(emu);
     }
 
-    printf("  opcode %02X\n", op1);
     (*x86emu_optab[op1])(emu, op1);
 
     *emu->x86.disasm_ptr = 0;
