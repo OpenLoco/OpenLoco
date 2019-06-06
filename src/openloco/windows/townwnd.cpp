@@ -48,6 +48,10 @@ namespace openloco::ui::windows::town
 
         // Defined at the bottom of this file.
         static void prepare_draw(window* self);
+        static void on_resize(window* self);
+        static void text_input(window* self, widget_index callingWidget, char* input);
+        static void update(window* self);
+        static void renameTownPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
@@ -153,12 +157,8 @@ namespace openloco::ui::windows::town
             switch (widgetIndex)
             {
                 case common::widx::caption:
-                {
-                    auto town = townmgr::get(self->number);
-                    commonFormatArgs[2] = town->name;
-                    textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+                    common::renameTownPrompt(self, widgetIndex);
                     break;
-                }
 
                 case common::widx::close_button:
                     WindowManager::close(self);
@@ -184,31 +184,6 @@ namespace openloco::ui::windows::town
             }
         }
 
-        // 0x00499287
-        static void text_input(window* self, widget_index callingWidget, char* input)
-        {
-            if (callingWidget != common::widx::caption)
-                return;
-
-            if (*input == '\0')
-                return;
-
-            addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
-
-            uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_46(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_46(1, 0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_46(1, 0, 0, buffer[6], buffer[7], buffer[8]);
-        }
-
-        // 0x0049938B
-        static void update(window* self)
-        {
-            self->frame_no++;
-            self->call_prepare_draw();
-            WindowManager::invalidate(WindowType::station, self->number);
-        }
-
         static void initViewport(window* self);
 
         // 0x004993A5
@@ -216,33 +191,9 @@ namespace openloco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            // Are these resets strictly necessary?
-            self->min_width = 192;
-            self->min_height = 161;
-            self->max_width = 600;
-            self->max_height = 440;
+            self->set_size(gfx::ui_size_t(192, 161), gfx::ui_size_t(600, 440));
 
-            if (self->width < self->min_width)
-            {
-                self->width = self->min_width;
-                self->invalidate();
-            }
-            else if (self->width > self->max_width)
-            {
-                self->width = self->max_width;
-                self->invalidate();
-            }
-
-            if (self->height < self->min_height)
-            {
-                self->height = self->min_height;
-                self->invalidate();
-            }
-            else if (self->height > self->max_height)
-            {
-                self->height = self->max_height;
-                self->invalidate();
-            }
+            common::on_resize(self);
 
             if (self->viewports[0] != nullptr)
             {
@@ -327,9 +278,9 @@ namespace openloco::ui::windows::town
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_resize = on_resize;
-            events.on_update = update;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
+            events.text_input = common::text_input;
             events.viewport_rotate = initViewport;
         }
     }
@@ -403,9 +354,7 @@ namespace openloco::ui::windows::town
         // 0x00499469
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499469, regs);
+            common::prepare_draw(self);
         }
 
         // 0x004994F9
@@ -420,37 +369,32 @@ namespace openloco::ui::windows::town
         // 0x004996AC
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x004996AC, regs);
-        }
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameTownPrompt(self, widgetIndex);
+                    break;
 
-        // 0x004996D1
-        static void text_input(window* self, widget_index callingWidget, char* input)
-        {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x004996D1, regs);
-        }
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
 
-        // 0x004996DC
-        static void update(window* self)
-        {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004996DC, regs);
+                case common::widx::tab_town:
+                case common::widx::tab_population:
+                case common::widx::tab_company_ratings:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x004996F6
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004996F6, regs);
+            // Call to sub_498E9B has been deliberately omitted.
+
+            self->set_size(gfx::ui_size_t(299, 172), gfx::ui_size_t(299, 327));
+
+            common::on_resize(self);
         }
 
         static void initEvents()
@@ -458,9 +402,9 @@ namespace openloco::ui::windows::town
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_resize = on_resize;
-            events.on_update = update;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
+            events.text_input = common::text_input;
         }
     }
 
@@ -476,9 +420,7 @@ namespace openloco::ui::windows::town
         // 0x00499761
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499761, regs);
+            common::prepare_draw(self);
         }
 
         // 0x004997F1
@@ -493,37 +435,32 @@ namespace openloco::ui::windows::town
         // 0x004998E7
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x004998E7, regs);
-        }
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameTownPrompt(self, widgetIndex);
+                    break;
 
-        // 0x0049990C
-        static void text_input(window* self, widget_index callingWidget, char* input)
-        {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x0049990C, regs);
-        }
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
 
-        // 0x00499917
-        static void update(window* self)
-        {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499917, regs);
+                case common::widx::tab_town:
+                case common::widx::tab_population:
+                case common::widx::tab_company_ratings:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x00499936
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499936, regs);
+            // Call to sub_498E9B has been deliberately omitted.
+
+            self->set_size(gfx::ui_size_t(340, 208), gfx::ui_size_t(340, 208));
+
+            common::on_resize(self);
         }
 
         static void initEvents()
@@ -531,9 +468,9 @@ namespace openloco::ui::windows::town
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_resize = on_resize;
-            events.on_update = update;
+            events.on_update = common::update;
             events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
+            events.text_input = common::text_input;
         }
     }
 
@@ -584,6 +521,62 @@ namespace openloco::ui::windows::town
             self->widgets[common::widx::panel].bottom = self->height - 1;
         }
 
+        static void on_resize(window* self)
+        {
+            if (self->width < self->min_width)
+            {
+                self->width = self->min_width;
+                self->invalidate();
+            }
+            else if (self->width > self->max_width)
+            {
+                self->width = self->max_width;
+                self->invalidate();
+            }
+
+            if (self->height < self->min_height)
+            {
+                self->height = self->min_height;
+                self->invalidate();
+            }
+            else if (self->height > self->max_height)
+            {
+                self->height = self->max_height;
+                self->invalidate();
+            }
+        }
+
+        // 0x00499287
+        static void text_input(window* self, widget_index callingWidget, char* input)
+        {
+            if (callingWidget != common::widx::caption)
+                return;
+
+            if (*input == '\0')
+                return;
+
+            addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
+
+            uint32_t* buffer = (uint32_t*)input;
+            game_commands::do_46(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_46(1, 0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_46(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+        }
+
+        static void update(window* self)
+        {
+            self->frame_no++;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::station, self->number);
+        }
+
+        static void renameTownPrompt(window* self, widget_index widgetIndex)
+        {
+            auto town = townmgr::get(self->number);
+            commonFormatArgs[2] = town->name;
+            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+        }
+
         // 0x004999A7, 0x004999AD
         static void repositionTabs(window* self)
         {
@@ -604,10 +597,39 @@ namespace openloco::ui::windows::town
         // 0x004991BC
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x004991BC, regs);
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+
+            textinput::sub_4CE6C9(self->type, self->number);
+
+            self->current_tab = widgetIndex - widx::tab_town;
+            self->frame_no = 0;
+            self->flags &= ~(window_flags::flag_16);
+            self->var_85C = -1;
+
+            if (self->viewports[0] != nullptr)
+            {
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+            }
+
+            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
+
+            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->holdable_widgets = 0;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+            self->disabled_widgets = 0;
+
+            self->invalidate();
+
+            self->set_size(windowSize);
+            self->call_on_resize();
+            self->call_prepare_draw();
+            self->init_scroll_widgets();
+            self->invalidate();
+            self->moveInsideScreenEdges();
         }
 
         // 0x004999E1

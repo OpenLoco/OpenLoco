@@ -276,7 +276,8 @@ namespace openloco::ui
         uint16_t var_856 = 0;
         uint16_t var_858 = 0;
         uint16_t var_85A;
-        uint8_t pad_85C[0x870 - 0x85C];
+        int32_t var_85C;
+        uint8_t pad_860[0x870 - 0x860];
         uint16_t current_tab = 0; // 0x870
         uint16_t frame_no = 0;    // 0x872
         uint16_t var_874;
@@ -290,16 +291,22 @@ namespace openloco::ui
         int16_t var_88C;
 
         window(gfx::point_t position, gfx::ui_size_t size);
+
+        constexpr void set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
+        {
+            this->min_width = minSize.width;
+            this->min_height = minSize.height;
+
+            this->max_width = maxSize.width;
+            this->max_height = maxSize.height;
+        }
+
         constexpr void set_size(gfx::ui_size_t size)
         {
-            this->min_width = size.width;
-            this->min_height = size.height;
-
-            this->max_width = size.width;
-            this->max_height = size.height;
-
             this->width = size.width;
             this->height = size.height;
+
+            set_size(size, size);
         }
 
         bool is_enabled(int8_t widget_index);
