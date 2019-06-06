@@ -13,4 +13,9 @@ namespace openloco::s5
     {
         return _activeOptions;
     }
+
+    Options& getPreviewOptions()
+    {
+        return _previewOptions;
+    }
 }

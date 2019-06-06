@@ -11,6 +11,7 @@
 #include "../objects/currency_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../s5/s5.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -2075,7 +2076,7 @@ namespace openloco::ui::options
             w->disabled_widgets |= 1 << common::widx::tab_music;
         }
 
-        if (is_editor_mode() && _9C8714 == 0)
+        if (is_editor_mode() && s5::getOptions().editor_step == 0)
         {
             w->disabled_widgets |= 1 << common::widx::tab_regional;
         }

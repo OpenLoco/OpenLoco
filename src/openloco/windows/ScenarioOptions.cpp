@@ -7,6 +7,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../objects/scenario_text_object.h"
+#include "../s5/s5.h"
 #include "../scenario.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -1000,7 +1001,7 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 // Prepare scenario name text.
                 char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
-                strncpy(buffer, scenarioTitle, 512);
+                strncpy(buffer, s5::getOptions().scenarioName, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
                 auto* stex = objectmgr::get<scenario_text_object>();
@@ -1028,7 +1029,7 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 // Prepare scenario details text.
                 char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
-                strncpy(buffer, scenarioDetails, 512);
+                strncpy(buffer, s5::getOptions().scenarioDetails, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
                 auto* stex = objectmgr::get<scenario_text_object>();
@@ -1053,7 +1054,7 @@ namespace openloco::ui::windows::ScenarioOptions
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
-                *scenarioGroup = itemIndex;
+                s5::getOptions().difficulty = itemIndex;
                 self->invalidate();
             }
         }
@@ -1069,7 +1070,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
                     dropdown::add(i, string_ids::dropdown_stringid, scenarioGroupLabelIds[i]);
 
-                dropdown::set_item_selected(*scenarioGroup);
+                dropdown::set_item_selected(s5::getOptions().difficulty);
             }
         }
 
@@ -1088,7 +1089,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::change_name_btn:
                 {
                     char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
-                    strncpy(buffer, scenarioTitle, 512);
+                    strncpy(buffer, s5::getOptions().scenarioName, 512);
 
                     textinput::open_textinput(self, string_ids::scenario_name_title, string_ids::enter_name_for_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
                     break;
@@ -1097,7 +1098,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 case widx::change_details_btn:
                 {
                     char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
-                    strncpy(buffer, scenarioDetails, 512);
+                    strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
                     textinput::open_textinput(self, string_ids::scenario_details_title, string_ids::enter_description_of_this_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
                     break;
@@ -1110,7 +1111,7 @@ namespace openloco::ui::windows::ScenarioOptions
         {
             common::prepare_draw(self);
 
-            widgets[widx::scenario_group].text = scenarioGroupLabelIds[*scenarioGroup];
+            widgets[widx::scenario_group].text = scenarioGroupLabelIds[s5::getOptions().difficulty];
         }
 
         // 0x0043F156
@@ -1120,16 +1121,14 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 case widx::change_name_btn:
                 {
-                    // TODO(avgeffen): sizeof() doesn't like our loco globals
-                    strncpy(&*scenarioTitle, input, 64);
+                    strncpy(s5::getOptions().scenarioName, input, sizeof(s5::Options::scenarioName));
                     self->invalidate();
                     break;
                 }
 
                 case widx::change_details_btn:
                 {
-                    // TODO(avgeffen): sizeof() doesn't like our loco globals
-                    strncpy(&*scenarioDetails, input, 256);
+                    strncpy(s5::getOptions().scenarioDetails, input, sizeof(s5::Options::scenarioDetails));
                     self->invalidate();
                     break;
                 }

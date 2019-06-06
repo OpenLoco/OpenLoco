@@ -28,7 +28,7 @@ namespace openloco::s5
         uint16_t scenarioFlags; // 0x06
         uint8_t madeAnyChanges; // 0x08
         uint8_t pad_9[1];
-        uint8_t landObjectDiversity[32];                // 0x0A
+        uint8_t landDistributionPatterns[32];           // 0x0A
         char scenarioName[64];                          // 0x2A
         char scenarioDetails[256];                      // 0x6A
         objectmgr::header scenarioText;                 // 0x16A
@@ -69,7 +69,7 @@ namespace openloco::s5
     static_assert(0x009C8714 + offsetof(Options, scenarioStartYear) == 0x009C8716);
     static_assert(0x009C8714 + offsetof(Options, scenarioFlags) == 0x009C871A);
     static_assert(0x009C8714 + offsetof(Options, madeAnyChanges) == 0x009C871C);
-    static_assert(0x009C8714 + offsetof(Options, landObjectDiversity) == 0x009C871E);
+    static_assert(0x009C8714 + offsetof(Options, landDistributionPatterns) == 0x009C871E);
     static_assert(0x009C8714 + offsetof(Options, numberOfForests) == 0x009C888E);
     static_assert(0x009C8714 + offsetof(Options, minForestRadius) == 0x009C8890);
     static_assert(0x009C8714 + offsetof(Options, maxForestRadius) == 0x009C8891);
@@ -108,4 +108,5 @@ namespace openloco::s5
     static_assert(sizeof(SaveDetails) == 0xC618);
 
     Options& getOptions();
+    Options& getPreviewOptions();
 }

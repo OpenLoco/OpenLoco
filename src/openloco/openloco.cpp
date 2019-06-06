@@ -682,7 +682,7 @@ namespace openloco
         addr<0x00525FCC, uint32_t>() = _prng->srand_0();
         addr<0x00525FD0, uint32_t>() = _prng->srand_1();
         call(0x004613F0);
-        addr<0x00F25374, uint8_t>() = s5::configuration().madeAnyChanges;
+        addr<0x00F25374, uint8_t>() = s5::getOptions().madeAnyChanges;
         date_tick();
         call(0x00463ABA);
         call(0x004C56F6);
@@ -699,8 +699,7 @@ namespace openloco
         audio::update_ambient_noise();
         call(0x00444387);
 
-        // TODO: does this apply to the original?
-        s5::configuration().madeAnyChanges = addr<0x00F25374, uint8_t>();
+        s5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_50C197 != 0)
         {
             auto title = string_ids::error_unable_to_load_saved_game;
