@@ -1,13 +1,16 @@
+#include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../interop/interop.hpp"
 #include "../input.h"
+#include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../map/tile.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
+#include "../viewportmgr.h"
 #include "../widget.h"
 
 using namespace openloco::interop;
@@ -231,13 +234,52 @@ namespace openloco::ui::windows::town
 
             self->call_prepare_draw();
 
+            // Figure out the town's position on the map.
             auto town = townmgr::get(self->number);
+            int16_t tileZ = openloco::map::tile_element_height(town->x, town->y) & 0xFFFF;
 
-            registers regs;
-            regs.ax = town->x;
-            regs.cx = town->y;
-            regs.esi = (int32_t)self;
-            call(0x00499AB2, regs);
+            // Compute views.
+            uint8_t currentRotation = static_cast<uint8_t>(self->viewports[0]->getRotation());
+            int32_t ecx = (tileZ << 16) | (currentRotation << 8) | 2;
+            int32_t edx = (town->y << 16) | town->x;
+
+            uint16_t flags = 0;
+            if (self->viewports[0] != nullptr)
+            {
+                if (self->var_848 == edx && self->var_84C == ecx)
+                    return;
+
+                flags = self->viewports[0]->flags;
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+                viewportmgr::collectGarbage();
+            }
+            else
+            {
+                if ((config::get().flags & config::flags::gridlines_on_landscape) != 0)
+                    flags |= viewport_flags::gridlines_on_landscape;
+            }
+
+            self->var_848 = edx;
+            self->var_84C = ecx;
+
+            // 0x00499B39 start
+            if (self->viewports[0] == nullptr)
+            {
+                auto widget = &self->widgets[widx::viewport];
+                auto tile = openloco::map::map_pos3({ town->x, town->y, tileZ });
+                auto zoomLevel = openloco::ui::viewportmgr::ZoomLevel::half;
+                viewportmgr::create(self, 0, gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1), gfx::ui_size_t(widget->width() - 2, widget->height() - 2), zoomLevel, tile);
+                self->invalidate();
+                self->flags |= window_flags::flag_2;
+            }
+            // 0x00499B39 end
+
+            if (self->viewports[0]->x != 0)
+            {
+                self->viewports[0]->flags = flags;
+                self->invalidate();
+            }
         }
 
         static void initEvents()

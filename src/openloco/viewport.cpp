@@ -14,8 +14,8 @@ namespace openloco::ui
         registers regs;
         regs.ax = origin.x;
         regs.bx = origin.y;
-        regs.dx = origin.x + size.width - 1;
-        regs.bp = origin.y + size.height - 1;
+        regs.dx = origin.x + size.width;
+        regs.bp = origin.y + size.height;
         regs.edi = (int32_t)dpi;
         regs.esi = (int32_t)this;
 

@@ -269,8 +269,7 @@ namespace openloco::ui
         uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
         int32_t var_848 = 0;
-        uint16_t var_84C = 0;
-        uint16_t var_84E = 0;
+        int32_t var_84C = 0;
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
         uint16_t var_854 = 0;

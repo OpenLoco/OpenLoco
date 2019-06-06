@@ -32,8 +32,8 @@ namespace openloco
     struct town
     {
         string_id name;
-        uint16_t x;
-        uint16_t y;
+        int16_t x;
+        int16_t y;
         uint16_t flags;
         uint8_t pad_08[0x30 - 0x08];
         uint32_t population; // 0x30
