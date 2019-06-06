@@ -1,3 +1,4 @@
+#include "../companymgr.h"
 #include "../config.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
@@ -300,7 +301,7 @@ namespace openloco::ui::windows::town
         if (window == nullptr)
         {
             // 0x00499C0D start
-            window = WindowManager::createWindowCentred(WindowType::town, windowSize, 0, &town::events);
+            window = WindowManager::createWindow(WindowType::town, windowSize, 0, &town::events);
             window->widgets = town::widgets;
             window->enabled_widgets = town::enabledWidgets;
             window->number = townId;
@@ -426,10 +427,41 @@ namespace openloco::ui::windows::town
         // 0x004997F1
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x004997F1, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            uint16_t xPos = self->x + 4;
+            uint16_t yPos = self->y + 46;
+            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::local_authority_ratings_transport_companies);
+
+            xPos += 4;
+            yPos += 14;
+            auto town = townmgr::get(self->number);
+            for (company_id_t i = 0; i < std::size(town->company_ratings); i++)
+            {
+                if ((town->companies_with_rating & (1 << i)) == 0)
+                    continue;
+
+                int16_t rating = (std::clamp<int16_t>(town->company_ratings[i], -1000, 1000) + 1000) / 20;
+                string_id rank{};
+                if (rating >= 70)
+                    rank = string_ids::town_rating_excellent;
+                else if (rating >= 60)
+                    rank = string_ids::town_rating_good;
+                else if (rating >= 50)
+                    rank = string_ids::town_rating_average;
+                else if (rating >= 24)
+                    rank = string_ids::town_rating_poor;
+                else
+                    rank = string_ids::town_rating_appalling;
+
+                commonFormatArgs[0] = companymgr::get(i)->name;
+                commonFormatArgs[2] = rating;
+                commonFormatArgs[3] = rank;
+                gfx::draw_string_494BBF(*dpi, xPos, yPos, self->width - 12, colour::black, string_ids::town_rating_company_percentage_rank, &*commonFormatArgs);
+
+                yPos += 10;
+            }
         }
 
         // 0x004998E7

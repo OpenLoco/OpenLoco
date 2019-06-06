@@ -712,6 +712,14 @@ namespace openloco::string_ids
     constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
 
+    constexpr string_id local_authority_ratings_transport_companies = 1833;
+    constexpr string_id town_rating_appalling = 1834;
+    constexpr string_id town_rating_poor = 1835;
+    constexpr string_id town_rating_average = 1836;
+    constexpr string_id town_rating_good = 1837;
+    constexpr string_id town_rating_excellent = 1838;
+    constexpr string_id town_rating_company_percentage_rank = 1839;
+
     constexpr string_id and_be_the_top_company = 1848;
     constexpr string_id and_be_within_the_top_companies = 1849;
     constexpr string_id with_a_time_limit = 1850;
