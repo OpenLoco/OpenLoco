@@ -70,7 +70,7 @@ namespace openloco::townmgr
                 currTown.history_size++;
             }
 
-            int32_t newPop = std::max(currTown.population - currTown.unk_14C, 0);
+            int32_t newPop = std::max(currTown.population - currTown.history_min_population, 0);
             int eax = newPop / 50;
 
             int edx = 0;
@@ -82,7 +82,7 @@ namespace openloco::townmgr
 
             if (edx != 0)
             {
-                currTown.unk_14C += edx;
+                currTown.history_min_population += edx;
                 int eax2 = edx / 50;
 
                 for (uint8_t i = 0; i < currTown.history_size; i++)
@@ -101,18 +101,18 @@ namespace openloco::townmgr
                 max = std::max(max, currTown.history[i]);
             }
 
-            edx = currTown.unk_14C;
+            edx = currTown.history_min_population;
             while (al <= 0xEB && edx > 0)
             {
                 al += 20;
                 edx -= 1000;
             }
 
-            edx -= currTown.unk_14C;
+            edx -= currTown.history_min_population;
             if (edx != 0)
             {
                 edx = -edx;
-                currTown.unk_14C -= edx;
+                currTown.history_min_population -= edx;
                 edx /= 50;
 
                 for (int i = 0; i < currTown.history_size; i++)
