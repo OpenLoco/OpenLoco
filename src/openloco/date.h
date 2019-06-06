@@ -39,6 +39,7 @@ namespace openloco
     };
 
     uint32_t current_day();
+    uint8_t current_month();
     uint16_t current_year();
 
     date current_date();

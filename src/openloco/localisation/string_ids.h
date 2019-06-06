@@ -462,6 +462,8 @@ namespace openloco::string_ids
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
 
+    constexpr string_id population_graph_people = 1357;
+    constexpr string_id population_graph_year = 1358;
     constexpr string_id title_town = 1359;
     constexpr string_id title_town_population = 1360;
     constexpr string_id title_town_local_authority = 1361;

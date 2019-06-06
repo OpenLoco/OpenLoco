@@ -634,6 +634,31 @@ namespace openloco::gfx
         call(0x00494BBF, regs);
     }
 
+    // 0x00494C78
+    // al: colour
+    // bx: string id
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
+    void draw_string_494C78(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void* args)
+    {
+        registers regs;
+        regs.al = colour;
+        regs.bx = stringId;
+        regs.cx = x;
+        regs.dx = y;
+        regs.esi = (int32_t)args;
+        regs.edi = (int32_t)&dpi;
+        call(0x00494C78, regs);
+    }
+
     void draw_string_centred(
         drawpixelinfo_t& dpi,
         int16_t x,
@@ -745,6 +770,19 @@ namespace openloco::gfx
     {
         // This makes the function signature more like a drawing application
         fill_rect_inset(dpi, x, y, x + dx - 1, y + dy - 1, colour, flags);
+    }
+
+    // 0x00452DA4
+    void draw_line(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t color)
+    {
+        registers regs;
+        regs.ax = left;
+        regs.bx = top;
+        regs.cx = right;
+        regs.dx = bottom;
+        regs.ebp = color;
+        regs.edi = (uint32_t)dpi;
+        call(0x00452DA4, regs);
     }
 
     // 0x004CD406

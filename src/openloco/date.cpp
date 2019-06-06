@@ -21,6 +21,11 @@ namespace openloco
         return _current_day;
     }
 
+    uint8_t current_month()
+    {
+        return _current_month;
+    }
+
     uint16_t current_year()
     {
         return _current_year;

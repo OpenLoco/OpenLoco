@@ -1,5 +1,6 @@
 #include "../companymgr.h"
 #include "../config.h"
+#include "../date.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -361,10 +362,62 @@ namespace openloco::ui::windows::town
         // 0x004994F9
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x004994F9, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            gfx::drawpixelinfo_t* clipped = nullptr;
+            if (!gfx::clip_drawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
+                return;
+
+            auto town = townmgr::get(self->number);
+            *(int32_t*)&*commonFormatArgs = town->history_min_population;
+
+            // Draw Y label and grid lines.
+            for (int16_t yPos = self->height - 57; yPos > 14; yPos -= 20)
+            {
+                const uint16_t xPos = 39;
+                gfx::fill_rect(clipped, xPos, yPos, xPos + 241, yPos, colour::get_shade(self->colours[1], 4));
+
+                gfx::draw_string_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &*commonFormatArgs);
+
+                *(int32_t*)&*commonFormatArgs += 1000;
+            }
+
+            int8_t month = current_month();
+            int16_t year = current_year();
+            int8_t yearSkip = 0;
+
+            for (uint8_t i = town->history_size - 1; i > 0; i--)
+            {
+                const uint16_t xPos = 41 + i;
+                const uint16_t yPos = 2;
+
+                // Draw horizontal year and vertical grid lines.
+                if (month == 0)
+                {
+                    if (yearSkip == 0)
+                    {
+                        commonFormatArgs[0] = year;
+                        gfx::draw_string_centred(*clipped, xPos, yPos, colour::black, string_ids::population_graph_year, &*commonFormatArgs);
+                    }
+
+                    gfx::fill_rect(clipped, xPos, 11, xPos, self->height - 57, colour::get_shade(self->colours[1], 4));
+                }
+
+                // Draw population graph
+                uint16_t yPos1 = -town->history[i] + (self->height - 57);
+                uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
+                gfx::draw_line(clipped, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
+
+                if (--month < 0)
+                {
+                    month = 11;
+                    year--;
+
+                    if (++yearSkip >= 3)
+                        yearSkip = 0;
+                }
+            }
         }
 
         // 0x004996AC
