@@ -1,4 +1,5 @@
 #include "../config.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -48,6 +49,7 @@ namespace openloco::ui::windows::town
         // Defined at the bottom of this file.
         static void prepare_draw(window* self);
         static void repositionTabs(window* self);
+        static void switchTab(window* self, widget_index widgetIndex);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
@@ -147,18 +149,56 @@ namespace openloco::ui::windows::town
             registers regs;
             regs.edx = widgetIndex;
             regs.esi = (int32_t)self;
-            call(0x00499079, regs);
+
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                {
+                    auto town = townmgr::get(self->number);
+                    commonFormatArgs[2] = town->name;
+                    textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+                    break;
+                }
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_town:
+                case common::widx::tab_population:
+                case common::widx::tab_company_ratings:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::centre_on_viewport:
+                    call(0x0049932D, regs);
+                    break;
+
+                case widx::expand_town:
+                    call(0x004990B9, regs);
+                    break;
+
+                case widx::demolish_town:
+                    call(0x0049916A, regs);
+                    break;
+            }
         }
 
         // 0x00499287
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x00499287, regs);
+            if (callingWidget != common::widx::caption)
+                return;
+
+            if (*input == '\0')
+                return;
+
+            addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
+
+            uint32_t* buffer = (uint32_t*)input;
+            game_commands::do_46(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_46(1, 0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_46(1, 0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         // 0x0049938B
@@ -559,6 +599,15 @@ namespace openloco::ui::windows::town
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;
             }
+        }
+
+        // 0x004991BC
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            registers regs;
+            regs.edx = widgetIndex;
+            regs.esi = (int32_t)self;
+            call(0x004991BC, regs);
         }
 
         // 0x004999E1

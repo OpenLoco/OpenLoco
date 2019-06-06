@@ -457,7 +457,10 @@ namespace openloco::string_ids
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
 
+    constexpr string_id title_town_name = 1308;
+    constexpr string_id prompt_type_new_town_name = 1309;
     constexpr string_id status_town_population = 1310;
+    constexpr string_id error_cant_rename_town = 1311;
 
     constexpr string_id title_town = 1359;
     constexpr string_id title_town_population = 1360;

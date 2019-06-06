@@ -26,6 +26,18 @@ namespace openloco::game_commands
         do_command(21, regs);
     }
 
+    inline void do_46(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = bl;   // [ 1 ]
+        regs.cx = cx;   // town number or 0
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(46, regs);
+    }
+
     inline void do_71(int32_t ax, char* string)
     {
 
