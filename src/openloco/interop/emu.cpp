@@ -3,12 +3,12 @@
 #include <cstdio>
 #include <x86emu.h>
 
-#include <map>
-#include <prim_ops.h>
-#include <mem.h>
 #include "interop.hpp"
+#include <map>
+#include <mem.h>
+#include <prim_ops.h>
 
-x86emu_t *emu;
+x86emu_t* emu;
 
 struct InteropFunction
 {
@@ -21,7 +21,7 @@ struct InteropFunction
 std::map<uint32_t, InteropFunction> _hooks;
 std::map<uint32_t, InteropFunction> _libraryHooks;
 
-[[maybe_unused]] void flush_log(x86emu_t *emu, char *buf, unsigned size)
+[[maybe_unused]] void flush_log(x86emu_t* emu, char* buf, unsigned size)
 {
     if (!buf || !size)
         return;
@@ -31,37 +31,40 @@ std::map<uint32_t, InteropFunction> _libraryHooks;
 
 x86emu_memio_handler_t _parent;
 
-uint32_t emu_me( x86emu_s *emu, u32 address, u32 *val, unsigned type)
+uint32_t emu_me(x86emu_s* emu, u32 address, u32* val, unsigned type)
 {
-    if(address < 0x1000000) {
+    if (address < 0x1000000)
+    {
         return _parent(emu, address, val, type);
     }
 
-    if(address >= 0x401000 && address < 0x401000 +  4096 * 214) {
+    if (address >= 0x401000 && address < 0x401000 + 4096 * 214)
+    {
         return _parent(emu, address, val, type);
     }
 
-    if(address >= 0x4d7000 && address < 0x4d7000 +  4096 * (78 + 3133)) {
+    if (address >= 0x4d7000 && address < 0x4d7000 + 4096 * (78 + 3133))
+    {
         return _parent(emu, address, val, type);
     }
 
-    u32 value =0xFFFFFFFF;
+    u32 value = 0xFFFFFFFF;
 
-    switch (type) {
+    switch (type)
+    {
         case X86EMU_MEMIO_R | X86EMU_MEMIO_8:
-            value= *((uint8_t*)(uintptr_t) address);
+            value = *((uint8_t*)(uintptr_t)address);
             *val = value;
             break;
 
         case X86EMU_MEMIO_W | X86EMU_MEMIO_32:
-             value = *val;
-            *((uint32_t*)(uintptr_t) address) = *val;
+            value = *val;
+            *((uint32_t*)(uintptr_t)address) = *val;
             break;
 
         default:
-            printf("%x %08X %08X\n", type,address, *val);
+            printf("%x %08X %08X\n", type, address, *val);
     }
-
 
     return 0;
 }
@@ -69,7 +72,7 @@ uint32_t emu_me( x86emu_s *emu, u32 address, u32 *val, unsigned type)
 void emu_init()
 {
     emu = x86emu_new(X86EMU_PERM_R | X86EMU_PERM_W | X86EMU_PERM_X, 0);
-//    x86emu_set_log(emu, 10000, flush_log);
+    //    x86emu_set_log(emu, 10000, flush_log);
     emu->log.trace = X86EMU_TRACE_DEFAULT | X86EMU_TRACE_ACC;
 
     // text
@@ -77,7 +80,7 @@ void emu_init()
     auto textBase = 0x401000;
     for (uintptr_t sizeDone = 0; sizeDone < textSize; sizeDone += X86EMU_PAGE_SIZE)
     {
-        x86emu_set_page(emu, textBase + sizeDone, (void *) (textBase + sizeDone));
+        x86emu_set_page(emu, textBase + sizeDone, (void*)(textBase + sizeDone));
     }
     x86emu_set_perm(emu, textBase, textBase + textSize, X86EMU_PERM_RWX | X86EMU_PERM_VALID);
 
@@ -86,11 +89,11 @@ void emu_init()
     auto dataBase = 0x4d7000;
     for (uintptr_t sizeDone = 0; sizeDone < dataSize; sizeDone += X86EMU_PAGE_SIZE)
     {
-        x86emu_set_page(emu, dataBase + sizeDone, (void *) (dataBase + sizeDone));
+        x86emu_set_page(emu, dataBase + sizeDone, (void*)(dataBase + sizeDone));
     }
     x86emu_set_perm(emu, dataBase, dataBase + dataSize, X86EMU_PERM_RW | X86EMU_PERM_VALID);
 
-    _parent =x86emu_set_memio_handler(emu, emu_me);
+    _parent = x86emu_set_memio_handler(emu, emu_me);
 }
 
 namespace openloco::interop
@@ -103,10 +106,10 @@ namespace openloco::interop
         _hooks.emplace(address, item);
     }
     void write_ret(uint32_t address) {}
-    void write_jmp(uint32_t address, void *fn) {}
+    void write_jmp(uint32_t address, void* fn) {}
     void write_nop(uint32_t address, size_t count) {}
-    void hook_dump(uint32_t address, void *fn) {}
-    void hook_lib(uint32_t address, void *fn) {}
+    void hook_dump(uint32_t address, void* fn) {}
+    void hook_lib(uint32_t address, void* fn) {}
 
     void hookFunction(uint32_t address, CallingConvention convention, size_t arguments, void (*fn)())
     {
@@ -121,7 +124,7 @@ namespace openloco::interop
         auto it = _libraryHooks.find(address);
         if (it != _libraryHooks.end())
         {
-            _libraryHooks.erase (it);
+            _libraryHooks.erase(it);
         }
 
         InteropFunction item = {};
@@ -133,7 +136,7 @@ namespace openloco::interop
 }
 
 extern "C" {
-int has_hook(x86emu_t *emu)
+int has_hook(x86emu_t* emu)
 {
     uint32_t address = emu->x86.R_EIP;
 
@@ -178,13 +181,13 @@ int has_hook(x86emu_t *emu)
     switch (it->second.argumentCount)
     {
         case 0:
-            retVal = ((uint32_t (*)()) it->second.function)();
+            retVal = ((uint32_t(*)())it->second.function)();
             break;
 
         case 1:
         {
             uint32_t arg1 = pop_long(emu);
-            retVal = ((uint32_t (*)(uint32_t)) it->second.function)(arg1);
+            retVal = ((uint32_t(*)(uint32_t))it->second.function)(arg1);
             break;
         }
 
@@ -192,7 +195,7 @@ int has_hook(x86emu_t *emu)
         {
             uint32_t arg1 = pop_long(emu);
             uint32_t arg2 = pop_long(emu);
-            retVal = ((uint32_t (*)(uint32_t,uint32_t)) it->second.function)(arg1, arg2);
+            retVal = ((uint32_t(*)(uint32_t, uint32_t))it->second.function)(arg1, arg2);
             break;
         }
 
@@ -201,7 +204,7 @@ int has_hook(x86emu_t *emu)
             uint32_t arg1 = pop_long(emu);
             uint32_t arg2 = pop_long(emu);
             uint32_t arg3 = pop_long(emu);
-            retVal = ((uint32_t (*)(uint32_t,uint32_t,uint32_t)) it->second.function)(arg1, arg2, arg3);
+            retVal = ((uint32_t(*)(uint32_t, uint32_t, uint32_t))it->second.function)(arg1, arg2, arg3);
             break;
         }
 
@@ -224,7 +227,7 @@ int has_hook(x86emu_t *emu)
     return 1;
 }
 
-int has_lib_hook(x86emu_t *emu, uint32_t addr)
+int has_lib_hook(x86emu_t* emu, uint32_t addr)
 {
     auto it = _libraryHooks.find(addr);
     if (it == _libraryHooks.end())
@@ -234,19 +237,18 @@ int has_lib_hook(x86emu_t *emu, uint32_t addr)
 
     printf("  hook @ 0x%X\n", addr);
 
-
     uint32_t retVal;
 
     switch (it->second.argumentCount)
     {
         case 0:
-            retVal = ((uint32_t (*)()) it->second.function)();
+            retVal = ((uint32_t(*)())it->second.function)();
             break;
 
         case 1:
         {
             uint32_t arg1 = pop_long(emu);
-            retVal = ((uint32_t (*)(uint32_t)) it->second.function)(arg1);
+            retVal = ((uint32_t(*)(uint32_t))it->second.function)(arg1);
             break;
         }
 
@@ -259,7 +261,7 @@ int has_lib_hook(x86emu_t *emu, uint32_t addr)
             uint32_t arg5 = pop_long(emu);
             uint32_t arg6 = pop_long(emu);
             uint32_t arg7 = pop_long(emu);
-            retVal = ((uint32_t (*)(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t)) it->second.function)(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            retVal = ((uint32_t(*)(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t))it->second.function)(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
             break;
         }
 
@@ -275,7 +277,6 @@ int has_lib_hook(x86emu_t *emu, uint32_t addr)
             push_long(emu, 0xFFFFFF);
         }
     }
-
 
     emu->x86.R_EAX = retVal;
     return 1;

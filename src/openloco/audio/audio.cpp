@@ -457,7 +457,7 @@ namespace openloco::audio
         auto w = WindowManager::find(WindowType::main, 0);
         if (w != nullptr)
         {
-            auto viewport = (ui::viewport*)(uintptr_t )w->viewports[0];
+            auto viewport = (ui::viewport*)(uintptr_t)w->viewports[0];
             if (viewport != nullptr && viewport->contains(vpos))
             {
                 return viewport;
@@ -469,7 +469,7 @@ namespace openloco::audio
             w = WindowManager::get(i);
             if (w != nullptr && w->type != WindowType::main && w->type != WindowType::news)
             {
-                auto viewport = (ui::viewport*)(uintptr_t )w->viewports[0];
+                auto viewport = (ui::viewport*)(uintptr_t)w->viewports[0];
                 if (viewport != nullptr && viewport->contains(vpos))
                 {
                     return viewport;

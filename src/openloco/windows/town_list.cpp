@@ -11,6 +11,6 @@ namespace openloco::ui::windows::town_list
     {
         registers regs;
         call(0x00499C83, regs);
-        return (window*)(uintptr_t )regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 }

@@ -37,7 +37,7 @@ namespace openloco::ui::windows::vehicle_list
             regs.eax = (uint32_t)companyId;
             regs.ebx = type;
             call(0x004C1A05, regs);
-            vehicle_list = (window*)(uintptr_t) regs.esi;
+            vehicle_list = (window*)(uintptr_t)regs.esi;
         }
         else
         {

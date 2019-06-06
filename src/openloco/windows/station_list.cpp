@@ -459,7 +459,7 @@ namespace openloco::ui::windows::station_list
             if (window->is_disabled(tabInfo.widgetIndex))
                 continue;
 
-            widget_t& tab =* window->getWidget(tabInfo.widgetIndex);
+            widget_t& tab = *window->getWidget(tabInfo.widgetIndex);
 
             tab.left = new_tab_x;
             new_tab_x += tab_width;

@@ -445,7 +445,7 @@ namespace openloco::ui
             auto& dpi = gfx::screen_dpi();
             if (dpi.bits != 0)
             {
-                std::memcpy(surface->pixels, (void*)(uintptr_t )dpi.bits, surface->pitch * surface->h);
+                std::memcpy(surface->pixels, (void*)(uintptr_t)dpi.bits, surface->pitch * surface->h);
             }
 
             // Unlock the surface

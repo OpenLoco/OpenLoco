@@ -264,7 +264,7 @@ namespace openloco::input
         ui::widget_t* widget = nullptr;
         if (widgetIndex != -1)
         {
-            widget = &((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex];
+            widget = &((ui::widget_t*)(uintptr_t)window->widgets)[widgetIndex];
         }
 
         registers regs;
@@ -487,7 +487,7 @@ namespace openloco::input
                     {
                         if (dragWindow->is_enabled(_pressedWidgetIndex))
                         {
-                            auto pressedWidget = &((ui::widget_t*)(uintptr_t )dragWindow->widgets)[_pressedWidgetIndex];
+                            auto pressedWidget = &((ui::widget_t*)(uintptr_t)dragWindow->widgets)[_pressedWidgetIndex];
 
                             audio::play_sound(audio::sound_id::click_press, dragWindow->x + pressedWidget->mid_x());
                             dragWindow->call_on_mouse_up(_pressedWidgetIndex);
@@ -672,7 +672,7 @@ namespace openloco::input
                 {
                     if (window != nullptr && widgetIndex != -1)
                     {
-                        auto buttonWidget = &((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex];
+                        auto buttonWidget = &((ui::widget_t*)(uintptr_t)window->widgets)[widgetIndex];
                         audio::play_sound(audio::sound_id::click_up, window->x + buttonWidget->mid_x());
                     }
                 }
@@ -1225,7 +1225,7 @@ namespace openloco::input
         {
             oldWindow->call_prepare_draw();
 
-            ui::widget_t* oldWidget = &((ui::widget_t*)(uintptr_t )oldWindow->widgets)[widgetIdx];
+            ui::widget_t* oldWidget = &((ui::widget_t*)(uintptr_t)oldWindow->widgets)[widgetIdx];
             if (
                 oldWidget->type == ui::widget_type::wt_16 || oldWidget->type == ui::widget_type::wt_10 || oldWidget->type == ui::widget_type::wt_9)
             {
@@ -1264,7 +1264,7 @@ namespace openloco::input
 
             if (widgetIdx != -1)
             {
-                ui::widget_t& widget = ((ui::widget_t*)(uintptr_t )window->widgets)[widgetIdx];
+                ui::widget_t& widget = ((ui::widget_t*)(uintptr_t)window->widgets)[widgetIdx];
                 switch (widget.type)
                 {
                     case ui::widget_type::panel:
@@ -1296,7 +1296,7 @@ namespace openloco::input
                         int16_t scroll_x, scroll_y;
                         ui::scrollview::get_part(
                             window,
-                            &((ui::widget_t*)(uintptr_t )window->widgets)[widgetIdx],
+                            &((ui::widget_t*)(uintptr_t)window->widgets)[widgetIdx],
                             x,
                             y,
                             &scroll_x,

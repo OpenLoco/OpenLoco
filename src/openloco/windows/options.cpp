@@ -416,7 +416,7 @@ namespace openloco::ui::options
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            widget_t &dropdown =* w->getWidget(widx::display_resolution);
+            widget_t& dropdown = *w->getWidget(widx::display_resolution);
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
             auto& cfg = config::get();
@@ -527,7 +527,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::display);
-            assert(w->widgets == (uint32_t) (loco_ptr)_widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -665,7 +665,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::sound);
-            assert(w->widgets == (uint32_t )(loco_ptr) _widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -755,7 +755,7 @@ namespace openloco::ui::options
             const auto& devices = audio::get_devices();
             if (devices.size() != 0)
             {
-                widget_t &dropdown = *w->getWidget(widx::audio_device);
+                widget_t& dropdown = *w->getWidget(widx::audio_device);
                 dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
@@ -862,7 +862,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::music);
-            assert(w->widgets == (uint32_t )(loco_ptr) _widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -1253,7 +1253,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::regional);
-            assert(w->widgets == (uint32_t )(loco_ptr) _widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -1710,7 +1710,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::controls);
-            assert(w->widgets == (uint32_t )(loco_ptr) _widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -1856,7 +1856,7 @@ namespace openloco::ui::options
         static void prepare_draw(window* w)
         {
             assert(w->current_tab == common::tab::miscellaneous);
-            assert(w->widgets == (uint32_t )(loco_ptr) _widgets);
+            assert(w->widgets == (uint32_t)(loco_ptr)_widgets);
 
             w->activated_widgets &= ~common::tabWidgets;
             w->activated_widgets |= 1ULL << (w->current_tab + 4);
@@ -2122,7 +2122,7 @@ namespace openloco::ui::options
             0,
             &display::_events);
 
-        window->widgets = (loco_ptr) display::_widgets;
+        window->widgets = (loco_ptr)display::_widgets;
         window->number = 0;
         window->current_tab = 0;
         window->frame_no = 0;
@@ -2147,7 +2147,7 @@ namespace openloco::ui::options
 #endif
 
         window->holdable_widgets = 0;
-        window->_event_handlers = (loco_ptr) &display::_events;
+        window->_event_handlers = (loco_ptr)&display::_events;
         window->activated_widgets = 0;
 
         window->call_on_resize();
@@ -2197,8 +2197,8 @@ namespace openloco::ui::options
                 w->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 #endif
 
-                w->_event_handlers = (loco_ptr) &display::_events;
-                w->widgets = (loco_ptr) display::_widgets;
+                w->_event_handlers = (loco_ptr)&display::_events;
+                w->widgets = (loco_ptr)display::_widgets;
                 w->invalidate();
                 w->set_size(display::_window_size);
                 w->row_hover = -1;
@@ -2208,8 +2208,8 @@ namespace openloco::ui::options
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
                 w->disabled_widgets = 0;
-                w->_event_handlers = (loco_ptr) &sound::_events;
-                w->widgets = (loco_ptr) sound::_widgets;
+                w->_event_handlers = (loco_ptr)&sound::_events;
+                w->widgets = (loco_ptr)sound::_widgets;
                 w->invalidate();
                 w->set_size(sound::_window_size);
                 w->row_hover = -1;
@@ -2218,8 +2218,8 @@ namespace openloco::ui::options
             case common::tab::music:
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
                 w->holdable_widgets = (1 << music::widx::volume);
-                w->_event_handlers = (loco_ptr) &music::_events;
-                w->widgets =(loco_ptr)  music::_widgets;
+                w->_event_handlers = (loco_ptr)&music::_events;
+                w->widgets = (loco_ptr)music::_widgets;
                 w->invalidate();
                 w->set_size(music::_window_size);
                 w->row_hover = -1;
@@ -2229,8 +2229,8 @@ namespace openloco::ui::options
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
                 w->holdable_widgets = 0;
-                w->_event_handlers = (loco_ptr) &regional::_events;
-                w->widgets = (loco_ptr) regional::_widgets;
+                w->_event_handlers = (loco_ptr)&regional::_events;
+                w->widgets = (loco_ptr)regional::_widgets;
                 w->invalidate();
                 w->set_size(regional::_window_size);
                 break;
@@ -2238,8 +2238,8 @@ namespace openloco::ui::options
             case common::tab::controls:
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
-                w->_event_handlers = (loco_ptr) &controls::_events;
-                w->widgets = (loco_ptr) controls::_widgets;
+                w->_event_handlers = (loco_ptr)&controls::_events;
+                w->widgets = (loco_ptr)controls::_widgets;
                 w->invalidate();
                 w->set_size(controls::_window_size);
                 break;
@@ -2247,8 +2247,8 @@ namespace openloco::ui::options
             case common::tab::miscellaneous:
                 w->disabled_widgets = 0;
                 w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
-                w->_event_handlers = (loco_ptr) &misc::_events;
-                w->widgets = (loco_ptr) misc::_widgets;
+                w->_event_handlers = (loco_ptr)&misc::_events;
+                w->widgets = (loco_ptr)misc::_widgets;
                 w->invalidate();
                 w->set_size(misc::_window_size);
                 break;

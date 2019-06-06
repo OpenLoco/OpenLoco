@@ -67,7 +67,7 @@ namespace openloco::ui::viewportmgr
     static void focusViewportOn(window* w, int index, thing_id_t dx)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        auto viewport = (ui::viewport*)(uintptr_t )w->viewports[index];
+        auto viewport = (ui::viewport*)(uintptr_t)w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
@@ -84,7 +84,7 @@ namespace openloco::ui::viewportmgr
     static void focusViewportOn(window* w, int index, map::map_pos3 tile)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        auto viewport = (ui::viewport*)(uintptr_t )w->viewports[index];
+        auto viewport = (ui::viewport*)(uintptr_t)w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
 
@@ -148,7 +148,7 @@ namespace openloco::ui::viewportmgr
         if (viewport == nullptr)
             return;
 
-        window->viewports[viewportIndex] = (loco_ptr )viewport;
+        window->viewports[viewportIndex] = (loco_ptr)viewport;
         focusViewportOn(window, viewportIndex, thing_id);
 
         collectGarbage();

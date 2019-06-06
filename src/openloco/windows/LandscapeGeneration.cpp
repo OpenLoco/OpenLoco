@@ -604,7 +604,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
             audio::play_sound(audio::sound_id::click_down, window->getWidget(widx::scrollview)->right);
 
-            const widget_t& target =* window->getWidget(widx::scrollview);
+            const widget_t& target = *window->getWidget(widx::scrollview);
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].v_top;
             dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
@@ -1219,9 +1219,9 @@ namespace openloco::ui::windows::LandscapeGeneration
             };
 
             widget_t* newWidgets = widgetCollectionsByTabId[window->current_tab];
-            if (window->widgets != (uintptr_t )newWidgets)
+            if (window->widgets != (uintptr_t)newWidgets)
             {
-                window->widgets =(loco_ptr) newWidgets;
+                window->widgets = (loco_ptr)newWidgets;
                 window->init_scroll_widgets();
             }
 
@@ -1276,7 +1276,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 &industries::events,
             };
 
-            window->_event_handlers =  (loco_ptr)eventsByTab[window->current_tab];
+            window->_event_handlers = (loco_ptr)eventsByTab[window->current_tab];
 
             switchTabWidgets(window);
 

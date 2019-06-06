@@ -284,7 +284,7 @@ namespace openloco::interop
         *_edi = temp->x86.R_EDI;
         *_ebp = temp->x86.R_EBP;
 
-       x86emu_done(temp);
+        x86emu_done(temp);
         console::log("===");
 #endif
         _originalAddress = 0;

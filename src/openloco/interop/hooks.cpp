@@ -3,9 +3,9 @@
 #include <cstring>
 #include <system_error>
 #ifndef _WIN32
+#include <cinttypes>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <cinttypes>
 #endif
 #include "../audio/audio.h"
 #include "../console.h"
@@ -184,8 +184,8 @@ static void CDECL fn_4081ad(int32_t wParam)
 
 ///endregion
 
-
-struct FileWrapper {
+struct FileWrapper
+{
     FILE* file;
 };
 
@@ -212,8 +212,6 @@ static uint32_t CDECL fn_FileSeekFromEnd(FileWrapper* a0, int32_t distance)
     fseek(a0->file, distance, SEEK_END);
     return ftell(a0->file);
 }
-
-
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL fn_FileRead(FileWrapper* a0, char* buffer, int32_t size)
@@ -352,9 +350,9 @@ static void CDECL fn_FindClose(Session* data)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_malloc(uint32_t size)
 {
-    void *pVoid = malloc(size);
+    void* pVoid = malloc(size);
     console::log("Allocated 0x%X bytes at 0x%" PRIXPTR, size, (uintptr_t)pVoid);
-    return (loco_ptr) pVoid;
+    return (loco_ptr)pVoid;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -915,11 +913,11 @@ void openloco::interop::register_hooks()
             regs.edx = widgetIndex;
             if (widgetIndex == -1)
             {
-                regs.edi = (uintptr_t)&((ui::widget_t*)(uintptr_t )window->widgets)[0];
+                regs.edi = (uintptr_t) & ((ui::widget_t*)(uintptr_t)window->widgets)[0];
             }
             else
             {
-                regs.edi = (uintptr_t)&((ui::widget_t*)(uintptr_t )window->widgets)[widgetIndex];
+                regs.edi = (uintptr_t) & ((ui::widget_t*)(uintptr_t)window->widgets)[widgetIndex];
             }
 
             return 0;

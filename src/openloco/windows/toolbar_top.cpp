@@ -111,7 +111,7 @@ namespace openloco::ui::windows::toolbar_top
             gfx::ui_size_t(ui::width(), 28),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
             &_events);
-        window->widgets =(loco_ptr) _widgets;
+        window->widgets = (loco_ptr)_widgets;
         window->enabled_widgets = (1 << widx::loadsave_menu) | (1 << widx::audio_menu) | (1 << widx::zoom_menu) | (1 << widx::rotate_menu) | (1 << widx::view_menu) | (1 << widx::terraform_menu) | (1 << widx::railroad_menu) | (1 << widx::road_menu) | (1 << widx::port_menu) | (1 << widx::build_vehicles_menu) | (1 << widx::vehicles_menu) | (1 << widx::stations_menu) | (1 << widx::towns_menu);
         window->init_scroll_widgets();
 
@@ -529,7 +529,7 @@ namespace openloco::ui::windows::toolbar_top
     {
         // Load objects.
         registers regs;
-        regs.edi =(loco_ptr)&available_objects[0];
+        regs.edi = (loco_ptr)&available_objects[0];
         call(0x00478265, regs);
 
         // Sanity check: any objects available?

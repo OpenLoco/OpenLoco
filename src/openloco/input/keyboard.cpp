@@ -117,7 +117,7 @@ namespace openloco::input
     {
         registers regs;
         call(0x00407028, regs);
-        return (key*)(uintptr_t) regs.eax;
+        return (key*)(uintptr_t)regs.eax;
     }
 
     static bool try_shortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)

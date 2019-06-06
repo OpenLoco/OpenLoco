@@ -33,7 +33,7 @@ namespace openloco::gui
             gfx::ui_size_t(uiWidth, uiHeight),
             ui::window_flags::stick_to_back,
             (ui::window_event_list*)0x004FA1F4);
-        window->widgets = (loco_ptr) _mainWindowWidgets;
+        window->widgets = (loco_ptr)_mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
         openloco::ui::viewportmgr::create(
             window,
@@ -122,13 +122,13 @@ namespace openloco::gui
             window->height = uiHeight;
             if (window->widgets)
             {
-                widget_t*widgets = (widget_t*)(uintptr_t )window->widgets;
+                widget_t* widgets = (widget_t*)(uintptr_t)window->widgets;
                 widgets[0].right = uiWidth;
                 widgets[0].bottom = uiHeight;
             }
             if (window->viewports[0])
             {
-                viewport*vp = (viewport*)((uintptr_t )window->viewports[0]);
+                viewport* vp = (viewport*)((uintptr_t)window->viewports[0]);
                 vp->width = uiWidth;
                 vp->height = uiHeight;
                 vp->view_width = uiWidth << vp->zoom;

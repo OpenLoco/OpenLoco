@@ -197,7 +197,7 @@ namespace openloco::ui::prompt_browse
 
         if (window != nullptr)
         {
-            window->widgets = (loco_ptr) widgets;
+            window->widgets = (loco_ptr)widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->init_scroll_widgets();
 

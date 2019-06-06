@@ -285,7 +285,7 @@ namespace openloco
         progressbar::set_progress(60);
         gfx::load_g1();
         progressbar::set_progress(220);
-//        call(0x004949BC);
+        //        call(0x004949BC);
         progressbar::set_progress(235);
         progressbar::set_progress(250);
         ui::initialise_cursors();

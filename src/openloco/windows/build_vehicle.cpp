@@ -21,7 +21,7 @@ namespace openloco::ui::build_vehicle
         registers regs;
         regs.eax = vehicle | flags;
         call(0x004C1AF7, regs);
-        return (window*)(uintptr_t )regs.esi;
+        return (window*)(uintptr_t)regs.esi;
     }
 
     void registerHooks()
@@ -30,7 +30,7 @@ namespace openloco::ui::build_vehicle
             0x004B92A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4B92A5((ui::window*)(uintptr_t )regs.esi);
+                sub_4B92A5((ui::window*)(uintptr_t)regs.esi);
                 regs = backup;
                 return 0;
             });
