@@ -250,7 +250,7 @@ namespace openloco::ui::textinput
         window->draw(context);
 
         *((string_id*)(&_commonFormatArgs[0])) = _message;
-        memcpy(&_commonFormatArgs[2], _formatArgs, 8);
+        memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
         gfx::draw_string_centred_wrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid2, &_commonFormatArgs[0]);

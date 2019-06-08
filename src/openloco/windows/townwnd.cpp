@@ -658,8 +658,8 @@ namespace openloco::ui::windows::town
         static void renameTownPrompt(window* self, widget_index widgetIndex)
         {
             auto town = townmgr::get(self->number);
-            commonFormatArgs[2] = town->name;
-            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+            commonFormatArgs[4] = town->name;
+            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, nullptr);
         }
 
         // 0x004999A7, 0x004999AD
