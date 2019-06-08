@@ -166,6 +166,12 @@ namespace openloco::string_ids
     constexpr string_id label_icons_rail_air_water = 243;
     constexpr string_id label_icons_road_air_water = 244;
     constexpr string_id label_icons_rail_road_air_water = 245;
+    constexpr string_id title_company = 246;
+    constexpr string_id title_company_details = 247;
+    constexpr string_id title_company_finances = 248;
+    constexpr string_id title_company_cargo_delivered = 249;
+    constexpr string_id title_company_colour_scheme = 250;
+    constexpr string_id title_company_challenge = 251;
 
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
@@ -211,6 +217,8 @@ namespace openloco::string_ids
     constexpr string_id player_info_company_value_negative = 573;
 
     constexpr string_id date_monthyear = 584;
+
+    constexpr string_id company_current_loan_value = 609;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
@@ -405,6 +413,27 @@ namespace openloco::string_ids
     constexpr string_id eighth_scale = 1098;
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
+    constexpr string_id main_colour_scheme = 1101;
+    constexpr string_id colour_steam_locomotives = 1102;
+    constexpr string_id colour_diesel_locomotives = 1103;
+    constexpr string_id colour_electric_locomotives = 1104;
+    constexpr string_id colour_multiple_units = 1105;
+    constexpr string_id colour_passenger_vehicles = 1106;
+    constexpr string_id colour_freight_vehicles = 1107;
+    constexpr string_id colour_buses = 1108;
+    constexpr string_id colour_trucks = 1109;
+    constexpr string_id colour_aircraft = 1110;
+    constexpr string_id colour_ships = 1111;
+    constexpr string_id tooltip_company_headquarters_and_details = 1112;
+    constexpr string_id tooltip_company_owner_and_status = 1113;
+    constexpr string_id tooltip_company_finances = 1114;
+    constexpr string_id tooltip_cargo_delivered = 1115;
+    constexpr string_id tooltip_company_colour_scheme = 1116;
+    constexpr string_id tooltip_company_challenge_for_this_game = 1117;
+    constexpr string_id special_colour_schemes_used_for = 1118;
+    constexpr string_id tooltip_select_main_colour = 1119;
+    constexpr string_id tooltip_select_secondary_colour = 1120;
+    constexpr string_id tooltip_toggle_vehicle_colour_scheme = 1121;
 
     constexpr string_id stringid_all_stations = 1128;
     constexpr string_id stringid_rail_stations = 1129;
@@ -550,6 +579,8 @@ namespace openloco::string_ids
     constexpr string_id num_units = 1442;
     constexpr string_id unit_separator = 1443;
 
+    constexpr string_id tooltip_build_or_move_headquarters = 1453;
+    constexpr string_id tooltip_change_owner_name = 1454;
     constexpr string_id tooltip_select_company = 1465;
 
     constexpr string_id display_options = 1486;

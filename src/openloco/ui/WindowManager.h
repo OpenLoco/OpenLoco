@@ -240,7 +240,7 @@ namespace openloco::ui::windows::CompanyList
 
 namespace openloco::ui::windows::CompanyWindow
 {
-    void OpenUnk(company_id_t companyId);
+    void open(company_id_t companyId);
     void openFinances(company_id_t companyId);
 }
 

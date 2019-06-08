@@ -188,7 +188,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
             auto company = _sortedCompanies[itemIndex];
             if (!company->empty())
             {
-                windows::CompanyWindow::OpenUnk(company->id());
+                windows::CompanyWindow::open(company->id());
             }
         }
     }
