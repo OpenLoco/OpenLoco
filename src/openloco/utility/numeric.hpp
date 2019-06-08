@@ -7,6 +7,8 @@
 
 namespace openloco::utility
 {
+    int32_t bitscanforward(uint32_t source);
+
     template<typename T>
     constexpr T rol(T val, size_t len)
     {

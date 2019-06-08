@@ -3,6 +3,7 @@
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "ui/WindowManager.h"
+#include "utility/numeric.hpp"
 
 using namespace openloco::interop;
 
@@ -55,92 +56,82 @@ namespace openloco::townmgr
     {
         for (town& currTown : towns())
         {
-            if (currTown.name == string_ids::null)
-            {
+            if (currTown.empty())
                 continue;
-            }
 
-            // scroll history
-            if (currTown.history_size == 12 * 20)
+            // Scroll history
+            if (currTown.history_size == std::size(currTown.history))
             {
-                memmove(&currTown.history, &currTown.history + 1, 12 * 20 - 1);
+                for (size_t i = 0; i < std::size(currTown.history) - 1; i++)
+                    currTown.history[i] = currTown.history[i + 1];
             }
             else
-            {
                 currTown.history_size++;
+
+            // Compute population growth.
+            uint32_t popSteps = std::max<int32_t>(currTown.population - currTown.history_min_population, 0) / 50;
+            uint32_t popGrowth = 0;
+            while (popSteps > 255)
+            {
+                popSteps -= 20;
+                popGrowth += 1000;
             }
 
-            int32_t newPop = std::max(currTown.population - currTown.history_min_population, 0);
-            int eax = newPop / 50;
-
-            int edx = 0;
-            while (eax > 0xFF)
+            // Any population growth to account for?
+            if (popGrowth != 0)
             {
-                eax -= 20;
-                edx += 1000;
-            }
+                currTown.history_min_population += popGrowth;
 
-            if (edx != 0)
-            {
-                currTown.history_min_population += edx;
-                int eax2 = edx / 50;
-
+                uint8_t offset = (popGrowth / 50) & 0xFF;
                 for (uint8_t i = 0; i < currTown.history_size; i++)
                 {
-                    currTown.history[i] = std::max(currTown.history[i] - (eax2 & 0xFF), 0);
+                    int16_t newHistory = currTown.history[i] - offset;
+                    currTown.history[i] = newHistory >= 0 ? static_cast<uint8_t>(newHistory) : 0;
                 }
             }
 
-            currTown.history[currTown.history_size - 1] = eax & 0xFF;
-            eax &= ~0xFF; // al = 0;
-            uint8_t al = 0;
+            // Write new history point.
+            currTown.history[currTown.history_size - 1] = popSteps & 0xFF;
 
-            uint8_t max = 0;
+            // Find historical maximum population.
+            uint8_t maxPopulation = 0;
             for (int i = 0; i < currTown.history_size; i++)
+                maxPopulation = std::max(maxPopulation, currTown.history[i]);
+
+            int32_t popOffset = currTown.history_min_population;
+            while (maxPopulation <= 235 && popOffset > 0)
             {
-                max = std::max(max, currTown.history[i]);
+                maxPopulation += 20;
+                popOffset -= 1000;
             }
 
-            edx = currTown.history_min_population;
-            while (al <= 0xEB && edx > 0)
+            popOffset -= currTown.history_min_population;
+            if (popOffset != 0)
             {
-                al += 20;
-                edx -= 1000;
-            }
-
-            edx -= currTown.history_min_population;
-            if (edx != 0)
-            {
-                edx = -edx;
-                currTown.history_min_population -= edx;
-                edx /= 50;
+                popOffset = -popOffset;
+                currTown.history_min_population -= popOffset;
+                popOffset /= 50;
 
                 for (int i = 0; i < currTown.history_size; i++)
-                {
-                    currTown.history[i] += edx;
-                }
+                    currTown.history[i] += popOffset;
             }
 
-            int16_t ax = -1;
+            // Work towards computing new build speed.
+            int16_t max_unk_158 = -1;
             uint32_t ebx = currTown.unk_198;
             while (ebx != 0)
             {
-                int ecx;
-                for (ecx = 0; ecx < 32; ecx++)
-                {
-                    if ((ebx & (1 << ecx)) != 0)
-                    {
-                        ebx &= ~(1 << ecx);
-                        break;
-                    }
-                }
+                uint32_t ecx = utility::bitscanforward(ebx);
+                ebx &= ~(1 << ecx);
 
-                ax = std::max(ax, currTown.unk_158[ecx]);
+                max_unk_158 = std::max(max_unk_158, currTown.unk_158[ecx]);
             }
 
-            currTown.build_speed = std::clamp(ax / 100, 1, 3);
+            // Compute build speed (1=slow build speed, 4=fast build speed)
+            currTown.build_speed = std::clamp((max_unk_158 / 100) + 1, 1, 4);
 
-            memset(&currTown.unk_158, 0, 20 * sizeof(uint16_t));
+            // Reset all unk_158 intermediaries to zero.
+            memset(&currTown.unk_158, 0, sizeof(currTown.unk_158));
         }
 
         ui::WindowManager::invalidate(ui::WindowType::town);

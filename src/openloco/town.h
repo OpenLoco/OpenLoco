@@ -35,7 +35,7 @@ namespace openloco
         uint8_t pad_02[0x06 - 0x02];
         uint16_t flags;
         uint8_t pad_08[0x30 - 0x08];
-        int32_t population; // 0x30
+        uint32_t population; // 0x30
         uint8_t pad_34[0x3A - 0x34];
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
@@ -47,7 +47,7 @@ namespace openloco
         int16_t unk_158[0x20];
         uint32_t unk_198;
         uint8_t pad_19C[0x1A4 - 0x19C];
-        uint8_t build_speed; // 0x1A4, 1=slow build speed, 3=fast build speed
+        uint8_t build_speed; // 0x1A4, 1=slow build speed, 4=fast build speed
         uint8_t unk_1A5;
         uint16_t num_stations; // 0x1A6
         uint8_t pad_1A8[0x270 - 0x1A8];
