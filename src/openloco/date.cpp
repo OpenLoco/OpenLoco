@@ -21,9 +21,9 @@ namespace openloco
         return _current_day;
     }
 
-    uint8_t current_month()
+    month_id current_month()
     {
-        return _current_month;
+        return static_cast<month_id>(*_current_month);
     }
 
     uint16_t current_year()

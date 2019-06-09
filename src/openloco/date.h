@@ -4,7 +4,7 @@
 
 namespace openloco
 {
-    enum class month_id
+    enum class month_id : uint8_t
     {
         january,
         february,
@@ -39,7 +39,7 @@ namespace openloco
     };
 
     uint32_t current_day();
-    uint8_t current_month();
+    month_id current_month();
     uint16_t current_year();
 
     date current_date();

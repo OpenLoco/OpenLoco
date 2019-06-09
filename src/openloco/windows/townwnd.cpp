@@ -143,9 +143,9 @@ namespace openloco::ui::windows::town
             commonFormatArgs[0] = townSizeLabelIds[(uint8_t)town->size];
             *(int32_t*)&commonFormatArgs[1] = town->population;
 
-            const uint16_t xPos = self->x + self->widgets[widx::unk_8].left;
-            const uint16_t yPos = self->y + self->widgets[widx::unk_8].top;
-            const uint16_t width = self->widgets[widx::unk_8].right - self->widgets[widx::unk_8].left;
+            const uint16_t xPos = self->x + self->widgets[widx::unk_8].left - 1;
+            const uint16_t yPos = self->y + self->widgets[widx::unk_8].top - 1;
+            const uint16_t width = self->widgets[widx::unk_8].width() - 1;
             gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::status_town_population, &*commonFormatArgs);
         }
 
@@ -370,20 +370,21 @@ namespace openloco::ui::windows::town
                 return;
 
             auto town = townmgr::get(self->number);
-            *(int32_t*)&*commonFormatArgs = town->history_min_population;
 
             // Draw Y label and grid lines.
-            for (int16_t yPos = self->height - 57; yPos > 14; yPos -= 20)
+            int32_t yTick = town->history_min_population;
+            for (int16_t yPos = self->height - 57; yPos >= 14; yPos -= 20)
             {
                 const uint16_t xPos = 39;
                 gfx::fill_rect(clipped, xPos, yPos, xPos + 241, yPos, colour::get_shade(self->colours[1], 4));
 
+                *(int32_t*)&*commonFormatArgs = yTick;
                 gfx::draw_string_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &*commonFormatArgs);
 
-                *(int32_t*)&*commonFormatArgs += 1000;
+                yTick += 1000;
             }
 
-            int8_t month = current_month();
+            int8_t month = static_cast<int8_t>(current_month());
             int16_t year = current_year();
             int8_t yearSkip = 0;
 
@@ -409,12 +410,14 @@ namespace openloco::ui::windows::town
                 uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
                 gfx::draw_line(clipped, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
 
-                if (--month < 0)
+                month--;
+                if (month < 0)
                 {
                     month = 11;
                     year--;
 
-                    if (++yearSkip >= 3)
+                    yearSkip++;
+                    if (yearSkip >= 3)
                         yearSkip = 0;
                 }
             }
@@ -503,7 +506,7 @@ namespace openloco::ui::windows::town
                     rank = string_ids::town_rating_good;
                 else if (rating >= 50)
                     rank = string_ids::town_rating_average;
-                else if (rating >= 24)
+                else if (rating >= 25)
                     rank = string_ids::town_rating_poor;
                 else
                     rank = string_ids::town_rating_appalling;
@@ -637,7 +640,7 @@ namespace openloco::ui::windows::town
             if (callingWidget != common::widx::caption)
                 return;
 
-            if (*input == '\0')
+            if (strlen(input) == 0)
                 return;
 
             addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
