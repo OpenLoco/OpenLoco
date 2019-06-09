@@ -473,6 +473,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_town_ratings_each_company = 1388;
 
     constexpr string_id demolish_this_town = 1392;
+    constexpr string_id cant_remove_town = 1393;
 
     constexpr string_id town_size_1 = 1399;
     constexpr string_id town_size_2 = 1400;

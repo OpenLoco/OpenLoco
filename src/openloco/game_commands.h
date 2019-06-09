@@ -51,6 +51,15 @@ namespace openloco::game_commands
         do_command(71, regs);
     }
 
+    inline bool do_50(uint8_t bl, uint8_t townId)
+    {
+        registers regs;
+        regs.bl = bl; // [ 1 = remove town]
+        regs.edi = townId;
+        do_command(50, regs);
+        return (uint32_t)regs.ebx != 0x80000000;
+    }
+
     inline void do_73(thing_id_t id)
     {
         registers regs;

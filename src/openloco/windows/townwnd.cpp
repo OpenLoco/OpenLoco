@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../companymgr.h"
 #include "../config.h"
 #include "../date.h"
@@ -181,8 +182,20 @@ namespace openloco::ui::windows::town
                     break;
 
                 case widx::demolish_town:
-                    call(0x0049916A, regs);
+                {
+                    loco_global<string_id, 0x009C68E8> gameErrorString;
+                    gameErrorString = string_ids::cant_remove_town;
+                    bool success = game_commands::do_50(1, self->number);
+                    if (!success)
+                        break;
+
+                    loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
+                    loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
+                    loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
+
+                    audio::play_sound(audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
                     break;
+                }
             }
         }
 
@@ -661,8 +674,8 @@ namespace openloco::ui::windows::town
         static void renameTownPrompt(window* self, widget_index widgetIndex)
         {
             auto town = townmgr::get(self->number);
-            commonFormatArgs[4] = town->name;
-            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, nullptr);
+            commonFormatArgs[2] = town->name;
+            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
 
         // 0x004999A7, 0x004999AD
