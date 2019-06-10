@@ -12,6 +12,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
+#include "../things/thingmgr.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../viewportmgr.h"
@@ -153,10 +154,6 @@ namespace openloco::ui::windows::town
         // 0x00499079
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-
             switch (widgetIndex)
             {
                 case common::widx::caption:
@@ -174,12 +171,45 @@ namespace openloco::ui::windows::town
                     break;
 
                 case widx::centre_on_viewport:
-                    call(0x0049932D, regs);
+                {
+                    if (self->viewports[0] == nullptr || self->var_848 == -1)
+                        break;
+
+                    registers regs;
+                    const uint32_t var_848 = self->var_848;
+                    if ((var_848 & (1 << 31)) != 0)
+                    {
+                        uint32_t ebx = var_848 & 0xFF;
+                        auto townCentre = thingmgr::get<Thing>(ebx << 7);
+
+                        regs.ax = townCentre->x;
+                        regs.cx = townCentre->y;
+                        regs.dx = townCentre->z;
+                    }
+                    else
+                    {
+                        const uint32_t eax = var_848 & 0x3FFFFFFF;
+                        const uint32_t ecx = eax >> 16;
+                        const uint32_t edx = (uint32_t)self->var_84C >> 16;
+
+                        regs.ax = static_cast<uint16_t>(eax);
+                        regs.cx = static_cast<uint16_t>(ecx);
+                        regs.dx = static_cast<uint16_t>(edx);
+                    }
+
+                    regs.esi = (int32_t)WindowManager::getMainWindow();
+                    call(0x004C6827, regs);
                     break;
+                }
 
                 case widx::expand_town:
+                {
+                    registers regs;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
                     call(0x004990B9, regs);
                     break;
+                }
 
                 case widx::demolish_town:
                 {
