@@ -117,21 +117,21 @@ namespace openloco::townmgr
             }
 
             // Work towards computing new build speed.
-            int16_t max_unk_158 = -1;
-            uint32_t ebx = currTown.unk_198;
-            while (ebx != 0)
+            int16_t maxCargoDelivered = -1;
+            uint32_t cargoFlags = currTown.cargo_influence_flags;
+            while (cargoFlags != 0)
             {
-                uint32_t ecx = utility::bitscanforward(ebx);
-                ebx &= ~(1 << ecx);
+                uint32_t cargoId = utility::bitscanforward(cargoFlags);
+                cargoFlags &= ~(1 << cargoId);
 
-                max_unk_158 = std::max(max_unk_158, currTown.unk_158[ecx]);
+                maxCargoDelivered = std::max(maxCargoDelivered, currTown.monthly_cargo_delivered[cargoId]);
             }
 
             // Compute build speed (1=slow build speed, 4=fast build speed)
-            currTown.build_speed = std::clamp((max_unk_158 / 100) + 1, 1, 4);
+            currTown.build_speed = std::clamp((maxCargoDelivered / 100) + 1, 1, 4);
 
-            // Reset all unk_158 intermediaries to zero.
-            memset(&currTown.unk_158, 0, sizeof(currTown.unk_158));
+            // Reset all monthly_cargo_delivered intermediaries to zero.
+            memset(&currTown.monthly_cargo_delivered, 0, sizeof(currTown.monthly_cargo_delivered));
         }
 
         ui::WindowManager::invalidate(ui::WindowType::town);
