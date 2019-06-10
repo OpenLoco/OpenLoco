@@ -22,16 +22,10 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 | **master**  | [![AppVeyor](https://ci.appveyor.com/api/projects/status/fpq6ptmma5d3e389?svg=true)](https://ci.appveyor.com/project/AaronVanGeffen/OpenLoco) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
 
 ### Chat
-You only need a GitHub or Twitter account to access these channels.
 
-If you want to help *make* the game, join the developer channel.
+Feel free to join our Gitter channel to talk about developing the game, or for help getting it to run. You only need an account with either GitHub, GitLab, or Twitter to join the Gitter chat.
 
-If you need help, want to talk to the developers, or just want to stay up to date then join the non-developer channel for your language.
-
-| Language | Non Developer | Developer |
-|----------|---------------|-----------|
-| English | [![Gitter](https://img.shields.io/badge/gitter-general-blue.svg)](https://gitter.im/OpenRCT2/OpenRCT2/non-dev) | [![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenLoco/OpenLoco) |
----
+[![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenLoco/OpenLoco)
 
 # 1 Introduction
 
