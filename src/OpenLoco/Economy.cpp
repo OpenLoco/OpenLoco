@@ -87,15 +87,15 @@ namespace OpenLoco::Economy
             _525EDE[i] = 0;
         }
 
-        uint32_t ecx = year - 1900;
-        if (ecx > 130)
-            ecx = 130;
+        // OpenLoco allows 1800 as the minimum year, whereas Locomotion uses 1900.
+        // Treat years before 1900 as though they were 1900 to not change vanilla scenarios.
+        uint32_t yearCount = std::clamp<uint32_t>(year, 1900, 2030) - 1900;
 
-        ecx *= 12;
-        while (ecx > 0)
+        yearCount *= 12;
+        while (yearCount > 0)
         {
             sub_46E239();
-            ecx--;
+            yearCount--;
         }
     }
 }
