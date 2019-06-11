@@ -15,11 +15,11 @@ namespace openloco
         constexpr company_id_t null = std::numeric_limits<company_id_t>::max();
     }
 
-    namespace company_flags
+    enum company_flags
     {
-        constexpr uint32_t challenge_completed = (1 << 6); // 0x40
-        constexpr uint32_t challenge_failed = (1 << 7);    // 0x80
-        constexpr uint32_t challenge_enabled = (1 << 8);   // 0x100
+        challenge_completed = (1 << 6), // 0x40
+        challenge_failed = (1 << 7),    // 0x80
+        challenge_enabled = (1 << 8),   // 0x100
     };
 
 #pragma pack(push, 1)
