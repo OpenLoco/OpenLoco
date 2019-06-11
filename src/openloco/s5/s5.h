@@ -21,7 +21,7 @@ namespace openloco::s5
 #pragma pack(push, 1)
     struct Options
     {
-        uint8_t editor_step;        // 0x00
+        uint8_t editorStep;         // 0x00
         uint8_t difficulty;         // 0x01
         uint16_t scenarioStartYear; // 0x02
         uint8_t pad_4[2];
@@ -64,7 +64,7 @@ namespace openloco::s5
 #pragma pack(pop)
 
     static_assert(sizeof(Options) == 0x431A);
-    static_assert(0x009C8714 + offsetof(Options, editor_step) == 0x009C8714);
+    static_assert(0x009C8714 + offsetof(Options, editorStep) == 0x009C8714);
     static_assert(0x009C8714 + offsetof(Options, difficulty) == 0x009C8715);
     static_assert(0x009C8714 + offsetof(Options, scenarioStartYear) == 0x009C8716);
     static_assert(0x009C8714 + offsetof(Options, scenarioFlags) == 0x009C871A);
