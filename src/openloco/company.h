@@ -17,9 +17,9 @@ namespace openloco
 
     enum company_flags
     {
-        challenge_completed = (1 << 6), // 0x40
-        challenge_failed = (1 << 7),    // 0x80
-        challenge_enabled = (1 << 8),   // 0x100
+        challenge_completed = (1 << 6),          // 0x40
+        challenge_failed = (1 << 7),             // 0x80
+        challenge_beaten_by_opponent = (1 << 8), // 0x100
     };
 
 #pragma pack(push, 1)

@@ -342,7 +342,7 @@ namespace openloco::ui::TimePanel
         {
             _common_format_args[2] = string_ids::challenge_failed;
         }
-        else if ((playerCompany->challenge_flags & company_flags::challenge_enabled) != 0)
+        else if ((playerCompany->challenge_flags & company_flags::challenge_beaten_by_opponent) != 0)
         {
             _common_format_args[2] = string_ids::empty;
         }
