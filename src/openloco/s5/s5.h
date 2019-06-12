@@ -21,13 +21,13 @@ namespace openloco::s5
 #pragma pack(push, 1)
     struct Options
     {
-        uint8_t editorStep;         // 0x00
-        uint8_t difficulty;         // 0x01
-        uint16_t scenarioStartYear; // 0x02
-        uint8_t pad_4[2];
-        uint16_t scenarioFlags; // 0x06
-        uint8_t madeAnyChanges; // 0x08
-        uint8_t pad_9[1];
+        uint8_t editorStep;                        // 0x00
+        uint8_t difficulty;                        // 0x01
+        uint16_t scenarioStartYear;                // 0x02
+        uint8_t pad_4[2];                          // 0x04
+        uint16_t scenarioFlags;                    // 0x06
+        uint8_t madeAnyChanges;                    // 0x08
+        uint8_t pad_9[1];                          // 0x09
         uint8_t landDistributionPatterns[32];      // 0x0A
         char scenarioName[64];                     // 0x2A
         char scenarioDetails[256];                 // 0x6A
