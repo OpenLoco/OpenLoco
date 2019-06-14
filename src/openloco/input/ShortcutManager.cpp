@@ -3,6 +3,7 @@
 #include "../game_commands.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../s5/s5.h"
 #include "../stationmgr.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
@@ -126,8 +127,6 @@ namespace openloco::input::ShortcutManager
         string_ids::shortcut_toggle_last_announcement,
         string_ids::shortcut_send_message,
     } };
-
-    static loco_global<uint8_t, 0x009C8714> _editor_step;
 
     size_t count()
     {
@@ -289,7 +288,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF1C6
     static void adjustLand()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::terraform::open_adjust_land();
@@ -298,7 +297,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF1E1
     static void adjustWater()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::terraform::open_adjust_water();
@@ -307,7 +306,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF1FC
     static void plantTrees()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::terraform::open_plant_trees();
@@ -316,7 +315,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF217
     static void bulldozeArea()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::terraform::open_clear_area();
@@ -338,7 +337,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF24F
     static void buildRoads()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         loco_global<uint8_t, 0x00525FAB> last_road_option;
@@ -409,7 +408,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF308
     static void showTownsList()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::town_list::open();
@@ -418,7 +417,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF323
     static void showIndustriesList()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::industry_list::open();
@@ -427,7 +426,7 @@ namespace openloco::input::ShortcutManager
     // 0x004BF33E
     static void showMap()
     {
-        if (is_editor_mode() && _editor_step == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
         windows::map::open();

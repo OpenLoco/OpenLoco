@@ -11,6 +11,7 @@
 #include "../objects/currency_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../s5/s5.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -25,8 +26,6 @@ namespace openloco::ui::options
     static void sub_4C13BE(window* w);
     static void sub_4C1519();
     static void sub_4BF935();
-
-    static loco_global<uint8_t, 0x009C8714> _9C8714;
 
     static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
@@ -2077,7 +2076,7 @@ namespace openloco::ui::options
             w->disabled_widgets |= 1 << common::widx::tab_music;
         }
 
-        if (is_editor_mode() && _9C8714 == 0)
+        if (is_editor_mode() && s5::getOptions().editorStep == 0)
         {
             w->disabled_widgets |= 1 << common::widx::tab_regional;
         }
