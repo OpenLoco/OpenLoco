@@ -445,7 +445,7 @@ namespace openloco::ui::windows::town
             for (int16_t yPos = self->height - 57; yPos >= 14; yPos -= 20)
             {
                 const uint16_t xPos = 39;
-                gfx::fill_rect(clipped, xPos, yPos, xPos + 241, yPos, colour::get_shade(self->colours[1], 4));
+                gfx::draw_rect(clipped, xPos, yPos, 241, 1, colour::get_shade(self->colours[1], 4));
 
                 *(int32_t*)&*commonFormatArgs = yTick;
                 gfx::draw_string_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &*commonFormatArgs);
@@ -471,7 +471,7 @@ namespace openloco::ui::windows::town
                         gfx::draw_string_centred(*clipped, xPos, yPos, colour::black, string_ids::population_graph_year, &*commonFormatArgs);
                     }
 
-                    gfx::fill_rect(clipped, xPos, 11, xPos, self->height - 57, colour::get_shade(self->colours[1], 4));
+                    gfx::draw_rect(clipped, xPos, 11, 1, self->height - 66, colour::get_shade(self->colours[1], 4));
                 }
 
                 // Draw population graph
