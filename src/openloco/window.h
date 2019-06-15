@@ -240,6 +240,41 @@ namespace openloco::ui
         }
     };
 
+    struct SavedView
+    {
+        int16_t mapX;
+        int16_t mapY;
+        int8_t unk_08;
+        int8_t rotation;
+        int16_t surfaceZ;
+
+        bool isEmpty()
+        {
+            return mapX == -1 && mapY == -1;
+        }
+
+        bool hasUnkFlag()
+        {
+            return (mapY & (1 << 15)) != 0;
+        }
+
+        int8_t getThingId()
+        {
+            return mapX & 0xFF;
+        }
+
+        void clear()
+        {
+            mapX = -1;
+            mapY = -1;
+        }
+
+        bool operator==(const SavedView& rhs)
+        {
+            return mapX == rhs.mapX && mapY == rhs.mapY && unk_08 == rhs.unk_08 && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
+        }
+    };
+
     struct window
     {
         window_event_list* event_handlers;                 // 0x00
@@ -268,8 +303,7 @@ namespace openloco::ui
         uint8_t pad_842[0x844 - 0x842];
         uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
-        int32_t var_848 = 0;
-        int32_t var_84C = 0;
+        SavedView saved_view; // 0x848
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
         uint16_t var_854 = 0;

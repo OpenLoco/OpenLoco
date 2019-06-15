@@ -172,15 +172,14 @@ namespace openloco::ui::windows::town
 
                 case widx::centre_on_viewport:
                 {
-                    if (self->viewports[0] == nullptr || self->var_848 == -1)
+                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
                         break;
 
                     registers regs;
-                    const uint32_t var_848 = self->var_848;
-                    if ((var_848 & (1 << 31)) != 0)
+                    if (self->saved_view.hasUnkFlag())
                     {
-                        uint32_t ebx = var_848 & 0xFF;
-                        auto townCentre = thingmgr::get<Thing>(ebx << 7);
+                        uint32_t townId = self->saved_view.getThingId();
+                        auto townCentre = thingmgr::get<Thing>(townId << 7);
 
                         regs.ax = townCentre->x;
                         regs.cx = townCentre->y;
@@ -188,13 +187,9 @@ namespace openloco::ui::windows::town
                     }
                     else
                     {
-                        const uint32_t eax = var_848 & 0x3FFFFFFF;
-                        const uint32_t ecx = eax >> 16;
-                        const uint32_t edx = (uint32_t)self->var_84C >> 16;
-
-                        regs.ax = static_cast<uint16_t>(eax);
-                        regs.cx = static_cast<uint16_t>(ecx);
-                        regs.dx = static_cast<uint16_t>(edx);
+                        regs.ax = self->saved_view.mapX;
+                        regs.cx = self->saved_view.mapY & 0x3FFF;
+                        regs.dx = self->saved_view.surfaceZ;
                     }
 
                     regs.esi = (int32_t)WindowManager::getMainWindow();
@@ -255,7 +250,7 @@ namespace openloco::ui::windows::town
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->var_848 = -1;
+                    self->saved_view.clear();
                 }
             }
 
@@ -275,14 +270,18 @@ namespace openloco::ui::windows::town
             int16_t tileZ = openloco::map::tile_element_height(town->x, town->y) & 0xFFFF;
 
             // Compute views.
-            uint8_t currentRotation = static_cast<uint8_t>(self->viewports[0]->getRotation());
-            int32_t ecx = (tileZ << 16) | (currentRotation << 8) | 2;
-            int32_t edx = (town->y << 16) | town->x;
+            SavedView view = {
+                town->x,
+                town->y,
+                2,
+                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                tileZ,
+            };
 
             uint16_t flags = 0;
             if (self->viewports[0] != nullptr)
             {
-                if (self->var_848 == edx && self->var_84C == ecx)
+                if (self->saved_view == view)
                     return;
 
                 flags = self->viewports[0]->flags;
@@ -296,8 +295,7 @@ namespace openloco::ui::windows::town
                     flags |= viewport_flags::gridlines_on_landscape;
             }
 
-            self->var_848 = edx;
-            self->var_84C = ecx;
+            self->saved_view = view;
 
             // 0x00499B39 start
             if (self->viewports[0] == nullptr)
@@ -366,7 +364,7 @@ namespace openloco::ui::windows::town
             }
             // 0x00499C0D end
 
-            window->var_848 = -1;
+            window->saved_view.clear();
         }
 
         // TODO(avgeffen): only needs to be called once.
