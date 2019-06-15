@@ -131,7 +131,7 @@ namespace openloco::ui::windows::town
             self->draw(dpi);
             common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::sub_4CF487(dpi, self, (widget_index)widx::centre_on_viewport);
+            widget::drawViewportCentreButton(dpi, self, (widget_index)widx::centre_on_viewport);
 
             static string_id townSizeLabelIds[] = {
                 string_ids::town_size_hamlet,

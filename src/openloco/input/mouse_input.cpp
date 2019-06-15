@@ -152,6 +152,11 @@ namespace openloco::input
         return (*_hoverWindowType == type) && (_hoverWindowNumber == number);
     }
 
+    bool is_hovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex)
+    {
+        return *_hoverWindowType == type && _hoverWindowNumber == number && _hoverWidgetIdx == widgetIndex;
+    }
+
     ui::widget_index get_hovered_widget_index()
     {
         return _hoverWidgetIdx;

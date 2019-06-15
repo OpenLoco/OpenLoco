@@ -15,6 +15,7 @@ namespace openloco::image_ids
     constexpr uint32_t close_button = 2321;
 
     constexpr uint32_t rubbish_bin = 2363;
+    constexpr uint32_t centre_viewport = 2364;
 
     constexpr uint32_t town_expand = 2382;
     constexpr uint32_t music_controls_stop = 2383;

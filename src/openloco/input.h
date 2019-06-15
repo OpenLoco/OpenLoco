@@ -69,6 +69,7 @@ namespace openloco::input
     gfx::point_t getMouseLocation();
     bool is_hovering(ui::WindowType);
     bool is_hovering(ui::WindowType, ui::window_number);
+    bool is_hovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex);
     ui::widget_index get_hovered_widget_index();
 
     bool is_dropdown_active(ui::WindowType type, ui::widget_index index);
