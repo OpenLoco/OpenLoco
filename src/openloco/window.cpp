@@ -1070,13 +1070,9 @@ namespace openloco::ui
         uint64_t pressed_widget = 0;
         if (input::state() == input::input_state::dropdown_active || input::state() == input::input_state::widget_pressed)
         {
-            if (this->type == addr<0x0052336F, WindowType>() && this->number == addr<0x00523370, uint16_t>())
-            {
-                if (input::has_flag((input::input_flags)(1 << 0)))
-                {
-                    pressed_widget = 1ULL << addr<0x00523372, uint32_t>();
-                }
-            }
+            widget_index widgetIndex = input::get_pressed_widget_index();
+            if (input::is_pressed(type, number, widgetIndex))
+                pressed_widget = 1ULL << widgetIndex;
         }
 
         uint64_t tool_widget = 0;

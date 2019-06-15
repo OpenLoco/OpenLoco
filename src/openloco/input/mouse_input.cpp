@@ -188,6 +188,11 @@ namespace openloco::input
         return _pressedWidgetIndex == index;
     }
 
+    ui::widget_index get_pressed_widget_index()
+    {
+        return _pressedWidgetIndex;
+    }
+
     bool is_tool_active(ui::WindowType type, ui::window_number number)
     {
         if (!has_flag(input_flags::tool_active))
