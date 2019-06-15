@@ -42,8 +42,7 @@ namespace openloco::ui
         town = 33,
         industry = 34,
         industryList = 35,
-        unk_36 = 36,
-
+        news = 36,
         messages = 37,
 
         multiplayer = 39,
