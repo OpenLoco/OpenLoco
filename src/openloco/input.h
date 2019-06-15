@@ -74,6 +74,7 @@ namespace openloco::input
 
     bool is_dropdown_active(ui::WindowType type, ui::widget_index index);
 
+    bool is_pressed(ui::WindowType type, ui::window_number number);
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
     ui::widget_index get_pressed_widget_index();
 

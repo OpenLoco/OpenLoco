@@ -2,6 +2,7 @@
 
 #include "company.h"
 #include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include <cstdint>
 #include <limits>
 
@@ -32,8 +33,8 @@ namespace openloco
     struct town
     {
         string_id name;
-        int16_t x;
-        int16_t y;
+        map::tile_coord_t x;
+        map::tile_coord_t y;
         uint16_t flags;
         uint8_t pad_08[0x30 - 0x08];
         uint32_t population; // 0x30

@@ -176,7 +176,7 @@ namespace openloco::input
         return _pressedWidgetIndex == index;
     }
 
-    bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index)
+    bool is_pressed(ui::WindowType type, ui::window_number number)
     {
         if (state() != input_state::widget_pressed)
             return false;
@@ -190,7 +190,12 @@ namespace openloco::input
         if (!has_flag(input_flags::widget_pressed))
             return false;
 
-        return _pressedWidgetIndex == index;
+        return true;
+    }
+
+    bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index)
+    {
+        return is_pressed(type, number) && _pressedWidgetIndex == index;
     }
 
     ui::widget_index get_pressed_widget_index()

@@ -57,16 +57,17 @@ namespace openloco::ui::widget
         auto& widget = window->widgets[widgetIndex];
         if (input::is_hovering(window->type, window->number, widgetIndex))
         {
-            gfx::fill_rect(dpi, widget.left + window->x, widget.top + window->y, widget.right + window->x, widget.bottom + window->y, gfx::recolour(0x34));
+            gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
+            gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
-            if (input::state() == input::input_state::widget_pressed && input::is_pressed(window->type, window->number, widgetIndex))
+            if (input::is_pressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            gfx::fill_rect_inset(dpi, widget.left + window->x, widget.top + window->y, widget.right + window->x, widget.bottom + window->y, window->colours[1] | 0x80, flags);
+            gfx::draw_rect_inset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), colour::translucent(window->colours[1]), flags);
         }
 
-        gfx::draw_image(dpi, widget.left + window->x, widget.top + window->y, gfx::recolour(image_ids::centre_viewport));
+        gfx::draw_image(dpi, widget.left + window->x, widget.top + window->y, gfx::recolour(image_ids::centre_viewport, window->colours[1]));
     }
 
     // 0x004CAB8E

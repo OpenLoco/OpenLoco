@@ -9,13 +9,13 @@ using namespace openloco::interop;
 namespace openloco::ui
 {
     // 0x0045A0E7
-    void viewport::render(gfx::drawpixelinfo_t* dpi, gfx::point_t origin, gfx::ui_size_t size)
+    void viewport::render(gfx::drawpixelinfo_t* dpi)
     {
         registers regs;
-        regs.ax = origin.x;
-        regs.bx = origin.y;
-        regs.dx = origin.x + size.width;
-        regs.bp = origin.y + size.height;
+        regs.ax = dpi->x;
+        regs.bx = dpi->y;
+        regs.dx = dpi->x + dpi->width;
+        regs.bp = dpi->y + dpi->height;
         regs.edi = (int32_t)dpi;
         regs.esi = (int32_t)this;
 

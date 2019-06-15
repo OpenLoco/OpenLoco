@@ -109,10 +109,10 @@ namespace openloco::ui
     void window::drawViewports(gfx::drawpixelinfo_t* dpi)
     {
         if (viewports[0] != nullptr)
-            viewports[0]->render(dpi, gfx::point_t(dpi->x, dpi->y), gfx::ui_size_t(dpi->width, dpi->height));
+            viewports[0]->render(dpi);
 
         if (viewports[1] != nullptr)
-            viewports[1]->render(dpi, gfx::point_t(dpi->x, dpi->y), gfx::ui_size_t(dpi->width, dpi->height));
+            viewports[1]->render(dpi);
     }
 
     static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
@@ -1070,9 +1070,11 @@ namespace openloco::ui
         uint64_t pressed_widget = 0;
         if (input::state() == input::input_state::dropdown_active || input::state() == input::input_state::widget_pressed)
         {
-            widget_index widgetIndex = input::get_pressed_widget_index();
-            if (input::is_pressed(type, number, widgetIndex))
+            if (input::is_pressed(type, number))
+            {
+                const widget_index widgetIndex = input::get_pressed_widget_index();
                 pressed_widget = 1ULL << widgetIndex;
+            }
         }
 
         uint64_t tool_widget = 0;

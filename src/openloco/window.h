@@ -328,18 +328,18 @@ namespace openloco::ui
 
         constexpr void set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
         {
-            this->min_width = minSize.width;
-            this->min_height = minSize.height;
+            min_width = minSize.width;
+            min_height = minSize.height;
 
-            this->max_width = maxSize.width;
-            this->max_height = maxSize.height;
+            max_width = maxSize.width;
+            max_height = maxSize.height;
+
+            width = std::clamp(width, min_width, max_width);
+            height = std::clamp(height, min_height, max_height);
         }
 
         constexpr void set_size(gfx::ui_size_t size)
         {
-            this->width = size.width;
-            this->height = size.height;
-
             set_size(size, size);
         }
 

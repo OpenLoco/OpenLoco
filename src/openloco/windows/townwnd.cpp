@@ -170,33 +170,22 @@ namespace openloco::ui::windows::town
                     common::switchTab(self, widgetIndex);
                     break;
 
+                // 0x0049932D
                 case widx::centre_on_viewport:
                 {
                     if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
                         break;
 
                     registers regs;
-                    if (self->saved_view.hasUnkFlag())
-                    {
-                        uint32_t townId = self->saved_view.getThingId();
-                        auto townCentre = thingmgr::get<Thing>(townId << 7);
-
-                        regs.ax = townCentre->x;
-                        regs.cx = townCentre->y;
-                        regs.dx = townCentre->z;
-                    }
-                    else
-                    {
-                        regs.ax = self->saved_view.mapX;
-                        regs.cx = self->saved_view.mapY & 0x3FFF;
-                        regs.dx = self->saved_view.surfaceZ;
-                    }
-
+                    regs.ax = self->saved_view.mapX;
+                    regs.cx = self->saved_view.mapY & 0x3FFF;
+                    regs.dx = self->saved_view.surfaceZ;
                     regs.esi = (int32_t)WindowManager::getMainWindow();
                     call(0x004C6827, regs);
                     break;
                 }
 
+                // 0x004990B9
                 case widx::expand_town:
                 {
                     auto town = townmgr::get(self->number);
@@ -234,6 +223,7 @@ namespace openloco::ui::windows::town
                     break;
                 }
 
+                // 0x0049916A
                 case widx::demolish_town:
                 {
                     loco_global<string_id, 0x009C68E8> gameErrorString;
@@ -266,7 +256,7 @@ namespace openloco::ui::windows::town
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
-                if (is_editor_mode())
+                if (!is_editor_mode())
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;
@@ -337,7 +327,7 @@ namespace openloco::ui::windows::town
             }
             // 0x00499B39 end
 
-            if (self->viewports[0]->x != 0)
+            if (self->viewports[0] != nullptr)
             {
                 self->viewports[0]->flags = flags;
                 self->invalidate();
