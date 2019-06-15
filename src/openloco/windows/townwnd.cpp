@@ -199,10 +199,38 @@ namespace openloco::ui::windows::town
 
                 case widx::expand_town:
                 {
-                    registers regs;
-                    regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    call(0x004990B9, regs);
+                    auto town = townmgr::get(self->number);
+
+                    const uint32_t ebx = (town->var_38 >> 3) + 5;
+                    const int16_t currentYear = current_year();
+                    int16_t tempYear = currentYear - 51;
+                    set_current_year(tempYear);
+
+                    for (uint8_t i = 8; i > 0; i--)
+                    {
+                        for (uint32_t j = ebx; j > 0; j--)
+                        {
+                            registers regs;
+                            regs.esi = (int32_t)town;
+                            regs.eax = 0xFF;
+
+                            call(0x00498116, regs);
+                            call(0x004975E0, regs);
+                        }
+
+                        tempYear += 7;
+                        set_current_year(tempYear);
+                    }
+
+                    set_current_year(currentYear);
+
+                    // Set new history entry.
+                    uint8_t historyEntry = std::min<uint8_t>(town->population / 50, 255);
+                    town->history[town->history_size - 1] = historyEntry;
+
+                    // Play construction sound at the town centre.
+                    int16_t tileZ = openloco::map::tile_element_height(town->x, town->y) & 0xFFFF;
+                    audio::play_sound(audio::sound_id::construct, loc16(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
 

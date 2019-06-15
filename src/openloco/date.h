@@ -41,6 +41,7 @@ namespace openloco
     uint32_t current_day();
     month_id current_month();
     uint16_t current_year();
+    void set_current_year(const int16_t year);
 
     date current_date();
     void set_date(const date& date);

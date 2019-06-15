@@ -31,6 +31,11 @@ namespace openloco
         return _current_year;
     }
 
+    void set_current_year(const int16_t year)
+    {
+        _current_year = year;
+    }
+
     date current_date()
     {
         return date(_current_year, (month_id)(*_current_month), _current_day_of_month + 1);
