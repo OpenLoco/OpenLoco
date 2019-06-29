@@ -29,13 +29,6 @@
 
 namespace openloco::interop
 {
-    registers::registers()
-    {
-        // We set registers to known undefined values so we are easily aware when
-        // code is attempting to use undefined registers.
-        std::memset(this, 0xCC, sizeof(registers));
-    }
-
     // This variable serves a purpose of identifying a crash if it has happened inside original code.
     // When switching to original code, stack frame pointer is modified and prevents breakpad from providing stack trace.
     volatile int32_t _originalAddress = 0;
