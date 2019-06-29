@@ -1121,14 +1121,16 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 case widx::change_name_btn:
                 {
-                    strncpy(s5::getOptions().scenarioName, input, sizeof(s5::Options::scenarioName));
+                    strncpy(s5::getOptions().scenarioName, input, sizeof(s5::Options::scenarioName) - 1);
+                    s5::getOptions().scenarioName[sizeof(s5::Options::scenarioName) - 1] = '\0';
                     self->invalidate();
                     break;
                 }
 
                 case widx::change_details_btn:
                 {
-                    strncpy(s5::getOptions().scenarioDetails, input, sizeof(s5::Options::scenarioDetails));
+                    strncpy(s5::getOptions().scenarioDetails, input, sizeof(s5::Options::scenarioDetails) - 1);
+                    s5::getOptions().scenarioDetails[sizeof(s5::Options::scenarioDetails) - 1] = '\0';
                     self->invalidate();
                     break;
                 }
