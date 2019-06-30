@@ -10,11 +10,13 @@
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 
-#if defined(__GNUC__)
+#if defined(__clang__)
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #define FORCE_ALIGN_ARG_POINTER
 #endif
+
+constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
 namespace openloco::interop
 {
@@ -26,7 +28,7 @@ namespace openloco::interop
     {
         union
         {
-            int32_t eax;
+            int32_t eax{ DEFAULT_REG_VAL };
             int16_t ax;
             struct
             {
@@ -36,7 +38,7 @@ namespace openloco::interop
         };
         union
         {
-            int32_t ebx;
+            int32_t ebx{ DEFAULT_REG_VAL };
             int16_t bx;
             struct
             {
@@ -46,7 +48,7 @@ namespace openloco::interop
         };
         union
         {
-            int32_t ecx;
+            int32_t ecx{ DEFAULT_REG_VAL };
             int16_t cx;
             struct
             {
@@ -56,7 +58,7 @@ namespace openloco::interop
         };
         union
         {
-            int32_t edx;
+            int32_t edx{ DEFAULT_REG_VAL };
             int16_t dx;
             struct
             {
@@ -66,21 +68,19 @@ namespace openloco::interop
         };
         union
         {
-            int32_t esi;
+            int32_t esi{ DEFAULT_REG_VAL };
             int16_t si;
         };
         union
         {
-            int32_t edi;
+            int32_t edi{ DEFAULT_REG_VAL };
             int16_t di;
         };
         union
         {
-            int32_t ebp;
+            int32_t ebp{ DEFAULT_REG_VAL };
             int16_t bp;
         };
-
-        registers();
     };
     assert_struct_size(registers, 7 * 4);
 #pragma pack(pop)
