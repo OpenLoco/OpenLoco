@@ -323,7 +323,7 @@ namespace openloco::ui::windows::town
                 auto zoomLevel = openloco::ui::viewportmgr::ZoomLevel::half;
                 viewportmgr::create(self, 0, gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1), gfx::ui_size_t(widget->width() - 2, widget->height() - 2), zoomLevel, tile);
                 self->invalidate();
-                self->flags |= window_flags::flag_2;
+                self->flags |= window_flags::viewport_no_scrolling;
             }
             // 0x00499B39 end
 
