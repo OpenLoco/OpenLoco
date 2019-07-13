@@ -361,18 +361,13 @@ namespace openloco::ui::windows::town
         if (window == nullptr)
         {
             // 0x00499C0D start
-            window = WindowManager::createWindow(WindowType::town, windowSize, 0, &town::events);
-            window->widgets = town::widgets;
-            window->enabled_widgets = town::enabledWidgets;
+            const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
+            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &town::events);
             window->number = townId;
-            window->current_tab = 0;
-            window->frame_no = 0;
-            window->disabled_widgets = 0;
             window->min_width = 192;
             window->min_height = 161;
             window->max_width = 600;
             window->max_height = 440;
-            window->flags |= window_flags::resizable;
 
             auto skin = objectmgr::get<interface_skin_object>();
             if (skin != nullptr)

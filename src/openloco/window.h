@@ -181,6 +181,7 @@ namespace openloco::ui
         constexpr uint32_t no_background = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
+        constexpr uint32_t flag_8 = 1 << 8;
         constexpr uint32_t resizable = 1 << 9;
         constexpr uint32_t no_auto_close = 1 << 10;
         constexpr uint32_t flag_11 = 1 << 11;
