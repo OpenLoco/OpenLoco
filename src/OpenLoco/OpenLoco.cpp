@@ -45,6 +45,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Crash.h"
@@ -833,6 +834,62 @@ namespace OpenLoco
 
     static loco_global<int8_t, 0x0050C197> _50C197;
     static loco_global<string_id, 0x0050C198> _50C198;
+
+    static void sub_42DF8B(building_element* el)
+    {
+        // call(0x0042DF8B);
+
+        if (el->var_5b())
+            return;
+
+        if (el->is_flag_4())
+            return;
+
+        auto object = el->object();
+
+        if (!el->has_station_element())
+        {
+            // 0x00042DFB3
+        }
+
+        if (el->has_40())
+            return;
+
+        // 0x0042E2AB
+
+        town_id_t townId;
+        {
+            registers regs;
+
+            call(0x00497E52, regs);
+            townId = regs.bx;
+        }
+
+        if (townId == town_id::null)
+            return;
+
+        auto town = townmgr::get(townId);
+
+        if (!el->has_station_element())
+        {
+            el->data()[5] += 0x20; // sets carry
+            if (carry && el->var_6a() != 0x3F && (object->var_98 & 1) == 0)
+            {
+                // probably has to do with large buildings
+                // update field 6 +1 for all parts
+            }
+        }
+
+        // 0x0042E3A1
+        if (el->has_station_element() && el->var_6a() >= 40)
+        {
+
+            if ((town->prng->rand_next() &= 0xFFFF) <= 16)
+            {
+                throw std::exception(); // return false;
+            }
+        }
+    }
 
     // 0x0046ABCB
     static void tickLogic()
