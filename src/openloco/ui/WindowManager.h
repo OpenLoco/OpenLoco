@@ -240,8 +240,8 @@ namespace openloco::ui::windows::CompanyList
 
 namespace openloco::ui::windows::CompanyWindow
 {
-    void open(company_id_t companyId);
-    void openFinances(company_id_t companyId);
+    window* open(company_id_t companyId);
+    window* openFinances(company_id_t companyId);
 }
 
 namespace openloco::ui::windows::PlayerInfoPanel

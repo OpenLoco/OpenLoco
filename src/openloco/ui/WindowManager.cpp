@@ -63,9 +63,20 @@ namespace openloco::ui::WindowManager
     void registerHooks()
     {
         register_hook(
+            0x0043454F,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                windows::CompanyWindow::open(regs.eax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x0043CB9F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 windows::editorInit();
+
                 return 0;
             });
 
