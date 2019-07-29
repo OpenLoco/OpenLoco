@@ -171,6 +171,8 @@ namespace openloco::string_ids
 
     constexpr string_id stringid_stringid = 347;
 
+    constexpr string_id move_main_view_to_show_this = 355;
+
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
 
@@ -209,6 +211,11 @@ namespace openloco::string_ids
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
     constexpr string_id title_menu_exit_from_game = 616;
+    constexpr string_id town_size_hamlet = 617;
+    constexpr string_id town_size_village = 618;
+    constexpr string_id town_size_town = 619;
+    constexpr string_id town_size_city = 620;
+    constexpr string_id town_size_metropolis = 621;
 
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
@@ -450,6 +457,24 @@ namespace openloco::string_ids
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
 
+    constexpr string_id title_town_name = 1308;
+    constexpr string_id prompt_type_new_town_name = 1309;
+    constexpr string_id status_town_population = 1310;
+    constexpr string_id error_cant_rename_town = 1311;
+
+    constexpr string_id population_graph_people = 1357;
+    constexpr string_id population_graph_year = 1358;
+    constexpr string_id title_town = 1359;
+    constexpr string_id title_town_population = 1360;
+    constexpr string_id title_town_local_authority = 1361;
+
+    constexpr string_id tooltip_town = 1386;
+    constexpr string_id tooltip_population_graph = 1387;
+    constexpr string_id tooltip_town_ratings_each_company = 1388;
+
+    constexpr string_id demolish_this_town = 1392;
+    constexpr string_id cant_remove_town = 1393;
+
     constexpr string_id town_size_1 = 1399;
     constexpr string_id town_size_2 = 1400;
     constexpr string_id town_size_3 = 1401;
@@ -458,6 +483,8 @@ namespace openloco::string_ids
     constexpr string_id town_size_6 = 1404;
     constexpr string_id town_size_7 = 1405;
     constexpr string_id town_size_8 = 1406;
+
+    constexpr string_id expand_this_town = 1409;
 
     constexpr string_id station_cargo_rating_percent = 1423;
 
@@ -687,6 +714,14 @@ namespace openloco::string_ids
     constexpr string_id tooltip_speed_fast_forward = 1819;
     constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
+
+    constexpr string_id local_authority_ratings_transport_companies = 1833;
+    constexpr string_id town_rating_appalling = 1834;
+    constexpr string_id town_rating_poor = 1835;
+    constexpr string_id town_rating_average = 1836;
+    constexpr string_id town_rating_good = 1837;
+    constexpr string_id town_rating_excellent = 1838;
+    constexpr string_id town_rating_company_percentage_rank = 1839;
 
     constexpr string_id and_be_the_top_company = 1848;
     constexpr string_id and_be_within_the_top_companies = 1849;

@@ -8,6 +8,7 @@
 #include "types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
+#include "viewport.hpp"
 #include <algorithm>
 
 namespace openloco::ui
@@ -174,12 +175,13 @@ namespace openloco::ui
     {
         constexpr uint32_t stick_to_back = 1 << 0;
         constexpr uint32_t stick_to_front = 1 << 1;
-        constexpr uint32_t flag_2 = 1 << 2;
+        constexpr uint32_t viewport_no_scrolling = 1 << 2;
         constexpr uint32_t scrolling_to_location = 1 << 3;
         constexpr uint32_t transparent = 1 << 4;
         constexpr uint32_t no_background = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
+        constexpr uint32_t flag_8 = 1 << 8;
         constexpr uint32_t resizable = 1 << 9;
         constexpr uint32_t no_auto_close = 1 << 10;
         constexpr uint32_t flag_11 = 1 << 11;
@@ -221,7 +223,7 @@ namespace openloco::ui
                 uint32_t event_18;
                 void (*scroll_mouse_over)(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*text_input)(window*, widget_index, char*);
-                uint32_t viewport_rotate;
+                void (*viewport_rotate)(window*);
                 uint32_t event_22;
                 void (*tooltip)(window*, widget_index);
                 ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
@@ -239,121 +241,39 @@ namespace openloco::ui
         }
     };
 
-    struct viewport_pos
+    struct SavedView
     {
-        int16_t x{};
-        int16_t y{};
+        int16_t mapX;
+        int16_t mapY;
+        int8_t unk_08;
+        int8_t rotation;
+        int16_t surfaceZ;
 
-        viewport_pos()
-            : viewport_pos(0, 0)
+        bool isEmpty()
         {
-        }
-        viewport_pos(int16_t _x, int16_t _y)
-            : x(_x)
-            , y(_y)
-        {
-        }
-    };
-
-    struct ViewportRect
-    {
-        int16_t left = 0;
-        int16_t top = 0;
-        int16_t bottom = 0;
-        int16_t right = 0;
-
-        constexpr bool contains(const viewport_pos& vpos)
-        {
-            return (left < vpos.x && top < vpos.y && right >= vpos.x && bottom >= vpos.y);
-        }
-    };
-
-    namespace viewport_flags
-    {
-        constexpr uint32_t underground_view = 1 << 0;
-        constexpr uint32_t hide_foreground_tracks_roads = 1 << 1;
-        constexpr uint32_t height_marks_on_tracks_roads = 1 << 2;
-        constexpr uint32_t height_marks_on_land = 1 << 3;
-        constexpr uint32_t one_way_direction_arrows = 1 << 4;
-        constexpr uint32_t gridlines_on_landscape = 1 << 5;
-        constexpr uint32_t hide_foreground_scenery_buildings = 1 << 6;
-        constexpr uint32_t flag_7 = 1 << 7;
-        constexpr uint32_t flag_8 = 1 << 8;
-        constexpr uint32_t town_names_displayed = 1 << 9;
-        constexpr uint32_t station_names_displayed = 1 << 10;
-    }
-
-    struct viewport
-    {
-        int16_t width;       // 0x00
-        int16_t height;      // 0x02
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t view_x;      // 0x08
-        int16_t view_y;      // 0x0A
-        int16_t view_width;  // 0x0C
-        int16_t view_height; // 0x0E
-        uint8_t zoom;        // 0x10
-        uint8_t pad_11;
-        uint16_t flags; // 0x12
-
-        constexpr bool contains(const viewport_pos& vpos)
-        {
-            return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
+            return mapX == -1 && mapY == -1;
         }
 
-        constexpr bool intersects(const ViewportRect& vpos)
+        bool hasUnkFlag()
         {
-            if (vpos.right <= view_x)
-                return false;
-
-            if (vpos.bottom <= view_y)
-                return false;
-
-            if (vpos.left >= view_x + view_width)
-                return false;
-
-            if (vpos.top >= view_y + view_height)
-                return false;
-
-            return true;
+            return (mapY & (1 << 15)) != 0;
         }
 
-        constexpr ViewportRect getIntersection(const ViewportRect& rect)
+        int8_t getThingId()
         {
-            auto out = ViewportRect();
-            out.left = std::max(rect.left, view_x);
-            out.right = std::min<int16_t>(rect.right, view_x + view_width);
-            out.top = std::max(rect.top, view_y);
-            out.bottom = std::min<int16_t>(rect.bottom, view_y + view_height);
-
-            return out;
+            return mapX & 0xFF;
         }
 
-        constexpr int getRotation()
+        void clear()
         {
-            return interop::addr<0x00e3f0b8, int32_t>();
+            mapX = -1;
+            mapY = -1;
         }
 
-        /**
-         * Maps a 2D viewport position to a UI (screen) position.
-         */
-        xy32 map_to_ui(const viewport_pos& vpos)
+        bool operator==(const SavedView& rhs)
         {
-            auto uiX = x + ((vpos.x - view_x) >> zoom);
-            auto uiY = y + ((vpos.y - view_y) >> zoom);
-            return { uiX, uiY };
+            return mapX == rhs.mapX && mapY == rhs.mapY && unk_08 == rhs.unk_08 && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
         }
-
-        static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
-        void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
-    };
-
-    struct viewport_config
-    {
-        uint16_t viewport_target_sprite; // 0x0
-        int16_t saved_view_x;            // 0x2
-        int16_t saved_view_y;            // 0x4
     };
 
     struct window
@@ -384,17 +304,15 @@ namespace openloco::ui
         uint8_t pad_842[0x844 - 0x842];
         uint16_t sort_mode; // 0x844;
         uint16_t var_846 = 0;
-        uint16_t var_848 = 0;
-        uint16_t var_84A = 0;
-        uint16_t var_84C = 0;
-        uint16_t var_84E = 0;
+        SavedView saved_view; // 0x848
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
         uint16_t var_854 = 0;
         uint16_t var_856 = 0;
         uint16_t var_858 = 0;
         uint16_t var_85A;
-        uint8_t pad_85C[0x870 - 0x85C];
+        int32_t var_85C;
+        uint8_t pad_860[0x870 - 0x860];
         uint16_t current_tab = 0; // 0x870
         uint16_t frame_no = 0;    // 0x872
         uint16_t var_874;
@@ -408,16 +326,22 @@ namespace openloco::ui
         int16_t var_88C;
 
         window(gfx::point_t position, gfx::ui_size_t size);
+
+        constexpr void set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
+        {
+            min_width = minSize.width;
+            min_height = minSize.height;
+
+            max_width = maxSize.width;
+            max_height = maxSize.height;
+
+            width = std::clamp(width, min_width, max_width);
+            height = std::clamp(height, min_height, max_height);
+        }
+
         constexpr void set_size(gfx::ui_size_t size)
         {
-            this->min_width = size.width;
-            this->min_height = size.height;
-
-            this->max_width = size.width;
-            this->max_height = size.height;
-
-            this->width = size.width;
-            this->height = size.height;
+            set_size(size, size);
         }
 
         bool is_enabled(int8_t widget_index);
@@ -433,6 +357,7 @@ namespace openloco::ui
         void init_scroll_widgets();
         int8_t get_scroll_data_index(widget_index index);
         void set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets);
+        void drawViewports(gfx::drawpixelinfo_t* dpi);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
         void viewport_zoom_set(int8_t zoomLevel, bool toCursor);

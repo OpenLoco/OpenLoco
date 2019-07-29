@@ -2,6 +2,7 @@
 
 #include "company.h"
 #include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include <cstdint>
 #include <limits>
 
@@ -32,11 +33,13 @@ namespace openloco
     struct town
     {
         string_id name;
-        uint8_t pad_02[0x06 - 0x02];
+        map::tile_coord_t x;
+        map::tile_coord_t y;
         uint16_t flags;
         uint8_t pad_08[0x30 - 0x08];
         uint32_t population; // 0x30
-        uint8_t pad_34[0x3A - 0x34];
+        uint8_t pad_34[0x38 - 0x34];
+        uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
         town_size size;                 // 0x5A
@@ -56,5 +59,6 @@ namespace openloco
         void update();
         void adjust_company_rating(company_id_t cid, int amount);
     };
+    static_assert(sizeof(town) == 0x270);
 #pragma pack(pop)
 }
