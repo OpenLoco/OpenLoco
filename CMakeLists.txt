@@ -30,7 +30,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 # Describe current version in terms of closest tag
 execute_process(
-    COMMAND git describe HEAD
+    COMMAND git describe HEAD --always
     COMMAND sed -E "s/-g.+$//"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE OPENLOCO_VERSION_TAG
