@@ -1,8 +1,12 @@
 #include "../audio/audio.h"
+#include "../companymgr.h"
+#include "../console.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../stationmgr.h"
+#include "../things/thingmgr.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../window.h"
@@ -10,6 +14,7 @@
 
 using namespace openloco::interop;
 using namespace openloco::ui;
+using namespace openloco::ui::viewport_interaction;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
 
@@ -226,6 +231,8 @@ namespace openloco::input
     }
 
 #pragma mark - Mouse input
+    static void state_viewport_left(mouse_button cx, int16_t x, int16_t y);
+    static void state_viewport_right(mouse_button cx, int16_t x, int16_t y);
 
     // 0x004C7174
     void handle_mouse(int16_t x, int16_t y, mouse_button button)
@@ -301,11 +308,11 @@ namespace openloco::input
                 break;
 
             case input_state::viewport_right:
-                call(0x004C74BB, regs);
+                state_viewport_right(button, x, y);
                 break;
 
             case input_state::viewport_left:
-                call(0x004C7334, regs);
+                state_viewport_left(button, x, y);
                 break;
 
             case input_state::scroll_left:
@@ -318,6 +325,230 @@ namespace openloco::input
 
             case input_state::scroll_right:
                 call(0x004C76A7, regs);
+                break;
+        }
+    }
+
+    // 0x004C7334
+    static void state_viewport_left(mouse_button cx, int16_t x, int16_t y)
+    {
+        auto window = WindowManager::find(_dragWindowType, _dragWindowNumber);
+        if (window == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        switch (cx)
+        {
+            case mouse_button::released:
+            {
+                // 0x4C735D
+                auto viewport = window->viewports[0];
+                if (viewport == nullptr)
+                {
+                    viewport = window->viewports[1];
+                }
+                if (viewport == nullptr)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                if (window->type == _dragWindowType && window->number == _dragWindowNumber)
+                {
+
+                    if (input::has_flag(input_flags::tool_active))
+                    {
+                        auto tool = WindowManager::find(_tooltipWindowType, _toolWindowNumber);
+                        if (tool != nullptr)
+                        {
+                            //    tool->call_12(_toolWidgetIndex);
+                        }
+                    }
+                }
+                break;
+            }
+
+            case mouse_button::left_released:
+            {
+                // 0x4C73C2
+                input::state(input_state::reset);
+                if (window->type != _dragWindowType || window->number != _dragWindowNumber)
+                    return;
+
+                if (has_flag(input_flags::tool_active))
+                {
+                    auto tool = WindowManager::find(_tooltipWindowType, _toolWindowNumber);
+                    if (tool != nullptr)
+                    {
+                        //    tool->call_13(_toolWidgetIndex);
+                    }
+                }
+                else if (!has_flag(input_flags::flag4))
+                {
+
+                    viewport_interaction::InteractionArg ptr{};
+
+                    auto bl = viewport_interaction::get_item_left(x, y, &ptr);
+                    switch (bl)
+                    {
+                        case InteractionItem::thing:
+                        {
+                            auto thing = thingmgr::get<thing_base>(ptr.value);
+                        }
+
+                        case InteractionItem::town:
+                        {
+                            char buffer[256] = { 0 };
+                            auto town = townmgr::get(ptr.value);
+                            stringmgr::format_string(buffer, town->name);
+                            console::log("Clicked town '%s' (%d)", buffer, ptr.value);
+                            break;
+                        }
+
+                        case InteractionItem::station:
+                        {
+                            char buffer[256] = { 0 };
+                            auto station = stationmgr::get(ptr.value);
+                            stringmgr::format_string(buffer, station->name, &station->town);
+                            console::log("Clicked station '%s' (%d)", buffer, ptr.value);
+                            break;
+                        }
+
+                        case InteractionItem::headquarterBuilding:
+                        {
+                            auto tile = (map::tile_element*)ptr.object;
+                            tile->as_building()->var_5b();
+                            auto z = tile->as_building()->base_z();
+                            for (auto& company : companymgr::companies())
+                            {
+                                if (company.var_257A == ptr.x
+                                    && company.var_257C == ptr.y
+                                    && company.var_2579 == z)
+                                {
+                                    company.id();
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+
+                        case InteractionItem::industry:
+                        {
+                            // industry
+                            auto tile = (map::tile_element*)ptr.object;
+                            break;
+                        }
+
+                        default:
+                            console::log("%d %X", bl, ptr.object);
+                            break;
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // 0x004C74BB
+    static void state_viewport_right(mouse_button cx, int16_t x, int16_t y)
+    {
+
+        //        call(0x004C74BB, regs);
+
+        auto window = WindowManager::find(_dragWindowType, _dragWindowNumber);
+        if (window == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        switch (cx)
+        {
+
+            case mouse_button::released:
+            {
+                // 4C74E4
+                _ticksSinceDragStart += time_since_last_tick;
+                auto vp = window->viewports[0];
+                if (vp == nullptr)
+                {
+                    vp = window->viewports[1];
+                }
+                if (vp == nullptr)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                if (window->flags & window_flags::viewport_no_scrolling)
+                {
+                    return;
+                }
+
+                if (x != 0 || y != 0)
+                {
+                    _ticksSinceDragStart = 1000;
+                    window->viewport_configurations[0].saved_view_x += x << (vp->zoom + 1);
+                    window->viewport_configurations[0].saved_view_y += y << (vp->zoom + 1);
+                }
+
+                break;
+            }
+
+            case mouse_button::right_released:
+            {
+                if (_ticksSinceDragStart > 500)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                input::state(input_state::reset);
+
+                auto item = viewport_interaction::right_over(_dragLastX, _dragLastY);
+
+                switch (item)
+                {
+                    case InteractionItem::t_0:
+                    default:
+                    {
+                        auto item2 = viewport_interaction::get_item_left(_dragLastX, _dragLastY, nullptr);
+                        switch (item2)
+                        {
+                            case InteractionItem::thing:
+                            case InteractionItem::town:
+                            case InteractionItem::station:
+                            case InteractionItem::industry:
+                                break;
+                        }
+
+                        break;
+                    }
+
+                    case InteractionItem::t_4:
+                    case InteractionItem::t_16:
+                    case InteractionItem::t_5:
+                    case InteractionItem::t_17:
+                    case InteractionItem::t_6:
+                    case InteractionItem::t_7:
+                    case InteractionItem::t_8:
+                    case InteractionItem::t_9:
+                    case InteractionItem::t_10:
+                    case InteractionItem::tree:
+                    case InteractionItem::building:
+                    case InteractionItem::wall:
+                    case InteractionItem::headquarterBuilding:
+                        break;
+                }
+
+                break;
+            }
+
+            default:
                 break;
         }
     }
@@ -1332,11 +1563,11 @@ namespace openloco::input
                         {
                             switch (viewport_interaction::get_item_left(x, y, nullptr))
                             {
-                                case 3:
-                                case 14:
-                                case 15:
-                                case 20:
-                                case 21:
+                                case InteractionItem::thing:
+                                case InteractionItem::town:
+                                case InteractionItem::station:
+                                case InteractionItem::industry:
+                                case InteractionItem::headquarterBuilding:
                                     skipItem = true;
                                     cursorId = ui::cursor_id::hand_pointer;
                                     break;

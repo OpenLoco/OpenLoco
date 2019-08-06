@@ -50,7 +50,12 @@ namespace openloco
         } colour;
         uint8_t pad_1C[0x50 - 0x1C];
         uint16_t available_vehicles; // 0x50
-        uint8_t pad_52[0x88CE - 0x52];
+
+        uint8_t pad_52[0x2579 - 0x52];
+        uint8_t var_2579;
+        uint16_t var_257A;
+        uint16_t var_257C;
+        uint8_t pad_257E[0x88CE - 0x257E];
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
         currency48_t vehicleProfit; // 0x8B9E

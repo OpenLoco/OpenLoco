@@ -1,5 +1,6 @@
 #pragma once
 
+#include "map/tile.h"
 #include <string>
 #include <vector>
 
@@ -62,7 +63,44 @@ namespace openloco::ui
 
     namespace viewport_interaction
     {
-        uint8_t get_item_left(int16_t x, int16_t y, void* arg);
-        void right_over(int16_t x, int16_t y);
+        struct InteractionArg
+        {
+            map::coord_t x;
+            map::coord_t y;
+            union
+            {
+                uint32_t value;
+                void* object;
+            };
+        };
+
+        enum class InteractionItem : uint8_t
+        {
+            t_0 = 0,
+            t_1 = 1,
+            t_2 = 2,
+            thing = 3,
+            t_4 = 4,
+            t_5 = 5,
+            t_6 = 6,
+            t_7 = 7,
+            t_8 = 8,
+            t_9 = 9,
+            t_10 = 10,
+            t_11 = 11,
+            tree = 12,
+            wall = 13,
+            town = 14,
+            station = 15,
+            t_16 = 16,
+            t_17 = 17,
+            t_18 = 18,
+            building = 19,
+            industry = 20,
+            headquarterBuilding = 21,
+        };
+
+        InteractionItem get_item_left(int16_t tempX, int16_t tempY, InteractionArg* arg);
+        InteractionItem right_over(int16_t x, int16_t y);
     }
 }
