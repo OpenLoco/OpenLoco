@@ -1096,7 +1096,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 
         for (auto& el : tile)
         {
-            if (itemFound && !(el.flags() & ((1 << 5) | (1 << 4))))
+            if (itemFound && !(el.is_flag_4() | el.is_flag_5()))
             {
                 break;
             }

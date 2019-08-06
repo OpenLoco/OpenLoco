@@ -48,6 +48,14 @@ namespace openloco::ui::vehicle
 
     namespace main
     {
+        window* open(const openloco::vehicle* vehicle)
+        {
+            registers regs{};
+            regs.edx = (uint32_t)vehicle;
+            call(0x004B6033, regs);
+            return (window*)regs.esi;
+        }
+
         // 0x004B30F3
         static void onUpdate(window* w)
         {

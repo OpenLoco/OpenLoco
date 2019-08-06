@@ -196,6 +196,32 @@ namespace openloco::ui::windows::construction
         return nonTrackWindow();
     }
 
+    // 0x004A0EAD
+    window* openAtTrack(window* main, track_element* track, const map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(track);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A0EAD, regs);
+
+        return reinterpret_cast<window*>(regs.esi);
+    }
+
+    // 0x004A147F
+    window* openAtRoad(window* main, road_element* track, const map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(track);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A147F, regs);
+
+        return reinterpret_cast<window*>(regs.esi);
+    }
+
     // 0x004A3B0D
     window* openWithFlags(const uint32_t flags)
     {

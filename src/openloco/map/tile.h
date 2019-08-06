@@ -115,6 +115,7 @@ namespace openloco::map
 
         bool has_high_type_flag() const { return _type & 0x80; }
         bool is_flag_4() const { return _flags & element_flags::flag_4; }
+        bool is_flag_5() const { return _flags & element_flags::flag_5; }
         void set_flag_6() { _flags |= element_flags::flag_6; }
         bool is_last() const;
     };

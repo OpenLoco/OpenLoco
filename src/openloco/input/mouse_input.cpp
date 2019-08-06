@@ -1,9 +1,15 @@
 #include "../audio/audio.h"
+#include "../companymgr.h"
+#include "../console.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"
+#include "../objects/objectmgr.h"
+#include "../objects/road_object.h"
 #include "../stationmgr.h"
+#include "../things/thingmgr.h"
+#include "../townmgr.h"
 #include "../tutorial.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
@@ -12,6 +18,7 @@
 
 using namespace openloco::interop;
 using namespace openloco::ui;
+using namespace openloco::ui::viewport_interaction;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
 
@@ -42,9 +49,11 @@ namespace openloco::input
 
     static loco_global<mouse_button, 0x001136FA0> _lastKnownButtonState;
 
+    static loco_global<map::map_pos[4], 0x004F9296> _4F9296;
+
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
 
-    static loco_global<int8_t, 0x0050A040> _50A040;
+    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
 
     static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
 
@@ -98,7 +107,7 @@ namespace openloco::input
 
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
-    static loco_global<uint16_t, 0x00F252A4> _F252A4;
+    static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
@@ -330,6 +339,8 @@ namespace openloco::input
     }
 
 #pragma mark - Mouse input
+    static void state_viewport_left(const mouse_button cx, const int16_t x, const int16_t y);
+    static void state_viewport_right(const mouse_button cx, const int16_t x, const int16_t y);
 
     // 0x004C7174
     void handle_mouse(int16_t x, int16_t y, mouse_button button)
@@ -405,11 +416,11 @@ namespace openloco::input
                 break;
 
             case input_state::viewport_right:
-                call(0x004C74BB, regs);
+                state_viewport_right(button, x, y);
                 break;
 
             case input_state::viewport_left:
-                call(0x004C7334, regs);
+                state_viewport_left(button, x, y);
                 break;
 
             case input_state::scroll_left:
@@ -424,6 +435,158 @@ namespace openloco::input
                 call(0x004C76A7, regs);
                 break;
         }
+    }
+
+    // 0x004C7334
+    static void state_viewport_left(const mouse_button button, const int16_t x, const int16_t y)
+    {
+        auto window = WindowManager::find(_dragWindowType, _dragWindowNumber);
+        if (window == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        switch (button)
+        {
+            case mouse_button::released:
+            {
+                // 0x4C735D
+                auto viewport = window->viewports[0];
+                if (viewport == nullptr)
+                {
+                    viewport = window->viewports[1];
+                }
+                if (viewport == nullptr)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                if (window->type == _dragWindowType && window->number == _dragWindowNumber)
+                {
+
+                    if (input::has_flag(input_flags::tool_active))
+                    {
+                        auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                        if (tool != nullptr)
+                        {
+                            tool->call_12(_toolWidgetIndex);
+                        }
+                    }
+                }
+                break;
+            }
+
+            case mouse_button::left_released:
+            {
+                // 0x4C73C2
+                input::state(input_state::reset);
+                if (window->type != _dragWindowType || window->number != _dragWindowNumber)
+                    return;
+
+                if (has_flag(input_flags::tool_active))
+                {
+                    auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                    if (tool != nullptr)
+                    {
+                        tool->call_13(_toolWidgetIndex);
+                    }
+                }
+                else if (!has_flag(input_flags::flag4))
+                {
+
+                    viewport_interaction::InteractionArg ptr{};
+
+                    auto interactionItem = viewport_interaction::get_item_left(x, y, &ptr);
+                    switch (interactionItem)
+                    {
+                        case InteractionItem::thing:
+                        {
+                            auto _thing = reinterpret_cast<Thing*>(ptr.object);
+                            auto veh = _thing->as_vehicle();
+                            if (veh != nullptr)
+                            {
+                                ui::vehicle::main::open(reinterpret_cast<openloco::vehicle*>(veh));
+                            }
+                            break;
+                        }
+
+                        case InteractionItem::town:
+                        {
+                            char buffer[256] = { 0 };
+                            auto town = townmgr::get(ptr.value);
+                            stringmgr::format_string(buffer, town->name);
+                            console::log("Clicked town '%s' (%d)", buffer, ptr.value);
+                            ui::windows::town::open(ptr.value);
+                            break;
+                        }
+
+                        case InteractionItem::station:
+                        {
+                            char buffer[256] = { 0 };
+                            auto station = stationmgr::get(ptr.value);
+                            stringmgr::format_string(buffer, station->name, &station->town);
+                            console::log("Clicked station '%s' (%d)", buffer, ptr.value);
+                            ui::windows::station::open(ptr.value);
+                            break;
+                        }
+
+                        case InteractionItem::headquarterBuilding:
+                        {
+                            auto building = ((map::tile_element*)ptr.object)->as_building();
+                            if (building != nullptr)
+                            {
+                                auto bl = building->var_5b();
+                                map::map_pos pos{ ptr.x, ptr.y };
+                                pos.x -= _4F9296[bl].x;
+                                pos.y -= _4F9296[bl].y;
+
+                                auto z = building->base_z();
+                                for (auto& company : companymgr::companies())
+                                {
+                                    if (company.empty())
+                                        continue;
+
+                                    if (company.headquarters_x == pos.x
+                                        && company.headquarters_y == pos.y
+                                        && company.headquarters_z == z)
+                                    {
+                                        ui::windows::CompanyWindow::open(company.id());
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+
+                        case InteractionItem::industry:
+                        {
+                            console::log("Clicked industry");
+                            ui::windows::industry::open(ptr.value);
+                            break;
+                        }
+
+                        default:
+                            console::log("%d %X", interactionItem, ptr.object);
+                            break;
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // 0x004C74BB
+    static void state_viewport_right(const mouse_button button, const int16_t x, const int16_t y)
+    {
+        registers regs{};
+        regs.cx = static_cast<uint16_t>(button);
+        regs.ax = x;
+        regs.bx = y;
+        call(0x004C74BB, regs);
     }
 
     mouse_button getLastKnownButtonState()
@@ -1358,12 +1521,12 @@ namespace openloco::input
         ui::cursor_id cursorId = ui::cursor_id::pointer;
 
         _mapTooltipFormatArguments = string_ids::null;
-        _50A040 = -1;
+        _mapTooltipOwner = company_id::null;
 
         if (_mapSelectionFlags & (1 << 6))
         {
             _mapSelectionFlags &= (uint16_t) ~(1 << 6);
-            auto station = stationmgr::get(_F252A4);
+            auto station = stationmgr::get(_hoveredStationId);
             if (!station->empty())
             {
                 station->invalidate();
@@ -1446,11 +1609,11 @@ namespace openloco::input
                         {
                             switch (viewport_interaction::get_item_left(x, y, nullptr))
                             {
-                                case 3:
-                                case 14:
-                                case 15:
-                                case 20:
-                                case 21:
+                                case InteractionItem::thing:
+                                case InteractionItem::town:
+                                case InteractionItem::station:
+                                case InteractionItem::industry:
+                                case InteractionItem::headquarterBuilding:
                                     skipItem = true;
                                     cursorId = ui::cursor_id::hand_pointer;
                                     break;
@@ -1466,7 +1629,7 @@ namespace openloco::input
 
         if (!skipItem)
         {
-            viewport_interaction::right_over(x, y);
+            viewport_interaction::right_over(x, y, nullptr);
         }
 
         if (input::state() == input::input_state::resizing)

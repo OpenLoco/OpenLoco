@@ -8,6 +8,11 @@
 #include "../window.h"
 #include <cstddef>
 
+namespace openloco
+{
+    struct vehicle;
+}
+
 namespace openloco::ui::WindowManager
 {
     enum class viewport_visibility
@@ -110,6 +115,8 @@ namespace openloco::ui::about_music
 namespace openloco::ui::windows::construction
 {
     window* openWithFlags(uint32_t flags);
+    window* openAtTrack(window* main, openloco::map::track_element* track, const openloco::map::map_pos pos);
+    window* openAtRoad(window* main, openloco::map::road_element* track, const openloco::map::map_pos pos);
     void sub_4A6FAC();
     void registerHooks();
 }
@@ -246,6 +253,10 @@ namespace openloco::ui::windows::town_list
 namespace openloco::ui::vehicle
 {
     void registerHooks();
+    namespace main
+    {
+        window* open(const openloco::vehicle* vehicle);
+    }
 }
 
 namespace openloco::ui::windows::vehicle_list
