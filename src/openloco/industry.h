@@ -21,6 +21,7 @@ namespace openloco
     namespace industry_flags
     {
         constexpr uint16_t flag_01 = 1 << 0;
+        constexpr uint16_t flag_02 = 1 << 2;
     }
 
 #pragma pack(push, 1)

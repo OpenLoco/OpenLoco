@@ -47,7 +47,7 @@ namespace openloco::input
 
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
 
-    static loco_global<int8_t, 0x0050A040> _50A040;
+    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
 
     static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
 
@@ -97,7 +97,7 @@ namespace openloco::input
 
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
-    static loco_global<uint16_t, 0x00F252A4> _F252A4;
+    static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
@@ -529,15 +529,15 @@ namespace openloco::input
                         break;
                     }
 
-                    case InteractionItem::t_4:
-                    case InteractionItem::t_16:
+                    case InteractionItem::track:
+                    case InteractionItem::road:
                     case InteractionItem::t_5:
                     case InteractionItem::t_17:
                     case InteractionItem::t_6:
-                    case InteractionItem::t_7:
-                    case InteractionItem::t_8:
-                    case InteractionItem::t_9:
-                    case InteractionItem::t_10:
+                    case InteractionItem::trackStation:
+                    case InteractionItem::roadStation:
+                    case InteractionItem::airport:
+                    case InteractionItem::dock:
                     case InteractionItem::tree:
                     case InteractionItem::building:
                     case InteractionItem::wall:
@@ -1475,12 +1475,12 @@ namespace openloco::input
         ui::cursor_id cursorId = ui::cursor_id::pointer;
 
         _mapTooltipFormatArguments = string_ids::null;
-        _50A040 = -1;
+        _mapTooltipOwner = company_id::null;
 
         if (_mapSelectionFlags & (1 << 6))
         {
             _mapSelectionFlags &= (uint16_t) ~(1 << 6);
-            auto station = stationmgr::get(_F252A4);
+            auto station = stationmgr::get(_hoveredStationId);
             if (!station->empty())
             {
                 station->invalidate();

@@ -7,7 +7,7 @@ namespace openloco
 #pragma pack(push, 1)
     struct steam_object
     {
-        string_id name; // 0x00 probably not confirmed
+        string_id name;
         uint8_t pad_02[0x5 - 0x2];
         uint8_t var_05;
         uint8_t var_06;

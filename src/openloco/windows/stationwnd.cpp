@@ -43,7 +43,7 @@ namespace openloco::ui::windows::station
 
         const auto station = stationmgr::get(w.number);
         int16_t y = 0;
-        for (int i = 0; i < 32; i++)
+        for (int i = 0; i < max_cargo_stats; i++)
         {
             auto& cargo = station->cargo_stats[i];
             if (!cargo.empty())

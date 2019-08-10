@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../station.h"
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -68,14 +69,14 @@ namespace openloco::map
     enum class element_type
     {
         surface,  // 0x00
-        unk_1,    // 0x04
+        track,    // 0x04
         station,  // 0x08
         unk_3,    // 0x0C
         building, // 0x10
-        industry, // 0x14
-        unk_6,    // 0x18
-        unk_7,    // 0x1C
-        unk_8,    // 0x20
+        tree,     // 0x14
+        wall,     // 0x18
+        road,     // 0x1C
+        industry, // 0x20
     };
 
     namespace element_flags
@@ -89,10 +90,10 @@ namespace openloco::map
     struct surface_element;
     struct station_element;
     struct building_element;
-    struct industry_element;
-    struct unk1_element;
+    struct tree_element;
+    struct track_element;
     struct unk3_element;
-    struct unk7_element;
+    struct road_element;
 
 #pragma pack(push, 1)
     struct tile_element_base
@@ -112,6 +113,7 @@ namespace openloco::map
         uint8_t clear_z() const { return _clear_z; }
 
         bool is_flag_4() const { return _flags & element_flags::flag_4; }
+        bool is_flag_5() const { return _flags & element_flags::flag_5; }
         void set_flag_6() { _flags |= element_flags::flag_6; }
         bool is_last() const;
     };
@@ -133,10 +135,10 @@ namespace openloco::map
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
         station_element* as_station() const { return as<station_element, element_type::station>(); }
         building_element* as_building() const { return as<building_element, element_type::building>(); }
-        industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
-        unk1_element* as_unk1() const { return as<unk1_element, element_type::unk_1>(); }
+        tree_element* as_tree() const { return as<tree_element, element_type::tree>(); }
+        track_element* as_track() const { return as<track_element, element_type::track>(); }
         unk3_element* as_unk3() const { return as<unk3_element, element_type::unk_3>(); }
-        unk7_element* as_unk7() const { return as<unk7_element, element_type::unk_7>(); }
+        road_element* as_road() const { return as<road_element, element_type::road>(); }
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -194,7 +196,7 @@ namespace openloco::map
         uint8_t object_id() const { return _5 & 0x1F; }
         uint8_t unk_5b() const { return _5 >> 5; }
         uint8_t rotation() const { return _type & 0x3; }
-        uint16_t station_id() const { return _station_id & 0x3FF; }
+        station_id_t station_id() const { return _station_id & 0x3FF; }
     };
 
     struct building_element : public tile_element_base
@@ -213,7 +215,7 @@ namespace openloco::map
         uint8_t var_5b() const { return _5 & 3; }
     };
 
-    struct industry_element : public tile_element_base
+    struct tree_element : public tile_element_base
     {
     private:
         uint8_t _4;
@@ -226,7 +228,7 @@ namespace openloco::map
         openloco::industry* industry() const;
     };
 
-    struct unk1_element : public tile_element_base
+    struct track_element : public tile_element_base
     {
     private:
         uint8_t _4;
@@ -257,7 +259,7 @@ namespace openloco::map
         uint8_t _7;
     };
 
-    struct unk7_element : public tile_element_base
+    struct road_element : public tile_element_base
     {
     private:
         uint8_t _4;
@@ -267,6 +269,7 @@ namespace openloco::map
 
     public:
         uint8_t unk_4_F() const { return _4 & 0xF; }
+        bool has_station_element() const { return (_type & 0x80) != 0; }
     };
 #pragma pack(pop)
 

@@ -136,7 +136,7 @@ namespace openloco
         var_3B1 = std::min(var_3B1 + 1, 255);
 
         auto& rng = gprng();
-        for (int i = 0; i < 32; i++)
+        for (int i = 0; i < max_cargo_stats; i++)
         {
             auto& cargo = cargo_stats[i];
             if (!cargo.empty())

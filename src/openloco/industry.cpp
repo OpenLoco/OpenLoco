@@ -32,7 +32,7 @@ namespace openloco
         while (!element->is_last())
         {
             element++;
-            if (element->type() == element_type::unk_8)
+            if (element->type() == element_type::industry)
             {
                 return true;
             }
@@ -60,7 +60,7 @@ namespace openloco
                             if (bl == 0 || bl != obj->var_EA)
                             {
                                 var_DB++;
-                                if ((!(obj->var_E4 & 0x10000000) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
+                                if ((!(obj->flags & 0x10000000) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
                                 {
                                     var_DD++;
                                 }

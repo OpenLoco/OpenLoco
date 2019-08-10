@@ -27,7 +27,7 @@ building_object* building_element::object() const
     return objectmgr::get<building_object>(object_id());
 }
 
-industry* industry_element::industry() const
+industry* tree_element::industry() const
 {
     return industrymgr::get(industry_id());
 }

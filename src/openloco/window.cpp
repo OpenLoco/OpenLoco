@@ -391,7 +391,7 @@ namespace openloco::ui
     {
         registers regs;
         regs.ax = screenX;
-        regs.cx = screenY;
+        regs.bx = screenY;
         regs.edx = flags;
         call(0x00459E54, regs);
 
