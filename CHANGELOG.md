@@ -1,5 +1,6 @@
 19.03+ (in development)
 ------------------------------------------------------------------------
+- Fix: [#226] Zooming to cursor is buggy on bigger maps
 - Fix: [#296] Correctly show challenge progression in save previews
 - Fix: [#297] Menu click sound not played.
 - Fix: [#303] Play title music preference is not saved.
