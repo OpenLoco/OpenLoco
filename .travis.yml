@@ -51,20 +51,19 @@ matrix:
           name: macOS 10.13 Clang (Xcode 9.3)
           osx_image: xcode9.3 # macOS 10.13
           language: cpp
-          before_install:
-            - export HOMEBREW_NO_AUTO_UPDATE=1
+          addons:
+            homebrew:
+              packages:
+                - gcc6
           install:
-            - brew uninstall --ignore-dependencies boost
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --tags; fi
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
-            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
-            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
             - zip -r openloco-macos.zip openloco.app
             - curl --progress-bar --upload-file openloco-macos.zip https://transfer.sh/openloco-macos.zip; echo;
@@ -72,20 +71,19 @@ matrix:
           name: macOS 10.12 Clang (Xcode 9.2)
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
           language: cpp
-          before_install:
-            - export HOMEBREW_NO_AUTO_UPDATE=1
+          addons:
+            homebrew:
+              packages:
+                - gcc6
           install:
-            - brew uninstall --ignore-dependencies boost
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/tags/*:refs/tags/*; fi
             - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git fetch --tags; fi
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
-            - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.1/macos-x86-static-boost-1.68.0.zip -o boost.zip
-            - unzip -q boost.zip -d boost/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
+            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
 
 
