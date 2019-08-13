@@ -2,14 +2,13 @@
 
 #include "localisation/stringmgr.h"
 #include "town.h"
+#include "types.hpp"
 #include "utility/numeric.hpp"
 #include <cstdint>
 #include <limits>
 
 namespace openloco
 {
-    using station_id_t = uint16_t;
-
     namespace station_id
     {
         constexpr station_id_t null = std::numeric_limits<station_id_t>::max();
