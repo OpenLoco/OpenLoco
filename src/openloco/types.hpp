@@ -4,6 +4,7 @@
 
 namespace openloco
 {
+    using station_id_t = uint16_t;
     using string_id = uint16_t;
 
     template<typename T>
