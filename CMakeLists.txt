@@ -19,7 +19,7 @@ endif()
 INCLUDE(FindPkgConfig)
 
 set(USE_BOOST_FS_DEFAULT OFF)
-if(APPLE OR MINGW)
+if(MINGW)
 	set(USE_BOOST_FS_DEFAULT ON)
 endif()
 
