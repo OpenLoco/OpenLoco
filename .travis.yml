@@ -65,7 +65,7 @@ matrix:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+            - CXX=g++-6 cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
             - zip -r openloco-macos.zip openloco.app
             - curl --progress-bar --upload-file openloco-macos.zip https://transfer.sh/openloco-macos.zip; echo;
@@ -87,7 +87,7 @@ matrix:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.1.0/openloco.dependencies.macos.1.1.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
             - mkdir build && cd build
-            - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+            - CXX=g++-6 cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
 
 
