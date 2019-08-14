@@ -18,7 +18,12 @@ endif()
 
 INCLUDE(FindPkgConfig)
 
-option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" OFF)
+set(USE_BOOST_FS_DEFAULT OFF)
+if(APPLE OR MINGW)
+	set(USE_BOOST_FS_DEFAULT ON)
+endif()
+
+option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
 option(STRICT "Build with warnings as errors" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
