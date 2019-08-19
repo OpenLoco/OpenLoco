@@ -431,7 +431,7 @@ namespace openloco::ui::windows
 
     static void sub_4391E2()
     {
-        game_commands::do_21(1, 0, 0);
+        game_commands::do_21(0, 0);
     }
 
     static void sub_46E328()

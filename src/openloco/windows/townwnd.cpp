@@ -19,6 +19,7 @@
 #include "../widget.h"
 
 using namespace openloco::interop;
+using namespace openloco::game_commands;
 
 namespace openloco::ui::windows::town
 {
@@ -228,7 +229,7 @@ namespace openloco::ui::windows::town
                 {
                     loco_global<string_id, 0x009C68E8> gameErrorString;
                     gameErrorString = string_ids::cant_remove_town;
-                    bool success = game_commands::do_50(1, self->number);
+                    bool success = game_commands::do_50(GameCommandFlag::apply, self->number);
                     if (!success)
                         break;
 

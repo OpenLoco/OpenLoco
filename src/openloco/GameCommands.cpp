@@ -60,12 +60,12 @@ namespace openloco::game_commands
         if (game_command_nest_level != 0)
             return loc_4313C6(esi, regs);
 
-        if ((flags & 1) == 0)
+        if ((flags & GameCommandFlag::apply) == 0)
         {
             return loc_4313C6(esi, regs);
         }
 
-        if ((flags & 0x50) != 0
+        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) != 0
             && _4F9688[esi] == 1
             && _updating_company_id == _player_company[0])
         {
@@ -110,7 +110,7 @@ namespace openloco::game_commands
 
         uint16_t flagsBackup = _gameCommandFlags;
         registers fnRegs1 = regs;
-        fnRegs1.bl &= ~1;
+        fnRegs1.bl &= ~GameCommandFlag::apply;
         call(addr, fnRegs1);
         uint32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
@@ -122,8 +122,8 @@ namespace openloco::game_commands
 
             if (game_command_nest_level == 1)
             {
-                if ((_gameCommandFlags & 4) == 0
-                    && (_gameCommandFlags & 0x20) == 0
+                if ((_gameCommandFlags & GameCommandFlag::flag_2) == 0
+                    && (_gameCommandFlags & GameCommandFlag::flag_6) == 0
                     && ebx != 0)
                 {
                     registers regs2;
@@ -136,7 +136,7 @@ namespace openloco::game_commands
 
         if (ebx == 0x80000000)
         {
-            if (flags & 1)
+            if (flags & GameCommandFlag::apply)
             {
                 return loc_4314EA();
             }
@@ -178,7 +178,7 @@ namespace openloco::game_commands
         if (game_command_nest_level != 0)
             return ebx;
 
-        if ((flagsBackup2 & 0x20) != 0)
+        if ((flagsBackup2 & GameCommandFlag::flag_5) != 0)
             return ebx;
 
         {
@@ -219,7 +219,7 @@ namespace openloco::game_commands
         if (_updating_company_id != _player_company[0])
             return 0x80000000;
 
-        if (_gameCommandFlags & 8)
+        if (_gameCommandFlags & GameCommandFlag::flag_3)
             return 0x80000000;
 
         if (_9C68E6 != 0xFFFE)

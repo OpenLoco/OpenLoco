@@ -45,6 +45,7 @@
 #include "utility/string.hpp"
 
 using namespace openloco::interop;
+using namespace openloco::game_commands;
 
 namespace openloco::ui
 {
@@ -952,7 +953,7 @@ namespace openloco::ui
 
         if (multiplayer::reset_flag(multiplayer::flags::flag_5))
         {
-            game_commands::do_21(1, 2, 1);
+            game_commands::do_21(2, 1);
         }
 
         if (!multiplayer::has_flag(multiplayer::flags::flag_0) && !multiplayer::has_flag(multiplayer::flags::flag_4))
@@ -962,7 +963,7 @@ namespace openloco::ui
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
-                regs.bl = 1;
+                regs.bl = GameCommandFlag::apply;
                 game_commands::do_command(69, regs);
             }
 
@@ -971,7 +972,7 @@ namespace openloco::ui
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
-                regs.bl = 1;
+                regs.bl = GameCommandFlag::apply;
                 game_commands::do_command(70, regs);
             }
         }
@@ -979,7 +980,7 @@ namespace openloco::ui
         if (multiplayer::reset_flag(multiplayer::flags::flag_4))
         {
             registers regs;
-            regs.bl = 1;
+            regs.bl = GameCommandFlag::apply;
             game_commands::do_command(72, regs);
         }
 
@@ -991,7 +992,7 @@ namespace openloco::ui
 
         if (multiplayer::reset_flag(multiplayer::flags::flag_1))
         {
-            game_commands::do_21(1, 0, 2);
+            game_commands::do_21(0, 2);
         }
 
         if (ui::dirty_blocks_initialised())
