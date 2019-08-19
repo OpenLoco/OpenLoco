@@ -284,7 +284,7 @@ namespace openloco::game_commands
                     return 0x80000000;
                 }
 
-                case element_type::unk_3: // 0x0C
+                case element_type::signal: // 0x0C
                 {
                     _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
                     sub_431908(_errorCompanyId, string_ids::str_1422);
