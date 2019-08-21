@@ -23,16 +23,16 @@ namespace openloco::game_commands
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
     static uint16_t _gameCommandFlags;
-    static loco_global<string_id, 0x009C68E6> _9C68E6;
     static loco_global<uintptr_t[80], 0x004F9548> _4F9548;
     static loco_global<uint8_t[80], 0x004F9688> _4F9688;
 
     static loco_global<tile_element*, 0x009C68D0> _9C68D0;
 
     static loco_global<coord_t, 0x009C68E4> _game_command_map_z;
-    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
+    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
+    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
-    static loco_global<string_id, 0x009C68E8> _9C68E8;
+    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
 
     void registerHooks()
     {
@@ -85,7 +85,7 @@ namespace openloco::game_commands
 
             if (is_paused())
             {
-                _9C68E6 = string_ids::empty;
+                gGameCommandErrorText = string_ids::empty;
                 return 0x80000000;
             }
         }
@@ -103,7 +103,7 @@ namespace openloco::game_commands
     static uint32_t loc_4313C6(int esi, const registers& regs)
     {
         uint16_t flags = regs.bx;
-        _9C68E6 = string_ids::null;
+        gGameCommandErrorText = string_ids::null;
         game_command_nest_level++;
 
         auto addr = _4F9548[esi];
@@ -201,11 +201,11 @@ namespace openloco::game_commands
         return ebx;
     }
 
-    static void sub_431908(company_id_t al, string_id dx)
+    static void sub_431908(company_id_t al, string_id bx, string_id dx)
     {
-
         registers regs;
         regs.al = al;
+        regs.bx = bx;
         regs.dx = dx;
         call(0x431908, regs);
     }
@@ -222,9 +222,9 @@ namespace openloco::game_commands
         if (_gameCommandFlags & GameCommandFlag::flag_3)
             return 0x80000000;
 
-        if (_9C68E6 != 0xFFFE)
+        if (gGameCommandErrorText != 0xFFFE)
         {
-            windows::show_error(_9C68E8, _9C68E6);
+            windows::show_error(gGameCommandErrorTitle, gGameCommandErrorText);
             return 0x80000000;
         }
 
@@ -247,7 +247,7 @@ namespace openloco::game_commands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
                     return 0x80000000;
                 }
 
@@ -263,7 +263,7 @@ namespace openloco::game_commands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
                     return 0x80000000;
                 }
 
@@ -280,14 +280,14 @@ namespace openloco::game_commands
                     _commonFormatArgs[0] = pStation->name;
                     _commonFormatArgs[1] = pStation->town;
                     _commonFormatArgs[2] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1421);
+                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
                     return 0x80000000;
                 }
 
                 case element_type::signal: // 0x0C
                 {
                     _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, string_ids::str_1422);
+                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_signal_belongs_to);
                     return 0x80000000;
                 }
 
@@ -298,7 +298,7 @@ namespace openloco::game_commands
 
         // fallback
         _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-        sub_431908(_errorCompanyId, string_ids::str_1420);
+        sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_belongs_to);
         return 0x80000000;
     }
 }
