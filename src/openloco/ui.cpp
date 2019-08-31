@@ -61,24 +61,6 @@ namespace openloco::ui
         uint8_t b, g, r, a;
     };
 
-    struct screen_info_t
-    {
-        gfx::drawpixelinfo_t dpi;
-        int16_t width;
-        int16_t height;
-        int16_t width_2;
-        int16_t height_2;
-        int16_t width_3;
-        int16_t height_3;
-        int16_t dirty_block_width;
-        int16_t dirty_block_height;
-        int32_t dirty_block_width_2;
-        int32_t dirty_block_height_2;
-        int8_t dirty_block_columns;
-        int8_t dirty_block_rows;
-        int8_t dirty_blocks_initialised;
-    };
-
     struct sdl_window_desc
     {
         int32_t x{};
@@ -351,8 +333,10 @@ namespace openloco::ui
         width = (int32_t)(width / scale_factor);
         height = (int32_t)(height / scale_factor);
 
-        int32_t columns = 6;
-        int32_t rows = 3;
+        int32_t widthShift = 6;
+        int16_t blockWidth = 1 << widthShift;
+        int32_t heightShift = 3;
+        int16_t blockHeight = 1 << heightShift;
 
         if (surface != nullptr)
         {
@@ -385,12 +369,12 @@ namespace openloco::ui
         screen_info->height_2 = height;
         screen_info->width_3 = width;
         screen_info->height_3 = height;
-        screen_info->dirty_block_width = 64;
-        screen_info->dirty_block_height = 8;
-        screen_info->dirty_block_width_2 = (width >> columns) + 1;
-        screen_info->dirty_block_height_2 = (height >> rows) + 1;
-        screen_info->dirty_block_columns = columns;
-        screen_info->dirty_block_rows = rows;
+        screen_info->dirty_block_width = blockWidth;
+        screen_info->dirty_block_height = blockHeight;
+        screen_info->dirty_block_columns = (width / blockWidth) + 1;
+        screen_info->dirty_block_rows = (height / blockHeight) + 1;
+        screen_info->dirty_block_column_shift = widthShift;
+        screen_info->dirty_block_row_shift = heightShift;
         screen_info->dirty_blocks_initialised = 1;
     }
 

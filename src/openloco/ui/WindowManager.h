@@ -14,6 +14,7 @@ namespace openloco::ui::WindowManager
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
     window* get(size_t index);
+    size_t indexOf(window* pWindow);
     size_t count();
 
     void update();
@@ -50,6 +51,9 @@ namespace openloco::ui::WindowManager
     bool isInFront(ui::window* w);
     bool isInFrontAlt(ui::window* w);
     ui::window* findWindowShowing(map::map_pos position);
+    void closeAllFloatingWindows();
+
+    void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
 }
 
 namespace openloco::ui::windows

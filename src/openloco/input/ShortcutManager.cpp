@@ -152,7 +152,7 @@ namespace openloco::input::ShortcutManager
     // 004BF0B6
     static void closeAllFloatingWindows()
     {
-        call(0x004CF456);
+        WindowManager::closeAllFloatingWindows();
     }
 
     // 0x4BF0BC

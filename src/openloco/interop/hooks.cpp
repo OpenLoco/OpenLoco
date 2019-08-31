@@ -115,13 +115,6 @@ static bool STDCALL fn_4054b9()
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL fn_40726d()
-{
-    STUB();
-    return true;
-}
-
-FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_timeGetTime()
 {
     return platform::get_time();
@@ -508,7 +501,6 @@ static void register_no_win32_hooks()
     write_jmp(0x404e8c, (void*)&get_num_dsound_devices);
     write_jmp(0x4054b9, (void*)&fn_4054b9);
     write_jmp(0x4064fa, (void*)&fn0);
-    write_jmp(0x40726d, (void*)&fn_40726d);
     write_jmp(0x4054a3, (void*)&fn_4054a3);
     write_jmp(0x4072ec, (void*)&fn0);
     write_jmp(0x4078be, (void*)&fn_4078be);
@@ -812,6 +804,15 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    register_hook(
+        0x004CF63B,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            gfx::render();
+            regs = backup;
+            return 0;
+        });
+
     ui::prompt_browse::register_hooks();
     ui::textinput::register_hooks();
     ui::tooltip::register_hooks();
@@ -933,6 +934,17 @@ void openloco::interop::register_hooks()
             registers backup = regs;
 
             initialise_viewports();
+            regs = backup;
+            return 0;
+        });
+
+    register_hook(
+        0x004C5DD5,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+
+            gfx::redraw_screen_rect(regs.ax, regs.bx, regs.dx, regs.bp);
+
             regs = backup;
             return 0;
         });

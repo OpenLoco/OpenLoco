@@ -210,7 +210,7 @@ namespace openloco::ui::prompt_browse
                     input::process_keyboard_input();
                     WindowManager::update();
                     ui::minimalHandleInput();
-                    call(0x004CF63B);
+                    gfx::render();
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(WindowType::undefined);
