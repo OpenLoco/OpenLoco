@@ -51,7 +51,7 @@ namespace openloco::ui::WindowManager
     static loco_global<window[max_windows], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
-    static void sub_4C6B09(window* window, viewport* viewport, int16_t x, int16_t y);
+    static void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y);
 
     void init()
     {
@@ -1517,7 +1517,7 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        sub_4C6B09(window, viewport, dX, dY);
+        viewport_redraw_after_shift(window, viewport, dX, dY);
     }
 
     static void copy_rect(int16_t ax, int16_t bx, int16_t cx, int16_t dx, int16_t di, int16_t si)
@@ -1542,14 +1542,13 @@ namespace openloco::ui::WindowManager
 
     /**
      * 0x004C6B09
-     * rct2: viewport_redraw_after_shift
      *
      * @param edi @<edi>
      * @param x @<dx>
      * @param y @<bp>
      * @param viewport @<esi>
      */
-    void sub_4C6B09(window* window, viewport* viewport, int16_t x, int16_t y)
+    void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y)
     {
         if (window != nullptr)
         {
@@ -1558,7 +1557,7 @@ namespace openloco::ui::WindowManager
             {
                 size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
                 auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
-                sub_4C6B09(nextWindow, viewport, x, y);
+                viewport_redraw_after_shift(nextWindow, viewport, x, y);
                 return;
             }
 
@@ -1569,49 +1568,49 @@ namespace openloco::ui::WindowManager
             {
                 viewport->width = window->x - viewport->x;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
             }
             else if (viewport->x + viewport->width > window->x + window->width)
             {
                 viewport->width = window->x + window->width - viewport->x;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
             }
             else if (viewport->y < window->y)
             {
                 viewport->height = window->y - viewport->y;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
             }
             else if (viewport->y + viewport->height > window->y + window->height)
             {
                 viewport->height = window->y + window->height - viewport->y;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
                 viewport->view_width = viewport->width << viewport->zoom;
-                sub_4C6B09(window, viewport, x, y);
+                viewport_redraw_after_shift(window, viewport, x, y);
             }
 
             // restore viewport
