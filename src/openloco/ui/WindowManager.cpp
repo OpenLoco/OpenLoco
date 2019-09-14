@@ -1520,24 +1520,48 @@ namespace openloco::ui::WindowManager
         viewport_redraw_after_shift(window, viewport, dX, dY);
     }
 
-    static void copy_rect(int16_t ax, int16_t bx, int16_t cx, int16_t dx, int16_t di, int16_t si)
+    // 0x00451DCB
+    static void copy_rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
     {
-        console::log("copy_rect(%d, %d, %d, %d, %d, %d);", ax, bx, cx, dx, di, si);
-        console::log("  dpi.bits:       0x%" PRIXPTR, _screen_dpi->bits);
-        console::log("  dpi.x:          %d", _screen_dpi->x);
-        console::log("  dpi.y:          %d", _screen_dpi->y);
-        console::log("  dpi.width:      %d", _screen_dpi->width);
-        console::log("  dpi.height:     %d", _screen_dpi->height);
-        console::log("  dpi.pitch:      %d", _screen_dpi->pitch);
-        console::log("  dpi.zoom_level: %d", _screen_dpi->zoom_level);
-        registers regs;
-        regs.ax = ax;
-        regs.bx = bx;
-        regs.cx = cx;
-        regs.dx = dx;
-        regs.di = di;
-        regs.si = si;
-        call(0x00451DCB, regs);
+        if (dx == 0 && dy == 0)
+            return;
+
+        auto _width = ui::width();
+        auto _height = ui::height();
+        gfx::drawpixelinfo_t& _bitsDPI = _screen_dpi;
+
+        // Adjust for move off screen
+        // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
+        // screen; hence the checks. This code should ultimately not be called when
+        // zooming because this function is specific to updating the screen on move
+        int32_t lmargin = std::min(x - dx, 0);
+        int32_t rmargin = std::min((int32_t)_width - (x - dx + width), 0);
+        int32_t tmargin = std::min(y - dy, 0);
+        int32_t bmargin = std::min((int32_t)_height - (y - dy + height), 0);
+        x -= lmargin;
+        y -= tmargin;
+        width += lmargin + rmargin;
+        height += tmargin + bmargin;
+
+        int32_t stride = _bitsDPI.width + _bitsDPI.pitch;
+        uint8_t* to = _bitsDPI.bits + y * stride + x;
+        uint8_t* from = _bitsDPI.bits + (y - dy) * stride + x - dx;
+
+        if (dy > 0)
+        {
+            // If positive dy, reverse directions
+            to += (height - 1) * stride;
+            from += (height - 1) * stride;
+            stride = -stride;
+        }
+
+        // Move bytes
+        for (int32_t i = 0; i < height; i++)
+        {
+            memmove(to, from, width);
+            to += stride;
+            from += stride;
+        }
     }
 
     /**
