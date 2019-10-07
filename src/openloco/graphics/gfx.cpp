@@ -654,8 +654,8 @@ namespace openloco::gfx
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
-        regs.esi = (int32_t)args;
-        regs.edi = (int32_t)&dpi;
+        regs.esi = (loco_ptr)args;
+        regs.edi = (loco_ptr)&dpi;
         call(0x00494C78, regs);
     }
 
@@ -781,7 +781,7 @@ namespace openloco::gfx
         regs.cx = right;
         regs.dx = bottom;
         regs.ebp = colour;
-        regs.edi = (uint32_t)dpi;
+        regs.edi = (loco_ptr)dpi;
         call(0x00452DA4, regs);
     }
 

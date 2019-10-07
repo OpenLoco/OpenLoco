@@ -16,8 +16,8 @@ namespace openloco::ui
         regs.bx = dpi->y;
         regs.dx = dpi->x + dpi->width;
         regs.bp = dpi->y + dpi->height;
-        regs.edi = (int32_t)dpi;
-        regs.esi = (int32_t)this;
+        regs.edi = (loco_ptr)dpi;
+        regs.esi = (loco_ptr)this;
 
         call(0x0045A0E7, regs);
     }

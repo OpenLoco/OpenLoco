@@ -54,20 +54,20 @@ namespace openloco::ui::widget
     // 0x004CF487
     void drawViewportCentreButton(gfx::drawpixelinfo_t* dpi, const window* window, const widget_index widgetIndex)
     {
-        auto& widget = window->widgets[widgetIndex];
+        auto widget = window->getWidget(widgetIndex);
         if (input::is_hovering(window->type, window->number, widgetIndex))
         {
-            gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
-            gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
+            gfx::draw_rect(dpi, widget->left + window->x, widget->top + window->y, widget->width(), widget->height(), 0x2000000 | 54);
+            gfx::draw_rect(dpi, widget->left + window->x, widget->top + window->y, widget->width(), widget->height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
             if (input::is_pressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            gfx::draw_rect_inset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), colour::translucent(window->colours[1]), flags);
+            gfx::draw_rect_inset(dpi, widget->left + window->x, widget->top + window->y, widget->width(), widget->height(), colour::translucent(window->colours[1]), flags);
         }
 
-        gfx::draw_image(dpi, widget.left + window->x, widget.top + window->y, gfx::recolour(image_ids::centre_viewport, window->colours[1]));
+        gfx::draw_image(dpi, widget->left + window->x, widget->top + window->y, gfx::recolour(image_ids::centre_viewport, window->colours[1]));
     }
 
     // 0x004CAB8E

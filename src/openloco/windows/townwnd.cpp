@@ -92,35 +92,35 @@ namespace openloco::ui::windows::town
         {
             common::prepare_draw(self);
 
-            self->widgets[widx::viewport].right = self->width - 26;
-            self->widgets[widx::viewport].bottom = self->height - 14;
+            self->getWidget(widx::viewport)->right = self->width - 26;
+            self->getWidget(widx::viewport)->bottom = self->height - 14;
 
-            self->widgets[widx::unk_8].top = self->height - 12;
-            self->widgets[widx::unk_8].bottom = self->height - 3;
-            self->widgets[widx::unk_8].right = self->width - 14;
+            self->getWidget(widx::unk_8)->top = self->height - 12;
+            self->getWidget(widx::unk_8)->bottom = self->height - 3;
+            self->getWidget(widx::unk_8)->right = self->width - 14;
 
-            self->widgets[widx::expand_town].right = self->width - 2;
-            self->widgets[widx::expand_town].left = self->width - 25;
+            self->getWidget(widx::expand_town)->right = self->width - 2;
+            self->getWidget(widx::expand_town)->left = self->width - 25;
 
-            self->widgets[widx::demolish_town].right = self->width - 2;
-            self->widgets[widx::demolish_town].left = self->width - 25;
+            self->getWidget(widx::demolish_town)->right = self->width - 2;
+            self->getWidget(widx::demolish_town)->left = self->width - 25;
 
             if (is_editor_mode())
             {
-                self->widgets[widx::expand_town].type = widget_type::wt_9;
-                self->widgets[widx::demolish_town].type = widget_type::wt_9;
+                self->getWidget(widx::expand_town)->type = widget_type::wt_9;
+                self->getWidget(widx::demolish_town)->type = widget_type::wt_9;
             }
             else
             {
-                self->widgets[widx::expand_town].type = widget_type::none;
-                self->widgets[widx::demolish_town].type = widget_type::none;
-                self->widgets[widx::viewport].right += 22;
+                self->getWidget(widx::expand_town)->type = widget_type::none;
+                self->getWidget(widx::demolish_town)->type = widget_type::none;
+                self->getWidget(widx::viewport)->right += 22;
             }
 
-            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
-            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+            self->getWidget(widx::centre_on_viewport)->right = self->getWidget(widx::viewport)->right - 1;
+            self->getWidget(widx::centre_on_viewport)->bottom = self->getWidget(widx::viewport)->bottom - 1;
+            self->getWidget(widx::centre_on_viewport)->left = self->getWidget(widx::viewport)->right - 24;
+            self->getWidget(widx::centre_on_viewport)->top = self->getWidget(widx::viewport)->bottom - 24;
 
             common::repositionTabs(self);
         }
@@ -145,9 +145,9 @@ namespace openloco::ui::windows::town
             commonFormatArgs[0] = townSizeLabelIds[(uint8_t)town->size];
             *(int32_t*)&commonFormatArgs[1] = town->population;
 
-            const uint16_t xPos = self->x + self->widgets[widx::unk_8].left - 1;
-            const uint16_t yPos = self->y + self->widgets[widx::unk_8].top - 1;
-            const uint16_t width = self->widgets[widx::unk_8].width() - 1;
+            const uint16_t xPos = self->x + self->getWidget(widx::unk_8)->left - 1;
+            const uint16_t yPos = self->y + self->getWidget(widx::unk_8)->top - 1;
+            const uint16_t width = self->getWidget(widx::unk_8)->width() - 1;
             gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::status_town_population, &*commonFormatArgs);
         }
 
@@ -173,14 +173,14 @@ namespace openloco::ui::windows::town
                 // 0x0049932D
                 case widx::centre_on_viewport:
                 {
-                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
+                    if (self->getViewport(0) == nullptr || self->saved_view.isEmpty())
                         break;
 
                     registers regs;
                     regs.ax = self->saved_view.mapX;
                     regs.cx = self->saved_view.mapY & 0x3FFF;
                     regs.dx = self->saved_view.surfaceZ;
-                    regs.esi = (int32_t)WindowManager::getMainWindow();
+                    regs.esi = (loco_ptr)WindowManager::getMainWindow();
                     call(0x004C6827, regs);
                     break;
                 }
@@ -200,7 +200,7 @@ namespace openloco::ui::windows::town
                         for (uint32_t j = ebx; j > 0; j--)
                         {
                             registers regs;
-                            regs.esi = (int32_t)town;
+                            regs.esi = (loco_ptr)town;
                             regs.eax = 0xFF;
 
                             call(0x00498116, regs);
@@ -253,7 +253,7 @@ namespace openloco::ui::windows::town
 
             common::on_resize(self);
 
-            if (self->viewports[0] != nullptr)
+            if (self->getViewport(0) != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
                 if (!is_editor_mode())
@@ -261,7 +261,7 @@ namespace openloco::ui::windows::town
 
                 uint16_t newHeight = self->height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto viewport = self->getViewport(0);
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;
@@ -292,19 +292,19 @@ namespace openloco::ui::windows::town
                 town->x,
                 town->y,
                 2,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self->getViewport(0)->getRotation()),
                 tileZ,
             };
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self->getViewport(0) != nullptr)
             {
                 if (self->saved_view == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                flags = self->getViewport(0)->flags;
+                self->getViewport(0)->width = 0;
+                self->viewports[0] = (uintptr_t) nullptr;
                 viewportmgr::collectGarbage();
             }
             else
@@ -316,9 +316,9 @@ namespace openloco::ui::windows::town
             self->saved_view = view;
 
             // 0x00499B39 start
-            if (self->viewports[0] == nullptr)
+            if (self->getViewport(0) == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
+                auto widget = self->getWidget(widx::viewport);
                 auto tile = openloco::map::map_pos3({ town->x, town->y, tileZ });
                 auto zoomLevel = openloco::ui::viewportmgr::ZoomLevel::half;
                 viewportmgr::create(self, 0, gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1), gfx::ui_size_t(widget->width() - 2, widget->height() - 2), zoomLevel, tile);
@@ -327,9 +327,9 @@ namespace openloco::ui::windows::town
             }
             // 0x00499B39 end
 
-            if (self->viewports[0] != nullptr)
+            if (self->getViewport(0) != nullptr)
             {
-                self->viewports[0]->flags = flags;
+                self->getViewport(0)->flags = flags;
                 self->invalidate();
             }
         }
@@ -386,10 +386,10 @@ namespace openloco::ui::windows::town
         window->current_tab = 0;
         window->invalidate();
 
-        window->widgets = town::widgets;
+        window->widgets = (loco_ptr)town::widgets;
         window->enabled_widgets = town::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &town::events;
+        window->_event_handlers = (loco_ptr)&town::events;
         window->activated_widgets = 0;
         window->disabled_widgets = 0;
         window->init_scroll_widgets();
@@ -636,9 +636,10 @@ namespace openloco::ui::windows::town
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
-            if (self->widgets != tabWidgets)
+            uint32_t widgetAddr = (loco_ptr)tabWidgets;
+            if (self->widgets != widgetAddr)
             {
-                self->widgets = tabWidgets;
+                self->widgets = widgetAddr;
                 self->init_scroll_widgets();
             }
 
@@ -651,16 +652,16 @@ namespace openloco::ui::windows::town
             commonFormatArgs[0] = townmgr::get(self->number)->name;
 
             // Resize common widgets.
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->getWidget(common::widx::frame)->right = self->width - 1;
+            self->getWidget(common::widx::frame)->bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->getWidget(common::widx::caption)->right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->getWidget(common::widx::close_button)->left = self->width - 15;
+            self->getWidget(common::widx::close_button)->right = self->width - 3;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->getWidget(common::widx::panel)->right = self->width - 1;
+            self->getWidget(common::widx::panel)->bottom = self->height - 1;
         }
 
         static void on_resize(window* self)
@@ -722,17 +723,17 @@ namespace openloco::ui::windows::town
         // 0x004999A7, 0x004999AD
         static void repositionTabs(window* self)
         {
-            int16_t xPos = self->widgets[widx::tab_town].left;
-            const int16_t tabWidth = self->widgets[widx::tab_town].right - xPos;
+            int16_t xPos = self->getWidget(widx::tab_town)->left;
+            const int16_t tabWidth = self->getWidget(widx::tab_town)->right - xPos;
 
             for (uint8_t i = widx::tab_town; i <= widx::tab_company_ratings; i++)
             {
                 if (self->is_disabled(i))
                     continue;
 
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
+                self->getWidget(i)->left = xPos;
+                self->getWidget(i)->right = xPos + tabWidth;
+                xPos = self->getWidget(i)->right + 1;
             }
         }
 
@@ -749,19 +750,19 @@ namespace openloco::ui::windows::town
             self->flags &= ~(window_flags::flag_16);
             self->var_85C = -1;
 
-            if (self->viewports[0] != nullptr)
+            if (self->getViewport(0) != nullptr)
             {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->getViewport(0)->width = 0;
+                self->viewports[0] = 0;
             }
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
 
             self->enabled_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
-            self->event_handlers = tabInfo.events;
+            self->_event_handlers = (loco_ptr)&tabInfo.events;
             self->activated_widgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->widgets = (loco_ptr)tabInfo.widgets;
             self->disabled_widgets = 0;
 
             self->invalidate();

@@ -108,11 +108,11 @@ namespace openloco::ui
     // 0x0045A0B3
     void window::drawViewports(gfx::drawpixelinfo_t* dpi)
     {
-        if (viewports[0] != nullptr)
-            viewports[0]->render(dpi);
+        if (getViewport(0) != nullptr)
+            getViewport(0)->render(dpi);
 
-        if (viewports[1] != nullptr)
-            viewports[1]->render(dpi);
+        if (getViewport(1) != nullptr)
+            getViewport(1)->render(dpi);
     }
 
     static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
@@ -1008,18 +1008,19 @@ namespace openloco::ui
 
     void window::call_viewport_rotate()
     {
+        window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
         if (event_handlers->viewport_rotate == nullptr)
             return;
 
         if (is_interop_event(event_handlers->viewport_rotate))
         {
             registers regs;
-            regs.esi = (int32_t)this;
-            call((uintptr_t)this->event_handlers->viewport_rotate, regs);
+            regs.esi = (loco_ptr)this;
+            call((uintptr_t)event_handlers->viewport_rotate, regs);
             return;
         }
 
-        this->event_handlers->viewport_rotate(this);
+        //        event_handlerss->viewport_rotate(this);
     }
 
     bool window::call_tooltip(int16_t widget_index)

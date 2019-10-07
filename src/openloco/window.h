@@ -344,7 +344,7 @@ namespace openloco::ui
             set_size(size, size);
         }
 
-        ui::widget_t* getWidget(widget_index index)
+        ui::widget_t* getWidget(widget_index index) const
         {
 #ifdef __i386__
             return &this->widgets[index];
