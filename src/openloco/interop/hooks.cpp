@@ -79,12 +79,6 @@ static int32_t CDECL audio_is_channel_playing(int a0)
     return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
 }
 
-static void STDCALL fn_40447f()
-{
-    STUB();
-    return;
-}
-
 static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
 {
     STUB();
@@ -114,13 +108,6 @@ static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL fn_4054b9()
-{
-    STUB();
-    return true;
-}
-
-FORCE_ALIGN_ARG_POINTER
 static bool STDCALL fn_40726d()
 {
     STUB();
@@ -142,18 +129,6 @@ static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pConte
 }
 
 static void STDCALL fn_4078be()
-{
-    STUB();
-    return;
-}
-
-static void STDCALL fn_4078fe()
-{
-    STUB();
-    return;
-}
-
-static void STDCALL fn_407b26()
 {
     STUB();
     return;
@@ -532,17 +507,13 @@ static void register_no_win32_hooks()
 {
     using namespace openloco::interop;
 
-    hookFunction(0x40447f, CallingConvention::stdcall, 0, (void (*)()) & fn_40447f);
     hookFunction(0x404b68, CallingConvention::stdcall, 4, (void (*)()) & fn_404b68);
     hookFunction(0x404e8c, CallingConvention::stdcall, 0, (void (*)()) & get_num_dsound_devices);
-    hookFunction(0x4054b9, CallingConvention::stdcall, 0, (void (*)()) & fn_4054b9);
     hookFunction(0x4064fa, CallingConvention::stdcall, 0, (void (*)()) & fn0);
     hookFunction(0x40726d, CallingConvention::stdcall, 0, (void (*)()) & fn_40726d);
     hookFunction(0x4054a3, CallingConvention::cdecl, 3, (void (*)()) & fn_4054a3);
     hookFunction(0x4072ec, CallingConvention::stdcall, 0, (void (*)()) & fn0);
     hookFunction(0x4078be, CallingConvention::stdcall, 0, (void (*)()) & fn_4078be);
-    hookFunction(0x4078fe, CallingConvention::stdcall, 0, (void (*)()) & fn_4078fe);
-    hookFunction(0x407b26, CallingConvention::stdcall, 0, (void (*)()) & fn_407b26);
     hookFunction(0x4080bb, CallingConvention::cdecl, 2, (void (*)()) & fn_4080bb);
     hookFunction(0x408163, CallingConvention::cdecl, 0, (void (*)()) & fn_408163);
     hookFunction(0x40817b, CallingConvention::cdecl, 1, (void (*)()) & fn_40817b);

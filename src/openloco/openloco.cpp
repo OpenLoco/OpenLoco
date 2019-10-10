@@ -162,9 +162,27 @@ namespace openloco
 
     static bool sub_4054B9()
     {
+#ifdef _WIN32
         registers regs;
         call(0x004054B9, regs);
         return regs.eax != 0;
+#else
+        return true;
+#endif
+    }
+
+    static void sub_4078FE()
+    {
+#ifdef _WIN32
+        call(0x004078FE);
+#endif
+    }
+
+    static void sub_407B26()
+    {
+#ifdef _WIN32
+        call(0x00407B26);
+#endif
     }
 
     static void sub_4062D1()
@@ -851,8 +869,8 @@ namespace openloco
             if (sub_4054B9())
             {
                 ui::create_window(cfg.display);
-                call(0x004078FE);
-                call(0x00407B26);
+                sub_4078FE();
+                sub_407B26();
                 ui::initialise_input();
                 audio::initialise_dsound();
                 run();

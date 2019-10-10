@@ -326,7 +326,9 @@ namespace openloco::ui
     // 0x0040447F
     void initialise_input()
     {
+#ifdef _WIN32
         call(0x0040447F);
+#endif
     }
 
     // 0x004045C2
