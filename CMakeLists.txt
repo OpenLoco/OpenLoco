@@ -190,9 +190,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -W
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
-file(GLOB_RECURSE LIB_SRCS "src/x86emu/*.c")
-add_library(x86emu ${LIB_SRCS})
-target_include_directories(x86emu INTERFACE "src/x86emu/include")
 
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
@@ -229,7 +226,7 @@ if (MINGW)
     target_link_libraries(${PROJECT} winmm)
 else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-    target_link_libraries(${PROJECT} x86emu)
+    target_link_libraries(${PROJECT} unicorn)
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 

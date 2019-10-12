@@ -325,6 +325,7 @@ static void CDECL fn_FindClose(Session* data)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_malloc(uint32_t size)
 {
+    mmap(nullptr, size, PROT_READ|PROT_WRITE, MAP_ANONYMOUS,-1,0);
     void* pVoid = malloc(size);
     console::log("Allocated 0x%X bytes at 0x%" PRIXPTR, size, (uintptr_t)pVoid);
     return (loco_ptr)pVoid;
@@ -340,11 +341,6 @@ FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_free(void* block)
 {
     return free(block);
-}
-
-static void STDCALL fn_dump(uint32_t address)
-{
-    console::log("Missing hook: 0x%x", address);
 }
 
 enum
@@ -528,9 +524,11 @@ static void register_no_win32_hooks()
     hookFunction(0x4d0fac, CallingConvention::stdcall, 2, (void (*)()) & fn_DirectSoundEnumerateA);
 
     // fill DLL hooks for ease of debugging
-    for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
+    for (uint32_t address = 0x4d7000; address <= 0x4d72d8; address += 4)
     {
-        hookLibrary(i, CallingConvention::stdcall, 0, (void (*)()) & fn_dump);
+        hookLibrary(address, [address]() {
+            console::log("Missing hook: 0x%x", address);
+        });
     }
 
     // dsound.dll

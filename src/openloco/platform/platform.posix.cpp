@@ -16,7 +16,7 @@
 
 int main(int argc, const char** argv)
 {
-    emu_init();
+    openloco::interop::emu_init();
     openloco::interop::load_sections();
     openloco::lpCmdLine((char*)argv[0]);
     openloco::main();

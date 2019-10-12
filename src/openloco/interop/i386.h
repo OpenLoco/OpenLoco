@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <unicorn/unicorn.h>
 
 constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
@@ -10,6 +11,8 @@ constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
 namespace openloco::interop
 {
+    void emu_init();
+
 #pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.
@@ -93,4 +96,5 @@ namespace openloco::interop
 
     void hookFunction(uint32_t address, CallingConvention convention, size_t arguments, void (*)());
     void hookLibrary(uint32_t address, CallingConvention convention, size_t arguments, void (*)());
+    void hookLibrary(uint32_t address, std::function<void()>);
 }

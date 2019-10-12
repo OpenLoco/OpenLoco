@@ -3,6 +3,7 @@
 #include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
+#include "../openloco.h"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "conversion.h"
@@ -17,7 +18,7 @@ using namespace openloco::interop;
 
 namespace openloco::localisation
 {
-    static loco_global<char * [0xFFFF], 0x005183FC> _strings;
+    static loco_global<uint32_t[0xFFFF], 0x005183FC> _strings;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
         { "INT16_1DP", control_codes::int16_decimals },
@@ -245,7 +246,7 @@ namespace openloco::localisation
                 char* processed_string = readString(new_string.data(), new_string.length());
 
                 if (processed_string != nullptr)
-                    _strings[id] = processed_string;
+                    _strings[id] = (loco_ptr)processed_string;
             }
 
             return true;

@@ -28,7 +28,7 @@ namespace openloco::stringmgr
     const uint16_t TOWN_NAMES_START = 0x9EE7;
     const uint16_t TOWN_NAMES_END = TOWN_NAMES_START + NUM_TOWN_NAMES;
 
-    static loco_global<char * [0xFFFF], 0x005183FC> _strings;
+    static loco_global<uint32_t[0xFFFF], 0x005183FC> _strings;
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
     static std::map<int32_t, string_id> day_to_string = {
@@ -82,7 +82,7 @@ namespace openloco::stringmgr
 
     const char* get_string(string_id id)
     {
-        char* str = _strings[id];
+        char* str = (char*)_strings[id];
         return str;
     }
 

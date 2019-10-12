@@ -3,6 +3,7 @@
 #include <cinttypes>
 #include <cstring>
 #include <stdexcept>
+#include <unicorn/unicorn.h>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -257,34 +258,9 @@ namespace openloco::interop
 #else // PLATFORM_X86
 
         console::log("===");
-        emu->max_instr = 5;
 
-        auto temp = x86emu_clone(emu);
-        x86emu_reset(temp);
-        x86emu_set_seg_register(temp, temp->x86.R_CS_SEL, 0);
-        temp->x86.R_CS_ACC |= (1 << 10);
-        temp->x86.R_CS_ACC |= (1 << 11);
-        temp->x86.R_CS_BASE = 0;
-        temp->x86.seg[3].limit = UINT32_MAX;
-        temp->x86.R_EIP = address;
-        temp->x86.R_EAX = *_eax;
-        temp->x86.R_EBX = *_ebx;
-        temp->x86.R_ECX = *_ecx;
-        temp->x86.R_EDX = *_edx;
-        temp->x86.R_ESI = *_esi;
-        temp->x86.R_EDI = *_edi;
-        temp->x86.R_EBP = *_ebp;
-        x86emu_run(temp, 0);
-        x86emu_clear_log(temp, true);
-        *_eax = temp->x86.R_EAX;
-        *_ebx = temp->x86.R_EBX;
-        *_ecx = temp->x86.R_ECX;
-        *_edx = temp->x86.R_EDX;
-        *_esi = temp->x86.R_ESI;
-        *_edi = temp->x86.R_EDI;
-        *_ebp = temp->x86.R_EBP;
+        emu::call(address, _eax, _ebx, _ecx, _edx, _esi, _edi, _ebp);
 
-        x86emu_done(temp);
         console::log("===");
 #endif
         _originalAddress = 0;
