@@ -190,6 +190,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -W
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
+add_subdirectory("allocators")
 
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
@@ -232,6 +233,7 @@ endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT} malloc)
 
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
