@@ -199,7 +199,8 @@ namespace openloco::gfx
     static void setTextColour(int colour)
     {
         auto el = &_g1Elements[image_ids::text_palette];
-        setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
+        auto offset = (uint8_t*)el->offset;
+        setTextColours(offset[colour * 4 + 0], offset[colour * 4 + 1], offset[colour * 4 + 2]);
     }
 
     // 0x00451189

@@ -41,7 +41,7 @@ namespace openloco::gfx
     // A version that can be 64-bit when ready...
     struct g1_element
     {
-        uint8_t* offset = nullptr;
+        uint32_t offset = 0;
         int16_t width = 0;
         int16_t height = 0;
         int16_t x_offset = 0;
@@ -51,7 +51,7 @@ namespace openloco::gfx
 
         g1_element() = default;
         g1_element(const g1_element32_t& src)
-            : offset((uint8_t*)(uintptr_t)(src.offset))
+            : offset(src.offset)
             , width(src.width)
             , height(src.height)
             , x_offset(src.x_offset)

@@ -443,7 +443,7 @@ namespace openloco::ui::prompt_browse
             // Temporarily substitute a g1 for the image data in the saved game
             auto backupg1 = *g1;
             *g1 = {};
-            g1->offset = (uint8_t*)saveInfo.image;
+            g1->offset = (loco_ptr)(uint8_t*)saveInfo.image;
             g1->width = 250;
             g1->height = 200;
             gfx::draw_image(&dpi, x + 1, y + 1, imageId);
@@ -497,7 +497,7 @@ namespace openloco::ui::prompt_browse
                 // Temporarily substitute a g1 for the height map image data in the saved game
                 auto backupg1 = *g1;
                 *g1 = {};
-                g1->offset = (uint8_t*)0x9CCBDE;
+                g1->offset = (loco_ptr)(uint8_t*)0x9CCBDE;
                 g1->width = 128;
                 g1->height = 128;
                 gfx::draw_image(&dpi, x + 1, y + 1, imageId);
