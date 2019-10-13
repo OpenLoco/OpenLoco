@@ -103,6 +103,9 @@ set(LINKER_SCRIPT "ld_script_i386.xc")
 
 if (I386)
     set(TARGET_M "-m32")
+else ()
+    # Turn off for 64-bit builds for now
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Wno-int-to-pointer-cast")
 endif ()
 
 # Handle creating the rct2 text and data files on OS X and Linux
@@ -138,31 +141,36 @@ if (UNIX)
             set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -pagezero_size 10000 -image_base 100000000")
         endif()
     else ()
-        # For Linux we have to use objcopy to wrap regular binaries into a linkable
-        # format. We use specific section names which are then referenced in a
-        # bespoke linker script so they can be placed at predefined VMAs.
-        add_custom_command(
-            OUTPUT openloco_text_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_command(
-            OUTPUT openloco_data_section.o
-            COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
-            DEPENDS segfiles
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(linkable_sections DEPENDS openloco_text_section.o openloco_data_section.o)
-        set_source_files_properties(
-            openloco_text_section.o openloco_data_section.o
-            PROPERTIES
-            EXTERNAL_OBJECT true
-            GENERATED true
-        )
-        # can't use GLOB here, as the files don't exist yet at cmake-time
-        set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
-        set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
+        if (I386)
+            # For Linux we have to use objcopy to wrap regular binaries into a linkable
+            # format. We use specific section names which are then referenced in a
+            # bespoke linker script so they can be placed at predefined VMAs.
+            add_custom_command(
+                OUTPUT openloco_text_section.o
+                COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_TEXT}\" openloco_text_section.o --rename-section .data=.loco_text,contents,alloc,load,readonly,code
+                DEPENDS segfiles
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            )
+            add_custom_command(
+                OUTPUT openloco_data_section.o
+                COMMAND objcopy --input binary --output ${OBJ_FORMAT} --binary-architecture i386 \"${OLOCO_DATA}\" openloco_data_section.o --rename-section .data=.loco_data,contents,alloc,load,readonly,data
+                DEPENDS segfiles
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            )
+            add_custom_target(linkable_sections DEPENDS openloco_text_section.o openloco_data_section.o)
+            set_source_files_properties(
+                openloco_text_section.o openloco_data_section.o
+                PROPERTIES
+                EXTERNAL_OBJECT true
+                GENERATED true
+            )
+            # can't use GLOB here, as the files don't exist yet at cmake-time
+            set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
+            set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
+        else ()
+            # Use a placeholder until suitable options are found.
+            set(LOCO_SEGMENT_LINKER_FLAGS " ")
+        endif ()
     endif ()
 endif (UNIX)
 
@@ -203,8 +211,12 @@ endif()
 
 find_package(SDL2_mixer REQUIRED)
 
+if (I386)
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+else ()
+find_package(yaml-cpp REQUIRED)
+endif ()
 
 if (USE_BOOST_FILESYSTEM)
     set(Boost_USE_STATIC_LIBS OFF)

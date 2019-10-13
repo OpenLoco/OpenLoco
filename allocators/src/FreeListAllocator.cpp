@@ -27,7 +27,6 @@ FreeListAllocator::~FreeListAllocator() {
 
 void* FreeListAllocator::Allocate(const std::size_t size, const std::size_t alignment) {
     const std::size_t allocationHeaderSize = sizeof(FreeListAllocator::AllocationHeader);
-    const std::size_t freeHeaderSize = sizeof(FreeListAllocator::FreeHeader);
     assert("Allocation size must be bigger" && size >= sizeof(Node));
     assert("Alignment must be 8 at least" && alignment >= 8);
 

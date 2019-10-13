@@ -1,5 +1,6 @@
 #include "emu.h"
 #include "i386.h"
+#include "../openloco.h"
 #include <cstdio>
 #include <unicorn/unicorn.h>
 #include <unicorn/x86.h>
@@ -8,8 +9,13 @@
 #include "interop.hpp"
 #include <Allocator.h>
 #include <FreeListAllocator.h>
+#include <cassert>
 #include <inttypes.h>
 #include <map>
+
+#ifdef __linux__
+#include <sys/mman.h>
+#endif
 
 namespace openloco::interop
 {
@@ -243,7 +249,7 @@ FIXME: type is one of
         return value;
     }
 
-    void hook_interrupt(uc_engine* uc, uint32_t intno, void* user_data)
+    static void hook_interrupt(uc_engine* uc, uint32_t intno, void* user_data)
     {
         if (intno != softwareInterruptNumber)
             return;
@@ -335,7 +341,7 @@ FIXME: type is one of
 
         if (hook.convention == CallingConvention::cdecl)
         {
-            for (int i = 0; i < hook.argumentCount; i++)
+            for (size_t i = 0; i < hook.argumentCount; i++)
             {
                 push(uc, 0xFFFFFFFF);
             }
