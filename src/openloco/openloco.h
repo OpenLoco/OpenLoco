@@ -66,3 +66,10 @@ namespace openloco
     void main();
     void prompt_tick_loop(std::function<bool()> tickAction);
 }
+
+namespace compat
+{
+    void* malloc(size_t size);
+    void free(void* ptr);
+    void* realloc(void* ptr, size_t size);
+}

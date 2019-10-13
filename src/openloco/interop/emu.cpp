@@ -6,6 +6,8 @@
 
 #include "../console.h"
 #include "interop.hpp"
+#include <Allocator.h>
+#include <FreeListAllocator.h>
 #include <inttypes.h>
 #include <map>
 
@@ -33,6 +35,26 @@ namespace openloco::interop
     const uint32_t hookMemStart = 0x10000000;
 
     static const int softwareInterruptNumber = 0x80;
+
+    uint32_t heapStart = 0x20000000;
+    uint32_t heapSize = 1024 * 1024 * 128; // 16MiB
+    void* heap;
+    FreeListAllocator* allocator;
+
+    void emu_init()
+    {
+        hookMem = malloc(0x1000);
+        hookMemCur = reinterpret_cast<uintptr_t>(hookMem);
+
+        heap = mmap((void*)heapStart, heapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        if (heap == MAP_FAILED)
+            exit(EXIT_FAILURE);
+
+        console::log("mapped to %X", (uintptr_t)heap);
+
+        allocator = new FreeListAllocator(heapSize, FreeListAllocator::PlacementPolicy::FIND_FIRST);
+        allocator->Init(heap);
+    }
 
     static void write_address_strictalias(uint8_t* data, uint32_t addr)
     {
@@ -192,12 +214,6 @@ FIXME: type is one of
         assembly[7] = 0xC3;
 
         write_memory(address, assembly, sizeof(assembly));
-    }
-
-    void emu_init()
-    {
-        hookMem = malloc(0x1000);
-        hookMemCur = reinterpret_cast<uintptr_t>(hookMem);
     }
 
     static uint32_t pop(uc_engine* uc)
@@ -370,6 +386,7 @@ FIXME: type is one of
 
             uc_mem_map_ptr(uc, 0x401000, 0x4d7000 - 0x401000, UC_PROT_READ | UC_PROT_EXEC, (void*)0x401000);
             uc_mem_map_ptr(uc, 0x4d7000, 0x1162000 - 0x4d7000, UC_PROT_READ | UC_PROT_WRITE, (void*)0x4d7000);
+            uc_mem_map_ptr(uc, (uintptr_t)heap, heapSize, UC_PROT_READ | UC_PROT_WRITE, heap);
 
             uc_mem_map_ptr(uc, hookMemStart, 0x1000, UC_PROT_READ | UC_PROT_EXEC, hookMem);
 
@@ -515,3 +532,40 @@ int has_lib_hook(x86emu_t* emu, uint32_t addr)
     return 1;
 }
 }*/
+
+namespace compat
+{
+    void* malloc(size_t size)
+    {
+        return openloco::interop::allocator->Allocate(size, 8);
+    }
+
+    void free(void* ptr)
+    {
+        return openloco::interop::allocator->Free(ptr);
+    }
+
+    void* realloc(void* ptr, size_t size)
+    {
+        struct AllocationHeader
+        {
+            std::size_t blockSize;
+            char padding;
+        };
+
+        const std::size_t currentAddress = (std::size_t)ptr;
+        const std::size_t headerAddress = currentAddress - sizeof(AllocationHeader);
+        const AllocationHeader* allocationHeader{ (AllocationHeader*)headerAddress };
+        size_t oldSize = allocationHeader->blockSize - allocationHeader->padding - sizeof(AllocationHeader);
+
+        openloco::console::log("old size: 0x%X bytes", oldSize);
+        auto minSize = std::min(size, oldSize);
+
+        auto newPtr = openloco::interop::allocator->Allocate(size, 8);
+        memcpy(newPtr, ptr, minSize);
+
+        openloco::interop::allocator->Free(ptr);
+
+        return newPtr;
+    }
+}

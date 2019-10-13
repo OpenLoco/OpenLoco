@@ -14,12 +14,8 @@ FreeListAllocator::FreeListAllocator(const std::size_t totalSize, const Placemen
     m_pPolicy = pPolicy;
 }
 
-void FreeListAllocator::Init() {
-    if (m_start_ptr != nullptr) {
-        free(m_start_ptr);
-        m_start_ptr = nullptr;
-    }
-    m_start_ptr = malloc(m_totalSize);
+void FreeListAllocator::Init(void* ptr) {
+    m_start_ptr = ptr;
 
     this->Reset();
 }

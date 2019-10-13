@@ -325,8 +325,7 @@ static void CDECL fn_FindClose(Session* data)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_malloc(uint32_t size)
 {
-    mmap(nullptr, size, PROT_READ|PROT_WRITE, MAP_ANONYMOUS,-1,0);
-    void* pVoid = malloc(size);
+    void* pVoid = compat::malloc(size);
     console::log("Allocated 0x%X bytes at 0x%" PRIXPTR, size, (uintptr_t)pVoid);
     return (loco_ptr)pVoid;
 }
@@ -334,13 +333,13 @@ static uint32_t CDECL fn_malloc(uint32_t size)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_realloc(void* block, uint32_t size)
 {
-    return (loco_ptr)realloc(block, size);
+    return (loco_ptr)compat::realloc(block, size);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_free(void* block)
 {
-    return free(block);
+    return compat::free(block);
 }
 
 enum

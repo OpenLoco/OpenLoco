@@ -17,7 +17,7 @@ public:
 
     virtual void Free(void* ptr) = 0;
 
-    virtual void Init() = 0;
+    virtual void Init(void* ptr) = 0;
 
     friend class Benchmark;
 };
