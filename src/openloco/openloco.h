@@ -41,7 +41,9 @@ namespace openloco
             assert(_ptr < UINT32_MAX);
             return (uint32_t)_ptr;
         }
+#ifndef __i386__
         operator uintptr_t() const { return _ptr; }
+#endif
     };
 #pragma pack(pop)
 
@@ -68,9 +70,11 @@ namespace openloco
     void prompt_tick_loop(std::function<bool()> tickAction);
 }
 
+#ifndef __i386__
 namespace compat
 {
     void* malloc(size_t size);
     void free(void* ptr);
     void* realloc(void* ptr, size_t size);
 }
+#endif
