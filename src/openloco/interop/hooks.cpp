@@ -25,6 +25,9 @@
 #include "interop.hpp"
 
 using namespace openloco;
+#ifdef __i386__
+namespace compat = std;
+#endif
 
 #define STUB() console::log_verbose(__FUNCTION__)
 

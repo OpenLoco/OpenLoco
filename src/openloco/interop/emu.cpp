@@ -1,3 +1,4 @@
+#ifndef __i386__
 #include "emu.h"
 #include "i386.h"
 #include "../openloco.h"
@@ -575,3 +576,4 @@ namespace compat
         return newPtr;
     }
 }
+#endif

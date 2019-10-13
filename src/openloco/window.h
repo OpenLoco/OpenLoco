@@ -346,17 +346,13 @@ namespace openloco::ui
 
         ui::widget_t* getWidget(widget_index index) const
         {
-#ifdef __i386__
-            return &this->widgets[index];
-#else
             return &((ui::widget_t*)(uintptr_t)this->widgets)[index];
-#endif
         }
 
         ui::viewport* getViewport(uint8_t index = 0)
         {
 #ifdef __i386__
-            return this->viewport[index];
+            return (ui::viewport*)this->viewports[index];
 #else
             return (ui::viewport*)(uintptr_t)this->viewports[index];
 #endif
