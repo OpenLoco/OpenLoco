@@ -109,6 +109,7 @@ matrix:
             homebrew:
               packages:
               - sdl2
+              - sdl2_mixer
           before_install: []
           script:
             - mkdir build && cd build
