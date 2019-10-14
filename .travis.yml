@@ -109,6 +109,7 @@ matrix:
             homebrew:
               packages:
               - sdl2
+          before_install: []
           script:
             - mkdir build && cd build
             - cmake .. -DI386=OFF
