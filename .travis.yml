@@ -110,6 +110,7 @@ matrix:
               packages:
               - sdl2
               - sdl2_mixer
+              - yaml-cpp
           before_install: []
           script:
             - mkdir build && cd build
