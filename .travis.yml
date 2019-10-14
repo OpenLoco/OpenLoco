@@ -35,6 +35,20 @@ matrix:
             - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/ -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/"
             - DOCKERIMG=fedora-mingw32
         - os: linux
+          name: Ubuntu i686 GCC (64-bit)
+          services:
+            - docker
+          env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DI386=OFF"
+            - DOCKERIMG=ubuntu-i686
+        - os: linux
+          name: Ubuntu i686 Clang (64-bit)
+          services:
+            - docker
+          env:
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DI386=OFF"
+            - DOCKERIMG=ubuntu-i686
+        - os: linux
           name: clang-format
           before_install: []
           language: cpp
@@ -86,6 +100,16 @@ matrix:
             - unzip -q boost.zip -d boost/
             - mkdir build && cd build
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx "-DBOOST_ROOT=($pwd)/../boost"
+            - make -j2
+        - os: osx
+          name: macOS 10.14 Clang (Xcode 11.2)
+          osx_image: xcode11.2
+          language: cpp
+          before_install:
+            - export HOMEBREW_NO_AUTO_UPDATE=1
+          script:
+            - mkdir build && cd build
+            - cmake .. -DI386=OFF
             - make -j2
 
 
