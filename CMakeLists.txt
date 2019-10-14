@@ -99,9 +99,11 @@ set(COMMON_COMPILE_OPTIONS
     -Wunreachable-code \
     ")
 
-set(OBJ_FORMAT "elf32-i386")
-set(LINKER_SCRIPT "ld_script_i386.xc")
-
+if (I386)
+    set(OBJ_FORMAT "elf32-i386")
+    set(LINKER_SCRIPT "ld_script_i386.xc")
+    set(TARGET_M "-m32")
+endif()
 
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
@@ -169,7 +171,6 @@ if (APPLE)
 endif ()
 
 set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
 
 # set necessary flags to compile code as is
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
