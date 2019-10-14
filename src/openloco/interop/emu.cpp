@@ -397,10 +397,12 @@ FIXME: type is one of
 
             uc_mem_map_ptr(uc, hookMemStart, 0x1000, UC_PROT_READ | UC_PROT_EXEC, hookMem);
 
-            void* stack = malloc(0x1000);
-            uc_mem_map_ptr(uc, 0x1000, 0x1000, UC_PROT_READ | UC_PROT_WRITE, (void*)stack);
+            constexpr uint32_t stackStart = 0x1000;
+            constexpr uint32_t stackSize = 1 * 1024 * 1024;
+            void* stack = malloc(stackSize);
+            uc_mem_map_ptr(uc, stackStart, stackSize, UC_PROT_READ | UC_PROT_WRITE, (void*)stack);
 
-            uint32_t esp = 0x1000 + 0x1000;
+            uint32_t esp = stackStart + stackSize;
             uc_reg_write(uc, UC_X86_REG_ESP, &esp);
 
             uc_mem_map(uc, executionEnd, 0x1000, UC_PROT_ALL);
