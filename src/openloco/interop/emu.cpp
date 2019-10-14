@@ -416,6 +416,7 @@ FIXME: type is one of
             }
 
             free(stack);
+            uc_close(uc);
         }
     }
 }
