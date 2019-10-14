@@ -5,7 +5,9 @@ set (PROJECT openloco)
 
 project(${PROJECT} CXX)
 
-if (APPLE)
+option(I386 "Compile for native x86" ON)
+
+if (APPLE AND I386)
     # Detection of this variable seems to fail with CMake.
     # Since we only support 32-bit builds at the moment, fix it this way.
     # TODO: find out a proper fix for this.
