@@ -105,8 +105,10 @@ matrix:
           name: macOS 10.14 Clang (Xcode 11.2)
           osx_image: xcode11.2
           language: cpp
-          before_install:
-            - export HOMEBREW_NO_AUTO_UPDATE=1
+          addons:
+            homebrew:
+              packages:
+              - sdl2
           script:
             - mkdir build && cd build
             - cmake .. -DI386=OFF
