@@ -61,7 +61,7 @@ namespace openloco
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
 #else
-    loco_global<char*, 0x00525348> glpCmdLine;
+    loco_global<uint32_t, 0x00525348> glpCmdLine;
 #endif
 
     loco_global<char[256], 0x005060D0> gCDKey;
@@ -105,13 +105,15 @@ namespace openloco
 
     const char* lpCmdLine()
     {
-        return glpCmdLine;
+        return (char*)(uintptr_t)glpCmdLine;
     }
 
 #ifndef _WIN32
     void lpCmdLine(const char* path)
     {
-        glpCmdLine = strdup(path);
+        auto copy = (char*)compat::malloc(strlen(path));
+        strcpy(copy, path);
+        glpCmdLine = (loco_ptr)copy;
     }
 #endif
 

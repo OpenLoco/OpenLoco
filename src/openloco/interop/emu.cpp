@@ -1,22 +1,25 @@
 #ifndef __i386__
 #include "emu.h"
-#include "i386.h"
 #include "../openloco.h"
+#include "i386.h"
 #include <cstdio>
 #include <unicorn/unicorn.h>
 #include <unicorn/x86.h>
 
 #include "../console.h"
 #include "interop.hpp"
-#include <Allocator.h>
-#include <FreeListAllocator.h>
 #include <cassert>
 #include <inttypes.h>
 #include <map>
+#include <mhash.h>
 
 #ifdef __linux__
 #include <sys/mman.h>
 #endif
+
+extern "C" {
+#include <tinyalloc.h>
+}
 
 namespace openloco::interop
 {
@@ -40,13 +43,13 @@ namespace openloco::interop
     uintptr_t hookMemCur;
 
     const uint32_t hookMemStart = 0x10000000;
+    const uint32_t hookMemSize = 0x1000;
 
     static const int softwareInterruptNumber = 0x80;
 
     uint32_t heapStart = 0x20000000;
     uint32_t heapSize = 1024 * 1024 * 128; // 16MiB
     void* heap;
-    FreeListAllocator* allocator;
 
     void emu_init()
     {
@@ -58,9 +61,10 @@ namespace openloco::interop
             exit(EXIT_FAILURE);
 
         console::log("mapped to %X", (uintptr_t)heap);
-
-        allocator = new FreeListAllocator(heapSize, FreeListAllocator::PlacementPolicy::FIND_FIRST);
-        allocator->Init(heap);
+        auto heapEnd = (void*)(heapStart + heapSize);
+        auto success = ta_init(heap, heapEnd, 1024, 16, 8);
+        if (!success)
+            exit(EXIT_FAILURE);
     }
 
     static void write_address_strictalias(uint8_t* data, uint32_t addr)
@@ -322,6 +326,17 @@ FIXME: type is one of
                 break;
             }
 
+            case 5:
+            {
+                uint32_t arg1 = pop(uc);
+                uint32_t arg2 = pop(uc);
+                uint32_t arg3 = pop(uc);
+                uint32_t arg4 = pop(uc);
+                uint32_t arg5 = pop(uc);
+                retVal = ((uint32_t(*)(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t))hook.function)(arg1, arg2, arg3, arg4, arg5);
+                break;
+            }
+
             case 7:
             {
                 uint32_t arg1 = pop(uc);
@@ -354,15 +369,16 @@ FIXME: type is one of
 
     namespace emu
     {
-        void call(uint32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
+        uc_engine* uc = nullptr;
+
+        static void initialise()
         {
             uc_err err;
 
-            uc_engine* uc = nullptr;
             err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);
             if (err)
             {
-                printf("Failed on uc_open() with error returned %u: %s\n", err, uc_strerror(err));
+                throw std::runtime_error("Failed on uc_open() with error returned " + std::to_string(err) + ": " + std::string(uc_strerror(err)));
             }
 
             // Add hooks to catch errors
@@ -389,34 +405,68 @@ FIXME: type is one of
 
             uc_hook hook1;
             uc_hook_add(uc, &hook1, UC_HOOK_INTR, (void*)hook_interrupt, NULL, 0, -1);
-            uc_hook_add(uc, &hook1, UC_HOOK_CODE, (void*)hook_code, NULL, 0, -1);
+            //            uc_hook_add(uc, &hook1, UC_HOOK_CODE, (void*)hook_code, NULL, 0, -1);
 
             uc_mem_map_ptr(uc, 0x401000, 0x4d7000 - 0x401000, UC_PROT_READ | UC_PROT_EXEC, (void*)0x401000);
             uc_mem_map_ptr(uc, 0x4d7000, 0x1162000 - 0x4d7000, UC_PROT_READ | UC_PROT_WRITE, (void*)0x4d7000);
             uc_mem_map_ptr(uc, (uintptr_t)heap, heapSize, UC_PROT_READ | UC_PROT_WRITE, heap);
 
-            uc_mem_map_ptr(uc, hookMemStart, 0x1000, UC_PROT_READ | UC_PROT_EXEC, hookMem);
+            uc_mem_map_ptr(uc, hookMemStart, hookMemSize, UC_PROT_READ | UC_PROT_EXEC, hookMem);
 
-            constexpr uint32_t stackStart = 0x1000;
+            constexpr uintptr_t stackStart = 0xA0000000;
             constexpr uint32_t stackSize = 1 * 1024 * 1024;
-            void* stack = malloc(stackSize);
+            void* stack = mmap((void*)stackStart, stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+            printf("allocated stack space from 0x%" PRIXPTR " to 0x%" PRIXPTR, (uintptr_t)stack, (uintptr_t)stack + stackSize);
             uc_mem_map_ptr(uc, stackStart, stackSize, UC_PROT_READ | UC_PROT_WRITE, (void*)stack);
 
             uint32_t esp = stackStart + stackSize;
             uc_reg_write(uc, UC_X86_REG_ESP, &esp);
 
             uc_mem_map(uc, executionEnd, 0x1000, UC_PROT_ALL);
+        }
+
+        static int depth = 0;
+
+        void call(uint32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
+        {
+            if (uc == nullptr)
+                initialise();
+
+            if (depth != 0)
+            {
+                console::error("Trying to call function at 0x%" PRIXPTR " while in other function", address);
+                return;
+            }
+
+            depth++;
+
+            uc_reg_write(uc, UC_X86_REG_EAX, _eax);
+            uc_reg_write(uc, UC_X86_REG_EBX, _ebx);
+            uc_reg_write(uc, UC_X86_REG_ECX, _ecx);
+            uc_reg_write(uc, UC_X86_REG_EDX, _edx);
+            uc_reg_write(uc, UC_X86_REG_ESI, _esi);
+            uc_reg_write(uc, UC_X86_REG_EDI, _edi);
+            uc_reg_write(uc, UC_X86_REG_EBP, _ebp);
+
+            // Push return address to stack
             push(uc, executionEnd);
 
-            err = uc_emu_start(uc, address, executionEnd, 0, 0);
+            auto err = uc_emu_start(uc, address, executionEnd, 0, 0);
 
             if (err)
             {
-                printf("Failed on uc_emu_start() with error returned %u: %s\n", err, uc_strerror(err));
+                throw std::runtime_error("Failed on uc_emu_start() with error returned " + std::to_string(err) + ": " + std::string(uc_strerror(err)));
             }
 
-            free(stack);
-            uc_close(uc);
+            uc_reg_read(uc, UC_X86_REG_EAX, _eax);
+            uc_reg_read(uc, UC_X86_REG_EBX, _ebx);
+            uc_reg_read(uc, UC_X86_REG_ECX, _ecx);
+            uc_reg_read(uc, UC_X86_REG_EDX, _edx);
+            uc_reg_read(uc, UC_X86_REG_ESI, _esi);
+            uc_reg_read(uc, UC_X86_REG_EDI, _edi);
+            uc_reg_read(uc, UC_X86_REG_EBP, _ebp);
+
+            depth--;
         }
     }
 }
@@ -547,36 +597,18 @@ namespace compat
 {
     void* malloc(size_t size)
     {
-        return openloco::interop::allocator->Allocate(size, 8);
+        return ta_alloc(size);
     }
 
     void free(void* ptr)
     {
-        return openloco::interop::allocator->Free(ptr);
+        ta_free(ptr);
     }
 
     void* realloc(void* ptr, size_t size)
     {
-        struct AllocationHeader
-        {
-            std::size_t blockSize;
-            char padding;
-        };
-
-        const std::size_t currentAddress = (std::size_t)ptr;
-        const std::size_t headerAddress = currentAddress - sizeof(AllocationHeader);
-        const AllocationHeader* allocationHeader{ (AllocationHeader*)headerAddress };
-        size_t oldSize = allocationHeader->blockSize - allocationHeader->padding - sizeof(AllocationHeader);
-
-        openloco::console::log("old size: 0x%X bytes", oldSize);
-        auto minSize = std::min(size, oldSize);
-
-        auto newPtr = openloco::interop::allocator->Allocate(size, 8);
-        memcpy(newPtr, ptr, minSize);
-
-        openloco::interop::allocator->Free(ptr);
-
-        return newPtr;
+        ta_free(ptr);
+        return ta_alloc(size);
     }
 }
 #endif

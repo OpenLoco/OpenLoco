@@ -1,13 +1,36 @@
 #include "FreeListAllocator.h"
 #include "Utils.h"  /* CalculatePaddingWithHeader */
-#include <stdlib.h>     /* malloc, free */
+#include <cstdlib>     /* malloc, free */
 #include <cassert>   /* assert		*/
 #include <limits>  /* limits_max */
 #include <algorithm>    // std::max
+#include <cinttypes>
 
 #ifdef _DEBUG
 #include <iostream>
 #endif
+
+void FreeListAllocator::Dump() {
+    Node * it = (Node *) m_start_ptr;
+
+    while (it != nullptr) {
+        printf("  - %" PRIXPTR "\n", (uintptr_t)it, it->data);
+        it = it->next;
+    }
+
+
+    auto it2 = m_freeList.head;
+    while(it2 != nullptr)
+    {
+        printf("  - %" PRIXPTR "\n", it2->data.blockSize);
+
+        if(it2->next == it2)
+            break;
+
+        it2 = it2->next;
+    }
+
+}
 
 FreeListAllocator::FreeListAllocator(const std::size_t totalSize, const PlacementPolicy pPolicy)
 : Allocator(totalSize) {
@@ -26,6 +49,7 @@ FreeListAllocator::~FreeListAllocator() {
 }
 
 void* FreeListAllocator::Allocate(const std::size_t size, const std::size_t alignment) {
+    Dump();
     const std::size_t allocationHeaderSize = sizeof(FreeListAllocator::AllocationHeader);
     assert("Allocation size must be bigger" && size >= sizeof(Node));
     assert("Alignment must be 8 at least" && alignment >= 8);
@@ -138,8 +162,13 @@ void FreeListAllocator::Free(void* ptr) {
 
     m_used -= freeNode->data.blockSize;
 
+    Dump();
+
     // Merge contiguous nodes
     Coalescence(itPrev, freeNode);
+
+
+    Dump();
 
 #ifdef _DEBUG
     std::cout << "F" << "\t@ptr " <<  ptr <<"\tH@ " << (void*) freeNode << "\tS " << freeNode->data.blockSize << "\tM " << m_used << std::endl;

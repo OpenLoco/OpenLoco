@@ -42,7 +42,10 @@ namespace openloco
             return (uint32_t)_ptr;
         }
 #ifndef __i386__
-        operator uintptr_t() const { return _ptr; }
+        operator uintptr_t() const
+        {
+            return _ptr;
+        }
 #endif
     };
 #pragma pack(pop)

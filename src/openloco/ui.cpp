@@ -374,7 +374,7 @@ namespace openloco::ui
         int32_t pitch = surface->pitch;
 
         gfx::drawpixelinfo_t dpi{};
-        dpi.bits = (loco_ptr) new uint8_t[surface->pitch * height];
+        dpi.bits = (loco_ptr)compat::malloc(surface->pitch * height);
         dpi.width = width;
         dpi.height = height;
         dpi.pitch = pitch - width;

@@ -9,7 +9,7 @@ if (APPLE)
     # Detection of this variable seems to fail with CMake.
     # Since we only support 32-bit builds at the moment, fix it this way.
     # TODO: find out a proper fix for this.
-    set(CMAKE_SIZEOF_VOID_P 4)
+    # set(CMAKE_SIZEOF_VOID_P 4)
 endif()
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -200,6 +200,11 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAG
 
 add_subdirectory("allocators")
 
+
+add_library(tinyalloc src/tinyalloc/tinyalloc.c)
+target_include_directories(tinyalloc PUBLIC src/tinyalloc/)
+
+
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
 	if (TARGET SDL2::SDL2-static)
@@ -247,7 +252,7 @@ endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
-target_link_libraries(${PROJECT} malloc)
+target_link_libraries(${PROJECT} tinyalloc)
 
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)

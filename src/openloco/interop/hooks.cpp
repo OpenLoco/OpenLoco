@@ -165,6 +165,7 @@ static void CDECL fn_4081ad(int32_t wParam)
 struct FileWrapper
 {
     FILE* file;
+    std::string name;
 };
 
 FORCE_ALIGN_ARG_POINTER
@@ -336,6 +337,7 @@ static uint32_t CDECL fn_malloc(uint32_t size)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_realloc(void* block, uint32_t size)
 {
+    console::log("Reallocated %" PRIXPTR " to 0x%X bytes", (uintptr_t)block, size);
     return (loco_ptr)compat::realloc(block, size);
 }
 
@@ -387,13 +389,15 @@ static bool STDCALL lib_DeleteFileA(char* lpFileName)
 
 FORCE_ALIGN_ARG_POINTER
 static bool STDCALL lib_WriteFile(
-    FILE* hFile,
+    FileWrapper* hFile,
     char* buffer,
     size_t nNumberOfBytesToWrite,
     uint32_t* lpNumberOfBytesWritten,
     uintptr_t lpOverlapped)
 {
-    *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
+    auto str = std::string(buffer, nNumberOfBytesToWrite);
+    size_t i = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile->file);
+    *lpNumberOfBytesWritten = i;
     console::log_verbose("WriteFile(%s)", buffer);
 
     return true;
@@ -441,6 +445,7 @@ static int32_t STDCALL lib_CreateFileA(
 
     auto wrapper = new FileWrapper;
     wrapper->file = pFILE;
+    wrapper->name = lpFileName;
     return (loco_ptr)wrapper;
 }
 

@@ -42,6 +42,8 @@ public:
 private:
     FreeListAllocator(FreeListAllocator &freeListAllocator);
 
+    void Dump();
+
     void Coalescence(Node* prevBlock, Node * freeBlock);
 
     void Find(const std::size_t size, const std::size_t alignment, std::size_t& padding, Node*& previousNode, Node*& foundNode);
