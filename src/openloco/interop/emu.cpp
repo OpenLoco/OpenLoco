@@ -51,6 +51,12 @@ namespace openloco::interop
     uint32_t heapSize = 1024 * 1024 * 128; // 16MiB
     void* heap;
 
+    uintptr_t stackStart = 0xA0000000;
+    uint32_t stackSize = 1 * 1024 * 1024;
+    void* stack;
+
+    static uint32_t _esp;
+
     void emu_init()
     {
         hookMem = malloc(0x1000);
@@ -60,11 +66,15 @@ namespace openloco::interop
         if (heap == MAP_FAILED)
             exit(EXIT_FAILURE);
 
-        console::log("mapped to %X", (uintptr_t)heap);
         auto heapEnd = (void*)(heapStart + heapSize);
         auto success = ta_init(heap, heapEnd, 1024, 16, 8);
         if (!success)
             exit(EXIT_FAILURE);
+
+        stack = mmap((void*)stackStart, stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        printf("allocated stack space from 0x%" PRIXPTR " to 0x%" PRIXPTR, (uintptr_t)stack, (uintptr_t)stack + stackSize);
+
+        _esp = stackStart + stackSize;
     }
 
     static void write_address_strictalias(uint8_t* data, uint32_t addr)
@@ -266,6 +276,9 @@ FIXME: type is one of
 
         if (hook.convention == openloco::interop::CallingConvention::sawyer)
         {
+            uint32_t backupEsp = _esp;
+            uc_reg_read(uc, UC_X86_REG_ESP, &_esp);
+
             openloco::interop::registers regs = {};
             uc_reg_read(uc, UC_X86_REG_EAX, &regs.eax);
             uc_reg_read(uc, UC_X86_REG_EBX, &regs.ebx);
@@ -285,6 +298,7 @@ FIXME: type is one of
             uc_reg_write(uc, UC_X86_REG_EDI, &regs.edi);
             uc_reg_write(uc, UC_X86_REG_EBP, &regs.ebp);
 
+            _esp = backupEsp;
             return;
         }
 
@@ -369,10 +383,9 @@ FIXME: type is one of
 
     namespace emu
     {
-        uc_engine* uc = nullptr;
-
-        static void initialise()
+        static uc_engine* initialise()
         {
+            uc_engine* uc = nullptr;
             uc_err err;
 
             err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);
@@ -405,7 +418,6 @@ FIXME: type is one of
 
             uc_hook hook1;
             uc_hook_add(uc, &hook1, UC_HOOK_INTR, (void*)hook_interrupt, NULL, 0, -1);
-            //            uc_hook_add(uc, &hook1, UC_HOOK_CODE, (void*)hook_code, NULL, 0, -1);
 
             uc_mem_map_ptr(uc, 0x401000, 0x4d7000 - 0x401000, UC_PROT_READ | UC_PROT_EXEC, (void*)0x401000);
             uc_mem_map_ptr(uc, 0x4d7000, 0x1162000 - 0x4d7000, UC_PROT_READ | UC_PROT_WRITE, (void*)0x4d7000);
@@ -413,32 +425,29 @@ FIXME: type is one of
 
             uc_mem_map_ptr(uc, hookMemStart, hookMemSize, UC_PROT_READ | UC_PROT_EXEC, hookMem);
 
-            constexpr uintptr_t stackStart = 0xA0000000;
-            constexpr uint32_t stackSize = 1 * 1024 * 1024;
-            void* stack = mmap((void*)stackStart, stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-            printf("allocated stack space from 0x%" PRIXPTR " to 0x%" PRIXPTR, (uintptr_t)stack, (uintptr_t)stack + stackSize);
             uc_mem_map_ptr(uc, stackStart, stackSize, UC_PROT_READ | UC_PROT_WRITE, (void*)stack);
 
-            uint32_t esp = stackStart + stackSize;
-            uc_reg_write(uc, UC_X86_REG_ESP, &esp);
-
             uc_mem_map(uc, executionEnd, 0x1000, UC_PROT_ALL);
+
+            return uc;
         }
 
         static int depth = 0;
 
         void call(uint32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
         {
-            if (uc == nullptr)
-                initialise();
+            auto uc = initialise();
 
-            if (depth != 0)
+            if (address == 0x4ca4bd)
             {
-                console::error("Trying to call function at 0x%" PRIXPTR " while in other function", address);
-                return;
+                uc_hook hook1;
+                uc_hook_add(uc, &hook1, UC_HOOK_CODE, (void*)hook_code, NULL, 0, -1);
             }
 
             depth++;
+
+            uint32_t espStart = _esp;
+            uc_reg_write(uc, UC_X86_REG_ESP, &espStart);
 
             uc_reg_write(uc, UC_X86_REG_EAX, _eax);
             uc_reg_write(uc, UC_X86_REG_EBX, _ebx);
@@ -458,6 +467,11 @@ FIXME: type is one of
                 throw std::runtime_error("Failed on uc_emu_start() with error returned " + std::to_string(err) + ": " + std::string(uc_strerror(err)));
             }
 
+            uint32_t espEnd;
+            uc_reg_read(uc, UC_X86_REG_ESP, &espEnd);
+
+            assert(espEnd == espStart);
+
             uc_reg_read(uc, UC_X86_REG_EAX, _eax);
             uc_reg_read(uc, UC_X86_REG_EBX, _ebx);
             uc_reg_read(uc, UC_X86_REG_ECX, _ecx);
@@ -465,6 +479,8 @@ FIXME: type is one of
             uc_reg_read(uc, UC_X86_REG_ESI, _esi);
             uc_reg_read(uc, UC_X86_REG_EDI, _edi);
             uc_reg_read(uc, UC_X86_REG_EBP, _ebp);
+
+            uc_close(uc);
 
             depth--;
         }
