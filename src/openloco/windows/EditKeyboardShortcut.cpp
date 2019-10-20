@@ -32,8 +32,8 @@ namespace openloco::ui::EditKeyboardShortcut
 
     static void init_events()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.draw = draw;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.draw = (loco_ptr)(void*)draw;
     }
 
     namespace widx

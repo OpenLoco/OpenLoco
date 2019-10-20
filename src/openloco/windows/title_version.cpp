@@ -29,8 +29,7 @@ namespace openloco::ui::windows
             &_events);
         window->widgets = (loco_ptr)widgets;
 
-        _events.prepare_draw = (void (*)(ui::window*))0x0042A035;
-        _events.draw = draw;
+        _events.draw = (loco_ptr)(void*)draw;
 
         return window;
     }

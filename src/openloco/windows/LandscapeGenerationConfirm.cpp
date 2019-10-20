@@ -71,8 +71,8 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
 
     static void init_events()
     {
-        events.draw = draw;
-        events.on_mouse_up = on_mouse_up;
+        events.draw = (loco_ptr)(void*)draw;
+        events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
     }
 
     // 0x004C180C

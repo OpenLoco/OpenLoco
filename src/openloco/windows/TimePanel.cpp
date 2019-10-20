@@ -79,16 +79,16 @@ namespace openloco::ui::TimePanel
 
     window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.event_03 = on_mouse_down;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.on_update = on_update;
-        _events.text_input = text_input;
-        _events.tooltip = tooltip;
-        _events.cursor = on_cursor;
-        _events.prepare_draw = prepare_draw;
-        _events.draw = draw;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.event_03 = (loco_ptr)(void*)on_mouse_down;
+        _events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+        _events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+        _events.on_update = (loco_ptr)(void*)on_update;
+        _events.text_input = (loco_ptr)(void*)text_input;
+        _events.tooltip = (loco_ptr)(void*)tooltip;
+        _events.cursor = (loco_ptr)(void*)on_cursor;
+        _events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+        _events.draw = (loco_ptr)(void*)draw;
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,

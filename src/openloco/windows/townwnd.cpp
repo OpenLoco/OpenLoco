@@ -336,13 +336,13 @@ namespace openloco::ui::windows::town
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
-            events.viewport_rotate = initViewport;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_resize = (loco_ptr)(void*)on_resize;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.text_input = (loco_ptr)(void*)common::text_input;
+            events.viewport_rotate = (loco_ptr)(void*)initViewport;
         }
     }
 
@@ -510,12 +510,12 @@ namespace openloco::ui::windows::town
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_resize = (loco_ptr)(void*)on_resize;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.text_input = (loco_ptr)(void*)common::text_input;
         }
     }
 
@@ -607,12 +607,12 @@ namespace openloco::ui::windows::town
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_resize = (loco_ptr)(void*)on_resize;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.text_input = (loco_ptr)(void*)common::text_input;
         }
     }
 

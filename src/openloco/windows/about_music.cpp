@@ -51,11 +51,11 @@ namespace openloco::ui::about_music
         if (WindowManager::bringToFront(WindowType::aboutMusic, 0) != nullptr)
             return;
 
-        _events.on_mouse_up = on_mouse_up;
-        _events.get_scroll_size = get_scroll_size;
-        _events.tooltip = tooltip;
-        _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.get_scroll_size = (loco_ptr)(void*)get_scroll_size;
+        _events.tooltip = (loco_ptr)(void*)tooltip;
+        _events.draw = (loco_ptr)(void*)draw;
+        _events.draw_scroll = (loco_ptr)(void*)draw_scroll;
 
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,

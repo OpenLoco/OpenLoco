@@ -141,14 +141,14 @@ namespace openloco::ui::windows
 
     ui::window* open_title_menu()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.text_input = on_text_input;
-        _events.cursor = on_cursor;
-        _events.on_update = on_update;
-        _events.prepare_draw = prepare_draw;
-        _events.draw = draw;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+        _events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+        _events.text_input = (loco_ptr)(void*)on_text_input;
+        _events.cursor = (loco_ptr)(void*)on_cursor;
+        _events.on_update = (loco_ptr)(void*)on_update;
+        _events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+        _events.draw = (loco_ptr)(void*)draw;
 
         auto window = openloco::ui::WindowManager::createWindow(
             WindowType::titleMenu,

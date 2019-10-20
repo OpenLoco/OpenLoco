@@ -109,20 +109,20 @@ namespace openloco::ui::windows::station_list
 
     static void init_events()
     {
-        _events.cursor = cursor;
-        _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
-        _events.event_08 = event_08;
-        _events.event_09 = event_09;
-        _events.get_scroll_size = get_scroll_size;
-        _events.on_dropdown = on_dropdown;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
-        _events.scroll_mouse_down = on_scroll_mouse_down;
-        _events.scroll_mouse_over = on_scroll_mouse_over;
-        _events.prepare_draw = prepare_draw;
-        _events.tooltip = tooltip;
+        _events.cursor = (loco_ptr)(void*)cursor;
+        _events.draw = (loco_ptr)(void*)draw;
+        _events.draw_scroll = (loco_ptr)(void*)draw_scroll;
+        _events.event_08 = (loco_ptr)(void*)event_08;
+        _events.event_09 = (loco_ptr)(void*)event_09;
+        _events.get_scroll_size = (loco_ptr)(void*)get_scroll_size;
+        _events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+        _events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.on_update = (loco_ptr)(void*)on_update;
+        _events.scroll_mouse_down = (loco_ptr)(void*)on_scroll_mouse_down;
+        _events.scroll_mouse_over = (loco_ptr)(void*)on_scroll_mouse_over;
+        _events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+        _events.tooltip = (loco_ptr)(void*)tooltip;
     }
 
     // 0x004910E8

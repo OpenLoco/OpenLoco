@@ -199,45 +199,45 @@ namespace openloco::ui
     {
         union
         {
-            void* events[29];
+            uint32_t events[29];
             struct
             {
-                void (*on_close)(window*);
-                void (*on_mouse_up)(window*, widget_index);
-                void (*on_resize)(window*);
-                void (*event_03)(window*, widget_index);
-                void (*on_mouse_down)(window*, widget_index);
-                void (*on_dropdown)(window*, widget_index, int16_t);
-                void (*on_periodic_update)(window*);
-                void (*on_update)(window*);
-                void (*event_08)(window*);
-                void (*event_09)(window*);
+                uint32_t on_close;
+                uint32_t on_mouse_up;
+                uint32_t on_resize;
+                uint32_t event_03;
+                uint32_t on_mouse_down;
+                uint32_t on_dropdown;
+                uint32_t on_periodic_update;
+                uint32_t on_update;
+                uint32_t event_08;
+                uint32_t event_09;
                 uint32_t on_tool_update;
                 uint32_t on_tool_down;
                 uint32_t event_12;
                 uint32_t event_13;
                 uint32_t tool_abort;
                 uint32_t event_15;
-                void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-                void (*scroll_mouse_down)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
+                uint32_t get_scroll_size;
+                uint32_t scroll_mouse_down;
                 uint32_t event_18;
-                void (*scroll_mouse_over)(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*text_input)(window*, widget_index, char*);
-                void (*viewport_rotate)(window*);
+                uint32_t scroll_mouse_over;
+                uint32_t text_input;
+                uint32_t viewport_rotate;
                 uint32_t event_22;
-                void (*tooltip)(window*, widget_index);
-                ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
+                uint32_t tooltip;
+                uint32_t cursor;
                 uint32_t on_move;
-                void (*prepare_draw)(window*);
-                void (*draw)(window*, gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                uint32_t prepare_draw;
+                uint32_t draw;
+                uint32_t draw_scroll;
             };
         };
 
         window_event_list()
         {
             // Set all events to a `ret` instruction
-            std::fill_n(events, 29, (void*)0x0042A034);
+            std::fill_n(events, 29, 0x0042A034);
         }
     };
 

@@ -31,9 +31,9 @@ namespace openloco::ui::vehicle
 
     void registerHooks()
     {
-        _mainEvents->on_update = main::onUpdate;
-        _vehicleDetailsEvents->on_update = vehicle_details::onUpdate;
-        _financesEvents->on_update = finances::onUpdate;
+        _mainEvents->on_update = (loco_ptr)(void*)main::onUpdate;
+        _vehicleDetailsEvents->on_update = (loco_ptr)(void*)vehicle_details::onUpdate;
+        _financesEvents->on_update = (loco_ptr)(void*)finances::onUpdate;
     }
 
     static void sub_4B28E2(window* w, int dx)

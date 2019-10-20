@@ -136,10 +136,10 @@ namespace openloco::ui::textinput
         stringmgr::format_string(temp, value, valueArgs);
         _buffer = temp;
 
-        _events.draw = draw;
-        _events.prepare_draw = prepare_draw;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
+        _events.draw = (loco_ptr)(void*)draw;
+        _events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.on_update = (loco_ptr)(void*)on_update;
 
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,

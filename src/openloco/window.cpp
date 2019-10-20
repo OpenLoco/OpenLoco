@@ -654,7 +654,7 @@ namespace openloco::ui
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_close == nullptr)
+        if (event_handlers->on_close == 0)
             return;
 
         if (is_interop_event(event_handlers->on_close))
@@ -665,14 +665,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_close(this);
+        auto fn = (void (*)(window*))event_handlers->on_close;
+        fn(this);
     }
 
     void window::call_on_periodic_update()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_periodic_update == nullptr)
+        if (event_handlers->on_periodic_update == 0)
             return;
 
         if (is_interop_event(event_handlers->on_periodic_update))
@@ -683,14 +684,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_periodic_update(this);
+        auto fn = (void (*)(window*))event_handlers->on_periodic_update;
+        fn(this);
     }
 
     void window::call_update()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_update == nullptr)
+        if (event_handlers->on_update == 0)
             return;
 
         if (is_interop_event(event_handlers->on_update))
@@ -701,14 +703,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_update(this);
+        auto fn = (void (*)(window*))event_handlers->on_update;
+        fn(this);
     }
 
     void window::call_8()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->event_08 == nullptr)
+        if (event_handlers->event_08 == 0)
             return;
 
         if (is_interop_event(event_handlers->event_08))
@@ -719,14 +722,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->event_08(this);
+        auto fn = (void (*)(window*))event_handlers->event_08;
+        fn(this);
     }
 
     void window::call_9()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->event_09 == nullptr)
+        if (event_handlers->event_09 == 0)
             return;
 
         if (is_interop_event(event_handlers->event_09))
@@ -737,7 +741,8 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->event_09(this);
+        auto fn = (void (*)(window*))event_handlers->event_09;
+        fn(this);
     }
 
     void window::call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos)
@@ -794,7 +799,7 @@ namespace openloco::ui
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->cursor == nullptr)
+        if (event_handlers->cursor == 0)
             return fallback;
 
         if (is_interop_event(event_handlers->cursor))
@@ -816,14 +821,15 @@ namespace openloco::ui
             return (cursor_id)regs.ebx;
         }
 
-        return event_handlers->cursor(this, widgetIdx, xPos, yPos, fallback);
+        auto fn = (ui::cursor_id(*)(window*, int16_t, int16_t, int16_t, ui::cursor_id))event_handlers->cursor;
+        return fn(this, widgetIdx, xPos, yPos, fallback);
     }
 
     void window::call_on_mouse_up(widget_index widgetIndex)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_mouse_up == nullptr)
+        if (event_handlers->on_mouse_up == 0)
             return;
 
         if (is_interop_event(event_handlers->on_mouse_up))
@@ -839,14 +845,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_mouse_up(this, widgetIndex);
+        auto fn = (void (*)(window*, widget_index))event_handlers->on_mouse_up;
+        fn(this, widgetIndex);
     }
 
     ui::window* window::call_on_resize()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_resize == nullptr)
+        if (event_handlers->on_resize == 0)
             return this;
 
         if (is_interop_event(event_handlers->on_resize))
@@ -858,7 +865,8 @@ namespace openloco::ui
             return (window*)(uintptr_t)regs.esi;
         }
 
-        event_handlers->on_resize(this);
+        auto fn = (void (*)(window*))event_handlers->on_resize;
+        fn(this);
         return this;
     }
 
@@ -866,7 +874,7 @@ namespace openloco::ui
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->event_03 == nullptr)
+        if (event_handlers->event_03 == 0)
             return;
 
         if (is_interop_event(event_handlers->event_03))
@@ -879,14 +887,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->event_03(this, widget_index);
+        auto fn = (void (*)(window*, int8_t))event_handlers->event_03;
+        fn(this, widget_index);
     }
 
     void window::call_on_mouse_down(ui::widget_index widget_index)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_mouse_down == nullptr)
+        if (event_handlers->on_mouse_down == 0)
             return;
 
         if (is_interop_event(event_handlers->on_mouse_down))
@@ -899,14 +908,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_mouse_down(this, widget_index);
+        auto fn = (void (*)(window*, int8_t))event_handlers->on_mouse_down;
+        fn(this, widget_index);
     }
 
     void window::call_on_dropdown(ui::widget_index widget_index, int16_t item_index)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->on_dropdown == nullptr)
+        if (event_handlers->on_dropdown == 0)
             return;
 
         if (is_interop_event(event_handlers->on_dropdown))
@@ -919,14 +929,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->on_dropdown(this, widget_index, item_index);
+        auto fn = (void (*)(window*, ui::widget_index, int16_t))event_handlers->on_dropdown;
+        fn(this, widget_index, item_index);
     }
 
     void window::call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->get_scroll_size == nullptr)
+        if (event_handlers->get_scroll_size == 0)
             return;
 
         if (is_interop_event(event_handlers->get_scroll_size))
@@ -940,14 +951,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
+        auto fn = (void (*)(window*, uint32_t scrollIndex, uint16_t * scrollWidth, uint16_t * scrollHeight)) event_handlers->get_scroll_size;
+        fn(this, scrollIndex, scrollWidth, scrollHeight);
     }
 
     void window::call_scroll_mouse_down(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->scroll_mouse_down == nullptr)
+        if (event_handlers->scroll_mouse_down == 0)
             return;
 
         if (is_interop_event(event_handlers->scroll_mouse_down))
@@ -961,14 +973,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
+        auto fn = (void (*)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index))event_handlers->scroll_mouse_down;
+        fn(this, xPos, yPos, scroll_index);
     }
 
     void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->scroll_mouse_over == nullptr)
+        if (event_handlers->scroll_mouse_over == 0)
             return;
 
         if (is_interop_event(event_handlers->scroll_mouse_over))
@@ -982,14 +995,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
+        auto fn = (void (*)(ui::window * window, int16_t x, int16_t y, uint8_t scroll_index)) event_handlers->scroll_mouse_over;
+        fn(this, xPos, yPos, scroll_index);
     }
 
     void window::call_text_input(widget_index caller, char* buffer)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->text_input == nullptr)
+        if (event_handlers->text_input == 0)
             return;
 
         if (is_interop_event(event_handlers->text_input))
@@ -1003,13 +1017,14 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->text_input(this, caller, buffer);
+        auto fn = (void (*)(window*, widget_index, char*))event_handlers->text_input;
+        fn(this, caller, buffer);
     }
 
     void window::call_viewport_rotate()
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
-        if (event_handlers->viewport_rotate == nullptr)
+        if (event_handlers->viewport_rotate == 0)
             return;
 
         if (is_interop_event(event_handlers->viewport_rotate))
@@ -1020,14 +1035,15 @@ namespace openloco::ui
             return;
         }
 
-        //        event_handlerss->viewport_rotate(this);
+        auto fn = (void (*)(window*))event_handlers->viewport_rotate;
+        fn(this);
     }
 
     bool window::call_tooltip(int16_t widget_index)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->tooltip == nullptr)
+        if (event_handlers->tooltip == 0)
             return false;
 
         if (is_interop_event(event_handlers->tooltip))
@@ -1039,7 +1055,8 @@ namespace openloco::ui
             return regs.ax != (int16_t)string_ids::null;
         }
 
-        event_handlers->tooltip(this, widget_index);
+        auto fn = (void (*)(window*, int8_t))event_handlers->tooltip;
+        fn(this, widget_index);
         return true;
     }
 
@@ -1058,7 +1075,7 @@ namespace openloco::ui
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->prepare_draw == nullptr)
+        if (event_handlers->prepare_draw == 0)
             return;
 
         if (is_interop_event(event_handlers->prepare_draw))
@@ -1069,14 +1086,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->prepare_draw(this);
+        auto fn = (void (*)(window*))event_handlers->prepare_draw;
+        fn(this);
     }
 
     void window::call_draw(gfx::drawpixelinfo_t* dpi)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->draw == nullptr)
+        if (event_handlers->draw == 0)
             return;
 
         if (is_interop_event(event_handlers->draw))
@@ -1088,14 +1106,15 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->draw(this, dpi);
+        auto fn = (void (*)(window*, gfx::drawpixelinfo_t * dpi)) event_handlers->draw;
+        fn(this, dpi);
     }
 
     void window::call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         window_event_list* event_handlers = (window_event_list*)(uintptr_t)this->_event_handlers;
 
-        if (event_handlers->draw_scroll == nullptr)
+        if (event_handlers->draw_scroll == 0)
             return;
 
         if (is_interop_event(event_handlers->draw_scroll))
@@ -1108,7 +1127,8 @@ namespace openloco::ui
             return;
         }
 
-        event_handlers->draw_scroll(this, dpi, scrollIndex);
+        auto fn = (void (*)(window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex))event_handlers->draw_scroll;
+        fn(this, dpi, scrollIndex);
     }
 
     // 0x004CA4DF

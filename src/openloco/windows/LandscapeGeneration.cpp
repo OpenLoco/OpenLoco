@@ -277,11 +277,11 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
+            events.draw = (loco_ptr)(void*)draw;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
         }
     }
 
@@ -654,16 +654,16 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.draw_scroll = draw_scroll;
-            events.get_scroll_size = get_scroll_size;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = update;
-            events.scroll_mouse_down = scroll_mouse_down;
-            events.tooltip = tooltip;
+            events.draw = (loco_ptr)(void*)draw;
+            events.draw_scroll = (loco_ptr)(void*)draw_scroll;
+            events.get_scroll_size = (loco_ptr)(void*)get_scroll_size;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)update;
+            events.scroll_mouse_down = (loco_ptr)(void*)scroll_mouse_down;
+            events.tooltip = (loco_ptr)(void*)tooltip;
         }
     }
 
@@ -923,11 +923,11 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
+            events.draw = (loco_ptr)(void*)draw;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
         }
     }
 
@@ -1064,12 +1064,12 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
+            events.draw = (loco_ptr)(void*)draw;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
         }
     }
 
@@ -1186,12 +1186,12 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
+            events.draw = (loco_ptr)(void*)draw;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
         }
     };
 

@@ -153,17 +153,17 @@ namespace openloco::ui::prompt_browse
         const char* filter,
         const char* title)
     {
-        _events.on_close = on_close;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_resize = on_resize;
-        _events.on_update = on_update;
-        _events.get_scroll_size = get_scroll_size;
-        _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464F7);
-        _events.scroll_mouse_over = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464B1);
-        _events.tooltip = tooltip;
-        _events.prepare_draw = prepare_draw;
-        _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.on_close = (loco_ptr)(void*)on_close;
+        _events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+        _events.on_resize = (loco_ptr)(void*)on_resize;
+        _events.on_update = (loco_ptr)(void*)on_update;
+        _events.get_scroll_size = (loco_ptr)(void*)get_scroll_size;
+        _events.scroll_mouse_down = 0x004464F7;
+        _events.scroll_mouse_over = 0x004464B1;
+        _events.tooltip = (loco_ptr)(void*)tooltip;
+        _events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+        _events.draw = (loco_ptr)(void*)draw;
+        _events.draw_scroll = (loco_ptr)(void*)draw_scroll;
 
         auto path = fs::path(szPath);
         auto directory = get_directory(path);

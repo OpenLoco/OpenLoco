@@ -487,12 +487,12 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
         }
     }
 
@@ -828,12 +828,12 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
         }
     }
 
@@ -961,11 +961,11 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
         }
     }
 
@@ -1139,13 +1139,13 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static void initEvents()
         {
-            events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
+            events.draw = (loco_ptr)(void*)draw;
+            events.on_dropdown = (loco_ptr)(void*)on_dropdown;
+            events.on_mouse_down = (loco_ptr)(void*)on_mouse_down;
+            events.on_mouse_up = (loco_ptr)(void*)on_mouse_up;
+            events.on_update = (loco_ptr)(void*)common::update;
+            events.prepare_draw = (loco_ptr)(void*)prepare_draw;
+            events.text_input = (loco_ptr)(void*)text_input;
         }
     }
 
