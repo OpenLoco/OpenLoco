@@ -438,7 +438,7 @@ FIXME: type is one of
         {
             auto uc = initialise();
 
-            if (address == 0x4ca4bd)
+            if (false)
             {
                 uc_hook hook1;
                 uc_hook_add(uc, &hook1, UC_HOOK_CODE, (void*)hook_code, NULL, 0, -1);
