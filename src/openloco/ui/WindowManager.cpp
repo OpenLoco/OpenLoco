@@ -987,7 +987,13 @@ namespace openloco::ui::WindowManager
         windowColours[3] = colour::opaque(w->colours[3]);
 
         w->call_prepare_draw();
-        w->call_draw(&dpi);
+
+        //        auto dpi = *_dpi;
+
+        auto dpi2 = (gfx::drawpixelinfo_t*)compat::malloc(sizeof(gfx::drawpixelinfo_t));
+        std::memcpy(dpi2, &dpi, sizeof(gfx::drawpixelinfo_t));
+        w->call_draw(dpi2);
+        compat::free(dpi2);
     }
 
     // 0x004CD3D0

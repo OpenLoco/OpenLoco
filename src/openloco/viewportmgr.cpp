@@ -43,7 +43,9 @@ namespace openloco::ui::viewportmgr
 
     static viewport* init_viewport(gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom)
     {
-        auto vp = _viewports.emplace_back(std::make_unique<viewport>()).get();
+        auto vp = (ui::viewport*)compat::malloc(sizeof(ui::viewport));
+
+        //        auto vp = _viewports.emplace_back(std::make_unique<viewport>()).get();
 
         vp->x = origin.x;
         vp->y = origin.y;

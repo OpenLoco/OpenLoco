@@ -268,7 +268,7 @@ namespace openloco::ui
     {
         registers regs;
         regs.esi = (loco_ptr)this;
-        call(0x004C99B9, regs);
+        //        call(0x004C99B9, regs);
     }
 
     // 0x004CA4BD

@@ -102,8 +102,8 @@ namespace openloco::gfx
         auto elements = convert_elements(elements32);
 
         // Read element data
-        auto elementData = std::make_unique<std::byte[]>(header.total_size);
-        if (!read_data(stream, elementData.get(), header.total_size))
+        auto elementData = (std::byte*)compat::malloc(header.total_size);
+        if (!read_data(stream, elementData, header.total_size))
         {
             throw std::runtime_error("Reading g1 elements failed.");
         }
@@ -127,10 +127,10 @@ namespace openloco::gfx
         // Adjust memory offsets
         for (auto& element : elements)
         {
-            element.offset += (uintptr_t)elementData.get();
+            element.offset += (uintptr_t)elementData;
         }
 
-        _g1Buffer = std::move(elementData);
+        //        _g1Buffer = std::move(elementData);
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
@@ -406,7 +406,10 @@ namespace openloco::gfx
                         // When offscreen in the y dimension there is no requirement to keep pos.x correct
                         if (chr >= 32)
                         {
-                            gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                            auto ptr = compat::malloc(sizeof(_textColours));
+                            std::memcpy(ptr, _textColours, sizeof(_textColours));
+                            gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, (uint8_t*)ptr);
+                            compat::free(ptr);
                             pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
                         }
                         else
