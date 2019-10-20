@@ -829,7 +829,7 @@ namespace openloco::gfx
         return (1 << 29) | (colour << 19) | image;
     }
 
-    loco_global<uint8_t*, 0x0050B860> _50B860;
+    loco_global<uint32_t, 0x0050B860> _50B860;
     loco_global<uint32_t, 0x00E04324> _E04324;
 
     void draw_image_solid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
@@ -843,7 +843,7 @@ namespace openloco::gfx
 
     void draw_image_palette_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
-        _50B860 = palette;
+        _50B860 = (loco_ptr)palette;
         _E04324 = 0x20000000;
         registers regs;
         regs.cx = x;

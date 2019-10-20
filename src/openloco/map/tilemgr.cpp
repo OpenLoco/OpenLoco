@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
-    static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
+    static loco_global<uint32_t[0x30004], 0x00E40134> _tiles;
 
     tile get(map_pos pos)
     {
@@ -19,11 +19,12 @@ namespace openloco::map::tilemgr
 
         size_t index = ((y << 9) | x) >> 5;
         auto data = _tiles[index];
-        if (data == (tile_element*)0xFFFFFFFF)
+        auto data2 = (tile_element*)_tiles[index];
+        if (data == 0xFFFFFFFF)
         {
-            data = nullptr;
+            data2 = nullptr;
         }
-        return tile(tileX, tileY, data);
+        return tile(tileX, tileY, data2);
     }
 
     /**

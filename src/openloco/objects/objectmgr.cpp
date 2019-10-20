@@ -7,10 +7,10 @@ using namespace openloco::interop;
 namespace openloco::objectmgr
 {
     loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
-    loco_global<uint32_t[1], 0x0050C3D0> _interfaceObjects;
+    loco_global<int32_t[1], 0x0050C3D0> _interfaceObjects;
     loco_global<sound_object* [128], 0x0050C3D4> _soundObjects;
     loco_global<uint32_t[1], 0x0050C5D4> _currencyObjects;
-    loco_global<steam_object* [32], 0x0050C5D8> _steamObjects;
+    loco_global<uint32_t[32], 0x0050C5D8> _steamObjects;
     loco_global<rock_object* [8], 0x0050C658> _rockObjects;
     loco_global<water_object* [1], 0x0050C678> _waterObjects;
     loco_global<land_object* [32], 0x0050C67C> _landObjects;
@@ -30,14 +30,14 @@ namespace openloco::objectmgr
     loco_global<road_object* [8], 0x0050C984> _roadObjects;
     loco_global<airport_object* [8], 0x0050C9A4> _airportObjects;
     loco_global<dock_object* [8], 0x0050C9C4> _dockObjects;
-    loco_global<vehicle_object* [224], 0x0050C9E4> _vehicleObjects;
+    loco_global<uint32_t[224], 0x0050C9E4> _vehicleObjects;
     loco_global<tree_object* [64], 0x0050CD64> _treeObjects;
     loco_global<snow_object* [1], 0x0050CE64> _snowObjects;
     loco_global<climate_object* [1], 0x0050CE68> _climateObjects;
     loco_global<hill_shapes_object* [1], 0x0050CE6C> _hillShapeObjects;
     loco_global<building_object* [128], 0x0050CE70> _buildingObjects;
     loco_global<scaffolding_object* [1], 0x0050D070> _scaffoldingObjects;
-    loco_global<industry_object* [16], 0x0050D074> _industryObjects;
+    loco_global<uint32_t[16], 0x0050D074> _industryObjects;
     loco_global<region_object* [1], 0x0050D0B4> _regionObjects;
     loco_global<competitor_object* [32], 0x0050D0B8> _competitorObjects;
     loco_global<scenario_text_object* [1], 0x0050D138> _scenarioTextObjects;
@@ -68,7 +68,7 @@ namespace openloco::objectmgr
     template<>
     steam_object* get(size_t id)
     {
-        return _steamObjects[id];
+        return (steam_object*)_steamObjects[id];
     }
 
     template<>
@@ -89,7 +89,7 @@ namespace openloco::objectmgr
     template<>
     vehicle_object* get(size_t id)
     {
-        return _vehicleObjects[id];
+        return (vehicle_object*)_vehicleObjects[id];
     }
 
     template<>
@@ -101,7 +101,7 @@ namespace openloco::objectmgr
     template<>
     industry_object* get(size_t id)
     {
-        return _industryObjects[id];
+        return (industry_object*)_industryObjects[id];
     }
 
     template<>
