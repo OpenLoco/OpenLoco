@@ -946,14 +946,6 @@ namespace openloco::ui
         this->event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
     }
 
-    void window::call_viewport_rotate()
-    {
-        registers regs;
-        regs.esi = (intptr_t)this;
-        call((int32_t)this->event_handlers->viewport_rotate, regs);
->>>>>>> d86d6246... Hack: Allow *compilation* in 64-bit mode
-    }
-
     void window::call_text_input(widget_index caller, char* buffer)
     {
         if (event_handlers->text_input == nullptr)
