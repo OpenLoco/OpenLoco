@@ -745,6 +745,11 @@ namespace openloco::ui
                     }
 #endif
 
+                    // Map keypad enter to normal enter
+                    if (keycode == SDLK_KP_ENTER) {
+                        keycode = SDLK_RETURN;
+                    }
+
                     auto locokey = convert_sdl_keycode_to_windows(keycode);
                     if (locokey != 0)
                     {
