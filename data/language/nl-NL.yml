@@ -1458,7 +1458,7 @@ strings:
   1428: Berichtopties
   1429: "{TINYFONT}{DATE DMY}"
   1430: " + "
-  1431: " waiting"
+  1431: " wachtend"
   1432: Geen wachtende passagiers of vracht
   1433: "{COLOUR BLACK}Status"
   1434: "{COLOUR BLACK}Status ▼"
@@ -1466,9 +1466,9 @@ strings:
   1436: "{COLOUR BLACK}Total waiting ▼"
   1437: "{COLOUR BLACK}Accepteert"
   1438: "{COLOUR BLACK}Accepteert ▼"
-  1439: "{SMALLFONT}{COLOUR BLACK}Sort list by station status"
-  1440: "{SMALLFONT}{COLOUR BLACK}Sort list by total units waiting"
-  1441: "{SMALLFONT}{COLOUR BLACK}Sort list by cargo accepted"
+  1439: "{SMALLFONT}{COLOUR BLACK}Lijst sorteren op stationsstatus"
+  1440: "{SMALLFONT}{COLOUR BLACK}Lijst sorteren op totale hoeveelheid wachtende eenheden"
+  1441: "{SMALLFONT}{COLOUR BLACK}Lijst sorteren op geaccepteerde vrachtsoorten"
   1442: "{INT32} eenheden"
   1443: ", "
   1444: "{NEWLINE}Accepteert "
@@ -1477,11 +1477,11 @@ strings:
   1447: "{SMALLFONT}{COLOUR BLACK}Station"
   1448: "{SMALLFONT}{COLOUR BLACK}Cargo waiting and accepted"
   1449: "{SMALLFONT}{COLOUR BLACK}Vrachtwaarderingen"
-  1450: Demolition not allowed
+  1450: Afbreken niet toegestaan
   1451: Another company is about to build here
   1452: Te lang!
   1453: "{SMALLFONT}{COLOUR BLACK}Hoofdkwartier bouwen of verplaatsen"
-  1454: "{SMALLFONT}{COLOUR BLACK}Change owner name"
+  1454: "{SMALLFONT}{COLOUR BLACK}Naam eigenaar veranderen"
   1455: "{COLOUR BLACK}(nog niet gebouwd)"
   1456: Bedrijfsnaam
   1457: "Voer een nieuwe bedrijfsnaam in:"
@@ -1503,11 +1503,11 @@ strings:
   1473: ""
   1474: ""
   1475: ""
-  1476: "{COLOUR BLACK}Attempting to connect..."
+  1476: "{COLOUR BLACK}Bezig met verbinden..."
   1477: "{COLOUR BLACK}Error: Unable to locate or connect to host"
-  1478: "{COLOUR BLACK}Success!{NEWLINE}You are now connected to: {STRINGID}"
+  1478: "{COLOUR BLACK}Gelukt!{NEWLINE}Je bent nu verbonden met: {STRINGID}"
   1479: "{COLOUR BLACK}Currently connected to: {STRINGID}{NEWLINE}{NEWLINE}Click below to disconnect and return to single player mode"
-  1480: "{COLOUR WINDOW_2}Set this computer up as a host"
+  1480: "{COLOUR WINDOW_2}Deze computer als host instellen"
   1481: "{COLOUR WINDOW_2}Verbinden met host"
   1482: "{COLOUR WINDOW_2}Verbreken"
   1483: Enter Host Address
@@ -1558,8 +1558,8 @@ strings:
   1523: Schepen
   1524: Vliegveld
   1525: Haven
-  1526: Order type not valid for aircraft
-  1527: Order type not valid for ships
+  1526: Ordertype is niet geldig voor vliegtuigen
+  1527: Ordertype is niet geldig voor schepen
   1528: Station is eigendom van een ander bedrijf
   1529: Geen water!
   1530: Water channel is currently needed by ships
@@ -1673,7 +1673,7 @@ strings:
   1635: Are you sure you want to generate a new landscape at the start of each game ?{NEWLINE}Choosing this option will mean you lose your current landscape
   1636: "{COLOUR WINDOW_2}Zeeniveau:"
   1637: +{INT16} eenheden
-  1638: "{COLOUR WINDOW_2}No. of forests:"
+  1638: "{COLOUR WINDOW_2}Aantal bossen:"
   1639: "{INT16}"
   1640: "{COLOUR WINDOW_2}Minimum forest radius:"
   1641: "{POP16}{INT16} blocks"
@@ -1689,7 +1689,7 @@ strings:
   1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
   1652: "{COLOUR WINDOW_2}Maximum altitude for trees:"
   1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
-  1654: "{COLOUR WINDOW_2}Minimum land height:"
+  1654: "{COLOUR WINDOW_2}Minimumlandhoogte:"
   1655: "{POP16}{INT16} eenheden"
   1656: "{COLOUR WINDOW_2}Topography style:"
   1657: Vlak land
@@ -1708,7 +1708,7 @@ strings:
   1670: "{COLOUR WINDOW_2}Aantal industrieën:"
   1671: At least one town needs to be built
   1672: Can't advance to next editor stage...
-  1673: Can't save scenario yet...
+  1673: Kan scenario nog niet opslaan...
   1674: "{SMALLFONT}{COLOUR BLACK}Scenario-opties"
   1675: "{SMALLFONT}{COLOUR BLACK}Scenario-doel"
   1676: "{SMALLFONT}{COLOUR BLACK}Bedrijfsopties"
@@ -1745,8 +1745,8 @@ strings:
   1707: "Enter description of this scenario:"
   1708: Nog geen details
   1709: Naamloos
-  1710: Landscape save failed!
-  1711: Scenario save failed!
+  1710: Landschap opslaan mislukt!
+  1711: Scenario opslaan mislukt!
   1712: Transferring data to other player...
   1713: Receiving data from other player...
   1714: Please wait - Game is being saved by the other player...
@@ -1785,7 +1785,7 @@ strings:
   1747: Eenheden geleverde vracht per maand
   1748: Bedrijfswaardes
   1749: Vrachtbetalingsfactor
-  1750: "{SMALLFONT}{COLOUR BLACK}Compare companies"
+  1750: "{SMALLFONT}{COLOUR BLACK}Bedrijven vergelijken"
   1751: "{SMALLFONT}{COLOUR BLACK}Company performance index graphs"
   1752: "{SMALLFONT}{COLOUR BLACK}Graphs of cargo delivered by each company"
   1753: "{SMALLFONT}{COLOUR BLACK}Company value graphs"
@@ -1829,7 +1829,7 @@ strings:
   1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
   1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
   1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
-  1794: Airport type is not suitable for this aircraft
+  1794: Dit type vliegveld is niet geschikt voor dit vliegtuig
   1795: "{COLOUR BLACK}£"
   1796: "{INT16} dagen"
   1797: "{CURRENCY32}"
@@ -1849,13 +1849,13 @@ strings:
   1811: Bouwt {STRINGID} in de buurt van {STRINGID}
   1812: Bouwt {STRINGID} in de buurt van {STRINGID}
   1813: Bouwt {STRINGID} in de buurt van {STRINGID}
-  1814: Checking services near {STRINGID}
-  1815: Surveying landscape near {STRINGID}
+  1814: Onderzoekt de voorzieningen in de buurt van {STRINGID}
+  1815: Onderzoekt het landschap in de buurt van {STRINGID}
   1816: "{COLOUR RED}Failliet!"
   1817: "{SMALLFONT}{COLOUR BLACK}Spel pauzeren"
-  1818: "{SMALLFONT}{COLOUR BLACK}Normal speed"
-  1819: "{SMALLFONT}{COLOUR BLACK}Fast forward"
-  1820: "{SMALLFONT}{COLOUR BLACK}Extra fast forward"
+  1818: "{SMALLFONT}{COLOUR BLACK}Normale snelheid"
+  1819: "{SMALLFONT}{COLOUR BLACK}Doorspoelen"
+  1820: "{SMALLFONT}{COLOUR BLACK}Snel doorspoelen"
   1821: "{COLOUR BLACK}Randomly Generated Landscape"
   1822: "{COLOUR WINDOW_2}Startdatum: {COLOUR BLACK}{UINT16 RAW}"
   1823: "{COLOUR WINDOW_2}Concurrenten: {COLOUR BLACK}geen"
@@ -1888,10 +1888,10 @@ strings:
   1850: "... binnen een tijdslimiet van:"
   1851: "{COLOUR WINDOW_2}Doel:"
   1852: "{COLOUR BLACK}  {STRINGID}"
-  1853: Achieve a certain company value
-  1854: Achieve a certain monthly profit from vehicles
-  1855: Achieve a certain performance index
-  1856: Deliver a certain amount of cargo
+  1853: Een bepaalde bedrijfswaarde bereiken
+  1854: Een bepaalde maandelijke winst uit voertuigen behalen
+  1855: Een bepaalde prestatie-index bereiken
+  1856: Een bepaalde hoeveelheid vracht afleveren
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
@@ -1971,17 +1971,17 @@ strings:
   1922: Voorkeursnaam eigenaar
   1923: "Voer de voorkeursnaam voor de eigenaar in:"
 
-  1924: "{COLOUR BLACK}{TINYFONT}Power"
-  1925: "{COLOUR BLACK}{TINYFONT}Brake"
+  1924: "{COLOUR BLACK}{TINYFONT}Tractie"
+  1925: "{COLOUR BLACK}{TINYFONT}Rem"
   1926: "{SMALLFONT}{COLOUR BLACK}Move the selected order up in the list"
   1927: "{SMALLFONT}{COLOUR BLACK}Move the selected order down in the list"
   1928: Unable to run the game directly from read-only media
 
-  1929: Atari Inc. Credits...
+  1929: Credits voor Atari Inc....
   1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
-  1931: Atari Inc. Credits
+  1931: Credits voor Atari Inc.
 
-  1932: Game versions are incompatible - Unable to connect!
+  1932: Kan niet verbinden - incompatibele versies!
   1933: "{SMALLFONT}{COLOUR BLACK}Send a short text message to the other player"
   1934: de andere speler
   1935: "The other player has exited the game: Two player mode has been disconnected"
