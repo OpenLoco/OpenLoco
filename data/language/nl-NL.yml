@@ -1850,7 +1850,7 @@ strings:
   1812: Bouwt {STRINGID} in de buurt van {STRINGID}
   1813: Bouwt {STRINGID} in de buurt van {STRINGID}
   1814: Onderzoekt de voorzieningen in de buurt van {STRINGID}
-  1815: Onderzoekt het landschap in de buurt van {STRINGID}
+  1815: Onderzoekt de omgeving van {STRINGID}
   1816: "{COLOUR RED}Failliet!"
   1817: "{SMALLFONT}{COLOUR BLACK}Spel pauzeren"
   1818: "{SMALLFONT}{COLOUR BLACK}Normale snelheid"
