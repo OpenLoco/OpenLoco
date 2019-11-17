@@ -1,5 +1,6 @@
 #include "../company.h"
 #include "../companymgr.h"
+#include "../config.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -60,6 +61,15 @@ namespace openloco::ui::windows::CompanyWindow
     namespace status
     {
         static const gfx::ui_size_t windowSize = { 270, 182 };
+
+        enum widx
+        {
+            unk_11 = 11,
+            viewport,
+            centre_on_viewport,
+            face,
+            change_owner_name,
+        };
 
         [[maybe_unused]] static widget_t widgets[] = {
             commonWidgets(270, 182, string_ids::title_company),
@@ -205,6 +215,19 @@ namespace openloco::ui::windows::CompanyWindow
         window->moveInsideScreenEdges();
 
         return window;
+    }
+
+    // 0x00435ACC
+    window* openAndSetName()
+    {
+        company_id_t companyId = companymgr::get_controlling_id();
+        window* self = open(companyId);
+
+        // Allow setting company owner name if no preferred owner name has been set.
+        if ((config::get().flags & config::flags::use_preferred_owner_name) == 0)
+            status::on_mouse_up(self, status::widx::change_owner_name);
+
+        return self;
     }
 
     namespace details

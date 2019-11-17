@@ -241,6 +241,7 @@ namespace openloco::ui::windows::CompanyList
 namespace openloco::ui::windows::CompanyWindow
 {
     window* open(company_id_t companyId);
+    window* openAndSetName();
     window* openFinances(company_id_t companyId);
 }
 
