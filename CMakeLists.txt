@@ -100,7 +100,6 @@ set(COMMON_COMPILE_OPTIONS
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
 
-
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
@@ -187,7 +186,12 @@ endif()
 find_package(SDL2_mixer REQUIRED)
 
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
-find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Free|Net|Open|DragonFly)BSD")
+    find_package(yaml-cpp REQUIRED)
+    include_directories(${YAML_CPP_INCLUDE_DIR})
+else()
+    find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+endif()
 
 if (USE_BOOST_FILESYSTEM)
     set(Boost_USE_STATIC_LIBS OFF)
@@ -203,7 +207,9 @@ endif()
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
 
-set(CMAKE_CXX_STANDARD 17)
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
 
 if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})

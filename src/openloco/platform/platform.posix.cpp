@@ -13,6 +13,12 @@
 #include <unistd.h>
 #endif
 
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 int main(int argc, const char** argv)
 {
     openloco::interop::load_sections();
