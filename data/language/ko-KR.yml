@@ -1,7 +1,7 @@
 header:
   locale: ko-KR
   english_name: Korean
-  native_name: Korean
+  native_name: 한국어
   loco_original_id: 9
 strings:
   0: ""
