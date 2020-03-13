@@ -5,8 +5,8 @@
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 #else
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 #endif
 
 namespace openloco::platform

@@ -3,7 +3,7 @@
 #ifdef _OPENLOCO_USE_BOOST_FS_
 #include <boost/filesystem.hpp>
 #else
-#include <experimental/filesystem>
+#include <filesystem>
 #endif
 
 namespace openloco::environment
@@ -11,7 +11,7 @@ namespace openloco::environment
 #ifdef _OPENLOCO_USE_BOOST_FS_
     namespace fs = boost::filesystem;
 #else
-    namespace fs = std::experimental::filesystem;
+    namespace fs = std::filesystem;
 #endif
 
     enum class path_id
