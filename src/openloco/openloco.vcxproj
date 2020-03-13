@@ -3,6 +3,7 @@
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
     <APPVEYOR_REPO_COMMIT_SHORT Condition="'$(APPVEYOR_REPO_COMMIT)'!=''">$(APPVEYOR_REPO_COMMIT.Substring(0, $([System.Math]::Min($(APPVEYOR_REPO_COMMIT.Length), 7))))</APPVEYOR_REPO_COMMIT_SHORT>
+    <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
