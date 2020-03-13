@@ -1,7 +1,7 @@
 header:
   locale: ja-JP
   english_name: Japanese
-  native_name: Japanese
+  native_name: 日本語
   loco_original_id: 0
 strings:
   0: ""
