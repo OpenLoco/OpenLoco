@@ -15,6 +15,7 @@
 #include "../win32.h"
 #include "ShortcutManager.h"
 #include <cstdint>
+#include <fstream>
 #include <functional>
 #include <png.h>
 
@@ -435,16 +436,11 @@ namespace openloco::input
     // 0x00452667
     static int16_t saveScreenshot()
     {
-        void* buffer = malloc(0x10000);
-        if (buffer == nullptr)
-        {
-            throw std::runtime_error("Failed to allocate memory");
-        }
-
         auto basePath = platform::get_user_directory();
         char suffixStr[256] = { 0 };
         fs::path path;
-        for (int16_t suffix = 1; suffix <= std::numeric_limits<int16_t>().max(); suffix++)
+        int16_t suffix;
+        for (suffix = 1; suffix <= std::numeric_limits<int16_t>().max(); suffix++)
         {
             stringmgr::format_string(suffixStr, 107, &suffix);
             if (!fs::exists(basePath / suffixStr))
