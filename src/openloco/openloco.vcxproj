@@ -3,6 +3,7 @@
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
     <APPVEYOR_REPO_COMMIT_SHORT Condition="'$(APPVEYOR_REPO_COMMIT)'!=''">$(APPVEYOR_REPO_COMMIT.Substring(0, $([System.Math]::Min($(APPVEYOR_REPO_COMMIT.Length), 7))))</APPVEYOR_REPO_COMMIT_SHORT>
+    <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -61,6 +62,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <!-- Include our vcpkg root first, otherwise the machine installed vcpkg will be used -->
-  <Import Project="..\..\packages\OpenLoco.Dependencies.1.1.1\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.1.1\build\native\OpenLoco.Dependencies.targets')" />
+  <Import Project="..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets')" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
