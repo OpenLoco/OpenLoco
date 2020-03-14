@@ -239,7 +239,9 @@ if (NOT MINGW)
 endif()
 
 target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
-target_link_libraries(${PROJECT} stdc++fs)
+if (NOT APPLE)
+    target_link_libraries(${PROJECT} stdc++fs)
+endif()
 
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600 SDL_MAIN_HANDLED=1)
