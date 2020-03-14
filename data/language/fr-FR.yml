@@ -118,9 +118,9 @@ strings:
   104: Sauvegarder partie
   105: Quitter l'Editeur de scénario
   106: Quitter partie
-  107: Capture d'écran{INT16}.BMP
+  107: Capture d'écran
   108: Capture d'écran
-  109: Capture d'écran sauvegardée sur disque en tant que '{STRINGID}'
+  109: Capture d'écran sauvegardée sur disque en tant que '{STRING}'
   110: Echec capture d'écran !
   111: Zone de données de terrain pleine !
   112: Impossible de construire à la fois sur et sous terre

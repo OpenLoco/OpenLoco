@@ -3,10 +3,12 @@
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../platform/platform.h"
+#include "../s5/s5.h"
 #include "../ui.h"
 #include <cstdint>
 #include <fstream>
 #include <png.h>
+#include <string>
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
@@ -28,21 +30,26 @@ namespace openloco::input
     }
 
     // 0x00452667
-    int16_t saveScreenshot()
+    std::string saveScreenshot()
     {
         auto basePath = platform::get_user_directory();
-        char suffixStr[256] = { 0 };
+        std::string scenarioName = s5::getOptions().scenarioName;
+
+        if (scenarioName.length() == 0)
+            scenarioName = stringmgr::get_string(string_ids::screenshot_filename_template);
+
+        std::string fileName = std::string(scenarioName) + ".png";
         fs::path path;
         int16_t suffix;
         for (suffix = 1; suffix <= std::numeric_limits<int16_t>().max(); suffix++)
         {
-            stringmgr::format_string(suffixStr, 107, &suffix);
-            if (!fs::exists(basePath / suffixStr))
+            if (!fs::exists(basePath / fileName))
             {
-                path = basePath / suffixStr;
-                path.replace_extension("png");
+                path = basePath / fileName;
                 break;
             }
+
+            fileName = std::string(scenarioName) + " (" + std::to_string(suffix) + ").png";
         }
 
         if (path.empty())
@@ -111,6 +118,6 @@ namespace openloco::input
             throw;
         }
 
-        return suffix;
+        return fileName;
     }
 }

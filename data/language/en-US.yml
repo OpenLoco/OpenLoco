@@ -119,9 +119,9 @@ strings:
   104: Save Game
   105: Quit Scenario Editor
   106: Quit Game
-  107: Screenshot{INT16}.BMP
+  107: Screenshot
   108: Screenshot
-  109: Screenshot saved to disk as '{STRINGID}'
+  109: Screenshot saved to disk as '{STRING}'
   110: Screenshot failed!
   111: Landscape data area full!
   112: Can't build partly above and partly below ground

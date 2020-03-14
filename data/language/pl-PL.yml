@@ -114,9 +114,9 @@ strings:
   104: Zapisz Grę
   105: Opuść Edytor Scenariuszy
   106: Opuść Grę
-  107: Screenshot{INT16}.BMP
+  107: Screenshot
   108: Zrzut Ekranu
-  109: Zrzut ekranu zapisany na dysku jako '{STRINGID}'
+  109: Zrzut ekranu zapisany na dysku jako '{STRING}'
   110: 'Błąd: Zrzut ekranu nie został wykonany!'
   111: Pełny obszar danych krajobrazowych
   112: Nie można budować częściowo nad i częściowo pod ziemią

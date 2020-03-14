@@ -118,9 +118,9 @@ strings:
   104: ゲームをセーブする
   105: シナリオエディタを閉じる
   106: ゲームを閉じる
-  107: スクリーンショット{INT16}.BMP
+  107: スクリーンショット
   108: スクリーンショット
-  109: Screenshot saved to disk as '{STRINGID}'
+  109: Screenshot saved to disk as '{STRING}'
   110: スクリーンショット失敗しました!
   111: Landscape data area full!
   112: Can't build partly above and partly below ground

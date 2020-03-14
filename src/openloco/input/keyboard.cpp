@@ -429,9 +429,8 @@ namespace openloco::input
             {
                 try
                 {
-                    auto index = saveScreenshot();
-                    *((string_id*)(&_commonFormatArgs[0])) = string_ids::screenshot_filename_template;
-                    *((int16_t*)(&_commonFormatArgs[2])) = index;
+                    std::string fileName = saveScreenshot();
+                    *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
                     windows::show_error(string_ids::screenshot_saved_as, string_ids::null, false);
                 }
                 catch (const std::exception&)

@@ -118,9 +118,9 @@ strings:
   104: Spiel speichern
   105: Szenario-Editor beenden
   106: Spiel beenden
-  107: Screenshot{INT16}.BMP
+  107: Screenshot
   108: Screenshot
-  109: Screenshot wird auf der Festplatte gespeichert als '{STRINGID}'
+  109: Screenshot wird auf der Festplatte gespeichert als '{STRING}'
   110: Screenshot fehlgeschlagen!
   111: Landschafts-Datenbereich voll!
   112: Es kann nicht teils über und teils unter dem Boden gebaut werden

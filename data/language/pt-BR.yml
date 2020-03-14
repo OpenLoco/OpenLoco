@@ -118,9 +118,9 @@ strings:
   104: Salvar Jogo
   105: Sair do Editor de Cenário
   106: Sair do Jogo
-  107: Captura de tela{INT16}.BMP
+  107: Captura de tela
   108: Captura de tela
-  109: Captura de tela salva no disco como '{STRINGID}'
+  109: Captura de tela salva no disco como '{STRING}'
   110: Captura de tela falhou!
   111: Dados da área de paisagem cheios!
   112: Impossível construir parcialmente acima e abaixo do solo

@@ -1,6 +1,7 @@
 #include <cstdint>
+#include <string>
 
 namespace openloco::input
 {
-    int16_t saveScreenshot();
+    std::string saveScreenshot();
 }

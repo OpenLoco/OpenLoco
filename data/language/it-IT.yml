@@ -118,9 +118,9 @@ strings:
   104: Salva partita
   105: Esci dall'editor di scenari
   106: Esci dal gioco
-  107: Schermata{INT16}.BMP
+  107: Schermata
   108: Schermata
-  109: Schermata salvata su disco con nome '{STRINGID}'
+  109: Schermata salvata su disco con nome '{STRING}'
   110: Schermata non catturata!
   111: Lo spazio per i dati del paesaggio è esaurito!
   112: Impossibile costruire in parte sopra e in parte sotto il terreno!

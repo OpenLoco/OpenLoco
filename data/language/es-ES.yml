@@ -118,9 +118,9 @@ strings:
   104: Guardar partida
   105: Salir del editor de escenarios
   106: Salir de la partida
-  107: Captura de pantalla{INT16}.BMP
+  107: Captura de pantalla
   108: Captura de pantalla
-  109: Captura de pantalla guardada en disco como '{STRINGID}'
+  109: Captura de pantalla guardada en disco como '{STRING}'
   110: ¡Fallo al capturar la pantalla!
   111: ¡El área de datos del paisaje está llena!
   112: No se puede construir una parte sobre el nivel del suelo y otra bajo tierra
