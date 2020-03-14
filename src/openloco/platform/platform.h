@@ -1,13 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#else
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#endif
+
+#include "../core/FileSystem.hpp"
 
 namespace openloco::platform
 {

@@ -1,9 +1,4 @@
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-#else
-#include <experimental/filesystem>
-#endif
 #include <fstream>
 
 #ifdef _WIN32
@@ -13,17 +8,12 @@
 
 #include "config.convert.hpp"
 #include "config.h"
+#include "core/FileSystem.hpp"
 #include "environment.h"
 #include "interop/interop.hpp"
 #include "utility/yaml.hpp"
 
 using namespace openloco::interop;
-
-#ifdef _OPENLOCO_USE_BOOST_FS_
-namespace fs = boost::filesystem;
-#else
-namespace fs = std::experimental::filesystem;
-#endif
 
 namespace openloco::config
 {

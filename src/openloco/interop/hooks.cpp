@@ -8,6 +8,7 @@
 #endif
 #include "../audio/audio.h"
 #include "../console.h"
+#include "../core/FileSystem.hpp"
 #include "../environment.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
@@ -226,7 +227,7 @@ typedef struct FindFileData
 class Session
 {
 public:
-    std::vector<openloco::environment::fs::path> fileList;
+    std::vector<fs::path> fileList;
 };
 
 #define FILE_ATTRIBUTE_DIRECTORY 0x10
@@ -238,10 +239,10 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 
     Session* data = new Session;
 
-    openloco::environment::fs::path path = lpFileName;
+    fs::path path = lpFileName;
     path.remove_filename();
 
-    openloco::environment::fs::directory_iterator iter(path), end;
+    fs::directory_iterator iter(path), end;
 
     while (iter != end)
     {
@@ -255,7 +256,7 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
 
-    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
     }
@@ -283,7 +284,7 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
 #endif
 
-    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
     }

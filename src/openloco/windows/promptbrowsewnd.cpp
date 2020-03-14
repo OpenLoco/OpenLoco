@@ -1,11 +1,5 @@
-#include <algorithm>
-#include <cstring>
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-#else
-#include <experimental/filesystem>
-#endif
 #include "../audio/audio.h"
+#include "../core/FileSystem.hpp"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -18,14 +12,10 @@
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
+#include <algorithm>
+#include <cstring>
 
 using namespace openloco::interop;
-
-#ifdef _OPENLOCO_USE_BOOST_FS_
-namespace fs = boost::filesystem;
-#else
-namespace fs = std::experimental::filesystem;
-#endif
 
 namespace openloco::ui::prompt_browse
 {
