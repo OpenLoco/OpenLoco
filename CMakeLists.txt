@@ -19,12 +19,6 @@ endif()
 INCLUDE(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 
-set(USE_BOOST_FS_DEFAULT OFF)
-if(APPLE OR MINGW)
-	set(USE_BOOST_FS_DEFAULT ON)
-endif()
-
-option(USE_BOOST_FILESYSTEM "Use Boost filesystem instead of C++17" ${USE_BOOST_FS_DEFAULT})
 option(STRICT "Build with warnings as errors" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
@@ -219,16 +213,6 @@ else()
     find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 endif()
 
-if (USE_BOOST_FILESYSTEM)
-    set(Boost_USE_STATIC_LIBS OFF)
-    find_package(Boost COMPONENTS filesystem)
-    if (NOT Boost_FOUND)
-        message("Dynamic Boost not found, retrying with static")
-        set(Boost_USE_STATIC_LIBS ON)
-        find_package(Boost COMPONENTS filesystem REQUIRED)
-    endif ()
-endif()
-
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
@@ -255,13 +239,7 @@ if (NOT MINGW)
 endif()
 
 target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
-if (USE_BOOST_FILESYSTEM)
-    target_link_libraries(${PROJECT} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
-    target_include_directories(${PROJECT} PRIVATE ${Boost_INCLUDE_DIRS})
-    target_compile_definitions(${PROJECT} PRIVATE BOOST_SYSTEM_NO_DEPRECATED=1 BOOST_FILESYSTEM_NO_DEPRECATED=1 _OPENLOCO_USE_BOOST_FS_=1)
-else()
-	target_link_libraries(${PROJECT} stdc++fs)
-endif()
+target_link_libraries(${PROJECT} stdc++fs)
 
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600 SDL_MAIN_HANDLED=1)
