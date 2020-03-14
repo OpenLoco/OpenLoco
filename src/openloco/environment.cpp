@@ -84,11 +84,7 @@ namespace openloco::environment
         path = auto_detect_loco_install_path();
         if (!path.empty())
         {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-            cfg.loco_install_path = path.make_preferred().string();
-#else
             cfg.loco_install_path = path.make_preferred().u8string();
-#endif
             config::write_new_config();
             return path;
         }
@@ -100,11 +96,7 @@ namespace openloco::environment
             path = platform::prompt_directory("Select your Locomotion install path.");
             if (validate_loco_install_path(path))
             {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                cfg.loco_install_path = path.make_preferred().string();
-#else
                 cfg.loco_install_path = path.make_preferred().u8string();
-#endif
                 config::write_new_config();
                 return path;
             }
@@ -178,11 +170,7 @@ namespace openloco::environment
     template<typename T>
     static void set_directory(T& buffer, fs::path path)
     {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-        utility::strcpy_safe(buffer, path.make_preferred().string().c_str());
-#else
         utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
-#endif
     }
 
     // 0x004412CE

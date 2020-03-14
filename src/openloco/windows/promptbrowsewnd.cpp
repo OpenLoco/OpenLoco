@@ -170,11 +170,7 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_title, title);
         utility::strcpy_safe(_filter, filter);
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-        utility::strcpy_safe(_directory, directory.make_preferred().string().c_str());
-#else
         utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
-#endif
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         refresh_directory_list();
@@ -609,11 +605,7 @@ namespace openloco::ui::prompt_browse
 
     static std::string get_basename(const fs::path& path)
     {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-        auto baseName = path.stem().string();
-#else
         auto baseName = path.stem().u8string();
-#endif
         if (baseName == ".")
         {
             baseName = "";
@@ -638,11 +630,7 @@ namespace openloco::ui::prompt_browse
             auto drives = platform::getDrives();
             for (auto& drive : drives)
             {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                auto name = drive.string();
-#else
                 auto name = drive.u8string();
-#endif
                 _newFiles.emplace_back(name, true);
             }
         }
@@ -656,22 +644,14 @@ namespace openloco::ui::prompt_browse
                     bool isDirectory = fs::is_directory(f);
                     if (!isDirectory)
                     {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                        auto extension = f.path().extension().string();
-#else
                         auto extension = f.path().extension().u8string();
-#endif
                         if (!utility::iequals(extension, filterExtension))
                         {
                             continue;
                         }
                     }
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                    auto name = f.path().stem().string();
-#else
                     auto name = f.path().stem().u8string();
-#endif
                     _newFiles.emplace_back(name, isDirectory);
                 }
             }
