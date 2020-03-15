@@ -1,7 +1,7 @@
 language: c
 
 before_install:
-    - docker pull openrct2/openloco:$DOCKERIMG
+    - docker pull openloco/openloco:$DOCKERIMG
 
 install:
     - if [[ $TRAVIS_JOB_NAME != "clang-format" ]]; then git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*; fi
