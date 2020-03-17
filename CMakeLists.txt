@@ -17,6 +17,7 @@ if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 INCLUDE(FindPkgConfig)
+include(CheckCXXCompilerFlag)
 
 set(USE_BOOST_FS_DEFAULT OFF)
 if(APPLE OR MINGW)
