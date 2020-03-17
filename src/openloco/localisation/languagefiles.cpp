@@ -17,7 +17,7 @@ using namespace openloco::interop;
 
 namespace openloco::localisation
 {
-    static loco_global<char * [0xFFFF], 0x005183FC> _strings;
+    static loco_global<char* [0xFFFF], 0x005183FC> _strings;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
         { "INT16_1DP", control_codes::int16_decimals },
