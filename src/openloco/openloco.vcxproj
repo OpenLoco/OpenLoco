@@ -38,9 +38,6 @@
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42A6B551-4EC5-4B66-A130-628622CD98C4}</ProjectGuid>
     <RootNamespace>openloco</RootNamespace>
@@ -61,7 +58,14 @@
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
-  <!-- Include our vcpkg root first, otherwise the machine installed vcpkg will be used -->
-  <Import Project="..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets')" />
+  <ItemGroup>
+    <PackageReference Include="OpenLoco.Dependencies" Version="1.2.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <!-- enable NuGet TargetMonikers fallback to native -->
+  <PropertyGroup>
+    <_NuGetTargetFallbackMoniker>$(_NuGetTargetFallbackMoniker);native,Version=v0.0</_NuGetTargetFallbackMoniker>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

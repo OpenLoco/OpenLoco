@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
-  OPENLOCO_VERSION: 19.03
+  OPENLOCO_VERSION: 20.03
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -14,3 +14,39 @@ jobs:
         uses: actions/checkout@v2
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    env:
+      CONFIGURATION: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build OpenRCT2
+        shell: pwsh
+        run: |
+            $ErrorView = 'NormalView'
+            $installPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version 16.0 -property installationpath
+            $instanceId = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version 16.0 -property instanceid
+            Import-Module "$installPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+            Enter-VsDevShell $instanceId
+            $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
+            Write-Host "%GIT_DESCRIBE% = $env:GIT_DESCRIBE"
+            msbuild openloco.sln /t:restore
+            msbuild openloco.sln
+      - name: Build artefacts
+        shell: pwsh
+        run: |
+            $ErrorView = 'NormalView'
+            New-Item -ItemType Directory artefacts | Out-Null
+            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll artefacts
+            Copy-Item data\language -Destination artefacts\data\language -Recurse
+            Copy-Item loco.exe artefacts\openloco.exe
+            Push-Location artefacts
+              7z a -tzip -mx9 -mtc=off -r openloco-v${env:OPENLOCO_VERSION}-win32.zip *
+            Pop-Location
+      - name: Upload artefacts (CI)
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: "OpenLoco-Windows-Win32"
+          path: artefacts/openloco-*-win32.zip
