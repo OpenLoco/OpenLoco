@@ -85,9 +85,7 @@ void channel::set_pan(int32_t pan)
 {
     if (!is_undefined())
     {
-        // clang-format off
-        auto[left, right] = pan_loco_to_sdl(pan);
-        // clang-format on
+        auto [left, right] = pan_loco_to_sdl(pan);
         Mix_SetPanning(_id, left, right);
     }
 }

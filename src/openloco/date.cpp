@@ -109,7 +109,6 @@ namespace openloco
 
     static std::pair<month_id, uint8_t> get_month_day(int32_t dayOfYear)
     {
-        // clang-format off
         static constexpr std::pair<month_id, uint8_t> month_table[] = {
             { month_id::january, 1 },
             { month_id::january, 2 },
@@ -478,7 +477,6 @@ namespace openloco
             { month_id::december, 30 },
             { month_id::december, 31 },
         };
-        // clang-format on
         return month_table[dayOfYear];
     }
 }
