@@ -1,0 +1,16 @@
+name: CI
+on: [push, pull_request]
+env:
+  OPENLOCO_BUILD_SERVER: GitHub
+  OPENLOCO_VERSION: 19.03
+jobs:
+  check-code-formatting:
+    name: Check code formatting
+    runs-on: ubuntu-latest
+    container:
+      image: openrct2/openrct2-build:0.2.4-format
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run clang-format
+        run: scripts/run-clang-format.py -r src
