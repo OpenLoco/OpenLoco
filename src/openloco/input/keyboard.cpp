@@ -11,6 +11,7 @@
 #include "../things/thingmgr.h"
 #include "../tutorial.h"
 #include "../ui.h"
+#include "../ui/Screenshot.h"
 #include "../win32.h"
 #include "ShortcutManager.h"
 #include <cstdint>
@@ -49,6 +50,7 @@ namespace openloco::input
     static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
     static loco_global<uint8_t, 0x00508F18> _keyModifier;
     static loco_global<ui::WindowType, 0x005233B6> _modalWindowType;
+    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _11364A4;
@@ -417,24 +419,6 @@ namespace openloco::input
         input::set_flag(input_flags::viewport_scrolling);
     }
 
-    // 0x00452667
-    static int16_t saveScreenshot()
-    {
-        registers regs;
-
-        auto result = call(0x00452667, regs);
-        bool cf = (result & (1 << 8)) != 0;
-
-        if (cf)
-        {
-            throw std::runtime_error("Failed to save screenshot");
-        }
-
-        return regs.ax;
-    }
-
-    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
-
     // 0x004BE92A
     void handle_keyboard()
     {
@@ -445,9 +429,8 @@ namespace openloco::input
             {
                 try
                 {
-                    auto index = saveScreenshot();
-                    *((string_id*)(&_commonFormatArgs[0])) = string_ids::screenshot_filename_template;
-                    *((int16_t*)(&_commonFormatArgs[2])) = index;
+                    std::string fileName = saveScreenshot();
+                    *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
                     windows::show_error(string_ids::screenshot_saved_as, string_ids::null, false);
                 }
                 catch (const std::exception&)

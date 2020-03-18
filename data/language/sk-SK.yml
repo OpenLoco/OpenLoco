@@ -119,9 +119,9 @@ strings:
   104: Uložiť hru
   105: Ukončiť editor scenára
   106: Ukončiť hru
-  107: Screenshot{INT16}.BMP
+  107: Screenshot
   108: Snímka obrazovky
-  109: Snímka obrazovky uložená pod názvom '{STRINGID}'
+  109: Snímka obrazovky uložená pod názvom '{STRING}'
   110: Nepodarilo sa vytvoriť snímku obrazovky!
   111: Plná oblasť dát na mape!
   112: Nie je možné stavať čiastočne nad a čiastočne pod zemou

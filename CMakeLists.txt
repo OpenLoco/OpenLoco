@@ -17,6 +17,7 @@ if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 INCLUDE(FindPkgConfig)
+include(CheckCXXCompilerFlag)
 
 set(USE_BOOST_FS_DEFAULT OFF)
 if(APPLE OR MINGW)
@@ -168,9 +169,32 @@ endif ()
 set(PIE_FLAG "-fno-pie")
 set(TARGET_M "-m32")
 
+# Check if a flag exists and add it to the list of compiler (so, not linker) options
+function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
+    CHECK_CXX_COMPILER_FLAG("${_FLAG}" "${_CACHE_VAR}")
+    if (${_CACHE_VAR})
+        list(APPEND SUPPORTED_CHECK_CXX_COMPILER_FLAGS "${_FLAG}")
+    else ()
+        message(STATUS "Unsupported CXXFLAG: ${_FLAG}")
+    endif ()
+endfunction ()
+
+# Check if a flag exists and add it to the compiler and the linker options
+function (ADD_CHECK_CXX_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
+    CHECK_CXX_COMPILER_FLAG("${_FLAG}" "${_CACHE_VAR}")
+    if (${_CACHE_VAR})
+        set(${_CXXFLAGS} "${${_CXXFLAGS}} ${_FLAG}" PARENT_SCOPE)
+    else ()
+        message(STATUS "Unsupported CXXFLAG: ${_FLAG}")
+    endif ()
+endfunction ()
+
+ADD_CHECK_CXX_COMPILER_FLAG(CMAKE_CXX_FLAGS CXX_WARN_NON_VIRTUAL_DTOR -Wnon-virtual-dtor)
+ADD_CHECK_CXX_FLAG(CMAKE_CXX_FLAGS CXX_WNO_CLOBBERED -Wno-clobbered)
+
 # set necessary flags to compile code as is
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS} -Wnon-virtual-dtor")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
@@ -184,6 +208,8 @@ if (NOT SDL2_LIBRARIES)
 endif()
 
 find_package(SDL2_mixer REQUIRED)
+
+find_package(PNG REQUIRED)
 
 # The hint provided here is targetting Arch Linux, a distro of choice for many contributors
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Free|Net|Open|DragonFly)BSD")
@@ -221,6 +247,8 @@ endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
+
 
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)

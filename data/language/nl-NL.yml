@@ -118,9 +118,9 @@ strings:
   104: Spel opslaan
   105: Scenariobewerker verlaten
   106: Spel beëindigen
-  107: Screenshot{INT16}.BMP
+  107: Screenshot
   108: Screenshot
-  109: Screenshot opgeslagen als '{STRINGID}'
+  109: Screenshot opgeslagen als '{STRING}'
   110: Screenshot nemen mislukt!
   111: '''Landscape data area'' zit vol!'
   112: Kan niet gedeeltelijk boven en onder de grond bouwen.

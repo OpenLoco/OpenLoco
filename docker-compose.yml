@@ -1,21 +1,21 @@
 version: '2'
 services:
   openloco-gcc32:
-    image: openrct2/openloco:ubuntu-i686
+    image: openloco/openloco:ubuntu-i686
     working_dir: /openloco/bin.gcc
     volumes:
       - .:/openloco
     entrypoint: bash
     command: -c "cmake ../ -G Ninja -DCMAKE_BUILD_TYPE=release && ninja -k0"
   openloco-clang32:
-    image: openrct2/openloco:ubuntu-i686
+    image: openloco/openloco:ubuntu-i686
     working_dir: /openloco/bin.clang
     volumes:
       - .:/openloco
     entrypoint: bash
     command: -c "cmake ../ -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release && ninja -k0"
   openloco-mingw32:
-    image: openrct2/openloco:fedora-mingw32
+    image: openloco/openloco:fedora-mingw32
     working_dir: /openloco/bin.mingw32
     volumes:
       - .:/openloco
