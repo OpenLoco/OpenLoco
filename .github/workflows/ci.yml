@@ -13,4 +13,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run clang-format
-        run: scripts/run-clang-format.py -r src
+        run: scripts/check-code-formatting.sh

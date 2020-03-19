@@ -8,6 +8,7 @@
 #endif
 #include "../audio/audio.h"
 #include "../console.h"
+#include "../core/FileSystem.hpp"
 #include "../environment.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
@@ -226,7 +227,7 @@ typedef struct FindFileData
 class Session
 {
 public:
-    std::vector<openloco::environment::fs::path> fileList;
+    std::vector<fs::path> fileList;
 };
 
 #define FILE_ATTRIBUTE_DIRECTORY 0x10
@@ -238,10 +239,10 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 
     Session* data = new Session;
 
-    openloco::environment::fs::path path = lpFileName;
+    fs::path path = lpFileName;
     path.remove_filename();
 
-    openloco::environment::fs::directory_iterator iter(path), end;
+    fs::directory_iterator iter(path), end;
 
     while (iter != end)
     {
@@ -249,13 +250,8 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
         ++iter;
     }
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().string().c_str());
-#else
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
-#endif
-
-    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
     }
@@ -277,13 +273,8 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
         return false;
     }
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().string().c_str());
-#else
     utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
-#endif
-
-    if (openloco::environment::fs::is_directory(data->fileList[0]))
+    if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
     }
@@ -461,11 +452,7 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
     assert(dwFileAttributes == 0x80);
     console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    boost::system::error_code ec;
-#else
     std::error_code ec;
-#endif
     auto path = fs::path(lpFileName);
     auto perms = fs::status(path, ec).permissions();
     if (!ec)
@@ -703,13 +690,10 @@ void openloco::interop::register_hooks()
 
             auto buffer = (char*)0x009D0D72;
             auto path = get_path((path_id)regs.ebx);
-#ifdef _OPENLOCO_USE_BOOST_FS_
-            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
-            std::strcpy(buffer, path.make_preferred().string().c_str());
-#else
+
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
-#endif
+
             regs.ebx = (int32_t)buffer;
             return 0;
         });

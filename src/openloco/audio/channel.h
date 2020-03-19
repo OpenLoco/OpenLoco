@@ -1,22 +1,12 @@
 #pragma once
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-#else
-#include <experimental/filesystem>
-#endif
+#include "../core/FileSystem.hpp"
 
 struct Mix_Chunk;
 
 namespace openloco::audio
 {
     struct sample;
-
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    namespace fs = boost::filesystem;
-#else
-    namespace fs = std::experimental::filesystem;
-#endif
 
     class channel
     {

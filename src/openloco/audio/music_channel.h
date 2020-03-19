@@ -1,26 +1,15 @@
 #pragma once
 
+#include "../core/FileSystem.hpp"
 #include "../things/thing.h"
 #include "audio.h"
 #include "channel.h"
-
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-#else
-#include <experimental/filesystem>
-#endif
 
 struct _Mix_Music;
 typedef struct _Mix_Music Mix_Music;
 
 namespace openloco::audio
 {
-#ifdef _OPENLOCO_USE_BOOST_FS_
-    namespace fs = boost::filesystem;
-#else
-    namespace fs = std::experimental::filesystem;
-#endif
-
     class music_channel
     {
     private:

@@ -1,9 +1,4 @@
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-#include <boost/filesystem.hpp>
-#else
-#include <experimental/filesystem>
-#endif
 #include <fstream>
 
 #ifdef _WIN32
@@ -13,17 +8,12 @@
 
 #include "config.convert.hpp"
 #include "config.h"
+#include "core/FileSystem.hpp"
 #include "environment.h"
 #include "interop/interop.hpp"
 #include "utility/yaml.hpp"
 
 using namespace openloco::interop;
-
-#ifdef _OPENLOCO_USE_BOOST_FS_
-namespace fs = boost::filesystem;
-#else
-namespace fs = std::experimental::filesystem;
-#endif
 
 namespace openloco::config
 {
@@ -110,13 +100,8 @@ namespace openloco::config
             fs::permissions(
                 dir,
                 fs::perms::owner_all |
-#ifdef _OPENLOCO_USE_BOOST_FS_
-                fs::perms::group_read | fs::perms::group_exe |
-                fs::perms::others_read | fs::perms::others_exe
-#else
                 fs::perms::group_read | fs::perms::group_exec |
                 fs::perms::others_read | fs::perms::others_exec
-#endif
             );
             // clang-format on
         }
@@ -156,11 +141,7 @@ namespace openloco::config
         node["scale_factor"] = _new_config.scale_factor;
         node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
 
-#ifdef _OPENLOCO_USE_BOOST_FS_
-        std::ofstream stream(configPath.string());
-#else
         std::ofstream stream(configPath);
-#endif
         if (stream.is_open())
         {
             stream << node << std::endl;
