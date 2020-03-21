@@ -14,6 +14,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyWindow
 {
+    loco_global<uint16_t[4], 0x112C826> _common_format_args;
+
     namespace common
     {
         enum widx
@@ -56,6 +58,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         // Defined at the bottom of this file.
         static void initEvents();
+        static void switchTabWidgets(window* self);
     }
 
     namespace status
@@ -88,18 +91,28 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00431EBB
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00431EBB, regs);
+            printf("In prepare draw for company window %p with number = %d\n", self, self->number);
+
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            // registers regs;
+            // regs.esi = (int32_t)self;
+            // call(0x00431EBB, regs);
         }
 
         // 0x00432055
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00432055, regs);
+            self->draw(dpi);
+
+            // registers regs;
+            // regs.edi = (int32_t)dpi;
+            // regs.esi = (int32_t)self;
+            // call(0x00432055, regs);
         }
 
         // 0x00432244
@@ -170,6 +183,28 @@ namespace openloco::ui::windows::CompanyWindow
         }
     }
 
+    static window* sub_4347D0(company_id_t companyId)
+    {
+        const uint32_t newFlags = window_flags::scrolling_to_location | window_flags::stick_to_front;
+        auto window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
+        printf("window: %p\n", window);
+        window->number = companyId;
+        printf("window->number = %d\n", window->number);
+        window->owner = companyId;
+        printf("window->owner = %d\n", window->owner);
+
+        window->current_tab = 0;
+        window->frame_no = 0;
+        window->saved_view.clear();
+
+        auto skin = objectmgr::get<interface_skin_object>();
+        window->colours[1] = skin->colour_0A;
+
+        window->flags |= window_flags::resizable;
+
+        return window;
+    }
+
     // 0x0043454F
     window* open(company_id_t companyId)
     {
@@ -177,23 +212,17 @@ namespace openloco::ui::windows::CompanyWindow
         if (window != nullptr)
         {
             if (input::is_tool_active(window->type, window->number))
+            {
                 input::cancel_tool();
-
-            window = WindowManager::bringToFront(WindowType::company, companyId);
+                window = WindowManager::bringToFront(WindowType::company, companyId);
+            }
         }
+
+        printf("New company window (0x0043454F) with companyId = %d\n", companyId);
 
         if (window == nullptr)
         {
-            // 0x004347D0 start
-            const uint32_t newFlags = window_flags::scrolling_to_location | window_flags::stick_to_front;
-            window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
-            window->number = companyId;
-
-            auto skin = objectmgr::get<interface_skin_object>();
-            window->colours[1] = skin->colour_0A;
-            // 0x004347D0 end
-
-            window->saved_view.clear();
+            window = sub_4347D0(companyId);
         }
 
         // TODO(avgeffen): only needs to be called once.
@@ -775,6 +804,39 @@ namespace openloco::ui::windows::CompanyWindow
             finances::initEvents();
             cargo_delivered::initEvents();
             challenge::initEvents();
+        }
+
+        static void switchTabWidgets(window* self)
+        {
+            self->activated_widgets = 0;
+
+            static widget_t* widgetCollectionsByTabId[] = {
+                status::widgets,
+                details::widgets,
+                colour_scheme::widgets,
+                finances::widgets,
+                cargo_delivered::widgets,
+                challenge::widgets,
+            };
+
+            widget_t* newWidgets = widgetCollectionsByTabId[self->current_tab];
+            if (self->widgets != newWidgets)
+            {
+                self->widgets = newWidgets;
+                // self->init_scroll_widgets();
+            }
+
+            static const widx tabWidgetIdxByTabId[] = {
+                tab_status,
+                tab_details,
+                tab_colour_scheme,
+                tab_finances,
+                tab_cargo_delivered,
+                tab_challenge,
+            };
+
+            self->activated_widgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
+            self->activated_widgets |= (1ULL << tabWidgetIdxByTabId[self->current_tab]);
         }
     }
 }

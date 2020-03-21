@@ -66,7 +66,32 @@ namespace openloco::ui::WindowManager
             0x0043454F,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                windows::CompanyWindow::open(regs.eax);
+                printf("Calling company window open with ax = %d\n", regs.ax);
+                window* company = windows::CompanyWindow::open(regs.ax);
+
+                regs = backup;
+                regs.esi = (int32_t)company;
+
+                return 0;
+            });
+
+        register_hook(
+            0x00434731,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                printf("Calling 0x00434731 with ax = %d\n", regs.ax);
+                // windows::CompanyWindow::open(regs.ax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004347D0,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                printf("Calling 0x004347D0 with ax = %d\n", regs.ax);
+                // windows::CompanyWindow::open(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -75,7 +100,11 @@ namespace openloco::ui::WindowManager
         register_hook(
             0x00435ACC,
             [](registers& regs) -> uint8_t {
-                windows::CompanyWindow::openAndSetName();
+                printf("Calling company window openAndSetName\n");
+                auto window = windows::CompanyWindow::openAndSetName();
+
+                regs = backup;
+                regs.esi = (int32_t)window;
 
                 return 0;
             });
