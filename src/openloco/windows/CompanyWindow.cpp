@@ -9,6 +9,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 
@@ -84,7 +85,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
         static window_event_list events;
 
@@ -99,9 +100,55 @@ namespace openloco::ui::windows::CompanyWindow
             auto company = companymgr::get(self->number);
             *_common_format_args = company->name;
 
-            // registers regs;
-            // regs.esi = (int32_t)self;
-            // call(0x00431EBB, regs);
+            self->disabled_widgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
+
+            // No centering on a viewport that doesn't exist.
+            if (self->viewports[0] == nullptr)
+                self->disabled_widgets |= (1 << widx::centre_on_viewport);
+
+            // No changing other player's faces, unless we're editing a scenario.
+            if (self->number != companymgr::get_controlling_id() && !is_editor_mode())
+                self->disabled_widgets |= (1 << widx::face);
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[widx::viewport].right = self->width - 119;
+            self->widgets[widx::viewport].bottom = self->height - 14;
+
+            self->widgets[widx::unk_11].top = self->height - 12;
+            self->widgets[widx::unk_11].bottom = self->height - 3;
+            self->widgets[widx::unk_11].right = self->width - 14;
+
+            self->widgets[widx::change_owner_name].right = self->width - 4;
+            self->widgets[widx::change_owner_name].left = self->width - 116;
+
+            self->widgets[widx::face].right = self->width - 28;
+            self->widgets[widx::face].left = self->width - 93;
+
+            self->widgets[common::widx::company_select].right = self->width - 3;
+            self->widgets[common::widx::company_select].left = self->width - 28;
+
+            if (self->number == companymgr::get_controlling_id())
+                self->widgets[widx::change_owner_name].type = widget_type::wt_9;
+            else
+                self->widgets[widx::change_owner_name].type = widget_type::none;
+
+            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
+            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
+            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
+            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+
+            // call sub_4343BC -> sub_4343C2
+
         }
 
         // 0x00432055
@@ -127,10 +174,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432283
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00432283, regs);
+            if (widgetIndex == common::widx::company_select)
+                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0043228E
@@ -157,9 +202,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043270A
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0043270A, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00432724
@@ -172,7 +217,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            // events.prepare_draw = prepare_draw;
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_mouse_down = on_mouse_down;
@@ -341,9 +386,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0432D85
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0432D85, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00432D9F
@@ -477,9 +522,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043325F
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0043325F, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00433279
@@ -584,9 +629,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043399D
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0043399D, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x004339B7
@@ -693,9 +738,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433C7D
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00433C7D, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00433C97
@@ -770,9 +815,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043402E
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0043402E, regs);
+            self->frame_no += 1;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00434048

@@ -80,7 +80,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
                 printf("Calling 0x00434731 with ax = %d\n", regs.ax);
-                // windows::CompanyWindow::open(regs.ax);
+                windows::CompanyWindow::open(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -91,7 +91,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
                 printf("Calling 0x004347D0 with ax = %d\n", regs.ax);
-                // windows::CompanyWindow::open(regs.ax);
+                windows::CompanyWindow::open(regs.ax);
                 regs = backup;
 
                 return 0;
