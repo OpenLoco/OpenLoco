@@ -57,6 +57,19 @@ namespace openloco::ui::windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::tab_challenge);
         }
 
+        // 0x00431E9B
+        static void enableRenameByCaption(window* self)
+        {
+            if (is_editor_mode() || self->number == companymgr::get_controlling_id())
+            {
+                self->enabled_widgets |= (1 << caption);
+            }
+            else
+            {
+                self->enabled_widgets &= ~(1 << caption);
+            }
+        }
+
         // Defined at the bottom of this file.
         static void initEvents();
         static void switchTabWidgets(window* self);
@@ -210,17 +223,34 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432724
         static void on_resize(window* self)
         {
-            // registers regs;
-            // regs.esi = (int32_t)self;
-            // call(0x00432724, regs);
+            common::enableRenameByCaption(self);
+
+            self->set_size(gfx::ui_size_t(270, 182), gfx::ui_size_t(640, 400));
+
+            if (self->viewports[0] != nullptr)
+            {
+                gfx::ui_size_t proposedDims(self->width - 123, self->height - 59);
+                auto& viewport = self->viewports[0];
+                if (proposedDims.width != viewport->width || proposedDims.height != viewport->height)
+                {
+                    viewport->width = proposedDims.width;
+                    viewport->height = proposedDims.height;
+                    viewport->view_width = proposedDims.width << viewport->zoom;
+                    viewport->view_height = proposedDims.height << viewport->zoom;
+                    self->saved_view.clear();
+                }
+            }
+
+            self->call_viewport_rotate();
         }
 
         // 0x004327C8
         static void viewport_rotate(window* self)
         {
+            // We're skipping the tab check and dive straight into the business to avoid a prepare_draw call.
             // registers regs;
             // regs.esi = (int32_t)self;
-            // call(0x004340B3);
+            // call(0x004340C6);
         }
 
         static void initEvents()
@@ -233,7 +263,7 @@ namespace openloco::ui::windows::CompanyWindow
             events.text_input = text_input;
             events.on_update = on_update;
             events.on_resize = on_resize;
-            // events.viewport_rotate = viewport_rotate;
+            events.viewport_rotate = viewport_rotate;
         }
     }
 
