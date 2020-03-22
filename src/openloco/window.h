@@ -335,8 +335,27 @@ namespace openloco::ui
             max_width = maxSize.width;
             max_height = maxSize.height;
 
-            width = std::clamp(width, min_width, max_width);
-            height = std::clamp(height, min_height, max_height);
+            if (width < min_width)
+            {
+                width = min_width;
+                invalidate();
+            }
+            else if (width > max_width)
+            {
+                width = max_width;
+                invalidate();
+            }
+
+            if (height < min_height)
+            {
+                height = min_height;
+                invalidate();
+            }
+            else if (height > max_height)
+            {
+                height = max_height;
+                invalidate();
+            }
         }
 
         constexpr void set_size(gfx::ui_size_t size)
