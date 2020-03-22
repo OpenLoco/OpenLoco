@@ -160,7 +160,7 @@ namespace openloco::ui::windows::toolbar_top
         {
             case 0:
                 // Load game
-                game_commands::do_21(1, 0, 0);
+                game_commands::do_21(0, 0);
                 break;
 
             case 1:
@@ -185,7 +185,7 @@ namespace openloco::ui::windows::toolbar_top
 
             case 7:
                 // Return to title screen
-                game_commands::do_21(1, 0, 1);
+                game_commands::do_21(0, 1);
                 break;
         }
     }

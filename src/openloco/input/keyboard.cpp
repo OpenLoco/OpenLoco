@@ -28,6 +28,7 @@
 
 using namespace openloco::interop;
 using namespace openloco::ui;
+using namespace openloco::game_commands;
 
 namespace openloco::input
 {
@@ -98,7 +99,7 @@ namespace openloco::input
 
             registers regs;
             regs.cx = w->number;
-            regs.bl = 1;
+            regs.bl = GameCommandFlag::apply;
             game_commands::do_command(77, regs);
             audio::play_sound(audio::sound_id::click_press, ui::width() / 2);
 
@@ -109,7 +110,7 @@ namespace openloco::input
     static void loc_4BED79()
     {
         registers regs;
-        regs.bl = 1;
+        regs.bl = GameCommandFlag::apply;
         game_commands::do_command(78, regs);
 
         audio::play_sound(audio::sound_id::click_press, ui::width() / 2);

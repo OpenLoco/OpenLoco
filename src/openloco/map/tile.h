@@ -71,7 +71,7 @@ namespace openloco::map
         surface,  // 0x00
         track,    // 0x04
         station,  // 0x08
-        unk_3,    // 0x0C
+        signal,   // 0x0C
         building, // 0x10
         tree,     // 0x14
         wall,     // 0x18
@@ -92,7 +92,7 @@ namespace openloco::map
     struct building_element;
     struct industry_element;
     struct track_element;
-    struct unk3_element;
+    struct signal_element;
     struct road_element;
 
 #pragma pack(push, 1)
@@ -134,10 +134,10 @@ namespace openloco::map
         surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
         track_element* as_track() const { return as<track_element, element_type::track>(); }
         station_element* as_station() const { return as<station_element, element_type::station>(); }
+        signal_element* as_signal() const { return as<signal_element, element_type::signal>(); }
         building_element* as_building() const { return as<building_element, element_type::building>(); }
         road_element* as_road() const { return as<road_element, element_type::road>(); }
         industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
-        unk3_element* as_unk3() const { return as<unk3_element, element_type::unk_3>(); }
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -249,7 +249,7 @@ namespace openloco::map
         uint8_t unk_7u() const { return _7 >> 4; }
     };
 
-    struct unk3_element : public tile_element_base
+    struct signal_element : public tile_element_base
     {
     private:
         uint8_t _4;
@@ -268,6 +268,7 @@ namespace openloco::map
 
     public:
         uint8_t unk_4_F() const { return _4 & 0xF; }
+        uint8_t road_object_id() const { return _5 >> 4; } // _5u
     };
 #pragma pack(pop)
 

@@ -486,6 +486,9 @@ namespace openloco::string_ids
 
     constexpr string_id expand_this_town = 1409;
 
+    constexpr string_id error_reason_belongs_to = 1420;
+    constexpr string_id error_reason_stringid_belongs_to = 1421;
+    constexpr string_id error_reason_signal_belongs_to = 1422;
     constexpr string_id station_cargo_rating_percent = 1423;
 
     constexpr string_id waiting_cargo_separator = 1430;
