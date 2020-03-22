@@ -60,6 +60,7 @@ namespace openloco::ui::windows::CompanyWindow
         // Defined at the bottom of this file.
         static void initEvents();
         static void switchTabWidgets(window* self);
+        static void repositionTabs(window* self);
     }
 
     namespace status
@@ -147,8 +148,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            // call sub_4343BC -> sub_4343C2
-
+            common::repositionTabs(self);
         }
 
         // 0x00432055
@@ -156,10 +156,10 @@ namespace openloco::ui::windows::CompanyWindow
         {
             self->draw(dpi);
 
-            // registers regs;
-            // regs.edi = (int32_t)dpi;
-            // regs.esi = (int32_t)self;
-            // call(0x00432055, regs);
+            registers regs;
+            regs.edi = (int32_t)dpi;
+            regs.esi = (int32_t)self;
+            call(0x0043205A, regs);
         }
 
         // 0x00432244
@@ -210,14 +210,22 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432724
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00432724, regs);
+            // registers regs;
+            // regs.esi = (int32_t)self;
+            // call(0x00432724, regs);
+        }
+
+        // 0x004327C8
+        static void viewport_rotate(window* self)
+        {
+            // registers regs;
+            // regs.esi = (int32_t)self;
+            // call(0x004340B3);
         }
 
         static void initEvents()
         {
-            // events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepare_draw;
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_mouse_down = on_mouse_down;
@@ -225,6 +233,7 @@ namespace openloco::ui::windows::CompanyWindow
             events.text_input = text_input;
             events.on_update = on_update;
             events.on_resize = on_resize;
+            // events.viewport_rotate = viewport_rotate;
         }
     }
 
@@ -882,6 +891,23 @@ namespace openloco::ui::windows::CompanyWindow
 
             self->activated_widgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
             self->activated_widgets |= (1ULL << tabWidgetIdxByTabId[self->current_tab]);
+        }
+
+        // 0x004343BC
+        static void repositionTabs(window* self)
+        {
+            int16_t xPos = self->widgets[widx::tab_status].left;
+            const int16_t tabWidth = self->widgets[widx::tab_status].right - xPos;
+
+            for (uint8_t i = widx::tab_status; i <= widx::tab_challenge; i++)
+            {
+                if (self->is_disabled(i))
+                    continue;
+
+                self->widgets[i].left = xPos;
+                self->widgets[i].right = xPos + tabWidth;
+                xPos = self->widgets[i].right + 1;
+            }
         }
     }
 }
