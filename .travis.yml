@@ -40,10 +40,6 @@ matrix:
           language: cpp
           before_install:
             - export HOMEBREW_NO_AUTO_UPDATE=1
-          install:
-            - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
-            - git config remote.origin.fetch +refs/tags/*:refs/tags/*
-            - git fetch --tags
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.2.0/openloco.dependencies.macos.1.2.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
@@ -51,17 +47,12 @@ matrix:
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
             - zip -r openloco-macos.zip openloco.app
-            - curl --progress-bar --upload-file openloco-macos.zip https://transfer.sh/openloco-macos.zip; echo;
         - os: osx
           name: macOS 10.12 Clang (Xcode 9.2)
           osx_image: xcode9.2 # macOS 10.12 (lacks std::byte)
           language: cpp
           before_install:
             - export HOMEBREW_NO_AUTO_UPDATE=1
-          install:
-            - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
-            - git config remote.origin.fetch +refs/tags/*:refs/tags/*
-            - git fetch --tags
           script:
             - curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.2.0/openloco.dependencies.macos.1.2.0.zip -o dependencies.zip
             - unzip -q dependencies.zip -d vcpkg/
