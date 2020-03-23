@@ -1,4 +1,4 @@
-19.03+ (in development)
+20.03 (2020-03-23)
 ------------------------------------------------------------------------
 - Feature: [#347] Screenshots are now saved in PNG format.
 - Fix: [#226] Zooming to cursor is buggy on bigger maps

@@ -1,7 +1,7 @@
 image: Visual Studio 2017
-version: 19.03-build{build}
+version: 20.03-build{build}
 environment:
-  version: 19.03
+  version: 20.03
 install:
 - ps: >-
     mkdir $env:TEMP\openloco
