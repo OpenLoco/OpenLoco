@@ -10,6 +10,7 @@
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -73,6 +74,7 @@ namespace openloco::ui::windows::CompanyWindow
         // Defined at the bottom of this file.
         static void initEvents();
         static void switchTabWidgets(window* self);
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void repositionTabs(window* self);
     }
 
@@ -168,11 +170,12 @@ namespace openloco::ui::windows::CompanyWindow
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
+            common::drawTabs(self, dpi);
 
             registers regs;
             regs.edi = (int32_t)dpi;
             regs.esi = (int32_t)self;
-            call(0x0043205A, regs);
+            call(0x0043205F, regs);
         }
 
         // 0x00432244
@@ -921,6 +924,124 @@ namespace openloco::ui::windows::CompanyWindow
 
             self->activated_widgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
             self->activated_widgets |= (1ULL << tabWidgetIdxByTabId[self->current_tab]);
+        }
+
+        // 0x00434413
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            auto skin = objectmgr::get<interface_skin_object>();
+
+            // Status tab
+            {
+                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_company;
+                widget::draw_tab(self, dpi, imageId, widx::tab_status);
+            }
+
+            // Details tab
+            {
+                const uint32_t imageId = gfx::recolour(skin->img + interface_skin::image_ids::tab_company_details, self->colours[0]);
+                widget::draw_tab(self, dpi, imageId, widx::tab_details);
+            }
+
+            // Colour scheme tab
+            {
+                static const uint32_t colourSchemeTabImageIds[] = {
+                    interface_skin::image_ids::tab_colour_scheme_frame0,
+                    interface_skin::image_ids::tab_colour_scheme_frame1,
+                    interface_skin::image_ids::tab_colour_scheme_frame2,
+                    interface_skin::image_ids::tab_colour_scheme_frame3,
+                    interface_skin::image_ids::tab_colour_scheme_frame4,
+                    interface_skin::image_ids::tab_colour_scheme_frame5,
+                    interface_skin::image_ids::tab_colour_scheme_frame6,
+                    interface_skin::image_ids::tab_colour_scheme_frame7,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_colour_scheme - widx::tab_status)
+                    imageId += colourSchemeTabImageIds[(self->frame_no / 4) % std::size(colourSchemeTabImageIds)];
+                else
+                    imageId += colourSchemeTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_colour_scheme);
+            }
+
+            // Finances tab
+            {
+                static const uint32_t financesTabImageIds[] = {
+                    interface_skin::image_ids::tab_finances_frame0,
+                    interface_skin::image_ids::tab_finances_frame1,
+                    interface_skin::image_ids::tab_finances_frame2,
+                    interface_skin::image_ids::tab_finances_frame3,
+                    interface_skin::image_ids::tab_finances_frame4,
+                    interface_skin::image_ids::tab_finances_frame5,
+                    interface_skin::image_ids::tab_finances_frame6,
+                    interface_skin::image_ids::tab_finances_frame7,
+                    interface_skin::image_ids::tab_finances_frame8,
+                    interface_skin::image_ids::tab_finances_frame9,
+                    interface_skin::image_ids::tab_finances_frame10,
+                    interface_skin::image_ids::tab_finances_frame11,
+                    interface_skin::image_ids::tab_finances_frame12,
+                    interface_skin::image_ids::tab_finances_frame13,
+                    interface_skin::image_ids::tab_finances_frame14,
+                    interface_skin::image_ids::tab_finances_frame15,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_finances - widx::tab_status)
+                    imageId += financesTabImageIds[(self->frame_no / 2) % std::size(financesTabImageIds)];
+                else
+                    imageId += financesTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_finances);
+            }
+
+            // Cargo delivered tab
+            {
+                static const uint32_t cargoDeliveredTabImageIds[] = {
+                    interface_skin::image_ids::tab_cargo_delivered_frame0,
+                    interface_skin::image_ids::tab_cargo_delivered_frame1,
+                    interface_skin::image_ids::tab_cargo_delivered_frame2,
+                    interface_skin::image_ids::tab_cargo_delivered_frame3,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_cargo_delivered - widx::tab_status)
+                    imageId += cargoDeliveredTabImageIds[(self->frame_no / 4) % std::size(cargoDeliveredTabImageIds)];
+                else
+                    imageId += cargoDeliveredTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_cargo_delivered);
+            }
+
+            // Challenge tab
+            {
+                static const uint32_t challengeTabImageIds[] = {
+                    interface_skin::image_ids::tab_cup_frame0,
+                    interface_skin::image_ids::tab_cup_frame1,
+                    interface_skin::image_ids::tab_cup_frame2,
+                    interface_skin::image_ids::tab_cup_frame3,
+                    interface_skin::image_ids::tab_cup_frame4,
+                    interface_skin::image_ids::tab_cup_frame5,
+                    interface_skin::image_ids::tab_cup_frame6,
+                    interface_skin::image_ids::tab_cup_frame7,
+                    interface_skin::image_ids::tab_cup_frame8,
+                    interface_skin::image_ids::tab_cup_frame9,
+                    interface_skin::image_ids::tab_cup_frame10,
+                    interface_skin::image_ids::tab_cup_frame11,
+                    interface_skin::image_ids::tab_cup_frame12,
+                    interface_skin::image_ids::tab_cup_frame13,
+                    interface_skin::image_ids::tab_cup_frame14,
+                    interface_skin::image_ids::tab_cup_frame15,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_challenge - widx::tab_status)
+                    imageId += challengeTabImageIds[(self->frame_no / 4) % std::size(challengeTabImageIds)];
+                else
+                    imageId += challengeTabImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tab_challenge);
+            }
         }
 
         // 0x004343BC
