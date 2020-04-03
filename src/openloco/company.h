@@ -62,7 +62,9 @@ namespace openloco
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8C4E - 0x8BB9];
         uint8_t var_8C4E;
-        uint8_t pad_8C4F[0x8FA8 - 0x8C4F];
+        uint8_t pad_8C4F[0x8E34 - 0x8C4F];
+        uint16_t jail_status; // 0x8E34
+        uint8_t pad_8E36[0x8FA8 - 0x8E36];
 
         company_id_t id() const;
         bool empty() const;

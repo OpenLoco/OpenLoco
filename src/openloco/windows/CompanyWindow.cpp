@@ -5,6 +5,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -16,7 +17,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyWindow
 {
-    loco_global<uint16_t[4], 0x112C826> _common_format_args;
+    loco_global<uint16_t[8], 0x112C826> _common_format_args;
 
     namespace common
     {
@@ -172,10 +173,86 @@ namespace openloco::ui::windows::CompanyWindow
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x0043205F, regs);
+            const auto company = companymgr::get(self->number);
+            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+
+            // Draw company owner face on dropdown.
+            {
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
+                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
+                gfx::draw_image(dpi, x, y, image);
+            }
+
+            // Draw 'owner' label
+            {
+                auto& widget = self->widgets[widx::face];
+                gfx::draw_string_centred(
+                    *dpi,
+                    self->x + (widget.left + widget.right) / 2,
+                    self->y + widget.top - 12,
+                    colour::black,
+                    string_ids::window_owner,
+                    nullptr);
+            }
+
+            // Draw company owner image.
+            {
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary) + 1;
+                const uint16_t x = self->x + self->widgets[widx::face].left + 1;
+                const uint16_t y = self->y + self->widgets[widx::face].top + 1;
+                gfx::draw_image(dpi, x, y, image);
+            }
+
+            // If the owner's been naughty, draw some jail bars over them.
+            if (company->jail_status != 0)
+            {
+                const uint32_t image = image_ids::owner_jailed;
+                const uint16_t x = self->x + self->widgets[widx::face].left + 1;
+                const uint16_t y = self->y + self->widgets[widx::face].top + 1;
+                gfx::draw_image(dpi, x, y, image);
+            }
+
+            // Draw owner name
+            {
+                *_common_format_args = company->var_02;
+                auto& widget = self->widgets[widx::change_owner_name];
+                auto origin = gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
+                gfx::draw_string_centred_wrapped(
+                    dpi,
+                    &origin,
+                    widget.right - widget.left,
+                    colour::black,
+                    string_ids::white_stringid2,
+                    &*_common_format_args);
+            }
+
+            // Draw owner status
+            {
+                uint32_t arg1{};
+                uint32_t arg2{};
+                string_id status = companymgr::getOwnerStatus(self->number, &arg1, &arg2);
+
+                *_common_format_args = status;
+                *(uint32_t*)&_common_format_args[1] = arg1;
+                *(uint32_t*)&_common_format_args[3] = arg2;
+
+                auto& widget = self->widgets[widx::unk_11];
+                gfx::draw_string_494BBF(
+                    *dpi,
+                    self->x + widget.left - 1,
+                    self->y + widget.top - 1,
+                    widget.right - widget.left,
+                    colour::black,
+                    string_ids::white_stringid2,
+                    &*_common_format_args);
+            }
+
+            if (self->viewports[0] != nullptr)
+            {
+                self->drawViewports(dpi);
+                widget::drawViewportCentreButton(dpi, self, (widget_index)widx::centre_on_viewport);
+            }
         }
 
         // 0x00432244

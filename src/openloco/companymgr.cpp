@@ -5,6 +5,7 @@
 #include "openloco.h"
 #include "things/thingmgr.h"
 #include "things/vehicle.h"
+#include "types.hpp"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;
@@ -123,6 +124,19 @@ namespace openloco::companymgr
     company* getOpponent()
     {
         return &_companies[_player_company[1]];
+    }
+
+    // 0x00438047
+    // Returns a string between 1810 and 1816 with up to two arguments.
+    string_id getOwnerStatus(company_id_t id, uint32_t* arg1, uint32_t* arg2)
+    {
+        registers regs;
+        regs.esi = (int32_t)get(id);
+        call(0x00438047, regs);
+
+        *arg1 = regs.ecx;
+        *arg2 = regs.edx;
+        return regs.bx;
     }
 
     // 0x004383ED
