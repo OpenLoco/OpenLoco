@@ -331,3 +331,5 @@ else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
 endif ()
+
+install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
