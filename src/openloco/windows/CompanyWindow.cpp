@@ -10,6 +10,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../things/thingmgr.h"
+#include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../viewportmgr.h"
@@ -390,7 +391,21 @@ namespace openloco::ui::windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = thingmgr::get<Thing>(company->observation_thing);
+                auto thing = thingmgr::get<openloco::vehicle>(company->observation_thing);
+
+                if (thing->base_type != thing_base_type::vehicle || thing->type != vehicle_thing_type::vehicle_0 || (thing->x & (1 << 15)) == 0)
+                {
+                    if (self->viewports[0] != nullptr)
+                    {
+                        self->viewports[0]->width = 0;
+                        self->viewports[0] = nullptr;
+                        self->invalidate();
+                    }
+                    return;
+                }
+
+                // loc_43419F
+                auto car = thing->next_car()->next_car()->next_car()->next_car();
 
                 // ...
             }
