@@ -289,7 +289,7 @@ namespace openloco::ui::windows::town
             SavedView view = {
                 town->x,
                 town->y,
-                2,
+                ZoomLevel::quarter,
                 static_cast<int8_t>(self->viewports[0]->getRotation()),
                 tileZ,
             };
@@ -318,8 +318,9 @@ namespace openloco::ui::windows::town
             {
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = openloco::map::map_pos3({ town->x, town->y, tileZ });
-                auto zoomLevel = openloco::ui::viewportmgr::ZoomLevel::half;
-                viewportmgr::create(self, 0, gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1), gfx::ui_size_t(widget->width() - 2, widget->height() - 2), zoomLevel, tile);
+                auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
+                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= window_flags::viewport_no_scrolling;
             }

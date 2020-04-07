@@ -44,4 +44,12 @@ namespace openloco
     {
         constexpr int16_t null = (int16_t)0x8000u;
     }
+
+    enum class ZoomLevel : uint8_t
+    {
+        full = 0,
+        half = 1,
+        quarter = 2,
+        eighth = 3,
+    };
 }

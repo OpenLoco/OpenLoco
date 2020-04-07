@@ -245,7 +245,7 @@ namespace openloco::ui
     {
         int16_t mapX;
         int16_t mapY;
-        int8_t unk_08;
+        ZoomLevel zoomLevel;
         int8_t rotation;
         int16_t surfaceZ;
 
@@ -272,7 +272,7 @@ namespace openloco::ui
 
         bool operator==(const SavedView& rhs)
         {
-            return mapX == rhs.mapX && mapY == rhs.mapY && unk_08 == rhs.unk_08 && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
+            return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
         }
     };
 

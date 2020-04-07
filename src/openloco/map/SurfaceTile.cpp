@@ -61,5 +61,5 @@ void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
     _9586DC[animationIndex].frame = 0;
     this->set_flag_6();
 
-    viewportmgr::invalidate({ x, y }, this->water() * 16, this->water() * 16, viewportmgr::ZoomLevel::full);
+    viewportmgr::invalidate({ x, y }, this->water() * 16, this->water() * 16, ZoomLevel::full);
 }

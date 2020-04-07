@@ -3,19 +3,12 @@
 #include "map/tile.h"
 #include "station.h"
 #include "things/thing.h"
+#include "types.hpp"
 #include "window.h"
 #include <array>
 
 namespace openloco::ui::viewportmgr
 {
-    enum class ZoomLevel : uint8_t
-    {
-        full = 0,
-        half = 1,
-        quarter = 2,
-        eighth = 3,
-    };
-
     constexpr int16_t viewportsPerWindow = 2;
 
     void init();
