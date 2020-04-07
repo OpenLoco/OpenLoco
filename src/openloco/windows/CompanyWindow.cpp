@@ -9,8 +9,10 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
+#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../viewportmgr.h"
 #include "../widget.h"
 
 using namespace openloco::interop;
@@ -327,6 +329,72 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x004327C8
         static void viewport_rotate(window* self)
         {
+            self->call_prepare_draw();
+
+            const auto& company = companymgr::get(self->number);
+
+            if (company->observation_thing == thing_id::null)
+            {
+                // Observing a certain location?
+                if (company->observation_x != -1)
+                {
+                    coord_t tileZ = openloco::map::tile_element_height(company->observation_x, company->observation_y) & 0xFFFF;
+                    // if ((tileZ & 0xFFFF0000) == 0)
+                    //     tileZ >>= 16;
+
+                    // loc_43410A
+                    int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+                    SavedView view = {
+                        company->observation_x,
+                        company->observation_y,
+                        ZoomLevel::quarter,
+                        rotation,
+                        static_cast<int16_t>(tileZ),
+                    };
+
+                    if (self->viewports[0] == nullptr || self->saved_view.hasUnkFlag())
+                    {
+                        self->saved_view = view;
+
+                        // sub_434336
+                        {
+                            auto& widget = self->widgets[widx::viewport];
+                            auto tile = openloco::map::map_pos3({ company->observation_x, company->observation_y, tileZ });
+                            auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
+                            auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+                            viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                        }
+                    }
+
+                    // Centre viewport on tile.
+                    registers regs;
+                    regs.ax = self->saved_view.mapX;
+                    regs.cx = self->saved_view.mapY & 0x3FFF;
+                    regs.dx = self->saved_view.surfaceZ;
+                    regs.esi = (int32_t)self;
+                    call(0x004C6827, regs);
+                }
+                // Not observing anything at all?
+                else
+                {
+                    // loc_434247
+                    if (self->viewports[0] != nullptr)
+                    {
+                        self->viewports[0]->width = 0;
+                        self->viewports[0] = nullptr;
+                        self->invalidate();
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                // loc_434170
+                auto thing = thingmgr::get<Thing>(company->observation_thing);
+
+                // ...
+            }
+
             // We're skipping the tab check and dive straight into the business to avoid a prepare_draw call.
             // registers regs;
             // regs.esi = (int32_t)self;

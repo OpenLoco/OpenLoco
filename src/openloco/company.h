@@ -1,6 +1,7 @@
 #pragma once
 
 #include "localisation/stringmgr.h"
+#include "types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -60,7 +61,11 @@ namespace openloco
         currency48_t vehicleProfit; // 0x8B9E
         uint8_t pad_8BA4[0x8BB0 - 0x8BA4];
         uint8_t var_8BB0[9];
-        uint8_t pad_8BB9[0x8C4E - 0x8BB9];
+        uint8_t pad_8BB9[0x8BBC - 0x8BB9];
+        thing_id_t observation_thing; // 0x_8BBC;
+        int16_t observation_x;        // 0x8BBE;
+        int16_t observation_y;        // 0x8BC0;
+        uint8_t pad_8BC2[0x8C4E - 0x8BC2];
         uint8_t var_8C4E;
         uint8_t pad_8C4F[0x8E34 - 0x8C4F];
         uint16_t jail_status; // 0x8E34

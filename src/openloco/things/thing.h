@@ -6,7 +6,6 @@
 
 namespace openloco
 {
-    using thing_id_t = uint16_t;
     struct Thing;
     struct vehicle_base;
     struct misc_thing;
