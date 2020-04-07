@@ -77,6 +77,8 @@ namespace openloco::ui::windows::CompanyWindow
 
         // Defined at the bottom of this file.
         static void initEvents();
+        static void renameCompanyPrompt(window* self, widget_index widgetIndex);
+        static void switchTab(window* self, widget_index widgetIndex);
         static void switchTabWidgets(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void repositionTabs(window* self);
@@ -95,7 +97,7 @@ namespace openloco::ui::windows::CompanyWindow
             change_owner_name,
         };
 
-        [[maybe_unused]] static widget_t widgets[] = {
+        static widget_t widgets[] = {
             commonWidgets(270, 182, string_ids::title_company),
             make_widget({ 3, 160 }, { 242, 21 }, widget_type::wt_13, 1),
             make_widget({ 3, 44 }, { 96, 120 }, widget_type::viewport, 1, -2),
@@ -261,10 +263,61 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432244
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00432244, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::centre_on_viewport:
+                {
+                    if (self->viewports[0] == nullptr)
+                        break;
+
+                    // Centre viewport on tile/thing.
+                    // TODO(avgeffen): move/implement.
+                    registers regs;
+                    regs.esi = (int32_t)self;
+                    call(0x004324DC, regs);
+                    break;
+                }
+
+                case widx::face:
+                {
+                    // Open face selection window
+                    // TODO(avgeffen): move/implement.
+                    registers regs;
+                    regs.eax = self->number;
+                    call(0x00434F52, regs);
+                    break;
+                }
+
+                case widx::change_owner_name:
+                {
+                    auto company = companymgr::get(self->number);
+                    _common_format_args[2] = company->var_02;
+                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->var_02, widgetIndex, &_common_format_args[2]);
+                    break;
+                }
+            }
+
+            // registers regs;
+            // regs.edx = widgetIndex;
+            // regs.esi = (int32_t)self;
+            // call(0x00432244, regs);
         }
 
         // 0x00432283
@@ -308,7 +361,7 @@ namespace openloco::ui::windows::CompanyWindow
         {
             common::enableRenameByCaption(self);
 
-            self->set_size(gfx::ui_size_t(270, 182), gfx::ui_size_t(640, 400));
+            self->set_size(status::windowSize, gfx::ui_size_t(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
@@ -508,7 +561,9 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace details
     {
-        [[maybe_unused]] static widget_t widgets[] = {
+        const gfx::ui_size_t windowSize = { 340, 194 };
+
+        static widget_t widgets[] = {
             commonWidgets(340, 194, string_ids::title_company_details),
             make_widget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
             make_widget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_build_or_move_headquarters),
@@ -623,8 +678,9 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace colour_scheme
     {
+        const gfx::ui_size_t windowSize = { 265, 252 };
 
-        [[maybe_unused]] static widget_t widgets[] = {
+        static widget_t widgets[] = {
             commonWidgets(265, 252, string_ids::title_company_colour_scheme),
             make_widget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
             make_widget({ 15, 98 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_diesel_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
@@ -752,7 +808,9 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace finances
     {
-        [[maybe_unused]] static widget_t widgets[] = {
+        const gfx::ui_size_t windowSize = { 636, 319 };
+
+        static widget_t widgets[] = {
             commonWidgets(636, 319, string_ids::title_company_finances),
             make_widget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
             make_stepper_widgets({ 87, 264 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::company_current_loan_value),
@@ -858,6 +916,13 @@ namespace openloco::ui::windows::CompanyWindow
             events.on_update = on_update;
             events.on_resize = on_resize;
         }
+
+        static void sub_4C8DBF(window* self)
+        {
+            registers regs;
+            regs.esi = (int32_t)self;
+            call(0x004C8DBF, regs);
+        }
     }
 
     // 0x004345EE
@@ -872,7 +937,9 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace cargo_delivered
     {
-        [[maybe_unused]] static widget_t widgets[] = {
+        const gfx::ui_size_t windowSize = { 340, 382 };
+
+        static widget_t widgets[] = {
             commonWidgets(340, 382, string_ids::title_company_cargo_delivered),
             widget_end(),
         };
@@ -968,7 +1035,9 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace challenge
     {
-        [[maybe_unused]] static widget_t widgets[] = {
+        const gfx::ui_size_t windowSize = { 320, 182 };
+
+        static widget_t widgets[] = {
             commonWidgets(320, 182, string_ids::title_company_challenge),
             widget_end(),
         };
@@ -980,27 +1049,60 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433D39
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00433D39, regs);
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            common::repositionTabs(self);
         }
 
         // 0x00433DEB
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
             registers regs;
             regs.edi = (int32_t)dpi;
             regs.esi = (int32_t)self;
-            call(0x00433DEB, regs);
+            call(0x00433DF5, regs);
         }
 
         // 0x00433FFE
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433FFE, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x00434023
@@ -1025,9 +1127,7 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00434048
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00434048, regs);
+            self->set_size(windowSize);
         }
 
         static void initEvents()
@@ -1043,6 +1143,24 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace common
     {
+        struct TabInformation
+        {
+            widget_t* widgets;
+            const widx widgetIndex;
+            window_event_list* events;
+            const uint64_t* enabledWidgets;
+            const gfx::ui_size_t* windowSize;
+        };
+
+        static TabInformation tabInformationByTabOffset[] = {
+            { status::widgets, widx::tab_status, &status::events, &status::enabledWidgets, &status::windowSize },
+            { details::widgets, widx::tab_details, &details::events, &details::enabledWidgets, &details::windowSize },
+            { colour_scheme::widgets, widx::tab_colour_scheme, &colour_scheme::events, &colour_scheme::enabledWidgets, &colour_scheme::windowSize },
+            { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
+            { cargo_delivered::widgets, widx::tab_cargo_delivered, &cargo_delivered::events, &cargo_delivered::enabledWidgets, &cargo_delivered::windowSize },
+            { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
+        };
+
         static void initEvents()
         {
             status::initEvents();
@@ -1084,6 +1202,57 @@ namespace openloco::ui::windows::CompanyWindow
 
             self->activated_widgets &= ~((1 << tab_status) | (1 << tab_details) | (1 << tab_colour_scheme) | (1 << tab_finances) | (1 << tab_cargo_delivered) | (1 << tab_challenge));
             self->activated_widgets |= (1ULL << tabWidgetIdxByTabId[self->current_tab]);
+        }
+
+        // 0x0043230B
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+
+            textinput::sub_4CE6C9(self->type, self->number);
+
+            self->current_tab = widgetIndex - widx::tab_status;
+            self->frame_no = 0;
+            self->flags &= ~(window_flags::flag_16);
+
+            if (self->viewports[0] != nullptr)
+            {
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+            }
+
+            auto tabIndex = widgetIndex - widx::tab_status;
+            auto tabInfo = tabInformationByTabOffset[tabIndex];
+
+            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->holdable_widgets = 0;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+
+            if (tabInfo.widgetIndex == widx::tab_finances)
+                self->holdable_widgets = 0x6000;
+
+            common::disableChallengeTab(self);
+
+            self->set_size(*tabInfo.windowSize);
+            self->call_on_resize();
+            self->call_prepare_draw();
+            self->init_scroll_widgets();
+            self->invalidate();
+            self->moveInsideScreenEdges();
+
+            if (tabInfo.widgetIndex == widx::tab_finances)
+                finances::sub_4C8DBF(self);
+        }
+
+        // 0x0043252E
+        static void renameCompanyPrompt(window* self, widget_index widgetIndex)
+        {
+            auto company = companymgr::get(self->number);
+            _common_format_args[2] = company->name;
+            textinput::open_textinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, &_common_format_args[2]);
         }
 
         // 0x00434413

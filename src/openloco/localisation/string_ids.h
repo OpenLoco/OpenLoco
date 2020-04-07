@@ -583,6 +583,14 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_build_or_move_headquarters = 1453;
     constexpr string_id tooltip_change_owner_name = 1454;
+    constexpr string_id not_yet_constructed = 1455;
+    constexpr string_id title_name_company = 1456;
+    constexpr string_id prompt_enter_new_company_name = 1457;
+    constexpr string_id cannot_rename_this_company = 1458;
+    constexpr string_id title_name_owner = 1459;
+    constexpr string_id prompt_enter_new_name_for_owner = 1460;
+    constexpr string_id cannot_change_owner_name = 1461;
+
     constexpr string_id tooltip_select_company = 1465;
 
     constexpr string_id display_options = 1486;
