@@ -810,6 +810,14 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const gfx::ui_size_t windowSize = { 636, 319 };
 
+        enum widx
+        {
+            scrollview = 11,
+            current_loan,
+            loan_decrease,
+            loan_increase,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(636, 319, string_ids::title_company_finances),
             make_widget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
@@ -819,23 +827,59 @@ namespace openloco::ui::windows::CompanyWindow
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
+        const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
+
         static window_event_list events;
 
         // 0x004332E4
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004332E4, regs);
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[common::widx::company_select].right = self->width - 3;
+            self->widgets[common::widx::company_select].left = self->width - 28;
+
+            if (self->number == companymgr::get_controlling_id())
+            {
+                self->widgets[widx::current_loan].type = widget_type::wt_17;
+                self->widgets[widx::loan_decrease].type = widget_type::wt_11;
+                self->widgets[widx::loan_increase].type = widget_type::wt_11;
+            }
+            else
+            {
+                self->widgets[widx::current_loan].type = widget_type::none;
+                self->widgets[widx::loan_decrease].type = widget_type::none;
+                self->widgets[widx::loan_increase].type = widget_type::none;
+            }
+
+            common::repositionTabs(self);
         }
 
         // 0x004333D0
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x004333D0, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            // registers regs;
+            // regs.edi = (int32_t)dpi;
+            // regs.esi = (int32_t)self;
+            // call(0x004333D0, regs);
         }
 
         // 0x0043361E
@@ -897,9 +941,9 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x004339B7
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004339B7, regs);
+            // registers regs;
+            // regs.esi = (int32_t)self;
+            // call(0x004339B7, regs);
         }
 
         static void initEvents()
@@ -928,11 +972,42 @@ namespace openloco::ui::windows::CompanyWindow
     // 0x004345EE
     window* openFinances(company_id_t companyId)
     {
-        registers regs;
-        regs.eax = companyId;
-        call(0x004345EE, regs);
+        auto window = WindowManager::bringToFront(WindowType::company, companyId);
+        if (window != nullptr)
+        {
+            if (input::is_tool_active(window->type, window->number))
+            {
+                input::cancel_tool();
+                window = WindowManager::bringToFront(WindowType::company, companyId);
+            }
+        }
 
-        return (window*)regs.esi;
+        printf("New company window (0x004345EE) with companyId = %d\n", companyId);
+
+        if (window == nullptr)
+        {
+            window = sub_4347D0(companyId);
+        }
+
+        // TODO(avgeffen): only needs to be called once.
+        common::initEvents();
+
+        window->current_tab = common::tab_finances - common::tab_status;
+        window->width = finances::windowSize.width;
+        window->height = finances::windowSize.height;
+        window->invalidate();
+
+        window->widgets = finances::widgets;
+        window->enabled_widgets = finances::enabledWidgets;
+        window->holdable_widgets = finances::holdableWidgets;
+        window->event_handlers = &finances::events;
+        window->activated_widgets = 0;
+
+        common::disableChallengeTab(window);
+        window->init_scroll_widgets();
+        window->moveInsideScreenEdges();
+
+        return window;
     }
 
     namespace cargo_delivered
@@ -1141,6 +1216,47 @@ namespace openloco::ui::windows::CompanyWindow
         }
     }
 
+    // 00434731
+    window* openChallenge(company_id_t companyId)
+    {
+        auto window = WindowManager::bringToFront(WindowType::company, companyId);
+        if (window != nullptr)
+        {
+            if (input::is_tool_active(window->type, window->number))
+            {
+                input::cancel_tool();
+                window = WindowManager::bringToFront(WindowType::company, companyId);
+            }
+        }
+
+        printf("New company window (0x00434731) with companyId = %d\n", companyId);
+
+        if (window == nullptr)
+        {
+            window = sub_4347D0(companyId);
+        }
+
+        // TODO(avgeffen): only needs to be called once.
+        common::initEvents();
+
+        window->current_tab = common::tab_challenge - common::tab_status;
+        window->width = challenge::windowSize.width;
+        window->height = challenge::windowSize.height;
+        window->invalidate();
+
+        window->widgets = challenge::widgets;
+        window->enabled_widgets = challenge::enabledWidgets;
+        window->holdable_widgets = 0;
+        window->event_handlers = &challenge::events;
+        window->activated_widgets = 0;
+
+        common::disableChallengeTab(window);
+        window->init_scroll_widgets();
+        window->moveInsideScreenEdges();
+
+        return window;
+    }
+
     namespace common
     {
         struct TabInformation
@@ -1232,7 +1348,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets = tabInfo.widgets;
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                self->holdable_widgets = 0x6000;
+                self->holdable_widgets = finances::holdableWidgets;
 
             common::disableChallengeTab(self);
 

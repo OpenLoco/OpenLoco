@@ -242,6 +242,7 @@ namespace openloco::ui::windows::CompanyWindow
 {
     window* open(company_id_t companyId);
     window* openAndSetName();
+    window* openChallenge(company_id_t companyId);
     window* openFinances(company_id_t companyId);
 }
 
