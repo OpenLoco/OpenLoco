@@ -655,6 +655,38 @@ namespace openloco::gfx
         call(0x00494C78, regs);
     }
 
+    // 0x00494D78
+    // al: colour
+    // bx: string id
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
+    void draw_string_left_underline(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void* args)
+    {
+        registers regs;
+        regs.al = colour;
+        regs.bx = stringId;
+        regs.cx = x;
+        regs.dx = y;
+        regs.esi = (int32_t)args;
+        regs.edi = (int32_t)&dpi;
+        call(0x00494D78, regs);
+    }
+
+    // 0x00494DE8
+    // al: colour
+    // bx: string id
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
     void draw_string_centred(
         drawpixelinfo_t& dpi,
         int16_t x,
@@ -673,6 +705,14 @@ namespace openloco::gfx
         call(0x00494DE8, regs);
     }
 
+    // 0x00494C36
+    // al: colour
+    // bx: string id
+    // bp: width
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
     void draw_string_centred_clipped(
         drawpixelinfo_t& dpi,
         int16_t x,
