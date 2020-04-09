@@ -40,9 +40,9 @@ namespace openloco
     {
         string_id name;
         string_id owner_name;
-        uint32_t challenge_flags; // 0x04
-        currency48_t var_08;      // company value related
-        uint8_t pad_0E[0x12 - 0x0E];
+        uint32_t challenge_flags;  // 0x04
+        currency48_t var_08;       // company value related
+        uint32_t current_loan;     // 0x0E
         uint32_t update_counter;   // 0x12
         int16_t performance_index; // 0x16
         uint8_t competitor_id;     // 0x18
@@ -55,7 +55,9 @@ namespace openloco
         uint8_t pad_1C[0x34 - 0x1C];
         uint32_t unlocked_vehicles[7]; // 0x34 (bit field based on vehicle_object index)
         uint16_t available_vehicles;   // 0x50
-        uint8_t pad_52[0x88CE - 0x52];
+        uint8_t pad_52[0x57 - 0x52];
+        uint8_t var_57;
+        uint8_t pad_58[0x88CE - 0x58];
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
         currency48_t vehicleProfit; // 0x8B9E

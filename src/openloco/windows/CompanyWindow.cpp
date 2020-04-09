@@ -4,6 +4,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
@@ -825,7 +826,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -839,6 +840,8 @@ namespace openloco::ui::windows::CompanyWindow
             // Set company name.
             auto company = companymgr::get(self->number);
             *_common_format_args = company->name;
+
+            *(uint32_t*)&_common_format_args[4] = company->current_loan;
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -888,19 +891,54 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433819
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433819, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x0043383E
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x0043383E, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::company_select:
+                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    break;
+
+                case widx::loan_decrease:
+                {
+                    registers regs;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
+                    call(0x0043393A, regs);
+                    break;
+                }
+
+                case widx::loan_increase:
+                {
+                    registers regs;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
+                    call(0x004338EB, regs);
+                    break;
+                }
+            }
         }
 
         // 0x0043385D
@@ -925,10 +963,17 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043386F
-        // static void get_scroll_size(window* self);
+        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        {
+            const auto& company = companymgr::get(self->number);
+            *scrollWidth = company->var_57 * 128;
+        }
 
         // 0x00433887
-        // static void tooltip(window* self);
+        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        {
+            args.push(string_ids::tooltip_scroll_list);
+        }
 
         // 0x0043399D
         static void on_update(window* self)
@@ -941,9 +986,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x004339B7
         static void on_resize(window* self)
         {
-            // registers regs;
-            // regs.esi = (int32_t)self;
-            // call(0x004339B7, regs);
+            common::enableRenameByCaption(self);
+            self->set_size(windowSize);
         }
 
         static void initEvents()
@@ -955,8 +999,8 @@ namespace openloco::ui::windows::CompanyWindow
             events.on_mouse_down = on_mouse_down;
             events.text_input = text_input;
             events.on_dropdown = on_dropdown;
-            // events.get_scroll_size = get_scroll_size;
-            // events.tooltip = tooltip;
+            events.get_scroll_size = get_scroll_size;
+            events.tooltip = tooltip;
             events.on_update = on_update;
             events.on_resize = on_resize;
         }
