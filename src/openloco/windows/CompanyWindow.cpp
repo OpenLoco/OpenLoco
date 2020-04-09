@@ -220,7 +220,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw owner name
             {
-                *_common_format_args = company->var_02;
+                *_common_format_args = company->owner_name;
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 gfx::draw_string_centred_wrapped(
@@ -308,8 +308,8 @@ namespace openloco::ui::windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    _common_format_args[2] = company->var_02;
-                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->var_02, widgetIndex, &_common_format_args[2]);
+                    _common_format_args[2] = company->owner_name;
+                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, &_common_format_args[2]);
                     break;
                 }
             }

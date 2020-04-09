@@ -39,7 +39,7 @@ namespace openloco
     struct company
     {
         string_id name;
-        string_id var_02;
+        string_id owner_name;
         uint32_t challenge_flags; // 0x04
         currency48_t var_08;      // company value related
         uint8_t pad_0E[0x12 - 0x0E];
