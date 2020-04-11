@@ -67,7 +67,8 @@ namespace openloco
         thing_id_t observation_thing; // 0x_8BBC;
         int16_t observation_x;        // 0x8BBE;
         int16_t observation_y;        // 0x8BC0;
-        uint8_t pad_8BC2[0x8C4E - 0x8BC2];
+        uint8_t pad_8BC2[0x8BCE - 0x8BC2];
+        uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t var_8C4E;
         uint8_t pad_8C4F[0x8E34 - 0x8C4F];
         uint16_t jail_status; // 0x8E34

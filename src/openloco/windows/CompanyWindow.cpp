@@ -6,6 +6,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -1222,10 +1223,10 @@ namespace openloco::ui::windows::CompanyWindow
 
     namespace cargo_delivered
     {
-        const gfx::ui_size_t windowSize = { 340, 382 };
+        const gfx::ui_size_t windowSize = { 240, 382 };
 
         static widget_t widgets[] = {
-            commonWidgets(340, 382, string_ids::title_company_cargo_delivered),
+            commonWidgets(240, 382, string_ids::title_company_cargo_delivered),
             widget_end(),
         };
 
@@ -1236,36 +1237,112 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433A22
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00433A22, regs);
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            common::repositionTabs(self);
         }
 
         // 0x00433ACD
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00433ACD, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            uint16_t y = self->y + 47;
+
+            // 'Cargo delivered'
+            gfx::draw_string_494B3F(
+                *dpi,
+                self->x + 5,
+                y,
+                colour::black,
+                string_ids::cargo_delivered);
+
+            y += 10;
+
+            uint8_t numPrinted = 0;
+            const auto company = companymgr::get(self->number);
+            for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
+            {
+                auto cargo = objectmgr::get<cargo_object>(i);
+                if (cargo == nullptr || company->cargoDelivered[i] == 0)
+                    continue;
+
+                if (company->cargoDelivered[i] == 1)
+                    _common_format_args[0] = cargo->unit_name_singular;
+                else
+                    _common_format_args[0] = cargo->unit_name_plural;
+
+                *(uint32_t*)&_common_format_args[1] = company->cargoDelivered[i];
+
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 10,
+                    y,
+                    colour::black,
+                    string_ids::white_stringid2,
+                    _common_format_args);
+
+                numPrinted++;
+                y += 10;
+            }
+
+            // No cargo delivered yet?
+            if (numPrinted == 0)
+            {
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 10,
+                    y,
+                    colour::black,
+                    string_ids::cargo_delivered_none);
+            }
         }
 
         // 0x00433BE6
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433BE6, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x00433C0B
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433C0B, regs);
+            if (widgetIndex == common::widx::company_select)
+                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x00433C16
@@ -1300,9 +1377,22 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433C97
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00433C97, regs);
+            common::enableRenameByCaption(self);
+
+            uint16_t cargoHeight = 0;
+            const auto company = companymgr::get(self->number);
+            for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
+            {
+                auto cargo = objectmgr::get<cargo_object>(i);
+                if (cargo == nullptr || company->cargoDelivered[i] == 0)
+                    continue;
+
+                cargoHeight += 10;
+            }
+
+            const uint16_t windowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
+
+            self->set_size({ windowSize.width, windowHeight });
         }
 
         static void initEvents()

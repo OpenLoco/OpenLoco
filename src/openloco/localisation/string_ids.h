@@ -877,6 +877,9 @@ namespace openloco::string_ids
     constexpr string_id challenge_delivered_cargo = 1859;
     constexpr string_id time_limit_years_value = 1860;
 
+    constexpr string_id cargo_delivered = 1867;
+    constexpr string_id cargo_delivered_none = 1868;
+
     constexpr string_id title_exit_game = 1869;
 
     constexpr string_id allow_industries_to_close_down_during_game = 1871;
