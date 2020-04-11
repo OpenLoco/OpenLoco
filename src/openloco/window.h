@@ -244,25 +244,49 @@ namespace openloco::ui
 
     struct SavedView
     {
-        int16_t mapX;
-        int16_t mapY;
+        union
+        {
+            coord_t mapX;
+            thing_id_t thingId;
+        };
+        union
+        {
+            coord_t mapY;
+            uint16_t flags;
+        };
         ZoomLevel zoomLevel;
         int8_t rotation;
         int16_t surfaceZ;
+
+        SavedView() = default;
+
+        SavedView(coord_t mapX, coord_t mapY, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+            : mapX(mapX)
+            , mapY(mapY)
+            , zoomLevel(zoomLevel)
+            , rotation(rotation)
+            , surfaceZ(surfaceZ){};
+
+        SavedView(thing_id_t thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+            : thingId(thingId)
+            , flags(flags)
+            , zoomLevel(zoomLevel)
+            , rotation(rotation)
+            , surfaceZ(surfaceZ){};
 
         bool isEmpty()
         {
             return mapX == -1 && mapY == -1;
         }
 
-        bool hasUnkFlag()
+        bool hasUnkFlag15()
         {
-            return (mapY & (1 << 15)) != 0;
+            return (flags & (1 << 14)) != 0;
         }
 
-        int8_t getThingId()
+        bool hasUnkFlag16()
         {
-            return mapX & 0xFF;
+            return (flags & (1 << 15)) != 0;
         }
 
         void clear()

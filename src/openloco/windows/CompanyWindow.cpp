@@ -399,15 +399,14 @@ namespace openloco::ui::windows::CompanyWindow
 
                     // loc_43410A
                     int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
-                    SavedView view = {
+                    SavedView view(
                         company->observation_x,
                         company->observation_y,
                         ZoomLevel::quarter,
                         rotation,
-                        static_cast<int16_t>(tileZ),
-                    };
+                        static_cast<int16_t>(tileZ));
 
-                    if (self->viewports[0] == nullptr || self->saved_view.hasUnkFlag())
+                    if (self->viewports[0] == nullptr || self->saved_view.hasUnkFlag15())
                     {
                         self->saved_view = view;
 
@@ -459,9 +458,37 @@ namespace openloco::ui::windows::CompanyWindow
                 }
 
                 // loc_43419F
-                // auto car = thing->next_car()->next_car()->next_car()->next_car();
+                auto car = thing->next_car()->next_car()->next_car()->next_car();
 
-                // ...
+                int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+                SavedView view(
+                    car->next_car_id,
+                    0xC000,
+                    ZoomLevel::full,
+                    rotation,
+                    0);
+
+                if (self->viewports[0] == nullptr)
+                {
+                    self->saved_view = view;
+
+                    // sub_434336
+                    {
+                        auto& widget = self->widgets[widx::viewport];
+                        auto thingId = self->saved_view.thingId;
+                        auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
+                        auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+                        viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, thingId);
+                    }
+                }
+
+                // Centre viewport on tile.
+                registers regs;
+                regs.ax = self->saved_view.mapX;
+                regs.cx = self->saved_view.mapY & 0x3FFF;
+                regs.dx = self->saved_view.surfaceZ;
+                regs.esi = (int32_t)self;
+                call(0x004C6827, regs);
             }
 
             // We're skipping the tab check and dive straight into the business to avoid a prepare_draw call.
