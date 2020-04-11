@@ -33,8 +33,8 @@ namespace openloco
     struct town
     {
         string_id name;
-        map::tile_coord_t x;
-        map::tile_coord_t y;
+        tile_coord_t x;
+        tile_coord_t y;
         uint16_t flags;
         uint8_t pad_08[0x30 - 0x08];
         uint32_t population; // 0x30
