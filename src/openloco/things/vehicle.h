@@ -90,13 +90,14 @@ namespace openloco
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t pad_35[0x38 - 0x35];
+        uint8_t var_35;
+        uint8_t pad_36[0x38 - 0x36];
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
-        TransportMode mode;
+        TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;

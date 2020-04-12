@@ -425,6 +425,20 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_age = 1155;
     constexpr string_id tooltip_sort_by_reliability = 1156;
 
+    constexpr string_id tooltip_build_new_train_vehicles = 1188;
+    constexpr string_id tooltip_build_new_buses = 1189;
+    constexpr string_id tooltip_build_new_trucks = 1190;
+    constexpr string_id tooltip_build_new_trams = 1191;
+    constexpr string_id tooltip_build_new_aircraft = 1192;
+    constexpr string_id tooltip_build_new_ships = 1193;
+
+    constexpr string_id tooltip_trains = 1194;
+    constexpr string_id tooltip_buses = 1195;
+    constexpr string_id tooltip_trucks = 1194;
+    constexpr string_id tooltip_trams = 1195;
+    constexpr string_id tooltip_aircraft = 1194;
+    constexpr string_id tooltip_ships = 1195;
+
     constexpr string_id tooltip_all_stations = 1200;
     constexpr string_id tooltip_rail_stations = 1201;
     constexpr string_id tooltip_road_stations = 1202;
@@ -452,6 +466,8 @@ namespace openloco::string_ids
     constexpr string_id num_trams_plural = 1273;
     constexpr string_id num_aircrafts_plural = 1274;
     constexpr string_id num_ships_plural = 1275;
+
+    constexpr string_id tooltip_vehicles_for = 1286;
 
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
