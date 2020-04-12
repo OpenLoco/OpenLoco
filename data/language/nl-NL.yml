@@ -1695,8 +1695,8 @@ strings:
   1657: Vlak land
   1658: Heuvels
   1659: Bergen
-  1660: "50% bergen, 50% heuvels"
-  1661: "50% bergen, 50% vlak land"
+  1660: "Afwisselend bergen en heuvels"
+  1661: "Afwisselend bergen en vlak land"
   1662: "{COLOUR WINDOW_2}Heuveldichtheid:"
   1663: "{POP16}{POP16}{INT16}%"
   1664: "{COLOUR WINDOW_2}Aantal steden:"
