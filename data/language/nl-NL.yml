@@ -1346,8 +1346,8 @@ strings:
   1316: "{COLOUR BLACK}Niets"
   1317: Too many industries
   1318: Industrieën
-  1319: Fund New Industries
-  1320: Build Industries
+  1319: Nieuwe industrieën bekostigen
+  1320: Industrieën plaatsen
   1321: "{SMALLFONT}{COLOUR BLACK}Lijst van steden"
   1322: "{SMALLFONT}{COLOUR BLACK}Build towns"
   1323: "{SMALLFONT}{COLOUR BLACK}Build individual town buildings"
@@ -1420,12 +1420,12 @@ strings:
   1390: "{SMALLFONT}{COLOUR BLACK}Production graph"
   1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
   1392: "{SMALLFONT}{COLOUR BLACK}Completely demolish this town (and any nearby industries)"
-  1393: Can't remove town...
-  1394: All stations near this town must be removed first
-  1395: Too close to another town
+  1393: Kan deze stad niet verwijderen...
+  1394: Je moet eerst alle stations die bij deze stad liggen afbreken
+  1395: Te dicht bij een andere stad
   1396: Teveel steden
-  1397: Too close to another town, or position is unsuitable
-  1398: "{SMALLFONT}{COLOUR BLACK}Select size of town to construct"
+  1397: Te dicht bij een andere stad, of deze locatie is niet geschikt
+  1398: "{SMALLFONT}{COLOUR BLACK}Selecteer de grootte van de te bouwen stad"
   1399: 1 (klein)
   1400: "2"
   1401: 3 (gemiddeld)
@@ -1436,8 +1436,8 @@ strings:
   1406: 8 (gigantisch)
   1407: "{COLOUR BLACK}Stadsgrootte:"
   1408: "{COLOUR BLACK}(Click on landscape to build new town)"
-  1409: "{SMALLFONT}{COLOUR BLACK}Expand this town"
-  1410: Too close to another industry
+  1409: "{SMALLFONT}{COLOUR BLACK}Deze stad uitbreiden"
+  1410: Te dicht bij een andere industrie
   1411: Town must be built nearby first
   1412: "{SMALLFONT}{COLOUR BLACK}Plant a cluster of the selected tree type"
   1413: "{SMALLFONT}{COLOUR BLACK}Plant a random cluster of trees"
@@ -1510,7 +1510,7 @@ strings:
   1480: "{COLOUR WINDOW_2}Deze computer als host instellen"
   1481: "{COLOUR WINDOW_2}Verbinden met host"
   1482: "{COLOUR WINDOW_2}Verbreken"
-  1483: Enter Host Address
+  1483: Hostadres invoeren
   1484: "Enter the IP address or computer name of the host to connect to, or leave blank to search the local network:"
   1485: "{COLOUR RED}Warning: You are connected to a different version of Chris Sawyer's Locomotion and two player game performance may not be reliable"
 
@@ -1566,7 +1566,7 @@ strings:
   1531: Currently in use by at least one vehicle
   1532: "{SMALLFONT}{COLOUR BLACK}Refit vehicle to carry a different type of cargo"
   1533: Can't refit this vehicle to carry a different type of cargo
-  1534: Requires water in front of dock
+  1534: Er moet water voor de steiger liggen
 
   1535: "{COLOUR WINDOW_2}Momenteel speelt:"
   1536: "{SMALLFONT}{COLOUR BLACK}Muziek stoppen"
@@ -1574,14 +1574,14 @@ strings:
   1538: "{SMALLFONT}{COLOUR BLACK}Volgend muziekstuk"
   1539: Alleen muziek afspelen die bij huidig tijdperk hoort
   1540: Alle muziek afspelen
-  1541: Play customized selection of music
+  1541: Aangepaste muziekselectie afspelen
   1542: Selectie aanpassen...
   1543: "{SMALLFONT}{COLOUR BLACK}Edit the music track selection list"
   1544: Muziekselectie bewerken
   1545: "{SMALLFONT}{COLOUR BLACK}Click on music track to toggle selection on/off"
   1546: ✓
   1547: "{COLOUR WINDOW_2}Volume:"
-  1548: "{SMALLFONT}{COLOUR BLACK}Set music volume"
+  1548: "{SMALLFONT}{COLOUR BLACK}Muziekvolume instellen"
   1549: Muziekopties
   1550: Select Owner's Face for {STRINGID}
   1551: "{SMALLFONT}{COLOUR BLACK}Click to select company/owner face"
@@ -1695,8 +1695,8 @@ strings:
   1657: Vlak land
   1658: Heuvels
   1659: Bergen
-  1660: Half Mountains, Half Hills
-  1661: Half Mountains, Half Flat
+  1660: "Afwisselend bergen en heuvels"
+  1661: "Afwisselend bergen en vlak land"
   1662: "{COLOUR WINDOW_2}Heuveldichtheid:"
   1663: "{POP16}{POP16}{INT16}%"
   1664: "{COLOUR WINDOW_2}Aantal steden:"
@@ -1975,14 +1975,14 @@ strings:
   1925: "{COLOUR BLACK}{TINYFONT}Rem"
   1926: "{SMALLFONT}{COLOUR BLACK}Move the selected order up in the list"
   1927: "{SMALLFONT}{COLOUR BLACK}Move the selected order down in the list"
-  1928: Unable to run the game directly from read-only media
+  1928: Kan het spel niet uitvoeren vanaf een medium waarop niet geschreven kan worden.
 
   1929: Credits voor Atari Inc....
   1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
   1931: Credits voor Atari Inc.
 
   1932: Kan niet verbinden - incompatibele versies!
-  1933: "{SMALLFONT}{COLOUR BLACK}Send a short text message to the other player"
+  1933: "{SMALLFONT}{COLOUR BLACK}Stuur een kort bericht naar de andere speler"
   1934: de andere speler
   1935: "The other player has exited the game: Two player mode has been disconnected"
 
@@ -2053,7 +2053,7 @@ strings:
   1998: "{COLOUR WINDOW_2}Air service speed record: {COLOUR BLACK}{VELOCITY}"
   1999: "{COLOUR WINDOW_2}Water service speed record: {COLOUR BLACK}{VELOCITY}"
   2000: "{COLOUR BLACK}Behaald door {STRINGID} op {DATE DMY}"
-  2001: Confirm Display Mode Change
+  2001: Verandering schermmodus bevestigen
   2002: "{COLOUR WINDOW_2}Display resolution changed to {UINT16 RAW} x {UINT16 RAW}"
   2003: "{COLOUR WINDOW_2}_"
   2004: "{COLOUR WINDOW_2}Bestandsnaam:"
@@ -2095,15 +2095,15 @@ strings:
   2040: ""
   2041: "{COLOUR BLACK}(ID: "
   2042: "Gegevens voor het volgende object zijn niet gevonden: "
-  2043: Not enough space for graphics
-  2044: Too many objects of this type selected
+  2043: Onvoldoende ruimte voor graphics
+  2044: Er zijn te veel objecten van dit type geselecteerd.
   2045: "The following object must be selected first: "
-  2046: This object is currently in use
-  2047: This object is required by another object
-  2048: This object is always required
-  2049: Unable to select this object
-  2050: Unable to deselect this object
-  2051: Invalid selection of objects
+  2046: Dit object is momenteel in gebruik.
+  2047: Dit object is vereist door een ander object.
+  2048: Dit object is altijd vereist.
+  2049: Kan dit object niet selecteren
+  2050: Kan dit object niet deselecteren
+  2051: Ongeldige objectselectie
   2052: Objectselectie - {STRINGID}
   2053: Interfacestijlen
   2054: Geluiden
@@ -2124,7 +2124,7 @@ strings:
   2069: Spoorextra's
   2070: Sporen
   2071: Road Stations
-  2072: Road Extras
+  2072: Wegextra's
   2073: Wegen
   2074: Vliegvelden
   2075: Havens
@@ -2156,8 +2156,8 @@ strings:
   2101: An interface type must be selected
   2102: At least one vehicle type must be selected
   2103: At least one land type must be selected
-  2104: A currency type must be selected
-  2105: A water type must be selected
+  2104: Je moet een valuta selecteren
+  2105: Je moet een watertype selecteren
   2106: A town name style must be selected
   2107: At least one level crossing type must be selected
   2108: A street light type must be selected
