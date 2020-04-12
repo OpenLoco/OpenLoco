@@ -4,6 +4,8 @@
 #include "../interop/interop.hpp"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../objects/road_object.h"
+#include "../objects/track_object.h"
 #include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
@@ -38,6 +40,7 @@ namespace openloco::ui::build_vehicle
         scrollview_2
     };
 
+    // 0x5231D0
     static widget_t _widgets[] = {
         make_widget({ 0, 0 }, { 380, 233 }, widget_type::frame, 0),
         make_widget({ 1, 1 }, { 378, 13 }, widget_type::caption_24, 0),
@@ -61,11 +64,13 @@ namespace openloco::ui::build_vehicle
         make_widget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1),
     };
 
+    loco_global<uint16_t[8], 0x112C826> _common_format_args;
     static loco_global<int16_t, 0x01136268>
         _1136268;
     static loco_global<uint16_t[1], 0x0113626A> _113626A;
-    static loco_global<int32_t, 0x011364E8> _11364E8;
+    static loco_global<int32_t, 0x011364E8> _build_target_vehicle;
     static loco_global<uint32_t, 0x011364EC> _11364EC;
+    // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<int8_t[1], 0x011364F0> _11364F0;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static std::array<uint16_t, 6> _504458{ 0x16, 0x16, 0x16, 0x16, 0x2A, 0x1E };
@@ -131,11 +136,11 @@ namespace openloco::ui::build_vehicle
     window* open(uint32_t vehicle, uint32_t flags)
     {
         auto window = WindowManager::bringToFront(WindowType::buildVehicle, companymgr::get_controlling_id());
-
+        bool tabMode = flags & (1 << 31);
         if (window)
         {
             widget_index tab = widx::tab_build_new_trains;
-            if (!(flags & (1ULL << 31)))
+            if (!tabMode)
             {
                 auto veh = thingmgr::get<openloco::vehicle>(vehicle);
                 tab += veh->var_5E;
@@ -147,13 +152,13 @@ namespace openloco::ui::build_vehicle
             }
             window->call_on_mouse_up(tab);
 
-            if (flags & (1 << 31))
+            if (tabMode)
             {
-                _11364E8 = -1;
+                _build_target_vehicle = -1;
             }
             else
             {
-                _11364E8 = vehicle;
+                _build_target_vehicle = vehicle;
             }
         }
         else
@@ -161,10 +166,10 @@ namespace openloco::ui::build_vehicle
             window = create(companymgr::get_controlling_id());
             window->width = window_size.width;
             window->height = window_size.height;
-            _11364E8 = -1;
-            if (!(flags & (1ULL << 31)))
+            _build_target_vehicle = -1;
+            if (!tabMode)
             {
-                _11364E8 = vehicle;
+                _build_target_vehicle = vehicle;
                 auto veh = thingmgr::get<openloco::vehicle>(vehicle);
                 window->current_tab = veh->var_5E;
             }
@@ -193,11 +198,11 @@ namespace openloco::ui::build_vehicle
             window->init_scroll_widgets();
         }
 
-        if (_11364E8 == -1)
+        if (_build_target_vehicle == -1)
         {
             return window;
         }
-        auto veh = thingmgr::get<openloco::vehicle>(_11364E8);
+        auto veh = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
         if (veh == nullptr)
         {
             return window;
@@ -304,9 +309,9 @@ namespace openloco::ui::build_vehicle
             vehicleId = w->number;
         }
 
-        if (_11364E8 != vehicleId)
+        if (_build_target_vehicle != vehicleId)
         {
-            _11364E8 = vehicleId;
+            _build_target_vehicle = vehicleId;
             window->var_83C = 0;
             window->invalidate();
         }
@@ -315,9 +320,9 @@ namespace openloco::ui::build_vehicle
         uint8_t dh = _11364F0[window->var_874];
 
         thing_base* vehicle = nullptr;
-        if (_11364E8 != -1)
+        if (_build_target_vehicle != -1)
         {
-            vehicle = thingmgr::get<thing_base>(_11364E8);
+            vehicle = thingmgr::get<thing_base>(_build_target_vehicle);
         }
 
         sub_4B9165(vehicleType, dh, vehicle);
@@ -407,10 +412,42 @@ namespace openloco::ui::build_vehicle
     // 0x4C370C
     static void tooltip(ui::window* window, widget_index widgetIndex)
     {
-        registers regs;
-        regs.ax = widgetIndex;
-        regs.esi = (int32_t)window;
-        call(0x4C370C, regs);
+        if (widgetIndex < widx::tab_vehicles_for_0 || widgetIndex >= widx::scrollview_1)
+        {
+            *_common_format_args = string_ids::tooltip_scroll_new_vehicle_list;
+        }
+        else
+        {
+            auto unk_for_tab = widgetIndex - widx::tab_vehicles_for_0;
+            auto type = _11364F0[unk_for_tab];
+            if (type == 0xFF)
+            {
+                if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
+                {
+
+                    *_common_format_args = string_ids::airport;
+                }
+                else
+                {
+                    *_common_format_args = string_ids::docks;
+                }
+            }
+            else
+            {
+                bool unk_flag = type & (1 << 7);
+                type &= ~(1 << 7);
+                if (unk_flag)
+                {
+                    auto road_obj = objectmgr::get<road_object>(type);
+                    *_common_format_args = road_obj->name;
+                }
+                else
+                {
+                    auto track_obj = objectmgr::get<track_object>(type);
+                    *_common_format_args = track_obj->name;
+                }
+            }
+        }
     }
 
     // 0x4C37CB

@@ -572,6 +572,9 @@ namespace openloco::string_ids
     constexpr string_id set_volume_tip = 1548;
     constexpr string_id menu_music_options = 1549;
 
+    constexpr string_id airport = 1554;
+    constexpr string_id docks = 1555;
+
     constexpr string_id owner_label = 1560;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
