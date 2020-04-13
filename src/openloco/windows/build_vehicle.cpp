@@ -283,7 +283,7 @@ namespace openloco::ui::build_vehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void sub_4B9165(VehicleType vehicle_type, uint8_t dh, openloco::vehicle* esi)
+    static void sub_4B9165(VehicleType vehicle_type, uint8_t dh, openloco::vehicle* vehicle)
     {
         if (dh != 0xFF && (dh & (1 << 7)))
         {
@@ -296,29 +296,30 @@ namespace openloco::ui::build_vehicle
         }
 
         auto company_id = companymgr::get_controlling_id();
-        if (esi != nullptr)
+        if (vehicle != nullptr)
         {
-            company_id = esi->owner;
+            company_id = vehicle->owner;
         }
         _num_available_vehicles = 0;
-        struct unk_4B9165
+        struct build_item
         {
-            uint8_t designed;
-            uint16_t power;
+            uint16_t vehicle_index;
+            uint8_t power;
+            uint16_t designed;
         };
-        std::array<unk_4B9165, objectmgr::get_max_objects(object_type::vehicle)> unk_arr;
+        std::vector<build_item> buildable_vehicles;
 
-        for (uint16_t eax = 0; eax < objectmgr::get_max_objects(object_type::vehicle); ++eax)
+        for (uint16_t vehicle_obj_index = 0; vehicle_obj_index < objectmgr::get_max_objects(object_type::vehicle); ++vehicle_obj_index)
         {
-            auto vehicle_obj = objectmgr::get<vehicle_object>(eax);
+            auto vehicle_obj = objectmgr::get<vehicle_object>(vehicle_obj_index);
             if ((uint32_t)vehicle_obj == 0xFFFFFFFF)
             {
                 continue;
             }
 
-            if (esi)
+            if (vehicle)
             {
-                if (sub_4B8FA2(esi, eax))
+                if (sub_4B8FA2(vehicle, vehicle_obj_index))
                 {
                     continue;
                 }
@@ -329,8 +330,8 @@ namespace openloco::ui::build_vehicle
                 continue;
             }
 
-            // Is vehicle unlocked
-            if (!(companymgr::get(company_id)->unlocked_vehicles[eax >> 5] & (1 << (eax & 0x1F))))
+            // Is vehicle type unlocked
+            if (!(companymgr::get(company_id)->unlocked_vehicles[vehicle_obj_index >> 5] & (1 << (vehicle_obj_index & 0x1F))))
             {
                 continue;
             }
@@ -368,45 +369,19 @@ namespace openloco::ui::build_vehicle
                 }
             }
 
-            auto power = vehicle_obj->power;
-            if (power == 0)
-            {
-                power = 1;
-            }
-
-            auto designed = vehicle_obj->designed & 0xFF;
-
-            auto cx = 0;
-            for (; cx < _num_available_vehicles; cx++)
-            {
-                if (power > unk_arr[cx].power)
-                {
-                    break;
-                }
-                if (power == unk_arr[cx].power)
-                {
-                    if (designed < unk_arr[cx].designed)
-                    {
-                        break;
-                    }
-                }
-            }
-            _num_available_vehicles++;
-            auto teax = eax;
-            do
-            {
-                auto temp_eax = teax;
-                teax = _available_vehicles[cx];
-                _available_vehicles[cx] = temp_eax;
-                auto temp_power = power;
-                power = unk_arr[cx].power;
-                unk_arr[cx].power = temp_power;
-                auto temp_designed = designed;
-                designed = unk_arr[cx].designed;
-                unk_arr[cx].designed = temp_designed;
-                cx++;
-            } while (cx < _num_available_vehicles);
+            auto power = std::min<uint16_t>(vehicle_obj->power, 1);
+            auto designed = vehicle_obj->designed;
+            // Unsure why power is only checked for first byte.
+            buildable_vehicles.push_back({ vehicle_obj_index, static_cast<uint8_t>(power), vehicle_obj->designed });
         }
+
+        std::sort(buildable_vehicles.begin(), buildable_vehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.designed < item2.designed; });
+        std::sort(buildable_vehicles.begin(), buildable_vehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.power > item2.power; });
+        for (size_t i = 0; i < buildable_vehicles.size(); ++i)
+        {
+            _available_vehicles[i] = buildable_vehicles[i].vehicle_index;
+        }
+        _num_available_vehicles = static_cast<int16_t>(buildable_vehicles.size());
     }
 
     static ui::window* getTopEditingVehicleWindow()
