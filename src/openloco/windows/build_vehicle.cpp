@@ -6,6 +6,7 @@
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
+#include "../objects/vehicle_object.h"
 #include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
@@ -64,16 +65,23 @@ namespace openloco::ui::build_vehicle
         make_widget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1),
     };
 
+    static constexpr uint32_t widget_index_to_tab_vehicle_for(widget_index widgetIndex)
+    {
+        return widgetIndex - widx::tab_vehicles_for_0;
+    }
+
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
     static loco_global<int16_t, 0x01136268>
         _1136268;
-    static loco_global<uint16_t[1], 0x0113626A> _113626A;
+    static loco_global<uint16_t[224], 0x0113626A> _113626A;
     static loco_global<int32_t, 0x011364E8> _build_target_vehicle;
     static loco_global<uint32_t, 0x011364EC> _11364EC;
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<int8_t[1], 0x011364F0> _11364F0;
+    static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _11364F0;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static std::array<uint16_t, 6> _504458{ 0x16, 0x16, 0x16, 0x16, 0x2A, 0x1E };
+    static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
+    static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
     static window_event_list _events;
 
@@ -81,6 +89,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4C28D2(ui::window* window);
     static void sub_4C2D8A(ui::window* window);
     static void sub_4C1CBE(ui::window* window);
+    static void sub_4A3A06(uint8_t cl, bool unk_flag);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -94,6 +103,7 @@ namespace openloco::ui::build_vehicle
     static void prepare_draw(ui::window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+
 
     static void init_events()
     {
@@ -418,7 +428,7 @@ namespace openloco::ui::build_vehicle
         }
         else
         {
-            auto unk_for_tab = widgetIndex - widx::tab_vehicles_for_0;
+            auto unk_for_tab = widget_index_to_tab_vehicle_for(widgetIndex);
             auto type = _11364F0[unk_for_tab];
             if (type == 0xFF)
             {
@@ -500,24 +510,139 @@ namespace openloco::ui::build_vehicle
     // 0x4C28D2
     static void sub_4C28D2(ui::window* window)
     {
-        window->number;
         auto available_vehicles = companymgr::companies()[window->number].available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
         auto disabled_tabs = (available_vehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
         window->disabled_widgets = disabled_tabs;
     }
 
+    // 0x4C2D8A
     static void sub_4C2D8A(ui::window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x4C2D8A, regs);
+        auto current_tab = window->current_tab;
+        sub_4B9165(current_tab, 0xFF, nullptr);
+
+        auto ecx = 0;
+        auto edx = 0;
+        for (auto veh_obj_index = 0; veh_obj_index < _1136268; veh_obj_index++)
+        {
+            auto vehicle_obj = objectmgr::get<vehicle_object>(_113626A[veh_obj_index]);
+            if (vehicle_obj && vehicle_obj->mode == TransportMode::rail)
+            {
+                ecx |= (1 << vehicle_obj->var_05);
+            }
+            else if (vehicle_obj && vehicle_obj->mode == TransportMode::road)
+            {
+                auto shift_unk = vehicle_obj->var_05;
+                if (shift_unk == 0xFF)
+                {
+                    shift_unk = _525FC5;
+                }
+                edx |= (1 << shift_unk);
+            }
+            else
+            {
+                // Reset the tabs
+                _11364F0[0] = -1;
+                window->widgets[tab_vehicles_for_0].type = widget_type::wt_8;
+                for (widget_index i = tab_vehicles_for_1; i <= tab_vehicles_for_7; ++i)
+                {
+                    window->widgets[i].type = widget_type::none;
+                }
+                return;
+            }
+        }
+
+        widget_index tab_widget_index = tab_vehicles_for_0;
+        auto al = 0;
+        for (al = utility::bitscanforward(ecx); al != -1 && tab_widget_index <= tab_vehicles_for_7; al = utility::bitscanforward(ecx))
+        {
+            ecx &= ~(1 << al);
+            window->widgets[tab_widget_index].type = widget_type::wt_8;
+            _11364F0[widget_index_to_tab_vehicle_for(tab_widget_index)] = al;
+            tab_widget_index++;
+        }
+
+        if (al == -1 && tab_widget_index <= tab_vehicles_for_7)
+        {
+            for (al = utility::bitscanforward(edx); al != -1 && tab_widget_index <= tab_vehicles_for_7; al = utility::bitscanforward(edx))
+            {
+                edx &= ~(1 << al);
+                window->widgets[tab_widget_index].type = widget_type::wt_8;
+                _11364F0[widget_index_to_tab_vehicle_for(tab_widget_index)] = al | (1 << 7);
+                tab_widget_index++;
+            }
+        }
+
+        _11364EC = widget_index_to_tab_vehicle_for(tab_widget_index);
+
+        for (; tab_widget_index <= tab_vehicles_for_7; ++tab_widget_index)
+        {
+            window->widgets[tab_widget_index].type = widget_type::none;
+        }
     }
 
     static void sub_4C1CBE(ui::window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x4C1CBE, regs);
+        if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains) || window->current_tab == (widx::tab_build_new_ships - widx::tab_build_new_trains))
+        {
+            window->var_874 = 0;
+        }
+
+        bool found = false;
+        uint32_t ebp = 0;
+        for (; ebp < _11364EC; ebp++)
+        {
+            if (last_railroad_option == _11364F0[ebp])
+            {
+                found = true;
+                break;
+            }
+
+            if (last_road_option == _11364F0[ebp])
+            {
+                found = true;
+                break;
+            }
+        }
+
+        window->var_874 = found ? ebp : 0;
+
+        bool unk_flag = _11364F0[ebp] & (1 << 7);
+        uint8_t cl = _11364F0[ebp] & ~(1 << 7);
+        sub_4A3A06(cl, unk_flag);
+    }
+
+    static void sub_4A3A06(uint8_t cl, bool unk_flag)
+    {
+        bool set_rail = false;
+        if (unk_flag)
+        {
+            auto road_obj = objectmgr::get<road_object>(cl);
+            if (road_obj && road_obj->flags & flags_12::unk_01)
+            {
+                set_rail = true;
+            }
+        }
+        else
+        {
+            auto rail_obj = objectmgr::get<track_object>(cl);
+            if (rail_obj && !(rail_obj->flags & flags_22::unk_02))
+            {
+                set_rail = true;
+            }
+        }
+
+        if (set_rail)
+        {
+            last_railroad_option = cl;
+        }
+        else
+        {
+            last_road_option = cl;
+        }
+
+        // The window number doesn't really matter as there is only one top toolbar
+        WindowManager::invalidate(WindowType::topToolbar, 0);
     }
 }
