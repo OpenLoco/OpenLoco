@@ -7,6 +7,7 @@ namespace openloco
     namespace flags_12
     {
         constexpr uint8_t unk_01 = 1 << 1;
+        constexpr uint8_t unk_03 = 1 << 3;
     }
 #pragma pack(push, 1)
     struct road_object

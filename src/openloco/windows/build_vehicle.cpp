@@ -71,9 +71,8 @@ namespace openloco::ui::build_vehicle
     }
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
-    static loco_global<int16_t, 0x01136268>
-        _1136268;
-    static loco_global<uint16_t[224], 0x0113626A> _113626A;
+    static loco_global<int16_t, 0x01136268> _num_available_vehicles;
+    static loco_global<uint16_t[objectmgr::get_max_objects(object_type::vehicle)], 0x0113626A> _available_vehicles;
     static loco_global<int32_t, 0x011364E8> _build_target_vehicle;
     static loco_global<uint32_t, 0x011364EC> _11364EC;
     // Array of types if 0xFF then no type, flag (1<<7) as well
@@ -103,7 +102,6 @@ namespace openloco::ui::build_vehicle
     static void prepare_draw(ui::window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-
 
     static void init_events()
     {
@@ -269,18 +267,146 @@ namespace openloco::ui::build_vehicle
             });
     }
 
-    static void sub_4B9165(uint8_t dl, uint8_t dh, void* esi)
+    static bool sub_4B8FA2(openloco::vehicle* esi, uint32_t eax)
     {
         registers regs;
-        regs.dl = dl;
-        regs.dh = dh;
+        regs.eax = eax;
         regs.esi = (uintptr_t)esi;
         if (esi == nullptr)
         {
             regs.esi = -1;
         }
 
-        call(0x004B9165, regs);
+        return call(0x004B8FA2, regs) & (X86_FLAG_CARRY << 8);
+    }
+
+    /* 0x4B9165
+     * Works out which vehicles are able to be built for this vehicle_type or vehicle
+     */
+    static void sub_4B9165(VehicleType vehicle_type, uint8_t dh, openloco::vehicle* esi)
+    {
+        if (dh != 0xFF && (dh & (1 << 7)))
+        {
+            auto obj_idx = dh & ~(1 << 7);
+            auto road_obj = objectmgr::get<road_object>(obj_idx);
+            if (road_obj->flags & flags_12::unk_03)
+            {
+                dh = 0xFE;
+            }
+        }
+
+        auto company_id = companymgr::get_controlling_id();
+        if (esi != nullptr)
+        {
+            company_id = esi->owner;
+        }
+        _num_available_vehicles = 0;
+        struct unk_4B9165
+        {
+            uint8_t designed;
+            uint16_t power;
+        };
+        std::array<unk_4B9165, objectmgr::get_max_objects(object_type::vehicle)> unk_arr;
+
+        for (uint16_t eax = 0; eax < objectmgr::get_max_objects(object_type::vehicle); ++eax)
+        {
+            auto vehicle_obj = objectmgr::get<vehicle_object>(eax);
+            if ((uint32_t)vehicle_obj == 0xFFFFFFFF)
+            {
+                continue;
+            }
+
+            if (esi)
+            {
+                if (sub_4B8FA2(esi, eax))
+                {
+                    continue;
+                }
+            }
+
+            if (vehicle_obj->type != vehicle_type)
+            {
+                continue;
+            }
+
+            // Is vehicle unlocked
+            if (!(companymgr::get(company_id)->unlocked_vehicles[eax >> 5] & (1 << (eax & 0x1F))))
+            {
+                continue;
+            }
+
+            if (dh != 0xFF)
+            {
+                uint8_t var05 = dh;
+                if (dh & (1 << 7))
+                {
+                    if (vehicle_obj->mode != TransportMode::road)
+                    {
+                        continue;
+                    }
+
+                    if (dh == 0xFE)
+                    {
+                        var05 = 0xFF;
+                    }
+                    else
+                    {
+                        var05 = dh & ~(1 << 7);
+                    }
+                }
+                else
+                {
+                    if (vehicle_obj->mode != TransportMode::rail)
+                    {
+                        continue;
+                    }
+                }
+
+                if (var05 != vehicle_obj->var_05)
+                {
+                    continue;
+                }
+            }
+
+            auto power = vehicle_obj->power;
+            if (power == 0)
+            {
+                power = 1;
+            }
+
+            auto designed = vehicle_obj->designed & 0xFF;
+
+            auto cx = 0;
+            for (; cx < _num_available_vehicles; cx++)
+            {
+                if (power > unk_arr[cx].power)
+                {
+                    break;
+                }
+                if (power == unk_arr[cx].power)
+                {
+                    if (designed < unk_arr[cx].designed)
+                    {
+                        break;
+                    }
+                }
+            }
+            _num_available_vehicles++;
+            auto teax = eax;
+            do
+            {
+                auto temp_eax = teax;
+                teax = _available_vehicles[cx];
+                _available_vehicles[cx] = temp_eax;
+                auto temp_power = power;
+                power = unk_arr[cx].power;
+                unk_arr[cx].power = temp_power;
+                auto temp_designed = designed;
+                designed = unk_arr[cx].designed;
+                unk_arr[cx].designed = temp_designed;
+                cx++;
+            } while (cx < _num_available_vehicles);
+        }
     }
 
     static ui::window* getTopEditingVehicleWindow()
@@ -326,22 +452,22 @@ namespace openloco::ui::build_vehicle
             window->invalidate();
         }
 
-        uint16_t vehicleType = window->current_tab;
+        VehicleType vehicleType = static_cast<VehicleType>(window->current_tab);
         uint8_t dh = _11364F0[window->var_874];
 
-        thing_base* vehicle = nullptr;
+        openloco::vehicle* veh = nullptr;
         if (_build_target_vehicle != -1)
         {
-            vehicle = thingmgr::get<thing_base>(_build_target_vehicle);
+            veh = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
         }
 
-        sub_4B9165(vehicleType, dh, vehicle);
+        sub_4B9165(vehicleType, dh, veh);
 
-        int cx = _1136268;
+        int cx = _num_available_vehicles;
         if (window->var_83C == cx)
             return;
 
-        uint16_t* src = _113626A;
+        uint16_t* src = _available_vehicles;
         int16_t* dest = window->row_info;
         window->var_83C = cx;
         window->row_count = 0;
@@ -519,14 +645,14 @@ namespace openloco::ui::build_vehicle
     // 0x4C2D8A
     static void sub_4C2D8A(ui::window* window)
     {
-        auto current_tab = window->current_tab;
-        sub_4B9165(current_tab, 0xFF, nullptr);
+        VehicleType current_tab_type = static_cast<VehicleType>(window->current_tab);
+        sub_4B9165(current_tab_type, 0xFF, nullptr);
 
         auto ecx = 0;
         auto edx = 0;
-        for (auto veh_obj_index = 0; veh_obj_index < _1136268; veh_obj_index++)
+        for (auto veh_obj_index = 0; veh_obj_index < _num_available_vehicles; veh_obj_index++)
         {
-            auto vehicle_obj = objectmgr::get<vehicle_object>(_113626A[veh_obj_index]);
+            auto vehicle_obj = objectmgr::get<vehicle_object>(_available_vehicles[veh_obj_index]);
             if (vehicle_obj && vehicle_obj->mode == TransportMode::rail)
             {
                 ecx |= (1 << vehicle_obj->var_05);
