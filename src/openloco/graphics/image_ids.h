@@ -7,6 +7,7 @@
 namespace openloco::image_ids
 {
     constexpr uint32_t null = 0xFFFFFFFF;
+
     constexpr uint32_t text_palette = 2169;
 
     constexpr uint32_t icon_parent_folder = 2310;

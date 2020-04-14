@@ -370,7 +370,6 @@ namespace openloco::ui::build_vehicle
             }
 
             auto power = std::min<uint16_t>(vehicle_obj->power, 1);
-            auto designed = vehicle_obj->designed;
             // Unsure why power is only checked for first byte.
             buildable_vehicles.push_back({ vehicle_obj_index, static_cast<uint8_t>(power), vehicle_obj->designed });
         }
@@ -584,9 +583,44 @@ namespace openloco::ui::build_vehicle
     // 0x4C2E5C
     static void prepare_draw(ui::window* window)
     {
+        if (window->widgets != _widgets)
+        {
+            window->widgets = _widgets;
+            window->init_scroll_widgets();
+        }
+
+        // Mask off all the tabs
+        auto active_widgets = window->activated_widgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_1) | (1 << scrollview_2));
+        // Only activate the singular tabs
+        active_widgets |= 1ULL << (window->current_tab + widx::tab_build_new_trains);
+        active_widgets |= 1ULL << (window->var_874 + widx::tab_vehicles_for_0);
+        window->activated_widgets = active_widgets;
+
+        window->widgets[widx::caption].text = window->current_tab + string_ids::build_trains;
+
+        auto width = window->width;
+        auto height = window->height;
+
+        window->widgets[widx::frame].right = width - 1;
+        window->widgets[widx::frame].bottom = height - 1;
+
+        window->widgets[widx::panel].right = width - 1;
+        window->widgets[widx::panel].bottom = height - 1;
+
+        window->widgets[widx::caption].right = width - 2;
+
+        window->widgets[widx::close_button].left = width - 15;
+        window->widgets[widx::close_button].right = width - 3;
+
+        window->widgets[widx::scrollview_2].right = width - 4;
+        window->widgets[widx::scrollview_2].left = width - 184;
+
+        window->widgets[widx::scrollview_1].right = width - 187;
+        window->widgets[widx::scrollview_1].bottom = height - 14;
+
         registers regs;
         regs.esi = (int32_t)window;
-        call(0x4C2E5C, regs);
+        call(0x4C2865, regs);
     }
 
     // 0x4C2F23
