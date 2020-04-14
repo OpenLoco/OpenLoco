@@ -62,8 +62,9 @@ namespace openloco::ui::build_vehicle
         make_remap_widget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
         make_remap_widget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
         make_remap_widget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_widget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, vertical),
-        make_widget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1),
+        make_widget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
+        make_widget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1, scrollbars::none),
+        widget_end(),
     };
 
     static constexpr uint32_t widget_index_to_tab_vehicle_for(widget_index widgetIndex)
@@ -79,9 +80,10 @@ namespace openloco::ui::build_vehicle
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _11364F0;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static std::array<uint16_t, 6> _504458{ 0x16, 0x16, 0x16, 0x16, 0x2A, 0x1E };
+    static std::array<uint16_t, 6> _scroll_row_height{ 22, 22, 22, 22, 42, 30 };
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
+    static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static window_event_list _events;
 
@@ -188,7 +190,7 @@ namespace openloco::ui::build_vehicle
                 window->current_tab = vehicle;
             }
 
-            window->var_83E = _504458[window->current_tab];
+            window->row_height = _scroll_row_height[window->current_tab];
             window->row_count = 0;
             window->var_83C = 0;
             window->row_hover = -1;
@@ -461,18 +463,96 @@ namespace openloco::ui::build_vehicle
     // 0x4C3576
     static void on_mouse_up(ui::window* window, widget_index widgetIndex)
     {
-        registers regs;
-        regs.edx = widgetIndex;
-        regs.esi = (uint32_t)window;
+        switch (widgetIndex)
+        {
+            case widx::close_button:
+                WindowManager::close(window);
+                break;
 
-        call(0x004C3576, regs);
+            case widx::tab_build_new_trains:
+            case widx::tab_build_new_buses:
+            case widx::tab_build_new_trucks:
+            case widx::tab_build_new_trams:
+            case widx::tab_build_new_aircraft:
+            case widx::tab_build_new_ships:
+            {
+
+                if (input::has_flag(input::input_flags::tool_active))
+                {
+                    input::cancel_tool(window->type, window->number);
+                }
+
+                auto new_tab = widgetIndex - widx::tab_build_new_trains;
+                window->current_tab = new_tab;
+                window->row_height = _scroll_row_height[new_tab];
+                window->frame_no = 0;
+                if (new_tab != last_build_vehicles_option)
+                {
+                    last_build_vehicles_option = new_tab;
+                    WindowManager::invalidate(WindowType::topToolbar, 0);
+                }
+
+                auto cur_viewport = window->viewports[0];
+                window->viewports[0] = 0;
+                if (cur_viewport != 0)
+                {
+                    cur_viewport->width = 0;
+                }
+
+                window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_1);
+                window->holdable_widgets = 0;
+                window->event_handlers = &_events;
+                window->widgets = _widgets;
+                sub_4C28D2(window);
+                window->invalidate();
+                _build_target_vehicle = -1;
+                sub_4C2D8A(window);
+                sub_4C1CBE(window);
+                window->row_count = 0;
+                window->var_83C = 0;
+                window->row_hover = -1;
+                window->call_on_resize();
+                window->call_on_periodic_update();
+                window->call_prepare_draw();
+                window->init_scroll_widgets();
+                window->invalidate();
+                window->moveInsideScreenEdges();
+                break;
+            }
+            case widx::tab_vehicles_for_0:
+            case widx::tab_vehicles_for_1:
+            case widx::tab_vehicles_for_2:
+            case widx::tab_vehicles_for_3:
+            case widx::tab_vehicles_for_4:
+            case widx::tab_vehicles_for_5:
+            case widx::tab_vehicles_for_6:
+            case widx::tab_vehicles_for_7:
+            {
+                auto tab = widget_index_to_tab_vehicle_for(widgetIndex);
+                if (window->var_874 == tab)
+                    break;
+
+                window->var_874 = tab;
+                sub_4A3A06(_11364F0[tab] & ~(1 << 7), _11364F0[tab] & (1 << 7));
+                _build_target_vehicle = -1;
+                window->row_count = 0;
+                window->var_83C = 0;
+                window->row_hover = -1;
+                window->call_on_resize();
+                window->call_on_periodic_update();
+                window->call_prepare_draw();
+                window->init_scroll_widgets();
+                window->invalidate();
+                break;
+            }
+        }
     }
 
     // 0x4C3929
     static void on_resize(window* window)
     {
         window->flags |= window_flags::resizable;
-        auto min_width = std::min<int16_t>(_11364EC * 31 + 195, 380);
+        auto min_width = std::max<int16_t>(_11364EC * 31 + 195, 380);
         window->min_width = min_width;
         window->max_width = 520;
         window->min_height = 233;
@@ -500,10 +580,10 @@ namespace openloco::ui::build_vehicle
         if (scroll_position < window->scroll_areas[0].v_top)
         {
             window->scroll_areas[0].v_top = scroll_position;
-            ui::scrollview::update_thumbs(window, 0);
+            ui::scrollview::update_thumbs(window, widx::scrollview_1);
         }
 
-        if (window->row_hover != 0xFFFF)
+        if (window->row_hover != -1)
         {
             return;
         }
@@ -537,7 +617,7 @@ namespace openloco::ui::build_vehicle
     // 0x4C37B9
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->var_83C * window->var_83E;
+        *scrollHeight = window->var_83C * window->row_height;
     }
 
     // 0x4C384B
@@ -606,21 +686,23 @@ namespace openloco::ui::build_vehicle
     // 0x4C37CB
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        registers regs;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        regs.ax = widgetIdx;
-        regs.ebx = -1;
-        regs.edi = (int32_t)&window->widgets[widgetIdx];
-        regs.esi = (int32_t)window;
-        call(0x4C37CB, regs);
-
-        if (regs.ebx == -1)
+        if (widgetIdx != widx::scrollview_1)
         {
             return fallback;
         }
 
-        return (cursor_id)regs.ebx;
+        auto scroll_item = yPos / window->row_height;
+        if (scroll_item >= window->var_83C)
+        {
+            return fallback;
+        }
+
+        if (window->row_info[scroll_item] == -1)
+        {
+            return fallback;
+        }
+
+        return cursor_id::hand_pointer;
     }
 
     // 0x4C2E5C

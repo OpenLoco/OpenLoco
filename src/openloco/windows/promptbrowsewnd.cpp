@@ -192,7 +192,7 @@ namespace openloco::ui::prompt_browse
             _textInputFlags = 0;
             _textInputLeft = 0;
 
-            window->var_83E = 11;
+            window->row_height = 11;
             window->var_85A = 0xFFFF;
 
             addr<0x009DA285, uint8_t>() = 0;
@@ -272,7 +272,7 @@ namespace openloco::ui::prompt_browse
     // 0x004464A1
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->var_83E * _numFiles;
+        *scrollHeight = window->row_height * _numFiles;
     }
 
     // 0x004467D7
@@ -548,7 +548,7 @@ namespace openloco::ui::prompt_browse
 
         // Directories / files
         auto y = 0;
-        auto lineHeight = window->var_83E;
+        auto lineHeight = window->row_height;
         for (auto i = 0; i < _numFiles; i++)
         {
             if (y + lineHeight >= dpi->y && y <= dpi->y + dpi->height)
