@@ -10,6 +10,7 @@
 #include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
+#include "../ui/scrollview.h"
 
 using namespace openloco::interop;
 
@@ -89,6 +90,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4C2D8A(ui::window* window);
     static void sub_4C1CBE(ui::window* window);
     static void sub_4A3A06(uint8_t cl, bool unk_flag);
+    static void sub_4C2865(ui::window* window);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -469,9 +471,50 @@ namespace openloco::ui::build_vehicle
     // 0x4C3929
     static void on_resize(window* window)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x4C3929, regs);
+        window->flags |= window_flags::resizable;
+        auto min_width = std::min<int16_t>(_11364EC * 31 + 195, 380);
+        window->min_width = min_width;
+        window->max_width = 520;
+        window->min_height = 233;
+        window->max_height = 600;
+        if (window->width < min_width)
+        {
+            window->width = min_width;
+            window->invalidate();
+        }
+
+        if (window->height < window->min_height)
+        {
+            window->height = window->min_height;
+            window->invalidate();
+        }
+
+        auto scroll_position = window->scroll_areas[0].v_bottom;
+        scroll_position -= window->widgets[widx::scrollview_1].bottom;
+        scroll_position += window->widgets[widx::scrollview_1].top;
+        if (scroll_position < 0)
+        {
+            scroll_position = 0;
+        }
+
+        if (scroll_position < window->scroll_areas[0].v_top)
+        {
+            window->scroll_areas[0].v_top = scroll_position;
+            ui::scrollview::update_thumbs(window, 0);
+        }
+
+        if (window->row_hover != 0xFFFF)
+        {
+            return;
+        }
+
+        if (window->var_83C == 0)
+        {
+            return;
+        }
+
+        window->row_hover = window->row_info[0];
+        window->invalidate();
     }
 
     // 0x4C3923
@@ -618,9 +661,7 @@ namespace openloco::ui::build_vehicle
         window->widgets[widx::scrollview_1].right = width - 187;
         window->widgets[widx::scrollview_1].bottom = height - 14;
 
-        registers regs;
-        regs.esi = (int32_t)window;
-        call(0x4C2865, regs);
+        sub_4C2865(window);
     }
 
     // 0x4C2F23
@@ -779,5 +820,28 @@ namespace openloco::ui::build_vehicle
 
         // The window number doesn't really matter as there is only one top toolbar
         WindowManager::invalidate(WindowType::topToolbar, 0);
+    }
+
+    // 0x4C2865 common for build vehicle window and vehicle list
+    static void sub_4C2865(ui::window* window)
+    {
+        auto disabled_widgets = window->disabled_widgets >> widx::tab_build_new_trains;
+        auto widget = window->widgets + widx::tab_build_new_trains;
+        auto tab_width = widget->right - widget->left;
+        auto tab_x = widget->left;
+        for (auto i = 0; i < widx::tab_build_new_ships - widx::tab_build_new_trains; ++i, ++widget)
+        {
+            if (disabled_widgets & (1ULL << i))
+            {
+                widget->type = widget_type::none;
+            }
+            else
+            {
+                widget->type = widget_type::wt_8;
+                widget->left = tab_x;
+                widget->right = tab_x + tab_width;
+                tab_x += tab_width + 1;
+            }
+        }
     }
 }
