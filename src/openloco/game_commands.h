@@ -21,6 +21,16 @@ namespace openloco::game_commands
     void registerHooks();
     uint32_t do_command(int esi, const registers& registers);
 
+    inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = vehicle_id;
+        regs.edx = vehicle_type;
+        do_command(5, regs);
+        return (uint32_t)regs.ebx != 0x80000000;
+    }
+
     inline void do_20()
     {
         registers regs;

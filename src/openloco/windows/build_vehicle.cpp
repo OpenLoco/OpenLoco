@@ -1,4 +1,5 @@
 #include "../companymgr.h"
+#include "../game_commands.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -73,8 +74,10 @@ namespace openloco::ui::build_vehicle
     }
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
+    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<int16_t, 0x01136268> _num_available_vehicles;
     static loco_global<uint16_t[objectmgr::get_max_objects(object_type::vehicle)], 0x0113626A> _available_vehicles;
+    static loco_global<uint16_t, 0x0113642A> _113642A;
     static loco_global<int32_t, 0x011364E8> _build_target_vehicle;
     static loco_global<uint32_t, 0x011364EC> _11364EC;
     // Array of types if 0xFF then no type, flag (1<<7) as well
@@ -93,6 +96,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4C1CBE(ui::window* window);
     static void sub_4A3A06(uint8_t cl, bool unk_flag);
     static void sub_4C2865(ui::window* window);
+    static void sub_4B60CC(openloco::vehicle* vehicle);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -623,23 +627,64 @@ namespace openloco::ui::build_vehicle
     // 0x4C384B
     static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)window;
-        regs.cx = x;
-        regs.dx = y;
-        call(0x4C384B, regs);
+        if (scroll_index != 0)
+        {
+            return;
+        }
+
+        auto scroll_item = y / window->row_height;
+        if (scroll_item >= window->var_83C)
+        {
+            return;
+        }
+
+        auto pan = window->width / 2 + window->x;
+        audio::play_sound(audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
+        auto item = window->row_info[scroll_item];
+        auto vehicle_obj = objectmgr::get<vehicle_object>(item);
+        _common_format_args[5] = vehicle_obj->name;
+        gGameCommandErrorTitle = string_ids::cant_build_pop_5_string_id;
+        if (_build_target_vehicle != -1)
+        {
+            auto vehicle = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
+            _common_format_args[6] = vehicle->var_44;
+            _common_format_args[7] = vehicle->var_22;
+            gGameCommandErrorTitle = string_ids::cant_add_pop_5_string_id_string_id;
+        }
+
+        if (!game_commands::do_5(item, _build_target_vehicle))
+        {
+            return;
+        }
+
+        if (_build_target_vehicle == -1)
+        {
+            auto vehicle = thingmgr::get<openloco::vehicle>(_113642A);
+            sub_4B60CC(vehicle);
+        }
+        sub_4B92A5(window);
     }
 
     // 0x4C3802
     static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)window;
-        regs.cx = x;
-        regs.dx = y;
-        call(0x4C3802, regs);
+        if (scroll_index != 0)
+        {
+            return;
+        }
+
+        auto scroll_item = y / window->row_height;
+        int16_t item = -1;
+        if (scroll_item < window->var_83C)
+        {
+            item = window->row_info[scroll_item];
+        }
+
+        if (item != -1 && item != window->row_hover)
+        {
+            window->row_hover = item;
+            window->invalidate();
+        }
     }
 
     // 0x4C370C
@@ -911,7 +956,7 @@ namespace openloco::ui::build_vehicle
         auto widget = window->widgets + widx::tab_build_new_trains;
         auto tab_width = widget->right - widget->left;
         auto tab_x = widget->left;
-        for (auto i = 0; i < widx::tab_build_new_ships - widx::tab_build_new_trains; ++i, ++widget)
+        for (auto i = 0; i <= widx::tab_build_new_ships - widx::tab_build_new_trains; ++i, ++widget)
         {
             if (disabled_widgets & (1ULL << i))
             {
@@ -925,5 +970,12 @@ namespace openloco::ui::build_vehicle
                 tab_x += tab_width + 1;
             }
         }
+    }
+
+    static void sub_4B60CC(openloco::vehicle* vehicle)
+    {
+        registers regs;
+        regs.edx = (int32_t)vehicle;
+        call(0x4B60CC, regs);
     }
 }
