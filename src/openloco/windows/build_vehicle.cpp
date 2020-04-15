@@ -1,5 +1,6 @@
 #include "../companymgr.h"
 #include "../game_commands.h"
+#include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -39,8 +40,14 @@ namespace openloco::ui::build_vehicle
         tab_vehicles_for_5,
         tab_vehicles_for_6,
         tab_vehicles_for_7,
-        scrollview_1,
-        scrollview_2
+        scrollview_vehicle_selection,
+        scrollview_vehicle_preview
+    };
+
+    enum scrollIdx
+    {
+        vehicle_selection,
+        vehicle_preview
     };
 
     // 0x5231D0
@@ -87,6 +94,7 @@ namespace openloco::ui::build_vehicle
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
+    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static window_event_list _events;
 
@@ -97,6 +105,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4A3A06(uint8_t cl, bool unk_flag);
     static void sub_4C2865(ui::window* window);
     static void sub_4B60CC(openloco::vehicle* vehicle);
+    static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -134,7 +143,7 @@ namespace openloco::ui::build_vehicle
         auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, window_flags::flag_11, &_events);
         window->widgets = _widgets;
         window->number = company;
-        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_1);
+        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = companymgr::get_controlling_id();
         window->frame_no = 0;
         auto skin = openloco::objectmgr::get<interface_skin_object>();
@@ -200,7 +209,7 @@ namespace openloco::ui::build_vehicle
             window->row_hover = -1;
             window->invalidate();
             window->widgets = _widgets;
-            window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_1);
+            window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_vehicle_selection);
             window->holdable_widgets = 0;
             window->event_handlers = &_events;
             window->activated_widgets = 0;
@@ -503,7 +512,7 @@ namespace openloco::ui::build_vehicle
                     cur_viewport->width = 0;
                 }
 
-                window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_1);
+                window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_vehicles_for_0) | (1 << widx::tab_vehicles_for_1) | (1 << widx::tab_vehicles_for_2) | (1 << widx::tab_vehicles_for_3) | (1 << widx::tab_vehicles_for_4) | (1 << widx::tab_vehicles_for_5) | (1 << widx::tab_vehicles_for_6) | (1 << widx::tab_vehicles_for_7) | (1 << widx::scrollview_vehicle_selection);
                 window->holdable_widgets = 0;
                 window->event_handlers = &_events;
                 window->widgets = _widgets;
@@ -573,18 +582,18 @@ namespace openloco::ui::build_vehicle
             window->invalidate();
         }
 
-        auto scroll_position = window->scroll_areas[0].v_bottom;
-        scroll_position -= window->widgets[widx::scrollview_1].bottom;
-        scroll_position += window->widgets[widx::scrollview_1].top;
+        auto scroll_position = window->scroll_areas[scrollIdx::vehicle_selection].v_bottom;
+        scroll_position -= window->widgets[widx::scrollview_vehicle_selection].bottom;
+        scroll_position += window->widgets[widx::scrollview_vehicle_selection].top;
         if (scroll_position < 0)
         {
             scroll_position = 0;
         }
 
-        if (scroll_position < window->scroll_areas[0].v_top)
+        if (scroll_position < window->scroll_areas[scrollIdx::vehicle_selection].v_top)
         {
-            window->scroll_areas[0].v_top = scroll_position;
-            ui::scrollview::update_thumbs(window, widx::scrollview_1);
+            window->scroll_areas[scrollIdx::vehicle_selection].v_top = scroll_position;
+            ui::scrollview::update_thumbs(window, widx::scrollview_vehicle_selection);
         }
 
         if (window->row_hover != -1)
@@ -627,7 +636,7 @@ namespace openloco::ui::build_vehicle
     // 0x4C384B
     static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        if (scroll_index != 0)
+        if (scroll_index != scrollIdx::vehicle_selection)
         {
             return;
         }
@@ -668,7 +677,7 @@ namespace openloco::ui::build_vehicle
     // 0x4C3802
     static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        if (scroll_index != 0)
+        if (scroll_index != scrollIdx::vehicle_selection)
         {
             return;
         }
@@ -690,7 +699,7 @@ namespace openloco::ui::build_vehicle
     // 0x4C370C
     static void tooltip(ui::window* window, widget_index widgetIndex)
     {
-        if (widgetIndex < widx::tab_vehicles_for_0 || widgetIndex >= widx::scrollview_1)
+        if (widgetIndex < widx::tab_vehicles_for_0 || widgetIndex >= widx::scrollview_vehicle_selection)
         {
             *_common_format_args = string_ids::tooltip_scroll_new_vehicle_list;
         }
@@ -731,7 +740,7 @@ namespace openloco::ui::build_vehicle
     // 0x4C37CB
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
-        if (widgetIdx != widx::scrollview_1)
+        if (widgetIdx != widx::scrollview_vehicle_selection)
         {
             return fallback;
         }
@@ -760,7 +769,7 @@ namespace openloco::ui::build_vehicle
         }
 
         // Mask off all the tabs
-        auto active_widgets = window->activated_widgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_1) | (1 << scrollview_2));
+        auto active_widgets = window->activated_widgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
         // Only activate the singular tabs
         active_widgets |= 1ULL << (window->current_tab + widx::tab_build_new_trains);
         active_widgets |= 1ULL << (window->var_874 + widx::tab_vehicles_for_0);
@@ -782,11 +791,11 @@ namespace openloco::ui::build_vehicle
         window->widgets[widx::close_button].left = width - 15;
         window->widgets[widx::close_button].right = width - 3;
 
-        window->widgets[widx::scrollview_2].right = width - 4;
-        window->widgets[widx::scrollview_2].left = width - 184;
+        window->widgets[widx::scrollview_vehicle_preview].right = width - 4;
+        window->widgets[widx::scrollview_vehicle_preview].left = width - 184;
 
-        window->widgets[widx::scrollview_1].right = width - 187;
-        window->widgets[widx::scrollview_1].bottom = height - 14;
+        window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
+        window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
         sub_4C2865(window);
     }
@@ -803,11 +812,36 @@ namespace openloco::ui::build_vehicle
     // 0x4C3307
     static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        registers regs;
-        regs.ax = scrollIndex;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x4C3307, regs);
+        switch (scrollIndex)
+        {
+            case scrollIdx::vehicle_selection:
+                break;
+            case scrollIdx::vehicle_preview:
+            {
+                auto colour = colour::get_shade(window->colours[1], 0);
+                // gfx::clear needs the colour copied to each byte of eax
+                gfx::clear(*dpi, colour * 0x01010101);
+
+                if (window->row_hover == -1)
+                {
+                    break;
+                }
+
+                uint8_t unk1 = _52622E & 0x3F;
+                uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
+                draw_vehicle_overview(dpi, window->row_hover, companymgr::get_controlling_id(), unk1, unk2, {90, 37});
+
+                auto vehicle_obj = objectmgr::get<vehicle_object>(window->row_hover);
+                auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
+                stringmgr::format_string(buffer, vehicle_obj->name);
+                break;
+            }
+        }
+        //registers regs;
+        //regs.ax = scrollIndex;
+        //regs.esi = (int32_t)window;
+        //regs.edi = (int32_t)dpi;
+        //call(0x4C3307, regs);
     }
 
     // 0x4C28D2
@@ -977,5 +1011,19 @@ namespace openloco::ui::build_vehicle
         registers regs;
         regs.edx = (int32_t)vehicle;
         call(0x4B60CC, regs);
+    }
+
+    // 0x4B7741
+    static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset)
+    {
+        registers regs;
+        regs.cx = offset.x;
+        regs.dx = offset.y;
+        regs.eax = eax;
+        regs.esi = esi;
+        regs.ebx = company;
+        regs.ebp = vehicle_type_idx;
+        regs.edi = (uintptr_t)dpi;
+        call(0x4B7741, regs);
     }
 }

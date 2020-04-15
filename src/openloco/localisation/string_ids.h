@@ -427,7 +427,8 @@ namespace openloco::string_ids
 
     constexpr string_id cant_add_pop_5_string_id_string_id = 1184;
     constexpr string_id cant_build_pop_5_string_id = 1185;
-
+    constexpr string_id select_new_vehicle = 1186;
+    constexpr string_id select_vehicle_to_add_to_string_id = 1187;
     constexpr string_id tooltip_build_new_train_vehicles = 1188;
     constexpr string_id tooltip_build_new_buses = 1189;
     constexpr string_id tooltip_build_new_trucks = 1190;
