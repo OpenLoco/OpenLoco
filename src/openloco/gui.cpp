@@ -40,7 +40,7 @@ namespace openloco::gui
             0,
             { window->x, window->y },
             { window->width, window->height },
-            viewportmgr::ZoomLevel::full,
+            ZoomLevel::full,
             { (map::map_rows * map::tile_size) / 2 - 1, (map::map_rows * map::tile_size) / 2 - 1, 480 });
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines

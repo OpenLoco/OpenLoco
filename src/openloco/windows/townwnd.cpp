@@ -53,7 +53,6 @@ namespace openloco::ui::windows::town
 
         // Defined at the bottom of this file.
         static void prepare_draw(window* self);
-        static void on_resize(window* self);
         static void text_input(window* self, widget_index callingWidget, char* input);
         static void update(window* self);
         static void renameTownPrompt(window* self, widget_index widgetIndex);
@@ -252,8 +251,6 @@ namespace openloco::ui::windows::town
 
             self->set_size(gfx::ui_size_t(192, 161), gfx::ui_size_t(600, 440));
 
-            common::on_resize(self);
-
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
@@ -292,7 +289,7 @@ namespace openloco::ui::windows::town
             SavedView view = {
                 town->x,
                 town->y,
-                2,
+                ZoomLevel::quarter,
                 static_cast<int8_t>(self->viewports[0]->getRotation()),
                 tileZ,
             };
@@ -321,8 +318,9 @@ namespace openloco::ui::windows::town
             {
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = openloco::map::map_pos3({ town->x, town->y, tileZ });
-                auto zoomLevel = openloco::ui::viewportmgr::ZoomLevel::half;
-                viewportmgr::create(self, 0, gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1), gfx::ui_size_t(widget->width() - 2, widget->height() - 2), zoomLevel, tile);
+                auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
+                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= window_flags::viewport_no_scrolling;
             }
@@ -505,8 +503,6 @@ namespace openloco::ui::windows::town
             // Call to sub_498E9B has been deliberately omitted.
 
             self->set_size(gfx::ui_size_t(299, 172), gfx::ui_size_t(299, 327));
-
-            common::on_resize(self);
         }
 
         static void initEvents()
@@ -602,8 +598,6 @@ namespace openloco::ui::windows::town
             // Call to sub_498E9B has been deliberately omitted.
 
             self->set_size(gfx::ui_size_t(340, 208), gfx::ui_size_t(340, 208));
-
-            common::on_resize(self);
         }
 
         static void initEvents()
@@ -662,31 +656,6 @@ namespace openloco::ui::windows::town
 
             self->widgets[common::widx::panel].right = self->width - 1;
             self->widgets[common::widx::panel].bottom = self->height - 1;
-        }
-
-        static void on_resize(window* self)
-        {
-            if (self->width < self->min_width)
-            {
-                self->width = self->min_width;
-                self->invalidate();
-            }
-            else if (self->width > self->max_width)
-            {
-                self->width = self->max_width;
-                self->invalidate();
-            }
-
-            if (self->height < self->min_height)
-            {
-                self->height = self->min_height;
-                self->invalidate();
-            }
-            else if (self->height > self->max_height)
-            {
-                self->height = self->max_height;
-                self->invalidate();
-            }
         }
 
         // 0x00499287

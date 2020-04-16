@@ -13,9 +13,6 @@ namespace openloco
 
 namespace openloco::map
 {
-    using coord_t = int16_t;
-    using tile_coord_t = int16_t;
-
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
     constexpr coord_t map_columns = 384;

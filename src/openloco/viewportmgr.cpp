@@ -312,7 +312,7 @@ namespace openloco::ui::viewportmgr
         invalidate(rect, level);
     }
 
-    void invalidate(const map::map_pos pos, map::coord_t zMin, map::coord_t zMax, ZoomLevel zoom, int radius)
+    void invalidate(const map::map_pos pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
     {
         auto axbx = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
         axbx.x -= radius;
