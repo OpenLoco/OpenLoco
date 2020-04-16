@@ -456,6 +456,9 @@ namespace openloco::string_ids
     constexpr string_id build_aircraft = 1244;
     constexpr string_id build_ships = 1245;
 
+    constexpr string_id no_vehicles_available = 1248;
+    constexpr string_id no_compatible_vehicles_available = 1249;
+
     constexpr string_id buffer_1250 = 1250;
 
     constexpr string_id num_trains_singular = 1264;

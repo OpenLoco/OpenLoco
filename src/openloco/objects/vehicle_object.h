@@ -120,7 +120,7 @@ namespace openloco
 
     struct vehicle_object
     {
-        string_id name;     // 0x00 probably not confirmed
+        string_id name;     // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t pad_04;
@@ -142,7 +142,10 @@ namespace openloco
         uint16_t rack_speed; // 0xDC
         uint16_t weight;     // 0xDE
         uint16_t flags;      // 0xE0
-        uint8_t pad_E2[0x10D - 0xE2];
+        uint8_t pad_E2[0xE4 - 0xE2];
+        uint32_t var_E4;
+        uint32_t var_E8;
+        uint8_t pad_EC[0x10D - 0xEC];
         simple_animation animation[2]; // 0x10D
         uint8_t var_113;
         uint16_t designed; // 0x114

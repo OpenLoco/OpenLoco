@@ -4,6 +4,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
@@ -106,6 +107,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4C2865(ui::window* window);
     static void sub_4B60CC(openloco::vehicle* vehicle);
     static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
+    static int16_t draw_vehicle_inline(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, uint8_t unk_1, company_id_t company, gfx::point_t loc);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -815,7 +817,63 @@ namespace openloco::ui::build_vehicle
         switch (scrollIndex)
         {
             case scrollIdx::vehicle_selection:
+            {
+                auto colour = colour::get_shade(window->colours[1], 4);
+                gfx::clear(*dpi, colour * 0x01010101);
+                if (window->var_83C == 0)
+                {
+                    auto default_message = string_ids::no_vehicles_available;
+                    if (_build_target_vehicle != -1)
+                    {
+                        auto vehicle = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
+                        default_message = string_ids::no_compatible_vehicles_available;
+                        _common_format_args[0] = vehicle->var_22;
+                        _common_format_args[1] = vehicle->var_44;
+                    }
+
+                    auto width = window->widgets[widx::scrollview_vehicle_selection].right - window->widgets[widx::scrollview_vehicle_selection].left - 17;
+                    auto y = (window->row_height - 10) / 2;
+                    gfx::draw_string_495224(*dpi, 3, y, width, colour::black, default_message, _common_format_args);
+                }
+                else
+                {
+                    int16_t y = 0;
+                    for (auto i = 0; i < window->var_83C; ++i, y += window->row_height)
+                    {
+                        if (y + window->row_height + 30 <= dpi->y)
+                        {
+                            continue;
+                        }
+
+                        if (y >= dpi->y + dpi->height + 30)
+                        {
+                            continue;
+                        }
+
+                        auto vehicle_type = window->row_info[i];
+                        if (vehicle_type == -1)
+                        {
+                            continue;
+                        }
+
+                        auto coloured_string = string_ids::white_stringid2;
+                        if (window->row_hover == vehicle_type)
+                        {
+                            gfx::fill_rect(dpi, 0, y, window->width, y + window->row_height - 1, 0x2000030);
+                            coloured_string = string_ids::wcolour2_stringid2;
+                        }
+
+                        int16_t half = (window->row_height - 22) / 2;
+                        auto x = draw_vehicle_inline(dpi, vehicle_type, 0, companymgr::get_controlling_id(), { 0, y + half });
+
+                        auto vehicle_obj = objectmgr::get<vehicle_object>(vehicle_type);
+                        _common_format_args[0] = vehicle_obj->name;
+                        half = (window->row_height - 10) / 2;
+                        gfx::draw_string_494B3F(*dpi, x + 3, y + half, colour::black, coloured_string, _common_format_args);
+                    }
+                }
                 break;
+            }
             case scrollIdx::vehicle_preview:
             {
                 auto colour = colour::get_shade(window->colours[1], 0);
@@ -829,19 +887,30 @@ namespace openloco::ui::build_vehicle
 
                 uint8_t unk1 = _52622E & 0x3F;
                 uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                draw_vehicle_overview(dpi, window->row_hover, companymgr::get_controlling_id(), unk1, unk2, {90, 37});
+                draw_vehicle_overview(dpi, window->row_hover, companymgr::get_controlling_id(), unk1, unk2, { 90, 37 });
 
                 auto vehicle_obj = objectmgr::get<vehicle_object>(window->row_hover);
                 auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
-                stringmgr::format_string(buffer, vehicle_obj->name);
+                buffer = stringmgr::format_string(buffer, vehicle_obj->name);
+                auto eax = vehicle_obj->var_E4 | vehicle_obj->var_E8;
+
+                for (auto ebx = utility::bitscanforward(eax); ebx != -1; ebx = utility::bitscanforward(eax))
+                {
+                    eax &= ~(1 << ebx);
+                    auto cargo_obj = objectmgr::get<cargo_object>(ebx);
+                    cargo_obj->unit_inline_sprite;
+                    *buffer++ = ' ';
+                    *buffer++ = control_codes::inline_sprite_str;
+                    *(reinterpret_cast<uint32_t*>(buffer)) = cargo_obj->unit_inline_sprite;
+                    buffer += 4;
+                }
+
+                *buffer++ = '\0';
+                _common_format_args[0] = string_ids::buffer_1250;
+                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid2, _common_format_args);
                 break;
             }
         }
-        //registers regs;
-        //regs.ax = scrollIndex;
-        //regs.esi = (int32_t)window;
-        //regs.edi = (int32_t)dpi;
-        //call(0x4C3307, regs);
     }
 
     // 0x4C28D2
@@ -1025,5 +1094,21 @@ namespace openloco::ui::build_vehicle
         regs.ebp = vehicle_type_idx;
         regs.edi = (uintptr_t)dpi;
         call(0x4B7741, regs);
+    }
+
+    // 0x4B7711
+    static int16_t draw_vehicle_inline(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, uint8_t unk_1, company_id_t company, gfx::point_t loc)
+    {
+        registers regs;
+
+        regs.al = unk_1;
+        regs.ebx = company;
+        regs.cx = loc.x;
+        regs.dx = loc.y;
+        regs.edi = (uintptr_t)dpi;
+        regs.ebp = vehicle_type_idx;
+        call(0x4B7711, regs);
+        // Returns right coordinate of the drawing
+        return regs.cx;
     }
 }
