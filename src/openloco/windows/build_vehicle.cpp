@@ -709,7 +709,7 @@ namespace openloco::ui::build_vehicle
         {
             auto unk_for_tab = widget_index_to_tab_vehicle_for(widgetIndex);
             auto type = _11364F0[unk_for_tab];
-            if (type == 0xFF)
+            if (type == -1)
             {
                 if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
                 {
