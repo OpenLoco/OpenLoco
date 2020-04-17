@@ -456,10 +456,21 @@ namespace openloco::string_ids
     constexpr string_id build_aircraft = 1244;
     constexpr string_id build_ships = 1245;
 
+    constexpr string_id road = 1247;
     constexpr string_id no_vehicles_available = 1248;
     constexpr string_id no_compatible_vehicles_available = 1249;
 
     constexpr string_id buffer_1250 = 1250;
+
+    constexpr string_id stats_cost = 1251;
+    constexpr string_id stats_requires = 1252;
+    constexpr string_id stats_power = 1253;
+    constexpr string_id stats_weight = 1254;
+    constexpr string_id stats_max_speed = 1255;
+    constexpr string_id stats_designed = 1256;
+    constexpr string_id stats_capacity = 1257;
+
+    constexpr string_id stats_running_cost = 1262;
 
     constexpr string_id num_trains_singular = 1264;
     constexpr string_id num_buses_singular = 1265;

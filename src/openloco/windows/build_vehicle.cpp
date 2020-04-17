@@ -90,6 +90,7 @@ namespace openloco::ui::build_vehicle
     static loco_global<uint32_t, 0x011364EC> _11364EC;
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _11364F0;
+    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static std::array<uint16_t, 6> _scroll_row_height{ 22, 22, 22, 22, 42, 30 };
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
@@ -108,6 +109,8 @@ namespace openloco::ui::build_vehicle
     static void sub_4B60CC(openloco::vehicle* vehicle);
     static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
     static int16_t draw_vehicle_inline(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, uint8_t unk_1, company_id_t company, gfx::point_t loc);
+    static void draw_build_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw_build_sub_type_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_resize(window* window);
@@ -805,10 +808,70 @@ namespace openloco::ui::build_vehicle
     // 0x4C2F23
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x4C2F23, regs);
+        window->draw(dpi);
+        draw_build_tabs(window, dpi);
+        draw_build_sub_type_tabs(window, dpi);
+
+        {
+            auto x = window->x + 2;
+            auto y = window->y + window->height - 13;
+            auto bottom_left_message = string_ids::select_new_vehicle;
+            if (_build_target_vehicle != -1)
+            {
+                auto vehicle = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
+                _common_format_args[0] = vehicle->var_22;
+                _common_format_args[1] = vehicle->var_44;
+                bottom_left_message = string_ids::select_vehicle_to_add_to_string_id;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x, y, window->width - 186, colour::black, bottom_left_message, _common_format_args);
+        }
+
+        if (window->row_hover == -1)
+        {
+            return;
+        }
+
+        auto vehicle_obj = objectmgr::get<vehicle_object>(window->row_hover);
+        auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
+        auto cost = (vehicle_obj->cost_fact * currencyMultiplicationFactor[vehicle_obj->cost_ind]) / 64;
+        *(reinterpret_cast<uint32_t*>(&_common_format_args[0])) = cost;
+        buffer = stringmgr::format_string(buffer, string_ids::stats_cost, _common_format_args);
+
+        auto running_cost = (vehicle_obj->run_cost_fact * currencyMultiplicationFactor[vehicle_obj->run_cost_ind]) / 1024;
+        *(reinterpret_cast<uint32_t*>(&_common_format_args[0])) = running_cost;
+        buffer = stringmgr::format_string(buffer, string_ids::stats_running_cost, _common_format_args);
+
+        if (vehicle_obj->designed != 0)
+        {
+            _common_format_args[0] = vehicle_obj->designed;
+            buffer = stringmgr::format_string(buffer, string_ids::stats_designed, _common_format_args);
+        }
+
+        if (vehicle_obj->mode == TransportMode::rail || vehicle_obj->mode == TransportMode::road)
+        {
+            buffer = stringmgr::format_string(buffer, string_ids::stats_requires);
+            auto track_name = string_ids::road;
+            if (vehicle_obj->mode == TransportMode::road)
+            {
+                if (vehicle_obj->var_05 != -1)
+                {
+                    track_name = objectmgr::get<road_object>(vehicle_obj->var_05)->name;
+                }
+            }
+            else
+            {
+                track_name = objectmgr::get<track_object>(vehicle_obj->var_05)->name;
+            }
+
+            buffer = stringmgr::format_string(buffer, track_name);
+            //0x4C3074
+        }
+        // 0x4C30EF
+        //registers regs;
+        //regs.esi = (int32_t)window;
+        //regs.edi = (int32_t)dpi;
+        //call(0x4C2F23, regs);
     }
 
     // 0x4C3307
@@ -898,7 +961,6 @@ namespace openloco::ui::build_vehicle
                 {
                     eax &= ~(1 << ebx);
                     auto cargo_obj = objectmgr::get<cargo_object>(ebx);
-                    cargo_obj->unit_inline_sprite;
                     *buffer++ = ' ';
                     *buffer++ = control_codes::inline_sprite_str;
                     *(reinterpret_cast<uint32_t*>(buffer)) = cargo_obj->unit_inline_sprite;
@@ -1080,6 +1142,24 @@ namespace openloco::ui::build_vehicle
         registers regs;
         regs.edx = (int32_t)vehicle;
         call(0x4B60CC, regs);
+    }
+
+    // 0x4C2BFD
+    static void draw_build_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        regs.edi = (int32_t)dpi;
+        call(0x4C2BFD, regs);
+    }
+
+    // 0x4C28F1
+    static void draw_build_sub_type_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    {
+        registers regs;
+        regs.esi = (int32_t)window;
+        regs.edi = (int32_t)dpi;
+        call(0x4C28F1, regs);
     }
 
     // 0x4B7741
