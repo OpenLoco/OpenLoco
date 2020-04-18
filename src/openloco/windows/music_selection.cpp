@@ -3,6 +3,7 @@
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -44,7 +45,7 @@ namespace openloco::ui::windows::music_selection
     static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_update(window* window);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
 
     static void init_events()
     {
@@ -196,9 +197,8 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C1762
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        loco_global<string_id, 0x112C826> common_format_args;
-        *common_format_args = string_ids::tooltip_scroll_list;
+        args.push(string_ids::tooltip_scroll_list);
     }
 }

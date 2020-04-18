@@ -108,7 +108,7 @@ namespace openloco::localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (unsigned char)(123 + 8);
+                        *out = (char)control_codes::stringid_args;
                         out++;
                     }
                     else

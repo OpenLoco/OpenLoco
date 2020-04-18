@@ -3,6 +3,7 @@
 #include "../graphics/image_ids.h"
 #include "../input/ShortcutManager.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -46,7 +47,7 @@ namespace openloco::ui::KeyboardShortcuts
     static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void on_mouse_up(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
-    static void tooltip(window*, widget_index);
+    static void tooltip(FormatArguments& args, window*, widget_index);
     static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
@@ -163,10 +164,9 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE844
-    static void tooltip(window*, widget_index)
+    static void tooltip(FormatArguments& args, window*, widget_index)
     {
-        loco_global<string_id, 0x112C826> common_format_args;
-        *common_format_args = string_ids::tooltip_scroll_list;
+        args.push(string_ids::tooltip_scroll_list);
     }
 
     // 0x004BE84E

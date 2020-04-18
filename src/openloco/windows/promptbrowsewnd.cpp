@@ -4,6 +4,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../platform/platform.h"
@@ -114,7 +115,7 @@ namespace openloco::ui::prompt_browse
     static void on_mouse_up(ui::window* window, widget_index widgetIndex);
     static void on_update(ui::window* window);
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo);
@@ -275,9 +276,9 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x004467D7
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        addr<0x0112C826, string_id>() = string_ids::tooltip_scroll_list;
+        args.push(string_ids::tooltip_scroll_list);
     }
 
     // 0x00445C8F

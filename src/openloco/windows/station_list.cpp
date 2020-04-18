@@ -4,6 +4,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"
@@ -105,7 +106,7 @@ namespace openloco::ui::windows::station_list
     static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_update(window* window);
     static void prepare_draw(ui::window* window);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
 
     static void init_events()
     {
@@ -749,8 +750,8 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x00491841
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        *_common_format_args = string_ids::tooltip_scroll_station_list;
+        args.push(string_ids::tooltip_scroll_station_list);
     }
 }
