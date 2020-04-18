@@ -4,10 +4,13 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../objects/road_extra_object.h"
 #include "../objects/road_object.h"
+#include "../objects/track_extra_object.h"
 #include "../objects/track_object.h"
 #include "../objects/vehicle_object.h"
 #include "../openloco.h"
@@ -119,7 +122,7 @@ namespace openloco::ui::build_vehicle
     static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void tooltip(ui::window* window, widget_index widgetIndex);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void prepare_draw(ui::window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
@@ -702,11 +705,11 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C370C
-    static void tooltip(ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
         if (widgetIndex < widx::tab_vehicles_for_0 || widgetIndex >= widx::scrollview_vehicle_selection)
         {
-            *_common_format_args = string_ids::tooltip_scroll_new_vehicle_list;
+            args.push(string_ids::tooltip_scroll_new_vehicle_list);
         }
         else
         {
@@ -717,11 +720,11 @@ namespace openloco::ui::build_vehicle
                 if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
                 {
 
-                    *_common_format_args = string_ids::airport;
+                    args.push(string_ids::airport);
                 }
                 else
                 {
-                    *_common_format_args = string_ids::docks;
+                    args.push(string_ids::docks);
                 }
             }
             else
@@ -731,12 +734,12 @@ namespace openloco::ui::build_vehicle
                 if (unk_flag)
                 {
                     auto road_obj = objectmgr::get<road_object>(type);
-                    *_common_format_args = road_obj->name;
+                    args.push(road_obj->name);
                 }
                 else
                 {
                     auto track_obj = objectmgr::get<track_object>(type);
-                    *_common_format_args = track_obj->name;
+                    args.push(track_obj->name);
                 }
             }
         }
@@ -854,7 +857,7 @@ namespace openloco::ui::build_vehicle
             auto track_name = string_ids::road;
             if (vehicle_obj->mode == TransportMode::road)
             {
-                if (vehicle_obj->var_05 != -1)
+                if (vehicle_obj->var_05 != 0xFF)
                 {
                     track_name = objectmgr::get<road_object>(vehicle_obj->var_05)->name;
                 }
@@ -865,8 +868,55 @@ namespace openloco::ui::build_vehicle
             }
 
             buffer = stringmgr::format_string(buffer, track_name);
-            //0x4C3074
+
+            for (auto i = 0; i < vehicle_obj->num_mods; ++i)
+            {
+                *buffer++ = ' ';
+                *buffer++ = '+';
+                *buffer++ = ' ';
+                *buffer = '\0';
+                if (vehicle_obj->mode == TransportMode::road)
+                {
+                    auto road_extra_obj = objectmgr::get<road_extra_object>(vehicle_obj->var_20[i]);
+                    buffer = stringmgr::format_string(buffer, road_extra_obj->name);
+                }
+                else
+                {
+                    auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_20[i]);
+                    buffer = stringmgr::format_string(buffer, track_extra_obj->name);
+                }
+            }
+
+            if (vehicle_obj->flags & flags_E0::unk_06)
+            {
+                auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_118);
+                _common_format_args[0] = track_extra_obj->name;
+                buffer = stringmgr::format_string(buffer, string_ids::stats_string_steep_slope, _common_format_args);
+            }
         }
+
+        if (vehicle_obj->power != 0)
+        {
+            if (vehicle_obj->mode == TransportMode::rail || vehicle_obj->mode == TransportMode::road)
+            {
+                _common_format_args[0] = vehicle_obj->power;
+                buffer = stringmgr::format_string(buffer, string_ids::stats_power, _common_format_args);
+            }
+        }
+
+        _common_format_args[0] = vehicle_obj->weight;
+        buffer = stringmgr::format_string(buffer, string_ids::stats_weight, _common_format_args);
+        _common_format_args[0] = vehicle_obj->speed;
+        buffer = stringmgr::format_string(buffer, string_ids::stats_max_speed, _common_format_args);
+
+        if (vehicle_obj->flags & flags_E0::unk_06)
+        {
+            auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_118);
+            _common_format_args[0] = vehicle_obj->rack_speed;
+            _common_format_args[1] = track_extra_obj->name;
+            buffer = stringmgr::format_string(buffer, string_ids::stats_velocity_on_string, _common_format_args);
+        }
+
         // 0x4C30EF
         //registers regs;
         //regs.esi = (int32_t)window;

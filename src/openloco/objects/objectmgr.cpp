@@ -111,9 +111,20 @@ namespace openloco::objectmgr
     }
 
     template<>
+    track_extra_object* get(size_t id) {
+        return _trackExtraObjects[id];
+    }
+
+    template<>
     track_object* get(size_t id)
     {
         return _trackObjects[id];
+    }
+
+    template<>
+    road_extra_object* get(size_t id)
+    {
+        return _roadExtraObjects[id];
     }
 
     template<>

@@ -118,6 +118,17 @@ namespace openloco
         uint8_t pad_0F[0x1E - 0xF];
     };
 
+    namespace flags_E0
+    {
+        constexpr uint16_t unk_06 = 1 << 6; //rackrail??
+        constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t unk_11 = 1 << 10; //cancouple??
+        constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
+        constexpr uint16_t unk_14 = 1 << 9;  //refittable??
+        constexpr uint16_t unk_15 = 1 << 10; //noannounce??
+
+    }
+
     struct vehicle_object
     {
         string_id name;     // 0x00
@@ -133,7 +144,8 @@ namespace openloco
         int16_t run_cost_fact; // 0x0C
         uint8_t colour_type;   // 0x0E
         uint8_t num_compat;    // 0x0F
-        uint8_t pad_10[0x24 - 0x10];
+        uint8_t pad_10[0x20 - 0x10];
+        uint8_t var_20[4];
         vehicle_object_unk var_24[4];
         vehicle_object_sprite sprites[4]; // 0x3C
         uint8_t pad_B4[0xD8 - 0xB4];
@@ -142,15 +154,17 @@ namespace openloco
         uint16_t rack_speed; // 0xDC
         uint16_t weight;     // 0xDE
         uint16_t flags;      // 0xE0
-        uint8_t pad_E2[0xE4 - 0xE2];
+        uint8_t var_E2;
+        uint8_t pad_E3;
         uint32_t var_E4;
         uint32_t var_E8;
-        uint8_t pad_EC[0x10D - 0xEC];
+        uint8_t pad_EC[0x10C - 0xEC];
+        uint8_t var_10C;
         simple_animation animation[2]; // 0x10D
         uint8_t var_113;
         uint16_t designed; // 0x114
         uint16_t obsolete; // 0x116
-        uint8_t pad_118;
+        uint8_t var_118;
         uint8_t startsnd_type; // 0x119
         union
         {

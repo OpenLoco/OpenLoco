@@ -470,6 +470,9 @@ namespace openloco::string_ids
     constexpr string_id stats_designed = 1256;
     constexpr string_id stats_capacity = 1257;
 
+    constexpr string_id stats_string_steep_slope = 1259;
+    constexpr string_id stats_velocity_on_string = 1260;
+
     constexpr string_id stats_running_cost = 1262;
 
     constexpr string_id num_trains_singular = 1264;
