@@ -917,11 +917,85 @@ namespace openloco::ui::build_vehicle
             buffer = stringmgr::format_string(buffer, string_ids::stats_velocity_on_string, _common_format_args);
         }
 
-        // 0x4C30EF
-        //registers regs;
-        //regs.esi = (int32_t)window;
-        //regs.edi = (int32_t)dpi;
-        //call(0x4C2F23, regs);
+        if (vehicle_obj->var_10C != 0)
+        {
+            {
+                _common_format_args[1] = vehicle_obj->var_E2;
+                auto cargo_type = utility::bitscanforward(vehicle_obj->var_E4);
+                if (cargo_type != -1)
+                {
+                    auto var_E4 = vehicle_obj->var_E4 & ~(1 << cargo_type);
+                    auto cargo_obj = objectmgr::get<cargo_object>(cargo_type);
+                    _common_format_args[0] = vehicle_obj->var_E2 == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
+                    buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, _common_format_args);
+                    cargo_type = utility::bitscanforward(var_E4);
+                    if (cargo_type != -1)
+                    {
+                        *buffer++ = ' ';
+                        *buffer++ = '(';
+                        *buffer = '\0';
+                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E4))
+                        {
+                            var_E4 &= ~(1 << cargo_type);
+                            if (buffer[-1] != '(')
+                            {
+                                *buffer++ = ' ';
+                            }
+
+                            cargo_obj = objectmgr::get<cargo_object>(cargo_type);
+                            _common_format_args[0] = cargo_obj->name;
+                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
+                            *buffer++ = ' ';
+                        }
+                        buffer[-1] = ')';
+                    }
+                }
+            }
+
+            if (vehicle_obj->flags & flags_E0::refittable)
+            {
+                buffer = stringmgr::format_string(buffer, string_ids::stats_refittable);
+            }
+
+            if (vehicle_obj->var_10C > 1)
+            {
+                _common_format_args[1] = vehicle_obj->var_E3;
+                auto cargo_type = utility::bitscanforward(vehicle_obj->var_E8);
+                if (cargo_type != -1)
+                {
+                    auto var_E8 = vehicle_obj->var_E8 & ~(1 << cargo_type);
+                    auto cargo_obj = objectmgr::get<cargo_object>(cargo_type);
+                    _common_format_args[0] = vehicle_obj->var_E2 == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
+                    buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, _common_format_args);
+
+                    cargo_type = utility::bitscanforward(var_E8);
+                    if (cargo_type != -1)
+                    {
+                        *buffer++ = ' ';
+                        *buffer++ = '(';
+                        *buffer = '\0';
+                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E8))
+                        {
+                            var_E8 &= ~(1 << cargo_type);
+                            if (buffer[-1] != '(')
+                            {
+                                *buffer++ = ' ';
+                            }
+
+                            cargo_obj = objectmgr::get<cargo_object>(cargo_type);
+                            _common_format_args[0] = cargo_obj->name;
+                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
+                            *buffer++ = ' ';
+                        }
+                        buffer[-1] = ')';
+                    }
+                }
+            }
+        }
+
+        auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
+        auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
+        gfx::draw_string_495224(*dpi, x, y, 180, colour::black, string_ids::buffer_1250);
     }
 
     // 0x4C3307

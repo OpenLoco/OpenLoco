@@ -124,7 +124,7 @@ namespace openloco
         constexpr uint16_t unk_09 = 1 << 9; //anytrack??
         constexpr uint16_t unk_11 = 1 << 10; //cancouple??
         constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
-        constexpr uint16_t unk_14 = 1 << 9;  //refittable??
+        constexpr uint16_t refittable = 1 << 9;
         constexpr uint16_t unk_15 = 1 << 10; //noannounce??
 
     }
@@ -155,7 +155,7 @@ namespace openloco
         uint16_t weight;     // 0xDE
         uint16_t flags;      // 0xE0
         uint8_t var_E2;
-        uint8_t pad_E3;
+        uint8_t var_E3;
         uint32_t var_E4;
         uint32_t var_E8;
         uint8_t pad_EC[0x10C - 0xEC];
