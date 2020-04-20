@@ -91,7 +91,7 @@ namespace openloco
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t var_35;
+        uint8_t track_type;  // 0x35
         uint8_t pad_36[0x38 - 0x36];
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39

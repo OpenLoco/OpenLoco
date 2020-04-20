@@ -135,7 +135,7 @@ namespace openloco
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t pad_04;
-        uint8_t var_05;        // 0x05
+        uint8_t track_type;    // 0x05
         uint8_t num_mods;      // 0x06
         uint8_t cost_ind;      // 0x07
         int16_t cost_fact;     // 0x08
