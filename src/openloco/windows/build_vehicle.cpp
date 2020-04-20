@@ -17,6 +17,7 @@
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -52,6 +53,21 @@ namespace openloco::ui::build_vehicle
     {
         vehicle_selection,
         vehicle_preview
+    };
+
+    struct TabDetails
+    {
+        widx widgetIndex;
+        uint32_t imageId;
+    };
+
+    static TabDetails typeTabInformationByType[] = {
+        { tab_build_new_trains, interface_skin::image_ids::build_vehicle_train },
+        { tab_build_new_buses, interface_skin::image_ids::build_vehicle_bus },
+        { tab_build_new_trucks, interface_skin::image_ids::build_vehicle_truck },
+        { tab_build_new_trams, interface_skin::image_ids::build_vehicle_tram },
+        { tab_build_new_aircraft, interface_skin::image_ids::build_vehicle_aircraft },
+        { tab_build_new_ships, interface_skin::image_ids::build_vehicle_ship }
     };
 
     // 0x5231D0
@@ -1264,10 +1280,19 @@ namespace openloco::ui::build_vehicle
     // 0x4C2BFD
     static void draw_build_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x4C2BFD, regs);
+        auto skin = objectmgr::get<interface_skin_object>();
+        auto companyColour = companymgr::get_company_colour(window->number);
+
+        for (auto tab : typeTabInformationByType)
+        {
+            auto frame_no = 0;
+            if (window->current_tab == tab.widgetIndex - widx::tab_build_new_trains)
+            {
+                frame_no = (window->frame_no / 2) & 0xF;
+            }
+            uint32_t image = gfx::recolour(skin->img + tab.imageId + frame_no, companyColour);
+            widget::draw_tab(window, dpi, image, tab.widgetIndex);
+        }
     }
 
     // 0x4C28F1
