@@ -456,7 +456,9 @@ namespace openloco::ui::options
         static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
         {
             auto& config = config::get_new();
+            float old_config_scale_factor = config.scale_factor;
             config.scale_factor = std::clamp(config.scale_factor + adjust_by, 1.0f, 4.0f);
+            if (old_config_scale_factor == config.scale_factor) return;
 
             openloco::config::write();
             gfx::invalidate_screen();
