@@ -330,7 +330,7 @@ namespace openloco::ui::TimePanel
     // 0x0043995C
     void formatChallenge()
     {
-        _common_format_args[0] = current_day();
+        *(uint32_t*)&_common_format_args[0] = current_day();
 
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
 
