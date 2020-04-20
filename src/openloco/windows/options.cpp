@@ -1953,6 +1953,7 @@ namespace openloco::ui::options
         {
             switch (i)
             {
+                case widx::use_preferred_owner_name:
                 case widx::change_btn:
                     set_preferred_name(w, str);
                     break;
