@@ -120,13 +120,12 @@ namespace openloco
 
     namespace flags_E0
     {
-        constexpr uint16_t unk_06 = 1 << 6;  //rackrail??
+        constexpr uint16_t rack_rail = 1 << 6;
         constexpr uint16_t unk_09 = 1 << 9;  //anytrack??
         constexpr uint16_t unk_11 = 1 << 10; //cancouple??
         constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
         constexpr uint16_t refittable = 1 << 9;
         constexpr uint16_t unk_15 = 1 << 10; //noannounce??
-
     }
 
     struct vehicle_object
@@ -145,27 +144,27 @@ namespace openloco
         uint8_t colour_type;   // 0x0E
         uint8_t num_compat;    // 0x0F
         uint8_t pad_10[0x20 - 0x10];
-        uint8_t var_20[4];
+        uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
         vehicle_object_sprite sprites[4]; // 0x3C
         uint8_t pad_B4[0xD8 - 0xB4];
-        uint16_t power;      // 0xD8
-        uint16_t speed;      // 0xDA
-        uint16_t rack_speed; // 0xDC
-        uint16_t weight;     // 0xDE
-        uint16_t flags;      // 0xE0
-        uint8_t var_E2;
-        uint8_t var_E3;
-        uint32_t var_E4;
-        uint32_t var_E8;
+        uint16_t power;                 // 0xD8
+        uint16_t speed;                 // 0xDA
+        uint16_t rack_speed;            // 0xDC
+        uint16_t weight;                // 0xDE
+        uint16_t flags;                 // 0xE0
+        uint8_t max_primary_cargo;      // 0xE2
+        uint8_t max_secondary_cargo;    // 0xE3
+        uint32_t primary_cargo_types;   // 0xE4
+        uint32_t secondary_cargo_types; // 0xE8
         uint8_t pad_EC[0x10C - 0xEC];
-        uint8_t var_10C;
-        simple_animation animation[2]; // 0x10D
+        uint8_t num_simultaneous_cargo_types; // 0x10C
+        simple_animation animation[2];        // 0x10D
         uint8_t var_113;
-        uint16_t designed; // 0x114
-        uint16_t obsolete; // 0x116
-        uint8_t var_118;
-        uint8_t startsnd_type; // 0x119
+        uint16_t designed;      // 0x114
+        uint16_t obsolete;      // 0x116
+        uint8_t rack_rail_type; // 0x118
+        uint8_t startsnd_type;  // 0x119
         union
         {
             vehicle_object_sound_1 type_1;

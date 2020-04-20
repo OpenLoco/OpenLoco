@@ -82,7 +82,7 @@ namespace openloco
     {
         uint8_t pad_20;
         company_id_t owner; // 0x21
-        uint16_t var_22;
+        uint16_t var_22;    // used for name on vehicle_0 will be type as string_id
         uint8_t pad_24[0x28 - 0x24];
         uint16_t var_28;
         uint8_t pad_2A[0x2C - 0x2A];
@@ -100,7 +100,7 @@ namespace openloco
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42
         uint8_t pad_43;
-        int16_t var_44;
+        int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
         uint8_t var_46;
         uint8_t pad_47[0x4A - 0x47];
         uint16_t var_4A;

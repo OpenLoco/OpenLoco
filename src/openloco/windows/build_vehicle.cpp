@@ -95,7 +95,7 @@ namespace openloco::ui::build_vehicle
     static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _tab_track_types;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static std::array<uint16_t, 6> _scroll_row_height = { 22, 22, 22, 22, 42, 30 };
+    static std::array<uint16_t, 6> _scroll_row_height = { { 22, 22, 22, 22, 42, 30 } };
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
@@ -445,7 +445,7 @@ namespace openloco::ui::build_vehicle
         }
 
         VehicleType vehicleType = static_cast<VehicleType>(window->current_tab);
-        uint8_t track_type = _tab_track_types[window->var_874];
+        uint8_t track_type = _tab_track_types[window->current_secondary_tab];
 
         openloco::vehicle* veh = nullptr;
         if (_build_target_vehicle != -1)
@@ -543,10 +543,10 @@ namespace openloco::ui::build_vehicle
             case widx::tab_vehicles_for_7:
             {
                 auto tab = widget_index_to_tab_vehicle_for(widgetIndex);
-                if (window->var_874 == tab)
+                if (window->current_secondary_tab == tab)
                     break;
 
-                window->var_874 = tab;
+                window->current_secondary_tab = tab;
                 sub_4A3A06(_tab_track_types[tab] & ~(1 << 7), _tab_track_types[tab] & (1 << 7));
                 _build_target_vehicle = -1;
                 window->row_count = 0;
@@ -624,7 +624,7 @@ namespace openloco::ui::build_vehicle
         window->call_prepare_draw();
 
         WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, window->current_tab + 4);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, (window->var_874 & 0xFF) + 10);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, (window->current_secondary_tab & 0xFF) + 10);
         WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, 19);
     }
 
@@ -773,7 +773,7 @@ namespace openloco::ui::build_vehicle
         auto active_widgets = window->activated_widgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
         // Only activate the singular tabs
         active_widgets |= 1ULL << (window->current_tab + widx::tab_build_new_trains);
-        active_widgets |= 1ULL << (window->var_874 + widx::tab_vehicles_for_0);
+        active_widgets |= 1ULL << (window->current_secondary_tab + widx::tab_vehicles_for_0);
         window->activated_widgets = active_widgets;
 
         window->widgets[widx::caption].text = window->current_tab + string_ids::build_trains;
@@ -868,19 +868,19 @@ namespace openloco::ui::build_vehicle
                 buffer += 3;
                 if (vehicle_obj->mode == TransportMode::road)
                 {
-                    auto road_extra_obj = objectmgr::get<road_extra_object>(vehicle_obj->var_20[i]);
+                    auto road_extra_obj = objectmgr::get<road_extra_object>(vehicle_obj->required_track_extras[i]);
                     buffer = stringmgr::format_string(buffer, road_extra_obj->name);
                 }
                 else
                 {
-                    auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_20[i]);
+                    auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->required_track_extras[i]);
                     buffer = stringmgr::format_string(buffer, track_extra_obj->name);
                 }
             }
 
-            if (vehicle_obj->flags & flags_E0::unk_06)
+            if (vehicle_obj->flags & flags_E0::rack_rail)
             {
-                auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_118);
+                auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->rack_rail_type);
                 _common_format_args[0] = track_extra_obj->name;
                 buffer = stringmgr::format_string(buffer, string_ids::stats_string_steep_slope, _common_format_args);
             }
@@ -900,33 +900,33 @@ namespace openloco::ui::build_vehicle
         _common_format_args[0] = vehicle_obj->speed;
         buffer = stringmgr::format_string(buffer, string_ids::stats_max_speed, _common_format_args);
 
-        if (vehicle_obj->flags & flags_E0::unk_06)
+        if (vehicle_obj->flags & flags_E0::rack_rail)
         {
-            auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->var_118);
+            auto track_extra_obj = objectmgr::get<track_extra_object>(vehicle_obj->rack_rail_type);
             _common_format_args[0] = vehicle_obj->rack_speed;
             _common_format_args[1] = track_extra_obj->name;
             buffer = stringmgr::format_string(buffer, string_ids::stats_velocity_on_string, _common_format_args);
         }
 
-        if (vehicle_obj->var_10C != 0)
+        if (vehicle_obj->num_simultaneous_cargo_types != 0)
         {
             {
-                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->var_E2;
-                auto cargo_type = utility::bitscanforward(vehicle_obj->var_E4);
+                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->max_primary_cargo;
+                auto cargo_type = utility::bitscanforward(vehicle_obj->primary_cargo_types);
                 if (cargo_type != -1)
                 {
-                    auto var_E4 = vehicle_obj->var_E4 & ~(1 << cargo_type);
+                    auto cargo_types = vehicle_obj->primary_cargo_types & ~(1 << cargo_type);
                     auto cargo_obj = objectmgr::get<cargo_object>(cargo_type);
-                    _common_format_args[0] = vehicle_obj->var_E2 == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
+                    _common_format_args[0] = vehicle_obj->max_primary_cargo == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
                     buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, _common_format_args);
-                    cargo_type = utility::bitscanforward(var_E4);
+                    cargo_type = utility::bitscanforward(cargo_types);
                     if (cargo_type != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E4))
+                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(cargo_types))
                         {
-                            var_E4 &= ~(1 << cargo_type);
+                            cargo_types &= ~(1 << cargo_type);
                             if (buffer[-1] != '(')
                             {
                                 strcpy(buffer, " ");
@@ -949,25 +949,25 @@ namespace openloco::ui::build_vehicle
                 buffer = stringmgr::format_string(buffer, string_ids::stats_refittable);
             }
 
-            if (vehicle_obj->var_10C > 1)
+            if (vehicle_obj->num_simultaneous_cargo_types > 1)
             {
-                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->var_E3;
-                auto cargo_type = utility::bitscanforward(vehicle_obj->var_E8);
+                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->max_secondary_cargo;
+                auto cargo_type = utility::bitscanforward(vehicle_obj->secondary_cargo_types);
                 if (cargo_type != -1)
                 {
-                    auto var_E8 = vehicle_obj->var_E8 & ~(1 << cargo_type);
+                    auto cargo_types = vehicle_obj->secondary_cargo_types & ~(1 << cargo_type);
                     auto cargo_obj = objectmgr::get<cargo_object>(cargo_type);
-                    _common_format_args[0] = vehicle_obj->var_E2 == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
+                    _common_format_args[0] = vehicle_obj->max_primary_cargo == 1 ? cargo_obj->unit_name_singular : cargo_obj->unit_name_plural;
                     buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, _common_format_args);
 
-                    cargo_type = utility::bitscanforward(var_E8);
+                    cargo_type = utility::bitscanforward(cargo_types);
                     if (cargo_type != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E8))
+                        for (; cargo_type != -1; cargo_type = utility::bitscanforward(cargo_types))
                         {
-                            var_E8 &= ~(1 << cargo_type);
+                            cargo_types &= ~(1 << cargo_type);
                             if (buffer[-1] != '(')
                             {
                                 strcpy(buffer, " ");
@@ -1072,7 +1072,7 @@ namespace openloco::ui::build_vehicle
                 auto vehicle_obj = objectmgr::get<vehicle_object>(window->row_hover);
                 auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
                 buffer = stringmgr::format_string(buffer, vehicle_obj->name);
-                auto usable_cargo_types = vehicle_obj->var_E4 | vehicle_obj->var_E8;
+                auto usable_cargo_types = vehicle_obj->primary_cargo_types | vehicle_obj->secondary_cargo_types;
 
                 for (auto cargo_type = utility::bitscanforward(usable_cargo_types); cargo_type != -1; cargo_type = utility::bitscanforward(usable_cargo_types))
                 {
@@ -1171,7 +1171,7 @@ namespace openloco::ui::build_vehicle
     {
         if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains) || window->current_tab == (widx::tab_build_new_ships - widx::tab_build_new_trains))
         {
-            window->var_874 = 0;
+            window->current_secondary_tab = 0;
         }
 
         bool found = false;
@@ -1191,7 +1191,7 @@ namespace openloco::ui::build_vehicle
             }
         }
 
-        window->var_874 = found ? track_tab : 0;
+        window->current_secondary_tab = found ? track_tab : 0;
 
         bool is_road = _tab_track_types[track_tab] & (1 << 7);
         uint8_t track_type = _tab_track_types[track_tab] & ~(1 << 7);
