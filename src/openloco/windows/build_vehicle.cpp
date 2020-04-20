@@ -871,10 +871,8 @@ namespace openloco::ui::build_vehicle
 
             for (auto i = 0; i < vehicle_obj->num_mods; ++i)
             {
-                *buffer++ = ' ';
-                *buffer++ = '+';
-                *buffer++ = ' ';
-                *buffer = '\0';
+                strcpy(buffer, " + ");
+                buffer += 3;
                 if (vehicle_obj->mode == TransportMode::road)
                 {
                     auto road_extra_obj = objectmgr::get<road_extra_object>(vehicle_obj->var_20[i]);
@@ -920,7 +918,7 @@ namespace openloco::ui::build_vehicle
         if (vehicle_obj->var_10C != 0)
         {
             {
-                _common_format_args[1] = vehicle_obj->var_E2;
+                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->var_E2;
                 auto cargo_type = utility::bitscanforward(vehicle_obj->var_E4);
                 if (cargo_type != -1)
                 {
@@ -931,21 +929,22 @@ namespace openloco::ui::build_vehicle
                     cargo_type = utility::bitscanforward(var_E4);
                     if (cargo_type != -1)
                     {
-                        *buffer++ = ' ';
-                        *buffer++ = '(';
-                        *buffer = '\0';
+                        strcpy(buffer, " (");
+                        buffer += 2;
                         for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E4))
                         {
                             var_E4 &= ~(1 << cargo_type);
                             if (buffer[-1] != '(')
                             {
-                                *buffer++ = ' ';
+                                strcpy(buffer, " ");
+                                buffer++;
                             }
 
                             cargo_obj = objectmgr::get<cargo_object>(cargo_type);
                             _common_format_args[0] = cargo_obj->name;
                             buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
-                            *buffer++ = ' ';
+                            strcpy(buffer, " ");
+                            buffer++;
                         }
                         buffer[-1] = ')';
                     }
@@ -959,7 +958,7 @@ namespace openloco::ui::build_vehicle
 
             if (vehicle_obj->var_10C > 1)
             {
-                _common_format_args[1] = vehicle_obj->var_E3;
+                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicle_obj->var_E3;
                 auto cargo_type = utility::bitscanforward(vehicle_obj->var_E8);
                 if (cargo_type != -1)
                 {
@@ -971,21 +970,22 @@ namespace openloco::ui::build_vehicle
                     cargo_type = utility::bitscanforward(var_E8);
                     if (cargo_type != -1)
                     {
-                        *buffer++ = ' ';
-                        *buffer++ = '(';
-                        *buffer = '\0';
+                        strcpy(buffer, " (");
+                        buffer += 2;
                         for (; cargo_type != -1; cargo_type = utility::bitscanforward(var_E8))
                         {
                             var_E8 &= ~(1 << cargo_type);
                             if (buffer[-1] != '(')
                             {
-                                *buffer++ = ' ';
+                                strcpy(buffer, " ");
+                                buffer++;
                             }
 
                             cargo_obj = objectmgr::get<cargo_object>(cargo_type);
                             _common_format_args[0] = cargo_obj->name;
                             buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
-                            *buffer++ = ' ';
+                            strcpy(buffer, " ");
+                            buffer++;
                         }
                         buffer[-1] = ')';
                     }
