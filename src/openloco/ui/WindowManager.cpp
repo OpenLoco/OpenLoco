@@ -623,6 +623,44 @@ namespace openloco::ui::WindowManager
         return (window*)regs.esi;
     }
 
+    window* moveToCentre(WindowType type)
+    {
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
+        {
+            if (w->type != type)
+                continue;
+
+            moveToCentre(w->type, w->number);
+            return w;
+        }
+        return nullptr;
+    }
+
+    window* moveToCentre(WindowType type, window_number number)
+    {
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
+        {
+            if (w->type != type)
+                continue;
+
+            if (w->number != number)
+                continue;
+
+            moveToCentre(w);
+            return w;
+        }
+        return nullptr;
+    }
+
+    window* moveToCentre(window* w)
+    {
+        w->invalidate();
+        w->x = ((ui::width() - w->width) / 2);
+        w->y = ((ui::height() - w->height) / 2);
+        gfx::invalidate_screen();
+        return w;
+    }
+
     /**
      * 0x004C9BEA
      *
