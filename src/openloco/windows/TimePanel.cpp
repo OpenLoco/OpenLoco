@@ -7,6 +7,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -36,7 +37,7 @@ namespace openloco::ui::TimePanel
         };
     }
 
-    static void formatChallenge();
+    static void formatChallenge(FormatArguments& args);
     static void processChatMessage(char* str);
     static void togglePaused();
     static void changeGameSpeed(window* w, uint8_t speed);
@@ -322,47 +323,47 @@ namespace openloco::ui::TimePanel
         switch (widgetIndex)
         {
             case widx::date_btn:
-                formatChallenge();
+                formatChallenge(args);
                 break;
         }
     }
 
     // 0x0043995C
-    void formatChallenge()
+    static void formatChallenge(FormatArguments& args)
     {
-        _common_format_args[0] = current_day();
+        args.push(current_day());
 
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {
-            _common_format_args[2] = string_ids::challenge_completed;
+            args.push(string_ids::challenge_completed);
         }
         else if ((playerCompany->challenge_flags & company_flags::challenge_failed) != 0)
         {
-            _common_format_args[2] = string_ids::challenge_failed;
+            args.push(string_ids::challenge_failed);
         }
         else if ((playerCompany->challenge_flags & company_flags::challenge_beaten_by_opponent) != 0)
         {
-            _common_format_args[2] = string_ids::empty;
+            args.push(string_ids::empty);
         }
         else
         {
-            _common_format_args[2] = string_ids::challenge_progress;
-            _common_format_args[3] = playerCompany->var_8C4E;
+            args.push(string_ids::challenge_progress);
+            args.push<uint16_t>(playerCompany->var_8C4E);
 
             if (objectiveFlags & 4)
             {
-                auto monthsLeft = (*objectiveTimeLimitYears * 12 - _526243);
-                auto yearsLeft = monthsLeft / 12;
+                uint16_t monthsLeft = (*objectiveTimeLimitYears * 12 - _526243);
+                uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
-                _common_format_args[4] = string_ids::challenge_time_left;
-                _common_format_args[5] = yearsLeft;
-                _common_format_args[6] = monthsLeft;
+                args.push(string_ids::challenge_time_left);
+                args.push(yearsLeft);
+                args.push(monthsLeft);
             }
             else
             {
-                _common_format_args[4] = string_ids::empty;
+                args.push(string_ids::empty);
             }
         }
     }
