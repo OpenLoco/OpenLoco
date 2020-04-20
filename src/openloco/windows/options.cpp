@@ -1846,9 +1846,9 @@ namespace openloco::ui::options
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
-        static void change_preferred_name(window* w);
+        static void change_preferred_name(window* w, widget_index wi);
         static void set_preferred_name(window* w, char* str);
-        static void use_preferred_owner_name_mouse_up(window* w);
+        static void use_preferred_owner_name_mouse_up(window* w, widget_index wi);
         static void disable_vehicle_breakdowns_mouse_up(window* w);
         static void export_plugin_objects_mouse_up(window* w);
 
@@ -1939,11 +1939,11 @@ namespace openloco::ui::options
                     break;
 
                 case widx::use_preferred_owner_name:
-                    use_preferred_owner_name_mouse_up(w);
+                    use_preferred_owner_name_mouse_up(w, wi);
                     break;
 
                 case widx::change_btn:
-                    change_preferred_name(w);
+                    change_preferred_name(w, wi);
                     break;
             }
         }
@@ -1960,14 +1960,14 @@ namespace openloco::ui::options
         }
 
         // 0x004C1319
-        static void change_preferred_name(window* w)
+        static void change_preferred_name(window* w, widget_index wi)
         {
             auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, 11, nullptr);
+            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, wi, nullptr);
         }
 
         // 0x004C1342
@@ -1986,7 +1986,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C135F
-        static void use_preferred_owner_name_mouse_up(window* w)
+        static void use_preferred_owner_name_mouse_up(window* w, widget_index wi)
         {
             auto& cfg = openloco::config::get();
             if (cfg.flags & config::flags::use_preferred_owner_name)
@@ -2005,7 +2005,7 @@ namespace openloco::ui::options
             {
                 if (strlen(cfg.preferred_name) == 0)
                 {
-                    change_preferred_name(w);
+                    change_preferred_name(w, wi);
                 }
             }
         }
