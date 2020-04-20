@@ -1820,7 +1820,7 @@ namespace openloco::ui::options
 
     namespace misc
     {
-        static const gfx::ui_size_t _window_size = { 420, 102 };
+        static const gfx::ui_size_t _window_size = { 420, 124 };
 
         namespace widx
         {
