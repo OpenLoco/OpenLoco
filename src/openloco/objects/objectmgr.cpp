@@ -111,7 +111,8 @@ namespace openloco::objectmgr
     }
 
     template<>
-    track_extra_object* get(size_t id) {
+    track_extra_object* get(size_t id)
+    {
         return _trackExtraObjects[id];
     }
 

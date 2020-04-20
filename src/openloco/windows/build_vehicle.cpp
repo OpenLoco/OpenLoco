@@ -90,9 +90,9 @@ namespace openloco::ui::build_vehicle
     static loco_global<uint16_t[objectmgr::get_max_objects(object_type::vehicle)], 0x0113626A> _available_vehicles;
     static loco_global<uint16_t, 0x0113642A> _113642A;
     static loco_global<int32_t, 0x011364E8> _build_target_vehicle;
-    static loco_global<uint32_t, 0x011364EC> _11364EC;
+    static loco_global<uint32_t, 0x011364EC> _num_track_type_tabs;
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _11364F0;
+    static loco_global<int8_t[widget_index_to_tab_vehicle_for(widx::tab_vehicles_for_7) + 1], 0x011364F0> _tab_track_types;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static std::array<uint16_t, 6> _scroll_row_height{ 22, 22, 22, 22, 42, 30 };
@@ -107,7 +107,7 @@ namespace openloco::ui::build_vehicle
     static void sub_4C28D2(ui::window* window);
     static void sub_4C2D8A(ui::window* window);
     static void sub_4C1CBE(ui::window* window);
-    static void sub_4A3A06(uint8_t cl, bool unk_flag);
+    static void sub_4A3A06(uint8_t track_type, bool is_road);
     static void sub_4C2865(ui::window* window);
     static void sub_4B60CC(openloco::vehicle* vehicle);
     static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
@@ -240,33 +240,26 @@ namespace openloco::ui::build_vehicle
         {
             return window;
         }
-        auto unk_al = veh->var_35;
+        auto target_track_type = veh->var_35;
         if (veh->mode != TransportMode::rail)
         {
-            unk_al |= (1 << 7);
-            if (unk_al == 0xFF)
+            target_track_type |= (1 << 7);
+            if (target_track_type == 0xFF)
             {
-                unk_al = _525FC5;
+                target_track_type = _525FC5;
             }
         }
 
-        bool found = false;
-        uint32_t unk_tab_offset = 0;
-        for (; unk_tab_offset < _11364EC;)
+        widget_index widgetIndex = widx::tab_vehicles_for_0;
+        for (uint32_t track_tab = 0; track_tab < _num_track_type_tabs; track_tab++)
         {
-            unk_tab_offset++;
-            if (unk_al == _11364F0[unk_tab_offset - 1])
+            if (target_track_type == _tab_track_types[track_tab])
             {
-                unk_tab_offset--;
-                found = true;
+                widgetIndex = widx::tab_vehicles_for_0 + track_tab;
                 break;
             }
         }
-        widget_index widgetIndex = widx::tab_vehicles_for_0;
-        if (found)
-        {
-            widgetIndex = widx::tab_vehicles_for_0 + unk_tab_offset;
-        }
+
         window->call_on_mouse_up(widgetIndex);
         return window;
     }
@@ -308,15 +301,15 @@ namespace openloco::ui::build_vehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void sub_4B9165(VehicleType vehicle_type, uint8_t dh, openloco::vehicle* vehicle)
+    static void sub_4B9165(VehicleType vehicle_type, uint8_t track_type, openloco::vehicle* vehicle)
     {
-        if (dh != 0xFF && (dh & (1 << 7)))
+        if (track_type != 0xFF && (track_type & (1 << 7)))
         {
-            auto obj_idx = dh & ~(1 << 7);
+            auto obj_idx = track_type & ~(1 << 7);
             auto road_obj = objectmgr::get<road_object>(obj_idx);
             if (road_obj->flags & flags_12::unk_03)
             {
-                dh = 0xFE;
+                track_type = 0xFE;
             }
         }
 
@@ -361,23 +354,23 @@ namespace openloco::ui::build_vehicle
                 continue;
             }
 
-            if (dh != 0xFF)
+            if (track_type != 0xFF)
             {
-                uint8_t var05 = dh;
-                if (dh & (1 << 7))
+                uint8_t var05 = track_type;
+                if (track_type & (1 << 7))
                 {
                     if (vehicle_obj->mode != TransportMode::road)
                     {
                         continue;
                     }
 
-                    if (dh == 0xFE)
+                    if (track_type == 0xFE)
                     {
                         var05 = 0xFF;
                     }
                     else
                     {
-                        var05 = dh & ~(1 << 7);
+                        var05 = track_type & ~(1 << 7);
                     }
                 }
                 else
@@ -452,7 +445,7 @@ namespace openloco::ui::build_vehicle
         }
 
         VehicleType vehicleType = static_cast<VehicleType>(window->current_tab);
-        uint8_t dh = _11364F0[window->var_874];
+        uint8_t dh = _tab_track_types[window->var_874];
 
         openloco::vehicle* veh = nullptr;
         if (_build_target_vehicle != -1)
@@ -554,7 +547,7 @@ namespace openloco::ui::build_vehicle
                     break;
 
                 window->var_874 = tab;
-                sub_4A3A06(_11364F0[tab] & ~(1 << 7), _11364F0[tab] & (1 << 7));
+                sub_4A3A06(_tab_track_types[tab] & ~(1 << 7), _tab_track_types[tab] & (1 << 7));
                 _build_target_vehicle = -1;
                 window->row_count = 0;
                 window->var_83C = 0;
@@ -573,7 +566,7 @@ namespace openloco::ui::build_vehicle
     static void on_resize(window* window)
     {
         window->flags |= window_flags::resizable;
-        auto min_width = std::max<int16_t>(_11364EC * 31 + 195, 380);
+        auto min_width = std::max<int16_t>(_num_track_type_tabs * 31 + 195, 380);
         window->min_width = min_width;
         window->max_width = 520;
         window->min_height = 233;
@@ -714,7 +707,7 @@ namespace openloco::ui::build_vehicle
         else
         {
             auto unk_for_tab = widget_index_to_tab_vehicle_for(widgetIndex);
-            auto type = _11364F0[unk_for_tab];
+            auto type = _tab_track_types[unk_for_tab];
             if (type == -1)
             {
                 if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
@@ -729,9 +722,9 @@ namespace openloco::ui::build_vehicle
             }
             else
             {
-                bool unk_flag = type & (1 << 7);
+                bool is_road = type & (1 << 7);
                 type &= ~(1 << 7);
-                if (unk_flag)
+                if (is_road)
                 {
                     auto road_obj = objectmgr::get<road_object>(type);
                     args.push(road_obj->name);
@@ -1051,7 +1044,7 @@ namespace openloco::ui::build_vehicle
                         }
 
                         int16_t half = (window->row_height - 22) / 2;
-                        auto x = draw_vehicle_inline(dpi, vehicle_type, 0, companymgr::get_controlling_id(), { 0, y + half });
+                        auto x = draw_vehicle_inline(dpi, vehicle_type, 0, companymgr::get_controlling_id(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicle_obj = objectmgr::get<vehicle_object>(vehicle_type);
                         _common_format_args[0] = vehicle_obj->name;
@@ -1135,7 +1128,7 @@ namespace openloco::ui::build_vehicle
             else
             {
                 // Reset the tabs
-                _11364F0[0] = -1;
+                _tab_track_types[0] = -1;
                 window->widgets[tab_vehicles_for_0].type = widget_type::wt_8;
                 for (widget_index i = tab_vehicles_for_1; i <= tab_vehicles_for_7; ++i)
                 {
@@ -1151,7 +1144,7 @@ namespace openloco::ui::build_vehicle
         {
             ecx &= ~(1 << al);
             window->widgets[tab_widget_index].type = widget_type::wt_8;
-            _11364F0[widget_index_to_tab_vehicle_for(tab_widget_index)] = al;
+            _tab_track_types[widget_index_to_tab_vehicle_for(tab_widget_index)] = al;
             tab_widget_index++;
         }
 
@@ -1161,12 +1154,12 @@ namespace openloco::ui::build_vehicle
             {
                 edx &= ~(1 << al);
                 window->widgets[tab_widget_index].type = widget_type::wt_8;
-                _11364F0[widget_index_to_tab_vehicle_for(tab_widget_index)] = al | (1 << 7);
+                _tab_track_types[widget_index_to_tab_vehicle_for(tab_widget_index)] = al | (1 << 7);
                 tab_widget_index++;
             }
         }
 
-        _11364EC = widget_index_to_tab_vehicle_for(tab_widget_index);
+        _num_track_type_tabs = widget_index_to_tab_vehicle_for(tab_widget_index);
 
         for (; tab_widget_index <= tab_vehicles_for_7; ++tab_widget_index)
         {
@@ -1183,15 +1176,15 @@ namespace openloco::ui::build_vehicle
 
         bool found = false;
         uint32_t ebp = 0;
-        for (; ebp < _11364EC; ebp++)
+        for (; ebp < _num_track_type_tabs; ebp++)
         {
-            if (last_railroad_option == _11364F0[ebp])
+            if (last_railroad_option == _tab_track_types[ebp])
             {
                 found = true;
                 break;
             }
 
-            if (last_road_option == _11364F0[ebp])
+            if (last_road_option == _tab_track_types[ebp])
             {
                 found = true;
                 break;
@@ -1200,17 +1193,17 @@ namespace openloco::ui::build_vehicle
 
         window->var_874 = found ? ebp : 0;
 
-        bool unk_flag = _11364F0[ebp] & (1 << 7);
-        uint8_t cl = _11364F0[ebp] & ~(1 << 7);
-        sub_4A3A06(cl, unk_flag);
+        bool is_road = _tab_track_types[ebp] & (1 << 7);
+        uint8_t cl = _tab_track_types[ebp] & ~(1 << 7);
+        sub_4A3A06(cl, is_road);
     }
 
-    static void sub_4A3A06(uint8_t cl, bool unk_flag)
+    static void sub_4A3A06(uint8_t track_type, bool is_road)
     {
         bool set_rail = false;
-        if (unk_flag)
+        if (is_road)
         {
-            auto road_obj = objectmgr::get<road_object>(cl);
+            auto road_obj = objectmgr::get<road_object>(track_type);
             if (road_obj && road_obj->flags & flags_12::unk_01)
             {
                 set_rail = true;
@@ -1218,7 +1211,7 @@ namespace openloco::ui::build_vehicle
         }
         else
         {
-            auto rail_obj = objectmgr::get<track_object>(cl);
+            auto rail_obj = objectmgr::get<track_object>(track_type);
             if (rail_obj && !(rail_obj->flags & flags_22::unk_02))
             {
                 set_rail = true;
@@ -1227,11 +1220,11 @@ namespace openloco::ui::build_vehicle
 
         if (set_rail)
         {
-            last_railroad_option = cl;
+            last_railroad_option = track_type;
         }
         else
         {
-            last_road_option = cl;
+            last_road_option = track_type;
         }
 
         // The window number doesn't really matter as there is only one top toolbar

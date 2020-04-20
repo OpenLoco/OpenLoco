@@ -120,8 +120,8 @@ namespace openloco
 
     namespace flags_E0
     {
-        constexpr uint16_t unk_06 = 1 << 6; //rackrail??
-        constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t unk_06 = 1 << 6;  //rackrail??
+        constexpr uint16_t unk_09 = 1 << 9;  //anytrack??
         constexpr uint16_t unk_11 = 1 << 10; //cancouple??
         constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
         constexpr uint16_t refittable = 1 << 9;
