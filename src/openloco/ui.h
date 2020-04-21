@@ -28,12 +28,12 @@ namespace openloco::ui
         int32_t height;
     };
 
-	namespace ScaleFactor
-	{
-		const float min = 1.0f;
-		const float max = 4.0f;
-		const float step = 1.0f;
-	};
+    namespace ScaleFactor
+    {
+        const float min = 1.0f;
+        const float max = 4.0f;
+        const float step = 1.0f;
+    };
 
 #ifdef _WIN32
     void* hwnd();
