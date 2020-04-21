@@ -1072,6 +1072,7 @@ namespace openloco::ui
 
         WindowManager::callEvent9OnAllWindows();
     }
+
     void adjust_window_scale(float adjust_by)
     {
         auto& config = config::get_new();
