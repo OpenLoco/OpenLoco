@@ -120,11 +120,11 @@ namespace openloco::ui::build_vehicle
     static window_event_list _events;
 
     static void sub_4B92A5(ui::window* window);
-    static void sub_4C28D2(ui::window* window);
-    static void sub_4C2D8A(ui::window* window);
-    static void sub_4C1CBE(ui::window* window);
-    static void sub_4A3A06(uint8_t track_type, bool is_road);
-    static void sub_4C2865(ui::window* window);
+    static void SetDisabledTransportTabs(ui::window* window);
+    static void SetTrackTypeTabs(ui::window* window);
+    static void ResetTrackTypeTabSelection(ui::window* window);
+    static void SetTopToolbarLastTrack(uint8_t track_type, bool is_road);
+    static void SetTransportTypeTabs(ui::window* window);
     static void sub_4B60CC(openloco::vehicle* vehicle);
     static void draw_vehicle_overview(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
     static int16_t draw_vehicle_inline(gfx::drawpixelinfo_t* dpi, int16_t vehicle_type_idx, uint8_t unk_1, company_id_t company, gfx::point_t loc);
@@ -175,7 +175,7 @@ namespace openloco::ui::build_vehicle
         {
             window->colours[1] = skin->colour_0A;
         }
-        sub_4C28D2(window);
+        SetDisabledTransportTabs(window);
         return window;
     }
 
@@ -237,9 +237,9 @@ namespace openloco::ui::build_vehicle
             window->holdable_widgets = 0;
             window->event_handlers = &_events;
             window->activated_widgets = 0;
-            sub_4C28D2(window);
-            sub_4C2D8A(window);
-            sub_4C1CBE(window);
+            SetDisabledTransportTabs(window);
+            SetTrackTypeTabs(window);
+            ResetTrackTypeTabSelection(window);
             sub_4B92A5(window);
 
             window->call_on_resize();
@@ -317,7 +317,7 @@ namespace openloco::ui::build_vehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void sub_4B9165(VehicleType vehicle_type, uint8_t track_type, openloco::vehicle* vehicle)
+    static void GenerateBuildableVehiclesArray(VehicleType vehicle_type, uint8_t track_type, openloco::vehicle* vehicle)
     {
         if (track_type != 0xFF && (track_type & (1 << 7)))
         {
@@ -469,7 +469,7 @@ namespace openloco::ui::build_vehicle
             veh = thingmgr::get<openloco::vehicle>(_build_target_vehicle);
         }
 
-        sub_4B9165(vehicleType, track_type, veh);
+        GenerateBuildableVehiclesArray(vehicleType, track_type, veh);
 
         int num_rows = _num_available_vehicles;
         if (window->var_83C == num_rows)
@@ -516,6 +516,7 @@ namespace openloco::ui::build_vehicle
                 window->current_tab = new_tab;
                 window->row_height = _scroll_row_height[new_tab];
                 window->frame_no = 0;
+                window->current_secondary_tab = 0;
                 if (new_tab != last_build_vehicles_option)
                 {
                     last_build_vehicles_option = new_tab;
@@ -533,11 +534,11 @@ namespace openloco::ui::build_vehicle
                 window->holdable_widgets = 0;
                 window->event_handlers = &_events;
                 window->widgets = _widgets;
-                sub_4C28D2(window);
+                SetDisabledTransportTabs(window);
                 window->invalidate();
                 _build_target_vehicle = -1;
-                sub_4C2D8A(window);
-                sub_4C1CBE(window);
+                SetTrackTypeTabs(window);
+                ResetTrackTypeTabSelection(window);
                 window->row_count = 0;
                 window->var_83C = 0;
                 window->row_hover = -1;
@@ -563,7 +564,7 @@ namespace openloco::ui::build_vehicle
                     break;
 
                 window->current_secondary_tab = tab;
-                sub_4A3A06(_tab_track_types[tab] & ~(1 << 7), _tab_track_types[tab] & (1 << 7));
+                SetTopToolbarLastTrack(_tab_track_types[tab] & ~(1 << 7), _tab_track_types[tab] & (1 << 7));
                 _build_target_vehicle = -1;
                 window->row_count = 0;
                 window->var_83C = 0;
@@ -814,7 +815,7 @@ namespace openloco::ui::build_vehicle
         window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
         window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
-        sub_4C2865(window);
+        SetTransportTypeTabs(window);
     }
 
     // 0x4C2F23
@@ -1109,7 +1110,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C28D2
-    static void sub_4C28D2(ui::window* window)
+    static void SetDisabledTransportTabs(ui::window* window)
     {
         auto available_vehicles = companymgr::companies()[window->number].available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
@@ -1118,10 +1119,10 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C2D8A
-    static void sub_4C2D8A(ui::window* window)
+    static void SetTrackTypeTabs(ui::window* window)
     {
         VehicleType current_tab_type = static_cast<VehicleType>(window->current_tab);
-        sub_4B9165(current_tab_type, 0xFF, nullptr);
+        GenerateBuildableVehiclesArray(current_tab_type, 0xFF, nullptr);
 
         auto rail_track_types = 0;
         auto road_track_types = 0;
@@ -1183,7 +1184,9 @@ namespace openloco::ui::build_vehicle
         }
     }
 
-    static void sub_4C1CBE(ui::window* window)
+    // 0x4C1CBE
+    // if previous track tab on previous transport type tab is also compatible keeps it on that track type
+    static void ResetTrackTypeTabSelection(ui::window* window)
     {
         if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains) || window->current_tab == (widx::tab_build_new_ships - widx::tab_build_new_trains))
         {
@@ -1211,10 +1214,11 @@ namespace openloco::ui::build_vehicle
 
         bool is_road = _tab_track_types[track_tab] & (1 << 7);
         uint8_t track_type = _tab_track_types[track_tab] & ~(1 << 7);
-        sub_4A3A06(track_type, is_road);
+        SetTopToolbarLastTrack(track_type, is_road);
     }
 
-    static void sub_4A3A06(uint8_t track_type, bool is_road)
+    // 0x4A3A06
+    static void SetTopToolbarLastTrack(uint8_t track_type, bool is_road)
     {
         bool set_rail = false;
         if (is_road)
@@ -1248,7 +1252,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C2865 common for build vehicle window and vehicle list
-    static void sub_4C2865(ui::window* window)
+    static void SetTransportTypeTabs(ui::window* window)
     {
         auto disabled_widgets = window->disabled_widgets >> widx::tab_build_new_trains;
         auto widget = window->widgets + widx::tab_build_new_trains;
@@ -1270,6 +1274,9 @@ namespace openloco::ui::build_vehicle
         }
     }
 
+    /* 0x4B60CC
+     * Opens vehicle window and clicks???
+     */
     static void sub_4B60CC(openloco::vehicle* vehicle)
     {
         registers regs;
