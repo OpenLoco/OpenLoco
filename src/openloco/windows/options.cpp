@@ -461,7 +461,7 @@ namespace openloco::ui::options
             openloco::config::write();
             gfx::invalidate_screen();
             ui::trigger_resize();
-            WindowManager::moveToCentre(w);
+            w->moveToCentre();
         }
 
         // 0x004BFBB7

@@ -24,9 +24,6 @@ namespace openloco::ui::WindowManager
     window* findAtAlt(int16_t x, int16_t y);
     window* bringToFront(window* window);
     window* bringToFront(WindowType type, uint16_t id);
-    window* moveToCentre(WindowType type);
-    window* moveToCentre(WindowType type, window_number number);
-    window* moveToCentre(window* w);
     void invalidate(WindowType type);
     void invalidate(WindowType type, window_number number);
     void invalidateWidget(WindowType type, window_number number, uint8_t widget_index);

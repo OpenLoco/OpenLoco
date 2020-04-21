@@ -387,6 +387,7 @@ namespace openloco::ui
 
         bool move(int16_t dx, int16_t dy);
         void moveInsideScreenEdges();
+        bool moveToCentre();
         widget_index find_widget_at(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
