@@ -604,6 +604,16 @@ namespace openloco::ui
         }
     }
 
+    bool window::moveToCentre()
+    {
+        int16_t dx = ((ui::width() - this->width) / 2);
+        int16_t dy = ((ui::height() - this->height) / 2);
+        dx = dx - this->x;
+        dy = dy - this->y;
+
+        return this->move(dx, dy);
+    }
+
     // 0x004C9513
     widget_index window::find_widget_at(int16_t xPos, int16_t yPos)
     {
