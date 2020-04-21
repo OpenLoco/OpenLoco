@@ -460,14 +460,13 @@ namespace openloco::ui::options
             if (config.scale_factor == newScaleFactor)
                 return;
             config.scale_factor = newScaleFactor;
-            
             w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
             w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
             if (newScaleFactor <= openloco::gfx::scaleFactorMin)
                 w->disabled_widgets |= (1 << widx::display_scale_down_btn);
             if (newScaleFactor >= openloco::gfx::scaleFactorMax)
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
-            
+
             openloco::config::write();
             gfx::invalidate_screen();
             ui::trigger_resize();

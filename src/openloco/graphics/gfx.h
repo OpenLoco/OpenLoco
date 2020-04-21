@@ -126,9 +126,9 @@ namespace openloco::gfx
         }
     };
 
-	const float scaleFactorMin = 1.0f;
-	const float scaleFactorMax = 4.0f;
-	const float scaleFactorStep = 1.0f;
+    const float scaleFactorMin = 1.0f;
+    const float scaleFactorMax = 4.0f;
+    const float scaleFactorStep = 1.0f;
 
     drawpixelinfo_t& screen_dpi();
 
