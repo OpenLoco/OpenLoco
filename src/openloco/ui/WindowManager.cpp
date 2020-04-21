@@ -66,11 +66,8 @@ namespace openloco::ui::WindowManager
             0x0043454F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                printf("Calling company window open with ax = %d\n", regs.ax);
-                window* company = windows::CompanyWindow::open(regs.ax);
-
+                windows::CompanyWindow::open(regs.ax);
                 regs = backup;
-                regs.esi = (int32_t)company;
 
                 return 0;
             });
@@ -79,7 +76,6 @@ namespace openloco::ui::WindowManager
             0x004345EE,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                printf("Calling company window finances with ax = %d\n", regs.ax);
                 windows::CompanyWindow::openFinances(regs.ax);
                 regs = backup;
 
@@ -90,7 +86,6 @@ namespace openloco::ui::WindowManager
             0x00434731,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                printf("Calling company window challenge with ax = %d\n", regs.ax);
                 windows::CompanyWindow::openChallenge(regs.ax);
                 regs = backup;
 
@@ -101,11 +96,8 @@ namespace openloco::ui::WindowManager
             0x00435ACC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                printf("Calling company window openAndSetName\n");
-                auto window = windows::CompanyWindow::openAndSetName();
-
+                windows::CompanyWindow::openAndSetName();
                 regs = backup;
-                regs.esi = (int32_t)window;
 
                 return 0;
             });

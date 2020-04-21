@@ -116,8 +116,6 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00431EBB
         static void prepare_draw(window* self)
         {
-            printf("In prepare draw for company window %p with number = %d\n", self, self->number);
-
             common::switchTabWidgets(self);
 
             // Set company name.
@@ -516,12 +514,8 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const uint32_t newFlags = window_flags::scrolling_to_location | window_flags::stick_to_front;
         auto window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
-        printf("window: %p\n", window);
         window->number = companyId;
-        printf("window->number = %d\n", window->number);
         window->owner = companyId;
-        printf("window->owner = %d\n", window->owner);
-
         window->current_tab = 0;
         window->frame_no = 0;
         window->saved_view.clear();
@@ -546,8 +540,6 @@ namespace openloco::ui::windows::CompanyWindow
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
-
-        printf("New company window (0x0043454F) with companyId = %d\n", companyId);
 
         if (window == nullptr)
         {
@@ -1193,8 +1185,6 @@ namespace openloco::ui::windows::CompanyWindow
             }
         }
 
-        printf("New company window (0x004345EE) with companyId = %d\n", companyId);
-
         if (window == nullptr)
         {
             window = sub_4347D0(companyId);
@@ -1528,8 +1518,6 @@ namespace openloco::ui::windows::CompanyWindow
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
-
-        printf("New company window (0x00434731) with companyId = %d\n", companyId);
 
         if (window == nullptr)
         {
