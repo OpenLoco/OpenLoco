@@ -23,9 +23,10 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 
 ### Chat
 
-Feel free to join our Gitter channel to talk about developing the game, or for help getting it to run. You only need an account with either GitHub, GitLab, or Twitter to join the Gitter chat.
+Feel free to join our Discord server to talk about developing the game, or for help getting it to run.
 
-[![Gitter](https://img.shields.io/badge/gitter-development-yellowgreen.svg)](https://gitter.im/OpenLoco/OpenLoco)
+[![Discord](https://img.shields.io/discord/689445672390361176)](https://discord.gg/vEuNRHD)
+
 
 # 1 Introduction
 

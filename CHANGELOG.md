@@ -1,13 +1,20 @@
+20.03+ (???)
+------------------------------------------------------------------------
+- Fix: [#264] Option 'Export plug-in objects with saved games' is partially cut off.
+- Fix: [#388] Re-center Options window on scale factor change.
+- Fix: [#396] Preferred owner name is not saved.
+- Fix: [#423] Date in challenge tooltip is incorrect.
+
 20.03 (2020-03-23)
 ------------------------------------------------------------------------
 - Feature: [#347] Screenshots are now saved in PNG format.
-- Fix: [#226] Zooming to cursor is buggy on bigger maps
-- Fix: [#296] Correctly show challenge progression in save previews
+- Fix: [#226] Zooming to cursor is buggy on bigger maps.
+- Fix: [#296] Correctly show challenge progression in save previews.
 - Fix: [#297] Menu click sound not played.
 - Fix: [#303] Play title music preference is not saved.
 - Fix: [#340] Cargo rating is calculated incorrectly in some edge cases.
-- Fix: [#343] Building a signal adds money (macOS/Linux only).
-- Fix: [#383] Crash in construction window
+- Fix: [#349] Building a signal adds money (macOS/Linux only).
+- Fix: [#383] Crash in construction window.
 - Fix: Strings were not wrapping properly in the file browser window.
 - Change: [#380] Make keypad enter work the same as normal enter.
 

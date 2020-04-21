@@ -1825,7 +1825,7 @@ namespace openloco::ui::options
 
     namespace misc
     {
-        static const gfx::ui_size_t _window_size = { 420, 102 };
+        static const gfx::ui_size_t _window_size = { 420, 124 };
 
         namespace widx
         {
@@ -1958,7 +1958,7 @@ namespace openloco::ui::options
         {
             switch (i)
             {
-                case widx::change_btn:
+                case widx::use_preferred_owner_name:
                     set_preferred_name(w, str);
                     break;
             }
@@ -1972,16 +1972,17 @@ namespace openloco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, 11, nullptr);
+            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
         static void set_preferred_name(window* w, char* str)
         {
-            if (strlen(str) == 0)
-                return;
-
             auto& cfg = openloco::config::get();
+
+            if (strlen(str) == 0)
+                cfg.flags &= ~config::flags::use_preferred_owner_name;
+
             strcpy(cfg.preferred_name, str);
             cfg.preferred_name[strlen(str)] = '\0';
 
