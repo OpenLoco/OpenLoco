@@ -13,6 +13,9 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Matthias Moninger (ZehMatt)
 * Hielke Morsink (Broxzier)
 
+## Bugfixes
+* seifer7
+
 ## Translations
 * Dutch - Michael Steenbeek (Gymnasiast)
 * English (UK) - extracted from original game
