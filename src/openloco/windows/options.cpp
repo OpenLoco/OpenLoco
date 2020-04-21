@@ -449,6 +449,8 @@ namespace openloco::ui::options
 
             openloco::config::write();
             WindowManager::invalidateWidget(w->type, w->number, widx::display_resolution);
+            openloco::ui::updateSDLResolution();
+            w->moveToCentre();
         }
 
 #pragma mark -
