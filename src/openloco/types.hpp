@@ -5,10 +5,20 @@
 namespace openloco
 {
     using coord_t = int16_t;
+    using currency32_t = int32_t;
     using station_id_t = uint16_t;
     using string_id = uint16_t;
     using thing_id_t = uint16_t;
     using tile_coord_t = int16_t;
+
+#pragma pack(push, 1)
+    struct currency48_t
+    {
+        int32_t var_00;
+        int16_t var_04;
+    };
+#pragma pack(pop)
+    static_assert(sizeof(currency48_t) == 6);
 
     template<typename T>
     struct location2

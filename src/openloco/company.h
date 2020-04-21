@@ -1,6 +1,7 @@
 #pragma once
 
 #include "localisation/stringmgr.h"
+#include "management/Expenditures.h"
 #include "types.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -26,14 +27,7 @@ namespace openloco
         bankrupt = (1 << 9),                     // 0x200
     };
 
-#pragma pack(push, 1)
-    struct currency48_t
-    {
-        int32_t var_00;
-        int16_t var_04;
-    };
-#pragma pack(pop)
-    static_assert(sizeof(currency48_t) == 6);
+    constexpr size_t expenditureHistoryCapacity = 16;
 
 #pragma pack(push, 1)
     struct company
@@ -56,8 +50,9 @@ namespace openloco
         uint32_t unlocked_vehicles[7]; // 0x34 (bit field based on vehicle_object index)
         uint16_t available_vehicles;   // 0x50
         uint8_t pad_52[0x57 - 0x52];
-        uint8_t var_57;
-        uint8_t pad_58[0x88CE - 0x58];
+        uint8_t numExpenditureMonths;                                                  // 0x57
+        currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
+        uint8_t pad_498[0x88CE - 0x498];
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
         currency48_t vehicleProfit; // 0x8B9E
@@ -81,6 +76,7 @@ namespace openloco
 #pragma pack(pop)
 
     static_assert(sizeof(company) == 0x8FA8);
+    static_assert(sizeof(company::expenditures) == 0x440);
     static_assert(offsetof(company, companyValue) == 0x88CE);
     static_assert(offsetof(company, vehicleProfit) == 0x8B9E);
     static_assert(offsetof(company, var_8C4E) == 0x8C4E);

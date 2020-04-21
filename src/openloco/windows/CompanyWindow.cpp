@@ -1,11 +1,13 @@
 #include "../company.h"
 #include "../companymgr.h"
 #include "../config.h"
+#include "../date.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
+#include "../management/Expenditures.h"
 #include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
@@ -1041,10 +1043,86 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043361E
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* context, uint32_t scrollIndex)
         {
-            registers regs;
-            regs.edi = (int32_t)context;
-            regs.esi = (int32_t)self;
-            call(0x0043361E, regs);
+            int16_t y = 47 - self->widgets[widx::scrollview].top + 14;
+
+            for (uint8_t i = 0; i < static_cast<uint8_t>(ExpenditureType::Count); i++)
+            {
+                // Add zebra stripes to even labels.
+                if (i % 2 == 0)
+                {
+                    auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
+                    gfx::fill_rect(context, 0, y, 2176, y + 9, colour);
+                }
+
+                y += 10;
+            }
+
+            const auto company = companymgr::get(self->number);
+
+            uint32_t maxYear = current_year();
+            uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
+
+            // Paint years on top of scroll area.
+            int16_t x = 132 - self->widgets[widx::scrollview].left;
+            y = 46 - self->widgets[widx::scrollview].top;
+            for (auto i = 0; i <= expenditureYears; i++)
+            {
+                FormatArguments args = {};
+                args.push(string_ids::uint16_raw);
+
+                uint16_t currentYear = maxYear - (expenditureYears - i);
+                args.push(currentYear);
+
+                string_id format = string_ids::wcolour2_stringid2;
+                if (i == expenditureYears)
+                    format = string_ids::white_stringid2;
+
+                gfx::draw_string_underline(
+                    *context,
+                    x,
+                    y,
+                    colour::black,
+                    format,
+                    &args);
+
+                x += 128;
+            }
+
+            y += 14;
+            for (auto i = 0; i <= expenditureYears; i++)
+            {
+                curreny48_t sum = 0;
+                for (auto j = 0; j <= ExpenditureType::Count; j++)
+                {
+                    // TODO(avgeffen): currency48_t from currency32_t
+                    // TODO(avgeffen): currency48_t +operator
+                    curreny48_t expenditures = company->expenditures[i][j];
+                    sum += expenditures;
+
+                    string_id format = string_ids::plus_currency48;
+                    if (expenditures < 0)
+                        format = string_ids::currency48;
+
+                    FormatArguments args = {};
+                    args.push<string_id>(format);
+                    args.push<curreny48_t>(expenditures);
+
+                    gfx::draw_string_494C78(
+                        *context,
+                        x,
+                        y,
+                        colour::black,
+                        format,
+                        &args);
+
+                    y += 10;
+                }
+            }
+
+            // registers regs;
+            // regs.edi = (int32_t)context;
+            // regs.esi = (int32_t)self;
+            // call(0x0043378C, regs);
         }
 
         // 0x00433819
@@ -1125,7 +1203,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             const auto& company = companymgr::get(self->number);
-            *scrollWidth = company->var_57 * 128;
+            *scrollWidth = company->numExpenditureMonths * 128;
         }
 
         // 0x00433887
@@ -1207,6 +1285,7 @@ namespace openloco::ui::windows::CompanyWindow
         common::disableChallengeTab(window);
         window->init_scroll_widgets();
         window->moveInsideScreenEdges();
+        finances::sub_4C8DBF(window);
 
         return window;
     }
