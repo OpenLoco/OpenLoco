@@ -58,6 +58,7 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
+    bool updateSDLResolution();
     void updateFullscreenResolutions();
     std::vector<Resolution> getFullscreenResolutions();
     Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);

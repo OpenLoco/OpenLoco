@@ -776,6 +776,23 @@ namespace openloco::ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
+    bool updateSDLResolution()
+    {
+        SDL_DisplayMode mode;
+        SDL_GetWindowDisplayMode(window, &mode);
+
+        auto& cfg = config::get();
+        mode.h = cfg.resolution_height;
+        mode.w = cfg.resolution_width;
+
+        if (SDL_SetWindowDisplayMode(window, &mode) != 0)
+            return false;
+
+        gfx::invalidate_screen();
+        resize(cfg.resolution_width, cfg.resolution_height);
+        return true;
+    }
+
     void updateFullscreenResolutions()
     {
         // Query number of display modes
@@ -882,6 +899,14 @@ namespace openloco::ui
             auto& cfg = config::get_new();
             cfg.display.mode = mode;
             config::write_new_config();
+
+            config::resolution_t* dimensions;
+            if (mode == config::screen_mode::window)
+                dimensions = &cfg.display.window_resolution;
+            else
+                dimensions = &cfg.display.fullscreen_resolution;
+
+            resize(dimensions->width, dimensions->height);
         }
     }
 

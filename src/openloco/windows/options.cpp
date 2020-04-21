@@ -406,6 +406,7 @@ namespace openloco::ui::options
 #if !(defined(__APPLE__) && defined(__MACH__))
             ui::set_screen_mode(new_mode);
             screen_mode_toggle_enabled(w);
+            w->moveToCentre();
 #endif
         }
 
@@ -449,6 +450,8 @@ namespace openloco::ui::options
 
             openloco::config::write();
             WindowManager::invalidateWidget(w->type, w->number, widx::display_resolution);
+            openloco::ui::updateSDLResolution();
+            w->moveToCentre();
         }
 
 #pragma mark -
