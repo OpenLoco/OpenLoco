@@ -456,6 +456,7 @@ namespace openloco::ui::options
         static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
         {
             openloco::ui::adjust_window_scale(adjust_by);
+            w->moveToCentre();
         }
 
         // 0x004BFBB7
