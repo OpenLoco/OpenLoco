@@ -1298,10 +1298,71 @@ namespace openloco::ui::build_vehicle
     // 0x4C28F1
     static void draw_build_sub_type_tabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)window;
-        regs.edi = (int32_t)dpi;
-        call(0x4C28F1, regs);
+        auto skin = objectmgr::get<interface_skin_object>();
+        auto companyColour = companymgr::get_company_colour(window->number);
+
+        auto left = window->x;
+        auto top = window->y + 69;
+        auto right = left + window->width - 187;
+        auto bottom = top;
+        gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 7));
+
+        left = window->x + window->width - 187;
+        top = window->y + 41;
+        right = left;
+        bottom = top + 27;
+        gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 7));
+
+        for (uint32_t tab = 0; tab < _num_track_type_tabs; ++tab)
+        {
+            const auto widget = window->widgets[tab + widx::tab_vehicles_for_0];
+            if (window->current_secondary_tab == tab)
+            {
+                left = widget.left + window->x + 1;
+                top = widget.top + window->y + 26;
+                right = left + 29;
+                bottom = top;
+                gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 5));
+            }
+
+            auto img = 0;
+            auto type = _tab_track_types[tab];
+            if (type == -1)
+            {
+                if (window->current_tab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
+                {
+                    img = skin->img + interface_skin::image_ids::toolbar_menu_airport;
+                }
+                else
+                {
+                    img = skin->img + interface_skin::image_ids::toolbar_menu_ship_port;
+                }
+                // Original saved the company colour in the img but didn't set the recolour flag
+            }
+            else if (type & (1 << 7)) // is_road
+            {
+                type &= ~(1 << 7);
+                auto road_obj = objectmgr::get<road_object>(type);
+                img = road_obj->var_0E;
+                if (window->current_secondary_tab == tab)
+                {
+                    img += (window->frame_no / 4) & 0x1F;
+                }
+                img = gfx::recolour(img, companyColour);
+            }
+            else
+            {
+                auto track_obj = objectmgr::get<track_object>(type);
+                img = track_obj->var_1E;
+                if (window->current_secondary_tab == tab)
+                {
+                    img += (window->frame_no / 4) & 0xF;
+                }
+                img = gfx::recolour(img, companyColour);
+            }
+
+            widget::draw_tab(window, dpi, img, tab + widx::tab_vehicles_for_0);
+        }
     }
 
     // 0x4B7741
