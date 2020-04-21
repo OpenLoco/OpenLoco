@@ -4,6 +4,7 @@
 - Fix: [#388] Re-center Options window on scale factor change.
 - Fix: [#396] Preferred owner name is not saved.
 - Fix: [#423] Date in challenge tooltip is incorrect.
+- Change: [#420] Disable window scale factor buttons when not applicable.
 
 20.03 (2020-03-23)
 ------------------------------------------------------------------------

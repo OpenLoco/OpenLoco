@@ -28,6 +28,13 @@ namespace openloco::ui
         int32_t height;
     };
 
+    namespace ScaleFactor
+    {
+        const float min = 1.0f;
+        const float max = 4.0f;
+        const float step = 1.0f;
+    };
+
 #ifdef _WIN32
     void* hwnd();
 #endif
@@ -59,6 +66,7 @@ namespace openloco::ui
 #endif
     void handleInput();
     void minimalHandleInput();
+    void adjust_window_scale(float adjust_by);
 
     namespace viewport_interaction
     {

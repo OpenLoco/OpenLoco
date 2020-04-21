@@ -1072,4 +1072,17 @@ namespace openloco::ui
 
         WindowManager::callEvent9OnAllWindows();
     }
+
+    void adjust_window_scale(float adjust_by)
+    {
+        auto& config = config::get_new();
+        float newScaleFactor = std::clamp(config.scale_factor + adjust_by, ScaleFactor::min, ScaleFactor::max);
+        if (config.scale_factor == newScaleFactor)
+            return;
+        config.scale_factor = newScaleFactor;
+
+        openloco::config::write();
+        gfx::invalidate_screen();
+        ui::trigger_resize();
+    }
 }

@@ -455,12 +455,7 @@ namespace openloco::ui::options
 
         static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
         {
-            auto& config = config::get_new();
-            config.scale_factor = std::clamp(config.scale_factor + adjust_by, 1.0f, 4.0f);
-
-            openloco::config::write();
-            gfx::invalidate_screen();
-            ui::trigger_resize();
+            openloco::ui::adjust_window_scale(adjust_by);
             w->moveToCentre();
         }
 
@@ -485,10 +480,10 @@ namespace openloco::ui::options
                     station_names_scale_mouse_down(w, wi);
                     break;
                 case widx::display_scale_down_btn:
-                    display_scale_mouse_down(w, wi, -1.0f);
+                    display_scale_mouse_down(w, wi, -openloco::ui::ScaleFactor::step);
                     break;
                 case widx::display_scale_up_btn:
-                    display_scale_mouse_down(w, wi, 1.0f);
+                    display_scale_mouse_down(w, wi, openloco::ui::ScaleFactor::step);
                     break;
             }
         }
@@ -585,6 +580,16 @@ namespace openloco::ui::options
             {
                 w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
+
+            if (config::get_new().scale_factor <= openloco::ui::ScaleFactor::min)
+                w->disabled_widgets |= (1 << widx::display_scale_down_btn);
+            else
+                w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
+
+            if (config::get_new().scale_factor >= openloco::ui::ScaleFactor::max)
+                w->disabled_widgets |= (1 << widx::display_scale_up_btn);
+            else
+                w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
 
             sub_4C13BE(w);
         }
