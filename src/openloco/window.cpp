@@ -606,8 +606,8 @@ namespace openloco::ui
 
     bool window::moveToCentre()
     {
-        float dx = ((ui::width() - this->width) / 2);
-        float dy = ((ui::height() - this->height) / 2);
+        int16_t dx = ((ui::width() - this->width) / 2);
+        int16_t dy = ((ui::height() - this->height) / 2);
         dx = dx - this->x;
         dy = dy - this->y;
 
