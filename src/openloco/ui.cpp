@@ -899,6 +899,14 @@ namespace openloco::ui
             auto& cfg = config::get_new();
             cfg.display.mode = mode;
             config::write_new_config();
+
+            config::resolution_t* dimensions;
+            if (mode == config::screen_mode::window)
+                dimensions = &cfg.display.window_resolution;
+            else
+                dimensions = &cfg.display.fullscreen_resolution;
+
+            resize(dimensions->width, dimensions->height);
         }
     }
 
