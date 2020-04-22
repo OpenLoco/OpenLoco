@@ -404,6 +404,10 @@ namespace openloco::ui
             cfg.window_resolution = { width, height };
             config::write_new_config();
         }
+
+        auto options_window = WindowManager::find(WindowType::options);
+        if (options_window != nullptr)
+            options_window->moveToCentre();
     }
 
     void trigger_resize()
@@ -760,21 +764,95 @@ namespace openloco::ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
-    bool updateSDLResolution()
+    bool setDisplayMode(config::screen_mode mode, int16_t width, int16_t height)
     {
-        SDL_DisplayMode mode;
-        SDL_GetWindowDisplayMode(window, &mode);
+        SDL_DisplayMode DisplayMode;
+        SDL_DisplayMode DesktopDisplayMode;
+        Resolution DesktopResolution;
+        Resolution FallbackResolution;
+        int32_t DisplayIndex = SDL_GetWindowDisplayIndex(window);
+        SDL_GetDesktopDisplayMode(DisplayIndex, &DesktopDisplayMode);
+        SDL_GetDesktopDisplayMode(DisplayIndex, &DisplayMode);
+        DesktopResolution = { DesktopDisplayMode.w, DesktopDisplayMode.h };
 
-        auto& cfg = config::get();
-        mode.h = cfg.resolution_height;
-        mode.w = cfg.resolution_width;
+        auto& old_config = config::get();
+        auto& config = config::get_new();
 
-        if (SDL_SetWindowDisplayMode(window, &mode) != 0)
+        config.display.mode = mode;
+
+        auto flags = 0;
+        switch (mode)
+        {
+            case config::screen_mode::window:
+                FallbackResolution = { config.display.window_resolution.width, config.display.window_resolution.height };
+                if (!(FallbackResolution.width > 0 && FallbackResolution.height > 0))
+                    FallbackResolution = { 640, 480 };
+                break;
+            case config::screen_mode::fullscreen:
+                flags |= SDL_WINDOW_FULLSCREEN;
+                FallbackResolution = { config.display.fullscreen_resolution.width, config.display.fullscreen_resolution.height };
+                if (!(FallbackResolution.width > 0 && FallbackResolution.height > 0))
+                    FallbackResolution = { DesktopResolution.width, DesktopResolution.height };
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+                FallbackResolution = { DesktopResolution.width, DesktopResolution.height };
+                width = 0;
+                height = 0;
+                break;
+            default:
+                console::error("Unrecongised display mode");
+                return false;
+                break;
+        }
+
+        // If no width or height is specified, use the fallback value from above (previously configured, or a default)
+        if (!(width > 0 && height > 0))
+        {
+            width = FallbackResolution.width;
+            height = FallbackResolution.height;
+        }
+
+        switch (mode)
+        {
+            case config::screen_mode::window:
+                config.display.window_resolution = { width, height };
+                break;
+            case config::screen_mode::fullscreen:
+                config.display.fullscreen_resolution = { width, height };
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                break;
+        }
+
+        old_config.resolution_height = height;
+        old_config.resolution_width = width;
+
+        DisplayMode.w = width;
+        DisplayMode.h = height;
+
+        if (SDL_SetWindowFullscreen(window, flags) != 0)
+        {
+            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
             return false;
+        }
+
+        if (SDL_SetWindowDisplayMode(window, &DisplayMode) != 0)
+        {
+            console::error("SDL_SetWindowDisplayMode failed: %s", SDL_GetError());
+            return false;
+        }
+        SDL_SetWindowSize(window, width, height);
+
+        openloco::config::write_new_config();
 
         gfx::invalidate_screen();
-        resize(cfg.resolution_width, cfg.resolution_height);
+        ui::trigger_resize();
         return true;
+    }
+    bool setDisplayMode(config::screen_mode mode)
+    {
+        return setDisplayMode(mode, 0, 0);
     }
 
     void updateFullscreenResolutions()
@@ -818,10 +896,13 @@ namespace openloco::ui
 
         // Update config fullscreen resolution if not set
         auto& cfg = config::get();
-        if (cfg.resolution_width == std::numeric_limits<uint16_t>::max() && cfg.resolution_height == std::numeric_limits<uint16_t>::max())
+        auto& cfg_new = config::get_new();
+        if (!(cfg_new.display.fullscreen_resolution.width > 0 && cfg_new.display.fullscreen_resolution.height > 0 && cfg.resolution_width > 0 && cfg.resolution_height > 0))
         {
             cfg.resolution_width = resolutions.back().width;
             cfg.resolution_height = resolutions.back().height;
+            cfg_new.display.fullscreen_resolution.width = resolutions.back().width;
+            cfg_new.display.fullscreen_resolution.height = resolutions.back().height;
         }
 
         _fsResolutions = resolutions;
@@ -859,51 +940,16 @@ namespace openloco::ui
     }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    void set_screen_mode(config::screen_mode mode)
-    {
-        auto flags = 0;
-        switch (mode)
-        {
-            case config::screen_mode::window:
-                break;
-            case config::screen_mode::fullscreen:
-                flags |= SDL_WINDOW_FULLSCREEN;
-                break;
-            case config::screen_mode::fullscreen_borderless:
-                flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-                break;
-        }
-
-        if (SDL_SetWindowFullscreen(window, flags) != 0)
-        {
-            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
-        }
-        else
-        {
-            auto& cfg = config::get_new();
-            cfg.display.mode = mode;
-            config::write_new_config();
-
-            config::resolution_t* dimensions;
-            if (mode == config::screen_mode::window)
-                dimensions = &cfg.display.window_resolution;
-            else
-                dimensions = &cfg.display.fullscreen_resolution;
-
-            resize(dimensions->width, dimensions->height);
-        }
-    }
-
     static void toggle_fullscreen_desktop()
     {
         auto flags = SDL_GetWindowFlags(window);
         if (flags & SDL_WINDOW_FULLSCREEN)
         {
-            set_screen_mode(config::screen_mode::window);
+            setDisplayMode(config::screen_mode::window);
         }
         else
         {
-            set_screen_mode(config::screen_mode::fullscreen_borderless);
+            setDisplayMode(config::screen_mode::fullscreen_borderless);
         }
     }
 #endif
