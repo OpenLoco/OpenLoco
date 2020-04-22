@@ -68,7 +68,7 @@ namespace openloco::ui::windows::town
         enum widx
         {
             viewport = 7,
-            unk_8,
+            status_bar,
             centre_on_viewport,
             expand_town,
             demolish_town,
@@ -96,9 +96,9 @@ namespace openloco::ui::windows::town
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
 
-            self->widgets[widx::unk_8].top = self->height - 12;
-            self->widgets[widx::unk_8].bottom = self->height - 3;
-            self->widgets[widx::unk_8].right = self->width - 14;
+            self->widgets[widx::status_bar].top = self->height - 12;
+            self->widgets[widx::status_bar].bottom = self->height - 3;
+            self->widgets[widx::status_bar].right = self->width - 14;
 
             self->widgets[widx::expand_town].right = self->width - 2;
             self->widgets[widx::expand_town].left = self->width - 25;
@@ -140,7 +140,7 @@ namespace openloco::ui::windows::town
             args.push(town->getTownSizeString());
             args.push(town->population);
 
-            const auto& widget = self->widgets[widx::unk_8];
+            const auto& widget = self->widgets[widx::status_bar];
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
