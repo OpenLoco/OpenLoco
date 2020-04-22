@@ -578,7 +578,9 @@ namespace openloco::ui::options
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
 
+#if !(defined(__APPLE__) && defined(__MACH__))
             screen_mode_toggle_enabled(w);
+#endif
 
             sub_4C13BE(w);
         }
