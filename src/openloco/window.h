@@ -38,9 +38,9 @@ namespace openloco::ui
         };
         string_id tooltip; // 0x0E
 
-        int16_t mid_x();
-        uint16_t width();
-        uint16_t height();
+        int16_t mid_x() const;
+        uint16_t width() const;
+        uint16_t height() const;
     };
 
     enum class widget_type : uint8_t
