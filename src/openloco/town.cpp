@@ -1,5 +1,6 @@
 #include "town.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include <algorithm>
 
 using namespace openloco::interop;
@@ -29,5 +30,22 @@ namespace openloco
             company_ratings[cid] + amount,
             min_company_rating,
             max_company_rating);
+    }
+
+    string_id town::getTownSizeString() const
+    {
+        static string_id townSizeNames[5] = {
+            string_ids::town_size_hamlet,
+            string_ids::town_size_village,
+            string_ids::town_size_town,
+            string_ids::town_size_city,
+            string_ids::town_size_metropolis
+        };
+
+        if (static_cast<uint8_t>(size) < std::size(townSizeNames))
+        {
+            return townSizeNames[static_cast<uint8_t>(size)];
+        }
+        return string_ids::town_size_hamlet;
     }
 }

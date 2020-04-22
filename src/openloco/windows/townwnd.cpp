@@ -7,6 +7,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../map/tile.h"
 #include "../objects/interface_skin_object.h"
@@ -67,7 +68,7 @@ namespace openloco::ui::windows::town
         enum widx
         {
             viewport = 7,
-            unk_8,
+            status_bar,
             centre_on_viewport,
             expand_town,
             demolish_town,
@@ -95,9 +96,9 @@ namespace openloco::ui::windows::town
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
 
-            self->widgets[widx::unk_8].top = self->height - 12;
-            self->widgets[widx::unk_8].bottom = self->height - 3;
-            self->widgets[widx::unk_8].right = self->width - 14;
+            self->widgets[widx::status_bar].top = self->height - 12;
+            self->widgets[widx::status_bar].bottom = self->height - 3;
+            self->widgets[widx::status_bar].right = self->width - 14;
 
             self->widgets[widx::expand_town].right = self->width - 2;
             self->widgets[widx::expand_town].left = self->width - 25;
@@ -131,24 +132,19 @@ namespace openloco::ui::windows::town
             self->draw(dpi);
             common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, (widget_index)widx::centre_on_viewport);
-
-            static string_id townSizeLabelIds[] = {
-                string_ids::town_size_hamlet,
-                string_ids::town_size_village,
-                string_ids::town_size_town,
-                string_ids::town_size_city,
-                string_ids::town_size_metropolis,
-            };
+            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             auto town = townmgr::get(self->number);
-            commonFormatArgs[0] = townSizeLabelIds[(uint8_t)town->size];
-            *(int32_t*)&commonFormatArgs[1] = town->population;
 
-            const uint16_t xPos = self->x + self->widgets[widx::unk_8].left - 1;
-            const uint16_t yPos = self->y + self->widgets[widx::unk_8].top - 1;
-            const uint16_t width = self->widgets[widx::unk_8].width() - 1;
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::status_town_population, &*commonFormatArgs);
+            auto args = FormatArguments();
+            args.push(town->getTownSizeString());
+            args.push(town->population);
+
+            const auto& widget = self->widgets[widx::status_bar];
+            const auto x = self->x + widget.left - 1;
+            const auto y = self->y + widget.top - 1;
+            const auto width = widget.width() - 1;
+            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::status_town_population, &args);
         }
 
         // 0x00499079

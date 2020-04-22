@@ -10,17 +10,17 @@ using namespace openloco::interop;
 
 namespace openloco::ui
 {
-    int16_t widget_t::mid_x()
+    int16_t widget_t::mid_x() const
     {
         return (this->left + this->right) / 2;
     }
 
-    uint16_t widget_t::width()
+    uint16_t widget_t::width() const
     {
         return (this->right - this->left) + 1;
     }
 
-    uint16_t widget_t::height()
+    uint16_t widget_t::height() const
     {
         return (this->bottom - this->top) + 1;
     }
