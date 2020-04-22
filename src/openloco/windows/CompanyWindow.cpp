@@ -7,6 +7,13 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyWindow
 {
+    void OpenUnk(company_id_t companyId)
+    {
+        registers regs;
+        regs.eax = companyId;
+        call(0x0043454F, regs);
+    }
+
     void openFinances(company_id_t companyId)
     {
         registers regs;

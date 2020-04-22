@@ -224,10 +224,12 @@ namespace openloco::ui::MessageWindow
 namespace openloco::ui::windows::CompanyList
 {
     void openPerformanceIndexes();
+    void OpenUnk();
 }
 
 namespace openloco::ui::windows::CompanyWindow
 {
+    void OpenUnk(company_id_t companyId);
     void openFinances(company_id_t companyId);
 }
 

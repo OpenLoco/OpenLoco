@@ -47,8 +47,8 @@ namespace openloco::ui::PlayerInfoPanel
     static void performanceIndexMouseUp();
     static void sub_4395EB();
 
-    static void sub_439602(FormatArguments& args);
-    static void sub_439643(FormatArguments& args);
+    static void companyValueTooltip(FormatArguments& args);
+    static void performanceIndexTooltip(FormatArguments& args);
     static void companyValueMouseUp();
 
     enum class CorporateRating
@@ -89,6 +89,7 @@ namespace openloco::ui::PlayerInfoPanel
     };
 
     static window_event_list _events;
+    std::vector<const company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
@@ -110,24 +111,24 @@ namespace openloco::ui::PlayerInfoPanel
     static void playerMouseDown(ui::window* self, widget_index widgetIndex)
     {
         auto args = FormatArguments();
-        std::vector<const company*> sortedCompanies;
+        _sortedCompanies.clear();
 
         for (const auto& c : companymgr::companies())
         {
             if (!c.empty())
             {
-                sortedCompanies.push_back(&c);
+                _sortedCompanies.push_back(&c);
             }
         }
 
         sort(
-            sortedCompanies.begin(),
-            sortedCompanies.end(),
+            _sortedCompanies.begin(),
+            _sortedCompanies.end(),
             [](const company* a, const company* b) {
                 return a->performance_index > b->performance_index;
             });
 
-        std::array<string_id, 15> positionArray = {
+        const string_id positionArray[15] = {
             string_ids::position_1st,
             string_ids::position_2nd,
             string_ids::position_3rd,
@@ -145,9 +146,9 @@ namespace openloco::ui::PlayerInfoPanel
             string_ids::position_15th,
         };
 
-        dropdown::set_highlighted_item(0);
         int index = 0;
-        for (auto company : sortedCompanies)
+        auto highlightIndex = -1;
+        for (auto company : _sortedCompanies)
         {
             auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
             auto rating = performanceToRating(company->performance_index);
@@ -155,6 +156,7 @@ namespace openloco::ui::PlayerInfoPanel
             args.push(positionArray[index]);
             args.push(gfx::recolour(competitorObj->images[company->owner_emotion], company->colour.primary << 19));
             args.push(company->name);
+            args.push<uint16_t>(0); // Needed after a user string id
             args.push(company->performance_index);
             args.push(_ratingNames[rating]);
 
@@ -162,20 +164,42 @@ namespace openloco::ui::PlayerInfoPanel
 
             if (is_player_company(company->id()))
             {
-                dropdown::set_highlighted_item(index);
+                highlightIndex = index;
             }
 
             index++;
         }
 
-        dropdown::add(index, string_ids::dropdown_companies_list, image_ids::company_list_dropdown_icon);
-        dropdown::show_below(self, widgetIndex, index + 1, 25);
-
+        dropdown::add(index++, string_ids::dropdown_companies_list, image_ids::company_list_dropdown_icon);
+        dropdown::show_below(self, widgetIndex, index, 25);
+        if (highlightIndex != -1)
+        {
+            dropdown::set_highlighted_item(highlightIndex);
+        }
         _113DC78 = _113DC78 | (1 << 1);
     }
 
-    static void sub_43AB87()
+    // 0x43AB87
+    static void playerDropdownClick(int16_t itemIndex)
     {
+        if (itemIndex == -1)
+        {
+            itemIndex = dropdown::get_highlighted_item();
+        }
+
+        // If its index is bigger than the list then its the company list extra item
+        if (static_cast<uint16_t>(itemIndex) >= _sortedCompanies.size())
+        {
+            windows::CompanyList::OpenUnk();
+        }
+        else
+        {
+            auto company = _sortedCompanies[itemIndex];
+            if (!company->empty())
+            {
+                windows::CompanyWindow::OpenUnk(company->id());
+            }
+        }
     }
 
     static void initEvents()
@@ -220,9 +244,10 @@ namespace openloco::ui::PlayerInfoPanel
     // 0x004393E7
     static void prepare_draw(window* window)
     {
-        _widgets[1].type = widget_type::none;
+        window->widgets[widx::w1].type = widget_type::none;
     }
 
+    // 0x43944B
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         widget_t& frame = _widgets[widx::w0];
@@ -270,7 +295,7 @@ namespace openloco::ui::PlayerInfoPanel
         switch (widgetIndex)
         {
             case widx::player:
-                sub_43AB87();
+                playerDropdownClick(item_index);
                 break;
         }
     }
@@ -314,16 +339,16 @@ namespace openloco::ui::PlayerInfoPanel
         switch (widgetIndex)
         {
             case widx::company_value:
-                sub_439602(args);
+                companyValueTooltip(args);
                 break;
 
             case widx::performance_index:
-                sub_439643(args);
+                performanceIndexTooltip(args);
                 break;
         }
     }
 
-    static void sub_439602(FormatArguments& args)
+    static void companyValueTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
         args.push(playerCompany->companyValue);
@@ -334,10 +359,10 @@ namespace openloco::ui::PlayerInfoPanel
     // 0x437D60
     static CorporateRating performanceToRating(int16_t ax)
     {
-        return static_cast<CorporateRating>(std::max(9, ax / 100));
+        return static_cast<CorporateRating>(std::min(9, ax / 100));
     }
 
-    static void sub_439643(FormatArguments& args)
+    static void performanceIndexTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
 
@@ -350,7 +375,7 @@ namespace openloco::ui::PlayerInfoPanel
     // 0x00439670
     static void on_update(window* w)
     {
-        w->var_854 += 1;
+        w->var_854++;
         if (w->var_854 >= 24)
         {
             w->var_854 = 0;
