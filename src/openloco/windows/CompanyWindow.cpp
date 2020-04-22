@@ -1091,32 +1091,42 @@ namespace openloco::ui::windows::CompanyWindow
             y += 14;
             for (auto i = 0; i <= expenditureYears; i++)
             {
-                curreny48_t sum = 0;
+                currency48_t sum = 0;
                 for (auto j = 0; j <= ExpenditureType::Count; j++)
                 {
-                    // TODO(avgeffen): currency48_t from currency32_t
-                    // TODO(avgeffen): currency48_t +operator
-                    curreny48_t expenditures = company->expenditures[i][j];
+                    printf("i,j = (%d,%d) = %d\n", i, j, company->expenditures[i][j]);
+                    currency48_t expenditures = company->expenditures[i][j];
                     sum += expenditures;
 
-                    string_id format = string_ids::plus_currency48;
+                    string_id mainFormat = string_ids::white_stringid2;
+                    string_id currFormat = string_ids::plus_currency48;
                     if (expenditures < 0)
-                        format = string_ids::currency48;
+                    {
+                        mainFormat = string_ids::red_stringid;
+                        currFormat = string_ids::currency48;
+                    }
 
                     FormatArguments args = {};
-                    args.push<string_id>(format);
-                    args.push<curreny48_t>(expenditures);
+                    args.push<string_id>(currFormat);
+                    args.push<currency48_t>(expenditures);
 
                     gfx::draw_string_494C78(
                         *context,
                         x,
                         y,
                         colour::black,
-                        format,
+                        mainFormat,
                         &args);
 
                     y += 10;
                 }
+
+                // TODO: print sum
+                // ...
+
+                // TODO: probably incorrect.
+                x += 128;
+                y = 46 - self->widgets[widx::scrollview].top + 14;
             }
 
             // registers regs;

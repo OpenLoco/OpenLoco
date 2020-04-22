@@ -200,6 +200,7 @@ namespace openloco::string_ids
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
+    constexpr string_id red_stringid = 454;
     constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
