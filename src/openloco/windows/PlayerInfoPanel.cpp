@@ -5,6 +5,7 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/FormatArguments.hpp"
@@ -259,9 +260,58 @@ namespace openloco::ui::PlayerInfoPanel
         draw_rect_inset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
 
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
-        auto competitor = objectmgr::get<competitor_object>(playerCompany->owner_emotion);
-        auto ax = playerCompany->colour.primary;
-        gfx::draw_image(dpi, window->x + frame.left + 2, window->y + frame.top + 2, 0x20000000 | (ax << 19) | competitor->images[playerCompany->competitor_id]);
+        auto competitor = objectmgr::get<competitor_object>(playerCompany->competitor_id);
+        auto image = gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->colour.primary);
+        gfx::draw_image(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
+
+        auto x = window->x + frame.width() / 2 + 12;
+        {
+            auto companyValueString = string_ids::player_info_bankrupt;
+            if (!(playerCompany->challenge_flags & company_flags::unk_9))
+            {
+                if (static_cast<int16_t>(playerCompany->var_08.var_04) < 0)
+                {
+                    companyValueString = string_ids::player_info_company_value_negative;
+                }
+                else
+                {
+                    companyValueString = string_ids::player_info_company_value;
+                }
+            }
+
+            auto colour = window->colours[0] & 0x7F;
+            if (input::is_hovering(WindowType::playerInfoToolbar, 0, widx::company_value))
+            {
+                colour = colour::white;
+            }
+            auto args = FormatArguments();
+            args.push(playerCompany->var_08.var_00);
+            args.push(playerCompany->var_08.var_04);
+            gfx::draw_string_centred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
+        }
+
+        {
+            auto performanceString = string_ids::player_info_performance;
+
+            if (playerCompany->challenge_flags & company_flags::increased_performance)
+            {
+                performanceString = string_ids::player_info_performance_increase;
+            }
+            else if (playerCompany->challenge_flags & (company_flags::decreased_performance))
+            {
+                performanceString = string_ids::player_info_performance_decrease;
+            }
+
+            auto colour = window->colours[0] & 0x7F;
+            if (input::is_hovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
+            {
+                colour = colour::white;
+            }
+
+            auto args = FormatArguments();
+            args.push(playerCompany->performance_index);
+            gfx::draw_string_centred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
+        }
     }
 
     // 0x004395A4

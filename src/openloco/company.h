@@ -17,9 +17,12 @@ namespace openloco
 
     enum company_flags
     {
+        increased_performance = (1 << 4),        // 0x10
+        decreased_performance = (1 << 5),        // 0x20
         challenge_completed = (1 << 6),          // 0x40
         challenge_failed = (1 << 7),             // 0x80
         challenge_beaten_by_opponent = (1 << 8), // 0x100
+        unk_9 = (1 << 9),                        // 0x200
     };
 
 #pragma pack(push, 1)

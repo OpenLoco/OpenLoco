@@ -175,6 +175,7 @@ namespace openloco::string_ids
 
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
+    constexpr string_id player_info_bankrupt = 398;
 
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;
 
@@ -204,6 +205,9 @@ namespace openloco::string_ids
 
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
+
+    constexpr string_id player_info_company_value = 572;
+    constexpr string_id player_info_company_value_negative = 573;
 
     constexpr string_id date_monthyear = 584;
 
@@ -764,6 +768,10 @@ namespace openloco::string_ids
     constexpr string_id str_1779 = 1779; // Chairman
     constexpr string_id str_1780 = 1780; // President
     constexpr string_id str_1781 = 1781; // Tycoon
+
+    constexpr string_id player_info_performance = 1788;
+    constexpr string_id player_info_performance_decrease = 1789;
+    constexpr string_id player_info_performance_increase = 1790;
 
     constexpr string_id toolbar_status_paused = 1800;
 
