@@ -17,14 +17,14 @@ namespace openloco::ui::vehicle
     {
         static void onUpdate(window* w);
     }
-    namespace finances
+    namespace route_details
     {
         static void onUpdate(window* w);
     }
 
     static loco_global<window_event_list, 0x005003C0> _mainEvents;
     static loco_global<window_event_list, 0x00500434> _vehicleDetailsEvents;
-    static loco_global<window_event_list, 0x00500554> _financesEvents;
+    static loco_global<window_event_list, 0x00500554> _routeDetailsEvents;
 
     static loco_global<int32_t, 0x0113614E> _113614E;
     static loco_global<int16_t, 0x01136156> _1136156;
@@ -33,7 +33,7 @@ namespace openloco::ui::vehicle
     {
         _mainEvents->on_update = main::onUpdate;
         _vehicleDetailsEvents->on_update = vehicle_details::onUpdate;
-        _financesEvents->on_update = finances::onUpdate;
+        _routeDetailsEvents->on_update = route_details::onUpdate;
     }
 
     static void sub_4B28E2(window* w, int dx)
@@ -89,6 +89,7 @@ namespace openloco::ui::vehicle
     namespace vehicle_details
     {
         // 0x004B3C45
+        // "Show <vehicle> design details and options" tab in vehicle window
         static void onUpdate(window* w)
         {
             if (w->number == _1136156)
@@ -134,9 +135,10 @@ namespace openloco::ui::vehicle
         }
     }
 
-    namespace finances
+    namespace route_details
     {
         // 0x004B55D1
+        // "Show <vehicle> route details" tab in vehicle window
         static void onUpdate(window* w)
         {
             w->frame_no += 1;
