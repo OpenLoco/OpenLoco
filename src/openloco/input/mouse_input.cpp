@@ -220,7 +220,7 @@ namespace openloco::input
     {
         if (input::has_flag(input::input_flags::tool_active))
         {
-            if (w->type == _toolWindowType && w->number == _toolWindowNumber
+            if (w->type == *_toolWindowType && w->number == _toolWindowNumber
                 && widgetIndex == _toolWidgetIndex)
             {
                 cancel_tool();
