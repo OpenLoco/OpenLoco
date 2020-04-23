@@ -1163,19 +1163,21 @@ namespace openloco::ui::windows::CompanyWindow
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
-            int16_t x = 132 - self->widgets[widx::scrollview].left;
+            int16_t x = 132 - self->widgets[widx::scrollview].left + 128;
             y = 46 - self->widgets[widx::scrollview].top;
-            for (auto i = 0; i <= expenditureYears; i++)
+            for (auto i = 0; i < expenditureYears; i++)
             {
                 FormatArguments args = {};
                 args.push(string_ids::uint16_raw);
 
-                uint16_t currentYear = maxYear - (expenditureYears - i);
+                uint16_t currentYear = maxYear - (expenditureYears - i) + 1;
                 args.push(currentYear);
 
                 string_id format = string_ids::wcolour2_stringid2;
-                if (i == expenditureYears)
+                if ((i + 1) != expenditureYears)
+                {
                     format = string_ids::white_stringid2;
+                }
 
                 gfx::draw_string_underline(
                     *context,
@@ -1188,14 +1190,15 @@ namespace openloco::ui::windows::CompanyWindow
                 x += 128;
             }
 
-            y += 14;
-            for (auto i = 0; i <= expenditureYears; i++)
+            x = 132 - self->widgets[widx::scrollview].left + 128;
+            y = 46 - self->widgets[widx::scrollview].top + 14;
+            for (auto i = 0; i < expenditureYears; i++)
             {
                 currency48_t sum = 0;
-                for (auto j = 0; j <= ExpenditureType::Count; j++)
+                for (auto j = 0; j < ExpenditureType::Count; j++)
                 {
-                    printf("i,j = (%d,%d) = %d\n", i, j, company->expenditures[i][j]);
-                    currency48_t expenditures = company->expenditures[i][j];
+                    auto expend32 = company->expenditures[i][j];
+                    currency48_t expenditures = expend32;
                     sum += expenditures;
 
                     string_id mainFormat = string_ids::white_stringid2;
@@ -1206,21 +1209,39 @@ namespace openloco::ui::windows::CompanyWindow
                         currFormat = string_ids::currency48;
                     }
 
-                    FormatArguments args = {};
-                    args.push<string_id>(currFormat);
-                    args.push<currency48_t>(expenditures);
+                    if (expenditures != 0)
+                    {
 
-                    gfx::draw_string_494C78(
-                        *context,
-                        x,
-                        y,
-                        colour::black,
-                        mainFormat,
-                        &args);
+                        FormatArguments args = {};
+                        args.push<string_id>(currFormat);
+                        args.push<currency48_t>(expenditures);
 
+                        gfx::draw_string_494C78(
+                            *context,
+                            x,
+                            y,
+                            colour::black,
+                            mainFormat,
+                            &args);
+                    }
                     y += 10;
                 }
 
+                FormatArguments args{};
+
+                auto mainFormat = string_ids::white_stringid2;
+                auto sumFormat = string_ids::plus_currency48;
+                if (sum < 0)
+                {
+                    mainFormat = string_ids::red_stringid;
+                    sumFormat = string_ids::currency48;
+                }
+                args.push(sumFormat);
+                args.push(sum);
+
+                y += 4;
+
+                gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
                 // TODO: print sum
                 // ...
 
@@ -1828,7 +1849,7 @@ namespace openloco::ui::windows::CompanyWindow
                 self->holdable_widgets = finances::holdableWidgets;
 
             common::disableChallengeTab(self);
-
+            self->invalidate();
             self->set_size(*tabInfo.windowSize);
             self->call_on_resize();
             self->call_prepare_draw();
