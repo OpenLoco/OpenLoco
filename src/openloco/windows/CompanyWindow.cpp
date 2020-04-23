@@ -512,9 +512,10 @@ namespace openloco::ui::windows::CompanyWindow
         }
     }
 
-    static window* sub_4347D0(company_id_t companyId)
+    // 0x004347D0
+    static window* create(company_id_t companyId)
     {
-        const uint32_t newFlags = window_flags::scrolling_to_location | window_flags::stick_to_front;
+        const uint32_t newFlags = window_flags::flag_8 | window_flags::flag_11;;
         auto window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
         window->number = companyId;
         window->owner = companyId;
@@ -545,7 +546,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         if (window == nullptr)
         {
-            window = sub_4347D0(companyId);
+            window = create(companyId);
         }
 
         // TODO(avgeffen): only needs to be called once.
@@ -1374,7 +1375,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         if (window == nullptr)
         {
-            window = sub_4347D0(companyId);
+            window = create(companyId);
         }
 
         // TODO(avgeffen): only needs to be called once.
@@ -1709,7 +1710,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         if (window == nullptr)
         {
-            window = sub_4347D0(companyId);
+            window = create(companyId);
         }
 
         // TODO(avgeffen): only needs to be called once.
