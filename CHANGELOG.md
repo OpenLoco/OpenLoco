@@ -5,6 +5,7 @@
 - Fix: [#396] Preferred owner name is not saved.
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
+- Fix: [#430] Null-chars added when manually specifying Locomotion directory, preventing launch.
 - Change: [#420] Disable window scale factor buttons when not applicable.
 
 20.03 (2020-03-23)
