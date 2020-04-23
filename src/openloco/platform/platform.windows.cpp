@@ -45,6 +45,7 @@ namespace openloco::platform
             }
             pszPath.resize(pszPath.size() * 2);
         }
+        pszPath.erase(std::find(pszPath.begin(), pszPath.end(), '\0'), pszPath.end());
         return pszPath;
     }
 
