@@ -758,16 +758,16 @@ namespace openloco::string_ids
     constexpr string_id dropdown_companies_list = 1743;
     constexpr string_id dropdown_company_performance = 1744;
 
-    constexpr string_id str_1772 = 1772; // Platelayer
-    constexpr string_id str_1773 = 1773; // Engineer
-    constexpr string_id str_1774 = 1774; // Traffic Manager
-    constexpr string_id str_1775 = 1775; // Transport Coordin
-    constexpr string_id str_1776 = 1776; // Route Supervisor
-    constexpr string_id str_1777 = 1777; // Director
-    constexpr string_id str_1778 = 1778; // Chief Executive
-    constexpr string_id str_1779 = 1779; // Chairman
-    constexpr string_id str_1780 = 1780; // President
-    constexpr string_id str_1781 = 1781; // Tycoon
+    constexpr string_id corporate_rating_platelayer = 1772;
+    constexpr string_id corporate_rating_engineer = 1773;
+    constexpr string_id corporate_rating_traffic_manager = 1774;
+    constexpr string_id corporate_rating_transport_coordinator = 1775;
+    constexpr string_id corporate_rating_route_supervisor = 1776;
+    constexpr string_id corporate_rating_director = 1777;
+    constexpr string_id corporate_rating_chief_executive = 1778;
+    constexpr string_id corporate_rating_chairman = 1779;
+    constexpr string_id corporate_rating_president = 1780;
+    constexpr string_id corporate_rating_tycoon = 1781;
 
     constexpr string_id player_info_performance = 1788;
     constexpr string_id player_info_performance_decrease = 1789;

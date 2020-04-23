@@ -206,7 +206,7 @@ namespace openloco::ui
                 void (*on_close)(window*);
                 void (*on_mouse_up)(window*, widget_index);
                 void (*on_resize)(window*);
-                void (*event_03)(window*, widget_index);
+                void (*event_03)(window*, widget_index); // mouse_over?
                 void (*on_mouse_down)(window*, widget_index);
                 void (*on_dropdown)(window*, widget_index, int16_t);
                 void (*on_periodic_update)(window*);
@@ -308,7 +308,7 @@ namespace openloco::ui
         SavedView saved_view; // 0x848
         uint16_t var_850 = 0;
         uint16_t var_852 = 0;
-        uint16_t var_854 = 0;
+        uint16_t var_854 = 0; // used to limit updates
         uint16_t var_856 = 0;
         uint16_t var_858 = 0;
         uint16_t var_85A;

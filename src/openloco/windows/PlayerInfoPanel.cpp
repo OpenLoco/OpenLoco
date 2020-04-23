@@ -21,7 +21,7 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::PlayerInfoPanel
+namespace openloco::ui::windows::PlayerInfoPanel
 {
     static const gfx::ui_size_t window_size = { 140, 27 };
 
@@ -29,25 +29,15 @@ namespace openloco::ui::PlayerInfoPanel
     {
         enum
         {
-            w0,
-            w1,
+            outer_frame,
+            inner_frame,
             player,
             company_value,
             performance_index
         };
     }
-    static void sub_439A1C();
-
-    static void sub_43995C();
-    static void sub_439A59();
-    static void sub_439A61();
-    static void sub_439A70(window* w);
-    static void sub_439A93(window* w);
-    static void sub_439AB6(window* w);
 
     static void performanceIndexMouseUp();
-    static void sub_4395EB();
-
     static void companyValueTooltip(FormatArguments& args);
     static void performanceIndexTooltip(FormatArguments& args);
     static void companyValueMouseUp();
@@ -71,32 +61,32 @@ namespace openloco::ui::PlayerInfoPanel
         make_widget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
         make_widget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
         make_widget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        make_widget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, string_ids::null, string_ids::tooltip_company_value),
-        make_widget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, string_ids::null, string_ids::tooltip_performance_index),
+        make_widget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
+        make_widget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
         widget_end(),
     };
 
     static std::map<CorporateRating, string_id> _ratingNames = {
-        { CorporateRating::platelayer, string_ids::str_1772 },
-        { CorporateRating::engineer, string_ids::str_1773 },
-        { CorporateRating::trafficManager, string_ids::str_1774 },
-        { CorporateRating::transportCoordinator, string_ids::str_1775 },
-        { CorporateRating::routeSupervisor, string_ids::str_1776 },
-        { CorporateRating::director, string_ids::str_1777 },
-        { CorporateRating::chiefExecutive, string_ids::str_1778 },
-        { CorporateRating::chairman, string_ids::str_1779 },
-        { CorporateRating::president, string_ids::str_1780 },
-        { CorporateRating::tycoon, string_ids::str_1781 },
+        { CorporateRating::platelayer, string_ids::corporate_rating_platelayer },
+        { CorporateRating::engineer, string_ids::corporate_rating_engineer },
+        { CorporateRating::trafficManager, string_ids::corporate_rating_traffic_manager },
+        { CorporateRating::transportCoordinator, string_ids::corporate_rating_transport_coordinator },
+        { CorporateRating::routeSupervisor, string_ids::corporate_rating_route_supervisor },
+        { CorporateRating::director, string_ids::corporate_rating_director },
+        { CorporateRating::chiefExecutive, string_ids::corporate_rating_chief_executive },
+        { CorporateRating::chairman, string_ids::corporate_rating_chairman },
+        { CorporateRating::president, string_ids::corporate_rating_president },
+        { CorporateRating::tycoon, string_ids::corporate_rating_tycoon },
     };
 
     static window_event_list _events;
     std::vector<const company*> _sortedCompanies;
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
+    static loco_global<uint16_t, 0x0050A004> _50A004; // maybe date related
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
     static loco_global<uint8_t, 0x00508F1A> game_speed;
-    static loco_global<uint16_t, 0x0113DC78> _113DC78;
+    static loco_global<uint16_t, 0x0113DC78> _113DC78; // dropdown flags?
 
     static void prepare_draw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
@@ -111,7 +101,6 @@ namespace openloco::ui::PlayerInfoPanel
     // 0x43AA4C
     static void playerMouseDown(ui::window* self, widget_index widgetIndex)
     {
-        auto args = FormatArguments();
         _sortedCompanies.clear();
 
         for (const auto& c : companymgr::companies())
@@ -154,8 +143,9 @@ namespace openloco::ui::PlayerInfoPanel
             auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
             auto rating = performanceToRating(company->performance_index);
 
+            auto args = FormatArguments();
             args.push(positionArray[index]);
-            args.push(gfx::recolour(competitorObj->images[company->owner_emotion], company->colour.primary << 19));
+            args.push(gfx::recolour(competitorObj->images[company->owner_emotion], company->colour.primary));
             args.push(company->name);
             args.push<uint16_t>(0); // Needed after a user string id
             args.push(company->performance_index);
@@ -245,13 +235,13 @@ namespace openloco::ui::PlayerInfoPanel
     // 0x004393E7
     static void prepare_draw(window* window)
     {
-        window->widgets[widx::w1].type = widget_type::none;
+        window->widgets[widx::inner_frame].type = widget_type::none;
     }
 
     // 0x43944B
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        widget_t& frame = _widgets[widx::w0];
+        widget_t& frame = _widgets[widx::outer_frame];
         gfx::draw_rect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
@@ -267,7 +257,7 @@ namespace openloco::ui::PlayerInfoPanel
         auto x = window->x + frame.width() / 2 + 12;
         {
             auto companyValueString = string_ids::player_info_bankrupt;
-            if (!(playerCompany->challenge_flags & company_flags::unk_9))
+            if (!(playerCompany->challenge_flags & company_flags::bankrupt))
             {
                 if (static_cast<int16_t>(playerCompany->var_08.var_04) < 0)
                 {
@@ -279,7 +269,7 @@ namespace openloco::ui::PlayerInfoPanel
                 }
             }
 
-            auto colour = window->colours[0] & 0x7F;
+            auto colour = colour::opaque(window->colours[0]);
             if (input::is_hovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
                 colour = colour::white;
@@ -368,19 +358,11 @@ namespace openloco::ui::PlayerInfoPanel
         switch (widgetIndex)
         {
             case widx::company_value:
-                sub_4395EB();
-                break;
-
             case widx::performance_index:
-                sub_4395EB();
+                _tooltipTimeout = 2000;
                 break;
         }
         return fallback;
-    }
-
-    static void sub_4395EB()
-    {
-        _tooltipTimeout = 2000;
     }
 
     // 0x004395F5
@@ -407,11 +389,12 @@ namespace openloco::ui::PlayerInfoPanel
 
     // Converts performance index to rating
     // 0x437D60
-    static CorporateRating performanceToRating(int16_t ax)
+    static CorporateRating performanceToRating(int16_t performanceIndex)
     {
-        return static_cast<CorporateRating>(std::min(9, ax / 100));
+        return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
+    // 0x439643
     static void performanceIndexTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
@@ -434,7 +417,7 @@ namespace openloco::ui::PlayerInfoPanel
         if (_50A004 & (1 << 0))
         {
             _50A004 = _50A004 & ~(1 << 0);
-            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, widx::w1);
+            WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, widx::inner_frame);
         }
     }
 }

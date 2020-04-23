@@ -233,7 +233,7 @@ namespace openloco::ui::windows::CompanyWindow
     void openFinances(company_id_t companyId);
 }
 
-namespace openloco::ui::PlayerInfoPanel
+namespace openloco::ui::windows::PlayerInfoPanel
 {
     window* open();
 }

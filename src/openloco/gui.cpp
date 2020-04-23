@@ -61,7 +61,7 @@ namespace openloco::gui
         {
             windows::toolbar_top::open();
 
-            PlayerInfoPanel::open();
+            windows::PlayerInfoPanel::open();
             TimePanel::open();
 
             if (openloco::tutorial::state() != tutorial::tutorial_state::none)
