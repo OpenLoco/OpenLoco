@@ -703,6 +703,42 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const gfx::ui_size_t windowSize = { 265, 252 };
 
+        enum widx
+        {
+            check_steam_locomotives = 11,
+            check_diesel_locomotives,
+            check_electric_locomotives,
+            check_multiple_units,
+            check_passenger_vehicles,
+            check_freight_vehicles,
+            check_buses,
+            check_trucks,
+            check_aircraft,
+            check_ships,
+            main_colour_scheme,
+            main_colour_steam_locomotives,
+            main_colour_diesel_locomotives,
+            main_colour_electric_locomotives,
+            main_colour_multiple_units,
+            main_colour_passenger_vehicles,
+            main_colour_freight_vehicles,
+            main_colour_buses,
+            main_colour_trucks,
+            main_colour_aircraft,
+            main_colour_ships,
+            secondary_colour_scheme,
+            secondary_colour_steam_locomotives,
+            secondary_colour_diesel_locomotives,
+            secondary_colour_electric_locomotives,
+            secondary_colour_multiple_units,
+            secondary_colour_passenger_vehicles,
+            secondary_colour_freight_vehicles,
+            secondary_colour_buses,
+            secondary_colour_trucks,
+            secondary_colour_aircraft,
+            secondary_colour_ships,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(265, 252, string_ids::title_company_colour_scheme),
             make_widget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
@@ -740,25 +776,89 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships);
 
         static window_event_list events;
 
         // 0x00432E0F
         static void prepare_draw(window* self)
         {
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[common::widx::company_select].right = self->width - 3;
+            self->widgets[common::widx::company_select].left = self->width - 28;
+
+            common::repositionTabs(self);
+
+            // Set company's main colour
+            self->widgets[widx::main_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->colour.primary);
+
+            // Set company's secondary colour
+            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->colour.secondary);
+
+            // TODO: set colours for different ride types.
             registers regs;
             regs.esi = (int32_t)self;
-            call(0x00432E0F, regs);
+            call(0x00432EB9, regs);
+
+            if (self->number == companymgr::get_controlling_id())
+                self->enabled_widgets |= (1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships);
+            else
+                self->enabled_widgets &= ~((1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships));
         }
 
         // 0x00432F9A
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00432F9A, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            const auto company = companymgr::get(self->number);
+            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+
+            // Draw company owner face on dropdown.
+            {
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
+                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
+                gfx::draw_image(dpi, x, y, image);
+            }
+
+            const auto& widget = self->widgets[widx::main_colour_scheme];
+            const uint16_t x = self->x + 6;
+            uint16_t y = self->y + widget.top + 3;
+
+            // 'Main colour scheme'
+            gfx::draw_string_494B3F(
+                *dpi,
+                x,
+                y,
+                colour::black,
+                string_ids::main_colour_scheme);
+
+            // 'Special colour schemes used for'
+            y += 17;
+            gfx::draw_string_494B3F(
+                *dpi,
+                x,
+                y,
+                colour::black,
+                string_ids::special_colour_schemes_used_for);
         }
 
         // 0x00433032
@@ -811,9 +911,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433279
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00433279, regs);
+            common::enableRenameByCaption(self);
+            self->set_size(windowSize);
         }
 
         static void initEvents()
