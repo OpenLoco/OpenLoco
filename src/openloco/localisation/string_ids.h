@@ -425,6 +425,24 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_age = 1155;
     constexpr string_id tooltip_sort_by_reliability = 1156;
 
+    constexpr string_id cant_add_pop_5_string_id_string_id = 1184;
+    constexpr string_id cant_build_pop_5_string_id = 1185;
+    constexpr string_id select_new_vehicle = 1186;
+    constexpr string_id select_vehicle_to_add_to_string_id = 1187;
+    constexpr string_id tooltip_build_new_train_vehicles = 1188;
+    constexpr string_id tooltip_build_new_buses = 1189;
+    constexpr string_id tooltip_build_new_trucks = 1190;
+    constexpr string_id tooltip_build_new_trams = 1191;
+    constexpr string_id tooltip_build_new_aircraft = 1192;
+    constexpr string_id tooltip_build_new_ships = 1193;
+
+    constexpr string_id tooltip_trains = 1194;
+    constexpr string_id tooltip_buses = 1195;
+    constexpr string_id tooltip_trucks = 1194;
+    constexpr string_id tooltip_trams = 1195;
+    constexpr string_id tooltip_aircraft = 1194;
+    constexpr string_id tooltip_ships = 1195;
+
     constexpr string_id tooltip_all_stations = 1200;
     constexpr string_id tooltip_rail_stations = 1201;
     constexpr string_id tooltip_road_stations = 1202;
@@ -438,7 +456,25 @@ namespace openloco::string_ids
     constexpr string_id build_aircraft = 1244;
     constexpr string_id build_ships = 1245;
 
+    constexpr string_id road = 1247;
+    constexpr string_id no_vehicles_available = 1248;
+    constexpr string_id no_compatible_vehicles_available = 1249;
+
     constexpr string_id buffer_1250 = 1250;
+
+    constexpr string_id stats_cost = 1251;
+    constexpr string_id stats_requires = 1252;
+    constexpr string_id stats_power = 1253;
+    constexpr string_id stats_weight = 1254;
+    constexpr string_id stats_max_speed = 1255;
+    constexpr string_id stats_designed = 1256;
+    constexpr string_id stats_capacity = 1257;
+    constexpr string_id stats_plus_string = 1258;
+    constexpr string_id stats_string_steep_slope = 1259;
+    constexpr string_id stats_velocity_on_string = 1260;
+    constexpr string_id stats_or_string = 1261;
+    constexpr string_id stats_running_cost = 1262;
+    constexpr string_id stats_refittable = 1263;
 
     constexpr string_id num_trains_singular = 1264;
     constexpr string_id num_buses_singular = 1265;
@@ -452,6 +488,8 @@ namespace openloco::string_ids
     constexpr string_id num_trams_plural = 1273;
     constexpr string_id num_aircrafts_plural = 1274;
     constexpr string_id num_ships_plural = 1275;
+
+    constexpr string_id tooltip_vehicles_for = 1286;
 
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
@@ -555,6 +593,9 @@ namespace openloco::string_ids
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
     constexpr string_id menu_music_options = 1549;
+
+    constexpr string_id airport = 1554;
+    constexpr string_id docks = 1555;
 
     constexpr string_id owner_label = 1560;
 

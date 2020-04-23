@@ -80,6 +80,7 @@ namespace openloco::ui
 
     enum scrollbars : uint8_t
     {
+        none = 0,
         horizontal = (1 << 0),
         vertical = (1 << 1),
         both = (1 << 0) | (1 << 1),
@@ -299,7 +300,7 @@ namespace openloco::ui
         int16_t row_info[1000];                            // 0x6A
         uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
-        uint16_t var_83E;
+        uint16_t row_height;    // 0x83E
         int16_t row_hover = -1; // 0x840
         uint8_t pad_842[0x844 - 0x842];
         uint16_t sort_mode; // 0x844;
@@ -313,9 +314,9 @@ namespace openloco::ui
         uint16_t var_85A;
         int32_t var_85C;
         uint8_t pad_860[0x870 - 0x860];
-        uint16_t current_tab = 0; // 0x870
-        uint16_t frame_no = 0;    // 0x872
-        uint16_t var_874;
+        uint16_t current_tab = 0;                   // 0x870
+        uint16_t frame_no = 0;                      // 0x872
+        uint16_t current_secondary_tab;             // 0x874
         viewport_config viewport_configurations[2]; // 0x876
         WindowType type;                            // 0x882
         uint8_t pad_883[1];
