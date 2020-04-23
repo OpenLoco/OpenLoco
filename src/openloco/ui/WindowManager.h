@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../company.h"
 #include "../graphics/gfx.h"
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"
@@ -218,6 +219,23 @@ namespace openloco::ui::build_vehicle
 namespace openloco::ui::MessageWindow
 {
     void open();
+}
+
+namespace openloco::ui::windows::CompanyList
+{
+    void openPerformanceIndexes();
+    void OpenUnk();
+}
+
+namespace openloco::ui::windows::CompanyWindow
+{
+    void OpenUnk(company_id_t companyId);
+    void openFinances(company_id_t companyId);
+}
+
+namespace openloco::ui::windows::PlayerInfoPanel
+{
+    window* open();
 }
 
 namespace openloco::ui::TimePanel

@@ -17,9 +17,12 @@ namespace openloco
 
     enum company_flags
     {
+        increased_performance = (1 << 4),        // 0x10
+        decreased_performance = (1 << 5),        // 0x20
         challenge_completed = (1 << 6),          // 0x40
         challenge_failed = (1 << 7),             // 0x80
         challenge_beaten_by_opponent = (1 << 8), // 0x100
+        bankrupt = (1 << 9),                     // 0x200
     };
 
 #pragma pack(push, 1)
@@ -37,7 +40,7 @@ namespace openloco
         string_id name;
         string_id var_02;
         uint32_t challenge_flags; // 0x04
-        currency48_t var_08;
+        currency48_t var_08;      // company value related
         uint8_t pad_0E[0x12 - 0x0E];
         uint32_t update_counter;   // 0x12
         int16_t performance_index; // 0x16

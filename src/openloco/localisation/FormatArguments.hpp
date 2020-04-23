@@ -46,6 +46,11 @@ namespace openloco
         {
             return _bufferStart;
         }
+
+        size_t getLength() const
+        {
+            return _buffer - _bufferStart;
+        }
     };
 
 }

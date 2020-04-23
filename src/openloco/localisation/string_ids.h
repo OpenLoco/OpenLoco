@@ -175,6 +175,7 @@ namespace openloco::string_ids
 
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
+    constexpr string_id player_info_bankrupt = 398;
 
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;
 
@@ -204,6 +205,9 @@ namespace openloco::string_ids
 
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
+
+    constexpr string_id player_info_company_value = 572;
+    constexpr string_id player_info_company_value_negative = 573;
 
     constexpr string_id date_monthyear = 584;
 
@@ -260,7 +264,8 @@ namespace openloco::string_ids
 
     constexpr string_id challenge_failed = 695;
     constexpr string_id challenge_completed = 696;
-
+    constexpr string_id tooltip_performance_index = 697;
+    constexpr string_id tooltip_company_value = 698;
     constexpr string_id challenge_progress = 699;
     constexpr string_id challenge_time_left = 700;
 
@@ -750,6 +755,23 @@ namespace openloco::string_ids
     constexpr string_id title_menu_scenario_editor = 1740;
 
     constexpr string_id menu_map = 1742;
+    constexpr string_id dropdown_companies_list = 1743;
+    constexpr string_id dropdown_company_performance = 1744;
+
+    constexpr string_id corporate_rating_platelayer = 1772;
+    constexpr string_id corporate_rating_engineer = 1773;
+    constexpr string_id corporate_rating_traffic_manager = 1774;
+    constexpr string_id corporate_rating_transport_coordinator = 1775;
+    constexpr string_id corporate_rating_route_supervisor = 1776;
+    constexpr string_id corporate_rating_director = 1777;
+    constexpr string_id corporate_rating_chief_executive = 1778;
+    constexpr string_id corporate_rating_chairman = 1779;
+    constexpr string_id corporate_rating_president = 1780;
+    constexpr string_id corporate_rating_tycoon = 1781;
+
+    constexpr string_id player_info_performance = 1788;
+    constexpr string_id player_info_performance_decrease = 1789;
+    constexpr string_id player_info_performance_increase = 1790;
 
     constexpr string_id toolbar_status_paused = 1800;
 
@@ -820,6 +842,22 @@ namespace openloco::string_ids
     constexpr string_id window_browse_challenge_failed = 2011;
 
     constexpr string_id error_invalid_filename = 2016;
+
+    constexpr string_id position_1st = 2023;
+    constexpr string_id position_2nd = 2024;
+    constexpr string_id position_3rd = 2025;
+    constexpr string_id position_4th = 2026;
+    constexpr string_id position_5th = 2027;
+    constexpr string_id position_6th = 2028;
+    constexpr string_id position_7th = 2029;
+    constexpr string_id position_8th = 2030;
+    constexpr string_id position_9th = 2031;
+    constexpr string_id position_10th = 2032;
+    constexpr string_id position_11th = 2033;
+    constexpr string_id position_12th = 2034;
+    constexpr string_id position_13th = 2035;
+    constexpr string_id position_14th = 2036;
+    constexpr string_id position_15th = 2037;
 
     constexpr string_id buffer_2039 = 2039;
     constexpr string_id buffer_2040 = 2040;
