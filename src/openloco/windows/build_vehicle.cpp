@@ -55,20 +55,134 @@ namespace openloco::ui::build_vehicle
         vehicle_preview
     };
 
+    static const uint32_t trainTabImages[16]{
+        interface_skin::image_ids::build_vehicle_train_frame_0,
+        interface_skin::image_ids::build_vehicle_train_frame_1,
+        interface_skin::image_ids::build_vehicle_train_frame_2,
+        interface_skin::image_ids::build_vehicle_train_frame_3,
+        interface_skin::image_ids::build_vehicle_train_frame_4,
+        interface_skin::image_ids::build_vehicle_train_frame_5,
+        interface_skin::image_ids::build_vehicle_train_frame_6,
+        interface_skin::image_ids::build_vehicle_train_frame_7,
+        interface_skin::image_ids::build_vehicle_train_frame_8,
+        interface_skin::image_ids::build_vehicle_train_frame_9,
+        interface_skin::image_ids::build_vehicle_train_frame_10,
+        interface_skin::image_ids::build_vehicle_train_frame_11,
+        interface_skin::image_ids::build_vehicle_train_frame_12,
+        interface_skin::image_ids::build_vehicle_train_frame_13,
+        interface_skin::image_ids::build_vehicle_train_frame_14,
+        interface_skin::image_ids::build_vehicle_train_frame_15,
+    };
+
+    static const uint32_t aircraftTabImages[16]{
+        interface_skin::image_ids::build_vehicle_aircraft_frame_0,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_1,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_2,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_3,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_4,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_5,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_6,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_7,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_8,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_9,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_10,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_11,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_12,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_13,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_14,
+        interface_skin::image_ids::build_vehicle_aircraft_frame_15,
+    };
+
+    static const uint32_t busTabImages[16]{
+        interface_skin::image_ids::build_vehicle_bus_frame_0,
+        interface_skin::image_ids::build_vehicle_bus_frame_1,
+        interface_skin::image_ids::build_vehicle_bus_frame_2,
+        interface_skin::image_ids::build_vehicle_bus_frame_3,
+        interface_skin::image_ids::build_vehicle_bus_frame_4,
+        interface_skin::image_ids::build_vehicle_bus_frame_5,
+        interface_skin::image_ids::build_vehicle_bus_frame_6,
+        interface_skin::image_ids::build_vehicle_bus_frame_7,
+        interface_skin::image_ids::build_vehicle_bus_frame_8,
+        interface_skin::image_ids::build_vehicle_bus_frame_9,
+        interface_skin::image_ids::build_vehicle_bus_frame_10,
+        interface_skin::image_ids::build_vehicle_bus_frame_11,
+        interface_skin::image_ids::build_vehicle_bus_frame_12,
+        interface_skin::image_ids::build_vehicle_bus_frame_13,
+        interface_skin::image_ids::build_vehicle_bus_frame_14,
+        interface_skin::image_ids::build_vehicle_bus_frame_15,
+    };
+
+    static const uint32_t tramTabImages[16]{
+        interface_skin::image_ids::build_vehicle_tram_frame_0,
+        interface_skin::image_ids::build_vehicle_tram_frame_1,
+        interface_skin::image_ids::build_vehicle_tram_frame_2,
+        interface_skin::image_ids::build_vehicle_tram_frame_3,
+        interface_skin::image_ids::build_vehicle_tram_frame_4,
+        interface_skin::image_ids::build_vehicle_tram_frame_5,
+        interface_skin::image_ids::build_vehicle_tram_frame_6,
+        interface_skin::image_ids::build_vehicle_tram_frame_7,
+        interface_skin::image_ids::build_vehicle_tram_frame_8,
+        interface_skin::image_ids::build_vehicle_tram_frame_9,
+        interface_skin::image_ids::build_vehicle_tram_frame_10,
+        interface_skin::image_ids::build_vehicle_tram_frame_11,
+        interface_skin::image_ids::build_vehicle_tram_frame_12,
+        interface_skin::image_ids::build_vehicle_tram_frame_13,
+        interface_skin::image_ids::build_vehicle_tram_frame_14,
+        interface_skin::image_ids::build_vehicle_tram_frame_15,
+    };
+
+    static const uint32_t truckTabImages[16]{
+        interface_skin::image_ids::build_vehicle_truck_frame_0,
+        interface_skin::image_ids::build_vehicle_truck_frame_1,
+        interface_skin::image_ids::build_vehicle_truck_frame_2,
+        interface_skin::image_ids::build_vehicle_truck_frame_3,
+        interface_skin::image_ids::build_vehicle_truck_frame_4,
+        interface_skin::image_ids::build_vehicle_truck_frame_5,
+        interface_skin::image_ids::build_vehicle_truck_frame_6,
+        interface_skin::image_ids::build_vehicle_truck_frame_7,
+        interface_skin::image_ids::build_vehicle_truck_frame_8,
+        interface_skin::image_ids::build_vehicle_truck_frame_9,
+        interface_skin::image_ids::build_vehicle_truck_frame_10,
+        interface_skin::image_ids::build_vehicle_truck_frame_11,
+        interface_skin::image_ids::build_vehicle_truck_frame_12,
+        interface_skin::image_ids::build_vehicle_truck_frame_13,
+        interface_skin::image_ids::build_vehicle_truck_frame_14,
+        interface_skin::image_ids::build_vehicle_truck_frame_15,
+    };
+
+    static const uint32_t shipTabImages[16]{
+        interface_skin::image_ids::build_vehicle_ship_frame_0,
+        interface_skin::image_ids::build_vehicle_ship_frame_1,
+        interface_skin::image_ids::build_vehicle_ship_frame_2,
+        interface_skin::image_ids::build_vehicle_ship_frame_3,
+        interface_skin::image_ids::build_vehicle_ship_frame_4,
+        interface_skin::image_ids::build_vehicle_ship_frame_5,
+        interface_skin::image_ids::build_vehicle_ship_frame_6,
+        interface_skin::image_ids::build_vehicle_ship_frame_7,
+        interface_skin::image_ids::build_vehicle_ship_frame_8,
+        interface_skin::image_ids::build_vehicle_ship_frame_9,
+        interface_skin::image_ids::build_vehicle_ship_frame_10,
+        interface_skin::image_ids::build_vehicle_ship_frame_11,
+        interface_skin::image_ids::build_vehicle_ship_frame_12,
+        interface_skin::image_ids::build_vehicle_ship_frame_13,
+        interface_skin::image_ids::build_vehicle_ship_frame_14,
+        interface_skin::image_ids::build_vehicle_ship_frame_15,
+    };
+
     struct TabDetails
     {
         VehicleType type;
         widx widgetIndex;
-        uint32_t imageId;
+        const uint32_t* imageIds;
     };
 
     static TabDetails _transportTypeTabInformation[] = {
-        { VehicleType::train, tab_build_new_trains, interface_skin::image_ids::build_vehicle_train_frame_0 },
-        { VehicleType::bus, tab_build_new_buses, interface_skin::image_ids::build_vehicle_bus_frame_0 },
-        { VehicleType::truck, tab_build_new_trucks, interface_skin::image_ids::build_vehicle_truck_frame_0 },
-        { VehicleType::tram, tab_build_new_trams, interface_skin::image_ids::build_vehicle_tram_frame_0 },
-        { VehicleType::plane, tab_build_new_aircraft, interface_skin::image_ids::build_vehicle_aircraft_frame_0 },
-        { VehicleType::ship, tab_build_new_ships, interface_skin::image_ids::build_vehicle_ship_frame_0 }
+        { VehicleType::train, tab_build_new_trains, trainTabImages },
+        { VehicleType::bus, tab_build_new_buses, busTabImages },
+        { VehicleType::truck, tab_build_new_trucks, truckTabImages },
+        { VehicleType::tram, tab_build_new_trams, tramTabImages },
+        { VehicleType::plane, tab_build_new_aircraft, aircraftTabImages },
+        { VehicleType::ship, tab_build_new_ships, shipTabImages }
     };
 
     // 0x5231D0
@@ -1301,7 +1415,7 @@ namespace openloco::ui::build_vehicle
             {
                 frameNo = (window->frame_no / 2) & 0xF;
             }
-            uint32_t image = gfx::recolour(skin->img + tab.imageId + frameNo, companyColour);
+            uint32_t image = gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
             widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
     }
