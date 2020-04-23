@@ -19,7 +19,7 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 ### Build Status
 |             | Windows | Linux / Mac | Download |
 |-------------|---------|-------------|----------|
-| **master**  | [![AppVeyor](https://ci.appveyor.com/api/projects/status/fpq6ptmma5d3e389?svg=true)](https://ci.appveyor.com/project/AaronVanGeffen/OpenLoco) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
+| **master**  | ![CI](https://github.com/OpenLoco/OpenLoco/workflows/CI/badge.svg) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
 
 ### Chat
 
@@ -52,9 +52,8 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 
 ### Windows:
 - 7 / 8 / 10
-- [Visual Studio 2017](https://www.visualstudio.com/vs/community/)
+- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
   - Desktop development with C++
-  - Windows 10 SDK (10.0.14393.0)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
@@ -73,11 +72,10 @@ OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be
 ## 3.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Install dependencies using [vcpkg](https://github.com/microsoft/vcpkg) or use the [nuget package](https://github.com/OpenLoco/Dependencies/releases).
-3. Open a new Developer Command Prompt for VS 2017, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
-4. Run `msbuild openloco.sln`
-5. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
-6. Run the game, `bin\openloco`
+2. Open a new Developer Command Prompt for VS 2019, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
+3. Run `msbuild openloco.sln /t:restore;build`
+4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
+5. Run the game, `bin\openloco`
 
 ### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
