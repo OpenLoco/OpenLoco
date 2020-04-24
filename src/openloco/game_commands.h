@@ -31,6 +31,18 @@ namespace openloco::game_commands
         return (uint32_t)regs.ebx != 0x80000000;
     }
 
+    // Change company colour scheme
+    inline void do_19(int8_t ah, int8_t cl, int8_t dl)
+    {
+        registers regs;
+        regs.ah = ah; // [ 0, 1 ] -- primary or secondary palette?
+        regs.bl = GameCommandFlag::apply;
+        regs.cl = cl; // vehicle type
+        regs.dh = 0;
+        regs.dl = dl; // company id
+        do_command(19, regs);
+    }
+
     inline void do_20()
     {
         registers regs;

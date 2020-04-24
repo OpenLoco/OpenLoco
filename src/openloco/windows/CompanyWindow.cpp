@@ -84,6 +84,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void initEvents();
         static void renameCompanyPrompt(window* self, widget_index widgetIndex);
         static void renameCompany(window* self, char* input);
+        static void switchCompany(window* self, int16_t itemIndex);
         static void switchTab(window* self, widget_index widgetIndex);
         static void switchTabWidgets(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
@@ -334,11 +335,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043228E
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x0043228E, regs);
+            if (widgetIndex == common::widx::company_select)
+                common::switchCompany(self, itemIndex);
         }
 
         // 0x004325DF
@@ -679,11 +677,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432C19
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00432C19, regs);
+            if (widgetIndex == common::widx::company_select)
+                common::switchCompany(self, itemIndex);
         }
 
         // 0x00432C24
@@ -932,11 +927,60 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043309D
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x0043309D, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::company_select:
+                    common::switchCompany(self, itemIndex);
+                    break;
+
+                case widx::main_colour_scheme:
+                case widx::main_colour_steam_locomotives:
+                case widx::main_colour_diesel_locomotives:
+                case widx::main_colour_electric_locomotives:
+                case widx::main_colour_multiple_units:
+                case widx::main_colour_passenger_vehicles:
+                case widx::main_colour_freight_vehicles:
+                case widx::main_colour_buses:
+                case widx::main_colour_trucks:
+                case widx::main_colour_aircraft:
+                case widx::main_colour_ships:
+                {
+                    if (itemIndex == -1)
+                        return;
+
+                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+
+                    // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
+                    const int8_t colour = 0;
+                    game_commands::do_19(0, widgetIndex - widx::main_colour_scheme, colour);
+
+                    break;
+                }
+
+                case widx::secondary_colour_scheme:
+                case widx::secondary_colour_steam_locomotives:
+                case widx::secondary_colour_diesel_locomotives:
+                case widx::secondary_colour_electric_locomotives:
+                case widx::secondary_colour_multiple_units:
+                case widx::secondary_colour_passenger_vehicles:
+                case widx::secondary_colour_freight_vehicles:
+                case widx::secondary_colour_buses:
+                case widx::secondary_colour_trucks:
+                case widx::secondary_colour_aircraft:
+                case widx::secondary_colour_ships:
+                {
+                    if (itemIndex == -1)
+                        return;
+
+                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+
+                    // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
+                    const int8_t colour = 0;
+                    game_commands::do_19(1, widgetIndex - widx::secondary_colour_scheme, colour);
+
+                    break;
+                }
+            }
         }
 
         // 0x0043325F
@@ -1355,14 +1399,22 @@ namespace openloco::ui::windows::CompanyWindow
             }
         }
 
+        static void sub_4C8DBF(window* self)
+        {
+            registers regs;
+            regs.esi = (int32_t)self;
+            call(0x004C8DBF, regs);
+        }
+
         // 0x00433868
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433868, regs);
+            if (widgetIndex == common::widx::company_select)
+            {
+                common::switchCompany(self, itemIndex);
+                sub_4C8DBF(self);
+                self->invalidate();
+            }
         }
 
         // 0x0043386F
@@ -1406,13 +1458,6 @@ namespace openloco::ui::windows::CompanyWindow
             events.tooltip = tooltip;
             events.on_update = on_update;
             events.on_resize = on_resize;
-        }
-
-        static void sub_4C8DBF(window* self)
-        {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004C8DBF, regs);
         }
     }
 
@@ -1592,11 +1637,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433C21
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433C21, regs);
+            if (widgetIndex == common::widx::company_select)
+                common::switchCompany(self, itemIndex);
         }
 
         // 0x00433C7D
@@ -1814,6 +1856,30 @@ namespace openloco::ui::windows::CompanyWindow
             finances::initEvents();
             cargo_delivered::initEvents();
             challenge::initEvents();
+        }
+
+        static void switchCompany(window* self, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+                return;
+
+            company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+
+            // Try to find an open company window for this company.
+            auto companyWindow = WindowManager::bringToFront(WindowType::company, companyId);
+            if (companyWindow != nullptr)
+                return;
+
+            // If not, we'll turn this window into a window for the company selected.
+            auto company = companymgr::get(companyId);
+            if (company->name == string_ids::empty)
+                return;
+
+            self->number = companyId;
+            self->owner = companyId;
+
+            common::disableChallengeTab(self);
+            self->invalidate();
         }
 
         static void switchTabWidgets(window* self)

@@ -143,6 +143,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id error_cant_change_colour_scheme = 222;
+
     constexpr string_id menu_zoom_in = 223;
     constexpr string_id menu_zoom_out = 224;
 
