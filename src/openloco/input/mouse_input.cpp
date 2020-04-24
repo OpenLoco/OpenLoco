@@ -255,7 +255,6 @@ namespace openloco::input
         cancel_tool();
     }
 
-
 #pragma mark - Mouse input
 
     // 0x004C7174
