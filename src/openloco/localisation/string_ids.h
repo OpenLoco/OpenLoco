@@ -8,6 +8,8 @@ namespace openloco::string_ids
 {
     constexpr string_id empty = 0;
 
+    constexpr string_id new_company = 2;
+
     constexpr string_id day_1st = 10;
     constexpr string_id day_2nd = 11;
     constexpr string_id day_3rd = 12;
@@ -828,7 +830,7 @@ namespace openloco::string_ids
     constexpr string_id land_distribution_around_cliffs = 1738;
     constexpr string_id create_hills_right_up_to_edge_of_map = 1739;
     constexpr string_id title_menu_scenario_editor = 1740;
-
+    constexpr string_id company_owner_name_transport = 1741;
     constexpr string_id menu_map = 1742;
     constexpr string_id dropdown_companies_list = 1743;
     constexpr string_id dropdown_company_performance = 1744;

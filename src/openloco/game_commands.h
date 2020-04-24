@@ -47,6 +47,36 @@ namespace openloco::game_commands
         do_command(21, regs);
     }
 
+    // Change company name
+    inline bool do_30(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = bl;   // [ 1 ]
+        regs.cx = cx;   // company id
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(30, regs);
+
+        return (regs.eax & (1 << 31)) != 0;
+    }
+
+    // Change company owner name
+    inline bool do_31(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = bl;   // [ 1 ]
+        regs.cx = cx;   // company id
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(31, regs);
+
+        return (regs.eax & (1 << 31)) != 0;
+    }
+
     inline void do_46(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;

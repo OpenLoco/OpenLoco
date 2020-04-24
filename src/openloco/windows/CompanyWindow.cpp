@@ -2,6 +2,7 @@
 #include "../companymgr.h"
 #include "../config.h"
 #include "../date.h"
+#include "../game_commands.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -82,6 +83,7 @@ namespace openloco::ui::windows::CompanyWindow
         // Defined at the bottom of this file.
         static void initEvents();
         static void renameCompanyPrompt(window* self, widget_index widgetIndex);
+        static void renameCompany(window* self, char* input);
         static void switchTab(window* self, widget_index widgetIndex);
         static void switchTabWidgets(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
@@ -339,15 +341,55 @@ namespace openloco::ui::windows::CompanyWindow
             call(0x0043228E, regs);
         }
 
+        // 0x004325DF
+        static void renameCompanyOwnerName(window* self, char* input)
+        {
+            if (strlen(input) == 0)
+                return;
+
+            addr<0x009C68E8, string_id>() = string_ids::cannot_change_owner_name;
+
+            bool success = false;
+            {
+                uint32_t* buffer = (uint32_t*)input;
+                game_commands::do_31(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
+                game_commands::do_31(1, 0, 2, buffer[3], buffer[4], buffer[5]);
+                success = game_commands::do_31(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+            }
+
+            // No need to propate the name if it could not be set.
+            if (!success)
+                return;
+
+            // Only name company after owner if this is a new company.
+            const auto& company = companymgr::get(self->number);
+            if (company->name != string_ids::new_company)
+                return;
+
+            // Temporarily store the new name in buffer string 2039.
+            // TODO: replace with a fixed length!
+            char* buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            strcpy(buffer, input);
+
+            FormatArguments args = {};
+            args.push(string_ids::buffer_2039);
+
+            // Add the ' Transport' suffix to the company name, and rename the company.
+            stringmgr::format_string(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
+            common::renameCompany(self, input);
+        }
+
         // 0x004322F6
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x004322F6, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
+            else if (callingWidget == widx::change_owner_name)
+            {
+                renameCompanyOwnerName(self, input);
+            }
         }
 
         // 0x0043270A
@@ -647,12 +689,10 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432C24
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x00432C24, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
         }
 
         // 0x00432CA1
@@ -883,12 +923,10 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433092
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x00433092, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
         }
 
         // 0x0043309D
@@ -1311,12 +1349,10 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043385D
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x0043385D, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
         }
 
         // 0x00433868
@@ -1547,12 +1583,10 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433C16
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x00433C16, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
         }
 
         // 0x00433C21
@@ -1682,12 +1716,10 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00434023
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.cl = 1;
-            regs.dx = callingWidget;
-            regs.edi = (uintptr_t)input;
-            regs.esi = (int32_t)self;
-            call(0x00434023, regs);
+            if (callingWidget == common::widx::caption)
+            {
+                common::renameCompany(self, input);
+            }
         }
 
         // 0x0043402E
@@ -1866,6 +1898,20 @@ namespace openloco::ui::windows::CompanyWindow
             auto company = companymgr::get(self->number);
             _common_format_args[2] = company->name;
             textinput::open_textinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, &_common_format_args[2]);
+        }
+
+        // 0x0043254F
+        static void renameCompany(window* self, char* input)
+        {
+            if (strlen(input) == 0)
+                return;
+
+            addr<0x009C68E8, string_id>() = string_ids::cannot_rename_this_company;
+
+            uint32_t* buffer = (uint32_t*)input;
+            game_commands::do_30(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_30(1, 0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_30(1, 0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         // 0x00434413
