@@ -25,7 +25,7 @@ namespace openloco
         currency48_t(int64_t currency)
         {
             var_00 = currency & 0xFFFFFFFF;
-            var_04 = (currency >> 16) & 0xFFFF;
+            var_04 = (currency >> 32) & 0xFFFF;
         }
 
         int64_t asInt64()

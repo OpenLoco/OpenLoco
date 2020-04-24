@@ -1242,10 +1242,9 @@ namespace openloco::ui::windows::CompanyWindow
                 y += 4;
 
                 gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
-                // TODO: print sum
-                // ...
 
-                // TODO: probably incorrect.
+                gfx::fill_rect(context, x - 128 + 10, y - 2, x, y - 2, colour::aquamarine);
+
                 x += 128;
                 y = 46 - self->widgets[widx::scrollview].top + 14;
             }
