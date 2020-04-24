@@ -1197,7 +1197,7 @@ namespace openloco::ui::windows::CompanyWindow
                 currency48_t sum = 0;
                 for (auto j = 0; j < ExpenditureType::Count; j++)
                 {
-                    auto expend32 = company->expenditures[i][j];
+                    auto expend32 = company->expenditures[expenditureYears - i - 1][j];
                     currency48_t expenditures = expend32;
                     sum += expenditures;
 

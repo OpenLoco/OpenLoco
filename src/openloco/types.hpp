@@ -30,7 +30,7 @@ namespace openloco
 
         int64_t asInt64()
         {
-            return var_00 | (var_04 << 16);
+            return var_00 | (static_cast<int64_t>(var_04) << 32);
         }
 
         bool operator==(const currency48_t rhs)
