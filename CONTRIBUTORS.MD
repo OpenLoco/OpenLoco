@@ -12,6 +12,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Richard Jenkins (rwjuk)
 * Matthias Moninger (ZehMatt)
 * Hielke Morsink (Broxzier)
+* Peter Gaál (petergaal)
 
 ## Bugfixes
 * seifer7

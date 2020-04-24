@@ -156,7 +156,7 @@ namespace openloco::ui::vehicle
             if (input::is_tool_active(WindowType::vehicle, w->number))
                 return;
 
-            if (input::tool_set(w, 9 /* tool widget*/, 12 /* tool idx? */))
+            if (input::toolSet(w, 9 /* tool widget*/, 12 /* tool idx? */))
                 return;
 
             w->invalidate();

@@ -216,7 +216,7 @@ namespace openloco::input
     // widgetIndex (dx)
     // w (esi)
     // TODO: Maybe create a an enum similar to TOOL_IDX in OpenRCT2 for tool (instead of uint8_t)
-    bool tool_set(ui::window* w, int16_t widgetIndex, uint8_t tool)
+    bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool)
     {
         if (input::has_flag(input::input_flags::tool_active))
         {
@@ -254,6 +254,7 @@ namespace openloco::input
 
         cancel_tool();
     }
+
 
 #pragma mark - Mouse input
 
