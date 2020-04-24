@@ -156,14 +156,7 @@ namespace openloco::ui::vehicle
             if (input::is_tool_active(WindowType::vehicle, w->number))
                 return;
 
-            registers regs;
-            regs.dx = 9; // tool widget
-            regs.al = 12;
-            regs.esi = (uintptr_t)w;
-
-            auto result = call(0x004CE367, regs);
-            bool cf = (result & (1 << 8)) != 0;
-            if (cf)
+            if (input::toolSet(w, 9 /* tool widget*/, 12 /* tool idx? */))
                 return;
 
             w->invalidate();

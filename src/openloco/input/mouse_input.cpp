@@ -211,6 +211,36 @@ namespace openloco::input
         return (*_toolWindowType == type && _toolWindowNumber == number);
     }
 
+    // 0x004CE367
+    // tool (al)
+    // widgetIndex (dx)
+    // w (esi)
+    // TODO: Maybe create a an enum similar to TOOL_IDX in OpenRCT2 for tool (instead of uint8_t)
+    bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool)
+    {
+        if (input::has_flag(input::input_flags::tool_active))
+        {
+            if (w->type == *_toolWindowType && w->number == _toolWindowNumber
+                && widgetIndex == _toolWidgetIndex)
+            {
+                cancel_tool();
+                return true;
+            }
+            else
+            {
+                cancel_tool();
+            }
+        }
+
+        input::set_flag(input::input_flags::tool_active);
+        input::reset_flag(input::input_flags::flag6);
+        _currentTool = tool;
+        _toolWindowType = w->type;
+        _toolWindowNumber = w->number;
+        _toolWidgetIndex = widgetIndex;
+        return false;
+    }
+
     // 0x004CE3D6
     void cancel_tool()
     {

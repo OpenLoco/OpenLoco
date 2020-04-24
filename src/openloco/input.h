@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/WindowManager.h"
+#include "window.h"
 
 namespace openloco::input
 {
@@ -35,6 +36,7 @@ namespace openloco::input
         tool_active = 1 << 3,
         flag4 = 1 << 4,
         flag5 = 1 << 5,
+        flag6 = 1 << 6,
         viewport_scrolling = 1 << 7,
     };
 
@@ -79,6 +81,7 @@ namespace openloco::input
     ui::widget_index get_pressed_widget_index();
 
     bool is_tool_active(ui::WindowType, ui::window_number);
+    bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool);
     void cancel_tool();
     void cancel_tool(ui::WindowType, ui::window_number);
 
