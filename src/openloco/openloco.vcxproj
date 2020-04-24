@@ -2,7 +2,6 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
-    <APPVEYOR_REPO_COMMIT_SHORT Condition="'$(APPVEYOR_REPO_COMMIT)'!=''">$(APPVEYOR_REPO_COMMIT.Substring(0, $([System.Math]::Min($(APPVEYOR_REPO_COMMIT.Length), 7))))</APPVEYOR_REPO_COMMIT_SHORT>
     <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
@@ -19,8 +18,8 @@
     <ClCompile Include="**\*.cpp" Exclude="version.cpp" />
     <ClCompile Include="version.cpp">
       <!-- Define git information -->
-      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_COMMIT_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(APPVEYOR_REPO_COMMIT_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(OPENLOCO_SHA1_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(OPENLOCO_SHA1_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemGroup>

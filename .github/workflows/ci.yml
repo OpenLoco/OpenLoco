@@ -30,6 +30,12 @@ jobs:
             $instanceId = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version 16.0 -property instanceid
             Import-Module "$installPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
             Enter-VsDevShell $instanceId
+            if (-not $env:GITHUB_REF.StartsWith("refs/tags/"))
+            {
+                $env:OPENLOCO_BRANCH=($env:GITHUB_REF -replace "refs/heads/")
+            }
+            $env:OPENLOCO_SHA1=$env:GITHUB_SHA
+            $env:OPENLOCO_SHA1_SHORT=$env:GITHUB_SHA.Substring(0, 7)
             $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
             Write-Host "%GIT_DESCRIBE% = $env:GIT_DESCRIBE"
             msbuild openloco.sln /t:restore
