@@ -1023,6 +1023,8 @@ namespace openloco::ui::windows::CompanyWindow
             loan_increase,
         };
 
+        constexpr uint16_t expenditureColumnWidth = 128;
+
         static widget_t widgets[] = {
             commonWidgets(636, 319, string_ids::title_company_finances),
             make_widget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
@@ -1298,7 +1300,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
 
-            gfx::fill_rect(context, x - 128 + 10, y - 2, x, y - 2, colour::aquamarine);
+            gfx::fill_rect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, colour::aquamarine);
         }
 
         // 0x0043361E
@@ -1312,7 +1314,7 @@ namespace openloco::ui::windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
-                    gfx::fill_rect(context, 0, y, 2176, y + 9, colour);
+                    gfx::fill_rect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
                 y += 10;
@@ -1324,7 +1326,7 @@ namespace openloco::ui::windows::CompanyWindow
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
-            int16_t x = 132 - self->widgets[widx::scrollview].left + 128;
+            int16_t x = 132 - self->widgets[widx::scrollview].left + expenditureColumnWidth;
             for (auto i = 0; i < expenditureYears; i++)
             {
                 y = 46 - self->widgets[widx::scrollview].top;
@@ -1335,7 +1337,7 @@ namespace openloco::ui::windows::CompanyWindow
                 auto sum = drawFinanceExpenditureColumn(context, x, y, columnIndex, *company);
                 drawFinanceSum(context, x, y, sum);
 
-                x += 128;
+                x += expenditureColumnWidth;
             }
         }
 
@@ -1423,7 +1425,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             const auto& company = companymgr::get(self->number);
-            *scrollWidth = company->numExpenditureMonths * 128;
+            *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
         }
 
         // 0x00433887
