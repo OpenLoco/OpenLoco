@@ -1222,6 +1222,85 @@ namespace openloco::ui::windows::CompanyWindow
             }
         }
 
+        static void drawFinanceYear(gfx::drawpixelinfo_t* context, int16_t x, int16_t& y, uint16_t columnYear, uint16_t currentYear)
+        {
+            FormatArguments args = {};
+            args.push(string_ids::uint16_raw);
+            args.push(columnYear);
+
+            string_id format = string_ids::wcolour2_stringid2;
+            if (columnYear != currentYear)
+            {
+                format = string_ids::white_stringid2;
+            }
+
+            gfx::draw_string_underline(
+                *context,
+                x,
+                y,
+                colour::black,
+                format,
+                &args);
+            y += 14;
+        }
+
+        static currency48_t drawFinanceExpenditureColumn(gfx::drawpixelinfo_t* context, const int16_t x, int16_t& y, uint8_t columnIndex, company& company)
+        {
+            currency48_t sum = 0;
+            for (auto j = 0; j < ExpenditureType::Count; j++)
+            {
+                currency48_t expenditures = company.expenditures[columnIndex][j];
+                sum += expenditures;
+
+                string_id mainFormat = string_ids::white_stringid2;
+                string_id currFormat = string_ids::plus_currency48;
+                if (expenditures < 0)
+                {
+                    mainFormat = string_ids::red_stringid;
+                    currFormat = string_ids::currency48;
+                }
+
+                if (expenditures != 0)
+                {
+
+                    FormatArguments args = {};
+                    args.push<string_id>(currFormat);
+                    args.push<currency48_t>(expenditures);
+
+                    gfx::draw_string_494C78(
+                        *context,
+                        x,
+                        y,
+                        colour::black,
+                        mainFormat,
+                        &args);
+                }
+                y += 10;
+            }
+            return sum;
+        }
+
+        static void drawFinanceSum(gfx::drawpixelinfo_t* context, int16_t x, int16_t& y, currency48_t sum)
+        {
+            FormatArguments args{};
+
+            auto mainFormat = string_ids::white_stringid2;
+            auto sumFormat = string_ids::plus_currency48;
+            if (sum < 0)
+            {
+                mainFormat = string_ids::red_stringid;
+                sumFormat = string_ids::currency48;
+            }
+            args.push(sumFormat);
+            args.push(sum);
+
+            y += 4;
+
+            gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
+
+            gfx::fill_rect(context, x - 128 + 10, y - 2, x, y - 2, colour::aquamarine);
+        }
+
         // 0x0043361E
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* context, uint32_t scrollIndex)
         {
@@ -1241,100 +1320,23 @@ namespace openloco::ui::windows::CompanyWindow
 
             const auto company = companymgr::get(self->number);
 
-            uint32_t maxYear = current_year();
+            uint32_t curYear = current_year();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
             int16_t x = 132 - self->widgets[widx::scrollview].left + 128;
-            y = 46 - self->widgets[widx::scrollview].top;
             for (auto i = 0; i < expenditureYears; i++)
             {
-                FormatArguments args = {};
-                args.push(string_ids::uint16_raw);
+                y = 46 - self->widgets[widx::scrollview].top;
 
-                uint16_t currentYear = maxYear - (expenditureYears - i) + 1;
-                args.push(currentYear);
-
-                string_id format = string_ids::wcolour2_stringid2;
-                if ((i + 1) != expenditureYears)
-                {
-                    format = string_ids::white_stringid2;
-                }
-
-                gfx::draw_string_underline(
-                    *context,
-                    x,
-                    y,
-                    colour::black,
-                    format,
-                    &args);
+                uint16_t columnYear = curYear - (expenditureYears - i) + 1;
+                uint8_t columnIndex = expenditureYears - i - 1;
+                drawFinanceYear(context, x, y, columnYear, curYear);
+                auto sum = drawFinanceExpenditureColumn(context, x, y, columnIndex, *company);
+                drawFinanceSum(context, x, y, sum);
 
                 x += 128;
             }
-
-            x = 132 - self->widgets[widx::scrollview].left + 128;
-            y = 46 - self->widgets[widx::scrollview].top + 14;
-            for (auto i = 0; i < expenditureYears; i++)
-            {
-                currency48_t sum = 0;
-                for (auto j = 0; j < ExpenditureType::Count; j++)
-                {
-                    auto expend32 = company->expenditures[expenditureYears - i - 1][j];
-                    currency48_t expenditures = expend32;
-                    sum += expenditures;
-
-                    string_id mainFormat = string_ids::white_stringid2;
-                    string_id currFormat = string_ids::plus_currency48;
-                    if (expenditures < 0)
-                    {
-                        mainFormat = string_ids::red_stringid;
-                        currFormat = string_ids::currency48;
-                    }
-
-                    if (expenditures != 0)
-                    {
-
-                        FormatArguments args = {};
-                        args.push<string_id>(currFormat);
-                        args.push<currency48_t>(expenditures);
-
-                        gfx::draw_string_494C78(
-                            *context,
-                            x,
-                            y,
-                            colour::black,
-                            mainFormat,
-                            &args);
-                    }
-                    y += 10;
-                }
-
-                FormatArguments args{};
-
-                auto mainFormat = string_ids::white_stringid2;
-                auto sumFormat = string_ids::plus_currency48;
-                if (sum < 0)
-                {
-                    mainFormat = string_ids::red_stringid;
-                    sumFormat = string_ids::currency48;
-                }
-                args.push(sumFormat);
-                args.push(sum);
-
-                y += 4;
-
-                gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
-
-                gfx::fill_rect(context, x - 128 + 10, y - 2, x, y - 2, colour::aquamarine);
-
-                x += 128;
-                y = 46 - self->widgets[widx::scrollview].top + 14;
-            }
-
-            // registers regs;
-            // regs.edi = (int32_t)context;
-            // regs.esi = (int32_t)self;
-            // call(0x0043378C, regs);
         }
 
         // 0x00433819
