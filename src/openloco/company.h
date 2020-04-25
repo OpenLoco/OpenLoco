@@ -46,7 +46,8 @@ namespace openloco
             uint8_t primary;   // 0x1A
             uint8_t secondary; // 0x1B
         } colour;
-        uint8_t pad_1C[0x34 - 0x1C];
+        uint8_t pad_1C[0x30 - 0x1C];
+        uint32_t customVehicleColoursSet; // 0x30
         uint32_t unlocked_vehicles[7]; // 0x34 (bit field based on vehicle_object index)
         uint16_t available_vehicles;   // 0x50
         uint8_t pad_52[0x57 - 0x52];

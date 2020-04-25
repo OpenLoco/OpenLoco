@@ -900,19 +900,94 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00433032
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433032, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::check_steam_locomotives:
+                case widx::check_diesel_locomotives:
+                case widx::check_electric_locomotives:
+                case widx::check_multiple_units:
+                case widx::check_passenger_vehicles:
+                case widx::check_freight_vehicles:
+                case widx::check_buses:
+                case widx::check_trucks:
+                case widx::check_aircraft:
+                case widx::check_ships:
+                    const auto company = companymgr::get(self->number);
+                    const auto vehicleType = widgetIndex - widx::check_steam_locomotives;
+                    const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
+
+                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+
+                    game_commands::do_19(0, /*al*/ newMode, 0, /*cl*/ vehicleType, /*dh*/ 1, /*dl*/ self->number);
+
+                    break;
+            }
         }
 
         // 0x00433067
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00433067, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::company_select:
+                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    break;
+
+                case main_colour_scheme:
+                case main_colour_steam_locomotives:
+                case main_colour_diesel_locomotives:
+                case main_colour_electric_locomotives:
+                case main_colour_multiple_units:
+                case main_colour_passenger_vehicles:
+                case main_colour_freight_vehicles:
+                case main_colour_buses:
+                case main_colour_trucks:
+                case main_colour_aircraft:
+                case main_colour_ships:
+                {
+                    registers regs;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
+                    call(0x00433119, regs);
+                    break;
+                }
+
+                case secondary_colour_scheme:
+                case secondary_colour_steam_locomotives:
+                case secondary_colour_diesel_locomotives:
+                case secondary_colour_electric_locomotives:
+                case secondary_colour_multiple_units:
+                case secondary_colour_passenger_vehicles:
+                case secondary_colour_freight_vehicles:
+                case secondary_colour_buses:
+                case secondary_colour_trucks:
+                case secondary_colour_aircraft:
+                case secondary_colour_ships:
+                {
+                    registers regs;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
+                    call(0x00433183, regs);
+                    break;
+                }
+            }
         }
 
         // 0x00433092
@@ -952,7 +1027,9 @@ namespace openloco::ui::windows::CompanyWindow
 
                     // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
                     const int8_t colour = 0;
-                    game_commands::do_19(0, widgetIndex - widx::main_colour_scheme, colour);
+                    const auto vehicleType = widgetIndex - widx::main_colour_scheme;
+
+                    game_commands::do_19(0, 0, colour, vehicleType, 1, self->number);
 
                     break;
                 }
@@ -976,7 +1053,9 @@ namespace openloco::ui::windows::CompanyWindow
 
                     // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
                     const int8_t colour = 0;
-                    game_commands::do_19(1, widgetIndex - widx::secondary_colour_scheme, colour);
+                    const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
+
+                    game_commands::do_19(1, 0, colour, vehicleType, 1, self->number);
 
                     break;
                 }
