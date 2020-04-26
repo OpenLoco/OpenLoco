@@ -182,7 +182,12 @@ namespace openloco::ui::title_options
     window* open();
 }
 
-namespace openloco::ui::windows::toolbar_top
+namespace openloco::ui::windows::toolbar_top::game
+{
+    void open();
+}
+
+namespace openloco::ui::windows::toolbar_top::editor
 {
     void open();
 }

@@ -148,7 +148,7 @@ namespace openloco::string_ids
     constexpr string_id menu_industries = 226;
     constexpr string_id menu_airport = 227;
     constexpr string_id menu_ship_port = 228;
-    constexpr string_id str_229 = 229;
+    constexpr string_id landscape_generation_options = 229;
 
     constexpr string_id label_icons_none = 230;
     constexpr string_id label_icons_rail = 231;
@@ -614,8 +614,8 @@ namespace openloco::string_ids
     constexpr string_id scenario_group_challenging = 1573;
     constexpr string_id scenario_group_expert = 1574;
 
-    constexpr string_id str_1581 = 1581;
-    constexpr string_id str_1582 = 1582;
+    constexpr string_id load_landscape = 1581;
+    constexpr string_id save_landscape = 1582;
 
     constexpr string_id title_landscape_generation_options = 1585;
     constexpr string_id title_landscape_generation_land = 1586;
