@@ -178,4 +178,16 @@ namespace openloco::map::tilemgr
 
         return std::make_tuple(height, waterHeight);
     }
+
+    // 0x004610F2
+    void map_invalidate_selection_rect()
+    {
+        call(0x004610F2);
+    }
+
+    // 0x0046112C
+    void map_invalidate_map_selection_tiles()
+    {
+        call(0x0046112C);
+    }
 }
