@@ -158,7 +158,7 @@ namespace openloco::ui
 
         if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
         {
-            auto rect = ui::Rect(vp->view_height, vp->view_y, vp->view_width, vp->view_height);
+            auto rect = ui::Rect(vp->x, vp->y, vp->width, vp->height);
             gfx::redraw_screen_rect(rect);
             return;
         }
