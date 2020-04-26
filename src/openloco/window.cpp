@@ -766,6 +766,14 @@ namespace openloco::ui
         call((uint32_t)this->event_handlers->on_tool_down, regs);
     }
 
+    void window::call_tool_abort(int16_t widget_index)
+    {
+        registers regs;
+        regs.dx = widget_index;
+        regs.esi = (int32_t)this;
+        call((uint32_t)this->event_handlers->on_tool_abort, regs);
+    }
+
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
     {
         registers regs;
