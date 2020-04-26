@@ -563,7 +563,6 @@ namespace openloco::ui::windows::town
                 else
                     rank = string_ids::town_rating_appalling;
 
-                
                 auto args = FormatArguments();
                 args.push(companymgr::get(i)->name);
                 args.push<int16_t>(0);
