@@ -627,6 +627,13 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const gfx::ui_size_t windowSize = { 340, 194 };
 
+        enum widx
+        {
+            viewport = 11,
+            build_hq,
+            centre_on_viewport,
+        };
+
         static widget_t widgets[] = {
             commonWidgets(340, 194, string_ids::title_company_details),
             make_widget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
@@ -635,16 +642,47 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << build_hq) | (1 << centre_on_viewport);
 
         static window_event_list events;
 
         // 0x004327CF
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x004327CF, regs);
+            common::switchTabWidgets(self);
+
+            // Set company name.
+            auto company = companymgr::get(self->number);
+            *_common_format_args = company->name;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[widx::viewport].right = self->width - 26;
+            self->widgets[widx::viewport].bottom = self->height - 14;
+
+            self->widgets[common::widx::company_select].right = self->width - 3;
+            self->widgets[common::widx::company_select].left = self->width - 28;
+
+            if (self->number == companymgr::get_controlling_id())
+                self->widgets[widx::build_hq].type = widget_type::wt_9;
+            else
+                self->widgets[widx::build_hq].type = widget_type::none;
+
+            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
+            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
+            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
+            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+
+            common::repositionTabs(self);
         }
 
         // 0x00432919
@@ -659,19 +697,61 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432BDD
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00432BDD, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameCompanyPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_status:
+                case common::widx::tab_details:
+                case common::widx::tab_colour_scheme:
+                case common::widx::tab_finances:
+                case common::widx::tab_cargo_delivered:
+                case common::widx::tab_challenge:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::centre_on_viewport:
+                {
+                    if (self->viewports[0] == nullptr)
+                        break;
+
+                    // Centre viewport on HQ.
+                    // TODO(avgeffen): move/implement.
+                    registers regs;
+                    regs.esi = (int32_t)self;
+                    call(0x00432C45, regs);
+                    break;
+                }
+            }
         }
 
         // 0x00432C08
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x00432C08, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::company_select:
+                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    break;
+
+                case widx::build_hq:
+                {
+                    registers regs;
+                    regs.al = 43;
+                    regs.edx = widgetIndex;
+                    regs.esi = (int32_t)self;
+                    call(0x004CE367, regs);
+
+                    input::set_flag(input::input_flags::flag5);
+                    break;
+                }
+            }
         }
 
         // 0x00432C19
@@ -710,13 +790,18 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432D9F
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00432D9F, regs);
+            common::enableRenameByCaption(self);
+            self->set_size(windowSize);
+            self->call_viewport_rotate();
         }
 
         // 0x00432E08
-        // static void viewport_rotate(window* self);
+        static void viewport_rotate(window* self)
+        {
+            // registers regs;
+            // regs.esi = (int32_t)self;
+            // call(0x0043425D, regs);
+        }
 
         static void initEvents()
         {
@@ -731,7 +816,7 @@ namespace openloco::ui::windows::CompanyWindow
             // events.on_tool_abort = on_tool_abort;
             events.on_update = on_update;
             events.on_resize = on_resize;
-            // events.viewport_rotate = viewport_rotate;
+            events.viewport_rotate = viewport_rotate;
         }
     }
 
