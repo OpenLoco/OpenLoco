@@ -85,6 +85,9 @@ namespace openloco::input
     void cancel_tool();
     void cancel_tool(ui::WindowType, ui::window_number);
 
+    void map_invalidate_map_selection_tiles();
+    void map_invalidate_selection_rect();
+
     bool has_key_modifier(uint8_t modifier);
 
     void handle_keyboard();
