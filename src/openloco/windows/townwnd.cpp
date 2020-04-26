@@ -424,11 +424,13 @@ namespace openloco::ui::windows::town
             int32_t yTick = town->history_min_population;
             for (int16_t yPos = self->height - 57; yPos >= 14; yPos -= 20)
             {
+                auto args = FormatArguments();
+                args.push(yTick);
+
                 const uint16_t xPos = 39;
                 gfx::draw_rect(clipped, xPos, yPos, 241, 1, colour::get_shade(self->colours[1], 4));
 
-                *(int32_t*)&*commonFormatArgs = yTick;
-                gfx::draw_string_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &*commonFormatArgs);
+                gfx::draw_string_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -447,8 +449,10 @@ namespace openloco::ui::windows::town
                 {
                     if (yearSkip == 0)
                     {
-                        commonFormatArgs[0] = year;
-                        gfx::draw_string_centred(*clipped, xPos, yPos, colour::black, string_ids::population_graph_year, &*commonFormatArgs);
+                        auto args = FormatArguments();
+                        args.push(year);
+
+                        gfx::draw_string_centred(*clipped, xPos, yPos, colour::black, string_ids::population_graph_year, &args);
                     }
 
                     gfx::draw_rect(clipped, xPos, 11, 1, self->height - 66, colour::get_shade(self->colours[1], 4));
@@ -457,7 +461,8 @@ namespace openloco::ui::windows::town
                 // Draw population graph
                 uint16_t yPos1 = -town->history[i] + (self->height - 57);
                 uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
-                gfx::draw_line(clipped, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
+                if (i < town->history_size - 1)
+                    gfx::draw_line(clipped, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
 
                 month--;
                 if (month < 0)
@@ -558,10 +563,14 @@ namespace openloco::ui::windows::town
                 else
                     rank = string_ids::town_rating_appalling;
 
-                commonFormatArgs[0] = companymgr::get(i)->name;
-                commonFormatArgs[2] = rating;
-                commonFormatArgs[3] = rank;
-                gfx::draw_string_494BBF(*dpi, xPos, yPos, self->width - 12, colour::black, string_ids::town_rating_company_percentage_rank, &*commonFormatArgs);
+                
+                auto args = FormatArguments();
+                args.push(companymgr::get(i)->name);
+                args.push<int16_t>(0);
+                args.push(rating);
+                args.push(rank);
+
+                gfx::draw_string_494BBF(*dpi, xPos, yPos, self->width - 12, colour::black, string_ids::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }
