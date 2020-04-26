@@ -1,6 +1,7 @@
 #include "WindowManager.h"
 #include "../audio/audio.h"
 #include "../companymgr.h"
+#include "../console.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../input.h"
@@ -37,7 +38,6 @@ namespace openloco::ui::WindowManager
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
     static loco_global<gfx::drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global<uint16_t, 0x0052334E> gWindowUpdateTicks;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -51,7 +51,7 @@ namespace openloco::ui::WindowManager
     static loco_global<window[max_windows], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
-    void sub_4C6B09(window* window, viewport* viewport, int16_t x, int16_t y);
+    static void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y);
 
     void init()
     {
@@ -127,30 +127,6 @@ namespace openloco::ui::WindowManager
                 registers backup = regs;
                 sub_4B93A5(regs.bx);
                 regs = backup;
-
-                return 0;
-            });
-
-        register_hook(
-            0x004C5FC8,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto dpi = &addr<0x005233B8, gfx::drawpixelinfo_t>();
-                auto window = (ui::window*)regs.esi;
-
-                // Make a copy to prevent overwriting from nested calls
-                auto regs2 = regs;
-
-                drawSingle(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
-                window++;
-
-                while (window < addr<0x0113D754, ui::window*>())
-                {
-                    if ((window->flags & ui::window_flags::transparent) != 0)
-                    {
-                        drawSingle(dpi, window, regs2.ax, regs2.bx, regs2.dx, regs2.bp);
-                    }
-                    window++;
-                }
 
                 return 0;
             });
@@ -329,6 +305,32 @@ namespace openloco::ui::WindowManager
                 regs = backup;
 
                 regs.esi = (uintptr_t)w;
+                return 0;
+            });
+
+        register_hook(
+            0x004CF456,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                closeAllFloatingWindows();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004CD3A9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto w = bringToFront((WindowType)regs.cx, regs.dx);
+                regs = backup;
+
+                regs.esi = (uintptr_t)w;
+                if (w == nullptr)
+                {
+                    return X86_FLAG_ZERO;
+                }
 
                 return 0;
             });
@@ -337,6 +339,21 @@ namespace openloco::ui::WindowManager
     window* get(size_t index)
     {
         return &_windows[index];
+    }
+
+    size_t indexOf(window* pWindow)
+    {
+        int i = 0;
+
+        for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
+        {
+            if (w == pWindow)
+                return i;
+
+            i++;
+        }
+
+        return 0;
     }
 
     size_t count()
@@ -613,6 +630,7 @@ namespace openloco::ui::WindowManager
     }
 
     // 0x004CC750
+    // TODO: hook
     window* bringToFront(window* w)
     {
         registers regs;
@@ -625,12 +643,14 @@ namespace openloco::ui::WindowManager
     // 0x004CD3A9
     window* bringToFront(WindowType type, uint16_t id)
     {
-        registers regs;
-        regs.cx = (uint8_t)type;
-        regs.dx = id;
-        call(0x004CD3A9, regs);
+        auto window = find(type, id);
+        if (window == nullptr)
+            return nullptr;
 
-        return (window*)regs.esi;
+        window->flags |= window_flags::white_border_mask;
+        window->invalidate();
+
+        return bringToFront(window);
     }
 
     /**
@@ -1434,6 +1454,265 @@ namespace openloco::ui::WindowManager
         }
 
         return nullptr;
+    }
+
+    /**
+     * 0x004C6A40
+     *
+     * @param window @<edi>
+     * @param viewport @<esi>
+     */
+    void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY)
+    {
+        for (auto w = window; w < _windowsEnd; w++)
+        {
+            if ((w->flags & window_flags::transparent) == 0)
+                continue;
+
+            if (viewport == w->viewports[0])
+                continue;
+
+            if (viewport == w->viewports[1])
+                continue;
+
+            if (viewport->x + viewport->width <= w->x)
+                continue;
+
+            if (w->x + w->width <= viewport->x)
+                continue;
+
+            if (viewport->y + viewport->height <= w->y)
+                continue;
+
+            if (w->y + w->height <= viewport->y)
+                continue;
+
+            int16_t left, top, right, bottom, cx;
+
+            left = w->x;
+            top = w->y;
+            right = w->x + w->width;
+            bottom = w->y + w->height;
+
+            // TODO: replace these with min/max
+            cx = viewport->x;
+            if (left < cx)
+                left = cx;
+
+            cx = viewport->x + viewport->width;
+            if (right > cx)
+                right = cx;
+
+            cx = viewport->y;
+            if (top < cx)
+                top = cx;
+
+            cx = viewport->y + viewport->height;
+            if (bottom > cx)
+                bottom = cx;
+
+            if (left < right && top < bottom)
+            {
+                gfx::redraw_screen_rect(left, top, right, bottom);
+            }
+        }
+
+        viewport_redraw_after_shift(window, viewport, dX, dY);
+    }
+
+    // 0x00451DCB
+    static void copy_rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
+    {
+        if (dx == 0 && dy == 0)
+            return;
+
+        auto _width = ui::width();
+        auto _height = ui::height();
+        gfx::drawpixelinfo_t& _bitsDPI = _screen_dpi;
+
+        // Adjust for move off screen
+        // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
+        // screen; hence the checks. This code should ultimately not be called when
+        // zooming because this function is specific to updating the screen on move
+        int32_t lmargin = std::min(x - dx, 0);
+        int32_t rmargin = std::min((int32_t)_width - (x - dx + width), 0);
+        int32_t tmargin = std::min(y - dy, 0);
+        int32_t bmargin = std::min((int32_t)_height - (y - dy + height), 0);
+        x -= lmargin;
+        y -= tmargin;
+        width += lmargin + rmargin;
+        height += tmargin + bmargin;
+
+        int32_t stride = _bitsDPI.width + _bitsDPI.pitch;
+        uint8_t* to = _bitsDPI.bits + y * stride + x;
+        uint8_t* from = _bitsDPI.bits + (y - dy) * stride + x - dx;
+
+        if (dy > 0)
+        {
+            // If positive dy, reverse directions
+            to += (height - 1) * stride;
+            from += (height - 1) * stride;
+            stride = -stride;
+        }
+
+        // Move bytes
+        for (int32_t i = 0; i < height; i++)
+        {
+            memmove(to, from, width);
+            to += stride;
+            from += stride;
+        }
+    }
+
+    /**
+     * 0x004C6B09
+     *
+     * @param edi @<edi>
+     * @param x @<dx>
+     * @param y @<bp>
+     * @param viewport @<esi>
+     */
+    void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y)
+    {
+        if (window != nullptr)
+        {
+            // skip current window and non-intersecting windows
+            if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
+            {
+                size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
+                auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
+                viewport_redraw_after_shift(nextWindow, viewport, x, y);
+                return;
+            }
+
+            // save viewport
+            ui::viewport view_copy = *viewport;
+
+            if (viewport->x < window->x)
+            {
+                viewport->width = window->x - viewport->x;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+
+                viewport->x += viewport->width;
+                viewport->view_x += viewport->width << viewport->zoom;
+                viewport->width = view_copy.width - viewport->width;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+            }
+            else if (viewport->x + viewport->width > window->x + window->width)
+            {
+                viewport->width = window->x + window->width - viewport->x;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+
+                viewport->x += viewport->width;
+                viewport->view_x += viewport->width << viewport->zoom;
+                viewport->width = view_copy.width - viewport->width;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+            }
+            else if (viewport->y < window->y)
+            {
+                viewport->height = window->y - viewport->y;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+
+                viewport->y += viewport->height;
+                viewport->view_y += viewport->height << viewport->zoom;
+                viewport->height = view_copy.height - viewport->height;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+            }
+            else if (viewport->y + viewport->height > window->y + window->height)
+            {
+                viewport->height = window->y + window->height - viewport->y;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+
+                viewport->y += viewport->height;
+                viewport->view_y += viewport->height << viewport->zoom;
+                viewport->height = view_copy.height - viewport->height;
+                viewport->view_width = viewport->width << viewport->zoom;
+                viewport_redraw_after_shift(window, viewport, x, y);
+            }
+
+            // restore viewport
+            *viewport = view_copy;
+        }
+        else
+        {
+            int16_t left = viewport->x;
+            int16_t top = viewport->y;
+            int16_t right = left + viewport->width;
+            int16_t bottom = top + viewport->height;
+
+            // if moved more than the viewport size
+            if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
+            {
+                // redraw whole viewport
+                gfx::redraw_screen_rect(left, top, right, bottom);
+            }
+            else
+            {
+                // update whole block ?
+                copy_rect(left, top, viewport->width, viewport->height, x, y);
+
+                if (x > 0)
+                {
+                    // draw left
+                    int16_t _right = left + x;
+                    gfx::redraw_screen_rect(left, top, _right, bottom);
+                    left += x;
+                }
+                else if (x < 0)
+                {
+                    // draw right
+                    int16_t _left = right + x;
+                    gfx::redraw_screen_rect(_left, top, right, bottom);
+                    right += x;
+                }
+
+                if (y > 0)
+                {
+                    // draw top
+                    bottom = top + y;
+                    gfx::redraw_screen_rect(left, top, right, bottom);
+                }
+                else if (y < 0)
+                {
+                    // draw bottom
+                    top = bottom + y;
+                    gfx::redraw_screen_rect(left, top, right, bottom);
+                }
+            }
+        }
+    }
+
+    // 0x004CF456
+    void closeAllFloatingWindows()
+    {
+        close(WindowType::dropdown, 0);
+
+        bool changed = true;
+        while (changed)
+        {
+            changed = false;
+            for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
+            {
+                if ((w->flags & window_flags::stick_to_back) != 0)
+                    continue;
+
+                if ((w->flags & window_flags::stick_to_front) != 0)
+                    continue;
+
+                close(w);
+
+                // restart loop
+                changed = true;
+                break;
+            }
+        }
     }
 }
 

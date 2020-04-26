@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/gfx.h"
 #include <string>
 #include <vector>
 
@@ -11,6 +12,25 @@ namespace openloco::config
 
 namespace openloco::ui
 {
+
+    struct screen_info_t
+    {
+        gfx::drawpixelinfo_t dpi;
+        int16_t width;
+        int16_t height;
+        int16_t width_2;
+        int16_t height_2;
+        int16_t width_3;
+        int16_t height_3;
+        int16_t dirty_block_width;
+        int16_t dirty_block_height;
+        int32_t dirty_block_columns;
+        int32_t dirty_block_rows;
+        int8_t dirty_block_column_shift;
+        int8_t dirty_block_row_shift;
+        int8_t dirty_blocks_initialised;
+    };
+
     enum class cursor_id
     {
         pointer,

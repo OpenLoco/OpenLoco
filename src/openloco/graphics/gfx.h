@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../localisation/stringmgr.h"
 #include "../openloco.h"
+#include "../types.hpp"
+#include "../ui/Rect.h"
+#include "types.h"
 #include <cstdint>
 
 namespace openloco::gfx
@@ -63,68 +65,6 @@ namespace openloco::gfx
     };
 
 #pragma pack(pop)
-
-    struct point_t
-    {
-        int16_t x = 0;
-        int16_t y = 0;
-
-        constexpr point_t(){};
-
-        constexpr point_t(int16_t x, int16_t y)
-            : x(x)
-            , y(y)
-        {
-        }
-
-        bool operator==(const point_t& rhs)
-        {
-            return x == rhs.x && y == rhs.y;
-        }
-
-        bool operator==(const int16_t rhs)
-        {
-            return x == rhs && y == rhs;
-        }
-
-        point_t& operator+=(const point_t& rhs)
-        {
-            x += rhs.x;
-            y += rhs.y;
-            return *this;
-        }
-
-        point_t& operator-=(const point_t& rhs)
-        {
-            x -= rhs.x;
-            y -= rhs.y;
-            return *this;
-        }
-
-        friend point_t operator+(point_t lhs, const point_t& rhs)
-        {
-            lhs += rhs;
-            return lhs;
-        }
-
-        friend point_t operator-(point_t lhs, const point_t& rhs)
-        {
-            lhs -= rhs;
-            return lhs;
-        }
-    };
-
-    struct ui_size_t
-    {
-        uint16_t width;
-        uint16_t height;
-
-        constexpr ui_size_t(uint16_t width, uint16_t height)
-            : width(width)
-            , height(height)
-        {
-        }
-    };
 
     drawpixelinfo_t& screen_dpi();
 
@@ -218,6 +158,10 @@ namespace openloco::gfx
     void invalidate_screen();
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
     void draw_dirty_blocks();
+    void render();
+
+    void redraw_screen_rect(ui::Rect rect);
+    void redraw_screen_rect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
     g1_element* get_g1element(uint32_t id);

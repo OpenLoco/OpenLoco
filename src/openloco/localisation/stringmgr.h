@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../types.hpp"
 #include <cstdint>
 
 #ifdef small
@@ -8,8 +9,6 @@
 
 namespace openloco
 {
-    using string_id = uint16_t;
-
     namespace string_ids
     {
         constexpr string_id null = 0xFFFF;

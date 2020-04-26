@@ -364,6 +364,16 @@ namespace openloco::ui
             set_size(size, size);
         }
 
+        bool isVisible()
+        {
+            return true;
+        }
+
+        bool isTranslucent()
+        {
+            return (this->flags & window_flags::transparent) != 0;
+        }
+
         bool is_enabled(int8_t widget_index);
         bool is_disabled(int8_t widget_index);
         bool is_activated(widget_index index);

@@ -9,6 +9,7 @@
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
 #include "ui.h"
+#include "ui/Rect.h"
 #include "ui/scrollview.h"
 #include "widget.h"
 #include <cassert>
@@ -141,12 +142,75 @@ namespace openloco::ui
     // 0x004C68E4
     static void viewport_move(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.esi = (uint32_t)w;
-        regs.edi = (uint32_t)vp;
-        call(0x004C68E4, regs);
+        int origX = vp->view_x >> vp->zoom;
+        int origY = vp->view_y >> vp->zoom;
+        int newX = x >> vp->zoom;
+        int newY = y >> vp->zoom;
+        int diffX = origX - newX;
+        int diffY = origY - newY;
+
+        vp->view_x = x;
+        vp->view_y = y;
+
+        // If no change in viewing area
+        if (diffX == 0 && diffY == 0)
+            return;
+
+        if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
+        {
+            auto rect = ui::Rect(vp->x, vp->y, vp->width, vp->height);
+            gfx::redraw_screen_rect(rect);
+            return;
+        }
+
+        uint8_t zoom = (1 << vp->zoom);
+        viewport backup = *vp;
+
+        if (vp->x < 0)
+        {
+            vp->width += vp->x;
+            vp->view_width += vp->x * zoom;
+            vp->view_x -= vp->x * zoom;
+            vp->x = 0;
+        }
+
+        int32_t eax = vp->x + vp->width - ui::width();
+        if (eax > 0)
+        {
+            vp->width -= eax;
+            vp->view_width -= eax * zoom;
+        }
+
+        if (vp->width <= 0)
+        {
+            *vp = backup;
+            return;
+        }
+
+        if (vp->y < 0)
+        {
+            vp->height += vp->y;
+            vp->view_height += vp->y * zoom;
+            vp->view_y -= vp->y * zoom;
+            vp->y = 0;
+        }
+
+        eax = vp->y + vp->height - ui::height();
+        if (eax > 0)
+        {
+            vp->height -= eax;
+            vp->view_height -= eax * zoom;
+        }
+
+        if (vp->height <= 0)
+        {
+            *vp = backup;
+            return;
+        }
+
+        WindowManager::viewport_shift_pixels(w, vp, diffX, diffY);
+
+        *vp = backup;
     }
 
     // 0x004C6456

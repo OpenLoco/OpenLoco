@@ -1,8 +1,12 @@
 #include "gfx.h"
+#include "../console.h"
+#include "../drawing/SoftwareDrawingEngine.h"
 #include "../environment.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/languagefiles.h"
 #include "../ui.h"
+#include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
 #include "colours.h"
 #include "image_ids.h"
@@ -14,6 +18,8 @@
 
 using namespace openloco::interop;
 using namespace openloco::utility;
+using namespace openloco::drawing;
+using namespace openloco::ui;
 
 namespace openloco::gfx
 {
@@ -35,6 +41,8 @@ namespace openloco::gfx
     constexpr uint32_t g1_count_temporary = 0x1000;
 
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    static loco_global<drawpixelinfo_t, 0x005233B8> _windowDPI;
+
     static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
@@ -837,11 +845,72 @@ namespace openloco::gfx
         regs.bp = bottom;
         call(0x004C5C69, regs);
     }
+    drawing::SoftwareDrawingEngine* engine;
 
     // 0x004C5CFA
     void draw_dirty_blocks()
     {
-        call(0x004C5CFA);
+        if (engine == nullptr)
+            engine = new drawing::SoftwareDrawingEngine();
+
+        engine->drawDirtyBlocks();
+    }
+
+    loco_global<char[512], 0x0112CC04> byte_112CC04;
+    loco_global<char[512], 0x0112CE04> byte_112CE04;
+
+    // 0x004CF63B
+    void render()
+    {
+        if (engine == nullptr)
+            engine = new drawing::SoftwareDrawingEngine();
+
+        char backup1[512] = { 0 };
+        char backup2[512] = { 0 };
+
+        std::memcpy(backup1, byte_112CC04, 512);
+        std::memcpy(backup2, byte_112CE04, 512);
+
+        if (ui::dirty_blocks_initialised())
+        {
+            engine->drawDirtyBlocks();
+        }
+
+        if (input::has_flag(input::input_flags::flag5))
+        {
+            call(0x004072EC); // NOP on _NO_LOCO_WIN32_
+        }
+        else
+        {
+            ui::process_messages();
+        }
+
+        if (addr<0x005252AC, uint32_t>() != 0)
+        {
+            //            sub_4058F5();
+        }
+
+        std::memcpy(byte_112CC04, backup1, 512);
+        std::memcpy(byte_112CE04, backup2, 512);
+    }
+
+    void redraw_screen_rect(Rect rect)
+    {
+        engine->drawRect(rect);
+    }
+
+    /**
+     * 0x004C5DD5
+     * rct2: window_draw_all
+     *
+     * @param left @<ax>
+     * @param top @<bx>
+     * @param right @<dx>
+     * @param bottom @<bp>
+     */
+    void redraw_screen_rect(int16_t left, int16_t top, int16_t right, int16_t bottom)
+    {
+        redraw_screen_rect(Rect::fromLTRB(left, top, right, bottom));
     }
 
     void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
