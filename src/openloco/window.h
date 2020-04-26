@@ -217,7 +217,7 @@ namespace openloco::ui
                 uint32_t on_tool_down;
                 uint32_t event_12;
                 uint32_t event_13;
-                uint32_t tool_abort;
+                uint32_t on_tool_abort;
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 void (*scroll_mouse_down)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
@@ -404,6 +404,7 @@ namespace openloco::ui
         void call_9();                                                                                    // 9
         void call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos);                          // 10
         void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
+        void call_tool_abort(int16_t widget_index);                                                       // 14
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17

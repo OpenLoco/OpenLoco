@@ -275,6 +275,16 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x004CE3D6,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                input::cancel_tool();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x004CE438,
             [](registers& regs) -> uint8_t {
                 auto w = getMainWindow();

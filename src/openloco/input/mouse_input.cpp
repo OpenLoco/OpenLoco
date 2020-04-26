@@ -2,6 +2,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
+#include "../map/tilemgr.h"
 #include "../stationmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
@@ -244,7 +245,27 @@ namespace openloco::input
     // 0x004CE3D6
     void cancel_tool()
     {
-        call(0x004CE3D6);
+        if (input::has_flag(input::input_flags::tool_active))
+        {
+            input::reset_flag(input::input_flags::tool_active);
+
+            map::tilemgr::map_invalidate_selection_rect();
+            map::tilemgr::map_invalidate_map_selection_tiles();
+
+            // Reset map selection
+            _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+
+            if (_toolWidgetIndex >= 0)
+            {
+                // Invalidate tool widget
+                ui::WindowManager::invalidateWidget(_toolWindowType, _toolWindowNumber, _toolWidgetIndex);
+
+                // Abort tool event
+                window* w = ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
+                if (w != nullptr)
+                    w->call_tool_abort(_toolWidgetIndex);
+            }
+        }
     }
 
     void cancel_tool(ui::WindowType type, ui::window_number number)
