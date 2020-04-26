@@ -188,7 +188,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw company owner face on dropdown.
             {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
                 const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
                 const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
                 gfx::draw_image(dpi, x, y, image);
@@ -208,7 +208,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary) + 1;
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary) + 1;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
                 gfx::draw_image(dpi, x, y, image);
@@ -842,10 +842,10 @@ namespace openloco::ui::windows::CompanyWindow
             common::repositionTabs(self);
 
             // Set company's main colour
-            self->widgets[widx::main_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->colour.primary);
+            self->widgets[widx::main_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->mainColours.primary);
 
             // Set company's secondary colour
-            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->colour.secondary);
+            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->mainColours.secondary);
 
             // TODO: set colours for different ride types.
             registers regs;
@@ -869,7 +869,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw company owner face on dropdown.
             {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
                 const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
                 const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
                 gfx::draw_image(dpi, x, y, image);
@@ -1169,7 +1169,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw company owner face on dropdown.
             {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
                 const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
                 const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
                 gfx::draw_image(dpi, x, y, image);
