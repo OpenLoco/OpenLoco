@@ -2,7 +2,6 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
-    <APPVEYOR_REPO_COMMIT_SHORT Condition="'$(APPVEYOR_REPO_COMMIT)'!=''">$(APPVEYOR_REPO_COMMIT.Substring(0, $([System.Math]::Min($(APPVEYOR_REPO_COMMIT.Length), 7))))</APPVEYOR_REPO_COMMIT_SHORT>
     <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
@@ -19,8 +18,8 @@
     <ClCompile Include="**\*.cpp" Exclude="version.cpp" />
     <ClCompile Include="version.cpp">
       <!-- Define git information -->
-      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_BRANCH)'!=''">OPENLOCO_BRANCH="$(APPVEYOR_REPO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(APPVEYOR_REPO_COMMIT_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(APPVEYOR_REPO_COMMIT_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(OPENLOCO_SHA1_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(OPENLOCO_SHA1_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemGroup>
@@ -37,9 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{42A6B551-4EC5-4B66-A130-628622CD98C4}</ProjectGuid>
@@ -61,7 +57,14 @@
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
-  <!-- Include our vcpkg root first, otherwise the machine installed vcpkg will be used -->
-  <Import Project="..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets" Condition="Exists('..\..\packages\OpenLoco.Dependencies.1.2.0\build\native\OpenLoco.Dependencies.targets')" />
+  <ItemGroup>
+    <PackageReference Include="OpenLoco.Dependencies" Version="1.2.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <!-- enable NuGet TargetMonikers fallback to native -->
+  <PropertyGroup>
+    <_NuGetTargetFallbackMoniker>$(_NuGetTargetFallbackMoniker);native,Version=v0.0</_NuGetTargetFallbackMoniker>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
