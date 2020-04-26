@@ -67,6 +67,8 @@ namespace openloco::ui::windows
     bool prompt_ok_cancel(string_id okButtonStringId);
 
     void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
+
+    void editorInit();
 }
 
 namespace openloco::ui::about
@@ -250,4 +252,9 @@ namespace openloco::ui::windows::PlayerInfoPanel
 namespace openloco::ui::TimePanel
 {
     window* open();
+}
+
+namespace openloco::ui::windows::toolbar_bottom::editor
+{
+    void open();
 }

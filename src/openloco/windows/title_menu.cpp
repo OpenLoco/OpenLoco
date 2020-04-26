@@ -6,6 +6,7 @@
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"
+#include "../map/tile.h"
 #include "../multiplayer.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -13,6 +14,7 @@
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
+#include "../viewportmgr.h"
 
 using namespace openloco::interop;
 
@@ -369,6 +371,45 @@ namespace openloco::ui::windows
     static void sub_439102()
     {
         call(0x0046e639); // window_multiplayer::open
+    }
+
+    static widget_t _editorWidgets[] = {
+        make_widget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
+        widget_end(),
+    };
+
+    // 0x0043CB9F
+    void editorInit()
+    {
+        const int32_t uiWidth = ui::width();
+        const int32_t uiHeight = ui::height();
+
+        _editorWidgets[0].bottom = uiHeight;
+        _editorWidgets[0].right = uiWidth;
+        auto window = WindowManager::createWindow(
+            WindowType::main,
+            { 0, 0 },
+            gfx::ui_size_t(uiWidth, uiHeight),
+            ui::window_flags::stick_to_back,
+            (ui::window_event_list*)0x004FA5F8);
+        window->widgets = _editorWidgets;
+        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
+        openloco::ui::viewportmgr::create(
+            window,
+            0,
+            { window->x, window->y },
+            { window->width, window->height },
+            ZoomLevel::full,
+            { (openloco::map::map_rows * openloco::map::tile_size) / 2 - 1, (openloco::map::map_rows * openloco::map::tile_size) / 2 - 1, 480 });
+
+        addr<0x00F2533F, int8_t>() = 0; // grid lines
+        addr<0x0112C2e1, int8_t>() = 0;
+        addr<0x009c870E, int8_t>() = 0;
+        addr<0x009c870F, int8_t>() = 2;
+        addr<0x009c8710, int8_t>() = 1;
+
+        toolbar_top::editor::open();
+        toolbar_bottom::editor::open();
     }
 
     static void sub_43910A()
