@@ -847,10 +847,49 @@ namespace openloco::ui::windows::CompanyWindow
             // Set company's secondary colour
             self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->mainColours.secondary);
 
-            // TODO: set colours for different ride types.
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00432EB9, regs);
+            struct ColourSchemeTuple
+            {
+                widget_index checkbox;
+                widget_index primary;
+                widget_index secondary;
+            };
+
+            // clang-format off
+            static const ColourSchemeTuple tuples[] =
+            {
+                { widx::check_steam_locomotives,     widx::main_colour_steam_locomotives,     widx::secondary_colour_steam_locomotives },
+                { widx::check_diesel_locomotives,    widx::main_colour_diesel_locomotives,    widx::secondary_colour_diesel_locomotives },
+                { widx::check_electric_locomotives,  widx::main_colour_electric_locomotives,  widx::secondary_colour_electric_locomotives },
+                { widx::check_multiple_units,        widx::main_colour_multiple_units,        widx::secondary_colour_multiple_units },
+                { widx::check_passenger_vehicles,    widx::main_colour_passenger_vehicles,    widx::secondary_colour_passenger_vehicles },
+                { widx::check_freight_vehicles,      widx::main_colour_freight_vehicles,      widx::secondary_colour_freight_vehicles },
+                { widx::check_buses,                 widx::main_colour_buses,                 widx::secondary_colour_buses },
+                { widx::check_trucks,                widx::main_colour_trucks,                widx::secondary_colour_trucks },
+                { widx::check_aircraft,              widx::main_colour_aircraft,              widx::secondary_colour_aircraft },
+                { widx::check_ships,                 widx::main_colour_ships,                 widx::secondary_colour_ships },
+            };
+            // clang-format on
+
+            for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(tuples)); i++)
+            {
+                if ((company->customVehicleColoursSet & (1 << i)) != 0)
+                {
+                    self->activated_widgets |= (1ULL << tuples[i].checkbox);
+
+                    self->widgets[tuples[i].primary].image = (1ULL << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->vehicleColours[i].primary);
+                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, company->vehicleColours[i].secondary);
+
+                    self->widgets[tuples[i].primary].type = widget_type::wt_10;
+                    self->widgets[tuples[i].secondary].type = widget_type::wt_10;
+                }
+                else
+                {
+                    self->activated_widgets &= ~(1ULL << tuples[i].checkbox);
+
+                    self->widgets[tuples[i].primary].type = widget_type::none;
+                    self->widgets[tuples[i].secondary].type = widget_type::none;
+                }
+            }
 
             if (self->number == companymgr::get_controlling_id())
                 self->enabled_widgets |= (1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships);
