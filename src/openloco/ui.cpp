@@ -98,7 +98,8 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
-    config::resolution_t getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex);
+    config::resolution_t* getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex);
+    config::resolution_t getDesktopResolution(int32_t displayIndex);
 #if !(defined(__APPLE__) && defined(__MACH__))
     static void toggle_fullscreen_desktop();
 #endif
@@ -765,21 +766,23 @@ namespace openloco::ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
-    config::resolution_t getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex)
+    config::resolution_t* getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex)
     {
-        config::resolution_t outputResolution = { 0, 0 };
+        config::resolution_t defaultResolution = { 640, 480 };
+        config::resolution_t* outputResolution = &defaultResolution;
+
         auto& config = config::get_new();
         switch (mode)
         {
         case config::screen_mode::window:
             if (config.display.window_resolution.width > 0 && config.display.window_resolution.height > 0)
-                outputResolution = { config.display.window_resolution.width, config.display.window_resolution.height };
+                outputResolution = &config.display.window_resolution;
             else
-                outputResolution = { 640, 480 };
+                outputResolution = &defaultResolution;
             break;
         case config::screen_mode::fullscreen:
             if (config.display.fullscreen_resolution.width > 0 && config.display.fullscreen_resolution.height > 0)
-                outputResolution = { config.display.fullscreen_resolution.width, config.display.fullscreen_resolution.height };
+                outputResolution = &config.display.fullscreen_resolution;
             break;
         case config::screen_mode::fullscreen_borderless:
             break;
@@ -788,15 +791,26 @@ namespace openloco::ui
             break;
         }
 
-        // If we have no resolution in config, use the current desktop resolution instead
-        if (!(outputResolution.width > 0 && outputResolution.height > 0))
+        // If we have no resolution in config, or it's 0x0, use the current desktop resolution instead
+        if (outputResolution == nullptr)
         {
-            SDL_DisplayMode desktopDisplayMode;
-            SDL_GetDesktopDisplayMode(displayIndex, &desktopDisplayMode);
-            outputResolution = { desktopDisplayMode.w, desktopDisplayMode.h };
+            config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
+            outputResolution = &desktopResolution;
+        } else if (!(outputResolution->width > 0 && outputResolution->height > 0))
+        {
+            config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
+            outputResolution = &desktopResolution;
         }
 
         return outputResolution;
+    }
+
+    config::resolution_t getDesktopResolution(int32_t displayIndex)
+    {
+        SDL_DisplayMode desktopDisplayMode;
+        SDL_GetDesktopDisplayMode(displayIndex, &desktopDisplayMode);
+        config::resolution_t desktopResolution = { desktopDisplayMode.w, desktopDisplayMode.h };
+        return desktopResolution;
     }
 
     bool setDisplayMode(config::screen_mode mode, int16_t width, int16_t height)
@@ -811,13 +825,9 @@ namespace openloco::ui
 
         config.display.mode = mode;
 
-        // If no resolution isset in function call, check config.
+        // If no resolution is set in function call parameters, check config.
         if (!(newResolution.width > 0 && newResolution.height > 0))
-        {
-            config::resolution_t configResolution = getDisplayResolutionByMode(mode, displayIndex);
-            newResolution.width = configResolution.width;
-            newResolution.height = configResolution.height;
-        }
+            newResolution = *getDisplayResolutionByMode(mode, displayIndex);
 
         auto flags = 0;
         switch (mode)
