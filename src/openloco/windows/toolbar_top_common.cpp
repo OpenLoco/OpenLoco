@@ -35,6 +35,50 @@ namespace openloco::ui::windows::toolbar_top::common
 
     static loco_global<int8_t[18], 0x0050A006> available_objects;
 
+    // 0x00439DE4
+    void draw(window* self, gfx::drawpixelinfo_t* dpi)
+    {
+        // Draw widgets.
+        self->draw(dpi);
+
+        uint32_t company_colour = companymgr::get_player_company_colour();
+
+        if (self->widgets[widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
+        {
+            uint32_t x = self->widgets[widx::road_menu].left + self->x;
+            uint32_t y = self->widgets[widx::road_menu].top + self->y;
+            uint32_t fgImage = 0;
+
+            // Figure out what icon to show on the button face.
+            bool isRoad = last_road_option & (1 << 7);
+            if (isRoad)
+            {
+                auto obj = objectmgr::get<road_object>(last_road_option & ~(1 << 7));
+                fgImage = gfx::recolour(obj->var_0E, company_colour);
+            }
+            else
+            {
+                auto obj = objectmgr::get<track_object>(last_road_option);
+                fgImage = gfx::recolour(obj->var_1E, company_colour);
+            }
+
+            y--;
+            auto interface = objectmgr::get<interface_skin_object>();
+            uint32_t bgImage = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
+
+            if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::road_menu))
+            {
+                y++;
+                bgImage++;
+            }
+
+            gfx::draw_image(dpi, x, y, fgImage);
+
+            y = self->widgets[widx::road_menu].top + self->y;
+            gfx::draw_image(dpi, x, y, bgImage);
+        }
+    }
+
     // 0x0043A78E
     void zoom_menu_mouse_down(window* window, widget_index widgetIndex)
     {
@@ -345,8 +389,89 @@ namespace openloco::ui::windows::toolbar_top::common
         }
     }
 
+    void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        switch (widgetIndex)
+        {
+            case widx::zoom_menu:
+                zoom_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case widx::rotate_menu:
+                rotate_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case widx::view_menu:
+                view_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case widx::terraform_menu:
+                terraform_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case widx::road_menu:
+                road_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case widx::towns_menu:
+                towns_menu_dropdown(window, widgetIndex, itemIndex);
+                break;
+        }
+    }
+
+    // 0x0043A071
+    void on_mouse_down(window* window, widget_index widgetIndex)
+    {
+        switch (widgetIndex)
+        {
+            case widx::zoom_menu:
+                zoom_menu_mouse_down(window, widgetIndex);
+                break;
+
+            case widx::rotate_menu:
+                rotate_menu_mouse_down(window, widgetIndex);
+                break;
+
+            case widx::view_menu:
+                view_menu_mouse_down(window, widgetIndex);
+                break;
+
+            case widx::terraform_menu:
+                terraform_menu_mouse_down(window, widgetIndex);
+                break;
+
+            case widx::road_menu:
+                road_menu_mouse_down(window, widgetIndex);
+                break;
+
+            case widx::towns_menu:
+                towns_menu_mouse_down(window, widgetIndex);
+                break;
+        }
+    }
+
     void on_update(window* window)
     {
         zoom_ticks++;
+    }
+
+    // 0x0043A17E
+    void on_resize(window* window)
+    {
+        auto main = WindowManager::getMainWindow();
+        if (main == nullptr)
+            window->set_disabled_widgets_and_invalidate(widx::zoom_menu | widx::rotate_menu);
+        else
+            window->set_disabled_widgets_and_invalidate(0);
+    }
+
+    void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)
+    {
+        for (const auto& widx : widxs)
+        {
+            window->widgets[widx].right = x;
+            window->widgets[widx].left = x - 29;
+            x -= 30;
+        }
     }
 }

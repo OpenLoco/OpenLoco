@@ -70,7 +70,6 @@ namespace openloco::ui::windows::toolbar_top::game
 
     static window_event_list _events;
 
-    static void on_resize(window* window);
     static void on_mouse_down(window* window, widget_index widgetIndex);
     static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
     static void prepare_draw(window* window);
@@ -83,7 +82,7 @@ namespace openloco::ui::windows::toolbar_top::game
         last_town_option = 0;
         last_port_option = 0;
 
-        _events.on_resize = on_resize;
+        _events.on_resize = common::on_resize;
         _events.event_03 = on_mouse_down;
         _events.on_mouse_down = on_mouse_down;
         _events.on_dropdown = on_dropdown;
@@ -109,16 +108,6 @@ namespace openloco::ui::windows::toolbar_top::game
             window->colours[2] = skin->colour_14;
             window->colours[3] = skin->colour_15;
         }
-    }
-
-    // 0x0043A17E
-    static void on_resize(window* window)
-    {
-        auto main = WindowManager::getMainWindow();
-        if (main == nullptr)
-            window->set_disabled_widgets_and_invalidate(common::widx::zoom_menu | common::widx::rotate_menu);
-        else
-            window->set_disabled_widgets_and_invalidate(0);
     }
 
     // 0x0043B0F7
@@ -507,28 +496,8 @@ namespace openloco::ui::windows::toolbar_top::game
                 audio_menu_mouse_down(window, widgetIndex);
                 break;
 
-            case common::widx::zoom_menu:
-                common::zoom_menu_mouse_down(window, widgetIndex);
-                break;
-
-            case common::widx::rotate_menu:
-                common::rotate_menu_mouse_down(window, widgetIndex);
-                break;
-
-            case common::widx::view_menu:
-                common::view_menu_mouse_down(window, widgetIndex);
-                break;
-
-            case common::widx::terraform_menu:
-                common::terraform_menu_mouse_down(window, widgetIndex);
-                break;
-
             case widx::railroad_menu:
                 railroad_menu_mouse_down(window, widgetIndex);
-                break;
-
-            case common::widx::road_menu:
-                common::road_menu_mouse_down(window, widgetIndex);
                 break;
 
             case common::widx::port_menu:
@@ -547,8 +516,8 @@ namespace openloco::ui::windows::toolbar_top::game
                 stations_menu_mouse_down(window, widgetIndex);
                 break;
 
-            case common::widx::towns_menu:
-                common::towns_menu_mouse_down(window, widgetIndex);
+            default:
+                common::on_mouse_down(window, widgetIndex);
                 break;
         }
     }
@@ -565,28 +534,8 @@ namespace openloco::ui::windows::toolbar_top::game
                 audio_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case common::widx::zoom_menu:
-                common::zoom_menu_dropdown(window, widgetIndex, itemIndex);
-                break;
-
-            case common::widx::rotate_menu:
-                common::rotate_menu_dropdown(window, widgetIndex, itemIndex);
-                break;
-
-            case common::widx::view_menu:
-                common::view_menu_dropdown(window, widgetIndex, itemIndex);
-                break;
-
-            case common::widx::terraform_menu:
-                common::terraform_menu_dropdown(window, widgetIndex, itemIndex);
-                break;
-
             case widx::railroad_menu:
                 railroad_menu_dropdown(window, widgetIndex, itemIndex);
-                break;
-
-            case common::widx::road_menu:
-                common::road_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::port_menu:
@@ -605,8 +554,8 @@ namespace openloco::ui::windows::toolbar_top::game
                 stations_menu_dropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case common::widx::towns_menu:
-                common::towns_menu_dropdown(window, widgetIndex, itemIndex);
+            default:
+                common::on_dropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
@@ -614,51 +563,14 @@ namespace openloco::ui::windows::toolbar_top::game
     // 0x00439DE4
     static void draw(window* window, gfx::drawpixelinfo_t* dpi)
     {
-        // Draw widgets.
-        window->draw(dpi);
+        common::draw(window, dpi);
 
         uint32_t company_colour = companymgr::get_player_company_colour();
 
-        if (_widgets[common::widx::road_menu].type != widget_type::none)
+        if (window->widgets[widx::railroad_menu].type != widget_type::none)
         {
-            uint32_t x = _widgets[common::widx::road_menu].left + window->x;
-            uint32_t y = _widgets[common::widx::road_menu].top + window->y;
-            uint32_t fg_image = 0;
-
-            // Figure out what icon to show on the button face.
-            uint8_t ebx = last_road_option;
-            if ((ebx & (1 << 7)) != 0)
-            {
-                ebx = ebx & ~(1 << 7);
-                auto obj = objectmgr::get<road_object>(ebx);
-                fg_image = gfx::recolour(obj->var_0E, company_colour);
-            }
-            else
-            {
-                auto obj = objectmgr::get<track_object>(ebx);
-                fg_image = gfx::recolour(obj->var_1E, company_colour);
-            }
-
-            y--;
-            auto interface = objectmgr::get<interface_skin_object>();
-            uint32_t bg_image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[2]);
-
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, common::widx::road_menu))
-            {
-                y++;
-                bg_image++;
-            }
-
-            gfx::draw_image(dpi, x, y, fg_image);
-
-            y = _widgets[common::widx::road_menu].top + window->y;
-            gfx::draw_image(dpi, x, y, bg_image);
-        }
-
-        if (_widgets[widx::railroad_menu].type != widget_type::none)
-        {
-            uint32_t x = _widgets[widx::railroad_menu].left + window->x;
-            uint32_t y = _widgets[widx::railroad_menu].top + window->y;
+            uint32_t x = window->widgets[widx::railroad_menu].left + window->x;
+            uint32_t y = window->widgets[widx::railroad_menu].top + window->y;
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
@@ -687,13 +599,13 @@ namespace openloco::ui::windows::toolbar_top::game
 
             gfx::draw_image(dpi, x, y, fg_image);
 
-            y = _widgets[widx::railroad_menu].top + window->y;
+            y = window->widgets[widx::railroad_menu].top + window->y;
             gfx::draw_image(dpi, x, y, bg_image);
         }
 
         {
-            uint32_t x = _widgets[common::widx::vehicles_menu].left + window->x;
-            uint32_t y = _widgets[common::widx::vehicles_menu].top + window->y;
+            uint32_t x = window->widgets[common::widx::vehicles_menu].left + window->x;
+            uint32_t y = window->widgets[common::widx::vehicles_menu].top + window->y;
 
             static const uint32_t button_face_image_ids[] = {
                 interface_skin::image_ids::vehicle_train,
@@ -717,13 +629,13 @@ namespace openloco::ui::windows::toolbar_top::game
 
             gfx::draw_image(dpi, x, y, fg_image);
 
-            y = _widgets[common::widx::vehicles_menu].top + window->y;
+            y = window->widgets[common::widx::vehicles_menu].top + window->y;
             gfx::draw_image(dpi, x, y, bg_image);
         }
 
         {
-            uint32_t x = _widgets[common::widx::build_vehicles_menu].left + window->x;
-            uint32_t y = _widgets[common::widx::build_vehicles_menu].top + window->y;
+            uint32_t x = window->widgets[common::widx::build_vehicles_menu].left + window->x;
+            uint32_t y = window->widgets[common::widx::build_vehicles_menu].top + window->y;
 
             static const uint32_t build_vehicle_images[] = {
                 interface_skin::image_ids::toolbar_build_vehicle_train,
@@ -753,104 +665,76 @@ namespace openloco::ui::windows::toolbar_top::game
         if (!audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << common::widx::audio_menu);
-            _widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);
+            window->widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);
         }
         else
         {
             window->activated_widgets &= ~(1 << common::widx::audio_menu);
-            _widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_active, window->colours[0]);
+            window->widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_active, window->colours[0]);
         }
 
         if (last_port_option == 0 && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
             last_port_option = 1;
 
-        _widgets[common::widx::loadsave_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_loadsave, 0);
-        _widgets[common::widx::zoom_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_zoom, 0);
-        _widgets[common::widx::rotate_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_rotate, 0);
-        _widgets[common::widx::view_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_view, 0);
+        window->widgets[common::widx::loadsave_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_loadsave, 0);
+        window->widgets[common::widx::zoom_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_zoom, 0);
+        window->widgets[common::widx::rotate_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_rotate, 0);
+        window->widgets[common::widx::view_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_view, 0);
 
-        _widgets[common::widx::terraform_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_terraform, 0);
-        _widgets[widx::railroad_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
-        _widgets[common::widx::road_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
-        _widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
-        _widgets[common::widx::build_vehicles_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::terraform_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_terraform, 0);
+        window->widgets[widx::railroad_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::road_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::build_vehicles_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
 
-        _widgets[common::widx::vehicles_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
-        _widgets[common::widx::stations_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_stations, 0);
+        window->widgets[common::widx::vehicles_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::stations_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_stations, 0);
 
         if (last_town_option == 0)
-            _widgets[common::widx::towns_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_towns, 0);
+            window->widgets[common::widx::towns_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_towns, 0);
         else
-            _widgets[common::widx::towns_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_industries, 0);
+            window->widgets[common::widx::towns_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_industries, 0);
 
         if (last_port_option == 0)
-            _widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_airports, 0);
+            window->widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_airports, 0);
         else
-            _widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_ports, 0);
+            window->widgets[common::widx::port_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_ports, 0);
 
         if (last_road_option != 0xFF)
-            _widgets[common::widx::road_menu].type = widget_type::wt_7;
+            window->widgets[common::widx::road_menu].type = widget_type::wt_7;
         else
-            _widgets[common::widx::road_menu].type = widget_type::none;
+            window->widgets[common::widx::road_menu].type = widget_type::none;
 
         if (last_railroad_option != 0xFF)
-            _widgets[widx::railroad_menu].type = widget_type::wt_7;
+            window->widgets[widx::railroad_menu].type = widget_type::wt_7;
         else
-            _widgets[widx::railroad_menu].type = widget_type::none;
+            window->widgets[widx::railroad_menu].type = widget_type::none;
 
         if (addr<0x00525FAC, int8_t>() != -1 || addr<0x00525FAD, int8_t>() != -1)
-            _widgets[common::widx::port_menu].type = widget_type::wt_7;
+            window->widgets[common::widx::port_menu].type = widget_type::wt_7;
         else
-            _widgets[common::widx::port_menu].type = widget_type::none;
+            window->widgets[common::widx::port_menu].type = widget_type::none;
 
         uint32_t x = std::max(640, ui::width()) - 1;
-        _widgets[common::widx::towns_menu].right = x;
-        x -= 29;
-        _widgets[common::widx::towns_menu].left = x;
-        x -= 1;
-
-        _widgets[common::widx::stations_menu].right = x;
-        x -= 29;
-        _widgets[common::widx::stations_menu].left = x;
-        x -= 1;
-
-        _widgets[common::widx::vehicles_menu].right = x;
-        x -= 29;
-        _widgets[common::widx::vehicles_menu].left = x;
+        common::rightAlignTabs(window, x, { common::widx::towns_menu, common::widx::stations_menu, common::widx::vehicles_menu });
         x -= 11;
+        common::rightAlignTabs(window, x, { common::widx::build_vehicles_menu });
 
-        _widgets[common::widx::build_vehicles_menu].right = x;
-        x -= 29;
-        _widgets[common::widx::build_vehicles_menu].left = x;
-        x -= 1;
-
-        if (_widgets[common::widx::port_menu].type != widget_type::none)
+        if (window->widgets[common::widx::port_menu].type != widget_type::none)
         {
-            _widgets[common::widx::port_menu].right = x;
-            x -= 29;
-            _widgets[common::widx::port_menu].left = x;
-            x -= 1;
+            common::rightAlignTabs(window, x, { common::widx::port_menu });
         }
 
-        if (_widgets[common::widx::road_menu].type != widget_type::none)
+        if (window->widgets[common::widx::road_menu].type != widget_type::none)
         {
-            _widgets[common::widx::road_menu].right = x;
-            x -= 29;
-            _widgets[common::widx::road_menu].left = x;
-            x -= 1;
+            common::rightAlignTabs(window, x, { common::widx::road_menu });
         }
 
-        if (_widgets[widx::railroad_menu].type != widget_type::none)
+        if (window->widgets[widx::railroad_menu].type != widget_type::none)
         {
-            _widgets[widx::railroad_menu].right = x;
-            x -= 29;
-            _widgets[widx::railroad_menu].left = x;
-            x -= 1;
+            common::rightAlignTabs(window, x, { widx::railroad_menu });
         }
 
-        _widgets[common::widx::terraform_menu].right = x;
-        x -= 29;
-        _widgets[common::widx::terraform_menu].left = x;
-        x -= 1;
+        common::rightAlignTabs(window, x, { common::widx::terraform_menu });
     }
 }

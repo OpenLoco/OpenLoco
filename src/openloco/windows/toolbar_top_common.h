@@ -28,6 +28,8 @@ namespace openloco::ui::windows::toolbar_top::common
         };
     }
 
+    void draw(window* window, gfx::drawpixelinfo_t* dpi);
+
     void zoom_menu_mouse_down(window* window, widget_index widgetIndex);
     void rotate_menu_mouse_down(window* window, widget_index widgetIndex);
     void view_menu_mouse_down(window* window, widget_index widgetIndex);
@@ -43,4 +45,9 @@ namespace openloco::ui::windows::toolbar_top::common
     void towns_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
 
     void on_update(window* window);
+    void on_resize(window* window);
+    void on_mouse_down(window* window, widget_index widgetIndex);
+    void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+
+    void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs);
 }
