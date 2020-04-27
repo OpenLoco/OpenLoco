@@ -2146,12 +2146,6 @@ namespace openloco::ui::options
         controls::init_events();
         misc::init_events();
 
-        // Update config fullscreen resolution if not set
-        auto& cfg = config::get();
-        auto& cfg_new = config::get_new();
-        if (!(cfg_new.display.fullscreen_resolution.width > 0 && cfg_new.display.fullscreen_resolution.height > 0 && cfg.resolution_width > 0 && cfg.resolution_height > 0))
-            updateFullscreenResolutions();
-
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
             WindowType::options,
