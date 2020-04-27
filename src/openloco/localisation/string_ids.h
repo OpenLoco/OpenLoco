@@ -184,6 +184,11 @@ namespace openloco::string_ids
 
     constexpr string_id move_main_view_to_show_this = 355;
 
+    constexpr string_id title_station_name = 383;
+    constexpr string_id prompt_type_new_station_name = 384;
+    constexpr string_id error_cant_rename_station = 385;
+
+    constexpr string_id station_catchment = 395;
     constexpr string_id menu_mute = 396;
     constexpr string_id menu_play_music = 397;
     constexpr string_id player_info_bankrupt = 398;
@@ -527,6 +532,10 @@ namespace openloco::string_ids
     constexpr string_id tooltip_airports = 1203;
     constexpr string_id tooltip_ship_ports = 1204;
 
+    constexpr string_id station_cargo = 1211;
+    constexpr string_id station_cargo_en_route_start = 1212;
+    constexpr string_id station_cargo_en_route_end = 1213;
+
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;
     constexpr string_id build_trucks = 1242;
@@ -588,6 +597,8 @@ namespace openloco::string_ids
     constexpr string_id title_town_population = 1360;
     constexpr string_id title_town_local_authority = 1361;
 
+    constexpr string_id title_station = 1364;
+
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
     constexpr string_id tooltip_town_ratings_each_company = 1388;
@@ -625,6 +636,12 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
     constexpr string_id num_units = 1442;
     constexpr string_id unit_separator = 1443;
+
+    constexpr string_id accepted_cargo_separator = 1445;
+    constexpr string_id cargo_nothing_accepted = 1446;
+    constexpr string_id tooltip_station = 1447;
+    constexpr string_id tooltip_station_cargo = 1448;
+    constexpr string_id tooltip_station_cargo_ratings = 1449;
 
     constexpr string_id tooltip_build_or_move_headquarters = 1453;
     constexpr string_id tooltip_change_owner_name = 1454;

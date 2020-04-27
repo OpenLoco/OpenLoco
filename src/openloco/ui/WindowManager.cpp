@@ -174,8 +174,20 @@ namespace openloco::ui::WindowManager
             0x00499B7E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::town::open(regs.dx);
+                auto window = windows::town::open(regs.dx);
                 regs = backup;
+                regs.esi = (uintptr_t)window;
+
+                return 0;
+            });
+
+        register_hook(
+            0x0048F210,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                auto window = windows::station::open(regs.dx);
+                regs = backup;
+                regs.esi = (uintptr_t)window;
 
                 return 0;
             });

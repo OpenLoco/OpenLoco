@@ -63,6 +63,19 @@ namespace openloco::game_commands
         do_command(19, regs);
     }
 
+    //Change Station name
+    inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = cx;   // station number or 0
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(11, regs);
+    }
+
     inline void do_20()
     {
         registers regs;

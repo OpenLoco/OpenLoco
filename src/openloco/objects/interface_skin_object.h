@@ -77,6 +77,7 @@ namespace openloco
 
         constexpr uint32_t toolbar_menu_airport = 46;
         constexpr uint32_t toolbar_menu_ship_port = 47;
+        constexpr uint32_t tab_cargo_ratings = 48;
 
         constexpr uint32_t tab_colour_scheme_frame0 = 49;
         constexpr uint32_t tab_colour_scheme_frame1 = 50;
@@ -166,7 +167,7 @@ namespace openloco
         constexpr uint32_t toolbar_menu_build_walls = 187;
         constexpr uint32_t phone = 188;
         constexpr uint32_t toolbar_menu_towns = 189;
-
+        constexpr uint32_t toolbar_menu_stations = 190;
         constexpr uint32_t toolbar_menu_industries = 191;
 
         constexpr uint32_t tab_cargo_delivered_frame0 = 198;
