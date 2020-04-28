@@ -1,5 +1,6 @@
 20.03+ (???)
 ------------------------------------------------------------------------
+- Feature: [#77] Add "Exit OpenLoco" to the main menu.
 - Fix: [#264] Option 'Export plug-in objects with saved games' is partially cut off.
 - Fix: [#388] Re-center Options window on scale factor change.
 - Fix: [#396] Preferred owner name is not saved.

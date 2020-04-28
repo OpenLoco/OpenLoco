@@ -120,8 +120,9 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(4, string_ids::options);
         dropdown::add(5, string_ids::menu_screenshot);
         dropdown::add(6, 0);
-        dropdown::add(7, string_ids::menu_quit_game);
-        dropdown::show_below(window, widgetIndex, 8);
+        dropdown::add(7, string_ids::menu_quit_to_menu);
+        dropdown::add(8, string_ids::menu_exit_openloco);
+        dropdown::show_below(window, widgetIndex, 9);
         dropdown::set_highlighted_item(1);
     }
 
@@ -161,6 +162,11 @@ namespace openloco::ui::windows::toolbar_top::game
             case 7:
                 // Return to title screen
                 game_commands::do_21(0, 1);
+                break;
+
+            case 8:
+                // Exit to desktop
+                game_commands::do_21(0, 2);
                 break;
         }
     }
