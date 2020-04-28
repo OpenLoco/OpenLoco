@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../compat.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
