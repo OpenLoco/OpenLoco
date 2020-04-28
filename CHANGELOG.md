@@ -6,6 +6,7 @@
 - Fix: [#396] Preferred owner name is not saved.
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
+- Fix: [#428] Show an error when a vehicle can't be built due to invalid properties. (Original bug.)
 - Fix: [#430] Null-chars added when manually specifying Locomotion directory, preventing launch.
 - Fix: [#440] Final segment in town population graphs could show no population.
 - Change: [#420] Disable window scale factor buttons when not applicable.
