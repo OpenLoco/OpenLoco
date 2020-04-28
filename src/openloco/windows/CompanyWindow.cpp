@@ -442,7 +442,7 @@ namespace openloco::ui::windows::CompanyWindow
             auto& widget = self->widgets[widx::viewport];
             auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
             auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
-            if (view.hasUnkFlag16())
+            if (view.isThingView())
             {
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
             }
@@ -477,6 +477,16 @@ namespace openloco::ui::windows::CompanyWindow
                 vpFlags |= viewport_flags::gridlines_on_landscape;
             }
             sub_434223(self, view, vpFlags);
+        }
+
+        static void invalidViewport(window* const self)
+        {
+            if (self->viewports[0] != nullptr)
+            {
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+                self->invalidate();
+            }
         }
 
         // 0x004327C8
@@ -520,17 +530,14 @@ namespace openloco::ui::windows::CompanyWindow
                         return;
                     }
 
-                    if (self->saved_view.hasUnkFlag16() || self->saved_view.rotation != view.rotation || self->saved_view.zoomLevel != view.zoomLevel)
+                    if (self->saved_view.isThingView() || self->saved_view.rotation != view.rotation || self->saved_view.zoomLevel != view.zoomLevel)
                     {
                         if (self->saved_view != view)
                         {
                             differentViewportSettings(self, view);
                             return;
                         }
-                        else
-                        {
-                            return;
-                        }
+                        return;
                     }
 
                     self->saved_view = view;
@@ -540,14 +547,7 @@ namespace openloco::ui::windows::CompanyWindow
                 // Not observing anything at all?
                 else
                 {
-                    // loc_434247
-                    if (self->viewports[0] != nullptr)
-                    {
-                        self->viewports[0]->width = 0;
-                        self->viewports[0] = nullptr;
-                        self->invalidate();
-                    }
-                    return;
+                    invalidViewport(self);
                 }
             }
             else
@@ -557,12 +557,7 @@ namespace openloco::ui::windows::CompanyWindow
 
                 if (thing->base_type != thing_base_type::vehicle || thing->type != vehicle_thing_type::vehicle_0 || (thing->x == location::null))
                 {
-                    if (self->viewports[0] != nullptr)
-                    {
-                        self->viewports[0]->width = 0;
-                        self->viewports[0] = nullptr;
-                        self->invalidate();
-                    }
+                    invalidViewport(self);
                     return;
                 }
 

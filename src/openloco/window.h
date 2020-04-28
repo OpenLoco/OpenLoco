@@ -285,14 +285,14 @@ namespace openloco::ui
             return (flags & (1 << 14)) != 0;
         }
 
-        bool hasUnkFlag16() const
+        bool isThingView() const
         {
             return (flags & (1 << 15)) != 0;
         }
 
         openloco::map::map_pos3 getPos() const
         {
-            if (hasUnkFlag16())
+            if (isThingView())
                 return {};
             return { mapX, mapY & 0x3FFF, surfaceZ };
         }
