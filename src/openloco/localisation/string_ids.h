@@ -906,4 +906,7 @@ namespace openloco::string_ids
     constexpr string_id zoom_to_cursor_tip = 2137;
 
     constexpr string_id play_title_music = 2138;
+
+    constexpr string_id menu_quit_to_menu = 2139;
+    constexpr string_id menu_exit_openloco = 2140;
 }
