@@ -461,6 +461,8 @@ namespace openloco::ui::windows::town
                 // Draw population graph
                 uint16_t yPos1 = -town->history[i] + (self->height - 57);
                 uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
+
+                // Do not draw current segment yet; it may be zeroed.
                 if (i < town->history_size - 1)
                     gfx::draw_line(clipped, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
 

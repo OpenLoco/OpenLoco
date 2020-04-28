@@ -6,6 +6,7 @@
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
 - Fix: [#430] Null-chars added when manually specifying Locomotion directory, preventing launch.
+- Fix: [#440] Final segment in town population graphs could show no population.
 - Change: [#420] Disable window scale factor buttons when not applicable.
 
 20.03 (2020-03-23)
