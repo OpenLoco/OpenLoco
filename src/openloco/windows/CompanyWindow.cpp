@@ -422,9 +422,71 @@ namespace openloco::ui::windows::CompanyWindow
             self->call_viewport_rotate();
         }
 
+        static void viewport_centre_on_tile(loc16 loc, window* self)
+        {
+            registers regs;
+            regs.ax = loc.x;
+            regs.cx = loc.y;
+            regs.dx = loc.z;
+            regs.esi = (int32_t)self;
+            call(0x004C6827, regs);
+        }
+
+        static void sub_434336(window* self, const SavedView& view)
+        {
+            if (self->viewports[0] != nullptr)
+            {
+                return;
+            }
+
+            auto& widget = self->widgets[widx::viewport];
+            auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+            if (view.hasUnkFlag16())
+            {
+                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
+            }
+            else
+            {
+                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
+            }
+        }
+
+        static void sub_434223(window* const self, const SavedView& view, const uint16_t vpFlags)
+        {
+            self->saved_view = view;
+            sub_434336(self, view);
+            self->viewports[0]->flags |= vpFlags;
+            self->invalidate();
+        }
+
+        static void differentViewportSettings(window* const self, const SavedView& view)
+        {
+            auto vpFlags = self->viewports[0]->flags;
+            self->viewports[0]->width = 0;
+            self->viewports[0] = nullptr;
+            viewportmgr::collectGarbage();
+            sub_434223(self, view, vpFlags);
+        }
+
+        static void noViewportPresent(window* const self, const SavedView& view)
+        {
+            uint16_t vpFlags = 0;
+            if (config::get().flags && config::flags::gridlines_on_landscape)
+            {
+                vpFlags |= viewport_flags::gridlines_on_landscape;
+            }
+            sub_434223(self, view, vpFlags);
+        }
+
         // 0x004327C8
         static void viewport_rotate(window* self)
         {
+            if (self->current_tab != 0)
+            {
+                return;
+            }
+
             self->call_prepare_draw();
 
             const auto& company = companymgr::get(self->number);
@@ -434,40 +496,46 @@ namespace openloco::ui::windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    coord_t tileZ = openloco::map::tile_element_height(company->observation_x, company->observation_y) & 0xFFFF;
-                    // if ((tileZ & 0xFFFF0000) == 0)
-                    //     tileZ >>= 16;
+                    auto tileZAndWater = openloco::map::tile_element_height(company->observation_x, company->observation_y);
+                    coord_t tileZ = tileZAndWater & 0xFFFF;
+                    coord_t waterZ = tileZAndWater >> 16;
+                    if (waterZ != 0)
+                    {
+                        tileZ = waterZ;
+                    }
 
                     // loc_43410A
                     int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                     SavedView view(
                         company->observation_x,
                         company->observation_y,
-                        ZoomLevel::quarter,
+                        ZoomLevel::half,
                         rotation,
-                        static_cast<int16_t>(tileZ));
+                        static_cast<int16_t>(tileZ + 16));
+                    view.flags |= (1 << 14);
 
-                    if (self->viewports[0] == nullptr || self->saved_view.hasUnkFlag15())
+                    if (self->viewports[0] == nullptr)
                     {
-                        self->saved_view = view;
+                        noViewportPresent(self, view);
+                        return;
+                    }
 
-                        // sub_434336
+                    if (self->saved_view.hasUnkFlag16() || self->saved_view.rotation != view.rotation || self->saved_view.zoomLevel != view.zoomLevel)
+                    {
+                        if (self->saved_view != view)
                         {
-                            auto& widget = self->widgets[widx::viewport];
-                            auto tile = openloco::map::map_pos3({ company->observation_x, company->observation_y, tileZ });
-                            auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
-                            auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
-                            viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                            differentViewportSettings(self, view);
+                            return;
+                        }
+                        else
+                        {
+                            return;
                         }
                     }
 
-                    // Centre viewport on tile.
-                    registers regs;
-                    regs.ax = self->saved_view.mapX;
-                    regs.cx = self->saved_view.mapY & 0x3FFF;
-                    regs.dx = self->saved_view.surfaceZ;
-                    regs.esi = (int32_t)self;
-                    call(0x004C6827, regs);
+                    self->saved_view = view;
+                    viewport_centre_on_tile({ company->observation_x, company->observation_y, tileZ + 16 }, self);
+                    return;
                 }
                 // Not observing anything at all?
                 else
@@ -487,7 +555,7 @@ namespace openloco::ui::windows::CompanyWindow
                 // loc_434170
                 auto thing = thingmgr::get<openloco::vehicle>(company->observation_thing);
 
-                if (thing->base_type != thing_base_type::vehicle || thing->type != vehicle_thing_type::vehicle_0 || (thing->x & (1 << 15)) == 0)
+                if (thing->base_type != thing_base_type::vehicle || thing->type != vehicle_thing_type::vehicle_0 || (thing->x == location::null))
                 {
                     if (self->viewports[0] != nullptr)
                     {
@@ -511,25 +579,15 @@ namespace openloco::ui::windows::CompanyWindow
 
                 if (self->viewports[0] == nullptr)
                 {
-                    self->saved_view = view;
-
-                    // sub_434336
-                    {
-                        auto& widget = self->widgets[widx::viewport];
-                        auto thingId = self->saved_view.thingId;
-                        auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
-                        auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
-                        viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, thingId);
-                    }
+                    noViewportPresent(self, view);
+                    return;
                 }
 
-                // Centre viewport on tile.
-                registers regs;
-                regs.ax = self->saved_view.mapX;
-                regs.cx = self->saved_view.mapY & 0x3FFF;
-                regs.dx = self->saved_view.surfaceZ;
-                regs.esi = (int32_t)self;
-                call(0x004C6827, regs);
+                if (self->saved_view != view)
+                {
+                    differentViewportSettings(self, view);
+                    return;
+                }
             }
 
             // We're skipping the tab check and dive straight into the business to avoid a prepare_draw call.

@@ -5,6 +5,7 @@
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include "types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
@@ -274,19 +275,26 @@ namespace openloco::ui
             , rotation(rotation)
             , surfaceZ(surfaceZ){};
 
-        bool isEmpty()
+        bool isEmpty() const
         {
             return mapX == -1 && mapY == -1;
         }
 
-        bool hasUnkFlag15()
+        bool hasUnkFlag15() const
         {
             return (flags & (1 << 14)) != 0;
         }
 
-        bool hasUnkFlag16()
+        bool hasUnkFlag16() const
         {
             return (flags & (1 << 15)) != 0;
+        }
+
+        openloco::map::map_pos3 getPos() const
+        {
+            if (hasUnkFlag16())
+                return {};
+            return { mapX, mapY & 0x3FFF, surfaceZ };
         }
 
         void clear()
@@ -295,9 +303,14 @@ namespace openloco::ui
             mapY = -1;
         }
 
-        bool operator==(const SavedView& rhs)
+        bool operator==(const SavedView& rhs) const
         {
             return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
+        }
+
+        bool operator!=(const SavedView& rhs) const
+        {
+            return !(*this == rhs);
         }
     };
 
