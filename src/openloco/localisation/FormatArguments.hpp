@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../compat.h"
 #include "../interop/interop.hpp"
 
 using namespace openloco::interop;

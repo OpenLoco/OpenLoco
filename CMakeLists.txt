@@ -297,12 +297,6 @@ if (APPLE)
         SOURCE ${BUNDLE_LANGUAGES}
         PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
     )
-
-    try_compile(SUPPORT_STD_BYTE ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/std_byte.cpp CXX_STANDARD 17)
-    if (NOT SUPPORT_STD_BYTE)
-        message(STATUS "std::byte is not supported.")
-        target_compile_definitions(${PROJECT} PRIVATE COMPAT_STD_BYTE=1)
-    endif ()
 endif ()
 
 # Add headers check to verify all headers carry their dependencies.
