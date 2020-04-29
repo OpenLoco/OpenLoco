@@ -87,6 +87,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void switchCompany(window* self, int16_t itemIndex);
         static void switchTab(window* self, widget_index widgetIndex);
         static void switchTabWidgets(window* self);
+        static void drawCompanySelect(const window* const self, gfx::drawpixelinfo_t* const dpi);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void repositionTabs(window* self);
     }
@@ -182,17 +183,9 @@ namespace openloco::ui::windows::CompanyWindow
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
-
+            common::drawCompanySelect(self, dpi);
             const auto company = companymgr::get(self->number);
             const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
-
-            // Draw company owner face on dropdown.
-            {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
-                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
-                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
-                gfx::draw_image(dpi, x, y, image);
-            }
 
             // Draw 'owner' label
             {
@@ -741,10 +734,20 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432919
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00432919, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+            common::drawCompanySelect(self, dpi);
+
+            auto company = companymgr::get(self->number);
+            auto x = self->x + 3;
+            auto y = self->y + 48;
+            FormatArguments args{};
+            args.push(company->startedDate);
+            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+            //registers regs;
+            //regs.edi = (int32_t)dpi;
+            //regs.esi = (int32_t)self;
+            //call(0x00432919, regs);
         }
 
         // 0x00432BDD
@@ -1040,17 +1043,7 @@ namespace openloco::ui::windows::CompanyWindow
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
-
-            const auto company = companymgr::get(self->number);
-            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
-
-            // Draw company owner face on dropdown.
-            {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
-                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
-                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
-                gfx::draw_image(dpi, x, y, image);
-            }
+            common::drawCompanySelect(self, dpi);
 
             const auto& widget = self->widgets[widx::main_colour_scheme];
             const uint16_t x = self->x + 6;
@@ -1340,17 +1333,9 @@ namespace openloco::ui::windows::CompanyWindow
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
+            common::drawCompanySelect(self, dpi);
 
             const auto company = companymgr::get(self->number);
-            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
-
-            // Draw company owner face on dropdown.
-            {
-                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
-                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
-                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
-                gfx::draw_image(dpi, x, y, image);
-            }
 
             // Draw 'expenditure/income' label
             {
@@ -2238,6 +2223,18 @@ namespace openloco::ui::windows::CompanyWindow
             game_commands::do_30(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
             game_commands::do_30(1, 0, 2, buffer[3], buffer[4], buffer[5]);
             game_commands::do_30(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+        }
+
+        static void drawCompanySelect(const window* const self, gfx::drawpixelinfo_t* const dpi)
+        {
+            const auto company = companymgr::get(self->number);
+            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+
+            // Draw company owner face.
+            const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+            const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
+            const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
+            gfx::draw_image(dpi, x, y, image);
         }
 
         // 0x00434413

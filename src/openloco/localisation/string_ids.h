@@ -677,6 +677,7 @@ namespace openloco::string_ids
 
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
+    constexpr string_id company_details_started = 1556;
 
     constexpr string_id owner_label = 1560;
 

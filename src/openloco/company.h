@@ -55,7 +55,8 @@ namespace openloco
         uint8_t pad_52[0x57 - 0x52];
         uint8_t numExpenditureMonths;                                                  // 0x57
         currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
-        uint8_t pad_498[0x88CE - 0x498];
+        uint32_t startedDate;                                                          // 0x0498
+        uint8_t pad_49C[0x88CE - 0x49C];
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
         currency48_t vehicleProfit; // 0x8B9E
