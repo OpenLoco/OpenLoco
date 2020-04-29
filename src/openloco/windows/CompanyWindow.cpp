@@ -415,16 +415,6 @@ namespace openloco::ui::windows::CompanyWindow
             self->call_viewport_rotate();
         }
 
-        static void viewport_centre_on_tile(loc16 loc, window* self)
-        {
-            registers regs;
-            regs.ax = loc.x;
-            regs.cx = loc.y;
-            regs.dx = loc.z;
-            regs.esi = (int32_t)self;
-            call(0x004C6827, regs);
-        }
-
         static void sub_434336(window* self, const SavedView& view)
         {
             if (self->viewports[0] != nullptr)
@@ -534,7 +524,7 @@ namespace openloco::ui::windows::CompanyWindow
                     }
 
                     self->saved_view = view;
-                    viewport_centre_on_tile({ company->observation_x, company->observation_y, tileZ + 16 }, self);
+                    self->viewport_centre_on_tile({ company->observation_x, company->observation_y, static_cast<coord_t>(tileZ + 16) });
                     return;
                 }
                 // Not observing anything at all?

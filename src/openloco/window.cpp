@@ -489,6 +489,16 @@ namespace openloco::ui
         *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
     }
 
+    void window::viewport_centre_on_tile(loc16 loc)
+    {
+        registers regs;
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.dx = loc.z;
+        regs.esi = (int32_t)this;
+        call(0x004C6827, regs);
+    }
+
     void window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.
