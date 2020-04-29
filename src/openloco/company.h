@@ -27,6 +27,22 @@ namespace openloco
         bankrupt = (1 << 9),                     // 0x200
     };
 
+    enum class CorporateRating
+    {
+        platelayer,           // 0 - 9.9%
+        engineer,             // 10 - 19.9%
+        trafficManager,       // 20 - 29.9%
+        transportCoordinator, // 30 - 39.9%
+        routeSupervisor,      // 40 - 49.9%
+        director,             // 50 - 59.9%
+        chiefExecutive,       // 60 - 69.9%
+        chairman,             // 70 - 79.9%
+        president,            // 80 - 89.9%
+        tycoon                // 90 - 100%
+    };
+
+    void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
+
     constexpr size_t expenditureHistoryCapacity = 16;
 
     struct ColourScheme

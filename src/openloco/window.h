@@ -294,7 +294,8 @@ namespace openloco::ui
         {
             if (isThingView())
                 return {};
-            return { mapX, mapY & 0x3FFF, surfaceZ };
+
+            return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };
         }
 
         void clear()

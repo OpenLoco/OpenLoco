@@ -739,11 +739,21 @@ namespace openloco::ui::windows::CompanyWindow
             common::drawCompanySelect(self, dpi);
 
             auto company = companymgr::get(self->number);
-            auto x = self->x + 3;
-            auto y = self->y + 48;
-            FormatArguments args{};
-            args.push(company->startedDate);
-            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+            {
+
+                auto x = self->x + 3;
+                auto y = self->y + 48;
+                FormatArguments args{};
+                args.push(company->startedDate);
+                gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+            }
+
+            {
+
+                FormatArguments args{};
+                formatPerformanceIndex(company->performance_index, args);
+                string_id formatId = 1557;
+            }
             //registers regs;
             //regs.edi = (int32_t)dpi;
             //regs.esi = (int32_t)self;

@@ -1,8 +1,10 @@
 #include "company.h"
 #include "interop/interop.hpp"
+#include "localisation/FormatArguments.hpp"
 #include "localisation/string_ids.h"
 #include <algorithm>
 #include <array>
+#include <map>
 
 using namespace openloco::interop;
 
@@ -37,5 +39,41 @@ namespace openloco
         registers regs;
         regs.esi = (int32_t)this;
         call(0x00430762, regs);
+    }
+
+    // Converts performance index to rating
+    // 0x437D60
+    constexpr CorporateRating performanceToRating(int16_t performanceIndex)
+    {
+        return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
+    }
+
+    static std::map<CorporateRating, string_id> _ratingNames = {
+        { CorporateRating::platelayer, string_ids::corporate_rating_platelayer },
+        { CorporateRating::engineer, string_ids::corporate_rating_engineer },
+        { CorporateRating::trafficManager, string_ids::corporate_rating_traffic_manager },
+        { CorporateRating::transportCoordinator, string_ids::corporate_rating_transport_coordinator },
+        { CorporateRating::routeSupervisor, string_ids::corporate_rating_route_supervisor },
+        { CorporateRating::director, string_ids::corporate_rating_director },
+        { CorporateRating::chiefExecutive, string_ids::corporate_rating_chief_executive },
+        { CorporateRating::chairman, string_ids::corporate_rating_chairman },
+        { CorporateRating::president, string_ids::corporate_rating_president },
+        { CorporateRating::tycoon, string_ids::corporate_rating_tycoon },
+    };
+
+    static string_id getCorporateRatingAsStringId(CorporateRating rating)
+    {
+        auto it = _ratingNames.find(rating);
+        if (it != _ratingNames.end())
+        {
+            return it->second;
+        }
+        return string_ids::corporate_rating_platelayer;
+    }
+
+    void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args)
+    {
+        args.push(performanceIndex);
+        args.push(getCorporateRatingAsStringId(performanceToRating(performanceIndex)));
     }
 }

@@ -42,20 +42,6 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static void performanceIndexTooltip(FormatArguments& args);
     static void companyValueMouseUp();
 
-    enum class CorporateRating
-    {
-        platelayer,           // 0 – 9.9%
-        engineer,             // 10 – 19.9%
-        trafficManager,       // 20 – 29.9%
-        transportCoordinator, // 30 – 39.9%
-        routeSupervisor,      // 40 – 49.9%
-        director,             // 50 – 59.9%
-        chiefExecutive,       // 60 – 69.9%
-        chairman,             // 70 – 79.9%
-        president,            // 80 – 89.9%
-        tycoon                // 90 – 100%
-    };
-
     // 0x00509d08
     static widget_t _widgets[] = {
         make_widget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
@@ -64,19 +50,6 @@ namespace openloco::ui::windows::PlayerInfoPanel
         make_widget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
         make_widget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
         widget_end(),
-    };
-
-    static std::map<CorporateRating, string_id> _ratingNames = {
-        { CorporateRating::platelayer, string_ids::corporate_rating_platelayer },
-        { CorporateRating::engineer, string_ids::corporate_rating_engineer },
-        { CorporateRating::trafficManager, string_ids::corporate_rating_traffic_manager },
-        { CorporateRating::transportCoordinator, string_ids::corporate_rating_transport_coordinator },
-        { CorporateRating::routeSupervisor, string_ids::corporate_rating_route_supervisor },
-        { CorporateRating::director, string_ids::corporate_rating_director },
-        { CorporateRating::chiefExecutive, string_ids::corporate_rating_chief_executive },
-        { CorporateRating::chairman, string_ids::corporate_rating_chairman },
-        { CorporateRating::president, string_ids::corporate_rating_president },
-        { CorporateRating::tycoon, string_ids::corporate_rating_tycoon },
     };
 
     static window_event_list _events;
@@ -96,7 +69,6 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static ui::cursor_id on_cursor(ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
     static void on_update(window* w);
-    static CorporateRating performanceToRating(int16_t ax);
 
     // 0x43AA4C
     static void playerMouseDown(ui::window* self, widget_index widgetIndex)
@@ -141,15 +113,13 @@ namespace openloco::ui::windows::PlayerInfoPanel
         for (auto company : _sortedCompanies)
         {
             auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
-            auto rating = performanceToRating(company->performance_index);
 
             auto args = FormatArguments();
             args.push(positionArray[index]);
             args.push(gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary));
             args.push(company->name);
             args.push<uint16_t>(0); // Needed after a user string id
-            args.push(company->performance_index);
-            args.push(_ratingNames[rating]);
+            formatPerformanceIndex(company->performance_index, args);
 
             dropdown::add(index, string_ids::dropdown_company_performance, args);
 
@@ -387,22 +357,12 @@ namespace openloco::ui::windows::PlayerInfoPanel
         args.push(playerCompany->vehicleProfit);
     }
 
-    // Converts performance index to rating
-    // 0x437D60
-    static CorporateRating performanceToRating(int16_t performanceIndex)
-    {
-        return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
-    }
-
     // 0x439643
     static void performanceIndexTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
 
-        args.push(playerCompany->performance_index);
-
-        auto rating = performanceToRating(playerCompany->performance_index);
-        args.push(_ratingNames[rating]);
+        formatPerformanceIndex(playerCompany->performance_index, args);
     }
 
     // 0x00439670
