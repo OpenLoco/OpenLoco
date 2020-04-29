@@ -246,6 +246,9 @@ namespace openloco::string_ids
     constexpr string_id currency48 = 607;
     constexpr string_id company_current_loan = 608;
     constexpr string_id company_current_loan_value = 609;
+    constexpr string_id cant_borrow_any_more_money = 610;
+    constexpr string_id not_enough_cash_available = 611;
+    constexpr string_id cant_pay_back_loan = 612;
 
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;

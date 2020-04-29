@@ -31,6 +31,15 @@ namespace openloco::game_commands
         return (uint32_t)regs.ebx != 0x80000000;
     }
 
+    // Change loan
+    inline void do_9(currency32_t newLoan)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.edx = newLoan;
+        do_command(9, regs);
+    }
+
     // Change company colour scheme
     inline void do_19(int8_t ah, int8_t al, uint8_t ax, int8_t cl, int8_t dh, int8_t dl)
     {

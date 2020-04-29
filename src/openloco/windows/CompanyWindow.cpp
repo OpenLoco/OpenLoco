@@ -1619,6 +1619,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043383E
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
+            static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
+
             switch (widgetIndex)
             {
                 case common::widx::company_select:
@@ -1627,19 +1629,37 @@ namespace openloco::ui::windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    registers regs;
-                    regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    call(0x0043393A, regs);
+                    currency32_t newLoan = companymgr::get(self->number)->current_loan;
+                    if (newLoan == 0)
+                        return;
+
+                    currency32_t stepSize{};
+                    if (*_clickRepeatTicks < 100)
+                        stepSize = 1000;
+                    else if (*_clickRepeatTicks >= 100)
+                        stepSize = 10000;
+                    else if (*_clickRepeatTicks >= 200)
+                        stepSize = 100000;
+
+                    newLoan -= stepSize;
+                    addr<0x009C68E8, string_id>() = string_ids::cant_pay_back_loan;
+                    game_commands::do_9(newLoan);
                     break;
                 }
 
                 case widx::loan_increase:
                 {
-                    registers regs;
-                    regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    call(0x004338EB, regs);
+                    currency32_t stepSize{};
+                    if (*_clickRepeatTicks < 100)
+                        stepSize = 1000;
+                    else if (*_clickRepeatTicks >= 100)
+                        stepSize = 10000;
+                    else if (*_clickRepeatTicks >= 200)
+                        stepSize = 100000;
+
+                    currency32_t newLoan = companymgr::get(self->number)->current_loan + stepSize;
+                    addr<0x009C68E8, string_id>() = string_ids::cant_borrow_any_more_money;
+                    game_commands::do_9(newLoan);
                     break;
                 }
             }
