@@ -8,6 +8,7 @@
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../map/tile.h"
+#include "../map/tilemgr.h"
 #include "../multiplayer.h"
 #include "../stationmgr.h"
 #include "../things/thingmgr.h"
@@ -113,6 +114,16 @@ namespace openloco::ui::WindowManager
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
                 callViewportRotateEventOnAllWindows();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004610F2,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                map::tilemgr::map_invalidate_selection_rect();
                 regs = backup;
 
                 return 0;
