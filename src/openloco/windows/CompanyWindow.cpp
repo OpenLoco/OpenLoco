@@ -286,20 +286,23 @@ namespace openloco::ui::windows::CompanyWindow
                         break;
 
                     // Centre viewport on tile/thing.
-                    // TODO(avgeffen): move/implement.
-                    registers regs;
-                    regs.esi = (int32_t)self;
-                    call(0x004324DC, regs);
+                    auto main = WindowManager::getMainWindow();
+                    if (self->saved_view.isThingView())
+                    {
+                        auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
+                        main->viewport_centre_on_tile({ thing->x, thing->y, thing->z });
+                    }
+                    else
+                    {
+                        auto mapY = static_cast<coord_t>(self->saved_view.mapY & 0x3FFF);
+                        main->viewport_centre_on_tile({ self->saved_view.mapX, mapY, self->saved_view.surfaceZ });
+                    }
                     break;
                 }
 
                 case widx::face:
                 {
-                    // Open face selection window
-                    // TODO(avgeffen): move/implement.
-                    registers regs;
-                    regs.eax = self->number;
-                    call(0x00434F52, regs);
+                    CompanyFaceSelection::open(self->number);
                     break;
                 }
 

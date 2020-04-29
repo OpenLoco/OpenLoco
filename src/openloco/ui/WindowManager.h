@@ -232,6 +232,11 @@ namespace openloco::ui::MessageWindow
     void open();
 }
 
+namespace openloco::ui::windows::CompanyFaceSelection
+{
+    void open(company_id_t id);
+}
+
 namespace openloco::ui::windows::CompanyList
 {
     void openPerformanceIndexes();
