@@ -1016,7 +1016,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(tuples)); i++)
             {
-                if ((company->customVehicleColoursSet & (1 << i)) != 0)
+                // customVehicleColoursSet appears to reserve its first bit for something else, so skip it.
+                if ((company->customVehicleColoursSet & (1 << (i + 1))) != 0)
                 {
                     self->activated_widgets |= (1ULL << tuples[i].checkbox);
 
@@ -1102,8 +1103,9 @@ namespace openloco::ui::windows::CompanyWindow
                 case widx::check_trucks:
                 case widx::check_aircraft:
                 case widx::check_ships:
+                    // customVehicleColoursSet appears to reserve its first bit for something else, so skip it.
+                    const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
                     const auto company = companymgr::get(self->number);
-                    const auto vehicleType = widgetIndex - widx::check_steam_locomotives;
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
                     addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
