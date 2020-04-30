@@ -693,6 +693,10 @@ namespace openloco::ui::windows::CompanyWindow
             // Set company name.
             auto company = companymgr::get(self->number);
             *_common_format_args = company->name;
+            auto companyColour = companymgr::get_company_colour(self->number);
+            auto skin = objectmgr::get<interface_skin_object>();
+            uint32_t image = skin->img + interface_skin::image_ids::build_headquarters;
+            self->widgets[widx::build_hq].image = gfx::recolour(image, companyColour) | (1 << 30);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -724,6 +728,59 @@ namespace openloco::ui::windows::CompanyWindow
             common::repositionTabs(self);
         }
 
+        static std::array<string_id, 10> aiRatingToLevelArray = {
+            string_ids::low,
+            string_ids::low,
+            string_ids::low,
+            string_ids::low,
+            string_ids::medium,
+            string_ids::medium,
+            string_ids::medium,
+            string_ids::high,
+            string_ids::high,
+            string_ids::high,
+        };
+
+        constexpr string_id aiRatingToLevel(const uint8_t rating)
+        {
+            return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
+        }
+
+        static void drawAIdetails(gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const openloco::company& company)
+        {
+            const auto competitor = objectmgr::get<competitor_object>(company.competitor_id);
+            {
+                FormatArguments args{};
+                args.push<uint16_t>(competitor->intelligence);
+                args.push(aiRatingToLevel(competitor->intelligence));
+                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_intelligence, &args);
+                y += 10;
+            }
+            {
+                FormatArguments args{};
+                args.push<uint16_t>(competitor->agressiveness);
+                args.push(aiRatingToLevel(competitor->agressiveness));
+                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
+                y += 10;
+            }
+            {
+                FormatArguments args{};
+                args.push<uint16_t>(competitor->competitiveness);
+                args.push(aiRatingToLevel(competitor->competitiveness));
+                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_competitiveness, &args);
+                y += 10;
+            }
+        }
+
+        static std::array<string_id, 6> transportTypeCountString = {
+            string_ids::company_details_trains_count,
+            string_ids::company_details_buses_count,
+            string_ids::company_details_trucks_count,
+            string_ids::company_details_trams_count,
+            string_ids::company_details_aircraft_count,
+            string_ids::company_details_ships_count,
+        };
+
         // 0x00432919
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
@@ -732,25 +789,81 @@ namespace openloco::ui::windows::CompanyWindow
             common::drawCompanySelect(self, dpi);
 
             auto company = companymgr::get(self->number);
+            auto x = self->x + 3;
+            auto y = self->y + 48;
             {
-
-                auto x = self->x + 3;
-                auto y = self->y + 48;
                 FormatArguments args{};
                 args.push(company->startedDate);
                 gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+                y += 10;
             }
 
             {
-
                 FormatArguments args{};
                 formatPerformanceIndex(company->performance_index, args);
-                string_id formatId = 1557;
+
+                string_id formatId = string_ids::company_details_performance;
+                if (company->challenge_flags & company_flags::decreased_performance)
+                {
+                    formatId = string_ids::company_details_performance_decreasing;
+                }
+                else if (company->challenge_flags & company_flags::increased_performance)
+                {
+                    formatId = string_ids::company_details_performance_increasing;
+                }
+                gfx::draw_string_494B3F(*dpi, x, y, colour::black, formatId, &args);
+                y += 25;
             }
-            //registers regs;
-            //regs.edi = (int32_t)dpi;
-            //regs.esi = (int32_t)self;
-            //call(0x00432919, regs);
+
+            {
+                FormatArguments args{};
+                args.push(company->owner_name);
+                gfx::draw_string_494BBF(*dpi, x, y, 213, colour::black, string_ids::owner_label, &args);
+                y += 10;
+            }
+
+            if (!is_player_company(self->number))
+            {
+                drawAIdetails(*dpi, x + 5, y, *company);
+            }
+            y += 5;
+
+            {
+                for (auto i = 0; i < 6; ++i)
+                {
+                    auto count = company->transportTypeCount[i];
+                    if (count != 0)
+                    {
+                        FormatArguments args{};
+                        args.push(count);
+                        gfx::draw_string_494B3F(*dpi, x, y, colour::black, transportTypeCountString[i], &args);
+                        y += 10;
+                    }
+                }
+            }
+
+            {
+                x = self->x + (self->widgets[widx::viewport].left + self->widgets[widx::viewport].right) / 2;
+                y = self->y + self->widgets[widx::viewport].top - 12;
+                gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::headquarters);
+            }
+
+            if (company->var_257A == -1)
+            {
+                auto width = self->widgets[widx::viewport].width();
+                gfx::point_t loc = {
+                    self->x + self->widgets[widx::viewport].left + width / 2,
+                    self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5
+                };
+                width -= 2;
+                gfx::draw_string_centred_wrapped(dpi, &loc, width, colour::black, string_ids::not_yet_constructed);
+            }
+
+            if (self->viewports[0] != nullptr)
+            {
+                self->drawViewports(dpi);
+                widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            }
         }
 
         // 0x00432BDD

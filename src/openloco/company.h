@@ -72,11 +72,13 @@ namespace openloco
         uint8_t numExpenditureMonths;                                                  // 0x57
         currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                          // 0x0498
-        uint8_t pad_49C[0x88CE - 0x49C];
+        uint8_t pad_49C[0x257A - 0x49C];
+        int16_t var_257A; // headquarter related
+        uint8_t pad_257C[0x88CE - 0x257C];
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
-        currency48_t vehicleProfit; // 0x8B9E
-        uint8_t pad_8BA4[0x8BB0 - 0x8BA4];
+        currency48_t vehicleProfit;     // 0x8B9E
+        uint16_t transportTypeCount[6]; // 0x8BA4
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8BBC - 0x8BB9];
         thing_id_t observation_thing; // 0x_8BBC;

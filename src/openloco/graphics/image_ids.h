@@ -18,6 +18,9 @@ namespace openloco::image_ids
 
     constexpr uint32_t close_button = 2321;
 
+    constexpr uint32_t inline_green_up_arrow = 2324;
+    constexpr uint32_t inline_red_down_arrow = 2325;
+
     constexpr uint32_t rubbish_bin = 2363;
     constexpr uint32_t centre_viewport = 2364;
 

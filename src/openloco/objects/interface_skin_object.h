@@ -271,6 +271,7 @@ namespace openloco
         constexpr uint32_t build_vehicle_ship_frame_14 = 345;
         constexpr uint32_t build_vehicle_ship_frame_15 = 346;
 
+        constexpr uint32_t build_headquarters = 417;
         constexpr uint32_t vehicle_train = 418;
 
         constexpr uint32_t vehicle_aircraft = 426;

@@ -307,6 +307,13 @@ namespace openloco::string_ids
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
 
+    constexpr string_id company_details_trains_count = 689;
+    constexpr string_id company_details_buses_count = 690;
+    constexpr string_id company_details_trucks_count = 691;
+    constexpr string_id company_details_trams_count = 692;
+    constexpr string_id company_details_aircraft_count = 693;
+    constexpr string_id company_details_ships_count = 694;
+
     constexpr string_id challenge_failed = 695;
     constexpr string_id challenge_completed = 696;
     constexpr string_id tooltip_performance_index = 697;
@@ -571,6 +578,7 @@ namespace openloco::string_ids
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
 
+    constexpr string_id headquarters = 1354;
     constexpr string_id window_owner = 1355;
     constexpr string_id interest_per_year = 1356;
 
@@ -681,8 +689,16 @@ namespace openloco::string_ids
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
     constexpr string_id company_details_started = 1556;
-
+    constexpr string_id company_details_performance = 1557;
+    constexpr string_id company_details_performance_decreasing = 1558;
+    constexpr string_id company_details_performance_increasing = 1559;
     constexpr string_id owner_label = 1560;
+    constexpr string_id low = 1561;
+    constexpr string_id medium = 1562;
+    constexpr string_id high = 1563;
+    constexpr string_id company_details_intelligence = 1564;
+    constexpr string_id company_details_aggressiveness = 1565;
+    constexpr string_id company_details_competitiveness = 1566;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
