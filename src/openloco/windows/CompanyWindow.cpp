@@ -698,6 +698,12 @@ namespace openloco::ui::windows::CompanyWindow
             uint32_t image = skin->img + interface_skin::image_ids::build_headquarters;
             self->widgets[widx::build_hq].image = gfx::recolour(image, companyColour) | (1 << 30);
 
+            self->disabled_widgets &= ~(1 << widx::centre_on_viewport);
+            if (company->headquarters_x == -1)
+            {
+                self->disabled_widgets |= (1 << widx::centre_on_viewport);
+            }
+
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
 
@@ -848,7 +854,7 @@ namespace openloco::ui::windows::CompanyWindow
                 gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::headquarters);
             }
 
-            if (company->var_257A == -1)
+            if (company->headquarters_x == -1)
             {
                 auto width = self->widgets[widx::viewport].width();
                 gfx::point_t loc = {
@@ -967,12 +973,85 @@ namespace openloco::ui::windows::CompanyWindow
             self->call_viewport_rotate();
         }
 
+        static void sub_434377(window* self, const SavedView& view)
+        {
+            if (self->viewports[0] != nullptr)
+            {
+                return;
+            }
+
+            auto& widget = self->widgets[widx::viewport];
+            auto origin = gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto size = gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+
+            viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
+            self->flags |= window_flags::viewport_no_scrolling;
+            self->invalidate();
+        }
+
         // 0x00432E08
         static void viewport_rotate(window* self)
         {
-            // registers regs;
-            // regs.esi = (int32_t)self;
-            // call(0x0043425D, regs);
+            if (self->current_tab != common::tab_details - common::tab_status)
+                return;
+
+            self->call_prepare_draw();
+            auto company = companymgr::get(self->number);
+            if (company->headquarters_x == -1)
+            {
+                // If headquarters not placed destroy the viewport
+                if (self->viewports[0] == nullptr)
+                {
+                    return;
+                }
+
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+                self->invalidate();
+                return;
+            }
+            int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+            openloco::map::map_pos3 loc = {
+                company->headquarters_x + 32,
+                company->headquarters_y + 32,
+                (company->headquarters_z + 8) * 4
+            };
+            SavedView view{
+                loc.x,
+                loc.y,
+                ZoomLevel::full,
+                rotation,
+                loc.z
+            };
+            view.flags |= (1 << 14);
+
+            uint16_t vpFlags = 0;
+            if (self->viewports[0] == nullptr)
+            {
+                if (config::get().flags && config::flags::gridlines_on_landscape)
+                {
+                    vpFlags |= viewport_flags::gridlines_on_landscape;
+                }
+            }
+            else if (self->saved_view != view)
+            {
+                vpFlags = self->viewports[0]->flags;
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+                viewportmgr::collectGarbage();
+            }
+            else
+            {
+                return;
+            }
+
+            self->saved_view = view;
+            sub_434377(self, view);
+            if (self->viewports[0] != nullptr)
+            {
+                self->viewports[0]->flags = vpFlags;
+                self->invalidate();
+            }
         }
 
         static void initEvents()
