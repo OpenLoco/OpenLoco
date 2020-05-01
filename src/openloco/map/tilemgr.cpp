@@ -193,13 +193,19 @@ namespace openloco::map::tilemgr
             {
                 for (uint16_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    registers regs;
-                    regs.ax = x;
-                    regs.cx = y;
-                    call(0x004CBE5F, regs);
+                    map_invalidate_tile_full(x, y);
                 }
             }
         }
+    }
+
+    // 0x004CBE5F
+    void map_invalidate_tile_full(uint16_t x, uint16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.cx = y;
+        call(0x004CBE5F, regs);    
     }
 
     // 0x0046112C
