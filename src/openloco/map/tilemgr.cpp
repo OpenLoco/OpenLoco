@@ -205,7 +205,7 @@ namespace openloco::map::tilemgr
         registers regs;
         regs.ax = x;
         regs.cx = y;
-        call(0x004CBE5F, regs);    
+        call(0x004CBE5F, regs);
     }
 
     // 0x0046112C
