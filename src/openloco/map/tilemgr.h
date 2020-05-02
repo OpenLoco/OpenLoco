@@ -10,6 +10,6 @@ namespace openloco::map::tilemgr
     tile get(coord_t x, coord_t y);
     std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y);
     void map_invalidate_selection_rect();
-    void map_invalidate_tile_full(uint16_t x, uint16_t y);
+    void map_invalidate_tile_full(coord_t x, coord_t y);
     void map_invalidate_map_selection_tiles();
 }
