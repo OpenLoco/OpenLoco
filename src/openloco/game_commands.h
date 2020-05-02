@@ -120,6 +120,16 @@ namespace openloco::game_commands
         do_command(46, regs);
     }
 
+    inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
+    {
+        registers regs;
+        regs.bl = bl;   //
+        regs.cx = cx;   // x?
+        regs.ax = ax;   // y?
+        regs.di = di;   // z?
+        do_command(55, regs);
+    }
+
     inline void do_71(int32_t ax, char* string)
     {
 

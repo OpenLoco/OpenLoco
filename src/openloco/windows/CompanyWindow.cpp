@@ -666,6 +666,11 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const gfx::ui_size_t windowSize = { 340, 194 };
 
+        loco_global<coord_t, 0x009C68D6> _9C68D6;
+        loco_global<coord_t, 0x009C68D8> _9C68D8;
+        loco_global<coord_t, 0x009C68DA> _9C68DA;
+        loco_global<uint8_t, 0x009C68EF> _9C68EF;
+
         enum widx
         {
             viewport = 11,
@@ -941,6 +946,23 @@ namespace openloco::ui::windows::CompanyWindow
             }
         }
 
+        static void sub_434E94()
+        {
+            if (_9C68EF & (1 << 0))
+            {
+                _9C68EF = _9C68EF & ~(1 << 0);
+                auto flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_3 | game_commands::GameCommandFlag::flag_5 | game_commands::GameCommandFlag::flag_6;
+                game_commands::do_55(flags, _9C68D6, _9C68D8, _9C68DA);
+            }
+        }
+
+        // 0x00468FFE hide_gridlines
+        static void sub_468FFE()
+        {
+            registers regs;
+            call(0x00468FFE, regs);
+        }
+
         // 0x00432CA1
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -966,10 +988,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00432D7A
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            call(0x00432D7A, regs);
+            sub_434E94();
+            sub_468FFE();
         }
 
         // 0x0432D85
