@@ -349,9 +349,9 @@ namespace openloco::ui
         uint16_t var_854 = 0; // used to limit updates
         uint16_t var_856 = 0;
         uint16_t var_858 = 0;
-        uint16_t var_85A;
-        int32_t var_85C;
-        uint8_t pad_860[0x870 - 0x860];
+        int16_t var_85A;
+        int16_t var_85C;
+        uint8_t pad_85E[0x870 - 0x85E];
         uint16_t current_tab = 0;                   // 0x870
         uint16_t frame_no = 0;                      // 0x872
         uint16_t current_secondary_tab;             // 0x874

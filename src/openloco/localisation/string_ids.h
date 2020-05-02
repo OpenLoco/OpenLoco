@@ -702,6 +702,8 @@ namespace openloco::string_ids
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
     constexpr string_id menu_music_options = 1549;
+    constexpr string_id company_face_selection_title = 1550;
+    constexpr string_id tooltip_company_face_selection = 1551;
 
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
