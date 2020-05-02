@@ -941,20 +941,36 @@ namespace openloco::ui::windows::CompanyWindow
             }
         }
 
-        //// 0x00432CA1
-        //static void on_tool_update(window* const self, const uint8_t widgetIndex, const int16_t x, const int16_t y)
-        //{
-        //}
+        // 0x00432CA1
+        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            registers regs;
+            regs.esi = (int32_t)&self;
+            regs.dx = widgetIndex;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x00432CA1, regs);
+        }
 
-        //// 0x00432D45
-        //static void on_tool_down(window* const self, const uint8_t widgetIndex, const int16_t x, const int16_t y)
-        //{
-        //}
+        // 0x00432D45
+        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            registers regs;
+            regs.esi = (int32_t)&self;
+            regs.dx = widgetIndex;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x00432D45, regs);
+        }
 
-        //// 0x00432D7A
-        //static void on_tool_abort(window* const self, const uint8_t widgetIndex)
-        //{
-        //}
+        // 0x00432D7A
+        static void on_tool_abort(window& self, const widget_index widgetIndex)
+        {
+            registers regs;
+            regs.esi = (int32_t)&self;
+            regs.dx = widgetIndex;
+            call(0x00432D7A, regs);
+        }
 
         // 0x0432D85
         static void on_update(window* self)
@@ -1061,9 +1077,9 @@ namespace openloco::ui::windows::CompanyWindow
             events.on_mouse_down = on_mouse_down;
             events.on_dropdown = on_dropdown;
             events.text_input = text_input;
-            events.on_tool_update = 0x00432CA1; //on_tool_update;
-            events.on_tool_down = 0x00432D45;   //on_tool_down;
-            events.on_tool_abort = 0x00432D7A;  //on_tool_abort;
+            events.on_tool_update = on_tool_update;
+            events.on_tool_down = on_tool_down;
+            events.on_tool_abort = on_tool_abort;
             events.on_update = on_update;
             events.on_resize = on_resize;
             events.viewport_rotate = viewport_rotate;

@@ -813,7 +813,7 @@ namespace openloco::ui
 
     void window::call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (event_handlers->on_tool_update == (uint32_t) nullptr)
+        if (event_handlers->on_tool_update == nullptr)
             return;
 
         if (is_interop_event(event_handlers->on_tool_update))
@@ -827,25 +827,43 @@ namespace openloco::ui
             return;
         }
 
-        assert(false);
+        event_handlers->on_tool_update(*this, widget_index, xPos, yPos);
     }
 
     void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        registers regs;
-        regs.ax = xPos;
-        regs.bx = yPos;
-        regs.dx = widget_index;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_tool_down, regs);
+        if (event_handlers->on_tool_down == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_tool_down))
+        {
+            registers regs;
+            regs.ax = xPos;
+            regs.bx = yPos;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_tool_down, regs);
+            return;
+        }
+
+        event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
     void window::call_tool_abort(int16_t widget_index)
     {
-        registers regs;
-        regs.dx = widget_index;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_tool_abort, regs);
+        if (event_handlers->on_tool_abort == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_tool_abort))
+        {
+            registers regs;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_tool_abort, regs);
+            return;
+        }
+
+        event_handlers->on_tool_abort(*this, widget_index);
     }
 
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
