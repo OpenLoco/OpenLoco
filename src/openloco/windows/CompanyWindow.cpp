@@ -1367,6 +1367,7 @@ namespace openloco::ui::windows::CompanyWindow
                     registers regs;
                     regs.edx = widgetIndex;
                     regs.esi = (int32_t)self;
+                    regs.edi = (int32_t)&self->widgets[widgetIndex];
                     call(0x00433119, regs);
                     break;
                 }
@@ -1386,6 +1387,7 @@ namespace openloco::ui::windows::CompanyWindow
                     registers regs;
                     regs.edx = widgetIndex;
                     regs.esi = (int32_t)self;
+                    regs.edi = (int32_t)&self->widgets[widgetIndex];
                     call(0x00433183, regs);
                     break;
                 }
@@ -1607,7 +1609,7 @@ namespace openloco::ui::windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
-                    gfx::fill_rect(dpi, 4, y, 129, y + 9, colour);
+                    gfx::fill_rect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
                 _common_format_args[0] = ExpenditureLabels[i];
