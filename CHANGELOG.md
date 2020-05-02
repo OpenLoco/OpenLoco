@@ -9,6 +9,7 @@
 - Fix: [#428] Show an error when a vehicle can't be built due to invalid properties. (Original bug.)
 - Fix: [#430] Null-chars added when manually specifying Locomotion directory, preventing launch.
 - Fix: [#440] Final segment in town population graphs could show no population.
+- Fix: [#359] Widgets tied to tools could get stuck in pressed state.
 - Change: [#420] Disable window scale factor buttons when not applicable.
 
 20.03 (2020-03-23)

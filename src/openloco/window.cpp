@@ -1190,7 +1190,7 @@ namespace openloco::ui
         }
 
         uint64_t tool_widget = 0;
-        if (this->type == addr<0x00523392, WindowType>() && this->number == addr<0x00523390, uint16_t>())
+        if (input::is_tool_active(this->type, this->number))
         {
             tool_widget = 1ULL << addr<0x00523394, uint32_t>();
         }
