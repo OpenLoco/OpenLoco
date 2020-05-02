@@ -1,6 +1,7 @@
 #include "tilemgr.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../viewportmgr.h"
 
 using namespace openloco::interop;
 
@@ -202,10 +203,8 @@ namespace openloco::map::tilemgr
     // 0x004CBE5F
     void map_invalidate_tile_full(coord_t x, coord_t y)
     {
-        registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        call(0x004CBE5F, regs);
+        auto pos = map::map_pos(x, y);
+        ui::viewportmgr::invalidate(pos, 0, 1088, ZoomLevel::eighth);
     }
 
     // 0x0046112C
