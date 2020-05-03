@@ -733,16 +733,18 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         static std::array<string_id, 10> aiRatingToLevelArray = {
-            string_ids::low,
-            string_ids::low,
-            string_ids::low,
-            string_ids::low,
-            string_ids::medium,
-            string_ids::medium,
-            string_ids::medium,
-            string_ids::high,
-            string_ids::high,
-            string_ids::high,
+            {
+                string_ids::low,
+                string_ids::low,
+                string_ids::low,
+                string_ids::low,
+                string_ids::medium,
+                string_ids::medium,
+                string_ids::medium,
+                string_ids::high,
+                string_ids::high,
+                string_ids::high,
+            }
         };
 
         constexpr string_id aiRatingToLevel(const uint8_t rating)
@@ -777,12 +779,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         static std::array<string_id, 6> transportTypeCountString = {
-            string_ids::company_details_trains_count,
-            string_ids::company_details_buses_count,
-            string_ids::company_details_trucks_count,
-            string_ids::company_details_trams_count,
-            string_ids::company_details_aircraft_count,
-            string_ids::company_details_ships_count,
+            {
+                string_ids::company_details_trains_count,
+                string_ids::company_details_buses_count,
+                string_ids::company_details_trucks_count,
+                string_ids::company_details_trams_count,
+                string_ids::company_details_aircraft_count,
+                string_ids::company_details_ships_count,
+            }
         };
 
         // 0x00432919
@@ -856,8 +860,8 @@ namespace openloco::ui::windows::CompanyWindow
             {
                 auto width = self->widgets[widx::viewport].width();
                 gfx::point_t loc = {
-                    self->x + self->widgets[widx::viewport].left + width / 2,
-                    self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5
+                    static_cast<int16_t>(self->x + self->widgets[widx::viewport].left + width / 2),
+                    static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
                 width -= 2;
                 gfx::draw_string_centred_wrapped(dpi, &loc, width, colour::black, string_ids::not_yet_constructed);
@@ -1040,9 +1044,9 @@ namespace openloco::ui::windows::CompanyWindow
             }
             int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
             openloco::map::map_pos3 loc = {
-                company->headquarters_x + 32,
-                company->headquarters_y + 32,
-                (company->headquarters_z + 8) * 4
+                static_cast<coord_t>(company->headquarters_x + 32),
+                static_cast<coord_t>(company->headquarters_y + 32),
+                static_cast<coord_t>((company->headquarters_z + 8) * 4)
             };
             SavedView view{
                 loc.x,

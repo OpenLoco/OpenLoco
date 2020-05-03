@@ -45,15 +45,15 @@ namespace openloco::game_commands
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.cl = colourType; // vehicle type or main
+        regs.cl = colourType;    // vehicle type or main
         regs.dh = setColourMode; // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
-        regs.dl = companyId; // company id
+        regs.dl = companyId;     // company id
 
         if (setColourMode == 0)
         {
             // cl is divided by 2 when used
             regs.ah = isPrimary; // [ 0, 1 ] -- primary or secondary palette
-            regs.al = value; // new colour
+            regs.al = value;     // new colour
         }
         else if (setColourMode == 1)
         {
@@ -124,10 +124,10 @@ namespace openloco::game_commands
     inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
     {
         registers regs;
-        regs.bl = bl;   //
-        regs.cx = cx;   // x?
-        regs.ax = ax;   // y?
-        regs.di = di;   // z?
+        regs.bl = bl; //
+        regs.cx = cx; // x?
+        regs.ax = ax; // y?
+        regs.di = di; // z?
         do_command(55, regs);
     }
 
