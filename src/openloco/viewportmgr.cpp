@@ -3,6 +3,7 @@
 #include "console.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"
+#include "map/tilemgr.h"
 #include "station.h"
 #include "things/thing.h"
 #include "things/thingmgr.h"
@@ -382,7 +383,7 @@ namespace openloco::ui::viewportmgr
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
-                invalidate(pos, 0, 1088, ZoomLevel::eighth);
+                map::tilemgr::map_invalidate_tile_full(pos);
                 return 0;
             });
         register_hook(

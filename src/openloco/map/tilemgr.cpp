@@ -1,16 +1,17 @@
 #include "tilemgr.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../viewportmgr.h"
 
 using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
-    static loco_global<uint16_t, 0x00F24486> _mapSelectionAX;
-    static loco_global<uint16_t, 0x00F24488> _mapSelectionBX;
-    static loco_global<uint16_t, 0x00F2448A> _mapSelectionAY;
-    static loco_global<uint16_t, 0x00F2448C> _mapSelectionBY;
+    static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
+    static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
+    static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
+    static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
 
     tile get(map_pos pos)
     {
@@ -189,23 +190,22 @@ namespace openloco::map::tilemgr
     {
         if ((input::getMapSelectionFlags() & 1) != 0)
         {
-            for (uint16_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
+            for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
-                for (uint16_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
+                for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    map_invalidate_tile_full(x, y);
+                    map_invalidate_tile_full({ x, y });
                 }
             }
         }
     }
 
     // 0x004CBE5F
-    void map_invalidate_tile_full(uint16_t x, uint16_t y)
+    // regs.ax: pos.x
+    // regs.cx: pos.y
+    void map_invalidate_tile_full(map::map_pos pos)
     {
-        registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        call(0x004CBE5F, regs);
+        ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
 
     // 0x0046112C
