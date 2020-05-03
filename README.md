@@ -32,7 +32,9 @@ Feel free to join our Discord server to talk about developing the game, or for h
 
 **OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](http://openttd.org) improved Transport Tycoon and [OpenRCT2](http://openrct2.io) improved RollerCoaster Tycoon.
 
-Chris Sawyer's Locomotion was written by Chris Sawyer in x86 assembly building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. This means that only select areas of the game such as the update logic should be written. The engine code such as audio, drawing and the window system should be left alone as it would only repeat the work that has already been done for OpenRCT2. It is more beneficial to share as much code as possible between OpenRCT2 and OpenLoco.
+Chris Sawyer's Locomotion was originally written by Chris Sawyer in x86 assembly, building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.
+
+Recent implementation efforts have focussed on re-implementing the UI, so that the data structures involved may be better understood. Once this is done, it is our hope the game logic will be easier to understand and implement.
 
 ---
 
