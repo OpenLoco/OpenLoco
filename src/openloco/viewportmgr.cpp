@@ -334,6 +334,14 @@ namespace openloco::ui::viewportmgr
     void registerHooks()
     {
         register_hook(
+            0x0046112C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                map::tilemgr::map_invalidate_map_selection_tiles();
+                regs = backup;
+                return 0;
+            });
+        register_hook(
             0x004CA2D0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

@@ -2,6 +2,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"
+#include <cassert>
 
 using namespace openloco::interop;
 
@@ -12,6 +13,14 @@ namespace openloco::map::tilemgr
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
+
+    // next decoded address after 0x00F24490 is 0x00F24942
+    // the difference is 1202 which mean we have probably 300
+    // available elements in the array (plus the -1 value
+    // at the first word in the array - as a tail element
+    // in the array)
+    constexpr uint16_t mapSelectedTilesSize = 300;
+    static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
     tile get(map_pos pos)
     {
@@ -188,6 +197,7 @@ namespace openloco::map::tilemgr
     // 0x004610F2
     void map_invalidate_selection_rect()
     {
+        // 1=MAP_SELECT_FLAG_ENABLE - from RCT2 code
         if ((input::getMapSelectionFlags() & 1) != 0)
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
@@ -211,6 +221,17 @@ namespace openloco::map::tilemgr
     // 0x0046112C
     void map_invalidate_map_selection_tiles()
     {
-        call(0x0046112C);
+        // 2=MAP_SELECT_FLAG_ENABLE_CONSTRUCT - from RCT2 code
+        if ((input::getMapSelectionFlags() & 2) == 0)
+            return;
+
+        for (uint16_t index=0;; ++index)
+        {
+            auto& position = _mapSelectedTiles[index];
+            if (position.x == -1)
+                break;
+            assert(index >= 0 && index < mapSelectedTilesSize);
+            map_invalidate_tile_full(position);
+        }
     }
 }
