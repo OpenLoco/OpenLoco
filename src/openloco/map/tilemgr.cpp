@@ -225,7 +225,7 @@ namespace openloco::map::tilemgr
         if ((input::getMapSelectionFlags() & 2) == 0)
             return;
 
-        for (uint16_t index=0;; ++index)
+        for (uint16_t index = 0;; ++index)
         {
             auto& position = _mapSelectedTiles[index];
             if (position.x == -1)
