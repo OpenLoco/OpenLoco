@@ -44,7 +44,7 @@ namespace openloco::ui::windows::CompanyWindow
             company_select,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge) | (1 << widx::company_select);
+        constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                                 \
@@ -115,7 +115,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
         static window_event_list events;
 
@@ -677,7 +677,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << build_hq) | (1 << centre_on_viewport);
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
         static window_event_list events;
 
@@ -1222,7 +1222,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | allMainColours | allSecondaryColours | allColourChecks;
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
 
         static window_event_list events;
 
@@ -1551,7 +1551,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -2050,7 +2050,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select);
 
         static window_event_list events;
 
@@ -2234,7 +2234,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = common::enabledWidgets;
 
         static window_event_list events;
 
@@ -2258,6 +2258,10 @@ namespace openloco::ui::windows::CompanyWindow
 
             self->widgets[common::widx::close_button].left = self->width - 15;
             self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[common::widx::company_select].right = self->width - 3;
+            self->widgets[common::widx::company_select].left = self->width - 28;
+            self->widgets[common::widx::company_select].type = widget_type::none;
 
             common::repositionTabs(self);
         }
