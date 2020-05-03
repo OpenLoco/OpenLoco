@@ -252,4 +252,9 @@ namespace openloco::ui::dropdown
         call(0x004CF284, regs);
         return regs.eax;
     }
+
+    uint16_t getItemArgument(const uint8_t index, const uint8_t argument)
+    {
+        return reinterpret_cast<uint16_t*>(_dropdownItemArgs[index])[argument];
+    }
 }

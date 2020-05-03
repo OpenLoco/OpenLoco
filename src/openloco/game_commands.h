@@ -41,22 +41,23 @@ namespace openloco::game_commands
     }
 
     // Change company colour scheme
-    inline void do_19(int8_t ah, int8_t al, uint8_t ax, int8_t cl, int8_t dh, int8_t dl)
+    inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.cl = cl; // vehicle type
-        regs.dh = dh; // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
-        regs.dl = dl; // company id
+        regs.cl = colourType; // vehicle type or main
+        regs.dh = setColourMode; // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
+        regs.dl = companyId; // company id
 
-        if (dh == 0)
+        if (setColourMode == 0)
         {
-            regs.ah = ah; // [ 0, 1 ] -- primary or secondary palette?
-            regs.ax = ax; // new colour?
+            // cl is divided by 2 when used
+            regs.ah = isPrimary; // [ 0, 1 ] -- primary or secondary palette
+            regs.al = value; // new colour
         }
-        else if (dh == 1)
+        else if (setColourMode == 1)
         {
-            regs.al = al; // [ 0, 1 ] -- off or on
+            regs.al = value; // [ 0, 1 ] -- off or on
         }
 
         do_command(19, regs);

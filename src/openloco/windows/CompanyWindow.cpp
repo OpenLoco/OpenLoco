@@ -1194,7 +1194,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Set company name.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
+            FormatArguments args{};
+            args.push(company->name);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -1330,14 +1331,14 @@ namespace openloco::ui::windows::CompanyWindow
                 case widx::check_trucks:
                 case widx::check_aircraft:
                 case widx::check_ships:
-                    // customVehicleColoursSet appears to reserve its first bit for something else, so skip it.
+                    // customVehicleColoursSet reserves first bit for main colour scheme even though it can't be changed, so skip it.
                     const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
                     const auto company = companymgr::get(self->number);
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
                     addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
 
-                    game_commands::do_19(0, /*al*/ newMode, 0, /*cl*/ vehicleType, /*dh*/ 1, /*dl*/ self->number);
+                    game_commands::do_19(0, newMode, vehicleType, 1, self->number);
 
                     break;
             }
@@ -1429,12 +1430,10 @@ namespace openloco::ui::windows::CompanyWindow
 
                     addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
 
-                    // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
-                    const int8_t colour = 0;
+                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
-                    game_commands::do_19(0, 0, colour, vehicleType, 1, self->number);
-
+                    game_commands::do_19(0, colour, vehicleType, 0, self->number);
                     break;
                 }
 
@@ -1455,12 +1454,10 @@ namespace openloco::ui::windows::CompanyWindow
 
                     addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
 
-                    // TODO _dropdownItemFormatArgs1+4[ecx*8] with ecx = itemIndex
-                    const int8_t colour = 0;
+                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
-                    game_commands::do_19(1, 0, colour, vehicleType, 1, self->number);
-
+                    game_commands::do_19(1, colour, vehicleType, 0, self->number);
                     break;
                 }
             }
