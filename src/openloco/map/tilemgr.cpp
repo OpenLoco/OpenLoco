@@ -8,17 +8,15 @@ using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
+    constexpr uint16_t MAP_SELECT_FLAG_ENABLE = 1;
+    constexpr uint16_t MAP_SELECT_FLAG_ENABLE_CONSTRUCT = 2;
+
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
 
-    // next decoded address after 0x00F24490 is 0x00F24942
-    // the difference is 1202 which mean we have probably 300
-    // available elements in the array (plus the -1 value
-    // at the first word in the array - as a tail element
-    // in the array)
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
@@ -197,8 +195,7 @@ namespace openloco::map::tilemgr
     // 0x004610F2
     void map_invalidate_selection_rect()
     {
-        // 1=MAP_SELECT_FLAG_ENABLE - from RCT2 code
-        if ((input::getMapSelectionFlags() & 1) != 0)
+        if ((input::getMapSelectionFlags() & MAP_SELECT_FLAG_ENABLE) != 0)
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
@@ -221,8 +218,7 @@ namespace openloco::map::tilemgr
     // 0x0046112C
     void map_invalidate_map_selection_tiles()
     {
-        // 2=MAP_SELECT_FLAG_ENABLE_CONSTRUCT - from RCT2 code
-        if ((input::getMapSelectionFlags() & 2) == 0)
+        if ((input::getMapSelectionFlags() & MAP_SELECT_FLAG_ENABLE_CONSTRUCT) == 0)
             return;
 
         for (uint16_t index = 0;; ++index)
