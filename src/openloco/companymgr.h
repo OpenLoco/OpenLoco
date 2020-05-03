@@ -1,6 +1,7 @@
 #pragma once
 
 #include "company.h"
+#include "types.hpp"
 #include <array>
 #include <cstddef>
 
@@ -19,5 +20,6 @@ namespace openloco::companymgr
     void update();
 
     company* getOpponent();
+    string_id getOwnerStatus(company_id_t id, FormatArguments& args);
     void updateOwnerStatus();
 }

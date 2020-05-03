@@ -232,6 +232,11 @@ namespace openloco::ui::MessageWindow
     void open();
 }
 
+namespace openloco::ui::windows::CompanyFaceSelection
+{
+    void open(company_id_t id);
+}
+
 namespace openloco::ui::windows::CompanyList
 {
     void openPerformanceIndexes();
@@ -240,8 +245,10 @@ namespace openloco::ui::windows::CompanyList
 
 namespace openloco::ui::windows::CompanyWindow
 {
-    void OpenUnk(company_id_t companyId);
-    void openFinances(company_id_t companyId);
+    window* open(company_id_t companyId);
+    window* openAndSetName();
+    window* openChallenge(company_id_t companyId);
+    window* openFinances(company_id_t companyId);
 }
 
 namespace openloco::ui::windows::PlayerInfoPanel

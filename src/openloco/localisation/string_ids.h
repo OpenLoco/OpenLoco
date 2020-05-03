@@ -8,6 +8,8 @@ namespace openloco::string_ids
 {
     constexpr string_id empty = 0;
 
+    constexpr string_id new_company = 2;
+
     constexpr string_id day_1st = 10;
     constexpr string_id day_2nd = 11;
     constexpr string_id day_3rd = 12;
@@ -141,6 +143,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
 
+    constexpr string_id error_cant_change_colour_scheme = 222;
+
     constexpr string_id menu_zoom_in = 223;
     constexpr string_id menu_zoom_out = 224;
 
@@ -166,6 +170,12 @@ namespace openloco::string_ids
     constexpr string_id label_icons_rail_air_water = 243;
     constexpr string_id label_icons_road_air_water = 244;
     constexpr string_id label_icons_rail_road_air_water = 245;
+    constexpr string_id title_company = 246;
+    constexpr string_id title_company_details = 247;
+    constexpr string_id title_company_finances = 248;
+    constexpr string_id title_company_cargo_delivered = 249;
+    constexpr string_id title_company_colour_scheme = 250;
+    constexpr string_id title_company_challenge = 251;
 
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
@@ -194,6 +204,7 @@ namespace openloco::string_ids
 
     constexpr string_id outlined_wcolour2_stringid2 = 450;
 
+    constexpr string_id red_stringid = 454;
     constexpr string_id white_stringid2 = 455;
 
     constexpr string_id wcolour2_stringid2 = 457;
@@ -212,6 +223,33 @@ namespace openloco::string_ids
 
     constexpr string_id date_monthyear = 584;
 
+    constexpr string_id expenditure_income = 587;
+    constexpr string_id train_income = 588;
+    constexpr string_id train_running_costs = 589;
+    constexpr string_id bus_income = 590;
+    constexpr string_id bus_running_costs = 591;
+    constexpr string_id truck_income = 592;
+    constexpr string_id truck_running_costs = 593;
+    constexpr string_id tram_income = 594;
+    constexpr string_id tram_running_costs = 595;
+    constexpr string_id aircraft_income = 596;
+    constexpr string_id aircraft_running_costs = 597;
+    constexpr string_id ship_income = 598;
+    constexpr string_id ship_running_costs = 599;
+    constexpr string_id construction = 600;
+    constexpr string_id vehicle_purchases = 601;
+    constexpr string_id vehicle_disposals = 602;
+    constexpr string_id loan_interest = 603;
+    constexpr string_id miscellaneous = 604;
+    constexpr string_id uint16_raw = 605;
+    constexpr string_id plus_currency48 = 606;
+    constexpr string_id currency48 = 607;
+    constexpr string_id company_current_loan = 608;
+    constexpr string_id company_current_loan_value = 609;
+    constexpr string_id cant_borrow_any_more_money = 610;
+    constexpr string_id not_enough_cash_available = 611;
+    constexpr string_id cant_pay_back_loan = 612;
+
     constexpr string_id title_menu_new_game = 613;
     constexpr string_id title_menu_load_game = 614;
     constexpr string_id title_menu_show_tutorial = 615;
@@ -221,6 +259,12 @@ namespace openloco::string_ids
     constexpr string_id town_size_town = 619;
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
+
+    constexpr string_id cash_bankrupt = 630;
+    constexpr string_id cash_positive = 631;
+    constexpr string_id cash_negative = 632;
+    constexpr string_id company_value = 633;
+    constexpr string_id profit_from_vehicles = 634;
 
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
@@ -262,6 +306,13 @@ namespace openloco::string_ids
     constexpr string_id menu_adjust_water = 682;
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
+
+    constexpr string_id company_details_trains_count = 689;
+    constexpr string_id company_details_buses_count = 690;
+    constexpr string_id company_details_trucks_count = 691;
+    constexpr string_id company_details_trams_count = 692;
+    constexpr string_id company_details_aircraft_count = 693;
+    constexpr string_id company_details_ships_count = 694;
 
     constexpr string_id challenge_failed = 695;
     constexpr string_id challenge_completed = 696;
@@ -405,6 +456,27 @@ namespace openloco::string_ids
     constexpr string_id eighth_scale = 1098;
     constexpr string_id vehicles_min_scale_tip = 1099;
     constexpr string_id station_names_min_scale_tip = 1100;
+    constexpr string_id main_colour_scheme = 1101;
+    constexpr string_id colour_steam_locomotives = 1102;
+    constexpr string_id colour_diesel_locomotives = 1103;
+    constexpr string_id colour_electric_locomotives = 1104;
+    constexpr string_id colour_multiple_units = 1105;
+    constexpr string_id colour_passenger_vehicles = 1106;
+    constexpr string_id colour_freight_vehicles = 1107;
+    constexpr string_id colour_buses = 1108;
+    constexpr string_id colour_trucks = 1109;
+    constexpr string_id colour_aircraft = 1110;
+    constexpr string_id colour_ships = 1111;
+    constexpr string_id tooltip_company_headquarters_and_details = 1112;
+    constexpr string_id tooltip_company_owner_and_status = 1113;
+    constexpr string_id tooltip_company_finances = 1114;
+    constexpr string_id tooltip_cargo_delivered = 1115;
+    constexpr string_id tooltip_company_colour_scheme = 1116;
+    constexpr string_id tooltip_company_challenge_for_this_game = 1117;
+    constexpr string_id special_colour_schemes_used_for = 1118;
+    constexpr string_id tooltip_select_main_colour = 1119;
+    constexpr string_id tooltip_select_secondary_colour = 1120;
+    constexpr string_id tooltip_toggle_vehicle_colour_scheme = 1121;
 
     constexpr string_id stringid_all_stations = 1128;
     constexpr string_id stringid_rail_stations = 1129;
@@ -506,6 +578,10 @@ namespace openloco::string_ids
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
 
+    constexpr string_id headquarters = 1354;
+    constexpr string_id window_owner = 1355;
+    constexpr string_id interest_per_year = 1356;
+
     constexpr string_id population_graph_people = 1357;
     constexpr string_id population_graph_year = 1358;
     constexpr string_id title_town = 1359;
@@ -549,6 +625,16 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
     constexpr string_id num_units = 1442;
     constexpr string_id unit_separator = 1443;
+
+    constexpr string_id tooltip_build_or_move_headquarters = 1453;
+    constexpr string_id tooltip_change_owner_name = 1454;
+    constexpr string_id not_yet_constructed = 1455;
+    constexpr string_id title_name_company = 1456;
+    constexpr string_id prompt_enter_new_company_name = 1457;
+    constexpr string_id cannot_rename_this_company = 1458;
+    constexpr string_id title_name_owner = 1459;
+    constexpr string_id prompt_enter_new_name_for_owner = 1460;
+    constexpr string_id cannot_change_owner_name = 1461;
 
     constexpr string_id tooltip_select_company = 1465;
 
@@ -602,8 +688,17 @@ namespace openloco::string_ids
 
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
-
+    constexpr string_id company_details_started = 1556;
+    constexpr string_id company_details_performance = 1557;
+    constexpr string_id company_details_performance_decreasing = 1558;
+    constexpr string_id company_details_performance_increasing = 1559;
     constexpr string_id owner_label = 1560;
+    constexpr string_id low = 1561;
+    constexpr string_id medium = 1562;
+    constexpr string_id high = 1563;
+    constexpr string_id company_details_intelligence = 1564;
+    constexpr string_id company_details_aggressiveness = 1565;
+    constexpr string_id company_details_competitiveness = 1566;
 
     constexpr string_id title_multiplayer_toggle_tooltip = 1567;
     constexpr string_id single_player_mode = 1568;
@@ -757,7 +852,7 @@ namespace openloco::string_ids
     constexpr string_id land_distribution_around_cliffs = 1738;
     constexpr string_id create_hills_right_up_to_edge_of_map = 1739;
     constexpr string_id title_menu_scenario_editor = 1740;
-
+    constexpr string_id company_owner_name_transport = 1741;
     constexpr string_id menu_map = 1742;
     constexpr string_id dropdown_companies_list = 1743;
     constexpr string_id dropdown_company_performance = 1744;
@@ -806,6 +901,9 @@ namespace openloco::string_ids
     constexpr string_id challenge_performance_index = 1858;
     constexpr string_id challenge_delivered_cargo = 1859;
     constexpr string_id time_limit_years_value = 1860;
+
+    constexpr string_id cargo_delivered = 1867;
+    constexpr string_id cargo_delivered_none = 1868;
 
     constexpr string_id title_exit_game = 1869;
 

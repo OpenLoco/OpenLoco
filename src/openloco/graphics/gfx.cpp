@@ -663,6 +663,31 @@ namespace openloco::gfx
         call(0x00494C78, regs);
     }
 
+    // 0x00494CB2
+    // al: colour
+    // bx: string id
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
+    void draw_string_underline(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        uint8_t colour,
+        string_id stringId,
+        const void* args)
+    {
+        registers regs;
+        regs.al = colour;
+        regs.bx = stringId;
+        regs.cx = x;
+        regs.dx = y;
+        regs.esi = (int32_t)args;
+        regs.edi = (int32_t)&dpi;
+        call(0x00494CB2, regs);
+    }
+
     // 0x00494D78
     // al: colour
     // bx: string id

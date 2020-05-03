@@ -5,6 +5,7 @@
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include "types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
@@ -213,11 +214,11 @@ namespace openloco::ui
                 void (*on_update)(window*);
                 void (*event_08)(window*);
                 void (*event_09)(window*);
-                uint32_t on_tool_update;
-                uint32_t on_tool_down;
+                void (*on_tool_update)(window&, const widget_index, const int16_t, const int16_t);
+                void (*on_tool_down)(window&, const widget_index, const int16_t, const int16_t);
                 uint32_t event_12;
                 uint32_t event_13;
-                uint32_t on_tool_abort;
+                void (*on_tool_abort)(window&, const widget_index);
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 void (*scroll_mouse_down)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
@@ -244,25 +245,57 @@ namespace openloco::ui
 
     struct SavedView
     {
-        int16_t mapX;
-        int16_t mapY;
+        union
+        {
+            coord_t mapX;
+            thing_id_t thingId;
+        };
+        union
+        {
+            coord_t mapY;
+            uint16_t flags;
+        };
         ZoomLevel zoomLevel;
         int8_t rotation;
         int16_t surfaceZ;
 
-        bool isEmpty()
+        SavedView() = default;
+
+        SavedView(coord_t mapX, coord_t mapY, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+            : mapX(mapX)
+            , mapY(mapY)
+            , zoomLevel(zoomLevel)
+            , rotation(rotation)
+            , surfaceZ(surfaceZ){};
+
+        SavedView(thing_id_t thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+            : thingId(thingId)
+            , flags(flags)
+            , zoomLevel(zoomLevel)
+            , rotation(rotation)
+            , surfaceZ(surfaceZ){};
+
+        bool isEmpty() const
         {
             return mapX == -1 && mapY == -1;
         }
 
-        bool hasUnkFlag()
+        bool hasUnkFlag15() const
         {
-            return (mapY & (1 << 15)) != 0;
+            return (flags & (1 << 14)) != 0;
         }
 
-        int8_t getThingId()
+        bool isThingView() const
         {
-            return mapX & 0xFF;
+            return (flags & (1 << 15)) != 0;
+        }
+
+        openloco::map::map_pos3 getPos() const
+        {
+            if (isThingView())
+                return {};
+
+            return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };
         }
 
         void clear()
@@ -271,9 +304,14 @@ namespace openloco::ui
             mapY = -1;
         }
 
-        bool operator==(const SavedView& rhs)
+        bool operator==(const SavedView& rhs) const
         {
             return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
+        }
+
+        bool operator!=(const SavedView& rhs) const
+        {
+            return !(*this == rhs);
         }
     };
 
@@ -389,6 +427,7 @@ namespace openloco::ui
         void set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets);
         void drawViewports(gfx::drawpixelinfo_t* dpi);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
+        void viewport_centre_on_tile(const map::map_pos3& loc);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
         void viewport_zoom_set(int8_t zoomLevel, bool toCursor);
         void viewport_zoom_in(bool toCursor);

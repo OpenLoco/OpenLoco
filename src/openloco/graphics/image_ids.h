@@ -10,12 +10,16 @@ namespace openloco::image_ids
 
     constexpr uint32_t text_palette = 2169;
 
+    constexpr uint32_t colour_swatch_recolourable = 2306;
+
     constexpr uint32_t company_list_dropdown_icon = 2309;
     constexpr uint32_t icon_parent_folder = 2310;
-
     constexpr uint32_t icon_folder = 2311;
 
     constexpr uint32_t close_button = 2321;
+
+    constexpr uint32_t inline_green_up_arrow = 2324;
+    constexpr uint32_t inline_red_down_arrow = 2325;
 
     constexpr uint32_t rubbish_bin = 2363;
     constexpr uint32_t centre_viewport = 2364;
@@ -175,4 +179,6 @@ namespace openloco::image_ids
     constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
 
     constexpr uint32_t locomotion_logo = 3624;
+
+    constexpr uint32_t owner_jailed = 3630;
 }

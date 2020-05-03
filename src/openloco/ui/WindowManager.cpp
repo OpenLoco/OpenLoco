@@ -63,15 +63,56 @@ namespace openloco::ui::WindowManager
     void registerHooks()
     {
         register_hook(
+            0x0043454F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                windows::CompanyWindow::open(regs.ax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x004345EE,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                windows::CompanyWindow::openFinances(regs.ax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x00434731,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                windows::CompanyWindow::openChallenge(regs.ax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
+            0x00435ACC,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                windows::CompanyWindow::openAndSetName();
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x0043CB9F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 windows::editorInit();
+
                 return 0;
             });
 
         register_hook(
             0x0043DA43,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 windows::LandscapeGeneration::open();
                 regs = backup;
@@ -81,7 +122,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x0043EE58,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 windows::ScenarioOptions::open();
                 regs = backup;
@@ -111,7 +152,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x0045F18B,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 callViewportRotateEventOnAllWindows();
                 regs = backup;
@@ -131,7 +172,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x00499B7E,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 windows::town::open(regs.dx);
                 regs = backup;
@@ -141,7 +182,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004B93A5,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 sub_4B93A5(regs.bx);
                 regs = backup;
@@ -161,7 +202,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004C9A95,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = findAt(regs.ax, regs.bx);
                 regs = backup;
@@ -172,7 +213,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004C9AFA,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = findAtAlt(regs.ax, regs.bx);
                 regs = backup;
@@ -183,7 +224,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004C9B56,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::window* w;
                 if (regs.cx & find_flag::by_type)
                 {
@@ -205,7 +246,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004CB966,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 if (regs.al < 0)
                 {
@@ -226,7 +267,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004CC692,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 if ((regs.cx & find_flag::by_type) != 0)
                 {
@@ -253,7 +294,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004CD296,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 relocateWindows();
                 regs = backup;
@@ -280,7 +321,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004CE438,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto w = getMainWindow();
 
                 regs.esi = (uintptr_t)w;
@@ -294,7 +335,7 @@ namespace openloco::ui::WindowManager
 
         register_hook(
             0x004CEE0B,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 sub_4CEE0B((ui::window*)regs.esi);
                 regs = backup;

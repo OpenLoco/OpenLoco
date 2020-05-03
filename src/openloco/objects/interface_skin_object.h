@@ -78,6 +78,14 @@ namespace openloco
         constexpr uint32_t toolbar_menu_airport = 46;
         constexpr uint32_t toolbar_menu_ship_port = 47;
 
+        constexpr uint32_t tab_colour_scheme_frame0 = 49;
+        constexpr uint32_t tab_colour_scheme_frame1 = 50;
+        constexpr uint32_t tab_colour_scheme_frame2 = 51;
+        constexpr uint32_t tab_colour_scheme_frame3 = 52;
+        constexpr uint32_t tab_colour_scheme_frame4 = 53;
+        constexpr uint32_t tab_colour_scheme_frame5 = 54;
+        constexpr uint32_t tab_colour_scheme_frame6 = 55;
+        constexpr uint32_t tab_colour_scheme_frame7 = 56;
         constexpr uint32_t tab_population_frame0 = 57;
         constexpr uint32_t tab_population_frame1 = 58;
         constexpr uint32_t tab_population_frame2 = 59;
@@ -149,7 +157,7 @@ namespace openloco
         constexpr uint32_t toolbar_menu_rotate_anti_clockwise = 178;
         constexpr uint32_t toolbar_menu_plant_trees = 179;
         constexpr uint32_t toolbar_menu_bulldozer = 180;
-
+        constexpr uint32_t tab_company_details = 181;
         constexpr uint32_t all_stations = 182;
         constexpr uint32_t rail_stations = 183;
         constexpr uint32_t road_stations = 184;
@@ -160,6 +168,11 @@ namespace openloco
         constexpr uint32_t toolbar_menu_towns = 189;
 
         constexpr uint32_t toolbar_menu_industries = 191;
+
+        constexpr uint32_t tab_cargo_delivered_frame0 = 198;
+        constexpr uint32_t tab_cargo_delivered_frame1 = 199;
+        constexpr uint32_t tab_cargo_delivered_frame2 = 200;
+        constexpr uint32_t tab_cargo_delivered_frame3 = 201;
 
         constexpr uint32_t build_vehicle_train_frame_0 = 251;
         constexpr uint32_t build_vehicle_train_frame_1 = 252;
@@ -257,6 +270,8 @@ namespace openloco
         constexpr uint32_t build_vehicle_ship_frame_13 = 344;
         constexpr uint32_t build_vehicle_ship_frame_14 = 345;
         constexpr uint32_t build_vehicle_ship_frame_15 = 346;
+
+        constexpr uint32_t build_headquarters = 417;
         constexpr uint32_t vehicle_train = 418;
 
         constexpr uint32_t vehicle_aircraft = 426;

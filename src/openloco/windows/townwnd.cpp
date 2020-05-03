@@ -172,12 +172,8 @@ namespace openloco::ui::windows::town
                     if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
                         break;
 
-                    registers regs;
-                    regs.ax = self->saved_view.mapX;
-                    regs.cx = self->saved_view.mapY & 0x3FFF;
-                    regs.dx = self->saved_view.surfaceZ;
-                    regs.esi = (int32_t)WindowManager::getMainWindow();
-                    call(0x004C6827, regs);
+                    auto main = WindowManager::getMainWindow();
+                    main->viewport_centre_on_tile(self->saved_view.getPos());
                     break;
                 }
 

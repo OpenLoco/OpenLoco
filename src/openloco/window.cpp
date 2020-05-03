@@ -489,6 +489,16 @@ namespace openloco::ui
         *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
     }
 
+    void window::viewport_centre_on_tile(const map::map_pos3& loc)
+    {
+        registers regs;
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.dx = loc.z;
+        regs.esi = (int32_t)this;
+        call(0x004C6827, regs);
+    }
+
     void window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.
@@ -803,7 +813,7 @@ namespace openloco::ui
 
     void window::call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (event_handlers->on_tool_update == (uint32_t) nullptr)
+        if (event_handlers->on_tool_update == nullptr)
             return;
 
         if (is_interop_event(event_handlers->on_tool_update))
@@ -817,25 +827,43 @@ namespace openloco::ui
             return;
         }
 
-        assert(false);
+        event_handlers->on_tool_update(*this, widget_index, xPos, yPos);
     }
 
     void window::call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        registers regs;
-        regs.ax = xPos;
-        regs.bx = yPos;
-        regs.dx = widget_index;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_tool_down, regs);
+        if (event_handlers->on_tool_down == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_tool_down))
+        {
+            registers regs;
+            regs.ax = xPos;
+            regs.bx = yPos;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_tool_down, regs);
+            return;
+        }
+
+        event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
     void window::call_tool_abort(int16_t widget_index)
     {
-        registers regs;
-        regs.dx = widget_index;
-        regs.esi = (int32_t)this;
-        call((uint32_t)this->event_handlers->on_tool_abort, regs);
+        if (event_handlers->on_tool_abort == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->on_tool_abort))
+        {
+            registers regs;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->on_tool_abort, regs);
+            return;
+        }
+
+        event_handlers->on_tool_abort(*this, widget_index);
     }
 
     ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
@@ -1162,7 +1190,7 @@ namespace openloco::ui
         }
 
         uint64_t tool_widget = 0;
-        if (this->type == addr<0x00523392, WindowType>() && this->number == addr<0x00523390, uint16_t>())
+        if (input::is_tool_active(this->type, this->number))
         {
             tool_widget = 1ULL << addr<0x00523394, uint32_t>();
         }
