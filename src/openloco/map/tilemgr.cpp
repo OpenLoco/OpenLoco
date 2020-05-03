@@ -221,12 +221,11 @@ namespace openloco::map::tilemgr
         if ((input::getMapSelectionFlags() & MAP_SELECT_FLAG_ENABLE_CONSTRUCT) == 0)
             return;
 
-        for (uint16_t index = 0;; ++index)
+        for (uint16_t index = 0; index < mapSelectedTilesSize; ++index)
         {
             auto& position = _mapSelectedTiles[index];
             if (position.x == -1)
                 break;
-            assert(index >= 0 && index < mapSelectedTilesSize);
             map_invalidate_tile_full(position);
         }
     }
