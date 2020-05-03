@@ -7,6 +7,7 @@
 
 namespace openloco
 {
+    using string_id = uint16_t;
     namespace screen_flags
     {
         constexpr uint8_t title = 1 << 0;
@@ -39,4 +40,5 @@ namespace openloco
     void sub_431695(uint16_t var_F253A0);
     void main();
     void prompt_tick_loop(std::function<bool()> tickAction);
+    void exit_with_error(openloco::string_id message, uint32_t errorCode);
 }

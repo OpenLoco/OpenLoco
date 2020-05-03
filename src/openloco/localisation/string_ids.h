@@ -58,6 +58,7 @@ namespace openloco::string_ids
     constexpr string_id close_window_cross = 56;
 
     constexpr string_id tooltip_close_window = 60;
+    constexpr string_id game_init_failure = 61;
 
     constexpr string_id display_resolution_dropdown_format = 65;
     constexpr string_id display_resolution_label_format = 66;
@@ -381,6 +382,7 @@ namespace openloco::string_ids
     constexpr string_id forced_software_buffer_mixing = UNUSED_STR(1010);
     constexpr string_id forced_software_buffer_mixing_tip = UNUSED_STR(1011);
 
+    constexpr string_id loco_already_running = 1016;
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
     constexpr string_id music_copyright = 1019;

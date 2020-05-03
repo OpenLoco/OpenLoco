@@ -1,4 +1,5 @@
 #include "../companymgr.h"
+#include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
@@ -6,13 +7,16 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
+#include <optional>
 
 using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyFaceSelection
 {
-    loco_global<uint8_t, 0x9C68F2> _9C68F2;
-    loco_global<uint16_t, 0x112C1C1> _112C1C1;
+    static loco_global<uint8_t, 0x9C68F2> _9C68F2;
+    static loco_global<uint16_t, 0x112C1C1> _112C1C1;
+    static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
+    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
 
     static const gfx::ui_size_t windowSize = { 400, 272 };
     static window_event_list events;
@@ -42,15 +46,60 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     void sub_435381()
     {
+        // Zero'd memory
+        _faceSelectionMalloc = new uint8_t[objectmgr::getNumInstalledObjects()]{};
+
+        if (_faceSelectionMalloc == nullptr)
+        {
+            exit_with_error(string_ids::null, 0xFF000002);
+        }
+    }
+
+    struct unk
+    {
+        object_type objectType;
+        int32_t index;
+    };
+
+    // 0x004720EB Returns std::nullopt if not loaded
+    std::optional<unk> getLoadedObjectTypeAndIndex(const objectmgr::object_index_entry& object)
+    {
         registers regs;
-        call(0x435381, regs);
+        regs.ebp = reinterpret_cast<uint32_t>(&object._header->type);
+        bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
+        if (success)
+        {
+            return { { static_cast<object_type>(regs.ecx), regs.ebx } };
+        }
+        return std::nullopt;
     }
 
     void sub_4353F4(company_id_t id)
     {
-        registers regs;
-        regs.al = id;
-        call(0x004353F4, regs);
+        std::vector<uint8_t> takenCompetitorIds;
+        for (const auto& c : companymgr::companies())
+        {
+            if (!c.empty() && c.id() != id)
+            {
+                takenCompetitorIds.push_back(c.competitor_id);
+            }
+        }
+
+        for (auto object : objectmgr::getAvailableObjects(object_type::competitor))
+        {
+            auto objectRef = getLoadedObjectTypeAndIndex(object.second);
+            if (objectRef)
+            {
+                if (objectRef->objectType == object_type::competitor)
+                {
+                    auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), objectRef->index);
+                    if (res != takenCompetitorIds.end())
+                    {
+                        _faceSelectionMalloc[object.first] = 0x20;
+                    }
+                }
+            }
+        }
     }
 
     void open(company_id_t id)
@@ -160,11 +209,33 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        registers regs;
-        regs.ax = scrollIndex;
-        regs.esi = (int32_t)self;
-        regs.edi = (int32_t)dpi;
-        call(0x435152, regs);
+        gfx::clear_single(*dpi, colour::get_shade(self->colours[1], 4));
+        auto y = 0;
+        auto nameCpy = std::make_unique<char[]>(256);
+        for (auto object : objectmgr::getAvailableObjects(object_type::competitor))
+        {
+            uint8_t inlineColour = control_codes::colour_black;
+
+            bool isDisabled = _faceSelectionMalloc[object.first] & (0x20);
+            if (object.second._header == reinterpret_cast<objectmgr::header*>(*(uint32_t*)&self->var_85A))
+            {
+                inlineColour = control_codes::window_colour_2;
+                gfx::fill_rect(dpi, 0, y, self->width, y + 9, 0x2000000 | 48);
+            }
+
+            strcpy(nameCpy.get() + 1, object.second._name);
+            nameCpy[0] = inlineColour;
+            _currentFontSpriteBase = font::medium_bold;
+            auto stringColour = colour::black;
+            if (isDisabled)
+            {
+                _currentFontSpriteBase = font::m1;
+                stringColour = colour::opaque(self->colours[1]) | (1 << 6);
+            }
+            gfx::draw_string(dpi, 0, y - 1, stringColour, nameCpy.get());
+
+            y += 10;
+        }
     }
 
     static void initEvents()

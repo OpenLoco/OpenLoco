@@ -240,12 +240,22 @@ namespace openloco
         call(0x004BE621, regs);
     }
 
+    // 0x004BE5EB
+    void exit_with_error(string_id message, uint32_t errorCode)
+    {
+        // Saves the error code for later writing to error log 1.TMP.
+        registers regs;
+        regs.eax = errorCode;
+        regs.bx = message;
+        call(0x004BE5EB, regs);
+    }
+
     // 0x00441400
     static void startup_checks()
     {
         if (is_already_running("Locomotion"))
         {
-            exit_with_error(61, 1016);
+            exit_with_error(string_ids::game_init_failure, string_ids::loco_already_running);
         }
 
         // Originally the game would check that all the game
