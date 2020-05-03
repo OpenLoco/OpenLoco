@@ -25,8 +25,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyWindow
 {
-    loco_global<uint16_t[8], 0x112C826> _common_format_args;
-
     namespace common
     {
         enum widx
@@ -124,9 +122,10 @@ namespace openloco::ui::windows::CompanyWindow
         {
             common::switchTabWidgets(self);
 
-            // Set company name.
+            // Set company name in title.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
+            FormatArguments args{};
+            args.push(company->name);
 
             self->disabled_widgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
 
@@ -218,7 +217,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw owner name
             {
-                *_common_format_args = company->owner_name;
+                FormatArguments args{};
+                args.push(company->owner_name);
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 gfx::draw_string_centred_wrapped(
@@ -227,18 +227,19 @@ namespace openloco::ui::windows::CompanyWindow
                     widget.right - widget.left,
                     colour::black,
                     string_ids::white_stringid2,
-                    &*_common_format_args);
+                    &args);
             }
 
             // Draw owner status
             {
-                uint32_t arg1{};
-                uint32_t arg2{};
-                string_id status = companymgr::getOwnerStatus(self->number, &arg1, &arg2);
-
-                *_common_format_args = status;
-                *(uint32_t*)&_common_format_args[1] = arg1;
-                *(uint32_t*)&_common_format_args[3] = arg2;
+                // TODO: df fix this
+                // Until format arguments can allow pushing to the front we will have to call twice once for the status
+                FormatArguments args{};
+                string_id status = companymgr::getOwnerStatus(self->number, args);
+                args = FormatArguments{};
+                args.push(status);
+                // and once for the args
+                companymgr::getOwnerStatus(self->number, args);
 
                 auto& widget = self->widgets[widx::unk_11];
                 gfx::draw_string_494BBF(
@@ -248,7 +249,7 @@ namespace openloco::ui::windows::CompanyWindow
                     widget.right - widget.left,
                     colour::black,
                     string_ids::white_stringid2,
-                    &*_common_format_args);
+                    &args);
             }
 
             if (self->viewports[0] != nullptr)
@@ -309,16 +310,10 @@ namespace openloco::ui::windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    _common_format_args[2] = company->owner_name;
-                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, &_common_format_args[2]);
+                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
             }
-
-            // registers regs;
-            // regs.edx = widgetIndex;
-            // regs.esi = (int32_t)self;
-            // call(0x00432244, regs);
         }
 
         // 0x00432283
@@ -697,7 +692,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Set company name.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
+            FormatArguments args{};
+            args.push(company->name);
             auto companyColour = companymgr::get_company_colour(self->number);
             auto skin = objectmgr::get<interface_skin_object>();
             uint32_t image = skin->img + interface_skin::image_ids::build_headquarters;
@@ -1568,9 +1564,12 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Set company name.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
-
-            *(uint32_t*)&_common_format_args[4] = company->current_loan;
+            FormatArguments args{};
+            args.push(company->name);
+            args.push<uint32_t>(0);
+            args.push<uint16_t>(0);
+            // Used for the loan stepper current value at offset 4
+            args.push(company->current_loan);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -1652,14 +1651,15 @@ namespace openloco::ui::windows::CompanyWindow
                     gfx::fill_rect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
-                _common_format_args[0] = ExpenditureLabels[i];
+                FormatArguments args{};
+                args.push(ExpenditureLabels[i]);
                 gfx::draw_string_494B3F(
                     *dpi,
                     self->x + 5,
                     y - 1,
                     colour::black,
                     string_ids::wcolour2_stringid2,
-                    _common_format_args);
+                    &args);
 
                 y += 10;
             }
@@ -1677,21 +1677,22 @@ namespace openloco::ui::windows::CompanyWindow
             // '@ X% interest per' label
             {
                 loco_global<uint8_t, 0x00525FC6> loanInterestRate;
-                _common_format_args[0] = *loanInterestRate;
+                FormatArguments args{};
+                args.push<uint16_t>(loanInterestRate);
                 gfx::draw_string_494B3F(
                     *dpi,
                     self->x + self->widgets[widx::current_loan].right + 3,
                     self->y + self->widgets[widx::current_loan].top + 1,
                     colour::black,
                     string_ids::interest_per_year,
-                    _common_format_args);
+                    &args);
             }
 
             // 'Cash' label with value
             {
                 // Set cash value in format args.
-                *(uint32_t*)&_common_format_args[0] = company->cash.var_00;
-                *(uint16_t*)&_common_format_args[2] = company->cash.var_04;
+                FormatArguments args{};
+                args.push(company->cash);
 
                 string_id cash_format = string_ids::cash_positive;
                 if ((company->challenge_flags & company_flags::bankrupt) != 0)
@@ -1705,14 +1706,14 @@ namespace openloco::ui::windows::CompanyWindow
                     self->y + self->widgets[widx::current_loan].top + 13,
                     colour::black,
                     cash_format,
-                    _common_format_args);
+                    &args);
             }
 
             // 'Company value' label with value
             {
                 // Set company value in format args.
-                *(uint32_t*)&_common_format_args[0] = company->companyValue.var_00;
-                *(uint16_t*)&_common_format_args[2] = company->companyValue.var_04;
+                FormatArguments args{};
+                args.push(company->companyValue);
 
                 gfx::draw_string_494B3F(
                     *dpi,
@@ -1720,14 +1721,14 @@ namespace openloco::ui::windows::CompanyWindow
                     self->y + self->widgets[widx::current_loan].top + 26,
                     colour::black,
                     string_ids::company_value,
-                    _common_format_args);
+                    &args);
             }
 
             // 'Profit from vehicles' label with value
             {
                 // Set company value in format args.
-                *(uint32_t*)&_common_format_args[0] = company->vehicleProfit.var_00;
-                *(uint16_t*)&_common_format_args[2] = company->vehicleProfit.var_04;
+                FormatArguments args{};
+                args.push(company->vehicleProfit);
 
                 gfx::draw_string_494B3F(
                     *dpi,
@@ -1735,7 +1736,7 @@ namespace openloco::ui::windows::CompanyWindow
                     self->y + self->widgets[widx::current_loan].top + 39,
                     colour::black,
                     string_ids::profit_from_vehicles,
-                    _common_format_args);
+                    &args);
             }
         }
 
@@ -2060,7 +2061,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Set company name.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
+            FormatArguments args{};
+            args.push(company->name);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -2102,12 +2104,13 @@ namespace openloco::ui::windows::CompanyWindow
                 if (cargo == nullptr || company->cargoDelivered[i] == 0)
                     continue;
 
+                FormatArguments args{};
                 if (company->cargoDelivered[i] == 1)
-                    _common_format_args[0] = cargo->unit_name_singular;
+                    args.push(cargo->unit_name_singular);
                 else
-                    _common_format_args[0] = cargo->unit_name_plural;
+                    args.push(cargo->unit_name_plural);
 
-                *(uint32_t*)&_common_format_args[1] = company->cargoDelivered[i];
+                args.push(company->cargoDelivered[i]);
 
                 gfx::draw_string_494B3F(
                     *dpi,
@@ -2115,7 +2118,7 @@ namespace openloco::ui::windows::CompanyWindow
                     y,
                     colour::black,
                     string_ids::white_stringid2,
-                    _common_format_args);
+                    &args);
 
                 numPrinted++;
                 y += 10;
@@ -2242,7 +2245,8 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Set company name.
             auto company = companymgr::get(self->number);
-            *_common_format_args = company->name;
+            FormatArguments args{};
+            args.push(company->name);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -2501,8 +2505,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void renameCompanyPrompt(window* self, widget_index widgetIndex)
         {
             auto company = companymgr::get(self->number);
-            _common_format_args[2] = company->name;
-            textinput::open_textinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, &_common_format_args[2]);
+            textinput::open_textinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
         // 0x0043254F

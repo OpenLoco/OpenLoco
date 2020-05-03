@@ -20,6 +20,6 @@ namespace openloco::companymgr
     void update();
 
     company* getOpponent();
-    string_id getOwnerStatus(company_id_t id, uint32_t* arg1, uint32_t* arg2);
+    string_id getOwnerStatus(company_id_t id, FormatArguments& args);
     void updateOwnerStatus();
 }

@@ -1,6 +1,7 @@
 #include "companymgr.h"
 #include "game_commands.h"
 #include "interop/interop.hpp"
+#include "localisation/FormatArguments.hpp"
 #include "map/tile.h"
 #include "openloco.h"
 #include "things/thingmgr.h"
@@ -128,14 +129,14 @@ namespace openloco::companymgr
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
-    string_id getOwnerStatus(company_id_t id, uint32_t* arg1, uint32_t* arg2)
+    string_id getOwnerStatus(company_id_t id, FormatArguments& args)
     {
         registers regs;
         regs.esi = (int32_t)get(id);
         call(0x00438047, regs);
 
-        *arg1 = regs.ecx;
-        *arg2 = regs.edx;
+        args.push(regs.ecx);
+        args.push(regs.edx);
         return regs.bx;
     }
 
