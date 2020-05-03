@@ -50,22 +50,23 @@ The latest release can be found on [GitHub](https://github.com/OpenLoco/OpenLoco
 
 OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](http://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
 
-### Windows:
-- 7 / 8 / 10
-- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
-  - Desktop development with C++
+Regardless of platform, the following libraries/dependencies are required:
+- [libpng](http://www.libpng.org/pub/png/libpng.html)
+- [libzip](https://libzip.org)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
-### Linux / macOS:
+### Windows
+- 7 / 8 / 10
+- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
+  - Desktop development with C++
+  - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
+
+### Linux / macOS
 - cmake
 - make or ninja
-- 32-bit versions of the following:
-  - [SDL2](https://www.libsdl.org/download-2.0.php)
-  - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
-  - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-  - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenLoco/OpenLoco/wiki/Compilation-on-macOS))
+- 32-bit versions of the libraries mentioned above
 
 ---
 
