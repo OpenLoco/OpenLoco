@@ -194,8 +194,7 @@ namespace openloco::map::tilemgr
             {
                 for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    auto pos = map::map_pos(x, y);
-                    map_invalidate_tile_full(pos);
+                    map_invalidate_tile_full({ x, y });
                 }
             }
         }
