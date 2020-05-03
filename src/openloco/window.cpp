@@ -489,7 +489,7 @@ namespace openloco::ui
         *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
     }
 
-    void window::viewport_centre_on_tile(loc16 loc)
+    void window::viewport_centre_on_tile(const map::map_pos3& loc)
     {
         registers regs;
         regs.ax = loc.x;

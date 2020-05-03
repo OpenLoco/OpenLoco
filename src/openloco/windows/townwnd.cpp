@@ -173,8 +173,7 @@ namespace openloco::ui::windows::town
                         break;
 
                     auto main = WindowManager::getMainWindow();
-                    auto mapY = static_cast<coord_t>(self->saved_view.mapY & 0x3FFF);
-                    main->viewport_centre_on_tile({ self->saved_view.mapX, mapY, self->saved_view.surfaceZ });
+                    main->viewport_centre_on_tile(self->saved_view.getPos());
                     break;
                 }
 

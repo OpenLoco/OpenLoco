@@ -297,8 +297,7 @@ namespace openloco::ui::windows::CompanyWindow
                     }
                     else
                     {
-                        auto mapY = static_cast<coord_t>(self->saved_view.mapY & 0x3FFF);
-                        main->viewport_centre_on_tile({ self->saved_view.mapX, mapY, self->saved_view.surfaceZ });
+                        main->viewport_centre_on_tile(self->saved_view.getPos());
                     }
                     break;
                 }
@@ -524,7 +523,7 @@ namespace openloco::ui::windows::CompanyWindow
                     }
 
                     self->saved_view = view;
-                    self->viewport_centre_on_tile({ company->observation_x, company->observation_y, static_cast<coord_t>(tileZ + 16) });
+                    self->viewport_centre_on_tile(view.getPos());
                     return;
                 }
                 // Not observing anything at all?
