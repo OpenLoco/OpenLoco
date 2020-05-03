@@ -25,6 +25,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyWindow
 {
+    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
+
     namespace common
     {
         enum widx
@@ -336,7 +338,7 @@ namespace openloco::ui::windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            addr<0x009C68E8, string_id>() = string_ids::cannot_change_owner_name;
+            gGameCommandErrorTitle = string_ids::cannot_change_owner_name;
 
             bool success = false;
             {
@@ -565,11 +567,6 @@ namespace openloco::ui::windows::CompanyWindow
                     return;
                 }
             }
-
-            // We're skipping the tab check and dive straight into the business to avoid a prepare_draw call.
-            // registers regs;
-            // regs.esi = (int32_t)self;
-            // call(0x004340C6);
         }
 
         static void initEvents()
@@ -661,7 +658,7 @@ namespace openloco::ui::windows::CompanyWindow
     {
         const gfx::ui_size_t windowSize = { 340, 194 };
 
-        loco_global<coord_t, 0x009C68D6> _9C68D6;
+        loco_global<coord_t, 0x009C68D6> _9C68D6; // likely tool x,y,z
         loco_global<coord_t, 0x009C68D8> _9C68D8;
         loco_global<coord_t, 0x009C68DA> _9C68DA;
         loco_global<uint8_t, 0x009C68EF> _9C68EF;
@@ -1375,7 +1372,7 @@ namespace openloco::ui::windows::CompanyWindow
                     const auto company = companymgr::get(self->number);
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
-                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
 
                     game_commands::do_19(0, newMode, vehicleType, 1, self->number);
 
@@ -1467,7 +1464,7 @@ namespace openloco::ui::windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
 
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
@@ -1491,7 +1488,7 @@ namespace openloco::ui::windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    addr<0x009C68E8, string_id>() = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
 
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
@@ -1907,7 +1904,7 @@ namespace openloco::ui::windows::CompanyWindow
                         stepSize = 100000;
 
                     newLoan -= stepSize;
-                    addr<0x009C68E8, string_id>() = string_ids::cant_pay_back_loan;
+                    gGameCommandErrorTitle = string_ids::cant_pay_back_loan;
                     game_commands::do_9(newLoan);
                     break;
                 }
@@ -1923,7 +1920,7 @@ namespace openloco::ui::windows::CompanyWindow
                         stepSize = 100000;
 
                     currency32_t newLoan = companymgr::get(self->number)->current_loan + stepSize;
-                    addr<0x009C68E8, string_id>() = string_ids::cant_borrow_any_more_money;
+                    gGameCommandErrorTitle = string_ids::cant_borrow_any_more_money;
                     game_commands::do_9(newLoan);
                     break;
                 }
@@ -2514,7 +2511,7 @@ namespace openloco::ui::windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            addr<0x009C68E8, string_id>() = string_ids::cannot_rename_this_company;
+            gGameCommandErrorTitle = string_ids::cannot_rename_this_company;
 
             uint32_t* buffer = (uint32_t*)input;
             game_commands::do_30(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
