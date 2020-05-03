@@ -194,17 +194,17 @@ namespace openloco::map::tilemgr
             {
                 for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    map_invalidate_tile_full(x, y);
+                    auto pos = map::map_pos(x, y);
+                    map_invalidate_tile_full(pos);
                 }
             }
         }
     }
 
     // 0x004CBE5F
-    void map_invalidate_tile_full(coord_t x, coord_t y)
+    void map_invalidate_tile_full(map::map_pos pos)
     {
-        auto pos = map::map_pos(x, y);
-        ui::viewportmgr::invalidate(pos, 0, 1088, ZoomLevel::eighth);
+        ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
 
     // 0x0046112C
