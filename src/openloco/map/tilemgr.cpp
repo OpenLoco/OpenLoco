@@ -8,8 +8,11 @@ using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
-    constexpr uint16_t MAP_SELECT_FLAG_ENABLE = 1;
-    constexpr uint16_t MAP_SELECT_FLAG_ENABLE_CONSTRUCT = 2;
+    enum MapSelectFlag : uint16_t
+    {
+        enable = (1 << 0),
+        enableConstruct = (1 << 1)
+    };
 
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
@@ -195,7 +198,7 @@ namespace openloco::map::tilemgr
     // 0x004610F2
     void map_invalidate_selection_rect()
     {
-        if ((input::getMapSelectionFlags() & MAP_SELECT_FLAG_ENABLE) != 0)
+        if ((input::getMapSelectionFlags() & MapSelectFlag::enable) != 0)
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
@@ -218,7 +221,7 @@ namespace openloco::map::tilemgr
     // 0x0046112C
     void map_invalidate_map_selection_tiles()
     {
-        if ((input::getMapSelectionFlags() & MAP_SELECT_FLAG_ENABLE_CONSTRUCT) == 0)
+        if ((input::getMapSelectionFlags() & MapSelectFlag::enableConstruct) == 0)
             return;
 
         for (uint16_t index = 0; index < mapSelectedTilesSize; ++index)
