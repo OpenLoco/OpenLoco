@@ -202,6 +202,8 @@ namespace openloco::map::tilemgr
     }
 
     // 0x004CBE5F
+    // regs.ax: pos.x
+    // regs.cx: pos.y
     void map_invalidate_tile_full(map::map_pos pos)
     {
         ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
