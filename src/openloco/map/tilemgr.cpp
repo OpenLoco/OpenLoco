@@ -2,7 +2,6 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"
-#include <cassert>
 
 using namespace openloco::interop;
 
