@@ -1146,6 +1146,49 @@ namespace openloco::ui::windows::CompanyWindow
             secondary_colour_ships,
         };
 
+        // clang-format off
+        constexpr uint64_t allMainColours = {
+            (1ULL << widx::main_colour_scheme) |
+            (1ULL << widx::main_colour_steam_locomotives) |
+            (1ULL << widx::main_colour_diesel_locomotives) |
+            (1ULL << widx::main_colour_electric_locomotives) |
+            (1ULL << widx::main_colour_multiple_units) |
+            (1ULL << widx::main_colour_passenger_vehicles) |
+            (1ULL << widx::main_colour_freight_vehicles) |
+            (1ULL << widx::main_colour_buses) |
+            (1ULL << widx::main_colour_trucks) |
+            (1ULL << widx::main_colour_aircraft) |
+            (1ULL << widx::main_colour_ships)
+        };
+
+        constexpr uint64_t allSecondaryColours = {
+            (1ULL << widx::secondary_colour_scheme) |
+            (1ULL << widx::secondary_colour_steam_locomotives) |
+            (1ULL << widx::secondary_colour_diesel_locomotives) |
+            (1ULL << widx::secondary_colour_electric_locomotives) |
+            (1ULL << widx::secondary_colour_multiple_units) |
+            (1ULL << widx::secondary_colour_passenger_vehicles) |
+            (1ULL << widx::secondary_colour_freight_vehicles) |
+            (1ULL << widx::secondary_colour_buses) |
+            (1ULL << widx::secondary_colour_trucks) |
+            (1ULL << widx::secondary_colour_aircraft) |
+            (1ULL << widx::secondary_colour_ships)
+        };
+
+        constexpr uint64_t allColourChecks = {
+            (1ULL << widx::check_steam_locomotives) |
+            (1ULL << widx::check_diesel_locomotives) |
+            (1ULL << widx::check_electric_locomotives) |
+            (1ULL << widx::check_multiple_units) |
+            (1ULL << widx::check_passenger_vehicles) |
+            (1ULL << widx::check_freight_vehicles) |
+            (1ULL << widx::check_buses) |
+            (1ULL << widx::check_trucks) |
+            (1ULL << widx::check_aircraft) |
+            (1ULL << widx::check_ships)
+        };
+        // clang-format on
+
         static widget_t widgets[] = {
             commonWidgets(265, 252, string_ids::title_company_colour_scheme),
             make_widget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
@@ -1183,7 +1226,7 @@ namespace openloco::ui::windows::CompanyWindow
             widget_end(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships);
+        constexpr uint64_t enabledWidgets = common::enabledWidgets | allMainColours | allSecondaryColours | allColourChecks;
 
         static window_event_list events;
 
@@ -1265,9 +1308,9 @@ namespace openloco::ui::windows::CompanyWindow
             }
 
             if (self->number == companymgr::get_controlling_id())
-                self->enabled_widgets |= (1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships);
+                self->enabled_widgets |= allColourChecks | allMainColours | allSecondaryColours;
             else
-                self->enabled_widgets &= ~((1ULL << check_steam_locomotives) | (1ULL << check_diesel_locomotives) | (1ULL << check_electric_locomotives) | (1ULL << check_multiple_units) | (1ULL << check_passenger_vehicles) | (1ULL << check_freight_vehicles) | (1ULL << check_buses) | (1ULL << check_trucks) | (1ULL << check_aircraft) | (1ULL << check_ships) | (1ULL << main_colour_steam_locomotives) | (1ULL << main_colour_diesel_locomotives) | (1ULL << main_colour_electric_locomotives) | (1ULL << main_colour_multiple_units) | (1ULL << main_colour_passenger_vehicles) | (1ULL << main_colour_freight_vehicles) | (1ULL << main_colour_buses) | (1ULL << main_colour_trucks) | (1ULL << main_colour_aircraft) | (1ULL << main_colour_ships) | (1ULL << secondary_colour_steam_locomotives) | (1ULL << secondary_colour_diesel_locomotives) | (1ULL << secondary_colour_electric_locomotives) | (1ULL << secondary_colour_multiple_units) | (1ULL << secondary_colour_passenger_vehicles) | (1ULL << secondary_colour_freight_vehicles) | (1ULL << secondary_colour_buses) | (1ULL << secondary_colour_trucks) | (1ULL << secondary_colour_aircraft) | (1ULL << secondary_colour_ships));
+                self->enabled_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
         }
 
         // 0x00432F9A
