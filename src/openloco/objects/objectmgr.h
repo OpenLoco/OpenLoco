@@ -174,10 +174,10 @@ namespace openloco::objectmgr
 #pragma pack(push, 1)
     struct header
     {
-        uint8_t type;
+        uint8_t type; // 0x00
         uint8_t pad_01[3];
         uint8_t var_04[8];
-        uint32_t checksum;
+        uint32_t checksum; // 0xC
 
         constexpr object_type get_type()
         {

@@ -3,6 +3,7 @@
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
+#include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -17,6 +18,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
     static loco_global<uint16_t, 0x112C1C1> _112C1C1;
     static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<competitor_object*, 0x0050D15C> _loadedObject; // This could be any type of object
 
     static const gfx::ui_size_t windowSize = { 400, 272 };
     static window_event_list events;
@@ -128,8 +130,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
             sub_4353F4(id);
             self->row_count = _112C1C1;
             self->row_hover = -1;
-            self->var_85A = -1;
-            self->var_85C = -1;
+            self->object = nullptr;
         }
     }
 
@@ -157,6 +158,36 @@ namespace openloco::ui::windows::CompanyFaceSelection
         *scrollHeight = _112C1C1 * 10;
     }
 
+    // Object free?
+    static void sub_471B95()
+    {
+        call(0x00471B95);
+    }
+
+    // Object load?
+    static void sub_47176D(objectmgr::header& object)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<int32_t>(&object);
+        call(0x0047176D, regs);
+    }
+
+    static std::pair<uint16_t, objectmgr::object_index_entry> getObjectFromSelection(const int16_t& y)
+    {
+        auto index = y / 10;
+        auto objects = objectmgr::getAvailableObjects(object_type::competitor);
+        if (index < 0 || static_cast<uint16_t>(index) >= objects.size())
+        {
+            return std::make_pair(-1, objectmgr::object_index_entry{});
+        }
+
+        if (_faceSelectionMalloc[objects[index].first] & (0x20))
+        {
+            return std::make_pair(-1, objectmgr::object_index_entry{});
+        }
+        return std::make_pair(index, objects[index].second);
+    }
+
     static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         registers regs;
@@ -169,12 +200,19 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static void scrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)self;
-        regs.cx = x;
-        regs.dx = y;
-        call(0x004352C7, regs);
+        auto [index, object] = getObjectFromSelection(y);
+        if (self->row_hover == index)
+        {
+            return;
+        }
+        self->row_hover = index;
+        self->object = object._name;
+        sub_471B95();
+        if (object._header)
+        {
+            sub_47176D(*object._header);
+        }
+        self->invalidate();
     }
 
     // 0x4352B1
@@ -201,30 +239,50 @@ namespace openloco::ui::windows::CompanyFaceSelection
             return;
         }
 
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.edi = (int32_t)dpi;
-        call(0x435003, regs);
+        {
+            auto colour = colour::get_shade(self->colours[1], 0);
+            auto l = self->x + 1 + self->widgets[widx::unk_5].left;
+            auto t = self->y + 1 + self->widgets[widx::unk_5].top;
+            auto r = self->x - 1 + self->widgets[widx::unk_5].right;
+            auto b = self->y - 1 + self->widgets[widx::unk_5].bottom;
+            gfx::fill_rect(dpi, l, t, r, b, colour);
+
+            competitor_object* competitor = _loadedObject;
+            uint32_t img = competitor->images[0] + 1 + (1 << 29);
+            gfx::draw_image(dpi, l, t, img);
+        }
+
+        {
+            auto x = self->x + self->widgets[widx::unk_5].mid_x();
+            auto y = self->y + self->widgets[widx::unk_5].bottom + 3;
+            auto width = self->width - self->widgets[widx::scrollview].right - 6;
+            auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            *str++ = control_codes::window_colour_2;
+            strcpy(str, self->object);
+            gfx::draw_string_centred_clipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
+        }
+
+        // There was code for displaying competitotor stats if window opened with none
+        // playing company. But that ability is disabled from the company window.
     }
 
     static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         gfx::clear_single(*dpi, colour::get_shade(self->colours[1], 4));
         auto y = 0;
-        auto nameCpy = std::make_unique<char[]>(256);
         for (auto object : objectmgr::getAvailableObjects(object_type::competitor))
         {
             uint8_t inlineColour = control_codes::colour_black;
 
             bool isDisabled = _faceSelectionMalloc[object.first] & (0x20);
-            if (object.second._header == reinterpret_cast<objectmgr::header*>(*(uint32_t*)&self->var_85A))
+            if (self->object && object.second._name == self->object)
             {
                 inlineColour = control_codes::window_colour_2;
                 gfx::fill_rect(dpi, 0, y, self->width, y + 9, 0x2000000 | 48);
             }
 
-            strcpy(nameCpy.get() + 1, object.second._name);
-            nameCpy[0] = inlineColour;
+            std::string name(object.second._name);
+            name.insert(0, 1, inlineColour);
             _currentFontSpriteBase = font::medium_bold;
             auto stringColour = colour::black;
             if (isDisabled)
@@ -232,7 +290,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
                 _currentFontSpriteBase = font::m1;
                 stringColour = colour::opaque(self->colours[1]) | (1 << 6);
             }
-            gfx::draw_string(dpi, 0, y - 1, stringColour, nameCpy.get());
+            gfx::draw_string(dpi, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 
             y += 10;
         }
