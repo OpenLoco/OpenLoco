@@ -9,6 +9,8 @@ namespace openloco
 
     namespace colour
     {
+        constexpr uint8_t outline_flag = 1 << 5;
+        constexpr uint8_t inset_flag = 1 << 6;
         constexpr uint8_t translucent_flag = 1 << 7;
 
         constexpr colour_t black = 0;
@@ -43,7 +45,16 @@ namespace openloco
         constexpr colour_t dark_pink = 29;
         constexpr colour_t bright_pink = 30;
         constexpr colour_t light_pink = 31;
-        constexpr colour_t white_black_outline = 32;
+
+        constexpr colour_t outline(colour_t c)
+        {
+            return c | outline_flag;
+        }
+
+        constexpr colour_t inset(colour_t c)
+        {
+            return c | inset_flag;
+        }
 
         constexpr colour_t translucent(colour_t c)
         {
