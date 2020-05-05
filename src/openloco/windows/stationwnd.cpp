@@ -77,7 +77,7 @@ namespace openloco::ui::windows::station
         };
 
         widget_t widgets[] = {
-            //commonWidgets(windowSize.width, windowSize.height),
+            // commonWidgets(windowSize.width, windowSize.height),
             commonWidgets(223, 136),
             make_widget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
             make_widget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
@@ -236,7 +236,7 @@ namespace openloco::ui::windows::station
                 if ((config::get().flags & config::flags::gridlines_on_landscape) != 0)
                     flags |= viewport_flags::gridlines_on_landscape;
             }
-            //Remove station names from viewport
+            // Remove station names from viewport
             flags |= viewport_flags::station_names_displayed;
 
             self->saved_view = view;
@@ -307,7 +307,7 @@ namespace openloco::ui::windows::station
         // TODO(avgeffen): only needs to be called once.
         common::initEvents();
 
-        window->current_tab = 0;
+        window->current_tab = common::widx::tab_station - common::widx::tab_station;
         window->invalidate();
 
         window->widgets = station::widgets;
@@ -359,9 +359,10 @@ namespace openloco::ui::windows::station
             self->widgets[widx::station_catchment].left = self->width - 25;
 
             common::repositionTabs(self);
-            self->activated_widgets &= 0xFFFFFdDF;
+
+            self->activated_widgets &= ~(1 << widx::station_catchment);
             if (self->number == word_112C786)
-                self->activated_widgets |= 0x200;
+                self->activated_widgets |= (1 << widx::station_catchment);
         }
 
         // 0x0048E8DE
@@ -478,7 +479,7 @@ namespace openloco::ui::windows::station
             auto cargoId = 0;
             for (const auto& cargoStats : station->cargo_stats)
             {
-                //auto& cargo = station->cargo_stats[i];
+                // auto& cargo = station->cargo_stats[i];
                 auto& cargo = cargoStats;
                 auto quantity = cargo.quantity;
                 if (quantity == 0)
@@ -533,9 +534,11 @@ namespace openloco::ui::windows::station
                 y += 2;
                 cargoId++;
             }
+
             uint16_t totalUnits = 0;
             for (const auto& stats : station->cargo_stats)
                 totalUnits += stats.quantity;
+
             if (totalUnits == 0)
             {
                 auto args = FormatArguments();
@@ -690,6 +693,7 @@ namespace openloco::ui::windows::station
                         colour = colour::saturated_red;
                     }
                 }
+
                 uint8_t amount = (rating * 327) / 256;
                 draw_rating_bar(self, dpi, 100, y, amount, colour);
 
@@ -730,7 +734,7 @@ namespace openloco::ui::windows::station
             { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &common::enabledWidgets }
         };
 
-        //0x0048E352, 0x0048E7C0 and 0x0048EC3B
+        // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
         static void prepare_draw(window* self)
         {
             // Reset tab widgets if needed.
@@ -742,7 +746,7 @@ namespace openloco::ui::windows::station
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings));
+            self->activated_widgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
             widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
             self->activated_widgets |= (1ULL << widgetIndex);
 
@@ -810,7 +814,7 @@ namespace openloco::ui::windows::station
             WindowManager::invalidate(WindowType::station, self->number);
         }
 
-        //0x0048E5E7
+        // 0x0048E5E7
         static void renameStationPrompt(window* self, widget_index widgetIndex)
         {
             auto station = stationmgr::get(self->number);
@@ -850,6 +854,7 @@ namespace openloco::ui::windows::station
                     regs.ax = -1;
                     call(0x0049271A, regs);
                 }
+
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
 
@@ -910,7 +915,7 @@ namespace openloco::ui::windows::station
 
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_cargo - widx::tab_station)
-                    imageId += cargoTabImageIds[(self->frame_no / 4) % std::size(cargoTabImageIds)];
+                    imageId += cargoTabImageIds[(self->frame_no / 8) % std::size(cargoTabImageIds)];
                 else
                     imageId += cargoTabImageIds[0];
 
@@ -926,12 +931,14 @@ namespace openloco::ui::windows::station
                 auto yOffset = widget.top + self->y + 14;
                 auto xOffset = widget.left + self->x + 4;
                 auto totalRatingBars = 0;
+
                 for (const auto& cargoStats : station->cargo_stats)
                 {
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        gfx::fill_rect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, self->colours[0]);
+                        gfx::fill_rect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | palette_index::index_30);
+
                         auto ratingColour = colour::moss_green;
                         if (cargo.rating < 100)
                         {
@@ -939,8 +946,10 @@ namespace openloco::ui::windows::station
                             if (cargo.rating < 50)
                                 ratingColour = colour::saturated_red;
                         }
+
                         auto ratingBarLength = (cargo.rating * 30) / 256;
                         gfx::fill_rect(dpi, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, colour::get_shade(ratingColour, 6));
+
                         yOffset += 3;
                         totalRatingBars++;
                         if (totalRatingBars >= 4)
@@ -949,6 +958,7 @@ namespace openloco::ui::windows::station
                 }
             }
         }
+
         // 0x0048E32C
         static void enableRenameByCaption(window* self)
         {
