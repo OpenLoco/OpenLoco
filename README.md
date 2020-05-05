@@ -30,15 +30,17 @@ Feel free to join our Discord server to talk about developing the game, or for h
 
 # 1 Introduction
 
-**OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](http://openttd.org) improved Transport Tycoon and [OpenRCT2](http://openrct2.io) improved RollerCoaster Tycoon.
+**OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](https://openttd.org) improved Transport Tycoon and [OpenRCT2](https://openrct2.io) improved RollerCoaster Tycoon.
 
-Chris Sawyer's Locomotion was written by Chris Sawyer in x86 assembly building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. This means that only select areas of the game such as the update logic should be written. The engine code such as audio, drawing and the window system should be left alone as it would only repeat the work that has already been done for OpenRCT2. It is more beneficial to share as much code as possible between OpenRCT2 and OpenLoco.
+Chris Sawyer's Locomotion was originally written by Chris Sawyer in x86 assembly, building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.
+
+Recent implementation efforts have focussed on re-implementing the UI, so that the data structures involved may be better understood. Once this is done, it is our hope the game logic will be easier to understand and implement.
 
 ---
 
 # 2 Downloading the game (pre-built)
 
-OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](http://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
+OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
 
 The latest release can be found on [GitHub](https://github.com/OpenLoco/OpenLoco/releases).
 
@@ -48,24 +50,25 @@ The latest release can be found on [GitHub](https://github.com/OpenLoco/OpenLoco
 
 ## 3.1 Building prerequisites
 
-OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](http://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
+OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
 
-### Windows:
-- 7 / 8 / 10
-- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
-  - Desktop development with C++
+Regardless of platform, the following libraries/dependencies are required:
+- [libpng](http://www.libpng.org/pub/png/libpng.html)
+- [libzip](https://libzip.org)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 
-### Linux / macOS:
+### Windows
+- 7 / 8 / 10
+- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
+  - Desktop development with C++
+  - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
+
+### Linux / macOS
 - cmake
 - make or ninja
-- 32-bit versions of the following:
-  - [SDL2](https://www.libsdl.org/download-2.0.php)
-  - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
-  - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-  - [Boost](http://www.boost.org/) (macOS only, [see wiki](https://github.com/OpenLoco/OpenLoco/wiki/Compilation-on-macOS))
+- 32-bit versions of the libraries mentioned above
 
 ---
 
