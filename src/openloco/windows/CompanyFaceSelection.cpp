@@ -53,18 +53,6 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
-    //[[maybe_unused]] static void sub_435381() // VS isn't listening to [[maybe_unused]]
-    //{
-    //    static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
-    //    // Zero'd memory
-    //    _faceSelectionMalloc = new uint8_t[objectmgr::getNumInstalledObjects()]{};
-
-    //    if (_faceSelectionMalloc == nullptr)
-    //    {
-    //        exit_with_error(string_ids::null, 0xFF000002);
-    //    }
-    //}
-
     // Object free?
     static void sub_471B95()
     {
