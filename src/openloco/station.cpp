@@ -32,12 +32,13 @@ namespace openloco
         return (station_id_t)index;
     }
 
-    // 0x00492640
+    // 0x0048B23E
     void station::update()
     {
         update_cargo_acceptance();
     }
 
+    // 0x00492640
     void station::update_cargo_acceptance()
     {
         uint32_t currentAcceptedCargo = calc_accepted_cargo();
@@ -65,6 +66,7 @@ namespace openloco
         }
     }
 
+    // 0x00492683
     void station::alert_cargo_acceptance_change(uint32_t oldCargoAcc, uint32_t newCargoAcc)
     {
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
