@@ -937,7 +937,7 @@ namespace openloco::ui::windows::station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        gfx::fill_rect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, self->colours[0]);
+                        gfx::fill_rect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | palette_index::index_30);
 
                         auto ratingColour = colour::moss_green;
                         if (cargo.rating < 100)
