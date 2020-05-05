@@ -101,7 +101,7 @@ namespace openloco
                                     bh = obj->var_F0;
                                 }
                                 uint8_t dl = prng.rand_next(7) * 32;
-                                sub_454A43(ax, cx, bl, bh, dl);
+                                sub_454A43(map::map_pos(ax, cx), bl, bh, dl);
                             }
                         }
                     }
@@ -110,14 +110,13 @@ namespace openloco
             }
         }
     }
-
-    void industry::sub_454A43(coord_t ax, coord_t cx, uint8_t bl, uint8_t bh, uint8_t dl)
+    void industry::sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
         registers regs;
         regs.bl = bl;
         regs.bh = bh;
-        regs.ax = ax;
-        regs.cx = cx;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
         regs.dl = dl;
         regs.dh = id();
         call(0x00454A43, regs);

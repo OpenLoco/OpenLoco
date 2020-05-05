@@ -30,12 +30,12 @@ namespace openloco::ui::windows::industry
             close_button,
             panel,
             tab_industry,
-            tab_unknown,
             tab_production,
+            tab_production_unknown,
             tab_transported,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_unknown) | (1 << widx::tab_production) | (1 << widx::tab_transported);
+        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_unknown) | (1 << widx::tab_transported);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
@@ -68,7 +68,7 @@ namespace openloco::ui::windows::industry
         static widget_t widgets[] = {
             commonWidgets(223, 136, string_ids::title_town),
             make_widget({ 3, 44 }, { 195, 79 }, widget_type::viewport, 1, 0xFFFFFFFE),
-            make_widget({ 3, 139 }, { 115, 14 }, widget_type::wt_13, 1),
+            make_widget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
             make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
             make_widget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_industry),
             widget_end(),
@@ -231,7 +231,7 @@ namespace openloco::ui::windows::industry
     }
 
     // 0x00456D2D
-    window* open(uint16_t industryId)
+    window* open(industry_id_t industryId)
     {
         auto window = WindowManager::bringToFront(WindowType::industry, industryId);
         if (window != nullptr)
@@ -264,7 +264,7 @@ namespace openloco::ui::windows::industry
             window->saved_view.clear();
         }
 
-        // TODO(avgeffen): only needs to be called once.
+        // TODO: only needs to be called once.
         common::initEvents();
 
         window->current_tab = 0;
@@ -275,13 +275,13 @@ namespace openloco::ui::windows::industry
         window->holdable_widgets = 0;
         window->event_handlers = &industry::events;
         window->activated_widgets = 0;
-        //auto industry = objectmgr::get<industry_object>(window->number);
+        auto industry = objectmgr::get<industry_object>(industrymgr::get(window->number)->object_id);
         auto disabledWidgets = 0;
 
-        /*if (industry->var_DE[0] == -1)
+        if (industry->var_DE[0] == 0xFF)
             disabledWidgets |= 0x20;
-        if (industry->var_DE[1] == -1)
-            disabledWidgets |= 0x40;*/
+        if (industry->var_DE[1] == 0xFF)
+            disabledWidgets |= 0x40;
 
         window->disabled_widgets = disabledWidgets;
         window->init_scroll_widgets();
@@ -290,24 +290,105 @@ namespace openloco::ui::windows::industry
         return window;
     }
 
-    namespace unknown
-    {
-        static widget_t widgets[] = {
-            commonWidgets(222, 136, string_ids::title_industry_monthly_production),
-            widget_end(),
-        };
-
-        static window_event_list events;
-    }
-
     namespace production
     {
+        static window_event_list events;
+
+        // 0x00455FD9
+        static void prepare_draw(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x00455FD9, regs);
+        }
+        // 0x00456079
+        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edi = (int32_t)dpi;
+            call(0x00456079, regs);
+        }
+
+        // 0x00456505
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edx = widgetIndex;
+            call(0x00456505, regs);
+        }
+
+        // 0x0045654F
+        static void on_resize(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x0045654F, regs);
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.on_resize = on_resize;
+            events.on_update = common::update;
+            events.prepare_draw = prepare_draw;
+            events.text_input = common::text_input;
+        }
+    }
+
+    namespace production_unknown
+    {
         static widget_t widgets[] = {
             commonWidgets(222, 136, string_ids::title_industry_monthly_production),
             widget_end(),
         };
 
         static window_event_list events;
+
+        // 0x0045626F
+        static void prepare_draw(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x0045626F, regs);
+        }
+        // 0x0045630F
+        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edi = (int32_t)dpi;
+            call(0x0045630F, regs);
+        }
+
+        // 0x004565B5
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edx = widgetIndex;
+            call(0x004565B5, regs);
+        }
+
+        // 0x004565FF
+        static void on_resize(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x004565FF, regs);
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.on_resize = on_resize;
+            events.on_update = common::update;
+            events.prepare_draw = prepare_draw;
+            events.text_input = common::text_input;
+        }
     }
 
     namespace transported
@@ -318,6 +399,57 @@ namespace openloco::ui::windows::industry
         };
 
         static window_event_list events;
+
+        // 0x00456665
+        static void prepare_draw(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x00456665, regs);
+        }
+        // 0x00456705
+        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edi = (int32_t)dpi;
+            call(0x00456705, regs);
+        }
+
+        // 0x0045695E
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edx = widgetIndex;
+            call(0x0045695E, regs);
+        }
+
+        // 0x004569C2
+        static void on_resize(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x004569C2, regs);
+        }
+
+        // 0x0045698E
+        static void update(window* self)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            call(0x0045698E, regs);
+        }
+
+        static void initEvents()
+        {
+            events.draw = draw;
+            events.on_mouse_up = on_mouse_up;
+            events.on_resize = on_resize;
+            events.on_update = update;
+            events.prepare_draw = prepare_draw;
+            events.text_input = common::text_input;
+        }
     }
 
     namespace common
@@ -332,15 +464,14 @@ namespace openloco::ui::windows::industry
 
         static TabInformation tabInformationByTabOffset[] = {
             { industry::widgets, widx::tab_industry, &industry::events, &industry::enabledWidgets },
-            { unknown::widgets, widx::tab_unknown, &unknown::events, &common::enabledWidgets },
-            { production::widgets, widx::tab_production, &production::events, &common::enabledWidgets },
+            { production_unknown::widgets, widx::tab_production, &production::events, &common::enabledWidgets },
+            { production_unknown::widgets, widx::tab_production_unknown, &production_unknown::events, &common::enabledWidgets },
             { transported::widgets, widx::tab_transported, &transported::events, &common::enabledWidgets }
         };
 
         static void prepare_draw(window* self)
         {
             // Reset tab widgets if needed.
-            std::printf("%d\n", self->current_tab);
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
             if (self->widgets != tabWidgets)
             {
@@ -349,7 +480,7 @@ namespace openloco::ui::windows::industry
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_industry) | (1 << widx::tab_unknown) | (1 << widx::tab_production) | (1 << widx::tab_transported));
+            self->activated_widgets &= ~((1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_unknown) | (1 << widx::tab_transported));
             widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
             self->activated_widgets |= (1ULL << widgetIndex);
 
@@ -357,8 +488,7 @@ namespace openloco::ui::windows::industry
             auto industry = industrymgr::get(self->number);
             auto args = FormatArguments();
             args.push(industry->name);
-            args.push<uint16_t>(0);
-            args.push(industry->var_D5);
+            args.push(industry->type);
             // Resize common widgets.
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -409,6 +539,9 @@ namespace openloco::ui::windows::industry
         static void initEvents()
         {
             industry::initEvents();
+            production::initEvents();
+            production_unknown::initEvents();
+            transported::initEvents();
         }
     }
 }

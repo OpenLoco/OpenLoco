@@ -99,7 +99,7 @@ namespace openloco::ui::windows::construction
 
 namespace openloco::ui::windows::industry
 {
-    window* open(uint16_t id);
+    window* open(industry_id_t id);
 }
 
 namespace openloco::ui::windows::industry_list

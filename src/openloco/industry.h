@@ -34,7 +34,7 @@ namespace openloco
         uint8_t object_id;  // 0x10
         uint8_t var_11;
         uint8_t pad_12[0xD5 - 0x12];
-        uint16_t var_D5;
+        uint16_t type;
         map::tile_loop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
@@ -52,7 +52,7 @@ namespace openloco
         bool empty() const;
 
         void update();
-        void sub_454A43(coord_t x, coord_t y, uint8_t bl, uint8_t bh, uint8_t dl);
+        void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)
 }
