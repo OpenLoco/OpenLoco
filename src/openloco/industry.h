@@ -27,8 +27,8 @@ namespace openloco
     struct industry
     {
         string_id name;
-        coord_t var_02;
-        coord_t var_04;
+        coord_t x;          // 0x02
+        coord_t y;          // 0x04
         uint16_t flags;     // 0x06
         utility::prng prng; // 0x08
         uint8_t object_id;  // 0x10

@@ -91,8 +91,8 @@ namespace openloco
                         {
                             if (prng.rand_bool())
                             {
-                                coord_t x = var_02 + (prng.rand_next(-15, 16) * 32);
-                                coord_t y = var_04 + (prng.rand_next(-15, 16) * 32);
+                                coord_t ax = x + (prng.rand_next(-15, 16) * 32);
+                                coord_t cx = y + (prng.rand_next(-15, 16) * 32);
                                 uint8_t bl = obj->var_ED;
                                 uint8_t bh = obj->var_EE;
                                 if (obj->var_EF != 0xFF && prng.rand_bool())
@@ -101,7 +101,7 @@ namespace openloco
                                     bh = obj->var_F0;
                                 }
                                 uint8_t dl = prng.rand_next(7) * 32;
-                                sub_454A43(x, y, bl, bh, dl);
+                                sub_454A43(ax, cx, bl, bh, dl);
                             }
                         }
                     }
@@ -111,13 +111,13 @@ namespace openloco
         }
     }
 
-    void industry::sub_454A43(coord_t x, coord_t y, uint8_t bl, uint8_t bh, uint8_t dl)
+    void industry::sub_454A43(coord_t ax, coord_t cx, uint8_t bl, uint8_t bh, uint8_t dl)
     {
         registers regs;
         regs.bl = bl;
         regs.bh = bh;
-        regs.ax = x;
-        regs.cx = y;
+        regs.ax = ax;
+        regs.cx = cx;
         regs.dl = dl;
         regs.dh = id();
         call(0x00454A43, regs);

@@ -596,12 +596,18 @@ namespace openloco::string_ids
     constexpr string_id title_town = 1359;
     constexpr string_id title_town_population = 1360;
     constexpr string_id title_town_local_authority = 1361;
+    constexpr string_id title_industry_monthly_production = 1362;
+    constexpr string_id title_statistics = 1363;
+
+    constexpr string_id demolish_this_industry = 1365;
 
     constexpr string_id title_station = 1364;
 
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
     constexpr string_id tooltip_town_ratings_each_company = 1388;
+    constexpr string_id tooltip_industry = 1389;
+    constexpr string_id tooltip_production_graph = 1390;
 
     constexpr string_id demolish_this_town = 1392;
     constexpr string_id cant_remove_town = 1393;
@@ -616,6 +622,8 @@ namespace openloco::string_ids
     constexpr string_id town_size_8 = 1406;
 
     constexpr string_id expand_this_town = 1409;
+
+    constexpr string_id tooltip_statistics = 1414;
 
     constexpr string_id error_reason_belongs_to = 1420;
     constexpr string_id error_reason_stringid_belongs_to = 1421;
