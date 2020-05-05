@@ -307,7 +307,7 @@ namespace openloco::ui::windows::station
         // TODO(avgeffen): only needs to be called once.
         common::initEvents();
 
-        window->current_tab = 0;
+        window->current_tab = common::widx::tab_station - common::widx::tab_station;
         window->invalidate();
 
         window->widgets = station::widgets;
@@ -746,7 +746,7 @@ namespace openloco::ui::windows::station
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings));
+            self->activated_widgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
             widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
             self->activated_widgets |= (1ULL << widgetIndex);
 
