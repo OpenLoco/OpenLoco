@@ -1,6 +1,9 @@
+#include "../audio/audio.h"
 #include "../companymgr.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"
@@ -19,6 +22,8 @@ namespace openloco::ui::windows::CompanyFaceSelection
     static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<competitor_object*, 0x0050D15C> _loadedObject; // This could be any type of object
+    static loco_global<int32_t, 0x0113E72C> _cursorX;
+    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
     static const gfx::ui_size_t windowSize = { 400, 272 };
     static window_event_list events;
@@ -55,6 +60,20 @@ namespace openloco::ui::windows::CompanyFaceSelection
         {
             exit_with_error(string_ids::null, 0xFF000002);
         }
+    }
+
+    // Object free?
+    static void sub_471B95()
+    {
+        call(0x00471B95);
+    }
+
+    // Object load?
+    static void sub_47176D(objectmgr::header& object)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<int32_t>(&object);
+        call(0x0047176D, regs);
     }
 
     struct unk
@@ -136,9 +155,8 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static void onClose(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        call(0x4352A4, regs);
+        sub_471B95();
+        delete[] _faceSelectionMalloc;
     }
 
     // 0x435299
@@ -158,21 +176,8 @@ namespace openloco::ui::windows::CompanyFaceSelection
         *scrollHeight = _112C1C1 * 10;
     }
 
-    // Object free?
-    static void sub_471B95()
-    {
-        call(0x00471B95);
-    }
-
-    // Object load?
-    static void sub_47176D(objectmgr::header& object)
-    {
-        registers regs;
-        regs.ebp = reinterpret_cast<int32_t>(&object);
-        call(0x0047176D, regs);
-    }
-
-    static std::pair<uint16_t, objectmgr::object_index_entry> getObjectFromSelection(const int16_t& y)
+    // 0x004354A6 sort of, very different
+    static std::pair<const uint16_t, const objectmgr::object_index_entry> getObjectFromSelection(const int16_t& y)
     {
         auto index = y / 10;
         auto objects = objectmgr::getAvailableObjects(object_type::competitor);
@@ -190,12 +195,19 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.esi = (int32_t)self;
-        regs.cx = x;
-        regs.dx = y;
-        call(0x435314, regs);
+        auto [index, object] = getObjectFromSelection(y);
+        if (!object._header)
+        {
+            return;
+        }
+        self->invalidate();
+        audio::play_sound(audio::sound_id::click_down, _cursorX);
+        gGameCommandErrorTitle = string_ids::cant_select_face;
+        auto result = game_commands::do_65(*object._header, _9C68F2);
+        if (result)
+        {
+            WindowManager::close(self);
+        }
     }
 
     static void scrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)

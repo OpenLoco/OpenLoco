@@ -2,6 +2,7 @@
 
 #include "interop/interop.hpp"
 #include "map/tile.h"
+#include "objects/objectmgr.h"
 #include "things/thing.h"
 
 using namespace openloco::interop;
@@ -142,6 +143,21 @@ namespace openloco::game_commands
         regs.ax = ax; // y?
         regs.di = di; // z?
         do_command(55, regs);
+    }
+
+    inline bool do_65(const objectmgr::header& object, uint8_t company)
+    {
+        auto objPtr = reinterpret_cast<const int32_t*>(&object);
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.eax = *objPtr++;
+        regs.ecx = *objPtr++;
+        regs.edx = *objPtr++;
+        regs.edi = *objPtr;
+        regs.bh = company;
+        do_command(65, regs);
+
+        return (uint32_t)regs.ebx != 0x80000000;
     }
 
     inline void do_71(int32_t ax, char* string)
