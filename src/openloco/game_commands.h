@@ -157,6 +157,28 @@ namespace openloco::game_commands
         do_command(71, regs);
     }
 
+    //Rename Industry
+    inline void do_79(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = cx;   // industry number or 0
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(79, regs);
+    }
+
+    inline bool do_48(uint8_t bl, uint8_t industryId)
+    {
+        registers regs;
+        regs.bl = bl; // [ 1 = remove industry]
+        regs.edi = industryId;
+        do_command(50, regs);
+        return (uint32_t)regs.ebx != 0x80000000;
+    }
+
     inline bool do_50(uint8_t bl, uint8_t townId)
     {
         registers regs;

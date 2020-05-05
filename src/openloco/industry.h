@@ -4,6 +4,7 @@
 #include "map/tile.h"
 #include "map/tile_loop.hpp"
 #include "objects/industry_object.h"
+#include "town.h"
 #include "utility/prng.hpp"
 #include <cstdint>
 #include <limits>
@@ -34,12 +35,13 @@ namespace openloco
         uint8_t object_id;  // 0x10
         uint8_t var_11;
         uint8_t pad_12[0xD5 - 0x12];
-        uint16_t type;
+        town_id_t town; // 0xD5
         map::tile_loop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
-        uint8_t pad_E0[0x189 - 0xE0];
+        uint8_t owner; // 0xE0
+        uint8_t pad_E1[0x189 - 0xE1];
         uint16_t var_189;
         uint16_t var_18B;
         uint8_t pad_18D[0x1A3 - 0x18D];

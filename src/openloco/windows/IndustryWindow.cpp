@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../config.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
@@ -20,7 +21,10 @@ using namespace openloco::game_commands;
 
 namespace openloco::ui::windows::industry
 {
-    static const gfx::ui_size_t windowSize = { 223, 161 };
+    static const gfx::ui_size_t windowSize = { 223, 136 };
+
+    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
+
     namespace common
     {
         enum widx
@@ -41,7 +45,7 @@ namespace openloco::ui::windows::industry
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
         make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                               \
+        make_widget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
         make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industry),                     \
         make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),            \
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),            \
@@ -51,12 +55,17 @@ namespace openloco::ui::windows::industry
         static void prepare_draw(window* self);
         static void text_input(window* self, widget_index callingWidget, char* input);
         static void update(window* self);
+        static void renameIndustryPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
+        static void switchTab(window* self, widget_index widgetIndex);
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
     namespace industry
     {
+        static const gfx::ui_size_t windowSize = { 223, 136 };
+
         enum widx
         {
             viewport = 8,
@@ -114,19 +123,74 @@ namespace openloco::ui::windows::industry
         // 0x00455C22
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+            self->drawViewports(dpi);
+            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+
+            //auto industry = industrymgr::get(self->number);
+
+            // 0x0045935F start
             registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00455C22, regs);
+            regs.dx = self->number;
+            call(0x0045935F, regs);
+            // 0x0045935F end
+
+            auto args = FormatArguments();
+            args.push(regs.bx);
+            auto widget = &self->widgets[widx::status_bar];
+            auto x = self->x + widget->left - 1;
+            auto y = self->y + widget->top - 1;
+            auto width = widget->width();
+            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::white_stringid2, &args);
         }
 
         // 0x00455C86
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edx = widgetIndex;
-            call(0x00455C86, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameIndustryPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_industry:
+                case common::widx::tab_production:
+                case common::widx::tab_production_unknown:
+                case common::widx::tab_transported:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                // 0x00455EA2
+                case widx::centre_on_viewport:
+                {
+                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
+                        break;
+
+                    auto main = WindowManager::getMainWindow();
+                    main->viewport_centre_on_tile(self->saved_view.getPos());
+                    break;
+                }
+
+                // 0x0049916A
+                case widx::demolish_industry:
+                {
+                    bool success = game_commands::do_48(GameCommandFlag::apply, self->number);
+                    if (!success)
+                        break;
+
+                    loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
+                    loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
+                    loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
+
+                    audio::play_sound(audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
+                    break;
+                }
+            }
         }
 
         static void initViewport(window* self);
@@ -246,7 +310,7 @@ namespace openloco::ui::windows::industry
         {
             // 0x00456DBC start
             const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
-            window = WindowManager::createWindow(WindowType::industry, windowSize, newFlags, &industry::events);
+            window = WindowManager::createWindow(WindowType::industry, industry::windowSize, newFlags, &industry::events);
             window->number = industryId;
             window->min_width = 192;
             window->min_height = 137;
@@ -488,7 +552,7 @@ namespace openloco::ui::windows::industry
             auto industry = industrymgr::get(self->number);
             auto args = FormatArguments();
             args.push(industry->name);
-            args.push(industry->type);
+            args.push(industry->town);
             // Resize common widgets.
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -505,12 +569,18 @@ namespace openloco::ui::windows::industry
         // 0x00455CBC
         static void text_input(window* self, widget_index callingWidget, char* input)
         {
-            registers regs;
-            regs.dx = callingWidget;
-            regs.esi = (int32_t)self;
-            regs.cl = 1;
-            regs.edi = (uintptr_t)input;
-            call(0x00456C36, regs);
+            if (callingWidget != common::widx::caption)
+                return;
+
+            if (strlen(input) == 0)
+                return;
+
+            gGameCommandErrorTitle = string_ids::error_cant_rename_industry;
+
+            uint32_t* buffer = (uint32_t*)input;
+            game_commands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_79(0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_79(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void update(window* self)
@@ -520,6 +590,26 @@ namespace openloco::ui::windows::industry
             WindowManager::invalidate(WindowType::industry, self->number);
         }
 
+         //0x0048E5E7
+        static void renameIndustryPrompt(window* self, widget_index widgetIndex)
+        {
+            auto industry = industrymgr::get(self->number);
+            if (!isNetworked())
+            {
+                if ((industry->flags & 0x8) == 0)
+                {
+                    if (!is_player_company(industry->owner))
+                    {
+                        auto args = FormatArguments();
+                        args.push<int64_t>(0);
+                        args.push(industry->name);
+                        args.push(industry->town);
+
+                        textinput::open_textinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+                    }
+                }
+            }
+        }
         // 0x00456A5E, 0x00456A64
         static void repositionTabs(window* self)
         {
@@ -536,6 +626,52 @@ namespace openloco::ui::windows::industry
                 xPos = self->widgets[i].right + 1;
             }
         }
+
+        // 0x004991BC
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+
+            self->current_tab = widgetIndex - widx::tab_industry;
+            self->frame_no = 0;
+            self->flags &= ~(window_flags::flag_16);
+            self->var_85C = -1;
+
+            if (self->viewports[0] != nullptr)
+            {
+                self->viewports[0]->width = 0;
+                self->viewports[0] = nullptr;
+            }
+
+            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry];
+
+            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->holdable_widgets = 0;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+            self->disabled_widgets = 0;
+
+            self->invalidate();
+
+            self->set_size(windowSize);
+            self->call_on_resize();
+            self->call_prepare_draw();
+            self->init_scroll_widgets();
+            self->invalidate();
+            self->moveInsideScreenEdges();
+        }
+
+        // 0x00456A98
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            registers regs;
+            regs.esi = (uint32_t)self;
+            regs.edi = (int32_t)dpi;
+            call(0x00456A98, regs);
+        }
+
         static void initEvents()
         {
             industry::initEvents();
