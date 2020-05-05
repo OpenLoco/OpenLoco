@@ -915,7 +915,7 @@ namespace openloco::ui::windows::station
 
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_cargo - widx::tab_station)
-                    imageId += cargoTabImageIds[(self->frame_no / 4) % std::size(cargoTabImageIds)];
+                    imageId += cargoTabImageIds[(self->frame_no / 8) % std::size(cargoTabImageIds)];
                 else
                     imageId += cargoTabImageIds[0];
 
