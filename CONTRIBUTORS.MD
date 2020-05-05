@@ -13,6 +13,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Matthias Moninger (ZehMatt)
 * Hielke Morsink (Broxzier)
 * Peter Gaál (petergaal)
+* Joe Bloomfield (Svelbeard)
 
 ## Bugfixes
 * seifer7

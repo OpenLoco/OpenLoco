@@ -64,7 +64,9 @@ namespace openloco
     struct station
     {
         string_id name; // 0x00
-        uint8_t pad_02[0x08 - 0x02];
+        coord_t x;      // 0x02
+        coord_t y;      // 0x04
+        coord_t z;      // 0x06
         uint16_t label_left[4];
         uint16_t label_right[4];
         uint16_t label_top[4];

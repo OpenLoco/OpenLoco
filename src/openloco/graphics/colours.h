@@ -43,6 +43,7 @@ namespace openloco
         constexpr colour_t dark_pink = 29;
         constexpr colour_t bright_pink = 30;
         constexpr colour_t light_pink = 31;
+        constexpr colour_t white_black_outline = 32;
 
         constexpr colour_t translucent(colour_t c)
         {
