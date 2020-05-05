@@ -1,5 +1,6 @@
 #include "../audio/audio.h"
 #include "../companymgr.h"
+#include "../core/Optional.hpp"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -11,7 +12,6 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
-#include <optional>
 
 using namespace openloco::interop;
 
@@ -53,17 +53,17 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
-    [[maybe_unused]] static void sub_435381()
-    {
-        static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
-        // Zero'd memory
-        _faceSelectionMalloc = new uint8_t[objectmgr::getNumInstalledObjects()]{};
+    //[[maybe_unused]] static void sub_435381() // VS isn't listening to [[maybe_unused]]
+    //{
+    //    static loco_global<uint8_t*, 0x009C68CC> _faceSelectionMalloc;
+    //    // Zero'd memory
+    //    _faceSelectionMalloc = new uint8_t[objectmgr::getNumInstalledObjects()]{};
 
-        if (_faceSelectionMalloc == nullptr)
-        {
-            exit_with_error(string_ids::null, 0xFF000002);
-        }
-    }
+    //    if (_faceSelectionMalloc == nullptr)
+    //    {
+    //        exit_with_error(string_ids::null, 0xFF000002);
+    //    }
+    //}
 
     // Object free?
     static void sub_471B95()
@@ -176,35 +176,41 @@ namespace openloco::ui::windows::CompanyFaceSelection
         return std::find(_inUseCompetitors.begin(), _inUseCompetitors.end(), objIndex) != _inUseCompetitors.end();
     }
 
-    // 0x004354A6 sort of, very different
-    static std::pair<const uint16_t, const objectmgr::object_index_entry> getObjectFromSelection(const int16_t& y)
+    struct ObjIndexPair
     {
-        auto index = y / rowHeight;
-        auto objects = objectmgr::getAvailableObjects(object_type::competitor);
-        if (index < 0 || static_cast<uint16_t>(index) >= objects.size())
+        int16_t index;
+        objectmgr::object_index_entry object;
+    };
+
+    // 0x004354A6 sort of, very different
+    static ObjIndexPair getObjectFromSelection(const int16_t& y)
+    {
+        const int16_t rowIndex = y / rowHeight;
+        const auto objects = objectmgr::getAvailableObjects(object_type::competitor);
+        if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
-            return std::make_pair(-1, objectmgr::object_index_entry{});
+            return { -1, objectmgr::object_index_entry{} };
         }
 
-        if (isInUseCompetitor(objects[index].first))
+        if (isInUseCompetitor(objects[rowIndex].first))
         {
-            return std::make_pair(-1, objectmgr::object_index_entry{});
+            return { -1, objectmgr::object_index_entry{} };
         }
-        return std::make_pair(index, objects[index].second);
+        return { rowIndex, objects[rowIndex].second };
     }
 
     static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
-        [[maybe_unused]] auto [index, object] = getObjectFromSelection(y);
+        const auto objIndex = getObjectFromSelection(y);
 
-        if (!object._header)
+        if (!objIndex.object._header)
         {
             return;
         }
         self->invalidate();
         audio::play_sound(audio::sound_id::click_down, _cursorX);
         gGameCommandErrorTitle = string_ids::cant_select_face;
-        auto result = game_commands::do_65(*object._header, self->owner);
+        const auto result = game_commands::do_65(*objIndex.object._header, self->owner);
         if (result)
         {
             WindowManager::close(self);
@@ -213,12 +219,12 @@ namespace openloco::ui::windows::CompanyFaceSelection
 
     static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
-        auto [index, object] = getObjectFromSelection(y);
-        if (self->row_hover == index)
+        const auto [rowIndex, object] = getObjectFromSelection(y);
+        if (self->row_hover == rowIndex)
         {
             return;
         }
-        self->row_hover = index;
+        self->row_hover = rowIndex;
         self->object = object._name;
         sub_471B95();
         if (object._header)
@@ -237,7 +243,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
     // 0x434FE8
     static void prepareDraw(window* const self)
     {
-        auto company = companymgr::get(self->owner);
+        const auto company = companymgr::get(self->owner);
 
         FormatArguments args{};
         args.push(company->name);
