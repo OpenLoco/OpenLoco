@@ -462,7 +462,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x00456505
-        static void on_mouse_up(window * self, widget_index widgetIndex)
+        static void on_mouse_up(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -484,7 +484,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x0045654F
-        static void on_resize(window * self)
+        static void on_resize(window* self)
         {
             {
                 self->set_size(minWindowSize, maxWindowSize);
@@ -650,7 +650,7 @@ namespace openloco::ui::windows::industry
     namespace transported
     {
         static const gfx::ui_size_t windowSize = { 300, 127 };
-        
+
         static widget_t widgets[] = {
             commonWidgets(300, 126, string_ids::title_statistics),
             widget_end(),
@@ -738,7 +738,7 @@ namespace openloco::ui::windows::industry
                     }
                 }
             }
-        }   
+        }
 
         // 0x0045695E
         static void on_mouse_up(window* self, widget_index widgetIndex)
@@ -905,7 +905,7 @@ namespace openloco::ui::windows::industry
             }
         }
 
-        // 0x004991BC
+        // 0x00455CC7
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::is_tool_active(self->type, self->number))
@@ -931,7 +931,16 @@ namespace openloco::ui::windows::industry
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
-            self->disabled_widgets = 0;
+
+            auto industry = objectmgr::get<industry_object>(industrymgr::get(self->number)->object_id);
+            auto disabledWidgets = 0;
+
+            if (industry->produced_cargo[0] == 0xFF)
+                disabledWidgets |= 0x20;
+            if (industry->produced_cargo[1] == 0xFF)
+                disabledWidgets |= 0x40;
+
+            self->disabled_widgets = disabledWidgets;
 
             self->invalidate();
 
@@ -946,10 +955,103 @@ namespace openloco::ui::windows::industry
         // 0x00456A98
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00456A98, regs);
+            auto skin = objectmgr::get<interface_skin_object>();
+
+            // Industry tab
+            {
+                uint32_t imageId = skin->img;
+                imageId += interface_skin::image_ids::toolbar_menu_industries;
+                widget::draw_tab(self, dpi, imageId, widx::tab_industry);
+            }
+
+            static const uint32_t productionTabImageIds[] = {
+                interface_skin::image_ids::tab_production_frame0,
+                interface_skin::image_ids::tab_production_frame1,
+                interface_skin::image_ids::tab_production_frame2,
+                interface_skin::image_ids::tab_production_frame3,
+                interface_skin::image_ids::tab_production_frame4,
+                interface_skin::image_ids::tab_production_frame5,
+                interface_skin::image_ids::tab_production_frame6,
+                interface_skin::image_ids::tab_production_frame7,
+            };
+
+            // Production Tab
+            {
+                uint32_t imageId = 0xFFFFFFFF;
+                widget::draw_tab(self, dpi, imageId, widx::tab_production);
+                auto widget = self->widgets[widx::tab_production];
+
+                if (widget.left != 0x8000)
+                {
+                    imageId = gfx::recolour(skin->img, self->colours[1]);
+
+                    if (self->current_tab == widx::tab_production - widx::tab_industry)
+                        imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];
+                    else
+                        imageId += productionTabImageIds[0];
+
+                    auto xPos = widget.left + self->x;
+                    auto yPos = widget.top + self->y;
+                    gfx::draw_image(dpi, xPos, yPos, imageId);
+
+                    auto industry = industrymgr::get(self->number);
+                    auto industryObj = objectmgr::get<industry_object>(industry->object_id);
+                    auto caroObj = objectmgr::get<cargo_object>(industryObj->produced_cargo[0]);
+                    gfx::draw_image(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
+
+                    imageId = 0xFFFFFFFE;
+                    widget::draw_tab(self, dpi, imageId, widx::tab_production);
+                }
+            }
+
+            // 2nd Production Tab
+            {
+                uint32_t imageId = 0xFFFFFFFF;
+                widget::draw_tab(self, dpi, imageId, widx::tab_production_2);
+                auto widget = self->widgets[widx::tab_production_2];
+
+                if (widget.left != 0x8000)
+                {
+                    imageId = gfx::recolour(skin->img, self->colours[1]);
+
+                    if (self->current_tab == widx::tab_production_2 - widx::tab_industry)
+                        imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];
+                    else
+                        imageId += productionTabImageIds[0];
+
+                    auto xPos = widget.left + self->x;
+                    auto yPos = widget.top + self->y;
+                    gfx::draw_image(dpi, xPos, yPos, imageId);
+
+                    auto industry = industrymgr::get(self->number);
+                    auto industryObj = objectmgr::get<industry_object>(industry->object_id);
+                    auto caroObj = objectmgr::get<cargo_object>(industryObj->produced_cargo[1]);
+                    gfx::draw_image(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
+
+                    imageId = 0xFFFFFFFE;
+                    widget::draw_tab(self, dpi, imageId, widx::tab_production_2);
+                }
+            }
+
+            // Transported Tab
+            {
+                static const uint32_t transportedTabImageIds[] = {
+                    interface_skin::image_ids::tab_transported_frame0,
+                    interface_skin::image_ids::tab_transported_frame1,
+                    interface_skin::image_ids::tab_transported_frame2,
+                    interface_skin::image_ids::tab_transported_frame3,
+                    interface_skin::image_ids::tab_transported_frame4,
+                    interface_skin::image_ids::tab_transported_frame5,
+                    interface_skin::image_ids::tab_transported_frame6,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tab_transported - widx::tab_industry)
+                    imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
+                else
+                    imageId += transportedTabImageIds[0];
+                widget::draw_tab(self, dpi, imageId, widx::tab_transported);
+            }
         }
 
         static void initEvents()

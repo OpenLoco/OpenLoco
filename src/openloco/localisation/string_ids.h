@@ -608,7 +608,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_town_ratings_each_company = 1388;
     constexpr string_id tooltip_industry = 1389;
     constexpr string_id tooltip_production_graph = 1390;
-    constexpr string_id production_graph_label= 1391;
+    constexpr string_id production_graph_label = 1391;
     constexpr string_id demolish_this_town = 1392;
     constexpr string_id cant_remove_town = 1393;
 
