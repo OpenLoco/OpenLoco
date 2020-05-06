@@ -12,10 +12,9 @@ using namespace openloco::interop;
 
 namespace openloco::ui::about_music
 {
-    constexpr uint16_t ww = 500;
-    constexpr uint16_t wh = 312;
+    constexpr gfx::ui_size_t windowSize = { 500, 312 };
 
-    constexpr uint16_t num_songs = 31;
+    constexpr uint16_t numSongs = 31;
 
     namespace widx
     {
@@ -30,21 +29,17 @@ namespace openloco::ui::about_music
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { ww, wh }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { ww - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
-        make_widget({ ww - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { ww, 297 }, widget_type::panel, 1),
-        make_widget({ 4, 18 }, { ww - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
+        make_widget({ 0, 0 }, windowSize, widget_type::frame, 0),
+        make_widget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
+        make_widget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        make_widget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
+        make_widget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
         widget_end(),
     };
 
     static window_event_list _events;
 
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void initEvents();
 
     // 0x0043B4AF
     void open()
@@ -52,15 +47,11 @@ namespace openloco::ui::about_music
         if (WindowManager::bringToFront(WindowType::aboutMusic, 0) != nullptr)
             return;
 
-        _events.on_mouse_up = on_mouse_up;
-        _events.get_scroll_size = get_scroll_size;
-        _events.tooltip = tooltip;
-        _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        initEvents();
 
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,
-            { ww, wh },
+            windowSize,
             0,
             &_events);
 
@@ -68,13 +59,13 @@ namespace openloco::ui::about_music
         window->enabled_widgets = 1 << widx::close;
         window->init_scroll_widgets();
 
-        auto interface = objectmgr::get<interface_skin_object>();
+        const auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
     }
 
     // 0x0043BFB0
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void on_mouse_up(ui::window* const window, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -85,28 +76,28 @@ namespace openloco::ui::about_music
     }
 
     // 0x0043BFBB
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void get_scroll_size(ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = num_songs * (10 + 10 + 14);
+        *scrollHeight = numSongs * (10 + 10 + 14);
     }
 
     // 0x0043BFC0
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, ui::window*, widget_index)
     {
         args.push(string_ids::tooltip_scroll_credits_list);
     }
 
     // 0x0043B8B8
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* const window, gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void draw_scroll(ui::window*, gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
-        static std::pair<string_id, string_id> strings_to_draw[num_songs] = {
+        static const std::pair<string_id, string_id> strings_to_draw[numSongs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },
             { string_ids::long_dusty_road, string_ids::long_dusty_road_credit },
             { string_ids::flying_high, string_ids::flying_high_credit },
@@ -140,10 +131,10 @@ namespace openloco::ui::about_music
             { string_ids::sandy_track_blues, string_ids::sandy_track_blues_credit },
         };
 
-        int16_t x = 240;
+        const int16_t x = 240;
         int16_t y = 2;
 
-        for (auto song_strings : strings_to_draw)
+        for (const auto song_strings : strings_to_draw)
         {
             // TODO: optimisation: don't draw past fold.
 
@@ -159,5 +150,14 @@ namespace openloco::ui::about_music
             draw_string_centred(*dpi, x, y, colour::black, string_ids::music_copyright, nullptr);
             y += 14;
         }
+    }
+
+    static void initEvents()
+    {
+        _events.on_mouse_up = on_mouse_up;
+        _events.get_scroll_size = get_scroll_size;
+        _events.tooltip = tooltip;
+        _events.draw = draw;
+        _events.draw_scroll = draw_scroll;
     }
 }
