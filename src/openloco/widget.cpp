@@ -786,7 +786,6 @@ namespace openloco::ui::widget
 
         if (w->is_disabled(index))
         {
-            widget->left = 0x8000;
             return; // 0x8000
         }
 

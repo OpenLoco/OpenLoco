@@ -27,7 +27,7 @@ namespace openloco::ui
     {
         widget_type type; // 0x00
         uint8_t colour;   // 0x01
-        uint16_t left;    // 0x02
+        int16_t left;     // 0x02
         int16_t right;    // 0x04
         int16_t top;      // 0x06
         int16_t bottom;   // 0x08

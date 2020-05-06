@@ -175,7 +175,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = bl; // [ 1 = remove industry]
         regs.edi = industryId;
-        do_command(50, regs);
+        do_command(48, regs);
         return (uint32_t)regs.ebx != 0x80000000;
     }
 

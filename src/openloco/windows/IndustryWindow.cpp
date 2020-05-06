@@ -975,13 +975,15 @@ namespace openloco::ui::windows::industry
                 interface_skin::image_ids::tab_production_frame7,
             };
 
+            auto industry = industrymgr::get(self->number);
+
             // Production Tab
             {
                 uint32_t imageId = 0xFFFFFFFF;
                 widget::draw_tab(self, dpi, imageId, widx::tab_production);
                 auto widget = self->widgets[widx::tab_production];
 
-                if (widget.left != 0x8000)
+                if (industry->produced_cargo[0] != 0xFF)
                 {
                     imageId = gfx::recolour(skin->img, self->colours[1]);
 
@@ -1010,7 +1012,7 @@ namespace openloco::ui::windows::industry
                 widget::draw_tab(self, dpi, imageId, widx::tab_production_2);
                 auto widget = self->widgets[widx::tab_production_2];
 
-                if (widget.left != 0x8000)
+                if (industry->produced_cargo[0] != 0xFF)
                 {
                     imageId = gfx::recolour(skin->img, self->colours[1]);
 
