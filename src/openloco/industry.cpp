@@ -87,7 +87,7 @@ namespace openloco
                     var_DD = 0;
                     if (var_DF < 224)
                     {
-                        if (var_189 / 8 <= var_1A3 || var_18B / 8 <= var_1A5)
+                        if (produced_cargo[0] / 8 <= var_1A3 || produced_cargo[1] / 8 <= var_1A5)
                         {
                             if (prng.rand_bool())
                             {

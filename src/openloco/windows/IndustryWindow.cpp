@@ -1,14 +1,17 @@
 #include "../audio/audio.h"
 #include "../config.h"
+#include "../date.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
+#include "../graphics/types.h"
 #include "../industrymgr.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
+#include "../objects/cargo_object.h"
 #include "../objects/industry_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -35,11 +38,11 @@ namespace openloco::ui::windows::industry
             panel,
             tab_industry,
             tab_production,
-            tab_production_unknown,
+            tab_production_2,
             tab_transported,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_unknown) | (1 << widx::tab_transported);
+        const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
@@ -65,6 +68,10 @@ namespace openloco::ui::windows::industry
     namespace industry
     {
         static const gfx::ui_size_t windowSize = { 223, 136 };
+
+        static const gfx::ui_size_t minWindowSize = { 192, 137 };
+
+        static const gfx::ui_size_t maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -160,7 +167,7 @@ namespace openloco::ui::windows::industry
 
                 case common::widx::tab_industry:
                 case common::widx::tab_production:
-                case common::widx::tab_production_unknown:
+                case common::widx::tab_production_2:
                 case common::widx::tab_transported:
                     common::switchTab(self, widgetIndex);
                     break;
@@ -198,7 +205,7 @@ namespace openloco::ui::windows::industry
         // 0x00455F1A
         static void on_resize(window* self)
         {
-            self->set_size(gfx::ui_size_t(192, 137), gfx::ui_size_t(600, 440));
+            self->set_size(minWindowSize, maxWindowSize);
 
             if (self->viewports[0] != nullptr)
             {
@@ -331,7 +338,7 @@ namespace openloco::ui::windows::industry
         // TODO: only needs to be called once.
         common::initEvents();
 
-        window->current_tab = 0;
+        window->current_tab = common::widx::tab_industry - common::widx::tab_industry;
         window->invalidate();
 
         window->widgets = industry::widgets;
@@ -342,9 +349,9 @@ namespace openloco::ui::windows::industry
         auto industry = objectmgr::get<industry_object>(industrymgr::get(window->number)->object_id);
         auto disabledWidgets = 0;
 
-        if (industry->var_DE[0] == 0xFF)
+        if (industry->produced_cargo[0] == 0xFF)
             disabledWidgets |= 0x20;
-        if (industry->var_DE[1] == 0xFF)
+        if (industry->produced_cargo[1] == 0xFF)
             disabledWidgets |= 0x40;
 
         window->disabled_widgets = disabledWidgets;
@@ -356,39 +363,132 @@ namespace openloco::ui::windows::industry
 
     namespace production
     {
+
+        static const gfx::ui_size_t minWindowSize = { 299, 282 };
+
+        static const gfx::ui_size_t maxWindowSize = { 299, 337 };
+
         static window_event_list events;
 
         // 0x00455FD9
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x00455FD9, regs);
+            common::prepare_draw(self);
+
+            common::repositionTabs(self);
         }
+
         // 0x00456079
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00456079, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            // Draw Units of Cargo sub title
+            auto industry = industrymgr::get(self->number);
+            auto industryObj = objectmgr::get<industry_object>(industry->object_id);
+            auto cargoObj = objectmgr::get<cargo_object>((uint8_t)industryObj->produced_cargo[0]);
+
+            auto args = FormatArguments();
+            args.push(cargoObj->units_and_cargo_name);
+
+            int16_t x = self->x + 2;
+            int16_t y = self->y - 24 + 68;
+
+            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::production_graph_label, &args);
+
+            // Draw Y label and grid lines.
+            int32_t yTick = 0;
+            for (int16_t yPos = self->y + self->height - 7; yPos >= self->y + 68; yPos -= 20)
+            {
+                auto args2 = FormatArguments();
+                args2.push(yTick);
+
+                gfx::draw_rect(dpi, self->x + 41, yPos, self->x + 280, 1, colour::get_shade(self->colours[1], 4));
+
+                gfx::draw_string_494C78(*dpi, self->x + 39, yPos - 6, colour::black, string_ids::population_graph_people, &args2);
+
+                yTick += 1000;
+            }
+
+            int8_t month = static_cast<int8_t>(current_month());
+            int16_t year = current_year();
+            int8_t yearSkip = 0;
+
+            for (uint8_t i = industry->history_size[0] - 1; i > 0; i--)
+            {
+                const uint16_t xPos = self->x + 41 + i;
+                const uint16_t yPos = self->y + 68 - 12;
+
+                // Draw horizontal year and vertical grid lines.
+                if (month == 0)
+                {
+                    if (yearSkip == 0)
+                    {
+                        auto args3 = FormatArguments();
+                        args3.push(year);
+
+                        gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::population_graph_year, &args3);
+                    }
+
+                    gfx::draw_rect(dpi, xPos, yPos + 11, 1, self->y + self->height - 7, colour::get_shade(self->colours[1], 4));
+                }
+                // Draw population graph
+                uint16_t yPos1 = -industry->history_1[i] + (self->y + self->height - 7);
+                uint16_t yPos2 = -industry->history_1[i + 1] + (self->y + self->height - 7);
+
+                // Do not draw current segment yet; it may be zeroed.
+                if (i < industry->history_size[0] - 1)
+                {
+                    if (yPos1 < self->y + self->height - 7)
+                    {
+                        if (yPos2 < self->y + self->height - 7)
+                        {
+                            gfx::draw_line(dpi, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
+                        }
+                    }
+                }
+                month--;
+                if (month < 0)
+                {
+                    month = 11;
+                    year--;
+
+                    yearSkip++;
+                    if (yearSkip >= 3)
+                        yearSkip = 0;
+                }
+            }
         }
 
         // 0x00456505
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void on_mouse_up(window * self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edx = widgetIndex;
-            call(0x00456505, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameIndustryPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_industry:
+                case common::widx::tab_production:
+                case common::widx::tab_production_2:
+                case common::widx::tab_transported:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x0045654F
-        static void on_resize(window* self)
+        static void on_resize(window * self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0045654F, regs);
+            {
+                self->set_size(minWindowSize, maxWindowSize);
+            }
         }
 
         static void initEvents()
@@ -402,8 +502,12 @@ namespace openloco::ui::windows::industry
         }
     }
 
-    namespace production_unknown
+    namespace production_2
     {
+        static const gfx::ui_size_t minWindowSize = { 299, 282 };
+
+        static const gfx::ui_size_t maxWindowSize = { 299, 337 };
+
         static widget_t widgets[] = {
             commonWidgets(222, 136, string_ids::title_industry_monthly_production),
             widget_end(),
@@ -414,34 +518,122 @@ namespace openloco::ui::windows::industry
         // 0x0045626F
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0045626F, regs);
+            common::prepare_draw(self);
+
+            common::repositionTabs(self);
         }
+
         // 0x0045630F
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0045630F, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            // Draw Units of Cargo sub title
+            auto industry = industrymgr::get(self->number);
+            auto industryObj = objectmgr::get<industry_object>(industry->object_id);
+            auto cargoObj = objectmgr::get<cargo_object>((uint8_t)industryObj->produced_cargo[1]);
+
+            auto args = FormatArguments();
+            args.push(cargoObj->units_and_cargo_name);
+
+            int16_t x = self->x + 2;
+            int16_t y = self->y - 24 + 68;
+
+            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::production_graph_label, &args);
+
+            // Draw Y label and grid lines.
+            int32_t yTick = 0;
+            for (int16_t yPos = self->y + self->height - 7; yPos >= self->y + 68; yPos -= 20)
+            {
+                auto args2 = FormatArguments();
+                args2.push(yTick);
+
+                gfx::draw_rect(dpi, self->x + 41, yPos, self->x + 280, 1, colour::get_shade(self->colours[1], 4));
+
+                gfx::draw_string_494C78(*dpi, self->x + 39, yPos - 6, colour::black, string_ids::population_graph_people, &args2);
+
+                yTick += 1000;
+            }
+
+            int8_t month = static_cast<int8_t>(current_month());
+            int16_t year = current_year();
+            int8_t yearSkip = 0;
+
+            for (uint8_t i = industry->history_size[1] - 1; i > 0; i--)
+            {
+                const uint16_t xPos = self->x + 41 + i;
+                const uint16_t yPos = self->y + 68 - 12;
+
+                // Draw horizontal year and vertical grid lines.
+                if (month == 0)
+                {
+                    if (yearSkip == 0)
+                    {
+                        auto args3 = FormatArguments();
+                        args3.push(year);
+
+                        gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::population_graph_year, &args3);
+                    }
+
+                    gfx::draw_rect(dpi, xPos, yPos + 11, 1, self->y + self->height - 7, colour::get_shade(self->colours[1], 4));
+                }
+                // Draw population graph
+                uint16_t yPos1 = -industry->history_2[i] + (self->y + self->height - 7);
+                uint16_t yPos2 = -industry->history_2[i + 1] + (self->y + self->height - 7);
+
+                // Do not draw current segment yet; it may be zeroed.
+                if (i < industry->history_size[1] - 1)
+                {
+                    if (yPos1 < self->y + self->height - 7)
+                    {
+                        if (yPos2 < self->y + self->height - 7)
+                        {
+                            gfx::draw_line(dpi, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
+                        }
+                    }
+                }
+                month--;
+                if (month < 0)
+                {
+                    month = 11;
+                    year--;
+
+                    yearSkip++;
+                    if (yearSkip >= 3)
+                        yearSkip = 0;
+                }
+            }
         }
 
         // 0x004565B5
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edx = widgetIndex;
-            call(0x004565B5, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameIndustryPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_industry:
+                case common::widx::tab_production:
+                case common::widx::tab_production_2:
+                case common::widx::tab_transported:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x004565FF
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x004565FF, regs);
+            {
+                self->set_size(minWindowSize, maxWindowSize);
+            }
         }
 
         static void initEvents()
@@ -457,6 +649,8 @@ namespace openloco::ui::windows::industry
 
     namespace transported
     {
+        static const gfx::ui_size_t windowSize = { 300, 127 };
+        
         static widget_t widgets[] = {
             commonWidgets(300, 126, string_ids::title_statistics),
             widget_end(),
@@ -467,42 +661,124 @@ namespace openloco::ui::windows::industry
         // 0x00456665
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x00456665, regs);
+            common::prepare_draw(self);
+
+            common::repositionTabs(self);
         }
+
         // 0x00456705
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00456705, regs);
-        }
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto industry = industrymgr::get(self->number);
+            auto industryObj = objectmgr::get<industry_object>(industry->object_id);
+            auto totalReceivedCargo = industryObj->received_cargo[0] & industryObj->received_cargo[1] & industryObj->received_cargo[2];
+            int16_t xPos = self->x + 3;
+            int16_t yPos = self->y + 45;
+            gfx::point_t origin = { xPos, yPos };
+            // Draw Last Months received cargo stats
+            if (totalReceivedCargo != 0xFF)
+            {
+                origin.x += 4;
+                origin.y += 10;
+                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::received_cargo);
+                for (uint8_t i = 0; i < std::size(industryObj->received_cargo); i++)
+                {
+                    uint16_t receivedCargo = industryObj->received_cargo[i];
+                    if (receivedCargo != 0xFF)
+                    {
+                        auto cargoObj = objectmgr::get<cargo_object>(receivedCargo);
+                        auto args = FormatArguments();
+
+                        if (receivedCargo == 1)
+                        {
+                            args.push(cargoObj->unit_name_singular);
+                        }
+                        else
+                        {
+                            args.push(cargoObj->unit_name_plural);
+                        }
+                        args.push(industry->received_cargo[i]);
+
+                        gfx::draw_string_left_wrapped(dpi, &origin, 290, colour::black, string_ids::white_stringid2, &args);
+                    }
+                }
+                origin.y += 4;
+            }
+
+            auto totalProducedCargo = industryObj->produced_cargo[0] & industryObj->produced_cargo[1];
+            // Draw Last Months produced cargo stats
+            if (totalProducedCargo != 0xFF)
+            {
+                gfx::draw_string_494B3F(*dpi, origin.x - 4, origin.y, colour::black, string_ids::produced_cargo);
+                origin.y += 10;
+
+                for (uint8_t i = 0; i < std::size(industryObj->produced_cargo); i++)
+                {
+                    uint16_t producedCargo = industryObj->produced_cargo[i];
+                    if (producedCargo != 0xFF)
+                    {
+                        auto cargoObj = objectmgr::get<cargo_object>(producedCargo);
+                        auto args = FormatArguments();
+
+                        if (producedCargo == 1)
+                        {
+                            args.push(cargoObj->unit_name_singular);
+                        }
+                        else
+                        {
+                            args.push(cargoObj->unit_name_plural);
+                        }
+                        args.push<uint32_t>(industry->produced_cargo[i]);
+                        args.push(industry->var_1A7[i]);
+
+                        gfx::draw_string_left_wrapped(dpi, &origin, 290, colour::black, string_ids::transported_cargo, &args);
+                    }
+                }
+            }
+        }   
 
         // 0x0045695E
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edx = widgetIndex;
-            call(0x0045695E, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::caption:
+                    common::renameIndustryPrompt(self, widgetIndex);
+                    break;
+
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_industry:
+                case common::widx::tab_production:
+                case common::widx::tab_production_2:
+                case common::widx::tab_transported:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x004569C2
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x004569C2, regs);
+            {
+                self->set_size(windowSize, windowSize);
+            }
         }
 
         // 0x0045698E
         static void update(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0045698E, regs);
+            self->frame_no++;
+            if (self->frame_no > 28)
+                self->frame_no = 0;
+
+            self->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::industry, self->number, self->current_tab + 4);
         }
 
         static void initEvents()
@@ -528,8 +804,8 @@ namespace openloco::ui::windows::industry
 
         static TabInformation tabInformationByTabOffset[] = {
             { industry::widgets, widx::tab_industry, &industry::events, &industry::enabledWidgets },
-            { production_unknown::widgets, widx::tab_production, &production::events, &common::enabledWidgets },
-            { production_unknown::widgets, widx::tab_production_unknown, &production_unknown::events, &common::enabledWidgets },
+            { production_2::widgets, widx::tab_production, &production::events, &common::enabledWidgets },
+            { production_2::widgets, widx::tab_production_2, &production_2::events, &common::enabledWidgets },
             { transported::widgets, widx::tab_transported, &transported::events, &common::enabledWidgets }
         };
 
@@ -544,7 +820,7 @@ namespace openloco::ui::windows::industry
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_unknown) | (1 << widx::tab_transported));
+            self->activated_widgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
             widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
             self->activated_widgets |= (1ULL << widgetIndex);
 
@@ -553,6 +829,7 @@ namespace openloco::ui::windows::industry
             auto args = FormatArguments();
             args.push(industry->name);
             args.push(industry->town);
+
             // Resize common widgets.
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
@@ -590,7 +867,7 @@ namespace openloco::ui::windows::industry
             WindowManager::invalidate(WindowType::industry, self->number);
         }
 
-         //0x0048E5E7
+        //0x0048E5E7
         static void renameIndustryPrompt(window* self, widget_index widgetIndex)
         {
             auto industry = industrymgr::get(self->number);
@@ -610,6 +887,7 @@ namespace openloco::ui::windows::industry
                 }
             }
         }
+
         // 0x00456A5E, 0x00456A64
         static void repositionTabs(window* self)
         {
@@ -632,6 +910,8 @@ namespace openloco::ui::windows::industry
         {
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
+
+            ui::textinput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;
@@ -676,7 +956,7 @@ namespace openloco::ui::windows::industry
         {
             industry::initEvents();
             production::initEvents();
-            production_unknown::initEvents();
+            production_2::initEvents();
             transported::initEvents();
         }
     }

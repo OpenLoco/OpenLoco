@@ -608,7 +608,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_town_ratings_each_company = 1388;
     constexpr string_id tooltip_industry = 1389;
     constexpr string_id tooltip_production_graph = 1390;
-
+    constexpr string_id production_graph_label= 1391;
     constexpr string_id demolish_this_town = 1392;
     constexpr string_id cant_remove_town = 1393;
 
@@ -624,6 +624,9 @@ namespace openloco::string_ids
     constexpr string_id expand_this_town = 1409;
 
     constexpr string_id tooltip_statistics = 1414;
+    constexpr string_id received_cargo = 1415;
+    constexpr string_id produced_cargo = 1416;
+    constexpr string_id transported_cargo = 1417;
 
     constexpr string_id error_reason_belongs_to = 1420;
     constexpr string_id error_reason_stringid_belongs_to = 1421;

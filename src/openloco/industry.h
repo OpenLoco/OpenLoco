@@ -35,19 +35,25 @@ namespace openloco
         uint8_t object_id;  // 0x10
         uint8_t var_11;
         uint8_t pad_12[0xD5 - 0x12];
-        town_id_t town; // 0xD5
+        town_id_t town;           // 0xD5
         map::tile_loop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
         uint8_t owner; // 0xE0
         uint8_t pad_E1[0x189 - 0xE1];
-        uint16_t var_189;
-        uint16_t var_18B;
-        uint8_t pad_18D[0x1A3 - 0x18D];
+        uint16_t produced_cargo[2]; // 0x189
+        uint8_t pad_18D[0x193 - 0x18D];
+        uint16_t received_cargo[3]; // 0x193
+        uint8_t pad_199[0x1A3 - 0x199];
         uint16_t var_1A3;
         uint16_t var_1A5;
-        uint8_t pad_1A7[0x453 - 0x1A7];
+        uint8_t var_1A7[2];
+        uint8_t history_size[2];           // 0x1A9 (<= 20 * 12)
+        uint8_t history_1[20 * 12];        // 0x1AB (20 years, 12 months)
+        uint8_t history_2[20 * 12];        // 0x29B
+        int32_t history_min_production[2]; // 0x38B
+        uint8_t pad_393[0x453 - 0x393];
 
         industry_id_t id() const;
         industry_object* object() const;
