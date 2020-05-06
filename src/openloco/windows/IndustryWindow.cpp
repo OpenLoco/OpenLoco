@@ -346,12 +346,12 @@ namespace openloco::ui::windows::industry
         window->holdable_widgets = 0;
         window->event_handlers = &industry::events;
         window->activated_widgets = 0;
-        auto industry = objectmgr::get<industry_object>(industrymgr::get(window->number)->object_id);
+        auto industryObj = objectmgr::get<industry_object>(industrymgr::get(window->number)->object_id);
         auto disabledWidgets = 0;
 
-        if (industry->produced_cargo[0] == 0xFF)
+        if (industryObj->produced_cargo[0] == 0xFF)
             disabledWidgets |= 0x20;
-        if (industry->produced_cargo[1] == 0xFF)
+        if (industryObj->produced_cargo[1] == 0xFF)
             disabledWidgets |= 0x40;
 
         window->disabled_widgets = disabledWidgets;
@@ -976,6 +976,7 @@ namespace openloco::ui::windows::industry
             };
 
             auto industry = industrymgr::get(self->number);
+            auto industryObj = objectmgr::get<industry_object>(industry->object_id);
 
             // Production Tab
             {
@@ -983,7 +984,7 @@ namespace openloco::ui::windows::industry
                 widget::draw_tab(self, dpi, imageId, widx::tab_production);
                 auto widget = self->widgets[widx::tab_production];
 
-                if (industry->produced_cargo[0] != 0xFF)
+                if (industryObj->produced_cargo[0] != 0xFF)
                 {
                     imageId = gfx::recolour(skin->img, self->colours[1]);
 
@@ -996,8 +997,6 @@ namespace openloco::ui::windows::industry
                     auto yPos = widget.top + self->y;
                     gfx::draw_image(dpi, xPos, yPos, imageId);
 
-                    auto industry = industrymgr::get(self->number);
-                    auto industryObj = objectmgr::get<industry_object>(industry->object_id);
                     auto caroObj = objectmgr::get<cargo_object>(industryObj->produced_cargo[0]);
                     gfx::draw_image(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
@@ -1012,7 +1011,7 @@ namespace openloco::ui::windows::industry
                 widget::draw_tab(self, dpi, imageId, widx::tab_production_2);
                 auto widget = self->widgets[widx::tab_production_2];
 
-                if (industry->produced_cargo[0] != 0xFF)
+                if (industryObj->produced_cargo[1] != 0xFF)
                 {
                     imageId = gfx::recolour(skin->img, self->colours[1]);
 
@@ -1025,8 +1024,6 @@ namespace openloco::ui::windows::industry
                     auto yPos = widget.top + self->y;
                     gfx::draw_image(dpi, xPos, yPos, imageId);
 
-                    auto industry = industrymgr::get(self->number);
-                    auto industryObj = objectmgr::get<industry_object>(industry->object_id);
                     auto caroObj = objectmgr::get<cargo_object>(industryObj->produced_cargo[1]);
                     gfx::draw_image(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
