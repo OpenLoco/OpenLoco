@@ -224,6 +224,9 @@ namespace openloco::string_ids
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
+    constexpr string_id status_num_industries_singular = 562;
+    constexpr string_id status_num_industries_plural = 563;
+
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
 
@@ -589,6 +592,12 @@ namespace openloco::string_ids
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
 
+    constexpr string_id title_industries = 1318;
+    constexpr string_id title_fund_new_industries = 1319;
+
+    constexpr string_id tooltip_industries_list = 1325;
+    constexpr string_id tooltip_fund_new_industires = 1326;
+
     constexpr string_id headquarters = 1354;
     constexpr string_id window_owner = 1355;
     constexpr string_id interest_per_year = 1356;
@@ -604,6 +613,11 @@ namespace openloco::string_ids
     constexpr string_id demolish_this_industry = 1365;
 
     constexpr string_id title_station = 1364;
+
+    constexpr string_id sort_industry_status = 1376;
+    constexpr string_id sort_industry_production_transported = 1377;
+
+    constexpr string_id sort_industry_name = 1382;
 
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
