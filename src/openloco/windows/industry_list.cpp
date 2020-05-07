@@ -47,6 +47,7 @@ namespace openloco::ui::windows::industry_list
         static void init_events();
         static void refreshIndustryList(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
+        static void prepare_draw(window* self);
     }
 
     namespace industry_list
@@ -72,12 +73,37 @@ namespace openloco::ui::windows::industry_list
 
         static window_event_list events;
 
+        enum SortMode : uint16_t
+        {
+            Name,
+            Status,
+            Production,
+        };
+
         // 0x00457B94
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x00457B94, regs);
+            common::prepare_draw(self);
+
+            self->widgets[widx::scrollview].right = self->width - 4;
+            self->widgets[widx::scrollview].bottom = self->height - 14;
+
+            // Reposition header buttons.
+            self->widgets[widx::sort_industry_name].right = std::min(self->width - 4, 203);
+
+            self->widgets[widx::sort_industry_status].left = std::min(self->width - 4, 204);
+            self->widgets[widx::sort_industry_status].right = std::min(self->width - 4, 443);
+
+            self->widgets[widx::sort_industry_production_transported].left = std::min(self->width - 4, 444);
+            self->widgets[widx::sort_industry_production_transported].right = std::min(self->width - 4, 603);
+
+            // Set header button captions.
+            self->widgets[widx::sort_industry_name].text = self->sort_mode == SortMode::Name ? string_ids::industry_table_header_desc : string_ids::industry_table_header;
+            self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? string_ids::industry_table_header_status_desc : string_ids::industry_table_header_status;
+            self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::Production ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
+
+            if (is_editor_mode())
+                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
         }
 
         // 0x00457CD9
@@ -244,7 +270,7 @@ namespace openloco::ui::windows::industry_list
             window = WindowManager::createWindow(
                 WindowType::industryList,
                 common::window_size,
-                window_flags::flag_11,
+                window_flags::flag_8,
                 &industry_list::events);
 
             window->number = 0;
@@ -388,8 +414,8 @@ namespace openloco::ui::windows::industry_list
         // 0x00458708
         static void event_08(window* self)
         {
-            if (self->var_846 != -1)
-                self->var_846 = -1;
+            if (self->var_846 != 0xFFFF)
+                self->var_846 = 0xFFFF;
             self->invalidate();
         }
 
@@ -456,6 +482,46 @@ namespace openloco::ui::windows::industry_list
 
     namespace common
     {
+        struct TabInformation
+        {
+            widget_t* widgets;
+            const widx widgetIndex;
+            window_event_list* events;
+            const uint64_t* enabledWidgets;
+        };
+
+        static TabInformation tabInformationByTabOffset[] = {
+            { industry_list::widgets, widx::tab_industry_list, &industry_list::events, &industry_list::enabledWidgets },
+            { new_industries::widgets, widx::tab_new_industry, &new_industries::events, &new_industries::enabledWidgets },
+        };
+
+        // 0x00457B94
+        static void prepare_draw(window* self)
+        {
+            // Reset tab widgets if needed.
+            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            if (self->widgets != tabWidgets)
+            {
+                self->widgets = tabWidgets;
+                self->init_scroll_widgets();
+            }
+
+            // Activate the current tab..
+            self->activated_widgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
+            self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+
+            self->widgets[common::widx::caption].right = self->width - 2;
+
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+        }
+
         // 0x00458A57
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
         {

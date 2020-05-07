@@ -597,6 +597,7 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_industries_list = 1325;
     constexpr string_id tooltip_fund_new_industires = 1326;
+    constexpr string_id tooltip_build_new_industries = 1326;
 
     constexpr string_id headquarters = 1354;
     constexpr string_id window_owner = 1355;
@@ -616,9 +617,14 @@ namespace openloco::string_ids
 
     constexpr string_id sort_industry_status = 1376;
     constexpr string_id sort_industry_production_transported = 1377;
-
+    constexpr string_id industry_table_header_status = 1378;
+    constexpr string_id industry_table_header_status_desc = 1379;
+    constexpr string_id industry_table_header_production = 1380;
+    constexpr string_id industry_table_header_production_desc = 1381;
     constexpr string_id sort_industry_name = 1382;
-
+    constexpr string_id industry_table_header = 1383;
+    constexpr string_id industry_table_header_desc = 1384;
+    constexpr string_id no_industry_available = 1385;
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
     constexpr string_id tooltip_town_ratings_each_company = 1388;
