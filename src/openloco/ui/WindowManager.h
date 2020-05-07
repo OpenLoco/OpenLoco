@@ -93,7 +93,7 @@ namespace openloco::ui::about_music
 
 namespace openloco::ui::windows::construction
 {
-    window* open_with_flags(uint32_t flags);
+    window* openWithFlags(uint32_t flags);
     void on_mouse_up(window& w, uint16_t widgetIndex);
 }
 
@@ -240,7 +240,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
 namespace openloco::ui::windows::CompanyList
 {
     void openPerformanceIndexes();
-    void OpenUnk();
+    void openUnk();
 }
 
 namespace openloco::ui::windows::CompanyWindow

@@ -6,20 +6,23 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::construction
 {
-    namespace widget_idx
+    namespace widx
     {
-        constexpr uint16_t close = 2;
-        constexpr uint16_t tab_0 = 4;
-        constexpr uint16_t tab_1 = 5;
-        constexpr uint16_t tab_2 = 6;
-        constexpr uint16_t tab_3 = 7;
-        constexpr uint16_t construct = 28;
-        constexpr uint16_t remove = 29;
-        constexpr uint16_t place = 30;
+        enum
+        {
+            close = 2,
+            tab_0 = 4,
+            tab_1,
+            tab_2,
+            tab_3,
+            construct = 28,
+            remove,
+            place,
+        };
     }
 
     // 0x004A3B0D
-    window* open_with_flags(uint32_t flags)
+    window* openWithFlags(const uint32_t flags)
     {
         registers regs;
         regs.ecx = flags;
@@ -28,7 +31,7 @@ namespace openloco::ui::windows::construction
     }
 
     // 0x0049D3F6
-    void on_mouse_up(window& w, uint16_t widgetIndex)
+    void on_mouse_up(window& w, const uint16_t widgetIndex)
     {
         // Allow shift key to repeat the action multiple times
         // This is useful for building very long tracks.
@@ -43,28 +46,28 @@ namespace openloco::ui::windows::construction
         regs.esi = (int32_t)&w;
         switch (widgetIndex)
         {
-            case widget_idx::close:
+            case widx::close:
                 WindowManager::close(&w);
                 break;
-            case widget_idx::tab_0:
-            case widget_idx::tab_1:
-            case widget_idx::tab_2:
-            case widget_idx::tab_3:
+            case widx::tab_0:
+            case widx::tab_1:
+            case widx::tab_2:
+            case widx::tab_3:
                 call(0x0049D93A, regs);
                 break;
-            case widget_idx::construct:
+            case widx::construct:
                 for (int i = 0; i < multiplier; i++)
                 {
                     call(0x0049F92D, regs);
                 }
                 break;
-            case widget_idx::remove:
+            case widx::remove:
                 for (int i = 0; i < multiplier; i++)
                 {
                     call(0x004A0121, regs);
                 }
                 break;
-            case widget_idx::place:
+            case widx::place:
                 call(0x0049D7DC, regs);
                 break;
         }

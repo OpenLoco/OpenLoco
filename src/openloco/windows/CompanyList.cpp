@@ -11,7 +11,7 @@ namespace openloco::ui::windows::CompanyList
         call(0x00435C69);
     }
 
-    void OpenUnk()
+    void openUnk()
     {
         call(0x00435BC8);
     }
