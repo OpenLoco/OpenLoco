@@ -32,8 +32,14 @@ namespace openloco
         return (station_id_t)index;
     }
 
-    // 0x00492640
+    // 0x0048B23E
     void station::update()
+    {
+        update_cargo_acceptance();
+    }
+
+    // 0x00492640
+    void station::update_cargo_acceptance()
     {
         uint32_t currentAcceptedCargo = calc_accepted_cargo();
         uint32_t originallyAcceptedCargo = 0;
@@ -46,37 +52,43 @@ namespace openloco
                 originallyAcceptedCargo |= (1 << cargoId);
             }
 
-            bool isStillAccepted = (currentAcceptedCargo & (1 << cargoId)) != 0;
-            cs.is_accepted(isStillAccepted);
+            bool isNowAccepted = (currentAcceptedCargo & (1 << cargoId)) != 0;
+            cs.is_accepted(isNowAccepted);
         }
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
         {
             if (owner == companymgr::get_controlling_id())
             {
-                for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
-                {
-                    bool acceptedBefore = (originallyAcceptedCargo & (1 << cargoId)) != 0;
-                    bool acceptedNow = (currentAcceptedCargo & (1 << cargoId)) != 0;
-                    if (acceptedBefore && !acceptedNow)
-                    {
-                        messagemgr::post(
-                            message_type::cargo_no_longer_accepted,
-                            owner,
-                            id(),
-                            cargoId);
-                    }
-                    else if (!acceptedBefore && acceptedNow)
-                    {
-                        messagemgr::post(
-                            message_type::cargo_now_accepted,
-                            owner,
-                            id(),
-                            cargoId);
-                    }
-                }
+                alert_cargo_acceptance_change(originallyAcceptedCargo, currentAcceptedCargo);
             }
             invalidate_window();
+        }
+    }
+
+    // 0x00492683
+    void station::alert_cargo_acceptance_change(uint32_t oldCargoAcc, uint32_t newCargoAcc)
+    {
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        {
+            bool acceptedBefore = (oldCargoAcc & (1 << cargoId)) != 0;
+            bool acceptedNow = (newCargoAcc & (1 << cargoId)) != 0;
+            if (acceptedBefore && !acceptedNow)
+            {
+                messagemgr::post(
+                    message_type::cargo_no_longer_accepted,
+                    owner,
+                    id(),
+                    cargoId);
+            }
+            else if (!acceptedBefore && acceptedNow)
+            {
+                messagemgr::post(
+                    message_type::cargo_now_accepted,
+                    owner,
+                    id(),
+                    cargoId);
+            }
         }
     }
 
