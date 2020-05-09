@@ -150,13 +150,6 @@ namespace openloco::gfx
         uint8_t colour,
         string_id stringId,
         const void* args = nullptr);
-    void draw_string_left_wrapped(
-        drawpixelinfo_t* context,
-        point_t* origin,
-        uint16_t width,
-        uint8_t colour,
-        string_id stringId,
-        const void* args = nullptr);
 
     void fill_rect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
     void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);

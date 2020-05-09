@@ -798,38 +798,6 @@ namespace openloco::gfx
         origin->y = regs.dx;
     }
 
-    /**
-     * 0x00495224
-     *
-     * @param context @<edi>
-     * @param origin {x @<cx>, y @<dx>}
-     * @param width @<bp>
-     * @param colour @<al>
-     * @param stringId @<bx>
-     * @param args @<esi>
-     */
-    void draw_string_left_wrapped(
-        drawpixelinfo_t* context,
-        point_t* origin,
-        uint16_t width,
-        uint8_t colour,
-        string_id stringId,
-        const void* args)
-    {
-        registers regs;
-        regs.edi = (uintptr_t)context;
-        regs.esi = (uintptr_t)args;
-        regs.cx = origin->x;
-        regs.dx = origin->y;
-        regs.bp = width;
-        regs.al = colour;
-        regs.bx = stringId;
-        call(0x00495224, regs);
-
-        origin->x = regs.cx;
-        origin->y = regs.dx;
-    }
-
     // 0x004474BA
     static void draw_rect_impl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {

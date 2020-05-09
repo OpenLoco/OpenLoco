@@ -22,6 +22,7 @@ namespace openloco
     namespace industry_flags
     {
         constexpr uint16_t flag_01 = 1 << 0;
+        constexpr uint16_t flag_04 = 1 << 3;
     }
 
 #pragma pack(push, 1)
@@ -42,22 +43,23 @@ namespace openloco
         uint8_t var_DF;
         uint8_t owner; // 0xE0
         uint8_t pad_E1[0x189 - 0xE1];
-        uint16_t produced_cargo[2]; // 0x189
+        uint16_t produced_cargo_quantity[2]; // 0x189
         uint8_t pad_18D[0x193 - 0x18D];
-        uint16_t received_cargo[3]; // 0x193
+        uint16_t received_cargo_quantity[3]; // 0x193
         uint8_t pad_199[0x1A3 - 0x199];
-        uint16_t var_1A3;
-        uint16_t var_1A5;
-        uint8_t var_1A7[2];
-        uint8_t history_size[2];           // 0x1A9 (<= 20 * 12)
-        uint8_t history_1[20 * 12];        // 0x1AB (20 years, 12 months)
-        uint8_t history_2[20 * 12];        // 0x29B
-        int32_t history_min_production[2]; // 0x38B
+        uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
+        uint8_t produced_cargo_transported[2]; // 0x1A7 (%)
+        uint8_t history_size[2];               // 0x1A9 (<= 20 * 12)
+        uint8_t history_1[20 * 12];            // 0x1AB (20 years, 12 months)
+        uint8_t history_2[20 * 12];            // 0x29B
+        int32_t history_min_production[2];     // 0x38B
         uint8_t pad_393[0x453 - 0x393];
 
         industry_id_t id() const;
         industry_object* object() const;
         bool empty() const;
+        bool canReceiveCargo() const;
+        bool canProduceCargo() const;
 
         void update();
         void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);
