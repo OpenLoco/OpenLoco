@@ -67,7 +67,8 @@ namespace openloco::ui::windows::CompanyFaceSelection
         call(0x0047176D, regs);
     }
 
-    // 0x004720EB Returns std::nullopt if not loaded
+    // 0x004720EB
+    // Returns std::nullopt if not loaded
     static std::optional<uint32_t> getLoadedObjectIndex(const objectmgr::object_index_entry& object)
     {
         registers regs;
@@ -108,6 +109,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
         }
     }
 
+    // 0x00434F52
     void open(const company_id_t id)
     {
         auto* self = WindowManager::bringToFront(WindowType::companyFaceSelection, 0);
@@ -137,6 +139,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
         }
     }
 
+    // 0x004352A4
     static void onClose(window* const self)
     {
         sub_471B95();
@@ -187,6 +190,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
         return { rowIndex, objects[rowIndex].second };
     }
 
+    // 0x00435314
     static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         const auto objIndex = getObjectFromSelection(y);
@@ -205,6 +209,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
         }
     }
 
+    // 0x004352C7
     static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         const auto [rowIndex, object] = getObjectFromSelection(y);
@@ -269,10 +274,11 @@ namespace openloco::ui::windows::CompanyFaceSelection
             gfx::draw_string_centred_clipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
         }
 
-        // There was code for displaying competitotor stats if window opened with none
+        // There was code for displaying competitor stats if window opened with none
         // playing company. But that ability is disabled from the company window.
     }
 
+    // 0x00435152
     static void drawScroll(window* const self, gfx::drawpixelinfo_t* const dpi, const uint32_t scrollIndex)
     {
         gfx::clear_single(*dpi, colour::get_shade(self->colours[1], 4));
