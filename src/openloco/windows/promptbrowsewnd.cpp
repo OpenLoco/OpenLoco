@@ -193,7 +193,7 @@ namespace openloco::ui::prompt_browse
             _textInputLeft = 0;
 
             window->row_height = 11;
-            window->var_85A = 0xFFFF;
+            window->var_85A = -1;
 
             addr<0x009DA285, uint8_t>() = 0;
             sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
@@ -357,7 +357,7 @@ namespace openloco::ui::prompt_browse
         gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
-        if (selectedIndex != 0xFFFF)
+        if (selectedIndex != -1)
         {
             auto& selectedFile = _files[selectedIndex];
             if (!selectedFile.is_directory())

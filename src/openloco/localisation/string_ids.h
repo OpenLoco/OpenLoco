@@ -58,6 +58,7 @@ namespace openloco::string_ids
     constexpr string_id close_window_cross = 56;
 
     constexpr string_id tooltip_close_window = 60;
+    constexpr string_id game_init_failure = 61;
 
     constexpr string_id display_resolution_dropdown_format = 65;
     constexpr string_id display_resolution_label_format = 66;
@@ -381,6 +382,7 @@ namespace openloco::string_ids
     constexpr string_id forced_software_buffer_mixing = UNUSED_STR(1010);
     constexpr string_id forced_software_buffer_mixing_tip = UNUSED_STR(1011);
 
+    constexpr string_id loco_already_running = 1016;
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;
     constexpr string_id music_copyright = 1019;
@@ -702,7 +704,10 @@ namespace openloco::string_ids
     constexpr string_id volume = 1547;
     constexpr string_id set_volume_tip = 1548;
     constexpr string_id menu_music_options = 1549;
+    constexpr string_id company_face_selection_title = 1550;
+    constexpr string_id tooltip_company_face_selection = 1551;
 
+    constexpr string_id cant_select_face = 1553;
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
     constexpr string_id company_details_started = 1556;
