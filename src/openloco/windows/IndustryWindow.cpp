@@ -615,7 +615,7 @@ namespace openloco::ui::windows::industry
             int16_t year = current_year();
             int8_t yearSkip = 0;
 
-            for (uint8_t i = industry->history_size[0] - 1; i > 0; i--)
+            for (uint8_t i = industry->history_size[self->current_tab - (widx::tab_production - widx::tab_industry)] - 1; i > 0; i--)
             {
                 const uint16_t xPos = self->x + 41 + i;
                 const uint16_t yPos = self->y + 68 - 12;
@@ -633,12 +633,23 @@ namespace openloco::ui::windows::industry
 
                     gfx::draw_rect(dpi, xPos, yPos + 11, 1, self->y + self->height - 7, colour::get_shade(self->colours[1], 4));
                 }
-                // Draw population graph
-                uint16_t yPos1 = -industry->history_1[i] + (self->y + self->height - 7);
-                uint16_t yPos2 = -industry->history_1[i + 1] + (self->y + self->height - 7);
+
+                // Draw production graph
+                uint16_t yPos1 = 0;
+                uint16_t yPos2 = 0;
+                if ((self->current_tab - (widx::tab_production - widx::tab_industry)) == 0)
+                {
+                    yPos1 = -industry->history_1[i] + (self->y + self->height - 7);
+                    yPos2 = -industry->history_1[i + 1] + (self->y + self->height - 7);
+                }
+                else
+                {
+                    yPos1 = -industry->history_2[i] + (self->y + self->height - 7);
+                    yPos2 = -industry->history_2[i + 1] + (self->y + self->height - 7);
+                }
 
                 // Do not draw current segment yet; it may be zeroed.
-                if (i < industry->history_size[0] - 1)
+                if (i < industry->history_size[self->current_tab - (widx::tab_production - widx::tab_industry)] - 1)
                 {
                     if (yPos1 < self->y + self->height - 7)
                     {
