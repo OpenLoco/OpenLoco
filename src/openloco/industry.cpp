@@ -113,7 +113,7 @@ namespace openloco
                         {
                             if (prng.rand_bool())
                             {
-                                map::map_pos randTile{ x + coord_t(prng.rand_next(-15, 16) * 32), y + coord_t(prng.rand_next(-15, 16) * 32) };
+                                map::map_pos randTile{ x + static_cast<coord_t>(prng.rand_next(-15, 16) * 32), y + static_cast<coord_t>(prng.rand_next(-15, 16) * 32) };
                                 uint8_t bl = obj->var_ED;
                                 uint8_t bh = obj->var_EE;
                                 if (obj->var_EF != 0xFF && prng.rand_bool())
