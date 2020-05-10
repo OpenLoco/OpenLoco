@@ -404,7 +404,7 @@ namespace openloco::ui::options
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            openloco::ui::setDisplayMode(new_mode);
+            ui::setDisplayMode(new_mode);
 #endif
         }
 
@@ -433,7 +433,7 @@ namespace openloco::ui::options
             if (index == -1)
                 return;
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            openloco::ui::setDisplayMode(config::screen_mode::fullscreen, resolutions[index].width, resolutions[index].height);
+            ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
