@@ -198,7 +198,7 @@ namespace openloco::ui::options
             make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
             make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_stepper_widgets({ 183, 79 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_stepper_widgets({ 183, 79 }, { 173, 12 }, widget_type::wt_17, 1, string_ids::empty),
             make_widget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
             make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
             make_widget({ 183, 133 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
@@ -2148,7 +2148,7 @@ namespace openloco::ui::options
         if (config::get_new().display.mode != config::screen_mode::fullscreen)
             window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 
-        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
+        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 #if !(defined(__APPLE__) && defined(__MACH__))
         window->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
         display::screen_mode_toggle_enabled(window);
@@ -2198,7 +2198,7 @@ namespace openloco::ui::options
         switch ((common::tab)w->current_tab)
         {
             case common::tab::display:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
+                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
                 w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
