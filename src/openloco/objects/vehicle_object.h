@@ -121,11 +121,11 @@ namespace openloco
     namespace flags_E0
     {
         constexpr uint16_t rack_rail = 1 << 6;
-        constexpr uint16_t unk_09 = 1 << 9;  //anytrack??
-        constexpr uint16_t unk_11 = 1 << 10; //cancouple??
-        constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
-        constexpr uint16_t refittable = 1 << 9;
-        constexpr uint16_t unk_15 = 1 << 10; //noannounce??
+        constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t can_couple = 1 << 11;
+        constexpr uint16_t unk_12 = 1 << 12; //dualhead??
+        constexpr uint16_t refittable = 1 << 14;
+        constexpr uint16_t unk_15 = 1 << 15; //noannounce??
     }
 
     struct vehicle_object
@@ -133,17 +133,17 @@ namespace openloco
         string_id name;     // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
-        uint8_t pad_04;
-        uint8_t track_type;    // 0x05
-        uint8_t num_mods;      // 0x06
-        uint8_t cost_ind;      // 0x07
-        int16_t cost_fact;     // 0x08
-        uint8_t reliability;   // 0x0A
-        uint8_t run_cost_ind;  // 0x0B
-        int16_t run_cost_fact; // 0x0C
-        uint8_t colour_type;   // 0x0E
-        uint8_t num_compat;    // 0x0F
-        uint8_t pad_10[0x20 - 0x10];
+        uint8_t var_04;
+        uint8_t track_type;               // 0x05
+        uint8_t num_mods;                 // 0x06
+        uint8_t cost_ind;                 // 0x07
+        int16_t cost_fact;                // 0x08
+        uint8_t reliability;              // 0x0A
+        uint8_t run_cost_ind;             // 0x0B
+        int16_t run_cost_fact;            // 0x0C
+        uint8_t colour_type;              // 0x0E
+        uint8_t num_compat;               // 0x0F
+        uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
         uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
         vehicle_object_sprite sprites[4]; // 0x3C

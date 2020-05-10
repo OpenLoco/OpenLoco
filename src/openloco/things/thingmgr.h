@@ -37,4 +37,6 @@ namespace openloco::thingmgr
 
     void update_vehicles();
     void update_misc_things();
+
+    uint16_t getListCount(const thing_list list);
 }

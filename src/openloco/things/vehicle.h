@@ -9,6 +9,12 @@
 
 namespace openloco
 {
+    namespace things::vehicle
+    {
+        uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
+        bool isVehicleTypeCompatible(openloco::vehicle* const veh0, const uint16_t vehicleTypeId); // move to vehicle0 function
+    }
+
     struct vehicle_bogie;
     struct vehicle_body;
     struct vehicle_26;
@@ -96,9 +102,9 @@ namespace openloco
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
         thing_id_t next_car_id; // 0x3A
-        uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t object_id; // 0x40
-        TransportMode mode; // 0x42
+        uint32_t var_3C;        // veh1 speed?
+        uint16_t object_id;     // 0x40
+        TransportMode mode;     // 0x42
         uint8_t pad_43;
         int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
         uint8_t pad_46;
@@ -116,7 +122,7 @@ namespace openloco
         uint8_t var_5A;
         uint8_t pad_5B[0x5D - 0x5B];
         uint8_t var_5D;
-        uint8_t var_5E;
+        VehicleType vehicleType;
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
         uint8_t pad_60[0x6A - 0x60];
         uint8_t var_6A;
@@ -137,12 +143,18 @@ namespace openloco
 
     struct vehicle_26 : vehicle_base
     {
-        uint8_t pad_20[0x44 - 0x20];
+        uint8_t pad_20[0x40 - 0x20];
+        uint16_t object_id; // 0x40
+        uint8_t pad_42[0x44 - 0x42];
         uint8_t sound_id; // 0x44
         uint8_t pad_45[0x4A - 0x45];
         uint16_t var_4A;                       // sound-related flag(s)
         ui::window_number sound_window_number; // 0x4C
         ui::WindowType sound_window_type;      // 0x4E
+        uint8_t pad_4F[0x56 - 0x4F];
+        uint32_t var_56;
+        uint8_t pad_5A[0x73 - 0x53];
+        uint8_t var_73;
     };
 
     struct vehicle_body : vehicle_base

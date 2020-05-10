@@ -138,6 +138,7 @@ namespace openloco::string_ids
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
+    constexpr string_id too_many_objects_in_game = 171;
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
 
@@ -227,6 +228,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_signal_single_direction = 277;
     constexpr string_id tooltip_bridge_stats = 278;
     constexpr string_id tooltip_select_station_type = 279;
+
+    constexpr string_id incompatible_vehicle = 335;
 
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
@@ -597,6 +600,10 @@ namespace openloco::string_ids
     constexpr string_id tooltip_sort_by_profit = 1154;
     constexpr string_id tooltip_sort_by_age = 1155;
     constexpr string_id tooltip_sort_by_reliability = 1156;
+    constexpr string_id vehicle_must_be_stopped = 1157;
+    constexpr string_id vehicle_has_crashed = 1158;
+    constexpr string_id vehicle_has_broken_down = 1159;
+    constexpr string_id vehicle_is_stuck = 1160;
 
     constexpr string_id cant_add_pop_5_string_id_string_id = 1184;
     constexpr string_id cant_build_pop_5_string_id = 1185;
@@ -811,6 +818,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_station_cargo = 1448;
     constexpr string_id tooltip_station_cargo_ratings = 1449;
 
+    constexpr string_id vehicle_too_long = 1452;
     constexpr string_id tooltip_build_or_move_headquarters = 1453;
     constexpr string_id tooltip_change_owner_name = 1454;
     constexpr string_id not_yet_constructed = 1455;

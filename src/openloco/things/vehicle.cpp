@@ -1189,7 +1189,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
     vehicle* veh_3 = vehicle_1136120;
     auto vehicleObject = object();
 
-    if (veh->var_5E == 5)
+    if (veh->vehicleType == VehicleType::ship)
     {
         if (veh_3->var_56 == 0)
             return;

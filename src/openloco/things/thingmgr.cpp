@@ -7,11 +7,17 @@ using namespace openloco::interop;
 namespace openloco::thingmgr
 {
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
+    loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;
     loco_global<Thing[max_things], 0x006DB6DC> _things;
 
     thing_id_t first_id(thing_list list)
     {
         return _heads[(size_t)list];
+    }
+
+    uint16_t getListCount(const thing_list list)
+    {
+        return _listCounts[static_cast<size_t>(list)];
     }
 
     template<>

@@ -413,7 +413,7 @@ namespace openloco::ui::windows::toolbar_top::game
             if ((v->var_38 & (1 << 4)) != 0)
                 continue;
 
-            vehicle_counts[v->var_5E]++;
+            vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;
         }
 
         uint8_t ddIndex = 0;
