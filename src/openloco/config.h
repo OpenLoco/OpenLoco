@@ -91,6 +91,11 @@ namespace openloco::config
     {
         int32_t width{};
         int32_t height{};
+
+        bool isPositive() const
+        {
+            return width > 0 && height > 0;
+        }
     };
 
     struct display_config

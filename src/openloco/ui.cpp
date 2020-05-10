@@ -98,8 +98,9 @@ namespace openloco::ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
-    config::resolution_t* getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex);
-    config::resolution_t getDesktopResolution(int32_t displayIndex);
+    static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex);
+    static config::resolution_t getDesktopResolution(int32_t displayIndex);
+
 #if !(defined(__APPLE__) && defined(__MACH__))
     static void toggle_fullscreen_desktop();
 #endif
@@ -766,7 +767,7 @@ namespace openloco::ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
-    config::resolution_t* getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex)
+    static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode, int32_t displayIndex)
     {
         config::resolution_t defaultResolution = { 640, 480 };
         config::resolution_t* outputResolution = &defaultResolution;
@@ -775,43 +776,39 @@ namespace openloco::ui
         switch (mode)
         {
             case config::screen_mode::window:
-                if (config.display.window_resolution.width > 0 && config.display.window_resolution.height > 0)
+                if (config.display.window_resolution.isPositive())
                     outputResolution = &config.display.window_resolution;
-                else
-                    outputResolution = &defaultResolution;
                 break;
+
             case config::screen_mode::fullscreen:
-                if (config.display.fullscreen_resolution.width > 0 && config.display.fullscreen_resolution.height > 0)
+                if (config.display.fullscreen_resolution.isPositive())
                     outputResolution = &config.display.fullscreen_resolution;
                 break;
+
             case config::screen_mode::fullscreen_borderless:
                 break;
+
             default:
                 console::error("Unrecongised display mode");
                 break;
         }
 
-        // If we have no resolution in config, or it's 0x0, use the current desktop resolution instead
-        if (outputResolution == nullptr)
+        if (outputResolution != nullptr && outputResolution->isPositive())
         {
-            config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
-            outputResolution = &desktopResolution;
+            return *outputResolution;
         }
-        else if (!(outputResolution->width > 0 && outputResolution->height > 0))
+        else
         {
-            config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
-            outputResolution = &desktopResolution;
+            // If we have no resolution in config, or it's 0x0, use the current desktop resolution instead
+            return getDesktopResolution(displayIndex);
         }
-
-        return outputResolution;
     }
 
-    config::resolution_t getDesktopResolution(int32_t displayIndex)
+    static config::resolution_t getDesktopResolution(int32_t displayIndex)
     {
         SDL_DisplayMode desktopDisplayMode;
         SDL_GetDesktopDisplayMode(displayIndex, &desktopDisplayMode);
-        config::resolution_t desktopResolution = { desktopDisplayMode.w, desktopDisplayMode.h };
-        return desktopResolution;
+        return { desktopDisplayMode.w, desktopDisplayMode.h };
     }
 
     bool setDisplayMode(config::screen_mode mode, int16_t width, int16_t height)
@@ -828,7 +825,7 @@ namespace openloco::ui
 
         // If no resolution is set in function call parameters, check config.
         if (!(newResolution.width > 0 && newResolution.height > 0))
-            newResolution = *getDisplayResolutionByMode(mode, displayIndex);
+            newResolution = getDisplayResolutionByMode(mode, displayIndex);
 
         auto flags = 0;
         switch (mode)
