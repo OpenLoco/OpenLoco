@@ -517,7 +517,7 @@ namespace openloco::ui::windows::industry
                             args.push(cargoObj->unit_name_plural);
                         }
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
-                        args.push(industry->produced_cargo_transported[cargoNumber]);
+                        args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
                         origin.y = gfx::draw_string_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::transported_cargo, &args);
                     }
@@ -598,13 +598,14 @@ namespace openloco::ui::windows::industry
             }
 
             // Draw Y label and grid lines.
+            const uint16_t graphBottom = self->y + self->height - 7;
             int32_t yTick = 0;
-            for (int16_t yPos = self->y + self->height - 7; yPos >= self->y + 68; yPos -= 20)
+            for (int16_t yPos = graphBottom; yPos >= self->y + 68; yPos -= 20)
             {
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                gfx::draw_rect(dpi, self->x + 41, yPos, self->x + 280, 1, colour::get_shade(self->colours[1], 4));
+                gfx::draw_rect(dpi, self->x + 41, yPos, 239, 1, colour::get_shade(self->colours[1], 4));
 
                 gfx::draw_string_494C78(*dpi, self->x + 39, yPos - 6, colour::black, string_ids::population_graph_people, &args);
 
@@ -614,11 +615,14 @@ namespace openloco::ui::windows::industry
             month_id month = current_month();
             int16_t year = current_year();
             int8_t yearSkip = 0;
-
-            for (uint8_t i = industry->history_size[self->current_tab - (widx::tab_production - widx::tab_industry)] - 1; i > 0; i--)
+            // This is either 0 or 1 depending on selected tab
+            // used to select the correct history
+            const uint8_t productionTabWidx = self->current_tab + widx::tab_industry;
+            const uint8_t productionNum = productionTabWidx - widx::tab_production;
+            for (uint8_t i = industry->history_size[productionNum] - 1; i > 0; i--)
             {
                 const uint16_t xPos = self->x + 41 + i;
-                const uint16_t yPos = self->y + 68 - 12;
+                const uint16_t yPos = self->y + 56;
 
                 // Draw horizontal year and vertical grid lines.
                 if (month == month_id::january)
@@ -631,29 +635,20 @@ namespace openloco::ui::windows::industry
                         gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::population_graph_year, &args);
                     }
 
-                    gfx::draw_rect(dpi, xPos, yPos + 11, 1, self->y + self->height - 7, colour::get_shade(self->colours[1], 4));
+                    gfx::draw_rect(dpi, xPos, yPos + 11, 1, self->height - 74, colour::get_shade(self->colours[1], 4));
                 }
 
+                const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
                 // Draw production graph
-                uint16_t yPos1 = 0;
-                uint16_t yPos2 = 0;
-                if ((self->current_tab - (widx::tab_production - widx::tab_industry)) == 0)
-                {
-                    yPos1 = -industry->history_1[i] + (self->y + self->height - 7);
-                    yPos2 = -industry->history_1[i + 1] + (self->y + self->height - 7);
-                }
-                else
-                {
-                    yPos1 = -industry->history_2[i] + (self->y + self->height - 7);
-                    yPos2 = -industry->history_2[i + 1] + (self->y + self->height - 7);
-                }
+                const uint16_t yPos1 = graphBottom - history[i];
+                const uint16_t yPos2 = graphBottom - history[i + 1];
 
                 // Do not draw current segment yet; it may be zeroed.
-                if (i < industry->history_size[self->current_tab - (widx::tab_production - widx::tab_industry)] - 1)
+                if (i < industry->history_size[productionNum] - 1)
                 {
-                    if (yPos1 < self->y + self->height - 7)
+                    if (yPos1 <= graphBottom)
                     {
-                        if (yPos2 < self->y + self->height - 7)
+                        if (yPos2 <= graphBottom)
                         {
                             gfx::draw_line(dpi, xPos, yPos1, xPos + 1, yPos2, colour::get_shade(self->colours[1], 7));
                         }
