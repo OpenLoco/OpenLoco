@@ -22,6 +22,8 @@ namespace openloco
     namespace industry_flags
     {
         constexpr uint16_t flag_01 = 1 << 0;
+        constexpr uint16_t flag_02 = 1 << 1;
+        constexpr uint16_t closing_down = 1 << 2;
         constexpr uint16_t flag_04 = 1 << 3;
     }
 
@@ -60,6 +62,7 @@ namespace openloco
         bool empty() const;
         bool canReceiveCargo() const;
         bool canProduceCargo() const;
+        void getStatusString(const char* buffer);
 
         void update();
         void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);

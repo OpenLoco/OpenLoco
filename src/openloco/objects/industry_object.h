@@ -8,7 +8,13 @@ namespace openloco
     struct industry_object
     {
         string_id name;
-        uint8_t pad_02[0xDE - 0x02];
+        uint8_t pad_02[0xCA - 0x02];
+        uint16_t var_CA; // start year?
+        uint16_t var_CC; // end year?
+        uint8_t var_CE;
+        uint8_t cost_fact; // 0xCF
+        uint8_t cost_ind;  // 0xD0
+        uint8_t pad_D1[0xDE - 0xD1];
         uint8_t produced_cargo_type[2]; // 0xDE (0xFF = null)
         uint8_t received_cargo_type[3]; // 0xE0 (0xFF = null)
         uint32_t var_E4;
