@@ -774,21 +774,21 @@ namespace openloco::ui
         auto& config = config::get_new();
         switch (mode)
         {
-        case config::screen_mode::window:
-            if (config.display.window_resolution.width > 0 && config.display.window_resolution.height > 0)
-                outputResolution = &config.display.window_resolution;
-            else
-                outputResolution = &defaultResolution;
-            break;
-        case config::screen_mode::fullscreen:
-            if (config.display.fullscreen_resolution.width > 0 && config.display.fullscreen_resolution.height > 0)
-                outputResolution = &config.display.fullscreen_resolution;
-            break;
-        case config::screen_mode::fullscreen_borderless:
-            break;
-        default:
-            console::error("Unrecongised display mode");
-            break;
+            case config::screen_mode::window:
+                if (config.display.window_resolution.width > 0 && config.display.window_resolution.height > 0)
+                    outputResolution = &config.display.window_resolution;
+                else
+                    outputResolution = &defaultResolution;
+                break;
+            case config::screen_mode::fullscreen:
+                if (config.display.fullscreen_resolution.width > 0 && config.display.fullscreen_resolution.height > 0)
+                    outputResolution = &config.display.fullscreen_resolution;
+                break;
+            case config::screen_mode::fullscreen_borderless:
+                break;
+            default:
+                console::error("Unrecongised display mode");
+                break;
         }
 
         // If we have no resolution in config, or it's 0x0, use the current desktop resolution instead
@@ -796,7 +796,8 @@ namespace openloco::ui
         {
             config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
             outputResolution = &desktopResolution;
-        } else if (!(outputResolution->width > 0 && outputResolution->height > 0))
+        }
+        else if (!(outputResolution->width > 0 && outputResolution->height > 0))
         {
             config::resolution_t desktopResolution = getDesktopResolution(displayIndex);
             outputResolution = &desktopResolution;
