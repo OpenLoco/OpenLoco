@@ -9,8 +9,8 @@ namespace openloco
     {
         string_id name;
         uint8_t pad_02[0xDE - 0x02];
-        uint8_t var_DE[2];
-        uint8_t var_E0[3];
+        uint8_t produced_cargo_type[2]; // 0xDE (0xFF = null)
+        uint8_t received_cargo_type[3]; // 0xE0 (0xFF = null)
         uint32_t var_E4;
         uint8_t pad_E8[0xEA - 0xE8];
         uint8_t var_EA;

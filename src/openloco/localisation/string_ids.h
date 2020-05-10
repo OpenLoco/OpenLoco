@@ -598,13 +598,19 @@ namespace openloco::string_ids
     constexpr string_id title_town = 1359;
     constexpr string_id title_town_population = 1360;
     constexpr string_id title_town_local_authority = 1361;
+    constexpr string_id title_industry_monthly_production = 1362;
+    constexpr string_id title_statistics = 1363;
+
+    constexpr string_id demolish_this_industry = 1365;
 
     constexpr string_id title_station = 1364;
 
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
     constexpr string_id tooltip_town_ratings_each_company = 1388;
-
+    constexpr string_id tooltip_industry = 1389;
+    constexpr string_id tooltip_production_graph = 1390;
+    constexpr string_id production_graph_label = 1391;
     constexpr string_id demolish_this_town = 1392;
     constexpr string_id cant_remove_town = 1393;
 
@@ -618,6 +624,11 @@ namespace openloco::string_ids
     constexpr string_id town_size_8 = 1406;
 
     constexpr string_id expand_this_town = 1409;
+
+    constexpr string_id tooltip_statistics = 1414;
+    constexpr string_id received_cargo = 1415;
+    constexpr string_id produced_cargo = 1416;
+    constexpr string_id transported_cargo = 1417;
 
     constexpr string_id error_reason_belongs_to = 1420;
     constexpr string_id error_reason_stringid_belongs_to = 1421;
@@ -966,6 +977,9 @@ namespace openloco::string_ids
     constexpr string_id window_browse_challenge_failed = 2011;
 
     constexpr string_id error_invalid_filename = 2016;
+    constexpr string_id title_industry_name = 2017;
+    constexpr string_id prompt_enter_new_industry_name = 2018;
+    constexpr string_id error_cant_rename_industry = 2019;
 
     constexpr string_id position_1st = 2023;
     constexpr string_id position_2nd = 2024;

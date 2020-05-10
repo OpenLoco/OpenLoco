@@ -97,6 +97,11 @@ namespace openloco::ui::windows::construction
     void on_mouse_up(window& w, uint16_t widgetIndex);
 }
 
+namespace openloco::ui::windows::industry
+{
+    window* open(industry_id_t id);
+}
+
 namespace openloco::ui::windows::industry_list
 {
     window* open();

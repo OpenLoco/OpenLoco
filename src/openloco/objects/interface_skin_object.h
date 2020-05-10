@@ -96,6 +96,15 @@ namespace openloco
         constexpr uint32_t tab_population_frame6 = 63;
         constexpr uint32_t tab_population_frame7 = 64;
 
+        constexpr uint32_t tab_production_frame0 = 89;
+        constexpr uint32_t tab_production_frame1 = 90;
+        constexpr uint32_t tab_production_frame2 = 91;
+        constexpr uint32_t tab_production_frame3 = 92;
+        constexpr uint32_t tab_production_frame4 = 93;
+        constexpr uint32_t tab_production_frame5 = 94;
+        constexpr uint32_t tab_production_frame6 = 95;
+        constexpr uint32_t tab_production_frame7 = 96;
+
         constexpr uint32_t tab_finances_frame0 = 113;
         constexpr uint32_t tab_finances_frame1 = 114;
         constexpr uint32_t tab_finances_frame2 = 115;
@@ -144,7 +153,13 @@ namespace openloco
         constexpr uint32_t tab_ratings_frame13 = 158;
         constexpr uint32_t tab_ratings_frame14 = 159;
         constexpr uint32_t tab_ratings_frame15 = 160;
-
+        constexpr uint32_t tab_transported_frame0 = 161;
+        constexpr uint32_t tab_transported_frame1 = 162;
+        constexpr uint32_t tab_transported_frame2 = 163;
+        constexpr uint32_t tab_transported_frame3 = 164;
+        constexpr uint32_t tab_transported_frame4 = 165;
+        constexpr uint32_t tab_transported_frame5 = 166;
+        constexpr uint32_t tab_transported_frame6 = 167;
         constexpr uint32_t tab_cogs_frame0 = 168;
         constexpr uint32_t tab_cogs_frame1 = 169;
         constexpr uint32_t tab_cogs_frame2 = 170;

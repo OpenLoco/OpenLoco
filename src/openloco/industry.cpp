@@ -26,6 +26,28 @@ namespace openloco
         return name == string_ids::null;
     }
 
+    bool industry::canReceiveCargo() const
+    {
+        auto receiveCargoState = false;
+        for (const auto& receivedCargo : objectmgr::get<industry_object>(object_id)->received_cargo_type)
+        {
+            if (receivedCargo != 0xff)
+                receiveCargoState = true;
+        }
+        return receiveCargoState;
+    }
+
+    bool industry::canProduceCargo() const
+    {
+        auto produceCargoState = false;
+        for (const auto& producedCargo : objectmgr::get<industry_object>(object_id)->produced_cargo_type)
+        {
+            if (producedCargo != 0xff)
+                produceCargoState = true;
+        }
+        return produceCargoState;
+    }
+
     static bool find_5(surface_element* surface)
     {
         auto element = surface;
@@ -87,12 +109,11 @@ namespace openloco
                     var_DD = 0;
                     if (var_DF < 224)
                     {
-                        if (var_189 / 8 <= var_1A3 || var_18B / 8 <= var_1A5)
+                        if (produced_cargo_quantity[0] / 8 <= produced_cargo_max[0] || produced_cargo_quantity[1] / 8 <= produced_cargo_max[1])
                         {
                             if (prng.rand_bool())
                             {
-                                coord_t x = var_02 + (prng.rand_next(-15, 16) * 32);
-                                coord_t y = var_04 + (prng.rand_next(-15, 16) * 32);
+                                map::map_pos randTile{ static_cast<coord_t>(x + (prng.rand_next(-15, 16) * 32)), static_cast<coord_t>(y + (prng.rand_next(-15, 16) * 32)) };
                                 uint8_t bl = obj->var_ED;
                                 uint8_t bh = obj->var_EE;
                                 if (obj->var_EF != 0xFF && prng.rand_bool())
@@ -101,7 +122,7 @@ namespace openloco
                                     bh = obj->var_F0;
                                 }
                                 uint8_t dl = prng.rand_next(7) * 32;
-                                sub_454A43(x, y, bl, bh, dl);
+                                sub_454A43(randTile, bl, bh, dl);
                             }
                         }
                     }
@@ -110,14 +131,13 @@ namespace openloco
             }
         }
     }
-
-    void industry::sub_454A43(coord_t x, coord_t y, uint8_t bl, uint8_t bh, uint8_t dl)
+    void industry::sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
         registers regs;
         regs.bl = bl;
         regs.bh = bh;
-        regs.ax = x;
-        regs.cx = y;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
         regs.dl = dl;
         regs.dh = id();
         call(0x00454A43, regs);
