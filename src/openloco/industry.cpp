@@ -79,7 +79,7 @@ namespace openloco
         }
 
         // Under Construction
-        if (var_11 == -1)
+        if (var_11 == 0xFF)
         {
             ptr = stringmgr::format_string(ptr, string_ids::industry_under_construction);
             return;

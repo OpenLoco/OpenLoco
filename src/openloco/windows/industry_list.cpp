@@ -626,21 +626,20 @@ namespace openloco::ui::windows::industry_list
             {
                 industryId = self->row_hover;
 
-                if (industryId == -1)
+                if (industryId == 0xFFFF)
                     return;
             }
 
             auto industryObj = objectmgr::get<industry_object>(industryId);
             auto industryCost = 0;
 
-            if (self->var_846 == -1)
+            if (self->var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == -1 && dword_E0C39C == (1 << 31)) || self->var_846 != -1)
+            if ((self->var_846 == 0xFFFF && dword_E0C39C == (1 << 31)) || self->var_846 != 0xFFFF)
             {
                 industryCost = (industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind]) / 8;
             }
-
             auto args = FormatArguments();
             args.push(industryCost);
 
@@ -659,7 +658,7 @@ namespace openloco::ui::windows::industry_list
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::white_stringid2);
+            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::white_stringid2, &industryObj->name);
         }
 
         // 0x0045843A
@@ -708,7 +707,7 @@ namespace openloco::ui::windows::industry_list
             auto xPos = (x / 122);
             auto yPos = (y / 112) * 5;
             auto index = xPos + yPos;
-            auto rowInfo = 0xFFFF;
+            uint16_t rowInfo = 0xFFFF;
 
             for (auto i = 0; i < self->var_83C; i++)
             {
@@ -724,7 +723,6 @@ namespace openloco::ui::windows::industry_list
             if (rowInfo == 0xFFFF)
                 string = string_ids::null;
 
-            const char* buffer = stringmgr::get_string(string);
             if (string != string_ids::empty)
             {
                 if (string == self->widgets[common::widx::frame].tooltip)
@@ -741,6 +739,7 @@ namespace openloco::ui::windows::industry_list
                 return;
 
             auto industryObj = objectmgr::get<industry_object>(rowInfo);
+            const char* buffer = stringmgr::get_string(string);
             char* ptr = (char*)buffer;
             *ptr = '\0';
             auto producedCargoCount = 0;
@@ -1132,11 +1131,11 @@ namespace openloco::ui::windows::industry_list
                     break;
                 if (!is_editor_mode())
                 {
-                    /*if (!(industryObj->var_E4 & 0x10000))
-                        continue;*/
-                    if (current_year() < industryObj->var_CA)
+                    if (!(industryObj->var_E4 & 0x10000))
                         continue;
-                    if (current_year() > industryObj->var_CC)
+                    if (current_year() < industryObj->designed)
+                        continue;
+                    if (current_year() > industryObj->obsolete)
                         continue;
                 }
                 self->row_info[industryCount] = i;
@@ -1146,7 +1145,7 @@ namespace openloco::ui::windows::industry_list
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            if (byte_525FC7 != -1)
+            if (byte_525FC7 != 0xFF)
             {
                 for (auto i = 0; i <= self->var_83C; i++)
                 {

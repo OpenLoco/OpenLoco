@@ -9,8 +9,8 @@ namespace openloco
     {
         string_id name;
         uint8_t pad_02[0xCA - 0x02];
-        uint16_t var_CA; // start year?
-        uint16_t var_CC; // end year?
+        uint16_t designed; // 0xCA start year
+        uint16_t obsolete; // 0xCC end year
         uint8_t var_CE;
         uint8_t cost_ind;  // 0xCF
         int16_t cost_fact; // 0xD0
