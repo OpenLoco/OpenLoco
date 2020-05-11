@@ -259,7 +259,7 @@ namespace openloco
         constexpr uint32_t build_vehicle_truck_frame_2 = 317;
         constexpr uint32_t build_vehicle_truck_frame_3 = 318;
         constexpr uint32_t build_vehicle_truck_frame_4 = 319;
-        constexpr uint32_t build_vehicle_truck_frame_5 = 310;
+        constexpr uint32_t build_vehicle_truck_frame_5 = 320;
         constexpr uint32_t build_vehicle_truck_frame_6 = 321;
         constexpr uint32_t build_vehicle_truck_frame_7 = 322;
         constexpr uint32_t build_vehicle_truck_frame_8 = 323;

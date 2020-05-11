@@ -94,14 +94,14 @@ namespace openloco
         uint8_t track_type;  // 0x35
         uint8_t pad_36[0x38 - 0x36];
         uint8_t var_38;
-        uint8_t object_sprite_type; // 0x39
-        thing_id_t next_car_id;     // 0x3A
+        uint8_t pad_39;         // 0x39
+        thing_id_t next_car_id; // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
-        uint8_t var_46;
+        uint8_t pad_46;
         uint8_t pad_47[0x4A - 0x47];
         uint16_t var_4A;
         uint8_t cargo_type; // 0x4C
@@ -110,8 +110,8 @@ namespace openloco
         uint8_t pad_50;
         uint8_t cargo_quantity; // 0x51
         uint8_t pad_52[0x54 - 0x52];
-        uint8_t var_54;
-        int8_t var_55;
+        uint8_t pad_54;
+        uint8_t pad_55;
         uint32_t var_56;
         uint8_t var_5A;
         uint8_t pad_5B[0x5D - 0x5B];
@@ -129,29 +129,10 @@ namespace openloco
 
         void update_head();
         void sub_4BA8D4();
-        void secondary_animation_update();
 
     private:
         bool update();
         void sub_4BAA76();
-        int32_t sub_4AA1D0();
-        void animation_update();
-        void sub_4AAB0B();
-        void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
-        uint16_t sub_4BE368(uint32_t distance);
-        uint8_t vehicle_body_update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
-        uint8_t vehicle_body_update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
-        uint8_t vehicle_update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
-        uint8_t vehicle_update_sprite_yaw_1(int16_t x_offset, int16_t y_offset);
-        uint8_t vehicle_update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
-        uint8_t vehicle_update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
-        uint8_t vehicle_update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
-        void steam_puffs_animation_update(uint8_t num, int8_t var_05);
-        void diesel_exhaust1_animation_update(uint8_t num, int8_t var_05);
-        void diesel_exhaust2_animation_update(uint8_t num, int8_t var_05);
-        void electric_spark1_animation_update(uint8_t num, int8_t var_05);
-        void electric_spark2_animation_update(uint8_t num, int8_t var_05);
-        void ship_wake_animation_update(uint8_t num, int8_t var_05);
     };
 
     struct vehicle_26 : vehicle_base
@@ -162,6 +143,47 @@ namespace openloco
         uint16_t var_4A;                       // sound-related flag(s)
         ui::window_number sound_window_number; // 0x4C
         ui::WindowType sound_window_type;      // 0x4E
+    };
+
+    struct vehicle_body : vehicle_base
+    {
+        uint8_t pad_20[0x38 - 0x20];
+        uint8_t var_38;
+        uint8_t object_sprite_type; // 0x39
+        thing_id_t next_car_id;     // 0x3A
+        uint8_t pad_3C[0x40 - 0x3C];
+        uint16_t object_id; // 0x40
+        TransportMode mode; // 0x42
+        uint8_t pad_43;
+        int16_t var_44;
+        uint8_t var_46;
+        uint8_t pad_47[0x54 - 0x47];
+        uint8_t var_54;
+        int8_t var_55;
+        uint8_t pad_56[0x5E - 0x56];
+        uint8_t var_5E;
+
+        vehicle_object* object() const;
+        int32_t update();
+        void secondary_animation_update();
+
+    private:
+        void sub_4AAB0B();
+        void animation_update();
+        void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
+        void steam_puffs_animation_update(uint8_t num, int8_t var_05);
+        void diesel_exhaust1_animation_update(uint8_t num, int8_t var_05);
+        void diesel_exhaust2_animation_update(uint8_t num, int8_t var_05);
+        void electric_spark1_animation_update(uint8_t num, int8_t var_05);
+        void electric_spark2_animation_update(uint8_t num, int8_t var_05);
+        void ship_wake_animation_update(uint8_t num, int8_t var_05);
+        uint8_t update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
+        uint8_t update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
+        uint8_t update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
+        uint8_t update_sprite_yaw_1(int16_t x_offset, int16_t y_offset);
+        uint8_t update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
+        uint8_t update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
+        uint8_t update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
     };
 #pragma pack(pop)
 }

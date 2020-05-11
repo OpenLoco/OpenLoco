@@ -790,8 +790,8 @@ namespace openloco::ui::build_vehicle
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
-            _common_format_args[6] = vehicle->var_44;
-            _common_format_args[7] = vehicle->var_22;
+            _common_format_args[6] = vehicle->var_22;
+            _common_format_args[7] = vehicle->var_44;
             gGameCommandErrorTitle = string_ids::cant_add_pop_5_string_id_string_id;
         }
 
