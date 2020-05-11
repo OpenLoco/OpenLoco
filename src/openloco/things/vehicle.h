@@ -97,14 +97,14 @@ namespace openloco
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t track_type;  // 0x35
-        uint8_t pad_36[0x38 - 0x36];
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
         thing_id_t next_car_id; // 0x3A
         uint32_t var_3C;        // veh1 speed?
-        uint16_t object_id;     // 0x40
-        TransportMode mode;     // 0x42
+        uint16_t object_id;     // 0x40 not used in all vehicles **be careful**
+        TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
         uint8_t pad_46;
@@ -140,6 +140,7 @@ namespace openloco
         bool update();
         void sub_4BAA76();
     };
+    static_assert(offsetof(vehicle, var_73) == 0x73);
 
     struct vehicle_26 : vehicle_base
     {
@@ -159,7 +160,17 @@ namespace openloco
 
     struct vehicle_body : vehicle_base
     {
-        uint8_t pad_20[0x38 - 0x20];
+        uint8_t pad_20[0x24 - 0x20];
+        ColourScheme colour_scheme; // 0x24
+        uint16_t head;              // 0x26
+        uint8_t pad_28[0x2C - 0x28];
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type; // 0x35 field same in all vehicles
+        uint16_t var_36;    // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
@@ -169,11 +180,19 @@ namespace openloco
         uint8_t pad_43;
         int16_t var_44;
         uint8_t var_46;
-        uint8_t pad_47[0x54 - 0x47];
-        uint8_t var_54;
+        uint8_t var_47;
+        uint32_t accepted_cargo_types; // 0x48
+        uint8_t cargo_type;            // 0x4C
+        uint8_t max_cargo;             // 0x4D
+        uint8_t pad_4E[0x51 - 0x4E];
+        uint8_t var_51;
+        uint8_t pad_52[0x54 - 0x52];
+        uint8_t body_index; // 0x54
         int8_t var_55;
-        uint8_t pad_56[0x5E - 0x56];
+        uint32_t creation_day; // 0x56
+        uint8_t pad_5A[0x5E - 0x5A];
         uint8_t var_5E;
+        uint8_t var_5F;
 
         vehicle_object* object() const;
         int32_t update();
@@ -197,5 +216,49 @@ namespace openloco
         uint8_t update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
     };
+    static_assert(offsetof(vehicle_body, var_5F) == 0x5F);
+
+    struct vehicle_bogie : vehicle_base
+    {
+        uint8_t pad_20[0x24 - 0x20];
+        ColourScheme colour_scheme; // 0x24
+        uint16_t head;              // 0x26
+        uint8_t pad_28[0x2C - 0x28];
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint8_t var_38;
+        uint8_t object_sprite_type; // 0x39
+        thing_id_t next_car_id; // 0x3A
+        uint8_t pad_3C[0x40 - 0x3C];
+        uint16_t object_id; // 0x40
+        TransportMode mode; // 0x42 field same in all vehicles
+        uint8_t pad_43;
+        uint16_t var_44;
+        uint8_t var_46;
+        uint8_t var_47;
+        uint32_t accepted_cargo_types; // 0x48
+        uint8_t cargo_type;            // 0x4C
+        uint8_t max_cargo;             // 0x4D
+        uint8_t pad_4E[0x51 - 0x4E];
+        uint8_t var_51;
+        uint8_t pad_52[0x54 - 0x52];
+        uint8_t body_index; // 0x54
+        uint8_t pad_55;
+        uint32_t creation_day; // 0x56
+        uint8_t pad_5A[0x5E - 0x5A];
+        uint8_t var_5E;
+        uint8_t var_5F;
+        uint8_t var_60;
+        uint8_t var_61;
+        uint32_t var_62;
+        uint16_t reliability; // 0x66
+        uint16_t var_68;
+    };
+    static_assert(offsetof(vehicle_bogie, var_68) == 0x68);
 #pragma pack(pop)
 }

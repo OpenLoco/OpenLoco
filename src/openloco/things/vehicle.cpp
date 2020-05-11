@@ -243,7 +243,7 @@ void openloco::vehicle_body::animation_update()
         return;
 
     auto vehicleObject = object();
-    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
+    int32_t var_05 = vehicleObject->var_24[body_index].var_05;
     if (var_05 == 0)
     {
         return;
@@ -976,7 +976,8 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_4(int16_t x_offset, int16_t y_
 void openloco::vehicle_body::secondary_animation_update()
 {
     auto vehicleObject = object();
-    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
+
+    uint8_t var_05 = vehicleObject->var_24[body_index].var_05;
     if (var_05 == 0)
         return;
 

@@ -430,7 +430,7 @@ namespace openloco::ui::build_vehicle
 
             if (vehicle)
             {
-                if (things::vehicle::isVehicleTypeCompatible(vehicle, vehicleObjIndex))
+                if (!things::vehicle::isVehicleTypeCompatible(vehicle, vehicleObjIndex))
                 {
                     continue;
                 }
