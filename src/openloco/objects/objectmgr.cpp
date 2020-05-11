@@ -101,7 +101,10 @@ namespace openloco::objectmgr
     template<>
     industry_object* get(size_t id)
     {
-        return _industryObjects[id];
+        if (_industryObjects[id] != (industry_object*)-1)
+            return _industryObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

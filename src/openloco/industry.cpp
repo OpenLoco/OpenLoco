@@ -131,7 +131,7 @@ namespace openloco
             requiredCargo++;
             if (requiredCargo > 1)
             {
-                if ((industryObj->var_E4 & (1 << 17)) != 0)
+                if ((industryObj->var_E4 & (1 << 17)) == 0)
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                 else
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
@@ -146,7 +146,7 @@ namespace openloco
             requiredCargo++;
             if (requiredCargo > 1)
             {
-                if ((industryObj->var_E4 & (1 << 17)) != 0)
+                if ((industryObj->var_E4 & (1 << 17)) == 0)
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                 else
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_or);

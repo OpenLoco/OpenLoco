@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../date.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -10,6 +11,7 @@
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
 #include "../ui/WindowManager.h"
+#include "../ui/scrollview.h"
 #include "../widget.h"
 
 using namespace openloco::interop;
@@ -20,6 +22,10 @@ namespace openloco::ui::windows::industry_list
     static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
     static loco_global<uint8_t, 0x00525FC7> byte_525FC7;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
+    static loco_global<utility::prng, 0x00525E20> _prng;
+    static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
+    static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
+    static loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     loco_global<uint8_t, 0x00508F14> _screen_flags;
     loco_global<int8_t, 0x00F2533F> _gridlines_state;
@@ -61,6 +67,7 @@ namespace openloco::ui::windows::industry_list
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void prepare_draw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
+        //indsutry_object sub_458BA0(window* self);
     }
 
     namespace industry_list
@@ -181,7 +188,7 @@ namespace openloco::ui::windows::industry_list
             if (currentIndustry == -1)
                 return;
 
-            //windows::industry::open(currentIndustry);
+            windows::industry::open(currentIndustry);
         }
 
         // 0x00458140
@@ -202,7 +209,6 @@ namespace openloco::ui::windows::industry_list
         // 0x00457A52
         static bool orderByName(const openloco::industry& lhs, const openloco::industry& rhs)
         {
-            //std::printf("orderByName\n");
             char lhsString[256] = { 0 };
             stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
 
@@ -405,7 +411,7 @@ namespace openloco::ui::windows::industry_list
                     text_colour_id = string_ids::wcolour2_stringid2;
                 }
 
-                if (industryId == -1)
+                if (industryId == 0xFFFF)
                     continue;
                 auto industry = industrymgr::get(industryId);
 
@@ -558,8 +564,6 @@ namespace openloco::ui::windows::industry_list
             window->call_on_resize();
             window->call_prepare_draw();
             window->init_scroll_widgets();
-
-            std::printf("windowOpen: %d\n", (uint32_t)window);
         }
         return window;
     }
@@ -584,7 +588,6 @@ namespace openloco::ui::windows::industry_list
         // 0x0045819F
         static void prepare_draw(window* self)
         {
-            std::printf("currentTabPrepareDraw: %d\n", self->current_tab);
             common::prepare_draw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
@@ -605,7 +608,6 @@ namespace openloco::ui::windows::industry_list
         // 0x0045826C
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            std::printf("currentTabDraw: %d\n", self->current_tab);
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -617,36 +619,46 @@ namespace openloco::ui::windows::industry_list
                 gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::no_industry_available);
                 return;
             }
+
             auto industryId = self->var_846;
-            if (self->var_846 == -1)
+
+            if (industryId == 0xFFFF)
             {
                 industryId = self->row_hover;
-                if (self->row_hover == -1)
+
+                if (industryId == -1)
                     return;
             }
+
             auto industryObj = objectmgr::get<industry_object>(industryId);
             auto industryCost = 0;
+
             if (self->var_846 == -1)
                 industryCost = dword_E0C39C;
+
             if ((self->var_846 == -1 && dword_E0C39C == (1 << 31)) || self->var_846 != -1)
             {
-                industryCost = industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind] / 8;
+                industryCost = (industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind]) / 8;
             }
 
             auto args = FormatArguments();
             args.push(industryCost);
 
             auto widthOffset = 0;
+
             if (!is_editor_mode())
             {
                 auto xPos = self->x + 3 + self->width - 19;
                 auto yPos = self->y + self->height - 13;
                 widthOffset = 138;
+
                 gfx::draw_string_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
             }
+
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
+
             gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::white_stringid2);
         }
 
@@ -667,31 +679,147 @@ namespace openloco::ui::windows::industry_list
         }
 
         //0x00458966
-        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            std::printf("currentTabOnScrollMouseDown: %d\n", self->current_tab);
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x00458966, regs);
+            int16_t xPos = (x / 122);
+            int16_t yPos = (y / 112) * 5;
+            auto index = xPos + yPos;
+
+            for (auto i = 0; i < self->var_83C; i++)
+            {
+                auto rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                {
+                    self->row_hover = rowInfo;
+                    byte_525FC7 = static_cast<uint8_t>(rowInfo);
+                    //common::sub_458BA0(self);
+                    int32_t pan = (self->width >> 1) + self->x;
+                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    audio::play_sound(audio::sound_id::click_down, loc, pan);
+                    break;
+                }
+            }
         }
 
         // 0x00458721
-        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            std::printf("currentTabOnScrollMouseOver: %d\n", self->current_tab);
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x00458721, regs);
+            auto xPos = (x / 122);
+            auto yPos = (y / 112) * 5;
+            auto index = xPos + yPos;
+            auto rowInfo = 0xFFFF;
+
+            for (auto i = 0; i < self->var_83C; i++)
+            {
+                rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                    break;
+            }
+            self->var_846 = rowInfo;
+            self->invalidate();
+            auto string = string_ids::buffer_337;
+
+            if (rowInfo == 0xFFFF)
+                string = string_ids::null;
+
+            const char* buffer = stringmgr::get_string(string);
+            if (string != string_ids::empty)
+            {
+                if (string == self->widgets[common::widx::frame].tooltip)
+                {
+                    if (rowInfo == self->var_85C)
+                        return;
+                }
+            }
+            self->widgets[common::widx::frame].tooltip = string;
+            self->var_85C = rowInfo;
+            call(0x004C87B5);
+
+            if (rowInfo == 0xFFFF)
+                return;
+
+            auto industryObj = objectmgr::get<industry_object>(rowInfo);
+            char* ptr = (char*)buffer;
+            *ptr = '\0';
+            auto producedCargoCount = 0;
+
+            if ((industryObj->produced_cargo_type[0] & industryObj->produced_cargo_type[1]) != 0xFF)
+            {
+                ptr = stringmgr::format_string(ptr, string_ids::industy_produces);
+                if (industryObj->produced_cargo_type[0] != 0xFF)
+                {
+                    producedCargoCount++;
+                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[0]);
+                    ptr = stringmgr::format_string(ptr, cargoObj->name);
+                }
+                if (industryObj->produced_cargo_type[1] != 0xFF)
+                {
+                    producedCargoCount++;
+
+                    if (producedCargoCount > 1)
+                        ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
+
+                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[1]);
+                    ptr = stringmgr::format_string(ptr, cargoObj->name);
+                }
+                if ((industryObj->received_cargo_type[0] & industryObj->received_cargo_type[1] & industryObj->received_cargo_type[2]) != 0xFF)
+                {
+                    ptr = stringmgr::format_string(ptr, string_ids::cargo_comma);
+                }
+            }
+
+            auto receivedCargoCount = 0;
+
+            if ((industryObj->received_cargo_type[0] & industryObj->received_cargo_type[1] & industryObj->received_cargo_type[2]) != 0xFF)
+            {
+                ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
+
+                if (industryObj->received_cargo_type[0] != 0xFF)
+                {
+                    receivedCargoCount++;
+                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[0]);
+                    ptr = stringmgr::format_string(ptr, cargoObj->name);
+                }
+
+                if (industryObj->received_cargo_type[1] != 0xFF)
+                {
+                    receivedCargoCount++;
+
+                    if (receivedCargoCount > 1)
+                    {
+                        if ((industryObj->var_E4 & 0x20000) != 0)
+                            ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
+                        else
+                            ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
+                    }
+
+                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[1]);
+                    ptr = stringmgr::format_string(ptr, cargoObj->name);
+                }
+
+                if (industryObj->received_cargo_type[2] != 0xFF)
+                {
+                    receivedCargoCount++;
+
+                    if (receivedCargoCount > 1)
+                    {
+                        if ((industryObj->var_E4 & 0x20000) != 0)
+                            ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
+                        else
+                            ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
+                    }
+
+                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[2]);
+                    ptr = stringmgr::format_string(ptr, cargoObj->name);
+                }
+            }
         }
 
         // 0x004585B8
         static void on_update(window* self)
         {
-            std::printf("currentTabOnUpdate: %d\n", self->current_tab);
             if ((_screen_flags & screen_flags::unknown_5) != 0)
             {
                 auto cursor = input::getMouseLocation();
@@ -704,7 +832,7 @@ namespace openloco::ui::windows::industry_list
                     xPos += 26;
                     yPos -= self->y;
 
-                    if (yPos >= 42)
+                    if ((yPos < 42) || (xPos <= self->width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
@@ -753,45 +881,83 @@ namespace openloco::ui::windows::industry_list
 
             self->call_prepare_draw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
-            //if ((_screen_flags & screen_flags::unknown_3) != 0 || self->type != _toolWindowType || self->number != _toolWindowNumber)
-            //{
-            //    WindowManager::close(self);
-            //    return;
-            //}
+            if ((_screen_flags & screen_flags::unknown_3) != 0 || self->type != _toolWindowType || self->number != _toolWindowNumber)
+            {
+                WindowManager::close(self);
+            }
         }
 
         // 0x00458455
         static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
         {
-            std::printf("currentTabTooltop: %d\n", self->current_tab);
             args.push(string_ids::tooltip_scroll_new_industry_list);
         }
 
         // 0x004586EA
         static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (4 * self->var_83C) / 5;
+            *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= 112;
-            std::printf("currentTabGetScrollSize: %d\n", self->current_tab);
+        }
+
+        // 0x00458C7F
+        static void drawIndustryThumb(gfx::drawpixelinfo_t* clipped, const openloco::industry_object* industryObj, int16_t x, int16_t y)
+        {
+            registers regs;
+            regs.cx = x;
+            regs.dx = y;
+            regs.edi = (uint32_t)clipped;
+            regs.ebp = (uint32_t)industryObj;
+            call(0x00458C7F, regs);
         }
 
         // 0x00458352
         static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            std::printf("currentTabDrawScroll: %d\n", self->current_tab);
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (uint32_t)dpi;
-            regs.eax = scrollIndex;
-            call(0x00458352, regs);
+            auto shade = colour::get_shade(self->colours[1], 4);
+            gfx::clear_single(*dpi, shade);
+
+            uint16_t xPos = 0;
+            uint16_t yPos = 0;
+            for (uint16_t i = 0; i < self->var_83C; i++)
+            {
+                word_E0C3C6 = 0xFFFF;
+                if (self->row_info[i] != self->row_hover)
+                {
+                    if (self->row_info[i] == self->var_846)
+                    {
+                        word_E0C3C6 = colour::translucent_flag;
+                        gfx::fill_rect_inset(dpi, xPos, yPos, 111, 111, self->colours[1], colour::translucent_flag);
+                    }
+                }
+                else
+                {
+                    word_E0C3C6 = colour::translucent_flag & colour::outline_flag;
+                    gfx::fill_rect_inset(dpi, xPos, yPos, 111, 111, self->colours[1], (colour::translucent_flag & colour::outline_flag));
+                }
+
+                auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
+
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
+                    drawIndustryThumb(clipped, industryObj, 56, 96);
+
+                xPos += 112;
+
+                if (xPos >= 560)
+                {
+                    xPos = 0;
+                    yPos += 112;
+                }
+            }
         }
 
         // 0x00458708
         static void event_08(window* self)
         {
-            std::printf("currentTabEvent8: %d\n", self->current_tab);
             if (self->var_846 != 0xFFFF)
                 self->var_846 = 0xFFFF;
             self->invalidate();
@@ -800,7 +966,6 @@ namespace openloco::ui::windows::industry_list
         // 0x0045848A
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            std::printf("currentTabToolUpdate: %d\n", (int)self.current_tab);
             registers regs;
             regs.esi = (int32_t)&self;
             regs.dx = widgetIndex;
@@ -812,7 +977,6 @@ namespace openloco::ui::windows::industry_list
         // 0x0045851F
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            std::printf("currentTabToolDown: %d\n", (int)self.current_tab);
             registers regs;
             regs.esi = (int32_t)&self;
             regs.dx = widgetIndex;
@@ -838,7 +1002,6 @@ namespace openloco::ui::windows::industry_list
         // 0x004585AD
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
-            std::printf("currentTabToolAbort: %d\n", (int)&self.current_tab);
             sub_458C09();
             sub_468FFE();
         }
@@ -879,7 +1042,6 @@ namespace openloco::ui::windows::industry_list
         // 0x00457B94
         static void prepare_draw(window* self)
         {
-            std::printf("prepareDraw: %d\n", (uint32_t)self);
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
             if (self->widgets != tabWidgets)
@@ -931,14 +1093,33 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458B51
-        static void sub_458B51()
+        static void sub_458B51(window* self)
         {
+            uint16_t scrollHeight = 0;
+            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->scroll_areas[0].v_bottom = scrollHeight;
+
+            auto i = 0;
+            if (i >= self->var_83C)
+            {
+                for (; i <= self->var_83C; i++)
+                {
+                    if (self->row_info[i] == self->row_hover)
+                        break;
+                }
+            }
+            self->scroll_areas[0].v_top = i;
+            ui::scrollview::update_thumbs(self, new_industries::widx::scrollview);
         }
 
-        // 0x00458BA0
-        static void sub_458BA0()
-        {
-        }
+        //// 0x00458BA0
+        //industry_object sub_458BA0(window* self)
+        //{
+        //    industry_object industryObj = nullptr;
+        //    if (self->row_hover != -1)
+        //        industry_object industryObj = objectmgr::get<industry_object>(self->row_hover);
+        //    return industryObj;
+        //}
 
         // 0x00458AAF
         static void sub_458AAF(window* self)
@@ -947,30 +1128,35 @@ namespace openloco::ui::windows::industry_list
             for (auto i = 0; objectmgr::get_max_objects(object_type::industry); i++)
             {
                 auto industryObj = objectmgr::get<industry_object>(i);
-                if (industryObj->name == industry_id::null)
-                    continue;
+                if (industryObj == nullptr)
+                    break;
                 if (!is_editor_mode())
                 {
-                    if ((industryObj->var_E4 & 0x10000) == 0)
-                        continue;
+                    /*if (!(industryObj->var_E4 & 0x10000))
+                        continue;*/
                     if (current_year() < industryObj->var_CA)
                         continue;
                     if (current_year() > industryObj->var_CC)
                         continue;
-                    self->row_info[industryCount] = i;
-                    industryCount++;
                 }
+                self->row_info[industryCount] = i;
+                industryCount++;
             }
+
             self->var_83C = industryCount;
             auto rowHover = -1;
+
             if (byte_525FC7 != -1)
             {
-                for (auto i = 0; self->var_83C; i++)
+                for (auto i = 0; i <= self->var_83C; i++)
                 {
                     if (i >= self->var_83C)
                     {
                         if (byte_525FC7 == self->row_info[i])
-                            self->row_hover = byte_525FC7;
+                        {
+                            rowHover = byte_525FC7;
+                            break;
+                        }
                     }
                     else
                     {
@@ -989,8 +1175,8 @@ namespace openloco::ui::windows::industry_list
                 }
             }
             self->row_hover = rowHover;
-            sub_458B51();
-            sub_458BA0();
+            sub_458B51(self);
+            //sub_458BA0(self);
         }
 
         // 0x00457FFE
@@ -1011,16 +1197,17 @@ namespace openloco::ui::windows::industry_list
             self->row_hover = -1;
             self->var_846 = -1;
             sub_458AAF(self);
+            //sub_458BA0(self);
+            _prng->rand_next();
+            _dword_E0C394 = _prng->srand_0();
+            _dword_E0C398 = _prng->srand_1();
         }
 
         // 0x00457F27
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            std::printf("currentTabSwitchTab: %d\n", self->current_tab);
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
-
-            // textinput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_industry_list;
             self->frame_no = 0;
