@@ -928,13 +928,13 @@ namespace openloco::ui::windows::industry_list
                     if (self->row_info[i] == self->var_846)
                     {
                         word_E0C3C6 = colour::translucent_flag;
-                        gfx::fill_rect_inset(dpi, xPos, yPos, 111, 111, self->colours[1], colour::translucent_flag);
+                        gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = colour::translucent_flag & colour::outline_flag;
-                    gfx::fill_rect_inset(dpi, xPos, yPos, 111, 111, self->colours[1], (colour::translucent_flag & colour::outline_flag));
+                    gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], (colour::translucent_flag & colour::outline_flag));
                 }
 
                 auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
