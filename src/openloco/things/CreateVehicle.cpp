@@ -168,12 +168,12 @@ namespace openloco::things::vehicle
         auto length = 0;
         for (auto i = 0; i < vehObject->var_04; ++i)
         {
-            if (vehObject->var_24[i].sprite_ind == 0xFF)
+            if (vehObject->var_24[i].body_sprite_ind == 0xFF)
             {
                 continue;
             }
 
-            auto unk = vehObject->var_24[i].sprite_ind & 0x7F;
+            auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
             length += vehObject->sprites[unk].bogey_position * 2;
         }
         return length;
@@ -352,16 +352,9 @@ namespace openloco::things::vehicle
         newBogie->var_60 = 0; // different
         newBogie->var_61 = 0; // different
 
-        newBogie->object_sprite_type = vehObject.var_24[bodyNumber].spriteType; //different
         newBogie->var_14 = 1;
         newBogie->var_09 = 1;
         newBogie->var_15 = 1;
-        if (newBogie->object_sprite_type != 0xFF) // different
-        {
-            newBogie->var_14 = vehObject.var_B4[newBogie->object_sprite_type].var_02;
-            newBogie->var_09 = vehObject.var_B4[newBogie->object_sprite_type].var_03;
-            newBogie->var_15 = vehObject.var_B4[newBogie->object_sprite_type].var_04;
-        }
 
         newBogie->colour_scheme = colourScheme;
         lastVeh->next_car_id = newBogie->id;
@@ -406,6 +399,14 @@ namespace openloco::things::vehicle
                 }
             }
         }
+
+        newBogie->object_sprite_type = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
+        if (newBogie->object_sprite_type != 0xFF)
+        {
+            newBogie->var_14 = vehObject.var_B4[newBogie->object_sprite_type].var_02;
+            newBogie->var_09 = vehObject.var_B4[newBogie->object_sprite_type].var_03;
+            newBogie->var_15 = vehObject.var_B4[newBogie->object_sprite_type].var_04;
+        }
         return newBogie;
     }
 
@@ -414,6 +415,13 @@ namespace openloco::things::vehicle
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         newBogie->var_38 = (1 << 1);
+        newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
+        if (newBogie->object_sprite_type != 0xFF)
+        {
+            newBogie->var_14 = vehObject.var_B4[newBogie->object_sprite_type].var_02;
+            newBogie->var_09 = vehObject.var_B4[newBogie->object_sprite_type].var_03;
+            newBogie->var_15 = vehObject.var_B4[newBogie->object_sprite_type].var_04;
+        }
         return newBogie;
     }
 
@@ -471,7 +479,7 @@ namespace openloco::things::vehicle
         newBody->var_15 = 1;
 
         // different onwards
-        auto spriteType = vehObject.var_24[bodyNumber].spriteType;
+        auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
         if (spriteType != 0xFF)
         {
             if (spriteType & (1 << 7))
@@ -588,7 +596,6 @@ namespace openloco::things::vehicle
             gameCommandMapY = veh2->y;
             gameCommandMapZ = veh2->z;
 
-            veh0->owner;
             if (!sub_431E6A(veh0->owner, nullptr))
             {
                 return 0x80000000;

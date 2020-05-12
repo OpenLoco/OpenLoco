@@ -96,9 +96,9 @@ namespace openloco
     {
         uint8_t length; // 0x00
         uint8_t pad_01;
-        uint8_t spriteType; // index of var_B4 struct
-        uint8_t pad_03;
-        uint8_t sprite_ind; // 0x04
+        uint8_t front_bogie_sprite_ind; // 0x02 index of var_B4 struct
+        uint8_t back_bogie_sprite_ind;  // 0x03 index of var_B4 struct
+        uint8_t body_sprite_ind;        // 0x04 index of a sprites struct
         uint8_t var_05;
     };
 

@@ -140,7 +140,7 @@ namespace openloco
         bool update();
         void sub_4BAA76();
     };
-    static_assert(offsetof(vehicle, var_73) == 0x73);
+    static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct vehicle_26 : vehicle_base
     {
@@ -216,7 +216,7 @@ namespace openloco
         uint8_t update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
         uint8_t update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
     };
-    static_assert(offsetof(vehicle_body, var_5F) == 0x5F);
+    static_assert(sizeof(vehicle_body) == 0x60); // Can't use offset_of change this to last field if more found
 
     struct vehicle_bogie : vehicle_base
     {
@@ -259,6 +259,6 @@ namespace openloco
         uint16_t reliability; // 0x66
         uint16_t var_68;
     };
-    static_assert(offsetof(vehicle_bogie, var_68) == 0x68);
+    static_assert(sizeof(vehicle_bogie) == 0x6A); // Can't use offset_of change this to last field if more found
 #pragma pack(pop)
 }
