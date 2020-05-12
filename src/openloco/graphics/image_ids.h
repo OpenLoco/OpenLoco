@@ -23,6 +23,7 @@ namespace openloco::image_ids
 
     constexpr uint32_t rubbish_bin = 2363;
     constexpr uint32_t centre_viewport = 2364;
+    constexpr uint32_t rotate_object = 2365;
 
     constexpr uint32_t show_station_catchment = 2379;
 
