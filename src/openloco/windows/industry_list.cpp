@@ -1149,7 +1149,7 @@ namespace openloco::ui::windows::industry_list
                     break;
                 if (!is_editor_mode())
                 {
-                    if (!(industryObj->flags & industry_object_flags::founded_by_user))
+                    if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
                         continue;
                     if (current_year() < industryObj->first_year)
                         continue;
