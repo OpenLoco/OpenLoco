@@ -31,12 +31,12 @@ namespace openloco
     struct industry
     {
         string_id name;
-        coord_t x;          // 0x02
-        coord_t y;          // 0x04
-        uint16_t flags;     // 0x06
-        utility::prng prng; // 0x08
-        uint8_t object_id;  // 0x10
-        uint8_t var_11;
+        coord_t x;                  // 0x02
+        coord_t y;                  // 0x04
+        uint16_t flags;             // 0x06
+        utility::prng prng;         // 0x08
+        uint8_t object_id;          // 0x10
+        uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint8_t pad_12[0xD5 - 0x12];
         town_id_t town;           // 0xD5
         map::tile_loop tile_loop; // 0xD7

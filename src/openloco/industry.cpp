@@ -79,7 +79,7 @@ namespace openloco
         }
 
         // Under Construction
-        if (var_11 == 0xFF)
+        if (under_construction != 0xFF)
         {
             ptr = stringmgr::format_string(ptr, string_ids::industry_under_construction);
             return;
@@ -131,7 +131,7 @@ namespace openloco
             requiredCargo++;
             if (requiredCargo > 1)
             {
-                if ((industryObj->var_E4 & (1 << 17)) == 0)
+                if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                 else
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
@@ -146,7 +146,7 @@ namespace openloco
             requiredCargo++;
             if (requiredCargo > 1)
             {
-                if ((industryObj->var_E4 & (1 << 17)) == 0)
+                if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                 else
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
@@ -185,7 +185,7 @@ namespace openloco
     // 0x00453275
     void industry::update()
     {
-        if (!(flags & industry_flags::flag_01) && var_11 == 0xFF)
+        if (!(flags & industry_flags::flag_01) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             auto obj = object();
@@ -202,7 +202,7 @@ namespace openloco
                             if (bl == 0 || bl != obj->var_EA)
                             {
                                 var_DB++;
-                                if ((!(obj->var_E4 & 0x10000000) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
+                                if ((!(obj->flags & industry_object_flags::flag_29) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
                                 {
                                     var_DD++;
                                 }

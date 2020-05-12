@@ -136,14 +136,13 @@ namespace openloco::ui::windows::industry
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            // 0x0045935F start
-            registers regs;
-            regs.dx = self->number;
-            call(0x0045935F, regs);
-            // 0x0045935F end
+            const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+            auto industry = industrymgr::get(self->number);
+            industry->getStatusString((char*)buffer);
 
             auto args = FormatArguments();
-            args.push(regs.bx);
+            args.push(string_ids::buffer_1250);
+
             auto widget = &self->widgets[widx::status_bar];
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
@@ -182,7 +181,7 @@ namespace openloco::ui::windows::industry
                     break;
                 }
 
-                // 0x0049916A
+                // 0x00455E59
                 case widx::demolish_industry:
                 {
                     bool success = game_commands::do_48(GameCommandFlag::apply, self->number);

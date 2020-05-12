@@ -232,6 +232,7 @@ namespace openloco::string_ids
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
 
+    constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
 
     constexpr string_id expenditure_income = 587;

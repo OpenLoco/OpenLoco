@@ -1,4 +1,5 @@
 #include "../audio/audio.h"
+#include "../config.h"
 #include "../date.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -67,7 +68,7 @@ namespace openloco::ui::windows::industry_list
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void prepare_draw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        //indsutry_object sub_458BA0(window* self);
+        // static void sub_458BA0(window* self);      Ommitted as result not used
     }
 
     namespace industry_list
@@ -570,6 +571,9 @@ namespace openloco::ui::windows::industry_list
 
     namespace new_industries
     {
+
+        static const gfx::ui_size_t window_size = { 578, 172 };
+
         enum widx
         {
             scrollview = 6,
@@ -692,7 +696,7 @@ namespace openloco::ui::windows::industry_list
                 {
                     self->row_hover = rowInfo;
                     byte_525FC7 = static_cast<uint8_t>(rowInfo);
-                    //common::sub_458BA0(self);
+                    //common::sub_458BA0(self);     Ommitted as result not used
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     audio::play_sound(audio::sound_id::click_down, loc, pan);
@@ -788,7 +792,7 @@ namespace openloco::ui::windows::industry_list
 
                     if (receivedCargoCount > 1)
                     {
-                        if ((industryObj->var_E4 & 0x20000) != 0)
+                        if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
                             ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                         else
                             ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
@@ -804,7 +808,7 @@ namespace openloco::ui::windows::industry_list
 
                     if (receivedCargoCount > 1)
                     {
-                        if ((industryObj->var_E4 & 0x20000) != 0)
+                        if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
                             ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
                         else
                             ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
@@ -846,19 +850,19 @@ namespace openloco::ui::windows::industry_list
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self->min_width = 578;
+                                self->min_width = window_size.width;
                                 self->min_height = y;
-                                self->max_width = 578;
+                                self->max_width = window_size.width;
                                 self->max_height = y;
                             }
                             else
                             {
                                 if (input::state() != input::input_state::scroll_left)
                                 {
-                                    self->min_width = 578;
-                                    self->min_height = 172;
-                                    self->max_width = 578;
-                                    self->max_height = 172;
+                                    self->min_width = window_size.width;
+                                    self->min_height = window_size.height;
+                                    self->max_width = window_size.width;
+                                    self->max_height = window_size.height;
                                 }
                             }
                         }
@@ -869,10 +873,10 @@ namespace openloco::ui::windows::industry_list
                     self->saved_view.mapX = 0;
                     if (input::state() != input::input_state::scroll_left)
                     {
-                        self->min_width = 578;
-                        self->min_height = 172;
-                        self->max_width = 578;
-                        self->max_height = 172;
+                        self->min_width = window_size.width;
+                        self->min_height = window_size.height;
+                        self->max_width = window_size.width;
+                        self->max_height = window_size.height;
                     }
                 }
             }
@@ -963,7 +967,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x0045848A
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void on_tool_update(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -974,7 +978,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x0045851F
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void on_tool_down(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -992,17 +996,32 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00468FFE hide_gridlines
-        static void sub_468FFE()
+        static void hideGridlines()
         {
-            registers regs;
-            call(0x00468FFE, regs);
+            std::printf("%d\n", int(_gridlines_state));
+            _gridlines_state--;
+            if (_gridlines_state == 0)
+            {
+                auto window = WindowManager::getMainWindow();
+                if (window != nullptr)
+                {
+                    if ((config::get().flags & config::flags::gridlines_on_landscape) == 0)
+                    {
+                        if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) == 0)
+                        {
+                            window->invalidate();
+                        }
+                        window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
+                    }
+                }
+            }
         }
 
         // 0x004585AD
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
             sub_458C09();
-            sub_468FFE();
+            hideGridlines();
         }
 
         static void init_events()
@@ -1083,10 +1102,11 @@ namespace openloco::ui::windows::industry_list
             if (_gridlines_state == 0)
             {
                 auto window = WindowManager::getMainWindow();
-                if ((window->viewports[0]->flags & 0x5) != 0)
+                if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) != 0)
                 {
                     window->invalidate();
                 }
+                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
             }
             _gridlines_state++;
         }
@@ -1111,13 +1131,11 @@ namespace openloco::ui::windows::industry_list
             ui::scrollview::update_thumbs(self, new_industries::widx::scrollview);
         }
 
-        //// 0x00458BA0
-        //industry_object sub_458BA0(window* self)
+        //// 0x00458BA0     Ommitted as result not used
+        //static void sub_458BA0(window* self)
         //{
-        //    industry_object industryObj = nullptr;
         //    if (self->row_hover != -1)
-        //        industry_object industryObj = objectmgr::get<industry_object>(self->row_hover);
-        //    return industryObj;
+        //        auto industryObj = objectmgr::get<industry_object>(self->row_hover);
         //}
 
         // 0x00458AAF
@@ -1131,11 +1149,11 @@ namespace openloco::ui::windows::industry_list
                     break;
                 if (!is_editor_mode())
                 {
-                    if (!(industryObj->var_E4 & 0x10000))
+                    if (!(industryObj->flags & industry_object_flags::founded_by_user))
                         continue;
-                    if (current_year() < industryObj->designed)
+                    if (current_year() < industryObj->first_year)
                         continue;
-                    if (current_year() > industryObj->obsolete)
+                    if (current_year() > industryObj->last_year)
                         continue;
                 }
                 self->row_info[industryCount] = i;
@@ -1175,19 +1193,19 @@ namespace openloco::ui::windows::industry_list
             }
             self->row_hover = rowHover;
             sub_458B51(self);
-            //sub_458BA0(self);
+            //sub_458BA0(self);     Ommitted as result not used
         }
 
         // 0x00457FFE
         static void sub_457FFE(window* self)
         {
-            self->min_width = 578;
-            self->min_height = 172;
-            self->max_width = 578;
-            self->max_height = 172;
+            self->min_width = new_industries::window_size.width;
+            self->min_height = new_industries::window_size.height;
+            self->max_width = new_industries::window_size.width;
+            self->max_height = new_industries::window_size.height;
             input::toolSet(self, common::widx::tab_new_industry, 40);
 
-            //if (input::has_flag(input::input_flags::flag6))
+            input::set_flag(input::input_flags::flag6);
             showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
@@ -1195,8 +1213,10 @@ namespace openloco::ui::windows::industry_list
             self->var_83C = 0;
             self->row_hover = -1;
             self->var_846 = -1;
+
             sub_458AAF(self);
-            //sub_458BA0(self);
+            //sub_458BA0(self);     Ommitted as result not used
+
             _prng->rand_next();
             _dword_E0C394 = _prng->srand_0();
             _dword_E0C398 = _prng->srand_1();
