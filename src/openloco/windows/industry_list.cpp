@@ -640,7 +640,7 @@ namespace openloco::ui::windows::industry_list
             if (self->var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == (1 << 31)) || self->var_846 != 0xFFFF)
+            if ((self->var_846 == 0xFFFF && dword_E0C39C == uint32_t(1 << 31)) || self->var_846 != 0xFFFF)
             {
                 industryCost = (industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind]) / 8;
             }
