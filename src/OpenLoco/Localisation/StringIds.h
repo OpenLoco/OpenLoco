@@ -212,6 +212,11 @@ namespace OpenLoco::StringIds
     constexpr string_id title_company_cargo_delivered = 249;
     constexpr string_id title_company_colour_scheme = 250;
     constexpr string_id title_company_challenge = 251;
+    constexpr string_id tooltip_change_direction = 252;
+    constexpr string_id tooltip_pass_signal_at_danger = 253;
+    constexpr string_id tooltip_remove_from_track = 254;
+
+    constexpr string_id tooltip_stop_start = 269;
 
     constexpr string_id velocity = 263;
     constexpr string_id unlimited_speed = 264;
@@ -245,6 +250,9 @@ namespace OpenLoco::StringIds
     constexpr string_id move_main_view_to_show_this = 355;
 
     constexpr string_id error_can_only_build_above_ground = 360;
+
+    constexpr string_id title_name_vehicle = 375;
+    constexpr string_id prompt_enter_new_vehicle_name = 376;
 
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
@@ -310,6 +318,11 @@ namespace OpenLoco::StringIds
 
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
+    constexpr string_id tooltip_vehicle_tab_main = 574;
+    constexpr string_id tooltip_vehicle_tab_details = 575;
+    constexpr string_id tooltip_vehicle_tab_cargo = 576;
+    constexpr string_id tooltip_vehicle_tab_route = 577;
+    constexpr string_id tooltip_vehicle_tab_finance = 578;
 
     constexpr string_id new_construction_position = 579;
     constexpr string_id rotate_90 = 580;
@@ -412,6 +425,8 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_adjust_water = 682;
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
+
+    constexpr string_id title_vehicle_cargo = 686;
 
     constexpr string_id company_details_trains_count = 689;
     constexpr string_id company_details_buses_count = 690;
@@ -698,6 +713,14 @@ namespace OpenLoco::StringIds
     constexpr string_id num_aircrafts_plural = 1274;
     constexpr string_id num_ships_plural = 1275;
 
+    constexpr string_id train = 1276;
+    constexpr string_id bus = 1277;
+    constexpr string_id truck = 1278;
+    constexpr string_id tram = 1279;
+    constexpr string_id aircraft = 1280;
+    constexpr string_id ship = 1281;
+    constexpr string_id str_1282 = 1282;
+
     constexpr string_id tooltip_vehicles_for = 1286;
 
     constexpr string_id menu_sprite_stringid = 1287;
@@ -892,6 +915,8 @@ namespace OpenLoco::StringIds
     constexpr string_id forbid_ships = 1523;
     constexpr string_id title_airport = 1524;
     constexpr string_id title_ship_port = 1525;
+
+    constexpr string_id refit_vehicle_tip = 1532;
 
     constexpr string_id currently_playing = 1535;
     constexpr string_id music_controls_stop_tip = 1536;
@@ -1413,6 +1438,27 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_quit_to_menu = 2139;
     constexpr string_id menu_exit_openloco = 2140;
 
+
     constexpr string_id disableAICompanies = 2141;
     constexpr string_id disableAICompanies_tip = 2142;
+
+    constexpr string_id getVehicleType(VehicleType type)
+    {
+        switch (type)
+        {
+            case VehicleType::train:
+                return train;
+            case VehicleType::bus:
+                return bus;
+            case VehicleType::truck:
+                return truck;
+            case VehicleType::tram:
+                return tram;
+            case VehicleType::aircraft:
+                return aircraft;
+            case VehicleType::ship:
+                return ship;
+        }
+        return empty;
+    }
 }

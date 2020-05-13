@@ -119,7 +119,7 @@ namespace OpenLoco::Things::Vehicle
             default:
             {
                 Things::Vehicle::Vehicle train(head);
-                if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
+                if (head->vehicleType == VehicleType::aircraft || head->vehicleType == VehicleType::ship)
                 {
                     if (train.veh2->var_73 & (1 << 0))
                     {

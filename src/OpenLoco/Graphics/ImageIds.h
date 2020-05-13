@@ -52,6 +52,10 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t centre_viewport = 2364;
     constexpr uint32_t rotate_object = 2365;
 
+    constexpr uint32_t stop_start = 2369;
+
+    constexpr uint32_t pass_signal = 2374;
+
     constexpr uint32_t show_station_catchment = 2379;
     constexpr uint32_t plant_cluster_selected_tree = 2380;
     constexpr uint32_t plant_cluster_random_tree = 2381;
@@ -59,6 +63,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t music_controls_stop = 2383;
     constexpr uint32_t music_controls_play = 2384;
     constexpr uint32_t music_controls_next = 2385;
+    constexpr uint32_t SPR_2386 = 2386;
+    constexpr uint32_t tab_vehicle_background = 2387;
 
     constexpr uint32_t tab_display = 2391;
     constexpr uint32_t tab_control = 2392;

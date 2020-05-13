@@ -132,7 +132,7 @@ namespace OpenLoco
         uint16_t object_id;     // 0x40 not used in all vehicles **be careful**
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
-        int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
+        int16_t var_44; // name this number
         uint8_t pad_46;
         uint8_t pad_47[0x4A - 0x47];
         uint16_t var_4A;

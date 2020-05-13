@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
         { VehicleType::bus, { InterfaceSkin::ImageIds::vehicle_bus, InterfaceSkin::ImageIds::build_vehicle_bus_frame_0, StringIds::build_buses, StringIds::num_buses_singular, StringIds::num_buses_plural } },
-        { VehicleType::plane, { InterfaceSkin::ImageIds::vehicle_aircraft, InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
+        { VehicleType::aircraft, { InterfaceSkin::ImageIds::vehicle_aircraft, InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
         { VehicleType::ship, { InterfaceSkin::ImageIds::vehicle_ship, InterfaceSkin::ImageIds::build_vehicle_ship_frame_0, StringIds::build_ships, StringIds::num_ships_singular, StringIds::num_ships_plural } },
         { VehicleType::train, { InterfaceSkin::ImageIds::vehicle_train_frame_0, InterfaceSkin::ImageIds::build_vehicle_train_frame_0, StringIds::build_trains, StringIds::num_trains_singular, StringIds::num_trains_plural } },
         { VehicleType::tram, { InterfaceSkin::ImageIds::vehicle_tram, InterfaceSkin::ImageIds::build_vehicle_tram_frame_0, StringIds::build_trams, StringIds::num_trams_singular, StringIds::num_trams_plural } },

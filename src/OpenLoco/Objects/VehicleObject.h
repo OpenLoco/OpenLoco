@@ -17,18 +17,6 @@ namespace OpenLoco
         water
     };
 
-    enum class VehicleType : uint8_t
-    {
-        train = 0,
-        bus,
-        truck,
-        tram,
-        plane,
-        ship
-    };
-
-    constexpr uint8_t vehicleTypeCount = 6;
-
     enum class simple_animation_type : uint8_t
     {
         none = 0,

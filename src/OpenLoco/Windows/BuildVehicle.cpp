@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::BuildVehicle
         { VehicleType::bus, tab_build_new_buses, busTabImages },
         { VehicleType::truck, tab_build_new_trucks, truckTabImages },
         { VehicleType::tram, tab_build_new_trams, tramTabImages },
-        { VehicleType::plane, tab_build_new_aircraft, aircraftTabImages },
+        { VehicleType::aircraft, tab_build_new_aircraft, aircraftTabImages },
         { VehicleType::ship, tab_build_new_ships, shipTabImages }
     };
 
@@ -807,7 +807,7 @@ namespace OpenLoco::Ui::BuildVehicle
             auto type = _TrackTypesForTab[trackTypeTab];
             if (type == -1)
             {
-                if (_transportTypeTabInformation[window->current_tab].type == VehicleType::plane)
+                if (_transportTypeTabInformation[window->current_tab].type == VehicleType::aircraft)
                 {
 
                     args.push(StringIds::airport);
@@ -1214,7 +1214,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::window* window)
     {
         auto transportType = _transportTypeTabInformation[window->current_tab].type;
-        if (transportType == VehicleType::plane || transportType == VehicleType::ship)
+        if (transportType == VehicleType::aircraft || transportType == VehicleType::ship)
         {
             window->current_secondary_tab = 0;
             return;

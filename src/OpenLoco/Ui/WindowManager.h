@@ -257,7 +257,12 @@ namespace OpenLoco::Ui::Windows::TownList
     window* open();
 }
 
-namespace OpenLoco::Ui::Vehicle
+namespace OpenLoco
+{
+    struct vehicle;
+}
+
+namespace OpenLoco::ui::vehicle
 {
     void registerHooks();
     namespace Main

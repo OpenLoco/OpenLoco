@@ -1039,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::Map
     static std::optional<uint8_t> getRouteColour(Things::Vehicle::Vehicle train)
     {
         uint8_t colour;
-        if (train.head->vehicleType == VehicleType::plane)
+        if (train.head->vehicleType == VehicleType::aircraft)
         {
             colour = 211;
             auto index = Utility::bitScanForward(_dword_F253A4);
