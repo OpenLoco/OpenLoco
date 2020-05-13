@@ -36,7 +36,7 @@ namespace openloco::ui::windows::industry_list
     namespace common
     {
         static const gfx::ui_size_t window_size = { 600, 197 };
-        static const gfx::ui_size_t max_dimensions = { 640, 1200 };
+        static const gfx::ui_size_t max_dimensions = { 600, 900 };
         static const gfx::ui_size_t min_dimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
@@ -494,8 +494,7 @@ namespace openloco::ui::windows::industry_list
 
         static void init_events()
         {
-
-            events.draw = draw;
+			events.draw = draw;
             events.cursor = cursor;
             events.draw_scroll = draw_scroll;
             events.event_08 = event_08;
@@ -640,7 +639,7 @@ namespace openloco::ui::windows::industry_list
             if (self->var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == uint32_t(1 << 31)) || self->var_846 != 0xFFFF)
+            if ((self->var_846 == 0xFFFF && dword_E0C39C == (1ULL << 31)) || self->var_846 != 0xFFFF)
             {
                 industryCost = (industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind]) / 8;
             }
@@ -823,7 +822,7 @@ namespace openloco::ui::windows::industry_list
         // 0x004585B8
         static void on_update(window* self)
         {
-            if ((_screen_flags & screen_flags::unknown_5) != 0)
+            if (!input::has_flag(input::input_flags::flag5))
             {
                 auto cursor = input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -884,7 +883,7 @@ namespace openloco::ui::windows::industry_list
 
             self->call_prepare_draw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
-            if ((_screen_flags & screen_flags::unknown_3) != 0 || self->type != _toolWindowType || self->number != _toolWindowNumber)
+            if ((!input::has_flag(input::input_flags::tool_active)) || self->type != _toolWindowType || self->number != _toolWindowNumber)
             {
                 WindowManager::close(self);
             }
@@ -998,7 +997,6 @@ namespace openloco::ui::windows::industry_list
         // 0x00468FFE hide_gridlines
         static void hideGridlines()
         {
-            std::printf("%d\n", int(_gridlines_state));
             _gridlines_state--;
             if (_gridlines_state == 0)
             {
