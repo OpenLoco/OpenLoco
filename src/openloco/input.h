@@ -97,4 +97,7 @@ namespace openloco::input
     void sub_407231();
     void process_mouse_over(int16_t x, int16_t y);
     void process_keyboard_input();
+
+    uint16_t getTooltipTimeout();
+    void setTooltipTimeout(uint16_t tooltipTimeout);
 }

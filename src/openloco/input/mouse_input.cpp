@@ -857,16 +857,6 @@ namespace openloco::input
         }
     }
 
-    // 0x004C87B5
-    static void sub_4C87B5()
-    {
-        ui::WindowManager::close(WindowType::tooltip, 0);
-        _tooltipTimeout = 0;
-        _tooltipWindowType = WindowType::undefined;
-        _currentTooltipStringId = -1;
-        ui::tooltip::set_52336E(false);
-    }
-
     // 0x004C8098
     static void state_normal_hover(int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex)
     {
@@ -920,7 +910,7 @@ namespace openloco::input
                     {
                         if (tooltipStringId != _currentTooltipStringId)
                         {
-                            sub_4C87B5();
+                            ui::tooltip::closeAndReset();
                         }
                     }
                 }
@@ -939,7 +929,7 @@ namespace openloco::input
             }
             else
             {
-                sub_4C87B5();
+                ui::tooltip::closeAndReset();
             }
 
             return;
@@ -1436,5 +1426,14 @@ namespace openloco::input
     gfx::point_t getMouseLocation()
     {
         return gfx::point_t(_cursorX, _cursorY);
+    }
+
+    uint16_t getTooltipTimeout()
+    {
+        return _tooltipTimeout;
+    }
+    void setTooltipTimeout(uint16_t tooltipTimeout)
+    {
+        _tooltipTimeout = tooltipTimeout;
     }
 }
