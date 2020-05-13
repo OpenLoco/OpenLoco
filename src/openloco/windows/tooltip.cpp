@@ -235,4 +235,9 @@ namespace openloco::ui::tooltip
             _tooltipNotShownTicks = 0;
         }
     }
+
+    void set_52336E(uint8_t value)
+    {
+        _52336E = value;
+    }
 }
