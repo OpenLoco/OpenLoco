@@ -225,6 +225,9 @@ namespace openloco::string_ids
 
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
+	
+    constexpr string_id status_towns_singular = 555;
+    constexpr string_id status_towns_plural = 556;
 
     constexpr string_id status_num_industries_singular = 562;
     constexpr string_id status_num_industries_plural = 563;
@@ -597,12 +600,17 @@ namespace openloco::string_ids
     constexpr string_id title_build_new_towns = 1292;
     constexpr string_id title_build_new_buildings = 1293;
     constexpr string_id title_build_new_misc_buildings = 1294;
+    constexpr string_id table_header_population = 1295;
+    constexpr string_id table_header_population_desc = 1296;
+    constexpr string_id tooltip_sort_population = 1297;
+    constexpr string_id population_int = 1298;
+    constexpr string_id table_header_stations = 1299;
+    constexpr string_id table_header_stations_desc = 1300;
+    constexpr string_id tooltip_sort_stations = 1301;
 
-    constexpr string_id sort_population = 1297;
-
-    constexpr string_id sort_stations = 1301;
-
-    constexpr string_id sort_town_type = 1305;
+    constexpr string_id tooltip_sort_town_type = 1305;
+    constexpr string_id table_header_town_type = 1306;
+    constexpr string_id table_header_town_type_desc = 1307;
 
     constexpr string_id title_town_name = 1308;
     constexpr string_id prompt_type_new_town_name = 1309;
