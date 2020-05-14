@@ -13,6 +13,7 @@
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../widget.h"
+#include <intrin0.h>
 
 using namespace openloco::interop;
 
@@ -256,31 +257,172 @@ namespace openloco::ui::windows::town_list
         // 0x0049A56D
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x0049A56D, regs);
+            uint16_t currentRow = y / common::rowHeight;
+            if (currentRow > self->var_83C)
+                return;
+
+            int16_t currentTown = self->row_info[currentRow];
+            if (currentTown == -1)
+                return;
+
+            windows::town::open(currentTown);
         }
 
         // 0x0049A532
         static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x0049A532, regs);
+            self->flags &= ~(window_flags::flag_14);
+
+            uint16_t currentRow = y / common::rowHeight;
+            int16_t currentTown = -1;
+
+            if (currentRow < self->var_83C)
+                currentTown = self->row_info[currentRow];
+
+            if (self->row_hover == currentTown)
+                return;
+
+            self->row_hover = currentTown;
+            self->invalidate();
+        }
+
+        // 0x00499EC9
+        static bool orderByName(const openloco::town& lhs, const openloco::town& rhs)
+        {
+            char lhsString[256] = { 0 };
+            stringmgr::format_string(lhsString, lhs.name);
+
+            char rhsString[256] = { 0 };
+            stringmgr::format_string(rhsString, rhs.name);
+
+            return strcmp(lhsString, rhsString) < 0;
+        }
+
+        // 0x00499F0A
+        static bool orderByType(const openloco::town& lhs, const openloco::town& rhs)
+        {
+            auto lhsSize = lhs.size;
+
+            auto rhsSize = rhs.size;
+
+            if (rhsSize != lhsSize)
+            {
+                return rhsSize < lhsSize;
+            }
+            else
+            {
+                auto lhsPopulation = lhs.population;
+
+                auto rhsPopulation = rhs.population;
+
+                return rhsPopulation < lhsPopulation;
+            }
+        }
+
+        // 0x00499F28
+        static bool orderByPopulation(const openloco::town& lhs, const openloco::town& rhs)
+        {
+            auto lhsPopulation = lhs.population;
+
+            auto rhsPopulation = rhs.population;
+
+            return rhsPopulation < lhsPopulation;
+        }
+
+        // 0x00499F3B
+        static bool orderByStations(const openloco::town& lhs, const openloco::town& rhs)
+        {
+            auto lhsStations = lhs.num_stations;
+
+            auto rhsStations = rhs.num_stations;
+
+            return rhsStations < lhsStations;
+        }
+
+        // 0x00499EC9, 0x00499F0A, 0x00499F28, 0x00499F3B
+        static bool getOrder(const SortMode mode, openloco::town& lhs, openloco::town& rhs)
+        {
+            switch (mode)
+            {
+                case SortMode::Name:
+                    return orderByName(lhs, rhs);
+
+                case SortMode::Type:
+                    return orderByType(lhs, rhs);
+
+                case SortMode::Population:
+                    return orderByPopulation(lhs, rhs);
+
+                case SortMode::Stations:
+                    return orderByStations(lhs, rhs);
+            }
+
+            return false;
         }
 
         // 0x00499E0B
         static void updateTownList(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499E0B, regs);
+            auto edi = -1;
+
+            auto i = -1;
+
+            for (auto& town : townmgr::towns())
+            {
+                i++;
+                if (town.empty())
+                    continue;
+
+                if ((town.flags & town_flags::rating_adjusted) != 0)
+                    continue;
+
+                if (edi == -1)
+                {
+                    edi = i;
+                    continue;
+                }
+
+                if (getOrder(SortMode(self->sort_mode), town, *townmgr::get(edi)))
+                {
+                    edi = i;
+                }
+            }
+
+            if (edi != -1)
+            {
+                bool dl = false;
+
+                townmgr::get(edi)->flags |= town_flags::rating_adjusted;
+
+                auto ebp = self->row_count;
+                if (edi != self->row_info[ebp])
+                {
+                    self->row_info[ebp] = edi;
+                    dl = true;
+                }
+
+                self->row_count += 1;
+                if (self->row_count > self->var_83C)
+                {
+                    self->var_83C = self->row_count;
+                    dl = true;
+                }
+
+                if (dl)
+                {
+                    self->invalidate();
+                }
+            }
+            else
+            {
+                if (self->var_83C != self->row_count)
+                {
+                    self->var_83C = self->row_count;
+                    self->invalidate();
+                }
+
+                common::refreshTownList(self);
+            }
         }
 
         // 0x0049A4A0
@@ -463,13 +605,15 @@ namespace openloco::ui::windows::town_list
             self->widgets[widx::current_size].text = townSizeNames[byte_1135C66];
         }
 
-        // 0x0049A0A7
+        // 0x0049A627
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049A0A7, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            gfx::draw_string_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, colour::black, string_ids::town_size_label);
+
+            gfx::draw_string_494B3F(*dpi, self->x + 3, self->y + self->height - 13, colour::black, string_ids::select_town_size);
         }
 
         // 0x0049A675
@@ -481,12 +625,16 @@ namespace openloco::ui::windows::town_list
             call(0x0049A675, regs);
         }
 
-        // 0x0049A4A0
+        // 0x0049A7F2
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00499E0B, regs);
+            self->frame_no++;
+            self->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::townList, self->number, self->current_tab + common::widx::tab_town_list);
+            if ((!input::has_flag(input::input_flags::tool_active)) || self->type != _toolWindowType || self->number != _toolWindowNumber)
+            {
+                WindowManager::close(self);
+            }
         }
 
         // 0x0049A697
@@ -832,9 +980,8 @@ namespace openloco::ui::windows::town_list
         // 0x0049ABC5
         static void on_close(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            call(0x0049ABC5, regs);
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
         }
 
         // 0x0049AEA1
@@ -1253,6 +1400,8 @@ namespace openloco::ui::windows::town_list
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
+
+            self->invalidate();
 
             if (self->current_tab == widx::tab_town_list - widx::tab_town_list)
                 sub_49A37E(self);

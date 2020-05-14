@@ -682,7 +682,8 @@ namespace openloco::string_ids
     constexpr string_id town_size_6 = 1404;
     constexpr string_id town_size_7 = 1405;
     constexpr string_id town_size_8 = 1406;
-
+    constexpr string_id town_size_label = 1407;
+    constexpr string_id select_town_size = 1408;
     constexpr string_id expand_this_town = 1409;
 
     constexpr string_id tooltip_statistics = 1414;
