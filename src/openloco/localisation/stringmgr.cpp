@@ -580,7 +580,7 @@ namespace openloco::stringmgr
         }
     }
 
-    char* format_string(char* buffer, string_id id, void* args)
+    char* format_string(char* buffer, string_id id, const void* args)
     {
         auto wrapped = argswrapper(args);
         return format_string(buffer, id, wrapped);

@@ -247,34 +247,7 @@ namespace openloco::ui::build_vehicle
     static void drawTransportTypeTabs(ui::window* window, gfx::drawpixelinfo_t* dpi);
     static void drawTrackTypeTabs(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_resize(window* window);
-    static void on_periodic_update(window* window);
-    static void on_update(window* window);
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
-    static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void prepare_draw(ui::window* window);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-
-    static void initEvents()
-    {
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_resize = on_resize;
-        _events.on_periodic_update = on_periodic_update;
-        _events.on_update = on_update;
-        _events.get_scroll_size = get_scroll_size;
-        _events.scroll_mouse_down = on_scroll_mouse_down;
-        _events.scroll_mouse_over = on_scroll_mouse_over;
-        _events.tooltip = tooltip;
-        _events.cursor = cursor;
-        _events.prepare_draw = prepare_draw;
-        _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
-    }
+    static void initEvents();
 
     // 0x4C1C64
     static window* create(company_id_t company)
@@ -433,7 +406,7 @@ namespace openloco::ui::build_vehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void GenerateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, openloco::vehicle* vehicle)
+    static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, openloco::vehicle* vehicle)
     {
         if (trackType != 0xFF && (trackType & (1 << 7)))
         {
@@ -585,7 +558,7 @@ namespace openloco::ui::build_vehicle
             veh = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
         }
 
-        GenerateBuildableVehiclesArray(vehicleType, trackType, veh);
+        generateBuildableVehiclesArray(vehicleType, trackType, veh);
 
         int numRows = _numAvailableVehicles;
         if (window->var_83C == numRows)
@@ -607,7 +580,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C3576
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -696,7 +669,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C3929
-    static void on_resize(window* window)
+    static void onResize(window* window)
     {
         window->flags |= window_flags::resizable;
         auto minWidth = std::max<int16_t>(_numTrackTypeTabs * 31 + 195, 380);
@@ -745,13 +718,13 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C3923
-    static void on_periodic_update(window* window)
+    static void onPeriodicUpdate(window* window)
     {
         sub_4B92A5(window);
     }
 
     // 0x4C377B
-    static void on_update(window* window)
+    static void onUpdate(window* window)
     {
         window->frame_no++;
         window->call_prepare_draw();
@@ -762,13 +735,13 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C37B9
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window->var_83C * window->row_height;
     }
 
     // 0x4C384B
-    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -785,13 +758,16 @@ namespace openloco::ui::build_vehicle
         audio::play_sound(audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window->row_info[scrollItem];
         auto vehicleObj = objectmgr::get<vehicle_object>(item);
-        _common_format_args[5] = vehicleObj->name;
+        FormatArguments args{};
+        // Skip 5 * 2 bytes
+        args.skip(10);
+        args.push(vehicleObj->name);
         gGameCommandErrorTitle = string_ids::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
-            _common_format_args[6] = vehicle->var_22;
-            _common_format_args[7] = vehicle->var_44;
+            args.push(vehicle->var_22);
+            args.push(vehicle->var_44);
             gGameCommandErrorTitle = string_ids::cant_add_pop_5_string_id_string_id;
         }
 
@@ -809,7 +785,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C3802
-    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -894,7 +870,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C2E5C
-    static void prepare_draw(ui::window* window)
+    static void prepareDraw(ui::window* window)
     {
         if (window->widgets != _widgets)
         {
@@ -945,15 +921,16 @@ namespace openloco::ui::build_vehicle
             auto x = window->x + 2;
             auto y = window->y + window->height - 13;
             auto bottomLeftMessage = string_ids::select_new_vehicle;
+            FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
                 auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
-                _common_format_args[0] = vehicle->var_22;
-                _common_format_args[1] = vehicle->var_44;
+                args.push(vehicle->var_22);
+                args.push(vehicle->var_44);
                 bottomLeftMessage = string_ids::select_vehicle_to_add_to_string_id;
             }
 
-            gfx::draw_string_494BBF(*dpi, x, y, window->width - 186, colour::black, bottomLeftMessage, _common_format_args);
+            gfx::draw_string_494BBF(*dpi, x, y, window->width - 186, colour::black, bottomLeftMessage, &args);
         }
 
         if (window->row_hover == -1)
@@ -963,18 +940,26 @@ namespace openloco::ui::build_vehicle
 
         auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
         auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
-        auto cost = (vehicleObj->cost_fact * currencyMultiplicationFactor[vehicleObj->cost_ind]) / 64;
-        *(reinterpret_cast<uint32_t*>(&_common_format_args[0])) = cost;
-        buffer = stringmgr::format_string(buffer, string_ids::stats_cost, _common_format_args);
 
-        auto runningCost = (vehicleObj->run_cost_fact * currencyMultiplicationFactor[vehicleObj->run_cost_ind]) / 1024;
-        *(reinterpret_cast<uint32_t*>(&_common_format_args[0])) = runningCost;
-        buffer = stringmgr::format_string(buffer, string_ids::stats_running_cost, _common_format_args);
+        {
+            auto cost = (vehicleObj->cost_fact * currencyMultiplicationFactor[vehicleObj->cost_ind]) / 64;
+            FormatArguments args{};
+            args.push(cost);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_cost, &args);
+        }
+
+        {
+            auto runningCost = (vehicleObj->run_cost_fact * currencyMultiplicationFactor[vehicleObj->run_cost_ind]) / 1024;
+            FormatArguments args{};
+            args.push(runningCost);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_running_cost, &args);
+        }
 
         if (vehicleObj->designed != 0)
         {
-            _common_format_args[0] = vehicleObj->designed;
-            buffer = stringmgr::format_string(buffer, string_ids::stats_designed, _common_format_args);
+            FormatArguments args{};
+            args.push(vehicleObj->designed);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_designed, &args);
         }
 
         if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
@@ -1014,8 +999,9 @@ namespace openloco::ui::build_vehicle
             if (vehicleObj->flags & flags_E0::rack_rail)
             {
                 auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
-                _common_format_args[0] = trackExtraObj->name;
-                buffer = stringmgr::format_string(buffer, string_ids::stats_string_steep_slope, _common_format_args);
+                FormatArguments args{};
+                args.push(trackExtraObj->name);
+                buffer = stringmgr::format_string(buffer, string_ids::stats_string_steep_slope, &args);
             }
         }
 
@@ -1023,35 +1009,50 @@ namespace openloco::ui::build_vehicle
         {
             if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
             {
-                _common_format_args[0] = vehicleObj->power;
-                buffer = stringmgr::format_string(buffer, string_ids::stats_power, _common_format_args);
+                FormatArguments args{};
+                args.push(vehicleObj->power);
+                buffer = stringmgr::format_string(buffer, string_ids::stats_power, &args);
             }
         }
 
-        _common_format_args[0] = vehicleObj->weight;
-        buffer = stringmgr::format_string(buffer, string_ids::stats_weight, _common_format_args);
-        _common_format_args[0] = vehicleObj->speed;
-        buffer = stringmgr::format_string(buffer, string_ids::stats_max_speed, _common_format_args);
-
+        {
+            FormatArguments args{};
+            args.push(vehicleObj->weight);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_weight, &args);
+        }
+        {
+            FormatArguments args{};
+            args.push(vehicleObj->speed);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_max_speed, &args);
+        }
         if (vehicleObj->flags & flags_E0::rack_rail)
         {
             auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
-            _common_format_args[0] = vehicleObj->rack_speed;
-            _common_format_args[1] = trackExtraObj->name;
-            buffer = stringmgr::format_string(buffer, string_ids::stats_velocity_on_string, _common_format_args);
+            FormatArguments args{};
+            args.push(vehicleObj->rack_speed);
+            args.push(trackExtraObj->name);
+            buffer = stringmgr::format_string(buffer, string_ids::stats_velocity_on_string, &args);
         }
 
         if (vehicleObj->num_simultaneous_cargo_types != 0)
         {
             {
-                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicleObj->max_primary_cargo;
                 auto cargoType = utility::bitscanforward(vehicleObj->primary_cargo_types);
                 if (cargoType != -1)
                 {
                     auto cargoTypes = vehicleObj->primary_cargo_types & ~(1 << cargoType);
-                    auto cargoObj = objectmgr::get<cargo_object>(cargoType);
-                    _common_format_args[0] = vehicleObj->max_primary_cargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
-                    buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, _common_format_args);
+                    {
+                        auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                        FormatArguments args{};
+                        auto cargoUnitName = cargoObj->unit_name_plural;
+                        if (vehicleObj->max_primary_cargo == 1)
+                        {
+                            cargoUnitName = cargoObj->unit_name_singular;
+                        }
+                        args.push(cargoUnitName);
+                        args.push(vehicleObj->max_primary_cargo);
+                        buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, &args);
+                    }
                     cargoType = utility::bitscanforward(cargoTypes);
                     if (cargoType != -1)
                     {
@@ -1066,9 +1067,10 @@ namespace openloco::ui::build_vehicle
                                 buffer++;
                             }
 
-                            cargoObj = objectmgr::get<cargo_object>(cargoType);
-                            _common_format_args[0] = cargoObj->name;
-                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
+                            auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                            FormatArguments args{};
+                            args.push(cargoObj->name);
+                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1084,14 +1086,22 @@ namespace openloco::ui::build_vehicle
 
             if (vehicleObj->num_simultaneous_cargo_types > 1)
             {
-                *(reinterpret_cast<uint32_t*>(&_common_format_args[1])) = vehicleObj->max_secondary_cargo;
                 auto cargoType = utility::bitscanforward(vehicleObj->secondary_cargo_types);
                 if (cargoType != -1)
                 {
                     auto cargoTypes = vehicleObj->secondary_cargo_types & ~(1 << cargoType);
-                    auto cargoObj = objectmgr::get<cargo_object>(cargoType);
-                    _common_format_args[0] = vehicleObj->max_primary_cargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
-                    buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, _common_format_args);
+                    {
+                        auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                        FormatArguments args{};
+                        auto cargoUnitName = cargoObj->unit_name_plural;
+                        if (vehicleObj->max_secondary_cargo == 1)
+                        {
+                            cargoUnitName = cargoObj->unit_name_singular;
+                        }
+                        args.push(cargoUnitName);
+                        args.push(vehicleObj->max_secondary_cargo);
+                        buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, &args);
+                    }
 
                     cargoType = utility::bitscanforward(cargoTypes);
                     if (cargoType != -1)
@@ -1107,9 +1117,10 @@ namespace openloco::ui::build_vehicle
                                 buffer++;
                             }
 
-                            cargoObj = objectmgr::get<cargo_object>(cargoType);
-                            _common_format_args[0] = cargoObj->name;
-                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, _common_format_args);
+                            auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                            FormatArguments args{};
+                            args.push(cargoObj->name);
+                            buffer = stringmgr::format_string(buffer, string_ids::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1125,7 +1136,7 @@ namespace openloco::ui::build_vehicle
     }
 
     // 0x4C3307
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         switch (scrollIndex)
         {
@@ -1136,18 +1147,19 @@ namespace openloco::ui::build_vehicle
                 if (window->var_83C == 0)
                 {
                     auto defaultMessage = string_ids::no_vehicles_available;
+                    FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
                         auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
                         defaultMessage = string_ids::no_compatible_vehicles_available;
-                        _common_format_args[0] = vehicle->var_22;
-                        _common_format_args[1] = vehicle->var_44;
+                        args.push(vehicle->var_22);
+                        args.push(vehicle->var_44);
                     }
 
                     auto widget = window->widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window->row_height - 10) / 2;
-                    gfx::draw_string_495224(*dpi, 3, y, width, colour::black, defaultMessage, _common_format_args);
+                    gfx::draw_string_495224(*dpi, 3, y, width, colour::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1181,9 +1193,10 @@ namespace openloco::ui::build_vehicle
                         auto x = drawVehicleInline(dpi, vehicleType, 0, companymgr::get_controlling_id(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = objectmgr::get<vehicle_object>(vehicleType);
-                        _common_format_args[0] = vehicleObj->name;
+                        FormatArguments args{};
+                        args.push(vehicleObj->name);
                         half = (window->row_height - 10) / 2;
-                        gfx::draw_string_494B3F(*dpi, x + 3, y + half, colour::black, colouredString, _common_format_args);
+                        gfx::draw_string_494B3F(*dpi, x + 3, y + half, colour::black, colouredString, &args);
                     }
                 }
                 break;
@@ -1219,8 +1232,9 @@ namespace openloco::ui::build_vehicle
                 }
 
                 *buffer++ = '\0';
-                _common_format_args[0] = string_ids::buffer_1250;
-                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid2, _common_format_args);
+                FormatArguments args{};
+                args.push(string_ids::buffer_1250);
+                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid2, &args);
                 break;
             }
         }
@@ -1239,7 +1253,7 @@ namespace openloco::ui::build_vehicle
     static void setTrackTypeTabs(ui::window* window)
     {
         VehicleType currentTransportTabType = _transportTypeTabInformation[window->current_tab].type;
-        GenerateBuildableVehiclesArray(currentTransportTabType, 0xFF, nullptr);
+        generateBuildableVehiclesArray(currentTransportTabType, 0xFF, nullptr);
 
         auto railTrackTypes = 0;
         auto roadTrackTypes = 0;
@@ -1309,6 +1323,7 @@ namespace openloco::ui::build_vehicle
         if (transportType == VehicleType::plane || transportType == VehicleType::ship)
         {
             window->current_secondary_tab = 0;
+            return;
         }
 
         bool found = false;
@@ -1518,5 +1533,21 @@ namespace openloco::ui::build_vehicle
         call(0x4B7711, regs);
         // Returns right coordinate of the drawing
         return regs.cx;
+    }
+
+    static void initEvents()
+    {
+        _events.on_mouse_up = onMouseUp;
+        _events.on_resize = onResize;
+        _events.on_periodic_update = onPeriodicUpdate;
+        _events.on_update = onUpdate;
+        _events.get_scroll_size = getScrollSize;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.tooltip = tooltip;
+        _events.cursor = cursor;
+        _events.prepare_draw = prepareDraw;
+        _events.draw = draw;
+        _events.draw_scroll = drawScroll;
     }
 }

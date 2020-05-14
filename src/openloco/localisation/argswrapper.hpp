@@ -7,10 +7,10 @@ namespace openloco::stringmgr
     class argswrapper
     {
     private:
-        void* args;
+        const void* args;
 
     public:
-        argswrapper(void* newargs)
+        argswrapper(const void* newargs)
             : args(newargs){};
 
         uint8_t pop8()
