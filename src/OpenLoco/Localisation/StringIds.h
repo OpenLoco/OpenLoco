@@ -266,7 +266,7 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;
 
     constexpr string_id dropdown_stringid = 421;
-
+    constexpr string_id dropdown_stringid_selected = 422;
     constexpr string_id dropdown_company_select = 423;
     constexpr string_id dropdown_stringptr = 424;
 

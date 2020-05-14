@@ -135,6 +135,7 @@ namespace OpenLoco
         constexpr uint32_t tab_production_frame5 = 94;
         constexpr uint32_t tab_production_frame6 = 95;
         constexpr uint32_t tab_production_frame7 = 96;
+        constexpr uint32_t spr_97 = 97;
 
         constexpr uint32_t tab_finances_frame0 = 113;
         constexpr uint32_t tab_finances_frame1 = 114;
@@ -226,6 +227,13 @@ namespace OpenLoco
         constexpr uint32_t tab_cargo_delivered_frame2 = 200;
         constexpr uint32_t tab_cargo_delivered_frame3 = 201;
         constexpr uint32_t tab_cargo_payment_rates = 202;
+
+        constexpr uint32_t spr_203 = 203;
+        constexpr uint32_t spr_211 = 211;
+        constexpr uint32_t spr_219 = 219;
+        constexpr uint32_t spr_227 = 227;
+        constexpr uint32_t spr_235 = 235;
+        constexpr uint32_t spr_243 = 243;
 
         constexpr uint32_t build_vehicle_train_frame_0 = 251;
         constexpr uint32_t build_vehicle_train_frame_1 = 252;

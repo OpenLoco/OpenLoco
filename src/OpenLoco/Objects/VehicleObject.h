@@ -12,9 +12,9 @@ namespace OpenLoco
     enum class TransportMode : uint8_t
     {
         rail = 0,
-        road,
-        air,
-        water
+        road = 1,
+        air = 2,
+        water = 3
     };
 
     enum class simple_animation_type : uint8_t
