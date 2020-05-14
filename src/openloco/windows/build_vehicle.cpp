@@ -760,9 +760,7 @@ namespace openloco::ui::build_vehicle
         auto vehicleObj = objectmgr::get<vehicle_object>(item);
         FormatArguments args{};
         // Skip 5 * 2 bytes
-        args.push<int32_t>(0);
-        args.push<int32_t>(0);
-        args.push<int16_t>(0);
+        args.skip(10);
         args.push(vehicleObj->name);
         gGameCommandErrorTitle = string_ids::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
@@ -1046,7 +1044,12 @@ namespace openloco::ui::build_vehicle
                     {
                         auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                         FormatArguments args{};
-                        args.push(vehicleObj->max_primary_cargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural);
+                        auto cargoUnitName = cargoObj->unit_name_plural;
+                        if (vehicleObj->max_primary_cargo == 1)
+                        {
+                            cargoUnitName = cargoObj->unit_name_singular;
+                        }
+                        args.push(cargoUnitName);
                         args.push(vehicleObj->max_primary_cargo);
                         buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, &args);
                     }
@@ -1090,7 +1093,12 @@ namespace openloco::ui::build_vehicle
                     {
                         auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                         FormatArguments args{};
-                        args.push(vehicleObj->max_secondary_cargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural);
+                        auto cargoUnitName = cargoObj->unit_name_plural;
+                        if (vehicleObj->max_secondary_cargo == 1)
+                        {
+                            cargoUnitName = cargoObj->unit_name_singular;
+                        }
+                        args.push(cargoUnitName);
                         args.push(vehicleObj->max_secondary_cargo);
                         buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, &args);
                     }
