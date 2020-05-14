@@ -35,9 +35,9 @@ namespace openloco::ui::windows::industry_list
 
     namespace common
     {
-        static const gfx::ui_size_t window_size = { 600, 197 };
-        static const gfx::ui_size_t max_dimensions = { 600, 900 };
-        static const gfx::ui_size_t min_dimensions = { 192, 100 };
+        static const gfx::ui_size_t windowSize = { 600, 197 };
+        static const gfx::ui_size_t maxDimensions = { 600, 900 };
+        static const gfx::ui_size_t minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -68,7 +68,7 @@ namespace openloco::ui::windows::industry_list
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void prepare_draw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        // static void sub_458BA0(window* self);      Ommitted as result not used
+        static void showGridlines();
     }
 
     namespace industry_list
@@ -125,6 +125,8 @@ namespace openloco::ui::windows::industry_list
 
             if (is_editor_mode())
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
+            else
+                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_fund_new_industries;
         }
 
         // 0x00457CD9
@@ -492,6 +494,18 @@ namespace openloco::ui::windows::industry_list
             self->invalidate();
         }
 
+        // 0x00457FCA
+        static void tabReset(window* self)
+        {
+            self->min_width = common::minDimensions.width;
+            self->min_height = common::minDimensions.height;
+            self->max_width = common::maxDimensions.width;
+            self->max_height = common::maxDimensions.height;
+            self->var_83C = 0;
+            self->row_hover = -1;
+            common::refreshIndustryList(self);
+        }
+
         static void init_events()
         {
             events.draw = draw;
@@ -522,7 +536,7 @@ namespace openloco::ui::windows::industry_list
             // 0x00457878
             window = WindowManager::createWindow(
                 WindowType::industryList,
-                common::window_size,
+                common::windowSize,
                 window_flags::flag_8,
                 &industry_list::events);
 
@@ -537,10 +551,10 @@ namespace openloco::ui::windows::industry_list
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = common::min_dimensions.width;
-            window->min_height = common::min_dimensions.height;
-            window->max_width = common::max_dimensions.width;
-            window->max_height = common::max_dimensions.height;
+            window->min_width = common::minDimensions.width;
+            window->min_height = common::minDimensions.height;
+            window->max_width = common::maxDimensions.width;
+            window->max_height = common::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
             auto skin = objectmgr::get<interface_skin_object>();
@@ -695,7 +709,7 @@ namespace openloco::ui::windows::industry_list
                 {
                     self->row_hover = rowInfo;
                     byte_525FC7 = static_cast<uint8_t>(rowInfo);
-                    //common::sub_458BA0(self);     Ommitted as result not used
+
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     audio::play_sound(audio::sound_id::click_down, loc, pan);
@@ -1029,6 +1043,108 @@ namespace openloco::ui::windows::industry_list
                 input::cancel_tool();
         }
 
+        // 0x00458B51
+        static void updateActiveThumb(window* self)
+        {
+            uint16_t scrollHeight = 0;
+            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->scroll_areas[0].v_bottom = scrollHeight;
+
+            auto i = 0;
+            if (i >= self->var_83C)
+            {
+                for (; i <= self->var_83C; i++)
+                {
+                    if (self->row_info[i] == self->row_hover)
+                        break;
+                }
+            }
+            self->scroll_areas[0].v_top = i;
+            ui::scrollview::update_thumbs(self, new_industries::widx::scrollview);
+        }
+
+        // 0x00458AAF
+        static void updateBuildableIndustries(window* self)
+        {
+            auto industryCount = 0;
+            for (auto i = 0; objectmgr::get_max_objects(object_type::industry); i++)
+            {
+                auto industryObj = objectmgr::get<industry_object>(i);
+                if (industryObj == nullptr)
+                    break;
+                if (!is_editor_mode())
+                {
+                    if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
+                        continue;
+                    if (current_year() < industryObj->first_year)
+                        continue;
+                    if (current_year() > industryObj->last_year)
+                        continue;
+                }
+                self->row_info[industryCount] = i;
+                industryCount++;
+            }
+
+            self->var_83C = industryCount;
+            auto rowHover = -1;
+
+            if (byte_525FC7 != 0xFF)
+            {
+                for (auto i = 0; i <= self->var_83C; i++)
+                {
+                    if (i >= self->var_83C)
+                    {
+                        if (byte_525FC7 == self->row_info[i])
+                        {
+                            rowHover = byte_525FC7;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (self->var_83C != 0)
+                        {
+                            rowHover = self->row_info[0];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (self->var_83C != 0)
+                {
+                    rowHover = self->row_info[0];
+                }
+            }
+            self->row_hover = rowHover;
+            updateActiveThumb(self);
+        }
+
+        // 0x00457FFE
+        static void tabReset(window* self)
+        {
+            self->min_width = new_industries::window_size.width;
+            self->min_height = new_industries::window_size.height;
+            self->max_width = new_industries::window_size.width;
+            self->max_height = new_industries::window_size.height;
+            input::toolSet(self, common::widx::tab_new_industry, 40);
+
+            input::set_flag(input::input_flags::flag6);
+            common::showGridlines();
+            byte_E0C3D9 = 0;
+            dword_E0C39C = 0x80000000;
+
+            self->var_83C = 0;
+            self->row_hover = -1;
+            self->var_846 = -1;
+
+            updateBuildableIndustries(self);
+
+            _prng->rand_next();
+            _dword_E0C394 = _prng->srand_0();
+            _dword_E0C398 = _prng->srand_1();
+        }
+
         static void init_events()
         {
             events.draw = draw;
@@ -1090,18 +1206,6 @@ namespace openloco::ui::windows::industry_list
             self->widgets[common::widx::close_button].right = self->width - 3;
         }
 
-        // 0x00457FCA
-        static void sub_457FCA(window* self)
-        {
-            self->min_width = 192;
-            self->min_height = 100;
-            self->max_width = 600;
-            self->max_height = 900;
-            self->var_83C = 0;
-            self->row_hover = -1;
-            refreshIndustryList(self);
-        }
-
         // 0x00468FD3
         static void showGridlines()
         {
@@ -1115,117 +1219,6 @@ namespace openloco::ui::windows::industry_list
                 window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
             }
             _gridlines_state++;
-        }
-
-        // 0x00458B51
-        static void sub_458B51(window* self)
-        {
-            uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
-            self->scroll_areas[0].v_bottom = scrollHeight;
-
-            auto i = 0;
-            if (i >= self->var_83C)
-            {
-                for (; i <= self->var_83C; i++)
-                {
-                    if (self->row_info[i] == self->row_hover)
-                        break;
-                }
-            }
-            self->scroll_areas[0].v_top = i;
-            ui::scrollview::update_thumbs(self, new_industries::widx::scrollview);
-        }
-
-        //// 0x00458BA0     Ommitted as result not used
-        //static void sub_458BA0(window* self)
-        //{
-        //    if (self->row_hover != -1)
-        //        auto industryObj = objectmgr::get<industry_object>(self->row_hover);
-        //}
-
-        // 0x00458AAF
-        static void sub_458AAF(window* self)
-        {
-            auto industryCount = 0;
-            for (auto i = 0; objectmgr::get_max_objects(object_type::industry); i++)
-            {
-                auto industryObj = objectmgr::get<industry_object>(i);
-                if (industryObj == nullptr)
-                    break;
-                if (!is_editor_mode())
-                {
-                    if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
-                        continue;
-                    if (current_year() < industryObj->first_year)
-                        continue;
-                    if (current_year() > industryObj->last_year)
-                        continue;
-                }
-                self->row_info[industryCount] = i;
-                industryCount++;
-            }
-
-            self->var_83C = industryCount;
-            auto rowHover = -1;
-
-            if (byte_525FC7 != 0xFF)
-            {
-                for (auto i = 0; i <= self->var_83C; i++)
-                {
-                    if (i >= self->var_83C)
-                    {
-                        if (byte_525FC7 == self->row_info[i])
-                        {
-                            rowHover = byte_525FC7;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (self->var_83C != 0)
-                        {
-                            rowHover = self->row_info[0];
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (self->var_83C != 0)
-                {
-                    rowHover = self->row_info[0];
-                }
-            }
-            self->row_hover = rowHover;
-            sub_458B51(self);
-            //sub_458BA0(self);     Ommitted as result not used
-        }
-
-        // 0x00457FFE
-        static void sub_457FFE(window* self)
-        {
-            self->min_width = new_industries::window_size.width;
-            self->min_height = new_industries::window_size.height;
-            self->max_width = new_industries::window_size.width;
-            self->max_height = new_industries::window_size.height;
-            input::toolSet(self, common::widx::tab_new_industry, 40);
-
-            input::set_flag(input::input_flags::flag6);
-            showGridlines();
-            byte_E0C3D9 = 0;
-            dword_E0C39C = 0x80000000;
-
-            self->var_83C = 0;
-            self->row_hover = -1;
-            self->var_846 = -1;
-
-            sub_458AAF(self);
-            //sub_458BA0(self);     Ommitted as result not used
-
-            _prng->rand_next();
-            _dword_E0C394 = _prng->srand_0();
-            _dword_E0C398 = _prng->srand_1();
         }
 
         // 0x00457F27
@@ -1244,7 +1237,7 @@ namespace openloco::ui::windows::industry_list
                 self->viewports[0] = nullptr;
             }
 
-            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry_list];
+            const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry_list];
 
             self->enabled_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
@@ -1253,9 +1246,9 @@ namespace openloco::ui::windows::industry_list
             self->widgets = tabInfo.widgets;
 
             if (self->current_tab == widx::tab_industry_list - widx::tab_industry_list)
-                sub_457FCA(self);
+                industry_list::tabReset(self);
             if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)
-                sub_457FFE(self);
+                new_industries::tabReset(self);
 
             self->call_on_resize();
             self->call_prepare_draw();

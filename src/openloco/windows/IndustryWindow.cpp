@@ -138,7 +138,7 @@ namespace openloco::ui::windows::industry
 
             const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
             auto industry = industrymgr::get(self->number);
-            industry->getStatusString((char*)buffer);
+            industry->getStatusString(const_cast<char*>(buffer));
 
             auto args = FormatArguments();
             args.push(string_ids::buffer_1250);
