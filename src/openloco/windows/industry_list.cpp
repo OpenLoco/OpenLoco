@@ -1239,7 +1239,7 @@ namespace openloco::ui::windows::industry_list
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry_list];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->enabled_widgets = tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
