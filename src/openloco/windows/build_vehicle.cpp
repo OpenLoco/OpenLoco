@@ -1315,6 +1315,7 @@ namespace openloco::ui::build_vehicle
         if (transportType == VehicleType::plane || transportType == VehicleType::ship)
         {
             window->current_secondary_tab = 0;
+            return;
         }
 
         bool found = false;
