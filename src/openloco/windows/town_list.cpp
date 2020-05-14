@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -11,9 +12,10 @@
 #include "../town.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 #include "../ui/scrollview.h"
+#include "../utility/numeric.hpp"
 #include "../widget.h"
-#include <intrin0.h>
 
 using namespace openloco::interop;
 
@@ -23,21 +25,17 @@ namespace openloco::ui::windows::town_list
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<uint8_t, 0x01135C60> byte_1135C60;
     static loco_global<uint8_t, 0x01135C61> byte_1135C61;
+    static loco_global<uint8_t, 0x01135C63> byte_1135C63;
     static loco_global<uint8_t, 0x01135C65> byte_1135C65;
     static loco_global<uint8_t, 0x01135C66> byte_1135C66;
     static loco_global<uint8_t, 0x00525FC8> byte_525FC8;
     static loco_global<uint8_t, 0x00525FC9> byte_525FC9;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
+    static loco_global<std::uint8_t[40], 0x0113D8A0> _dropdownItemArgs;
 
     namespace common
     {
-        static const gfx::ui_size_t window_size = { 600, 197 };
-        static const gfx::ui_size_t max_dimensions = { 600, 900 };
-        static const gfx::ui_size_t min_dimensions = { 192, 100 };
-
-        static const uint8_t rowHeight = 10;
-
         enum widx
         {
             frame,
@@ -75,6 +73,12 @@ namespace openloco::ui::windows::town_list
 
     namespace town_list
     {
+        static const gfx::ui_size_t windowSize = { 600, 197 };
+        static const gfx::ui_size_t maxDimensions = { 600, 900 };
+        static const gfx::ui_size_t minDimensions = { 192, 100 };
+
+        static const uint8_t rowHeight = 10;
+
         enum widx
         {
             sort_town_name = 8,
@@ -147,9 +151,9 @@ namespace openloco::ui::windows::town_list
                 town_id_t townId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + common::rowHeight < dpi->y || yPos >= yPos + common::rowHeight + dpi->height || townId == (uint16_t)-1)
+                if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || townId == (uint16_t)-1)
                 {
-                    yPos += common::rowHeight;
+                    yPos += rowHeight;
                     continue;
                 }
 
@@ -158,7 +162,7 @@ namespace openloco::ui::windows::town_list
                 // Highlight selection.
                 if (townId == self->row_hover)
                 {
-                    gfx::draw_rect(dpi, 0, yPos, self->width, common::rowHeight, 0x2000030);
+                    gfx::draw_rect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
                     text_colour_id = string_ids::wcolour2_stringid2;
                 }
 
@@ -183,7 +187,7 @@ namespace openloco::ui::windows::town_list
                 // Town Population
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::population_int);
+                    args.push(string_ids::int_32);
                     args.push(town->population);
 
                     gfx::draw_string_494BBF(*dpi, 280, yPos, 68, colour::black, text_colour_id, &args);
@@ -191,12 +195,12 @@ namespace openloco::ui::windows::town_list
                 // Town Stations
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::population_int);
+                    args.push(string_ids::int_32);
                     args.push(town->num_stations);
 
                     gfx::draw_string_494BBF(*dpi, 350, yPos, 68, colour::black, text_colour_id, &args);
                 }
-                yPos += common::rowHeight;
+                yPos += rowHeight;
             }
         }
 
@@ -257,7 +261,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049A56D
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            uint16_t currentRow = y / common::rowHeight;
+            uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
                 return;
 
@@ -273,7 +277,7 @@ namespace openloco::ui::windows::town_list
         {
             self->flags &= ~(window_flags::flag_14);
 
-            uint16_t currentRow = y / common::rowHeight;
+            uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
 
             if (currentRow < self->var_83C)
@@ -298,7 +302,17 @@ namespace openloco::ui::windows::town_list
             return strcmp(lhsString, rhsString) < 0;
         }
 
-        // 0x00499F0A
+        // 0x00499F28
+        static bool orderByPopulation(const openloco::town& lhs, const openloco::town& rhs)
+        {
+            auto lhsPopulation = lhs.population;
+
+            auto rhsPopulation = rhs.population;
+
+            return rhsPopulation < lhsPopulation;
+        }
+
+        // 0x00499F0A Left this in to match the x86 code. can be replaced with orderByPopulation
         static bool orderByType(const openloco::town& lhs, const openloco::town& rhs)
         {
             auto lhsSize = lhs.size;
@@ -311,22 +325,8 @@ namespace openloco::ui::windows::town_list
             }
             else
             {
-                auto lhsPopulation = lhs.population;
-
-                auto rhsPopulation = rhs.population;
-
-                return rhsPopulation < lhsPopulation;
+                return orderByPopulation(lhs, rhs);
             }
-        }
-
-        // 0x00499F28
-        static bool orderByPopulation(const openloco::town& lhs, const openloco::town& rhs)
-        {
-            auto lhsPopulation = lhs.population;
-
-            auto rhsPopulation = rhs.population;
-
-            return rhsPopulation < lhsPopulation;
         }
 
         // 0x00499F3B
@@ -373,7 +373,7 @@ namespace openloco::ui::windows::town_list
                 if (town.empty())
                     continue;
 
-                if ((town.flags & town_flags::rating_adjusted) != 0)
+                if ((town.flags & town_flags::sorted) != 0)
                     continue;
 
                 if (edi == -1)
@@ -391,8 +391,9 @@ namespace openloco::ui::windows::town_list
             if (edi != -1)
             {
                 bool dl = false;
+                self->invalidate();
 
-                townmgr::get(edi)->flags |= town_flags::rating_adjusted;
+                townmgr::get(edi)->flags |= town_flags::sorted;
 
                 auto ebp = self->row_count;
                 if (edi != self->row_info[ebp])
@@ -461,7 +462,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049A4FA
         static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = common::rowHeight * self->var_83C;
+            *scrollHeight = rowHeight * self->var_83C;
         }
 
         // 0x00491841
@@ -476,11 +477,26 @@ namespace openloco::ui::windows::town_list
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
-            uint16_t currentIndex = yPos / common::rowHeight;
+            uint16_t currentIndex = yPos / rowHeight;
             if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
                 return cursor_id::hand_pointer;
 
             return fallback;
+        }
+
+        // 0x0049A37E
+        static void tabReset(window* self)
+        {
+            self->min_width = minDimensions.width;
+            self->min_height = minDimensions.height;
+            self->max_width = maxDimensions.width;
+            self->max_height = maxDimensions.height;
+            self->width = windowSize.width;
+            self->height = windowSize.height;
+            self->var_83C = 0;
+            self->row_hover = -1;
+
+            common::refreshTownList(self);
         }
 
         static void init_events()
@@ -513,7 +529,7 @@ namespace openloco::ui::windows::town_list
             // 0x00499CFC
             window = WindowManager::createWindow(
                 WindowType::townList,
-                common::window_size,
+                town_list::windowSize,
                 window_flags::flag_8,
                 &town_list::events);
 
@@ -528,10 +544,10 @@ namespace openloco::ui::windows::town_list
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = common::min_dimensions.width;
-            window->min_height = common::min_dimensions.height;
-            window->max_width = common::max_dimensions.width;
-            window->max_height = common::max_dimensions.height;
+            window->min_width = town_list::minDimensions.width;
+            window->min_height = town_list::minDimensions.height;
+            window->max_width = town_list::maxDimensions.width;
+            window->max_height = town_list::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
             auto skin = objectmgr::get<interface_skin_object>();
@@ -566,6 +582,8 @@ namespace openloco::ui::windows::town_list
 
     namespace build_towns
     {
+        static const gfx::ui_size_t windowSize = { 220, 87 };
+
         enum widx
         {
             current_size = 8,
@@ -576,8 +594,8 @@ namespace openloco::ui::windows::town_list
 
         widget_t widgets[] = {
             commonWidgets(219, 86, string_ids::title_build_new_towns),
-            make_widget({ 100, 45 }, { 116, 11 }, widget_type::wt_18, 1, image_ids::null, string_ids::tooltip_select_town_size),
-            make_widget({ 204, 46 }, { 10, 9 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_town_size),
+            make_widget({ 100, 45 }, { 116, 12 }, widget_type::wt_18, 1, image_ids::null, string_ids::tooltip_select_town_size),
+            make_widget({ 204, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end(),
         };
 
@@ -619,10 +637,19 @@ namespace openloco::ui::windows::town_list
         // 0x0049A675
         static void on_mouse_up(ui::window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x0049A675, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_town_list:
+                case common::widx::tab_build_town:
+                case common::widx::tab_build_buildings:
+                case common::widx::tab_build_misc_buildings:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x0049A7F2
@@ -638,15 +665,19 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A697
-        static void on_dropdown(window* self, ui::widget_index widget_index, int16_t item_index)
+        static void on_dropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = item_index;
-            regs.edx = widget_index;
-            regs.esi = (uint32_t)self;
-            call(0x0049A697, regs);
+            if (widgetIndex != widx::select_size)
+                return;
+            if (itemIndex != -1)
+            {
+                itemIndex++;
+                byte_1135C66 = itemIndex;
+                self->invalidate();
+            }
         }
 
+        // 0x0049A7C1
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
             common::hideGridlines();
@@ -677,27 +708,35 @@ namespace openloco::ui::windows::town_list
         // 0x0049A690
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (uint32_t)self;
-            regs.edi = (uint32_t)&self->widgets[widgetIndex];
-            call(0x0049A690, regs);
+            if (widgetIndex == widx::select_size)
+                dropdown::populateTownSizeSelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0049A844
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            call(0x0049A844, regs);
+            self->set_size(windowSize, windowSize);
         }
 
         // 0x0049A7C7
         static void on_close(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            call(0x0049A7C7, regs);
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+        }
+
+        // 0x0049A3BE
+        static void tabReset(window* self)
+        {
+            self->min_width = windowSize.width;
+            self->min_height = windowSize.height;
+            self->max_width = windowSize.width;
+            self->max_width = windowSize.height;
+            self->width = windowSize.width;
+            self->height = windowSize.height;
+            input::toolSet(self, common::widx::tab_build_town, 38);
+            input::set_flag(input::input_flags::flag6);
+            common::showGridlines();
         }
 
         static void init_events()
@@ -718,6 +757,10 @@ namespace openloco::ui::windows::town_list
 
     namespace build_misc_buildings
     {
+        static const gfx::ui_size_t windowSize = { 600, 172 };
+
+        static const uint8_t rowHeight = 112;
+
         enum widx
         {
             scrollview = 8,
@@ -781,19 +824,48 @@ namespace openloco::ui::windows::town_list
         // 0x0049A9C2
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049A9C2, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto buildingId = self->var_846;
+
+            if (buildingId == 0xFFFF)
+            {
+                buildingId = self->row_hover;
+
+                if (buildingId == 0xFFFF)
+                    return;
+            }
+
+            auto buildingObj = objectmgr::get<building_object>(buildingId);
+
+            gfx::draw_string_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, colour::black, string_ids::white_stringid2, &buildingObj->name);
         }
 
         // 0x0049AB31
         static void on_mouse_up(ui::window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (int32_t)self;
-            call(0x0049AB31, regs);
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_town_list:
+                case common::widx::tab_build_town:
+                case common::widx::tab_build_buildings:
+                case common::widx::tab_build_misc_buildings:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::rotate_object:
+                    if (byte_1135C63 < 3)
+                        byte_1135C63++;
+                    else
+                        byte_1135C63 = 0;
+                    //byte_1135C63 &= (uint8_t)3;
+                    break;
+            }
         }
 
         // 0x0049AD51
@@ -826,19 +898,19 @@ namespace openloco::ui::windows::town_list
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self->min_width = 578;
+                                self->min_width = windowSize.width;
                                 self->min_height = y;
-                                self->max_width = 578;
+                                self->max_width = windowSize.width;
                                 self->max_height = y;
                             }
                             else
                             {
                                 if (input::state() != input::input_state::scroll_left)
                                 {
-                                    self->min_width = 578;
-                                    self->min_height = 172;
-                                    self->max_width = 578;
-                                    self->max_height = 172;
+                                    self->min_width = windowSize.width;
+                                    self->min_height = windowSize.height;
+                                    self->max_width = windowSize.width;
+                                    self->max_height = windowSize.height;
                                 }
                             }
                         }
@@ -849,10 +921,10 @@ namespace openloco::ui::windows::town_list
                     self->saved_view.mapX = 0;
                     if (input::state() != input::input_state::scroll_left)
                     {
-                        self->min_width = 578;
-                        self->min_height = 172;
-                        self->max_width = 578;
-                        self->max_height = 172;
+                        self->min_width = windowSize.width;
+                        self->min_height = windowSize.height;
+                        self->max_width = windowSize.width;
+                        self->max_height = windowSize.height;
                     }
                 }
             }
@@ -867,13 +939,15 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AB59
-        static void on_dropdown(window* self, ui::widget_index widget_index, int16_t item_index)
+        static void on_dropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.ax = item_index;
-            regs.edx = widget_index;
-            regs.esi = (uint32_t)self;
-            call(0x0049AB59, regs);
+            if (widgetIndex != widx::object_colour)
+                return;
+            if (itemIndex == 0xFFFF)
+                return;
+
+            byte_1135C61 = _dropdownItemArgs[itemIndex];
+            self->invalidate();
         }
 
         // 0x0049B37F
@@ -912,14 +986,25 @@ namespace openloco::ui::windows::town_list
             call(0x0049ACBD, regs);
         }
 
+        // 0x004CCF8C
+        static void showColourDropdown(building_object* buildingObj, colour_t colour, uint8_t byte)
+        {
+            registers regs;
+            regs.ebp = (int32_t)buildingObj;
+            regs.al = colour;
+            regs.ah = byte;
+            call(0x004CCF8C, regs);
+        }
+
         // 0x0049AB52
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (uint32_t)self;
-            regs.edi = (uint32_t)&self->widgets[widgetIndex];
-            call(0x0049AB52, regs);
+            if (widgetIndex == widx::object_colour)
+            {
+                auto colour = colour::translucent(self->colours[1]);
+                auto buildingObj = objectmgr::get<building_object>(self->row_hover);
+                showColourDropdown(buildingObj, colour, byte_1135C61);
+            }
         }
 
         // 0x0049AF98
@@ -936,7 +1021,7 @@ namespace openloco::ui::windows::town_list
             *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
-            *scrollHeight *= 112;
+            *scrollHeight *= rowHeight;
         }
 
         // 0x0049ABBB
@@ -955,26 +1040,75 @@ namespace openloco::ui::windows::town_list
             call(0x0049AA1C, regs);
         }
 
+        // 0x0049B304
+        static void updateBuildingColours(window* self)
+        {
+            if (self->row_hover != -1)
+            {
+                auto buildingObj = objectmgr::get<building_object>(self->row_hover);
+                if (buildingObj->colours != 0)
+                    byte_1135C61 = utility::bitscanreverse(buildingObj->colours);
+            }
+        }
+
+        static int getRowIndex(int16_t x, int16_t y)
+        {
+            return (x / 122) + (y / 112) * 5;
+        }
+
         // 0x0049AEFD
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x0049AEFD, regs);
+            int16_t xPos = (x / 122);
+            int16_t yPos = (y / 112) * 5;
+            auto index = getRowIndex(x, y);
+
+            for (auto i = 0; i < self->var_83C; i++)
+            {
+                auto rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                {
+                    self->row_hover = rowInfo;
+
+                    if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
+                        byte_525FC9 = static_cast<uint8_t>(rowInfo);
+                    else
+                        byte_525FC8 = static_cast<uint8_t>(rowInfo);
+
+                    updateBuildingColours(self);
+
+                    int32_t pan = (self->width >> 1) + self->x;
+                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+
+                    audio::play_sound(audio::sound_id::click_down, loc, pan);
+
+                    dword_1135C34 = 0x80000000;
+                    byte_1135C65 = 0;
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x0049AEBA
         static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x0049AEBA, regs);
+            auto index = getRowIndex(x, y);
+            uint16_t rowInfo = y;
+            auto i = 0;
+            for (; i < self->var_83C; i++)
+            {
+                rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                    break;
+            }
+            if (self->var_83C <= i)
+            {
+                self->var_846 = rowInfo;
+                self->invalidate();
+            }
         }
 
         // 0x0049ABC5
@@ -992,6 +1126,121 @@ namespace openloco::ui::windows::town_list
                 self->var_846 = 0xFFFF;
                 self->invalidate();
             }
+        }
+
+        // 0x0049B2B5
+        static void updateActiveThumb(window* self)
+        {
+            uint16_t scrollHeight = 0;
+            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->scroll_areas[0].v_bottom = scrollHeight;
+
+            auto i = 0;
+            if (i >= self->var_83C)
+            {
+                for (; i <= self->var_83C; i++)
+                {
+                    if (self->row_info[i] == self->row_hover)
+                        break;
+                }
+            }
+            self->scroll_areas[0].v_top = i;
+            ui::scrollview::update_thumbs(self, build_misc_buildings::widx::scrollview);
+        }
+
+        // 0x0049B206
+        static void updateBuildingList(window* self)
+        {
+            auto buildingCount = 0;
+            for (auto i = 0; i < 0x80; i++)
+            {
+                auto buildingObj = objectmgr::get<building_object>(i);
+                if (buildingObj == nullptr)
+                    break;
+                if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
+                {
+                    if ((buildingObj->flags & building_object_flags::flag_2) != 0)
+                    {
+                        if ((buildingObj->flags & building_object_flags::flag_4) != 0)
+                            continue;
+                    }
+                }
+                else
+                {
+                    if ((buildingObj->flags & building_object_flags::flag_2) != 0)
+                        continue;
+                }
+                self->row_info[buildingCount] = i;
+                buildingCount++;
+            }
+
+            self->var_83C = buildingCount;
+            auto rowHover = -1;
+
+            auto byte = byte_525FC8;
+            if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
+                byte = byte_525FC9;
+
+            if (byte != 0xFF)
+            {
+                for (auto i = 0; i <= self->var_83C; i++)
+                {
+                    if (i >= self->var_83C)
+                    {
+                        if (byte == self->row_info[i])
+                        {
+                            rowHover = byte;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (self->var_83C != 0)
+                        {
+                            rowHover = self->row_info[0];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (self->var_83C != 0)
+                {
+                    rowHover = self->row_info[0];
+                }
+            }
+            updateActiveThumb(self);
+            updateBuildingColours(self);
+        }
+
+        // 0x0049A3FF
+        static void tabReset(window* self)
+        {
+            self->min_width = windowSize.width;
+            self->min_height = windowSize.height;
+            self->max_width = windowSize.width;
+            self->max_width = windowSize.height;
+            self->width = windowSize.width;
+            self->height = windowSize.height;
+
+            auto tab = common::widx::tab_build_buildings;
+            if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
+                tab = common::widx::tab_build_misc_buildings;
+
+            input::toolSet(self, tab, 39);
+            input::set_flag(input::input_flags::flag6);
+            common::showGridlines();
+
+            byte_1135C60 = 0;
+            dword_1135C34 = 0x80000000;
+            self->var_83C = 0;
+            self->row_hover = -1;
+            self->var_846 = -1;
+
+            updateBuildingList(self);
+            updateBuildingColours(self);
+
+            byte_1135C65 = 0;
         }
 
         static void init_events()
@@ -1066,14 +1315,14 @@ namespace openloco::ui::windows::town_list
             widget_t* widgets;
             const widx widgetIndex;
             window_event_list* events;
-            const uint64_t* enabledWidgets;
+            const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { town_list::widgets, widx::tab_town_list, &town_list::events, &town_list::enabledWidgets },
-            { build_towns::widgets, widx::tab_build_town, &build_towns::events, &build_towns::enabledWidgets },
-            { build_misc_buildings::widgets, widx::tab_build_buildings, &build_misc_buildings::events, &build_misc_buildings::enabledWidgets },
-            { build_misc_buildings::widgets, widx::tab_build_misc_buildings, &build_misc_buildings::events, &build_misc_buildings::enabledWidgets },
+            { town_list::widgets, widx::tab_town_list, &town_list::events, town_list::enabledWidgets },
+            { build_towns::widgets, widx::tab_build_town, &build_towns::events, build_towns::enabledWidgets },
+            { build_misc_buildings::widgets, widx::tab_build_buildings, &build_misc_buildings::events, build_misc_buildings::enabledWidgets },
+            { build_misc_buildings::widgets, widx::tab_build_misc_buildings, &build_misc_buildings::events, build_misc_buildings::enabledWidgets },
         };
 
         static void prepare_draw(window* self)
@@ -1156,7 +1405,7 @@ namespace openloco::ui::windows::town_list
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
-                    imageId += buildNewTownsImageIds[(self->frame_no / 4) % std::size(buildNewTownsImageIds)];
+                    imageId += buildNewTownsImageIds[(self->frame_no / 2) % std::size(buildNewTownsImageIds)];
                 else
                     imageId += buildNewTownsImageIds[0];
 
@@ -1185,7 +1434,7 @@ namespace openloco::ui::windows::town_list
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list)
-                    imageId += buildBuildingsImageIds[(self->frame_no / 4) % std::size(buildBuildingsImageIds)];
+                    imageId += buildBuildingsImageIds[(self->frame_no / 2) % std::size(buildBuildingsImageIds)];
                 else
                     imageId += buildBuildingsImageIds[0];
 
@@ -1214,167 +1463,12 @@ namespace openloco::ui::windows::town_list
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                    imageId += buildMiscBuildingsImageIds[(self->frame_no / 4) % std::size(buildMiscBuildingsImageIds)];
+                    imageId += buildMiscBuildingsImageIds[(self->frame_no / 2) % std::size(buildMiscBuildingsImageIds)];
                 else
                     imageId += buildMiscBuildingsImageIds[0];
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
             }
-        }
-
-        // 0x0049A37E
-        static void sub_49A37E(window* self)
-        {
-            self->min_width = 192;
-            self->min_height = 200;
-            self->max_width = 600;
-            self->max_width = 900;
-            self->width = 600;
-            self->height = 197;
-            self->var_83C = 0;
-            self->row_hover = -1;
-
-            refreshTownList(self);
-        }
-
-        // 0x0049A3BE
-        static void sub_49A3BE(window* self)
-        {
-            self->min_width = 220;
-            self->min_height = 87;
-            self->max_width = 220;
-            self->max_width = 87;
-            self->width = 220;
-            self->height = 87;
-            input::toolSet(self, tab_build_town, 38);
-            input::set_flag(input::input_flags::flag6);
-        }
-
-        // 0x0049B2B5
-        static void townList_49B2B5(window* self)
-        {
-            uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
-            self->scroll_areas[0].v_bottom = scrollHeight;
-
-            auto i = 0;
-            if (i >= self->var_83C)
-            {
-                for (; i <= self->var_83C; i++)
-                {
-                    if (self->row_info[i] == self->row_hover)
-                        break;
-                }
-            }
-            self->scroll_areas[0].v_top = i;
-            ui::scrollview::update_thumbs(self, build_misc_buildings::widx::scrollview);
-        }
-
-        static void sub_49B304(window* self)
-        {
-            if (self->row_hover != -1)
-            {
-                auto buildingObj = objectmgr::get<building_object>(self->row_hover);
-
-                unsigned long* byte = 0;
-                _BitScanReverse(byte, buildingObj->colours);
-                byte_1135C61 = *byte;
-            }
-        }
-
-        // 0x0049B206
-        static void townList_49B206(window* self)
-        {
-            auto buildingCount = 0;
-            for (auto i = 0; i < 0x80; i++)
-            {
-                auto buildingObj = objectmgr::get<building_object>(i);
-                if (buildingObj == nullptr)
-                    break;
-                if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                {
-                    if ((buildingObj->flags & building_object_flags::flag_2) != 0)
-                    {
-                        if ((buildingObj->flags & building_object_flags::flag_4) != 0)
-                            continue;
-                    }
-                }
-                else
-                {
-                    if ((buildingObj->flags & building_object_flags::flag_2) != 0)
-                        continue;
-                }
-                self->row_info[buildingCount] = i;
-                buildingCount++;
-            }
-
-            self->var_83C = buildingCount;
-            auto rowHover = -1;
-
-            auto byte = byte_525FC8;
-            if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                byte = byte_525FC9;
-
-            if (byte != 0xFF)
-            {
-                for (auto i = 0; i <= self->var_83C; i++)
-                {
-                    if (i >= self->var_83C)
-                    {
-                        if (byte == self->row_info[i])
-                        {
-                            rowHover = byte;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (self->var_83C != 0)
-                        {
-                            rowHover = self->row_info[0];
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (self->var_83C != 0)
-                {
-                    rowHover = self->row_info[0];
-                }
-            }
-            townList_49B2B5(self);
-            sub_49B304(self);
-        }
-
-        // 0x0049A3FF
-        static void sub_49A3FF(window* self)
-        {
-            self->min_width = 600;
-            self->min_height = 172;
-            self->max_width = 600;
-            self->max_width = 172;
-            self->width = 600;
-            self->height = 172;
-
-            auto tab = tab_build_buildings;
-            if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                tab = tab_build_misc_buildings;
-
-            input::toolSet(self, tab, 39);
-            input::set_flag(input::input_flags::flag6);
-            showGridlines();
-
-            byte_1135C60 = 0;
-            dword_1135C34 = 0x80000000;
-            self->var_83C = 0;
-            self->row_hover = -1;
-            self->var_846 = -1;
-
-            townList_49B206(self);
-            sub_49B304(self);
-
-            byte_1135C65 = 0;
         }
 
         //0x00457F27
@@ -1393,9 +1487,9 @@ namespace openloco::ui::windows::town_list
                 self->viewports[0] = nullptr;
             }
 
-            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
+            const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->enabled_widgets = tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
@@ -1404,11 +1498,11 @@ namespace openloco::ui::windows::town_list
             self->invalidate();
 
             if (self->current_tab == widx::tab_town_list - widx::tab_town_list)
-                sub_49A37E(self);
+                town_list::tabReset(self);
             if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
-                sub_49A3BE(self);
+                build_towns::tabReset(self);
             if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list || self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                sub_49A3FF(self);
+                build_misc_buildings::tabReset(self);
 
             self->call_on_resize();
             self->call_prepare_draw();
@@ -1427,7 +1521,7 @@ namespace openloco::ui::windows::town_list
                 if (town.empty())
                     continue;
 
-                town.flags &= ~town_flags::rating_adjusted;
+                town.flags &= ~town_flags::sorted;
             }
         }
 

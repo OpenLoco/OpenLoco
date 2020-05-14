@@ -603,7 +603,7 @@ namespace openloco::string_ids
     constexpr string_id table_header_population = 1295;
     constexpr string_id table_header_population_desc = 1296;
     constexpr string_id tooltip_sort_population = 1297;
-    constexpr string_id population_int = 1298;
+    constexpr string_id int_32 = 1298;
     constexpr string_id table_header_stations = 1299;
     constexpr string_id table_header_stations_desc = 1300;
     constexpr string_id tooltip_sort_stations = 1301;
