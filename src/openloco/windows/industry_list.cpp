@@ -1022,6 +1022,13 @@ namespace openloco::ui::windows::industry_list
             hideGridlines();
         }
 
+        // 0x0045845F
+        static void on_close(window* self)
+        {
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+        }
+
         static void init_events()
         {
             events.draw = draw;
@@ -1037,6 +1044,7 @@ namespace openloco::ui::windows::industry_list
             events.prepare_draw = prepare_draw;
             events.tooltip = tooltip;
             events.on_tool_abort = on_tool_abort;
+            events.on_close = on_close;
         }
     }
 
