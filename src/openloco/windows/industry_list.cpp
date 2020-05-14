@@ -679,12 +679,17 @@ namespace openloco::ui::windows::industry_list
             }
         }
 
+        static int getRowIndex(int16_t x, int16_t y)
+        {
+            return (x / 122) + (y / 112) * 5;
+        }
+
         //0x00458966
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / 122);
             int16_t yPos = (y / 112) * 5;
-            auto index = xPos + yPos;
+            auto index = getRowIndex(x, y);
 
             for (auto i = 0; i < self->var_83C; i++)
             {
@@ -703,11 +708,6 @@ namespace openloco::ui::windows::industry_list
                     break;
                 }
             }
-        }
-
-        static int getRowIndex(int16_t x, int16_t y)
-        {
-            return (x / 122) + (y / 112) * 5;
         }
 
         // 0x00458721
