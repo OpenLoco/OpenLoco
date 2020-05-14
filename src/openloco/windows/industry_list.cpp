@@ -1292,7 +1292,7 @@ namespace openloco::ui::windows::industry_list
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)
-                    imageId += fundNewIndustriesImageIds[(self->frame_no / 4) % std::size(fundNewIndustriesImageIds)];
+                    imageId += fundNewIndustriesImageIds[(self->frame_no / 2) % std::size(fundNewIndustriesImageIds)];
                 else
                     imageId += fundNewIndustriesImageIds[0];
 
