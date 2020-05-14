@@ -22,7 +22,7 @@ namespace openloco
     namespace industry_flags
     {
         constexpr uint16_t flag_01 = 1 << 0;
-        constexpr uint16_t flag_02 = 1 << 1;
+        constexpr uint16_t sorted = 1 << 1;
         constexpr uint16_t closing_down = 1 << 2;
         constexpr uint16_t flag_04 = 1 << 3;
     }
@@ -47,7 +47,7 @@ namespace openloco
         uint8_t pad_E1[0x189 - 0xE1];
         uint16_t produced_cargo_quantity[2]; // 0x189
         uint8_t pad_18D[0x193 - 0x18D];
-        uint16_t received_cargo_quantity[3]; // 0x193
+        uint16_t required_cargo_quantity[3]; // 0x193
         uint8_t pad_199[0x1A3 - 0x199];
         uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
         uint8_t produced_cargo_transported[2]; // 0x1A7 (%)

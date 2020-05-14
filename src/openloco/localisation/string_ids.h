@@ -621,7 +621,7 @@ namespace openloco::string_ids
 
     constexpr string_id industry_under_construction = 1366;
     constexpr string_id industry_producing = 1367;
-    constexpr string_id industy_produces = 1368;
+    constexpr string_id industry_produces = 1368;
 
     constexpr string_id cargo_to_produce = 1370;
     constexpr string_id industry_requires = 1371;

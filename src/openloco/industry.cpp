@@ -3,6 +3,7 @@
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
 #include "objects/cargo_object.h"
+#include "objects/industry_object.h"
 #include "objects/objectmgr.h"
 #include "utility/numeric.hpp"
 #include <algorithm>
@@ -31,7 +32,7 @@ namespace openloco
     bool industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : objectmgr::get<industry_object>(object_id)->received_cargo_type)
+        for (const auto& receivedCargo : objectmgr::get<industry_object>(object_id)->required_cargo_type)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -92,94 +93,24 @@ namespace openloco
                 return;
 
             ptr = stringmgr::format_string(ptr, string_ids::industry_producing);
-            auto producedCargo = 0;
 
-            if (industryObj->produced_cargo_type[0] != 0xFF)
-            {
-                producedCargo++;
-                auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[0]);
-                ptr = stringmgr::format_string(ptr, cargoObj->name);
-            }
+            ptr = industryObj->getProducedCargoString(ptr);
 
-            if (industryObj->produced_cargo_type[1] != 0xFF)
-            {
-                producedCargo++;
-
-                if (producedCargo > 1)
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-
-                auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[1]);
-                ptr = stringmgr::format_string(ptr, cargoObj->name);
-            }
             return;
         }
 
         // Required Cargo
         ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
-        auto requiredCargo = 0;
 
-        if (industryObj->received_cargo_type[0] != 0xFF)
-        {
-            requiredCargo++;
-
-            auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[0]);
-            ptr = stringmgr::format_string(ptr, cargoObj->name);
-        }
-
-        if (industryObj->received_cargo_type[1] != 0xFF)
-        {
-            requiredCargo++;
-            if (requiredCargo > 1)
-            {
-                if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-                else
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
-            }
-
-            auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[1]);
-            ptr = stringmgr::format_string(ptr, cargoObj->name);
-        }
-
-        if (industryObj->received_cargo_type[2] != 0xFF)
-        {
-            requiredCargo++;
-            if (requiredCargo > 1)
-            {
-                if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-                else
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
-            }
-
-            auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[2]);
-            ptr = stringmgr::format_string(ptr, cargoObj->name);
-        }
+        ptr = industryObj->getRequiredCargoString(ptr);
 
         if (!canProduceCargo())
             return;
 
         // Production and Received Cargo
         ptr = stringmgr::format_string(ptr, string_ids::cargo_to_produce);
-        auto producedCargo = 0;
 
-        if (industryObj->produced_cargo_type[0] != 0xFF)
-        {
-            producedCargo++;
-            auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[0]);
-            ptr = stringmgr::format_string(ptr, cargoObj->name);
-        }
-
-        if (industryObj->produced_cargo_type[1] != 0xFF)
-        {
-            producedCargo++;
-
-            if (producedCargo > 1)
-                ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-
-            auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[1]);
-            ptr = stringmgr::format_string(ptr, cargoObj->name);
-        }
+        ptr = industryObj->getProducedCargoString(ptr);
     }
 
     // 0x00453275

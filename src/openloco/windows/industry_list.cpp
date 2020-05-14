@@ -35,12 +35,6 @@ namespace openloco::ui::windows::industry_list
 
     namespace common
     {
-        static const gfx::ui_size_t windowSize = { 600, 197 };
-        static const gfx::ui_size_t maxDimensions = { 600, 900 };
-        static const gfx::ui_size_t minDimensions = { 192, 100 };
-
-        static const uint8_t rowHeight = 10;
-
         enum widx
         {
             frame,
@@ -73,6 +67,12 @@ namespace openloco::ui::windows::industry_list
 
     namespace industry_list
     {
+        static const gfx::ui_size_t windowSize = { 600, 197 };
+        static const gfx::ui_size_t maxDimensions = { 600, 900 };
+        static const gfx::ui_size_t minDimensions = { 192, 100 };
+
+        static const uint8_t rowHeight = 10;
+
         enum widx
         {
             sort_industry_name = 6,
@@ -98,7 +98,7 @@ namespace openloco::ui::windows::industry_list
         {
             Name,
             Status,
-            Production,
+            ProductionTransported,
         };
 
         // 0x00457B94
@@ -121,7 +121,7 @@ namespace openloco::ui::windows::industry_list
             // Set header button captions.
             self->widgets[widx::sort_industry_name].text = self->sort_mode == SortMode::Name ? string_ids::industry_table_header_desc : string_ids::industry_table_header;
             self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? string_ids::industry_table_header_status_desc : string_ids::industry_table_header_status;
-            self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::Production ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
+            self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
 
             if (is_editor_mode())
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
@@ -183,7 +183,7 @@ namespace openloco::ui::windows::industry_list
         //0x00458172
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            uint16_t currentRow = y / common::rowHeight;
+            uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
                 return;
 
@@ -199,7 +199,7 @@ namespace openloco::ui::windows::industry_list
         {
             self->flags &= ~(window_flags::flag_14);
 
-            uint16_t currentRow = y / common::rowHeight;
+            uint16_t currentRow = y / rowHeight;
             int16_t currentIndustry = -1;
 
             if (currentRow < self->var_83C)
@@ -239,42 +239,34 @@ namespace openloco::ui::windows::industry_list
             return strcmp(lhsString, rhsString) < 0;
         }
 
-        // 0x00457AF3
-        static bool orderByProduction(const openloco::industry& lhs, const openloco::industry& rhs)
+        static uint8_t getAverageTransportedCargo(const openloco::industry& industry)
         {
-            auto industryObj = objectmgr::get<industry_object>(lhs.object_id);
-            auto lhsVar = 0;
+            auto industryObj = objectmgr::get<industry_object>(industry.object_id);
+            uint8_t productionTransported = -1;
 
-            if ((industryObj->produced_cargo_type[0] & industryObj->produced_cargo_type[1]) != 0xFF)
+            if (industryObj->producesCargo())
             {
-                lhsVar = lhs.produced_cargo_transported[0];
+                productionTransported = industry.produced_cargo_transported[0];
                 if (industryObj->produced_cargo_type[1] != 0xFF)
                 {
-                    lhsVar = lhs.produced_cargo_transported[1];
+                    productionTransported = industry.produced_cargo_transported[1];
                     if (industryObj->produced_cargo_type[0] != 0xFF)
                     {
-                        lhsVar += lhs.produced_cargo_transported[0];
-                        lhsVar = lhsVar >> 1;
+                        productionTransported += industry.produced_cargo_transported[0];
+                        productionTransported /= 2;
                     }
                 }
             }
+            return productionTransported;
+        }
 
-            industryObj = objectmgr::get<industry_object>(rhs.object_id);
-            auto rhsVar = 0;
+        // 0x00457AF3
+        static bool orderByProductionTransported(const openloco::industry& lhs, const openloco::industry& rhs)
+        {
+            auto lhsVar = getAverageTransportedCargo(lhs);
 
-            if ((industryObj->produced_cargo_type[0] & industryObj->produced_cargo_type[1]) != 0xFF)
-            {
-                rhsVar = rhs.produced_cargo_transported[0];
-                if (industryObj->produced_cargo_type[1] != 0xFF)
-                {
-                    rhsVar = rhs.produced_cargo_transported[1];
-                    if (industryObj->produced_cargo_type[0] != 0xFF)
-                    {
-                        rhsVar += rhs.produced_cargo_transported[0];
-                        rhsVar = rhsVar >> 1;
-                    }
-                }
-            }
+            auto rhsVar = getAverageTransportedCargo(rhs);
+
             return rhsVar < lhsVar;
         }
 
@@ -289,8 +281,8 @@ namespace openloco::ui::windows::industry_list
                 case SortMode::Status:
                     return orderByStatus(lhs, rhs);
 
-                case SortMode::Production:
-                    return orderByProduction(lhs, rhs);
+                case SortMode::ProductionTransported:
+                    return orderByProductionTransported(lhs, rhs);
             }
 
             return false;
@@ -309,7 +301,7 @@ namespace openloco::ui::windows::industry_list
                 if (industry.empty())
                     continue;
 
-                if ((industry.flags & industry_flags::flag_02) != 0)
+                if ((industry.flags & industry_flags::sorted) != 0)
                     continue;
 
                 if (edi == -1)
@@ -327,8 +319,9 @@ namespace openloco::ui::windows::industry_list
             if (edi != -1)
             {
                 bool dl = false;
+                self->invalidate();
 
-                industrymgr::get(edi)->flags |= industry_flags::flag_02;
+                industrymgr::get(edi)->flags |= industry_flags::sorted;
 
                 auto ebp = self->row_count;
                 if (edi != self->row_info[ebp])
@@ -384,7 +377,7 @@ namespace openloco::ui::windows::industry_list
         // 0x00458108
         static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = common::rowHeight * self->var_83C;
+            *scrollHeight = rowHeight * self->var_83C;
         }
 
         // 0x00457D2A
@@ -399,9 +392,9 @@ namespace openloco::ui::windows::industry_list
                 industry_id_t industryId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + common::rowHeight < dpi->y || yPos >= yPos + common::rowHeight + dpi->height || industryId == (uint16_t)-1)
+                if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || industryId == (uint16_t)-1)
                 {
-                    yPos += common::rowHeight;
+                    yPos += rowHeight;
                     continue;
                 }
 
@@ -410,7 +403,7 @@ namespace openloco::ui::windows::industry_list
                 // Highlight selection.
                 if (industryId == self->row_hover)
                 {
-                    gfx::draw_rect(dpi, 0, yPos, self->width, common::rowHeight, 0x2000030);
+                    gfx::draw_rect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
                     text_colour_id = string_ids::wcolour2_stringid2;
                 }
 
@@ -438,27 +431,20 @@ namespace openloco::ui::windows::industry_list
                 }
                 // Industry Production Delivered
                 {
-                    auto industryObj = industry->object();
                     if (!industry->canProduceCargo())
-                        continue;
-
-                    auto productionTransported = industry->produced_cargo_transported[0];
-                    if (industryObj->produced_cargo_type[1] != 0xFF)
                     {
-                        productionTransported = industry->produced_cargo_transported[1];
-                        if (industryObj->produced_cargo_type[0] != 0xFF)
-                        {
-                            productionTransported += industry->produced_cargo_transported[1];
-                            productionTransported = productionTransported >> 1;
-                        }
+                        yPos += rowHeight;
+                        continue;
                     }
+
+                    auto productionTransported = getAverageTransportedCargo(*industry);
 
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
                     gfx::draw_string_494BBF(*dpi, 440, yPos, 138, colour::black, string_ids::production_transported_percent, &args);
                 }
-                yPos += common::rowHeight;
+                yPos += rowHeight;
             }
         }
 
@@ -468,7 +454,7 @@ namespace openloco::ui::windows::industry_list
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
-            uint16_t currentIndex = yPos / common::rowHeight;
+            uint16_t currentIndex = yPos / rowHeight;
             if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
                 return cursor_id::hand_pointer;
 
@@ -497,10 +483,10 @@ namespace openloco::ui::windows::industry_list
         // 0x00457FCA
         static void tabReset(window* self)
         {
-            self->min_width = common::minDimensions.width;
-            self->min_height = common::minDimensions.height;
-            self->max_width = common::maxDimensions.width;
-            self->max_height = common::maxDimensions.height;
+            self->min_width = minDimensions.width;
+            self->min_height = minDimensions.height;
+            self->max_width = maxDimensions.width;
+            self->max_height = maxDimensions.height;
             self->var_83C = 0;
             self->row_hover = -1;
             common::refreshIndustryList(self);
@@ -529,14 +515,14 @@ namespace openloco::ui::windows::industry_list
         auto window = WindowManager::bringToFront(WindowType::industryList, 0);
         if (window != nullptr)
         {
-            window->call_on_mouse_up(4);
+            window->call_on_mouse_up(common::widx::tab_industry_list);
         }
         else
         {
             // 0x00457878
             window = WindowManager::createWindow(
                 WindowType::industryList,
-                common::windowSize,
+                industry_list::windowSize,
                 window_flags::flag_8,
                 &industry_list::events);
 
@@ -551,10 +537,10 @@ namespace openloco::ui::windows::industry_list
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = common::minDimensions.width;
-            window->min_height = common::minDimensions.height;
-            window->max_width = common::maxDimensions.width;
-            window->max_height = common::maxDimensions.height;
+            window->min_width = industry_list::minDimensions.width;
+            window->min_height = industry_list::minDimensions.height;
+            window->max_width = industry_list::maxDimensions.width;
+            window->max_height = industry_list::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
             auto skin = objectmgr::get<interface_skin_object>();
@@ -566,7 +552,6 @@ namespace openloco::ui::windows::industry_list
             // TODO: only needs to be called once.
             common::init_events();
 
-            window->current_tab = 0;
             window->invalidate();
 
             window->widgets = industry_list::widgets;
@@ -713,17 +698,22 @@ namespace openloco::ui::windows::industry_list
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     audio::play_sound(audio::sound_id::click_down, loc, pan);
+                    dword_E0C39C = 0x80000000;
+                    self->invalidate();
                     break;
                 }
             }
         }
 
+        static int getRowIndex(int16_t x, int16_t y)
+        {
+            return (x / 122) + (y / 112) * 5;
+        }
+
         // 0x00458721
         static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            auto xPos = (x / 122);
-            auto yPos = (y / 112) * 5;
-            auto index = xPos + yPos;
+            auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
 
             for (auto i = 0; i < self->var_83C; i++)
@@ -740,7 +730,7 @@ namespace openloco::ui::windows::industry_list
             if (rowInfo == 0xFFFF)
                 string = string_ids::null;
 
-            if (string != string_ids::empty)
+            if (stringmgr::get_string(string_ids::buffer_337)[0] != '\0')
             {
                 if (string == self->widgets[common::widx::frame].tooltip)
                 {
@@ -759,77 +749,22 @@ namespace openloco::ui::windows::industry_list
             const char* buffer = stringmgr::get_string(string);
             char* ptr = (char*)buffer;
             *ptr = '\0';
-            auto producedCargoCount = 0;
 
-            if ((industryObj->produced_cargo_type[0] & industryObj->produced_cargo_type[1]) != 0xFF)
+            if (industryObj->producesCargo())
             {
-                ptr = stringmgr::format_string(ptr, string_ids::industy_produces);
-                if (industryObj->produced_cargo_type[0] != 0xFF)
-                {
-                    producedCargoCount++;
-                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[0]);
-                    ptr = stringmgr::format_string(ptr, cargoObj->name);
-                }
-                if (industryObj->produced_cargo_type[1] != 0xFF)
-                {
-                    producedCargoCount++;
+                ptr = stringmgr::format_string(ptr, string_ids::industry_produces);
+                ptr = industryObj->getProducedCargoString(ptr);
 
-                    if (producedCargoCount > 1)
-                        ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-
-                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->produced_cargo_type[1]);
-                    ptr = stringmgr::format_string(ptr, cargoObj->name);
-                }
-                if ((industryObj->received_cargo_type[0] & industryObj->received_cargo_type[1] & industryObj->received_cargo_type[2]) != 0xFF)
+                if (industryObj->requiresCargo())
                 {
                     ptr = stringmgr::format_string(ptr, string_ids::cargo_comma);
                 }
             }
 
-            auto receivedCargoCount = 0;
-
-            if ((industryObj->received_cargo_type[0] & industryObj->received_cargo_type[1] & industryObj->received_cargo_type[2]) != 0xFF)
+            if (industryObj->requiresCargo())
             {
                 ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
-
-                if (industryObj->received_cargo_type[0] != 0xFF)
-                {
-                    receivedCargoCount++;
-                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[0]);
-                    ptr = stringmgr::format_string(ptr, cargoObj->name);
-                }
-
-                if (industryObj->received_cargo_type[1] != 0xFF)
-                {
-                    receivedCargoCount++;
-
-                    if (receivedCargoCount > 1)
-                    {
-                        if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
-                            ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-                        else
-                            ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
-                    }
-
-                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[1]);
-                    ptr = stringmgr::format_string(ptr, cargoObj->name);
-                }
-
-                if (industryObj->received_cargo_type[2] != 0xFF)
-                {
-                    receivedCargoCount++;
-
-                    if (receivedCargoCount > 1)
-                    {
-                        if ((industryObj->flags & industry_object_flags::requires_all_cargo) != 0)
-                            ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
-                        else
-                            ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
-                    }
-
-                    auto cargoObj = objectmgr::get<cargo_object>(industryObj->received_cargo_type[2]);
-                    ptr = stringmgr::format_string(ptr, cargoObj->name);
-                }
+                ptr = industryObj->getRequiredCargoString(ptr);
             }
         }
 
@@ -963,7 +898,7 @@ namespace openloco::ui::windows::industry_list
 
                 xPos += 112;
 
-                if (xPos >= 560)
+                if (xPos >= 112 * 5) // full row
                 {
                     xPos = 0;
                     yPos += 112;
@@ -1076,9 +1011,9 @@ namespace openloco::ui::windows::industry_list
                 {
                     if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
                         continue;
-                    if (current_year() < industryObj->first_year)
+                    if (current_year() < industryObj->designedYear)
                         continue;
-                    if (current_year() > industryObj->last_year)
+                    if (current_year() > industryObj->obsoleteYear)
                         continue;
                 }
                 self->row_info[industryCount] = i;
@@ -1310,7 +1245,7 @@ namespace openloco::ui::windows::industry_list
                 if (industry.empty())
                     continue;
 
-                industry.flags &= ~industry_flags::flag_02;
+                industry.flags &= ~industry_flags::sorted;
             }
         }
 
