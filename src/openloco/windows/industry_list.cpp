@@ -494,7 +494,7 @@ namespace openloco::ui::windows::industry_list
 
         static void init_events()
         {
-			events.draw = draw;
+            events.draw = draw;
             events.cursor = cursor;
             events.draw_scroll = draw_scroll;
             events.event_08 = event_08;
@@ -641,7 +641,7 @@ namespace openloco::ui::windows::industry_list
 
             if ((self->var_846 == 0xFFFF && dword_E0C39C == (1ULL << 31)) || self->var_846 != 0xFFFF)
             {
-                industryCost = (industryObj->cost_fact * currencyMultiplicationFactor[industryObj->cost_ind]) / 8;
+                industryCost = (industryObj->cost_factor * currencyMultiplicationFactor[industryObj->cost_index]) / 8;
             }
             auto args = FormatArguments();
             args.push(industryCost);
