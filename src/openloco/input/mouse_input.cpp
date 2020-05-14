@@ -910,7 +910,7 @@ namespace openloco::input
                     {
                         if (tooltipStringId != _currentTooltipStringId)
                         {
-                            call(0x4C87B5);
+                            ui::tooltip::closeAndReset();
                         }
                     }
                 }
@@ -929,7 +929,7 @@ namespace openloco::input
             }
             else
             {
-                call(0x4C87B5);
+                ui::tooltip::closeAndReset();
             }
 
             return;
@@ -1426,5 +1426,14 @@ namespace openloco::input
     gfx::point_t getMouseLocation()
     {
         return gfx::point_t(_cursorX, _cursorY);
+    }
+
+    uint16_t getTooltipTimeout()
+    {
+        return _tooltipTimeout;
+    }
+    void setTooltipTimeout(uint16_t tooltipTimeout)
+    {
+        _tooltipTimeout = tooltipTimeout;
     }
 }

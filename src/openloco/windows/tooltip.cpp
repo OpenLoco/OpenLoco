@@ -1,4 +1,5 @@
 #include "../graphics/gfx.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -13,7 +14,7 @@ namespace openloco::ui::tooltip
 {
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
-    static loco_global<int8_t, 0x0052336E> _52336E; // bool
+    static loco_global<bool, 0x0052336E> _52336E;
 
     static loco_global<WindowType, 0x00523381> _tooltipWindowType;
     static loco_global<window_number, 0x00523382> _tooltipWindowNumber;
@@ -234,5 +235,20 @@ namespace openloco::ui::tooltip
         {
             _tooltipNotShownTicks = 0;
         }
+    }
+
+    void set_52336E(bool value)
+    {
+        _52336E = value;
+    }
+
+    // 0x004C87B5
+    void closeAndReset()
+    {
+        ui::WindowManager::close(WindowType::tooltip, 0);
+        input::setTooltipTimeout(0);
+        _tooltipWindowType = WindowType::undefined;
+        _currentTooltipStringId = -1;
+        set_52336E(false);
     }
 }
