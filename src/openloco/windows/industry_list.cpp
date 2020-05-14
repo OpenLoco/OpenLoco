@@ -1171,12 +1171,12 @@ namespace openloco::ui::windows::industry_list
             widget_t* widgets;
             const widx widgetIndex;
             window_event_list* events;
-            const uint64_t* enabledWidgets;
+            const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { industry_list::widgets, widx::tab_industry_list, &industry_list::events, &industry_list::enabledWidgets },
-            { new_industries::widgets, widx::tab_new_industry, &new_industries::events, &new_industries::enabledWidgets },
+            { industry_list::widgets, widx::tab_industry_list, &industry_list::events, industry_list::enabledWidgets },
+            { new_industries::widgets, widx::tab_new_industry, &new_industries::events, new_industries::enabledWidgets },
         };
 
         // 0x00457B94
