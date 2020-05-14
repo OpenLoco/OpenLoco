@@ -740,7 +740,7 @@ namespace openloco::ui::windows::industry_list
             }
             self->widgets[common::widx::frame].tooltip = string;
             self->var_85C = rowInfo;
-            call(0x004C87B5);
+            tooltip::closeAndReset();
 
             if (rowInfo == 0xFFFF)
                 return;
