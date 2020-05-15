@@ -291,7 +291,7 @@ namespace openloco::ui::windows::industry_list
         // 0x00457991
         static void updateIndustryList(window* self)
         {
-            auto edi = -1;
+            auto chosenIndustry = -1;
 
             auto i = -1;
 
@@ -304,40 +304,39 @@ namespace openloco::ui::windows::industry_list
                 if ((industry.flags & industry_flags::sorted) != 0)
                     continue;
 
-                if (edi == -1)
+                if (chosenIndustry == -1)
                 {
-                    edi = i;
+                    chosenIndustry = i;
                     continue;
                 }
 
-                if (getOrder(SortMode(self->sort_mode), industry, *industrymgr::get(edi)))
+                if (getOrder(SortMode(self->sort_mode), industry, *industrymgr::get(chosenIndustry)))
                 {
-                    edi = i;
+                    chosenIndustry = i;
                 }
             }
 
-            if (edi != -1)
+            if (chosenIndustry != -1)
             {
-                bool dl = false;
-                self->invalidate();
+                bool shouldInvalidate = false;
 
-                industrymgr::get(edi)->flags |= industry_flags::sorted;
+                industrymgr::get(chosenIndustry)->flags |= industry_flags::sorted;
 
                 auto ebp = self->row_count;
-                if (edi != self->row_info[ebp])
+                if (chosenIndustry != self->row_info[ebp])
                 {
-                    self->row_info[ebp] = edi;
-                    dl = true;
+                    self->row_info[ebp] = chosenIndustry;
+                    shouldInvalidate = true;
                 }
 
                 self->row_count += 1;
                 if (self->row_count > self->var_83C)
                 {
                     self->var_83C = self->row_count;
-                    dl = true;
+                    shouldInvalidate = true;
                 }
 
-                if (dl)
+                if (shouldInvalidate)
                 {
                     self->invalidate();
                 }
