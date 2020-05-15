@@ -156,7 +156,8 @@ namespace openloco::ui
         }
     }
 
-    void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp) {
+    void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp)
+    {
         viewport_set_underground_flag(underground, this, vp);
     }
 
