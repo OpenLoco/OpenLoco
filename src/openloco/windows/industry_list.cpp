@@ -787,8 +787,12 @@ namespace openloco::ui::windows::industry_list
                         xPos = cursor.x;
                         yPos = cursor.y;
                         widget_index activeWidget = self->find_widget_at(xPos, yPos);
-                        if (activeWidget == common::widx::panel)
+
+                        if (activeWidget == widx::scrollview)
                         {
+                            if (self->saved_view.mapX < 0)
+                                self->saved_view.mapX = 0;
+
                             self->saved_view.mapX += 1;
                             if (self->saved_view.mapX >= 8)
                             {
@@ -884,8 +888,8 @@ namespace openloco::ui::windows::industry_list
                 }
                 else
                 {
-                    word_E0C3C6 = colour::translucent_flag & colour::outline_flag;
-                    gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], (colour::translucent_flag & colour::outline_flag));
+                    word_E0C3C6 = colour::translucent_flag | colour::outline_flag;
+                    gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
                 auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
@@ -1079,6 +1083,16 @@ namespace openloco::ui::windows::industry_list
             _dword_E0C398 = _prng->srand_1();
         }
 
+        // 0x004589E8
+        static void on_resize(window* self)
+        {
+            self->invalidate();
+            gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
+            gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+            self->set_size(minWindowSize, maxWindowSize);
+            updateActiveThumb(self);
+        }
+
         static void init_events()
         {
             events.draw = draw;
@@ -1095,6 +1109,7 @@ namespace openloco::ui::windows::industry_list
             events.tooltip = tooltip;
             events.on_tool_abort = on_tool_abort;
             events.on_close = on_close;
+            events.on_resize = on_resize;
         }
     }
 
