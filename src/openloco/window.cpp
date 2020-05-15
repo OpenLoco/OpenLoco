@@ -130,13 +130,34 @@ namespace openloco::ui
         *outZ = regs.dx;
     }
 
+    // 0x004C641F
+    // regs.dl:  underground
+    // regs.esi: w
+    // regs.edi: vp
     static void viewport_set_underground_flag(bool underground, ui::window* w, ui::viewport* vp)
     {
-        registers regs;
-        regs.esi = (int32_t)w;
-        regs.edi = (int32_t)vp;
-        regs.dl = underground;
-        call(0x4C641F, regs);
+        if (w->type != WindowType::main)
+        {
+            if (!underground)
+            {
+                bool bit = (vp->flags & viewport_flags::underground_view) != 0;
+                vp->flags &= ~viewport_flags::underground_view;
+                if (!bit)
+                    return;
+            }
+            else
+            {
+                bool bit = (vp->flags & viewport_flags::underground_view) != 0;
+                vp->flags |= viewport_flags::underground_view;
+                if (bit)
+                    return;
+            }
+            w->invalidate();
+        }
+    }
+
+    void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp) {
+        viewport_set_underground_flag(underground, this, vp);
     }
 
     // 0x004C68E4
@@ -237,7 +258,7 @@ namespace openloco::ui
                 int z = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
                 bool underground = (thing->z < z);
 
-                viewport_set_underground_flag(underground, this, viewport);
+                viewportSetUndergroundFlag(underground, viewport);
 
                 viewport->centre_2d_coordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY);
             }
@@ -249,7 +270,7 @@ namespace openloco::ui
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
                 sub_45FD41(midX, midY, 128, viewport->getRotation(), &outX, &outY, &outZ);
-                viewport_set_underground_flag(false, this, viewport);
+                viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
                 if (outX < -256)

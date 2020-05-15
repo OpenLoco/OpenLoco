@@ -433,6 +433,7 @@ namespace openloco::ui
         int8_t get_scroll_data_index(widget_index index);
         void set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets);
         void drawViewports(gfx::drawpixelinfo_t* dpi);
+        void viewportSetUndergroundFlag(bool underground, ui::viewport* vp);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void viewport_centre_on_tile(const map::map_pos3& loc);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
