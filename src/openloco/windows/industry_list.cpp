@@ -515,8 +515,11 @@ namespace openloco::ui::windows::industry_list
         else
         {
             // 0x00457878
+            auto origin = gfx::point_t(ui::width() - industry_list::windowSize.width, 30);
+
             window = WindowManager::createWindow(
                 WindowType::industryList,
+                origin,
                 industry_list::windowSize,
                 window_flags::flag_8,
                 &industry_list::events);
@@ -545,6 +548,9 @@ namespace openloco::ui::windows::industry_list
             // 0x00457878 end
 
             // TODO: only needs to be called once.
+            window->width = industry_list::windowSize.width;
+            window->height = industry_list::windowSize.height;
+
             common::init_events();
 
             window->invalidate();
@@ -1083,8 +1089,8 @@ namespace openloco::ui::windows::industry_list
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-            self->set_size(minWindowSize, maxWindowSize);
-            if (minWindowSize.height > self->height || maxWindowSize.height < self->height)
+            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            if (hasResized)
                 updateActiveThumb(self);
         }
 

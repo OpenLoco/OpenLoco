@@ -373,8 +373,10 @@ namespace openloco::ui
 
         window(gfx::point_t position, gfx::ui_size_t size);
 
-        constexpr void set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
+        constexpr bool set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
         {
+            bool hasResized = false;
+
             min_width = minSize.width;
             min_height = minSize.height;
 
@@ -385,23 +387,28 @@ namespace openloco::ui
             {
                 width = min_width;
                 invalidate();
+                hasResized = true;
             }
             else if (width > max_width)
             {
                 width = max_width;
                 invalidate();
+                hasResized = true;
             }
 
             if (height < min_height)
             {
                 height = min_height;
                 invalidate();
+                hasResized = true;
             }
             else if (height > max_height)
             {
                 height = max_height;
                 invalidate();
+                hasResized = true;
             }
+            return hasResized;
         }
 
         constexpr void set_size(gfx::ui_size_t size)
