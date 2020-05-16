@@ -31,8 +31,6 @@ namespace openloco::ui::options
     static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _50D435;
-    static loco_global<uint8_t[3], 0x0050D5B5> _50D5B5;
-    static loco_global<uint8_t[3], 0x0050D5B8> _50D5B8;
 
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
