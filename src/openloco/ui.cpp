@@ -769,39 +769,18 @@ namespace openloco::ui
 
     static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode)
     {
-        config::resolution_t defaultResolution = { 640, 480 };
-        config::resolution_t* outputResolution = &defaultResolution;
-
         auto& config = config::get_new();
-        switch (mode)
+        if (mode == config::screen_mode::window)
         {
-            case config::screen_mode::window:
-                if (config.display.window_resolution.isPositive())
-                    outputResolution = &config.display.window_resolution;
-                break;
-
-            case config::screen_mode::fullscreen:
-                if (config.display.fullscreen_resolution.isPositive())
-                    outputResolution = &config.display.fullscreen_resolution;
-                break;
-
-            case config::screen_mode::fullscreen_borderless:
-                break;
-
-            default:
-                console::error("Unrecongised display mode");
-                break;
+            if (config.display.window_resolution.isPositive())
+                return config.display.window_resolution;
+            else
+                return { 800, 600 };
         }
-
-        if (outputResolution != nullptr && outputResolution->isPositive())
-        {
-            return *outputResolution;
-        }
+        else if (mode == config::screen_mode::fullscreen && config.display.fullscreen_resolution.isPositive())
+            return config.display.fullscreen_resolution;
         else
-        {
-            // If we have no resolution in config, or it's 0x0, use the current desktop resolution instead
             return getDesktopResolution();
-        }
     }
 
     static config::resolution_t getDesktopResolution()
