@@ -84,7 +84,7 @@ namespace openloco::ui::windows::industry_list
             make_widget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_name),
             make_widget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_status),
             make_widget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_production_transported),
-            make_widget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, 2),
+            make_widget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
             widget_end(),
         };
 
@@ -578,7 +578,7 @@ namespace openloco::ui::windows::industry_list
 
         widget_t widgets[] = {
             commonWidgets(577, 171, string_ids::title_fund_new_industries),
-            make_widget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, 2),
+            make_widget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, scrollbars::vertical),
             widget_end(),
         };
 
@@ -1003,7 +1003,7 @@ namespace openloco::ui::windows::industry_list
             i = (i / 5) * rowHeight;
 
             self->scroll_areas[0].v_top = i;
-            ui::scrollview::update_thumbs(self, new_industries::widx::scrollview);
+            ui::scrollview::update_thumbs(self, widx::scrollview);
         }
 
         // 0x00458AAF
@@ -1084,7 +1084,8 @@ namespace openloco::ui::windows::industry_list
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
             self->set_size(minWindowSize, maxWindowSize);
-            updateActiveThumb(self);
+            if (minWindowSize.height > self->height || maxWindowSize.height < self->height)
+                updateActiveThumb(self);
         }
 
         static void init_events()
@@ -1135,7 +1136,7 @@ namespace openloco::ui::windows::industry_list
 
             // Activate the current tab..
             self->activated_widgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
-            self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activated_widgets |= (1ULL << tabInformationByTabOffset[self->current_tab].widgetIndex);
 
             self->widgets[common::widx::frame].right = self->width - 1;
             self->widgets[common::widx::frame].bottom = self->height - 1;
