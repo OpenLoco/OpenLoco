@@ -6,8 +6,10 @@ namespace openloco
 {
     namespace building_object_flags
     {
-        constexpr uint32_t flag_2 = 1 << 1;
-        constexpr uint32_t flag_4 = 1 << 3;
+        constexpr uint32_t large_tile = 1 << 0;  // 2x2 tile
+        constexpr uint32_t misc_building = 1 << 1;
+        constexpr uint32_t undestructible = 1 << 2;
+        constexpr uint32_t is_headquarters = 1 << 3;
     }
 
 #pragma pack(push, 1)

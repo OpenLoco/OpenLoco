@@ -43,7 +43,7 @@ namespace openloco::utility
         return success - 1;
 #else
 #pragma message "Falling back to iterative bitscan reverse, consider using intrinsics"
-        for (int32_t i = 31; i > -1 ; i--)
+        for (int32_t i = 31; i > -1; i--)
             if (source & (1u << i))
                 return i;
 
