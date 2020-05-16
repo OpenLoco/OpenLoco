@@ -102,7 +102,7 @@ namespace openloco::config
     {
         screen_mode mode;
         int32_t index{};
-        resolution_t window_resolution;
+        resolution_t window_resolution = { 800, 600 };
         resolution_t fullscreen_resolution;
     };
 
