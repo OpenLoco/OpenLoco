@@ -5,6 +5,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/languagefiles.h"
 #include "../localisation/languages.h"
 #include "../localisation/string_ids.h"
@@ -36,9 +37,6 @@ namespace openloco::ui::options
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
-    static loco_global<char[20], 0x0112C826> _commonFormatArgs;
-
-#define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
     static void on_close(window* w)
     {
@@ -554,8 +552,10 @@ namespace openloco::ui::options
             }
             w->widgets[widx::screen_mode].text = screen_mode_string_id;
 
-            set_format_arg(0x10, uint16_t, config::get().resolution_width);
-            set_format_arg(0x12, uint16_t, config::get().resolution_height);
+            FormatArguments args = {};
+            args.skip(0x10);
+            args.push<uint16_t>(config::get().resolution_width);
+            args.push<uint16_t>(config::get().resolution_height);
 
             if (config::get().construction_marker)
                 w->widgets[widx::construction_marker].text = string_ids::translucent;
@@ -687,14 +687,16 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            set_format_arg(0x0, string_id, string_ids::audio_device_none);
+            FormatArguments args = {};
 
             auto audioDeviceName = audio::get_current_device_name();
             if (audioDeviceName != nullptr)
             {
-                set_format_arg(0x0, string_id, string_ids::stringptr);
-                set_format_arg(0x2, char*, (char*)audioDeviceName);
+                args.push(string_ids::stringptr);
+                args.push(audioDeviceName);
             }
+            else
+                args.push(string_ids::audio_device_none);
 
             if (config::get_new().audio.play_title_music)
                 w->activated_widgets |= (1 << widx::play_title_music);
@@ -889,7 +891,9 @@ namespace openloco::ui::options
             {
                 songName = audio::getMusicInfo(_currentSong)->title_id;
             }
-            set_format_arg(0, string_id, songName);
+
+            FormatArguments args = {};
+            args.push(songName);
 
             static const string_id playlist_string_ids[] = {
                 string_ids::play_only_music_from_current_era,
@@ -897,7 +901,8 @@ namespace openloco::ui::options
                 string_ids::play_custom_music_selection,
             };
 
-            set_format_arg(2, string_id, playlist_string_ids[(uint8_t)config::get().music_playlist]);
+            string_id currentSongStringId = playlist_string_ids[(uint8_t)config::get().music_playlist];
+            args.push(currentSongStringId);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
             w->activated_widgets |= (1 << widx::music_controls_stop);
@@ -1275,8 +1280,10 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
+            FormatArguments args = {};
+
             auto& language = localisation::getDescriptorForLanguage(config::get_new().language);
-            set_format_arg(0, const char*, language.native_name.c_str());
+            args.push(language.native_name.c_str());
 
             string_id current_height_units = string_ids::height_units;
             if ((openloco::config::get().flags & config::flags::show_height_as_units) == 0)
@@ -1284,7 +1291,8 @@ namespace openloco::ui::options
                 current_height_units = string_ids::height_real_values;
             }
 
-            set_format_arg(0x6, string_id, current_height_units);
+            args.skip(0x2);
+            args.push(current_height_units);
 
             string_id current_measurement_format = string_ids::imperial;
             if (openloco::config::get().measurement_format)
@@ -1292,8 +1300,9 @@ namespace openloco::ui::options
                 current_measurement_format = string_ids::metric;
             }
 
-            set_format_arg(0xC, string_id, current_measurement_format);
-            set_format_arg(0xA, string_id, objectmgr::get<currency_object>()->name);
+            args.skip(0x2);
+            args.push(objectmgr::get<currency_object>()->name);
+            args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
             if (config::get().flags & config::flags::preferred_currency_for_new_games)
@@ -1917,8 +1926,9 @@ namespace openloco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            set_format_arg(0, string_id, string_ids::buffer_2039);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, _commonFormatArgs);
+            FormatArguments args = {};
+            args.push(string_ids::buffer_2039);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
