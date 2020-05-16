@@ -49,8 +49,8 @@ namespace openloco::config
     struct config_t
     {
         uint32_t flags;                             // 0x50AEB4, 0x00
-        uint16_t resolution_width;                  // 0x50AEB8, 0x04
-        uint16_t resolution_height;                 // 0x50AEBA, 0x06
+        int16_t resolution_width;                   // 0x50AEB8, 0x04
+        int16_t resolution_height;                  // 0x50AEBA, 0x06
         uint16_t backup_resolution_width;           // 0x50AEBC, 0x08
         uint16_t backup_resolution_height;          // 0x50AEBE, 0x10
         uint8_t countdown;                          // 0x50AEC0, 0x0C
