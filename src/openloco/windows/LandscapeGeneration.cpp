@@ -431,7 +431,7 @@ namespace openloco::ui::windows::LandscapeGeneration
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                gfx::draw_string_494BBF(*dpi, 24, yPos + 5, 121, colour::black, string_ids::wcolour2_stringid2, &*commonFormatArgs);
+                gfx::draw_string_494BBF(*dpi, 24, yPos + 5, 121, colour::black, string_ids::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
                 gfx::fill_rect_inset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
@@ -439,7 +439,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[s5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
-                gfx::draw_string_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
+                gfx::draw_string_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;

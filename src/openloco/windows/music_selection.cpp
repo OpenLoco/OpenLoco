@@ -107,13 +107,13 @@ namespace openloco::ui::windows::music_selection
         uint16_t y = 0;
         for (uint16_t i = 0; i < window->row_count; i++)
         {
-            string_id text_colour_id = string_ids::white_stringid2;
+            string_id text_colour_id = string_ids::black_stringid;
 
             // Draw hovered track
             if (i == window->row_hover)
             {
                 gfx::draw_rect(dpi, 0, y, 800, rowHeight, 0x2000030);
-                text_colour_id = string_ids::wcolour2_stringid2;
+                text_colour_id = string_ids::wcolour2_stringid;
             }
 
             // Draw checkbox.
@@ -121,7 +121,7 @@ namespace openloco::ui::windows::music_selection
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])
-                gfx::draw_string_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid2, (void*)&string_ids::checkmark);
+                gfx::draw_string_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid, (void*)&string_ids::checkmark);
 
             // Draw track name.
             string_id music_title_id = audio::getMusicInfo(i)->title_id;

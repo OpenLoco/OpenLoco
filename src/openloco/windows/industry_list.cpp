@@ -140,7 +140,7 @@ namespace openloco::ui::windows::industry_list
                 args.push(string_ids::status_num_industries_plural);
             args.push(self->var_83C);
 
-            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::white_stringid2, &args);
+            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00457EC4
@@ -393,13 +393,13 @@ namespace openloco::ui::windows::industry_list
                     continue;
                 }
 
-                string_id text_colour_id = string_ids::white_stringid2;
+                string_id text_colour_id = string_ids::black_stringid;
 
                 // Highlight selection.
                 if (industryId == self->row_hover)
                 {
                     gfx::draw_rect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
-                    text_colour_id = string_ids::wcolour2_stringid2;
+                    text_colour_id = string_ids::wcolour2_stringid;
                 }
 
                 if (industryId == 0xFFFF)
@@ -663,7 +663,7 @@ namespace openloco::ui::windows::industry_list
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::white_stringid2, &industryObj->name);
+            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A

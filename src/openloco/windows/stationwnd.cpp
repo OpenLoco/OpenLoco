@@ -128,7 +128,7 @@ namespace openloco::ui::windows::station
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::white_stringid2, &args);
+            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -543,7 +543,7 @@ namespace openloco::ui::windows::station
             {
                 auto args = FormatArguments();
                 args.push(string_ids::nothing_waiting);
-                gfx::draw_string_494B3F(*dpi, 1, 0, colour::black, string_ids::white_stringid2, &args);
+                gfx::draw_string_494B3F(*dpi, 1, 0, colour::black, string_ids::black_stringid, &args);
             }
         }
 
@@ -681,7 +681,7 @@ namespace openloco::ui::windows::station
                 }
 
                 auto cargoObj = objectmgr::get<cargo_object>(cargoId);
-                gfx::draw_string_494BBF(*dpi, 1, y, 98, 0, string_ids::wcolour2_stringid2, &cargoObj->name);
+                gfx::draw_string_494BBF(*dpi, 1, y, 98, 0, string_ids::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = colour::moss_green;

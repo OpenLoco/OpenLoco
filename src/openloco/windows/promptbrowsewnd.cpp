@@ -376,7 +376,7 @@ namespace openloco::ui::prompt_browse
                     y,
                     width,
                     0,
-                    string_ids::wcolour2_stringid2,
+                    string_ids::wcolour2_stringid,
                     _commonFormatArgs);
                 y += 12;
 
@@ -512,7 +512,7 @@ namespace openloco::ui::prompt_browse
         // Draw text box text
         gfx::point_t origin = { 0, 1 };
         set_common_args_stringptr(text);
-        gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::white_stringid2, _commonFormatArgs);
+        gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
         if (showCaret)
         {
@@ -528,7 +528,7 @@ namespace openloco::ui::prompt_browse
                 gbuffer = std::string_view(text, caret);
                 set_common_args_stringptr(gbuffer.c_str());
                 origin = { 0, 1 };
-                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::white_stringid2, _commonFormatArgs);
+                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
                 gfx::draw_rect(&dpi, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
@@ -556,11 +556,11 @@ namespace openloco::ui::prompt_browse
                 auto file = _files[i];
 
                 // Draw the row highlight
-                auto stringId = string_ids::white_stringid2;
+                auto stringId = string_ids::black_stringid;
                 if (i == window->var_85A)
                 {
                     gfx::draw_rect(dpi, 0, y, window->width, lineHeight, 0x2000000 | 48);
-                    stringId = string_ids::wcolour2_stringid2;
+                    stringId = string_ids::wcolour2_stringid;
                 }
 
                 // Draw the folder icon

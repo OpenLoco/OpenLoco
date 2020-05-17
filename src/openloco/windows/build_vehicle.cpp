@@ -1182,11 +1182,11 @@ namespace openloco::ui::build_vehicle
                             continue;
                         }
 
-                        auto colouredString = string_ids::white_stringid2;
+                        auto colouredString = string_ids::black_stringid;
                         if (window->row_hover == vehicleType)
                         {
                             gfx::fill_rect(dpi, 0, y, window->width, y + window->row_height - 1, 0x2000030);
-                            colouredString = string_ids::wcolour2_stringid2;
+                            colouredString = string_ids::wcolour2_stringid;
                         }
 
                         int16_t half = (window->row_height - 22) / 2;
@@ -1234,7 +1234,7 @@ namespace openloco::ui::build_vehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(string_ids::buffer_1250);
-                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid2, &args);
+                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid, &args);
                 break;
             }
         }
