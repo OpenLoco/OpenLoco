@@ -23,7 +23,7 @@ namespace openloco::ui::windows::town_list
 {
     loco_global<int8_t, 0x00F2533F> _gridlines_state;
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
-    static loco_global<uint8_t, 0x01135C61> _buildingColour;
+    static loco_global<colour_t, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
     static loco_global<uint8_t, 0x01135C65> byte_1135C65;
     static loco_global<uint8_t, 0x01135C66> _townSize;
@@ -942,7 +942,7 @@ namespace openloco::ui::windows::town_list
         {
             if (widgetIndex != widx::object_colour)
                 return;
-            if (itemIndex == 0xFFFF)
+            if (itemIndex == -1)
                 return;
 
             _buildingColour = _dropdownItemArgs[itemIndex][4];
@@ -1097,17 +1097,14 @@ namespace openloco::ui::windows::town_list
 
                 if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                 {
-                    auto colour = _buildingColour;
+                    colour_t colour = _buildingColour;
                     if (self->row_hover != self->row_info[i])
                     {
-                        colour = buildingObj->colours;
-                        colour = utility::bitscanreverse(colour);
+                        colour = utility::bitscanreverse(buildingObj->colours);
                         if (colour == 0xFF)
                             colour = 0;
                     }
-                    std::printf("rowInfo: %d\n", self->row_info[i]);
-                    std::printf("rowHover: %d\n", self->row_hover);
-                    std::printf("colour: %d\n\n", int(colour));
+
                     drawBuildingThumb(clipped, buildingObj, _buildingRotation, 56, 96, colour);
                 }
 
@@ -1129,7 +1126,7 @@ namespace openloco::ui::windows::town_list
                 auto buildingObj = objectmgr::get<building_object>(self->row_hover);
                 if (buildingObj->colours != 0)
                 {
-                    auto colour = utility::bitscanreverse(buildingObj->colours);
+                    colour_t colour = utility::bitscanreverse(buildingObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
                     _buildingColour = colour;
@@ -1145,7 +1142,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049AEFD
         static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            int16_t xPos = (x / 122);
+            int16_t xPos = (x / 112);
             int16_t yPos = (y / 112) * 5;
             auto index = getRowIndex(x, y);
 
