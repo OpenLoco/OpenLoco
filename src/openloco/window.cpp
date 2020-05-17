@@ -136,24 +136,22 @@ namespace openloco::ui
     // regs.edi: vp
     static void viewport_set_underground_flag(bool underground, ui::window* w, ui::viewport* vp)
     {
-        if (w->type != WindowType::main)
+        if (w->type == WindowType::main)
+            return;
+
+        bool shouldInvalidate;
+        if (!underground)
         {
-            if (!underground)
-            {
-                bool bit = (vp->flags & viewport_flags::underground_view) != 0;
-                vp->flags &= ~viewport_flags::underground_view;
-                if (!bit)
-                    return;
-            }
-            else
-            {
-                bool bit = (vp->flags & viewport_flags::underground_view) != 0;
-                vp->flags |= viewport_flags::underground_view;
-                if (bit)
-                    return;
-            }
-            w->invalidate();
+            shouldInvalidate = !(vp->flags & viewport_flags::underground_view);
+            vp->flags &= ~viewport_flags::underground_view;
         }
+        else
+        {
+            shouldInvalidate = vp->flags & viewport_flags::underground_view;
+            vp->flags |= viewport_flags::underground_view;
+        }
+        if (shouldInvalidate)
+            w->invalidate();
     }
 
     void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp)
