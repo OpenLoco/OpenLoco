@@ -108,11 +108,11 @@ namespace openloco::ui::KeyboardShortcuts
         auto yPos = 0;
         for (auto i = 0; i < self->row_count; i++)
         {
-            string_id format = string_ids::white_stringid2;
+            string_id format = string_ids::black_stringid;
             if (i == self->row_hover)
             {
                 gfx::draw_rect(dpi, 0, yPos, 800, rowHeight, 0x2000030);
-                format = string_ids::wcolour2_stringid2;
+                format = string_ids::wcolour2_stringid;
             }
 
             _commonFormatArgs[1] = ShortcutManager::getName(static_cast<Shortcut>(i));

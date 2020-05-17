@@ -486,13 +486,13 @@ namespace openloco::ui::windows::station_list
                 continue;
             }
 
-            string_id text_colour_id = string_ids::white_stringid2;
+            string_id text_colour_id = string_ids::black_stringid;
 
             // Highlight selection.
             if (stationId == window->row_hover)
             {
                 gfx::draw_rect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
-                text_colour_id = string_ids::wcolour2_stringid2;
+                text_colour_id = string_ids::wcolour2_stringid;
             }
 
             auto station = stationmgr::get(stationId);
@@ -598,7 +598,7 @@ namespace openloco::ui::windows::station_list
 
         // Draw number of stations.
         auto origin = gfx::point_t(window->x + 4, window->y + window->height - 12);
-        gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::white_stringid2, &*_common_format_args);
+        gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::black_stringid, &*_common_format_args);
     }
 
     // 0x004917BB

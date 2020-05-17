@@ -147,7 +147,7 @@ namespace openloco::ui::windows::industry
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
             auto width = widget->width();
-            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::white_stringid2, &args);
+            gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -484,7 +484,7 @@ namespace openloco::ui::windows::industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = gfx::draw_string_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::white_stringid2, &args);
+                        origin.y = gfx::draw_string_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::black_stringid, &args);
                     }
                     cargoNumber++;
                 }

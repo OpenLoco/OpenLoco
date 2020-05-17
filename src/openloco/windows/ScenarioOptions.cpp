@@ -1037,7 +1037,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     commonFormatArgs[0] = stex->details;
 
                 auto& target = window->widgets[widx::change_details_btn];
-                gfx::draw_string_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, colour::black, string_ids::white_stringid2, &*commonFormatArgs);
+                gfx::draw_string_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, colour::black, string_ids::black_stringid, &*commonFormatArgs);
             }
         }
 

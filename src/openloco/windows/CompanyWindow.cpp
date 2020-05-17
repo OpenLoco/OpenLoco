@@ -228,7 +228,7 @@ namespace openloco::ui::windows::CompanyWindow
                     &origin,
                     widget.right - widget.left,
                     colour::black,
-                    string_ids::white_stringid2,
+                    string_ids::black_stringid,
                     &args);
             }
 
@@ -250,7 +250,7 @@ namespace openloco::ui::windows::CompanyWindow
                     self->y + widget.top - 1,
                     widget.right - widget.left,
                     colour::black,
-                    string_ids::white_stringid2,
+                    string_ids::black_stringid,
                     &args);
             }
 
@@ -1658,7 +1658,7 @@ namespace openloco::ui::windows::CompanyWindow
                     self->x + 5,
                     y - 1,
                     colour::black,
-                    string_ids::wcolour2_stringid2,
+                    string_ids::wcolour2_stringid,
                     &args);
 
                 y += 10;
@@ -1746,10 +1746,10 @@ namespace openloco::ui::windows::CompanyWindow
             args.push(string_ids::uint16_raw);
             args.push(columnYear);
 
-            string_id format = string_ids::wcolour2_stringid2;
+            string_id format = string_ids::wcolour2_stringid;
             if (columnYear != currentYear)
             {
-                format = string_ids::white_stringid2;
+                format = string_ids::black_stringid;
             }
 
             gfx::draw_string_underline(
@@ -1770,7 +1770,7 @@ namespace openloco::ui::windows::CompanyWindow
                 currency48_t expenditures = company.expenditures[columnIndex][j];
                 sum += expenditures;
 
-                string_id mainFormat = string_ids::white_stringid2;
+                string_id mainFormat = string_ids::black_stringid;
                 string_id currFormat = string_ids::plus_currency48;
                 if (expenditures < 0)
                 {
@@ -1802,7 +1802,7 @@ namespace openloco::ui::windows::CompanyWindow
         {
             FormatArguments args{};
 
-            auto mainFormat = string_ids::white_stringid2;
+            auto mainFormat = string_ids::black_stringid;
             auto sumFormat = string_ids::plus_currency48;
             if (sum < 0)
             {
@@ -2117,7 +2117,7 @@ namespace openloco::ui::windows::CompanyWindow
                     self->x + 10,
                     y,
                     colour::black,
-                    string_ids::white_stringid2,
+                    string_ids::black_stringid,
                     &args);
 
                 numPrinted++;
