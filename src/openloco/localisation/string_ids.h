@@ -225,13 +225,13 @@ namespace openloco::string_ids
 
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
-	
+
     constexpr string_id status_towns_singular = 555;
     constexpr string_id status_towns_plural = 556;
 
     constexpr string_id status_num_industries_singular = 562;
     constexpr string_id status_num_industries_plural = 563;
-	
+
     constexpr string_id rotate_object_90 = 565;
 
     constexpr string_id player_info_company_value = 572;

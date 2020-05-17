@@ -274,7 +274,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049A532
         static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(window_flags::flag_14);
+            self->flags &= ~(window_flags::not_scroll_view);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
@@ -440,13 +440,13 @@ namespace openloco::ui::windows::town_list
         // 0x0049A4D0
         static void event_08(window* self)
         {
-            self->flags |= window_flags::flag_14;
+            self->flags |= window_flags::not_scroll_view;
         }
 
         // 0x0049A4D8
         static void event_09(window* self)
         {
-            if ((self->flags & window_flags::flag_14) == 0)
+            if ((self->flags & window_flags::not_scroll_view) == 0)
                 return;
 
             if (self->row_hover == -1)
@@ -1028,11 +1028,11 @@ namespace openloco::ui::windows::town_list
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-            //bool hasResized = self->set_size(minWindowSize, maxWindowSize);
-            bool hasResized = false;
+            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            /*bool hasResized = false;
             if ((self->height < minWindowSize.height) || (self->height > maxWindowSize.height))
                 hasResized = true;
-            self->set_size(minWindowSize, maxWindowSize);
+            self->set_size(minWindowSize, maxWindowSize);*/
             if (hasResized)
                 updateActiveThumb(self);
         }
