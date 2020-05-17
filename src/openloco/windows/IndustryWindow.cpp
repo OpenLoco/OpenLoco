@@ -136,14 +136,13 @@ namespace openloco::ui::windows::industry
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            // 0x0045935F start
-            registers regs;
-            regs.dx = self->number;
-            call(0x0045935F, regs);
-            // 0x0045935F end
+            const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+            auto industry = industrymgr::get(self->number);
+            industry->getStatusString(const_cast<char*>(buffer));
 
             auto args = FormatArguments();
-            args.push(regs.bx);
+            args.push(string_ids::buffer_1250);
+
             auto widget = &self->widgets[widx::status_bar];
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
@@ -182,7 +181,7 @@ namespace openloco::ui::windows::industry
                     break;
                 }
 
-                // 0x0049916A
+                // 0x00455E59
                 case widx::demolish_industry:
                 {
                     bool success = game_commands::do_48(GameCommandFlag::apply, self->number);
@@ -468,14 +467,14 @@ namespace openloco::ui::windows::industry
                 gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::received_cargo);
 
                 auto cargoNumber = 0;
-                for (const auto& receivedCargoType : industryObj->received_cargo_type)
+                for (const auto& receivedCargoType : industryObj->required_cargo_type)
                 {
                     if (receivedCargoType != 0xFF)
                     {
                         auto cargoObj = objectmgr::get<cargo_object>(receivedCargoType);
                         auto args = FormatArguments();
 
-                        if (industry->received_cargo_quantity[cargoNumber] == 1)
+                        if (industry->required_cargo_quantity[cargoNumber] == 1)
                         {
                             args.push(cargoObj->unit_name_singular);
                         }
@@ -483,7 +482,7 @@ namespace openloco::ui::windows::industry
                         {
                             args.push(cargoObj->unit_name_plural);
                         }
-                        args.push<uint32_t>(industry->received_cargo_quantity[cargoNumber]);
+                        args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
                         origin.y = gfx::draw_string_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::white_stringid2, &args);
                     }

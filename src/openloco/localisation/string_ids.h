@@ -105,6 +105,8 @@ namespace openloco::string_ids
     constexpr string_id screenshot_saved_as = 109;
     constexpr string_id screenshot_failed = 110;
 
+    constexpr string_id build_cost = 138;
+
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
@@ -224,9 +226,13 @@ namespace openloco::string_ids
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
+    constexpr string_id status_num_industries_singular = 562;
+    constexpr string_id status_num_industries_plural = 563;
+
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
 
+    constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
 
     constexpr string_id expenditure_income = 587;
@@ -589,6 +595,14 @@ namespace openloco::string_ids
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
 
+    constexpr string_id title_industries = 1318;
+    constexpr string_id title_fund_new_industries = 1319;
+    constexpr string_id title_build_new_industries = 1320;
+
+    constexpr string_id tooltip_industries_list = 1325;
+    constexpr string_id tooltip_fund_new_industries = 1326;
+    constexpr string_id tooltip_build_new_industries = 1327;
+
     constexpr string_id headquarters = 1354;
     constexpr string_id window_owner = 1355;
     constexpr string_id interest_per_year = 1356;
@@ -605,6 +619,26 @@ namespace openloco::string_ids
 
     constexpr string_id title_station = 1364;
 
+    constexpr string_id industry_under_construction = 1366;
+    constexpr string_id industry_producing = 1367;
+    constexpr string_id industry_produces = 1368;
+
+    constexpr string_id cargo_to_produce = 1370;
+    constexpr string_id industry_requires = 1371;
+
+    constexpr string_id cargo_and = 1373;
+    constexpr string_id cargo_or = 1374;
+    constexpr string_id cargo_comma = 1375;
+    constexpr string_id sort_industry_status = 1376;
+    constexpr string_id sort_industry_production_transported = 1377;
+    constexpr string_id industry_table_header_status = 1378;
+    constexpr string_id industry_table_header_status_desc = 1379;
+    constexpr string_id industry_table_header_production = 1380;
+    constexpr string_id industry_table_header_production_desc = 1381;
+    constexpr string_id sort_industry_name = 1382;
+    constexpr string_id industry_table_header = 1383;
+    constexpr string_id industry_table_header_desc = 1384;
+    constexpr string_id no_industry_available = 1385;
     constexpr string_id tooltip_town = 1386;
     constexpr string_id tooltip_population_graph = 1387;
     constexpr string_id tooltip_town_ratings_each_company = 1388;
@@ -629,7 +663,8 @@ namespace openloco::string_ids
     constexpr string_id received_cargo = 1415;
     constexpr string_id produced_cargo = 1416;
     constexpr string_id transported_cargo = 1417;
-
+    constexpr string_id production_transported_percent = 1418;
+    constexpr string_id industry_closing_down = 1419;
     constexpr string_id error_reason_belongs_to = 1420;
     constexpr string_id error_reason_stringid_belongs_to = 1421;
     constexpr string_id error_reason_signal_belongs_to = 1422;

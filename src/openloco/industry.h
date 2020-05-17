@@ -22,6 +22,8 @@ namespace openloco
     namespace industry_flags
     {
         constexpr uint16_t flag_01 = 1 << 0;
+        constexpr uint16_t sorted = 1 << 1;
+        constexpr uint16_t closing_down = 1 << 2;
         constexpr uint16_t flag_04 = 1 << 3;
     }
 
@@ -29,12 +31,12 @@ namespace openloco
     struct industry
     {
         string_id name;
-        coord_t x;          // 0x02
-        coord_t y;          // 0x04
-        uint16_t flags;     // 0x06
-        utility::prng prng; // 0x08
-        uint8_t object_id;  // 0x10
-        uint8_t var_11;
+        coord_t x;                  // 0x02
+        coord_t y;                  // 0x04
+        uint16_t flags;             // 0x06
+        utility::prng prng;         // 0x08
+        uint8_t object_id;          // 0x10
+        uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint8_t pad_12[0xD5 - 0x12];
         town_id_t town;           // 0xD5
         map::tile_loop tile_loop; // 0xD7
@@ -45,7 +47,7 @@ namespace openloco
         uint8_t pad_E1[0x189 - 0xE1];
         uint16_t produced_cargo_quantity[2]; // 0x189
         uint8_t pad_18D[0x193 - 0x18D];
-        uint16_t received_cargo_quantity[3]; // 0x193
+        uint16_t required_cargo_quantity[3]; // 0x193
         uint8_t pad_199[0x1A3 - 0x199];
         uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
         uint8_t produced_cargo_transported[2]; // 0x1A7 (%)
@@ -60,6 +62,7 @@ namespace openloco
         bool empty() const;
         bool canReceiveCargo() const;
         bool canProduceCargo() const;
+        void getStatusString(const char* buffer);
 
         void update();
         void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);

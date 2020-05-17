@@ -203,6 +203,17 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x004577FF,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+                auto window = windows::industry_list::open();
+                regs = backup;
+                regs.esi = (uintptr_t)window;
+
+                return 0;
+            });
+
+        register_hook(
             0x004B93A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

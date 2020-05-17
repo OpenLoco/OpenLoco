@@ -1,6 +1,9 @@
 #include "industry.h"
 #include "interop/interop.hpp"
+#include "localisation/string_ids.h"
 #include "map/tilemgr.h"
+#include "objects/cargo_object.h"
+#include "objects/industry_object.h"
 #include "objects/objectmgr.h"
 #include "utility/numeric.hpp"
 #include <algorithm>
@@ -29,7 +32,7 @@ namespace openloco
     bool industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : objectmgr::get<industry_object>(object_id)->received_cargo_type)
+        for (const auto& receivedCargo : objectmgr::get<industry_object>(object_id)->required_cargo_type)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -62,10 +65,58 @@ namespace openloco
         return false;
     }
 
+    // 0x0045935F
+    void industry::getStatusString(const char* buffer)
+    {
+        char* ptr = (char*)buffer;
+        *ptr = '\0';
+        auto industryObj = object();
+
+        // Closing Down
+        if (flags & industry_flags::closing_down)
+        {
+            ptr = stringmgr::format_string(ptr, string_ids::industry_closing_down);
+            return;
+        }
+
+        // Under Construction
+        if (under_construction != 0xFF)
+        {
+            ptr = stringmgr::format_string(ptr, string_ids::industry_under_construction);
+            return;
+        }
+
+        // Produced Cargo Only
+        if (!canReceiveCargo())
+        {
+            if (!canProduceCargo())
+                return;
+
+            ptr = stringmgr::format_string(ptr, string_ids::industry_producing);
+
+            ptr = industryObj->getProducedCargoString(ptr);
+
+            return;
+        }
+
+        // Required Cargo
+        ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
+
+        ptr = industryObj->getRequiredCargoString(ptr);
+
+        if (!canProduceCargo())
+            return;
+
+        // Production and Received Cargo
+        ptr = stringmgr::format_string(ptr, string_ids::cargo_to_produce);
+
+        ptr = industryObj->getProducedCargoString(ptr);
+    }
+
     // 0x00453275
     void industry::update()
     {
-        if (!(flags & industry_flags::flag_01) && var_11 == 0xFF)
+        if (!(flags & industry_flags::flag_01) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             auto obj = object();
@@ -82,7 +133,7 @@ namespace openloco
                             if (bl == 0 || bl != obj->var_EA)
                             {
                                 var_DB++;
-                                if ((!(obj->var_E4 & 0x10000000) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
+                                if ((!(obj->flags & industry_object_flags::flag_29) && (surface->data()[4] & 0xE0) == 0) || find_5(surface))
                                 {
                                     var_DD++;
                                 }
