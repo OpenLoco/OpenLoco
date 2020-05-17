@@ -156,13 +156,13 @@ namespace openloco::ui::windows::town_list
                     continue;
                 }
 
-                string_id text_colour_id = string_ids::white_stringid2;
+                string_id text_colour_id = string_ids::black_stringid;
 
                 // Highlight selection.
                 if (townId == self->row_hover)
                 {
                     gfx::draw_rect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
-                    text_colour_id = string_ids::wcolour2_stringid2;
+                    text_colour_id = string_ids::wcolour2_stringid;
                 }
 
                 if (townId == 0xFFFF)
@@ -218,7 +218,7 @@ namespace openloco::ui::windows::town_list
                 args.push(string_ids::status_towns_plural);
             args.push(self->var_83C);
 
-            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::white_stringid2, &args);
+            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -841,7 +841,7 @@ namespace openloco::ui::windows::town_list
 
             auto buildingObj = objectmgr::get<building_object>(buildingId);
 
-            gfx::draw_string_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, colour::black, string_ids::white_stringid2, &buildingObj->name);
+            gfx::draw_string_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, colour::black, string_ids::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
