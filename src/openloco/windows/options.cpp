@@ -5,6 +5,7 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/languagefiles.h"
 #include "../localisation/languages.h"
 #include "../localisation/string_ids.h"
@@ -30,15 +31,10 @@ namespace openloco::ui::options
     static loco_global<uint32_t, 0x0050D430> _50D430;
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _50D435;
-    static loco_global<uint8_t[3], 0x0050D5B5> _50D5B5;
-    static loco_global<uint8_t[3], 0x0050D5B8> _50D5B8;
 
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
-    static loco_global<char[20], 0x0112C826> _commonFormatArgs;
-
-#define set_format_arg(a, b, c) *((b*)(&_commonFormatArgs[a])) = (c)
 
     static void on_close(window* w)
     {
@@ -164,6 +160,8 @@ namespace openloco::ui::options
         make_remap_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::miscellaneous_options)
 
         static constexpr int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
+
+        static constexpr int enabledWidgets = (1 << widx::close_button) | tabWidgets;
     }
 
     namespace display
@@ -211,6 +209,8 @@ namespace openloco::ui::options
         };
 
         static window_event_list _events;
+
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void on_mouse_up(window* w, widget_index wi)
@@ -554,8 +554,10 @@ namespace openloco::ui::options
             }
             w->widgets[widx::screen_mode].text = screen_mode_string_id;
 
-            set_format_arg(0x10, uint16_t, config::get().resolution_width);
-            set_format_arg(0x12, uint16_t, config::get().resolution_height);
+            FormatArguments args = {};
+            args.skip(0x10);
+            args.push<uint16_t>(config::get().resolution_width);
+            args.push<uint16_t>(config::get().resolution_height);
 
             if (config::get().construction_marker)
                 w->widgets[widx::construction_marker].text = string_ids::translucent;
@@ -629,6 +631,19 @@ namespace openloco::ui::options
             draw_string_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
         }
 
+        static void applyScreenModeRestrictions(window* w)
+        {
+            if (config::get_new().display.mode != config::screen_mode::fullscreen)
+                w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
+            display::screen_mode_toggle_enabled(w);
+#else
+            w->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+#endif
+        }
+
         static const window_event_list init_events()
         {
             _events.on_close = on_close;
@@ -655,6 +670,8 @@ namespace openloco::ui::options
                 play_title_music,
             };
         }
+
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_sound),
@@ -687,14 +704,16 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            set_format_arg(0x0, string_id, string_ids::audio_device_none);
+            FormatArguments args = {};
 
             auto audioDeviceName = audio::get_current_device_name();
             if (audioDeviceName != nullptr)
             {
-                set_format_arg(0x0, string_id, string_ids::stringptr);
-                set_format_arg(0x2, char*, (char*)audioDeviceName);
+                args.push(string_ids::stringptr);
+                args.push(audioDeviceName);
             }
+            else
+                args.push(string_ids::audio_device_none);
 
             if (config::get_new().audio.play_title_music)
                 w->activated_widgets |= (1 << widx::play_title_music);
@@ -843,6 +862,8 @@ namespace openloco::ui::options
             };
         }
 
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
+
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_music),
             make_widget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, string_ids::stringid),
@@ -889,7 +910,9 @@ namespace openloco::ui::options
             {
                 songName = audio::getMusicInfo(_currentSong)->title_id;
             }
-            set_format_arg(0, string_id, songName);
+
+            FormatArguments args = {};
+            args.push(songName);
 
             static const string_id playlist_string_ids[] = {
                 string_ids::play_only_music_from_current_era,
@@ -897,7 +920,8 @@ namespace openloco::ui::options
                 string_ids::play_custom_music_selection,
             };
 
-            set_format_arg(2, string_id, playlist_string_ids[(uint8_t)config::get().music_playlist]);
+            string_id currentSongStringId = playlist_string_ids[(uint8_t)config::get().music_playlist];
+            args.push(currentSongStringId);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
             w->activated_widgets |= (1 << widx::music_controls_stop);
@@ -1226,6 +1250,8 @@ namespace openloco::ui::options
             };
         }
 
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
+
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_regional),
             make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::stringptr),
@@ -1275,8 +1301,10 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
+            FormatArguments args = {};
+
             auto& language = localisation::getDescriptorForLanguage(config::get_new().language);
-            set_format_arg(0, const char*, language.native_name.c_str());
+            args.push(language.native_name.c_str());
 
             string_id current_height_units = string_ids::height_units;
             if ((openloco::config::get().flags & config::flags::show_height_as_units) == 0)
@@ -1284,7 +1312,8 @@ namespace openloco::ui::options
                 current_height_units = string_ids::height_real_values;
             }
 
-            set_format_arg(0x6, string_id, current_height_units);
+            args.skip(0x2);
+            args.push(current_height_units);
 
             string_id current_measurement_format = string_ids::imperial;
             if (openloco::config::get().measurement_format)
@@ -1292,8 +1321,9 @@ namespace openloco::ui::options
                 current_measurement_format = string_ids::metric;
             }
 
-            set_format_arg(0xC, string_id, current_measurement_format);
-            set_format_arg(0xA, string_id, objectmgr::get<currency_object>()->name);
+            args.skip(0x2);
+            args.push(objectmgr::get<currency_object>()->name);
+            args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
             if (config::get().flags & config::flags::preferred_currency_for_new_games)
@@ -1700,6 +1730,8 @@ namespace openloco::ui::options
             };
         }
 
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
+
         static const gfx::ui_size_t _window_size = { 366, 99 };
 
         static widget_t _widgets[] = {
@@ -1842,6 +1874,8 @@ namespace openloco::ui::options
             };
         }
 
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
+
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
             make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disable_vehicle_breakdowns, string_ids::null),
@@ -1917,8 +1951,9 @@ namespace openloco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            set_format_arg(0, string_id, string_ids::buffer_2039);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, _commonFormatArgs);
+            FormatArguments args = {};
+            args.push(string_ids::buffer_2039);
+            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
@@ -2145,16 +2180,8 @@ namespace openloco::ui::options
         sub_4BF8CD();
         sub_4C1519();
 
-        if (config::get_new().display.mode != config::screen_mode::fullscreen)
-            window->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
-
-        window->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
-#if !(defined(__APPLE__) && defined(__MACH__))
-        window->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
-        display::screen_mode_toggle_enabled(window);
-#else
-        window->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
-#endif
+        window->enabled_widgets = display::enabledWidgets;
+        display::applyScreenModeRestrictions(window);
 
         window->holdable_widgets = 0;
         window->event_handlers = &display::_events;
@@ -2177,6 +2204,23 @@ namespace openloco::ui::options
         return window;
     }
 
+    struct TabInformation
+    {
+        widget_t* widgets;
+        window_event_list* events;
+        gfx::ui_size_t windowSize;
+        const uint64_t* enabledWidgets;
+    };
+
+    static TabInformation tabInformationByTabOffset[] = {
+        { display::_widgets, &display::_events, display::_window_size, &display::enabledWidgets },
+        { sound::_widgets, &sound::_events, sound::_window_size, &sound::enabledWidgets },
+        { music::_widgets, &music::_events, music::_window_size, &music::enabledWidgets },
+        { regional::_widgets, &regional::_events, regional::_window_size, &regional::enabledWidgets },
+        { controls::_widgets, &controls::_events, controls::_window_size, &controls::enabledWidgets },
+        { misc::_widgets, &misc::_events, misc::_window_size, &misc::enabledWidgets },
+    };
+
     // 0x004BFC11
     static void tab_on_mouse_up(window* w, widget_index wi)
     {
@@ -2189,80 +2233,25 @@ namespace openloco::ui::options
         w->disabled_widgets = 0;
         w->holdable_widgets = 0;
         w->activated_widgets = 0;
+        w->row_hover = -1;
         if (w->viewports[0])
         {
             w->viewports[0]->width = 0;
             w->viewports[0] = nullptr;
         }
 
-        switch ((common::tab)w->current_tab)
-        {
-            case common::tab::display:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
+        auto& tabInfo = tabInformationByTabOffset[w->current_tab];
+        w->enabled_widgets = *tabInfo.enabledWidgets;
+        w->event_handlers = tabInfo.events;
+        w->widgets = tabInfo.widgets;
+        w->invalidate();
+        w->set_size(tabInfo.windowSize);
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-                w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
-                display::screen_mode_toggle_enabled(w);
-#else
-                w->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
-#endif
+        if ((common::tab)w->current_tab == common::tab::display)
+            display::applyScreenModeRestrictions(w);
 
-                w->event_handlers = &display::_events;
-                w->widgets = display::_widgets;
-                w->invalidate();
-                w->set_size(display::_window_size);
-                w->row_hover = -1;
-                break;
-
-            case common::tab::sound:
-                w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
-                w->disabled_widgets = 0;
-                w->event_handlers = &sound::_events;
-                w->widgets = sound::_widgets;
-                w->invalidate();
-                w->set_size(sound::_window_size);
-                w->row_hover = -1;
-                break;
-
-            case common::tab::music:
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
-                w->holdable_widgets = (1 << music::widx::volume);
-                w->event_handlers = &music::_events;
-                w->widgets = music::_widgets;
-                w->invalidate();
-                w->set_size(music::_window_size);
-                w->row_hover = -1;
-                break;
-
-            case common::tab::regional:
-                w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
-                w->holdable_widgets = 0;
-                w->event_handlers = &regional::_events;
-                w->widgets = regional::_widgets;
-                w->invalidate();
-                w->set_size(regional::_window_size);
-                break;
-
-            case common::tab::controls:
-                w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
-                w->event_handlers = &controls::_events;
-                w->widgets = controls::_widgets;
-                w->invalidate();
-                w->set_size(controls::_window_size);
-                break;
-
-            case common::tab::miscellaneous:
-                w->disabled_widgets = 0;
-                w->enabled_widgets = (1 << common::widx::close_button) | common::tabWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
-                w->event_handlers = &misc::_events;
-                w->widgets = misc::_widgets;
-                w->invalidate();
-                w->set_size(misc::_window_size);
-                break;
-        }
+        else if ((common::tab)w->current_tab == common::tab::music)
+            w->holdable_widgets = (1 << music::widx::volume);
 
         w->call_on_resize();
         w->call_prepare_draw();
