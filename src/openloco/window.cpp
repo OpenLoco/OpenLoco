@@ -125,6 +125,7 @@ namespace openloco::ui
     // regs.edx: rotation
     // Output:
     // {x: regs.ax, y: regs.bx}
+    // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
     static map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
         map::map_pos ret{};
