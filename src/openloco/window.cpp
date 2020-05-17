@@ -216,8 +216,6 @@ namespace openloco::ui
     // 0x004C6456
     void window::viewports_update_position()
     {
-        this->call_on_resize();
-
         for (int i = 0; i < 2; i++)
         {
             viewport* viewport = this->viewports[i];
@@ -227,6 +225,7 @@ namespace openloco::ui
             {
                 continue;
             }
+            this->call_on_resize();
 
             int16_t centreX, centreY;
 
