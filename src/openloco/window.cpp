@@ -117,17 +117,38 @@ namespace openloco::ui
             viewports[1]->render(dpi);
     }
 
-    static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
+    // 0x0045FD41
+    // Input:
+    // regs.ax:  x
+    // regs.bx:  y
+    // regs.bp:  bp
+    // regs.edx: rotation
+    // Output:
+    // *outX: regs.ax;
+    // *outY: regs.bx;
+    // *outZ: regs.dx;
+    static void viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.bp = bp;
-        regs.edx = rotation;
-        call(0x45FD41, regs);
-        *outX = regs.ax;
-        *outY = regs.bx;
-        *outZ = regs.dx;
+        switch (rotation)
+        {
+            case 0:
+                *outX = -x / 2 + y + z;
+                *outY = x / 2 + y + z;
+                break;
+            case 1:
+                *outX = -x / 2 - y - z;
+                *outY = -x / 2 + y + z;
+                break;
+            case 2:
+                *outX = x / 2 - y - z;
+                *outY = -x / 2 - y - z;
+                break;
+            case 3:
+                *outX = x / 2 + y + z;
+                *outY = x / 2 - y - z;
+                break;
+        }
+        *outZ = x / 2;
     }
 
     // 0x004C641F
@@ -267,7 +288,7 @@ namespace openloco::ui
                 int16_t midX = config->saved_view_x + (viewport->view_width / 2);
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                sub_45FD41(midX, midY, 128, viewport->getRotation(), &outX, &outY, &outZ);
+                viewport_coord_to_map_coord(midX, midY, 128, viewport->getRotation(), &outX, &outY, &outZ);
                 viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
