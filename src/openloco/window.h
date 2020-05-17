@@ -217,7 +217,7 @@ namespace openloco::ui
                 void (*event_09)(window*);
                 void (*on_tool_update)(window&, const widget_index, const int16_t, const int16_t);
                 void (*on_tool_down)(window&, const widget_index, const int16_t, const int16_t);
-                uint32_t event_12;
+                void (*event_12)(window&, const widget_index, const int16_t, const int16_t);
                 uint32_t event_13;
                 void (*on_tool_abort)(window&, const widget_index);
                 uint32_t event_15;

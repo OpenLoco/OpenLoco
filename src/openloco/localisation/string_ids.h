@@ -210,7 +210,10 @@ namespace openloco::string_ids
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
 
-    constexpr string_id outlined_wcolour2_stringid = 450;
+    constexpr string_id title_build_walls = 446;
+    constexpr string_id title_plant_trees = 447;
+
+    constexpr string_id outlined_wcolour2_stringid2 = 450;
 
     constexpr string_id red_stringid = 454;
     constexpr string_id black_stringid = 455;
@@ -317,6 +320,17 @@ namespace openloco::string_ids
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
 
+    constexpr string_id tooltip_clear_area = 668;
+    constexpr string_id tooltip_decrease_clear_area = 669;
+    constexpr string_id tooltip_increase_clear_area = 670;
+    constexpr string_id tooltip_decrease_adjust_land_area = 671;
+    constexpr string_id tooltip_increase_adjust_land_area = 672;
+    constexpr string_id tooltip_decrease_adjust_water_area = 673;
+    constexpr string_id tooltip_increase_adjust_water_area = 674;
+    constexpr string_id title_adjust_land = 675;
+    constexpr string_id title_adjust_water = 676;
+    constexpr string_id tooltip_adjust_water = 677;
+    constexpr string_id tooltip_adjust_land = 678;
     constexpr string_id clear_area = 679;
     constexpr string_id menu_clear_area = 680;
     constexpr string_id menu_adjust_land = 681;
@@ -544,7 +558,11 @@ namespace openloco::string_ids
     constexpr string_id tooltip_road_stations = 1202;
     constexpr string_id tooltip_airports = 1203;
     constexpr string_id tooltip_ship_ports = 1204;
-
+    constexpr string_id tooltip_clear_land = 1205;
+    constexpr string_id tooltip_plant_trees = 1206;
+    constexpr string_id tooltip_adjust_land = 1207;
+    constexpr string_id tooltip_adjust_water = 1208;
+    constexpr string_id tooltip_build_walls = 1209;
     constexpr string_id tooltip_object_colour = 1210;
     constexpr string_id station_cargo = 1211;
     constexpr string_id station_cargo_en_route_start = 1212;
@@ -686,6 +704,8 @@ namespace openloco::string_ids
     constexpr string_id select_town_size = 1408;
     constexpr string_id expand_this_town = 1409;
 
+    constexpr string_id plant_cluster_selected_tree = 1412;
+    constexpr string_id plant_cluster_random_tree = 1413;
     constexpr string_id tooltip_statistics = 1414;
     constexpr string_id received_cargo = 1415;
     constexpr string_id produced_cargo = 1416;
