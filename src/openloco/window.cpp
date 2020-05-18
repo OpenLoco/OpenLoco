@@ -117,17 +117,38 @@ namespace openloco::ui
             viewports[1]->render(dpi);
     }
 
-    static void sub_45FD41(int16_t x, int16_t y, int16_t bp, int32_t rotation, int16_t* outX, int16_t* outY, int16_t* outZ)
+    // 0x0045FD41
+    // Input:
+    // regs.ax:  x
+    // regs.bx:  y
+    // regs.bp:  z
+    // regs.edx: rotation
+    // Output:
+    // {x: regs.ax, y: regs.bx}
+    // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
+    static map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.bp = bp;
-        regs.edx = rotation;
-        call(0x45FD41, regs);
-        *outX = regs.ax;
-        *outY = regs.bx;
-        *outZ = regs.dx;
+        map::map_pos ret{};
+        switch (rotation)
+        {
+            case 0:
+                ret.x = -x / 2 + y + z;
+                ret.y = x / 2 + y + z;
+                break;
+            case 1:
+                ret.x = -x / 2 - y - z;
+                ret.y = -x / 2 + y + z;
+                break;
+            case 2:
+                ret.x = x / 2 - y - z;
+                ret.y = -x / 2 - y - z;
+                break;
+            case 3:
+                ret.x = x / 2 + y + z;
+                ret.y = x / 2 - y - z;
+                break;
+        }
+        return ret;
     }
 
     // 0x004C641F
@@ -262,39 +283,37 @@ namespace openloco::ui
             }
             else
             {
-                int16_t outX, outY, outZ;
-
                 int16_t midX = config->saved_view_x + (viewport->view_width / 2);
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                sub_45FD41(midX, midY, 128, viewport->getRotation(), &outX, &outY, &outZ);
+                map::map_pos mapCoord = viewport_coord_to_map_coord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
-                if (outX < -256)
+                if (mapCoord.x < -256)
                 {
-                    outX = -256;
+                    mapCoord.x = -256;
                     atMapEdge = true;
                 }
-                if (outY < -256)
+                if (mapCoord.y < -256)
                 {
-                    outY = -256;
+                    mapCoord.y = -256;
                     atMapEdge = true;
                 }
-                if (outX > 0x30FE)
+                if (mapCoord.x > 0x30FE)
                 {
-                    outX = 0x30FE;
+                    mapCoord.x = 0x30FE;
                     atMapEdge = true;
                 }
-                if (outY > 0x30FE)
+                if (mapCoord.y > 0x30FE)
                 {
-                    outY = 0x30FE;
+                    mapCoord.y = 0x30FE;
                     atMapEdge = true;
                 }
 
                 if (atMapEdge)
                 {
-                    auto coord_2d = coordinate_3d_to_2d(outX, outY, 128, viewport->getRotation());
+                    auto coord_2d = coordinate_3d_to_2d(mapCoord.x, mapCoord.y, 128, viewport->getRotation());
 
                     config->saved_view_x = coord_2d.x - viewport->view_width / 2;
                     config->saved_view_y = coord_2d.y - viewport->view_height / 2;
