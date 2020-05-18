@@ -93,6 +93,12 @@ namespace openloco::objectmgr
     }
 
     template<>
+    tree_object* get(size_t id)
+    {
+        return _treeObjects[id];
+    }
+
+    template<>
     building_object* get(size_t id)
     {
         if (_buildingObjects[id] != reinterpret_cast<building_object*>(-1))
