@@ -65,4 +65,13 @@ namespace openloco::thingmgr
     {
         call(0x004402F4);
     }
+
+    // 0x0047019F
+    void moveSpriteToList(thing_base* const thing, const thing_list list)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(thing);
+        regs.cl = static_cast<int8_t>(list);
+        call(0x0047019F, regs);
+    }
 }

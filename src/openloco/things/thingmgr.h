@@ -13,7 +13,8 @@ namespace openloco::thingmgr
     {
         null,
         vehicle,
-        misc = 3
+        misc = 3,
+        vehicle_head,
     };
 
     template<typename T>
@@ -39,4 +40,5 @@ namespace openloco::thingmgr
     void update_misc_things();
 
     uint16_t getListCount(const thing_list list);
+    void moveSpriteToList(thing_base* const thing, const thing_list list);
 }

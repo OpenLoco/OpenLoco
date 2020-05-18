@@ -41,6 +41,7 @@ namespace openloco::things::vehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _525FB8;
     static loco_global<thing_id_t[32 * 1000], 0x0096885C> _96885C;
+    static loco_global<uint8_t[256000], 0x00987C5C> _987C5C;
 
     // 0x004B1D96
     static bool checkMaxAIVehicles()
@@ -653,7 +654,7 @@ namespace openloco::things::vehicle
         return true;
     }
 
-    static std::optional<int32_t> sub_4B1E00()
+    static std::optional<uint16_t> sub_4B1E00()
     {
         if (!checkMaxAIVehicles())
         {
@@ -676,6 +677,83 @@ namespace openloco::things::vehicle
         return {};
     }
 
+    static void sub_470312(vehicle_head* const newHead)
+    {
+        _987C5C[_525FB8] = 0;
+        newHead->var_46 = _525FB8;
+        _525FB8++;
+        newHead->var_4A = 0;
+        newHead->var_4C = 1;
+    }
+
+    // 0x004B64F9
+    static uint16_t createUniqueTypeNumber(const VehicleType type)
+    {
+        std::array<bool, 1000> _unkArr{};
+        auto v = thingmgr::first<openloco::vehicle>();
+        while (v != nullptr)
+        {
+            auto next = v->next_vehicle();
+
+            if (v->owner == _updating_company_id && v->vehicleType == type)
+            {
+                if (v->var_44 != 0)
+                {
+                    _unkArr[v->var_44 - 1] = true;
+                }
+            }
+            v = next;
+        }
+
+        uint16_t newNum = 0;
+        for (;newNum < _unkArr.size(); ++newNum)
+        {
+            if (_unkArr[newNum])
+                break;
+        }
+        return newNum;
+    }
+
+    // 0x004AE34B
+    static void createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
+    {
+        auto* const newThing = createVehicleThing();
+        newThing->base_type = thing_base_type::vehicle;
+        newThing->type = vehicle_thing_type::vehicle_0;
+        newThing->owner = _updating_company_id;
+        thingmgr::moveSpriteToList(newThing, thingmgr::thing_list::vehicle_head);
+
+        auto newHead = newThing->as_vehicle_head();
+        newHead->head = newHead->id;
+        newHead->var_0C |= (1 << 1);
+        newHead->track_type = trackType;
+        newHead->mode = mode;
+        newHead->tile_x = -1;
+        newHead->tile_y = 0;
+        newHead->tile_base_z = 0;
+        newHead->var_28 = 0;
+        newHead->var_2E = 0;
+        newHead->var_2C = 0;
+        newHead->var_36 = orderId;
+        newHead->var_14 = 0;
+        newHead->var_09 = 0;
+        newHead->var_15 = 0;
+        newHead->var_38 = 0;
+        newHead->var_3C = 0;
+        newHead->vehicleType = vehicleType;
+        newHead->var_22 = static_cast<uint8_t>(vehicleType) + 4;
+        newHead->var_44 = createUniqueTypeNumber(vehicleType);
+        newHead->var_5D = 0;
+        newHead->var_54 = -1;
+        newHead->var_5F = 0;
+        newHead->var_60 = -1;
+        newHead->var_61 = -1;
+        newHead->var_69 = 0;
+        newHead->var_77 = 0;
+        newHead->var_79 = 0;
+        sub_470312(newHead);
+    }
+
     // 0x004AE318
     static bool createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
@@ -696,7 +774,8 @@ namespace openloco::things::vehicle
             return false;
         }
 
-        // 0x004AE348
+        createHead(trackType, mode, *orderId, type);
+        // 0x004AE40E
     }
 
     static void sub_4AF7A4(openloco::vehicle* const veh0)
@@ -760,8 +839,11 @@ namespace openloco::things::vehicle
         if (flags & game_commands::GameCommandFlag::apply)
         {
             auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-            auto mode = vehObject->mode;
-            auto trackType = vehObject->track_type;
+            
+            if (!createBase(vehObject->mode, vehObject->type, vehObject->track_type))
+            {
+                return 0x80000000;
+            }
         }
         // 0x4AE733
         auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);

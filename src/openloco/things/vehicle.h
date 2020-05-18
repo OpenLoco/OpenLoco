@@ -15,8 +15,13 @@ namespace openloco
         bool isVehicleTypeCompatible(openloco::vehicle* const veh0, const uint16_t vehicleTypeId); // move to vehicle0 function
     }
 
+    struct vehicle_head;
+    struct vehicle_1;
+    struct vehicle_2;
     struct vehicle_bogie;
     struct vehicle_body;
+    struct vehicle_tail;
+
     struct vehicle_26;
 
     namespace flags_5f
@@ -67,6 +72,9 @@ namespace openloco
         }
 
     public:
+        vehicle_head* as_vehicle_head() const { return as<vehicle_head, vehicle_thing_type::vehicle_0>(); }
+        vehicle_1* as_vehicle_1() const { return as<vehicle_1, vehicle_thing_type::vehicle_1>(); }
+        vehicle_2* as_vehicle_2() const { return as<vehicle_2, vehicle_thing_type::vehicle_2>(); }
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie, vehicle_thing_type::vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
         {
@@ -82,6 +90,7 @@ namespace openloco
                 return vehicle;
             return as<vehicle_26, vehicle_thing_type::vehicle_6>();
         }
+        vehicle_tail* as_vehicle_tail() const { return as<vehicle_tail, vehicle_thing_type::vehicle_6>(); }
     };
 
     struct vehicle : vehicle_base
@@ -123,7 +132,7 @@ namespace openloco
         uint8_t pad_5B[0x5D - 0x5B];
         uint8_t var_5D;
         VehicleType vehicleType; // 0x5E
-        uint8_t var_5F; // 0x5F (bit 1 = can break down)
+        uint8_t var_5F;          // 0x5F (bit 1 = can break down)
         uint8_t pad_60[0x6A - 0x60];
         uint8_t var_6A;
         uint8_t pad_6B[0x73 - 0x6B];
@@ -158,19 +167,67 @@ namespace openloco
         uint8_t var_73;
     };
 
+    struct vehicle_head : vehicle_base
+    {
+        uint8_t pad_20;
+        company_id_t owner; // 0x21
+        uint16_t var_22;
+        uint8_t pad_24[0x26 - 0x24];
+        thing_id_t head; // 0x26
+        uint32_t var_28;
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint8_t var_38;
+        uint8_t pad_39;         // 0x39
+        thing_id_t next_car_id; // 0x3A
+        uint32_t var_3C;        // 0x3C
+        uint8_t pad_40[0x2];    // 0x40
+        TransportMode mode;     // 0x42 field same in all vehicles
+        uint8_t pad_43;
+        int16_t var_44;
+        uint32_t var_46;
+        uint16_t var_4A;
+        uint16_t var_4C; // 0x4C
+        uint8_t pad_4E[0x2]; // 0x4E
+        uint8_t pad_50;
+        uint8_t pad_51; // 0x51
+        uint8_t var_52;
+        uint8_t pad_53;
+        int16_t var_54;
+        uint8_t pad_56[0x4];
+        uint8_t pad_5A;
+        uint8_t pad_5B[0x5D - 0x5B];
+        uint8_t var_5D;
+        VehicleType vehicleType; // 0x5E
+        uint8_t var_5F;          // 0x5F
+        uint8_t var_60;
+        uint16_t var_61;
+        uint8_t pad_63[0x69 - 0x63];
+        uint32_t var_69;
+        uint8_t pad_6D[0x77 - 0x6D];
+        uint16_t var_77; // 
+        uint8_t var_79;
+    };
+    static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
+
     struct vehicle_body : vehicle_base
     {
         uint8_t pad_20[0x24 - 0x20];
         ColourScheme colour_scheme; // 0x24
-        uint16_t head;              // 0x26
+        thing_id_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         uint16_t var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
-        uint8_t track_type; // 0x35 field same in all vehicles
-        uint16_t var_36;    // 0x36 field same in all vehicles
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
         thing_id_t next_car_id;     // 0x3A
@@ -222,7 +279,7 @@ namespace openloco
     {
         uint8_t pad_20[0x24 - 0x20];
         ColourScheme colour_scheme; // 0x24
-        uint16_t head;              // 0x26
+        thing_id_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         uint16_t var_2C;
         uint16_t var_2E;
@@ -233,7 +290,7 @@ namespace openloco
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        thing_id_t next_car_id; // 0x3A
+        thing_id_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42 field same in all vehicles
