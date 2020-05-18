@@ -1,13 +1,18 @@
 #include "../company.h"
 #include "../companymgr.h"
+#include "../core/Optional.hpp"
 #include "../date.h"
 #include "../game_commands.h"
 #include "../management/Expenditures.h"
 #include "../map/tile.h"
 #include "../objects/objectmgr.h"
+#include "../objects/road_object.h"
+#include "../objects/track_object.h"
 #include "../objects/vehicle_object.h"
+#include "../ui/WindowManager.h"
 #include "thingmgr.h"
 #include "vehicle.h"
+#include <numeric>
 #include <utility>
 
 using namespace openloco;
@@ -25,6 +30,7 @@ namespace openloco::things::vehicle
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
+    static loco_global<int32_t, 0x011360FC> _11360FC;
     static loco_global<openloco::vehicle*, 0x01136240> _backupVeh0;
     static loco_global<int16_t, 0x01136248> _backup2E;
     static loco_global<int16_t, 0x0113624C> _backup2C;
@@ -32,6 +38,53 @@ namespace openloco::things::vehicle
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
+    static loco_global<uint8_t, 0x00525FC5> _525FC5;
+    static loco_global<uint32_t, 0x00525FB8> _525FB8;
+    static loco_global<thing_id_t[32 * 1000], 0x0096885C> _96885C;
+
+    // 0x004B1D96
+    static bool checkMaxAIVehicles()
+    {
+        if (is_player_company(_updating_company_id))
+        {
+            return true;
+        }
+
+        const auto& companies = companymgr::companies();
+        auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](int32_t& total, const auto& company) {
+            if (is_player_company(company.id()))
+                return 0;
+            return std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
+        });
+
+        if (totalAiVehicles > 500)
+        {
+            gGameCommandErrorText = string_ids::too_many_vehicles;
+            return false;
+        }
+
+        return true;
+    }
+
+    // 0x004B1E44
+    static bool checkMaxVehicles()
+    {
+        if (!checkMaxAIVehicles())
+        {
+            return false;
+        }
+
+        for (auto i = 0; i < 32 * 1000; i += 32)
+        {
+            auto id = _96885C[i];
+            if (id == 0xFFFF)
+            {
+                return true;
+            }
+        }
+        gGameCommandErrorText = string_ids::too_many_vehicles;
+        return false;
+    }
 
     static bool sub_431E6A(const company_id_t company, map::tile_element* const tile)
     {
@@ -313,7 +366,7 @@ namespace openloco::things::vehicle
             int32_t randVal = (prng.rand_next(65535) * reliabilityFactor / 2) / 256;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
-            vehBogie->var_68 = static_cast<uint16_t>(std::min(4, reliabilityFactor));
+            vehBogie->var_68 = static_cast<uint16_t>(std::max(4, reliabilityFactor));
         }
     }
 
@@ -515,6 +568,37 @@ namespace openloco::things::vehicle
 
     static void sub_4B7CC3(openloco::vehicle* const veh0)
     {
+        if (veh0->mode == TransportMode::road)
+        {
+            auto trackType = veh0->track_type;
+            if (veh0->track_type == 0xFF)
+            {
+                trackType = _525FC5;
+            }
+
+            const auto roadObj = objectmgr::get<road_object>(trackType);
+            auto* const veh3 = veh0->next_car()->next_car()->next_car(); // bogie or 6
+            _11360FC = 0;
+            if (veh3->type == vehicle_thing_type::vehicle_6)
+            {
+                // 0x4B7F16
+            }
+            else
+            {
+                // 0x4B7E57
+                bool unk_ah = false;
+                const auto vehicleObj = veh3->object();
+                if (vehicleObj->sprites[0].var_05)
+                {
+                    unk_ah = true;
+                }
+
+                if (vehicleObj->flags & flags_E0::rack_rail)
+                {
+                    //const auto rackRail = vehicleObj->rack_rail_type;
+                }
+            }
+        }
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(veh0);
         call(0x004B7CC3, regs);
@@ -569,14 +653,120 @@ namespace openloco::things::vehicle
         return true;
     }
 
+    static std::optional<int32_t> sub_4B1E00()
+    {
+        if (!checkMaxAIVehicles())
+        {
+            return {};
+        }
+
+        for (auto i = 0; i < 32 * 1000; i += 32)
+        {
+            auto id = _96885C[i];
+            if (id == -1)
+            {
+                for (auto j = 0; j < 32; ++j)
+                {
+                    _96885C[i + j] = -2;
+                }
+                return { i };
+            }
+        }
+        gGameCommandErrorText = string_ids::too_many_vehicles;
+        return {};
+    }
+
+    // 0x004AE318
+    static bool createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
+    {
+        if (!checkNumFreeThings(4))
+        {
+            return false;
+        }
+
+        if (_525FB8 > 256000)
+        {
+            gGameCommandErrorText = string_ids::no_space_for_more_vehicle_orders;
+            return false;
+        }
+
+        auto orderId = sub_4B1E00();
+        if (!orderId)
+        {
+            return false;
+        }
+
+        // 0x004AE348
+    }
+
+    static void sub_4AF7A4(openloco::vehicle* const veh0)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<int32_t>(veh0);
+        call(0x004AF7A4, regs);
+    }
+
+    // 0x00437ED0
+    static void companyRecalculateTransportCounts(const company_id_t companyId)
+    {
+        auto company = companymgr::get(companyId);
+        for (auto& count : company->transportTypeCount)
+        {
+            count = 0;
+        }
+
+        auto v = thingmgr::first<openloco::vehicle>();
+        while (v != nullptr)
+        {
+            auto next = v->next_vehicle();
+
+            if (v->owner == companyId)
+            {
+                company->transportTypeCount[static_cast<uint8_t>(v->vehicleType)]++;
+            }
+            v = next;
+        }
+
+        ui::WindowManager::invalidate(ui::WindowType::company, companyId);
+    }
+
+    // 0x004B05E4
+    static void sub_4B05E4(openloco::vehicle* const veh0, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<int32_t>(veh0);
+        regs.ax = x;
+        regs.cx = y;
+        regs.bx = unk2;
+        regs.dl = baseZ;
+        regs.ebp = unk1;
+        call(0x004B05E4, regs);
+    }
+
     // 0x004AE74E
     static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId)
     {
-        registers regs{};
-        regs.bl = game_commands::GameCommandFlag::apply;
-        regs.edx = vehicleTypeId;
-        call(0x4AE74E, regs);
-        return regs.ebx;
+        gameCommandMapX = location::null;
+        if (!checkNumFreeThings(16))
+        {
+            return 0x80000000;
+        }
+
+        if (!checkMaxVehicles())
+        {
+            return 0x80000000;
+        }
+
+        if (flags & game_commands::GameCommandFlag::apply)
+        {
+            auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+            auto mode = vehObject->mode;
+            auto trackType = vehObject->track_type;
+        }
+        // 0x4AE733
+        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
+        return cost;
     }
 
     // 0x004AE5E4
@@ -631,29 +821,37 @@ namespace openloco::things::vehicle
 
                 if (createBody(veh0, vehicleTypeId))
                 {
-                    registers regs{};
-                    regs.edx = vehicleTypeId;
-                    regs.esi = reinterpret_cast<int32_t>(veh0);
-                    call(0x004AE6DE, regs);
-                    return regs.ebx;
+                    // 0x004AE6DE
+                    sub_4AF7A4(veh0);
+                    companyRecalculateTransportCounts(_updating_company_id);
+
+                    if (_backupVeh0 != reinterpret_cast<openloco::vehicle*>(-1))
+                    {
+                        sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                    }
+
+                    ui::WindowManager::invalidate(ui::WindowType::vehicleList, veh0->owner);
                 }
                 else
                 {
-                    registers regs{};
-                    regs.edx = vehicleTypeId;
-                    regs.esi = reinterpret_cast<int32_t>(veh0);
-                    call(0x004AE809, regs);
-                    return regs.ebx;
+                    if (_backupVeh0 == reinterpret_cast<openloco::vehicle*>(-1))
+                    {
+                        return 0x80000000;
+                    }
+
+                    openloco::vehicle* veh0backup = _backupVeh0;
+                    // If it has an existing body
+                    if (veh0backup->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
+                    {
+                        sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                    }
+                    return 0x80000000;
                 }
             }
-            // 0x4AE665
-            registers regs{};
-            regs.bl = flags;
-            regs.di = vehicleThingId;
-            regs.edx = vehicleTypeId;
-            regs.esi = reinterpret_cast<uint32_t>(veh0);
-            call(0x004AE665, regs);
-            return regs.ebx;
+            // 0x4AE733
+            auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+            auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
+            return cost;
         }
     }
 }

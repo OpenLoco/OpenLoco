@@ -230,7 +230,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_select_station_type = 279;
 
     constexpr string_id incompatible_vehicle = 335;
-
+    constexpr string_id too_many_vehicles = 336;
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
@@ -637,6 +637,7 @@ namespace openloco::string_ids
     constexpr string_id station_cargo = 1211;
     constexpr string_id station_cargo_en_route_start = 1212;
     constexpr string_id station_cargo_en_route_end = 1213;
+    constexpr string_id no_space_for_more_vehicle_orders = 1214;
 
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;

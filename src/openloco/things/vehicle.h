@@ -122,7 +122,7 @@ namespace openloco
         uint8_t var_5A;
         uint8_t pad_5B[0x5D - 0x5B];
         uint8_t var_5D;
-        VehicleType vehicleType;
+        VehicleType vehicleType; // 0x5E
         uint8_t var_5F; // 0x5F (bit 1 = can break down)
         uint8_t pad_60[0x6A - 0x60];
         uint8_t var_6A;
