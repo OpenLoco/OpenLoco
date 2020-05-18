@@ -38,8 +38,6 @@ namespace openloco::industrymgr
                 }
             }
         }
-
-        call(0x00453234);
     }
 
     // 0x0045383B

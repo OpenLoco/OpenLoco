@@ -109,6 +109,7 @@ namespace openloco::map
         uint8_t base_z() const { return _base_z; }
         uint8_t clear_z() const { return _clear_z; }
 
+        bool has_high_type_flag() const { return _type & 0x80; }
         bool is_flag_4() const { return _flags & element_flags::flag_4; }
         void set_flag_6() { _flags |= element_flags::flag_6; }
         bool is_last() const;
@@ -175,8 +176,10 @@ namespace openloco::map
         bool is_slope_dbl_height() const { return _slope & surface_slope::double_height; }
         uint8_t slope_corners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
+        uint8_t var_4_E0() const { return _slope & 0xE0; }
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
+        uint8_t var_6_SLR5() const { return _terrain >> 5; }
         uint8_t industry_id() const { return _industry; }
         void createWave(int16_t x, int16_t y, int animationIndex);
     };

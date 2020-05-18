@@ -65,6 +65,8 @@ namespace openloco
         void getStatusString(const char* buffer);
 
         void update();
+        void sub_45329B(const map_pos& pos);
+        void sub_453354();
         void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)
