@@ -329,8 +329,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_increase_adjust_water_area = 674;
     constexpr string_id title_adjust_land = 675;
     constexpr string_id title_adjust_water = 676;
-    constexpr string_id tooltip_adjust_water = 677;
-    constexpr string_id tooltip_adjust_land = 678;
+    constexpr string_id tooltip_adjust_water_tool = 677;
+    constexpr string_id tooltip_adjust_land_tool = 678;
     constexpr string_id clear_area = 679;
     constexpr string_id menu_clear_area = 680;
     constexpr string_id menu_adjust_land = 681;
