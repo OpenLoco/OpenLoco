@@ -154,7 +154,6 @@ namespace openloco::ui::windows::ScenarioOptions
 namespace openloco::ui::windows::station
 {
     window* open(uint16_t id);
-    void tab_2_scroll_paint(window& w, gfx::drawpixelinfo_t& dpi);
 }
 
 namespace openloco::ui::windows::station_list
