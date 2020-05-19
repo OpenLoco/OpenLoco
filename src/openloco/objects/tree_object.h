@@ -12,10 +12,11 @@ namespace openloco
         uint8_t var_03;
         uint8_t var_04;
         uint8_t var_05;
-        uint8_t num_rotations;
-        uint8_t var_07;
-        uint16_t var_08;
-        uint8_t pad_0A[0x3D - 0x0A];
+        uint8_t num_rotations;  // 0x06
+        uint8_t tree_size;      // 0x07 
+        uint16_t var_08;        // 0x08
+        uint8_t states[40];     // 0x0A
+        uint8_t pad_32[0x3D - 0x32];
         uint8_t var_3D;
         uint8_t var_3E;
         uint8_t cost_index;     // 0x3F
