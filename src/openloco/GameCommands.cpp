@@ -112,7 +112,7 @@ namespace openloco::game_commands
         registers fnRegs1 = regs;
         fnRegs1.bl &= ~GameCommandFlag::apply;
         call(addr, fnRegs1);
-        uint32_t ebx = fnRegs1.ebx;
+        int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
         if (ebx != 0x80000000)
@@ -156,7 +156,7 @@ namespace openloco::game_commands
         uint16_t flagsBackup2 = _gameCommandFlags;
         registers fnRegs2 = regs;
         call(addr, fnRegs2);
-        uint32_t ebx2 = fnRegs2.ebx;
+        int32_t ebx2 = fnRegs2.ebx;
         _gameCommandFlags = flagsBackup2;
 
         if (ebx2 == 0x80000000)
