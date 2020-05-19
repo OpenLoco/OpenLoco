@@ -115,7 +115,7 @@ namespace openloco::game_commands
         int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
-        if (ebx != 0x80000000)
+        if (ebx != static_cast<int32_t>(0x80000000))
         {
             if (is_editor_mode())
                 ebx = 0;
@@ -134,7 +134,7 @@ namespace openloco::game_commands
             }
         }
 
-        if (ebx == 0x80000000)
+        if (ebx == static_cast<int32_t>(0x80000000))
         {
             if (flags & GameCommandFlag::apply)
             {
@@ -159,7 +159,7 @@ namespace openloco::game_commands
         int32_t ebx2 = fnRegs2.ebx;
         _gameCommandFlags = flagsBackup2;
 
-        if (ebx2 == 0x80000000)
+        if (ebx2 == static_cast<int32_t>(0x80000000))
         {
             return loc_4314EA();
         }
