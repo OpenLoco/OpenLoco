@@ -572,7 +572,7 @@ namespace openloco::ui::windows::terraform
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::white_stringid2, &treeObj->name);
+            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &treeObj->name);
         }
 
         // 0x004BB982

@@ -213,7 +213,7 @@ namespace openloco::string_ids
     constexpr string_id title_build_walls = 446;
     constexpr string_id title_plant_trees = 447;
 
-    constexpr string_id outlined_wcolour2_stringid2 = 450;
+    constexpr string_id outlined_wcolour2_stringid = 450;
 
     constexpr string_id red_stringid = 454;
     constexpr string_id black_stringid = 455;
