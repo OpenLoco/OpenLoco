@@ -1050,7 +1050,7 @@ namespace openloco::ui::build_vehicle
                             cargoUnitName = cargoObj->unit_name_singular;
                         }
                         args.push(cargoUnitName);
-                        args.push(vehicleObj->max_primary_cargo);
+                        args.push<uint16_t>(vehicleObj->max_primary_cargo);
                         buffer = stringmgr::format_string(buffer, string_ids::stats_capacity, &args);
                     }
                     cargoType = utility::bitscanforward(cargoTypes);
@@ -1099,7 +1099,7 @@ namespace openloco::ui::build_vehicle
                             cargoUnitName = cargoObj->unit_name_singular;
                         }
                         args.push(cargoUnitName);
-                        args.push(vehicleObj->max_secondary_cargo);
+                        args.push<uint16_t>(vehicleObj->max_secondary_cargo);
                         buffer = stringmgr::format_string(buffer, string_ids::stats_plus_string, &args);
                     }
 

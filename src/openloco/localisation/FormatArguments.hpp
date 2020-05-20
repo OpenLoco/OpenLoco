@@ -41,6 +41,7 @@ namespace openloco
         template<typename T>
         void push(T arg)
         {
+            static_assert(sizeof(T) % 2 == 0, "Tried to push an odd number of bytes onto the format args!");
             auto* nextOffset = getNextOffset(sizeof(T));
 
             *(T*)_buffer = arg;
