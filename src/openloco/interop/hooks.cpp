@@ -784,6 +784,9 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
+    /* This can be removed after implementing signal place and remove game commands.
+     * It fixes an original bug with those two game commands.
+     */
     register_hook(
         0x004A2AD7,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -794,6 +797,7 @@ void openloco::interop::register_hooks()
 
             // Set ebp register to a nice large non-negative number.
             // This fixes exorbitant prices for signals on Linux and macOS.
+            // Value must be greater than the cost for placing a signal.
             regs.ebp = 0xC0FFEE;
             return 0;
         });
