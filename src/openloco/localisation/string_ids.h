@@ -145,6 +145,10 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_company_list = 213;
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
+    constexpr string_id increase_height_cost = 216;
+    constexpr string_id decrease_height_cost = 217;
+
+    constexpr string_id clear_land_cost = 219;
 
     constexpr string_id error_cant_change_colour_scheme = 222;
 

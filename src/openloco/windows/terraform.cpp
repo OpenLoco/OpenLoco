@@ -11,6 +11,7 @@
 #include "../objects/tree_object.h"
 #include "../objects/water_object.h"
 #include "../ui/WindowManager.h"
+#include "../ui/dropdown.h"
 #include "../ui/scrollview.h"
 #include "../utility/numeric.hpp"
 #include "../widget.h"
@@ -21,28 +22,30 @@ using namespace openloco::map;
 namespace openloco::ui::windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
+    static loco_global<std::uint8_t[32], 0x005046FA> _appropriateImageDropdownItemsPerRow;
+    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<company_id_t, 0x00525E3C> _player_company;
+    static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
-    static loco_global<uint8_t, 0x00525FB6> _lastSelectedLand;
-    static loco_global<uint8_t, 0x009C870E> _byte_9C870E;
-    static loco_global<uint8_t, 0x009C870F> _byte_9C870F;
-    static loco_global<uint8_t, 0x009C870F> _byte_9C8710;
-    static loco_global<uint8_t, 0x00F003D2> _byte_F003D2;
+    static loco_global<uint8_t, 0x00525FB6> _grassLand;
+    static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
+    static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
+    static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
+    static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _byte_113649A;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
-    static loco_global<uint16_t, 0x0050A000> _word_50A000;
+    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint32_t, 0x00F2530C> _dword_F2530C;
     static loco_global<uint32_t, 0x00F25310> _dword_F25310;
     static loco_global<uint32_t, 0x01136484> _dword_1136484;
     static loco_global<uint32_t, 0x0113652C> _dword_113652C;
     static loco_global<uint32_t, 0x01136528> _dword_1136528;
-    static loco_global<std::uint8_t[40][8], 0x0113D8A0> _dropdownItemArgs;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
+    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+    static loco_global<std::byte[40][8], 0x0113D8A0> _dropdownItemArgs;
 
     namespace common
     {
@@ -77,9 +80,12 @@ namespace openloco::ui::windows::terraform
         static void init_events();
         static void sub_4BD297();
         static void switchTab(window* self, widget_index widgetIndex);
-        static void sub_4BCF2F(window* self);
+        static void repositionTabs(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void prepare_draw(window* self);
+        static void on_update(window* self);
+        static void on_resize(window* self, uint8_t height);
+        static void on_mouse_up(window* self, widget_index widgetIndex);
     }
 
     namespace plant_trees
@@ -102,10 +108,10 @@ namespace openloco::ui::windows::terraform
         widget_t widgets[] = {
             commonWidgets(634, 162, string_ids::title_plant_trees),
             make_widget({ 3, 45 }, { 605, 101 }, widget_type::scrollview, 1, scrollbars::vertical),
-            make_widget({ 609, 23 }, { 46, 23 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
-            make_widget({ 609, 23 }, { 70, 23 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
-            make_widget({ 609, 23 }, { 94, 23 }, widget_type::wt_9, 1, image_ids::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
-            make_widget({ 609, 23 }, { 118, 23 }, widget_type::wt_9, 1, image_ids::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
+            make_widget({ 609, 46 }, { 23, 23 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
+            make_widget({ 609, 70 }, { 23, 23 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
+            make_widget({ 609, 94 }, { 23, 23 }, widget_type::wt_9, 1, image_ids::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
+            make_widget({ 609, 118 }, { 23, 23 }, widget_type::wt_9, 1, image_ids::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
             widget_end(),
         };
 
@@ -128,11 +134,7 @@ namespace openloco::ui::windows::terraform
 
         // 0x004BB6B2
         static void updateTreeColours(window* self)
-        { 
-            //registers regs;
-            //regs.esi = (uint32_t)self;
-            //call(0x004BB6B2, regs);
-
+        {
             if (self->row_hover != -1)
             {
                 auto treeObj = objectmgr::get<tree_object>(self->row_hover);
@@ -149,10 +151,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBC7D
         static void tabReset(window* self)
         {
-            /*registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x004BBC7D, regs);*/
-
             input::toolSet(self, common::widx::panel, 8);
             input::set_flag(input::input_flags::flag6);
             _byte_113649A = 0;
@@ -166,11 +164,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBAB5
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            /*registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = (uint32_t)self;
-            call(0x004BBAB5, regs);*/
-
             switch (widgetIndex)
             {
                 case common::widx::close_button:
@@ -240,10 +233,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBFBD
         static void on_resize(window* self)
         {
-            //registers regs;
-            //regs.esi = uint32_t(self);
-            //call(0x004BBFBD, regs);
-
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
@@ -273,17 +262,13 @@ namespace openloco::ui::windows::terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = _dropdownItemArgs[itemIndex][4];
+            _treeColour = dropdown::get_highlighted_item();
             self->invalidate();
         }
 
         // 0x004BBDA5
         static void on_update(window* self)
         {
-            //registers regs;
-            //regs.esi = uint32_t(self);
-            //call(0x004BBDA5, regs);
-
             if (!input::has_flag(input::input_flags::tool_active))
                 WindowManager::close(self);
 
@@ -357,7 +342,7 @@ namespace openloco::ui::windows::terraform
         // 0x004BBEDF
         static void event_08(window* self)
         {
-            if (self->var_846 != -1)
+            if (self->var_846 != 0xFFFF)
             {
                 self->var_846 = -1;
                 self->invalidate();
@@ -391,7 +376,7 @@ namespace openloco::ui::windows::terraform
         {
             *scrollHeight = (self->var_83C + 8) / 9;
             if (*scrollHeight == 0)
-                *scrollHeight++;
+                *scrollHeight += 1;
             *scrollHeight *= rowHeight;
         }
 
@@ -403,13 +388,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBF3B
         static void scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            //registers regs;
-            //regs.ax = scroll_index;
-            //regs.esi = uint32_t(self);
-            //regs.cx = x;
-            //regs.dx = y;
-            //call(0x004BBF3B, regs);
-
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
             auto index = getRowIndex(x, y);
@@ -437,13 +415,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBEF8
         static void scroll_mouse_over(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            //registers regs;
-            //regs.ax = scroll_index;
-            //regs.esi = uint32_t(self);
-            //regs.cx = x;
-            //regs.dx = y;
-            //call(0x004BBF3B, regs);
-
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
             auto i = 0;
@@ -469,28 +440,25 @@ namespace openloco::ui::windows::terraform
         // 0x004BB756
         static void prepare_draw(window* self)
         {
-            //registers regs;
-            //regs.esi = uint32_t(self);
-            //call(0x004BBB15, regs);
-
             common::prepare_draw(self);
 
-            auto activatedWidgets = (1ULL << common::widx::tab_plant_trees);
+            self->activated_widgets = (1ULL << common::widx::tab_plant_trees);
+
+            self->activated_widgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
             if (_treeClusterType == 1)
-                activatedWidgets |= (1 << widx::plant_cluster_selected);
+                self->activated_widgets |= (1ULL << widx::plant_cluster_selected);
 
             if (_treeClusterType == 2)
-                activatedWidgets |= (1 << widx::plant_cluster_random);
+                self->activated_widgets |= (1ULL << widx::plant_cluster_random);
 
-            self->activated_widgets |= activatedWidgets;
             self->widgets[widx::rotate_object].type = widget_type::none;
             self->widgets[widx::object_colour].type = widget_type::none;
 
             if (self->row_hover != -1)
             {
                 auto treeObj = objectmgr::get<tree_object>(self->row_hover);
-                if (treeObj->name != -1)
+                if (treeObj->name != 0xFFFF)
                 {
                     if (treeObj->num_rotations == 1)
                         self->widgets[widx::rotate_object].type = widget_type::wt_9;
@@ -523,17 +491,12 @@ namespace openloco::ui::windows::terraform
                 self->widgets[widx::plant_cluster_random].type = widget_type::none;
             }*/
 
-            common::sub_4BCF2F(self);
+            common::repositionTabs(self);
         }
 
         // 0x004BB8C9
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = uint32_t(self);
-            //regs.edi = uint32_t(dpi);
-            //call(0x004BB8C9, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -548,7 +511,7 @@ namespace openloco::ui::windows::terraform
             auto treeObj = objectmgr::get<tree_object>(treeId);
 
             uint32_t treeCost = 0x80000000;
-            if (self->var_846 == -1)
+            if (self->var_846 == 0xFFFF)
             {
                 treeCost = _dword_1136484;
                 if (treeCost == 0x80000000)
@@ -578,70 +541,70 @@ namespace openloco::ui::windows::terraform
         // 0x004BB982
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            //registers regs;
-            //regs.ax = scrollIndex;
-            //regs.esi = uint32_t(self);
-            //regs.edi = uint32_t(dpi);
-            //call(0x004BB982, regs);
+            registers regs;
+            regs.ax = scrollIndex;
+            regs.esi = uint32_t(self);
+            regs.edi = uint32_t(dpi);
+            call(0x004BB982, regs);
 
-            auto shade = colour::get_shade(self->colours[1], 3);
-            gfx::clear_single(*dpi, shade);
+            //auto shade = colour::get_shade(self->colours[1], 3);
+            //gfx::clear_single(*dpi, shade);
 
-            loco_global<uint16_t, 0x01136490> word_1136490;
+            //loco_global<uint16_t, 0x01136490> word_1136490;
 
-            uint16_t xPos = 0;
-            uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
-            {
-                word_1136490 = 0xFFFF;
-                if (self->row_info[i] != self->row_hover)
-                {
-                    if (self->row_info[i] == self->var_846)
-                    {
-                        word_1136490 = colour::translucent_flag;
-                        gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
-                    }
-                }
-                else
-                {
-                    word_1136490 = colour::translucent_flag | colour::outline_flag;
-                    gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
-                }
+            //uint16_t xPos = 0;
+            //uint16_t yPos = 0;
+            //for (uint16_t i = 0; i < self->var_83C; i++)
+            //{
+            //    word_1136490 = 0xFFFF;
+            //    if (self->row_info[i] != self->row_hover)
+            //    {
+            //        if (self->row_info[i] == self->var_846)
+            //        {
+            //            word_1136490 = colour::translucent_flag;
+            //            gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        word_1136490 = colour::translucent_flag | colour::outline_flag;
+            //        gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+            //    }
 
-                auto treeObj = objectmgr::get<tree_object>(self->row_info[i]);
+            //    auto treeObj = objectmgr::get<tree_object>(self->row_info[i]);
 
-                gfx::drawpixelinfo_t* clipped = nullptr;
+            //    gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
-                {
-                    auto image = _byte_500775[treeObj->tree_size] * treeObj->num_rotations;
-                    auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
-                    image += rotation;
-                    image += treeObj->states[treeObj->var_3D];
-                    printf("%d\n", treeObj->tree_size);
-                    //auto colourOptions = treeObj->colours;
-                    //if (colourOptions != 0)
-                    //{
-                    //    colour_t colour = _treeColour;
-                    //    if ((word_1136490 & 0x20) == 0)
-                    //    {
-                    //        colour = utility::bitscanreverse(colourOptions);
-                    //        if (colour == 0xFF)
-                    //            colour = 0;
-                    //    }
-                    //    image = gfx::recolour(image, colour);
-                    //}
-                    gfx::draw_image(clipped, 32, 50, image);
-                }
+            //    if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
+            //    {
+            //        auto image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
+            //        auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
+            //        image += rotation;
+            //        image += treeObj->states[treeObj->var_3D];
+            //        // printf("%d", treeObj->var_3D);
+            //        auto colourOptions = treeObj->colours;
+            //        if (colourOptions != 0)
+            //        {
+            //            colour_t colour = _treeColour;
+            //            if ((word_1136490 & 0x20) == 0)
+            //            {
+            //                colour = utility::bitscanreverse(colourOptions);
+            //                if (colour == 0xFF)
+            //                    colour = 0;
+            //            }
+            //            image = gfx::recolour(image, colour);
+            //        }
+            //        gfx::draw_image(clipped, 32, 50, image);
+            //    }
 
-                xPos += 66;
+            //    xPos += 66;
 
-                if (xPos >= 66 * 9) // full row
-                {
-                    xPos = 0;
-                    yPos += rowHeight;
-                }
-            }
+            //    if (xPos >= 66 * 9) // full row
+            //    {
+            //        xPos = 0;
+            //        yPos += rowHeight;
+            //    }
+            //}
         }
 
         static void init_events()
@@ -753,9 +716,9 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(129, 104, string_ids::clear_area),
-            make_widget({ 33, 45 }, { 63, 43 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_clear_area),
-            make_widget({ 34, 46 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::decrease_tool_area, string_ids::tooltip_decrease_clear_area),
-            make_widget({ 80, 72 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::increase_tool_area, string_ids::tooltip_increase_clear_area),
+            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_clear_area),
+            make_widget({ 34 + 16, 46 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_clear_area),
+            make_widget({ 80 + 16, 72 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_clear_area),
             widget_end(),
         };
 
@@ -773,41 +736,40 @@ namespace openloco::ui::windows::terraform
             input::toolSet(self, common::widx::panel, 41);
             input::set_flag(input::input_flags::flag6);
             _dword_F2530C = 0x80000000;
-            _word_50A000 = _byte_9C870F;
-        }
-
-        // 0x004BC641
-        static void on_mouse_up(window* self, widget_index widgetIndex)
-        {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC641, regs);
+            _adjustToolSize = _clearAreaToolSize;
         }
 
         // 0x004BC7C6
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC7C6, regs);
+            common::on_resize(self, 105);
         }
 
         // 0x004BC65C
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC65C, regs);
-        }
+            switch (widgetIndex)
+            {
+                case widx::decrease_area:
+                {
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 1)
+                        _adjustToolSize = 1;
+                    _clearAreaToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
 
-        // 0x004BC78A
-        static void on_update(window* self)
-        {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC78A, regs);
+                case widx::increase_area:
+                {
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 10)
+                        _adjustToolSize = 10;
+                    _clearAreaToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x004BC677
@@ -858,27 +820,44 @@ namespace openloco::ui::windows::terraform
         // 0x004BC555
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC555, regs);
+            common::prepare_draw(self);
+
+            self->activated_widgets |= (1ULL << widx::tool_area);
+
+            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+
+            common::repositionTabs(self);
         }
 
         // 0x004BC5E7
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            regs.edi = int32_t(dpi);
-            call(0x004BC5E7, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            if (_dword_F2530C == 0x80000000)
+                return;
+            if (_dword_F2530C == 0)
+                return;
+
+            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            xPos /= 2;
+            xPos += self->x;
+            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
+
+            auto args = FormatArguments();
+            args.push<uint16_t>(_dword_F2530C);
+
+            gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
 
         static void init_events()
         {
             events.on_close = on_close;
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_up = common::on_mouse_up;
             events.on_resize = on_resize;
             events.on_mouse_down = on_mouse_down;
-            events.on_update = on_update;
+            events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
             events.event_12 = event_12;
@@ -902,10 +881,10 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(129, 104, string_ids::title_adjust_land),
-            make_widget({ 33, 45 }, { 63, 43 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_land_tool),
-            make_widget({ 34, 46 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::decrease_tool_area, string_ids::tooltip_decrease_adjust_land_area),
-            make_widget({ 80, 72 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::increase_tool_area, string_ids::tooltip_increase_adjust_land_area),
-            make_widget({ 55, 92 }, { 13, 13 }, widget_type::wt_6, 0),
+            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_land_tool),
+            make_widget({ 34 + 16, 46 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_land_area),
+            make_widget({ 80 + 16, 72 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_land_area),
+            make_widget({ 55 + 16, 92 }, { 13, 13 }, widget_type::wt_6, 0),
             widget_end(),
         };
 
@@ -927,57 +906,105 @@ namespace openloco::ui::windows::terraform
                 auto landObj = objectmgr::get<land_object>(i);
                 if (landObj->name != string_ids::null)
                 {
-                    _byte_F003D2 = i;
+                    _lastSelectedLand = i;
                     _dword_F2530C = 0x80000000;
                     _dword_F25310 = 0x80000000;
-                    _word_50A000 = _byte_9C870E;
+                    _adjustToolSize = _adjustLandToolSize;
                     break;
                 }
             }
         }
 
-        // 0x004BC98C
-        static void on_mouse_up(window* self, widget_index widgetIndex)
-        {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC98C, regs);
-        }
-
         // 0x004BCBF8
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCBF8, regs);
+            common::on_resize(self, 140);
         }
 
         // 0x004BC9A7
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC9A7, regs);
+            switch (widgetIndex)
+            {
+                case widx::land_material:
+                {
+                    //registers regs;
+                    //regs.esi = uint32_t(self);
+                    //call(0x004BCB47, regs);
+
+                    auto landCount = 0;
+                    for (auto i = 0; i < 32; i++)
+                    {
+                        auto landObj = objectmgr::get<land_object>(i);
+                        if (landObj != nullptr)
+                            landCount++;
+                    }
+                    auto xPos = self->widgets[widgetIndex].left + self->x;
+                    auto yPos = self->widgets[widgetIndex].bottom + self->y;
+                    //auto height = self->widgets[widgetIndex].bottom - self->widgets[widgetIndex].top + 1;
+                    auto colour = self->colours[1] | 0x80;
+                    auto count = _appropriateImageDropdownItemsPerRow[landCount];
+
+                    dropdown::show_image(xPos, yPos, 20, 20, colour, count, landCount);
+
+                    auto landIndex = 0;
+                    for (uint16_t i = 0; i < 32; i++)
+                    {
+                        auto landObj = objectmgr::get<land_object>(i);
+                        if (landObj == nullptr)
+                            continue;
+
+                        if (landObj->name == _lastSelectedLand)
+                            dropdown::set_highlighted_item(landIndex);
+
+                        auto args = FormatArguments();
+                        args.push(landObj->var_16 + land::image_ids::landscape_generator_tile_icon);
+                        args.push<uint16_t>(i);
+
+                        dropdown::add(landIndex, 0xFFFE, args);
+
+                        landIndex++;
+                    }
+                    break;
+                }
+
+                case widx::decrease_area:
+                {
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 0)
+                        _adjustToolSize = 0;
+                    _adjustLandToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
+
+                case widx::increase_area:
+                {
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 10)
+                        _adjustToolSize = 10;
+                    _adjustLandToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x004BC9C6
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
+            /*registers regs;
             regs.ax = itemIndex;
             regs.edx = widgetIndex;
             regs.esi = int32_t(self);
-            call(0x004BC9C6, regs);
-        }
+            call(0x004BC9C6, regs);*/
 
-        // 0x004BCB0B
-        static void on_update(window* self)
-        {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCB0B, regs);
+            if (widgetIndex != widx::land_material)
+                return;
+            if (itemIndex == 0xFFFF)
+                return;
+            _lastSelectedLand = dropdown::get_highlighted_item();
+            self->invalidate();
         }
 
         // 0x004BC9D7
@@ -1029,27 +1056,70 @@ namespace openloco::ui::windows::terraform
         // 0x004BC83B
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC83B, regs);
+            common::prepare_draw(self);
+
+            self->activated_widgets |= (1ULL << widx::tool_area);
+
+            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+
+            self->widgets[widx::land_material].type = widget_type::none;
+
+            if (_adjustToolSize != 0)
+            {
+                self->widgets[widx::land_material].type = widget_type::wt_6;
+
+                auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
+
+                self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+            }
+
+            common::repositionTabs(self);
         }
 
         // 0x004BC909
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            regs.edi = int32_t(dpi);
-            call(0x004BC909, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            xPos /= 2;
+            xPos += self->x;
+            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 28;
+
+            if (_dword_F2530C != 0x80000000)
+            {
+                if (_dword_F2530C != 0)
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(_dword_F2530C);
+
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
+                }
+            }
+
+            yPos += 10;
+
+            if (_dword_F25310 != 0x80000000)
+            {
+                if (_dword_F25310 != 0)
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(_dword_F25310);
+
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
+                }
+            }
         }
+
         static void init_events()
         {
             events.on_close = on_close;
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_up = common::on_mouse_up;
             events.on_resize = on_resize;
             events.on_mouse_down = on_mouse_down;
             events.on_dropdown = on_dropdown;
-            events.on_update = on_update;
+            events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
             events.event_12 = event_12;
@@ -1072,9 +1142,9 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(129, 104, string_ids::title_adjust_water),
-            make_widget({ 33, 45 }, { 63, 43 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_water_tool),
-            make_widget({ 34, 46 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::decrease_tool_area, string_ids::tooltip_decrease_adjust_water_area),
-            make_widget({ 80, 72 }, { 15, 15 }, widget_type::wt_7, 1, image_ids::increase_tool_area, string_ids::tooltip_increase_adjust_water_area),
+            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_water_tool),
+            make_widget({ 34 + 16, 46 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_water_area),
+            make_widget({ 80 + 16, 72 }, { 15, 15 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_water_area),
             widget_end(),
         };
 
@@ -1093,41 +1163,40 @@ namespace openloco::ui::windows::terraform
             input::set_flag(input::input_flags::flag6);
             _dword_113652C = 0x80000000;
             _dword_1136528 = 0x80000000;
-            _word_50A000 = _byte_9C8710;
-        }
-
-        // 0x004BCD82
-        static void on_mouse_up(window* self, widget_index widgetIndex)
-        {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BCD82, regs);
+            _adjustToolSize = _adjustWaterToolSize;
         }
 
         // 0x004BCEB4
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCEB4, regs);
+            common::on_resize(self, 115);
         }
 
         // 0x004BCD9D
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BCD9D, regs);
-        }
+            switch (widgetIndex)
+            {
+                case widx::decrease_area:
+                {
+                    _adjustToolSize--;
+                    if (_adjustToolSize < 1)
+                        _adjustToolSize = 1;
+                    _adjustWaterToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
 
-        // 0x004BCE78
-        static void on_update(window* self)
-        {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCE78, regs);
+                case widx::increase_area:
+                {
+                    _adjustToolSize++;
+                    if (_adjustToolSize > 10)
+                        _adjustToolSize = 10;
+                    _adjustWaterToolSize = _adjustToolSize;
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x004BCDB4
@@ -1179,26 +1248,62 @@ namespace openloco::ui::windows::terraform
         // 0x004BCC6D
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCC6D, regs);
+            common::prepare_draw(self);
+
+            self->activated_widgets |= (1ULL << widx::tool_area);
+
+            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+
+            common::repositionTabs(self);
         }
 
         // 0x004BCCFF
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            regs.edi = int32_t(dpi);
-            call(0x004BCCFF, regs);
+            //registers regs;
+            //regs.esi = int32_t(self);
+            //regs.edi = int32_t(dpi);
+            //call(0x004BCCFF, regs);
+
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            xPos /= 2;
+            xPos += self->x;
+            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
+
+            if (_dword_113652C != 0x80000000)
+            {
+                if (_dword_113652C != 0)
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(_dword_113652C);
+
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
+                }
+            }
+
+            yPos += 10;
+
+            if (_dword_1136528 != 0x80000000)
+            {
+                if (_dword_1136528 != 0)
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(_dword_1136528);
+
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
+                }
+            }
         }
         static void init_events()
         {
             events.on_close = on_close;
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_up = common::on_mouse_up;
             events.on_resize = on_resize;
             events.on_mouse_down = on_mouse_down;
-            events.on_update = on_update;
+            events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
             events.event_12 = event_12;
@@ -1210,6 +1315,8 @@ namespace openloco::ui::windows::terraform
 
     namespace build_walls
     {
+        static const gfx::ui_size_t windowSize = { 418, 108 };
+
         static const uint8_t rowHeight = 48;
 
         enum widx
@@ -1254,35 +1361,117 @@ namespace openloco::ui::windows::terraform
             // sub_4BB748 omitted
         }
 
-        // 0x004BC1F7
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        // 0x004BC506
+        static void updateActiveThumb(window* self)
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC1F7, regs);
+            uint16_t scrollHeight = 0;
+            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->scroll_areas[0].v_bottom = scrollHeight;
+
+            auto i = 0;
+            for (; i <= self->var_83C; i++)
+            {
+                if (self->row_info[i] == self->row_hover)
+                    break;
+            }
+
+            if (i >= self->var_83C)
+                i = 0;
+
+            i = (i / 10) * rowHeight;
+
+            self->scroll_areas[0].v_top = i;
+            ui::scrollview::update_thumbs(self, widx::scrollview);
         }
 
         // 0x004BC44B
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC44B, regs);
+            self->invalidate();
+            gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
+            gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            if (hasResized)
+                updateActiveThumb(self);
         }
 
         // 0x004BC23D
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC23D, regs);
+            if (!input::has_flag(input::input_flags::tool_active))
+                WindowManager::close(self);
+
+            if (_toolWindowType != WindowType::terraform)
+                WindowManager::close(self);
+
+            if (!input::has_flag(input::input_flags::flag5))
+            {
+                auto cursor = input::getMouseLocation();
+                auto xPos = cursor.x;
+                auto yPos = cursor.y;
+                window* activeWindow = WindowManager::findAt(xPos, yPos);
+                if (activeWindow == self)
+                {
+                    xPos -= self->x;
+                    xPos += 26;
+                    yPos -= self->y;
+
+                    if ((yPos < 42) || (xPos <= self->width))
+                    {
+                        xPos = cursor.x;
+                        yPos = cursor.y;
+                        widget_index activeWidget = self->find_widget_at(xPos, yPos);
+
+                        if (activeWidget > common::widx::panel)
+                        {
+                            self->saved_view.mapX += 1;
+                            if (self->saved_view.mapX >= 8)
+                            {
+                                auto y = std::min(self->scroll_areas[0].v_bottom - 1 + 60, 562);
+                                if (ui::height() < 600)
+                                {
+                                    y = std::min(y, 358);
+                                }
+                                self->min_width = windowSize.width;
+                                self->min_height = y;
+                                self->max_width = windowSize.width;
+                                self->max_height = y;
+                            }
+                            else
+                            {
+                                if (input::state() != input::input_state::scroll_left)
+                                {
+                                    self->min_width = windowSize.width;
+                                    self->min_height = windowSize.height;
+                                    self->max_width = windowSize.width;
+                                    self->max_height = windowSize.height;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    self->saved_view.mapX = 0;
+                    if (input::state() != input::input_state::scroll_left)
+                    {
+                        self->min_width = windowSize.width;
+                        self->min_height = windowSize.height;
+                        self->max_width = windowSize.width;
+                        self->max_height = windowSize.height;
+                    }
+                }
+            }
+            self->frame_no++;
+
+            self->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
         }
 
         // 0x004BC377
         static void event_08(window* self)
         {
-            if (self->var_846 != -1)
+            if (self->var_846 != 0xFFFF)
             {
                 self->var_846 = -1;
                 self->invalidate();
@@ -1316,7 +1505,7 @@ namespace openloco::ui::windows::terraform
         {
             *scrollHeight = (self->var_83C + 9) / 10;
             if (*scrollHeight == 0)
-                *scrollHeight++;
+                *scrollHeight += 1;
             *scrollHeight *= rowHeight;
         }
 
@@ -1351,9 +1540,12 @@ namespace openloco::ui::windows::terraform
         // 0x004BC029
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BC029, regs);
+            common::prepare_draw(self);
+
+            self->widgets[widx::scrollview].right = self->width - 26;
+            self->widgets[widx::scrollview].bottom = self->height - 14;
+
+            common::repositionTabs(self);
         }
 
         // 0x004BC0C2
@@ -1378,7 +1570,7 @@ namespace openloco::ui::windows::terraform
         static void init_events()
         {
             events.on_close = on_close;
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_up = common::on_mouse_up;
             events.on_resize = on_resize;
             events.on_update = on_update;
             events.event_08 = event_08;
@@ -1412,12 +1604,69 @@ namespace openloco::ui::windows::terraform
             { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
         };
 
-        // 0x004BCF2F
-        static void sub_4BCF2F(window* self)
+        static void on_resize(window* self, uint8_t height)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BCF2F, regs);
+            self->flags |= window_flags::resizable;
+            /*auto width = 130;
+            if (is_editor_mode)
+                width += 31;*/
+            uint16_t width = 161;
+            gfx::ui_size_t windowSize = { width, height };
+            self->set_size(windowSize, windowSize);
+        }
+
+        // 0x004BC78A, 0x004BCB0B
+        static void on_update(window* self)
+        {
+            if (!input::has_flag(input::input_flags::tool_active))
+                WindowManager::close(self);
+
+            if (_toolWindowType != WindowType::terraform)
+                WindowManager::close(self);
+
+            self->frame_no++;
+            self->call_prepare_draw();
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
+        }
+
+        // 0x004BCD82
+        static void on_mouse_up(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_adjust_land:
+                case common::widx::tab_adjust_water:
+                case common::widx::tab_build_walls:
+                case common::widx::tab_clear_area:
+                case common::widx::tab_plant_trees:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
+        }
+
+        // 0x004BCF29, 0x004BCF2F
+        static void repositionTabs(window* self)
+        {
+            int16_t xPos = self->widgets[widx::tab_clear_area].left;
+            const int16_t tabWidth = self->widgets[widx::tab_clear_area].right - xPos;
+
+            for (uint8_t i = widx::tab_clear_area; i <= widx::tab_build_walls; i++)
+            {
+                if (self->is_disabled(i))
+                {
+                    self->widgets[i].type = widget_type::none;
+                    continue;
+                }
+
+                self->widgets[i].type = widget_type::wt_8;
+                self->widgets[i].left = xPos;
+                self->widgets[i].right = xPos + tabWidth;
+                xPos = self->widgets[i].right + 1;
+            }
         }
 
         static void prepare_draw(window* self)
@@ -1460,7 +1709,7 @@ namespace openloco::ui::windows::terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
+                auto landObj = objectmgr::get<land_object>(_grassLand);
                 uint32_t imageId = landObj->var_16 + land::image_ids::toolbar_terraform_land;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
@@ -1470,7 +1719,7 @@ namespace openloco::ui::windows::terraform
                 auto waterObj = objectmgr::get<water_object>();
                 uint32_t imageId = waterObj->var_06 + water::image_ids::toolbar_terraform_water;
                 if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
-                    imageId += (self->frame_no / 2);
+                    imageId += (self->frame_no / 2) % 16;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_adjust_water);
             }
@@ -1500,11 +1749,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BBB2B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.edx = widgetIndex;
-            //regs.esi = (uint32_t)self;
-            //call(0x004BBB2B, regs);
-
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
 
@@ -1526,26 +1770,31 @@ namespace openloco::ui::windows::terraform
             self->widgets = tabInfo.widgets;
 
             auto disabledWidgets = 0;
-            if (!is_editor_mode())
-                disabledWidgets |= common::widx::tab_build_walls;
+            /*if (!is_editor_mode())
+                disabledWidgets |= common::widx::tab_build_walls;*/
             self->disabled_widgets = disabledWidgets;
 
             switch (widgetIndex)
             {
                 case common::widx::tab_adjust_land:
                     adjust_land::tabReset(self);
+                    break;
 
                 case common::widx::tab_adjust_water:
                     adjust_water::tabReset(self);
+                    break;
 
                 case common::widx::tab_build_walls:
                     build_walls::tabReset(self);
+                    break;
 
                 case common::widx::tab_clear_area:
                     clear_area::tabReset(self);
+                    break;
 
                 case common::widx::tab_plant_trees:
                     plant_trees::tabReset(self);
+                    break;
             }
 
             self->call_on_resize();
