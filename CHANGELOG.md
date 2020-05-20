@@ -5,6 +5,7 @@
 - Fix: [#359] Widgets tied to tools could get stuck in pressed state.
 - Fix: [#388] Re-center Options window on scale factor change.
 - Fix: [#396] Preferred owner name is not saved.
+- Fix: [#409] Incorrect refund cost when deleting signals.
 - Fix: [#412] Game crashes after a while on Great Britain & Ireland 1930.
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
