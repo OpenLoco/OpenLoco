@@ -98,6 +98,70 @@ namespace openloco::game_commands
         do_command(21, regs);
     }
 
+    inline void do_22(uint16_t ax, uint16_t cx, uint8_t dl, uint8_t dh, uint8_t bh, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.dl = dl;
+        regs.dh = dh;
+        regs.bh = bh;
+        regs.bl = flags;
+        do_command(22, regs);
+    }
+
+    // Change Land Material
+    inline void do_24(uint16_t ax, uint16_t cx, uint8_t di, uint8_t bp, uint8_t dl, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.di = di;
+        regs.dl = dl;
+        regs.bp = bp;
+        regs.bl = flags;
+        do_command(24, regs);
+    } 
+    
+    // Raise Land
+    inline void do_25(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.dx = dx;
+        regs.bp = bp;
+        regs.di = di;
+        regs.bl = flags;
+        do_command(25, regs);
+    }
+
+    // Lower Land 
+    inline void do_26(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.dx = dx;
+        regs.bp = bp;
+        regs.di = di;
+        regs.bl = flags;
+        do_command(26, regs);
+    }
+
+    // Lower/Raise Land Mountain
+    inline void do_27(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.dx = dx;
+        regs.bp = bp;
+        regs.di = di;
+        regs.bl = flags;
+        do_command(27, regs);
+    }
+
     // Change company name
     inline bool do_30(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -124,6 +188,17 @@ namespace openloco::game_commands
         return do_command(31, regs) != FAILURE;
     }
 
+    inline void do_33(uint16_t ax, uint16_t cx, uint8_t dl, uint8_t dh, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.dl = dl;
+        regs.dh = dh;
+        regs.bl = flags;
+        do_command(33, regs);
+    }
+	
     // Rename town
     inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {

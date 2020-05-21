@@ -217,8 +217,8 @@ namespace openloco::ui
                 void (*event_09)(window*);
                 void (*on_tool_update)(window&, const widget_index, const int16_t, const int16_t);
                 void (*on_tool_down)(window&, const widget_index, const int16_t, const int16_t);
-                void (*event_12)(window&, const widget_index, const int16_t, const int16_t);
-                void (*event_13)(window&, const widget_index);
+                uint32_t event_12;
+                uint32_t event_13;
                 void (*on_tool_abort)(window&, const widget_index);
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);

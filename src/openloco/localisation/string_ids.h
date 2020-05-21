@@ -96,6 +96,9 @@ namespace openloco::string_ids
 
     constexpr string_id dropdown = 96;
 
+    constexpr string_id error_cant_lower_land_here = 100;
+    constexpr string_id error_cant_raise_land_here = 101;
+
     constexpr string_id menu_load_game = 103;
     constexpr string_id menu_save_game = 104;
     constexpr string_id menu_quit_scenario_editor = 105;
@@ -240,6 +243,8 @@ namespace openloco::string_ids
     constexpr string_id status_num_industries_plural = 563;
 
     constexpr string_id rotate_object_90 = 565;
+
+    constexpr string_id error_cant_change_land_type = 567;
 
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;

@@ -1,4 +1,5 @@
 #include "../audio/audio.h"
+#include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -19,11 +20,13 @@
 
 using namespace openloco::interop;
 using namespace openloco::map;
+using namespace openloco::game_commands;
 
 namespace openloco::ui::windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<std::uint8_t[32], 0x005046FA> _appropriateImageDropdownItemsPerRow;
+    static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<company_id_t, 0x00525E3C> _player_company;
@@ -35,6 +38,12 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
+    static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
+    static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
+    static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
+    static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
+    static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
+    static loco_global<uint16_t, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _byte_113649A;
@@ -44,7 +53,12 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint32_t, 0x00F2530C> _dword_F2530C;
     static loco_global<uint32_t, 0x00F25310> _dword_F25310;
     static loco_global<uint32_t, 0x01136484> _dword_1136484;
-    static loco_global<uint16_t, 0x01136490> word_1136490;
+    static loco_global<uint16_t, 0x01136488> _word_1136488;
+    static loco_global<uint16_t, 0x0113648A> _word_113648A;
+    static loco_global<uint16_t, 0x01136490> _word_1136490;
+    static loco_global<uint8_t, 0x01136499> _byte_1136499;
+    static loco_global<uint8_t, 0x0113649B> _byte_113649B;
+    static loco_global<uint8_t, 0x0113649C> _byte_113649C;
     static loco_global<uint32_t, 0x0113652C> _dword_113652C;
     static loco_global<uint32_t, 0x01136528> _dword_1136528;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
@@ -162,10 +176,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BB63F
         static void refreshTreeList(window* self)
         {
-            //registers regs;
-            //regs.esi = uint32_t(self);
-            //call(0x004BB63F, regs);
-
             auto treeIndex = 0;
             for (auto i = 0; i < 64; i++)
             {
@@ -396,6 +406,23 @@ namespace openloco::ui::windows::terraform
             call(0x004BBB15, regs);
         }
 
+        //static void sub_4BD297()
+        //{
+        //    auto flags = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_5 | GameCommandFlag::flag_6;
+        //    if ((_byte_113649A & 1) != 0)
+        //    {
+        //        _byte_113649A &= uint8_t(0xFE);
+        //
+        //        game_commands::do_22(_word_1136488,_word_113648A, _byte_1136499, _byte_113649C, _byte_113649B, flags);
+        //    }
+        //    if ((_byte_113649A & 2) != 0)
+        //    {
+        //        _byte_113649A &= uint8_t(0xFD);
+
+        //        game_commands::do_33(_word_1136488, _word_113648A, _byte_1136499, (_byte_113649B & 3), flags);
+        //    }
+        //}
+
         // 0x004BBB20
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -405,6 +432,14 @@ namespace openloco::ui::windows::terraform
             regs.ax = x;
             regs.bx = y;
             call(0x004BBB20, regs);
+
+            //if (widgetIndex != common::widx::panel)
+            //    return;
+
+            //sub_4BD297();
+            //if (self.current_tab = common::widx::tab_plant_trees - common::widx::tab_clear_area)
+            //{
+            //}
         }
 
         // 0x004BBEC1
@@ -585,7 +620,7 @@ namespace openloco::ui::windows::terraform
             if (colourOptions != 0)
             {
                 colour_t colour = _treeColour;
-                if ((word_1136490 & 0x20) == 0)
+                if ((_word_1136490 & 0x20) == 0)
                 {
                     colour = utility::bitscanreverse(colourOptions);
                     if (colour == 0xFF)
@@ -606,18 +641,18 @@ namespace openloco::ui::windows::terraform
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                word_1136490 = 0xFFFF;
+                _word_1136490 = 0xFFFF;
                 if (self->row_info[i] != self->row_hover)
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        word_1136490 = colour::translucent_flag;
+                        _word_1136490 = colour::translucent_flag;
                         gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    word_1136490 = colour::translucent_flag | colour::outline_flag;
+                    _word_1136490 = colour::translucent_flag | colour::outline_flag;
                     gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
@@ -826,28 +861,28 @@ namespace openloco::ui::windows::terraform
             call(0x004BC689, regs);
         }
 
-        // 0x004BC682
-        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
-        {
-            registers regs;
-            regs.esi = int32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC682, regs);
-        }
+        //// 0x004BC682
+        //static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        //{
+        //    registers regs;
+        //    regs.esi = int32_t(&self);
+        //    regs.dx = widgetIndex;
+        //    regs.ax = x;
+        //    regs.bx = y;
+        //    call(0x004BC682, regs);
+        //}
 
-        // 0x004BC701
-        static void event_13(window& self, const widget_index widgetIndex)
-        {
-            if (widgetIndex == common::widx::panel)
-            {
-                tilemgr::map_invalidate_selection_rect();
+        //// 0x004BC701
+        //static void event_13(window& self, const widget_index widgetIndex)
+        //{
+        //    if (widgetIndex == common::widx::panel)
+        //    {
+        //        tilemgr::map_invalidate_selection_rect();
 
-                // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
-            }
-        }
+        //        // Reset map selection
+        //        _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+        //    }
+        //}
 
         // 0x004BC555
         static void prepare_draw(window* self)
@@ -892,8 +927,8 @@ namespace openloco::ui::windows::terraform
             events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
-            events.event_12 = event_12;
-            events.event_13 = event_13;
+            events.event_12 = (uint32_t)0x004BC682;
+            events.event_13 = (uint32_t)0x004BC701;
             events.prepare_draw = prepare_draw;
             events.draw = draw;
         }
@@ -1035,37 +1070,338 @@ namespace openloco::ui::windows::terraform
             self->invalidate();
         }
 
+        //// 0x004A69DD
+        //static uint8_t sub_4A69DD()
+        //{
+        //    registers regs;
+        //    call(0x004A69DD, regs);
+        //    return regs.bl;
+        //}
+
+        // 0x00468DFD
+        static uint8_t lowerLand(uint8_t flags)
+        {
+            registers regs;
+            regs.bl = flags;
+            call(0x00468DFD, regs);
+            return regs.bl;
+
+            //if ((flags & 1) != 0)
+            //    flags = sub_4A69DD();
+
+            //auto x = _mapSelectionAX + _mapSelectionBX;
+            //auto y = _mapSelectionAY + _mapSelectionBY;
+            //x /= 2;
+            //y /= 2;
+            //x += 16;
+            //y += 16;
+            //auto x2 = _mapSelectionBX << 16;
+            //auto y2 = _mapSelectionBY << 16;
+            //x2 |= _mapSelectionAX;
+            //y2 |= _mapSelectionAY;
+            //_gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
+
+            //if (_adjustToolSize == 0)
+            //{
+            //    uint16_t di = 0xFFFF;
+            //    game_commands::do_27(x, y, x2, y2, di, flags);
+            //}
+            //else
+            //{
+            //    uint16_t di = _word_F2448E;
+            //    game_commands::do_26(x, y, x2, y2, di, flags);
+            //}
+            //return flags;
+        } 
+        
+        // 0x00468D1D
+        static uint8_t raiseLand(uint8_t flags)
+        {
+            registers regs;
+            regs.bl = flags;
+            call(0x00468D1D, regs);
+            return regs.bl;
+
+            //if (!(flags & 1))
+            //    flags = sub_4A69DD();
+
+            //auto x = _mapSelectionAX + _mapSelectionBX;
+            //auto y = _mapSelectionAY + _mapSelectionBY;
+            //x /= 2;
+            //y /= 2;
+            //x += 16;
+            //y += 16;
+            //auto x2 = _mapSelectionBX << 16;
+            //auto y2 = _mapSelectionBY << 16;
+            //x2 |= _mapSelectionAX;
+            //y2 |= _mapSelectionAY;
+            //_gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+
+            //if (_adjustToolSize == 0)
+            //{
+            //    uint16_t di = 1;
+            //    game_commands::do_27(x, y, x2, y2, di, flags);
+            //}
+            //else
+            //{
+            //    uint16_t di = _word_F2448E;
+            //    game_commands::do_25(x, y, x2, y2, di, flags);
+            //}
+            //return flags;
+        }
+
         // 0x004BC9D7
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
-            regs.esi = int32_t(&self);
+            regs.esi = uint32_t(&self);
             regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
             call(0x004BC9D7, regs);
+
+            //uint16_t xPos = 0;
+            //uint16_t yPos = 0;
+            //if (widgetIndex != common::widx::panel)
+            //    return;
+            //tilemgr::map_invalidate_selection_rect();
+            //if (_currentTool != 3)
+            //{
+            //    _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+            //    if (_adjustLandToolSize != 1)
+            //    {
+            //        registers regs;
+            //        regs.ax = x;
+            //        regs.bx = y;
+            //        call(0x0045F1A7, regs);
+            //        xPos = regs.ax;
+            //        yPos = regs.bx;
+            //        if (xPos != 0x8000)
+            //        {
+            //            auto count = 0;
+            //            if ((_mapSelectionFlags & 1) == 0)
+            //            {
+            //                _mapSelectionFlags = _mapSelectionFlags | 1;
+            //                count++;
+            //            }
+
+            //            if (_word_F2448E != 4)
+            //            {
+            //            _word_F2448E = 4;
+            //                count++;
+            //            }
+
+            //            uint16_t toolSizeA = _adjustToolSize;
+
+            //            if (!toolSizeA)
+            //                toolSizeA = 1;
+
+            //            toolSizeA = toolSizeA << 5;
+            //            uint16_t toolSizeB = toolSizeA;
+            //            toolSizeB -= 32;
+            //            toolSizeA = toolSizeA > 1;
+            //            toolSizeA -= 16;
+            //            xPos -= toolSizeA;
+            //            yPos -= toolSizeA;
+            //            xPos &= 0xFFE0;
+            //            yPos &= 0xFFE0;
+
+            //            if (xPos != _mapSelectionAX)
+            //            {
+            //            _mapSelectionAX = xPos;
+            //                count++;
+            //            }
+
+            //            if (yPos != _mapSelectionAY)
+            //            {
+            //                _mapSelectionAY = yPos;
+            //                count++;
+            //            }
+
+            //            xPos += toolSizeB;
+            //            yPos += toolSizeB;
+
+            //            if (xPos != _mapSelectionBX)
+            //            {
+            //                _mapSelectionBX = xPos;
+            //                count++;
+            //            }
+
+            //            if (yPos != _mapSelectionBY)
+            //            {
+            //                _mapSelectionBY = yPos;
+            //                count++;
+            //            }
+
+            //            tilemgr::map_invalidate_selection_rect();
+
+            //            if (!count)
+            //                return;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        registers regs;
+            //        regs.ax = x;
+            //        regs.bx = y;
+            //        call(0x0045FD8E, regs);
+            //        xPos = regs.ax;
+            //        yPos = regs.bx;
+            //        auto zPos = regs.cx;
+            //        if (xPos != 0x8000)
+            //        {
+            //            auto count = 0;
+            //            if ((_mapSelectionFlags & 1) == 0)
+            //            {
+            //                _mapSelectionFlags = _mapSelectionFlags | 1;
+            //                count++;
+            //            }
+
+            //            if (_word_F2448E != zPos)
+            //            {
+            //                _word_F2448E = zPos;
+            //                count++;
+            //            }
+            //            if (xPos != _mapSelectionAX)
+            //            {
+            //                _mapSelectionAX = xPos;
+            //                count++;
+            //            }
+
+            //            if (yPos != _mapSelectionAY)
+            //            {
+            //                _mapSelectionAY = yPos;
+            //                count++;
+            //            }
+
+            //            if (xPos != _mapSelectionBX)
+            //            {
+            //                _mapSelectionBX = xPos;
+            //                count++;
+            //            }
+
+            //            if (yPos != _mapSelectionBY)
+            //            {
+            //                _mapSelectionBY = yPos;
+            //                count++;
+            //            }
+
+            //            tilemgr::map_invalidate_selection_rect();
+
+            //            if (!count)
+            //                return;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    if ((_mapSelectionFlags & 1) == 0)
+            //        return;
+            //}
+
+            //uint32_t ebx = -1;
+            //uint32_t ecx = -1;
+
+            //if (is_editor_mode() || xPos == 0x8000)
+            //{
+            //    ebx = 0x80000000;
+            //    ecx = 0x80000000;
+            //}
+            //else
+            //{
+            //    auto flags = lowerLand(4);
+            //    ecx = flags;
+            //    flags = raiseLand(4);
+            //    ebx = flags;
+            //}
+
+            //if (_dword_F2530C == ebx)
+            //{
+            //    if (_dword_F25310 == ecx)
+            //        return;
+            //}
+            //_dword_F2530C = ebx;
+            //_dword_F25310 = ecx;
+            //WindowManager::invalidate(WindowType::terraform, 0);
         }
 
         // 0x004BC9ED
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = int32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC9ED, regs);
+            //registers regs;
+            //regs.esi = int32_t(&self);
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x004BC9ED, regs);
+
+            if (widgetIndex != common::widx::panel)
+                return;
+            if ((_mapSelectionFlags & 1) == 0)
+                return;
+            if (_adjustToolSize != 0)
+            {
+                if (_lastSelectedLand != 0xFF)
+                {
+                    _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
+                    game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
+                }
+            }
+
+            _currentTool = 3;
         }
 
         // 0x004BC9E2
         static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = int32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC9E2, regs);
+            //registers regs;
+            //regs.esi = int32_t(&self);
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x004BC9E2, regs);
+
+            if (widgetIndex != common::widx::panel)
+                return;
+
+            auto window = WindowManager::findAt(x, y);
+            if (window == nullptr)
+                return;
+
+            widget_index newWidgetIndex = window->find_widget_at(x, y);
+            if (newWidgetIndex == 0xFFFF)
+                return;
+
+            auto widget = window->widgets[newWidgetIndex];
+            if (widget.type != widget_type::viewport)
+                return;
+
+            auto viewport = window->viewports[0];
+            if (viewport == nullptr)
+                return;
+
+            auto zoom = viewport->zoom;
+
+            int16_t dx = static_cast<int16_t>(0xFFF0);
+            dx = dx /= (2 ^ zoom);
+            auto yPos = y - _dragLastY;
+            auto flags = GameCommandFlag::apply;
+
+            if (yPos <= dx)
+            {
+                _dragLastY += dx;
+                raiseLand(flags);
+            }
+            else
+            {
+                dx = -dx;
+                if (yPos < dx)
+                    return;
+                _dragLastY += dx;
+                lowerLand(flags);
+            }
+            _dword_F2530C = 0x80000000;
+            _dword_F25310 = 0x80000000;
         }
 
         // 0x004BCA5D
@@ -1076,7 +1412,7 @@ namespace openloco::ui::windows::terraform
                 tilemgr::map_invalidate_selection_rect();
 
                 // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
                 _currentTool = 18;
             }
         }
@@ -1150,8 +1486,8 @@ namespace openloco::ui::windows::terraform
             events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
-            events.event_12 = event_12;
-            events.event_13 = event_13;
+            events.event_12 = (uint32_t) 0x004BC9E2;
+            events.event_13 = (uint32_t)0x004BCA5D;
             events.prepare_draw = prepare_draw;
             events.draw = draw;
         }
@@ -1249,29 +1585,29 @@ namespace openloco::ui::windows::terraform
             call(0x004BCDCA, regs);
         }
 
-        // 0x004BCDBF
-        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
-        {
-            registers regs;
-            regs.esi = int32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BCDBF, regs);
-        }
+        //// 0x004BCDBF
+        //static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        //{
+        //    registers regs;
+        //    regs.esi = int32_t(&self);
+        //    regs.dx = widgetIndex;
+        //    regs.ax = x;
+        //    regs.bx = y;
+        //    call(0x004BCDBF, regs);
+        //}
 
-        // 0x004BCDE8
-        static void event_13(window& self, const widget_index widgetIndex)
-        {
-            if (widgetIndex == common::widx::panel)
-            {
-                tilemgr::map_invalidate_selection_rect();
+        //// 0x004BCDE8
+        //static void event_13(window& self, const widget_index widgetIndex)
+        //{
+        //    if (widgetIndex == common::widx::panel)
+        //    {
+        //        tilemgr::map_invalidate_selection_rect();
 
-                // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
-                _currentTool = 19;
-            }
-        }
+        //        // Reset map selection
+        //        _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+        //        _currentTool = 19;
+        //    }
+        //}
 
         // 0x004BCC6D
         static void prepare_draw(window* self)
@@ -1330,8 +1666,8 @@ namespace openloco::ui::windows::terraform
             events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
-            events.event_12 = event_12;
-            events.event_13 = event_13;
+            events.event_12 = (uint32_t)0x004BCDBF;
+            events.event_13 = (uint32_t)0x004BCDE8;
             events.prepare_draw = prepare_draw;
             events.draw = draw;
         }
@@ -1970,5 +2306,26 @@ namespace openloco::ui::windows::terraform
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_build_walls);
+    }
+
+    void registerHooks()
+    {
+        register_hook(
+            0x004BC9E2,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                adjust_land::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x004BCA5D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                adjust_land::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                regs = backup;
+                return 0;
+            });
     }
 }
