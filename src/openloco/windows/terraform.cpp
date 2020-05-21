@@ -9,6 +9,7 @@
 #include "../objects/land_object.h"
 #include "../objects/objectmgr.h"
 #include "../objects/tree_object.h"
+#include "../objects/wall_object.h"
 #include "../objects/water_object.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -29,6 +30,7 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
     static loco_global<uint8_t, 0x00525FB6> _grassLand;
+    static loco_global<uint8_t, 0x00525FCA> _lastSelectedWall;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
@@ -42,6 +44,7 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint32_t, 0x00F2530C> _dword_F2530C;
     static loco_global<uint32_t, 0x00F25310> _dword_F25310;
     static loco_global<uint32_t, 0x01136484> _dword_1136484;
+    static loco_global<uint16_t, 0x01136490> word_1136490;
     static loco_global<uint32_t, 0x0113652C> _dword_113652C;
     static loco_global<uint32_t, 0x01136528> _dword_1136528;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
@@ -117,21 +120,6 @@ namespace openloco::ui::windows::terraform
 
         static window_event_list events;
 
-        // 0x004BB63F
-        static void refreshTreeList(window* self)
-        {
-            registers regs;
-            regs.esi = uint32_t(self);
-            call(0x004BB63F, regs);
-        }
-
-        // 0x004BBB0A
-        static void on_close(window* self)
-        {
-            common::sub_4BD297();
-            ui::windows::hideGridlines();
-        }
-
         // 0x004BB6B2
         static void updateTreeColours(window* self)
         {
@@ -146,6 +134,77 @@ namespace openloco::ui::windows::terraform
                     _treeColour = colour;
                 }
             }
+        }
+
+        // 0x004BC4B7
+        static void updateActiveThumb(window* self)
+        {
+            uint16_t scrollHeight = 0;
+            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->scroll_areas[0].v_bottom = scrollHeight;
+
+            auto i = 0;
+            for (; i <= self->var_83C; i++)
+            {
+                if (self->row_info[i] == self->row_hover)
+                    break;
+            }
+
+            if (i >= self->var_83C)
+                i = 0;
+
+            i = (i / 9) * rowHeight;
+
+            self->scroll_areas[0].v_top = i;
+            ui::scrollview::update_thumbs(self, widx::scrollview);
+        }
+
+        // 0x004BB63F
+        static void refreshTreeList(window* self)
+        {
+            //registers regs;
+            //regs.esi = uint32_t(self);
+            //call(0x004BB63F, regs);
+
+            auto treeIndex = 0;
+            for (auto i = 0; i < 64; i++)
+            {
+                auto treeObj = objectmgr::get<tree_object>(i);
+                if (treeObj == nullptr)
+                    continue;
+                self->row_info[treeIndex] = i;
+                treeIndex++;
+            }
+
+            self->var_83C = treeIndex;
+            auto rowHover = -1;
+
+            if (_lastSelectedTree != 0xFF)
+            {
+                for (auto i = 0; i < self->var_83C; i++)
+                {
+                    if (_lastSelectedTree == self->row_info[i])
+                    {
+                        rowHover = _lastSelectedTree;
+                        break;
+                    }
+                }
+            }
+
+            if (rowHover == -1 && self->var_83C != 0)
+            {
+                rowHover = self->row_info[0];
+            }
+
+            updateActiveThumb(self);
+            updateTreeColours(self);
+        }
+
+        // 0x004BBB0A
+        static void on_close(window* self)
+        {
+            common::sub_4BD297();
+            ui::windows::hideGridlines();
         }
 
         // 0x004BBC7D
@@ -205,29 +264,6 @@ namespace openloco::ui::windows::terraform
                     self->invalidate();
                 }
             }
-        }
-
-        // 0x00458B51
-        static void updateActiveThumb(window* self)
-        {
-            uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
-            self->scroll_areas[0].v_bottom = scrollHeight;
-
-            auto i = 0;
-            for (; i <= self->var_83C; i++)
-            {
-                if (self->row_info[i] == self->row_hover)
-                    break;
-            }
-
-            if (i >= self->var_83C)
-                i = 0;
-
-            i = (i / 9) * rowHeight;
-
-            self->scroll_areas[0].v_top = i;
-            ui::scrollview::update_thumbs(self, widx::scrollview);
         }
 
         // 0x004BBFBD
@@ -460,7 +496,7 @@ namespace openloco::ui::windows::terraform
                 auto treeObj = objectmgr::get<tree_object>(self->row_hover);
                 if (treeObj->name != 0xFFFF)
                 {
-                    if (treeObj->num_rotations == 1)
+                    if (treeObj->num_rotations != 1)
                         self->widgets[widx::rotate_object].type = widget_type::wt_9;
 
                     if (treeObj->colours != 0)
@@ -538,73 +574,69 @@ namespace openloco::ui::windows::terraform
             gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &treeObj->name);
         }
 
+        static void drawTreeThumb(tree_object* treeObj, gfx::drawpixelinfo_t* clipped)
+        {
+            uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
+            auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
+            image += rotation;
+            image += treeObj->var_0A[treeObj->var_3D];
+
+            auto colourOptions = treeObj->colours;
+            if (colourOptions != 0)
+            {
+                colour_t colour = _treeColour;
+                if ((word_1136490 & 0x20) == 0)
+                {
+                    colour = utility::bitscanreverse(colourOptions);
+                    if (colour == 0xFF)
+                        colour = 0;
+                }
+                image = gfx::recolour(image, colour);
+            }
+            gfx::draw_image(clipped, 32, 96, image);
+        }
+
         // 0x004BB982
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            registers regs;
-            regs.ax = scrollIndex;
-            regs.esi = uint32_t(self);
-            regs.edi = uint32_t(dpi);
-            call(0x004BB982, regs);
+            auto shade = colour::get_shade(self->colours[1], 3);
+            gfx::clear_single(*dpi, shade);
 
-            //auto shade = colour::get_shade(self->colours[1], 3);
-            //gfx::clear_single(*dpi, shade);
+            uint16_t xPos = 0;
+            uint16_t yPos = 0;
+            for (uint16_t i = 0; i < self->var_83C; i++)
+            {
+                word_1136490 = 0xFFFF;
+                if (self->row_info[i] != self->row_hover)
+                {
+                    if (self->row_info[i] == self->var_846)
+                    {
+                        word_1136490 = colour::translucent_flag;
+                        gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
+                    }
+                }
+                else
+                {
+                    word_1136490 = colour::translucent_flag | colour::outline_flag;
+                    gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                }
 
-            //loco_global<uint16_t, 0x01136490> word_1136490;
+                auto treeObj = objectmgr::get<tree_object>(self->row_info[i]);
+                gfx::drawpixelinfo_t* clipped = nullptr;
 
-            //uint16_t xPos = 0;
-            //uint16_t yPos = 0;
-            //for (uint16_t i = 0; i < self->var_83C; i++)
-            //{
-            //    word_1136490 = 0xFFFF;
-            //    if (self->row_info[i] != self->row_hover)
-            //    {
-            //        if (self->row_info[i] == self->var_846)
-            //        {
-            //            word_1136490 = colour::translucent_flag;
-            //            gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        word_1136490 = colour::translucent_flag | colour::outline_flag;
-            //        gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
-            //    }
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
+                {
+                    drawTreeThumb(treeObj, clipped);
+                }
 
-            //    auto treeObj = objectmgr::get<tree_object>(self->row_info[i]);
+                xPos += 66;
 
-            //    gfx::drawpixelinfo_t* clipped = nullptr;
-
-            //    if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
-            //    {
-            //        auto image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
-            //        auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
-            //        image += rotation;
-            //        image += treeObj->states[treeObj->var_3D];
-            //        // printf("%d", treeObj->var_3D);
-            //        auto colourOptions = treeObj->colours;
-            //        if (colourOptions != 0)
-            //        {
-            //            colour_t colour = _treeColour;
-            //            if ((word_1136490 & 0x20) == 0)
-            //            {
-            //                colour = utility::bitscanreverse(colourOptions);
-            //                if (colour == 0xFF)
-            //                    colour = 0;
-            //            }
-            //            image = gfx::recolour(image, colour);
-            //        }
-            //        gfx::draw_image(clipped, 32, 50, image);
-            //    }
-
-            //    xPos += 66;
-
-            //    if (xPos >= 66 * 9) // full row
-            //    {
-            //        xPos = 0;
-            //        yPos += rowHeight;
-            //    }
-            //}
+                if (xPos >= 66 * 9) // full row
+                {
+                    xPos = 0;
+                    yPos += rowHeight;
+                }
+            }
         }
 
         static void init_events()
@@ -904,14 +936,14 @@ namespace openloco::ui::windows::terraform
             for (auto i = 0; i < 32; i++)
             {
                 auto landObj = objectmgr::get<land_object>(i);
-                if (landObj->name != string_ids::null)
-                {
-                    _lastSelectedLand = i;
-                    _dword_F2530C = 0x80000000;
-                    _dword_F25310 = 0x80000000;
-                    _adjustToolSize = _adjustLandToolSize;
-                    break;
-                }
+                if (landObj == nullptr)
+                    continue;
+
+                _lastSelectedLand = i;
+                _dword_F2530C = 0x80000000;
+                _dword_F25310 = 0x80000000;
+                _adjustToolSize = _adjustLandToolSize;
+                break;
             }
         }
 
@@ -921,6 +953,44 @@ namespace openloco::ui::windows::terraform
             common::on_resize(self, 140);
         }
 
+        // 0x004BCB47
+        static void showDropdown(window* self, widget_index widgetIndex)
+        {
+            auto landCount = 0;
+            for (auto i = 0; i < 32; i++)
+            {
+                auto landObj = objectmgr::get<land_object>(i);
+                if (landObj != nullptr)
+                    landCount++;
+            }
+            auto xPos = self->widgets[widgetIndex].left + self->x;
+            auto yPos = self->widgets[widgetIndex].bottom + self->y;
+            auto heightOffset = self->widgets[widgetIndex].bottom - self->widgets[widgetIndex].top + 1;
+            auto colour = self->colours[1] | 0x80;
+            auto count = _appropriateImageDropdownItemsPerRow[landCount];
+
+            dropdown::show_image(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
+
+            auto landIndex = 0;
+            for (uint16_t i = 0; i < 32; i++)
+            {
+                auto landObj = objectmgr::get<land_object>(i);
+                if (landObj == nullptr)
+                    continue;
+
+                if (landObj->name == _lastSelectedLand)
+                    dropdown::set_highlighted_item(landIndex);
+
+                auto args = FormatArguments();
+                args.push(landObj->var_16 + land::image_ids::landscape_generator_tile_icon);
+                args.push<uint16_t>(i);
+
+                dropdown::add(landIndex, 0xFFFE, args);
+
+                landIndex++;
+            }
+        }
+
         // 0x004BC9A7
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
@@ -928,43 +998,7 @@ namespace openloco::ui::windows::terraform
             {
                 case widx::land_material:
                 {
-                    //registers regs;
-                    //regs.esi = uint32_t(self);
-                    //call(0x004BCB47, regs);
-
-                    auto landCount = 0;
-                    for (auto i = 0; i < 32; i++)
-                    {
-                        auto landObj = objectmgr::get<land_object>(i);
-                        if (landObj != nullptr)
-                            landCount++;
-                    }
-                    auto xPos = self->widgets[widgetIndex].left + self->x;
-                    auto yPos = self->widgets[widgetIndex].bottom + self->y;
-                    //auto height = self->widgets[widgetIndex].bottom - self->widgets[widgetIndex].top + 1;
-                    auto colour = self->colours[1] | 0x80;
-                    auto count = _appropriateImageDropdownItemsPerRow[landCount];
-
-                    dropdown::show_image(xPos, yPos, 20, 20, colour, count, landCount);
-
-                    auto landIndex = 0;
-                    for (uint16_t i = 0; i < 32; i++)
-                    {
-                        auto landObj = objectmgr::get<land_object>(i);
-                        if (landObj == nullptr)
-                            continue;
-
-                        if (landObj->name == _lastSelectedLand)
-                            dropdown::set_highlighted_item(landIndex);
-
-                        auto args = FormatArguments();
-                        args.push(landObj->var_16 + land::image_ids::landscape_generator_tile_icon);
-                        args.push<uint16_t>(i);
-
-                        dropdown::add(landIndex, 0xFFFE, args);
-
-                        landIndex++;
-                    }
+                    showDropdown(self, widgetIndex);
                     break;
                 }
 
@@ -993,15 +1027,9 @@ namespace openloco::ui::windows::terraform
         // 0x004BC9C6
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            /*registers regs;
-            regs.ax = itemIndex;
-            regs.edx = widgetIndex;
-            regs.esi = int32_t(self);
-            call(0x004BC9C6, regs);*/
-
             if (widgetIndex != widx::land_material)
                 return;
-            if (itemIndex == 0xFFFF)
+            if (itemIndex == -1)
                 return;
             _lastSelectedLand = dropdown::get_highlighted_item();
             self->invalidate();
@@ -1260,11 +1288,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BCCFF
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = int32_t(self);
-            //regs.edi = int32_t(dpi);
-            //call(0x004BCCFF, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -1297,6 +1320,7 @@ namespace openloco::ui::windows::terraform
                 }
             }
         }
+
         static void init_events()
         {
             events.on_close = on_close;
@@ -1334,33 +1358,6 @@ namespace openloco::ui::windows::terraform
 
         static window_event_list events;
 
-        // 0x004BB6D5
-        static void refreshWallList(window* self)
-        {
-            registers regs;
-            regs.esi = int32_t(self);
-            call(0x004BB6D5, regs);
-        }
-
-        // 0x004BC21C
-        static void on_close(window* self)
-        {
-            common::sub_4BD297();
-            ui::windows::hideGridlines();
-        }
-
-        // 0x004BBCBF
-        static void tabReset(window* self)
-        {
-            input::toolSet(self, common::widx::panel, 15);
-            input::set_flag(input::input_flags::flag6);
-            _byte_113649A = 0;
-            self->var_83C = 0;
-            self->row_hover = -1;
-            refreshWallList(self);
-            // sub_4BB748 omitted
-        }
-
         // 0x004BC506
         static void updateActiveThumb(window* self)
         {
@@ -1382,6 +1379,61 @@ namespace openloco::ui::windows::terraform
 
             self->scroll_areas[0].v_top = i;
             ui::scrollview::update_thumbs(self, widx::scrollview);
+        }
+
+        // 0x004BB6D5
+        static void refreshWallList(window* self)
+        {
+            auto wallIndex = 0;
+            for (auto i = 0; i < 32; i++)
+            {
+                auto wallObj = objectmgr::get<wall_object>(i);
+                if (wallObj == nullptr)
+                    continue;
+                self->row_info[wallIndex] = i;
+                wallIndex++;
+            }
+
+            self->var_83C = wallIndex;
+            auto rowHover = -1;
+
+            if (_lastSelectedTree != 0xFF)
+            {
+                for (auto i = 0; i < self->var_83C; i++)
+                {
+                    if (_lastSelectedWall == self->row_info[i])
+                    {
+                        rowHover = _lastSelectedWall;
+                        break;
+                    }
+                }
+            }
+
+            if (rowHover == -1 && self->var_83C != 0)
+            {
+                rowHover = self->row_info[0];
+            }
+
+            updateActiveThumb(self);
+        }
+
+        // 0x004BC21C
+        static void on_close(window* self)
+        {
+            common::sub_4BD297();
+            ui::windows::hideGridlines();
+        }
+
+        // 0x004BBCBF
+        static void tabReset(window* self)
+        {
+            input::toolSet(self, common::widx::panel, 15);
+            input::set_flag(input::input_flags::flag6);
+            _byte_113649A = 0;
+            self->var_83C = 0;
+            self->row_hover = -1;
+            refreshWallList(self);
+            // sub_4BB748 omitted
         }
 
         // 0x004BC44B
@@ -1509,26 +1561,55 @@ namespace openloco::ui::windows::terraform
             *scrollHeight *= rowHeight;
         }
 
+        static int getRowIndex(int16_t x, int16_t y)
+        {
+            return (x / 40) + (y / rowHeight) * 10;
+        }
+
         // 0x004BC3D3
         static void scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = int32_t(self);
-            regs.cx = x;
-            regs.dx = y;
-            call(0x004BC3D3, regs);
+            int16_t xPos = (x / 40);
+            int16_t yPos = (y / rowHeight) * 10;
+            auto index = getRowIndex(x, y);
+
+            for (auto i = 0; i < self->var_83C; i++)
+            {
+                auto rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                {
+                    self->row_hover = rowInfo;
+                    _lastSelectedWall = static_cast<uint8_t>(rowInfo);
+
+                    int32_t pan = (self->width >> 1) + self->x;
+                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    audio::play_sound(audio::sound_id::click_down, loc, pan);
+                    self->saved_view.mapX = -16;
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x004BC390
         static void scroll_mouse_over(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            registers regs;
-            regs.ax = scroll_index;
-            regs.esi = int32_t(self);
-            regs.cx = x;
-            regs.dx = y;
-            call(0x004BC390, regs);
+            auto index = getRowIndex(x, y);
+            uint16_t rowInfo = 0xFFFF;
+            auto i = 0;
+
+            for (; i < self->var_83C; i++)
+            {
+                rowInfo = self->row_info[i];
+                index--;
+                if (index < 0)
+                    break;
+            }
+            if (i >= self->var_83C)
+                rowInfo = 0xFFFF;
+            self->var_846 = rowInfo;
+            self->invalidate();
         }
 
         // 0x004BC212
@@ -1551,20 +1632,62 @@ namespace openloco::ui::windows::terraform
         // 0x004BC0C2
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = int32_t(self);
-            regs.edi = int32_t(dpi);
-            call(0x004BC0C2, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto wallId = self->var_846;
+            if (wallId == 0xFFFF)
+            {
+                wallId = self->row_hover;
+                if (wallId == 0xFFFF)
+                    return;
+            }
+
+            auto wallObj = objectmgr::get<wall_object>(wallId);
+            auto xPos = self->x + 3;
+            auto yPos = self->y + self->height - 13;
+            auto width = self->width - 19;
+
+            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            registers regs;
-            regs.ax = scrollIndex;
-            regs.esi = int32_t(self);
-            regs.edi = int32_t(dpi);
-            call(0x004BC11C, regs);
+            auto shade = colour::get_shade(self->colours[1], 3);
+            gfx::clear_single(*dpi, shade);
+
+            uint16_t xPos = 0;
+            uint16_t yPos = 0;
+            for (uint16_t i = 0; i < self->var_83C; i++)
+            {
+                if (self->row_info[i] != self->row_hover)
+                {
+                    if (self->row_info[i] == self->var_846)
+                    {
+                        gfx::draw_rect_inset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], colour::translucent_flag);
+                    }
+                }
+                else
+                {
+                    gfx::draw_rect_inset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                }
+
+                auto wallObj = objectmgr::get<wall_object>(self->row_info[i]);
+
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
+                    gfx::draw_image(clipped, 34, 28, wallObj->var_02);
+
+                xPos += 40;
+
+                if (xPos >= 40 * 10) // full row
+                {
+                    xPos = 0;
+                    yPos += rowHeight;
+                }
+            }
         }
 
         static void init_events()

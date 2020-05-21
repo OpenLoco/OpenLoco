@@ -95,7 +95,19 @@ namespace openloco::objectmgr
     template<>
     tree_object* get(size_t id)
     {
-        return _treeObjects[id];
+        if (_treeObjects[id] != (tree_object*)-1)
+            return _treeObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    wall_object* get(size_t id)
+    {
+        if (_wallObjects[id] != (wall_object*)-1)
+            return _wallObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

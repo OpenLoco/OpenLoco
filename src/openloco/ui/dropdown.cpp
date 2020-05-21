@@ -159,9 +159,10 @@ namespace openloco::ui::dropdown
      * @param colour
      * @param count
      * @param columnCount
+     * @param heightOffset
      */
 
-    void show_image(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, uint8_t columnCount, uint8_t count)
+    void show_image(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -173,6 +174,7 @@ namespace openloco::ui::dropdown
         regs.bh = count;
         regs.bp = width;
         regs.ah = height;
+        regs.di = heightOffset;
 
         call(0x004CCDE7, regs);
     }
