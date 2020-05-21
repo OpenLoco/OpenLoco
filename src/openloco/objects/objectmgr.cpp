@@ -95,7 +95,7 @@ namespace openloco::objectmgr
     template<>
     building_object* get(size_t id)
     {
-        if (_buildingObjects[id] != (building_object*)-1)
+        if (_buildingObjects[id] != reinterpret_cast<building_object*>(-1))
             return _buildingObjects[id];
         else
             return nullptr;

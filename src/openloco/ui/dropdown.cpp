@@ -253,16 +253,6 @@ namespace openloco::ui::dropdown
         return regs.eax;
     }
 
-    // 0x0049A69E
-    void populateTownSizeSelect(window* window, widget_t* widget)
-    {
-        registers regs;
-        regs.edi = (int32_t)widget;
-        regs.esi = (int32_t)window;
-
-        call(0x0049A69E, regs);
-    }
-
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument)
     {
         return reinterpret_cast<uint16_t*>(_dropdownItemArgs[index])[argument];

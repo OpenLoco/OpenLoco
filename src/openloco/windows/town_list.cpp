@@ -21,7 +21,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::town_list
 {
-    loco_global<int8_t, 0x00F2533F> _gridlines_state;
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<colour_t, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
@@ -53,7 +52,7 @@ namespace openloco::ui::windows::town_list
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
         make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                               \
+        make_widget({ 0, 41 }, { frameWidth, 155 }, widget_type::panel, 1),                                                               \
         make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_list),                    \
         make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_town),                  \
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_buildings),             \
@@ -65,8 +64,6 @@ namespace openloco::ui::windows::town_list
         static void switchTab(window* self, widget_index widgetIndex);
         static void init_events();
         static void refreshTownList(window* self);
-        static void hideGridlines();
-        static void showGridlines();
 
     }
 
@@ -91,11 +88,11 @@ namespace openloco::ui::windows::town_list
 
         widget_t widgets[] = {
             commonWidgets(600, 197, string_ids::title_towns),
-            make_widget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_by_name),
-            make_widget({ 204, 44 }, { 79, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_town_type),
-            make_widget({ 284, 44 }, { 69, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_population),
-            make_widget({ 354, 44 }, { 69, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_stations),
-            make_widget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, 2),
+            make_widget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_by_name),
+            make_widget({ 204, 43 }, { 80, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_town_type),
+            make_widget({ 284, 43 }, { 70, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_population),
+            make_widget({ 354, 43 }, { 70, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_stations),
+            make_widget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, 2),
             widget_end(),
         };
 
@@ -446,7 +443,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049A4D8
         static void event_09(window* self)
         {
-            if ((self->flags & window_flags::not_scroll_view) == 0)
+            if (!(self->flags & window_flags::not_scroll_view))
                 return;
 
             if (self->row_hover == -1)
@@ -530,7 +527,7 @@ namespace openloco::ui::windows::town_list
                 WindowType::townList,
                 origin,
                 town_list::windowSize,
-                window_flags::flag_8,
+                window_flags::resizable,
                 &town_list::events);
 
             window->number = 0;
@@ -595,9 +592,9 @@ namespace openloco::ui::windows::town_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
         widget_t widgets[] = {
-            commonWidgets(219, 86, string_ids::title_build_new_towns),
-            make_widget({ 100, 45 }, { 116, 12 }, widget_type::wt_18, 1, image_ids::null, string_ids::tooltip_select_town_size),
-            make_widget({ 204, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            commonWidgets(220, 87, string_ids::title_build_new_towns),
+            make_widget({ 100, 45 }, { 117, 12 }, widget_type::wt_18, 1, image_ids::null, string_ids::tooltip_select_town_size),
+            make_widget({ 205, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end(),
         };
 
@@ -682,7 +679,7 @@ namespace openloco::ui::windows::town_list
         // 0x0049A7C1
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
-            common::hideGridlines();
+            ui::windows::hideGridlines();
         }
 
         // 0x0049A710
@@ -707,11 +704,21 @@ namespace openloco::ui::windows::town_list
             call(0x0049A75E, regs);
         }
 
+        // 0x0049A69E
+        static void populateTownSizeSelect(window* self, widget_t* widget)
+        {
+            registers regs;
+            regs.edi = (int32_t)widget;
+            regs.esi = (int32_t)self;
+
+            call(0x0049A69E, regs);
+        }
+
         // 0x0049A690
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::select_size)
-                dropdown::populateTownSizeSelect(self, &self->widgets[widgetIndex]);
+                populateTownSizeSelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0049A844
@@ -738,7 +745,7 @@ namespace openloco::ui::windows::town_list
             self->height = windowSize.height;
             input::toolSet(self, common::widx::tab_build_town, 38);
             input::set_flag(input::input_flags::flag6);
-            common::showGridlines();
+            ui::windows::showGridlines();
         }
 
         static void init_events()
@@ -773,10 +780,10 @@ namespace openloco::ui::windows::town_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
         widget_t widgets[] = {
-            commonWidgets(639, 171, string_ids::title_build_new_buildings),
-            make_widget({ 2, 45 }, { 572, 111 }, widget_type::scrollview, 1, 2),
-            make_widget({ 575, 46 }, { 23, 23 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
-            make_widget({ 579, 91 }, { 15, 15 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
+            commonWidgets(640, 172, string_ids::title_build_new_buildings),
+            make_widget({ 2, 45 }, { 573, 112 }, widget_type::scrollview, 1, 2),
+            make_widget({ 575, 46 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
+            make_widget({ 579, 91 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
             widget_end(),
         };
 
@@ -785,15 +792,6 @@ namespace openloco::ui::windows::town_list
         // 0x0049A8A6
         static void prepare_draw(ui::window* self)
         {
-            if (self->widgets != widgets)
-            {
-                self->widgets = widgets;
-                self->init_scroll_widgets();
-            }
-
-            self->activated_widgets &= ~((1ULL << common::widx::tab_town_list) | (1ULL << common::widx::tab_build_town) | (1ULL << common::widx::tab_build_buildings) | (1ULL << common::widx::tab_build_misc_buildings));
-            self->activated_widgets |= 1ULL << (self->current_tab - common::widx::tab_town_list);
-
             self->widgets[widx::object_colour].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, _buildingColour);
             self->widgets[widx::object_colour].type = widget_type::none;
 
@@ -865,6 +863,7 @@ namespace openloco::ui::windows::town_list
                         _buildingRotation++;
                     else
                         _buildingRotation = 0;
+                    self->invalidate();
                     break;
             }
         }
@@ -945,7 +944,7 @@ namespace openloco::ui::windows::town_list
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = _dropdownItemArgs[itemIndex][4];
+            _buildingColour = dropdown::getItemArgument(itemIndex, 4);
             self->invalidate();
         }
 
@@ -960,7 +959,7 @@ namespace openloco::ui::windows::town_list
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
             sub_49B37F();
-            common::hideGridlines();
+            ui::windows::hideGridlines();
         }
 
         // 0x0049ABF0
@@ -1029,10 +1028,6 @@ namespace openloco::ui::windows::town_list
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->set_size(minWindowSize, maxWindowSize);
-            /*bool hasResized = false;
-            if ((self->height < minWindowSize.height) || (self->height > maxWindowSize.height))
-                hasResized = true;
-            self->set_size(minWindowSize, maxWindowSize);*/
             if (hasResized)
                 updateActiveThumb(self);
         }
@@ -1041,7 +1036,7 @@ namespace openloco::ui::windows::town_list
         static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
-            if (*scrollHeight == 0)
+            if (!*scrollHeight)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
         }
@@ -1071,23 +1066,19 @@ namespace openloco::ui::windows::town_list
             auto shade = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, shade);
 
-            loco_global<uint16_t, 0x01135C58> word_1135C58;
             uint16_t xPos = 0;
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                word_1135C58 = 0xFFFF;
                 if (self->row_info[i] != self->row_hover)
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        word_1135C58 = colour::translucent_flag;
                         gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    word_1135C58 = colour::translucent_flag | colour::outline_flag;
                     gfx::draw_rect_inset(dpi, xPos, yPos, 112, 112, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
@@ -1221,7 +1212,7 @@ namespace openloco::ui::windows::town_list
                     continue;
                 if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
                 {
-                    if ((buildingObj->flags & building_object_flags::misc_building) == 0)
+                    if (!(buildingObj->flags & building_object_flags::misc_building))
                         continue;
                     if ((buildingObj->flags & building_object_flags::is_headquarters) != 0)
                         continue;
@@ -1280,10 +1271,9 @@ namespace openloco::ui::windows::town_list
 
             input::toolSet(self, tab, 39);
             input::set_flag(input::input_flags::flag6);
-            common::showGridlines();
+            ui::windows::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;
-
             byte_1135C60 = 0;
             dword_1135C34 = 0x80000000;
             self->var_83C = 0;
@@ -1481,7 +1471,7 @@ namespace openloco::ui::windows::town_list
             }
         }
 
-        //0x00457F27
+        //0x0049A2E2
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::is_tool_active(self->type, self->number))
@@ -1504,6 +1494,11 @@ namespace openloco::ui::windows::town_list
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
+
+            if (is_editor_mode())
+                self->disabled_widgets = 0;
+            else
+                self->disabled_widgets |= (1 << common::widx::tab_build_town) | (1 << common::widx::tab_build_buildings) | (1 << common::widx::tab_build_misc_buildings);
 
             self->invalidate();
 
@@ -1532,42 +1527,6 @@ namespace openloco::ui::windows::town_list
                     continue;
 
                 town.flags &= ~town_flags::sorted;
-            }
-        }
-
-        // 0x00468FD3
-        static void showGridlines()
-        {
-            if (_gridlines_state == 0)
-            {
-                auto window = WindowManager::getMainWindow();
-                if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) != 0)
-                {
-                    window->invalidate();
-                }
-                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
-            }
-            _gridlines_state++;
-        }
-
-        // 0x00468FFE
-        static void hideGridlines()
-        {
-            _gridlines_state--;
-            if (_gridlines_state == 0)
-            {
-                auto window = WindowManager::getMainWindow();
-                if (window != nullptr)
-                {
-                    if ((config::get().flags & config::flags::gridlines_on_landscape) == 0)
-                    {
-                        if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) == 0)
-                        {
-                            window->invalidate();
-                        }
-                        window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
-                    }
-                }
             }
         }
 
