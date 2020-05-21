@@ -1836,11 +1836,14 @@ namespace openloco::ui::windows
         if (!_gridlines_state)
         {
             auto window = WindowManager::getMainWindow();
-            if (!(window->viewports[0]->flags & viewport_flags::gridlines_on_landscape))
+            if (window != nullptr)
             {
-                window->invalidate();
+                if (!(window->viewports[0]->flags & viewport_flags::gridlines_on_landscape))
+                {
+                    window->invalidate();
+                }
+                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
             }
-            window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
         }
         _gridlines_state++;
     }
