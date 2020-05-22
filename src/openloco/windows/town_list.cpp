@@ -1036,7 +1036,7 @@ namespace openloco::ui::windows::town_list
         static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
-            if (!*scrollHeight)
+            if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
         }
