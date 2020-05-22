@@ -207,6 +207,8 @@ namespace openloco::ui::windows::terraform
                 rowHover = self->row_info[0];
             }
 
+            self->row_hover = rowHover;
+
             updateActiveThumb(self);
             updateTreeColours(self);
         }
@@ -1751,6 +1753,8 @@ namespace openloco::ui::windows::terraform
             {
                 rowHover = self->row_info[0];
             }
+
+            self->row_hover = rowHover;
 
             updateActiveThumb(self);
         }
