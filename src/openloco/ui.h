@@ -8,6 +8,7 @@ namespace openloco::config
 {
     enum class screen_mode;
     struct display_config;
+    struct resolution_t;
 }
 
 namespace openloco::ui
@@ -78,13 +79,11 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
-    bool updateSDLResolution();
+    bool setDisplayMode(config::screen_mode mode, config::resolution_t newResolution);
+    bool setDisplayMode(config::screen_mode mode);
     void updateFullscreenResolutions();
     std::vector<Resolution> getFullscreenResolutions();
     Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);
-#if true || !(defined(__APPLE__) && defined(__MACH__))
-    void set_screen_mode(config::screen_mode mode);
-#endif
     void handleInput();
     void minimalHandleInput();
     void adjust_window_scale(float adjust_by);

@@ -404,9 +404,7 @@ namespace openloco::ui::options
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            ui::set_screen_mode(new_mode);
-            screen_mode_toggle_enabled(w);
-            w->moveToCentre();
+            ui::setDisplayMode(new_mode);
 #endif
         }
 
@@ -420,11 +418,11 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::display_resolution];
             dropdown::show_text_2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
-            auto& cfg = config::get();
+            auto& cfg = config::get_new();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 dropdown::add(i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
-                if (cfg.resolution_width == resolutions[i].width && cfg.resolution_height == resolutions[i].height)
+                if (cfg.display.fullscreen_resolution.width == resolutions[i].width && cfg.display.fullscreen_resolution.height == resolutions[i].height)
                     dropdown::set_item_selected((int16_t)i);
             }
         }
@@ -434,24 +432,8 @@ namespace openloco::ui::options
         {
             if (index == -1)
                 return;
-
-            auto& config = config::get_new();
-            auto current_res = config.display.fullscreen_resolution;
-
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            if (current_res.width == resolutions[index].width && current_res.height == resolutions[index].height)
-                return;
-
-            config.display.fullscreen_resolution = { resolutions[index].width, resolutions[index].height };
-
-            auto& old_config = config::get();
-            old_config.resolution_width = resolutions[index].width;
-            old_config.resolution_height = resolutions[index].height;
-
-            openloco::config::write();
-            WindowManager::invalidateWidget(w->type, w->number, widx::display_resolution);
-            openloco::ui::updateSDLResolution();
-            w->moveToCentre();
+            ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
@@ -459,7 +441,6 @@ namespace openloco::ui::options
         static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
         {
             openloco::ui::adjust_window_scale(adjust_by);
-            w->moveToCentre();
         }
 
         // 0x004BFBB7
@@ -556,8 +537,9 @@ namespace openloco::ui::options
 
             FormatArguments args = {};
             args.skip(0x10);
-            args.push<uint16_t>(config::get().resolution_width);
-            args.push<uint16_t>(config::get().resolution_height);
+            auto& resolution = config::get_new().display.fullscreen_resolution;
+            args.push<uint16_t>(resolution.width);
+            args.push<uint16_t>(resolution.height);
 
             if (config::get().construction_marker)
                 w->widgets[widx::construction_marker].text = string_ids::translucent;
@@ -595,6 +577,10 @@ namespace openloco::ui::options
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
+
+#if !(defined(__APPLE__) && defined(__MACH__))
+            screen_mode_toggle_enabled(w);
+#endif
 
             sub_4C13BE(w);
         }
