@@ -69,6 +69,9 @@ namespace openloco::ui::windows
     void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
 
     void editorInit();
+
+    void showGridlines();
+    void hideGridlines();
 }
 
 namespace openloco::ui::about

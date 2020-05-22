@@ -1,6 +1,7 @@
 #include "WindowManager.h"
 #include "../audio/audio.h"
 #include "../companymgr.h"
+#include "../config.h"
 #include "../console.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
@@ -1811,6 +1812,7 @@ namespace openloco::ui::WindowManager
 namespace openloco::ui::windows
 {
     static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
+    static loco_global<int8_t, 0x00F2533F> _gridlines_state;
 
     // 0x00431A8A
     void show_error(string_id title, string_id message, bool sound)
@@ -1826,5 +1828,44 @@ namespace openloco::ui::windows
         call(0x00431A8A, regs);
 
         suppressErrorSound = false;
+    }
+
+    // 0x00468FD3
+    void showGridlines()
+    {
+        if (!_gridlines_state)
+        {
+            auto window = WindowManager::getMainWindow();
+            if (window != nullptr)
+            {
+                if (!(window->viewports[0]->flags & viewport_flags::gridlines_on_landscape))
+                {
+                    window->invalidate();
+                }
+                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
+            }
+        }
+        _gridlines_state++;
+    }
+
+    // 0x00468FFE
+    void hideGridlines()
+    {
+        _gridlines_state--;
+        if (!_gridlines_state)
+        {
+            if (!(config::get().flags & config::flags::gridlines_on_landscape))
+            {
+                auto window = WindowManager::getMainWindow();
+                if (window != nullptr)
+                {
+                    if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) != 0)
+                    {
+                        window->invalidate();
+                    }
+                    window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
+                }
+            }
+        }
     }
 }

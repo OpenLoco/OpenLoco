@@ -31,4 +31,23 @@ namespace openloco::utility
         return -1;
 #endif
     }
+
+    int32_t bitscanreverse(uint32_t source)
+    {
+#if defined(_MSC_VER) && (_MSC_VER >= 1400) // Visual Studio 2005
+        DWORD i;
+        uint8_t success = _BitScanReverse(&i, source);
+        return success != 0 ? i : -1;
+#elif defined(__GNUC__)
+        int32_t success = __builtin_ffs(__builtin_bswap32(source));
+        return success - 1;
+#else
+#pragma message "Falling back to iterative bitscan reverse, consider using intrinsics"
+        for (int32_t i = 31; i > -1; i--)
+            if (source & (1u << i))
+                return i;
+
+        return -1;
+#endif
+    }
 }

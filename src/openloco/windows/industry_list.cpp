@@ -25,7 +25,6 @@ namespace openloco::ui::windows::industry_list
     static loco_global<utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
-    loco_global<int8_t, 0x00F2533F> _gridlines_state;
 
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
@@ -58,7 +57,6 @@ namespace openloco::ui::windows::industry_list
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void prepare_draw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void showGridlines();
     }
 
     namespace industry_list
@@ -954,32 +952,11 @@ namespace openloco::ui::windows::industry_list
             call(0x00458C09, regs);
         }
 
-        // 0x00468FFE hide_gridlines
-        static void hideGridlines()
-        {
-            _gridlines_state--;
-            if (_gridlines_state == 0)
-            {
-                auto window = WindowManager::getMainWindow();
-                if (window != nullptr)
-                {
-                    if ((config::get().flags & config::flags::gridlines_on_landscape) == 0)
-                    {
-                        if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) == 0)
-                        {
-                            window->invalidate();
-                        }
-                        window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
-                    }
-                }
-            }
-        }
-
         // 0x004585AD
         static void on_tool_abort(window& self, const widget_index widgetIndex)
         {
             sub_458C09();
-            hideGridlines();
+            ui::windows::hideGridlines();
         }
 
         // 0x0045845F
@@ -1068,7 +1045,7 @@ namespace openloco::ui::windows::industry_list
             input::toolSet(self, common::widx::tab_new_industry, 40);
 
             input::set_flag(input::input_flags::flag6);
-            common::showGridlines();
+            ui::windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
 
@@ -1154,21 +1131,6 @@ namespace openloco::ui::windows::industry_list
 
             self->widgets[common::widx::close_button].left = self->width - 15;
             self->widgets[common::widx::close_button].right = self->width - 3;
-        }
-
-        // 0x00468FD3
-        static void showGridlines()
-        {
-            if (_gridlines_state == 0)
-            {
-                auto window = WindowManager::getMainWindow();
-                if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) != 0)
-                {
-                    window->invalidate();
-                }
-                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
-            }
-            _gridlines_state++;
         }
 
         // 0x00457F27

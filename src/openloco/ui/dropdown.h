@@ -71,5 +71,6 @@ namespace openloco::ui::dropdown
 
     void populateCompanySelect(window* window, widget_t* widget);
     company_id_t getCompanyIdFromSelection(int16_t itemIndex);
+    void populateTownSizeSelect(window* window, widget_t* widget);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
 }

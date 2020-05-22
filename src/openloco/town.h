@@ -17,6 +17,7 @@ namespace openloco
 
     namespace town_flags
     {
+        constexpr uint16_t sorted = 1 << 0;
         constexpr uint16_t rating_adjusted = 1 << 1;
     }
 
@@ -32,10 +33,10 @@ namespace openloco
 #pragma pack(push, 1)
     struct town
     {
-        string_id name;
-        coord_t x;
-        coord_t y;
-        uint16_t flags;
+        string_id name; // 0x00
+        coord_t x;      // 0x02
+        coord_t y;      // 0x04
+        uint16_t flags; // 0x06
         uint8_t pad_08[0x30 - 0x08];
         uint32_t population; // 0x30
         uint8_t pad_34[0x38 - 0x34];
