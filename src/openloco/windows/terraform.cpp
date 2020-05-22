@@ -1111,7 +1111,7 @@ namespace openloco::ui::windows::terraform
             auto y = _mapSelectionAY + _mapSelectionBY;
             x /= 2;
             y /= 2;
-            x += 16;KD
+            x += 16;
             y += 16;
             uint32_t x2 = _mapSelectionBX << 16;
             uint32_t y2 = _mapSelectionBY << 16;
