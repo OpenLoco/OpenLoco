@@ -815,7 +815,6 @@ namespace openloco::ui
             return false;
         }
 
-
         // It appears we were successful in setting the screen mode, so let's up date the config.
         auto& config = config::get_new();
         config.display.mode = mode;
