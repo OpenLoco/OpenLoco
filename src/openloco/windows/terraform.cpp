@@ -25,7 +25,6 @@ using namespace openloco::game_commands;
 namespace openloco::ui::windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
-    static loco_global<std::uint8_t[32], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
@@ -50,12 +49,12 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
-    static loco_global<uint32_t, 0x00F2530C> _dword_F2530C;
-    static loco_global<uint32_t, 0x00F25310> _dword_F25310;
-    static loco_global<uint32_t, 0x01136484> _dword_1136484;
+    static loco_global<uint32_t, 0x00F2530C> _raiseAdjustCost;
+    static loco_global<uint32_t, 0x00F25310> _lowerAdjustCost;
+    static loco_global<uint32_t, 0x01136484> _lastTreeCost;
     static loco_global<uint16_t, 0x01136488> _word_1136488;
     static loco_global<uint16_t, 0x0113648A> _word_113648A;
-    static loco_global<uint16_t, 0x01136490> _word_1136490;
+    static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
     static loco_global<uint8_t, 0x01136499> _byte_1136499;
     static loco_global<uint8_t, 0x0113649B> _byte_113649B;
     static loco_global<uint8_t, 0x0113649C> _byte_113649C;
@@ -103,7 +102,7 @@ namespace openloco::ui::windows::terraform
         static void on_update(window* self);
         static void on_resize(window* self, uint8_t height);
         static void on_mouse_up(window* self, widget_index widgetIndex);
-        static uint8_t sub_4A69DD();
+        static void sub_4A69DD();
     }
 
     namespace plant_trees
@@ -226,7 +225,7 @@ namespace openloco::ui::windows::terraform
             input::toolSet(self, common::widx::panel, 8);
             input::set_flag(input::input_flags::flag6);
             _byte_113649A = 0;
-            _dword_1136484 = 0x80000000;
+            _lastTreeCost = 0x80000000;
             self->var_83C = 0;
             self->row_hover = -1;
             refreshTreeList(self);
@@ -454,7 +453,7 @@ namespace openloco::ui::windows::terraform
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     audio::play_sound(audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
-                    _dword_1136484 = 0x80000000;
+                    _lastTreeCost = 0x80000000;
                     self->invalidate();
                     break;
                 }
@@ -534,12 +533,6 @@ namespace openloco::ui::windows::terraform
             self->widgets[widx::plant_cluster_selected].right = self->width - 2;
             self->widgets[widx::plant_cluster_random].right = self->width - 2;
 
-            /*if (is_editor_mode())
-            {
-                self->widgets[widx::plant_cluster_selected].type = widget_type::none;
-                self->widgets[widx::plant_cluster_random].type = widget_type::none;
-            }*/
-
             common::repositionTabs(self);
         }
 
@@ -562,7 +555,7 @@ namespace openloco::ui::windows::terraform
             uint32_t treeCost = 0x80000000;
             if (self->var_846 == 0xFFFF)
             {
-                treeCost = _dword_1136484;
+                treeCost = _lastTreeCost;
                 if (treeCost == 0x80000000)
                 {
                     treeCost = treeObj->cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
@@ -592,13 +585,13 @@ namespace openloco::ui::windows::terraform
             uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
             image += rotation;
-            image += treeObj->var_0A[treeObj->var_3D];
+            image += treeObj->sprites[treeObj->season_state];
 
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
                 colour_t colour = _treeColour;
-                if ((_word_1136490 & 0x20) == 0)
+                if ((_lastTreeColourFlag & 0x20) == 0)
                 {
                     colour = utility::bitscanreverse(colourOptions);
                     if (colour == 0xFF)
@@ -619,18 +612,18 @@ namespace openloco::ui::windows::terraform
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                _word_1136490 = 0xFFFF;
+                _lastTreeColourFlag = 0xFFFF;
                 if (self->row_info[i] != self->row_hover)
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        _word_1136490 = colour::translucent_flag;
+                        _lastTreeColourFlag = colour::translucent_flag;
                         gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    _word_1136490 = colour::translucent_flag | colour::outline_flag;
+                    _lastTreeColourFlag = colour::translucent_flag | colour::outline_flag;
                     gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
@@ -690,14 +683,14 @@ namespace openloco::ui::windows::terraform
                 WindowType::terraform,
                 origin,
                 plant_trees::windowSize,
-                window_flags::flag_8,
+                window_flags::flag_11,
                 &plant_trees::events);
 
             window->number = 0;
             window->current_tab = common::widx::tab_plant_trees - common::widx::tab_clear_area;
             window->frame_no = 0;
             _byte_113649A = 0;
-            _dword_1136484 = 0x80000000;
+            _lastTreeCost = 0x80000000;
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
             window->saved_view.mapX = 0;
@@ -727,10 +720,7 @@ namespace openloco::ui::windows::terraform
             window->holdable_widgets = 0;
             window->activated_widgets = 0;
 
-            auto disabledWidgets = 0;
-            /*if (!is_editor_mode())
-                disabledWidgets |= common::widx::tab_build_walls;*/
-            window->disabled_widgets = disabledWidgets;
+            window->disabled_widgets = 0;
 
             window->call_on_resize();
             window->call_prepare_draw();
@@ -780,7 +770,7 @@ namespace openloco::ui::windows::terraform
         {
             input::toolSet(self, common::widx::panel, 41);
             input::set_flag(input::input_flags::flag6);
-            _dword_F2530C = 0x80000000;
+            _raiseAdjustCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
         }
 
@@ -841,6 +831,7 @@ namespace openloco::ui::windows::terraform
                 x2 |= _mapSelectionAX;
                 y2 |= _mapSelectionAY;
                 _gGameCommandErrorTitle = string_ids::error_cant_clear_entire_area;
+
                 game_commands::do_66(x, y, x2, y2, flags);
             }
         }
@@ -896,9 +887,9 @@ namespace openloco::ui::windows::terraform
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            if (_dword_F2530C == 0x80000000)
+            if (_raiseAdjustCost == 0x80000000)
                 return;
-            if (_dword_F2530C == 0)
+            if (_raiseAdjustCost == 0)
                 return;
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
@@ -907,7 +898,7 @@ namespace openloco::ui::windows::terraform
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
 
             auto args = FormatArguments();
-            args.push<uint16_t>(_dword_F2530C);
+            args.push<uint16_t>(_raiseAdjustCost);
 
             gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
@@ -969,8 +960,8 @@ namespace openloco::ui::windows::terraform
                     continue;
 
                 _lastSelectedLand = i;
-                _dword_F2530C = 0x80000000;
-                _dword_F25310 = 0x80000000;
+                _raiseAdjustCost = 0x80000000;
+                _lowerAdjustCost = 0x80000000;
                 _adjustToolSize = _adjustLandToolSize;
                 break;
             }
@@ -979,7 +970,10 @@ namespace openloco::ui::windows::terraform
         // 0x004BCBF8
         static void on_resize(window* self)
         {
-            common::on_resize(self, 140);
+            if (!is_editor_mode())
+                common::on_resize(self, 140);
+            else
+                common::on_resize(self, 115);
         }
 
         // 0x004BCB47
@@ -992,11 +986,12 @@ namespace openloco::ui::windows::terraform
                 if (landObj != nullptr)
                     landCount++;
             }
+
             auto xPos = self->widgets[widgetIndex].left + self->x;
             auto yPos = self->widgets[widgetIndex].bottom + self->y;
-            auto heightOffset = self->widgets[widgetIndex].bottom - self->widgets[widgetIndex].top + 1;
+            auto heightOffset = self->widgets[widgetIndex].height() - 18;
             auto colour = self->colours[1] | 0x80;
-            auto count = _appropriateImageDropdownItemsPerRow[landCount];
+            auto count = dropdown::getItemsPerRow(landCount);
 
             dropdown::show_image(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
@@ -1065,233 +1060,273 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x00468DFD
-        static uint8_t lowerLand(uint8_t flags)
+        static uint32_t lowerLand(uint8_t flags)
         {
-            if (!(flags & 1))
-                flags = common::sub_4A69DD();
+            registers regs;
+            regs.bl = flags;
+            call(0x00468DFD, regs);
+            return regs.ebx;
 
-            auto x = _mapSelectionAX + _mapSelectionBX;
-            auto y = _mapSelectionAY + _mapSelectionBY;
-            x /= 2;
-            y /= 2;
-            x += 16;
-            y += 16;
-            uint32_t x2 = _mapSelectionBX << 16;
-            uint32_t y2 = _mapSelectionBY << 16;
-            x2 |= _mapSelectionAX;
-            y2 |= _mapSelectionAY;
-            _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
+        //    uint32_t cost = 0x80000000;
+        //    if ((flags & 1))
+        //        common::sub_4A69DD();
 
-            if (_adjustToolSize == 0)
-            {
-                uint16_t di = 0xFFFF;
-                game_commands::do_27(x, y, x2, y2, di, flags);
-            }
-            else
-            {
-                uint16_t di = _word_F2448E;
-                game_commands::do_26(x, y, x2, y2, di, flags);
-            }
-            return flags;
+        //    uint16_t x = _mapSelectionAX + _mapSelectionBX;
+        //    uint16_t y = _mapSelectionAY + _mapSelectionBY;
+        //    x /= 2;
+        //    y /= 2;
+        //    x += 16;
+        //    y += 16;
+        //    uint32_t x2 = _mapSelectionBX << 16;
+        //    uint32_t y2 = _mapSelectionBY << 16;
+        //    x2 |= _mapSelectionAX;
+        //    y2 |= _mapSelectionAY;
+        //    _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
+
+        //    if (_adjustToolSize == 0)
+        //    {
+        //        uint16_t di = 0xFFFF;
+        //        cost = game_commands::do_27(x, y, x2, y2, di, flags);
+        //    }
+        //    else
+        //    {
+        //        uint16_t di = _word_F2448E;
+        //        cost = game_commands::do_26(x, y, x2, y2, di, flags);
+        //    }
+        //    return cost;
         }
 
         // 0x00468D1D
-        static uint8_t raiseLand(uint8_t flags)
+        static uint32_t raiseLand(uint8_t flags)
         {
-            if (!(flags & 1))
-                flags = common::sub_4A69DD();
+            registers regs;
+            regs.bl = flags;
+            call(0x00468D1D, regs);
+            return regs.ebx;
 
-            auto x = _mapSelectionAX + _mapSelectionBX;
-            auto y = _mapSelectionAY + _mapSelectionBY;
-            x /= 2;
-            y /= 2;
-            x += 16;
-            y += 16;
-            uint32_t x2 = _mapSelectionBX << 16;
-            uint32_t y2 = _mapSelectionBY << 16;
-            x2 |= _mapSelectionAX;
-            y2 |= _mapSelectionAY;
-            _gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+            //uint32_t cost = 0x80000000;
+            //if ((flags & 1))
+            //    common::sub_4A69DD();
 
-            if (_adjustToolSize == 0)
+            //auto x = _mapSelectionAX + _mapSelectionBX;
+            //auto y = _mapSelectionAY + _mapSelectionBY;
+            //x /= 2;
+            //y /= 2;
+            //x += 16;
+            //y += 16;
+            //uint32_t x2 = _mapSelectionBX << 16;
+            //uint32_t y2 = _mapSelectionBY << 16;
+            //x2 |= _mapSelectionAX;
+            //y2 |= _mapSelectionAY;
+            //_gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+
+            //if (_adjustToolSize == 0)
+            //{
+            //    uint16_t di = 1;
+            //    cost = game_commands::do_27(x, y, x2, y2, di, flags);
+            //}
+            //else
+            //{
+            //    uint16_t di = _word_F2448E;
+            //    cost = game_commands::do_25(x, y, x2, y2, di, flags);
+            //}
+            //return cost;
+        }
+
+        static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost)
+        {
+            if (_raiseAdjustCost == raiseCost)
             {
-                uint16_t di = 1;
-                game_commands::do_27(x, y, x2, y2, di, flags);
+                if (_lowerAdjustCost == lowerCost)
+                    return;
             }
-            else
+
+            _raiseAdjustCost = raiseCost;
+            _lowerAdjustCost = lowerCost;
+
+            WindowManager::invalidate(WindowType::terraform, 0);
+        }
+
+        static uint16_t setMapSelectionTiles(int16_t x, int16_t y)
+        {
+            registers regs;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x0045F1A7, regs);
+            auto xPos = regs.ax;
+            auto yPos = regs.bx;
+            if (xPos != 0x8000)
             {
-                uint16_t di = _word_F2448E;
-                game_commands::do_25(x, y, x2, y2, di, flags);
+                uint8_t count = 0;
+                if ((_mapSelectionFlags & 1) == 0)
+                {
+                    _mapSelectionFlags = _mapSelectionFlags | 1;
+                    count++;
+                }
+
+                if (_word_F2448E != 4)
+                {
+                    _word_F2448E = 4;
+                    count++;
+                }
+
+                uint16_t toolSizeA = _adjustToolSize;
+
+                if (!toolSizeA)
+                    toolSizeA = 1;
+
+                toolSizeA = toolSizeA << 5;
+                uint16_t toolSizeB = toolSizeA;
+                toolSizeB -= 32;
+                toolSizeA = toolSizeA >> 1;
+                toolSizeA -= 16;
+                xPos -= toolSizeA;
+                yPos -= toolSizeA;
+                xPos &= 0xFFE0;
+                yPos &= 0xFFE0;
+
+                if (xPos != _mapSelectionAX)
+                {
+                    _mapSelectionAX = xPos;
+                    count++;
+                }
+
+                if (yPos != _mapSelectionAY)
+                {
+                    _mapSelectionAY = yPos;
+                    count++;
+                }
+
+                xPos += toolSizeB;
+                yPos += toolSizeB;
+
+                if (xPos != _mapSelectionBX)
+                {
+                    _mapSelectionBX = xPos;
+                    count++;
+                }
+
+                if (yPos != _mapSelectionBY)
+                {
+                    _mapSelectionBY = yPos;
+                    count++;
+                }
+
+                tilemgr::map_invalidate_selection_rect();
+
+                return count;
             }
-            return flags;
+            return 0x8000;
+        }
+
+        static uint16_t setMapSelectionSingleTile(int16_t x, int16_t y)
+        {
+            registers regs;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x0045FD8E, regs);
+            auto xPos = regs.ax;
+            auto yPos = regs.bx;
+            auto cursorQuadrant = regs.cx;
+            if (xPos != 0x8000)
+            {
+                auto count = 0;
+                if ((_mapSelectionFlags & 1) == 0)
+                {
+                    _mapSelectionFlags = _mapSelectionFlags | 1;
+                    count++;
+                }
+
+                if (_word_F2448E != cursorQuadrant)
+                {
+                    _word_F2448E = cursorQuadrant;
+                    count++;
+                }
+                if (xPos != _mapSelectionAX)
+                {
+                    _mapSelectionAX = xPos;
+                    count++;
+                }
+
+                if (yPos != _mapSelectionAY)
+                {
+                    _mapSelectionAY = yPos;
+                    count++;
+                }
+
+                if (xPos != _mapSelectionBX)
+                {
+                    _mapSelectionBX = xPos;
+                    count++;
+                }
+
+                if (yPos != _mapSelectionBY)
+                {
+                    _mapSelectionBY = yPos;
+                    count++;
+                }
+
+                tilemgr::map_invalidate_selection_rect();
+
+                return count;
+            }
+            return 0x8000;
         }
 
         // 0x004BC9D7
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             uint16_t xPos = 0;
-            uint16_t yPos = 0;
             if (widgetIndex != common::widx::panel)
                 return;
+
             tilemgr::map_invalidate_selection_rect();
+
             if (_currentTool != 3)
             {
                 _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
                 if (_adjustLandToolSize != 1)
                 {
-                    registers regs;
-                    regs.ax = x;
-                    regs.bx = y;
-                    call(0x0045F1A7, regs);
-                    xPos = regs.ax;
-                    yPos = regs.bx;
-                    if (xPos != 0x8000)
-                    {
-                        auto count = 0;
-                        if ((_mapSelectionFlags & 1) == 0)
-                        {
-                            _mapSelectionFlags = _mapSelectionFlags | 1;
-                            count++;
-                        }
+                    auto count = setMapSelectionTiles(x, y);
 
-                        if (_word_F2448E != 4)
-                        {
-                            _word_F2448E = 4;
-                            count++;
-                        }
+                    if (count == 0x8000)
+                        xPos = 0x8000;
 
-                        uint16_t toolSizeA = _adjustToolSize;
-
-                        if (!toolSizeA)
-                            toolSizeA = 1;
-
-                        toolSizeA = toolSizeA << 5;
-                        uint16_t toolSizeB = toolSizeA;
-                        toolSizeB -= 32;
-                        toolSizeA = toolSizeA >> 1;
-                        toolSizeA -= 16;
-                        xPos -= toolSizeA;
-                        yPos -= toolSizeA;
-                        xPos &= 0xFFE0;
-                        yPos &= 0xFFE0;
-
-                        if (xPos != _mapSelectionAX)
-                        {
-                            _mapSelectionAX = xPos;
-                            count++;
-                        }
-
-                        if (yPos != _mapSelectionAY)
-                        {
-                            _mapSelectionAY = yPos;
-                            count++;
-                        }
-
-                        xPos += toolSizeB;
-                        yPos += toolSizeB;
-
-                        if (xPos != _mapSelectionBX)
-                        {
-                            _mapSelectionBX = xPos;
-                            count++;
-                        }
-
-                        if (yPos != _mapSelectionBY)
-                        {
-                            _mapSelectionBY = yPos;
-                            count++;
-                        }
-
-                        tilemgr::map_invalidate_selection_rect();
-
-                        if (!count)
-                            return;
-                    }
+                    if (!count)
+                        return;
                 }
                 else
                 {
-                    registers regs;
-                    regs.ax = x;
-                    regs.bx = y;
-                    call(0x0045FD8E, regs);
-                    xPos = regs.ax;
-                    yPos = regs.bx;
-                    auto zPos = regs.cx;
-                    if (xPos != 0x8000)
-                    {
-                        auto count = 0;
-                        if ((_mapSelectionFlags & 1) == 0)
-                        {
-                            _mapSelectionFlags = _mapSelectionFlags | 1;
-                            count++;
-                        }
+                    auto count = setMapSelectionSingleTile(x, y);
 
-                        if (_word_F2448E != zPos)
-                        {
-                            _word_F2448E = zPos;
-                            count++;
-                        }
-                        if (xPos != _mapSelectionAX)
-                        {
-                            _mapSelectionAX = xPos;
-                            count++;
-                        }
+                    if (count == 0x8000)
+                        xPos = 0x8000;
 
-                        if (yPos != _mapSelectionAY)
-                        {
-                            _mapSelectionAY = yPos;
-                            count++;
-                        }
-
-                        if (xPos != _mapSelectionBX)
-                        {
-                            _mapSelectionBX = xPos;
-                            count++;
-                        }
-
-                        if (yPos != _mapSelectionBY)
-                        {
-                            _mapSelectionBY = yPos;
-                            count++;
-                        }
-
-                        tilemgr::map_invalidate_selection_rect();
-
-                        if (!count)
-                            return;
-                    }
+                    if (!count)
+                        return;
                 }
             }
             else
             {
-                if ((_mapSelectionFlags & 1) == 0)
+                if (!(_mapSelectionFlags & 1))
                     return;
             }
 
-            uint32_t ebx = -1;
-            uint32_t ecx = -1;
+            uint32_t raiseCost = 0;
+            uint32_t lowerCost = 0;
 
             if (is_editor_mode() || xPos == 0x8000)
             {
-                ebx = 0x80000000;
-                ecx = 0x80000000;
+                raiseCost = 0x80000000;
+                lowerCost = 0x80000000;
             }
             else
             {
-                auto flags = lowerLand(GameCommandFlag::flag_2);
-                ecx = flags;
-                flags = raiseLand(GameCommandFlag::flag_2);
-                ebx = flags;
-            }
+                lowerCost = lowerLand(GameCommandFlag::flag_2);
 
-            if (_dword_F2530C == ebx)
-            {
-                if (_dword_F25310 == ecx)
-                    return;
+                raiseCost = raiseLand(GameCommandFlag::flag_2);
             }
-            _dword_F2530C = ebx;
-            _dword_F25310 = ecx;
-            WindowManager::invalidate(WindowType::terraform, 0);
+            setAdjustCost(raiseCost, lowerCost);
         }
 
         // 0x004BC9ED
@@ -1301,12 +1336,15 @@ namespace openloco::ui::windows::terraform
                 return;
             if (!(_mapSelectionFlags & 1))
                 return;
-            if (_adjustToolSize != 0)
+            if (is_editor_mode())
             {
-                if (_lastSelectedLand != 0xFF)
+                if (_adjustToolSize != 0)
                 {
-                    _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
-                    game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
+                    if (_lastSelectedLand != 0xFF)
+                    {
+                        _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
+                        game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
+                    }
                 }
             }
 
@@ -1355,8 +1393,8 @@ namespace openloco::ui::windows::terraform
                 _dragLastY += dx;
                 lowerLand(flags);
             }
-            _dword_F2530C = 0x80000000;
-            _dword_F25310 = 0x80000000;
+            _raiseAdjustCost = 0x80000000;
+            _lowerAdjustCost = 0x80000000;
         }
 
         // 0x004BCA5D
@@ -1406,27 +1444,23 @@ namespace openloco::ui::windows::terraform
             xPos += self->x;
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 28;
 
-            if (_dword_F2530C != 0x80000000)
+            if (_raiseAdjustCost != 0x80000000)
             {
-                if (_dword_F2530C != 0)
+                if (_raiseAdjustCost != 0)
                 {
-                    auto args = FormatArguments();
-                    args.push<uint16_t>(_dword_F2530C);
-
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
+                    int raiseCost = _raiseAdjustCost;
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &raiseCost);
                 }
             }
 
             yPos += 10;
 
-            if (_dword_F25310 != 0x80000000)
+            if (_lowerAdjustCost != 0x80000000)
             {
-                if (_dword_F25310 != 0)
+                if (_lowerAdjustCost != 0)
                 {
-                    auto args = FormatArguments();
-                    args.push<uint16_t>(_dword_F25310);
-
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
+                    int lowerCost = _lowerAdjustCost;
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &lowerCost);
                 }
             }
         }
@@ -1596,8 +1630,8 @@ namespace openloco::ui::windows::terraform
                 _dragLastY += dx;
                 lowerWater(flags);
             }
-            _dword_F2530C = 0x80000000;
-            _dword_F25310 = 0x80000000;
+            _raiseAdjustCost = 0x80000000;
+            _lowerAdjustCost = 0x80000000;
         }
 
         // 0x004BCDE8
@@ -2020,7 +2054,7 @@ namespace openloco::ui::windows::terraform
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
                 if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
-                    gfx::draw_image(clipped, 34, 28, wallObj->var_02);
+                    gfx::draw_image(clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;
 
@@ -2270,11 +2304,10 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004A69DD
-        static uint8_t sub_4A69DD()
+        static void sub_4A69DD()
         {
             registers regs;
             call(0x004A69DD, regs);
-            return regs.bl;
         }
 
         static void init_events()
@@ -2377,5 +2410,25 @@ namespace openloco::ui::windows::terraform
                 regs = backup;
                 return 0;
             });
+
+        //register_hook(
+        //    0x00468D1D,
+        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        //        registers backup = regs;
+        //        uint32_t cost = adjust_land::raiseLand((uint8_t)regs.dl);
+        //        regs = backup;
+        //        regs.edx = cost;
+        //        return 0;
+        //    });
+
+        //register_hook(
+        //    0x00468DFD,
+        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        //        registers backup = regs;
+        //        uint32_t cost = adjust_land::lowerLand((uint8_t)regs.dl);
+        //        regs = backup;
+        //        regs.edx = cost;
+        //        return 0;
+        //    });
     }
 }

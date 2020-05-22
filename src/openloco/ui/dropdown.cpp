@@ -18,6 +18,7 @@ namespace openloco::ui::dropdown
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
+    static loco_global<std::uint8_t[32], 0x005046FA> _appropriateImageDropdownItemsPerRow;
 
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
@@ -286,5 +287,10 @@ namespace openloco::ui::dropdown
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument)
     {
         return reinterpret_cast<uint16_t*>(_dropdownItemArgs[index])[argument];
+    }
+
+    uint16_t getItemsPerRow(uint8_t itemCount)
+    {
+        return _appropriateImageDropdownItemsPerRow[itemCount];
     }
 }

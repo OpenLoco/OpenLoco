@@ -8,7 +8,7 @@ namespace openloco
     struct wall_object
     {
         string_id name;
-        uint32_t var_02;
+        uint32_t sprite; // 0x02
         uint8_t var_06;
         uint8_t var_07;
         uint8_t var_08;
