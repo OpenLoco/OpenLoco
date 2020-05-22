@@ -794,10 +794,6 @@ namespace openloco::ui
 
     bool setDisplayMode(config::screen_mode mode, config::resolution_t newResolution)
     {
-        SDL_DisplayMode displayMode;
-        int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
-        SDL_GetDesktopDisplayMode(displayIndex, &displayMode);
-
         // First, set the appropriate screen mode flags.
         auto flags = 0;
         if (mode == config::screen_mode::fullscreen)
@@ -815,14 +811,7 @@ namespace openloco::ui
         // Set the new dimensions of the screen, or just the window.
         if (mode != config::screen_mode::window)
         {
-            displayMode.w = newResolution.width;
-            displayMode.h = newResolution.height;
-
-            if (SDL_SetWindowDisplayMode(window, &displayMode) != 0)
-            {
-                console::error("SDL_SetWindowDisplayMode failed: %s", SDL_GetError());
-                return false;
-            }
+            SDL_SetWindowSize(window, newResolution.width, newResolution.height);
         }
         else
         {
