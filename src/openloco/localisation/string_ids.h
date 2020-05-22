@@ -227,6 +227,8 @@ namespace openloco::string_ids
 
     constexpr string_id wcolour2_stringid = 457;
 
+    constexpr string_id error_cant_lower_water_here = 477;
+    constexpr string_id error_cant_raise_water_here = 478;
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
@@ -836,6 +838,7 @@ namespace openloco::string_ids
     constexpr string_id load_landscape = 1581;
     constexpr string_id save_landscape = 1582;
 
+    constexpr string_id error_cant_clear_entire_area = 1584;
     constexpr string_id title_landscape_generation_options = 1585;
     constexpr string_id title_landscape_generation_land = 1586;
     constexpr string_id title_landscape_generation_forests = 1587;

@@ -104,7 +104,7 @@ namespace openloco::objectmgr
     template<>
     wall_object* get(size_t id)
     {
-        if (_wallObjects[id] != reinterpret_cast < wall_object*>(-1))
+        if (_wallObjects[id] != reinterpret_cast<wall_object*>(-1))
             return _wallObjects[id];
         else
             return nullptr;

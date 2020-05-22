@@ -111,7 +111,7 @@ namespace openloco::game_commands
     }
 
     // Change Land Material
-    inline void do_24(uint16_t ax, uint16_t cx, uint8_t di, uint8_t bp, uint8_t dl, uint8_t flags)
+    inline void do_24(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t dl, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
@@ -121,45 +121,69 @@ namespace openloco::game_commands
         regs.bp = bp;
         regs.bl = flags;
         do_command(24, regs);
-    } 
-    
+    }
+
     // Raise Land
-    inline void do_25(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    inline void do_25(uint16_t ax, uint16_t cx, uint32_t edx, uint32_t ebp, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
         regs.cx = cx;
-        regs.dx = dx;
-        regs.bp = bp;
+        regs.edx = edx;
+        regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
         do_command(25, regs);
     }
 
-    // Lower Land 
-    inline void do_26(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    // Lower Land
+    inline void do_26(uint16_t ax, uint16_t cx, uint32_t edx, uint32_t ebp, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
         regs.cx = cx;
-        regs.dx = dx;
-        regs.bp = bp;
+        regs.edx = edx;
+        regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
         do_command(26, regs);
     }
 
     // Lower/Raise Land Mountain
-    inline void do_27(uint16_t ax, uint16_t cx, uint16_t dx, uint8_t bp, uint8_t di, uint8_t flags)
+    inline void do_27(uint16_t ax, uint16_t cx, uint32_t edx, uint32_t ebp, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
         regs.cx = cx;
-        regs.dx = dx;
-        regs.bp = bp;
+        regs.edx = edx;
+        regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
         do_command(27, regs);
+    }
+
+    // Raise Water
+    inline void do_28(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.bp = bp;
+        regs.di = di;
+        regs.bl = flags;
+        do_command(28, regs);
+    }
+
+    // Lower Water
+    inline void do_29(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.bp = bp;
+        regs.di = di;
+        regs.bl = flags;
+        do_command(29, regs);
     }
 
     // Change company name
@@ -253,6 +277,18 @@ namespace openloco::game_commands
         regs.edi = *objPtr;
         regs.bh = company;
         return do_command(65, regs) != FAILURE;
+    }
+
+    // Clear Land
+    inline void do_66(uint16_t ax, uint16_t cx, uint32_t edx, uint32_t ebp, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = ax;
+        regs.cx = cx;
+        regs.edx = edx;
+        regs.ebp = ebp;
+        regs.bl = flags;
+        do_command(66, regs);
     }
 
     // Send chat message

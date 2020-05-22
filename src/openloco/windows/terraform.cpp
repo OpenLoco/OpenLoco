@@ -103,6 +103,7 @@ namespace openloco::ui::windows::terraform
         static void on_update(window* self);
         static void on_resize(window* self, uint8_t height);
         static void on_mouse_up(window* self, widget_index widgetIndex);
+        static uint8_t sub_4A69DD();
     }
 
     namespace plant_trees
@@ -850,39 +851,69 @@ namespace openloco::ui::windows::terraform
             call(0x004BC677, regs);
         }
 
+        static void clearLand(uint8_t flags)
+        {
+            if ((_mapSelectionFlags & 1))
+            {
+                uint16_t x = _mapSelectionAX + _mapSelectionBX;
+                uint16_t y = _mapSelectionAY + _mapSelectionBY;
+                x /= 2;
+                y /= 2;
+                uint32_t x2 = _mapSelectionBX << 16;
+                uint32_t y2 = _mapSelectionBY << 16;
+                x2 |= _mapSelectionAX;
+                y2 |= _mapSelectionAY;
+                _gGameCommandErrorTitle = string_ids::error_cant_clear_entire_area;
+                game_commands::do_66(x, y, x2, y2, flags);
+            }
+        }
+
         // 0x004BC689
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = int32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC689, regs);
+            //registers regs;
+            //regs.esi = int32_t(&self);
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x004BC689, regs);
+
+            if (widgetIndex != common::widx::panel)
+                return;
+            clearLand(GameCommandFlag::apply);
         }
 
-        //// 0x004BC682
-        //static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
-        //{
-        //    registers regs;
-        //    regs.esi = int32_t(&self);
-        //    regs.dx = widgetIndex;
-        //    regs.ax = x;
-        //    regs.bx = y;
-        //    call(0x004BC682, regs);
-        //}
+        // 0x004BC682
+        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            //registers regs;
+            //regs.esi = int32_t(&self);
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x004BC682, regs);
 
-        //// 0x004BC701
-        //static void event_13(window& self, const widget_index widgetIndex)
-        //{
-        //    if (widgetIndex == common::widx::panel)
-        //    {
-        //        tilemgr::map_invalidate_selection_rect();
+            if (widgetIndex != common::widx::panel)
+                return;
 
-        //        // Reset map selection
-        //        _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
-        //    }
-        //}
+            auto window = WindowManager::find(WindowType::error);
+            if (window == nullptr)
+            {
+                clearLand(GameCommandFlag::apply);
+            }
+        }
+
+        // 0x004BC701
+        static void event_13(window& self, const widget_index widgetIndex)
+        {
+            if (widgetIndex == common::widx::panel)
+            {
+                tilemgr::map_invalidate_selection_rect();
+
+                // Reset map selection
+                _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+            }
+        }
 
         // 0x004BC555
         static void prepare_draw(window* self)
@@ -1070,274 +1101,249 @@ namespace openloco::ui::windows::terraform
             self->invalidate();
         }
 
-        //// 0x004A69DD
-        //static uint8_t sub_4A69DD()
-        //{
-        //    registers regs;
-        //    call(0x004A69DD, regs);
-        //    return regs.bl;
-        //}
-
         // 0x00468DFD
         static uint8_t lowerLand(uint8_t flags)
         {
-            registers regs;
-            regs.bl = flags;
-            call(0x00468DFD, regs);
-            return regs.bl;
+            if (!(flags & 1))
+                flags = common::sub_4A69DD();
 
-            //if ((flags & 1) != 0)
-            //    flags = sub_4A69DD();
+            auto x = _mapSelectionAX + _mapSelectionBX;
+            auto y = _mapSelectionAY + _mapSelectionBY;
+            x /= 2;
+            y /= 2;
+            x += 16;KD
+            y += 16;
+            uint32_t x2 = _mapSelectionBX << 16;
+            uint32_t y2 = _mapSelectionBY << 16;
+            x2 |= _mapSelectionAX;
+            y2 |= _mapSelectionAY;
+            _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
 
-            //auto x = _mapSelectionAX + _mapSelectionBX;
-            //auto y = _mapSelectionAY + _mapSelectionBY;
-            //x /= 2;
-            //y /= 2;
-            //x += 16;
-            //y += 16;
-            //auto x2 = _mapSelectionBX << 16;
-            //auto y2 = _mapSelectionBY << 16;
-            //x2 |= _mapSelectionAX;
-            //y2 |= _mapSelectionAY;
-            //_gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
+            if (_adjustToolSize == 0)
+            {
+                uint16_t di = 0xFFFF;
+                game_commands::do_27(x, y, x2, y2, di, flags);
+            }
+            else
+            {
+                uint16_t di = _word_F2448E;
+                game_commands::do_26(x, y, x2, y2, di, flags);
+            }
+            return flags;
+        }
 
-            //if (_adjustToolSize == 0)
-            //{
-            //    uint16_t di = 0xFFFF;
-            //    game_commands::do_27(x, y, x2, y2, di, flags);
-            //}
-            //else
-            //{
-            //    uint16_t di = _word_F2448E;
-            //    game_commands::do_26(x, y, x2, y2, di, flags);
-            //}
-            //return flags;
-        } 
-        
         // 0x00468D1D
         static uint8_t raiseLand(uint8_t flags)
         {
-            registers regs;
-            regs.bl = flags;
-            call(0x00468D1D, regs);
-            return regs.bl;
+            if (!(flags & 1))
+                flags = common::sub_4A69DD();
 
-            //if (!(flags & 1))
-            //    flags = sub_4A69DD();
+            auto x = _mapSelectionAX + _mapSelectionBX;
+            auto y = _mapSelectionAY + _mapSelectionBY;
+            x /= 2;
+            y /= 2;
+            x += 16;
+            y += 16;
+            uint32_t x2 = _mapSelectionBX << 16;
+            uint32_t y2 = _mapSelectionBY << 16;
+            x2 |= _mapSelectionAX;
+            y2 |= _mapSelectionAY;
+            _gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
 
-            //auto x = _mapSelectionAX + _mapSelectionBX;
-            //auto y = _mapSelectionAY + _mapSelectionBY;
-            //x /= 2;
-            //y /= 2;
-            //x += 16;
-            //y += 16;
-            //auto x2 = _mapSelectionBX << 16;
-            //auto y2 = _mapSelectionBY << 16;
-            //x2 |= _mapSelectionAX;
-            //y2 |= _mapSelectionAY;
-            //_gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
-
-            //if (_adjustToolSize == 0)
-            //{
-            //    uint16_t di = 1;
-            //    game_commands::do_27(x, y, x2, y2, di, flags);
-            //}
-            //else
-            //{
-            //    uint16_t di = _word_F2448E;
-            //    game_commands::do_25(x, y, x2, y2, di, flags);
-            //}
-            //return flags;
+            if (_adjustToolSize == 0)
+            {
+                uint16_t di = 1;
+                game_commands::do_27(x, y, x2, y2, di, flags);
+            }
+            else
+            {
+                uint16_t di = _word_F2448E;
+                game_commands::do_25(x, y, x2, y2, di, flags);
+            }
+            return flags;
         }
 
         // 0x004BC9D7
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = uint32_t(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC9D7, regs);
+            //registers regs;
+            //regs.esi = uint32_t(&self);
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x004BC9D7, regs);
 
-            //uint16_t xPos = 0;
-            //uint16_t yPos = 0;
-            //if (widgetIndex != common::widx::panel)
-            //    return;
-            //tilemgr::map_invalidate_selection_rect();
-            //if (_currentTool != 3)
-            //{
-            //    _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
-            //    if (_adjustLandToolSize != 1)
-            //    {
-            //        registers regs;
-            //        regs.ax = x;
-            //        regs.bx = y;
-            //        call(0x0045F1A7, regs);
-            //        xPos = regs.ax;
-            //        yPos = regs.bx;
-            //        if (xPos != 0x8000)
-            //        {
-            //            auto count = 0;
-            //            if ((_mapSelectionFlags & 1) == 0)
-            //            {
-            //                _mapSelectionFlags = _mapSelectionFlags | 1;
-            //                count++;
-            //            }
+            uint16_t xPos = 0;
+            uint16_t yPos = 0;
+            if (widgetIndex != common::widx::panel)
+                return;
+            tilemgr::map_invalidate_selection_rect();
+            if (_currentTool != 3)
+            {
+                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+                if (_adjustLandToolSize != 1)
+                {
+                    registers regs;
+                    regs.ax = x;
+                    regs.bx = y;
+                    call(0x0045F1A7, regs);
+                    xPos = regs.ax;
+                    yPos = regs.bx;
+                    if (xPos != 0x8000)
+                    {
+                        auto count = 0;
+                        if ((_mapSelectionFlags & 1) == 0)
+                        {
+                            _mapSelectionFlags = _mapSelectionFlags | 1;
+                            count++;
+                        }
 
-            //            if (_word_F2448E != 4)
-            //            {
-            //            _word_F2448E = 4;
-            //                count++;
-            //            }
+                        if (_word_F2448E != 4)
+                        {
+                        _word_F2448E = 4;
+                            count++;
+                        }
 
-            //            uint16_t toolSizeA = _adjustToolSize;
+                        uint16_t toolSizeA = _adjustToolSize;
 
-            //            if (!toolSizeA)
-            //                toolSizeA = 1;
+                        if (!toolSizeA)
+                            toolSizeA = 1;
 
-            //            toolSizeA = toolSizeA << 5;
-            //            uint16_t toolSizeB = toolSizeA;
-            //            toolSizeB -= 32;
-            //            toolSizeA = toolSizeA > 1;
-            //            toolSizeA -= 16;
-            //            xPos -= toolSizeA;
-            //            yPos -= toolSizeA;
-            //            xPos &= 0xFFE0;
-            //            yPos &= 0xFFE0;
+                        toolSizeA = toolSizeA << 5;
+                        uint16_t toolSizeB = toolSizeA;
+                        toolSizeB -= 32;
+                        toolSizeA = toolSizeA >> 1;
+                        toolSizeA -= 16;
+                        xPos -= toolSizeA;
+                        yPos -= toolSizeA;
+                        xPos &= 0xFFE0;
+                        yPos &= 0xFFE0;
 
-            //            if (xPos != _mapSelectionAX)
-            //            {
-            //            _mapSelectionAX = xPos;
-            //                count++;
-            //            }
+                        if (xPos != _mapSelectionAX)
+                        {
+                        _mapSelectionAX = xPos;
+                            count++;
+                        }
 
-            //            if (yPos != _mapSelectionAY)
-            //            {
-            //                _mapSelectionAY = yPos;
-            //                count++;
-            //            }
+                        if (yPos != _mapSelectionAY)
+                        {
+                            _mapSelectionAY = yPos;
+                            count++;
+                        }
 
-            //            xPos += toolSizeB;
-            //            yPos += toolSizeB;
+                        xPos += toolSizeB;
+                        yPos += toolSizeB;
 
-            //            if (xPos != _mapSelectionBX)
-            //            {
-            //                _mapSelectionBX = xPos;
-            //                count++;
-            //            }
+                        if (xPos != _mapSelectionBX)
+                        {
+                            _mapSelectionBX = xPos;
+                            count++;
+                        }
 
-            //            if (yPos != _mapSelectionBY)
-            //            {
-            //                _mapSelectionBY = yPos;
-            //                count++;
-            //            }
+                        if (yPos != _mapSelectionBY)
+                        {
+                            _mapSelectionBY = yPos;
+                            count++;
+                        }
 
-            //            tilemgr::map_invalidate_selection_rect();
+                        tilemgr::map_invalidate_selection_rect();
 
-            //            if (!count)
-            //                return;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        registers regs;
-            //        regs.ax = x;
-            //        regs.bx = y;
-            //        call(0x0045FD8E, regs);
-            //        xPos = regs.ax;
-            //        yPos = regs.bx;
-            //        auto zPos = regs.cx;
-            //        if (xPos != 0x8000)
-            //        {
-            //            auto count = 0;
-            //            if ((_mapSelectionFlags & 1) == 0)
-            //            {
-            //                _mapSelectionFlags = _mapSelectionFlags | 1;
-            //                count++;
-            //            }
+                        if (!count)
+                            return;
+                    }
+                }
+                else
+                {
+                    registers regs;
+                    regs.ax = x;
+                    regs.bx = y;
+                    call(0x0045FD8E, regs);
+                    xPos = regs.ax;
+                    yPos = regs.bx;
+                    auto zPos = regs.cx;
+                    if (xPos != 0x8000)
+                    {
+                        auto count = 0;
+                        if ((_mapSelectionFlags & 1) == 0)
+                        {
+                            _mapSelectionFlags = _mapSelectionFlags | 1;
+                            count++;
+                        }
 
-            //            if (_word_F2448E != zPos)
-            //            {
-            //                _word_F2448E = zPos;
-            //                count++;
-            //            }
-            //            if (xPos != _mapSelectionAX)
-            //            {
-            //                _mapSelectionAX = xPos;
-            //                count++;
-            //            }
+                        if (_word_F2448E != zPos)
+                        {
+                            _word_F2448E = zPos;
+                            count++;
+                        }
+                        if (xPos != _mapSelectionAX)
+                        {
+                            _mapSelectionAX = xPos;
+                            count++;
+                        }
 
-            //            if (yPos != _mapSelectionAY)
-            //            {
-            //                _mapSelectionAY = yPos;
-            //                count++;
-            //            }
+                        if (yPos != _mapSelectionAY)
+                        {
+                            _mapSelectionAY = yPos;
+                            count++;
+                        }
 
-            //            if (xPos != _mapSelectionBX)
-            //            {
-            //                _mapSelectionBX = xPos;
-            //                count++;
-            //            }
+                        if (xPos != _mapSelectionBX)
+                        {
+                            _mapSelectionBX = xPos;
+                            count++;
+                        }
 
-            //            if (yPos != _mapSelectionBY)
-            //            {
-            //                _mapSelectionBY = yPos;
-            //                count++;
-            //            }
+                        if (yPos != _mapSelectionBY)
+                        {
+                            _mapSelectionBY = yPos;
+                            count++;
+                        }
 
-            //            tilemgr::map_invalidate_selection_rect();
+                        tilemgr::map_invalidate_selection_rect();
 
-            //            if (!count)
-            //                return;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    if ((_mapSelectionFlags & 1) == 0)
-            //        return;
-            //}
+                        if (!count)
+                            return;
+                    }
+                }
+            }
+            else
+            {
+                if ((_mapSelectionFlags & 1) == 0)
+                    return;
+            }
 
-            //uint32_t ebx = -1;
-            //uint32_t ecx = -1;
+            uint32_t ebx = -1;
+            uint32_t ecx = -1;
 
-            //if (is_editor_mode() || xPos == 0x8000)
-            //{
-            //    ebx = 0x80000000;
-            //    ecx = 0x80000000;
-            //}
-            //else
-            //{
-            //    auto flags = lowerLand(4);
-            //    ecx = flags;
-            //    flags = raiseLand(4);
-            //    ebx = flags;
-            //}
+            if (is_editor_mode() || xPos == 0x8000)
+            {
+                ebx = 0x80000000;
+                ecx = 0x80000000;
+            }
+            else
+            {
+                auto flags = lowerLand(4);
+                ecx = flags;
+                flags = raiseLand(4);
+                ebx = flags;
+            }
 
-            //if (_dword_F2530C == ebx)
-            //{
-            //    if (_dword_F25310 == ecx)
-            //        return;
-            //}
-            //_dword_F2530C = ebx;
-            //_dword_F25310 = ecx;
-            //WindowManager::invalidate(WindowType::terraform, 0);
+            if (_dword_F2530C == ebx)
+            {
+                if (_dword_F25310 == ecx)
+                    return;
+            }
+            _dword_F2530C = ebx;
+            _dword_F25310 = ecx;
+            WindowManager::invalidate(WindowType::terraform, 0);
         }
 
         // 0x004BC9ED
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            //registers regs;
-            //regs.esi = int32_t(&self);
-            //regs.dx = widgetIndex;
-            //regs.ax = x;
-            //regs.bx = y;
-            //call(0x004BC9ED, regs);
-
             if (widgetIndex != common::widx::panel)
                 return;
-            if ((_mapSelectionFlags & 1) == 0)
+            if (!(_mapSelectionFlags & 1))
                 return;
             if (_adjustToolSize != 0)
             {
@@ -1354,13 +1360,6 @@ namespace openloco::ui::windows::terraform
         // 0x004BC9E2
         static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            //registers regs;
-            //regs.esi = int32_t(&self);
-            //regs.dx = widgetIndex;
-            //regs.ax = x;
-            //regs.bx = y;
-            //call(0x004BC9E2, regs);
-
             if (widgetIndex != common::widx::panel)
                 return;
 
@@ -1369,7 +1368,7 @@ namespace openloco::ui::windows::terraform
                 return;
 
             widget_index newWidgetIndex = window->find_widget_at(x, y);
-            if (newWidgetIndex == 0xFFFF)
+            if (newWidgetIndex == -1)
                 return;
 
             auto widget = window->widgets[newWidgetIndex];
@@ -1383,7 +1382,7 @@ namespace openloco::ui::windows::terraform
             auto zoom = viewport->zoom;
 
             int16_t dx = static_cast<int16_t>(0xFFF0);
-            dx = dx /= (2 ^ zoom);
+            dx /= (2 ^ zoom);
             auto yPos = y - _dragLastY;
             auto flags = GameCommandFlag::apply;
 
@@ -1486,7 +1485,7 @@ namespace openloco::ui::windows::terraform
             events.on_update = common::on_update;
             events.on_tool_update = on_tool_update;
             events.on_tool_down = on_tool_down;
-            events.event_12 = (uint32_t) 0x004BC9E2;
+            events.event_12 = (uint32_t)0x004BC9E2;
             events.event_13 = (uint32_t)0x004BCA5D;
             events.prepare_draw = prepare_draw;
             events.draw = draw;
@@ -1585,29 +1584,78 @@ namespace openloco::ui::windows::terraform
             call(0x004BCDCA, regs);
         }
 
-        //// 0x004BCDBF
-        //static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
-        //{
-        //    registers regs;
-        //    regs.esi = int32_t(&self);
-        //    regs.dx = widgetIndex;
-        //    regs.ax = x;
-        //    regs.bx = y;
-        //    call(0x004BCDBF, regs);
-        //}
+        static void raiseWater(uint8_t flags)
+        {
+            common::sub_4A69DD();
+            _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
+            game_commands::do_28(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, flags);
+        }
 
-        //// 0x004BCDE8
-        //static void event_13(window& self, const widget_index widgetIndex)
-        //{
-        //    if (widgetIndex == common::widx::panel)
-        //    {
-        //        tilemgr::map_invalidate_selection_rect();
+        static void lowerWater(uint8_t flags)
+        {
+            common::sub_4A69DD();
+            _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
+            game_commands::do_29(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, flags);
+        }
 
-        //        // Reset map selection
-        //        _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
-        //        _currentTool = 19;
-        //    }
-        //}
+        // 0x004BCDBF
+        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            if (widgetIndex != common::widx::panel)
+                return;
+
+            auto window = WindowManager::findAt(x, y);
+            if (window == nullptr)
+                return;
+
+            widget_index newWidgetIndex = window->find_widget_at(x, y);
+            if (newWidgetIndex == -1)
+                return;
+
+            auto widget = window->widgets[newWidgetIndex];
+            if (widget.type != widget_type::viewport)
+                return;
+
+            auto viewport = window->viewports[0];
+            if (viewport == nullptr)
+                return;
+
+            auto zoom = viewport->zoom;
+
+            int16_t dx = static_cast<int16_t>(0xFFF0);
+            dx /= (2 ^ zoom);
+            auto yPos = y - _dragLastY;
+            auto flags = GameCommandFlag::apply;
+
+            if (yPos <= dx)
+            {
+                _dragLastY += dx;
+                raiseWater(flags);
+            }
+            else
+            {
+                dx = -dx;
+                if (yPos < dx)
+                    return;
+                _dragLastY += dx;
+                lowerWater(flags);
+            }
+            _dword_F2530C = 0x80000000;
+            _dword_F25310 = 0x80000000;
+        }
+
+        // 0x004BCDE8
+        static void event_13(window& self, const widget_index widgetIndex)
+        {
+            if (widgetIndex == common::widx::panel)
+            {
+                tilemgr::map_invalidate_selection_rect();
+
+                // Reset map selection
+                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+                _currentTool = 19;
+            }
+        }
 
         // 0x004BCC6D
         static void prepare_draw(window* self)
@@ -2263,6 +2311,14 @@ namespace openloco::ui::windows::terraform
             self->moveInsideScreenEdges();
         }
 
+        // 0x004A69DD
+        static uint8_t sub_4A69DD()
+        {
+            registers regs;
+            call(0x004A69DD, regs);
+            return regs.bl;
+        }
+
         static void init_events()
         {
             plant_trees::init_events();
@@ -2324,6 +2380,42 @@ namespace openloco::ui::windows::terraform
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 adjust_land::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x004BCDBF,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                adjust_water::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x004BCDE8,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                adjust_water::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x004BC682,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                clear_area::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x004BC701,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                clear_area::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });

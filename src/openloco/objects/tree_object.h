@@ -15,7 +15,7 @@ namespace openloco
         uint8_t num_rotations; // 0x06 (1,2,4)
         uint8_t growth;        // 0x07
         uint16_t var_08;       // 0x08
-        uint32_t var_0A[12];    // 0x0A
+        uint32_t var_0A[12];   // 0x0A
         uint8_t pad_3A[0x3D - 0x3A];
         uint8_t var_3D;
         uint8_t states;
