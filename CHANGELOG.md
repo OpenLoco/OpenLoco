@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#77] Add "Exit OpenLoco" to the main menu.
 - Fix: [#264] Option 'Export plug-in objects with saved games' is partially cut off.
+- Fix: [#299, #430] Crash due to added null-chars when manually specifying Locomotion directory.
 - Fix: [#359] Widgets tied to tools could get stuck in pressed state.
 - Fix: [#388] Re-center Options window on scale factor change.
 - Fix: [#396] Preferred owner name is not saved.
@@ -10,9 +11,9 @@
 - Fix: [#423] Date in challenge tooltip is incorrect.
 - Fix: [#425] Changing resolution in fullscreen mode doesn't work.
 - Fix: [#428] Show an error when a vehicle can't be built due to invalid properties. (Original bug.)
-- Fix: [#430] Null-chars added when manually specifying Locomotion directory, preventing launch.
 - Fix: [#440] Final segment in town population graphs could show no population.
 - Fix: [#467] Incorrect scrolling thumbs when leaving the bottom of an auto resizing window.
+- Fix: [#478] Crash when opening narrow gauge tab on train purchasing window
 - Change: [#420] Disable window scale factor buttons when not applicable.
 
 20.03 (2020-03-23)
