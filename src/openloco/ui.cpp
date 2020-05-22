@@ -801,6 +801,13 @@ namespace openloco::ui
         else if (mode == config::screen_mode::fullscreen_borderless)
             flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
+        // *HACK* Set window to non fullscreen before switching resolution.
+        // This fixes issues with high dpi and Windows scaling affecting the gui size.
+        SDL_SetWindowFullscreen(window, 0);
+
+        // Set the new dimensions of the screen.
+        SDL_SetWindowSize(window, newResolution.width, newResolution.height);
+
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
@@ -808,15 +815,6 @@ namespace openloco::ui
             return false;
         }
 
-        // Set the new dimensions of the screen, or just the window.
-        if (mode != config::screen_mode::window)
-        {
-            SDL_SetWindowSize(window, newResolution.width, newResolution.height);
-        }
-        else
-        {
-            SDL_SetWindowSize(window, newResolution.width, newResolution.height);
-        }
 
         // It appears we were successful in setting the screen mode, so let's up date the config.
         auto& config = config::get_new();
