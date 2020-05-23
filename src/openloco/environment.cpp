@@ -153,15 +153,14 @@ namespace openloco::environment
             auto similarResult = find_similar_file(result);
             if (similarResult.empty())
             {
-                std::cerr << "File not found: " << result << std::endl;
+                std::cerr << "Warning: file " << result << " could not be not found" << std::endl;
             }
             else
             {
                 result = similarResult;
             }
 #else
-
-            std::cerr << "File not found: " << result << std::endl;
+            std::cerr << "Warning: file " << result << " could not be not found" << std::endl;
 #endif
         }
         return result;
