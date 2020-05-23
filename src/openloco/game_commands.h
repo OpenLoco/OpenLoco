@@ -43,7 +43,7 @@ namespace openloco::game_commands
         do_command(9, regs);
     }
 
-    // Change Station name
+    // Change station name
     inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
@@ -154,6 +154,7 @@ namespace openloco::game_commands
         return do_command(50, regs) != GameCommandFlag::failure;
     }
 
+    // Build company headquarters
     inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
     {
         registers regs;
@@ -164,6 +165,7 @@ namespace openloco::game_commands
         do_command(55, regs);
     }
 
+    // Change company face
     inline bool do_65(const objectmgr::header& object, uint8_t company)
     {
         auto objPtr = reinterpret_cast<const int32_t*>(&object);
@@ -177,6 +179,7 @@ namespace openloco::game_commands
         return do_command(65, regs) != GameCommandFlag::failure;
     }
 
+    // Send chat message
     inline void do_71(int32_t ax, char* string)
     {
         registers regs;
@@ -189,6 +192,7 @@ namespace openloco::game_commands
         do_command(71, regs);
     }
 
+    // Update owner status
     inline void do_73(thing_id_t id)
     {
         registers regs;
@@ -198,6 +202,7 @@ namespace openloco::game_commands
         do_command(73, regs);
     }
 
+    // Update owner status
     inline void do_73(map::map_pos position)
     {
         registers regs;
@@ -207,7 +212,7 @@ namespace openloco::game_commands
         do_command(73, regs);
     }
 
-    // Rename Industry
+    // Rename industry
     inline void do_79(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
