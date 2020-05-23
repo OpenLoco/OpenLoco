@@ -342,9 +342,9 @@ namespace openloco::ui::windows::CompanyWindow
             bool success = false;
             {
                 uint32_t* buffer = (uint32_t*)input;
-                game_commands::do_31(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
-                game_commands::do_31(1, 0, 2, buffer[3], buffer[4], buffer[5]);
-                success = game_commands::do_31(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+                game_commands::do_31(self->number, 1, buffer[0], buffer[1], buffer[2]);
+                game_commands::do_31(0, 2, buffer[3], buffer[4], buffer[5]);
+                success = game_commands::do_31(0, 0, buffer[6], buffer[7], buffer[8]);
             }
 
             // No need to propate the name if it could not be set.
@@ -2521,9 +2521,9 @@ namespace openloco::ui::windows::CompanyWindow
             gGameCommandErrorTitle = string_ids::cannot_rename_this_company;
 
             uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_30(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_30(1, 0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_30(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+            game_commands::do_30(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_30(0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_30(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void drawCompanySelect(const window* const self, gfx::drawpixelinfo_t* const dpi)

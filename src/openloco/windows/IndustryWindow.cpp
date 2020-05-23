@@ -184,7 +184,7 @@ namespace openloco::ui::windows::industry
                 // 0x00455E59
                 case widx::demolish_industry:
                 {
-                    bool success = game_commands::do_48(GameCommandFlag::apply, self->number);
+                    bool success = game_commands::do_48(self->number);
                     if (!success)
                         break;
 

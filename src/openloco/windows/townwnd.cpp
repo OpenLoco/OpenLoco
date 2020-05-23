@@ -220,7 +220,7 @@ namespace openloco::ui::windows::town
                 {
                     loco_global<string_id, 0x009C68E8> gameErrorString;
                     gameErrorString = string_ids::cant_remove_town;
-                    bool success = game_commands::do_50(GameCommandFlag::apply, self->number);
+                    bool success = game_commands::do_50(self->number);
                     if (!success)
                         break;
 
@@ -672,9 +672,9 @@ namespace openloco::ui::windows::town
             addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
 
             uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_46(1, self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_46(1, 0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_46(1, 0, 0, buffer[6], buffer[7], buffer[8]);
+            game_commands::do_46(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            game_commands::do_46(0, 2, buffer[3], buffer[4], buffer[5]);
+            game_commands::do_46(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void update(window* self)
