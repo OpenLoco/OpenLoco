@@ -122,7 +122,7 @@ namespace openloco::game_commands
         regs.di = di;
         regs.bl = flags;
         do_command(25, regs);
-        return regs.bx;
+        return regs.ebx;
     }
 
     // Lower Land
@@ -136,7 +136,7 @@ namespace openloco::game_commands
         regs.di = di;
         regs.bl = flags;
         do_command(26, regs);
-        return regs.bx;
+        return regs.ebx;
     }
 
     // Lower/Raise Land Mountain
@@ -150,7 +150,7 @@ namespace openloco::game_commands
         regs.di = di;
         regs.bl = flags;
         do_command(27, regs);
-        return regs.bx;
+        return regs.ebx;
     }
 
     // Raise Water

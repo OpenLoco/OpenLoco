@@ -970,10 +970,13 @@ namespace openloco::ui::windows::terraform
         // 0x004BCBF8
         static void on_resize(window* self)
         {
-            if (!is_editor_mode())
-                common::on_resize(self, 140);
-            else
+            if (is_editor_mode())
                 common::on_resize(self, 115);
+            else
+            {
+                // CHANGE: Resizes window to allow dropdown and cost string to be drawn seperately
+                common::on_resize(self, 140);
+            }
         }
 
         // 0x004BCB47
@@ -1067,49 +1070,12 @@ namespace openloco::ui::windows::terraform
             call(0x00468DFD, regs);
             return regs.ebx;
 
-        //    uint32_t cost = 0x80000000;
-        //    if ((flags & 1))
-        //        common::sub_4A69DD();
-
-        //    uint16_t x = _mapSelectionAX + _mapSelectionBX;
-        //    uint16_t y = _mapSelectionAY + _mapSelectionBY;
-        //    x /= 2;
-        //    y /= 2;
-        //    x += 16;
-        //    y += 16;
-        //    uint32_t x2 = _mapSelectionBX << 16;
-        //    uint32_t y2 = _mapSelectionBY << 16;
-        //    x2 |= _mapSelectionAX;
-        //    y2 |= _mapSelectionAY;
-        //    _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
-
-        //    if (_adjustToolSize == 0)
-        //    {
-        //        uint16_t di = 0xFFFF;
-        //        cost = game_commands::do_27(x, y, x2, y2, di, flags);
-        //    }
-        //    else
-        //    {
-        //        uint16_t di = _word_F2448E;
-        //        cost = game_commands::do_26(x, y, x2, y2, di, flags);
-        //    }
-        //    return cost;
-        }
-
-        // 0x00468D1D
-        static uint32_t raiseLand(uint8_t flags)
-        {
-            registers regs;
-            regs.bl = flags;
-            call(0x00468D1D, regs);
-            return regs.ebx;
-
-            //uint32_t cost = 0x80000000;
+            //uint32_t cost;
             //if ((flags & 1))
             //    common::sub_4A69DD();
 
-            //auto x = _mapSelectionAX + _mapSelectionBX;
-            //auto y = _mapSelectionAY + _mapSelectionBY;
+            //uint16_t x = _mapSelectionAX + _mapSelectionBX;
+            //uint16_t y = _mapSelectionAY + _mapSelectionBY;
             //x /= 2;
             //y /= 2;
             //x += 16;
@@ -1118,19 +1084,56 @@ namespace openloco::ui::windows::terraform
             //uint32_t y2 = _mapSelectionBY << 16;
             //x2 |= _mapSelectionAX;
             //y2 |= _mapSelectionAY;
-            //_gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+            //_gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
 
             //if (_adjustToolSize == 0)
             //{
-            //    uint16_t di = 1;
+            //    uint16_t di = 0xFFFF;
             //    cost = game_commands::do_27(x, y, x2, y2, di, flags);
             //}
             //else
             //{
             //    uint16_t di = _word_F2448E;
-            //    cost = game_commands::do_25(x, y, x2, y2, di, flags);
+            //    cost = game_commands::do_26(x, y, x2, y2, di, flags);
             //}
             //return cost;
+        }
+
+        // 0x00468D1D
+        static uint32_t raiseLand(uint8_t flags)
+        {
+            //registers regs;
+            //regs.bl = flags;
+            //call(0x00468D1D, regs);
+            //return regs.ebx;
+
+            uint32_t cost;
+            if ((flags & 1))
+                common::sub_4A69DD();
+
+            auto x = _mapSelectionAX + _mapSelectionBX;
+            auto y = _mapSelectionAY + _mapSelectionBY;
+            x /= 2;
+            y /= 2;
+            x += 16;
+            y += 16;
+            uint32_t x2 = _mapSelectionBX << 16;
+            uint32_t y2 = _mapSelectionBY << 16;
+            x2 |= _mapSelectionAX;
+            y2 |= _mapSelectionAY;
+            _gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+
+            if (_adjustToolSize == 0)
+            {
+                uint16_t di = 1;
+                cost = game_commands::do_27(x, y, x2, y2, di, flags);
+            }
+            else
+            {
+                uint16_t di = _word_F2448E;
+                cost = game_commands::do_25(x, y, x2, y2, di, flags);
+            }
+            return cost;
         }
 
         static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost)
@@ -1153,8 +1156,8 @@ namespace openloco::ui::windows::terraform
             regs.ax = x;
             regs.bx = y;
             call(0x0045F1A7, regs);
-            auto xPos = regs.ax;
-            auto yPos = regs.bx;
+            uint16_t xPos = regs.ax;
+            uint16_t yPos = regs.bx;
             if (xPos != 0x8000)
             {
                 uint8_t count = 0;
@@ -1225,9 +1228,9 @@ namespace openloco::ui::windows::terraform
             regs.ax = x;
             regs.bx = y;
             call(0x0045FD8E, regs);
-            auto xPos = regs.ax;
-            auto yPos = regs.bx;
-            auto cursorQuadrant = regs.cx;
+            uint16_t xPos = regs.ax;
+            uint16_t yPos = regs.bx;
+            uint16_t cursorQuadrant = regs.cx;
             if (xPos != 0x8000)
             {
                 auto count = 0;
@@ -1347,6 +1350,18 @@ namespace openloco::ui::windows::terraform
                     }
                 }
             }
+            else
+            {
+                // CHANGE: Allows the player to change land type outside of the scenario editor.
+                if (_adjustToolSize != 0)
+                {
+                    if (_lastSelectedLand != 0xFF)
+                    {
+                        _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
+                        game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
+                    }
+                }
+            }
 
             _currentTool = 3;
         }
@@ -1420,14 +1435,28 @@ namespace openloco::ui::windows::terraform
             self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
 
             self->widgets[widx::land_material].type = widget_type::none;
-
-            if (_adjustToolSize != 0)
+            if (is_editor_mode())
             {
-                self->widgets[widx::land_material].type = widget_type::wt_6;
+                if (_adjustToolSize != 0)
+                {
+                    self->widgets[widx::land_material].type = widget_type::wt_6;
 
-                auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
+                    auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
 
-                self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                    self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                }
+            }
+            else
+            {
+                // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
+                if (_adjustToolSize != 0)
+                {
+                    self->widgets[widx::land_material].type = widget_type::wt_6;
+
+                    auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
+
+                    self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                }
             }
 
             common::repositionTabs(self);
