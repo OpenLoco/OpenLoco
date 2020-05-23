@@ -28,7 +28,10 @@ namespace openloco
         string_id name;
         uint8_t pad_02[0x10 - 0x02];
         uint16_t var_10;
-        uint8_t pad_12[0xAD - 0x12];
+        uint8_t pad_12[0xA8 - 0x12];
+        uint16_t designedYear;  // 0xA8
+        uint16_t obsoleteYear;  // 0xAA
+        uint8_t var_AC;
         uint8_t var_AD;
         airport_var_AE_object* var_AE;
         airport_var_B2_object* var_B2;

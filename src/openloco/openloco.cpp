@@ -139,6 +139,11 @@ namespace openloco
         return (_screen_flags & screen_flags::networked) != 0;
     }
 
+    bool is_unknown_3_mode()
+    {
+        return (_screen_flags & screen_flags::unknown_3) != 0;
+    }
+
     bool is_unknown_4_mode()
     {
         return (_screen_flags & screen_flags::unknown_4) != 0;

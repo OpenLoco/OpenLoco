@@ -30,6 +30,7 @@ namespace openloco
     bool is_editor_mode();
     bool is_title_mode();
     bool isNetworked();
+    bool is_unknown_3_mode();
     bool is_unknown_4_mode();
     bool is_paused();
     uint8_t get_pause_flags();
