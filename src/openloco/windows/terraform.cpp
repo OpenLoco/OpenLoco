@@ -49,8 +49,8 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
-    static loco_global<uint32_t, 0x00F2530C> _raiseAdjustCost;
-    static loco_global<uint32_t, 0x00F25310> _lowerAdjustCost;
+    static loco_global<uint32_t, 0x00F2530C> _raiseLandAdjustCost;
+    static loco_global<uint32_t, 0x00F25310> _lowerLandAdjustCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
     static loco_global<uint16_t, 0x01136488> _word_1136488;
     static loco_global<uint16_t, 0x0113648A> _word_113648A;
@@ -770,7 +770,7 @@ namespace openloco::ui::windows::terraform
         {
             input::toolSet(self, common::widx::panel, 41);
             input::set_flag(input::input_flags::flag6);
-            _raiseAdjustCost = 0x80000000;
+            _raiseLandAdjustCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
         }
 
@@ -887,9 +887,9 @@ namespace openloco::ui::windows::terraform
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            if (_raiseAdjustCost == 0x80000000)
+            if (_raiseLandAdjustCost == 0x80000000)
                 return;
-            if (_raiseAdjustCost == 0)
+            if (_raiseLandAdjustCost == 0)
                 return;
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
@@ -898,7 +898,7 @@ namespace openloco::ui::windows::terraform
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
 
             auto args = FormatArguments();
-            args.push<uint16_t>(_raiseAdjustCost);
+            args.push<uint16_t>(_raiseLandAdjustCost);
 
             gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
@@ -960,8 +960,8 @@ namespace openloco::ui::windows::terraform
                     continue;
 
                 _lastSelectedLand = i;
-                _raiseAdjustCost = 0x80000000;
-                _lowerAdjustCost = 0x80000000;
+                _raiseLandAdjustCost = 0x80000000;
+                _lowerLandAdjustCost = 0x80000000;
                 _adjustToolSize = _adjustLandToolSize;
                 break;
             }
@@ -1065,48 +1065,38 @@ namespace openloco::ui::windows::terraform
         // 0x00468DFD
         static uint32_t lowerLand(uint8_t flags)
         {
-            registers regs;
-            regs.bl = flags;
-            call(0x00468DFD, regs);
-            return regs.ebx;
+            uint32_t cost;
+            if ((flags & 1))
+                common::sub_4A69DD();
 
-            //uint32_t cost;
-            //if ((flags & 1))
-            //    common::sub_4A69DD();
+            uint16_t x = _mapSelectionAX + _mapSelectionBX;
+            uint16_t y = _mapSelectionAY + _mapSelectionBY;
+            x /= 2;
+            y /= 2;
+            x += 16;
+            y += 16;
+            uint32_t x2 = _mapSelectionBX << 16;
+            uint32_t y2 = _mapSelectionBY << 16;
+            x2 |= _mapSelectionAX;
+            y2 |= _mapSelectionAY;
+            _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
 
-            //uint16_t x = _mapSelectionAX + _mapSelectionBX;
-            //uint16_t y = _mapSelectionAY + _mapSelectionBY;
-            //x /= 2;
-            //y /= 2;
-            //x += 16;
-            //y += 16;
-            //uint32_t x2 = _mapSelectionBX << 16;
-            //uint32_t y2 = _mapSelectionBY << 16;
-            //x2 |= _mapSelectionAX;
-            //y2 |= _mapSelectionAY;
-            //_gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
-
-            //if (_adjustToolSize == 0)
-            //{
-            //    uint16_t di = 0xFFFF;
-            //    cost = game_commands::do_27(x, y, x2, y2, di, flags);
-            //}
-            //else
-            //{
-            //    uint16_t di = _word_F2448E;
-            //    cost = game_commands::do_26(x, y, x2, y2, di, flags);
-            //}
-            //return cost;
+            if (_adjustToolSize == 0)
+            {
+                uint16_t di = 0xFFFF;
+                cost = game_commands::do_27(x, y, x2, y2, di, flags);
+            }
+            else
+            {
+                uint16_t di = _word_F2448E;
+                cost = game_commands::do_26(x, y, x2, y2, di, flags);
+            }
+            return cost;
         }
 
         // 0x00468D1D
         static uint32_t raiseLand(uint8_t flags)
         {
-            //registers regs;
-            //regs.bl = flags;
-            //call(0x00468D1D, regs);
-            //return regs.ebx;
-
             uint32_t cost;
             if ((flags & 1))
                 common::sub_4A69DD();
@@ -1138,14 +1128,14 @@ namespace openloco::ui::windows::terraform
 
         static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost)
         {
-            if (_raiseAdjustCost == raiseCost)
+            if (_raiseLandAdjustCost == raiseCost)
             {
-                if (_lowerAdjustCost == lowerCost)
+                if (_lowerLandAdjustCost == lowerCost)
                     return;
             }
 
-            _raiseAdjustCost = raiseCost;
-            _lowerAdjustCost = lowerCost;
+            _raiseLandAdjustCost = raiseCost;
+            _lowerLandAdjustCost = lowerCost;
 
             WindowManager::invalidate(WindowType::terraform, 0);
         }
@@ -1408,8 +1398,8 @@ namespace openloco::ui::windows::terraform
                 _dragLastY += dx;
                 lowerLand(flags);
             }
-            _raiseAdjustCost = 0x80000000;
-            _lowerAdjustCost = 0x80000000;
+            _raiseLandAdjustCost = 0x80000000;
+            _lowerLandAdjustCost = 0x80000000;
         }
 
         // 0x004BCA5D
@@ -1473,22 +1463,22 @@ namespace openloco::ui::windows::terraform
             xPos += self->x;
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 28;
 
-            if (_raiseAdjustCost != 0x80000000)
+            if (_raiseLandAdjustCost != 0x80000000)
             {
-                if (_raiseAdjustCost != 0)
+                if (_raiseLandAdjustCost != 0)
                 {
-                    int raiseCost = _raiseAdjustCost;
+                    int raiseCost = _raiseLandAdjustCost;
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &raiseCost);
                 }
             }
 
             yPos += 10;
 
-            if (_lowerAdjustCost != 0x80000000)
+            if (_lowerLandAdjustCost != 0x80000000)
             {
-                if (_lowerAdjustCost != 0)
+                if (_lowerLandAdjustCost != 0)
                 {
-                    int lowerCost = _lowerAdjustCost;
+                    int lowerCost = _lowerLandAdjustCost;
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &lowerCost);
                 }
             }
@@ -1659,8 +1649,8 @@ namespace openloco::ui::windows::terraform
                 _dragLastY += dx;
                 lowerWater(flags);
             }
-            _raiseAdjustCost = 0x80000000;
-            _lowerAdjustCost = 0x80000000;
+            _dword_113652C = 0x80000000;
+            _dword_1136528 = 0x80000000;
         }
 
         // 0x004BCDE8
@@ -2138,6 +2128,7 @@ namespace openloco::ui::windows::terraform
             /*auto width = 130;
             if (is_editor_mode)
                 width += 31;*/
+            // width set to 161 to include building walls tab
             uint16_t width = 161;
             gfx::ui_size_t windowSize = { width, height };
             self->set_size(windowSize, windowSize);
@@ -2439,25 +2430,5 @@ namespace openloco::ui::windows::terraform
                 regs = backup;
                 return 0;
             });
-
-        //register_hook(
-        //    0x00468D1D,
-        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //        registers backup = regs;
-        //        uint32_t cost = adjust_land::raiseLand((uint8_t)regs.dl);
-        //        regs = backup;
-        //        regs.edx = cost;
-        //        return 0;
-        //    });
-
-        //register_hook(
-        //    0x00468DFD,
-        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //        registers backup = regs;
-        //        uint32_t cost = adjust_land::lowerLand((uint8_t)regs.dl);
-        //        regs = backup;
-        //        regs.edx = cost;
-        //        return 0;
-        //    });
     }
 }

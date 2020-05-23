@@ -121,8 +121,7 @@ namespace openloco::game_commands
         regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
-        do_command(25, regs);
-        return regs.ebx;
+        return do_command(25, regs);
     }
 
     // Lower Land
@@ -135,8 +134,7 @@ namespace openloco::game_commands
         regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
-        do_command(26, regs);
-        return regs.ebx;
+        return do_command(26, regs);
     }
 
     // Lower/Raise Land Mountain
@@ -149,12 +147,11 @@ namespace openloco::game_commands
         regs.ebp = ebp;
         regs.di = di;
         regs.bl = flags;
-        do_command(27, regs);
-        return regs.ebx;
+        return do_command(27, regs);
     }
 
     // Raise Water
-    inline void do_28(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
+    inline uint32_t do_28(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
@@ -162,11 +159,11 @@ namespace openloco::game_commands
         regs.bp = bp;
         regs.di = di;
         regs.bl = flags;
-        do_command(28, regs);
+        return do_command(28, regs);
     }
 
     // Lower Water
-    inline void do_29(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
+    inline uint32_t do_29(uint16_t ax, uint16_t cx, uint16_t di, uint16_t bp, uint8_t flags)
     {
         registers regs;
         regs.ax = ax;
@@ -174,7 +171,7 @@ namespace openloco::game_commands
         regs.bp = bp;
         regs.di = di;
         regs.bl = flags;
-        do_command(29, regs);
+        return do_command(29, regs);
     }
 
     // Change company name
