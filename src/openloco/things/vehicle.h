@@ -192,7 +192,7 @@ namespace openloco
         int16_t var_44;
         uint32_t var_46;
         uint16_t var_4A;
-        uint16_t var_4C; // 0x4C
+        uint16_t var_4C;     // 0x4C
         uint8_t pad_4E[0x2]; // 0x4E
         uint8_t pad_50;
         uint8_t pad_51; // 0x51
@@ -210,10 +210,81 @@ namespace openloco
         uint8_t pad_63[0x69 - 0x63];
         uint32_t var_69;
         uint8_t pad_6D[0x77 - 0x6D];
-        uint16_t var_77; // 
+        uint16_t var_77; //
         uint8_t var_79;
     };
     static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
+
+    struct vehicle_1 : vehicle_base
+    {
+        uint8_t pad_20;
+        company_id_t owner; // 0x21
+        uint8_t pad_22[0x26 - 0x22];
+        thing_id_t head; // 0x26
+        uint32_t var_28;
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint8_t var_38;
+        uint8_t pad_39;         // 0x39
+        thing_id_t next_car_id; // 0x3A
+        uint32_t var_3C;        // 0x3C
+        uint8_t pad_40[0x2];    // 0x40
+        TransportMode mode;     // 0x42 field same in all vehicles
+        uint8_t pad_43;
+        uint16_t var_44;
+        uint16_t var_46;
+        uint8_t var_48;
+        uint8_t pad_49[0x4E - 0x49];
+        uint16_t var_4E;
+        uint16_t var_50;
+        uint8_t var_52;
+        int32_t var_53;
+    };
+    static_assert(sizeof(vehicle_1) == 0x57); // Can't use offset_of change this to last field if more found
+
+    struct vehicle_2 : vehicle_base
+    {
+        uint8_t pad_20;
+        company_id_t owner; // 0x21
+        uint8_t pad_22[0x26 - 0x22];
+        thing_id_t head; // 0x26
+        uint32_t var_28;
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint8_t var_38;
+        uint8_t pad_39;              // 0x39
+        thing_id_t next_car_id;      // 0x3A
+        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        TransportMode mode;          // 0x42 field same in all vehicles
+        uint8_t pad_43;
+        uint8_t var_44;
+        uint8_t pad_45[0x48 - 0x45];
+        int16_t var_48;
+        uint16_t var_4A;
+        uint8_t pad_4C[0x56 - 0x4C];
+        uint32_t var_56;
+        uint8_t var_5A;
+        uint8_t var_5B;
+        uint8_t pad_5C[0x5E - 0x5C];
+        uint32_t var_5E;
+        uint32_t var_62;
+        uint32_t var_66;
+        uint32_t var_6A;
+        uint32_t var_6E;
+        uint8_t var_72;
+        uint8_t var_73; // 0x73 (bit 0 = broken down)
+    };
+    static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct vehicle_body : vehicle_base
     {
@@ -317,5 +388,33 @@ namespace openloco
         uint16_t var_68;
     };
     static_assert(sizeof(vehicle_bogie) == 0x6A); // Can't use offset_of change this to last field if more found
+
+    struct vehicle_tail : vehicle_base
+    {
+        uint8_t pad_20;
+        company_id_t owner; // 0x21
+        uint8_t pad_22[0x26 - 0x22];
+        thing_id_t head; // 0x26
+        uint32_t var_28;
+        uint16_t var_2C;
+        uint16_t var_2E;
+        int16_t tile_x;      // 0x30
+        int16_t tile_y;      // 0x32
+        uint8_t tile_base_z; // 0x34
+        uint8_t track_type;  // 0x35 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint8_t var_38;
+        uint8_t pad_39;              // 0x39
+        thing_id_t next_car_id;      // 0x3A
+        uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
+        TransportMode mode;          // 0x42 field same in all vehicles
+        uint8_t pad_43;
+        uint8_t var_44;
+        uint8_t pad_45[0x48 - 0x45];
+        int16_t var_48;
+        uint16_t var_4A;
+    };
+    static_assert(sizeof(vehicle_tail) == 0x4C); // Can't use offset_of change this to last field if more found
+
 #pragma pack(pop)
 }

@@ -61,6 +61,7 @@
     <ClCompile Include="scenariomgr.cpp" />
     <ClCompile Include="station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
+    <ClCompile Include="things\CreateVehicle.cpp" />
     <ClCompile Include="things\misc.cpp" />
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />

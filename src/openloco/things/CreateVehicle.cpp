@@ -37,10 +37,11 @@ namespace openloco::things::vehicle
     static loco_global<int16_t, 0x01136250> _backupX;
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
+    static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _525FB8;
-    static loco_global<thing_id_t[32 * 1000], 0x0096885C> _96885C;
+    static loco_global<thing_id_t[64 * 1000], 0x0096885C> _96885C;
     static loco_global<uint8_t[256000], 0x00987C5C> _987C5C;
 
     // 0x004B1D96
@@ -75,7 +76,7 @@ namespace openloco::things::vehicle
             return false;
         }
 
-        for (auto i = 0; i < 32 * 1000; i += 32)
+        for (auto i = 0; i < 64 * 1000; i += 64)
         {
             auto id = _96885C[i];
             if (id == 0xFFFF)
@@ -119,7 +120,7 @@ namespace openloco::things::vehicle
             default:
             {
                 auto veh1 = veh0->next_car();
-                auto veh2 = veh1->next_car()->as_vehicle_2or6();
+                auto veh2 = veh1->next_car()->as_vehicle_2();
                 if (veh0->vehicleType == VehicleType::plane || veh0->vehicleType == VehicleType::ship)
                 {
                     if (veh2->var_73 & (1 << 0))
@@ -661,12 +662,12 @@ namespace openloco::things::vehicle
             return {};
         }
 
-        for (auto i = 0; i < 32 * 1000; i += 32)
+        for (auto i = 0; i < 64 * 1000; i += 64)
         {
             auto id = _96885C[i];
             if (id == -1)
             {
-                for (auto j = 0; j < 32; ++j)
+                for (auto j = 0; j < 64; ++j)
                 {
                     _96885C[i + j] = -2;
                 }
@@ -706,7 +707,7 @@ namespace openloco::things::vehicle
         }
 
         uint16_t newNum = 0;
-        for (;newNum < _unkArr.size(); ++newNum)
+        for (; newNum < _unkArr.size(); ++newNum)
         {
             if (_unkArr[newNum])
                 break;
@@ -715,7 +716,7 @@ namespace openloco::things::vehicle
     }
 
     // 0x004AE34B
-    static void createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
+    static openloco::vehicle_head* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newThing = createVehicleThing();
         newThing->base_type = thing_base_type::vehicle;
@@ -752,30 +753,150 @@ namespace openloco::things::vehicle
         newHead->var_77 = 0;
         newHead->var_79 = 0;
         sub_470312(newHead);
+        return newHead;
     }
 
+    // 0x004AE40E
+    static openloco::vehicle_1* createVehicle1(const thing_id_t head, openloco::vehicle* const lastVeh)
+    {
+        auto* const newThing = createVehicleThing();
+        newThing->base_type = thing_base_type::vehicle;
+        newThing->type = vehicle_thing_type::vehicle_1;
+        newThing->owner = _updating_company_id;
+
+        auto newVeh1 = newThing->as_vehicle_1();
+        newVeh1->head = head;
+        newVeh1->track_type = lastVeh->track_type;
+        newVeh1->mode = lastVeh->mode;
+        newVeh1->tile_x = -1;
+        newVeh1->tile_y = 0;
+        newVeh1->tile_base_z = 0;
+        newVeh1->var_28 = 0;
+        newVeh1->var_2E = 0;
+        newVeh1->var_2C = 0;
+        newVeh1->var_36 = lastVeh->var_36;
+        newVeh1->var_14 = 0;
+        newVeh1->var_09 = 0;
+        newVeh1->var_15 = 0;
+        newVeh1->var_38 = 0;
+        newVeh1->var_3C = 0;
+        newVeh1->var_44 = 0;
+        newVeh1->var_46 = 0;
+        newVeh1->var_48 = 0;
+        newVeh1->var_52 = 0;
+        newVeh1->var_4E = 0;
+        newVeh1->var_50 = 0;
+        newVeh1->var_53 = -1;
+        lastVeh->next_car_id = newVeh1->id;
+        return newVeh1;
+    }
+
+    // 0x004AE4A0
+    static openloco::vehicle_2* createVehicle2(const thing_id_t head, openloco::vehicle* const lastVeh)
+    {
+        auto* const newThing = createVehicleThing();
+        newThing->base_type = thing_base_type::vehicle;
+        newThing->type = vehicle_thing_type::vehicle_2;
+        newThing->owner = _updating_company_id;
+
+        auto newVeh2 = newThing->as_vehicle_2();
+        newVeh2->head = head;
+        newVeh2->track_type = lastVeh->track_type;
+        newVeh2->mode = lastVeh->mode;
+        newVeh2->tile_x = -1;
+        newVeh2->tile_y = 0;
+        newVeh2->tile_base_z = 0;
+        newVeh2->var_28 = 0;
+        newVeh2->var_2E = 0;
+        newVeh2->var_2C = 0;
+        newVeh2->var_36 = lastVeh->var_36;
+        newVeh2->var_14 = 0;
+        newVeh2->var_09 = 0;
+        newVeh2->var_15 = 0;
+        newVeh2->var_38 = 0;
+
+        newVeh2->var_56 = 0;
+        newVeh2->var_5A = 0;
+        newVeh2->var_5B = 0;
+        newVeh2->var_44 = -1;
+        newVeh2->var_48 = -1;
+        newVeh2->var_48 = 0;
+        newVeh2->var_4A = 0;
+        newVeh2->var_5E = 0;
+        newVeh2->var_62 = 0;
+        newVeh2->var_66 = 0;
+        newVeh2->var_6A = 0;
+        newVeh2->var_6E = 0;
+        newVeh2->var_72 = 0;
+        newVeh2->var_73 = 0;
+        lastVeh->next_car_id = newVeh2->id;
+        return newVeh2;
+    }
+
+    // 0x004AE54E
+    static openloco::vehicle_tail* createVehicleTail(const thing_id_t head, openloco::vehicle* const lastVeh)
+    {
+        auto* const newThing = createVehicleThing();
+        newThing->base_type = thing_base_type::vehicle;
+        newThing->type = vehicle_thing_type::vehicle_6;
+        newThing->owner = _updating_company_id;
+
+        auto newTail = newThing->as_vehicle_tail();
+        newTail->head = head;
+        newTail->track_type = lastVeh->track_type;
+        newTail->mode = lastVeh->mode;
+        newTail->tile_x = -1;
+        newTail->tile_y = 0;
+        newTail->tile_base_z = 0;
+        newTail->var_28 = 0;
+        newTail->var_2E = 0;
+        newTail->var_2C = 0;
+        newTail->var_36 = lastVeh->var_36;
+        newTail->var_14 = 0;
+        newTail->var_09 = 0;
+        newTail->var_15 = 0;
+        newTail->var_38 = 0;
+
+        newTail->var_44 = -1;
+        newTail->var_48 = -1;
+        newTail->var_4A = 0;
+        lastVeh->next_car_id = newTail->id;
+        newTail->next_car_id = thing_id::null;
+        return newTail;
+    }
     // 0x004AE318
-    static bool createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
+    static std::optional<openloco::vehicle_head*> createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
         if (!checkNumFreeThings(4))
         {
-            return false;
+            return {};
         }
 
         if (_525FB8 > 256000)
         {
             gGameCommandErrorText = string_ids::no_space_for_more_vehicle_orders;
-            return false;
+            return {};
         }
 
         auto orderId = sub_4B1E00();
         if (!orderId)
         {
-            return false;
+            return {};
         }
 
-        createHead(trackType, mode, *orderId, type);
-        // 0x004AE40E
+        auto* const head = createHead(trackType, mode, *orderId, type);
+        openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head);
+
+        auto* const veh1 = createVehicle1(head->id, lastVeh);
+        lastVeh = reinterpret_cast<openloco::vehicle*>(veh1);
+
+        auto* const veh2 = createVehicle2(head->id, lastVeh);
+        lastVeh = reinterpret_cast<openloco::vehicle*>(veh2);
+
+        auto* const tail = createVehicleTail(head->id, lastVeh);
+
+        sub_4B7CC3(reinterpret_cast<openloco::vehicle*>(head));
+        return { head };
     }
 
     static void sub_4AF7A4(openloco::vehicle* const veh0)
@@ -822,6 +943,17 @@ namespace openloco::things::vehicle
         call(0x004B05E4, regs);
     }
 
+    // 0x004B1E77
+    // Free orderId?
+    static void sub_4B1E77(const uint16_t orderId)
+    {
+        uint16_t baseOrderId = orderId & ~(0x3F);
+        for (auto i = 0; i < 64; ++i)
+        {
+            _96885C[i + baseOrderId] = -1;
+        }
+    }
+
     // 0x004AE74E
     static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId)
     {
@@ -839,9 +971,35 @@ namespace openloco::things::vehicle
         if (flags & game_commands::GameCommandFlag::apply)
         {
             auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-            
-            if (!createBase(vehObject->mode, vehObject->type, vehObject->track_type))
+
+            auto head = createBase(vehObject->mode, vehObject->type, vehObject->track_type);
+            if (!head)
             {
+                return 0x80000000;
+            }
+
+            auto _head = reinterpret_cast<openloco::vehicle*>(*head);
+            _113642A = _head->id;
+            if (createBody(_head, vehicleTypeId))
+            {
+                // 0x004AE6DE
+                sub_4AF7A4(_head);
+                companyRecalculateTransportCounts(_updating_company_id);
+
+                if (_backupVeh0 != reinterpret_cast<openloco::vehicle*>(-1))
+                {
+                    sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                }
+
+                ui::WindowManager::invalidate(ui::WindowType::vehicleList, _head->owner);
+            }
+            else
+            {
+                // Cleanup and delete base before exit.
+
+                sub_4B1E77(_head->var_36);
+
+                // 0x004AE7B2
                 return 0x80000000;
             }
         }
@@ -863,7 +1021,7 @@ namespace openloco::things::vehicle
         else
         {
             auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
-            auto veh2 = veh0->next_car()->next_car()->as_vehicle_2or6();
+            auto veh2 = veh0->next_car()->next_car()->as_vehicle_2();
             gameCommandMapX = veh2->x;
             gameCommandMapY = veh2->y;
             gameCommandMapZ = veh2->z;
