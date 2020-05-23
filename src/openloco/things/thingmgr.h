@@ -41,4 +41,5 @@ namespace openloco::thingmgr
 
     uint16_t getListCount(const thing_list list);
     void moveSpriteToList(thing_base* const thing, const thing_list list);
+    bool checkNumFreeThings(const size_t numNewThings);
 }

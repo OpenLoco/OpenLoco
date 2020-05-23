@@ -9,6 +9,7 @@ namespace openloco::thingmgr
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
     loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;
     loco_global<Thing[max_things], 0x006DB6DC> _things;
+    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
     thing_id_t first_id(thing_list list)
     {
@@ -71,7 +72,18 @@ namespace openloco::thingmgr
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);
-        regs.cl = static_cast<int8_t>(list);
+        regs.ecx = static_cast<int8_t>(list);
         call(0x0047019F, regs);
+    }
+
+    // 0x00470188
+    bool checkNumFreeThings(const size_t numNewThings)
+    {
+        if (thingmgr::getListCount(thingmgr::thing_list::null) <= numNewThings)
+        {
+            gGameCommandErrorText = string_ids::too_many_objects_in_game;
+            return false;
+        }
+        return true;
     }
 }
