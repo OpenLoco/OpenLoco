@@ -9,7 +9,7 @@ namespace openloco
         constexpr uint32_t built_on_water = 1 << 8;
         constexpr uint32_t can_be_founded_by_user = 1 << 16;
         constexpr uint32_t requires_all_cargo = 1 << 17;
-        constexpr uint32_t flag_29 = 1 << 28;
+        constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)
     struct industry_object
