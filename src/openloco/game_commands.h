@@ -9,7 +9,7 @@ using namespace openloco::interop;
 
 namespace openloco::game_commands
 {
-    enum GameCommandFlag
+    enum GameCommandFlag : uint8_t
     {
         apply = 1 << 0,  // 0x01
         flag_2 = 1 << 2, // 0x04
@@ -19,17 +19,20 @@ namespace openloco::game_commands
         flag_6 = 1 << 6, // 0x40
     };
 
+    constexpr uint32_t FAILURE = 0x80000000;
+
     void registerHooks();
     uint32_t do_command(int esi, const registers& registers);
 
+    // Build vehicle
     inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
-        do_command(5, regs);
-        return (uint32_t)regs.ebx != 0x80000000;
+
+        return do_command(5, regs) != FAILURE;
     }
 
     // Change loan
@@ -39,6 +42,19 @@ namespace openloco::game_commands
         regs.bl = GameCommandFlag::apply;
         regs.edx = newLoan;
         do_command(9, regs);
+    }
+
+    // Change station name
+    inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = cx;   // station number or 0
+        regs.ax = ax;   // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        do_command(11, regs);
     }
 
     // Change company colour scheme
@@ -64,19 +80,7 @@ namespace openloco::game_commands
         do_command(19, regs);
     }
 
-    //Change Station name
-    inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
-    {
-        registers regs;
-        regs.bl = GameCommandFlag::apply;
-        regs.cx = cx;   // station number or 0
-        regs.ax = ax;   // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
-        do_command(11, regs);
-    }
-
+    // Pause game
     inline void do_20()
     {
         registers regs;
@@ -84,6 +88,7 @@ namespace openloco::game_commands
         do_command(20, regs);
     }
 
+    // Load/save/quit game
     inline void do_21(uint8_t dl, uint8_t di)
     {
         registers regs;
@@ -94,39 +99,36 @@ namespace openloco::game_commands
     }
 
     // Change company name
-    inline bool do_30(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline bool do_30(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = bl;   // [ 1 ]
+        regs.bl = GameCommandFlag::apply;
         regs.cx = cx;   // company id
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        do_command(30, regs);
-
-        return (regs.eax & (1 << 31)) != 0;
+        return do_command(30, regs) != FAILURE;
     }
 
     // Change company owner name
-    inline bool do_31(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline bool do_31(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = bl;   // [ 1 ]
+        regs.bl = GameCommandFlag::apply;
         regs.cx = cx;   // company id
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        do_command(31, regs);
-
-        return (regs.eax & (1 << 31)) != 0;
+        return do_command(31, regs) != FAILURE;
     }
 
-    inline void do_46(uint8_t bl, uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    // Rename town
+    inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = bl;   // [ 1 ]
+        regs.bl = GameCommandFlag::apply;
         regs.cx = cx;   // town number or 0
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
@@ -135,16 +137,36 @@ namespace openloco::game_commands
         do_command(46, regs);
     }
 
+    // Remove industry
+    inline bool do_48(uint8_t industryId)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.dx = industryId;
+        return do_command(48, regs) != FAILURE;
+    }
+
+    // Remove town
+    inline bool do_50(uint8_t townId)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.edi = townId;
+        return do_command(50, regs) != FAILURE;
+    }
+
+    // Build company headquarters
     inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
     {
         registers regs;
-        regs.bl = bl; //
+        regs.bl = bl; // flags
         regs.cx = cx; // x?
         regs.ax = ax; // y?
         regs.di = di; // z?
         do_command(55, regs);
     }
 
+    // Change company face
     inline bool do_65(const objectmgr::header& object, uint8_t company)
     {
         auto objPtr = reinterpret_cast<const int32_t*>(&object);
@@ -155,14 +177,12 @@ namespace openloco::game_commands
         regs.edx = *objPtr++;
         regs.edi = *objPtr;
         regs.bh = company;
-        do_command(65, regs);
-
-        return (uint32_t)regs.ebx != 0x80000000;
+        return do_command(65, regs) != FAILURE;
     }
 
+    // Send chat message
     inline void do_71(int32_t ax, char* string)
     {
-
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.ax = ax;
@@ -173,7 +193,27 @@ namespace openloco::game_commands
         do_command(71, regs);
     }
 
-    //Rename Industry
+    // Update owner status
+    inline void do_73(thing_id_t id)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.ax = -2;
+        regs.cx = id;
+        do_command(73, regs);
+    }
+
+    // Update owner status
+    inline void do_73(map::map_pos position)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.ax = position.x;
+        regs.cx = position.y;
+        do_command(73, regs);
+    }
+
+    // Rename industry
     inline void do_79(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
@@ -184,41 +224,5 @@ namespace openloco::game_commands
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
         do_command(79, regs);
-    }
-
-    inline bool do_48(uint8_t bl, uint8_t industryId)
-    {
-        registers regs;
-        regs.bl = bl; // [ 1 = remove industry]
-        regs.dx = industryId;
-        do_command(48, regs);
-        return (uint32_t)regs.ebx != 0x80000000;
-    }
-
-    inline bool do_50(uint8_t bl, uint8_t townId)
-    {
-        registers regs;
-        regs.bl = bl; // [ 1 = remove town]
-        regs.edi = townId;
-        do_command(50, regs);
-        return (uint32_t)regs.ebx != 0x80000000;
-    }
-
-    inline void do_73(thing_id_t id)
-    {
-        registers regs;
-        regs.bl = GameCommandFlag::apply;
-        regs.ax = -2;
-        regs.cx = id;
-        do_command(73, regs);
-    }
-
-    inline void do_73(map::map_pos position)
-    {
-        registers regs;
-        regs.bl = GameCommandFlag::apply;
-        regs.ax = position.x;
-        regs.cx = position.y;
-        do_command(73, regs);
     }
 }
