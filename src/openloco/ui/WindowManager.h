@@ -260,6 +260,11 @@ namespace openloco::ui::windows::CompanyWindow
     window* openFinances(company_id_t companyId);
 }
 
+namespace openloco::ui::windows::ObjectSelectionWindow
+{
+    window* open();
+}
+
 namespace openloco::ui::windows::PlayerInfoPanel
 {
     window* open();
