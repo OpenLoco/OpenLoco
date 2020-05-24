@@ -159,11 +159,9 @@ namespace openloco
         vehicle_object* object() const;
 
         void update_head();
-        void sub_4BA8D4();
 
     private:
         bool update();
-        void sub_4BAA76();
     };
     static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -232,8 +230,10 @@ namespace openloco
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
+        void sub_4BA8D4();
 
     private:
+        void sub_4BAA76();
         uint32_t getVehicleTotalLength();
     };
     static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
@@ -357,13 +357,13 @@ namespace openloco
     private:
         void sub_4AAB0B();
         void animation_update();
-        void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
+        void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
         void steam_puffs_animation_update(uint8_t num, int32_t var_05);
         void diesel_exhaust1_animation_update(uint8_t num, int32_t var_05);
         void diesel_exhaust2_animation_update(uint8_t num, int32_t var_05);
         void electric_spark1_animation_update(uint8_t num, int32_t var_05);
         void electric_spark2_animation_update(uint8_t num, int32_t var_05);
-        void ship_wake_animation_update(uint8_t num, int32_t);
+        void ship_wake_animation_update(uint8_t num, int32_t var_05);
         uint8_t update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
