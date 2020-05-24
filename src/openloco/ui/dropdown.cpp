@@ -18,7 +18,7 @@ namespace openloco::ui::dropdown
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
-    static loco_global<std::uint8_t[32], 0x005046FA> _appropriateImageDropdownItemsPerRow;
+    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
 
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
@@ -166,6 +166,7 @@ namespace openloco::ui::dropdown
     void show_image(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
+        assert(count < std::size(_appropriateImageDropdownItemsPerRow));
 
         registers regs;
         regs.cx = x;

@@ -200,17 +200,6 @@ namespace openloco::game_commands
         return do_command(31, regs) != FAILURE;
     }
 
-    inline void do_33(uint16_t ax, uint16_t cx, uint8_t dl, uint8_t dh, uint8_t flags)
-    {
-        registers regs;
-        regs.ax = ax;
-        regs.cx = cx;
-        regs.dl = dl;
-        regs.dh = dh;
-        regs.bl = flags;
-        do_command(33, regs);
-    }
-	
     // Rename town
     inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {

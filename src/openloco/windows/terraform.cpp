@@ -176,17 +176,17 @@ namespace openloco::ui::windows::terraform
         // 0x004BB63F
         static void refreshTreeList(window* self)
         {
-            auto treeIndex = 0;
-            for (auto i = 0; i < 64; i++)
+            auto treeCount = 0;
+            for (uint16_t i = 0; i < objectmgr::get_max_objects(object_type::tree); i++)
             {
                 auto treeObj = objectmgr::get<tree_object>(i);
                 if (treeObj == nullptr)
                     continue;
-                self->row_info[treeIndex] = i;
-                treeIndex++;
+                self->row_info[treeCount] = i;
+                treeCount++;
             }
 
-            self->var_83C = treeIndex;
+            self->var_83C = treeCount;
             auto rowHover = -1;
 
             if (_lastSelectedTree != 0xFF)
@@ -558,12 +558,12 @@ namespace openloco::ui::windows::terraform
                 treeCost = _lastTreeCost;
                 if (treeCost == 0x80000000)
                 {
-                    treeCost = treeObj->cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
+                    treeCost = treeObj->build_cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
                 }
             }
             else
             {
-                treeCost = treeObj->cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
+                treeCost = treeObj->build_cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
             }
             auto args = FormatArguments();
             args.push(treeCost);
@@ -1381,7 +1381,7 @@ namespace openloco::ui::windows::terraform
             auto zoom = viewport->zoom;
 
             int16_t dx = static_cast<int16_t>(0xFFF0);
-            dx /= (2 ^ zoom);
+            dx /= pow(2, zoom);
             auto yPos = y - _dragLastY;
             auto flags = GameCommandFlag::apply;
 
@@ -1632,7 +1632,7 @@ namespace openloco::ui::windows::terraform
             auto zoom = viewport->zoom;
 
             int16_t dx = static_cast<int16_t>(0xFFF0);
-            dx /= (2 ^ zoom);
+            dx /= pow(2, zoom);
             auto yPos = y - _dragLastY;
             auto flags = GameCommandFlag::apply;
 
@@ -1777,17 +1777,17 @@ namespace openloco::ui::windows::terraform
         // 0x004BB6D5
         static void refreshWallList(window* self)
         {
-            auto wallIndex = 0;
-            for (auto i = 0; i < 32; i++)
+            auto wallCount = 0;
+            for (uint16_t i = 0; i < objectmgr::get_max_objects(object_type::wall); i++)
             {
                 auto wallObj = objectmgr::get<wall_object>(i);
                 if (wallObj == nullptr)
                     continue;
-                self->row_info[wallIndex] = i;
-                wallIndex++;
+                self->row_info[wallCount] = i;
+                wallCount++;
             }
 
-            self->var_83C = wallIndex;
+            self->var_83C = wallCount;
             auto rowHover = -1;
 
             if (_lastSelectedTree != 0xFF)

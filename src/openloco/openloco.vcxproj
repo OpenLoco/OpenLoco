@@ -188,7 +188,9 @@
     <ClInclude Include="objects\steam_object.h" />
     <ClInclude Include="objects\track_extra_object.h" />
     <ClInclude Include="objects\track_object.h" />
+    <ClInclude Include="objects\tree_object.h" />
     <ClInclude Include="objects\vehicle_object.h" />
+    <ClInclude Include="objects\wall_object.h" />
     <ClInclude Include="objects\water_object.h" />
     <ClInclude Include="openloco.h" />
     <ClInclude Include="platform\platform.h" />

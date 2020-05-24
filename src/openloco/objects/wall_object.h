@@ -10,7 +10,7 @@ namespace openloco
         string_id name;
         uint32_t sprite; // 0x02
         uint8_t var_06;
-        uint8_t var_07;
+        uint8_t flags; // 0x07
         uint8_t var_08;
         uint8_t var_09;
     };
