@@ -12,7 +12,6 @@ namespace openloco
     namespace things::vehicle
     {
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
-        bool isVehicleTypeCompatible(openloco::vehicle* const veh0, const uint16_t vehicleTypeId); // move to vehicle0 function
     }
 
     struct vehicle_head;
@@ -220,6 +219,12 @@ namespace openloco
         uint8_t pad_6D[0x77 - 0x6D];
         uint16_t var_77; //
         uint8_t var_79;
+
+    public:
+        bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
+
+    private:
+        uint32_t getVehicleTotalLength();
     };
     static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
 

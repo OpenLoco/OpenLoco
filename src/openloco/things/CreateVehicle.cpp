@@ -31,7 +31,7 @@ namespace openloco::things::vehicle
     static loco_global<map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
     static loco_global<int32_t, 0x011360FC> _11360FC;
-    static loco_global<openloco::vehicle*, 0x01136240> _backupVeh0;
+    static loco_global<openloco::vehicle_head*, 0x01136240> _backupVeh0;
     static loco_global<int16_t, 0x01136248> _backup2E;
     static loco_global<int16_t, 0x0113624C> _backup2C;
     static loco_global<int16_t, 0x01136250> _backupX;
@@ -104,9 +104,9 @@ namespace openloco::things::vehicle
         return false;
     }
 
-    static bool sub_4B0BDD(openloco::vehicle* const veh0)
+    static bool sub_4B0BDD(openloco::vehicle_head* const head)
     {
-        switch (veh0->var_5D)
+        switch (head->var_5D)
         {
             case 8:
                 gGameCommandErrorText = string_ids::vehicle_has_crashed;
@@ -119,9 +119,9 @@ namespace openloco::things::vehicle
                 return false;
             default:
             {
-                auto veh1 = veh0->next_car();
+                auto veh1 = reinterpret_cast<openloco::vehicle*>(head)->next_car();
                 auto veh2 = veh1->next_car()->as_vehicle_2();
-                if (veh0->vehicleType == VehicleType::plane || veh0->vehicleType == VehicleType::ship)
+                if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
                 {
                     if (veh2->var_73 & (1 << 0))
                     {
@@ -129,12 +129,12 @@ namespace openloco::things::vehicle
                         return false;
                     }
 
-                    if (veh0->tile_x == -1)
+                    if (head->tile_x == -1)
                     {
                         return true;
                     }
 
-                    if (veh0->var_5D != 6 && veh0->var_5D != 1)
+                    if (head->var_5D != 6 && head->var_5D != 1)
                     {
                         gGameCommandErrorText = string_ids::vehicle_must_be_stopped;
                         return false;
@@ -149,7 +149,7 @@ namespace openloco::things::vehicle
                 else
                 {
 
-                    if (veh0->tile_x == -1)
+                    if (head->tile_x == -1)
                     {
                         return true;
                     }
@@ -168,176 +168,10 @@ namespace openloco::things::vehicle
         }
     }
 
-    static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
-    {
-        auto newObject = objectmgr::get<vehicle_object>(newVehicleTypeId);       //edi
-        auto sourceObject = objectmgr::get<vehicle_object>(sourceVehicleTypeId); // esi
-
-        if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
-        {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
-            return false;
-        }
-
-        if (newVehicleTypeId == sourceVehicleTypeId)
-        {
-            return true;
-        }
-
-        if (newObject->num_compat != 0)
-        {
-            for (auto i = 0; i < newObject->num_compat; ++i)
-            {
-                if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
-                {
-                    return true;
-                }
-            }
-        }
-
-        if (sourceObject->num_compat != 0)
-        {
-            for (auto i = 0; i < sourceObject->num_compat; ++i)
-            {
-                if (sourceObject->compatible_vehicles[i] == newVehicleTypeId)
-                {
-                    return true;
-                }
-            }
-        }
-
-        if ((newObject->num_compat != 0) && (sourceObject->num_compat != 0))
-        {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
-            return false;
-        }
-
-        return true;
-    }
-
-    // 0x004B9780
-    // used by road vehicles only maybe??
-    static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
-    {
-        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-        auto length = 0;
-        for (auto i = 0; i < vehObject->var_04; ++i)
-        {
-            if (vehObject->var_24[i].body_sprite_ind == 0xFF)
-            {
-                continue;
-            }
-
-            auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
-            length += vehObject->sprites[unk].bogey_position * 2;
-        }
-        return length;
-    }
-
-    // 0x004B97B7
-    // used by road vehicles only maybe??
-    static uint32_t getVehicleTotalLength(openloco::vehicle* const veh0)
-    {
-        auto totalLength = 0;
-        auto veh = veh0->next_car()->next_car()->next_car();
-        while (veh->type != vehicle_thing_type::vehicle_6)
-        {
-            if (veh->type == vehicle_thing_type::vehicle_body_end)
-            {
-                totalLength += getVehicleTypeLength(veh->object_id);
-            }
-            veh = veh->next_car();
-        }
-        return totalLength;
-    }
-
-    // 0x004B8FA2
-    bool isVehicleTypeCompatible(openloco::vehicle* const veh0, const uint16_t vehicleTypeId)
-    {
-        if (veh0 == nullptr)
-        {
-            return false;
-        }
-        auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-        if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
-        {
-            auto veh = veh0->next_car()->next_car()->next_car();
-            if (veh->type != vehicle_thing_type::vehicle_6)
-            {
-                gGameCommandErrorText = string_ids::incompatible_vehicle;
-                return false;
-            }
-        }
-        else
-        {
-            if (newObject->track_type != veh0->track_type)
-            {
-                gGameCommandErrorText = string_ids::incompatible_vehicle;
-                return false;
-            }
-        }
-
-        if (newObject->mode != veh0->mode)
-        {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
-            return false;
-        }
-
-        if (newObject->type != veh0->vehicleType)
-        {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
-            return false;
-        }
-
-        {
-            auto veh = veh0->next_car()->next_car()->next_car();
-            if (veh->type != vehicle_thing_type::vehicle_6)
-            {
-                while (veh->type != vehicle_thing_type::vehicle_6)
-                {
-                    if (!sub_4B90F0(vehicleTypeId, veh->object_id))
-                    {
-                        return false;
-                    }
-
-                    vehicle_body* vehUnk = nullptr;
-                    do
-                    {
-                        veh = veh->next_car()->next_car()->next_car();
-                        if (veh->type == vehicle_thing_type::vehicle_6)
-                        {
-                            break;
-                        }
-
-                        vehUnk = veh->next_car()->next_car()->as_vehicle_body();
-                    } while (vehUnk != nullptr && vehUnk->type == vehicle_thing_type::vehicle_body_cont);
-                }
-            }
-        }
-        if (veh0->mode != TransportMode::road)
-        {
-            return true;
-        }
-
-        if (veh0->track_type != 0xFF)
-        {
-            return true;
-        }
-
-        auto curTotalLength = getVehicleTotalLength(veh0);
-        auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
-        if (curTotalLength + additionalNewLength > 176)
-        {
-            gGameCommandErrorText = string_ids::vehicle_too_long;
-            return false;
-        }
-        return true;
-    }
-
-    static void sub_4B08DD(openloco::vehicle* const veh0)
+    static void sub_4B08DD(openloco::vehicle_head* const head)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(veh0);
+        regs.esi = reinterpret_cast<uint32_t>(head);
         call(0x004B08DD, regs);
     }
 
@@ -933,10 +767,10 @@ namespace openloco::things::vehicle
     }
 
     // 0x004B05E4
-    static void sub_4B05E4(openloco::vehicle* const veh0, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
+    static void sub_4B05E4(openloco::vehicle_head* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(veh0);
+        regs.esi = reinterpret_cast<int32_t>(head);
         regs.ax = x;
         regs.cx = y;
         regs.bx = unk2;
@@ -1034,7 +868,7 @@ namespace openloco::things::vehicle
                 sub_4AF7A4(_head);
                 companyRecalculateTransportCounts(_updating_company_id);
 
-                if (_backupVeh0 != reinterpret_cast<openloco::vehicle*>(-1))
+                if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
                 {
                     sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                 }
@@ -1067,7 +901,7 @@ namespace openloco::things::vehicle
     uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
         gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::VehiclePurchases) * 4;
-        _backupVeh0 = reinterpret_cast<openloco::vehicle*>(-1);
+        _backupVeh0 = reinterpret_cast<openloco::vehicle_head*>(-1);
         if (vehicleThingId == (uint16_t)-1)
         {
             return create(flags, vehicleTypeId);
@@ -1090,12 +924,12 @@ namespace openloco::things::vehicle
                 return 0x80000000;
             }
 
-            if (!sub_4B0BDD(veh0))
+            if (!sub_4B0BDD(head))
             {
                 return 0x80000000;
             }
 
-            if (!isVehicleTypeCompatible(veh0, vehicleTypeId))
+            if (!head->isVehicleTypeCompatible(vehicleTypeId))
             {
                 return 0x80000000;
             }
@@ -1114,8 +948,8 @@ namespace openloco::things::vehicle
                     _backupZ = head->tile_base_z;
                     _backup2C = head->var_2C;
                     _backup2E = head->var_2E;
-                    _backupVeh0 = veh0;
-                    sub_4B08DD(veh0);
+                    _backupVeh0 = head;
+                    sub_4B08DD(head);
                 }
 
                 if (createBody(head, vehicleTypeId))
@@ -1124,7 +958,7 @@ namespace openloco::things::vehicle
                     sub_4AF7A4(head);
                     companyRecalculateTransportCounts(_updating_company_id);
 
-                    if (_backupVeh0 != reinterpret_cast<openloco::vehicle*>(-1))
+                    if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
                     {
                         sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                     }
@@ -1133,14 +967,14 @@ namespace openloco::things::vehicle
                 }
                 else
                 {
-                    if (_backupVeh0 == reinterpret_cast<openloco::vehicle*>(-1))
+                    if (_backupVeh0 == reinterpret_cast<openloco::vehicle_head*>(-1))
                     {
                         return 0x80000000;
                     }
 
-                    openloco::vehicle* veh0backup = _backupVeh0;
+                    vehicle_head* veh0backup = _backupVeh0;
                     // If it has an existing body
-                    if (veh0backup->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
+                    if (reinterpret_cast<openloco::vehicle*>(veh0backup)->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
                     {
                         sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                     }

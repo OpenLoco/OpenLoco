@@ -30,6 +30,7 @@ loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -1549,4 +1550,166 @@ void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
     loc.y += yFactor;
 
     exhaust::create(loc, vehicleObject->animation[num].object_id);
+}
+
+static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
+{
+    auto newObject = objectmgr::get<vehicle_object>(newVehicleTypeId);       //edi
+    auto sourceObject = objectmgr::get<vehicle_object>(sourceVehicleTypeId); // esi
+
+    if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    if (newVehicleTypeId == sourceVehicleTypeId)
+    {
+        return true;
+    }
+
+    if (newObject->num_compat != 0)
+    {
+        for (auto i = 0; i < newObject->num_compat; ++i)
+        {
+            if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
+            {
+                return true;
+            }
+        }
+    }
+
+    if (sourceObject->num_compat != 0)
+    {
+        for (auto i = 0; i < sourceObject->num_compat; ++i)
+        {
+            if (sourceObject->compatible_vehicles[i] == newVehicleTypeId)
+            {
+                return true;
+            }
+        }
+    }
+
+    if ((newObject->num_compat != 0) && (sourceObject->num_compat != 0))
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    return true;
+}
+
+// 0x004B9780
+// used by road vehicles only maybe??
+static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
+{
+    auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    auto length = 0;
+    for (auto i = 0; i < vehObject->var_04; ++i)
+    {
+        if (vehObject->var_24[i].body_sprite_ind == 0xFF)
+        {
+            continue;
+        }
+
+        auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
+        length += vehObject->sprites[unk].bogey_position * 2;
+    }
+    return length;
+}
+
+// 0x004B97B7
+// used by road vehicles only maybe??
+uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
+{
+    auto totalLength = 0;
+    auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+    while (veh->type != vehicle_thing_type::vehicle_6)
+    {
+        if (veh->type == vehicle_thing_type::vehicle_body_end)
+        {
+            totalLength += getVehicleTypeLength(veh->object_id);
+        }
+        veh = veh->next_car();
+    }
+    return totalLength;
+}
+
+// 0x004B8FA2
+bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
+{
+    auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
+    {
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+        if (veh->type != vehicle_thing_type::vehicle_6)
+        {
+            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            return false;
+        }
+    }
+    else
+    {
+        if (newObject->track_type != track_type)
+        {
+            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            return false;
+        }
+    }
+
+    if (newObject->mode != mode)
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    if (newObject->type != vehicleType)
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    {
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+        if (veh->type != vehicle_thing_type::vehicle_6)
+        {
+            while (veh->type != vehicle_thing_type::vehicle_6)
+            {
+                if (!sub_4B90F0(vehicleTypeId, veh->object_id))
+                {
+                    return false;
+                }
+
+                vehicle_body* vehUnk = nullptr;
+                do
+                {
+                    veh = veh->next_car()->next_car()->next_car();
+                    if (veh->type == vehicle_thing_type::vehicle_6)
+                    {
+                        break;
+                    }
+
+                    vehUnk = veh->next_car()->next_car()->as_vehicle_body();
+                } while (vehUnk != nullptr && vehUnk->type == vehicle_thing_type::vehicle_body_cont);
+            }
+        }
+    }
+    if (mode != TransportMode::road)
+    {
+        return true;
+    }
+
+    if (track_type != 0xFF)
+    {
+        return true;
+    }
+
+    auto curTotalLength = getVehicleTotalLength();
+    auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
+    if (curTotalLength + additionalNewLength > 176)
+    {
+        gGameCommandErrorText = string_ids::vehicle_too_long;
+        return false;
+    }
+    return true;
 }

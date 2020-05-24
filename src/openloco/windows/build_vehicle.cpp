@@ -430,7 +430,8 @@ namespace openloco::ui::build_vehicle
 
             if (vehicle)
             {
-                if (!things::vehicle::isVehicleTypeCompatible(vehicle, vehicleObjIndex))
+                auto* const head = vehicle->as_vehicle_head();
+                if (head && !head->isVehicleTypeCompatible(vehicleObjIndex))
                 {
                     continue;
                 }
