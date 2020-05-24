@@ -932,11 +932,6 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    // Remove the set window pos function, we do not want it as it
-    // keeps moving the process window to 0, 0
-    // Can be removed when WindowManager:update() is hooked
-    write_ret(0x00406520);
-
     // Remove check for is road in use when removing roads. It is
     // quite annoying when it's sometimes only the player's own
     // vehicles that are using it.
