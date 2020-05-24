@@ -342,11 +342,20 @@ namespace openloco::things::vehicle
     }
 
     // 0x00470039
-    static openloco::vehicle* createVehicleThing()
+    static openloco::vehicle_base* createVehicleThing()
     {
         registers regs{};
         call(0x00470039, regs);
-        return reinterpret_cast<openloco::vehicle*>(regs.esi);
+        return reinterpret_cast<openloco::vehicle_base*>(regs.esi);
+    }
+
+    template<typename T>
+    static T* createVehicleThing()
+    {
+        auto* const base = createVehicleThing();
+        base->base_type = thing_base_type::vehicle;
+        base->type = T::VehicleThingType;
+        return reinterpret_cast<T*>(base);
     }
 
     static void sub_4BA873(openloco::vehicle_bogie* const vehBogie)
@@ -369,16 +378,8 @@ namespace openloco::things::vehicle
     // 0x4AE8F1
     static openloco::vehicle_bogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, openloco::vehicle* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = vehicle_thing_type::vehicle_bogie;
-        newThing->owner = _updating_company_id;
-
-        auto newBogie = newThing->as_vehicle_bogie();
-        if (newBogie == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto newBogie = createVehicleThing<vehicle_bogie>();
+        newBogie->owner = _updating_company_id;
         newBogie->head = head;
         newBogie->body_index = bodyNumber;
         newBogie->track_type = lastVeh->track_type;
@@ -488,16 +489,10 @@ namespace openloco::things::vehicle
     // 0x004AEA9E
     static openloco::vehicle_body* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, openloco::vehicle* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_end : vehicle_thing_type::vehicle_body_cont;
-        newThing->owner = _updating_company_id;
-
-        auto newBody = newThing->as_vehicle_body();
-        if (newBody == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto newBody = createVehicleThing<vehicle_body>();
+        // TODO: move this into the create function somehow
+        newBody->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_end : vehicle_thing_type::vehicle_body_cont;
+        newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;
         newBody->track_type = lastVeh->track_type;
@@ -730,17 +725,9 @@ namespace openloco::things::vehicle
     // 0x004AE34B
     static openloco::vehicle_head* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
-        auto* const newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = vehicle_thing_type::vehicle_0;
-        newThing->owner = _updating_company_id;
-        thingmgr::moveSpriteToList(newThing, thingmgr::thing_list::vehicle_head);
-
-        auto newHead = newThing->as_vehicle_head();
-        if (newHead == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto* const newHead = createVehicleThing<vehicle_head>();
+        thingmgr::moveSpriteToList(newHead, thingmgr::thing_list::vehicle_head);
+        newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= (1 << 1);
         newHead->track_type = trackType;
@@ -775,16 +762,8 @@ namespace openloco::things::vehicle
     // 0x004AE40E
     static openloco::vehicle_1* createVehicle1(const thing_id_t head, openloco::vehicle* const lastVeh)
     {
-        auto* const newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = vehicle_thing_type::vehicle_1;
-        newThing->owner = _updating_company_id;
-
-        auto newVeh1 = newThing->as_vehicle_1();
-        if (newVeh1 == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto* const newVeh1 = createVehicleThing<vehicle_1>();
+        newVeh1->owner = _updating_company_id;
         newVeh1->head = head;
         newVeh1->track_type = lastVeh->track_type;
         newVeh1->mode = lastVeh->mode;
@@ -814,16 +793,8 @@ namespace openloco::things::vehicle
     // 0x004AE4A0
     static openloco::vehicle_2* createVehicle2(const thing_id_t head, openloco::vehicle* const lastVeh)
     {
-        auto* const newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = vehicle_thing_type::vehicle_2;
-        newThing->owner = _updating_company_id;
-
-        auto newVeh2 = newThing->as_vehicle_2();
-        if (newVeh2 == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto* const newVeh2 = createVehicleThing<vehicle_2>();
+        newVeh2->owner = _updating_company_id;
         newVeh2->head = head;
         newVeh2->track_type = lastVeh->track_type;
         newVeh2->mode = lastVeh->mode;
@@ -860,16 +831,8 @@ namespace openloco::things::vehicle
     // 0x004AE54E
     static openloco::vehicle_tail* createVehicleTail(const thing_id_t head, openloco::vehicle* const lastVeh)
     {
-        auto* const newThing = createVehicleThing();
-        newThing->base_type = thing_base_type::vehicle;
-        newThing->type = vehicle_thing_type::vehicle_6;
-        newThing->owner = _updating_company_id;
-
-        auto newTail = newThing->as_vehicle_tail();
-        if (newTail == nullptr) // Can never happen
-        {
-            return nullptr;
-        }
+        auto* const newTail = createVehicleThing<vehicle_tail>();
+        newTail->owner = _updating_company_id;
         newTail->head = head;
         newTail->track_type = lastVeh->track_type;
         newTail->mode = lastVeh->mode;
@@ -914,12 +877,24 @@ namespace openloco::things::vehicle
 
         auto* const head = createHead(trackType, mode, *orderId, type);
         openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head);
+        if (lastVeh == nullptr) // Can never happen
+        {
+            return {};
+        }
 
         auto* const veh1 = createVehicle1(head->id, lastVeh);
         lastVeh = reinterpret_cast<openloco::vehicle*>(veh1);
+        if (lastVeh == nullptr) // Can never happen
+        {
+            return {};
+        }
 
         auto* const veh2 = createVehicle2(head->id, lastVeh);
         lastVeh = reinterpret_cast<openloco::vehicle*>(veh2);
+        if (lastVeh == nullptr) // Can never happen
+        {
+            return {};
+        }
 
         createVehicleTail(head->id, lastVeh);
 

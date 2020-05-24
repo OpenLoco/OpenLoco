@@ -191,5 +191,5 @@ namespace openloco
         uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
     };
 #pragma pack(pop)
-    static_assert(offsetof(vehicle_object, num_sounds) == 0x15A);
+    static_assert(sizeof(vehicle_object) == 0x15E);
 }
