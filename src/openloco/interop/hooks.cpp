@@ -707,14 +707,6 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x0043B26C,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::about::open();
-            return 0;
-        });
-
     register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -915,24 +907,6 @@ void openloco::interop::register_hooks()
             auto window = (ui::window*)regs.esi;
             window->init_scroll_widgets();
             regs = backup;
-
-            return 0;
-        });
-
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x00004BF7B9,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::options::open();
-
-            return 0;
-        });
-
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x00004BF7B9,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::options::open_music_settings();
 
             return 0;
         });
