@@ -607,6 +607,9 @@ namespace openloco::ui::windows::station_list
         if (widgetIndex != widx::company_select)
             return;
 
+        if (itemIndex == -1)
+            return;
+
         company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
