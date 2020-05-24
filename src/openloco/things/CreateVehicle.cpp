@@ -571,7 +571,7 @@ namespace openloco::things::vehicle
         return newBody;
     }
 
-    static void sub_4B7CC3(openloco::vehicle* const veh0)
+    static void sub_4B7CC3(openloco::vehicle_head* const head)
     {
         //if (veh0->mode == TransportMode::road)
         //{
@@ -605,20 +605,20 @@ namespace openloco::things::vehicle
         //    }
         //}
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(veh0);
+        regs.esi = reinterpret_cast<int32_t>(head);
         call(0x004B7CC3, regs);
     }
 
     // 0x004AE86D
-    static bool createBody(openloco::vehicle* const veh0, const uint16_t vehicleTypeId)
+    static bool createBody(openloco::vehicle_head* const head, const uint16_t vehicleTypeId)
     {
         if (!thingmgr::checkNumFreeThings(12))
         {
             return false;
         }
 
-        openloco::vehicle* lastVeh = veh0;   // will be of type vehicle_body_end at end of loop
-        openloco::vehicle* endVeh = lastVeh; // will be of type vehicle_6 at end of loop
+        openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_body_end at end of loop
+        openloco::vehicle* endVeh = lastVeh;                                     // will be of type vehicle_6 at end of loop
         for (; endVeh->type != vehicle_thing_type::vehicle_6; endVeh = lastVeh->next_car())
         {
             lastVeh = lastVeh->next_car();
@@ -637,14 +637,13 @@ namespace openloco::things::vehicle
         openloco::vehicle_bogie* newCarStart = nullptr;
         for (auto bodyNumber = 0; bodyNumber < vehObject->var_04; ++bodyNumber)
         {
-            auto* const firstBogie = createFirstBogie(veh0->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
-
+            auto* const firstBogie = createFirstBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
             lastVeh = reinterpret_cast<openloco::vehicle*>(firstBogie);
 
-            auto* const secondBogie = createSecondBogie(veh0->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
+            auto* const secondBogie = createSecondBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
             lastVeh = reinterpret_cast<openloco::vehicle*>(secondBogie);
 
-            auto* const body = createBody(veh0->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
+            auto* const body = createBody(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
             lastVeh = reinterpret_cast<openloco::vehicle*>(body);
 
             if (newCarStart == nullptr)
@@ -658,7 +657,7 @@ namespace openloco::things::vehicle
             return false;
         }
         lastVeh->next_car_id = endVeh->id;
-        sub_4B7CC3(veh0);
+        sub_4B7CC3(head);
         return true;
     }
 
@@ -898,11 +897,11 @@ namespace openloco::things::vehicle
 
         createVehicleTail(head->id, lastVeh);
 
-        sub_4B7CC3(reinterpret_cast<openloco::vehicle*>(head));
+        sub_4B7CC3(head);
         return { head };
     }
 
-    static void sub_4AF7A4(openloco::vehicle* const veh0)
+    static void sub_4AF7A4(openloco::vehicle_head* const veh0)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(veh0);
@@ -957,6 +956,52 @@ namespace openloco::things::vehicle
         }
     }
 
+    static void sub_470795(const uint32_t var46, const uint16_t var4C)
+    {
+        auto v = thingmgr::first<openloco::vehicle>();
+        while (v != nullptr)
+        {
+            auto next = v->next_vehicle();
+
+            auto head = v->as_vehicle_head();
+            v = next;
+            if (head == nullptr) // Can never happen
+            {
+                continue;
+            }
+
+            if (head->var_46 > var46)
+            {
+                head->var_46 += var4C;
+            }
+        }
+    }
+
+    // 0x00470334
+    static void sub_470334(openloco::vehicle_head* const head)
+    {
+        sub_470795(head->var_46, head->var_4C * -1);
+        auto unk = _525FB8 - head->var_46 - head->var_4C;
+        auto var46 = head->var_46;
+        for (; unk != 0; --unk)
+        {
+            _987C5C[var46] = _987C5C[head->var_4C + var46];
+            var46++;
+        }
+
+        _525FB8 = _525FB8 - head->var_4C;
+    }
+
+    // 0x0042851C
+    // Delete related news items??
+    static void sub_42851C(const thing_id_t id, const uint8_t type)
+    {
+        registers regs{};
+        regs.al = type;
+        regs.dx = id;
+        call(0x0042851C, regs);
+    }
+
     // 0x004AE74E
     static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId)
     {
@@ -981,7 +1026,7 @@ namespace openloco::things::vehicle
                 return 0x80000000;
             }
 
-            auto _head = reinterpret_cast<openloco::vehicle*>(*head);
+            auto _head = *head;
             _113642A = _head->id;
             if (createBody(_head, vehicleTypeId))
             {
@@ -999,10 +1044,16 @@ namespace openloco::things::vehicle
             else
             {
                 // Cleanup and delete base before exit.
-
                 sub_4B1E77(_head->var_36);
-
-                // 0x004AE7B2
+                sub_470334(_head);
+                sub_42851C(_head->id, 3);
+                auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->next_car();
+                thingmgr::freeThing(_head);
+                auto veh2 = veh1->next_car();
+                thingmgr::freeThing(veh1);
+                auto veh6 = veh2->next_car();
+                thingmgr::freeThing(veh2);
+                thingmgr::freeThing(veh6);
                 return 0x80000000;
             }
         }
@@ -1024,8 +1075,9 @@ namespace openloco::things::vehicle
         else
         {
             auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
+            auto head = veh0->as_vehicle_head();
             auto veh2 = veh0->next_car()->next_car()->as_vehicle_2();
-            if (veh2 == nullptr)
+            if (veh2 == nullptr || head == nullptr)
             {
                 return 0x80000000;
             }
@@ -1033,7 +1085,7 @@ namespace openloco::things::vehicle
             gameCommandMapY = veh2->y;
             gameCommandMapZ = veh2->z;
 
-            if (!sub_431E6A(veh0->owner, nullptr))
+            if (!sub_431E6A(head->owner, nullptr))
             {
                 return 0x80000000;
             }
@@ -1055,21 +1107,21 @@ namespace openloco::things::vehicle
 
             if (flags & game_commands::GameCommandFlag::apply)
             {
-                if (veh0->tile_x != -1)
+                if (head->tile_x != -1)
                 {
-                    _backupX = veh0->tile_x;
-                    _backupY = veh0->tile_y;
-                    _backupZ = veh0->tile_base_z;
-                    _backup2C = veh0->var_2C;
-                    _backup2E = veh0->var_2E;
+                    _backupX = head->tile_x;
+                    _backupY = head->tile_y;
+                    _backupZ = head->tile_base_z;
+                    _backup2C = head->var_2C;
+                    _backup2E = head->var_2E;
                     _backupVeh0 = veh0;
                     sub_4B08DD(veh0);
                 }
 
-                if (createBody(veh0, vehicleTypeId))
+                if (createBody(head, vehicleTypeId))
                 {
                     // 0x004AE6DE
-                    sub_4AF7A4(veh0);
+                    sub_4AF7A4(head);
                     companyRecalculateTransportCounts(_updating_company_id);
 
                     if (_backupVeh0 != reinterpret_cast<openloco::vehicle*>(-1))
@@ -1077,7 +1129,7 @@ namespace openloco::things::vehicle
                         sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                     }
 
-                    ui::WindowManager::invalidate(ui::WindowType::vehicleList, veh0->owner);
+                    ui::WindowManager::invalidate(ui::WindowType::vehicleList, head->owner);
                 }
                 else
                 {

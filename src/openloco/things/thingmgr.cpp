@@ -46,6 +46,14 @@ namespace openloco::thingmgr
         return (thing_base*)regs.esi;
     }
 
+    // 0x0047024A
+    void freeThing(thing_base* const thing)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(thing);
+        call(0x0047024A, regs);
+    }
+
     // 0x004A8826
     void update_vehicles()
     {

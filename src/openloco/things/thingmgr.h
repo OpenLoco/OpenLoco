@@ -35,6 +35,7 @@ namespace openloco::thingmgr
     T* first();
 
     thing_base* create_thing();
+    void freeThing(thing_base* const thing);
 
     void update_vehicles();
     void update_misc_things();
