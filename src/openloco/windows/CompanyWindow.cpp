@@ -1894,8 +1894,8 @@ namespace openloco::ui::windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    currency32_t newLoan = companymgr::get(self->number)->current_loan;
-                    if (newLoan == 0)
+                    auto company = companymgr::get(self->number);
+                    if (company->current_loan == 0)
                         return;
 
                     currency32_t stepSize{};
@@ -1906,7 +1906,8 @@ namespace openloco::ui::windows::CompanyWindow
                     else if (*_clickRepeatTicks >= 200)
                         stepSize = 100000;
 
-                    newLoan -= stepSize;
+                    auto newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
+
                     gGameCommandErrorTitle = string_ids::cant_pay_back_loan;
                     game_commands::do_9(newLoan);
                     break;
