@@ -9,16 +9,17 @@ using namespace openloco::interop;
 
 namespace openloco::game_commands
 {
-    enum GameCommandFlag : uint32_t
+    enum GameCommandFlag : uint8_t
     {
-        apply = 1 << 0,     // 0x01
-        flag_2 = 1 << 2,    // 0x04
-        flag_3 = 1 << 3,    // 0x08
-        flag_4 = 1 << 4,    // 0x10
-        flag_5 = 1 << 5,    // 0x20
-        flag_6 = 1 << 6,    // 0x40
-        failure = 1U << 31, // 0x80000000
+        apply = 1 << 0,  // 0x01
+        flag_2 = 1 << 2, // 0x04
+        flag_3 = 1 << 3, // 0x08
+        flag_4 = 1 << 4, // 0x10
+        flag_5 = 1 << 5, // 0x20
+        flag_6 = 1 << 6, // 0x40
     };
+
+    constexpr uint32_t FAILURE = 0x80000000;
 
     void registerHooks();
     uint32_t do_command(int esi, const registers& registers);
@@ -31,7 +32,7 @@ namespace openloco::game_commands
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
 
-        return do_command(5, regs) != GameCommandFlag::failure;
+        return do_command(5, regs) != FAILURE;
     }
 
     // Change loan
@@ -107,7 +108,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return do_command(30, regs) != GameCommandFlag::failure;
+        return do_command(30, regs) != FAILURE;
     }
 
     // Change company owner name
@@ -120,7 +121,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return do_command(31, regs) != GameCommandFlag::failure;
+        return do_command(31, regs) != FAILURE;
     }
 
     // Rename town
@@ -142,7 +143,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.dx = industryId;
-        return do_command(48, regs) != GameCommandFlag::failure;
+        return do_command(48, regs) != FAILURE;
     }
 
     // Remove town
@@ -151,7 +152,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.edi = townId;
-        return do_command(50, regs) != GameCommandFlag::failure;
+        return do_command(50, regs) != FAILURE;
     }
 
     // Build company headquarters
@@ -176,7 +177,7 @@ namespace openloco::game_commands
         regs.edx = *objPtr++;
         regs.edi = *objPtr;
         regs.bh = company;
-        return do_command(65, regs) != GameCommandFlag::failure;
+        return do_command(65, regs) != FAILURE;
     }
 
     // Send chat message
