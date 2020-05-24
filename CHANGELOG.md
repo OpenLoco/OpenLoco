@@ -1,4 +1,4 @@
-20.03+ (???)
+20.05 (2020-05-24)
 ------------------------------------------------------------------------
 - Feature: [#77] Add "Exit OpenLoco" to the main menu.
 - Fix: [#264] Option 'Export plug-in objects with saved games' is partially cut off.

@@ -2,9 +2,9 @@
   Please fill out the form below by replacing the placeholders.
   Delete any headings and placeholders that you do not fill out.
 -->
-**OS:**  <!-- e.g. Windows 10 -->
-**Version:**  <!-- e.g. 18.02 -->
-**Commit/Build:**  <!-- e.g. d2237ea -->
+**OS:**  e.g. Windows 10
+**Version:**  e.g. 20.05
+**Commit/Build:**  e.g. e6e665a
 
 <!-- Explanation of the issue -->
 
