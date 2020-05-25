@@ -733,9 +733,35 @@ namespace openloco::ui::prompt_browse
             });
     }
 
-    static int sub_446F1D()
+    // 0x00446F1D
+    static bool filenameContainsInvalidChars()
     {
-        return call(0x00446F1D) & X86_FLAG_CARRY;
+        uint8_t numNonSpacesProcessed = 0;
+        for (char* ptr = &*_text_input_buffer; *ptr != '\0'; ptr++)
+        {
+            if (*ptr != ' ')
+                numNonSpacesProcessed++;
+
+            switch (*ptr)
+            {
+                // The following chars are considered invalid in filenames.
+                case '.':
+                case '"':
+                case '\\':
+                case '*':
+                case '?':
+                case ':':
+                case ';':
+                case ',':
+                case '<':
+                case '>':
+                case '/':
+                    return true;
+            }
+        }
+
+        // If we have only processed spaces, the filename is invalid as well.
+        return numNonSpacesProcessed == 0;
     }
 
     // 0x00446574
@@ -747,7 +773,7 @@ namespace openloco::ui::prompt_browse
         }
         else
         {
-            if (sub_446F1D())
+            if (filenameContainsInvalidChars())
             {
                 windows::show_error(string_ids::error_invalid_filename);
             }
