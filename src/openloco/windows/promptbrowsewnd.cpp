@@ -27,7 +27,6 @@ namespace openloco::ui::prompt_browse
     {
         saved_game,
         landscape,
-        unk_2,
     };
 
 #pragma pack(push, 1)
@@ -767,11 +766,7 @@ namespace openloco::ui::prompt_browse
     // 0x00446574
     static void sub_446574(ui::window* window)
     {
-        if (*_type != browse_file_type::unk_2)
-        {
-            call(0x00446689);
-        }
-        else
+        if (*_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
             {
@@ -783,6 +778,12 @@ namespace openloco::ui::prompt_browse
                 regs.esi = (int32_t)window;
                 call(0x00446598, regs);
             }
+        }
+        else
+        {
+            registers regs;
+            regs.esi = (int32_t)window;
+            call(0x00446689, regs);
         }
     }
 }
