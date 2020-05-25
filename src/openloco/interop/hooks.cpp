@@ -707,14 +707,6 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x0043B26C,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::about::open();
-            return 0;
-        });
-
     register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -919,24 +911,6 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x00004BF7B9,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::options::open();
-
-            return 0;
-        });
-
-    // Keep until editor toolbar has been implemented.
-    register_hook(
-        0x00004BF7B9,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::options::open_music_settings();
-
-            return 0;
-        });
-
     register_hook(
         0x004C57C0,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -957,11 +931,6 @@ void openloco::interop::register_hooks()
             regs = backup;
             return 0;
         });
-
-    // Remove the set window pos function, we do not want it as it
-    // keeps moving the process window to 0, 0
-    // Can be removed when WindowManager:update() is hooked
-    write_ret(0x00406520);
 
     // Remove check for is road in use when removing roads. It is
     // quite annoying when it's sometimes only the player's own
