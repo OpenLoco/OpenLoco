@@ -216,6 +216,10 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_pass_signal_at_danger = 253;
     constexpr string_id tooltip_remove_from_track = 254;
 
+    constexpr string_id stop = 265;
+    constexpr string_id start = 266;
+    constexpr string_id manual = 267;
+
     constexpr string_id tooltip_stop_start = 269;
 
     constexpr string_id velocity = 263;
@@ -632,6 +636,8 @@ namespace OpenLoco::StringIds
     constexpr string_id vehicle_has_crashed = 1158;
     constexpr string_id vehicle_has_broken_down = 1159;
     constexpr string_id vehicle_is_stuck = 1160;
+
+    constexpr string_id cant_pass_signal_at_danger = 1165;
 
     constexpr string_id tab_map_overall = 1178;
     constexpr string_id tab_map_vehicles = 1179;

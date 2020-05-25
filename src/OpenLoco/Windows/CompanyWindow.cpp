@@ -285,29 +285,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::centre_on_viewport:
-                {
-                    if (self->viewports[0] == nullptr)
-                        break;
-
-                    // Centre viewport on tile/thing.
-                    auto main = WindowManager::getMainWindow();
-                    if (self->saved_view.isThingView())
-                    {
-                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
-                        main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
-                    }
-                    else
-                    {
-                        main->viewportCentreOnTile(self->saved_view.getPos());
-                    }
+                    self->viewportCentreMain();
                     break;
-                }
 
                 case widx::face:
-                {
                     CompanyFaceSelection::open(self->number);
                     break;
-                }
 
                 case widx::change_owner_name:
                 {

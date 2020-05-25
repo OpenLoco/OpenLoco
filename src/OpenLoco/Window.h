@@ -445,6 +445,7 @@ namespace OpenLoco::Ui
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
         void drawViewports(Gfx::drawpixelinfo_t* dpi);
+        void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);

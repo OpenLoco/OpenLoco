@@ -600,6 +600,24 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
+    void window::viewportCentreMain()
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        // Centre viewport on tile/thing.
+        auto main = WindowManager::getMainWindow();
+        if (saved_view.isThingView())
+        {
+            auto thing = ThingManager::get<Thing>(saved_view.thingId);
+            main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
+        }
+        else
+        {
+            main->viewportCentreOnTile(saved_view.getPos());
+        }
+    }
+
     void window::viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.

@@ -54,6 +54,16 @@ namespace OpenLoco::GameCommands
     uint32_t doCommand(int esi, const registers& registers);
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
 
+    // Pass signal (vehicle)
+    inline void do_4(thing_id_t vehicleHead)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = vehicleHead;
+
+        doCommand(4, regs);
+    }
+
     // Build vehicle
     inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
     {

@@ -172,14 +172,8 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 // 0x00455EA2
                 case widx::centre_on_viewport:
-                {
-                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
-                        break;
-
-                    auto main = WindowManager::getMainWindow();
-                    main->viewportCentreOnTile(self->saved_view.getPos());
+                    self->viewportCentreMain();
                     break;
-                }
 
                 // 0x00455E59
                 case widx::demolish_industry:

@@ -269,8 +269,13 @@ namespace OpenLoco
         uint16_t var_50;
         uint8_t var_52;
         int32_t var_53;
+        int8_t var_57[4];
+        uint16_t var_5b[4];
+        uint16_t var_63[4];
+        uint8_t var_6B[4];
+        uint32_t var_6F[4];
     };
-    static_assert(sizeof(vehicle_1) == 0x57); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_1) == 0x7F); // Can't use offset_of change this to last field if more found
 
     struct vehicle_2 : vehicle_base
     {

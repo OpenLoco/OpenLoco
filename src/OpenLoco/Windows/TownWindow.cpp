@@ -168,14 +168,8 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // 0x0049932D
                 case widx::centre_on_viewport:
-                {
-                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
-                        break;
-
-                    auto main = WindowManager::getMainWindow();
-                    main->viewportCentreOnTile(self->saved_view.getPos());
+                    self->viewportCentreMain();
                     break;
-                }
 
                 // 0x004990B9
                 case widx::expand_town:
