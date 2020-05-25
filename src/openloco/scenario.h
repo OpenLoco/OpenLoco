@@ -12,8 +12,8 @@ namespace openloco::scenario
 
     enum industry_flags
     {
-        allow_industries_close_down = (1 << 0),
-        allow_industries_start_up = (1 << 1),
+        disallow_industries_close_down = (1 << 0),
+        disallow_industries_start_up = (1 << 1),
     };
 
     enum objective_flags : uint8_t

@@ -1160,12 +1160,12 @@ namespace openloco::ui::windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    *industryFlags ^= scenario::industry_flags::allow_industries_close_down;
+                    *industryFlags ^= scenario::industry_flags::disallow_industries_close_down;
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    *industryFlags ^= scenario::industry_flags::allow_industries_start_up;
+                    *industryFlags ^= scenario::industry_flags::disallow_industries_start_up;
                     window->invalidate();
                     break;
             }
@@ -1179,9 +1179,9 @@ namespace openloco::ui::windows::LandscapeGeneration
             widgets[widx::num_industries].text = numIndustriesLabels[s5::getOptions().numberOfIndustries];
 
             window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if (industryFlags & scenario::industry_flags::allow_industries_close_down)
+            if (!(industryFlags & scenario::industry_flags::disallow_industries_close_down))
                 window->activated_widgets |= 1 << widx::check_allow_industries_close_down;
-            if (industryFlags & scenario::industry_flags::allow_industries_start_up)
+            if (!(industryFlags & scenario::industry_flags::disallow_industries_start_up))
                 window->activated_widgets |= 1 << widx::check_allow_industries_start_up;
         }
 

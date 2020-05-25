@@ -1,5 +1,6 @@
 20.05+ (???)
 ------------------------------------------------------------------------
+- Fix: [#487] Checkbox behaviour reversed for industry opening/closing in landscape generation options.
 - Fix: [#488] Repeated clicking may lead to a negative loan.
 
 20.05 (2020-05-24)
