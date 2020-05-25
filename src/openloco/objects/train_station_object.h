@@ -1,0 +1,32 @@
+#pragma once
+
+#include "../types.hpp"
+
+namespace openloco
+{
+#pragma pack(push, 1)
+    struct train_station_object
+    {
+        string_id name;
+        uint8_t var_02;
+        uint8_t var_03;
+        uint16_t track_pieces;       // 0x04
+        uint16_t build_cost_factor; // 0x06
+        uint16_t sell_cost_factor;  // 0x08
+        uint8_t cost_index;         // 0x0A
+        uint8_t var_0B;
+        uint8_t colour_flags;   // 0x0C
+        uint8_t pad_0D[0x22 - 0x0D];
+        uint8_t var_22;
+        uint8_t num_compatible; // 0x23
+        uint8_t pad_24[0x2A - 0x24];
+        uint16_t designed_year; // 0x2A
+        uint16_t obsolete_year; // 0x2C
+        uint8_t var_2E[16];
+        uint8_t var_3E[16];
+        uint8_t var_4E[16];
+        uint8_t var_5E[16];
+        uint8_t pad_6E[0xAC - 0x6E];
+    };
+#pragma pack(pop)
+}

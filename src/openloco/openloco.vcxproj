@@ -175,10 +175,12 @@
     <ClInclude Include="messagemgr.h" />
     <ClInclude Include="multiplayer.h" />
     <ClInclude Include="objects\airport_object.h" />
+    <ClInclude Include="objects\bridge_object.h" />
     <ClInclude Include="objects\building_object.h" />
     <ClInclude Include="objects\cargo_object.h" />
     <ClInclude Include="objects\competitor_object.h" />
     <ClInclude Include="objects\currency_object.h" />
+    <ClInclude Include="objects\dock_object.h" />
     <ClInclude Include="objects\industry_object.h" />
     <ClInclude Include="objects\interface_skin_object.h" />
     <ClInclude Include="objects\land_object.h" />
@@ -191,6 +193,8 @@
     <ClInclude Include="objects\steam_object.h" />
     <ClInclude Include="objects\track_extra_object.h" />
     <ClInclude Include="objects\track_object.h" />
+    <ClInclude Include="objects\train_signal_object.h" />
+    <ClInclude Include="objects\train_station_object.h" />
     <ClInclude Include="objects\tree_object.h" />
     <ClInclude Include="objects\vehicle_object.h" />
     <ClInclude Include="objects\wall_object.h" />

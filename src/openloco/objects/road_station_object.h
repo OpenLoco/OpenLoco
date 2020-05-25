@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../localisation/stringmgr.h"
+#include "../types.hpp"
 
 namespace openloco
 {
@@ -8,10 +8,18 @@ namespace openloco
     struct road_station_object
     {
         string_id name;
-        uint8_t pad_02[0x0B - 0x02];
-        uint8_t var_0B;
-        uint8_t pad_0C[0x2C - 0x0C];
-        uint8_t var_2C;
+        uint8_t pad_02[0x04 - 0x02];
+        uint16_t road_pieces;       // 0x04
+        uint16_t build_cost_factor; // 0x06
+        uint16_t sell_cost_factor;  // 0x08
+        uint8_t cost_index;         // 0x0A
+        uint8_t pad_0B[0x20 - 0x0B];
+        uint8_t var_20;
+        uint8_t num_compatible; // 0x21
+        uint8_t pad_22[0x28 - 0x22];
+        uint16_t designed_year; // 0x28
+        uint16_t obsolete_year; // 0x2A
+        uint8_t pad_2C[0x6E - 0x2C];
     };
 #pragma pack(pop)
 }

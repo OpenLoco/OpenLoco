@@ -108,6 +108,31 @@ namespace openloco::string_ids
     constexpr string_id screenshot_saved_as = 109;
     constexpr string_id screenshot_failed = 110;
 
+    constexpr string_id stringid_2 = 113;
+    constexpr string_id tooltip_left_hand_curve = 114;
+    constexpr string_id tooltip_right_hand_curve = 115;
+    constexpr string_id tooltip_left_hand_curve_small = 116;
+    constexpr string_id tooltip_right_hand_curve_small = 117;
+    constexpr string_id tooltip_left_hand_curve_very_small = 118;
+    constexpr string_id tooltip_right_hand_curve_very_small = 119;
+    constexpr string_id tooltip_left_hand_curve_large = 120;
+    constexpr string_id tooltip_right_hand_curve_large = 121;
+    constexpr string_id tooltip_straight = 122;
+    constexpr string_id tooltip_s_bend_left = 123;
+    constexpr string_id tooltip_s_bend_right = 124;
+    constexpr string_id tooltip_s_bend_left_dual_track = 125;
+    constexpr string_id tooltip_s_bend_right_dual_track = 126;
+    constexpr string_id tooltip_s_bend_to_single_track = 127;
+    constexpr string_id tooltip_turnaround = 128; 
+    constexpr string_id tooltip_start_construction = 129;
+    constexpr string_id tooltip_construct = 130;
+    constexpr string_id tooltip_remove = 131;
+    constexpr string_id tooltip_steep_slope_down = 132;
+    constexpr string_id tooltip_slope_down = 133;
+    constexpr string_id tooltip_level = 134;
+    constexpr string_id tooltip_slope_up = 135;
+    constexpr string_id tooltip_steep_slope_up = 136;
+
     constexpr string_id build_cost = 138;
 
     constexpr string_id menu_underground_view = 145;
@@ -187,6 +212,13 @@ namespace openloco::string_ids
     constexpr string_id title_company_colour_scheme = 250;
     constexpr string_id title_company_challenge = 251;
 
+    constexpr string_id tab_track_road_construction = 271;
+    constexpr string_id tab_station_construction = 272;
+    constexpr string_id tab_signal_construction = 273;
+    constexpr string_id tab_electrification_construction = 274;
+
+    constexpr string_id tooltip_bridge_stats = 278;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
@@ -250,6 +282,8 @@ namespace openloco::string_ids
 
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
+
+    constexpr string_id rotate_90 = 580;
 
     constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
