@@ -7,8 +7,8 @@ namespace openloco
 #pragma pack(push, 1)
     struct interface_skin_object
     {
-        string_id name;
-        uint32_t img;
+        string_id name; // 0x00
+        uint32_t img;   // 0x02
         uint8_t colour_06;
         uint8_t colour_07;
         uint8_t colour_08;

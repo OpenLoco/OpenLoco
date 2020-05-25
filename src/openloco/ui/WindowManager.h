@@ -25,7 +25,7 @@ namespace openloco::ui::WindowManager
     window* findAt(gfx::point_t point);
     window* findAtAlt(int16_t x, int16_t y);
     window* bringToFront(window* window);
-    window* bringToFront(WindowType type, uint16_t id);
+    window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, window_number number);
     void invalidateWidget(WindowType type, window_number number, uint8_t widget_index);
@@ -258,6 +258,11 @@ namespace openloco::ui::windows::CompanyWindow
     window* openAndSetName();
     window* openChallenge(company_id_t companyId);
     window* openFinances(company_id_t companyId);
+}
+
+namespace openloco::ui::windows::ObjectSelectionWindow
+{
+    window* open();
 }
 
 namespace openloco::ui::windows::PlayerInfoPanel

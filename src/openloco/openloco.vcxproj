@@ -102,6 +102,7 @@
     <ClCompile Include="windows\map.cpp" />
     <ClCompile Include="windows\MessageWindow.cpp" />
     <ClCompile Include="windows\music_selection.cpp" />
+    <ClCompile Include="windows\ObjectSelectionWindow.cpp" />
     <ClCompile Include="windows\options.cpp" />
     <ClCompile Include="windows\PlayerInfoPanel.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />

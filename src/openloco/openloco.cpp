@@ -81,7 +81,11 @@ namespace openloco
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
+
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+
+    static loco_global<uint8_t, 0x009C8714> _editorStep;
+
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
 
@@ -440,6 +444,38 @@ namespace openloco
         }
     }
 
+    // 0x0043D9D4
+    static void editor_tick()
+    {
+        if (!is_editor_mode())
+            return;
+
+        switch (_editorStep)
+        {
+            case 0:
+                if (WindowManager::find(WindowType::objectSelection) == nullptr)
+                    windows::ObjectSelectionWindow::open();
+                break;
+
+            case 1:
+                // Scenario/landscape loaded?
+                if ((addr<0x00525E28, uint32_t>() & 1) != 0)
+                    return;
+
+                if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)
+                    windows::LandscapeGeneration::open();
+                break;
+
+            case 2:
+                if (WindowManager::find(WindowType::scenarioOptions) == nullptr)
+                    windows::ScenarioOptions::open();
+                break;
+
+            case 3:
+                break;
+        }
+    }
+
     // 0x0046A794
     static void tick()
     {
@@ -616,7 +652,7 @@ namespace openloco
                 tick_logic(numUpdates);
 
                 _525F62++;
-                call(0x0043D9D4);
+                editor_tick();
                 audio::play_background_music();
                 audio::play_title_screen_music();
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() == 0 && addr<0x0113E2E4, int32_t>() < 0x40)
