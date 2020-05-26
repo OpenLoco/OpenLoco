@@ -146,7 +146,7 @@ namespace openloco
                     if (bl == 0 || bl != obj->var_EA)
                     {
                         var_DB++;
-                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() == 0) || find_5(surface))
+                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || find_5(surface))
                         {
                             var_DD++;
                         }
