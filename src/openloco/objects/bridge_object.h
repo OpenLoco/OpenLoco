@@ -19,7 +19,8 @@ namespace openloco
         uint16_t height_cost_factor; // 0x10
         uint16_t sell_cost_factor;   // 0x12
         uint16_t disabled_track_cfg; // 0x14
-        uint8_t pad_16[0x22 - 0x16];
+        uint32_t var_16;
+        uint8_t pad_16[0x22 - 0x1A];
         uint8_t var_22;
         uint8_t var_23;
         uint8_t pad_24[0x2A - 0x24];

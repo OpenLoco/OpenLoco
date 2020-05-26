@@ -73,6 +73,7 @@ namespace openloco::ui::windows
 
     void showGridlines();
     void hideGridlines();
+    void showDirectionArrows();
 }
 
 namespace openloco::ui::about

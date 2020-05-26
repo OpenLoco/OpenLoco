@@ -16,7 +16,9 @@ namespace openloco
         uint8_t cost_index;         // 0x0A
         uint8_t var_0B;
         uint8_t colour_flags;   // 0x0C
-        uint8_t pad_0D[0x22 - 0x0D];
+        uint8_t var_0D;
+        uint32_t var_0E;
+        uint8_t pad_12[0x22 - 0x12];
         uint8_t var_22;
         uint8_t num_compatible; // 0x23
         uint8_t pad_24[0x2A - 0x24];

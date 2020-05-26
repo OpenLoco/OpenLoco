@@ -3,12 +3,14 @@
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
+#include "../localisation/FormatArguments.hpp"
 #include "../map/tilemgr.h"
 #include "../objects/airport_object.h"
 #include "../objects/bridge_object.h"
 #include "../objects/dock_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../objects/road_extra_object.h"
 #include "../objects/road_object.h"
 #include "../objects/road_station_object.h"
 #include "../objects/track_object.h"
@@ -17,14 +19,18 @@
 #include "../objects/vehicle_object.h"
 #include "../ui/WindowManager.h"
 #include "../utility/numeric.hpp"
+#include "../widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;
 
 namespace openloco::ui::windows::construction
 {
+    static loco_global<uint16_t[2], 0x004FFAF0> _dword_4FFAF0;
+    static loco_global<uint8_t[31], 0x05045FA> _byte_5045FA;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint8_t[8], 0x0525F72> _byte_525F72;
     static loco_global<uint8_t[8], 0x0525F7A> _byte_525F7A;
@@ -38,7 +44,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAD> _haveShipPorts;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
-    static loco_global<uint8_t, 0x0112C2E1> _byte_112C2E1;
     static loco_global<uint32_t, 0x01135F3E> _dword_1135F3E;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _word_1135FB4;
@@ -46,13 +51,13 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
     static loco_global<uint16_t, 0x01135FE4> _word_1135FE4;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
-    static loco_global<uint8_t, 0x0113602E> _byte_113602E;
+    static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
     static loco_global<uint8_t[9], 0x01136030> _bridgeList;
-    static loco_global<uint8_t, 0x01136039> _byte_1136039;
+    static loco_global<uint8_t, 0x01136039> _lastSelectedBridge;
     static loco_global<uint8_t, 0x0113603A> _byte_113603A;
     static loco_global<uint8_t[17], 0x0113603B> _stationList;
-    static loco_global<uint8_t, 0x0113604C> _byte_113604C;
-    static loco_global<uint32_t, 0x01136054> _dword_1136054;
+    static loco_global<uint8_t, 0x0113604C> _lastSelectedStation;
+    static loco_global<uint8_t[4], 0x01136054> _modList;
     static loco_global<uint8_t, 0x01136061> _byte_1136061;
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
@@ -62,21 +67,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x0113606E> _byte_113606E;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
-
-    namespace widx
-    {
-        enum
-        {
-            close = 2,
-            tab_construction = 4,
-            tab_station,
-            tab_signal,
-            tab_overhead,
-            construct = 28,
-            remove,
-            place,
-        };
-    }
 
     namespace common
     {
@@ -103,7 +93,9 @@ namespace openloco::ui::windows::construction
         make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_electrification_construction)
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
-    
+
+        static void prepare_draw(window* self);
+        static void repositionTabs(window* self);
         static void init_events();
     }
 
@@ -245,9 +237,25 @@ namespace openloco::ui::windows::construction
         // 0x0049DCA2
         static void on_update(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0049DCA2, regs);
+            //registers regs;
+            //regs.esi = (uint32_t)self;
+            //call(0x0049DCA2, regs);
+
+            self->frame_no++;
+            self->call_prepare_draw();
+            WindowManager::invalidate(WindowType::construction, self->number);
+            if (_byte_1136061 == 1)
+            {
+                if ((!input::has_flag(input::input_flags::tool_active)) || _toolWindowType != WindowType::construction || _toolWidgetIndex != construction::widx::construct)
+                {
+                    WindowManager::close(self);
+                }
+            }
+            if (_byte_1136061 == 0)
+            {
+                if (input::has_flag(input::input_flags::tool_active) && _toolWindowType == WindowType::construction)
+                    input::cancel_tool();
+            }
         }
 
         // 0x0049DC8C
@@ -285,20 +293,81 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049CE79
-        static void prepare_draw(window*self)
+        static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0049CE79, regs);
+            //registers regs;
+            //regs.esi = (uint32_t)self;
+            //call(0x0049CE79, regs);
+
+            common::prepare_draw(self);
+            auto args = FormatArguments();
+            if (_trackType & (1 << 7))
+            {
+                auto roadObj = objectmgr::get<road_object>(_trackType & ~(1 << 7));
+                args.push(roadObj->name);
+            }
+            else
+            {
+                auto trackObj = objectmgr::get<track_object>(_trackType);
+                args.push(trackObj->name);
+            }
+            if (_lastSelectedBridge != 0xFFFFFFFF)
+            {
+                auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+                if (bridgeObj != nullptr)
+                {
+                    args.push(bridgeObj->name);
+                    if (bridgeObj->max_speed == 0xFF)
+                    {
+                        args.push(string_ids::unlimited_speed);
+                        args.push(bridgeObj->max_speed);
+                    }
+                    else
+                    {
+                        args.push(string_ids::velocity);
+                        args.push(bridgeObj->max_speed);
+                    }
+                    args.push<uint16_t>(bridgeObj->max_height);
+                }
+            }
+            common::repositionTabs(self);
         }
 
         // 0x0049CF36
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049CF36, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x0049CF36, regs);
+
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            if( self->widgets[widx::bridge].type != widget_type::none)
+            {
+                if (_lastSelectedBridge != 0xFFFFFFFF)
+                {
+                    auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+                    if (bridgeObj != nullptr)
+                    {
+                        auto company = companymgr::get(_playerCompany);
+                        auto imageId = gfx::recolour(bridgeObj->var_16, company->mainColours.primary);
+                        auto x = self->x + self->widgets[widx::bridge].left + 2;
+                        auto y = self->y + self->widgets[widx::bridge].top + 1;
+
+                        gfx::draw_image(dpi, x, y, imageId);
+                    }
+                }
+            }
+            if (self->widgets[widx::construct].type == widget_type::none)
+                return;
+            if (_trackType & (1 << 7))
+            {
+            }
+            else
+            {
+            }
         }
 
         static void init_events()
@@ -364,34 +433,21 @@ namespace openloco::ui::windows::construction
     {
         auto disabledWidgets = 0;
         if (is_editor_mode())
-            disabledWidgets |= 0x20;
-        if (_byte_1136063 & 0xC0)
-            disabledWidgets |= 0x10;
-        if (_byte_113602E == 0xFF)
-            disabledWidgets |= 0x40;
-        if (_dword_1136054 == 0xFFFFFFFF)
-            disabledWidgets |= (1 << 7);
-        if (_byte_113604C == 0xFF)
-            disabledWidgets |= 0x20;
-        self->disabled_widgets = disabledWidgets;
-    }
+            disabledWidgets |= (1ULL << common::widx::tab_station);
 
-    // 0x004793C4
-    static void setDirectionArrows()
-    {
-        if (_byte_112C2E1 == 0)
-        {
-            auto mainWindow = WindowManager::getMainWindow();
-            if (mainWindow != nullptr)
-            {
-                if (!(mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
-                {
-                    mainWindow->viewports[0]->flags |= viewport_flags::one_way_direction_arrows;
-                    mainWindow->invalidate();
-                }
-            }
-        }
-        _byte_112C2E1++;
+        if (_byte_1136063 & 0xC0)
+            disabledWidgets |= (1ULL << common::widx::tab_construction);
+
+        if (_lastSelectedSignal == 0xFF)
+            disabledWidgets |= (1ULL << common::widx::tab_signal);
+
+        if (_modList[0] == 0xFFFFFFFF)
+            disabledWidgets |= (1ULL << common::widx::tab_overhead);
+
+        if (_lastSelectedStation == 0xFF)
+            disabledWidgets |= (1ULL << common::widx::tab_station);
+
+        self->disabled_widgets = disabledWidgets;
     }
 
     // 0x004A0963
@@ -417,7 +473,7 @@ namespace openloco::ui::windows::construction
         window->colours[1] = skin->colour_0D;
 
         WindowManager::sub_4CEE0B(window);
-        setDirectionArrows();
+        ui::windows::showDirectionArrows();
         ui::windows::showGridlines();
     }
 
@@ -452,7 +508,7 @@ namespace openloco::ui::windows::construction
     {
         auto currentYear = current_year();
         auto airportCount = 0;
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::airport); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::airport); i++)
         {
             auto airportObj = objectmgr::get<airport_object>(i);
             if (airportObj == nullptr)
@@ -474,7 +530,7 @@ namespace openloco::ui::windows::construction
     {
         auto currentYear = current_year();
         auto dockCount = 0;
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::dock); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::dock); i++)
         {
             auto dockObj = objectmgr::get<dock_object>(i);
             if (dockObj == nullptr)
@@ -500,11 +556,12 @@ namespace openloco::ui::windows::construction
         auto roadObj = objectmgr::get<road_object>(trackType);
         auto roadStationCount = 0;
 
-        for (auto i = 0; i <= roadObj->num_stations; i++)
+        for (auto i = 0; i < roadObj->num_stations; i++)
         {
-            if (roadObj->stations[i] == 0xFF)
+            auto station = roadObj->stations[i];
+            if (station == 0xFF)
                 continue;
-            auto roadStationObj = objectmgr::get<road_station_object>(i);
+            auto roadStationObj = objectmgr::get<road_station_object>(station);
             if (currentYear < roadStationObj->designed_year)
                 continue;
             if (currentYear > roadStationObj->obsolete_year)
@@ -513,7 +570,7 @@ namespace openloco::ui::windows::construction
             roadStationCount++;
         }
 
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::road_station); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::road_station); i++)
         {
             auto roadStationObj = objectmgr::get<road_station_object>(i);
             if (roadStationObj == nullptr)
@@ -554,18 +611,19 @@ namespace openloco::ui::windows::construction
         auto currentYear = current_year();
         auto roadObj = objectmgr::get<road_object>(trackType);
         auto bridgeCount = 0;
-        for (auto i = 0; i <= roadObj->num_bridges; i++)
+        for (auto i = 0; i < roadObj->num_bridges; i++)
         {
-            if (roadObj->bridges[i] == 0xFF)
+            auto bridge = roadObj->bridges[i];
+            if (bridge == 0xFF)
                 continue;
-            auto bridgeObj = objectmgr::get<bridge_object>(i);
+            auto bridgeObj = objectmgr::get<bridge_object>(bridge);
             if (currentYear < bridgeObj->designed_year)
                 continue;
             _bridgeList[bridgeCount] = i;
             bridgeCount++;
         }
 
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::bridge); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::bridge); i++)
         {
             auto bridgeObj = objectmgr::get<bridge_object>(i);
             if (bridgeObj == nullptr)
@@ -601,7 +659,7 @@ namespace openloco::ui::windows::construction
     {
         auto trackType = _trackType & ~(1 << 7);
         auto companyId = _updatingCompanyId;
-        _dword_1136054 = 0xFFFFFFFF;
+        _modList[0] = 0xFFFFFFFF;
         auto flags = 0;
 
         for (uint8_t vehicle = 0; vehicle < objectmgr::get_max_objects(object_type::vehicle); vehicle++)
@@ -642,11 +700,10 @@ namespace openloco::ui::windows::construction
         for (auto i = 0; i < roadObj->num_mods; i++)
         {
             if (flags & roadObj->mods[i])
-                _dword_1136054 = roadObj->mods[i];
-            _dword_1136054++;
+                _modList[i] = roadObj->mods[i];
         }
-    } 
-    
+    }
+
     // 0x0049F1B5
     static void sub_49F1B5()
     {
@@ -683,14 +740,14 @@ namespace openloco::ui::windows::construction
         auto al = _byte_525F9A[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _stationList[0];
-        _byte_113604C = al;
+        _lastSelectedStation = al;
 
         refreshRoadBridgeList();
 
         al = _byte_525F7A[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _bridgeList[0];
-        _byte_1136039 = al;
+        _lastSelectedBridge = al;
 
         refreshRoadOption();
 
@@ -825,7 +882,7 @@ namespace openloco::ui::windows::construction
         auto trackObj = objectmgr::get<track_object>(trackType);
         auto signalCount = 0;
         auto var_0E = trackObj->var_0E;
-        for (auto i = 0; i <= 32; i++)
+        for (auto i = 0; i < 32; i++)
         {
             auto ecx = utility::bitscanforward(var_0E);
             if (ecx == 0)
@@ -840,7 +897,7 @@ namespace openloco::ui::windows::construction
             signalCount++;
         }
 
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::track_signal); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::track_signal); i++)
         {
             auto signalObj = objectmgr::get<train_signal_object>(i);
             if (signalObj == nullptr)
@@ -880,11 +937,12 @@ namespace openloco::ui::windows::construction
         auto trackObj = objectmgr::get<track_object>(trackType);
         auto trainStationCount = 0;
 
-        for (auto i = 0; i <= trackObj->num_stations; i++)
+        for (auto i = 0; i < trackObj->num_stations; i++)
         {
-            if (trackObj->stations[i] == 0xFF)
+            auto station = trackObj->stations[i];
+            if (station == 0xFF)
                 continue;
-            auto trainStationObj = objectmgr::get<train_station_object>(i);
+            auto trainStationObj = objectmgr::get<train_station_object>(station);
             if (currentYear < trainStationObj->designed_year)
                 continue;
             if (currentYear > trainStationObj->obsolete_year)
@@ -893,7 +951,7 @@ namespace openloco::ui::windows::construction
             trainStationCount++;
         }
 
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::track_station); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::track_station); i++)
         {
             auto trainStationObj = objectmgr::get<train_station_object>(i);
             if (trainStationObj == nullptr)
@@ -934,18 +992,19 @@ namespace openloco::ui::windows::construction
         auto currentYear = current_year();
         auto trackObj = objectmgr::get<track_object>(trackType);
         auto bridgeCount = 0;
-        for (auto i = 0; i <= trackObj->num_bridges; i++)
+        for (auto i = 0; i < trackObj->num_bridges; i++)
         {
-            if (trackObj->bridges[i] == 0xFF)
+            auto bridge = trackObj->bridges[i];
+            if (bridge == 0xFF)
                 continue;
-            auto bridgeObj = objectmgr::get<bridge_object>(i);
+            auto bridgeObj = objectmgr::get<bridge_object>(bridge);
             if (currentYear < bridgeObj->designed_year)
                 continue;
             _bridgeList[bridgeCount] = i;
             bridgeCount++;
         }
 
-        for (uint8_t i = 0; i <= objectmgr::get_max_objects(object_type::bridge); i++)
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::bridge); i++)
         {
             auto bridgeObj = objectmgr::get<bridge_object>(i);
             if (bridgeObj == nullptr)
@@ -981,7 +1040,7 @@ namespace openloco::ui::windows::construction
     {
         auto trackType = _trackType;
         auto companyId = _updatingCompanyId;
-        _dword_1136054 = 0xFFFFFFFF;
+        _modList[0] = 0xFFFFFFFF;
         auto flags = 0;
 
         for (uint8_t vehicle = 0; vehicle < objectmgr::get_max_objects(object_type::vehicle); vehicle++)
@@ -1022,8 +1081,7 @@ namespace openloco::ui::windows::construction
         for (auto i = 0; i < trackObj->num_mods; i++)
         {
             if (flags & trackObj->mods[i])
-                _dword_1136054 = trackObj->mods[i];
-            _dword_1136054++;
+                _modList[i] = trackObj->mods[i];
         }
     }
 
@@ -1034,7 +1092,7 @@ namespace openloco::ui::windows::construction
             al = _stationList[0];
         }
 
-        _byte_113604C = al;
+        _lastSelectedStation = al;
         auto window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -1046,7 +1104,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(widx::tab_construction);
+            window->call_on_mouse_up(common::widx::tab_construction);
         }
         return window;
     }
@@ -1068,7 +1126,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(widx::place);
+            window->call_on_mouse_up(construction::widx::rotate_90);
         }
         return window;
     }
@@ -1080,6 +1138,7 @@ namespace openloco::ui::windows::construction
         //regs.ecx = flags;
         //call(0x004A3B0D, regs);
         //return (window*)regs.esi;
+
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow)
         {
@@ -1152,10 +1211,10 @@ namespace openloco::ui::windows::construction
         {
             createConstructionWindow();
 
-            _byte_113602E = 0x0FF;
-            _dword_1136054 = 0x0FFFFFFFF;
+            _lastSelectedSignal = 0xFF;
+            _modList[0] = 0xFFFFFFFF;
             _word_1135FE4 = 0;
-            _byte_1136039 = 0x0FF;
+            _lastSelectedBridge = 0xFF;
 
             refreshAirportList();
 
@@ -1169,10 +1228,10 @@ namespace openloco::ui::windows::construction
             {
                 createConstructionWindow();
 
-                _byte_113602E = 0xFF;
-                _dword_1136054 = 0xFFFFFFFF;
+                _lastSelectedSignal = 0xFF;
+                _modList[0] = 0xFFFFFFFF;
                 _word_1135FE4 = 0;
-                _byte_1136039 = 0xFF;
+                _lastSelectedBridge = 0xFF;
 
                 refreshDockList();
 
@@ -1186,7 +1245,7 @@ namespace openloco::ui::windows::construction
                 {
                     createConstructionWindow();
 
-                    _byte_113602E = 0xFF;
+                    _lastSelectedSignal = 0xFF;
 
                     refreshRoadStationList();
 
@@ -1195,7 +1254,7 @@ namespace openloco::ui::windows::construction
                     if (al == 0xFF)
                         al = _stationList[0];
 
-                    _byte_113604C = al;
+                    _lastSelectedStation = al;
 
                     refreshRoadBridgeList();
 
@@ -1204,7 +1263,7 @@ namespace openloco::ui::windows::construction
                     if (al == 0xFF)
                         al = _bridgeList[0];
 
-                    _byte_1136039 = al;
+                    _lastSelectedBridge = al;
 
                     refreshRoadOption();
 
@@ -1219,16 +1278,14 @@ namespace openloco::ui::windows::construction
         }
         createConstructionWindow();
 
-        auto al = _trackType;
-
         refreshSignalList();
 
-        al = _byte_525F72[_trackType];
+        auto al = _byte_525F72[_trackType];
 
         if (al == 0xFF)
             al = _signalList[0];
 
-        _byte_113602E = al;
+        _lastSelectedSignal = al;
 
         refreshtrainStationList();
 
@@ -1237,7 +1294,7 @@ namespace openloco::ui::windows::construction
         if (al == 0xFF)
             al = _stationList[0];
 
-        _byte_113604C = al;
+        _lastSelectedStation = al;
 
         refreshTrackBridgeList();
 
@@ -1246,7 +1303,7 @@ namespace openloco::ui::windows::construction
         if (al == 0xFF)
             al = _bridgeList[0];
 
-        _byte_1136039 = al;
+        _lastSelectedBridge = al;
 
         refreshTrackOption();
 
@@ -1274,28 +1331,28 @@ namespace openloco::ui::windows::construction
         regs.esi = (int32_t)&w;
         switch (widgetIndex)
         {
-            case widx::close:
+            case common::widx::close_button:
                 WindowManager::close(&w);
                 break;
-            case widx::tab_construction:
-            case widx::tab_station:
-            case widx::tab_signal:
-            case widx::tab_overhead:
+            case common::widx::tab_construction:
+            case common::widx::tab_station:
+            case common::widx::tab_signal:
+            case common::widx::tab_overhead:
                 call(0x0049D93A, regs);
                 break;
-            case widx::construct:
+            case construction::widx::construct:
                 for (int i = 0; i < multiplier; i++)
                 {
                     call(0x0049F92D, regs);
                 }
                 break;
-            case widx::remove:
+            case construction::widx::remove:
                 for (int i = 0; i < multiplier; i++)
                 {
                     call(0x004A0121, regs);
                 }
                 break;
-            case widx::place:
+            case construction::widx::rotate_90:
                 call(0x0049D7DC, regs);
                 break;
         }
@@ -1303,6 +1360,256 @@ namespace openloco::ui::windows::construction
 
     namespace common
     {
+        struct TabInformation
+        {
+            widget_t* widgets;
+            const widx widgetIndex;
+            window_event_list* events;
+            const uint64_t enabledWidgets;
+        };
+
+        static TabInformation tabInformationByTabOffset[] = {
+            { construction::widgets, widx::tab_construction, &construction::events, construction::enabledWidgets },
+        };
+
+        static void prepare_draw(window* self)
+        {
+            // Reset tab widgets if needed
+            const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            if (self->widgets != tabWidgets)
+            {
+                self->widgets = tabWidgets;
+                self->init_scroll_widgets();
+            }
+
+            // Activate the current tab
+            self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
+            self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+        }
+
+        // 0x0049ED33
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            auto company = companymgr::get(_playerCompany);
+            auto companyColour = company->mainColours.primary;
+            if (_trackType & (1 << 7))
+            {
+                auto roadObj = objectmgr::get<road_object>(_trackType & ~(1 << 7));
+                // Construction Tab
+                {
+                    auto imageId = roadObj->var_0E;
+                    if (self->current_tab == widx::tab_construction - widx::tab_construction)
+                        imageId += (self->frame_no / 4) % 32;
+                    gfx::recolour(imageId, companyColour);
+
+                    widget::draw_tab(self, dpi, imageId, widx::tab_construction);
+                }
+                // Station Tab
+                {
+                    widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
+                    if (!self->is_disabled(widx::tab_station))
+                    {
+                        auto x = self->widgets[widx::tab_station].left + self->x + 1;
+                        auto y = self->widgets[widx::tab_station].top + self->y + 1;
+                        auto width = 29;
+                        auto height = 25;
+                        if (self->current_tab == widx::tab_station - widx::tab_construction)
+                            height++;
+
+                        gfx::drawpixelinfo_t* clipped = nullptr;
+
+                        if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+                        {
+                            clipped->zoom_level = 1;
+                            clipped->width <<= 1;
+                            clipped->height <<= 1;
+                            clipped->x <<= 1;
+                            clipped->y <<= 1;
+                            auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStation);
+                            auto imageId = gfx::recolour(roadStationObj->var_0C, companyColour);
+                            gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                            auto colour = _byte_5045FA[companyColour];
+                            if (!roadStationObj->colour_flags & 1)
+                            {
+                                colour = 46;
+                            }
+                            imageId = gfx::recolour(imageId, colour) + 1;
+                            gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                        }
+
+                        widget::draw_tab(self, dpi, -2, widx::tab_station);
+                    }
+                }
+                // Overhead tab
+                {
+                    widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
+                    if (!self->is_disabled(widx::tab_station))
+                    {
+                        auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
+                        auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
+
+                        for (auto i = 0; i < 2; i++)
+                        {
+                            if (_modList[i] != 0xFF)
+                            {
+                                auto roadExtraObj = objectmgr::get<road_extra_object>(_modList[i]);
+                                auto imageId = roadExtraObj->var_0A;
+                                if (self->current_tab == widx::tab_overhead - widx::tab_construction)
+                                    imageId += (self->frame_no / 2) % 8;
+                                gfx::draw_image(dpi, x, y, imageId);
+                            }
+                        }
+
+                        widget::draw_tab(self, dpi, -2, widx::tab_overhead);
+                    }
+                }
+            }
+            else
+            {
+                auto trackObj = objectmgr::get<track_object>(_trackType);
+                // Construction Tab
+                {
+                    auto imageId = trackObj->var_1E;
+                    if (self->current_tab == widx::tab_construction - widx::tab_construction)
+                        imageId += (self->frame_no / 4) % 15;
+                    gfx::recolour(imageId, companyColour);
+
+                    widget::draw_tab(self, dpi, imageId, widx::tab_construction);
+                }
+                // Station Tab
+                {
+                    if (_byte_1136063 & (1 << 7))
+                    {
+                        auto imageId = objectmgr::get<interface_skin_object>()->img + 46;
+
+                        widget::draw_tab(self, dpi, imageId, widx::tab_station);
+                    }
+                    else
+                    {
+                        if (_byte_1136063 & (1 << 6))
+                        {
+                            auto imageId = objectmgr::get<interface_skin_object>()->img + 47;
+
+                            widget::draw_tab(self, dpi, imageId, widx::tab_station);
+                        }
+                        else
+                        {
+                            widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
+                            if (!self->is_disabled(widx::tab_station))
+                            {
+                                auto x = self->widgets[widx::tab_station].left + self->x + 1;
+                                auto y = self->widgets[widx::tab_station].top + self->y + 1;
+                                auto width = 29;
+                                auto height = 25;
+                                if (self->current_tab == widx::tab_station - widx::tab_construction)
+                                    height++;
+
+                                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                                if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+                                {
+                                    clipped->zoom_level = 1;
+                                    clipped->width <<= 1;
+                                    clipped->height <<= 1;
+                                    clipped->x <<= 1;
+                                    clipped->y <<= 1;
+                                    auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStation);
+                                    auto imageId = gfx::recolour(trainStationObj->var_0E, companyColour);
+                                    gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                                    auto colour = _byte_5045FA[companyColour];
+                                    if (!trainStationObj->colour_flags & 1)
+                                    {
+                                        colour = 46;
+                                    }
+                                    imageId = gfx::recolour(imageId, colour) + 1;
+                                    gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                                }
+
+                                widget::draw_tab(self, dpi, -2, widx::tab_station);
+                            }
+                        }
+                    }
+                }
+                // Signal Tab
+                {
+                    widget::draw_tab(self, dpi, image_ids::null, widx::tab_signal);
+                    if (!self->is_disabled(widx::tab_station))
+                    {
+                        auto x = self->widgets[widx::tab_signal].left + self->x + 1;
+                        auto y = self->widgets[widx::tab_signal].top + self->y + 1;
+                        auto width = 29;
+                        auto height = 25;
+                        if (self->current_tab == widx::tab_station - widx::tab_construction)
+                            height++;
+
+                        gfx::drawpixelinfo_t* clipped = nullptr;
+
+                        if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+                        {
+                            auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+                            auto imageId = trainSignalObject->var_0E;
+                            if (self->current_tab == widx::tab_signal - widx::tab_construction)
+                            {
+                                auto eax = _dword_4FFAF0[trainSignalObject->var_05];
+                                auto si = self->current_tab >> trainSignalObject->var_04;
+                                eax &= si;
+                                eax = _dword_4FFAF0[eax + 1];
+                                eax >>= 3;
+                                imageId += eax;
+                            }
+                            gfx::draw_image(clipped, 15, 31, imageId);
+                        }
+
+                        widget::draw_tab(self, dpi, -2, widx::tab_signal);
+                    }
+                }
+                // Overhead Tab
+                {
+                    widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
+                    if (!self->is_disabled(widx::tab_station))
+                    {
+                        auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
+                        auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
+
+                        for (auto i = 0; i < 4; i++)
+                        {
+                            if (_modList[i] != 0xFF)
+                            {
+                                auto roadExtraObj = objectmgr::get<road_extra_object>(_modList[i]);
+                                auto imageId = roadExtraObj->var_0A;
+                                if (self->current_tab == widx::tab_overhead - widx::tab_construction)
+                                    imageId += (self->frame_no / 2) % 8;
+                                gfx::draw_image(dpi, x, y, imageId);
+                            }
+                        }
+
+                        widget::draw_tab(self, dpi, -2, widx::tab_overhead);
+                    }
+                }
+            }
+        }
+
+        // 0x004A09DE
+        static void repositionTabs(window* self)
+        {
+            int16_t xPos = self->widgets[widx::tab_construction].left;
+            const int16_t tabWidth = self->widgets[widx::tab_construction].right - xPos;
+
+            for (uint8_t i = widx::tab_construction; i <= widx::tab_overhead; i++)
+            {
+                if (self->is_disabled(i))
+                {
+                    self->widgets[i].type = widget_type::none;
+                    continue;
+                }
+
+                self->widgets[i].type = widget_type::wt_8;
+                self->widgets[i].left = xPos;
+                self->widgets[i].right = xPos + tabWidth;
+                xPos = self->widgets[i].right + 1;
+            }
+        }
+
         static void init_events()
         {
             construction::init_events();

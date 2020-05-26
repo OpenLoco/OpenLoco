@@ -15,7 +15,7 @@ namespace openloco
         uint16_t sell_cost_factor; // 0x08
         uint8_t cost_index;        // 0x0A
         uint8_t pad_0B[0x0E - 0x0A];
-        uint32_t var_0E; // 0x02
+        uint32_t var_0E;
         uint8_t var_12;
         uint8_t var_13;
         uint8_t pad_14[0x1A - 0x14];

@@ -212,6 +212,9 @@ namespace openloco::string_ids
     constexpr string_id title_company_colour_scheme = 250;
     constexpr string_id title_company_challenge = 251;
 
+    constexpr string_id velocity = 263;
+    constexpr string_id unlimited_speed = 264;
+
     constexpr string_id tab_track_road_construction = 271;
     constexpr string_id tab_station_construction = 272;
     constexpr string_id tab_signal_construction = 273;

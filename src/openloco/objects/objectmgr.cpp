@@ -173,7 +173,10 @@ namespace openloco::objectmgr
     template<>
     track_object* get(size_t id)
     {
-        return _trackObjects[id];
+        if (_trackObjects[id] != reinterpret_cast<track_object*>(-1))
+            return _trackObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

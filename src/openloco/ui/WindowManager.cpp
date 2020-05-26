@@ -1871,7 +1871,8 @@ namespace openloco::ui::WindowManager
 namespace openloco::ui::windows
 {
     static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
-    static loco_global<int8_t, 0x00F2533F> _gridlines_state;
+    static loco_global<int8_t, 0x00F2533F> _gridlinesState;
+    static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
 
     // 0x00431A8A
     void show_error(string_id title, string_id message, bool sound)
@@ -1889,7 +1890,7 @@ namespace openloco::ui::windows
     // 0x00468FD3
     void showGridlines()
     {
-        if (!_gridlines_state)
+        if (!_gridlinesState)
         {
             auto window = WindowManager::getMainWindow();
             if (window != nullptr)
@@ -1901,14 +1902,14 @@ namespace openloco::ui::windows
                 window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
             }
         }
-        _gridlines_state++;
+        _gridlinesState++;
     }
 
     // 0x00468FFE
     void hideGridlines()
     {
-        _gridlines_state--;
-        if (!_gridlines_state)
+        _gridlinesState--;
+        if (!_gridlinesState)
         {
             if (!(config::get().flags & config::flags::gridlines_on_landscape))
             {
@@ -1923,5 +1924,23 @@ namespace openloco::ui::windows
                 }
             }
         }
+    }
+
+    // 0x004793C4
+    void showDirectionArrows()
+    {
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if (!(mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags |= viewport_flags::one_way_direction_arrows;
+                    mainWindow->invalidate();
+                }
+            }
+        }
+        _directionArrowsState++;
     }
 }
