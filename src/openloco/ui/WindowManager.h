@@ -52,6 +52,7 @@ namespace openloco::ui::WindowManager
     bool isInFrontAlt(ui::window* w);
     ui::window* findWindowShowing(map::map_pos position);
     void closeAllFloatingWindows();
+    int32_t getCurrentRotation();
 
     void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
 }

@@ -484,5 +484,8 @@ namespace openloco::ui
         void call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                           // 28
     };
     static_assert(sizeof(window) == 0x88E);
+
+    map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation);
+    map::map_pos sub_45FCE6(int16_t x, int16_t y, int16_t z);
 #pragma pack(pop)
 }

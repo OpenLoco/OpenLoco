@@ -117,6 +117,40 @@ namespace openloco::ui
             viewports[1]->render(dpi);
     }
 
+    // 0x0045FCE6
+    // Input:
+    // regs.ax:  x
+    // regs.bx:  y
+    // regs.bp:  z
+    // Output:
+    // {x: regs.ax, y: regs.bx}
+    // Note: function seems to be similar to screen_get_map_xy_with_z in openrct2
+    map::map_pos sub_45FCE6(int16_t x, int16_t y, int16_t z)
+    {
+        window* w = WindowManager::findAt(x, y);
+        if (w != nullptr)
+        {
+            viewport* vp = w->viewports[0];
+            if (vp != nullptr && x >= vp->x && x < vp->x + vp->width && y >= vp->y && y < vp->y + vp->height)
+            {
+                map::map_pos position = viewport_coord_to_map_coord(
+                    ((x - vp->x) << vp->zoom) + vp->view_x,
+                    ((y - vp->y) << vp->zoom) + vp->view_y,
+                    z,
+                    WindowManager::getCurrentRotation());
+                if (position.x <= 0x2FFF && position.y <= 0x2FFF)
+                {
+                    return position;
+                }
+                else
+                {
+                    return { -32768, position.y };
+                }
+            }
+        }
+        return { -32768, y };
+    }
+
     // 0x0045FD41
     // Input:
     // regs.ax:  x
@@ -126,7 +160,7 @@ namespace openloco::ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    static map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
         map::map_pos ret{};
         switch (rotation)
