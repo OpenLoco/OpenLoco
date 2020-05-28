@@ -12,7 +12,7 @@ namespace openloco
         uint8_t pad_03[0x8 - 0x03];
         uint8_t cost_factor; // 0x08
         uint8_t pad_09[0x0A - 0x09];
-		uint32_t image; // 0x0A
+        uint32_t image; // 0x0A
         uint8_t pad_0E[0x16 - 0x0E];
         uint32_t var_16;
     };

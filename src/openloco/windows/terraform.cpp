@@ -1159,8 +1159,8 @@ namespace openloco::ui::windows::terraform
         {
             auto pos = sub_45F1A7(x, y);
 
-            auto xPos = pos.x;
-            auto yPos = pos.y;
+            uint16_t xPos = pos.x;
+            uint16_t yPos = pos.y;
             if (xPos != 0x8000)
             {
                 uint8_t count = 0;
