@@ -5,6 +5,7 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
+#include "../map/tile.h"
 #include "../map/tilemgr.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/land_object.h"
@@ -58,8 +59,8 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x01136499> _byte_1136499;
     static loco_global<uint8_t, 0x0113649B> _byte_113649B;
     static loco_global<uint8_t, 0x0113649C> _byte_113649C;
-    static loco_global<uint32_t, 0x0113652C> _dword_113652C;
-    static loco_global<uint32_t, 0x01136528> _dword_1136528;
+    static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
+    static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][8], 0x0113D8A0> _dropdownItemArgs;
 
@@ -110,6 +111,7 @@ namespace openloco::ui::windows::terraform
         static const gfx::ui_size_t windowSize = { 634, 162 };
 
         static const uint8_t rowHeight = 102;
+        static const uint8_t columnWidth = 66;
 
         enum widx
         {
@@ -133,6 +135,13 @@ namespace openloco::ui::windows::terraform
         };
 
         static window_event_list events;
+
+        enum treeCluster
+        {
+            none = 0,
+            selected,
+            random,
+        };
 
         // 0x004BB6B2
         static void updateTreeColours(window* self)
@@ -252,27 +261,27 @@ namespace openloco::ui::windows::terraform
                 case widx::rotate_object:
                 {
                     _treeRotation++;
-                    _treeRotation &= uint8_t(3);
+                    _treeRotation = _treeRotation & 3;
                     self->invalidate();
                     break;
                 }
 
                 case widx::plant_cluster_selected:
                 {
-                    if (_treeClusterType == 1)
-                        _treeClusterType = 0;
+                    if (_treeClusterType == treeCluster::selected)
+                        _treeClusterType = treeCluster::none;
                     else
-                        _treeClusterType = 1;
+                        _treeClusterType = treeCluster::selected;
                     self->invalidate();
                     break;
                 }
 
                 case widx::plant_cluster_random:
                 {
-                    if (_treeClusterType == 2)
-                        _treeClusterType = 0;
+                    if (_treeClusterType == treeCluster::random)
+                        _treeClusterType = treeCluster::none;
                     else
-                        _treeClusterType = 2;
+                        _treeClusterType = treeCluster::random;
                     self->invalidate();
                 }
             }
@@ -430,13 +439,13 @@ namespace openloco::ui::windows::terraform
 
         static int getRowIndex(int16_t x, int16_t y)
         {
-            return (x / 66) + (y / rowHeight) * 9;
+            return (x / columnWidth) + (y / rowHeight) * 9;
         }
 
         // 0x004BBF3B
         static void scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            int16_t xPos = (x / rowHeight);
+            int16_t xPos = (x / columnWidth);
             int16_t yPos = (y / rowHeight) * 5;
             auto index = getRowIndex(x, y);
 
@@ -448,6 +457,8 @@ namespace openloco::ui::windows::terraform
                 {
                     self->row_hover = rowInfo;
                     _lastSelectedTree = static_cast<uint8_t>(rowInfo);
+
+                    updateTreeColours(self);
 
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -490,14 +501,12 @@ namespace openloco::ui::windows::terraform
         {
             common::prepare_draw(self);
 
-            self->activated_widgets = (1ULL << common::widx::tab_plant_trees);
-
             self->activated_widgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
-            if (_treeClusterType == 1)
+            if (_treeClusterType == treeCluster::selected)
                 self->activated_widgets |= (1ULL << widx::plant_cluster_selected);
 
-            if (_treeClusterType == 2)
+            if (_treeClusterType == treeCluster::random)
                 self->activated_widgets |= (1ULL << widx::plant_cluster_random);
 
             self->widgets[widx::rotate_object].type = widget_type::none;
@@ -591,7 +600,7 @@ namespace openloco::ui::windows::terraform
             if (colourOptions != 0)
             {
                 colour_t colour = _treeColour;
-                if ((_lastTreeColourFlag & 0x20) == 0)
+                if (!(_lastTreeColourFlag & (1 << 5)))
                 {
                     colour = utility::bitscanreverse(colourOptions);
                     if (colour == 0xFF)
@@ -635,9 +644,9 @@ namespace openloco::ui::windows::terraform
                     drawTreeThumb(treeObj, clipped);
                 }
 
-                xPos += 66;
+                xPos += columnWidth;
 
-                if (xPos >= 66 * 9) // full row
+                if (xPos >= columnWidth * 9) // full row
                 {
                     xPos = 0;
                     yPos += rowHeight;
@@ -694,7 +703,7 @@ namespace openloco::ui::windows::terraform
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
             window->saved_view.mapX = 0;
-            _treeClusterType = 0;
+            _treeClusterType = plant_trees::treeCluster::none;
 
             WindowManager::sub_4CEE0B(window);
 
@@ -822,17 +831,16 @@ namespace openloco::ui::windows::terraform
         {
             if ((_mapSelectionFlags & 1))
             {
-                uint16_t x = _mapSelectionAX + _mapSelectionBX;
-                uint16_t y = _mapSelectionAY + _mapSelectionBY;
+                int16_t x = _mapSelectionAX + _mapSelectionBX;
+                int16_t y = _mapSelectionAY + _mapSelectionBY;
                 x /= 2;
                 y /= 2;
-                uint32_t x2 = _mapSelectionBX << 16;
-                uint32_t y2 = _mapSelectionBY << 16;
-                x2 |= _mapSelectionAX;
-                y2 |= _mapSelectionAY;
+                map_pos centre = { x, y };
+                map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+                map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
                 _gGameCommandErrorTitle = string_ids::error_cant_clear_entire_area;
 
-                game_commands::do_66(x, y, x2, y2, flags);
+                game_commands::do_66(centre, pointA, pointB, flags);
             }
         }
 
@@ -865,7 +873,7 @@ namespace openloco::ui::windows::terraform
                 tilemgr::map_invalidate_selection_rect();
 
                 // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
             }
         }
 
@@ -889,6 +897,7 @@ namespace openloco::ui::windows::terraform
 
             if (_raiseLandAdjustCost == 0x80000000)
                 return;
+
             if (_raiseLandAdjustCost == 0)
                 return;
 
@@ -971,7 +980,9 @@ namespace openloco::ui::windows::terraform
         static void on_resize(window* self)
         {
             if (is_editor_mode())
+            {
                 common::on_resize(self, 115);
+            }
             else
             {
                 // CHANGE: Resizes window to allow dropdown and cost string to be drawn seperately
@@ -999,7 +1010,7 @@ namespace openloco::ui::windows::terraform
             dropdown::show_image(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
             auto landIndex = 0;
-            for (uint16_t i = 0; i < 32; i++)
+            for (uint16_t i = 0; i < objectmgr::get_max_objects(object_type::land); i++)
             {
                 auto landObj = objectmgr::get<land_object>(i);
                 if (landObj == nullptr)
@@ -1069,27 +1080,24 @@ namespace openloco::ui::windows::terraform
             if ((flags & 1))
                 common::sub_4A69DD();
 
-            uint16_t x = _mapSelectionAX + _mapSelectionBX;
-            uint16_t y = _mapSelectionAY + _mapSelectionBY;
+            int16_t x = _mapSelectionAX + _mapSelectionBX;
+            int16_t y = _mapSelectionAY + _mapSelectionBY;
             x /= 2;
             y /= 2;
-            x += 16;
-            y += 16;
-            uint32_t x2 = _mapSelectionBX << 16;
-            uint32_t y2 = _mapSelectionBY << 16;
-            x2 |= _mapSelectionAX;
-            y2 |= _mapSelectionAY;
+            map_pos centre = { x, y };
+            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
             _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
 
             if (_adjustToolSize == 0)
             {
                 uint16_t di = 0xFFFF;
-                cost = game_commands::do_27(x, y, x2, y2, di, flags);
+                cost = game_commands::do_27(centre, pointA, pointB, di, flags);
             }
             else
             {
                 uint16_t di = _word_F2448E;
-                cost = game_commands::do_26(x, y, x2, y2, di, flags);
+                cost = game_commands::do_26(centre, pointA, pointB, di, flags);
             }
             return cost;
         }
@@ -1101,27 +1109,24 @@ namespace openloco::ui::windows::terraform
             if ((flags & 1))
                 common::sub_4A69DD();
 
-            auto x = _mapSelectionAX + _mapSelectionBX;
-            auto y = _mapSelectionAY + _mapSelectionBY;
+            int16_t x = _mapSelectionAX + _mapSelectionBX;
+            int16_t y = _mapSelectionAY + _mapSelectionBY;
             x /= 2;
             y /= 2;
-            x += 16;
-            y += 16;
-            uint32_t x2 = _mapSelectionBX << 16;
-            uint32_t y2 = _mapSelectionBY << 16;
-            x2 |= _mapSelectionAX;
-            y2 |= _mapSelectionAY;
+            map_pos centre = { x, y };
+            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
             _gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
 
             if (_adjustToolSize == 0)
             {
                 uint16_t di = 1;
-                cost = game_commands::do_27(x, y, x2, y2, di, flags);
+                cost = game_commands::do_27(centre, pointA, pointB, di, flags);
             }
             else
             {
                 uint16_t di = _word_F2448E;
-                cost = game_commands::do_25(x, y, x2, y2, di, flags);
+                cost = game_commands::do_25(centre, pointA, pointB, di, flags);
             }
             return cost;
         }
@@ -1140,14 +1145,22 @@ namespace openloco::ui::windows::terraform
             WindowManager::invalidate(WindowType::terraform, 0);
         }
 
-        static uint16_t setMapSelectionTiles(int16_t x, int16_t y)
+        static map_pos sub_45F1A7(int16_t x, int16_t y)
         {
             registers regs;
             regs.ax = x;
             regs.bx = y;
             call(0x0045F1A7, regs);
-            uint16_t xPos = regs.ax;
-            uint16_t yPos = regs.bx;
+            map_pos pos = { regs.ax, regs.bx };
+            return pos;
+        }
+
+        static uint16_t setMapSelectionTiles(int16_t x, int16_t y)
+        {
+            auto pos = sub_45F1A7(x, y);
+
+            auto xPos = pos.x;
+            auto yPos = pos.y;
             if (xPos != 0x8000)
             {
                 uint8_t count = 0;
@@ -1212,15 +1225,24 @@ namespace openloco::ui::windows::terraform
             return 0x8000;
         }
 
-        static uint16_t setMapSelectionSingleTile(int16_t x, int16_t y)
+        static map_pos3 sub_45FD8E(int16_t x, int16_t y)
         {
             registers regs;
             regs.ax = x;
             regs.bx = y;
             call(0x0045FD8E, regs);
-            uint16_t xPos = regs.ax;
-            uint16_t yPos = regs.bx;
-            uint16_t cursorQuadrant = regs.cx;
+            map_pos3 pos = { regs.ax, regs.bx, regs.cx };
+            return pos;
+        }
+
+        static uint16_t setMapSelectionSingleTile(int16_t x, int16_t y)
+        {
+            auto pos = sub_45FD8E(x, y);
+
+            uint16_t xPos = pos.x;
+            uint16_t yPos = pos.y;
+            uint16_t cursorQuadrant = pos.z;
+
             if (xPos != 0x8000)
             {
                 auto count = 0;
@@ -1277,7 +1299,7 @@ namespace openloco::ui::windows::terraform
 
             if (_currentTool != 3)
             {
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
                 if (_adjustLandToolSize != 1)
                 {
                     auto count = setMapSelectionTiles(x, y);
@@ -1329,27 +1351,17 @@ namespace openloco::ui::windows::terraform
                 return;
             if (!(_mapSelectionFlags & 1))
                 return;
-            if (is_editor_mode())
+
+            // CHANGE: Allows the player to change land type outside of the scenario editor.
+            if (_adjustToolSize != 0)
             {
-                if (_adjustToolSize != 0)
+                if (_lastSelectedLand != 0xFF)
                 {
-                    if (_lastSelectedLand != 0xFF)
-                    {
-                        _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
-                        game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
-                    }
-                }
-            }
-            else
-            {
-                // CHANGE: Allows the player to change land type outside of the scenario editor.
-                if (_adjustToolSize != 0)
-                {
-                    if (_lastSelectedLand != 0xFF)
-                    {
-                        _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
-                        game_commands::do_24(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, _lastSelectedLand, GameCommandFlag::apply);
-                    }
+                    _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
+                    map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+                    map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+
+                    game_commands::do_24(pointA, pointB, _lastSelectedLand, GameCommandFlag::apply);
                 }
             }
 
@@ -1380,22 +1392,23 @@ namespace openloco::ui::windows::terraform
 
             auto zoom = viewport->zoom;
 
-            int16_t dx = static_cast<int16_t>(0xFFF0);
-            dx /= pow(2, zoom);
-            auto yPos = y - _dragLastY;
+            auto dY = -(16 >> zoom);
+            if (dY == 0)
+                dY = -1;
+            auto deltaY = y - _dragLastY;
             auto flags = GameCommandFlag::apply;
 
-            if (yPos <= dx)
+            if (deltaY <= dY)
             {
-                _dragLastY += dx;
+                _dragLastY = _dragLastY + dY;
                 raiseLand(flags);
             }
             else
             {
-                dx = -dx;
-                if (yPos < dx)
+                dY = -dY;
+                if (deltaY < dY)
                     return;
-                _dragLastY += dx;
+                _dragLastY = _dragLastY + dY;
                 lowerLand(flags);
             }
             _raiseLandAdjustCost = 0x80000000;
@@ -1410,7 +1423,7 @@ namespace openloco::ui::windows::terraform
                 tilemgr::map_invalidate_selection_rect();
 
                 // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
                 _currentTool = 18;
             }
         }
@@ -1425,28 +1438,15 @@ namespace openloco::ui::windows::terraform
             self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
 
             self->widgets[widx::land_material].type = widget_type::none;
-            if (is_editor_mode())
+
+            // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
+            if (_adjustToolSize != 0)
             {
-                if (_adjustToolSize != 0)
-                {
-                    self->widgets[widx::land_material].type = widget_type::wt_6;
+                self->widgets[widx::land_material].type = widget_type::wt_6;
 
-                    auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
+                auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
 
-                    self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
-                }
-            }
-            else
-            {
-                // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
-                if (_adjustToolSize != 0)
-                {
-                    self->widgets[widx::land_material].type = widget_type::wt_6;
-
-                    auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
-
-                    self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
-                }
+                self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
             }
 
             common::repositionTabs(self);
@@ -1533,8 +1533,8 @@ namespace openloco::ui::windows::terraform
         {
             input::toolSet(self, common::widx::panel, 19);
             input::set_flag(input::input_flags::flag6);
-            _dword_113652C = 0x80000000;
-            _dword_1136528 = 0x80000000;
+            _raiseWaterCost = 0x80000000;
+            _lowerWaterCost = 0x80000000;
             _adjustToolSize = _adjustWaterToolSize;
         }
 
@@ -1597,14 +1597,20 @@ namespace openloco::ui::windows::terraform
         {
             common::sub_4A69DD();
             _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
-            game_commands::do_28(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, flags);
+            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+
+            game_commands::do_28(pointA, pointB, flags);
         }
 
         static void lowerWater(uint8_t flags)
         {
             common::sub_4A69DD();
             _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
-            game_commands::do_29(_mapSelectionAX, _mapSelectionAY, _mapSelectionBX, _mapSelectionBY, flags);
+            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
+            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+
+            game_commands::do_29(pointA, pointB, flags);
         }
 
         // 0x004BCDBF
@@ -1631,26 +1637,28 @@ namespace openloco::ui::windows::terraform
 
             auto zoom = viewport->zoom;
 
-            int16_t dx = static_cast<int16_t>(0xFFF0);
-            dx /= pow(2, zoom);
-            auto yPos = y - _dragLastY;
+            auto dY = -(16 >> zoom);
+            if (dY == 0)
+                dY = -1;
+
+            auto deltaY = y - _dragLastY;
             auto flags = GameCommandFlag::apply;
 
-            if (yPos <= dx)
+            if (deltaY <= dY)
             {
-                _dragLastY += dx;
+                _dragLastY = _dragLastY + dY;
                 raiseWater(flags);
             }
             else
             {
-                dx = -dx;
-                if (yPos < dx)
+                dY = -dY;
+                if (deltaY < dY)
                     return;
-                _dragLastY += dx;
+                _dragLastY = _dragLastY + dY;
                 lowerWater(flags);
             }
-            _dword_113652C = 0x80000000;
-            _dword_1136528 = 0x80000000;
+            _raiseWaterCost = 0x80000000;
+            _lowerWaterCost = 0x80000000;
         }
 
         // 0x004BCDE8
@@ -1661,7 +1669,7 @@ namespace openloco::ui::windows::terraform
                 tilemgr::map_invalidate_selection_rect();
 
                 // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & 0xFFFE;
+                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
                 _currentTool = 19;
             }
         }
@@ -1689,12 +1697,12 @@ namespace openloco::ui::windows::terraform
             xPos += self->x;
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
 
-            if (_dword_113652C != 0x80000000)
+            if (_raiseWaterCost != 0x80000000)
             {
-                if (_dword_113652C != 0)
+                if (_raiseWaterCost != 0)
                 {
                     auto args = FormatArguments();
-                    args.push<uint16_t>(_dword_113652C);
+                    args.push<uint16_t>(_raiseWaterCost);
 
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
                 }
@@ -1702,12 +1710,12 @@ namespace openloco::ui::windows::terraform
 
             yPos += 10;
 
-            if (_dword_1136528 != 0x80000000)
+            if (_lowerWaterCost != 0x80000000)
             {
-                if (_dword_1136528 != 0)
+                if (_lowerWaterCost != 0)
                 {
                     auto args = FormatArguments();
-                    args.push<uint16_t>(_dword_1136528);
+                    args.push<uint16_t>(_lowerWaterCost);
 
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
                 }
@@ -1828,7 +1836,6 @@ namespace openloco::ui::windows::terraform
             self->var_83C = 0;
             self->row_hover = -1;
             refreshWallList(self);
-            // sub_4BB748 omitted
         }
 
         // 0x004BC44B
@@ -2125,10 +2132,12 @@ namespace openloco::ui::windows::terraform
         static void on_resize(window* self, uint8_t height)
         {
             self->flags |= window_flags::resizable;
+
             /*auto width = 130;
             if (is_editor_mode)
                 width += 31;*/
-            // width set to 161 to include building walls tab
+
+            // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
             gfx::ui_size_t windowSize = { width, height };
             self->set_size(windowSize, windowSize);
@@ -2289,9 +2298,13 @@ namespace openloco::ui::windows::terraform
             self->widgets = tabInfo.widgets;
 
             auto disabledWidgets = 0;
+
+            // CHANGE: Disabled so the build walls tab shows outside of editor mode
             /*if (!is_editor_mode())
                 disabledWidgets |= common::widx::tab_build_walls;*/
+
             self->disabled_widgets = disabledWidgets;
+            self->invalidate();
 
             switch (widgetIndex)
             {
