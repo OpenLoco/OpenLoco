@@ -83,7 +83,7 @@ namespace openloco::ui::windows::terraform
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
+        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
         make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
         make_widget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                       \
         make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_clear_land),                   \
@@ -2027,7 +2027,7 @@ namespace openloco::ui::windows::terraform
         {
             common::prepare_draw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 26;
+            self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
             common::repositionTabs(self);
