@@ -3,6 +3,7 @@
 - Fix: [#487] Checkbox behaviour reversed for industry opening/closing in landscape generation options.
 - Fix: [#488] Repeated clicking may lead to a negative loan.
 - Fix: [#494] Farms not producing grain for stations in Mountain Mayhem scenario.
+- Fix: [#498] Clicking newly invented vehicle in news throws out of range exception.
 
 20.05 (2020-05-24)
 ------------------------------------------------------------------------
