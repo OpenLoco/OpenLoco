@@ -736,7 +736,7 @@ namespace openloco::ui::prompt_browse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (char* ptr = &*_text_input_buffer; *ptr != '\0'; ptr++)
+        for (const char* ptr = &*_text_input_buffer; *ptr != '\0'; ptr++)
         {
             if (*ptr != ' ')
                 numNonSpacesProcessed++;
