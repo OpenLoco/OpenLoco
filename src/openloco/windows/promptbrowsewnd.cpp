@@ -27,7 +27,6 @@ namespace openloco::ui::prompt_browse
     {
         saved_game,
         landscape,
-        unk_2,
     };
 
 #pragma pack(push, 1)
@@ -733,21 +732,43 @@ namespace openloco::ui::prompt_browse
             });
     }
 
-    static int sub_446F1D()
+    // 0x00446F1D
+    static bool filenameContainsInvalidChars()
     {
-        return call(0x00446F1D) & X86_FLAG_CARRY;
+        uint8_t numNonSpacesProcessed = 0;
+        for (const char* ptr = &*_text_input_buffer; *ptr != '\0'; ptr++)
+        {
+            if (*ptr != ' ')
+                numNonSpacesProcessed++;
+
+            switch (*ptr)
+            {
+                // The following chars are considered invalid in filenames.
+                case '.':
+                case '"':
+                case '\\':
+                case '*':
+                case '?':
+                case ':':
+                case ';':
+                case ',':
+                case '<':
+                case '>':
+                case '/':
+                    return true;
+            }
+        }
+
+        // If we have only processed spaces, the filename is invalid as well.
+        return numNonSpacesProcessed == 0;
     }
 
     // 0x00446574
     static void sub_446574(ui::window* window)
     {
-        if (*_type != browse_file_type::unk_2)
+        if (*_type == browse_type::save)
         {
-            call(0x00446689);
-        }
-        else
-        {
-            if (sub_446F1D())
+            if (filenameContainsInvalidChars())
             {
                 windows::show_error(string_ids::error_invalid_filename);
             }
@@ -757,6 +778,12 @@ namespace openloco::ui::prompt_browse
                 regs.esi = (int32_t)window;
                 call(0x00446598, regs);
             }
+        }
+        else
+        {
+            registers regs;
+            regs.esi = (int32_t)window;
+            call(0x00446689, regs);
         }
     }
 }
