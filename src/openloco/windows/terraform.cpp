@@ -50,8 +50,8 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
-    static loco_global<uint32_t, 0x00F2530C> _raiseLandAdjustCost;
-    static loco_global<uint32_t, 0x00F25310> _lowerLandAdjustCost;
+    static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
+    static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
     static loco_global<uint16_t, 0x01136488> _word_1136488;
     static loco_global<uint16_t, 0x0113648A> _word_113648A;
@@ -575,7 +575,7 @@ namespace openloco::ui::windows::terraform
                 treeCost = treeObj->build_cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
             }
             auto args = FormatArguments();
-            args.push(treeCost);
+            args.push<uint32_t>(treeCost);
 
             if (!is_editor_mode())
             {
@@ -779,7 +779,7 @@ namespace openloco::ui::windows::terraform
         {
             input::toolSet(self, common::widx::panel, 41);
             input::set_flag(input::input_flags::flag6);
-            _raiseLandAdjustCost = 0x80000000;
+            _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
         }
 
@@ -895,10 +895,10 @@ namespace openloco::ui::windows::terraform
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            if (_raiseLandAdjustCost == 0x80000000)
+            if (_raiseLandCost == 0x80000000)
                 return;
 
-            if (_raiseLandAdjustCost == 0)
+            if (_raiseLandCost == 0)
                 return;
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
@@ -907,7 +907,7 @@ namespace openloco::ui::windows::terraform
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
 
             auto args = FormatArguments();
-            args.push<uint16_t>(_raiseLandAdjustCost);
+            args.push<uint32_t>(_raiseLandCost);
 
             gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
@@ -969,8 +969,8 @@ namespace openloco::ui::windows::terraform
                     continue;
 
                 _lastSelectedLand = i;
-                _raiseLandAdjustCost = 0x80000000;
-                _lowerLandAdjustCost = 0x80000000;
+                _raiseLandCost = 0x80000000;
+                _lowerLandCost = 0x80000000;
                 _adjustToolSize = _adjustLandToolSize;
                 break;
             }
@@ -1133,14 +1133,14 @@ namespace openloco::ui::windows::terraform
 
         static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost)
         {
-            if (_raiseLandAdjustCost == raiseCost)
+            if (_raiseLandCost == raiseCost)
             {
-                if (_lowerLandAdjustCost == lowerCost)
+                if (_lowerLandCost == lowerCost)
                     return;
             }
 
-            _raiseLandAdjustCost = raiseCost;
-            _lowerLandAdjustCost = lowerCost;
+            _raiseLandCost = raiseCost;
+            _lowerLandCost = lowerCost;
 
             WindowManager::invalidate(WindowType::terraform, 0);
         }
@@ -1411,8 +1411,8 @@ namespace openloco::ui::windows::terraform
                 _dragLastY = _dragLastY + dY;
                 lowerLand(flags);
             }
-            _raiseLandAdjustCost = 0x80000000;
-            _lowerLandAdjustCost = 0x80000000;
+            _raiseLandCost = 0x80000000;
+            _lowerLandCost = 0x80000000;
         }
 
         // 0x004BCA5D
@@ -1463,23 +1463,25 @@ namespace openloco::ui::windows::terraform
             xPos += self->x;
             auto yPos = self->widgets[widx::tool_area].bottom + self->y + 28;
 
-            if (_raiseLandAdjustCost != 0x80000000)
+            if (_raiseLandCost != 0x80000000)
             {
-                if (_raiseLandAdjustCost != 0)
+                if (_raiseLandCost != 0)
                 {
-                    int raiseCost = _raiseLandAdjustCost;
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &raiseCost);
+                    auto args = FormatArguments();
+                    args.push<uint32_t>(_raiseLandCost);
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
                 }
             }
 
             yPos += 10;
 
-            if (_lowerLandAdjustCost != 0x80000000)
+            if (_lowerLandCost != 0x80000000)
             {
-                if (_lowerLandAdjustCost != 0)
+                if (_lowerLandCost != 0)
                 {
-                    int lowerCost = _lowerLandAdjustCost;
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &lowerCost);
+                    auto args = FormatArguments();
+                    args.push<uint32_t>(_lowerLandCost);
+                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
                 }
             }
         }
@@ -1702,7 +1704,7 @@ namespace openloco::ui::windows::terraform
                 if (_raiseWaterCost != 0)
                 {
                     auto args = FormatArguments();
-                    args.push<uint16_t>(_raiseWaterCost);
+                    args.push<uint32_t>(_raiseWaterCost);
 
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
                 }
@@ -1715,7 +1717,7 @@ namespace openloco::ui::windows::terraform
                 if (_lowerWaterCost != 0)
                 {
                     auto args = FormatArguments();
-                    args.push<uint16_t>(_lowerWaterCost);
+                    args.push<uint32_t>(_lowerWaterCost);
 
                     gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
                 }
