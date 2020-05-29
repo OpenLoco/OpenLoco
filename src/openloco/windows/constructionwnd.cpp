@@ -1,5 +1,6 @@
 #include "../companymgr.h"
 #include "../date.h"
+#include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -13,6 +14,7 @@
 #include "../objects/road_extra_object.h"
 #include "../objects/road_object.h"
 #include "../objects/road_station_object.h"
+#include "../objects/track_extra_object.h"
 #include "../objects/track_object.h"
 #include "../objects/train_signal_object.h"
 #include "../objects/train_station_object.h"
@@ -26,8 +28,66 @@ using namespace openloco::map;
 
 namespace openloco::ui::windows::construction
 {
+    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+    static loco_global<uint8_t[10], 0x004F6D44> _unk_4F6D44;
+    static loco_global<uint8_t[10], 0x004F6D4F> _unk_4F6D4F;
+    static loco_global<uint8_t[10], 0x004F6D5A> _unk_4F6D5A;
+    static loco_global<uint8_t[40], 0x004F6D65> _unk_4F6D65;
+    static loco_global<uint8_t[40], 0x004F6D8E> _unk_4F6D8E;
+    static loco_global<uint8_t[20], 0x004F6DB7> _unk_4F6DB7;
+    static loco_global<uint8_t[20], 0x004F6DCC> _unk_4F6DCC;
+    static loco_global<uint8_t[10], 0x004F6DE1> _unk_4F6DE1;
+    static loco_global<uint8_t[10], 0x004F6DEC> _unk_4F6DEC;
+    static loco_global<uint8_t[10], 0x004F6DF7> _unk_4F6DF7;
+
+    static loco_global<uint8_t[10], 0x004F7488> _unk_4F7488;
+    static loco_global<uint8_t[40], 0x004F7493> _unk_4F7493;
+    static loco_global<uint8_t[10], 0x004F74BC> _unk_4F74BC;
+    static loco_global<uint8_t[10], 0x004F74C7> _unk_4F74C7;
+    static loco_global<uint8_t[40], 0x004F74D2> _unk_4F74D2;
+    static loco_global<uint8_t[40], 0x004F74FB> _unk_4F74FB;
+    static loco_global<uint8_t[50], 0x004F7524> _unk_4F7524;
+    static loco_global<uint8_t[50], 0x004F7557> _unk_4F7557;
+    static loco_global<uint8_t[50], 0x004F758A> _unk_4F758A;
+    static loco_global<uint8_t[50], 0x004F75BD> _unk_4F75BD;
+    static loco_global<uint8_t[50], 0x004F75F0> _unk_4F75F0;
+    static loco_global<uint8_t[50], 0x004F7623> _unk_4F7623;
+    static loco_global<uint8_t[40], 0x004F7656> _unk_4F7656;
+    static loco_global<uint8_t[40], 0x004F767F> _unk_4F767F;
+    static loco_global<uint8_t[20], 0x004F76A8> _unk_4F76A8;
+    static loco_global<uint8_t[20], 0x004F76BD> _unk_4F76BD;
+    static loco_global<uint8_t[10], 0x004F76D2> _unk_4F76D2;
+    static loco_global<uint8_t[10], 0x004F76DD> _unk_4F76DD;
+    static loco_global<uint8_t[40], 0x004F76E8> _unk_4F76E8;
+    static loco_global<uint8_t[40], 0x004F7711> _unk_4F7711;
+    static loco_global<uint8_t[40], 0x004F773A> _unk_4F773A;
+    static loco_global<uint8_t[40], 0x004F7763> _unk_4F7763;
+    static loco_global<uint8_t[40], 0x004F778C> _unk_4F778C;
+    static loco_global<uint8_t[40], 0x004F77B5> _unk_4F77B5;
+    static loco_global<uint8_t[40], 0x004F77DE> _unk_4F77DE;
+    static loco_global<uint8_t[40], 0x004F7807> _unk_4F7807;
+    static loco_global<uint8_t[10], 0x004F7830> _unk_4F7830;
+    static loco_global<uint8_t[10], 0x004F783B> _unk_4F783B;
+    static loco_global<uint8_t[10], 0x004F7846> _unk_4F7846;
+    static loco_global<uint8_t[10], 0x004F7851> _unk_4F7851;
+    static loco_global<uint8_t[10], 0x004F785C> _unk_4F785C;
+    static loco_global<uint8_t[10], 0x004F7867> _unk_4F7867;
+    static loco_global<uint8_t[10], 0x004F7872> _unk_4F7872;
+    static loco_global<uint8_t[10], 0x004F787D> _unk_4F787D;
+    static loco_global<uint8_t[10], 0x004F7888> _unk_4F7888;
+    static loco_global<uint8_t[10], 0x004F7893> _unk_4F7893;
+    static loco_global<uint8_t[10], 0x004F789E> _unk_4F789E;
+    static loco_global<uint8_t[10], 0x004F78A9> _unk_4F78A9;
+    static loco_global<uint8_t[10], 0x004F78B4> _unk_4F78B4;
+    static loco_global<uint8_t[10], 0x004F78BF> _unk_4F78BF;
+    static loco_global<uint8_t[10], 0x004F78CA> _unk_4F78CA;
+    static loco_global<uint8_t[10], 0x004F78D5> _unk_4F78D5;
+    static loco_global<uint8_t[10], 0x004F78E0> _unk_4F78E0;
+    static loco_global<uint8_t[10], 0x004F78EB> _unk_4F78EB;
+
     static loco_global<uint16_t[2], 0x004FFAF0> _dword_4FFAF0;
-    static loco_global<uint8_t[31], 0x05045FA> _byte_5045FA;
+    static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
+    static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
@@ -43,12 +103,15 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAC> _haveAirports;
     static loco_global<uint8_t, 0x00525FAD> _haveShipPorts;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
+    static loco_global<uint32_t, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
-    static loco_global<uint32_t, 0x01135F3E> _dword_1135F3E;
+    static loco_global<uint32_t, 0x01135F3E> _constructionCost;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
-    static loco_global<uint16_t, 0x01135FB4> _word_1135FB4;
-    static loco_global<uint16_t, 0x01135FB6> _word_1135FB6;
+    static loco_global<uint16_t, 0x01135FB4> _x;
+    static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
+    static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
+    static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _word_1135FE4;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
@@ -66,6 +129,9 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x01136068> _byte_1136068;
     static loco_global<uint8_t, 0x0113606E> _byte_113606E;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
+    static loco_global<uint8_t, 0x01136077> _byte_1136077;
+    static loco_global<uint8_t, 0x01136078> _byte_1136078;
+    static loco_global<uint8_t, 0x01136079> _byte_1136079;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
 
     namespace common
@@ -96,6 +162,7 @@ namespace openloco::ui::windows::construction
 
         static void prepare_draw(window* self);
         static void repositionTabs(window* self);
+        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void init_events();
     }
 
@@ -311,7 +378,7 @@ namespace openloco::ui::windows::construction
                 auto trackObj = objectmgr::get<track_object>(_trackType);
                 args.push(trackObj->name);
             }
-            if (_lastSelectedBridge != 0xFFFFFFFF)
+            if (_lastSelectedBridge != 0xFF)
             {
                 auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
@@ -333,6 +400,185 @@ namespace openloco::ui::windows::construction
             common::repositionTabs(self);
         }
 
+        static registers sub_4A0AE5(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
+        {
+            registers regs;
+            regs.ax = ax;
+            regs.cx = cx;
+            regs.edi = edi;
+            regs.bh = bh;
+            regs.edx = edx;
+            call(0x004A0AE5, regs);
+            return regs;
+        }
+
+        static registers sub_478F1F(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
+        {
+            registers regs;
+            regs.ax = ax;
+            regs.cx = cx;
+            regs.edi = edi;
+            regs.bh = bh;
+            regs.edx = edx;
+            call(0x00478F1F, regs);
+            return regs;
+        }
+
+        // 0x0049D38A and 0x0049D16B
+        static void loc_49D38A(window* self, gfx::drawpixelinfo_t* clipped)
+        {
+            auto x = self->widgets[widx::construct].width() + 1;
+            x >>= 1;
+            x += self->x;
+            auto y = self->widgets[widx::construct].bottom + self->y - 23;
+
+            if (_byte_1136061 != 1)
+                gfx::draw_string_centred(*clipped, x, y, colour::black, string_ids::build_this);
+
+            y += 11;
+            if (_constructionCost != 0x80000000)
+            {
+                if (_constructionCost != 0)
+                {
+                    auto args = FormatArguments();
+                    args.push<uint32_t>(_constructionCost);
+                    gfx::draw_string_centred(*clipped, x, y, colour::black, string_ids::build_cost, &args);
+                }
+            }
+        }
+
+        static void loc_49D106(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        {
+            bp >>= 1;
+            si >>= 1;
+            si += 0x10;
+            ax -= bp;
+            cx -= si;
+            clipped->x += ax;
+            clipped->y += cx;
+            _dword_E0C3E0 = (uint32_t)clipped;
+            auto x = 0x2000;
+            auto y = 0x2000;
+            auto edi = _word_1135FD8 << 16 | 0x1E0;
+            auto edx = _word_1135FD6 << 16 | _byte_1136079 << 8 | _byte_1136077;
+            _byte_522095 = _byte_522095 | (1 << 1);
+
+            sub_4A0AE5(x, y, edi, _byte_1136078, edx);
+
+            _byte_522095 = _byte_522095 & ~(1 << 1);
+            
+            loc_49D38A(self, clipped);
+        }
+
+        static void loc_49D325(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        {
+            bp >>= 1;
+            si >>= 1;
+            si += 0x10;
+            ax -= bp;
+            cx -= si;
+            clipped->x += ax;
+            clipped->y += cx;
+            _dword_E0C3E0 = (uint32_t)clipped;
+            auto x = 0x2000;
+            auto y = 0x2000;
+            auto edi = _word_1135FD8 << 16 | 0x1E0;
+            auto edx = _word_1135FD6 << 16 | _byte_1136079 << 8 | _byte_1136077;
+            _byte_522095 = _byte_522095 | (1 << 1);
+
+            sub_478F1F(x, y, edi, _byte_1136078, edx);
+
+            _byte_522095 = _byte_522095 & ~(1 << 1);
+
+            loc_49D38A(self, clipped);
+        }
+
+        static void sub_49D0B8(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax = -ax + cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D106(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D0CC(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            ax = -ax;
+            auto bx = ax;
+            ax -= cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D106(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D0E0(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax -= cx;
+            cx = -cx;
+            cx -= bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D106(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D0F4(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax += cx;
+            cx = -cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D106(self, clipped, ax, cx, bp, si);
+        }
+
+        static void sub_49D2D7(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax = -ax + cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D325(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D2EB(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            ax = -ax;
+            auto bx = ax;
+            ax -= cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D325(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D2FF(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax -= cx;
+            cx = -cx;
+            cx -= bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D325(self, clipped, ax, cx, bp, si);
+        }
+
+        static void loc_49D313(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        {
+            auto bx = ax;
+            ax += cx;
+            cx = -cx;
+            cx += bx;
+            cx >>= 1;
+            cx -= dx;
+            loc_49D325(self, clipped, ax, cx, bp, si);
+        }
+
         // 0x0049CF36
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
@@ -344,9 +590,9 @@ namespace openloco::ui::windows::construction
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            if( self->widgets[widx::bridge].type != widget_type::none)
+            if (self->widgets[widx::bridge].type != widget_type::none)
             {
-                if (_lastSelectedBridge != 0xFFFFFFFF)
+                if (_lastSelectedBridge != 0xFF)
                 {
                     auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
                     if (bridgeObj != nullptr)
@@ -360,13 +606,247 @@ namespace openloco::ui::windows::construction
                     }
                 }
             }
+
             if (self->widgets[widx::construct].type == widget_type::none)
                 return;
+
             if (_trackType & (1 << 7))
             {
+                registers regs;
+                auto flags = call(0x004A0832, regs);
+                auto carryFlag = (flags >> 16) & (1 << 1);
+                _word_1135FD8 = regs.edi >> 16;
+                if (carryFlag)
+                    return;
+                _byte_1136077 = regs.dl;
+                _byte_1136078 = regs.bh;
+                _byte_1136079 = regs.dh;
+                _word_1135FD6 = (regs.edx >> 16) & 0x1F;
+
+                auto x = self->x + self->widgets[widx::construct].left + 1;
+                auto y = self->y + self->widgets[widx::construct].top + 1;
+                auto width = self->widgets[widx::construct].width();
+                auto height = self->widgets[widx::construct].width();
+
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+                {
+                    static const uint8_t* offset_4F6D1C[] = {
+                        _unk_4F6D44,
+                        _unk_4F6D4F,
+                        _unk_4F6D5A,
+                        _unk_4F6D65,
+                        _unk_4F6D8E,
+                        _unk_4F6DB7,
+                        _unk_4F6DCC,
+                        _unk_4F6DE1,
+                        _unk_4F6DEC,
+                        _unk_4F6DF7,
+                    };
+
+                    auto ecx = offset_4F6D1C[_byte_1136079];
+                    auto i = 0;
+
+                    while (ecx[i + 10] != 0xFF)
+                    {
+                        i += 10;
+                    }
+
+                    int16_t ax = ecx[i + 1];
+                    int16_t dx = ecx[i + 5];
+                    int16_t cx = ecx[i + 3];
+
+                    if (ecx[i + 9] & (1 << 6))
+                    {
+                        ax = 0;
+                        cx = 0;
+                    }
+
+                    switch (_byte_1136078 & 3)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                        {
+                            std::swap(ax, cx);
+                            cx = -cx;
+                            break;
+                        }
+                        case 2:
+                        {
+                            ax = -ax;
+                            cx = -cx;
+                            break;
+                        }
+                        case 3:
+                        {
+                            std::swap(ax, cx);
+                            ax = -ax;
+                            break;
+                        }
+                    }
+                    ax >>= 1;
+                    cx >>= 1;
+                    ax += 0x2010;
+                    cx += 0x2010;
+                    dx += 0x1CC;
+                    switch (gCurrentRotation)
+                    {
+                        case 0:
+                            sub_49D2D7(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 1:
+                            loc_49D2EB(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 2:
+                            loc_49D2FF(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 3:
+                            loc_49D313(self, clipped, ax, cx, dx, width, height);
+                            break;
+                    }
+                }
+                else
+                {
+                    loc_49D38A(self, dpi);
+                }
             }
             else
             {
+                registers regs;
+                auto flags = call(0x004A04F8, regs);
+                auto carryFlag = (flags >> 16) & (1 << 1);
+                _word_1135FD8 = regs.edi >> 16;
+                if (carryFlag)
+                    return;
+                _byte_1136077 = regs.dl;
+                _byte_1136078 = regs.bh;
+                _byte_1136079 = regs.dh;
+                _word_1135FD6 = (regs.edx >> 16) & 0x1F;
+
+                auto x = self->x + self->widgets[widx::construct].left + 1;
+                auto y = self->y + self->widgets[widx::construct].top + 1;
+                auto width = self->widgets[widx::construct].width();
+                auto height = self->widgets[widx::construct].width();
+
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+                {
+                    static const uint8_t* offset_4F6D1C[] = {
+                        _unk_4F7488,
+                        _unk_4F7493,
+                        _unk_4F74BC,
+                        _unk_4F74C7,
+                        _unk_4F74D2,
+                        _unk_4F74FB,
+                        _unk_4F7524,
+                        _unk_4F7557,
+                        _unk_4F758A,
+                        _unk_4F75BD,
+                        _unk_4F75F0,
+                        _unk_4F7623,
+                        _unk_4F7656,
+                        _unk_4F767F,
+                        _unk_4F76A8,
+                        _unk_4F76BD,
+                        _unk_4F76D2,
+                        _unk_4F76DD,
+                        _unk_4F76E8,
+                        _unk_4F7711,
+                        _unk_4F773A,
+                        _unk_4F7763,
+                        _unk_4F778C,
+                        _unk_4F77B5,
+                        _unk_4F77DE,
+                        _unk_4F7807,
+                        _unk_4F7830,
+                        _unk_4F783B,
+                        _unk_4F7846,
+                        _unk_4F7851,
+                        _unk_4F785C,
+                        _unk_4F7867,
+                        _unk_4F7872,
+                        _unk_4F787D,
+                        _unk_4F7888,
+                        _unk_4F7893,
+                        _unk_4F789E,
+                        _unk_4F78A9,
+                        _unk_4F78B4,
+                        _unk_4F78BF,
+                        _unk_4F78CA,
+                        _unk_4F78D5,
+                        _unk_4F78E0,
+                        _unk_4F78EB,
+                    };
+
+                    auto ecx = offset_4F6D1C[_byte_1136079];
+                    auto i = 0;
+
+                    while (ecx[i + 10] != 0xFF)
+                    {
+                        i += 10;
+                    }
+
+                    int16_t ax = ecx[i + 1];
+                    int16_t dx = ecx[i + 5];
+                    int16_t cx = ecx[i + 3];
+
+                    if (ecx[i + 9] & (1 << 6))
+                    {
+                        ax = 0;
+                        cx = 0;
+                    }
+
+                    switch (_byte_1136078 & 3)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                        {
+                            std::swap(ax, cx);
+                            cx = -cx;
+                            break;
+                        }
+                        case 2:
+                        {
+                            ax = -ax;
+                            cx = -cx;
+                            break;
+                        }
+                        case 3:
+                        {
+                            std::swap(ax, cx);
+                            ax = -ax;
+                            break;
+                        }
+                    }
+                    ax >>= 1;
+                    cx >>= 1;
+                    ax += 0x2010;
+                    cx += 0x2010;
+                    dx += 0x1CC;
+                    switch (gCurrentRotation)
+                    {
+                        case 0:
+                            sub_49D0B8(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 1:
+                            loc_49D0CC(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 2:
+                            loc_49D0E0(self, clipped, ax, cx, dx, width, height);
+                            break;
+                        case 3:
+                            loc_49D0F4(self, clipped, ax, cx, dx, width, height);
+                            break;
+                    }
+                }
+                else
+                {
+                    loc_49D38A(self, dpi);
+                }
             }
         }
 
@@ -405,14 +885,14 @@ namespace openloco::ui::windows::construction
     }
 
     // 0x004A3A06
-    static void setTrackOptions(const uint32_t trackType)
+    static void setTrackOptions(const uint8_t trackType)
     {
         auto newTrackType = trackType;
         if (trackType & (1 << 7))
         {
             newTrackType &= ~(1 << 7);
             auto roadObj = objectmgr::get<road_object>(newTrackType);
-            if (roadObj->flags & flags_12::unk_01)
+            if (!(roadObj->flags & flags_12::unk_01))
                 _lastRoadOption = trackType;
             else
                 _lastRailroadOption = trackType;
@@ -420,7 +900,7 @@ namespace openloco::ui::windows::construction
         else
         {
             auto trackObj = objectmgr::get<track_object>(newTrackType);
-            if (trackObj->flags & flags_22::unk_02)
+            if (!(trackObj->flags & flags_22::unk_02))
                 _lastRailroadOption = trackType;
             else
                 _lastRoadOption = trackType;
@@ -630,7 +1110,7 @@ namespace openloco::ui::windows::construction
                 continue;
             for (auto j = 0; j < bridgeObj->var_22; j++)
             {
-                if (trackType != bridgeObj->var_22)
+                if (trackType != bridgeObj->var_23)
                     continue;
                 if (currentYear < bridgeObj->designed_year)
                     continue;
@@ -659,7 +1139,10 @@ namespace openloco::ui::windows::construction
     {
         auto trackType = _trackType & ~(1 << 7);
         auto companyId = _updatingCompanyId;
-        _modList[0] = 0xFFFFFFFF;
+        _modList[0] = 0xFF;
+        _modList[1] = 0xFF;
+        _modList[2] = 0xFF;
+        _modList[3] = 0xFF;
         auto flags = 0;
 
         for (uint8_t vehicle = 0; vehicle < objectmgr::get_max_objects(object_type::vehicle); vehicle++)
@@ -865,9 +1348,9 @@ namespace openloco::ui::windows::construction
     //    if (bh < 0x0C)
     //        bh &= uint8_t(3);
     //    uint32_t edx = (_trackType & 0x7F) | (dh << 8);
-    //    edx |= (_byte_1136039 << 24);
-    //    auto edi = _word_1135FB8 << 16 | _word_1135FE4;
-    //    if (_word_1135FB4)
+    //    edx |= (_lastSelectedBridge << 24);
+    //    auto edi = _word_1135FB8 | _word_1135FE4 << 16;
+    //    if (_x)
     //        return true;
     //    else
     //        return false;
@@ -882,13 +1365,14 @@ namespace openloco::ui::windows::construction
         auto trackObj = objectmgr::get<track_object>(trackType);
         auto signalCount = 0;
         auto var_0E = trackObj->var_0E;
-        for (auto i = 0; i < 32; i++)
+        while (var_0E > 0)
         {
             auto ecx = utility::bitscanforward(var_0E);
-            if (ecx == 0)
+            if (ecx == -1)
                 break;
             var_0E &= ~(1 << ecx);
-            auto signalObj = objectmgr::get<train_signal_object>(i);
+            auto signalObj = objectmgr::get<train_signal_object>(ecx);
+            std::printf("start: %d end: %d\n", signalObj->designed_year, signalObj->obsolete_year);
             if (currentYear > signalObj->obsolete_year)
                 continue;
             if (currentYear < signalObj->designed_year)
@@ -904,14 +1388,16 @@ namespace openloco::ui::windows::construction
                 continue;
             for (auto j = 0; j < signalObj->var_12; j++)
             {
-                if (trackType != signalObj->var_13)
+                if (trackType != objectmgr::get<train_signal_object>(i + j)->var_13)
                     continue;
                 if (currentYear < signalObj->designed_year)
+                    continue;
+                if (currentYear > signalObj->obsolete_year)
                     continue;
                 for (size_t k = 0; k < std::size(_signalList); k++)
                 {
                     auto signal = signalListCopy[k];
-                    if (signalListCopy = _signalList)
+                    if (signalListCopy == _signalList)
                     {
                         _signalList[signalCount] = i;
                         signalCount++;
@@ -1040,7 +1526,10 @@ namespace openloco::ui::windows::construction
     {
         auto trackType = _trackType;
         auto companyId = _updatingCompanyId;
-        _modList[0] = 0xFFFFFFFF;
+        _modList[0] = 0xFF;
+        _modList[1] = 0xFF;
+        _modList[2] = 0xFF;
+        _modList[3] = 0xFF;
         auto flags = 0;
 
         for (uint8_t vehicle = 0; vehicle < objectmgr::get_max_objects(object_type::vehicle); vehicle++)
@@ -1193,13 +1682,13 @@ namespace openloco::ui::windows::construction
 
         _trackType = flags;
         _byte_1136063 = flags >> 24;
-        _word_1135FB4 = 0x1800;
-        _word_1135FB6 = 0x1800;
+        _x = 0x1800;
+        _y = 0x1800;
         _word_1135FB8 = 0x100;
         _byte_1136064 = 0;
         _byte_1136061 = 0;
         _byte_113607E = 1;
-        _dword_1135F3E = 0x80000000;
+        _constructionCost = 0x80000000;
         _byte_1136076 = 0;
         _byte_1136067 = 0;
         _byte_1136068 = 0;
@@ -1212,7 +1701,10 @@ namespace openloco::ui::windows::construction
             createConstructionWindow();
 
             _lastSelectedSignal = 0xFF;
-            _modList[0] = 0xFFFFFFFF;
+            _modList[0] = 0xFF;
+            _modList[1] = 0xFF;
+            _modList[2] = 0xFF;
+            _modList[3] = 0xFF;
             _word_1135FE4 = 0;
             _lastSelectedBridge = 0xFF;
 
@@ -1229,7 +1721,12 @@ namespace openloco::ui::windows::construction
                 createConstructionWindow();
 
                 _lastSelectedSignal = 0xFF;
-                _modList[0] = 0xFFFFFFFF;
+
+                _modList[0] = 0xFF;
+                _modList[1] = 0xFF;
+                _modList[2] = 0xFF;
+                _modList[3] = 0xFF;
+
                 _word_1135FE4 = 0;
                 _lastSelectedBridge = 0xFF;
 
@@ -1241,7 +1738,7 @@ namespace openloco::ui::windows::construction
             }
             else
             {
-                if (flags & 80)
+                if (flags & (1 << 7))
                 {
                     createConstructionWindow();
 
@@ -1427,14 +1924,14 @@ namespace openloco::ui::windows::construction
                             clipped->y <<= 1;
                             auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStation);
                             auto imageId = gfx::recolour(roadStationObj->var_0C, companyColour);
-                            gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                            gfx::draw_image(clipped, -4, -9, imageId);
                             auto colour = _byte_5045FA[companyColour];
                             if (!roadStationObj->colour_flags & 1)
                             {
                                 colour = 46;
                             }
                             imageId = gfx::recolour(imageId, colour) + 1;
-                            gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                            gfx::draw_image(clipped, -4, -9, imageId);
                         }
 
                         widget::draw_tab(self, dpi, -2, widx::tab_station);
@@ -1453,7 +1950,7 @@ namespace openloco::ui::windows::construction
                             if (_modList[i] != 0xFF)
                             {
                                 auto roadExtraObj = objectmgr::get<road_extra_object>(_modList[i]);
-                                auto imageId = roadExtraObj->var_0A;
+                                auto imageId = roadExtraObj->var_0E;
                                 if (self->current_tab == widx::tab_overhead - widx::tab_construction)
                                     imageId += (self->frame_no / 2) % 8;
                                 gfx::draw_image(dpi, x, y, imageId);
@@ -1515,14 +2012,14 @@ namespace openloco::ui::windows::construction
                                     clipped->y <<= 1;
                                     auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStation);
                                     auto imageId = gfx::recolour(trainStationObj->var_0E, companyColour);
-                                    gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                                    gfx::draw_image(clipped, -4, -9, imageId);
                                     auto colour = _byte_5045FA[companyColour];
                                     if (!trainStationObj->colour_flags & 1)
                                     {
                                         colour = 46;
                                     }
                                     imageId = gfx::recolour(imageId, colour) + 1;
-                                    gfx::draw_image(clipped, 0xFFFC, 0xFFF6, imageId);
+                                    gfx::draw_image(clipped, -4, -9, imageId);
                                 }
 
                                 widget::draw_tab(self, dpi, -2, widx::tab_station);
@@ -1533,7 +2030,7 @@ namespace openloco::ui::windows::construction
                 // Signal Tab
                 {
                     widget::draw_tab(self, dpi, image_ids::null, widx::tab_signal);
-                    if (!self->is_disabled(widx::tab_station))
+                    if (!self->is_disabled(widx::tab_signal))
                     {
                         auto x = self->widgets[widx::tab_signal].left + self->x + 1;
                         auto y = self->widgets[widx::tab_signal].top + self->y + 1;
@@ -1575,8 +2072,8 @@ namespace openloco::ui::windows::construction
                         {
                             if (_modList[i] != 0xFF)
                             {
-                                auto roadExtraObj = objectmgr::get<road_extra_object>(_modList[i]);
-                                auto imageId = roadExtraObj->var_0A;
+                                auto trackExtraObj = objectmgr::get<track_extra_object>(_modList[i]);
+                                auto imageId = trackExtraObj->var_0E;
                                 if (self->current_tab == widx::tab_overhead - widx::tab_construction)
                                     imageId += (self->frame_no / 2) % 8;
                                 gfx::draw_image(dpi, x, y, imageId);

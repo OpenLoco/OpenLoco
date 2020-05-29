@@ -19,8 +19,8 @@ namespace openloco
         uint8_t num_mods;       // 0x08
         uint8_t num_signals;    // 0x09
         uint8_t mods[4];        // 0x0A
-        uint16_t var_0E;
-        uint8_t pad_14[0x14 - 0x10];
+        uint8_t var_0E;
+        uint8_t pad_10[0x14 - 0x0F];
         uint16_t build_cost_factor;  // 0x14
         uint16_t sell_cost_factor;   // 0x16
         uint16_t tunnel_cost_factor; // 0x18

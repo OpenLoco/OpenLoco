@@ -92,7 +92,10 @@ namespace openloco::objectmgr
     template<>
     road_station_object* get(size_t id)
     {
-        return _roadStationObjects[id];
+        if (_roadStationObjects[id] != reinterpret_cast<road_station_object*>(-1))
+            return _roadStationObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

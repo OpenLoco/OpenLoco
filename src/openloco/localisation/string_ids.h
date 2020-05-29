@@ -132,7 +132,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_level = 134;
     constexpr string_id tooltip_slope_up = 135;
     constexpr string_id tooltip_steep_slope_up = 136;
-
+    constexpr string_id build_this = 137;
     constexpr string_id build_cost = 138;
 
     constexpr string_id menu_underground_view = 145;
