@@ -384,8 +384,9 @@ namespace openloco::ui::build_vehicle
             0x4C1AF7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                open(regs.eax, regs.eax);
+                auto window = open(regs.eax, regs.eax);
                 regs = backup;
+                regs.esi = (int32_t)window;
                 return 0;
             });
     }
