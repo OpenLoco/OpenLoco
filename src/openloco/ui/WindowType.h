@@ -53,13 +53,13 @@ namespace openloco::ui
         landscapeGenerationConfirm = 44,
         scenarioOptions = 45,
 
-        wt_47 = 47,
+        progressBar = 47,
         companyList = 48,
         tutorial = 49,
         confirmDisplayModePrompt = 50,
         textInput = 51,
         fileBrowserPrompt = 52,
-
+        previewImage = 53,
         confirmationPrompt = 54,
         openLocoVersion = 55,
         titleOptions = 56,
