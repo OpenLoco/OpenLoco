@@ -3,7 +3,7 @@
   Delete any headings and placeholders that you do not fill out.
 -->
 **OS:**  e.g. Windows 10
-**Version:**  e.g. 20.05
+**Version:**  e.g. 20.05.1
 **Commit/Build:**  e.g. e6e665a
 
 <!-- Explanation of the issue -->
