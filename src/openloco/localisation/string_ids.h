@@ -96,6 +96,9 @@ namespace openloco::string_ids
 
     constexpr string_id dropdown = 96;
 
+    constexpr string_id error_cant_lower_land_here = 100;
+    constexpr string_id error_cant_raise_land_here = 101;
+
     constexpr string_id menu_load_game = 103;
     constexpr string_id menu_save_game = 104;
     constexpr string_id menu_quit_scenario_editor = 105;
@@ -145,6 +148,10 @@ namespace openloco::string_ids
     constexpr string_id tooltip_scroll_company_list = 213;
     constexpr string_id tooltip_scroll_scenario_list = 214;
     constexpr string_id tooltip_scroll_credits_list = 215;
+    constexpr string_id increase_height_cost = 216;
+    constexpr string_id decrease_height_cost = 217;
+
+    constexpr string_id clear_land_cost = 219;
 
     constexpr string_id error_cant_change_colour_scheme = 222;
 
@@ -210,6 +217,9 @@ namespace openloco::string_ids
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
 
+    constexpr string_id title_build_walls = 446;
+    constexpr string_id title_plant_trees = 447;
+
     constexpr string_id outlined_wcolour2_stringid = 450;
 
     constexpr string_id red_stringid = 454;
@@ -217,6 +227,8 @@ namespace openloco::string_ids
 
     constexpr string_id wcolour2_stringid = 457;
 
+    constexpr string_id error_cant_lower_water_here = 477;
+    constexpr string_id error_cant_raise_water_here = 478;
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
@@ -233,6 +245,8 @@ namespace openloco::string_ids
     constexpr string_id status_num_industries_plural = 563;
 
     constexpr string_id rotate_object_90 = 565;
+
+    constexpr string_id error_cant_change_land_type = 567;
 
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
@@ -317,6 +331,17 @@ namespace openloco::string_ids
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
 
+    constexpr string_id tooltip_clear_area = 668;
+    constexpr string_id tooltip_decrease_clear_area = 669;
+    constexpr string_id tooltip_increase_clear_area = 670;
+    constexpr string_id tooltip_decrease_adjust_land_area = 671;
+    constexpr string_id tooltip_increase_adjust_land_area = 672;
+    constexpr string_id tooltip_decrease_adjust_water_area = 673;
+    constexpr string_id tooltip_increase_adjust_water_area = 674;
+    constexpr string_id title_adjust_land = 675;
+    constexpr string_id title_adjust_water = 676;
+    constexpr string_id tooltip_adjust_water_tool = 677;
+    constexpr string_id tooltip_adjust_land_tool = 678;
     constexpr string_id clear_area = 679;
     constexpr string_id menu_clear_area = 680;
     constexpr string_id menu_adjust_land = 681;
@@ -544,7 +569,11 @@ namespace openloco::string_ids
     constexpr string_id tooltip_road_stations = 1202;
     constexpr string_id tooltip_airports = 1203;
     constexpr string_id tooltip_ship_ports = 1204;
-
+    constexpr string_id tooltip_clear_land = 1205;
+    constexpr string_id tooltip_plant_trees = 1206;
+    constexpr string_id tooltip_adjust_land = 1207;
+    constexpr string_id tooltip_adjust_water = 1208;
+    constexpr string_id tooltip_build_walls = 1209;
     constexpr string_id tooltip_object_colour = 1210;
     constexpr string_id station_cargo = 1211;
     constexpr string_id station_cargo_en_route_start = 1212;
@@ -686,6 +715,8 @@ namespace openloco::string_ids
     constexpr string_id select_town_size = 1408;
     constexpr string_id expand_this_town = 1409;
 
+    constexpr string_id plant_cluster_selected_tree = 1412;
+    constexpr string_id plant_cluster_random_tree = 1413;
     constexpr string_id tooltip_statistics = 1414;
     constexpr string_id received_cargo = 1415;
     constexpr string_id produced_cargo = 1416;
@@ -807,6 +838,7 @@ namespace openloco::string_ids
     constexpr string_id load_landscape = 1581;
     constexpr string_id save_landscape = 1582;
 
+    constexpr string_id error_cant_clear_entire_area = 1584;
     constexpr string_id title_landscape_generation_options = 1585;
     constexpr string_id title_landscape_generation_land = 1586;
     constexpr string_id title_landscape_generation_forests = 1587;

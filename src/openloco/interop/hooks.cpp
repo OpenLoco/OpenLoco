@@ -564,51 +564,6 @@ void openloco::interop::load_sections()
 #endif
 }
 
-static void register_terraform_hooks()
-{
-    /* Event 1: clear tool
-    ------------------------*/
-    // Remove size limit outside of scenario editor: will always be 10 instead of 5.
-    interop::write_nop(0x4BC75B, 0x4BC779 - 0x4BC75B);
-
-    // Resize window to fit fifth tab.
-    interop::write_nop(0x4BC7CF, 0x4BC7DA - 0x4BC7CF);
-
-    /* Event 2: land tool
-    -----------------------*/
-    // Enable soil selection
-    // TODO: doesn't have any effect yet, and is in the way.
-    // interop::write_nop(0x4BC8CE, 0x4BC8D7 - 0x4BC8CE);
-
-    // Remove decrease size limit: enable mountain tool outside of scenario editor.
-    interop::write_nop(0x4BCA9E, 0x4BCAB1 - 0x4BCA9E);
-
-    // Remove increase size limit: will always be 10 instead of 5.
-    interop::write_nop(0x4BCADC, 0x4BCAFA - 0x4BCADC);
-
-    // Resize window to fit fifth tab.
-    interop::write_nop(0x4BCC01, 0x4BCC0C - 0x4BCC01);
-
-    /* Event 3: water tool
-    ------------------------*/
-    // Remove size limit outside of scenario editor: will always be 10 instead of 5.
-    interop::write_nop(0x4BCE49, 0x4BCE67 - 0x4BCE49);
-
-    // Resize window to fit fifth tab.
-    interop::write_nop(0x4BCEBD, 0x4BCEC8 - 0x4BCEBD);
-
-    /* Event 4: trees and forests
-    -------------------------------*/
-    // Enable forest placement outside of scenario editor.
-    // TODO: placing a forest currently does not cost any money.
-    interop::write_nop(0x4BB8AA, 0x4BB8B5 - 0x4BB8AA);
-
-    /* Event 5: fences
-    --------------------*/
-    // Don't disable fences tab
-    interop::write_nop(0x4BCF6B, 0x4BCF7B - 0x4BCF6B);
-}
-
 static void register_audio_hooks()
 {
     using namespace openloco::interop;
@@ -663,7 +618,6 @@ void openloco::interop::register_hooks()
     register_no_win32_hooks();
 #endif // _NO_LOCO_WIN32_
 
-    register_terraform_hooks();
     register_audio_hooks();
 
     register_hook(
@@ -819,6 +773,7 @@ void openloco::interop::register_hooks()
     ui::tooltip::register_hooks();
     ui::vehicle::registerHooks();
     ui::build_vehicle::registerHooks();
+    ui::windows::terraform::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
     game_commands::registerHooks();

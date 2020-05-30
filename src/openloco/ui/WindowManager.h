@@ -173,6 +173,7 @@ namespace openloco::ui::windows::terraform
     void open_adjust_water();
     void open_plant_trees();
     void open_build_walls();
+    void registerHooks();
 }
 
 namespace openloco::ui::textinput

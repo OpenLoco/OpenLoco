@@ -93,6 +93,24 @@ namespace openloco::objectmgr
     }
 
     template<>
+    tree_object* get(size_t id)
+    {
+        if (_treeObjects[id] != reinterpret_cast<tree_object*>(-1))
+            return _treeObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    wall_object* get(size_t id)
+    {
+        if (_wallObjects[id] != reinterpret_cast<wall_object*>(-1))
+            return _wallObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
     building_object* get(size_t id)
     {
         if (_buildingObjects[id] != reinterpret_cast<building_object*>(-1))

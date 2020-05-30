@@ -151,6 +151,10 @@ namespace openloco::objectmgr
     template<>
     vehicle_object* get(size_t id);
     template<>
+    tree_object* get(size_t id);
+    template<>
+    wall_object* get(size_t id);
+    template<>
     building_object* get(size_t id);
     template<>
     industry_object* get(size_t id);

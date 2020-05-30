@@ -26,7 +26,8 @@ namespace openloco::image_ids
     constexpr uint32_t rotate_object = 2365;
 
     constexpr uint32_t show_station_catchment = 2379;
-
+    constexpr uint32_t plant_cluster_selected_tree = 2380;
+    constexpr uint32_t plant_cluster_random_tree = 2381;
     constexpr uint32_t town_expand = 2382;
     constexpr uint32_t music_controls_stop = 2383;
     constexpr uint32_t music_controls_play = 2384;
@@ -84,6 +85,11 @@ namespace openloco::image_ids
     constexpr uint32_t tab_music_13 = 2440;
     constexpr uint32_t tab_music_14 = 2441;
     constexpr uint32_t tab_music_15 = 2442;
+    constexpr uint32_t decrease_tool_area = 2443;
+
+    constexpr uint32_t increase_tool_area = 2445;
+
+    constexpr uint32_t tool_area = 2447;
 
     constexpr uint32_t tab = 2387;
 

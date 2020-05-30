@@ -98,6 +98,82 @@ namespace openloco::game_commands
         do_command(21, regs);
     }
 
+    // Change Land Material
+    inline void do_24(map::map_pos pointA, map::map_pos pointB, uint8_t landType, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = pointA.x;
+        regs.cx = pointA.y;
+        regs.di = pointB.x;
+        regs.bp = pointB.y;
+        regs.dl = landType;
+        regs.bl = flags;
+        do_command(24, regs);
+    }
+
+    // Raise Land
+    inline uint32_t do_25(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = centre.x;
+        regs.cx = centre.y;
+        regs.edx = pointB.x << 16 | pointA.x;
+        regs.ebp = pointB.y << 16 | pointA.y;
+        regs.bl = flags;
+        regs.di = di;
+        return do_command(25, regs);
+    }
+
+    // Lower Land
+    inline uint32_t do_26(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = centre.x;
+        regs.cx = centre.y;
+        regs.edx = pointB.x << 16 | pointA.x;
+        regs.ebp = pointB.y << 16 | pointA.y;
+        regs.bl = flags;
+        regs.di = di;
+        return do_command(26, regs);
+    }
+
+    // Lower/Raise Land Mountain
+    inline uint32_t do_27(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = centre.x;
+        regs.cx = centre.y;
+        regs.edx = pointB.x << 16 | pointA.x;
+        regs.ebp = pointB.y << 16 | pointA.y;
+        regs.bl = flags;
+        regs.di = di;
+        return do_command(27, regs);
+    }
+
+    // Raise Water
+    inline uint32_t do_28(map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = pointA.x;
+        regs.cx = pointA.y;
+        regs.di = pointB.x;
+        regs.bp = pointB.y;
+        regs.bl = flags;
+        return do_command(28, regs);
+    }
+
+    // Lower Water
+    inline uint32_t do_29(map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = pointA.x;
+        regs.cx = pointA.y;
+        regs.di = pointB.x;
+        regs.bp = pointB.y;
+        regs.bl = flags;
+        return do_command(29, regs);
+    }
+
     // Change company name
     inline bool do_30(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -178,6 +254,18 @@ namespace openloco::game_commands
         regs.edi = *objPtr;
         regs.bh = company;
         return do_command(65, regs) != FAILURE;
+    }
+
+    // Clear Land
+    inline void do_66(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = centre.x;
+        regs.cx = centre.y;
+        regs.edx = pointB.x << 16 | pointA.x;
+        regs.ebp = pointB.y << 16 | pointA.y;
+        regs.bl = flags;
+        do_command(66, regs);
     }
 
     // Send chat message
