@@ -1,6 +1,7 @@
 #pragma once
 
 #include "company.h"
+#include "core/Optional.hpp"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
@@ -11,7 +12,6 @@
 #include "ui/WindowType.h"
 #include "viewport.hpp"
 #include <algorithm>
-#include <optional>
 
 namespace openloco::ui
 {
