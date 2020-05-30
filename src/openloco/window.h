@@ -11,6 +11,7 @@
 #include "ui/WindowType.h"
 #include "viewport.hpp"
 #include <algorithm>
+#include <optional>
 
 namespace openloco::ui
 {
@@ -486,6 +487,6 @@ namespace openloco::ui
     static_assert(sizeof(window) == 0x88E);
 
     map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation);
-    map::map_pos sub_45FCE6(int16_t x, int16_t y, int16_t z);
+    std::optional<map::map_pos> screenGetMapXyWithZ(const viewport_pos& vpos, const int16_t z);
 #pragma pack(pop)
 }

@@ -71,6 +71,11 @@ namespace openloco::ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
+        constexpr bool containsUI(const viewport_pos& vpos)
+        {
+            return (vpos.x >= x && vpos.x < x + width && vpos.y >= y && vpos.y < y + height);
+        }
+
         constexpr bool intersects(const ViewportRect& vpos)
         {
             if (vpos.right <= view_x)

@@ -125,30 +125,34 @@ namespace openloco::ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: function seems to be similar to screen_get_map_xy_with_z in openrct2
-    map::map_pos sub_45FCE6(int16_t x, int16_t y, int16_t z)
+    std::optional<map::map_pos> screenGetMapXyWithZ(const viewport_pos& vpos, const int16_t z)
     {
-        window* w = WindowManager::findAt(x, y);
-        if (w != nullptr)
+        window* w = WindowManager::findAt(vpos.x, vpos.y);
+        if (w == nullptr)
         {
-            viewport* vp = w->viewports[0];
-            if (vp != nullptr && x >= vp->x && x < vp->x + vp->width && y >= vp->y && y < vp->y + vp->height)
+            return std::nullopt;
+        }
+
+        viewport* vp = w->viewports[0];
+        if (vp == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        if (vp->containsUI(vpos))
+        {
+            map::map_pos position = viewport_coord_to_map_coord(
+                ((vpos.x - vp->x) << vp->zoom) + vp->view_x,
+                ((vpos.y - vp->y) << vp->zoom) + vp->view_y,
+                z,
+                WindowManager::getCurrentRotation());
+            if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
-                map::map_pos position = viewport_coord_to_map_coord(
-                    ((x - vp->x) << vp->zoom) + vp->view_x,
-                    ((y - vp->y) << vp->zoom) + vp->view_y,
-                    z,
-                    WindowManager::getCurrentRotation());
-                if (position.x <= 0x2FFF && position.y <= 0x2FFF)
-                {
-                    return position;
-                }
-                else
-                {
-                    return { -32768, position.y };
-                }
+                return position;
             }
         }
-        return { -32768, y };
+
+        return std::nullopt;
     }
 
     // 0x0045FD41

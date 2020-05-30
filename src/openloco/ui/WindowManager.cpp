@@ -165,10 +165,18 @@ namespace openloco::ui::WindowManager
             0x0045FCE6,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto pos = ui::sub_45FCE6(regs.ax, regs.bx, regs.bp);
+                viewport_pos vpos = { regs.ax, regs.bx };
+                auto pos = ui::screenGetMapXyWithZ(vpos, regs.bp);
                 regs = backup;
-                regs.ax = pos.x;
-                regs.bx = pos.y;
+                if (pos)
+                {
+                    regs.ax = pos.value().x;
+                    regs.bx = pos.value().y;
+                }
+                else
+                {
+                    regs.ax = -32768;
+                }
                 return 0;
             });
 
