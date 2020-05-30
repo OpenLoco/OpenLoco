@@ -170,8 +170,8 @@ namespace openloco::ui::WindowManager
                 regs = backup;
                 if (pos)
                 {
-                    regs.ax = pos.value().x;
-                    regs.bx = pos.value().y;
+                    regs.ax = (*pos).x;
+                    regs.bx = (*pos).y;
                 }
                 else
                 {
