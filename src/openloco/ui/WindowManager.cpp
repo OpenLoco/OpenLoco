@@ -1088,7 +1088,7 @@ namespace openloco::ui::WindowManager
                 return;
         }
 
-        if (is_unknown_4_mode() && w->type != WindowType::wt_47)
+        if (is_unknown_4_mode() && w->type != WindowType::progressBar)
         {
             return;
         }
