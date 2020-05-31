@@ -1131,6 +1131,7 @@ namespace openloco::string_ids
     constexpr string_id title_industry_name = 2017;
     constexpr string_id prompt_enter_new_industry_name = 2018;
     constexpr string_id error_cant_rename_industry = 2019;
+    constexpr string_id dropdown_bridge_stats = 2020;
 
     constexpr string_id position_1st = 2023;
     constexpr string_id position_2nd = 2024;

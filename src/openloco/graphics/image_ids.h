@@ -41,6 +41,8 @@ namespace openloco::image_ids
     constexpr uint32_t construction_s_bend_dual_track_left = 2355;
     constexpr uint32_t construction_s_bend_dual_track_right = 2356;
 
+    constexpr uint32_t construction_right_turnaround = 2359;
+    constexpr uint32_t construction_left_turnaround = 2360;
     constexpr uint32_t construction_remove = 2361;
 
     constexpr uint32_t rubbish_bin = 2363;
