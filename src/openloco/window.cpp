@@ -124,7 +124,6 @@ namespace openloco::ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    // Note: function seems to be similar to screen_get_map_xy_with_z in openrct2
     std::optional<map::map_pos> screenGetMapXyWithZ(const viewport_pos& vpos, const int16_t z)
     {
         window* w = WindowManager::findAt(vpos.x, vpos.y);
