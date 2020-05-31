@@ -55,6 +55,7 @@ namespace openloco::ui::WindowManager
     int32_t getCurrentRotation();
 
     void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
+    void viewportSetVisibility(uint8_t flags);
 }
 
 namespace openloco::ui::windows
@@ -74,6 +75,7 @@ namespace openloco::ui::windows
     void showGridlines();
     void hideGridlines();
     void showDirectionArrows();
+    void hideDirectionArrows();
 }
 
 namespace openloco::ui::about
@@ -99,7 +101,7 @@ namespace openloco::ui::about_music
 namespace openloco::ui::windows::construction
 {
     window* openWithFlags(uint32_t flags);
-    void on_mouse_up(window& w, uint16_t widgetIndex);
+    void sub_4A6FAC();
 }
 
 namespace openloco::ui::windows::industry
@@ -166,6 +168,7 @@ namespace openloco::ui::windows::ScenarioOptions
 namespace openloco::ui::windows::station
 {
     window* open(uint16_t id);
+    void showStationCatchment(uint16_t windowNumber);
 }
 
 namespace openloco::ui::windows::station_list

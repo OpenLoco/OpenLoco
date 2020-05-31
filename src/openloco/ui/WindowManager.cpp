@@ -1836,6 +1836,93 @@ namespace openloco::ui::WindowManager
         }
     }
 
+    /**
+     * 0x004A0A18
+     *
+     * @param flags @<al>
+     */
+    void viewportSetVisibility(uint8_t flags)
+    {
+        auto window = WindowManager::getMainWindow();
+
+        if (window == nullptr)
+            return;
+
+        auto viewport = window->viewports[0];
+        bool flagsChanged = false;
+        if (flags < 1 || flags > 3)
+        {
+            if (viewport->flags & (viewport_flags::underground_view))
+            {
+                viewport->flags &= ~(viewport_flags::underground_view);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::flag_7))
+            {
+                viewport->flags &= ~(viewport_flags::flag_7);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::flag_8))
+            {
+                viewport->flags &= ~(viewport_flags::flag_8);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::hide_foreground_tracks_roads))
+            {
+                viewport->flags &= ~(viewport_flags::hide_foreground_tracks_roads);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::hide_foreground_scenery_buildings))
+            {
+                viewport->flags &= ~(viewport_flags::hide_foreground_scenery_buildings);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::height_marks_on_land))
+            {
+                viewport->flags &= ~(viewport_flags::height_marks_on_land);
+                flagsChanged = true;
+            }
+
+            if (viewport->flags & (viewport_flags::height_marks_on_tracks_roads))
+            {
+                viewport->flags &= ~(viewport_flags::height_marks_on_tracks_roads);
+                flagsChanged = true;
+            }
+        }
+        else if (flags == 1)
+        {
+            if (!(viewport->flags & (viewport_flags::underground_view)))
+            {
+                viewport->flags |= (viewport_flags::underground_view);
+                flagsChanged = true;
+            }
+        }
+        else if (flags < 3)
+        {
+            if (!(viewport->flags & (viewport_flags::height_marks_on_land)))
+            {
+                viewport->flags |= (viewport_flags::height_marks_on_land);
+                flagsChanged = true;
+            }
+        }
+        else if (flags == 3)
+        {
+            if ((viewport->flags & (viewport_flags::underground_view)))
+            {
+                viewport->flags &= ~(viewport_flags::underground_view);
+                flagsChanged = true;
+            }
+        }
+
+        if (flagsChanged)
+            window->invalidate();
+    }
+
     // 0x004CF456
     void closeAllFloatingWindows()
     {
@@ -1920,7 +2007,7 @@ namespace openloco::ui::windows
                     {
                         window->invalidate();
                     }
-                    window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
+                    window->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
                 }
             }
         }
@@ -1942,5 +2029,23 @@ namespace openloco::ui::windows
             }
         }
         _directionArrowsState++;
+    }
+
+    // 0x004793EF
+    void hideDirectionArrows()
+    {
+        _directionArrowsState--;
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if ((mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags &= ~viewport_flags::one_way_direction_arrows;
+                    mainWindow->invalidate();
+                }
+            }
+        }
     }
 }

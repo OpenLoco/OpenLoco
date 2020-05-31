@@ -77,7 +77,10 @@ namespace openloco
         town_id_t town;                                   // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t var_1CE;
-        uint8_t pad_1D0[0x3B0 - 0x1D0];
+        uint16_t var_1D0;
+        uint16_t var_1D2;
+        uint16_t var_1D4;
+        uint8_t pad_1D6[0x3B0 - 0x1D6];
         uint8_t var_3B0;
         uint8_t var_3B1;
         uint8_t pad_3B2[0x3D2 - 0x3B2];

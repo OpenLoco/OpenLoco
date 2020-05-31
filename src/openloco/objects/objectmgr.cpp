@@ -83,7 +83,7 @@ namespace openloco::objectmgr
     template<>
     train_signal_object* get(size_t id)
     {
-        if (_trainSignalObjects[id] != (train_signal_object*)-1)
+        if (_trainSignalObjects[id] != reinterpret_cast < train_signal_object*>(-1))
             return _trainSignalObjects[id];
         else
             return nullptr;

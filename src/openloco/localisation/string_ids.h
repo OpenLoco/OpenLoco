@@ -215,18 +215,24 @@ namespace openloco::string_ids
     constexpr string_id velocity = 263;
     constexpr string_id unlimited_speed = 264;
 
+    constexpr string_id tooltip_select_track_to_upgrade = 268;
+
     constexpr string_id tab_track_road_construction = 271;
     constexpr string_id tab_station_construction = 272;
     constexpr string_id tab_signal_construction = 273;
     constexpr string_id tab_electrification_construction = 274;
-
+    constexpr string_id tooltip_select_signal_type = 275;
+    constexpr string_id tooltip_signal_both_directions = 276;
+    constexpr string_id tooltip_signal_single_direction = 277;
     constexpr string_id tooltip_bridge_stats = 278;
+    constexpr string_id tooltip_select_station_type = 279;
 
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
     constexpr string_id stringid_stringid = 347;
 
+    constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
 
     constexpr string_id title_station_name = 383;

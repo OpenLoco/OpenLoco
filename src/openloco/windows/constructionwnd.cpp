@@ -25,6 +25,7 @@
 
 using namespace openloco::interop;
 using namespace openloco::map;
+using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction
 {
@@ -85,46 +86,58 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t[10], 0x004F78E0> _unk_4F78E0;
     static loco_global<uint8_t[10], 0x004F78EB> _unk_4F78EB;
 
+    static loco_global<uint8_t[40][8], 0x004F7B62> _word_4F7B62;
+
     static loco_global<uint16_t[2], 0x004FFAF0> _dword_4FFAF0;
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
+    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint8_t[8], 0x0525F72> _byte_525F72;
-    static loco_global<uint8_t[8], 0x0525F7A> _byte_525F7A;
+    static loco_global<uint8_t[8], 0x0525F7A> _selectedBridges;
     static loco_global<uint8_t[8], 0x0525F82> _byte_525F82;
     static loco_global<uint8_t[8], 0x0525F8A> _byte_525F8A;
-    static loco_global<uint8_t[8], 0x0525F9A> _byte_525F9A;
-    static loco_global<uint8_t[8], 0x0525FA2> _byte_525FA2;
+    static loco_global<uint8_t[8], 0x0525F9A> _selectedStations;
+    static loco_global<uint8_t[8], 0x0525FA2> _selectedMods;
     static loco_global<uint8_t, 0x00525FAA> _lastRailroadOption;
     static loco_global<uint8_t, 0x00525FAB> _lastRoadOption;
     static loco_global<uint8_t, 0x00525FAC> _haveAirports;
     static loco_global<uint8_t, 0x00525FAD> _haveShipPorts;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint32_t, 0x00E0C3E0> _dword_E0C3E0;
+    static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
+    constexpr uint16_t mapSelectedTilesSize = 300;
+    static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
     static loco_global<uint32_t, 0x01135F3E> _constructionCost;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
+    static loco_global<uint32_t, 0x01135F3E> _trackCost;
+    static loco_global<uint32_t, 0x01135F4E> _dword_1135F4E;
+    static loco_global<uint32_t, 0x01135F6C> _dword_1135F6C;
+    static loco_global<uint32_t, 0x01135F46> _dword_1135F46;
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _word_1135FE4;
+    static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
     static loco_global<uint8_t[9], 0x01136030> _bridgeList;
     static loco_global<uint8_t, 0x01136039> _lastSelectedBridge;
     static loco_global<uint8_t, 0x0113603A> _byte_113603A;
     static loco_global<uint8_t[17], 0x0113603B> _stationList;
-    static loco_global<uint8_t, 0x0113604C> _lastSelectedStation;
+    static loco_global<uint8_t, 0x0113604C> _lastSelectedStationBuilding;
     static loco_global<uint8_t[4], 0x01136054> _modList;
-    static loco_global<uint8_t, 0x01136061> _byte_1136061;
+    static loco_global<uint8_t, 0x01136061> _constructionHover;
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
-    static loco_global<uint8_t, 0x01136064> _byte_1136064;
+    static loco_global<uint8_t, 0x01136064> _constructionRotation;
+    static loco_global<uint8_t, 0x01136064> _byte_1136065;
     static loco_global<uint8_t, 0x01136067> _byte_1136067;
     static loco_global<uint8_t, 0x01136068> _byte_1136068;
     static loco_global<uint8_t, 0x0113606E> _byte_113606E;
@@ -161,9 +174,36 @@ namespace openloco::ui::windows::construction
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
         static void prepare_draw(window* self);
+        static void switchTab(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void init_events();
+    }
+
+    // 0x0049F1B5
+    static void sub_49F1B5()
+    {
+        registers regs;
+        call(0x0049F1B5, regs);
+
+        //auto window = WindowManager::find(WindowType::construction);
+
+        //if (window != nullptr)
+        //{
+        //    return;
+        //}
+
+        //if (_trackType & (1 << 7))
+        //{
+        //    tilemgr::map_invalidate_map_selection_tiles();
+        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+        //    auto carryFlag = sub_4A0832();
+        //}
+        //else
+        //{
+        //    tilemgr::map_invalidate_map_selection_tiles();
+        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+        //}
     }
 
     namespace construction
@@ -191,7 +231,7 @@ namespace openloco::ui::windows::construction
             slope_up,
             steep_slope_up,
             bridge,
-            bridge_2,
+            bridge_dropdown,
             construct,
             remove,
             rotate_90,
@@ -218,7 +258,7 @@ namespace openloco::ui::windows::construction
             (1ULL << widx::slope_up) |
             (1ULL << widx::steep_slope_up) |
             (1ULL << widx::bridge) |
-            (1ULL << widx::bridge_2) |
+            (1ULL << widx::bridge_dropdown) |
             (1ULL << widx::construct) |
             (1ULL << widx::remove) |
             (1ULL << widx::rotate_90)
@@ -257,36 +297,297 @@ namespace openloco::ui::windows::construction
 
         static window_event_list events;
 
+        // 0x0049FEC7
+        static void sub_49FEC7()
+        {
+            registers regs;
+            call(0x0049FEC7, regs);
+        }
+
         // 0x0049DD14
         static void on_close(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0049DD14, regs);
+            sub_49FEC7();
+            WindowManager::viewportSetVisibility(0);
+            tilemgr::map_invalidate_map_selection_tiles();
+            _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
+            windows::hideDirectionArrows();
+            windows::hideGridlines();
         }
 
         // 0x0049D3F6
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
+            // Allow shift key to repeat the action multiple times
+            // This is useful for building very long tracks.
+            int multiplier = 1;
+            if (input::has_key_modifier(input::key_modifier::shift))
+            {
+                multiplier = 10;
+            }
+
             registers regs;
-            regs.esi = (uint32_t)self;
             regs.edx = widgetIndex;
-            call(0x0049D3F6, regs);
+            regs.esi = (int32_t)&self;
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_construction:
+                case common::widx::tab_overhead:
+                case common::widx::tab_signal:
+                case common::widx::tab_station:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::construct:
+                    for (int i = 0; i < multiplier; i++)
+                    {
+                        call(0x0049F92D, regs);
+                    }
+                    break;
+                case widx::remove:
+                    for (int i = 0; i < multiplier; i++)
+                    {
+                        call(0x004A0121, regs);
+                    }
+                    break;
+                case widx::rotate_90:
+                {
+                    if (_constructionHover == 1)
+                    {
+                        _constructionRotation++;
+                        _constructionRotation = _constructionRotation & 3;
+                        _trackCost = 0x80000000;
+                        sub_49F1B5();
+                        break;
+                    }
+                    sub_49FEC7();
+                    WindowManager::viewportSetVisibility(3);
+                    input::toolSet(self, widx::construct, 12);
+                    input::set_flag(input::input_flags::flag6);
+                    _constructionHover = 1;
+                    _byte_113607E = 0;
+                    _constructionRotation = _constructionRotation & 3;
+                    sub_49F1B5();
+                    break;
+                }
+            }
+        }
+
+        static void sub_49DBEC(window* self, uint64_t disabledWidgets)
+        {
+            if (_byte_1136068 == 2 || _byte_1136068 == 6)
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+            }
+
+            if (_byte_1136068 == 4 || _byte_1136068 == 8)
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+            }
+
+            if (_constructionRotation <= 12)
+            {
+                if (_constructionRotation > 8)
+                {
+                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                    disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                }
+                else
+                {
+                    if (_constructionRotation >= 4)
+                    {
+                        disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                        disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                    }
+                }
+            }
+            else
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+            }
+
+            if (_constructionHover == 0)
+            {
+                registers regs;
+                auto flags = call(0x004A0832, regs);
+                auto carryFlag = (flags >> 16) & (1 << 1);
+                if (carryFlag)
+                    disabledWidgets |= (1 << widx::construct);
+            }
+            self->set_disabled_widgets_and_invalidate(disabledWidgets);
+        }
+
+        static void sub_49DB1F(window* self, track_object trackObj, uint64_t disabledWidgets)
+        {
+            if (_byte_1136068 == 2 || _byte_1136068 == 6)
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+                if (!(trackObj.track_pieces & (1 << 8)))
+                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+            }
+            if (_byte_1136068 == 4 || _byte_1136068 == 8)
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+                if (!(trackObj.track_pieces & (1 << 8)))
+                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+            }
+
+            if (_constructionRotation <= 12)
+            {
+                if (_constructionRotation > 8)
+                {
+                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                    disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                }
+                else
+                {
+                    if (_constructionRotation >= 4)
+                    {
+                        disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                        disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                    }
+                }
+            }
+            else
+            {
+                disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
+                disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+            }
+
+            if (_constructionHover == 0)
+            {
+                registers regs;
+                auto flags = call(0x004A04F8, regs);
+                auto carryFlag = (flags >> 16) & (1 << 1);
+                if (carryFlag)
+                    disabledWidgets |= (1 << widx::construct);
+            }
+            self->set_disabled_widgets_and_invalidate(disabledWidgets);
+        }
+
+        static void sub_49DAF3(window* self, track_object trackObj, uint64_t disabledWidgets)
+        {
+            auto trackPieces = trackObj.track_pieces & ((1 << 5) |(1<<8));
+
+            if (trackPieces != ((1 << 5) | (1 << 8)))
+                disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
+
+            trackPieces = trackObj.track_pieces & ((1 << 6) | (1 << 8));
+
+            if (trackPieces != ((1 << 6) | (1 << 8)))
+                disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
+
+            sub_49DB1F(self, trackObj, disabledWidgets);
         }
 
         // 0x0049DAA5
         static void on_resize(window* self)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            call(0x0049DAA5, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //call(0x0049DAA5, regs);
+
+            self->enabled_widgets &= ~(1 << widx::construct);
+            if (_constructionHover != 1)
+                self->enabled_widgets |= (1 << widx::construct);
+            auto disabledWidgets = self->disabled_widgets;
+            disabledWidgets &= (1 << common::widx::tab_construction | 1 << common::widx::tab_overhead | 1 << common::widx::tab_signal | 1 << common::widx::tab_station);
+            uint8_t trackType = _trackType;
+            if (trackType & (1 << 7))
+            {
+                trackType &= ~(1 << 7);
+                // auto roadObj = objectmgr::get<road_object>(trackType);
+                if (_byte_1136067 == 0xFF)
+                {
+                    sub_49DBEC(self, disabledWidgets);
+                    return;
+                }
+                switch (_byte_1136067)
+                {
+                    case 0:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                    {
+                        sub_49DBEC(self, disabledWidgets);
+                        break;
+                    }
+
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 13:
+                    {
+                        disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                auto trackObj = objectmgr::get<track_object>(trackType);
+                if (_byte_1136067 == 0xFF)
+                {
+                    sub_49DB1F(self, *trackObj, disabledWidgets);
+                    return;
+                }
+                switch (_byte_1136067)
+                {
+                    case 0:
+                        sub_49DB1F(self, *trackObj, disabledWidgets);
+                        break;
+
+                    case 1:
+                    case 2:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                    case 13:
+                    {
+                        disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+                        sub_49DB1F(self, *trackObj, disabledWidgets);
+                        break;
+                    }
+
+                    case 3:
+                    case 4:
+                    {
+                        sub_49DAF3(self, *trackObj, disabledWidgets);
+                        break;
+                    }
+                }
+            }
         }
 
         // 0x0049D42F
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
+            std::printf("on_mouse_down\n");
+            std::printf("%d\n", widgetIndex);
             registers regs;
-            regs.esi = (uint32_t)self;
+            regs.esi = (int32_t)self;
             regs.edx = widgetIndex;
             call(0x0049D42F, regs);
         }
@@ -294,31 +595,33 @@ namespace openloco::ui::windows::construction
         // 0x0049D4EA
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edx = widgetIndex;
-            regs.ax = itemIndex;
-            call(0x0049D4EA, regs);
+            if (widgetIndex == widx::bridge_dropdown)
+            {
+                if (itemIndex != -1)
+                {
+                    auto bridge = _bridgeList[itemIndex];
+                    _lastSelectedBridge = bridge;
+                    _selectedBridges[_trackType] = bridge;
+                    sub_49FEC7();
+                    _trackCost = 0x80000000;
+                    sub_49F1B5();
+                }
+            }
         }
 
         // 0x0049DCA2
         static void on_update(window* self)
         {
-            //registers regs;
-            //regs.esi = (uint32_t)self;
-            //call(0x0049DCA2, regs);
-
             self->frame_no++;
             self->call_prepare_draw();
             WindowManager::invalidate(WindowType::construction, self->number);
-            if (_byte_1136061 == 1)
+
+            if (_constructionHover == 1)
             {
-                if ((!input::has_flag(input::input_flags::tool_active)) || _toolWindowType != WindowType::construction || _toolWidgetIndex != construction::widx::construct)
-                {
+                if (!input::is_tool_active(WindowType::construction, self->number) || _toolWidgetIndex != construction::widx::construct)
                     WindowManager::close(self);
-                }
             }
-            if (_byte_1136061 == 0)
+            if (_constructionHover == 0)
             {
                 if (input::has_flag(input::input_flags::tool_active) && _toolWindowType == WindowType::construction)
                     input::cancel_tool();
@@ -329,8 +632,8 @@ namespace openloco::ui::windows::construction
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
-            regs.esi = (uint32_t)&self;
-            regs.edx = widgetIndex;
+            regs.esi = (int32_t)&self;
+            regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
             call(0x0049DC8C, regs);
@@ -339,24 +642,141 @@ namespace openloco::ui::windows::construction
         // 0x0049DC97
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
+            std::printf("on_tool_down\n");
+            std::printf("%d\n", widgetIndex);
             registers regs;
-            regs.esi = (uint32_t)&self;
-            regs.edx = widgetIndex;
+            regs.esi = (int32_t)&self;
+            regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
             call(0x0049DC97, regs);
+
+            //if (widgetIndex != widx::construct)
+            //    return;
+
+            //tilemgr::map_invalidate_map_selection_tiles();
+            //sub_49FEC7();
+
+            //registers regs;
+            //uint32_t flags;
+
+            //if (_trackType & (1 << 7))
+            //{
+            //    flags = call(0x004A0832, regs);
+            //}
+            //else
+            //{
+            //    flags = call(0x004A04F8, regs);
+            //}
+            //auto edi = regs.edi;
+            //auto carryFlag = (flags >> 16) & (1 << 1);
+
+            //if (carryFlag)
+            //    return;
+
+            //auto i = 0;
+            //_byte_1136065 = regs.dh;
+
+            //if (input::getMapSelectionFlags() & MapSelectFlag::enableConstruct)
+            //{
+            //    auto count = 0;
+            //    auto pos = _mapSelectedTiles[count];
+            //    uint16_t dx = 0;
+
+            //    while (pos.x != -1)
+            //    {
+            //        std::printf("%d\n", count);
+            //        pos = _mapSelectedTiles[count];
+
+            //        if (pos.x == -1)
+            //        {
+            //            count++;
+            //            continue;
+            //        }
+
+            //        if (pos.y == -1)
+            //        {
+            //            count++;
+            //            continue;
+            //        }
+
+            //        auto tileId = ((pos.y << 9) | pos.x) >> 3;
+            //        auto tile = _tiles[tileId]->as_track();
+
+            //        if (tile == nullptr)
+            //        {
+            //            count++;
+            //            continue;
+            //        }
+
+            //        if (!tile->has_type_3C())
+            //        {
+            //            while (tile->has_type_3C())
+            //            {
+            //                tileId++;
+            //                tile = _tiles[tileId]->as_track();
+            //            }
+            //        }
+            //        dx = tile->base_z() << 2;
+
+            //        if (tile->has_4_F())
+            //            dx += 16;
+
+            //        if (tile->has_4_10())
+            //            dx += 16;
+
+            //        if (dx > i)
+            //            i = dx;
+
+            //        dx &= ~(0xFF);
+            //        dx |= tile->track_object_id();
+            //        dx &= 0x1F;
+
+            //        if (dx > i)
+            //            i = dx;
+
+            //        count++;
+            //    }
+            //    edi = pos.x << 16 | pos.y;
+            //}
+            //registers regs2;
+            //regs2.esi = (int32_t)&self;
+            //regs2.edi = edi;
+            //if (_trackType & (1 << 7))
+            //{
+            //    call(0x004A23F8, regs2);
+            //}
+            //else
+            //{
+            //    call(0x004A212D, regs2);
+            //}
+            //_word_1136000 = i;
+            //_mapSelectionFlags = _mapSelectionFlags & ~(1 << 2 | 1 << 1 | 1 << 0);
+            //registers regs;
+            //if (_trackType & (1 << 7))
+            //{
+            //    call(0x00478361, regs);
+            //}
+            //else
+            //{
+            //    call(0x004A4011, regs);
+            //}
+            //if (!regs.eax)
+            //{
+            //    uint32_t ebp = regs.dl << 3;
+            //    if (_word_4F7B62[ebp][0] == 0)
+            //    {
+
+            //    }
+            //}
         }
 
         // 0x0049D4F5
-        static ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+        static ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
         {
-            registers regs;
-            regs.esi = (uint32_t)self;
-            regs.ax = xPos;
-            regs.cx = yPos;
-            regs.edi = (int32_t)fallback;
-            call(0x0049D4F5, regs);
-            return (cursor_id)regs.edi;
+            if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
+                _tooltipTimeout = 2000;
+            return fallback;
         }
 
         // 0x0049CE79
@@ -425,29 +845,30 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049D38A and 0x0049D16B
-        static void loc_49D38A(window* self, gfx::drawpixelinfo_t* clipped)
+        static void loc_49D38A(window* self, gfx::drawpixelinfo_t* dpi)
         {
             auto x = self->widgets[widx::construct].width() + 1;
             x >>= 1;
             x += self->x;
             auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
-            if (_byte_1136061 != 1)
-                gfx::draw_string_centred(*clipped, x, y, colour::black, string_ids::build_this);
+            if (_constructionHover != 1)
+                gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::build_this);
 
             y += 11;
+
             if (_constructionCost != 0x80000000)
             {
                 if (_constructionCost != 0)
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_constructionCost);
-                    gfx::draw_string_centred(*clipped, x, y, colour::black, string_ids::build_cost, &args);
+                    gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::build_cost, &args);
                 }
             }
         }
 
-        static void loc_49D106(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        static void loc_49D106(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
         {
             bp >>= 1;
             si >>= 1;
@@ -466,11 +887,11 @@ namespace openloco::ui::windows::construction
             sub_4A0AE5(x, y, edi, _byte_1136078, edx);
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
-            
-            loc_49D38A(self, clipped);
+
+            loc_49D38A(self, dpi);
         }
 
-        static void loc_49D325(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        static void loc_49D325(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
         {
             bp >>= 1;
             si >>= 1;
@@ -490,20 +911,20 @@ namespace openloco::ui::windows::construction
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
 
-            loc_49D38A(self, clipped);
+            loc_49D38A(self, dpi);
         }
 
-        static void sub_49D0B8(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void sub_49D0B8(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax = -ax + cx;
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, ax, cx, bp, si);
+            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0CC(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D0CC(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             ax = -ax;
             auto bx = ax;
@@ -511,10 +932,10 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, ax, cx, bp, si);
+            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0E0(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D0E0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax -= cx;
@@ -522,10 +943,10 @@ namespace openloco::ui::windows::construction
             cx -= bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, ax, cx, bp, si);
+            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0F4(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D0F4(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax += cx;
@@ -533,20 +954,20 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, ax, cx, bp, si);
+            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void sub_49D2D7(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void sub_49D2D7(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax = -ax + cx;
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, ax, cx, bp, si);
+            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D2EB(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D2EB(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             ax = -ax;
             auto bx = ax;
@@ -554,10 +975,10 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, ax, cx, bp, si);
+            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D2FF(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D2FF(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax -= cx;
@@ -565,10 +986,10 @@ namespace openloco::ui::windows::construction
             cx -= bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, ax, cx, bp, si);
+            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D313(window* self, gfx::drawpixelinfo_t* clipped, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void loc_49D313(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax += cx;
@@ -576,7 +997,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, ax, cx, bp, si);
+            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049CF36
@@ -694,16 +1115,16 @@ namespace openloco::ui::windows::construction
                     switch (gCurrentRotation)
                     {
                         case 0:
-                            sub_49D2D7(self, clipped, ax, cx, dx, width, height);
+                            sub_49D2D7(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 1:
-                            loc_49D2EB(self, clipped, ax, cx, dx, width, height);
+                            loc_49D2EB(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 2:
-                            loc_49D2FF(self, clipped, ax, cx, dx, width, height);
+                            loc_49D2FF(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 3:
-                            loc_49D313(self, clipped, ax, cx, dx, width, height);
+                            loc_49D313(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                     }
                 }
@@ -830,16 +1251,16 @@ namespace openloco::ui::windows::construction
                     switch (gCurrentRotation)
                     {
                         case 0:
-                            sub_49D0B8(self, clipped, ax, cx, dx, width, height);
+                            sub_49D0B8(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 1:
-                            loc_49D0CC(self, clipped, ax, cx, dx, width, height);
+                            loc_49D0CC(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 2:
-                            loc_49D0E0(self, clipped, ax, cx, dx, width, height);
+                            loc_49D0E0(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 3:
-                            loc_49D0F4(self, clipped, ax, cx, dx, width, height);
+                            loc_49D0F4(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                     }
                 }
@@ -864,13 +1285,6 @@ namespace openloco::ui::windows::construction
             events.prepare_draw = prepare_draw;
             events.draw = draw;
         }
-    }
-
-    // 0x0049FEC7
-    static void sub_49FEC7()
-    {
-        registers regs;
-        call(0x0049FEC7, regs);
     }
 
     // 0x004CD454
@@ -924,7 +1338,7 @@ namespace openloco::ui::windows::construction
         if (_modList[0] == 0xFFFFFFFF)
             disabledWidgets |= (1ULL << common::widx::tab_overhead);
 
-        if (_lastSelectedStation == 0xFF)
+        if (_lastSelectedStationBuilding == 0xFF)
             disabledWidgets |= (1ULL << common::widx::tab_station);
 
         self->disabled_widgets = disabledWidgets;
@@ -1187,54 +1601,28 @@ namespace openloco::ui::windows::construction
         }
     }
 
-    // 0x0049F1B5
-    static void sub_49F1B5()
-    {
-        registers regs;
-        call(0x0049F1B5, regs);
-
-        //auto window = WindowManager::find(WindowType::construction);
-
-        //if (window != nullptr)
-        //{
-        //    return;
-        //}
-
-        //if (_trackType & (1 << 7))
-        //{
-        //    tilemgr::map_invalidate_map_selection_tiles();
-        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
-        //    auto carryFlag = sub_4A0832();
-        //}
-        //else
-        //{
-        //    tilemgr::map_invalidate_map_selection_tiles();
-        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
-        //}
-    }
-
     // 0x004A3A50
     static void sub_4A3A50()
     {
-        sub_49FEC7();
+        construction::sub_49FEC7();
         setTrackOptions(_trackType);
         refreshRoadStationList();
 
-        auto al = _byte_525F9A[(_trackType & ~(1ULL << 7))];
+        auto al = _selectedStations[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _stationList[0];
-        _lastSelectedStation = al;
+        _lastSelectedStationBuilding = al;
 
         refreshRoadBridgeList();
 
-        al = _byte_525F7A[(_trackType & ~(1ULL << 7))];
+        al = _selectedBridges[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _bridgeList[0];
         _lastSelectedBridge = al;
 
         refreshRoadOption();
 
-        al = _byte_525F7A[(_trackType & ~(1ULL << 7))];
+        al = _selectedMods[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = 0;
         _word_1135FE4 = al;
@@ -1252,7 +1640,7 @@ namespace openloco::ui::windows::construction
     //{
     //    auto eax = _byte_1136067;
     //    auto bl = _byte_1136068;
-    //    auto bh = _byte_1136064;
+    //    auto bh = _constructionRotation;
     //    if (eax == 0xFF)
     //        return;
     //    switch (eax)
@@ -1581,7 +1969,7 @@ namespace openloco::ui::windows::construction
             al = _stationList[0];
         }
 
-        _lastSelectedStation = al;
+        _lastSelectedStationBuilding = al;
         auto window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -1685,8 +2073,8 @@ namespace openloco::ui::windows::construction
         _x = 0x1800;
         _y = 0x1800;
         _word_1135FB8 = 0x100;
-        _byte_1136064 = 0;
-        _byte_1136061 = 0;
+        _constructionRotation = 0;
+        _constructionHover = 0;
         _byte_113607E = 1;
         _constructionCost = 0x80000000;
         _byte_1136076 = 0;
@@ -1746,16 +2134,16 @@ namespace openloco::ui::windows::construction
 
                     refreshRoadStationList();
 
-                    auto al = _byte_525F9A[(_trackType & ~(1ULL << 7))];
+                    auto al = _selectedStations[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xFF)
                         al = _stationList[0];
 
-                    _lastSelectedStation = al;
+                    _lastSelectedStationBuilding = al;
 
                     refreshRoadBridgeList();
 
-                    al = _byte_525F7A[(_trackType & ~(1ULL << 7))];
+                    al = _selectedBridges[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xFF)
                         al = _bridgeList[0];
@@ -1764,7 +2152,7 @@ namespace openloco::ui::windows::construction
 
                     refreshRoadOption();
 
-                    al = _byte_525FA2[(_trackType & ~(1ULL << 7))];
+                    al = _selectedMods[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xff)
                         al = 0;
@@ -1791,11 +2179,11 @@ namespace openloco::ui::windows::construction
         if (al == 0xFF)
             al = _stationList[0];
 
-        _lastSelectedStation = al;
+        _lastSelectedStationBuilding = al;
 
         refreshTrackBridgeList();
 
-        al = _byte_525F7A[_trackType];
+        al = _selectedBridges[_trackType];
 
         if (al == 0xFF)
             al = _bridgeList[0];
@@ -1812,47 +2200,97 @@ namespace openloco::ui::windows::construction
         return checkB(al);
     }
 
-    // 0x0049D3F6
-    void on_mouse_up(window& w, const uint16_t widgetIndex)
+    // 0x004A6FAC
+    void sub_4A6FAC()
     {
-        // Allow shift key to repeat the action multiple times
-        // This is useful for building very long tracks.
-        int multiplier = 1;
-        if (input::has_key_modifier(input::key_modifier::shift))
+        auto window = WindowManager::find(WindowType::construction);
+        if (window == nullptr)
+            return;
+        if (window->current_tab == common::widx::tab_station - common::widx::tab_construction)
         {
-            multiplier = 10;
+            if (_byte_1136063 & 0xC0)
+                WindowManager::close(window);
+            else
+                window->call_on_mouse_up(common::widx::tab_construction);
         }
+    }
 
-        registers regs;
-        regs.edx = widgetIndex;
-        regs.esi = (int32_t)&w;
-        switch (widgetIndex)
+    namespace station
+    {
+        enum widx
         {
-            case common::widx::close_button:
-                WindowManager::close(&w);
-                break;
-            case common::widx::tab_construction:
-            case common::widx::tab_station:
-            case common::widx::tab_signal:
-            case common::widx::tab_overhead:
-                call(0x0049D93A, regs);
-                break;
-            case construction::widx::construct:
-                for (int i = 0; i < multiplier; i++)
-                {
-                    call(0x0049F92D, regs);
-                }
-                break;
-            case construction::widx::remove:
-                for (int i = 0; i < multiplier; i++)
-                {
-                    call(0x004A0121, regs);
-                }
-                break;
-            case construction::widx::rotate_90:
-                call(0x0049D7DC, regs);
-                break;
-        }
+            station = 8,
+            station_dropdown,
+            image,
+            rotate,
+        };
+
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
+
+        widget_t widgets[] = {
+            commonWidgets(138, 190, string_ids::stringid_2),
+            make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_station_type),
+            make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_station_type),
+            make_widget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
+            make_widget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
+            widget_end(),
+        };
+
+        static window_event_list events;
+    }
+
+    namespace signal
+    {
+        enum widx
+        {
+            signal = 8,
+            signal_dropdown,
+            both_directions,
+            single_direction,
+        };
+
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
+
+        widget_t widgets[] = {
+            commonWidgets(138, 190, string_ids::stringid_2),
+            make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
+            make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
+            make_widget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
+            make_widget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_single_direction),
+            widget_end(),
+        };
+
+        static window_event_list events;
+    }
+
+    namespace overhead
+    {
+        enum widx
+        {
+            checkbox_1 = 8,
+            checkbox_2,
+            checkbox_3,
+            checkbox_4,
+            image,
+            track,
+            track_dropdown,
+        };
+
+        const uint64_t enabledWidgets = common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
+
+        widget_t widgets[] = {
+            commonWidgets(138, 167, string_ids::stringid_2),
+            make_widget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+            make_widget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+            make_widget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+            make_widget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+            make_widget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
+            make_widget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_track_to_upgrade),
+            make_widget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_track_to_upgrade),
+            widget_end(),
+        };
+
+        static window_event_list events;
     }
 
     namespace common
@@ -1867,6 +2305,9 @@ namespace openloco::ui::windows::construction
 
         static TabInformation tabInformationByTabOffset[] = {
             { construction::widgets, widx::tab_construction, &construction::events, construction::enabledWidgets },
+            { station::widgets, widx::tab_station, &station::events, station::enabledWidgets },
+            { signal::widgets, widx::tab_signal, &signal::events, signal::enabledWidgets },
+            { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets },
         };
 
         static void prepare_draw(window* self)
@@ -1882,6 +2323,75 @@ namespace openloco::ui::windows::construction
             // Activate the current tab
             self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
             self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+        }
+
+        // 0x0049D93A
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            if (self->current_tab == widgetIndex - widx::tab_construction)
+                return;
+            if (widgetIndex == widx::tab_station)
+            {
+                ui::windows::station::showStationCatchment(-1);
+            }
+            construction::sub_49FEC7();
+            tilemgr::map_invalidate_map_selection_tiles();
+            _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
+            _trackCost = 0x80000000;
+            _dword_1135F4E = 0x80000000;
+            _dword_1135F6C = 0x80000000;
+            _dword_1135F46 = 0x80000000;
+            _byte_1136076 = 0;
+
+            if (input::is_tool_active(self->type, self->number))
+                input::cancel_tool();
+
+            self->current_tab = widgetIndex - widx::tab_construction;
+            self->frame_no = 0;
+            self->flags &= ~(window_flags::flag_16);
+
+            auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
+
+            self->enabled_widgets = tabInfo.enabledWidgets;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+
+            setDisabledWidgets(self);
+
+            self->invalidate();
+
+            self->width = self->widgets[widx::frame].right + 1;
+            self->height = self->widgets[widx::frame].bottom + 1;
+
+            self->call_on_resize();
+            self->call_prepare_draw();
+            self->init_scroll_widgets();
+            self->invalidate();
+
+            if (self->current_tab == widx::tab_construction - widx::tab_construction)
+            {
+                if (_constructionHover != 0)
+                {
+                    _constructionHover = 0;
+                    _byte_113607E = 1;
+                    self->call_on_mouse_up(construction::widx::rotate_90);
+                }
+            }
+
+            if (self->current_tab == widx::tab_signal - widx::tab_construction)
+            {
+                // TODO: replace with signal tab widx
+                self->call_on_mouse_down(0x0A);
+            }
+
+            if (self->current_tab == widx::tab_overhead - widx::tab_construction)
+            {
+                // TODO: replace with overhead tab widx
+                self->call_on_mouse_down(0x0C);
+            }
+
+            self->moveInsideScreenEdges();
         }
 
         // 0x0049ED33
@@ -1922,11 +2432,11 @@ namespace openloco::ui::windows::construction
                             clipped->height <<= 1;
                             clipped->x <<= 1;
                             clipped->y <<= 1;
-                            auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStation);
+                            auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStationBuilding);
                             auto imageId = gfx::recolour(roadStationObj->var_0C, companyColour);
                             gfx::draw_image(clipped, -4, -9, imageId);
                             auto colour = _byte_5045FA[companyColour];
-                            if (!roadStationObj->colour_flags & 1)
+                            if (!(roadStationObj->colour_flags & 1))
                             {
                                 colour = 46;
                             }
@@ -2010,11 +2520,11 @@ namespace openloco::ui::windows::construction
                                     clipped->height <<= 1;
                                     clipped->x <<= 1;
                                     clipped->y <<= 1;
-                                    auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStation);
+                                    auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStationBuilding);
                                     auto imageId = gfx::recolour(trainStationObj->var_0E, companyColour);
                                     gfx::draw_image(clipped, -4, -9, imageId);
                                     auto colour = _byte_5045FA[companyColour];
-                                    if (!trainStationObj->colour_flags & 1)
+                                    if (!(trainStationObj->colour_flags & 1))
                                     {
                                         colour = 46;
                                     }

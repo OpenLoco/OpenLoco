@@ -8,6 +8,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
+#include "../map/tilemgr.h"
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -18,10 +19,13 @@
 #include "../widget.h"
 
 using namespace openloco::interop;
+using namespace openloco::map;
 
 namespace openloco::ui::windows::station
 {
-    static loco_global<uint16_t, 0x00112C786> word_112C786;
+    static loco_global<uint16_t[0x24000], 0x000F00484> _byte_F00484;
+    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
+    static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -361,7 +365,7 @@ namespace openloco::ui::windows::station
             common::repositionTabs(self);
 
             self->activated_widgets &= ~(1 << widx::station_catchment);
-            if (self->number == word_112C786)
+            if (self->number == _lastSelectedStation)
                 self->activated_widgets |= (1 << widx::station_catchment);
         }
 
@@ -427,15 +431,14 @@ namespace openloco::ui::windows::station
                     break;
 
                 case widx::station_catchment:
+                {
                     auto windowNumber = self->number;
-                    if (self->number == word_112C786)
+                    if (self->number == _lastSelectedStation)
                         windowNumber = -1;
 
-                    // 0x0049271A
-                    registers regs;
-                    regs.ax = windowNumber;
-                    call(0x0049271A, regs);
+                    showStationCatchment(windowNumber);
                     break;
+                }
             }
         }
 
@@ -718,6 +721,61 @@ namespace openloco::ui::windows::station
         }
     }
 
+    // 0x00491BC6
+    static void sub_491BC6()
+    {
+        auto posId = 0;
+        for (coord_t y = 0; y < 0x3000; y += 0x20)
+        {
+            for (coord_t x = 0; x < 0x3000; x += 0x20)
+            {
+                if (_byte_F00484[posId] & (1 << 0))
+                {
+                    map_pos pos = { x, y };
+                    tilemgr::map_invalidate_tile_full(pos);
+                }
+                posId++;
+            }
+        }
+    }
+
+    // 0x00491D70
+    static void sub_491D70(openloco::station* station, uint16_t dx)
+    {
+        registers regs;
+        regs.ebp = uint32_t(station);
+        regs.dx = dx;
+        call(0x00491D70, regs);
+    }
+
+    // 0x0049271A
+    void showStationCatchment(uint16_t stationId)
+    {
+        if (stationId == _lastSelectedStation)
+            return;
+        auto oldStationId = _lastSelectedStation;
+        _lastSelectedStation = stationId;
+        if (oldStationId != 0xFFFF)
+        {
+            if (_mapSelectionFlags & (1 << 6))
+            {
+                WindowManager::invalidate(WindowType::station, oldStationId);
+                sub_491BC6();
+                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 5);
+            }
+        }
+        auto newStationId = _lastSelectedStation;
+        if (newStationId != 0xFFFF)
+        {
+            ui::windows::construction::sub_4A6FAC();
+            auto station = stationmgr::get(_lastSelectedStation);
+            sub_491D70(station, 0);
+            _mapSelectionFlags = _mapSelectionFlags | (1 << 5);
+            WindowManager::invalidate(WindowType::station, newStationId);
+            sub_491BC6();
+        }
+    }
+
     namespace common
     {
         struct TabInformation
@@ -847,12 +905,9 @@ namespace openloco::ui::windows::station
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::tab_cargo)
-                if (self->number == word_112C786)
+                if (self->number == _lastSelectedStation)
                 {
-                    // 0x0049271A
-                    registers regs;
-                    regs.ax = -1;
-                    call(0x0049271A, regs);
+                    showStationCatchment(-1);
                 }
 
             if (input::is_tool_active(self->type, self->number))

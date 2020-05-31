@@ -7,12 +7,6 @@ using namespace openloco::interop;
 
 namespace openloco::map::tilemgr
 {
-    enum MapSelectFlag : uint16_t
-    {
-        enable = (1 << 0),
-        enableConstruct = (1 << 1)
-    };
-
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
