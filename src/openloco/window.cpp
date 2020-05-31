@@ -141,11 +141,8 @@ namespace openloco::ui
 
         if (vp->containsUI(vpos))
         {
-            map::map_pos position = viewport_coord_to_map_coord(
-                ((vpos.x - vp->x) << vp->zoom) + vp->view_x,
-                ((vpos.y - vp->y) << vp->zoom) + vp->view_y,
-                z,
-                WindowManager::getCurrentRotation());
+            map::map_pos mpos = vp->ui_to_map(vpos);
+            map::map_pos position = viewport_coord_to_map_coord(mpos.x, mpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
                 return position;

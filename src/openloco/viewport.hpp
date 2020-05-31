@@ -2,6 +2,7 @@
 
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
+#include "map/tile.h"
 #include "types.hpp"
 #include <algorithm>
 
@@ -117,6 +118,16 @@ namespace openloco::ui
             auto uiX = x + ((vpos.x - view_x) >> zoom);
             auto uiY = y + ((vpos.y - view_y) >> zoom);
             return { uiX, uiY };
+        }
+
+        /**
+         * Maps a UI (screen) position to a 2D viewport position.
+         */
+        map::map_pos ui_to_map(const viewport_pos& vpos)
+        {
+            coord_t map_x = ((vpos.x - x) << zoom) + view_x;
+            coord_t map_y = ((vpos.y - y) << zoom) + view_y;
+            return { map_x, map_y };
         }
 
         void render(gfx::drawpixelinfo_t* dpi);
