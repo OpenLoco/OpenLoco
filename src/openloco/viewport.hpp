@@ -125,9 +125,9 @@ namespace openloco::ui
          */
         viewport_pos ui_to_map(const xy32& pos)
         {
-            coord_t map_x = ((pos.x - x) << zoom) + view_x;
-            coord_t map_y = ((pos.y - y) << zoom) + view_y;
-            return { map_x, map_y };
+            int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
+            int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
+            return { viewport_x, viewport_y };
         }
 
         void render(gfx::drawpixelinfo_t* dpi);

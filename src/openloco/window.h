@@ -487,6 +487,6 @@ namespace openloco::ui
     static_assert(sizeof(window) == 0x88E);
 
     map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation);
-    std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& vpos, const int16_t z);
+    std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);
 #pragma pack(pop)
 }
