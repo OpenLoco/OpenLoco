@@ -232,6 +232,7 @@ int32_t openloco::vehicle_body::update()
     return 0;
 }
 
+// 0x004AAC4E
 void openloco::vehicle_body::animation_update()
 {
     if (var_38 & (1 << 4))
@@ -242,11 +243,13 @@ void openloco::vehicle_body::animation_update()
         return;
 
     auto vehicleObject = object();
-
-    if (vehicleObject->var_24[var_54].var_05 == 0)
+    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
+    if (var_05 == 0)
     {
         return;
     }
+
+    var_05 -= 0x80;
 
     switch (vehicleObject->animation[0].type)
     {
@@ -255,22 +258,22 @@ void openloco::vehicle_body::animation_update()
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            steam_puffs_animation_update(0, var_05);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            diesel_exhaust1_animation_update(0, var_05);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            electric_spark1_animation_update(0, var_05);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            electric_spark2_animation_update(0, var_05);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            diesel_exhaust2_animation_update(0, var_05);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(0, vehicleObject->var_24[var_54].var_05 - 0x80);
+            ship_wake_animation_update(0, var_05);
             break;
         default:
             assert(false);
@@ -973,7 +976,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_4(int16_t x_offset, int16_t y_
 void openloco::vehicle_body::secondary_animation_update()
 {
     auto vehicleObject = object();
-    uint8_t var_05 = vehicleObject->var_24[var_54].var_05;
+    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
     if (var_05 == 0)
         return;
 
@@ -1010,7 +1013,7 @@ void openloco::vehicle_body::secondary_animation_update()
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t var_05)
 {
     auto vehicleObject = object();
     vehicle* frontBogie = vehicle_front_bogie;
@@ -1175,7 +1178,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int8_t va
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1261,7 +1264,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int8_
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1336,7 +1339,7 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int8_
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1396,7 +1399,7 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int8_
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32_t var_05)
 {
     vehicle* frontBogie = vehicle_front_bogie;
     vehicle* backBogie = vehicle_back_bogie;
@@ -1478,7 +1481,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int8_
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int8_t var_05)
+void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
 {
     vehicle* veh_3 = vehicle_1136120;
     auto vehicleObject = object();
