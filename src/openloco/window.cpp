@@ -117,6 +117,40 @@ namespace openloco::ui
             viewports[1]->render(dpi);
     }
 
+    // 0x0045FCE6
+    // Input:
+    // regs.ax:  x
+    // regs.bx:  y
+    // regs.bp:  z
+    // Output:
+    // {x: regs.ax, y: regs.bx}
+    std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
+    {
+        window* w = WindowManager::findAt(mouse.x, mouse.y);
+        if (w == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        viewport* vp = w->viewports[0];
+        if (vp == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        if (vp->containsUI(mouse))
+        {
+            viewport_pos vpos = vp->ui_to_map(mouse);
+            map::map_pos position = viewport_coord_to_map_coord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
+            if (position.x <= 0x2FFF && position.y <= 0x2FFF)
+            {
+                return position;
+            }
+        }
+
+        return std::nullopt;
+    }
+
     // 0x0045FD41
     // Input:
     // regs.ax:  x
@@ -126,7 +160,7 @@ namespace openloco::ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    static map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
         map::map_pos ret{};
         switch (rotation)

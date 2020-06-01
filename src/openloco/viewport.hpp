@@ -2,6 +2,7 @@
 
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
+#include "map/tile.h"
 #include "types.hpp"
 #include <algorithm>
 
@@ -71,6 +72,11 @@ namespace openloco::ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
+        constexpr bool containsUI(const xy32& pos)
+        {
+            return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
+        }
+
         constexpr bool intersects(const ViewportRect& vpos)
         {
             if (vpos.right <= view_x)
@@ -112,6 +118,16 @@ namespace openloco::ui
             auto uiX = x + ((vpos.x - view_x) >> zoom);
             auto uiY = y + ((vpos.y - view_y) >> zoom);
             return { uiX, uiY };
+        }
+
+        /**
+         * Maps a UI (screen) position to a 2D viewport position.
+         */
+        viewport_pos ui_to_map(const xy32& pos)
+        {
+            int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
+            int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
+            return { viewport_x, viewport_y };
         }
 
         void render(gfx::drawpixelinfo_t* dpi);

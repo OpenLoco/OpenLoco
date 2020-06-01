@@ -162,6 +162,25 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x0045FCE6,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                xy32 mouse = { regs.ax, regs.bx };
+                auto pos = ui::screenGetMapXyWithZ(mouse, regs.bp);
+                regs = backup;
+                if (pos)
+                {
+                    regs.ax = (*pos).x;
+                    regs.bx = (*pos).y;
+                }
+                else
+                {
+                    regs.ax = -32768;
+                }
+                return 0;
+            });
+
+        register_hook(
             0x004610F2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -1806,6 +1825,11 @@ namespace openloco::ui::WindowManager
                 break;
             }
         }
+    }
+
+    int32_t getCurrentRotation()
+    {
+        return gCurrentRotation;
     }
 }
 
