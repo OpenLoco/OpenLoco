@@ -149,7 +149,7 @@ namespace openloco::ui::dropdown
 
         call(0x004CC807, regs);
     }
-	
+
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
@@ -164,8 +164,8 @@ namespace openloco::ui::dropdown
         regs.di = height;
 
         call(0x004CC807, regs);
-	}
-	
+    }
+
     /**
      * 0x004CCDE7
      *

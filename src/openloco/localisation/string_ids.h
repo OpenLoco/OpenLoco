@@ -123,7 +123,7 @@ namespace openloco::string_ids
     constexpr string_id tooltip_s_bend_left_dual_track = 125;
     constexpr string_id tooltip_s_bend_right_dual_track = 126;
     constexpr string_id tooltip_s_bend_to_single_track = 127;
-    constexpr string_id tooltip_turnaround = 128; 
+    constexpr string_id tooltip_turnaround = 128;
     constexpr string_id tooltip_start_construction = 129;
     constexpr string_id tooltip_construct = 130;
     constexpr string_id tooltip_remove = 131;

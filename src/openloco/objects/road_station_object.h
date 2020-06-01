@@ -13,7 +13,7 @@ namespace openloco
         uint16_t build_cost_factor; // 0x06
         uint16_t sell_cost_factor;  // 0x08
         uint8_t cost_index;         // 0x0A
-        uint8_t colour_flags;              // 0x0B
+        uint8_t colour_flags;       // 0x0B
         uint32_t var_0C;
         uint8_t pad_10[0x20 - 0x10];
         uint8_t var_20;

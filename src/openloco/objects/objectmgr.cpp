@@ -83,7 +83,7 @@ namespace openloco::objectmgr
     template<>
     train_signal_object* get(size_t id)
     {
-        if (_trainSignalObjects[id] != reinterpret_cast < train_signal_object*>(-1))
+        if (_trainSignalObjects[id] != reinterpret_cast<train_signal_object*>(-1))
             return _trainSignalObjects[id];
         else
             return nullptr;
@@ -137,7 +137,7 @@ namespace openloco::objectmgr
     template<>
     industry_object* get(size_t id)
     {
-        if (_industryObjects[id] != reinterpret_cast < industry_object*>(-1))
+        if (_industryObjects[id] != reinterpret_cast<industry_object*>(-1))
             return _industryObjects[id];
         else
             return nullptr;

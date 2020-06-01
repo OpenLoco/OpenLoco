@@ -97,12 +97,12 @@ namespace openloco::ui::windows::construction
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
-    static loco_global<uint8_t[8], 0x0525F72> _byte_525F72;
-    static loco_global<uint8_t[8], 0x0525F7A> _selectedBridges;
-    static loco_global<uint8_t[8], 0x0525F82> _byte_525F82;
-    static loco_global<uint8_t[8], 0x0525F8A> _byte_525F8A;
-    static loco_global<uint8_t[8], 0x0525F9A> _selectedStations;
-    static loco_global<uint8_t[8], 0x0525FA2> _selectedMods;
+    static loco_global<uint8_t[8], 0x0525F72> _scenarioSignals;
+    static loco_global<uint8_t[8], 0x0525F7A> _scenarioBridges;
+    static loco_global<uint8_t[8], 0x0525F82> _scenarioTrainStations;
+    static loco_global<uint8_t[8], 0x0525F8A> _scenarioTrackMods;
+    static loco_global<uint8_t[8], 0x0525F9A> _scenarioRoadStations;
+    static loco_global<uint8_t[8], 0x0525FA2> _scenarioRoadMods;
     static loco_global<uint8_t, 0x00525FAA> _lastRailroadOption;
     static loco_global<uint8_t, 0x00525FAB> _lastRoadOption;
     static loco_global<uint8_t, 0x00525FAC> _haveAirports;
@@ -113,18 +113,17 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
-    static loco_global<uint32_t, 0x01135F3E> _constructionCost;
-    static loco_global<uint16_t, 0x01135F86> _word_1135F86;
-    static loco_global<uint16_t, 0x01135FB4> _x;
-    static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint32_t, 0x01135F3E> _trackCost;
     static loco_global<uint32_t, 0x01135F4E> _dword_1135F4E;
     static loco_global<uint32_t, 0x01135F6C> _dword_1135F6C;
     static loco_global<uint32_t, 0x01135F46> _dword_1135F46;
+    static loco_global<uint16_t, 0x01135F86> _word_1135F86;
+    static loco_global<uint16_t, 0x01135FB4> _x;
+    static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
-    static loco_global<uint16_t, 0x01135FE4> _word_1135FE4;
+    static loco_global<uint16_t, 0x01135FE4> _lastSelectedMod;
     static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
@@ -181,30 +180,348 @@ namespace openloco::ui::windows::construction
         static void init_events();
     }
 
+    static const uint8_t* offset_4F6D1C[] = {
+        _unk_4F6D44,
+        _unk_4F6D4F,
+        _unk_4F6D5A,
+        _unk_4F6D65,
+        _unk_4F6D8E,
+        _unk_4F6DB7,
+        _unk_4F6DCC,
+        _unk_4F6DE1,
+        _unk_4F6DEC,
+        _unk_4F6DF7,
+    };
+
+    static const uint8_t* offset_4F73D8[] = {
+        _unk_4F7488,
+        _unk_4F7493,
+        _unk_4F74BC,
+        _unk_4F74C7,
+        _unk_4F74D2,
+        _unk_4F74FB,
+        _unk_4F7524,
+        _unk_4F7557,
+        _unk_4F758A,
+        _unk_4F75BD,
+        _unk_4F75F0,
+        _unk_4F7623,
+        _unk_4F7656,
+        _unk_4F767F,
+        _unk_4F76A8,
+        _unk_4F76BD,
+        _unk_4F76D2,
+        _unk_4F76DD,
+        _unk_4F76E8,
+        _unk_4F7711,
+        _unk_4F773A,
+        _unk_4F7763,
+        _unk_4F778C,
+        _unk_4F77B5,
+        _unk_4F77DE,
+        _unk_4F7807,
+        _unk_4F7830,
+        _unk_4F783B,
+        _unk_4F7846,
+        _unk_4F7851,
+        _unk_4F785C,
+        _unk_4F7867,
+        _unk_4F7872,
+        _unk_4F787D,
+        _unk_4F7888,
+        _unk_4F7893,
+        _unk_4F789E,
+        _unk_4F78A9,
+        _unk_4F78B4,
+        _unk_4F78BF,
+        _unk_4F78CA,
+        _unk_4F78D5,
+        _unk_4F78E0,
+        _unk_4F78EB,
+    };
+
+    static bool sub_4A0832(registers regs)
+    {
+        regs.eax = _byte_1136067;
+        regs.bl = _byte_1136068;
+        regs.bh = _constructionRotation;
+        if (regs.eax == 0xFF)
+            return true;
+        switch (regs.eax)
+        {
+            case 0: // 0x004A0856
+            {
+                if (regs.bh >= 0xC)
+                    return true;
+                if (regs.bh >= 8)
+                    return true;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 0;
+                if (regs.bl != 0)
+                {
+                    regs.dh = 5;
+                    if (regs.bl != 2)
+                    {
+                        regs.dh = 7;
+                        if (regs.bl != 4)
+                        {
+                            regs.dh = 6;
+                            if (regs.bl != 6)
+                            {
+                                regs.dh = 8;
+                                if (regs.bl != 8)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            case 1: // 0x004A08A5
+            {
+                if (regs.bh != 0)
+                    return true;
+                if (regs.bh >= 0xC)
+                    return true;
+                if (regs.bh >= 8)
+                    return true;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 1;
+                break;
+            }
+            case 2: // 0x004A08CD
+            {
+                if (regs.bh != 0)
+                    return true;
+                if (regs.bh >= 0xC)
+                    return true;
+                if (regs.bh >= 8)
+                    return true;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 2;
+                break;
+            }
+            case 3: // 0x004A08ED
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 3;
+                if (regs.bl != 0)
+                    return true;
+                break;
+            }
+            case 4: // 0x004A08FB
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 4;
+                if (regs.bl != 0)
+                    return true;
+                break;
+            }
+            case 5: // 0x004A095F
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            {
+                return true;
+            }
+            case 13: // 0x004A0909
+            {
+                if (regs.bl != 0)
+                    return true;
+                if (regs.bh >= 0x0C)
+                    return true;
+                break;
+            }
+        }
+
+        regs.dh = 9;
+
+        if (regs.bh < 0x0C)
+            regs.bh &= 3;
+
+        regs.ax = _x;
+        regs.cx = _y;
+        regs.edx = (_trackType & ~(1 << 7)) | (regs.dh << 8);
+        regs.dl = _trackType & ~(1 << 7);
+        regs.edx |= (_lastSelectedBridge << 24);
+        regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+
+        if (regs.ax)
+            return true;
+        else
+            return false;
+    }
+
+    //static bool sub_4A04F8(registers regs)
+    //{
+    //    regs.eax = _byte_1136067;
+    //    regs.bl = _byte_1136068;
+    //    regs.bh = _constructionRotation;
+    //    if (regs.eax == 0xFF)
+    //        return true;
+    //    switch (regs.eax)
+    //    {
+    //        case 0: // loc_4A051C
+    //        {
+    //            if (regs.bh >= 0xC)
+    //            {
+    //                regs.dh = 1;
+    //                if (regs.bl != 0)
+    //                    return true;
+    //            }
+    //            else
+    //            {
+    //                if (regs.bh >= 8)
+    //                {
+    //                    regs.dh = 27;
+    //                    if (regs.bl != 0)
+    //                    {
+    //                        regs.dh = 35;
+    //                        if (regs.bl != 4)
+    //                        {
+    //                            regs.dh = 37;
+    //                            if (regs.bl != 8)
+    //                                return true;
+    //                        }
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    if (regs.bh >= 4)
+    //                    {
+    //                        regs.dh = 26;
+    //                        if (regs.bl != 0)
+    //                        {
+    //                            regs.dh = 34;
+    //                            if (regs.bl != 4)
+    //                            {
+    //                                regs.dh = 36;
+    //                                if (regs.bl != 8)
+    //                                    return true;
+    //                            }
+    //                        }
+    //                    }
+    //                    else
+    //                    {
+    //                        regs.dh = 0;
+    //                        if (regs.bl != 0)
+    //                        {
+    //                            regs.dh = 14;
+    //                            if (regs.bl != 2)
+    //                            {
+    //                                regs.dh = 16;
+    //                                if (regs.bl != 4)
+    //                                {
+    //                                    regs.dh = 15;
+    //                                    if (regs.bl != 6)
+    //                                    {
+    //                                        regs.dh = 17;
+    //                                        if (regs.bl != 8)
+    //                                            return true;
+    //                                    }
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //            break;
+    //        }
+    //        case 1:  // loc_4A05C3
+    //        case 2:  // loc_4A05F4
+    //        case 3:  // loc_4A0625
+    //        case 4:  // loc_4A066A
+    //        case 5:  // loc_4A06AF
+    //        case 6:  // loc_4A06C8
+    //        case 7:  // loc_4A06E1
+    //        case 8:  // loc_4A0705
+    //        case 9:  // loc_4A0729
+    //        case 10: // loc_4A0756
+    //        case 11: // loc_4A077C
+    //        case 12: // loc_4A07A2
+    //        case 13: // loc_4A07C0
+    //            break;
+    //    }
+
+    //    if (regs.bh < 0x0C)
+    //        regs.bh &= 3;
+
+    //    regs.ax = _x;
+    //    regs.cx = _y;
+    //    regs.edx = (_trackType & ~(1 << 7)) | (regs.dh << 8);
+    //    regs.dl = _trackType & ~(1 << 7);
+    //    regs.edx |= (_lastSelectedBridge << 24);
+    //    regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+
+    //    if (regs.ax)
+    //        return true;
+    //    else
+    //        return false;
+    //}
+
     // 0x0049F1B5
     static void sub_49F1B5()
     {
-        registers regs;
-        call(0x0049F1B5, regs);
+        //registers regs;
+        //call(0x0049F1B5, regs);
 
-        //auto window = WindowManager::find(WindowType::construction);
+        auto window = WindowManager::find(WindowType::construction);
 
-        //if (window != nullptr)
-        //{
-        //    return;
-        //}
+        if (window != nullptr)
+        {
+            return;
+        }
 
-        //if (_trackType & (1 << 7))
-        //{
-        //    tilemgr::map_invalidate_map_selection_tiles();
-        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
-        //    auto carryFlag = sub_4A0832();
-        //}
-        //else
-        //{
-        //    tilemgr::map_invalidate_map_selection_tiles();
-        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
-        //}
+        if (_trackType & (1 << 7))
+        {
+            tilemgr::map_invalidate_map_selection_tiles();
+            _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+
+            registers regs;
+            auto carryFlag = sub_4A0832(regs);
+
+            auto bl = regs.bl;
+            auto bh = regs.bh;
+            auto edi = regs.edi;
+            auto ax = regs.ax;
+            auto cx = regs.cx;
+            auto dh = regs.dh;
+            //auto ebx = regs.ebx;
+
+            if (carryFlag)
+            {
+                bl = _constructionRotation;
+                edi = 0;
+                ax = _x;
+                cx = _y;
+            }
+            else
+            {
+                bl = bh;
+                edi = dh;
+            }
+            auto ediOffset = offset_4F6D1C[edi];
+            if (ediOffset[0] != 0xFF)
+            {
+            }
+            else
+            {
+            }
+        }
+        else
+        {
+            tilemgr::map_invalidate_map_selection_tiles();
+            _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+        }
     }
 
     namespace construction
@@ -419,8 +736,7 @@ namespace openloco::ui::windows::construction
             if (_constructionHover == 0)
             {
                 registers regs;
-                auto flags = call(0x004A0832, regs);
-                auto carryFlag = (flags >> 16) & (1 << 1);
+                auto carryFlag = sub_4A0832(regs);
                 if (carryFlag)
                     disabledWidgets |= (1 << widx::construct);
             }
@@ -433,7 +749,7 @@ namespace openloco::ui::windows::construction
             {
                 disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
                 disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
-                
+
                 if (!(trackObj.track_pieces & (1 << 8)))
                     disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
             }
@@ -644,7 +960,7 @@ namespace openloco::ui::windows::construction
 
         // 0x0049D42F
         static void on_mouse_down(window* self, widget_index widgetIndex)
-        {   
+        {
             switch (widgetIndex)
             {
                 case widx::left_hand_curve:
@@ -761,7 +1077,7 @@ namespace openloco::ui::windows::construction
                 {
                     auto bridge = _bridgeList[itemIndex];
                     _lastSelectedBridge = bridge;
-                    _selectedBridges[_trackType] = bridge;
+                    _scenarioBridges[_trackType] = bridge;
                     sub_49FEC7();
                     _trackCost = 0x80000000;
                     sub_49F1B5();
@@ -829,7 +1145,8 @@ namespace openloco::ui::windows::construction
 
             //if (_trackType & (1 << 7))
             //{
-            //    flags = call(0x004A0832, regs);
+            //    registers regs;
+            //    auto carryFlag = sub_4A0832(regs);
             //}
             //else
             //{
@@ -983,7 +1300,8 @@ namespace openloco::ui::windows::construction
             common::repositionTabs(self);
         }
 
-        static registers sub_4A0AE5(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
+        // 0x004A0AE5
+        static registers drawTrack(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
         {
             registers regs;
             regs.ax = ax;
@@ -995,7 +1313,8 @@ namespace openloco::ui::windows::construction
             return regs;
         }
 
-        static registers sub_478F1F(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
+        // 0x00478F1F
+        static registers drawRoad(uint16_t ax, uint16_t cx, uint32_t edi, uint16_t bh, uint32_t edx)
         {
             registers regs;
             regs.ax = ax;
@@ -1008,7 +1327,7 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049D38A and 0x0049D16B
-        static void loc_49D38A(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawCostString(window* self, gfx::drawpixelinfo_t* dpi)
         {
             auto x = self->widgets[widx::construct].width() + 1;
             x >>= 1;
@@ -1020,12 +1339,12 @@ namespace openloco::ui::windows::construction
 
             y += 11;
 
-            if (_constructionCost != 0x80000000)
+            if (_trackCost != 0x80000000)
             {
-                if (_constructionCost != 0)
+                if (_trackCost != 0)
                 {
                     auto args = FormatArguments();
-                    args.push<uint32_t>(_constructionCost);
+                    args.push<uint32_t>(_trackCost);
                     gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::build_cost, &args);
                 }
             }
@@ -1047,11 +1366,11 @@ namespace openloco::ui::windows::construction
             auto edx = _word_1135FD6 << 16 | _byte_1136079 << 8 | _byte_1136077;
             _byte_522095 = _byte_522095 | (1 << 1);
 
-            sub_4A0AE5(x, y, edi, _byte_1136078, edx);
+            drawTrack(x, y, edi, _byte_1136078, edx);
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
 
-            loc_49D38A(self, dpi);
+            drawCostString(self, dpi);
         }
 
         static void loc_49D325(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
@@ -1070,14 +1389,15 @@ namespace openloco::ui::windows::construction
             auto edx = _word_1135FD6 << 16 | _byte_1136079 << 8 | _byte_1136077;
             _byte_522095 = _byte_522095 | (1 << 1);
 
-            sub_478F1F(x, y, edi, _byte_1136078, edx);
+            drawRoad(x, y, edi, _byte_1136078, edx);
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
 
-            loc_49D38A(self, dpi);
+            drawCostString(self, dpi);
         }
 
-        static void sub_49D0B8(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D0B8
+        static void trackRotation0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax = -ax + cx;
@@ -1087,7 +1407,8 @@ namespace openloco::ui::windows::construction
             loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0CC(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D0CC
+        static void trackRotation1(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             ax = -ax;
             auto bx = ax;
@@ -1098,7 +1419,8 @@ namespace openloco::ui::windows::construction
             loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0E0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D0E0
+        static void trackRotation2(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax -= cx;
@@ -1109,7 +1431,8 @@ namespace openloco::ui::windows::construction
             loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D0F4(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D0F4
+        static void trackRotation3(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax += cx;
@@ -1120,7 +1443,8 @@ namespace openloco::ui::windows::construction
             loc_49D106(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void sub_49D2D7(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D2D7
+        static void roadRotation0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax = -ax + cx;
@@ -1130,7 +1454,8 @@ namespace openloco::ui::windows::construction
             loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D2EB(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D2EB
+        static void roadRotation1(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             ax = -ax;
             auto bx = ax;
@@ -1141,7 +1466,8 @@ namespace openloco::ui::windows::construction
             loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D2FF(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D2FF
+        static void roadRotation2(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax -= cx;
@@ -1152,7 +1478,8 @@ namespace openloco::ui::windows::construction
             loc_49D325(self, clipped, dpi, ax, cx, bp, si);
         }
 
-        static void loc_49D313(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        // 0x0049D313
+        static void roadRotation3(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
         {
             auto bx = ax;
             ax += cx;
@@ -1192,9 +1519,10 @@ namespace openloco::ui::windows::construction
             if (_trackType & (1 << 7))
             {
                 registers regs;
-                auto flags = call(0x004A0832, regs);
-                auto carryFlag = (flags >> 16) & (1 << 1);
+                auto carryFlag = sub_4A0832(regs);
+
                 _word_1135FD8 = regs.edi >> 16;
+
                 if (carryFlag)
                     return;
                 _byte_1136077 = regs.dl;
@@ -1211,19 +1539,6 @@ namespace openloco::ui::windows::construction
 
                 if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
                 {
-                    static const uint8_t* offset_4F6D1C[] = {
-                        _unk_4F6D44,
-                        _unk_4F6D4F,
-                        _unk_4F6D5A,
-                        _unk_4F6D65,
-                        _unk_4F6D8E,
-                        _unk_4F6DB7,
-                        _unk_4F6DCC,
-                        _unk_4F6DE1,
-                        _unk_4F6DEC,
-                        _unk_4F6DF7,
-                    };
-
                     auto ecx = offset_4F6D1C[_byte_1136079];
                     auto i = 0;
 
@@ -1273,22 +1588,22 @@ namespace openloco::ui::windows::construction
                     switch (gCurrentRotation)
                     {
                         case 0:
-                            sub_49D2D7(self, clipped, dpi, ax, cx, dx, width, height);
+                            roadRotation0(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 1:
-                            loc_49D2EB(self, clipped, dpi, ax, cx, dx, width, height);
+                            roadRotation1(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 2:
-                            loc_49D2FF(self, clipped, dpi, ax, cx, dx, width, height);
+                            roadRotation2(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 3:
-                            loc_49D313(self, clipped, dpi, ax, cx, dx, width, height);
+                            roadRotation3(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                     }
                 }
                 else
                 {
-                    loc_49D38A(self, dpi);
+                    drawCostString(self, dpi);
                 }
             }
             else
@@ -1313,53 +1628,6 @@ namespace openloco::ui::windows::construction
 
                 if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
                 {
-                    static const uint8_t* offset_4F6D1C[] = {
-                        _unk_4F7488,
-                        _unk_4F7493,
-                        _unk_4F74BC,
-                        _unk_4F74C7,
-                        _unk_4F74D2,
-                        _unk_4F74FB,
-                        _unk_4F7524,
-                        _unk_4F7557,
-                        _unk_4F758A,
-                        _unk_4F75BD,
-                        _unk_4F75F0,
-                        _unk_4F7623,
-                        _unk_4F7656,
-                        _unk_4F767F,
-                        _unk_4F76A8,
-                        _unk_4F76BD,
-                        _unk_4F76D2,
-                        _unk_4F76DD,
-                        _unk_4F76E8,
-                        _unk_4F7711,
-                        _unk_4F773A,
-                        _unk_4F7763,
-                        _unk_4F778C,
-                        _unk_4F77B5,
-                        _unk_4F77DE,
-                        _unk_4F7807,
-                        _unk_4F7830,
-                        _unk_4F783B,
-                        _unk_4F7846,
-                        _unk_4F7851,
-                        _unk_4F785C,
-                        _unk_4F7867,
-                        _unk_4F7872,
-                        _unk_4F787D,
-                        _unk_4F7888,
-                        _unk_4F7893,
-                        _unk_4F789E,
-                        _unk_4F78A9,
-                        _unk_4F78B4,
-                        _unk_4F78BF,
-                        _unk_4F78CA,
-                        _unk_4F78D5,
-                        _unk_4F78E0,
-                        _unk_4F78EB,
-                    };
-
                     auto ecx = offset_4F6D1C[_byte_1136079];
                     auto i = 0;
 
@@ -1409,22 +1677,22 @@ namespace openloco::ui::windows::construction
                     switch (gCurrentRotation)
                     {
                         case 0:
-                            sub_49D0B8(self, clipped, dpi, ax, cx, dx, width, height);
+                            trackRotation0(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 1:
-                            loc_49D0CC(self, clipped, dpi, ax, cx, dx, width, height);
+                            trackRotation1(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 2:
-                            loc_49D0E0(self, clipped, dpi, ax, cx, dx, width, height);
+                            trackRotation2(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                         case 3:
-                            loc_49D0F4(self, clipped, dpi, ax, cx, dx, width, height);
+                            trackRotation3(self, clipped, dpi, ax, cx, dx, width, height);
                             break;
                     }
                 }
                 else
                 {
-                    loc_49D38A(self, dpi);
+                    drawCostString(self, dpi);
                 }
             }
         }
@@ -1493,7 +1761,7 @@ namespace openloco::ui::windows::construction
         if (_lastSelectedSignal == 0xFF)
             disabledWidgets |= (1ULL << common::widx::tab_signal);
 
-        if ((_modList[0] << 24 | _modList[1] << 16 | _modList[2] << 8|_modList[3])  == 0xFFFFFFFF)
+        if ((_modList[0] << 24 | _modList[1] << 16 | _modList[2] << 8 | _modList[3]) == 0xFFFFFFFF)
             disabledWidgets |= (1ULL << common::widx::tab_overhead);
 
         if (_lastSelectedStationType == 0xFF)
@@ -1527,6 +1795,8 @@ namespace openloco::ui::windows::construction
         WindowManager::sub_4CEE0B(window);
         ui::windows::showDirectionArrows();
         ui::windows::showGridlines();
+
+        common::init_events();
     }
 
     // 0x004723BD
@@ -1706,7 +1976,7 @@ namespace openloco::ui::windows::construction
     }
 
     // 0x004781C5
-    static void refreshRoadOption()
+    static void refreshRoadModList()
     {
         auto trackType = _trackType & ~(1 << 7);
         auto companyId = _updatingCompanyId;
@@ -1765,24 +2035,24 @@ namespace openloco::ui::windows::construction
         setTrackOptions(_trackType);
         refreshRoadStationList();
 
-        auto al = _selectedStations[(_trackType & ~(1ULL << 7))];
+        auto al = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _stationList[0];
         _lastSelectedStationType = al;
 
         refreshRoadBridgeList();
 
-        al = _selectedBridges[(_trackType & ~(1ULL << 7))];
+        al = _scenarioBridges[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = _bridgeList[0];
         _lastSelectedBridge = al;
 
-        refreshRoadOption();
+        refreshRoadModList();
 
-        al = _selectedMods[(_trackType & ~(1ULL << 7))];
+        al = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = 0;
-        _word_1135FE4 = al;
+        _lastSelectedMod = al;
 
         auto window = WindowManager::find(WindowType::construction);
 
@@ -1792,114 +2062,6 @@ namespace openloco::ui::windows::construction
         }
         sub_49F1B5();
     }
-
-    //static bool sub_4A0832()
-    //{
-    //    auto eax = _byte_1136067;
-    //    auto bl = _byte_1136068;
-    //    auto bh = _constructionRotation;
-    //    if (eax == 0xFF)
-    //        return;
-    //    switch (eax)
-    //    {
-    //        case 0: // 0x004A0856
-    //        {
-    //            if (bh >= 0x0C)
-    //                return true;
-    //            if (bh >= 8)
-    //                return true;
-    //            if (bh >= 4)
-    //                return true;
-    //            auto dh = 0;
-    //            if (bl != 0)
-    //            {
-    //                dh = 5;
-    //                if (bl != 2)
-    //                {
-    //                    dh = 7;
-    //                    if (bl != 4)
-    //                    {
-    //                        dh = 6;
-    //                        if (bl != 6)
-    //                        {
-    //                            dh = 8;
-    //                            if (bl != 8)
-    //                                return true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        case 1: // 0x004A08A5
-    //        {
-    //            if (bh != 0)
-    //                return true;
-    //            if (bh >= 0xC)
-    //                return true;
-    //            if (bh >= 8)
-    //                return true;
-    //            if (bh >= 4)
-    //                return true;
-    //            auto dh = 1;
-    //        }
-    //        case 2: // 0x004A08CD
-    //        {
-    //            if (bh != 0)
-    //                return true;
-    //            if (bh >= 0xC)
-    //                return true;
-    //            if (bh >= 8)
-    //                return true;
-    //            if (bh >= 4)
-    //                return true;
-    //            auto dh = 2;
-    //        }
-    //        case 3: // 0x004A08ED
-    //        {
-    //            if (bh >= 4)
-    //                return true;
-    //            auto dh = 3;
-    //            if (bl != 0)
-    //                return true;
-    //        }
-    //        case 4: // 0x004A08FB
-    //        {
-    //            if (bh >= 4)
-    //                return true;
-    //            auto dh = 4;
-    //            if (bl != 0)
-    //                return true;
-    //        }
-    //        case 5: // 0x004A095F
-    //        case 6:
-    //        case 7:
-    //        case 8:
-    //        case 9:
-    //        case 10:
-    //        case 11:
-    //        case 12:
-    //        {
-    //            return true;
-    //        }
-    //        case 13: // 0x004A0909
-    //        {
-    //            if (bl != 0)
-    //                return true;
-    //            if (bh >= 0x0C)
-    //                return true;
-    //        }
-    //    }
-    //    auto dh = 9;
-    //    if (bh < 0x0C)
-    //        bh &= uint8_t(3);
-    //    uint32_t edx = (_trackType & 0x7F) | (dh << 8);
-    //    edx |= (_lastSelectedBridge << 24);
-    //    auto edi = _word_1135FB8 | _word_1135FE4 << 16;
-    //    if (_x)
-    //        return true;
-    //    else
-    //        return false;
-    //}
 
     // 0x00488B4D
     static void refreshSignalList()
@@ -2067,7 +2229,7 @@ namespace openloco::ui::windows::construction
     }
 
     // 0x004A693D
-    static void refreshTrackOption()
+    static void refreshTrackModList()
     {
         auto trackType = _trackType;
         auto companyId = _updatingCompanyId;
@@ -2119,14 +2281,8 @@ namespace openloco::ui::windows::construction
         }
     }
 
-    window* check(uint8_t al)
+    window* nonTrackWindow()
     {
-        if (al == 0xFF)
-        {
-            al = _stationList[0];
-        }
-
-        _lastSelectedStationType = al;
         auto window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -2138,16 +2294,13 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(common::widx::tab_construction);
+            window->call_on_mouse_up(common::widx::tab_station);
         }
         return window;
     }
 
-    window* checkB(uint8_t al)
+    window* trackWindow()
     {
-        _word_1135FE4 = al;
-        _byte_113603A = 0;
-
         auto window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -2182,21 +2335,19 @@ namespace openloco::ui::windows::construction
 
         auto window = WindowManager::find(WindowType::construction);
 
-        common::init_events();
-
         if (window != nullptr)
         {
             if (flags & (1 << 7))
             {
-                auto al = flags & 0x7F;
-                auto roadObj = objectmgr::get<road_object>(al);
+                auto trackType = flags & ~(1 << 7);
+                auto roadObj = objectmgr::get<road_object>(trackType);
 
                 if (roadObj->flags & 8)
                 {
                     if (_trackType & (1 << 7))
                     {
-                        al = flags & 0x7F;
-                        roadObj = objectmgr::get<road_object>(al);
+                        trackType = _trackType & ~(1 << 7);
+                        roadObj = objectmgr::get<road_object>(trackType);
 
                         if (roadObj->flags & 8)
                         {
@@ -2222,7 +2373,7 @@ namespace openloco::ui::windows::construction
         if (mainWindow)
         {
             auto viewport = mainWindow->viewports[0];
-            _word_1135F86 = viewport->flags;
+            viewport->flags = _word_1135F86;
         }
 
         _trackType = flags;
@@ -2233,7 +2384,7 @@ namespace openloco::ui::windows::construction
         _constructionRotation = 0;
         _constructionHover = 0;
         _byte_113607E = 1;
-        _constructionCost = 0x80000000;
+        _trackCost = 0x80000000;
         _byte_1136076 = 0;
         _byte_1136067 = 0;
         _byte_1136068 = 0;
@@ -2250,14 +2401,21 @@ namespace openloco::ui::windows::construction
             _modList[1] = 0xFF;
             _modList[2] = 0xFF;
             _modList[3] = 0xFF;
-            _word_1135FE4 = 0;
+            _lastSelectedMod = 0;
             _lastSelectedBridge = 0xFF;
 
             refreshAirportList();
 
             auto al = _haveAirports;
 
-            return check(al);
+            if (al == 0xFF)
+            {
+                al = _stationList[0];
+            }
+
+            _lastSelectedStationType = al;
+
+            return nonTrackWindow();
         }
         else
         {
@@ -2272,14 +2430,21 @@ namespace openloco::ui::windows::construction
                 _modList[2] = 0xFF;
                 _modList[3] = 0xFF;
 
-                _word_1135FE4 = 0;
+                _lastSelectedMod = 0;
                 _lastSelectedBridge = 0xFF;
 
                 refreshDockList();
 
                 auto al = _haveShipPorts;
 
-                return check(al);
+                if (al == 0xFF)
+                {
+                    al = _stationList[0];
+                }
+
+                _lastSelectedStationType = al;
+
+                return nonTrackWindow();
             }
             else
             {
@@ -2291,7 +2456,7 @@ namespace openloco::ui::windows::construction
 
                     refreshRoadStationList();
 
-                    auto al = _selectedStations[(_trackType & ~(1ULL << 7))];
+                    auto al = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xFF)
                         al = _stationList[0];
@@ -2300,21 +2465,24 @@ namespace openloco::ui::windows::construction
 
                     refreshRoadBridgeList();
 
-                    al = _selectedBridges[(_trackType & ~(1ULL << 7))];
+                    al = _scenarioBridges[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xFF)
                         al = _bridgeList[0];
 
                     _lastSelectedBridge = al;
 
-                    refreshRoadOption();
+                    refreshRoadModList();
 
-                    al = _selectedMods[(_trackType & ~(1ULL << 7))];
+                    al = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
 
                     if (al == 0xff)
                         al = 0;
 
-                    return checkB(al);
+                    _lastSelectedMod = al;
+                    _byte_113603A = 0;
+
+                    return trackWindow();
                 }
             }
         }
@@ -2322,7 +2490,7 @@ namespace openloco::ui::windows::construction
 
         refreshSignalList();
 
-        auto al = _byte_525F72[_trackType];
+        auto al = _scenarioSignals[_trackType];
 
         if (al == 0xFF)
             al = _signalList[0];
@@ -2331,7 +2499,7 @@ namespace openloco::ui::windows::construction
 
         refreshtrainStationList();
 
-        al = _byte_525F82[_trackType];
+        al = _scenarioTrainStations[_trackType];
 
         if (al == 0xFF)
             al = _stationList[0];
@@ -2340,21 +2508,24 @@ namespace openloco::ui::windows::construction
 
         refreshTrackBridgeList();
 
-        al = _selectedBridges[_trackType];
+        al = _scenarioBridges[_trackType];
 
         if (al == 0xFF)
             al = _bridgeList[0];
 
         _lastSelectedBridge = al;
 
-        refreshTrackOption();
+        refreshTrackModList();
 
-        al = _byte_525F8A[_trackType];
+        al = _scenarioTrackMods[_trackType];
 
         if (al == 0xFF)
             al = 0;
 
-        return checkB(al);
+        _lastSelectedMod = al;
+        _byte_113603A = 0;
+
+        return trackWindow();
     }
 
     // 0x004A6FAC

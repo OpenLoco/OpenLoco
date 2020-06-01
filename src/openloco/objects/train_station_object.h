@@ -10,12 +10,12 @@ namespace openloco
         string_id name;
         uint8_t var_02;
         uint8_t var_03;
-        uint16_t track_pieces;       // 0x04
+        uint16_t track_pieces;      // 0x04
         uint16_t build_cost_factor; // 0x06
         uint16_t sell_cost_factor;  // 0x08
         uint8_t cost_index;         // 0x0A
         uint8_t var_0B;
-        uint8_t colour_flags;   // 0x0C
+        uint8_t colour_flags; // 0x0C
         uint8_t var_0D;
         uint32_t var_0E;
         uint8_t pad_12[0x22 - 0x12];
