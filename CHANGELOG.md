@@ -1,3 +1,7 @@
+20.05.1+ (???)
+------------------------------------------------------------------------
+- Fix: [#485] Incorrect position of exhaust smoke on vehicles.
+
 20.05.1 (2020-05-30)
 ------------------------------------------------------------------------
 - Fix: [#487] Checkbox behaviour reversed for industry opening/closing in landscape generation options.
