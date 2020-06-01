@@ -124,9 +124,9 @@ namespace openloco::ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<map::map_pos> screenGetMapXyWithZ(const viewport_pos& vpos, const int16_t z)
+    std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
     {
-        window* w = WindowManager::findAt(vpos.x, vpos.y);
+        window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)
         {
             return std::nullopt;
@@ -138,10 +138,10 @@ namespace openloco::ui
             return std::nullopt;
         }
 
-        if (vp->containsUI(vpos))
+        if (vp->containsUI(mouse))
         {
-            map::map_pos mpos = vp->ui_to_map(vpos);
-            map::map_pos position = viewport_coord_to_map_coord(mpos.x, mpos.y, z, WindowManager::getCurrentRotation());
+            viewport_pos vpos = vp->ui_to_map(mouse);
+            map::map_pos position = viewport_coord_to_map_coord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
                 return position;

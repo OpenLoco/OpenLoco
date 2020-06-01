@@ -72,9 +72,9 @@ namespace openloco::ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
-        constexpr bool containsUI(const viewport_pos& vpos)
+        constexpr bool containsUI(const xy32& pos)
         {
-            return (vpos.x >= x && vpos.x < x + width && vpos.y >= y && vpos.y < y + height);
+            return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }
 
         constexpr bool intersects(const ViewportRect& vpos)
@@ -123,10 +123,10 @@ namespace openloco::ui
         /**
          * Maps a UI (screen) position to a 2D viewport position.
          */
-        map::map_pos ui_to_map(const viewport_pos& vpos)
+        viewport_pos ui_to_map(const xy32& pos)
         {
-            coord_t map_x = ((vpos.x - x) << zoom) + view_x;
-            coord_t map_y = ((vpos.y - y) << zoom) + view_y;
+            coord_t map_x = ((pos.x - x) << zoom) + view_x;
+            coord_t map_y = ((pos.y - y) << zoom) + view_y;
             return { map_x, map_y };
         }
 
