@@ -409,11 +409,10 @@ namespace openloco::ui
     }
 
     // 0x004CA4BD
+    // input: regs.esi - window (this)
     void window::invalidate()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call(0x004CA4BD, regs);
+        gfx::set_dirty_blocks(x, y, x + width, y + height);
     }
 
     // 0x004CA115

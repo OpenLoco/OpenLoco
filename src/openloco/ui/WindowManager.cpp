@@ -298,6 +298,19 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x004CA4BD,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto window = (ui::window*)regs.esi;
+                if (window != nullptr)
+                {
+                    window->invalidate();
+                }
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
             0x004CB966,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
