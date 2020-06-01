@@ -244,6 +244,16 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x004C5C69,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                gfx::set_dirty_blocks(regs.ax, regs.bx, regs.dx, regs.bp);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x004C9984,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
