@@ -19,6 +19,7 @@
 #include "../objects/train_signal_object.h"
 #include "../objects/train_station_object.h"
 #include "../objects/vehicle_object.h"
+#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../utility/numeric.hpp"
@@ -137,9 +138,9 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
     static loco_global<uint8_t, 0x01136064> _constructionRotation;
-    static loco_global<uint8_t, 0x01136064> _byte_1136065;
-    static loco_global<uint8_t, 0x01136067> _byte_1136067;
-    static loco_global<uint8_t, 0x01136068> _byte_1136068;
+    static loco_global<uint8_t, 0x01136065> _byte_1136065;
+    static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
+    static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _byte_113606E;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
     static loco_global<uint8_t, 0x01136077> _byte_1136077;
@@ -159,6 +160,30 @@ namespace openloco::ui::windows::construction
             tab_station,
             tab_signal,
             tab_overhead,
+        };
+
+        enum trackPiece
+        {
+            straight,
+            left_hand_curve_very_small,
+            right_hand_curve_very_small,
+            left_hand_curve_small,
+            right_hand_curve_small,
+            left_hand_curve,
+            right_hand_curve,
+            left_hand_curve_large,
+            right_hand_curve_large,
+            s_bend_left,
+            s_bend_right,
+        };
+
+        enum trackGradient
+        {
+            level = 0,
+            slope_up = 2,
+            steep_slope_up = 4,
+            slope_down = 6,
+            steep_slope_down = 8,
         };
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
@@ -240,37 +265,37 @@ namespace openloco::ui::windows::construction
         _unk_4F78EB,
     };
 
-    static bool sub_4A0832(registers regs)
+    static bool sub_4A0832(registers& regs)
     {
-        regs.eax = _byte_1136067;
-        regs.bl = _byte_1136068;
+        regs.ax = _lastSelectedTrackPiece;
+        regs.bl = _lastSelectedTrackGradient;
         regs.bh = _constructionRotation;
-        if (regs.eax == 0xFF)
+        if (regs.ax == 0xFF)
             return true;
-        switch (regs.eax)
+        switch (regs.ax)
         {
-            case 0: // 0x004A0856
+            case common::trackPiece::straight: // 0x004A0856
             {
-                if (regs.bh >= 0xC)
+                if (regs.bh >= 12)
                     return true;
                 if (regs.bh >= 8)
                     return true;
                 if (regs.bh >= 4)
                     return true;
                 regs.dh = 0;
-                if (regs.bl != 0)
+                if (regs.bl != common::trackGradient::level)
                 {
                     regs.dh = 5;
-                    if (regs.bl != 2)
+                    if (regs.bl != common::trackGradient::slope_up)
                     {
                         regs.dh = 7;
-                        if (regs.bl != 4)
+                        if (regs.bl != common::trackGradient::steep_slope_up)
                         {
                             regs.dh = 6;
-                            if (regs.bl != 6)
+                            if (regs.bl != common::trackGradient::slope_down)
                             {
                                 regs.dh = 8;
-                                if (regs.bl != 8)
+                                if (regs.bl != common::trackGradient::steep_slope_down)
                                     return true;
                             }
                         }
@@ -278,11 +303,11 @@ namespace openloco::ui::windows::construction
                 }
                 break;
             }
-            case 1: // 0x004A08A5
+            case common::trackPiece::left_hand_curve_very_small: // 0x004A08A5
             {
                 if (regs.bh != 0)
                     return true;
-                if (regs.bh >= 0xC)
+                if (regs.bh >= 12)
                     return true;
                 if (regs.bh >= 8)
                     return true;
@@ -291,11 +316,11 @@ namespace openloco::ui::windows::construction
                 regs.dh = 1;
                 break;
             }
-            case 2: // 0x004A08CD
+            case common::trackPiece::right_hand_curve_very_small: // 0x004A08CD
             {
                 if (regs.bh != 0)
                     return true;
-                if (regs.bh >= 0xC)
+                if (regs.bh >= 12)
                     return true;
                 if (regs.bh >= 8)
                     return true;
@@ -304,30 +329,30 @@ namespace openloco::ui::windows::construction
                 regs.dh = 2;
                 break;
             }
-            case 3: // 0x004A08ED
+            case common::trackPiece::left_hand_curve_small: // 0x004A08ED
             {
                 if (regs.bh >= 4)
                     return true;
                 regs.dh = 3;
-                if (regs.bl != 0)
+                if (regs.bl != common::trackGradient::level)
                     return true;
                 break;
             }
-            case 4: // 0x004A08FB
+            case common::trackPiece::right_hand_curve_small: // 0x004A08FB
             {
                 if (regs.bh >= 4)
                     return true;
                 regs.dh = 4;
-                if (regs.bl != 0)
+                if (regs.bl != common::trackGradient::level)
                     return true;
                 break;
             }
-            case 5: // 0x004A095F
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
+            case common::trackPiece::left_hand_curve: // 0x004A095F
+            case common::trackPiece::right_hand_curve:
+            case common::trackPiece::left_hand_curve_large:
+            case common::trackPiece::right_hand_curve_large:
+            case common::trackPiece::s_bend_left:
+            case common::trackPiece::s_bend_right:
             case 11:
             case 12:
             {
@@ -335,9 +360,9 @@ namespace openloco::ui::windows::construction
             }
             case 13: // 0x004A0909
             {
-                if (regs.bl != 0)
+                if (regs.bl != common::trackGradient::level)
                     return true;
-                if (regs.bh >= 0x0C)
+                if (regs.bh >= 12)
                     return true;
                 break;
             }
@@ -355,173 +380,374 @@ namespace openloco::ui::windows::construction
         regs.edx |= (_lastSelectedBridge << 24);
         regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
 
-        if (regs.ax)
-            return true;
-        else
-            return false;
+        regs.ax &= regs.ax;
+        return false;
     }
 
-    //static bool sub_4A04F8(registers regs)
-    //{
-    //    regs.eax = _byte_1136067;
-    //    regs.bl = _byte_1136068;
-    //    regs.bh = _constructionRotation;
-    //    if (regs.eax == 0xFF)
-    //        return true;
-    //    switch (regs.eax)
-    //    {
-    //        case 0: // loc_4A051C
-    //        {
-    //            if (regs.bh >= 0xC)
-    //            {
-    //                regs.dh = 1;
-    //                if (regs.bl != 0)
-    //                    return true;
-    //            }
-    //            else
-    //            {
-    //                if (regs.bh >= 8)
-    //                {
-    //                    regs.dh = 27;
-    //                    if (regs.bl != 0)
-    //                    {
-    //                        regs.dh = 35;
-    //                        if (regs.bl != 4)
-    //                        {
-    //                            regs.dh = 37;
-    //                            if (regs.bl != 8)
-    //                                return true;
-    //                        }
-    //                    }
-    //                }
-    //                else
-    //                {
-    //                    if (regs.bh >= 4)
-    //                    {
-    //                        regs.dh = 26;
-    //                        if (regs.bl != 0)
-    //                        {
-    //                            regs.dh = 34;
-    //                            if (regs.bl != 4)
-    //                            {
-    //                                regs.dh = 36;
-    //                                if (regs.bl != 8)
-    //                                    return true;
-    //                            }
-    //                        }
-    //                    }
-    //                    else
-    //                    {
-    //                        regs.dh = 0;
-    //                        if (regs.bl != 0)
-    //                        {
-    //                            regs.dh = 14;
-    //                            if (regs.bl != 2)
-    //                            {
-    //                                regs.dh = 16;
-    //                                if (regs.bl != 4)
-    //                                {
-    //                                    regs.dh = 15;
-    //                                    if (regs.bl != 6)
-    //                                    {
-    //                                        regs.dh = 17;
-    //                                        if (regs.bl != 8)
-    //                                            return true;
-    //                                    }
-    //                                }
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //            break;
-    //        }
-    //        case 1:  // loc_4A05C3
-    //        case 2:  // loc_4A05F4
-    //        case 3:  // loc_4A0625
-    //        case 4:  // loc_4A066A
-    //        case 5:  // loc_4A06AF
-    //        case 6:  // loc_4A06C8
-    //        case 7:  // loc_4A06E1
-    //        case 8:  // loc_4A0705
-    //        case 9:  // loc_4A0729
-    //        case 10: // loc_4A0756
-    //        case 11: // loc_4A077C
-    //        case 12: // loc_4A07A2
-    //        case 13: // loc_4A07C0
-    //            break;
-    //    }
+    static bool sub_4A04F8(registers& regs)
+    {
+        regs.ax = _lastSelectedTrackPiece;
+        regs.bl = _lastSelectedTrackGradient;
+        regs.bh = _constructionRotation;
+        if (regs.ax == 0xFF)
+            return true;
+        switch (regs.ax)
+        {
+            case common::trackPiece::straight: // loc_4A051C
+            {
+                if (regs.bh >= 12)
+                {
+                    regs.dh = 1;
+                    if (regs.bl != common::trackGradient::level)
+                        return true;
+                }
+                else
+                {
+                    if (regs.bh >= 8)
+                    {
+                        regs.dh = 27;
+                        if (regs.bl != common::trackGradient::level)
+                        {
+                            regs.dh = 35;
+                            if (regs.bl != common::trackGradient::steep_slope_up)
+                            {
+                                regs.dh = 37;
+                                if (regs.bl != common::trackGradient::steep_slope_down)
+                                    return true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (regs.bh >= 4)
+                        {
+                            regs.dh = 26;
+                            if (regs.bl != common::trackGradient::level)
+                            {
+                                regs.dh = 34;
+                                if (regs.bl != common::trackGradient::steep_slope_up)
+                                {
+                                    regs.dh = 36;
+                                    if (regs.bl != common::trackGradient::steep_slope_down)
+                                        return true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            regs.dh = 0;
+                            if (regs.bl != common::trackGradient::level)
+                            {
+                                regs.dh = 14;
+                                if (regs.bl != common::trackGradient::slope_up)
+                                {
+                                    regs.dh = 16;
+                                    if (regs.bl != common::trackGradient::steep_slope_up)
+                                    {
+                                        regs.dh = 15;
+                                        if (regs.bl != common::trackGradient::slope_down)
+                                        {
+                                            regs.dh = 17;
+                                            if (regs.bl != common::trackGradient::steep_slope_down)
+                                                return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
 
-    //    if (regs.bh < 0x0C)
-    //        regs.bh &= 3;
+            case common::trackPiece::left_hand_curve_very_small: // loc_4A05C3
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                if (regs.bh >= 8)
+                {
+                    regs.dh = 29;
+                    break;
+                }
+                if (regs.bh >= 4)
+                {
+                    regs.dh = 28;
+                    break;
+                }
+                regs.dh = 2;
+                break;
+            }
 
-    //    regs.ax = _x;
-    //    regs.cx = _y;
-    //    regs.edx = (_trackType & ~(1 << 7)) | (regs.dh << 8);
-    //    regs.dl = _trackType & ~(1 << 7);
-    //    regs.edx |= (_lastSelectedBridge << 24);
-    //    regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+            case common::trackPiece::right_hand_curve_very_small: // loc_4A05F4
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                if (regs.bh >= 8)
+                {
+                    regs.dh = 31;
+                    break;
+                }
+                if (regs.bh >= 4)
+                {
+                    regs.dh = 30;
+                    break;
+                }
+                regs.dh = 3;
+                break;
+            }
 
-    //    if (regs.ax)
-    //        return true;
-    //    else
-    //        return false;
-    //}
+            case common::trackPiece::left_hand_curve_small: // loc_4A0625
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 4;
+                if (regs.bl != common::trackGradient::level)
+                {
+                    regs.dh = 18;
+                    if (regs.bl != common::trackGradient::slope_up)
+                    {
+                        regs.dh = 22;
+                        if (regs.bl != common::trackGradient::steep_slope_up)
+                        {
+                            regs.dh = 20;
+                            if (regs.bl != common::trackGradient::slope_down)
+                            {
+                                regs.dh = 24;
+                                if (regs.bl != common::trackGradient::steep_slope_down)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+
+            case common::trackPiece::right_hand_curve_small: // loc_4A066A
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 5;
+                if (regs.bl != common::trackGradient::level)
+                {
+                    regs.dh = 19;
+                    if (regs.bl != common::trackGradient::slope_up)
+                    {
+                        regs.dh = 23;
+                        if (regs.bl != common::trackGradient::steep_slope_up)
+                        {
+                            regs.dh = 21;
+                            if (regs.bl != common::trackGradient::slope_down)
+                            {
+                                regs.dh = 25;
+                                if (regs.bl != common::trackGradient::steep_slope_down)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+
+            case common::trackPiece::left_hand_curve: // loc_4A06AF
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 6;
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                break;
+            }
+
+            case common::trackPiece::right_hand_curve: // loc_4A06C8
+            {
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 7;
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                break;
+            }
+
+            case common::trackPiece::left_hand_curve_large: // loc_4A06E1
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                regs.dh = 10;
+                if (regs.bh >= 12)
+                    break;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 8;
+                break;
+            }
+
+            case common::trackPiece::right_hand_curve_large: // loc_4A0705
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                regs.dh = 11;
+                if (regs.bh >= 12)
+                    break;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 9;
+                break;
+            }
+
+            case common::trackPiece::s_bend_left: // loc_4A0729
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                regs.dh = 33;
+                if (regs.bh >= 8)
+                    break;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 12;
+                break;
+            }
+
+            case common::trackPiece::s_bend_right: // loc_4A0756
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                if (regs.bh >= 8)
+                    return true;
+                regs.bh = 32;
+                if (regs.bh >= 4)
+                    break;
+                regs.dh = 13;
+                break;
+            }
+
+            case 11: // loc_4A077C
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                if (regs.bh >= 8)
+                    return true;
+                regs.bh = 40;
+                if (regs.bh >= 4)
+                    break;
+                regs.dh = 38;
+                break;
+            }
+
+            case 12: // loc_4A07A2
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                regs.dh = 41;
+                if (regs.bh >= 8)
+                    break;
+                if (regs.bh >= 4)
+                    return true;
+                regs.dh = 39;
+                break;
+            }
+
+            case 13: // loc_4A07C0
+            {
+                if (regs.bl != common::trackGradient::level)
+                    return true;
+                if (regs.bh >= 12)
+                    return true;
+                regs.dh = 43;
+                if (regs.bh >= 8)
+                    break;
+                regs.dh = 42;
+                if (regs.bh >= 4)
+                    return true;
+                break;
+            }
+        }
+
+        if (regs.bh < 12)
+            regs.bh &= 3;
+
+        regs.ax = _x;
+        regs.cx = _y;
+        regs.edx = _trackType | (regs.dh << 8);
+        regs.dl = _trackType;
+        regs.edx |= (_lastSelectedBridge << 24);
+        regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+
+        if (_byte_113607E & (1 << 1))
+        {
+            auto thing = thingmgr::get<Thing>(2492);
+            regs.edi |= thing->type;
+        }
+
+        regs.ax &= regs.ax;
+        return false;
+    }
 
     // 0x0049F1B5
     static void sub_49F1B5()
     {
-        //registers regs;
-        //call(0x0049F1B5, regs);
+        registers regs;
+        call(0x0049F1B5, regs);
 
-        auto window = WindowManager::find(WindowType::construction);
+        //auto window = WindowManager::find(WindowType::construction);
 
-        if (window != nullptr)
-        {
-            return;
-        }
+        //if (window != nullptr)
+        //{
+        //    return;
+        //}
 
-        if (_trackType & (1 << 7))
-        {
-            tilemgr::map_invalidate_map_selection_tiles();
-            _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+        //if (_trackType & (1 << 7))
+        //{
+        //    tilemgr::map_invalidate_map_selection_tiles();
+        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
 
-            registers regs;
-            auto carryFlag = sub_4A0832(regs);
+        //    registers regs;
+        //    auto carryFlag = sub_4A0832(regs);
 
-            auto bl = regs.bl;
-            auto bh = regs.bh;
-            auto edi = regs.edi;
-            auto ax = regs.ax;
-            auto cx = regs.cx;
-            auto dh = regs.dh;
-            //auto ebx = regs.ebx;
+        //    auto bl = regs.bl;
+        //    auto bh = regs.bh;
+        //    auto edi = regs.edi;
+        //    auto ax = regs.ax;
+        //    auto cx = regs.cx;
+        //    auto dh = regs.dh;
+        //    //auto ebx = regs.ebx;
 
-            if (carryFlag)
-            {
-                bl = _constructionRotation;
-                edi = 0;
-                ax = _x;
-                cx = _y;
-            }
-            else
-            {
-                bl = bh;
-                edi = dh;
-            }
-            auto ediOffset = offset_4F6D1C[edi];
-            if (ediOffset[0] != 0xFF)
-            {
-            }
-            else
-            {
-            }
-        }
-        else
-        {
-            tilemgr::map_invalidate_map_selection_tiles();
-            _mapSelectionFlags = _mapSelectionFlags | 0x0A;
-        }
+        //    if (carryFlag)
+        //    {
+        //        bl = _constructionRotation;
+        //        edi = 0;
+        //        ax = _x;
+        //        cx = _y;
+        //    }
+        //    else
+        //    {
+        //        bl = bh;
+        //        edi = dh;
+        //    }
+        //    auto ediOffset = offset_4F6D1C[edi];
+        //    if (ediOffset[0] != 0xFF)
+        //    {
+        //    }
+        //    else
+        //    {
+        //    }
+        //}
+        //else
+        //{
+        //    tilemgr::map_invalidate_map_selection_tiles();
+        //    _mapSelectionFlags = _mapSelectionFlags | 0x0A;
+        //}
     }
 
     namespace construction
@@ -697,14 +923,14 @@ namespace openloco::ui::windows::construction
 
         static void sub_49DBEC(window* self, uint64_t disabledWidgets)
         {
-            if (_byte_1136068 == 2 || _byte_1136068 == 6)
+            if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
             {
                 disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
                 disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
                 disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
             }
 
-            if (_byte_1136068 == 4 || _byte_1136068 == 8)
+            if (_lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
             {
                 disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
                 disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
@@ -745,7 +971,7 @@ namespace openloco::ui::windows::construction
 
         static void sub_49DB1F(window* self, track_object trackObj, uint64_t disabledWidgets)
         {
-            if (_byte_1136068 == 2 || _byte_1136068 == 6)
+            if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
             {
                 disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
                 disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
@@ -754,7 +980,7 @@ namespace openloco::ui::windows::construction
                     disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
             }
 
-            if (_byte_1136068 == 4 || _byte_1136068 == 8)
+            if (_lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
             {
                 disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
                 disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
@@ -788,8 +1014,8 @@ namespace openloco::ui::windows::construction
             if (_constructionHover == 0)
             {
                 registers regs;
-                auto flags = call(0x004A04F8, regs);
-                auto carryFlag = (flags >> 16) & (1 << 1);
+                auto carryFlag = sub_4A04F8(regs);
+
                 if (carryFlag)
                     disabledWidgets |= (1 << widx::construct);
             }
@@ -824,20 +1050,20 @@ namespace openloco::ui::windows::construction
             {
                 trackType &= ~(1 << 7);
                 // auto roadObj = objectmgr::get<road_object>(trackType);
-                if (_byte_1136067 == 0xFF)
+                if (_lastSelectedTrackPiece == 0xFF)
                 {
                     sub_49DBEC(self, disabledWidgets);
                     return;
                 }
-                switch (_byte_1136067)
+                switch (_lastSelectedTrackPiece)
                 {
-                    case 0:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
+                    case common::trackPiece::straight:
+                    case common::trackPiece::left_hand_curve:
+                    case common::trackPiece::right_hand_curve:
+                    case common::trackPiece::left_hand_curve_large:
+                    case common::trackPiece::right_hand_curve_large:
+                    case common::trackPiece::s_bend_left:
+                    case common::trackPiece::s_bend_right:
                     case 11:
                     case 12:
                     {
@@ -845,10 +1071,10 @@ namespace openloco::ui::windows::construction
                         break;
                     }
 
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
+                    case common::trackPiece::left_hand_curve_very_small:
+                    case common::trackPiece::right_hand_curve_very_small:
+                    case common::trackPiece::left_hand_curve_small:
+                    case common::trackPiece::right_hand_curve_small:
                     case 13:
                     {
                         disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
@@ -859,12 +1085,12 @@ namespace openloco::ui::windows::construction
             else
             {
                 auto trackObj = objectmgr::get<track_object>(trackType);
-                if (_byte_1136067 == 0xFF)
+                if (_lastSelectedTrackPiece == 0xFF)
                 {
                     sub_49DB1F(self, *trackObj, disabledWidgets);
                     return;
                 }
-                switch (_byte_1136067)
+                switch (_lastSelectedTrackPiece)
                 {
                     case 0:
                         sub_49DB1F(self, *trackObj, disabledWidgets);
@@ -902,9 +1128,9 @@ namespace openloco::ui::windows::construction
             _byte_113603A = 0xFF;
             sub_49FEC7();
             if (slope)
-                _byte_1136068 = trackPiece;
+                _lastSelectedTrackGradient = trackPiece;
             else
-                _byte_1136067 = trackPiece;
+                _lastSelectedTrackPiece = trackPiece;
             _trackCost = 0x80000000;
             sub_49F1B5();
         }
@@ -1009,15 +1235,15 @@ namespace openloco::ui::windows::construction
                 {
                     _byte_113603A = 0xFF;
                     sub_49FEC7();
-                    _byte_1136067 = 11;
+                    _lastSelectedTrackPiece = 11;
                     _trackCost = 0x80000000;
                     if (self->widgets[widx::s_bend_dual_track_left].image != image_ids::construction_s_bend_dual_track_left)
                     {
-                        _byte_1136067 = 13;
+                        _lastSelectedTrackPiece = 13;
                         if (self->widgets[widx::s_bend_dual_track_left].image != image_ids::construction_right_turnaround)
                         {
                             if (self->widgets[widx::s_bend_dual_track_left].image != image_ids::construction_left_turnaround)
-                                _byte_1136067 = 12;
+                                _lastSelectedTrackPiece = 12;
                         }
                     }
                     sub_49F1B5();
@@ -1028,13 +1254,13 @@ namespace openloco::ui::windows::construction
                 {
                     _byte_113603A = 0xFF;
                     sub_49FEC7();
-                    _byte_1136067 = 12;
+                    _lastSelectedTrackPiece = 12;
                     _trackCost = 0x80000000;
                     if (self->widgets[widx::s_bend_dual_track_right].image != image_ids::construction_s_bend_dual_track_right)
                     {
-                        _byte_1136067 = 13;
+                        _lastSelectedTrackPiece = 13;
                         if (self->widgets[widx::s_bend_dual_track_left].image != image_ids::construction_left_turnaround)
-                            _byte_1136067 = 11;
+                            _lastSelectedTrackPiece = 11;
                     }
                     sub_49F1B5();
                     break;
@@ -1066,6 +1292,8 @@ namespace openloco::ui::windows::construction
                     break;
                 }
             }
+            std::printf("TrackPiece: %d\n", int(_lastSelectedTrackPiece));
+            std::printf("TrackGradient: %d\n", int(_lastSelectedTrackGradient));
         }
 
         // 0x0049D4EA
@@ -1142,18 +1370,16 @@ namespace openloco::ui::windows::construction
 
             //registers regs;
             //uint32_t flags;
-
+            //auto carryFlag = false
             //if (_trackType & (1 << 7))
             //{
-            //    registers regs;
-            //    auto carryFlag = sub_4A0832(regs);
+            //    carryFlag = sub_4A0832(regs);
             //}
             //else
             //{
-            //    flags = call(0x004A04F8, regs);
+            //    carryFlag = sub_4A04F8(regs);
             //}
             //auto edi = regs.edi;
-            //auto carryFlag = (flags >> 16) & (1 << 1);
 
             //if (carryFlag)
             //    return;
@@ -1609,11 +1835,13 @@ namespace openloco::ui::windows::construction
             else
             {
                 registers regs;
-                auto flags = call(0x004A04F8, regs);
-                auto carryFlag = (flags >> 16) & (1 << 1);
+                auto carryFlag = sub_4A04F8(regs);
+
                 _word_1135FD8 = regs.edi >> 16;
+
                 if (carryFlag)
                     return;
+
                 _byte_1136077 = regs.dl;
                 _byte_1136078 = regs.bh;
                 _byte_1136079 = regs.dh;
@@ -1628,7 +1856,7 @@ namespace openloco::ui::windows::construction
 
                 if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
                 {
-                    auto ecx = offset_4F6D1C[_byte_1136079];
+                    auto ecx = offset_4F73D8[_byte_1136079];
                     auto i = 0;
 
                     while (ecx[i + 10] != 0xFF)
@@ -2355,8 +2583,8 @@ namespace openloco::ui::windows::construction
 
                             sub_4A3A50();
 
-                            _byte_1136067 = 0;
-                            _byte_1136068 = 0;
+                            _lastSelectedTrackPiece = 0;
+                            _lastSelectedTrackGradient = 0;
 
                             return window;
                         }
@@ -2386,8 +2614,8 @@ namespace openloco::ui::windows::construction
         _byte_113607E = 1;
         _trackCost = 0x80000000;
         _byte_1136076 = 0;
-        _byte_1136067 = 0;
-        _byte_1136068 = 0;
+        _lastSelectedTrackPiece = 0;
+        _lastSelectedTrackGradient = 0;
         _byte_113606E = 0;
 
         setTrackOptions(flags);
