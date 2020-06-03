@@ -9,7 +9,7 @@ namespace openloco
     struct track_extra_object
     {
         string_id name;
-        uint16_t track_pieces;       // 0x02
+        uint16_t track_pieces;      // 0x02
         uint8_t is_overhead;        // 0x04
         uint8_t cost_index;         // 0x05
         uint16_t build_cost_factor; // 0x06

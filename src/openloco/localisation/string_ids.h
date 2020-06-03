@@ -848,6 +848,8 @@ namespace openloco::string_ids
     constexpr string_id forbid_trams = 1521;
     constexpr string_id forbid_aircraft = 1522;
     constexpr string_id forbid_ships = 1523;
+    constexpr string_id title_airport = 1524;
+    constexpr string_id title_ship_port = 1525;
 
     constexpr string_id currently_playing = 1535;
     constexpr string_id music_controls_stop_tip = 1536;
