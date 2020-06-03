@@ -9,6 +9,18 @@ namespace openloco
         constexpr uint8_t unk_01 = 1 << 1;
         constexpr uint8_t unk_03 = 1 << 3;
     }
+
+    namespace road_piece_flags
+    {
+        constexpr uint16_t one_way = 1 << 0;
+        constexpr uint16_t track = 1 << 1;
+        constexpr uint16_t slope = 1 << 2;
+        constexpr uint16_t steep_slope = 1 << 3;
+        constexpr uint16_t intersection = 1 << 2;
+        constexpr uint16_t one_sided = 1 << 5;
+        constexpr uint16_t overtake = 1 << 6;
+        constexpr uint16_t street_lights = 1 << 8;
+    }
 #pragma pack(push, 1)
     struct road_object
     {

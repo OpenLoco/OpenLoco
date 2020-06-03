@@ -8,6 +8,22 @@ namespace openloco
     {
         constexpr uint8_t unk_02 = 1 << 2;
     }
+
+    namespace track_piece_flags
+    {
+        constexpr uint16_t diagonal = 1 << 0;
+        constexpr uint16_t large_curve = 1 << 1;
+        constexpr uint16_t normal_curve = 1 << 2;
+        constexpr uint16_t small_curve = 1 << 3;
+        constexpr uint16_t very_small_curve = 1 << 4;
+        constexpr uint16_t slope = 1 << 5;
+        constexpr uint16_t steep_slope = 1 << 6;
+        constexpr uint16_t one_sided = 1 << 7;
+        constexpr uint16_t sloped_curve = 1 << 8;
+        constexpr uint16_t s_bend = 1 << 9;
+        constexpr uint16_t junction = 1 << 10;
+    }
+
 #pragma pack(push, 1)
     struct track_object
     {
