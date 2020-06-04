@@ -217,6 +217,7 @@ namespace openloco::string_ids
 
     constexpr string_id tooltip_select_track_to_upgrade = 268;
 
+    constexpr string_id signal_black = 270;
     constexpr string_id tab_track_road_construction = 271;
     constexpr string_id tab_station_construction = 272;
     constexpr string_id tab_signal_construction = 273;

@@ -92,7 +92,10 @@ namespace openloco::ui::windows::construction
 
     static loco_global<uint8_t[40][8], 0x004F7B62> _word_4F7B62;
 
-    static loco_global<uint16_t[2], 0x004FFAF0> _dword_4FFAF0;
+    static loco_global<uint8_t[16], 0x004FFB08> _signalFrames2State;
+    static loco_global<uint8_t[32], 0x004FFB19> _signalFrames3State;
+    static loco_global<uint8_t[64], 0x004FFB3A> _signalFrames4State;
+
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
@@ -124,7 +127,7 @@ namespace openloco::ui::windows::construction
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<uint32_t, 0x01135F3E> _trackCost;
-    static loco_global<uint32_t, 0x01135F4E> _dword_1135F4E;
+    static loco_global<uint32_t, 0x01135F4E> _signalCost;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
     static loco_global<uint32_t, 0x01135F70> _dword_1135F70;
     static loco_global<uint32_t, 0x01135F74> _dword_1135F74;
@@ -140,6 +143,7 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
+    static loco_global<uint8_t, 0x0113602F> _isSignalBothDirections;
     static loco_global<uint8_t[9], 0x01136030> _bridgeList;
     static loco_global<uint8_t, 0x01136039> _lastSelectedBridge;
     static loco_global<uint8_t, 0x0113603A> _byte_113603A;
@@ -2652,29 +2656,101 @@ namespace openloco::ui::windows::construction
         // 0x0049E64E
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.dx = widgetIndex;
-            call(0x0049E64E, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.dx = widgetIndex;
+            //call(0x0049E64E, regs);
+
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_construction:
+                case common::widx::tab_overhead:
+                case common::widx::tab_signal:
+                case common::widx::tab_station:
+                    common::switchTab(self, widgetIndex);
+                    break;
+            }
         }
 
         // 0x0049E669
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.dx = widgetIndex;
-            call(0x0049E669, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.dx = widgetIndex;
+            //call(0x0049E669, regs);
+
+            switch (widgetIndex)
+            {
+                case widx::signal_dropdown:
+                {
+                    uint8_t signalCount = 0;
+                    while (_signalList[signalCount] != 0xFF)
+                        signalCount++;
+
+                    auto widget = self->widgets[widx::signal];
+                    auto xPos = widget.left + self->x;
+                    auto yPos = widget.top + self->y;
+                    auto width = widget.width() + 2;
+                    auto height = widget.height();
+
+                    dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, 0x80);
+
+                    signalCount = 0;
+                    while (_signalList[signalCount] != 0xFF)
+                    {
+                        auto signal = _signalList[signalCount];
+                        if (signal == _lastSelectedSignal)
+                            dropdown::set_highlighted_item(signalCount);
+
+                        auto trainSignalObj = objectmgr::get<train_signal_object>(signal);
+
+                        dropdown::add(signalCount, trainSignalObj->name);
+
+                        signalCount++;
+                    }
+                }
+
+                case widx::both_directions:
+                {
+                    _isSignalBothDirections = 1;
+                    input::cancel_tool();
+                    input::toolSet(self, widgetIndex, 42);
+                    break;
+                }
+
+                case widx::single_direction:
+                {
+                    _isSignalBothDirections = 0;
+                    input::cancel_tool();
+                    input::toolSet(self, widgetIndex, 42);
+                    break;
+                }
+            }
         }
 
         // 0x0049E67C
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = itemIndex;
-            call(0x0049E67C, regs);
+            //registers regs;
+            //regs.esi = (int32_t)&self;
+            //regs.dx = widgetIndex;
+            //regs.ax = itemIndex;
+            //call(0x0049E67C, regs);
+
+            if (widgetIndex != widx::signal_dropdown)
+                return;
+
+            if (itemIndex != -1)
+            {
+                _lastSelectedSignal = _signalList[itemIndex];
+                _scenarioSignals[_trackType] = _signalList[itemIndex];
+                self->invalidate();
+            }
         }
 
         // 0x0049E76F
@@ -2712,18 +2788,73 @@ namespace openloco::ui::windows::construction
         // 0x0049E499
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0049E499, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //call(0x0049E499, regs);
+
+            common::prepare_draw(self);
+
+            auto trackObj = objectmgr::get<track_object>(_trackType);
+
+            auto args = FormatArguments();
+            args.push(trackObj->name);
+
+            auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+
+            self->widgets[widx::signal].text = trainSignalObject->name;
+
+            common::repositionTabs(self);
         }
 
         // 0x0049E501
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049E501, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x0049E501, regs);
+
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+
+            auto xPos = self->x + 3;
+            auto yPos = self->y + 63;
+            auto width = 130;
+
+            {
+                auto args = FormatArguments();
+                args.push(trainSignalObject->var_0C);
+
+                gfx::draw_string_495224(*dpi, xPos, yPos, width, colour::black, string_ids::signal_black, &args);
+            }
+
+            auto signalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+            auto imageId = signalObject->var_0E;
+
+            xPos = (self->widgets[widx::both_directions].left + self->widgets[widx::both_directions].right) / 2 + self->x;
+            yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
+
+            gfx::draw_image(dpi, xPos - 8, yPos, imageId);
+
+            gfx::draw_image(dpi, xPos + 8, yPos, imageId + 4);
+
+            xPos = (self->widgets[widx::single_direction].left + self->widgets[widx::single_direction].right) / 2 + self->x;
+            yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
+
+            gfx::draw_image(dpi, xPos, yPos, imageId);
+
+            if (_signalCost != 0x80000000 && _signalCost != 0)
+            {
+                auto args = FormatArguments();
+                args.push<uint32_t>(_signalCost);
+
+                xPos = self->x + 69;
+                yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
+
+                gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            }
         }
 
         static void init_events()
@@ -2904,7 +3035,7 @@ namespace openloco::ui::windows::construction
             tilemgr::map_invalidate_map_selection_tiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             _trackCost = 0x80000000;
-            _dword_1135F4E = 0x80000000;
+            _signalCost = 0x80000000;
             _stationCost = 0x80000000;
             _dword_1135F46 = 0x80000000;
             _byte_1136076 = 0;
@@ -3120,18 +3251,24 @@ namespace openloco::ui::windows::construction
 
                         gfx::drawpixelinfo_t* clipped = nullptr;
 
+                        static const uint8_t* signalFrames[] = {
+                            _signalFrames2State,
+                            _signalFrames3State,
+                            _signalFrames4State,
+                        };
+
                         if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
                         {
                             auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
                             auto imageId = trainSignalObject->var_0E;
                             if (self->current_tab == widx::tab_signal - widx::tab_construction)
                             {
-                                auto eax = _dword_4FFAF0[trainSignalObject->var_05];
-                                auto si = self->current_tab >> trainSignalObject->var_04;
-                                eax &= si;
-                                eax = _dword_4FFAF0[eax + 1];
-                                eax >>= 3;
-                                imageId += eax;
+                                auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
+                                auto frameCount = frames[0];
+                                frameCount &= (self->frame_no >> trainSignalObject->var_04);
+                                auto frameIndex = frames[frameCount + 1];
+                                frameIndex <<= 3;
+                                imageId += frameIndex;
                             }
                             gfx::draw_image(clipped, 15, 31, imageId);
                         }
