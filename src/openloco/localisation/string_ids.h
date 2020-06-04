@@ -689,6 +689,11 @@ namespace openloco::string_ids
     constexpr string_id prompt_type_new_town_name = 1309;
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
+    constexpr string_id new_station = 1312;
+    constexpr string_id new_station_buffer = 1313;
+    constexpr string_id catchment_area_accepts = 1314;
+    constexpr string_id catchment_area_produces = 1315;
+    constexpr string_id catchment_area_nothing = 1316;
 
     constexpr string_id title_industries = 1318;
     constexpr string_id title_fund_new_industries = 1319;

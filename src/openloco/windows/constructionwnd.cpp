@@ -8,6 +8,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/airport_object.h"
 #include "../objects/bridge_object.h"
+#include "../objects/cargo_object.h"
 #include "../objects/dock_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -19,6 +20,7 @@
 #include "../objects/train_signal_object.h"
 #include "../objects/train_station_object.h"
 #include "../objects/vehicle_object.h"
+#include "../stationmgr.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -110,8 +112,8 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t[8], 0x0525FA2> _scenarioRoadMods;
     static loco_global<uint8_t, 0x00525FAA> _lastRailroadOption;
     static loco_global<uint8_t, 0x00525FAB> _lastRoadOption;
-    static loco_global<uint8_t, 0x00525FAC> _haveAirports;
-    static loco_global<uint8_t, 0x00525FAD> _haveShipPorts;
+    static loco_global<uint8_t, 0x00525FAC> _lastAirport;
+    static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint32_t, 0x00E0C3E0> _dword_E0C3E0;
@@ -119,9 +121,14 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
+    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<uint32_t, 0x01135F3E> _trackCost;
     static loco_global<uint32_t, 0x01135F4E> _dword_1135F4E;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
+    static loco_global<uint32_t, 0x01135F70> _dword_1135F70;
+    static loco_global<uint32_t, 0x01135F74> _dword_1135F74;
+    static loco_global<uint32_t, 0x01135F78> _dword_1135F78;
     static loco_global<uint32_t, 0x01135F46> _dword_1135F46;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
@@ -2032,7 +2039,7 @@ namespace openloco::ui::windows::construction
 
             refreshAirportList();
 
-            auto al = _haveAirports;
+            auto al = _lastAirport;
 
             if (al == 0xFF)
             {
@@ -2061,7 +2068,7 @@ namespace openloco::ui::windows::construction
 
                 refreshDockList();
 
-                auto al = _haveShipPorts;
+                auto al = _lastShipPort;
 
                 if (al == 0xFF)
                 {
@@ -2225,7 +2232,7 @@ namespace openloco::ui::windows::construction
             //regs.dx = widgetIndex;
             //call(0x0049E249, regs);
 
-            switch(widgetIndex)
+            switch (widgetIndex)
             {
                 case widx::station_dropdown:
                 {
@@ -2240,15 +2247,16 @@ namespace openloco::ui::windows::construction
                     auto height = widget.height();
                     dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, 0x80);
 
-                    if (_byte_1136063 & (1<<7))
+                    if (_byte_1136063 & (1 << 7))
                     {
                         stationCount = 0;
-                        while (_stationList[stationCount]!= 0xFF)
+                        while (_stationList[stationCount] != 0xFF)
                         {
-                            if (_stationList[stationCount] == _lastSelectedStationType)
+                            auto station = _stationList[stationCount];
+                            if (station == _lastSelectedStationType)
                                 dropdown::set_highlighted_item(stationCount);
 
-                            auto airportObj = objectmgr::get<airport_object>(stationCount);
+                            auto airportObj = objectmgr::get<airport_object>(station);
 
                             dropdown::add(stationCount, airportObj->name);
 
@@ -2260,10 +2268,11 @@ namespace openloco::ui::windows::construction
                         stationCount = 0;
                         while (_stationList[stationCount] != 0xFF)
                         {
-                            if (_stationList[stationCount] == _lastSelectedStationType)
+                            auto station = _stationList[stationCount];
+                            if (station == _lastSelectedStationType)
                                 dropdown::set_highlighted_item(stationCount);
 
-                            auto dockObj = objectmgr::get<dock_object>(stationCount);
+                            auto dockObj = objectmgr::get<dock_object>(station);
 
                             dropdown::add(stationCount, dockObj->name);
 
@@ -2275,10 +2284,11 @@ namespace openloco::ui::windows::construction
                         stationCount = 0;
                         while (_stationList[stationCount] != 0xFF)
                         {
-                            if (_stationList[stationCount] == _lastSelectedStationType)
+                            auto station = _stationList[stationCount];
+                            if (station == _lastSelectedStationType)
                                 dropdown::set_highlighted_item(stationCount);
 
-                            auto roadStationObj = objectmgr::get<road_station_object>(stationCount);
+                            auto roadStationObj = objectmgr::get<road_station_object>(station);
 
                             dropdown::add(stationCount, roadStationObj->name);
 
@@ -2290,10 +2300,11 @@ namespace openloco::ui::windows::construction
                         stationCount = 0;
                         while (_stationList[stationCount] != 0xFF)
                         {
-                            if (_stationList[stationCount] == _lastSelectedStationType)
+                            auto station = _stationList[stationCount];
+                            if (station == _lastSelectedStationType)
                                 dropdown::set_highlighted_item(stationCount);
 
-                            auto trainStationObj = objectmgr::get<train_station_object>(stationCount);
+                            auto trainStationObj = objectmgr::get<train_station_object>(station);
 
                             dropdown::add(stationCount, trainStationObj->name);
 
@@ -2314,11 +2325,40 @@ namespace openloco::ui::windows::construction
         // 0x0049E256
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = itemIndex;
-            call(0x0049E256, regs);
+            //registers regs;
+            //regs.esi = (int32_t)&self;
+            //regs.dx = widgetIndex;
+            //regs.ax = itemIndex;
+            //call(0x0049E256, regs);
+
+            if (widgetIndex == widx::station_dropdown)
+            {
+                if (itemIndex == -1)
+                    return;
+
+                auto selectedStation = _stationList[itemIndex];
+                _lastSelectedStationType = selectedStation;
+
+                if (_byte_1136063 & (1 << 7))
+                {
+                    _lastAirport = selectedStation;
+                }
+                else if (_byte_1136063 & (1 << 6))
+                {
+                    _lastShipPort = selectedStation;
+                }
+                else if (_trackType & (1 << 7))
+                {
+                    auto trackType = _trackType & ~(1 << 7);
+                    _scenarioRoadStations[trackType] = selectedStation;
+                }
+                else
+                {
+                    _scenarioTrainStations[_trackType] = selectedStation;
+                }
+
+                self->invalidate();
+            }
         }
 
         // 0x0049E437
@@ -2405,10 +2445,171 @@ namespace openloco::ui::windows::construction
         // 0x0049DE40
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049DE40, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x0049DE40, regs);
+
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto company = companymgr::get(_playerCompany);
+            auto companyColour = company->mainColours.primary;
+            int16_t xPos = self->widgets[widx::image].left + self->x;
+            int16_t yPos = self->widgets[widx::image].top + self->y;
+
+            if (_byte_1136063 & (1 << 7))
+            {
+                auto airportObj = objectmgr::get<airport_object>(_lastSelectedStationType);
+
+                auto imageId = gfx::recolour(airportObj->var_08, companyColour);
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+            }
+            else if (_byte_1136063 & (1 << 6))
+            {
+                auto dockObj = objectmgr::get<dock_object>(_lastSelectedStationType);
+
+                auto imageId = gfx::recolour(dockObj->var_08, companyColour);
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+            }
+            else if (_trackType & (1 << 7))
+            {
+                auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStationType);
+
+                auto imageId = gfx::recolour(roadStationObj->var_0C, companyColour);
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+
+                auto colour = _byte_5045FA[companyColour];
+
+                if (!(roadStationObj->flags & road_station_flags::recolourable))
+                {
+                    colour = 46;
+                }
+
+                imageId = gfx::recolour(imageId, colour) + 1;
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+            }
+            else
+            {
+                auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStationType);
+
+                auto imageId = gfx::recolour(trainStationObj->var_0E, companyColour);
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+
+                auto colour = _byte_5045FA[companyColour];
+
+                if (!(trainStationObj->flags & train_station_flags::recolourable))
+                {
+                    colour = 46;
+                }
+
+                imageId = gfx::recolour(imageId, colour) + 1;
+
+                gfx::draw_image(dpi, xPos, yPos, imageId);
+            }
+
+            if (_stationCost != 0x80000000 && _stationCost != 0)
+            {
+                xPos = self->x + 69;
+                yPos = self->widgets[widx::image].bottom + self->y + 4;
+
+                auto args = FormatArguments();
+                args.push<uint32_t>(_stationCost);
+
+                gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            }
+
+            xPos = self->x + 3;
+            yPos = self->widgets[widx::image].bottom + self->y + 16;
+            auto width = self->width - 4;
+            gfx::draw_rect_inset(dpi, xPos, yPos, width, 1, self->colours[1], (1 << 5));
+
+            if (!(_byte_522096 & (1 << 3)))
+                return;
+
+            auto args = FormatArguments();
+
+            if (_dword_1135F70 == 0xFFFFFFFF)
+            {
+                args.push(string_ids::new_station);
+            }
+            else
+            {
+                auto station = stationmgr::get(_dword_1135F70);
+                args.push(station->name);
+                args.push(station->town);
+            }
+
+            stringmgr::format_string(&_stringFormatBuffer[0], string_ids::new_station_buffer, &args);
+
+            _currentFontSpriteBase = font::medium_bold;
+            width = self->width - 4;
+            int16_t stringWidth = gfx::clip_string(width, _stringFormatBuffer);
+            xPos = self->x + 69 - ((stringWidth - 1) / 2);
+            yPos = self->widgets[widx::image].bottom + self->y + 18;
+
+            gfx::draw_string(dpi, xPos, yPos, colour::black, _stringFormatBuffer);
+
+            xPos = self->x + 2;
+            yPos = self->widgets[widx::image].bottom + self->y + 29;
+            gfx::point_t origin = { xPos, yPos };
+            gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_accepts);
+
+            if (_dword_1135F74 == 0)
+            {
+                gfx::draw_string_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
+            }
+            else
+            {
+                yPos--;
+                for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+                {
+                    if (_dword_1135F74 & (1 << i))
+                    {
+                        auto xPosMax = self->x + self->width - 12;
+                        if (origin.x <= xPosMax)
+                        {
+                            auto cargoObj = objectmgr::get<cargo_object>(i);
+
+                            gfx::draw_image(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                            origin.x += 10;
+                        }
+                    }
+                }
+            }
+
+            xPos = self->x + 2;
+            yPos = self->widgets[widx::image].bottom + self->y + 49;
+            origin = { xPos, yPos };
+            gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_produces);
+
+            if (_dword_1135F78 == 0)
+            {
+                gfx::draw_string_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
+            }
+            else
+            {
+                yPos--;
+                for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+                {
+                    if (_dword_1135F78 & (1 << i))
+                    {
+                        auto xPosMax = self->x + self->width - 12;
+                        if (origin.x <= xPosMax)
+                        {
+                            auto cargoObj = objectmgr::get<cargo_object>(i);
+
+                            gfx::draw_image(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                            origin.x += 10;
+                        }
+                    }
+                }
+            }
         }
 
         static void init_events()
@@ -2749,6 +2950,11 @@ namespace openloco::ui::windows::construction
                 self->call_on_mouse_down(signal::widx::both_directions);
             }
 
+            if (self->current_tab == widx::tab_station - widx::tab_construction)
+            {
+                self->call_on_mouse_down(station::widx::image);
+            }
+
             if (self->current_tab == widx::tab_overhead - widx::tab_construction)
             {
                 self->call_on_mouse_down(overhead::widx::image);
@@ -2799,7 +3005,7 @@ namespace openloco::ui::windows::construction
                             auto imageId = gfx::recolour(roadStationObj->var_0C, companyColour);
                             gfx::draw_image(clipped, -4, -9, imageId);
                             auto colour = _byte_5045FA[companyColour];
-                            if (!(roadStationObj->colour_flags & 1))
+                            if (!(roadStationObj->flags & road_station_flags::recolourable))
                             {
                                 colour = 46;
                             }
@@ -2887,7 +3093,7 @@ namespace openloco::ui::windows::construction
                                     auto imageId = gfx::recolour(trainStationObj->var_0E, companyColour);
                                     gfx::draw_image(clipped, -4, -9, imageId);
                                     auto colour = _byte_5045FA[companyColour];
-                                    if (!(trainStationObj->colour_flags & 1))
+                                    if (!(trainStationObj->flags & train_station_flags::recolourable))
                                     {
                                         colour = 46;
                                     }
