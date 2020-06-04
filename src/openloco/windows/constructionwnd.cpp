@@ -120,7 +120,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint32_t, 0x00E0C3E0> _dword_E0C3E0;
-    static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -140,7 +139,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
-    static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
     static loco_global<uint8_t, 0x0113602F> _isSignalBothDirections;
@@ -154,7 +152,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
     static loco_global<uint8_t, 0x01136064> _constructionRotation;
-    static loco_global<uint8_t, 0x01136065> _byte_1136065;
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
@@ -224,7 +221,7 @@ namespace openloco::ui::windows::construction
         static void init_events();
         static bool getRoadPieceId(registers& regs);
         static bool getTrackPieceId(registers& regs);
-        static void sub_49F1B5();
+        static void activateSelectedTrackWidgets();
         static void sub_49FEC7();
         static void on_close(window* self);
         static void on_update(window* self, uint8_t flag);
@@ -398,7 +395,7 @@ namespace openloco::ui::windows::construction
 
             registers regs;
             regs.edx = widgetIndex;
-            regs.esi = (int32_t)&self;
+            regs.esi = (int32_t)self;
             switch (widgetIndex)
             {
                 case common::widx::close_button:
@@ -416,14 +413,17 @@ namespace openloco::ui::windows::construction
                     for (int i = 0; i < multiplier; i++)
                     {
                         call(0x0049F92D, regs);
+                        //sub_49F92D()
                     }
                     break;
+
                 case widx::remove:
                     for (int i = 0; i < multiplier; i++)
                     {
                         call(0x004A0121, regs);
                     }
                     break;
+
                 case widx::rotate_90:
                 {
                     if (_constructionHover == 1)
@@ -431,7 +431,7 @@ namespace openloco::ui::windows::construction
                         _constructionRotation++;
                         _constructionRotation = _constructionRotation & 3;
                         _trackCost = 0x80000000;
-                        common::sub_49F1B5();
+                        common::activateSelectedTrackWidgets();
                         break;
                     }
                     common::sub_49FEC7();
@@ -441,13 +441,14 @@ namespace openloco::ui::windows::construction
                     _constructionHover = 1;
                     _byte_113607E = 0;
                     _constructionRotation = _constructionRotation & 3;
-                    common::sub_49F1B5();
+                    common::activateSelectedTrackWidgets();
                     break;
                 }
             }
         }
 
-        static void sub_49DBEC(window* self, uint64_t disabledWidgets)
+        // 0x0049DBEC
+        static void disableUnusedRoadPieces(window* self, uint64_t disabledWidgets)
         {
             if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
             {
@@ -488,14 +489,15 @@ namespace openloco::ui::windows::construction
             if (_constructionHover == 0)
             {
                 registers regs;
-                auto carryFlag = common::getRoadPieceId(regs);
-                if (carryFlag)
+                auto invalidRoad = common::getRoadPieceId(regs);
+                if (invalidRoad)
                     disabledWidgets |= (1 << widx::construct);
             }
             self->set_disabled_widgets_and_invalidate(disabledWidgets);
         }
 
-        static void sub_49DB1F(window* self, track_object trackObj, uint64_t disabledWidgets)
+        // 0x0049DB1F
+        static void disableUnusedTrackPieces(window* self, track_object trackObj, uint64_t disabledWidgets)
         {
             if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
             {
@@ -548,7 +550,8 @@ namespace openloco::ui::windows::construction
             self->set_disabled_widgets_and_invalidate(disabledWidgets);
         }
 
-        static void sub_49DAF3(window* self, track_object trackObj, uint64_t disabledWidgets)
+        // 0x0049DAF3
+        static void disableTrackSlopes(window* self, track_object trackObj, uint64_t disabledWidgets)
         {
             auto trackPieces = trackObj.track_pieces & ((1 << 5) | (1 << 8));
 
@@ -560,7 +563,7 @@ namespace openloco::ui::windows::construction
             if (trackPieces != ((1 << 6) | (1 << 8)))
                 disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
 
-            sub_49DB1F(self, trackObj, disabledWidgets);
+            disableUnusedTrackPieces(self, trackObj, disabledWidgets);
         }
 
         // 0x0049DAA5
@@ -575,10 +578,10 @@ namespace openloco::ui::windows::construction
             if (trackType & (1 << 7))
             {
                 trackType &= ~(1 << 7);
-                // auto roadObj = objectmgr::get<road_object>(trackType);
+
                 if (_lastSelectedTrackPiece == 0xFF)
                 {
-                    sub_49DBEC(self, disabledWidgets);
+                    disableUnusedRoadPieces(self, disabledWidgets);
                     return;
                 }
                 switch (_lastSelectedTrackPiece)
@@ -593,7 +596,7 @@ namespace openloco::ui::windows::construction
                     case common::trackPiece::s_bend_to_dual_track:
                     case common::trackPiece::s_bend_to_single_track:
                     {
-                        sub_49DBEC(self, disabledWidgets);
+                        disableUnusedRoadPieces(self, disabledWidgets);
                         break;
                     }
 
@@ -604,6 +607,7 @@ namespace openloco::ui::windows::construction
                     case common::trackPiece::turnaround:
                     {
                         disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+                        disableUnusedRoadPieces(self, disabledWidgets);
                         break;
                     }
                 }
@@ -613,13 +617,13 @@ namespace openloco::ui::windows::construction
                 auto trackObj = objectmgr::get<track_object>(trackType);
                 if (_lastSelectedTrackPiece == 0xFF)
                 {
-                    sub_49DB1F(self, *trackObj, disabledWidgets);
+                    disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
                     return;
                 }
                 switch (_lastSelectedTrackPiece)
                 {
                     case common::trackPiece::straight:
-                        sub_49DB1F(self, *trackObj, disabledWidgets);
+                        disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
                         break;
 
                     case common::trackPiece::left_hand_curve_very_small:
@@ -635,14 +639,14 @@ namespace openloco::ui::windows::construction
                     case common::trackPiece::turnaround:
                     {
                         disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                        sub_49DB1F(self, *trackObj, disabledWidgets);
+                        disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
                         break;
                     }
 
                     case common::trackPiece::left_hand_curve_small:
                     case common::trackPiece::right_hand_curve_small:
                     {
-                        sub_49DAF3(self, *trackObj, disabledWidgets);
+                        disableTrackSlopes(self, *trackObj, disabledWidgets);
                         break;
                     }
                 }
@@ -658,7 +662,7 @@ namespace openloco::ui::windows::construction
             else
                 _lastSelectedTrackPiece = trackPiece;
             _trackCost = 0x80000000;
-            common::sub_49F1B5();
+            common::activateSelectedTrackWidgets();
         }
 
         static void bridgeDropdown(window* self)
@@ -774,7 +778,7 @@ namespace openloco::ui::windows::construction
                                 _lastSelectedTrackPiece = common::trackPiece::s_bend_to_single_track;
                         }
                     }
-                    common::sub_49F1B5();
+                    common::activateSelectedTrackWidgets();
                     break;
                 }
 
@@ -790,7 +794,7 @@ namespace openloco::ui::windows::construction
                         if (self->widgets[widx::s_bend_dual_track_left].image != image_ids::construction_left_turnaround)
                             _lastSelectedTrackPiece = common::trackPiece::s_bend_to_dual_track;
                     }
-                    common::sub_49F1B5();
+                    common::activateSelectedTrackWidgets();
                     break;
                 }
 
@@ -820,9 +824,6 @@ namespace openloco::ui::windows::construction
                     break;
                 }
             }
-            std::printf("WidgetIndex: %d\n", int(widgetIndex));
-            std::printf("TrackPiece: %d\n", int(_lastSelectedTrackPiece));
-            std::printf("TrackGradient: %d\n", int(_lastSelectedTrackGradient));
         }
 
         // 0x0049D4EA
@@ -834,10 +835,10 @@ namespace openloco::ui::windows::construction
                 {
                     auto bridge = _bridgeList[itemIndex];
                     _lastSelectedBridge = bridge;
-                    _scenarioBridges[_trackType] = bridge;
+                    _scenarioBridges[_trackType & ~(1<<7)] = bridge;
                     common::sub_49FEC7();
                     _trackCost = 0x80000000;
-                    common::sub_49F1B5();
+                    common::activateSelectedTrackWidgets();
                 }
             }
         }
@@ -983,7 +984,8 @@ namespace openloco::ui::windows::construction
             }
         }
 
-        static void loc_49D106(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        // 0x0049D106
+        static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
         {
             bp >>= 1;
             si >>= 1;
@@ -992,14 +994,13 @@ namespace openloco::ui::windows::construction
             cx -= si;
             clipped->x += ax;
             clipped->y += cx;
+            std::printf("x: %d, y: %d\n", ax, cx);
             _dword_E0C3E0 = (uint32_t)clipped;
             uint16_t x = 0x2000;
             uint16_t y = 0x2000;
             uint32_t edi = _word_1135FD8 << 16 | 0x1E0;
             uint32_t edx = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
             _byte_522095 = _byte_522095 | (1 << 1);
-
-            std::printf("trackPieceId: %d\n", int(_lastSelectedTrackPieceId));
 
             drawTrack(x, y, edi, _byte_1136078, edx);
 
@@ -1008,7 +1009,8 @@ namespace openloco::ui::windows::construction
             drawCostString(self, dpi);
         }
 
-        static void loc_49D325(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        // 0x0049D325
+        static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
         {
             bp >>= 1;
             si >>= 1;
@@ -1039,7 +1041,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
+            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D0CC
@@ -1051,7 +1053,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
+            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D0E0
@@ -1063,7 +1065,7 @@ namespace openloco::ui::windows::construction
             cx -= bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
+            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D0F4
@@ -1075,7 +1077,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D106(self, clipped, dpi, ax, cx, bp, si);
+            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D2D7
@@ -1086,7 +1088,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
+            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D2EB
@@ -1098,7 +1100,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
+            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D2FF
@@ -1110,7 +1112,7 @@ namespace openloco::ui::windows::construction
             cx -= bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
+            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049D313
@@ -1122,7 +1124,7 @@ namespace openloco::ui::windows::construction
             cx += bx;
             cx >>= 1;
             cx -= dx;
-            loc_49D325(self, clipped, dpi, ax, cx, bp, si);
+            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
         }
 
         // 0x0049CF36
@@ -1154,12 +1156,13 @@ namespace openloco::ui::windows::construction
             if (_trackType & (1 << 7))
             {
                 registers regs;
-                auto carryFlag = common::getRoadPieceId(regs);
+                auto invalidRoad = common::getRoadPieceId(regs);
 
                 _word_1135FD8 = regs.edi >> 16;
 
-                if (carryFlag)
+                if (invalidRoad)
                     return;
+
                 _byte_1136077 = regs.dl;
                 _byte_1136078 = regs.bh;
                 _lastSelectedTrackPieceId = regs.dh;
@@ -1168,7 +1171,7 @@ namespace openloco::ui::windows::construction
                 auto x = self->x + self->widgets[widx::construct].left + 1;
                 auto y = self->y + self->widgets[widx::construct].top + 1;
                 auto width = self->widgets[widx::construct].width();
-                auto height = self->widgets[widx::construct].width();
+                auto height = self->widgets[widx::construct].height();
 
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -1181,10 +1184,10 @@ namespace openloco::ui::windows::construction
                     {
                         i += 10;
                     }
-
-                    int16_t ax = ecx[i + 1];
-                    int16_t dx = ecx[i + 5];
-                    int16_t cx = ecx[i + 3];
+                    
+                    int16_t ax = ecx[i + 1] | (ecx[i + 2] << 8);
+                    int16_t dx = ecx[i + 5] | (ecx[i + 6] << 8);
+                    int16_t cx = ecx[i + 3] | (ecx[i + 4] << 8);
 
                     if (ecx[i + 9] & (1 << 6))
                     {
@@ -1259,7 +1262,7 @@ namespace openloco::ui::windows::construction
                 auto x = self->x + self->widgets[widx::construct].left + 1;
                 auto y = self->y + self->widgets[widx::construct].top + 1;
                 auto width = self->widgets[widx::construct].width();
-                auto height = self->widgets[widx::construct].width();
+                auto height = self->widgets[widx::construct].height();
 
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -1273,9 +1276,9 @@ namespace openloco::ui::windows::construction
                         i += 10;
                     }
 
-                    int16_t ax = ecx[i + 1];
-                    int16_t dx = ecx[i + 5];
-                    int16_t cx = ecx[i + 3];
+                    int16_t ax = ecx[i + 1] | (ecx[i + 2] << 8);
+                    int16_t dx = ecx[i + 5] | (ecx[i + 6] << 8);
+                    int16_t cx = ecx[i + 3] | (ecx[i + 4] << 8);
 
                     if (ecx[i + 9] & (1 << 6))
                     {
@@ -1392,7 +1395,7 @@ namespace openloco::ui::windows::construction
         if (is_editor_mode())
             disabledWidgets |= (1ULL << common::widx::tab_station);
 
-        if (_byte_1136063 & 0xC0)
+        if (_byte_1136063 & (1 << 7 | 1 << 6))
             disabledWidgets |= (1ULL << common::widx::tab_construction);
 
         if (_lastSelectedSignal == 0xFF)
@@ -1449,12 +1452,12 @@ namespace openloco::ui::windows::construction
             size_t i = 1;
             for (; i < count; i++)
             {
-                uint8_t ah = list[i];
-                uint8_t al = list[i - 1];
-                if (al > ah)
+                uint8_t item1 = list[i];
+                uint8_t item2 = list[i - 1];
+                if (item2 > item1)
                 {
-                    list[i - 1] = ah;
-                    list[i] = al;
+                    list[i - 1] = item1;
+                    list[i] = item2;
                 }
             }
             count--;
@@ -1697,7 +1700,7 @@ namespace openloco::ui::windows::construction
         {
             setDisabledWidgets(window);
         }
-        common::sub_49F1B5();
+        common::activateSelectedTrackWidgets();
     }
 
     // 0x00488B4D
@@ -1716,7 +1719,7 @@ namespace openloco::ui::windows::construction
                 break;
             var_0E &= ~(1 << ecx);
             auto signalObj = objectmgr::get<train_signal_object>(ecx);
-            std::printf("start: %d end: %d\n", signalObj->designed_year, signalObj->obsolete_year);
+
             if (currentYear > signalObj->obsolete_year)
                 continue;
             if (currentYear < signalObj->designed_year)
@@ -1945,7 +1948,7 @@ namespace openloco::ui::windows::construction
             setDisabledWidgets(window);
         }
 
-        common::sub_49F1B5();
+        common::activateSelectedTrackWidgets();
         window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
@@ -2043,14 +2046,14 @@ namespace openloco::ui::windows::construction
 
             refreshAirportList();
 
-            auto al = _lastAirport;
-
-            if (al == 0xFF)
+            if (_lastAirport == 0xFF)
             {
-                al = _stationList[0];
+                _lastSelectedStationType = _stationList[0];
             }
-
-            _lastSelectedStationType = al;
+            else
+            {
+                _lastSelectedStationType = _lastAirport;
+            }
 
             return nonTrackWindow();
         }
@@ -2072,14 +2075,14 @@ namespace openloco::ui::windows::construction
 
                 refreshDockList();
 
-                auto al = _lastShipPort;
-
-                if (al == 0xFF)
+                if (_lastShipPort == 0xFF)
                 {
-                    al = _stationList[0];
+                    _lastSelectedStationType = _stationList[0];
                 }
-
-                _lastSelectedStationType = al;
+                else
+                {
+                    _lastSelectedStationType = _lastShipPort;
+                }
 
                 return nonTrackWindow();
             }
@@ -2093,30 +2096,30 @@ namespace openloco::ui::windows::construction
 
                     refreshRoadStationList();
 
-                    auto al = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
+                    auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
 
-                    if (al == 0xFF)
-                        al = _stationList[0];
+                    if (lastStation == 0xFF)
+                        lastStation = _stationList[0];
 
-                    _lastSelectedStationType = al;
+                    _lastSelectedStationType = lastStation;
 
                     refreshRoadBridgeList();
 
-                    al = _scenarioBridges[(_trackType & ~(1ULL << 7))];
+                    auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
 
-                    if (al == 0xFF)
-                        al = _bridgeList[0];
+                    if (lastBridge == 0xFF)
+                        lastBridge = _bridgeList[0];
 
-                    _lastSelectedBridge = al;
+                    _lastSelectedBridge = lastBridge;
 
                     refreshRoadModList();
 
-                    al = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
+                    auto lastMod = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
 
-                    if (al == 0xff)
-                        al = 0;
+                    if (lastMod == 0xff)
+                        lastMod = 0;
 
-                    _lastSelectedMods = al;
+                    _lastSelectedMods = lastMod;
                     _byte_113603A = 0;
 
                     return trackWindow();
@@ -2127,39 +2130,39 @@ namespace openloco::ui::windows::construction
 
         refreshSignalList();
 
-        auto al = _scenarioSignals[_trackType];
+        auto lastSignal = _scenarioSignals[_trackType];
 
-        if (al == 0xFF)
-            al = _signalList[0];
+        if (lastSignal == 0xFF)
+            lastSignal = _signalList[0];
 
-        _lastSelectedSignal = al;
+        _lastSelectedSignal = lastSignal;
 
         refreshtrainStationList();
 
-        al = _scenarioTrainStations[_trackType];
+        auto lastStation = _scenarioTrainStations[_trackType];
 
-        if (al == 0xFF)
-            al = _stationList[0];
+        if (lastStation == 0xFF)
+            lastStation = _stationList[0];
 
-        _lastSelectedStationType = al;
+        _lastSelectedStationType = lastStation;
 
         refreshTrackBridgeList();
 
-        al = _scenarioBridges[_trackType];
+        auto lastBridge = _scenarioBridges[_trackType];
 
-        if (al == 0xFF)
-            al = _bridgeList[0];
+        if (lastBridge == 0xFF)
+            lastBridge = _bridgeList[0];
 
-        _lastSelectedBridge = al;
+        _lastSelectedBridge = lastBridge;
 
         refreshTrackModList();
 
-        al = _scenarioTrackMods[_trackType];
+        auto lastMod = _scenarioTrackMods[_trackType];
 
-        if (al == 0xFF)
-            al = 0;
+        if (lastMod == 0xFF)
+            lastMod = 0;
 
-        _lastSelectedMods = al;
+        _lastSelectedMods = lastMod;
         _byte_113603A = 0;
 
         return trackWindow();
@@ -2231,11 +2234,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E249
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.dx = widgetIndex;
-            //call(0x0049E249, regs);
-
             switch (widgetIndex)
             {
                 case widx::station_dropdown:
@@ -2329,12 +2327,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E256
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)&self;
-            //regs.dx = widgetIndex;
-            //regs.ax = itemIndex;
-            //call(0x0049E256, regs);
-
             if (widgetIndex == widx::station_dropdown)
             {
                 if (itemIndex == -1)
@@ -2449,11 +2441,6 @@ namespace openloco::ui::windows::construction
         // 0x0049DE40
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x0049DE40, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -2703,6 +2690,7 @@ namespace openloco::ui::windows::construction
 
                         signalCount++;
                     }
+                    break;
                 }
 
                 case widx::both_directions:
@@ -2874,11 +2862,6 @@ namespace openloco::ui::windows::construction
         // 0x0049EBD1
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.dx = widgetIndex;
-            //call(0x0049EBD1, regs);
-
             switch (widgetIndex)
             {
                 case common::widx::close_button:
@@ -2916,11 +2899,6 @@ namespace openloco::ui::windows::construction
         // 0x0049EBFC
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.dx = widgetIndex;
-            //call(0x0049EBFC, regs);
-
             switch (widgetIndex)
             {
                 case widx::track_dropdown:
@@ -2940,6 +2918,7 @@ namespace openloco::ui::windows::construction
                     dropdown::add(2, string_ids::all_connected_track);
 
                     dropdown::set_highlighted_item(_lastSelectedTrackModSection);
+                    break;
                 }
 
                 case widx::image:
@@ -2954,12 +2933,6 @@ namespace openloco::ui::windows::construction
         // 0x0049EC09
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)&self;
-            //regs.dx = widgetIndex;
-            //regs.ax = itemIndex;
-            //call(0x0049EC09, regs);
-
             if (widgetIndex != widx::track_dropdown)
                 return;
 
@@ -2973,10 +2946,6 @@ namespace openloco::ui::windows::construction
         // 0x0049ECD1
         static void on_update(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x0049ECD1, regs);
-
             common::on_update(self, 16);
         }
 
@@ -3005,10 +2974,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E7D3
         static void prepare_draw(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x0049E7D3, regs);
-
             common::prepare_draw(self);
 
             auto activatedWidgets = self->activated_widgets;
@@ -3124,7 +3089,7 @@ namespace openloco::ui::windows::construction
                 string_ids::all_connected_track,
             };
 
-            self->widgets[widx::track].text = modString[_byte_1136063];
+            self->widgets[widx::track].text = modString[_lastSelectedTrackModSection];
 
             common::repositionTabs(self);
         }
@@ -3132,11 +3097,6 @@ namespace openloco::ui::windows::construction
         // 0x0049EA3E
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x0049EA3E, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
             if (_lastSelectedMods & 0xF)
@@ -3207,16 +3167,17 @@ namespace openloco::ui::windows::construction
                     auto company = companymgr::get(_playerCompany);
                     auto companyColour = company->mainColours.primary;
                     auto edi = _lastSelectedMods << 16 | 0x1D0;
+                    _byte_522095 = _byte_522095 | (1 << 0);
 
                     if (_trackType & (1 << 7))
                     {
                         uint8_t trackType = _trackType & ~(1 << 7);
-                        auto edx = companyColour << 16 | trackType;
+                        auto edx = (companyColour << 16) | trackType;
                         construction::drawRoad(x, y, edi, gCurrentRotation, edx);
                     }
                     else
                     {
-                        auto edx = companyColour << 16 | _trackType;
+                        auto edx = (companyColour << 16) | _trackType;
                         construction::drawTrack(x, y, edi, gCurrentRotation, edx);
                     }
                     _byte_522095 = _byte_522095 & ~(1 << 0);
@@ -4052,11 +4013,8 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049F1B5
-        static void sub_49F1B5()
+        static void activateSelectedTrackWidgets()
         {
-            //registers regs;
-            //call(0x0049F1B5, regs);
-
             static const uint8_t trackPieceWidgets[] = {
                 construction::widx::straight,
                 construction::widx::left_hand_curve_very_small,
@@ -4189,6 +4147,7 @@ namespace openloco::ui::windows::construction
                     window->widgets[construction::widx::s_bend_dual_track_left].type = widget_type::wt_9;
                     window->widgets[construction::widx::s_bend_dual_track_left].image = image_ids::construction_right_turnaround;
                     window->widgets[construction::widx::s_bend_dual_track_left].tooltip = string_ids::tooltip_turnaround;
+
                     if (_byte_525FAE == 0)
                         window->widgets[construction::widx::s_bend_dual_track_left].image = image_ids::construction_left_turnaround;
                 }
@@ -4519,5 +4478,27 @@ namespace openloco::ui::windows::construction
                 window->invalidate();
             }
         }
+    }
+
+    void registerHooks()
+    {
+
+        register_hook(
+            0x0049DC97,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                construction::on_mouse_up((ui::window*)regs.esi, (widget_index)regs.dx);
+                regs = backup;
+                return 0;
+            });
+
+        register_hook(
+            0x0049F1B5,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                common::activateSelectedTrackWidgets();
+                regs = backup;
+                return 0;
+            });
     }
 }

@@ -102,6 +102,7 @@ namespace openloco::ui::windows::construction
 {
     window* openWithFlags(uint32_t flags);
     void sub_4A6FAC();
+    void registerHooks();
 }
 
 namespace openloco::ui::windows::industry
