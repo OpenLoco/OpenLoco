@@ -132,14 +132,14 @@ namespace openloco::ui::windows::construction
     static loco_global<uint32_t, 0x01135F70> _dword_1135F70;
     static loco_global<uint32_t, 0x01135F74> _dword_1135F74;
     static loco_global<uint32_t, 0x01135F78> _dword_1135F78;
-    static loco_global<uint32_t, 0x01135F46> _dword_1135F46;
+    static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
-    static loco_global<uint16_t, 0x01135FE4> _lastSelectedMod;
+    static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
     static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
@@ -157,7 +157,7 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x01136065> _byte_1136065;
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
-    static loco_global<uint8_t, 0x0113606E> _byte_113606E;
+    static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
     static loco_global<uint8_t, 0x01136077> _byte_1136077;
     static loco_global<uint8_t, 0x01136078> _byte_1136078;
@@ -1660,7 +1660,7 @@ namespace openloco::ui::windows::construction
 
         for (auto i = 0; i < roadObj->num_mods; i++)
         {
-            if (flags & roadObj->mods[i])
+            if (flags & (1 << roadObj->mods[i]))
                 _modList[i] = roadObj->mods[i];
         }
     }
@@ -1689,7 +1689,7 @@ namespace openloco::ui::windows::construction
         al = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
         if (al == 0xFF)
             al = 0;
-        _lastSelectedMod = al;
+        _lastSelectedMods = al;
 
         auto window = WindowManager::find(WindowType::construction);
 
@@ -1913,7 +1913,7 @@ namespace openloco::ui::windows::construction
 
         for (auto i = 0; i < trackObj->num_mods; i++)
         {
-            if (flags & trackObj->mods[i])
+            if (flags & (1 << trackObj->mods[i]))
                 _modList[i] = trackObj->mods[i];
         }
     }
@@ -2025,7 +2025,7 @@ namespace openloco::ui::windows::construction
         _byte_1136076 = 0;
         _lastSelectedTrackPiece = 0;
         _lastSelectedTrackGradient = 0;
-        _byte_113606E = 0;
+        _lastSelectedTrackModSection = 0;
 
         setTrackOptions(flags);
 
@@ -2038,7 +2038,7 @@ namespace openloco::ui::windows::construction
             _modList[1] = 0xFF;
             _modList[2] = 0xFF;
             _modList[3] = 0xFF;
-            _lastSelectedMod = 0;
+            _lastSelectedMods = 0;
             _lastSelectedBridge = 0xFF;
 
             refreshAirportList();
@@ -2067,7 +2067,7 @@ namespace openloco::ui::windows::construction
                 _modList[2] = 0xFF;
                 _modList[3] = 0xFF;
 
-                _lastSelectedMod = 0;
+                _lastSelectedMods = 0;
                 _lastSelectedBridge = 0xFF;
 
                 refreshDockList();
@@ -2116,7 +2116,7 @@ namespace openloco::ui::windows::construction
                     if (al == 0xff)
                         al = 0;
 
-                    _lastSelectedMod = al;
+                    _lastSelectedMods = al;
                     _byte_113603A = 0;
 
                     return trackWindow();
@@ -2159,7 +2159,7 @@ namespace openloco::ui::windows::construction
         if (al == 0xFF)
             al = 0;
 
-        _lastSelectedMod = al;
+        _lastSelectedMods = al;
         _byte_113603A = 0;
 
         return trackWindow();
@@ -2643,7 +2643,7 @@ namespace openloco::ui::windows::construction
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
         widget_t widgets[] = {
-            commonWidgets(138, 190, string_ids::stringid_2),
+            commonWidgets(138, 167, string_ids::stringid_2),
             make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
             make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
             make_widget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
@@ -2656,11 +2656,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E64E
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.dx = widgetIndex;
-            //call(0x0049E64E, regs);
-
             switch (widgetIndex)
             {
                 case common::widx::close_button:
@@ -2679,11 +2674,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E669
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.dx = widgetIndex;
-            //call(0x0049E669, regs);
-
             switch (widgetIndex)
             {
                 case widx::signal_dropdown:
@@ -2736,12 +2726,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E67C
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)&self;
-            //regs.dx = widgetIndex;
-            //regs.ax = itemIndex;
-            //call(0x0049E67C, regs);
-
             if (widgetIndex != widx::signal_dropdown)
                 return;
 
@@ -2756,10 +2740,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E76F
         static void on_update(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x0049E76F, regs);
-
             common::on_update(self, 4);
         }
 
@@ -2788,10 +2768,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E499
         static void prepare_draw(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x0049E499, regs);
-
             common::prepare_draw(self);
 
             auto trackObj = objectmgr::get<track_object>(_trackType);
@@ -2809,11 +2785,6 @@ namespace openloco::ui::windows::construction
         // 0x0049E501
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x0049E501, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -2887,7 +2858,7 @@ namespace openloco::ui::windows::construction
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
         widget_t widgets[] = {
-            commonWidgets(138, 167, string_ids::stringid_2),
+            commonWidgets(138, 192, string_ids::stringid_2),
             make_widget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
             make_widget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
             make_widget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
@@ -2903,29 +2874,100 @@ namespace openloco::ui::windows::construction
         // 0x0049EBD1
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.dx = widgetIndex;
-            call(0x0049EBD1, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.dx = widgetIndex;
+            //call(0x0049EBD1, regs);
+
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+
+                case common::widx::tab_construction:
+                case common::widx::tab_overhead:
+                case common::widx::tab_signal:
+                case common::widx::tab_station:
+                    common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::checkbox_1:
+                case widx::checkbox_2:
+                case widx::checkbox_3:
+                case widx::checkbox_4:
+                {
+                    auto checkboxIndex = widgetIndex - 8;
+
+                    if (_lastSelectedMods & 1 << checkboxIndex)
+                        _lastSelectedMods = _lastSelectedMods & ~(1 << checkboxIndex);
+                    else
+                        _lastSelectedMods = _lastSelectedMods | (1 << checkboxIndex);
+
+                    // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
+                    _scenarioTrackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
+
+                    self->invalidate();
+                    break;
+                }
+            }
         }
 
         // 0x0049EBFC
         static void on_mouse_down(window* self, widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.dx = widgetIndex;
-            call(0x0049EBFC, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.dx = widgetIndex;
+            //call(0x0049EBFC, regs);
+
+            switch (widgetIndex)
+            {
+                case widx::track_dropdown:
+                {
+                    uint8_t modCount = 3;
+
+                    auto widget = self->widgets[widx::track];
+                    auto xPos = widget.left + self->x;
+                    auto yPos = widget.top + self->y;
+                    auto width = widget.width() + 2;
+                    auto height = widget.height();
+
+                    dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, 0x80);
+
+                    dropdown::add(0, string_ids::single_section);
+                    dropdown::add(1, string_ids::block_section);
+                    dropdown::add(2, string_ids::all_connected_track);
+
+                    dropdown::set_highlighted_item(_lastSelectedTrackModSection);
+                }
+
+                case widx::image:
+                {
+                    input::cancel_tool();
+                    input::toolSet(self, widgetIndex, 12);
+                    break;
+                }
+            }
         }
 
         // 0x0049EC09
         static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = itemIndex;
-            call(0x0049EC09, regs);
+            //registers regs;
+            //regs.esi = (int32_t)&self;
+            //regs.dx = widgetIndex;
+            //regs.ax = itemIndex;
+            //call(0x0049EC09, regs);
+
+            if (widgetIndex != widx::track_dropdown)
+                return;
+
+            if (itemIndex != -1)
+            {
+                _lastSelectedTrackModSection = itemIndex;
+                self->invalidate();
+            }
         }
 
         // 0x0049ECD1
@@ -2963,19 +3005,236 @@ namespace openloco::ui::windows::construction
         // 0x0049E7D3
         static void prepare_draw(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x0049E7D3, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //call(0x0049E7D3, regs);
+
+            common::prepare_draw(self);
+
+            auto activatedWidgets = self->activated_widgets;
+            activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
+
+            self->widgets[widx::checkbox_1].type = widget_type::none;
+            self->widgets[widx::checkbox_2].type = widget_type::none;
+            self->widgets[widx::checkbox_3].type = widget_type::none;
+            self->widgets[widx::checkbox_4].type = widget_type::none;
+
+            if (_trackType & (1 << 7))
+            {
+                auto trackType = _trackType & ~(1 << 7);
+                auto roadObj = objectmgr::get<road_object>(trackType);
+
+                auto args = FormatArguments();
+                args.push(roadObj->name);
+
+                if (_modList[0] != 0xFF)
+                {
+                    auto roadExtraObject = objectmgr::get<road_extra_object>(_modList[0]);
+                    self->widgets[widx::checkbox_1].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_1].text = roadExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 0)
+                        activatedWidgets |= 1 << widx::checkbox_1;
+                }
+
+                if (_modList[1] != 0xFF)
+                {
+                    auto roadExtraObject = objectmgr::get<road_extra_object>(_modList[1]);
+                    self->widgets[widx::checkbox_2].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_2].text = roadExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 1)
+                        activatedWidgets |= 1 << widx::checkbox_2;
+                }
+            }
+            else
+            {
+                auto trackObj = objectmgr::get<track_object>(_trackType);
+
+                auto args = FormatArguments();
+                args.push(trackObj->name);
+
+                if (_modList[0] != 0xFF)
+                {
+                    auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[0]);
+                    self->widgets[widx::checkbox_1].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_1].text = trackExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 0)
+                        activatedWidgets |= 1 << widx::checkbox_1;
+                }
+
+                if (_modList[1] != 0xFF)
+                {
+                    auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[1]);
+                    self->widgets[widx::checkbox_2].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_2].text = trackExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 1)
+                        activatedWidgets |= 1 << widx::checkbox_2;
+                }
+
+                if (_modList[2] != 0xFF)
+                {
+                    auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[2]);
+                    self->widgets[widx::checkbox_3].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_3].text = trackExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 2)
+                        activatedWidgets |= 1 << widx::checkbox_3;
+                }
+
+                if (_modList[3] != 0xFF)
+                {
+                    auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[3]);
+                    self->widgets[widx::checkbox_4].type = widget_type::checkbox;
+                    self->widgets[widx::checkbox_4].text = trackExtraObject->name;
+
+                    if (_lastSelectedMods & 1 << 3)
+                        activatedWidgets |= 1 << widx::checkbox_4;
+                }
+            }
+
+            self->activated_widgets = activatedWidgets;
+
+            self->widgets[widx::image].type = widget_type::none;
+            self->widgets[widx::track].type = widget_type::none;
+            self->widgets[widx::track_dropdown].type = widget_type::none;
+
+            self->widgets[widx::image].tooltip = string_ids::null;
+
+            if (_lastSelectedMods & 0xF)
+            {
+                self->widgets[widx::image].type = widget_type::wt_3;
+                self->widgets[widx::track].type = widget_type::wt_18;
+                self->widgets[widx::track_dropdown].type = widget_type::wt_11;
+
+                self->widgets[widx::image].tooltip = string_ids::upgrade_track_with_mods;
+
+                if (is_unknown_3_mode())
+                {
+                    if (_toolWindowType == WindowType::construction)
+                        self->widgets[widx::image].tooltip = string_ids::click_track_to_upgrade;
+                }
+            }
+
+            static string_id modString[] = {
+                string_ids::single_section,
+                string_ids::block_section,
+                string_ids::all_connected_track,
+            };
+
+            self->widgets[widx::track].text = modString[_byte_1136063];
+
+            common::repositionTabs(self);
         }
 
         // 0x0049EA3E
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0049EA3E, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x0049EA3E, regs);
+
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+            if (_lastSelectedMods & 0xF)
+            {
+                gfx::drawpixelinfo_t* clipped = nullptr;
+                auto xPos = self->x + self->widgets[widx::image].left + 1;
+                auto yPos = self->y + self->widgets[widx::image].top + 1;
+                auto width = self->widgets[widx::image].width();
+                auto height = self->widgets[widx::image].height();
+
+                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
+                {
+                    auto x = 0x2010;
+                    auto y = 0x2010;
+
+                    switch (gCurrentRotation)
+                    {
+                        case 0:
+                        {
+                            auto bx = x;
+                            x = -x + y;
+                            y += bx;
+                            y >>= 1;
+                            y -= 460;
+                            break;
+                        }
+                        case 1:
+                        {
+                            x = -x;
+                            auto bx = x;
+                            x -= y;
+                            y += bx;
+                            y >>= 1;
+                            y -= 460;
+                            break;
+                        }
+                        case 2:
+                        {
+                            auto bx = x;
+                            x -= y;
+                            y = -y;
+                            y -= bx;
+                            y >>= 1;
+                            y -= 460;
+                            break;
+                        }
+                        case 3:
+                        {
+                            auto bx = x;
+                            x += y;
+                            y = -y;
+                            y += bx;
+                            y >>= 1;
+                            y -= 460;
+                            break;
+                        }
+                    }
+                    x -= (self->widgets[widx::image].width() / 2);
+                    y -= ((self->widgets[widx::image].width() / 2) + 16);
+                    clipped->x += x;
+                    clipped->y += y;
+
+                    _dword_E0C3E0 = (uint32_t)clipped;
+
+                    x = 0x2000;
+                    y = 0x2000;
+
+                    auto company = companymgr::get(_playerCompany);
+                    auto companyColour = company->mainColours.primary;
+                    auto edi = _lastSelectedMods << 16 | 0x1D0;
+
+                    if (_trackType & (1 << 7))
+                    {
+                        uint8_t trackType = _trackType & ~(1 << 7);
+                        auto edx = companyColour << 16 | trackType;
+                        construction::drawRoad(x, y, edi, gCurrentRotation, edx);
+                    }
+                    else
+                    {
+                        auto edx = companyColour << 16 | _trackType;
+                        construction::drawTrack(x, y, edi, gCurrentRotation, edx);
+                    }
+                    _byte_522095 = _byte_522095 & ~(1 << 0);
+                }
+            }
+
+            auto xPos = self->x + 69;
+            auto yPos = self->widgets[widx::image].bottom + self->y + 4;
+
+            if (_modCost != 0x80000000 && _modCost != 0)
+            {
+                auto args = FormatArguments();
+                args.push<uint32_t>(_modCost);
+
+                gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            }
         }
+
         static void init_events()
         {
             events.on_close = common::on_close;
@@ -3037,7 +3296,7 @@ namespace openloco::ui::windows::construction
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
             _stationCost = 0x80000000;
-            _dword_1135F46 = 0x80000000;
+            _modCost = 0x80000000;
             _byte_1136076 = 0;
 
             if (input::is_tool_active(self->type, self->number))
@@ -3476,7 +3735,7 @@ namespace openloco::ui::windows::construction
             regs.edx = (_trackType & ~(1 << 7)) | (regs.dh << 8);
             regs.dl = _trackType & ~(1 << 7);
             regs.edx |= (_lastSelectedBridge << 24);
-            regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+            regs.edi = _word_1135FB8 | _lastSelectedMods << 16;
 
             regs.ax &= regs.ax;
             return false;
@@ -3780,7 +4039,7 @@ namespace openloco::ui::windows::construction
             regs.edx = _trackType | (regs.dh << 8);
             regs.dl = _trackType;
             regs.edx |= (_lastSelectedBridge << 24);
-            regs.edi = _word_1135FB8 | _lastSelectedMod << 16;
+            regs.edi = _word_1135FB8 | _lastSelectedMods << 16;
 
             if (_byte_113607E & (1 << 1))
             {

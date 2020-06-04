@@ -232,7 +232,12 @@ namespace openloco::string_ids
     constexpr string_id buffer_338 = 338;
 
     constexpr string_id stringid_stringid = 347;
+    constexpr string_id single_section = 348;
+    constexpr string_id block_section = 349;
+    constexpr string_id all_connected_track = 350;
 
+    constexpr string_id upgrade_track_with_mods = 352;
+    constexpr string_id click_track_to_upgrade = 353;
     constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
 
