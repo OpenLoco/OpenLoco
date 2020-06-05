@@ -90,8 +90,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t[10], 0x004F78E0> _unk_4F78E0;
     static loco_global<uint8_t[10], 0x004F78EB> _unk_4F78EB;
 
-    static loco_global<uint8_t[40][8], 0x004F7B62> _word_4F7B62;
-
     static loco_global<uint8_t[16], 0x004FFB08> _signalFrames2State;
     static loco_global<uint8_t[32], 0x004FFB19> _signalFrames3State;
     static loco_global<uint8_t[64], 0x004FFB3A> _signalFrames4State;
@@ -393,6 +391,7 @@ namespace openloco::ui::windows::construction
                 multiplier = 10;
             }
 
+            std::printf("widgetIndex: %d\n", widgetIndex);
             registers regs;
             regs.edx = widgetIndex;
             regs.esi = (int32_t)self;
@@ -409,6 +408,8 @@ namespace openloco::ui::windows::construction
                     common::switchTab(self, widgetIndex);
                     break;
 
+                case -32:
+                case -96:
                 case widx::construct:
                     for (int i = 0; i < multiplier; i++)
                     {
@@ -438,9 +439,11 @@ namespace openloco::ui::windows::construction
                     WindowManager::viewportSetVisibility(3);
                     input::toolSet(self, widx::construct, 12);
                     input::set_flag(input::input_flags::flag6);
+
                     _constructionHover = 1;
                     _byte_113607E = 0;
                     _constructionRotation = _constructionRotation & 3;
+
                     common::activateSelectedTrackWidgets();
                     break;
                 }
@@ -570,11 +573,14 @@ namespace openloco::ui::windows::construction
         static void on_resize(window* self)
         {
             self->enabled_widgets &= ~(1 << widx::construct);
+
             if (_constructionHover != 1)
                 self->enabled_widgets |= (1 << widx::construct);
+
             auto disabledWidgets = self->disabled_widgets;
             disabledWidgets &= (1 << common::widx::tab_construction | 1 << common::widx::tab_overhead | 1 << common::widx::tab_signal | 1 << common::widx::tab_station);
             uint8_t trackType = _trackType;
+
             if (trackType & (1 << 7))
             {
                 trackType &= ~(1 << 7);
@@ -657,10 +663,12 @@ namespace openloco::ui::windows::construction
         {
             _byte_113603A = 0xFF;
             common::sub_49FEC7();
+
             if (slope)
                 _lastSelectedTrackGradient = trackPiece;
             else
                 _lastSelectedTrackPiece = trackPiece;
+
             _trackCost = 0x80000000;
             common::activateSelectedTrackWidgets();
         }
@@ -696,8 +704,10 @@ namespace openloco::ui::windows::construction
                 auto company = companymgr::get(_playerCompany);
                 auto companyColour = company->mainColours.primary;
                 auto imageId = gfx::recolour(bridgeObj->var_16, companyColour);
+
                 auto args = FormatArguments();
                 args.push(imageId);
+
                 if (bridgeObj->max_speed == 0xFFFF)
                 {
                     args.push(string_ids::unlimited_speed);
@@ -835,7 +845,9 @@ namespace openloco::ui::windows::construction
                 {
                     auto bridge = _bridgeList[itemIndex];
                     _lastSelectedBridge = bridge;
-                    _scenarioBridges[_trackType & ~(1<<7)] = bridge;
+
+                    // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
+                    _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
                     common::sub_49FEC7();
                     _trackCost = 0x80000000;
                     common::activateSelectedTrackWidgets();
@@ -884,7 +896,7 @@ namespace openloco::ui::windows::construction
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
-            regs.esi = (int32_t)&self;
+            regs.esi = (uint32_t)&self;
             regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
@@ -994,7 +1006,6 @@ namespace openloco::ui::windows::construction
             cx -= si;
             clipped->x += ax;
             clipped->y += cx;
-            std::printf("x: %d, y: %d\n", ax, cx);
             _dword_E0C3E0 = (uint32_t)clipped;
             uint16_t x = 0x2000;
             uint16_t y = 0x2000;
@@ -1184,7 +1195,7 @@ namespace openloco::ui::windows::construction
                     {
                         i += 10;
                     }
-                    
+
                     int16_t ax = ecx[i + 1] | (ecx[i + 2] << 8);
                     int16_t dx = ecx[i + 5] | (ecx[i + 6] << 8);
                     int16_t cx = ecx[i + 3] | (ecx[i + 4] << 8);
@@ -2016,7 +2027,7 @@ namespace openloco::ui::windows::construction
             viewport->flags = _word_1135F86;
         }
 
-        _trackType = flags;
+        _trackType = static_cast<uint8_t>(flags);
         _byte_1136063 = flags >> 24;
         _x = 0x1800;
         _y = 0x1800;
@@ -4002,7 +4013,7 @@ namespace openloco::ui::windows::construction
             regs.edx |= (_lastSelectedBridge << 24);
             regs.edi = _word_1135FB8 | _lastSelectedMods << 16;
 
-            if (_byte_113607E & (1 << 1))
+            if (_byte_113607E & (1 << 0))
             {
                 auto thing = thingmgr::get<Thing>(2492);
                 regs.edi |= thing->type;
@@ -4483,14 +4494,15 @@ namespace openloco::ui::windows::construction
     void registerHooks()
     {
 
-        register_hook(
-            0x0049DC97,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                construction::on_mouse_up((ui::window*)regs.esi, (widget_index)regs.dx);
-                regs = backup;
-                return 0;
-            });
+        //register_hook(
+        //    0x0049D3F6,
+        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        //        registers backup = regs;
+        //        std::printf("widgetIndex: %d\n", regs.dx);
+        //        construction::on_mouse_up((ui::window*)regs.esi, (widget_index)regs.dx);
+        //        regs = backup;
+        //        return 0;
+        //    });
 
         register_hook(
             0x0049F1B5,
@@ -4500,5 +4512,15 @@ namespace openloco::ui::windows::construction
                 regs = backup;
                 return 0;
             });
+
+        //register_hook(
+        //    0x004A3B0D,
+        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        //        registers backup = regs;
+        //        std::printf("openWithFlags\n");
+        //        openWithFlags(regs.ecx);
+        //        regs = backup;
+        //        return 0;
+        //    });
     }
 }
