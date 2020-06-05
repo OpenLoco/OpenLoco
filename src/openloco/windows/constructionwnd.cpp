@@ -900,45 +900,6 @@ namespace openloco::ui::windows::construction
             call(0x0049DC8C, regs);
         }
 
-        // 0x0045FCE6
-        static map_pos getMapCoord(int16_t x, int16_t y, int16_t z)
-        {
-            auto window = WindowManager::findAt(x, y);
-            auto viewport = window->viewports[0];
-
-            if (viewport == nullptr) 
-                return map_pos{ -32768, 0 };
-
-            x -= viewport->x;
-            if (x < 0)
-                return map_pos{ -32768, 0 };
-
-            if (x >= viewport->width)
-                return map_pos{ -32768, 0 };
-
-            y -= viewport->y;
-            if (y < 0)
-                return map_pos{ -32768, 0 };
-
-            if (y >= viewport->width)
-                return map_pos{ -32768, 0 };
-
-            auto zoom = viewport->zoom;
-
-            x <<= zoom;
-            y <<= zoom;
-
-            x += viewport->view_x;
-            y += viewport->view_y;
-
-            auto mapPos = window->viewport_coord_to_map_coord(x, y, z, gCurrentRotation);
-
-            if (mapPos.x > 0x2FFF || mapPos.y > 0x2FFF)
-                return map_pos{ -32768, 0 };
-
-            return mapPos;
-        }
-
         // 0x0049DC97
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -965,40 +926,40 @@ namespace openloco::ui::windows::construction
                 _byte_1136065 = regs.dh;
                 auto roadHeight = 0;
 
+                auto i = 0;
                 if (_mapSelectionFlags & 1 << 1)
                 {
-                    auto i = 0;
-                    auto x = _mapSelectedTiles[i].x;
-                    while (x != -1)
+                    auto xPos = _mapSelectedTiles[i].x;
+                    while (xPos != -1)
                     {
-                        auto y = _mapSelectedTiles[i].y;
+                        auto yPos = _mapSelectedTiles[i].y;
 
-                        if (x >= 0x2FFF)
+                        if (xPos >= 0x2FFF)
                         {
                             i++;
                             continue;
                         }
 
-                        if (y >= 0x2FFF)
+                        if (yPos >= 0x2FFF)
                         {
                             i++;
                             continue;
                         }
 
                         auto tile = tilemgr::get(_mapSelectedTiles[i]);
-                        auto tileIndex = 0;
+
                         auto tileElement = tile.begin();
 
-                        if ((tileElement->type & 0x3C))
+                        if (tileElement->is_not_surface())
                         {
-                            while (tileElement->type & 0x3C)
+                            while (tileElement->is_not_surface())
                             {
                                 tileElement = tileElement += 8;
                             }
                         }
 
                         auto surfaceTile = tileElement->as_surface();
-                        auto tileHeight = surfaceTile->base_z;
+                        auto tileHeight = surfaceTile->base_z();
 
                         if (surfaceTile->slope_corners())
                         {
@@ -1027,55 +988,63 @@ namespace openloco::ui::windows::construction
                         }
 
                         i++;
-                        x = _mapSelectedTiles[i].x;
+                        xPos = _mapSelectedTiles[i].x;
                     }
                 }
                 // loc_4A23F8
                 _word_1136000 = roadHeight;
                 _mapSelectionFlags = _mapSelectionFlags & ~(7);
 
-                registers regs;
-                regs.ax = x;
-                regs.bx = y;
-                auto flags = call(0x00478361, regs);
-                map_pos mapPos = { regs.ax, regs.bx };
+                registers regs2;
+                regs2.ax = x;
+                regs2.bx = y;
+                auto flags = call(0x00478361, regs2);
+                map_pos mapPos = { regs2.ax, regs2.bx };
                 if (!(flags & 1 << 8))
                 {
-                    mapPos = getMapCoord(x, y, roadHeight);
-                    if (mapPos.x != 0x8000)
+                    auto pos = screenGetMapXyWithZ(xy32(x, y), roadHeight);
+                    if (!pos)
                     {
+                        mapPos.x = (*pos).x;
+                        mapPos.y = (*pos).y;
                         mapPos.x &= 0xFFE0;
                         mapPos.y &= 0xFFE0;
                         _byte_113605D = 1;
                         _word_1135FFE = roadHeight;
                     }
+                    else
+                    {
+                    }
                 }
 
                 if (flags & 1 << 8 || mapPos.x == 0x8000)
                 {
-                    registers regs2;
-                    call(0x00460781, regs2);
+                    registers regs3;
+                    regs3.ax = x;
+                    regs3.bx = y;
+                    regs3.edi = _mapSelectedTiles[i].x << 16 | _mapSelectedTiles[i].x;
+                    call(0x00460781, regs3);
 
-                    if (regs.ax == 0x8000)
+                    if (regs3.ax == -32768)
                         return;
 
-                    mapPos.x = regs.ax;
-                    mapPos.y = regs.bx;
+                    mapPos.x = regs3.ax;
+                    mapPos.y = regs3.bx;
 
                     auto tile = tilemgr::get(mapPos);
-                    auto tileIndex = 0;
+
                     auto tileElement = tile.begin();
 
-                    if ((tileElement->type & 0x3C))
+                    if (tileElement->is_not_surface())
                     {
-                        while (tileElement->type & 0x3C)
+                        while (tileElement->is_not_surface())
                         {
                             tileElement = tileElement += 8;
                         }
                     }
 
                     auto surfaceTile = tileElement->as_surface();
-                    auto tileHeight = surfaceTile->base_z;
+                    auto tileHeight = surfaceTile->base_z();
 
                     if (surfaceTile->slope_corners())
                     {
@@ -1110,7 +1079,7 @@ namespace openloco::ui::windows::construction
                 if (input::has_key_modifier(1) || _byte_113605D != 1)
                 {
                     auto roadPiece = common::roadPieces[_byte_1136065];
-                    auto i = 0;
+                    i = 0;
                     auto height = 0;
 
                     while (roadPiece[i] != 0xFF)
@@ -1161,7 +1130,7 @@ namespace openloco::ui::windows::construction
 
                     if (_dword_1135F42 == 0x80000000)
                     {
-                        if (!gGameCommandErrorText == string_ids::error_can_only_build_above_ground)
+                        if (gGameCommandErrorText != string_ids::error_can_only_build_above_ground)
                         {
                             ebx--;
                             if (ebx != 0)
@@ -1169,7 +1138,7 @@ namespace openloco::ui::windows::construction
                                 roadHeight -= 16;
                                 if (roadHeight >= 0)
                                 {
-                                    if (ebx < 0 )
+                                    if (ebx < 0)
                                     {
                                         continue;
                                     }
