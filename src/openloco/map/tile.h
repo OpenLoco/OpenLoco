@@ -238,12 +238,9 @@ namespace openloco::map
     public:
         bool has_station_element() const { return (_type & 0x80) != 0; }
         uint8_t unk_z() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
-        bool has_type_3C() const { return (_type & 0x3C) != 0; }
         bool has_signal() const { return (_type & 0x40) != 0; }
         uint8_t unk_direction() const { return _type & 0x03; }
         uint8_t unk_4() const { return _4 & 0x3F; }
-        bool has_4_F() const { return (_4 & 0xF) != 0; }
-        bool has_4_10() const { return (_4 & 0x10) != 0; }
         bool has_4_80() const { return (_4 & 0x80) != 0; }
         uint8_t track_object_id() const { return _5 >> 4; } // _5u
         uint8_t unk_5l() const { return _5 & 0xF; }
@@ -259,9 +256,6 @@ namespace openloco::map
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
-
-    public:
-        uint8_t signal_object_id() const { return _5 >> 4; } // _5u
     };
 
     struct road_element : public tile_element_base

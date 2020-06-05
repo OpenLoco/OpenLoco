@@ -241,6 +241,8 @@ namespace openloco::string_ids
     constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
 
+    constexpr string_id error_can_only_build_above_ground = 360;
+
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
     constexpr string_id error_cant_rename_station = 385;

@@ -95,6 +95,7 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t[64], 0x004FFB3A> _signalFrames4State;
 
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
+    static loco_global<uint8_t, 0x00508F09> _byte_508F09;
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
     static loco_global<uint8_t, 0x00522092> _byte_522092;
@@ -121,15 +122,17 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
+    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<uint32_t, 0x01135F3E> _trackCost;
+    static loco_global<uint32_t, 0x01135F42> _dword_1135F42;
+    static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint32_t, 0x01135F4E> _signalCost;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
     static loco_global<uint32_t, 0x01135F70> _dword_1135F70;
     static loco_global<uint32_t, 0x01135F74> _dword_1135F74;
     static loco_global<uint32_t, 0x01135F78> _dword_1135F78;
-    static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
@@ -137,6 +140,8 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
+    static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
+    static loco_global<uint16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
     static loco_global<uint8_t, 0x0113602F> _isSignalBothDirections;
@@ -146,10 +151,13 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t[17], 0x0113603B> _stationList;
     static loco_global<uint8_t, 0x0113604C> _lastSelectedStationType;
     static loco_global<uint8_t[4], 0x01136054> _modList;
+    static loco_global<uint8_t, 0x0113605D> _byte_113605D;
     static loco_global<uint8_t, 0x01136061> _constructionHover;
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
     static loco_global<uint8_t, 0x01136064> _constructionRotation;
+    static loco_global<uint8_t, 0x01136065> _byte_1136065;
+    static loco_global<uint8_t, 0x01136066> _byte_1136066;
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
@@ -892,15 +900,305 @@ namespace openloco::ui::windows::construction
             call(0x0049DC8C, regs);
         }
 
+        // 0x0045FCE6
+        static map_pos getMapCoord(int16_t x, int16_t y, int16_t z)
+        {
+            auto window = WindowManager::findAt(x, y);
+            auto viewport = window->viewports[0];
+
+            if (viewport == nullptr) 
+                return map_pos{ -32768, 0 };
+
+            x -= viewport->x;
+            if (x < 0)
+                return map_pos{ -32768, 0 };
+
+            if (x >= viewport->width)
+                return map_pos{ -32768, 0 };
+
+            y -= viewport->y;
+            if (y < 0)
+                return map_pos{ -32768, 0 };
+
+            if (y >= viewport->width)
+                return map_pos{ -32768, 0 };
+
+            auto zoom = viewport->zoom;
+
+            x <<= zoom;
+            y <<= zoom;
+
+            x += viewport->view_x;
+            y += viewport->view_y;
+
+            auto mapPos = window->viewport_coord_to_map_coord(x, y, z, gCurrentRotation);
+
+            if (mapPos.x > 0x2FFF || mapPos.y > 0x2FFF)
+                return map_pos{ -32768, 0 };
+
+            return mapPos;
+        }
+
         // 0x0049DC97
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (uint32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049DC97, regs);
+            //registers regs;
+            //regs.esi = (uint32_t)&self;
+            //regs.dx = widgetIndex;
+            //regs.ax = x;
+            //regs.bx = y;
+            //call(0x0049DC97, regs);
+
+            if (widgetIndex != 28)
+                return;
+
+            if (_trackType & (1 << 7))
+            {
+                map_invalidate_map_selection_tiles();
+                common::sub_49FEC7();
+                registers regs;
+                auto invalidRoad = common::getRoadPieceId(regs);
+
+                if (invalidRoad)
+                    return;
+
+                _byte_1136065 = regs.dh;
+                auto roadHeight = 0;
+
+                if (_mapSelectionFlags & 1 << 1)
+                {
+                    auto i = 0;
+                    auto x = _mapSelectedTiles[i].x;
+                    while (x != -1)
+                    {
+                        auto y = _mapSelectedTiles[i].y;
+
+                        if (x >= 0x2FFF)
+                        {
+                            i++;
+                            continue;
+                        }
+
+                        if (y >= 0x2FFF)
+                        {
+                            i++;
+                            continue;
+                        }
+
+                        auto tile = tilemgr::get(_mapSelectedTiles[i]);
+                        auto tileIndex = 0;
+                        auto tileElement = tile.begin();
+
+                        if ((tileElement->type & 0x3C))
+                        {
+                            while (tileElement->type & 0x3C)
+                            {
+                                tileElement = tileElement += 8;
+                            }
+                        }
+
+                        auto surfaceTile = tileElement->as_surface();
+                        auto tileHeight = surfaceTile->base_z;
+
+                        if (surfaceTile->slope_corners())
+                        {
+                            tileHeight += 16;
+                        }
+
+                        if (surfaceTile->is_slope_dbl_height())
+                        {
+                            tileHeight += 16;
+                        }
+
+                        if (tileHeight > roadHeight)
+                        {
+                            roadHeight = tileHeight;
+                        }
+
+                        if (surfaceTile->water())
+                        {
+                            tileHeight = surfaceTile->water() << 4;
+                            tileHeight += 16;
+                        }
+
+                        if (tileHeight > roadHeight)
+                        {
+                            roadHeight = tileHeight;
+                        }
+
+                        i++;
+                        x = _mapSelectedTiles[i].x;
+                    }
+                }
+                // loc_4A23F8
+                _word_1136000 = roadHeight;
+                _mapSelectionFlags = _mapSelectionFlags & ~(7);
+
+                registers regs;
+                regs.ax = x;
+                regs.bx = y;
+                auto flags = call(0x00478361, regs);
+                map_pos mapPos = { regs.ax, regs.bx };
+                if (!(flags & 1 << 8))
+                {
+                    mapPos = getMapCoord(x, y, roadHeight);
+                    if (mapPos.x != 0x8000)
+                    {
+                        mapPos.x &= 0xFFE0;
+                        mapPos.y &= 0xFFE0;
+                        _byte_113605D = 1;
+                        _word_1135FFE = roadHeight;
+                    }
+                }
+
+                if (flags & 1 << 8 || mapPos.x == 0x8000)
+                {
+                    registers regs2;
+                    call(0x00460781, regs2);
+
+                    if (regs.ax == 0x8000)
+                        return;
+
+                    mapPos.x = regs.ax;
+                    mapPos.y = regs.bx;
+
+                    auto tile = tilemgr::get(mapPos);
+                    auto tileIndex = 0;
+                    auto tileElement = tile.begin();
+
+                    if ((tileElement->type & 0x3C))
+                    {
+                        while (tileElement->type & 0x3C)
+                        {
+                            tileElement = tileElement += 8;
+                        }
+                    }
+
+                    auto surfaceTile = tileElement->as_surface();
+                    auto tileHeight = surfaceTile->base_z;
+
+                    if (surfaceTile->slope_corners())
+                    {
+                        tileHeight += 16;
+                    }
+
+                    if (surfaceTile->is_slope_dbl_height())
+                    {
+                        tileHeight += 16;
+                    }
+
+                    if (tileHeight < _word_1136000)
+                    {
+                        roadHeight = _word_1136000;
+                    }
+
+                    if (surfaceTile->water())
+                    {
+                        tileHeight = surfaceTile->water() << 4;
+                        tileHeight += 16;
+                    }
+
+                    if (tileHeight > roadHeight)
+                    {
+                        roadHeight = tileHeight;
+                    }
+                    _byte_113605D = 0;
+                }
+                input::cancel_tool();
+
+                auto ebx = 0;
+                if (input::has_key_modifier(1) || _byte_113605D != 1)
+                {
+                    auto roadPiece = common::roadPieces[_byte_1136065];
+                    auto i = 0;
+                    auto height = 0;
+
+                    while (roadPiece[i] != 0xFF)
+                    {
+                        if (height > roadPiece[i + 5])
+                            height = roadPiece[i + 5];
+
+                        i += 10;
+                    }
+
+                    roadHeight -= height;
+                    roadHeight -= 16;
+                    ebx = 2;
+
+                    if (input::has_key_modifier(1))
+                    {
+                        ebx = 0x80000000;
+                        roadHeight -= 16;
+                    }
+                }
+                else
+                {
+                    ebx = 1;
+                    auto dx = _word_1135FFE;
+                }
+
+                while (true)
+                {
+                    _constructionHover = 0;
+                    _byte_113607E = 0;
+                    _x = mapPos.x;
+                    _y = mapPos.y;
+                    _word_1135FB8 = roadHeight;
+                    _byte_522096 = 0;
+                    _byte_1136066 = 0;
+
+                    common::activateSelectedTrackWidgets();
+                    auto window = WindowManager::find(WindowType::construction);
+
+                    if (window == nullptr)
+                        return;
+
+                    _byte_508F09 = _byte_508F09 | (1 << 0);
+
+                    on_mouse_up(window, widx::construct);
+
+                    _byte_508F09 = _byte_508F09 & ~(1 << 0);
+
+                    if (_dword_1135F42 == 0x80000000)
+                    {
+                        if (!gGameCommandErrorText == string_ids::error_can_only_build_above_ground)
+                        {
+                            ebx--;
+                            if (ebx != 0)
+                            {
+                                roadHeight -= 16;
+                                if (roadHeight >= 0)
+                                {
+                                    if (ebx < 0 )
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        roadHeight += 32;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _byte_113607E = 1;
+                        WindowManager::close(WindowType::error, 0);
+                        return;
+                    }
+
+                    on_mouse_up(window, widx::rotate_90);
+
+                    audio::play_sound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
+
+                    return;
+                }
+            }
+            else
+            {
+            }
         }
 
         // 0x0049D4F5
@@ -4493,17 +4791,6 @@ namespace openloco::ui::windows::construction
 
     void registerHooks()
     {
-
-        //register_hook(
-        //    0x0049D3F6,
-        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //        registers backup = regs;
-        //        std::printf("widgetIndex: %d\n", regs.dx);
-        //        construction::on_mouse_up((ui::window*)regs.esi, (widget_index)regs.dx);
-        //        regs = backup;
-        //        return 0;
-        //    });
-
         register_hook(
             0x0049F1B5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -4513,14 +4800,13 @@ namespace openloco::ui::windows::construction
                 return 0;
             });
 
-        //register_hook(
-        //    0x004A3B0D,
-        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //        registers backup = regs;
-        //        std::printf("openWithFlags\n");
-        //        openWithFlags(regs.ecx);
-        //        regs = backup;
-        //        return 0;
-        //    });
+        register_hook(
+            0x0049DC97,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                construction::on_tool_down(*((ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
+                regs = backup;
+                return 0;
+            });
     }
 }
