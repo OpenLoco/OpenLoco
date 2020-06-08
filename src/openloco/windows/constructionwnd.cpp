@@ -425,7 +425,6 @@ namespace openloco::ui::windows::construction
                     for (int i = 0; i < multiplier; i++)
                     {
                         call(0x0049F92D, regs);
-                        //sub_49F92D()
                     }
                     break;
 
@@ -902,16 +901,63 @@ namespace openloco::ui::windows::construction
             call(0x0049DC8C, regs);
         }
 
+        static void getConstructionHeight(map_pos mapPos, uint16_t* height, bool isSelected)
+        {
+            auto tile = tilemgr::get(mapPos);
+
+            auto tileElement = tile.begin();
+
+            if (tileElement->is_not_surface())
+            {
+                while (tileElement->is_not_surface())
+                {
+                    tileElement += 8;
+                }
+            }
+
+            auto surfaceTile = tileElement->as_surface();
+            uint16_t tileHeight = surfaceTile->base_z() << 2;
+
+            if (surfaceTile->slope_corners())
+            {
+                tileHeight += 16;
+            }
+
+            if (surfaceTile->is_slope_dbl_height())
+            {
+                tileHeight += 16;
+            }
+
+            if (isSelected)
+            {
+                if (tileHeight > *height)
+                {
+                    *height = tileHeight;
+                }
+            }
+            else
+            {
+                if (tileHeight > _word_1136000)
+                {
+                    *height = _word_1136000;
+                }
+            }
+
+            if (surfaceTile->water())
+            {
+                tileHeight = surfaceTile->water() << 4;
+                tileHeight += 16;
+            }
+
+            if (tileHeight > *height)
+            {
+                *height = tileHeight;
+            }
+        }
+
         // 0x0049DC97
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            //registers regs;
-            //regs.esi = (uint32_t)&self;
-            //regs.dx = widgetIndex;
-            //regs.ax = x;
-            //regs.bx = y;
-            //call(0x0049DC97, regs);
-
             if (widgetIndex != 28)
                 return;
 
@@ -926,7 +972,7 @@ namespace openloco::ui::windows::construction
                     return;
 
                 _byte_1136065 = (*road).id;
-                auto roadHeight = 0;
+                uint16_t roadHeight = 0;
 
                 auto i = 0;
                 if (_mapSelectionFlags & 1 << 1)
@@ -950,46 +996,7 @@ namespace openloco::ui::windows::construction
                             continue;
                         }
 
-                        auto tile = tilemgr::get(_mapSelectedTiles[i]);
-
-                        auto tileElement = tile.begin();
-
-                        if (tileElement->is_not_surface())
-                        {
-                            while (tileElement->is_not_surface())
-                            {
-                                tileElement = tileElement += 8;
-                            }
-                        }
-
-                        auto surfaceTile = tileElement->as_surface();
-                        auto tileHeight = surfaceTile->base_z() << 2;
-
-                        if (surfaceTile->slope_corners())
-                        {
-                            tileHeight += 16;
-                        }
-
-                        if (surfaceTile->is_slope_dbl_height())
-                        {
-                            tileHeight += 16;
-                        }
-
-                        if (tileHeight > roadHeight)
-                        {
-                            roadHeight = tileHeight;
-                        }
-
-                        if (surfaceTile->water())
-                        {
-                            tileHeight = surfaceTile->water() << 4;
-                            tileHeight += 16;
-                        }
-
-                        if (tileHeight > roadHeight)
-                        {
-                            roadHeight = tileHeight;
-                        }
+                        getConstructionHeight(_mapSelectedTiles[i], &roadHeight, true);
 
                         i++;
                         xPos = _mapSelectedTiles[i].x;
@@ -1037,52 +1044,14 @@ namespace openloco::ui::windows::construction
                     mapPos.x = regs3.ax;
                     mapPos.y = regs3.bx;
 
-                    auto tile = tilemgr::get(mapPos);
+                    getConstructionHeight(mapPos, &roadHeight, true);
 
-                    auto tileElement = tile.begin();
-
-                    if (tileElement->is_not_surface())
-                    {
-                        while (tileElement->is_not_surface())
-                        {
-                            tileElement = tileElement += 8;
-                        }
-                    }
-
-                    auto surfaceTile = tileElement->as_surface();
-                    auto tileHeight = surfaceTile->base_z() << 2;
-
-                    if (surfaceTile->slope_corners())
-                    {
-                        tileHeight += 16;
-                    }
-
-                    if (surfaceTile->is_slope_dbl_height())
-                    {
-                        tileHeight += 16;
-                    }
-
-                    if (tileHeight < _word_1136000)
-                    {
-                        roadHeight = _word_1136000;
-                    }
-
-                    if (surfaceTile->water())
-                    {
-                        tileHeight = surfaceTile->water() << 4;
-                        tileHeight += 16;
-                    }
-
-                    if (tileHeight > roadHeight)
-                    {
-                        roadHeight = tileHeight;
-                    }
                     _byte_113605D = 0;
                 }
                 input::cancel_tool();
 
                 auto ebx = 0;
-                if (input::has_key_modifier(1) || _byte_113605D != 1)
+                if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
                 {
                     auto roadPiece = common::roadPieces[_byte_1136065];
                     i = 0;
@@ -1100,7 +1069,7 @@ namespace openloco::ui::windows::construction
                     roadHeight -= 16;
                     ebx = 2;
 
-                    if (input::has_key_modifier(1))
+                    if (input::has_key_modifier(input::key_modifier::shift))
                     {
                         ebx = 0x80000000;
                         roadHeight -= 16;
@@ -1182,7 +1151,7 @@ namespace openloco::ui::windows::construction
                     return;
 
                 _byte_1136065 = (*track).id;
-                auto trackHeight = 0;
+                uint16_t trackHeight = 0;
                 auto i = 0;
 
                 if (_mapSelectionFlags & 1 << 1)
@@ -1206,46 +1175,7 @@ namespace openloco::ui::windows::construction
                             continue;
                         }
 
-                        auto tile = tilemgr::get(_mapSelectedTiles[i]);
-
-                        auto tileElement = tile.begin();
-
-                        if (tileElement->is_not_surface())
-                        {
-                            while (tileElement->is_not_surface())
-                            {
-                                tileElement = tileElement += 8;
-                            }
-                        }
-
-                        auto surfaceTile = tileElement->as_surface();
-                        auto tileHeight = surfaceTile->base_z() << 2;
-
-                        if (surfaceTile->slope_corners())
-                        {
-                            tileHeight += 16;
-                        }
-
-                        if (surfaceTile->is_slope_dbl_height())
-                        {
-                            tileHeight += 16;
-                        }
-
-                        if (tileHeight > trackHeight)
-                        {
-                            trackHeight = tileHeight;
-                        }
-
-                        if (surfaceTile->water())
-                        {
-                            tileHeight = surfaceTile->water() << 4;
-                            tileHeight += 16;
-                        }
-
-                        if (tileHeight > trackHeight)
-                        {
-                            trackHeight = tileHeight;
-                        }
+                        getConstructionHeight(_mapSelectedTiles[i], &trackHeight, true);
 
                         i++;
                         xPos = _mapSelectedTiles[i].x;
@@ -1295,52 +1225,14 @@ namespace openloco::ui::windows::construction
                     mapPos.x = regs3.ax;
                     mapPos.y = regs3.bx;
 
-                    auto tile = tilemgr::get(mapPos);
+                    getConstructionHeight(mapPos, &trackHeight, false);
 
-                    auto tileElement = tile.begin();
-
-                    if (tileElement->is_not_surface())
-                    {
-                        while (tileElement->is_not_surface())
-                        {
-                            tileElement = tileElement += 8;
-                        }
-                    }
-
-                    auto surfaceTile = tileElement->as_surface();
-                    auto tileHeight = surfaceTile->base_z() << 2;
-
-                    if (surfaceTile->slope_corners())
-                    {
-                        tileHeight += 16;
-                    }
-
-                    if (surfaceTile->is_slope_dbl_height())
-                    {
-                        tileHeight += 16;
-                    }
-
-                    if (tileHeight < _word_1136000)
-                    {
-                        trackHeight = _word_1136000;
-                    }
-
-                    if (surfaceTile->water())
-                    {
-                        tileHeight = surfaceTile->water() << 4;
-                        tileHeight += 16;
-                    }
-
-                    if (tileHeight > trackHeight)
-                    {
-                        trackHeight = tileHeight;
-                    }
                     _byte_113605D = 0;
                 }
                 input::cancel_tool();
 
                 auto ebx = 0;
-                if (input::has_key_modifier(1) || _byte_113605D != 1)
+                if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
                 {
                     auto roadPiece = common::roadPieces[_byte_1136065];
                     i = 0;
@@ -1358,7 +1250,7 @@ namespace openloco::ui::windows::construction
                     trackHeight -= 16;
                     ebx = 2;
 
-                    if (input::has_key_modifier(1))
+                    if (input::has_key_modifier(input::key_modifier::shift))
                     {
                         ebx = 0x80000000;
                         trackHeight -= 16;
@@ -1477,11 +1369,11 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x004A0AE5
-        static void drawTrack(uint16_t ax, uint16_t cx, uint32_t edi, uint8_t bh, uint32_t edx)
+        static void drawTrack(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx)
         {
             registers regs;
-            regs.ax = ax;
-            regs.cx = cx;
+            regs.ax = x;
+            regs.cx = y;
             regs.edi = edi;
             regs.bh = bh;
             regs.edx = edx;
@@ -1489,11 +1381,11 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x00478F1F
-        static void drawRoad(uint16_t ax, uint16_t cx, uint32_t edi, uint8_t bh, uint32_t edx)
+        static void drawRoad(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx)
         {
             registers regs;
-            regs.ax = ax;
-            regs.cx = cx;
+            regs.ax = x;
+            regs.cx = y;
             regs.edi = edi;
             regs.bh = bh;
             regs.edx = edx;
@@ -1525,23 +1417,22 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049D106
-        static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t width, uint16_t height)
         {
-            bp >>= 1;
-            si >>= 1;
-            si += 16;
-            ax -= bp;
-            cx -= si;
-            clipped->x += ax;
-            clipped->y += cx;
+            width >>= 1;
+            height >>= 1;
+            height += 16;
+            x -= width;
+            y -= height;
+            clipped->x += x;
+            clipped->y += y;
             _dword_E0C3E0 = (uint32_t)clipped;
-            uint16_t x = 0x2000;
-            uint16_t y = 0x2000;
+
             uint32_t edi = _word_1135FD8 << 16 | 0x1E0;
-            uint32_t edx = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
+            uint32_t trackPieceImage = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
             _byte_522095 = _byte_522095 | (1 << 1);
 
-            drawTrack(x, y, edi, _byte_1136078, edx);
+            drawTrack(0x2000, 0x2000, edi, _byte_1136078, trackPieceImage);
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -1549,121 +1440,72 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049D325
-        static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, uint16_t bp, uint16_t si)
+        static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t width, uint16_t height)
         {
-            bp >>= 1;
-            si >>= 1;
-            si += 16;
-            ax -= bp;
-            cx -= si;
-            clipped->x += ax;
-            clipped->y += cx;
+            width >>= 1;
+            height >>= 1;
+            height += 16;
+            x -= width;
+            y -= height;
+            clipped->x += x;
+            clipped->y += y;
             _dword_E0C3E0 = (uint32_t)clipped;
-            uint16_t x = 0x2000;
-            uint16_t y = 0x2000;
+
             uint32_t edi = _word_1135FD8 << 16 | 0x1E0;
-            uint32_t edx = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
+            uint32_t roadPieceImage = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
             _byte_522095 = _byte_522095 | (1 << 1);
 
-            drawRoad(x, y, edi, _byte_1136078, edx);
+            drawRoad(0x2000, 0x2000, edi, _byte_1136078, roadPieceImage);
 
             _byte_522095 = _byte_522095 & ~(1 << 1);
 
             drawCostString(self, dpi);
         }
 
-        // 0x0049D0B8
-        static void trackRotation0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
+        static void rotation(int16_t* x, int16_t* y, uint8_t rotation, int16_t dx)
         {
-            auto bx = ax;
-            ax = -ax + cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D0CC
-        static void trackRotation1(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            ax = -ax;
-            auto bx = ax;
-            ax -= cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D0E0
-        static void trackRotation2(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            auto bx = ax;
-            ax -= cx;
-            cx = -cx;
-            cx -= bx;
-            cx >>= 1;
-            cx -= dx;
-            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D0F4
-        static void trackRotation3(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            auto bx = ax;
-            ax += cx;
-            cx = -cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawTrackCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D2D7
-        static void roadRotation0(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            auto bx = ax;
-            ax = -ax + cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D2EB
-        static void roadRotation1(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            ax = -ax;
-            auto bx = ax;
-            ax -= cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D2FF
-        static void roadRotation2(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            auto bx = ax;
-            ax -= cx;
-            cx = -cx;
-            cx -= bx;
-            cx >>= 1;
-            cx -= dx;
-            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
-        }
-
-        // 0x0049D313
-        static void roadRotation3(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, int16_t ax, int16_t cx, int16_t dx, uint16_t bp, uint16_t si)
-        {
-            auto bx = ax;
-            ax += cx;
-            cx = -cx;
-            cx += bx;
-            cx >>= 1;
-            cx -= dx;
-            drawRoadCost(self, clipped, dpi, ax, cx, bp, si);
+            switch (rotation)
+            {
+                case 0:
+                {
+                    auto xCopy = *x;
+                    *x = -*x + *y;
+                    *y += xCopy;
+                    *y >>= 1;
+                    *y -= dx;
+                    break;
+                }
+                case 1:
+                {
+                    *x = -*x;
+                    auto xCopy = *x;
+                    *x -= *y;
+                    *y += xCopy;
+                    *y >>= 1;
+                    *y -= dx;
+                    break;
+                }
+                case 2:
+                {
+                    auto xCopy = *x;
+                    *x -= *y;
+                    *y = -*y;
+                    *y -= xCopy;
+                    *y >>= 1;
+                    *y -= dx;
+                    break;
+                }
+                case 3:
+                {
+                    auto xCopy = *x;
+                    *x += *y;
+                    *y = -*y;
+                    *y += xCopy;
+                    *y >>= 1;
+                    *y -= dx;
+                    break;
+                }
+            }
         }
 
         // 0x0049CF36
@@ -1723,14 +1565,14 @@ namespace openloco::ui::windows::construction
                         i += 10;
                     }
 
-                    int16_t ax = ecx[i + 1] | (ecx[i + 2] << 8);
+                    int16_t xPos = ecx[i + 1] | (ecx[i + 2] << 8);
                     int16_t dx = ecx[i + 5] | (ecx[i + 6] << 8);
-                    int16_t cx = ecx[i + 3] | (ecx[i + 4] << 8);
+                    int16_t yPos = ecx[i + 3] | (ecx[i + 4] << 8);
 
                     if (ecx[i + 9] & (1 << 6))
                     {
-                        ax = 0;
-                        cx = 0;
+                        xPos = 0;
+                        yPos = 0;
                     }
 
                     switch (_byte_1136078 & 3)
@@ -1739,43 +1581,31 @@ namespace openloco::ui::windows::construction
                             break;
                         case 1:
                         {
-                            std::swap(ax, cx);
-                            cx = -cx;
+                            std::swap(xPos, yPos);
+                            yPos = -yPos;
                             break;
                         }
                         case 2:
                         {
-                            ax = -ax;
-                            cx = -cx;
+                            xPos = -xPos;
+                            yPos = -yPos;
                             break;
                         }
                         case 3:
                         {
-                            std::swap(ax, cx);
-                            ax = -ax;
+                            std::swap(xPos, yPos);
+                            xPos = -xPos;
                             break;
                         }
                     }
-                    ax >>= 1;
-                    cx >>= 1;
-                    ax += 0x2010;
-                    cx += 0x2010;
+                    xPos >>= 1;
+                    yPos >>= 1;
+                    xPos += 0x2010;
+                    yPos += 0x2010;
                     dx += 0x1CC;
-                    switch (gCurrentRotation)
-                    {
-                        case 0:
-                            roadRotation0(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 1:
-                            roadRotation1(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 2:
-                            roadRotation2(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 3:
-                            roadRotation3(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                    }
+
+                    rotation(&xPos, &yPos, gCurrentRotation, dx);
+                    drawRoadCost(self, clipped, dpi, xPos, yPos, width, height);
                 }
                 else
                 {
@@ -1813,14 +1643,14 @@ namespace openloco::ui::windows::construction
                         i += 10;
                     }
 
-                    int16_t ax = ecx[i + 1] | (ecx[i + 2] << 8);
+                    int16_t xPos = ecx[i + 1] | (ecx[i + 2] << 8);
                     int16_t dx = ecx[i + 5] | (ecx[i + 6] << 8);
-                    int16_t cx = ecx[i + 3] | (ecx[i + 4] << 8);
+                    int16_t yPos = ecx[i + 3] | (ecx[i + 4] << 8);
 
                     if (ecx[i + 9] & (1 << 6))
                     {
-                        ax = 0;
-                        cx = 0;
+                        xPos = 0;
+                        yPos = 0;
                     }
 
                     switch (_byte_1136078 & 3)
@@ -1829,43 +1659,31 @@ namespace openloco::ui::windows::construction
                             break;
                         case 1:
                         {
-                            std::swap(ax, cx);
-                            cx = -cx;
+                            std::swap(xPos, yPos);
+                            yPos = -yPos;
                             break;
                         }
                         case 2:
                         {
-                            ax = -ax;
-                            cx = -cx;
+                            xPos = -xPos;
+                            yPos = -yPos;
                             break;
                         }
                         case 3:
                         {
-                            std::swap(ax, cx);
-                            ax = -ax;
+                            std::swap(xPos, yPos);
+                            xPos = -xPos;
                             break;
                         }
                     }
-                    ax >>= 1;
-                    cx >>= 1;
-                    ax += 0x2010;
-                    cx += 0x2010;
+                    xPos >>= 1;
+                    yPos >>= 1;
+                    xPos += 0x2010;
+                    yPos += 0x2010;
                     dx += 0x1CC;
-                    switch (gCurrentRotation)
-                    {
-                        case 0:
-                            trackRotation0(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 1:
-                            trackRotation1(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 2:
-                            trackRotation2(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                        case 3:
-                            trackRotation3(self, clipped, dpi, ax, cx, dx, width, height);
-                            break;
-                    }
+
+                    rotation(&xPos, &yPos, gCurrentRotation, dx);
+                    drawTrackCost(self, clipped, dpi, xPos, yPos, width, height);
                 }
                 else
                 {
@@ -2498,11 +2316,6 @@ namespace openloco::ui::windows::construction
     // 0x004A3B0D
     window* openWithFlags(const uint32_t flags)
     {
-        //registers regs;
-        //regs.ecx = flags;
-        //call(0x004A3B0D, regs);
-        //return (window*)regs.esi;
-
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow)
         {
@@ -4231,7 +4044,7 @@ namespace openloco::ui::windows::construction
                 rotation &= 3;
 
             return trackPieceId{ id, rotation };
-        } 
+        }
 
         // 0x004A04F8
         std::optional<trackPieceId> getTrackPieceId()
