@@ -728,6 +728,11 @@ namespace openloco::string_ids
     constexpr string_id error_reason_signal_belongs_to = 1422;
     constexpr string_id station_cargo_rating_percent = 1423;
 
+    constexpr string_id title_messages = 1425;
+    constexpr string_id tooltip_recent_messages = 1426;
+    constexpr string_id tooltip_message_options = 1427;
+    constexpr string_id title_message_options = 1428;
+
     constexpr string_id waiting_cargo_separator = 1430;
     constexpr string_id waiting = 1431;
     constexpr string_id nothing_waiting = 1432;
