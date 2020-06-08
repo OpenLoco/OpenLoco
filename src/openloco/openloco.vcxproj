@@ -94,6 +94,7 @@
     <ClCompile Include="windows\CompanyWindow.cpp" />
     <ClCompile Include="windows\constructionwnd.cpp" />
     <ClCompile Include="windows\EditKeyboardShortcut.cpp" />
+    <ClCompile Include="windows\error.cpp" />
     <ClCompile Include="windows\IndustryWindow.cpp" />
     <ClCompile Include="windows\industry_list.cpp" />
     <ClCompile Include="windows\KeyboardShortcuts.cpp" />

@@ -132,6 +132,13 @@ namespace openloco::ui::windows::music_selection
     window* open();
 }
 
+namespace openloco::ui::windows::error
+{
+    void open(string_id title, string_id message);
+    void open_with_competitor(string_id title, string_id message, uint8_t competitorId);
+    void registerHooks();
+}
+
 namespace openloco::ui::options
 {
     window* open();

@@ -201,15 +201,6 @@ namespace openloco::game_commands
         return ebx;
     }
 
-    static void sub_431908(company_id_t al, string_id bx, string_id dx)
-    {
-        registers regs;
-        regs.al = al;
-        regs.bx = bx;
-        regs.dx = dx;
-        call(0x431908, regs);
-    }
-
     static uint32_t loc_4314EA()
     {
         game_command_nest_level--;
@@ -247,7 +238,7 @@ namespace openloco::game_commands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
+                    windows::error::open_with_competitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -263,7 +254,7 @@ namespace openloco::game_commands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
+                    windows::error::open_with_competitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -280,14 +271,14 @@ namespace openloco::game_commands
                     _commonFormatArgs[0] = pStation->name;
                     _commonFormatArgs[1] = pStation->town;
                     _commonFormatArgs[2] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to);
+                    windows::error::open_with_competitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
                 case element_type::signal: // 0x0C
                 {
                     _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-                    sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_signal_belongs_to);
+                    windows::error::open_with_competitor(gGameCommandErrorTitle, string_ids::error_reason_signal_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -298,7 +289,7 @@ namespace openloco::game_commands
 
         // fallback
         _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
-        sub_431908(_errorCompanyId, gGameCommandErrorTitle, string_ids::error_reason_belongs_to);
+        windows::error::open_with_competitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
         return 0x80000000;
     }
 }
