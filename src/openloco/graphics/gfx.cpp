@@ -41,15 +41,9 @@ namespace openloco::gfx
     constexpr uint32_t g1_count_temporary = 0x1000;
 
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global<int16_t, 0x0050B894> _ui_width;
-    static loco_global<int16_t, 0x0050B894> _ui_height;
-    static loco_global<uint32_t, 0x0050B8A4> _dirty_blocks_width_2;
-    static loco_global<uint8_t, 0x0050B8AC> _dirty_blocks_columns;
-    static loco_global<uint8_t, 0x0050B8AD> _dirty_blocks_rows;
     static loco_global<drawpixelinfo_t, 0x005233B8> _windowDPI;
 
     static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
-    static loco_global<uint8_t[7500], 0x00E025C4> _dirty_blocks;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
@@ -866,48 +860,23 @@ namespace openloco::gfx
         set_dirty_blocks(0, 0, ui::width(), ui::height());
     }
 
-    // 0x004C5C69
-    // input:
-    // regs.ax: left
-    // regs.bx: top
-    // regs.dx: right
-    // regs.bp: bottom
+    drawing::SoftwareDrawingEngine* engine;
+
+    /**
+     * 0x004C5C69
+     *
+     * @param left @<ax>
+     * @param top @<bx>
+     * @param right @<dx>
+     * @param bottom @<bp>
+     */
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        if (left < 0)
-            left = 0;
-        if (top < 0)
-            top = 0;
-        if (right > _ui_width)
-            right = _ui_width;
-        if (bottom > _ui_height)
-            bottom = _ui_height;
+        if (engine == nullptr)
+            engine = new drawing::SoftwareDrawingEngine();
 
-        if (left >= right)
-            return;
-        if (top >= bottom)
-            return;
-
-        right--;
-        bottom--;
-
-        left = left >> _dirty_blocks_columns;
-        right = right >> _dirty_blocks_columns;
-        top = top >> _dirty_blocks_rows;
-        bottom = bottom >> _dirty_blocks_rows;
-
-        uint32_t dirtyBlockWidth = _dirty_blocks_width_2;
-        for (int16_t y = top; y <= bottom; y++)
-        {
-            uint32_t yOffset = y * dirtyBlockWidth;
-            for (int16_t x = left; x <= right; x++)
-            {
-                _dirty_blocks[yOffset + x] = 0xFF;
-            }
-        }
+        engine->setDirtyBlocks(left, top, right, bottom);
     }
-
-    drawing::SoftwareDrawingEngine* engine;
 
     // 0x004C5CFA
     void draw_dirty_blocks()
