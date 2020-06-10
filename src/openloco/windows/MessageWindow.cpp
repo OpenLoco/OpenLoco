@@ -238,21 +238,7 @@ namespace openloco::ui::MessageWindow
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                // Reset buffer_2039
-                while (*str)
-                {
-                    *str = 0;
-                    *str++;
-                }
-
-                str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
-
-                while (*buffer)
-                {
-                    *str = *buffer;
-                    *str++;
-                    *buffer++;
-                }
+                strcpy(str, buffer);
 
                 auto stringId = string_ids::black_stringid;
 
@@ -376,7 +362,7 @@ namespace openloco::ui::MessageWindow
 
             scrollHeight -= window->widgets[messages::widx::scrollview].height();
 
-            if (scrollHeight < 0)
+            if (static_cast<int16_t>(scrollHeight) < 0)
                 scrollHeight = 0;
 
             window->scroll_areas[0].v_top = scrollHeight;
