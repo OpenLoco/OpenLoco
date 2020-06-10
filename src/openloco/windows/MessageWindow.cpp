@@ -26,7 +26,6 @@ using namespace openloco::interop;
 
 namespace openloco::ui::MessageWindow
 {
-    static loco_global<uint8_t[6], 0x0050AF2A> _byte_50AF2A;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
@@ -238,7 +237,8 @@ namespace openloco::ui::MessageWindow
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                strcpy(str, buffer);
+                const size_t bufferLength = 512;
+                strncpy(str, buffer, bufferLength);
 
                 auto stringId = string_ids::black_stringid;
 
@@ -459,7 +459,7 @@ namespace openloco::ui::MessageWindow
                     dropdown::add(1, string_ids::dropdown_stringid, string_ids::message_ticker);
                     dropdown::add(2, string_ids::dropdown_stringid, string_ids::message_window);
 
-                    auto dropdownIndex = _byte_50AF2A[(widgetIndex - 7) / 2];
+                    auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
                     dropdown::set_highlighted_item(dropdownIndex);
                     break;
@@ -490,9 +490,9 @@ namespace openloco::ui::MessageWindow
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
-                    if (itemIndex != _byte_50AF2A[dropdownIndex])
+                    if (itemIndex != config::get().news_settings[dropdownIndex])
                     {
-                        _byte_50AF2A[dropdownIndex] = itemIndex;
+                        config::get().news_settings[dropdownIndex] = itemIndex;
                         config::write();
                         gfx::invalidate_screen();
                     }
@@ -535,7 +535,7 @@ namespace openloco::ui::MessageWindow
                 {
                     auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
                     auto args = FormatArguments();
-                    args.push(newsDropdownStringIds[_byte_50AF2A[i]]);
+                    args.push(newsDropdownStringIds[config::get().news_settings[i]]);
 
                     gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
                 }
