@@ -1056,6 +1056,20 @@ namespace openloco::string_ids
     constexpr string_id menu_map = 1742;
     constexpr string_id dropdown_companies_list = 1743;
     constexpr string_id dropdown_company_performance = 1744;
+    constexpr string_id title_company_list = 1745;
+    constexpr string_id title_company_performance = 1746;
+    constexpr string_id title_company_cargo_units = 1747;
+    constexpr string_id title_company_values = 1748;
+    constexpr string_id title_cargo_payment_rates = 1749;
+    constexpr string_id tab_compare_companies = 1750;
+    constexpr string_id tab_company_performance = 1751;
+    constexpr string_id tab_cargo_graphs = 1752;
+    constexpr string_id tab_company_values = 1753;
+    constexpr string_id tab_cargo_payment_rates = 1754;
+    constexpr string_id tooltip_sort_company_name = 1755;
+    constexpr string_id tooltip_sort_company_status = 1756;
+    constexpr string_id tooltip_sort_company_performance = 1757;
+    constexpr string_id tooltip_sort_company_value = 1758;
 
     constexpr string_id corporate_rating_platelayer = 1772;
     constexpr string_id corporate_rating_engineer = 1773;
@@ -1132,6 +1146,9 @@ namespace openloco::string_ids
     constexpr string_id the_other_player = 1934;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
+    constexpr string_id tab_cargo_distance_graphs = 1984;
+
+    constexpr string_id tab_speed_records = 1995;
 
     constexpr string_id window_browse_input_caret = 2003;
     constexpr string_id window_browse_filename = 2004;
