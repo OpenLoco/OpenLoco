@@ -13,8 +13,7 @@ namespace openloco
         uint8_t companyId; // 0xC7
         uint16_t var_C8;
         uint8_t pad_CA[0xD0 - 0xCA];
-        uint16_t date; // 0xD0
-        uint8_t pad_D2[0xD4 - 0xD2];
+        uint32_t date; // 0xD0
     };
 #pragma pack(pop)
 }
