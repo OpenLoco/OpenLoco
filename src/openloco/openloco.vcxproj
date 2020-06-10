@@ -109,6 +109,7 @@
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\ScenarioOptions.cpp" />
+    <ClCompile Include="windows\NewsWindow.cpp" />
     <ClCompile Include="windows\stationwnd.cpp" />
     <ClCompile Include="windows\station_list.cpp" />
     <ClCompile Include="windows\terraform.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="graphics\image_ids.h" />
     <ClInclude Include="graphics\types.h" />
     <ClInclude Include="gui.h" />
+    <ClInclude Include="message.h" />
     <ClInclude Include="industry.h" />
     <ClInclude Include="industrymgr.h" />
     <ClInclude Include="input.h" />
