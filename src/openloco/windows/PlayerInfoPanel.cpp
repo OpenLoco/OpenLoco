@@ -151,7 +151,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
         // If its index is bigger than the list then its the company list extra item
         if (static_cast<uint16_t>(itemIndex) >= _sortedCompanies.size())
         {
-            windows::CompanyList::openUnk();
+            windows::CompanyList::open();
         }
         else
         {

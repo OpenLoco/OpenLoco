@@ -19,6 +19,7 @@ namespace openloco
 
     enum company_flags
     {
+        sorted = (1 << 3),                       // 0x08
         increased_performance = (1 << 4),        // 0x10
         decreased_performance = (1 << 5),        // 0x20
         challenge_completed = (1 << 6),          // 0x40
@@ -76,7 +77,9 @@ namespace openloco
         uint8_t headquarters_z; // 0x2579
         coord_t headquarters_x; // 0x257A -1 on no headquarter placed
         coord_t headquarters_y; // 0x257C
-        uint8_t pad_257E[0x88CE - 0x257E];
+        uint8_t pad_257E[0x87DC - 0x257E];
+        int16_t performance_index_history[120];    // 0x87DC
+        uint16_t history_size;
         currency48_t companyValue; // 0x88CE
         uint8_t pad_88D4[0x8B9E - 0x88D4];
         currency48_t vehicleProfit;     // 0x8B9E
