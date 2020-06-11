@@ -171,12 +171,12 @@ namespace openloco
         void sub_4AAB0B();
         void animation_update();
         void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
-        void steam_puffs_animation_update(uint8_t num, int8_t var_05);
-        void diesel_exhaust1_animation_update(uint8_t num, int8_t var_05);
-        void diesel_exhaust2_animation_update(uint8_t num, int8_t var_05);
-        void electric_spark1_animation_update(uint8_t num, int8_t var_05);
-        void electric_spark2_animation_update(uint8_t num, int8_t var_05);
-        void ship_wake_animation_update(uint8_t num, int8_t var_05);
+        void steam_puffs_animation_update(uint8_t num, int32_t var_05);
+        void diesel_exhaust1_animation_update(uint8_t num, int32_t var_05);
+        void diesel_exhaust2_animation_update(uint8_t num, int32_t var_05);
+        void electric_spark1_animation_update(uint8_t num, int32_t var_05);
+        void electric_spark2_animation_update(uint8_t num, int32_t var_05);
+        void ship_wake_animation_update(uint8_t num, int32_t);
         uint8_t update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
