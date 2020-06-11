@@ -2,6 +2,7 @@
 #include "../interop/interop.hpp"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
+#include <algorithm>
 
 using namespace openloco::interop;
 using namespace openloco::gfx;
@@ -56,6 +57,47 @@ namespace openloco::drawing
             return dy;
         }
     };
+
+    /**
+     * 0x004C5C69
+     *
+     * @param left @<ax>
+     * @param top @<bx>
+     * @param right @<dx>
+     * @param bottom @<bp>
+     */
+    void SoftwareDrawingEngine::setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    {
+        left = std::max(left, 0);
+        top = std::max(top, 0);
+        right = std::min(right, (int32_t)screen_info->width);
+        bottom = std::min(bottom, (int32_t)screen_info->height);
+
+        if (left >= right)
+            return;
+        if (top >= bottom)
+            return;
+
+        right--;
+        bottom--;
+
+        const int32_t dirty_block_left = left >> screen_info->dirty_block_column_shift;
+        const int32_t dirty_block_right = right >> screen_info->dirty_block_column_shift;
+        const int32_t dirty_block_top = top >> screen_info->dirty_block_row_shift;
+        const int32_t dirty_block_bottom = bottom >> screen_info->dirty_block_row_shift;
+
+        const size_t columns = screen_info->dirty_block_columns;
+        const size_t rows = screen_info->dirty_block_rows;
+        auto grid = Grid<uint8_t>(_E025C4, columns, rows);
+
+        for (int16_t y = dirty_block_top; y <= dirty_block_bottom; y++)
+        {
+            for (int16_t x = dirty_block_left; x <= dirty_block_right; x++)
+            {
+                grid[y][x] = 0xFF;
+            }
+        }
+    }
 
     // 0x004C5CFA
     void SoftwareDrawingEngine::drawDirtyBlocks()

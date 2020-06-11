@@ -860,17 +860,23 @@ namespace openloco::gfx
         set_dirty_blocks(0, 0, ui::width(), ui::height());
     }
 
-    // 0x004C5C69
+    drawing::SoftwareDrawingEngine* engine;
+
+    /**
+     * 0x004C5C69
+     *
+     * @param left @<ax>
+     * @param top @<bx>
+     * @param right @<dx>
+     * @param bottom @<bp>
+     */
     void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        registers regs;
-        regs.ax = left;
-        regs.bx = top;
-        regs.dx = right;
-        regs.bp = bottom;
-        call(0x004C5C69, regs);
+        if (engine == nullptr)
+            engine = new drawing::SoftwareDrawingEngine();
+
+        engine->setDirtyBlocks(left, top, right, bottom);
     }
-    drawing::SoftwareDrawingEngine* engine;
 
     // 0x004C5CFA
     void draw_dirty_blocks()
