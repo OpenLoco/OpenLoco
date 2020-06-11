@@ -630,12 +630,13 @@ namespace openloco::ui::MessageWindow
             self->widgets = tabInfo.widgets;
             self->disabled_widgets = 0;
 
+            self->invalidate();
+
             if (self->current_tab == widx::tab_messages - widx::tab_messages)
                 messages::tabReset(self);
             if (self->current_tab == widx::tab_settings - widx::tab_messages)
                 settings::tabReset(self);
 
-            self->invalidate();
             self->call_on_resize();
             self->call_prepare_draw();
             self->init_scroll_widgets();
