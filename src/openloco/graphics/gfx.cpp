@@ -183,7 +183,6 @@ namespace openloco::gfx
         uint16_t width = 0;
         uint8_t* str = (uint8_t*)buffer;
 
-        
         while (true)
         {
             localisation::utf32_t chr = localisation::readCodePoint(&str);
