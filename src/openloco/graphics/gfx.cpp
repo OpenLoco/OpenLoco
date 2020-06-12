@@ -179,10 +179,82 @@ namespace openloco::gfx
      */
     uint16_t get_string_width(const char* buffer)
     {
-        registers regs;
-        regs.esi = (uintptr_t)buffer;
-        call(0x495685, regs);
-        return regs.cx;
+        uint16_t width = 0;
+        uint8_t* str = (uint8_t*)buffer;
+
+        while (*str != (uint8_t)0)
+        {
+            uint8_t chr = *str;
+            str++;
+
+            if (chr >= 32)
+            {
+                width += _characterWidths[chr - 32 + _currentFontSpriteBase];
+                continue;
+            }
+
+            switch (chr)
+            {
+                case control_codes::move_x:
+                    width = *str;
+                    str++;
+                    break;
+
+                case control_codes::adjust_palette:
+                case 3:
+                case 4:
+                    str++;
+                    break;
+
+                case control_codes::newline:
+                case control_codes::newline_smaller:
+                    continue;
+
+                case control_codes::font_small:
+                    _currentFontSpriteBase = font::small;
+                    break;
+
+                case control_codes::font_large:
+                    _currentFontSpriteBase = font::large;
+                    break;
+
+                case control_codes::font_bold:
+                    _currentFontSpriteBase = font::medium_bold;
+                    break;
+
+                case control_codes::font_regular:
+                    _currentFontSpriteBase = font::medium_normal;
+                    break;
+
+                case control_codes::outline:
+                case control_codes::outline_off:
+                case control_codes::window_colour_1:
+                case control_codes::window_colour_2:
+                case control_codes::window_colour_3:
+                case 0x10:
+                    continue;
+
+                case control_codes::inline_sprite_str:
+                {
+                    uint32_t image = ((uint32_t*)str)[0];
+                    uint32_t imageId = image & 0x7FFFF;
+                    str += 4;
+                    width += _g1Elements[imageId].width;
+                    break;
+                }
+
+                default:
+                    if (chr <= 0x16)
+                    {
+                        str += 2;
+                        continue;
+                    }
+                    str += 4;
+                    break;
+            }
+        }
+
+        return width;
     }
 
     static void setTextColours(palette_index_t pal1, palette_index_t pal2, palette_index_t pal3)
