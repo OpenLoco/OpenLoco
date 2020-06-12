@@ -140,6 +140,21 @@ namespace openloco::companymgr
         return regs.bx;
     }
 
+    owner_status getOwnerStatus(company_id_t id)
+    {
+        registers regs;
+        regs.esi = (int32_t)get(id);
+        call(0x00438047, regs);
+
+        owner_status ownerStatus;
+
+        ownerStatus.string = regs.bx;
+        ownerStatus.argument1 = regs.ecx;
+        ownerStatus.argument2 = regs.edx;
+
+        return ownerStatus;
+    }
+
     // 0x004383ED
     void updateOwnerStatus()
     {

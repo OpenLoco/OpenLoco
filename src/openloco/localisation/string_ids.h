@@ -1078,7 +1078,11 @@ namespace openloco::string_ids
     constexpr string_id table_header_company_performance_desc = 1764;
     constexpr string_id table_header_company_value = 1765;
     constexpr string_id table_header_company_value_desc = 1766;
-
+    constexpr string_id table_item_company = 1767;
+    constexpr string_id performance_index = 1768;
+    constexpr string_id performance_index_decrease = 1769;
+    constexpr string_id performance_index_increase = 1770;
+    constexpr string_id company_value_currency = 1771;
     constexpr string_id corporate_rating_platelayer = 1772;
     constexpr string_id corporate_rating_engineer = 1773;
     constexpr string_id corporate_rating_traffic_manager = 1774;
@@ -1098,7 +1102,7 @@ namespace openloco::string_ids
     constexpr string_id player_info_performance = 1788;
     constexpr string_id player_info_performance_decrease = 1789;
     constexpr string_id player_info_performance_increase = 1790;
-    constexpr string_id company_value_currency = 1791;
+    constexpr string_id small_company_value_currency = 1791;
     constexpr string_id small_black_string = 1792;
     constexpr string_id small_white_string = 1793;
 
@@ -1168,12 +1172,12 @@ namespace openloco::string_ids
     constexpr string_id the_other_player = 1934;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
-    constexpr string_id title_cargo_distance_graphs = 1984;
+    constexpr string_id title_cargo_distance_graphs = 1983;
     constexpr string_id tab_cargo_distance_graphs = 1984;
 
     constexpr string_id tab_speed_records = 1995;
-    constexpr string_id title_speed_records = 1995;
-    constexpr string_id speed_records = 1996;
+    constexpr string_id speed_records = 1995;
+    constexpr string_id title_speed_records = 1996;
     constexpr string_id land_speed_record = 1997;
     constexpr string_id air_speed_record = 1998;
     constexpr string_id water_speed_record = 1999;

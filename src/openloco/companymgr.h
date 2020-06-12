@@ -19,7 +19,15 @@ namespace openloco::companymgr
     uint8_t get_player_company_colour();
     void update();
 
+    struct owner_status
+    {
+        string_id string;
+        uint32_t argument1;
+        uint32_t argument2;
+    };
+
     company* getOpponent();
     string_id getOwnerStatus(company_id_t id, FormatArguments& args);
+    owner_status getOwnerStatus(company_id_t id);
     void updateOwnerStatus();
 }

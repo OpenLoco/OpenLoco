@@ -192,7 +192,7 @@ namespace openloco::ui::windows::CompanyList
             return strcmp(lhsString, rhsString) < 0;
         }
 
-        // 0x00437BA0
+        // 0x00437BE1
         static bool orderByStatus(const openloco::company& lhs, const openloco::company& rhs)
         {
             char lhsString[256] = { 0 };
@@ -465,10 +465,107 @@ namespace openloco::ui::windows::CompanyList
         // 0x00435EA7
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00435EA7, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x00435EA7, regs);
+
+            auto colour = colour::get_shade(self->colours[1], 3);
+            gfx::clear(*dpi, colour * 0x01010101);
+
+            auto y = 0;
+            for(auto i = 0; i < self->var_83C; i++)
+            {
+                auto yPos = y + 25;
+
+                if (yPos <= dpi->y)
+                {
+                    y += 25;
+                    continue;
+                }
+
+                yPos = dpi->y + dpi->height;
+
+                if (y >= yPos)
+                {
+                    y += 25;
+                    continue;
+                }
+
+                auto rowItem = self->row_info[i];
+
+                if (rowItem == -1)
+                {
+                    y += 25;
+                    continue;
+                }
+
+                auto stringId = string_ids::black_stringid;
+
+                if (rowItem == self->row_hover)
+                {
+                    gfx::draw_rect(dpi, 0, y, self->width, 24, (1 << 25) | palette_index::index_30);
+
+                    stringId = string_ids::wcolour2_stringid;
+                }
+
+                auto company = companymgr::get(rowItem);
+                auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
+                auto imageId = gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
+                
+                {
+                    auto args = FormatArguments();
+                    args.push(string_ids::table_item_company);
+                    args.push(imageId);
+                    args.push(company->name);
+
+                    gfx::draw_string_494BBF(*dpi, 0, y - 1, 173, colour::black, stringId, &args);
+                }
+
+                {
+                    
+                    auto args = FormatArguments();
+                    companymgr::owner_status ownerStatus = companymgr::getOwnerStatus(company->id());
+                    args.push(ownerStatus.string);
+                    args.push(ownerStatus.argument1);
+                    args.push(ownerStatus.argument2);
+
+                    gfx::draw_string_494BBF(*dpi, 175, y + 7, 208, colour::black, stringId, &args);
+                }
+
+                auto performanceStringId = string_ids::performance_index;
+
+                if (company->challenge_flags & company_flags::increased_performance | company_flags::decreased_performance)
+                {
+                    performanceStringId = string_ids::performance_index_decrease;
+
+                    if (company->challenge_flags & company_flags::increased_performance)
+                    {
+                        performanceStringId = string_ids::performance_index_increase;
+                    }
+                }
+
+                {
+                    auto args = FormatArguments();
+
+                    args.push(performanceStringId);
+                    formatPerformanceIndex(company->performance_index, args);
+
+                    gfx::draw_string_494BBF(*dpi, 385, y - 1, 143, colour::black, stringId, &args);
+                }
+
+                {
+                    auto args = FormatArguments();
+
+                    args.push(string_ids::company_value_currency);
+                    args.push(company->companyValueHistory[0]);
+                    //args.push(company->companyValueHistory[0].var_00);
+                    //args.push(company->companyValueHistory[0].var_04);
+
+                    gfx::draw_string_494BBF(*dpi, 530, y - 1, 98, colour::black, stringId, &args);
+                }
+                y += 25;
+            }
         }
 
         // 0x00437AB6
@@ -934,7 +1031,7 @@ namespace openloco::ui::windows::CompanyList
             _graphDataEnd = maxHistorySize;
             _dword_113DD0C = 4;
             _graphXLabel = string_ids::rawdate_short;
-            _graphYLabel = string_ids::company_value_currency;
+            _graphYLabel = string_ids::small_company_value_currency;
             _word_113DD80 = 4;
             _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
@@ -1201,7 +1298,7 @@ namespace openloco::ui::windows::CompanyList
                     args.push(_dword_526258[i]);
 
                     gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::record_date_achieved, &args);
-                    y += 24;
+                    y += 17;
                 }
 
                 y += 5;
