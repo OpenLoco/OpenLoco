@@ -77,23 +77,24 @@ namespace openloco
         uint8_t headquarters_z; // 0x2579
         coord_t headquarters_x; // 0x257A -1 on no headquarter placed
         coord_t headquarters_y; // 0x257C
-        uint8_t pad_257E[0x87DC - 0x257E];
-        int16_t performance_index_history[120];    // 0x87DC
-        uint16_t history_size;
-        currency48_t companyValue; // 0x88CE
-        uint8_t pad_88D4[0x8B9E - 0x88D4];
-        currency48_t vehicleProfit;     // 0x8B9E
-        uint16_t transportTypeCount[6]; // 0x8BA4
+        uint8_t pad_257E[0x85FC - 0x257E];
+        uint32_t cargo_units_delivered_history[120]; // 0x85FC
+        int16_t performance_index_history[120];      // 0x87DC
+        uint16_t history_size;                       // 0x88CC
+        currency48_t companyValueHistory[120];       // 0x88CE
+        currency48_t vehicleProfit;                  // 0x8B9E
+        uint16_t transportTypeCount[6];              // 0x8BA4
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8BBC - 0x8BB9];
-        thing_id_t observation_thing; // 0x_8BBC;
+        thing_id_t observation_thing; // 0x8BBC;
         int16_t observation_x;        // 0x8BBE;
         int16_t observation_y;        // 0x8BC0;
         uint8_t pad_8BC2[0x8BCE - 0x8BC2];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t var_8C4E;
-        uint8_t pad_8C4F[0x8E34 - 0x8C4F];
-        uint16_t jail_status; // 0x8E34
+        uint8_t pad_8C4F[0x8C54 - 0x8C4F];
+        uint32_t cargo_units_distance_history[120]; // 0x008C54
+        uint16_t jail_status;                       // 0x8E34
         uint8_t pad_8E36[0x8FA8 - 0x8E36];
 
         company_id_t id() const;
@@ -105,7 +106,7 @@ namespace openloco
 
     static_assert(sizeof(company) == 0x8FA8);
     static_assert(sizeof(company::expenditures) == 0x440);
-    static_assert(offsetof(company, companyValue) == 0x88CE);
+    static_assert(offsetof(company, companyValueHistory[0]) == 0x88CE);
     static_assert(offsetof(company, vehicleProfit) == 0x8B9E);
     static_assert(offsetof(company, var_8C4E) == 0x8C4E);
     static_assert(offsetof(company, var_8BB0) == 0x8BB0);

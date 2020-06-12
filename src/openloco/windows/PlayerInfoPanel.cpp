@@ -353,7 +353,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static void companyValueTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
-        args.push(playerCompany->companyValue);
+        args.push(playerCompany->companyValueHistory[0]);
         args.push(playerCompany->vehicleProfit);
     }
 

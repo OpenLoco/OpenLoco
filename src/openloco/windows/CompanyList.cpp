@@ -6,6 +6,8 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
+#include "../objects/cargo_object.h"
+#include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
@@ -17,34 +19,39 @@ using namespace openloco::interop;
 
 namespace openloco::ui::windows::CompanyList
 {
+    static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
+    static loco_global<company_id_t[3], 0x00526254> _byte_526254;
+    static loco_global<uint32_t[3], 0x00526258> _dword_526258;
+    static loco_global<uint16_t[32][120], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
     static loco_global<uint16_t, 0x0113DC7A> _graphLeft;
     static loco_global<uint16_t, 0x0113DC7C> _graphTop;
     static loco_global<uint16_t, 0x0113DC7E> _graphRight;
     static loco_global<uint16_t, 0x0113DC80> _graphBottom;
-    static loco_global<uint16_t, 0x0113DC82> _word_113DC82;
-    static loco_global<uint16_t, 0x0113DC84> _word_113DC84;
-    static loco_global<uint32_t, 0x0113DC86> _dword_113DC86;
-    static loco_global<uint16_t, 0x0113DC8A> _word_113DC8A;
-    static loco_global<uint32_t[32], 0x0113DC8C> _dword_113DC8C;
-    static loco_global<uint32_t, 0x0113DD0C> _dword_113DD0C;
-    static loco_global<uint16_t[32], 0x0113DD10> _word_113DD10;
+    static loco_global<uint16_t, 0x0113DC82> _graphYOffset;
+    static loco_global<uint16_t, 0x0113DC84> _graphXOffset;
+    static loco_global<uint32_t, 0x0113DC86> _graphYAxisLabelIncrement;
+    static loco_global<uint16_t, 0x0113DC8A> _graphLineCount;
+    static loco_global<uint32_t[32], 0x0113DC8C> _graphYData;
+    static loco_global<uint32_t, 0x0113DD0C> _dword_113DD0C; //graphType?
+    static loco_global<uint16_t[32], 0x0113DD10> _graphDataStart;
     static loco_global<uint32_t, 0x0113DD50> _dword_113DD50;
-    static loco_global<uint8_t[32], 0x0113DD54> _byte_113DD54;
-    static loco_global<uint16_t, 0x0113DD74> _word_113DD74;
+    static loco_global<uint8_t[32], 0x0113DD54> _graphLineColour;
+    static loco_global<uint16_t, 0x0113DD74> _graphDataEnd;
     static loco_global<uint16_t, 0x0113DD76> _graphXLabel;
-    static loco_global<uint32_t, 0x0113DD78> _dword_113DD78;
+    static loco_global<uint32_t, 0x0113DD78> _graphXAxisRange;
     static loco_global<uint32_t, 0x0113DD7C> _dword_113DD7C;
-    static loco_global<uint16_t, 0x0113DD80> _word_113DD80;
-    static loco_global<uint16_t, 0x0113DD82> _word_113DD82;
+    static loco_global<uint16_t, 0x0113DD80> _word_113DD80; //graphXAxisIncrement?
+    static loco_global<uint16_t, 0x0113DD82> _graphXAxisLabelIncrement;
     static loco_global<uint16_t, 0x0113DD84> _graphYLabel;
     static loco_global<uint32_t, 0x0113DD86> _dword_113DD86;
     static loco_global<uint32_t, 0x0113DD8A> _dword_113DD8A;
     static loco_global<uint32_t, 0x0113DD8E> _dword_113DD8E;
     static loco_global<uint8_t, 0x0113DD99> _byte_113DD99;
-    static loco_global<uint16_t[32], 0x0113DD9A> _word_113DD9A;
+    static loco_global<uint16_t[32], 0x0113DD9A> _graphItemId;
 
     namespace common
     {
@@ -85,7 +92,7 @@ namespace openloco::ui::windows::CompanyList
         static void refreshCompanyList(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void drawGraph(window* self, gfx::drawpixelinfo_t* dpi);
-        static void drawGraphKey(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y);
+        static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
@@ -218,15 +225,15 @@ namespace openloco::ui::windows::CompanyList
         // 0x00437C67
         static bool orderByValue(const openloco::company& lhs, const openloco::company& rhs)
         {
-            auto lhsValue = lhs.companyValue.var_04;
+            auto lhsValue = lhs.companyValueHistory[0].var_04;
 
-            auto rhsValue = rhs.companyValue.var_04;
+            auto rhsValue = rhs.companyValueHistory[0].var_04;
 
             if (lhsValue == rhsValue)
             {
-                lhsValue = lhs.companyValue.var_00;
+                lhsValue = lhs.companyValueHistory[0].var_00;
 
-                rhsValue = rhs.companyValue.var_00;
+                rhsValue = rhs.companyValueHistory[0].var_00;
             }
 
             return rhsValue < lhsValue;
@@ -469,10 +476,9 @@ namespace openloco::ui::windows::CompanyList
         {
             self->row_count = 0;
 
-            for (auto i = 0; i < companymgr::max_companies; i++)
+            for (auto& company : companymgr::companies())
             {
-                auto company = companymgr::get(i);
-                company->challenge_flags &= ~(1 << 3);
+                company.challenge_flags &= ~(1 << 3);
             }
         }
 
@@ -593,11 +599,6 @@ namespace openloco::ui::windows::CompanyList
         // 0x00436490
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x00436490, regs);
-
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
@@ -605,9 +606,9 @@ namespace openloco::ui::windows::CompanyList
             _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
             _graphRight = 520;
             _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
-            _word_113DC82 = 17;  //graphYOffset
-            _word_113DC84 = 40;  //graphXOffset
-            _dword_113DC86 = 20; //graphYAxisLabelIncrement
+            _graphYOffset = 17;
+            _graphXOffset = 40;
+            _graphYAxisLabelIncrement = 20;
             _dword_113DD50 = 0;
 
             uint16_t maxHistorySize = 1;
@@ -631,54 +632,25 @@ namespace openloco::ui::windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = companymgr::get_company_colour(companyId);
 
-                _dword_113DC8C[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
-                _word_113DD10[count] = maxHistorySize - company.history_size;
-                _byte_113DD54[count] = colour::get_shade(companyColour, 6);
-                _word_113DD9A[count] = companyId;
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
+                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphLineColour[count] = colour::get_shade(companyColour, 6);
+                _graphItemId[count] = companyId;
                 count++;
             }
 
-            _word_113DC8A = count;
-            _word_113DD74 = maxHistorySize;
-            _dword_113DD0C = 2; //graphType?
+            _graphLineCount = count;
+            _graphDataEnd = maxHistorySize;
+            _dword_113DD0C = 2;
             _graphXLabel = string_ids::rawdate_short;
             _graphYLabel = string_ids::percentage_one_decimal_place;
-            _word_113DD80 = 4;  //graphXAxisIncrement
-            _word_113DD82 = 12; //graphXAxisLabelIncrement
+            _word_113DD80 = 4;
+            _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
             _dword_113DD8A = 100;
             _dword_113DD8E = 2;
 
-            auto totalMonths = (current_year() * 12) + static_cast<uint16_t>(current_month());
-
-            _dword_113DD78 = totalMonths;
-            _dword_113DD7C = 1;
-            _byte_113DD99 = 1;
-
-            common::drawGraph(self, dpi);
-
-            if (self->var_854 != 0)
-            {
-                auto i = 0;
-                while (utility::bitscanforward(self->var_854) != _word_113DD9A[i])
-                {
-                    i++;
-                }
-
-                _dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
-
-                if (_word_9C68C7 & (1 << 2))
-                    _byte_113DD54[i] = 10;
-
-                _dword_113DD8E = _dword_113DD8E | (1 << 2);
-
-                common::drawGraph(self, dpi);
-            }
-
-            auto x = self->width + self->x - 104;
-            auto y = self->y + 52;
-
-            common::drawGraphKey(self, dpi, x, y);
+            common::drawGraphAndKey(self, dpi);
         }
 
         // 0x004361D8
@@ -724,10 +696,58 @@ namespace openloco::ui::windows::CompanyList
         // 0x004367B4
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x004367B4, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            _graphLeft = self->x + 4;
+            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphRight = 525;
+            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphYOffset = 17;
+            _graphXOffset = 45;
+            _graphYAxisLabelIncrement = 25;
+            _dword_113DD50 = 0;
+
+            uint16_t maxHistorySize = 1;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                if (maxHistorySize < company.history_size)
+                    maxHistorySize = company.history_size;
+            }
+
+            uint8_t count = 0;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                auto companyId = company.id();
+                auto companyColour = companymgr::get_company_colour(companyId);
+
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
+                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphLineColour[count] = colour::get_shade(companyColour, 6);
+                _graphItemId[count] = companyId;
+                count++;
+            }
+
+            _graphLineCount = count;
+            _graphDataEnd = maxHistorySize;
+            _dword_113DD0C = 4;
+            _graphXLabel = string_ids::rawdate_short;
+            _graphYLabel = string_ids::cargo_units_delivered;
+            _word_113DD80 = 4;
+            _graphXAxisLabelIncrement = 12;
+            _dword_113DD86 = 0;
+            _dword_113DD8A = 1000;
+            _dword_113DD8E = 2;
+
+            common::drawGraphAndKey(self, dpi);
         }
 
         // 0x00436201
@@ -773,10 +793,58 @@ namespace openloco::ui::windows::CompanyList
         // 0x00436AD8
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00436AD8, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            _graphLeft = self->x + 4;
+            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphRight = 545;
+            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphYOffset = 17;
+            _graphXOffset = 65;
+            _graphYAxisLabelIncrement = 25;
+            _dword_113DD50 = 0;
+
+            uint16_t maxHistorySize = 1;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                if (maxHistorySize < company.history_size)
+                    maxHistorySize = company.history_size;
+            }
+
+            uint8_t count = 0;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                auto companyId = company.id();
+                auto companyColour = companymgr::get_company_colour(companyId);
+
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
+                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphLineColour[count] = colour::get_shade(companyColour, 6);
+                _graphItemId[count] = companyId;
+                count++;
+            }
+
+            _graphLineCount = count;
+            _graphDataEnd = maxHistorySize;
+            _dword_113DD0C = 4;
+            _graphXLabel = string_ids::rawdate_short;
+            _graphYLabel = string_ids::cargo_units_delivered;
+            _word_113DD80 = 4;
+            _graphXAxisLabelIncrement = 12;
+            _dword_113DD86 = 0;
+            _dword_113DD8A = 1000;
+            _dword_113DD8E = 2;
+
+            common::drawGraphAndKey(self, dpi);
         }
 
         // 0x00436227
@@ -822,10 +890,58 @@ namespace openloco::ui::windows::CompanyList
         // 0x00436DFC
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00436DFC, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            _graphLeft = self->x + 4;
+            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphRight = 570;
+            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphYOffset = 17;
+            _graphXOffset = 90;
+            _graphYAxisLabelIncrement = 25;
+            _dword_113DD50 = 0;
+
+            uint16_t maxHistorySize = 1;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                if (maxHistorySize < company.history_size)
+                    maxHistorySize = company.history_size;
+            }
+
+            uint8_t count = 0;
+
+            for (auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                auto companyId = company.id();
+                auto companyColour = companymgr::get_company_colour(companyId);
+
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
+                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphLineColour[count] = colour::get_shade(companyColour, 6);
+                _graphItemId[count] = companyId;
+                count++;
+            }
+
+            _graphLineCount = count;
+            _graphDataEnd = maxHistorySize;
+            _dword_113DD0C = 4;
+            _graphXLabel = string_ids::rawdate_short;
+            _graphYLabel = string_ids::company_value_currency;
+            _word_113DD80 = 4;
+            _graphXAxisLabelIncrement = 12;
+            _dword_113DD86 = 0;
+            _dword_113DD8A = 10000;
+            _dword_113DD8E = 2;
+
+            common::drawGraphAndKey(self, dpi);
         }
 
         // 0x0043624D
@@ -868,13 +984,124 @@ namespace openloco::ui::windows::CompanyList
             self->set_size(windowSize, windowSize);
         }
 
+        // 0x00437949
+        static void drawGraphKey(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        {
+            auto cargoCount = 0;
+            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+            {
+                auto cargo = objectmgr::get<cargo_object>(i);
+                if (cargo == nullptr)
+                    continue;
+
+                auto colour = _cargoLineColour[i];
+                colour = colour::get_shade(colour, 6);
+                auto stringId = string_ids::small_black_string;
+
+                if (self->var_854 & (1 << cargoCount))
+                {
+                    stringId = string_ids::small_white_string;
+                }
+
+                if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
+                {
+                    gfx::fill_rect(dpi, x, y + 3, x + 4, y + 7, colour);
+                }
+
+                auto args = FormatArguments();
+                args.push(cargo->name);
+
+                gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+                y += 10;
+                cargoCount++;
+            }
+        }
+
         // 0x00437120
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00437120, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            _graphLeft = self->x + 4;
+            _graphTop = self->y + self->widgets[common::widx::panel].top + 14;
+            _graphRight = 380;
+            _graphBottom = self->height - self->widgets[common::widx::panel].top - 28;
+            _graphYOffset = 17;
+            _graphXOffset = 80;
+            _graphYAxisLabelIncrement = 25;
+            _dword_113DD50 = 0;
+
+            auto count = 0;
+            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+            {
+                auto cargo = objectmgr::get<cargo_object>(i);
+                if (cargo == nullptr)
+                    continue;
+
+                auto colour = _cargoLineColour[i];
+
+                _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
+                _graphDataStart[count] = 0;
+                _graphLineColour[count] = colour::get_shade(colour, 6);
+                _graphItemId[count] = i;
+                count++;
+            }
+
+            _graphLineCount = count;
+            _graphDataEnd = 60;
+            _dword_113DD0C = 4;
+            _graphXLabel = string_ids::cargo_delivered_days;
+            _graphYLabel = string_ids::cargo_delivered_currency;
+            _word_113DD80 = 5;
+            _graphXAxisLabelIncrement = 20;
+            _dword_113DD86 = 0;
+            _dword_113DD8A = 0;
+            _dword_113DD8E = 0;
+
+            _graphXAxisRange = 2;
+            _dword_113DD7C = 2;
+            _byte_113DD99 = 1;
+
+            common::drawGraph(self, dpi);
+
+            if (self->var_854 != 0)
+            {
+                auto i = 0;
+                while (utility::bitscanforward(self->var_854) != _graphItemId[i])
+                {
+                    i++;
+                }
+
+                _dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+
+                if (_word_9C68C7 & (1 << 2))
+                    _graphLineColour[i] = 10;
+
+                _dword_113DD8E = _dword_113DD8E | (1 << 2);
+
+                common::drawGraph(self, dpi);
+            }
+
+            auto x = self->width + self->x - 104;
+            auto y = self->y + 52;
+
+            drawGraphKey(self, dpi, x, y);
+
+            x = self->x + 8;
+            y = self->widgets[common::widx::panel].top + self->y + 1;
+
+            auto args = FormatArguments();
+            args.push<uint16_t>(100);
+            args.push<uint16_t>(10);
+
+            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::cargo_deliver_graph_title, &args);
+
+            x = self->x + 160;
+            y = self->height + self->y - 13;
+
+            gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::cargo_transit_time);
         }
 
         static void sub_4375F7()
@@ -927,10 +1154,58 @@ namespace openloco::ui::windows::CompanyList
         // 0x0043745A
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x0043745A, regs);
+            self->draw(dpi);
+            common::drawTabs(self, dpi);
+
+            auto y = self->y + 47;
+
+            for (auto i = 0; i < 3; i++)
+            {
+                auto recordType = _word_52624E[i];
+                if (recordType == 0)
+                    continue;
+                {
+                    auto args = FormatArguments();
+                    args.push(recordType);
+
+                    const string_id string[] = {
+                        string_ids::land_speed_record,
+                        string_ids::air_speed_record,
+                        string_ids::water_speed_record,
+                    };
+
+                    auto x = self->x + 4;
+                    gfx::draw_string_494B3F(*dpi, x, y, colour::black, string[i], &args);
+                }
+                y += 11;
+
+                auto companyId = _byte_526254[i];
+
+                if (companyId != company_id::null)
+                {
+                    auto company = companymgr::get(companyId);
+                    auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
+
+                    auto imageId = competitorObj->images[company->owner_emotion];
+                    imageId = gfx::recolour(imageId, company->mainColours.primary);
+
+                    auto x = self->x + 4;
+                    gfx::draw_image(dpi, x, y, imageId);
+
+                    x = self->x + 33;
+                    y += 7;
+
+                    auto args = FormatArguments();
+                    args.push(company->name);
+                    args.push<uint16_t>(0);
+                    args.push(_dword_526258[i]);
+
+                    gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::record_date_achieved, &args);
+                    y += 24;
+                }
+
+                y += 5;
+            }
         }
 
         static void initEvents()
@@ -1311,9 +1586,43 @@ namespace openloco::ui::windows::CompanyList
                 gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
 
                 y += 10;
+                companyCount++;
             }
         }
 
+        static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi)
+        {
+            auto totalMonths = (current_year() * 12) + static_cast<uint16_t>(current_month());
+
+            _graphXAxisRange = totalMonths;
+            _dword_113DD7C = 1;
+            _byte_113DD99 = 1;
+
+            common::drawGraph(self, dpi);
+
+            if (self->var_854 != 0)
+            {
+                auto i = 0;
+                while (utility::bitscanforward(self->var_854) != _graphItemId[i])
+                {
+                    i++;
+                }
+
+                _dword_113DD50 = 0xFFFFFFFF & ~(1 << i);
+
+                if (_word_9C68C7 & (1 << 2))
+                    _graphLineColour[i] = 10;
+
+                _dword_113DD8E = _dword_113DD8E | (1 << 2);
+
+                common::drawGraph(self, dpi);
+            }
+
+            auto x = self->width + self->x - 104;
+            auto y = self->y + 52;
+
+            common::drawGraphKey(self, dpi, x, y);
+        }
         static void initEvents()
         {
             company_list::initEvents();

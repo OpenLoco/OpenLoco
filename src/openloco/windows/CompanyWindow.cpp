@@ -1713,7 +1713,7 @@ namespace openloco::ui::windows::CompanyWindow
             {
                 // Set company value in format args.
                 FormatArguments args{};
-                args.push(company->companyValue);
+                args.push(company->companyValueHistory[0]);
 
                 gfx::draw_string_494B3F(
                     *dpi,

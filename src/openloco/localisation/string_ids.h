@@ -1094,14 +1094,19 @@ namespace openloco::string_ids
     constexpr string_id rawdate_short = 1784;
     constexpr string_id percentage_one_decimal_place = 1785;
 
+    constexpr string_id cargo_units_delivered = 1787;
     constexpr string_id player_info_performance = 1788;
     constexpr string_id player_info_performance_decrease = 1789;
     constexpr string_id player_info_performance_increase = 1790;
-
+    constexpr string_id company_value_currency = 1791;
     constexpr string_id small_black_string = 1792;
     constexpr string_id small_white_string = 1793;
 
     constexpr string_id currency_symbol = 1795;
+    constexpr string_id cargo_delivered_days = 1796;
+    constexpr string_id cargo_delivered_currency = 1797;
+    constexpr string_id cargo_deliver_graph_title = 1798;
+    constexpr string_id cargo_transit_time = 1799;
 
     constexpr string_id toolbar_status_paused = 1800;
 
@@ -1168,6 +1173,11 @@ namespace openloco::string_ids
 
     constexpr string_id tab_speed_records = 1995;
     constexpr string_id title_speed_records = 1995;
+    constexpr string_id speed_records = 1996;
+    constexpr string_id land_speed_record = 1997;
+    constexpr string_id air_speed_record = 1998;
+    constexpr string_id water_speed_record = 1999;
+    constexpr string_id record_date_achieved = 2000;
 
     constexpr string_id window_browse_input_caret = 2003;
     constexpr string_id window_browse_filename = 2004;
