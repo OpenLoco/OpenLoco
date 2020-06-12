@@ -60,7 +60,7 @@ namespace openloco::ui::windows::error
         };
     }
 
-    char* formatErrorString(string_id title, string_id message, char* buffer)
+    static char* formatErrorString(string_id title, string_id message, char* buffer)
     {
         char* ptr = (char*)buffer;
         ptr[0] = -112;
