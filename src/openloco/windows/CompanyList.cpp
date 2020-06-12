@@ -474,7 +474,7 @@ namespace openloco::ui::windows::CompanyList
             gfx::clear(*dpi, colour * 0x01010101);
 
             auto y = 0;
-            for(auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self->var_83C; i++)
             {
                 auto yPos = y + 25;
 
@@ -512,7 +512,7 @@ namespace openloco::ui::windows::CompanyList
                 auto company = companymgr::get(rowItem);
                 auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
                 auto imageId = gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
-                
+
                 {
                     auto args = FormatArguments();
                     args.push(string_ids::table_item_company);
@@ -523,7 +523,7 @@ namespace openloco::ui::windows::CompanyList
                 }
 
                 {
-                    
+
                     auto args = FormatArguments();
                     companymgr::owner_status ownerStatus = companymgr::getOwnerStatus(company->id());
                     args.push(ownerStatus.string);
@@ -535,7 +535,7 @@ namespace openloco::ui::windows::CompanyList
 
                 auto performanceStringId = string_ids::performance_index;
 
-                if (company->challenge_flags & company_flags::increased_performance | company_flags::decreased_performance)
+                if (company->challenge_flags & (company_flags::increased_performance | company_flags::decreased_performance))
                 {
                     performanceStringId = string_ids::performance_index_decrease;
 
@@ -559,8 +559,6 @@ namespace openloco::ui::windows::CompanyList
 
                     args.push(string_ids::company_value_currency);
                     args.push(company->companyValueHistory[0]);
-                    //args.push(company->companyValueHistory[0].var_00);
-                    //args.push(company->companyValueHistory[0].var_04);
 
                     gfx::draw_string_494BBF(*dpi, 530, y - 1, 98, colour::black, stringId, &args);
                 }
