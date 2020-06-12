@@ -553,7 +553,6 @@ namespace openloco::ui::windows::construction
 
             if (_constructionHover == 0)
             {
-                registers regs;
                 auto track = common::getTrackPieceId();
 
                 if (!track)
@@ -901,7 +900,7 @@ namespace openloco::ui::windows::construction
             call(0x0049DC8C, regs);
         }
 
-        static void getConstructionHeight(map_pos mapPos, uint16_t* height, bool isSelected)
+        static void getConstructionHeight(map_pos mapPos, int16_t* height, bool isSelected)
         {
             auto tile = tilemgr::get(mapPos);
 
@@ -916,7 +915,11 @@ namespace openloco::ui::windows::construction
             }
 
             auto surfaceTile = tileElement->as_surface();
-            uint16_t tileHeight = surfaceTile->base_z() << 2;
+
+            if (surfaceTile == nullptr)
+                return;
+
+            int16_t tileHeight = surfaceTile->base_z() << 2;
 
             if (surfaceTile->slope_corners())
             {
@@ -972,7 +975,7 @@ namespace openloco::ui::windows::construction
                     return;
 
                 _byte_1136065 = (*road).id;
-                uint16_t roadHeight = 0;
+                int16_t roadHeight = 0;
 
                 auto i = 0;
                 if (_mapSelectionFlags & 1 << 1)
@@ -1151,7 +1154,7 @@ namespace openloco::ui::windows::construction
                     return;
 
                 _byte_1136065 = (*track).id;
-                uint16_t trackHeight = 0;
+                int16_t trackHeight = 0;
                 auto i = 0;
 
                 if (_mapSelectionFlags & 1 << 1)
@@ -1234,14 +1237,14 @@ namespace openloco::ui::windows::construction
                 auto ebx = 0;
                 if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
                 {
-                    auto roadPiece = common::roadPieces[_byte_1136065];
+                    auto trackPiece = common::trackPieces[_byte_1136065];
                     i = 0;
                     auto height = 0;
 
-                    while (roadPiece[i] != 0xFF)
+                    while (trackPiece[i] != 0xFF)
                     {
-                        if (height > roadPiece[i + 5])
-                            height = roadPiece[i + 5];
+                        if (height > trackPiece[i + 5])
+                            height = trackPiece[i + 5];
 
                         i += 10;
                     }
