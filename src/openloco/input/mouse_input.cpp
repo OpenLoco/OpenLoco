@@ -281,6 +281,21 @@ namespace openloco::input
         return _mapSelectionFlags;
     }
 
+    bool hasMapSelectionFlag(map_selection_flags flags)
+    {
+        return (_mapSelectionFlags & (uint16_t)flags) != 0;
+    }
+
+    void setMapSelectionFlags(map_selection_flags flags)
+    {
+        _mapSelectionFlags = _mapSelectionFlags | (uint16_t)flags;
+    }
+
+    void resetMapSelectionFlag(map_selection_flags flags)
+    {
+        _mapSelectionFlags = _mapSelectionFlags & ~(uint16_t)flags;
+    }
+
 #pragma mark - Mouse input
 
     // 0x004C7174

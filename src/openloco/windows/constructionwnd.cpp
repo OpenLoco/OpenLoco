@@ -446,7 +446,7 @@ namespace openloco::ui::windows::construction
                         break;
                     }
                     common::sub_49FEC7();
-                    WindowManager::viewportSetVisibility(3);
+                    WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
                     input::toolSet(self, widx::construct, 12);
                     input::set_flag(input::input_flags::flag6);
 
@@ -906,9 +906,9 @@ namespace openloco::ui::windows::construction
 
             auto tileElement = tile.begin();
 
-            if (tileElement->is_not_surface())
+            if (tileElement->type() != element_type::surface)
             {
-                while (tileElement->is_not_surface())
+                while (tileElement->type() != element_type::surface)
                 {
                     tileElement += 8;
                 }
@@ -3907,7 +3907,7 @@ namespace openloco::ui::windows::construction
         static void on_close(window* self)
         {
             sub_49FEC7();
-            WindowManager::viewportSetVisibility(0);
+            WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
             tilemgr::map_invalidate_map_selection_tiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             windows::hideDirectionArrows();

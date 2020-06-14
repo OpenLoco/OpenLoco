@@ -1839,9 +1839,9 @@ namespace openloco::ui::WindowManager
     /**
      * 0x004A0A18
      *
-     * @param flags @<al>
+     * @param visibility @<al>
      */
-    void viewportSetVisibility(uint8_t flags)
+    void viewportSetVisibility(viewport_visibility visibility)
     {
         auto window = WindowManager::getMainWindow();
 
@@ -1850,72 +1850,83 @@ namespace openloco::ui::WindowManager
 
         auto viewport = window->viewports[0];
         bool flagsChanged = false;
-        if (flags < 1 || flags > 3)
+
+        switch (visibility)
         {
-            if (viewport->flags & (viewport_flags::underground_view))
+            case viewport_visibility::undergroundView:
             {
-                viewport->flags &= ~(viewport_flags::underground_view);
-                flagsChanged = true;
+                if (!(viewport->flags & (viewport_flags::underground_view)))
+                {
+                    viewport->flags |= (viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
+                break;
             }
 
-            if (viewport->flags & (viewport_flags::flag_7))
+            case viewport_visibility::heightMarksOnLand:
             {
-                viewport->flags &= ~(viewport_flags::flag_7);
-                flagsChanged = true;
+                if (!(viewport->flags & (viewport_flags::height_marks_on_land)))
+                {
+                    viewport->flags |= (viewport_flags::height_marks_on_land);
+                    flagsChanged = true;
+                }
+                break;
             }
 
-            if (viewport->flags & (viewport_flags::flag_8))
+            case viewport_visibility::overgroundView:
             {
-                viewport->flags &= ~(viewport_flags::flag_8);
-                flagsChanged = true;
+                if ((viewport->flags & (viewport_flags::underground_view)))
+                {
+                    viewport->flags &= ~(viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
+                break;
             }
 
-            if (viewport->flags & (viewport_flags::hide_foreground_tracks_roads))
+            default:
             {
-                viewport->flags &= ~(viewport_flags::hide_foreground_tracks_roads);
-                flagsChanged = true;
-            }
+                if (viewport->flags & (viewport_flags::underground_view))
+                {
+                    viewport->flags &= ~(viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
 
-            if (viewport->flags & (viewport_flags::hide_foreground_scenery_buildings))
-            {
-                viewport->flags &= ~(viewport_flags::hide_foreground_scenery_buildings);
-                flagsChanged = true;
-            }
+                if (viewport->flags & (viewport_flags::flag_7))
+                {
+                    viewport->flags &= ~(viewport_flags::flag_7);
+                    flagsChanged = true;
+                }
 
-            if (viewport->flags & (viewport_flags::height_marks_on_land))
-            {
-                viewport->flags &= ~(viewport_flags::height_marks_on_land);
-                flagsChanged = true;
-            }
+                if (viewport->flags & (viewport_flags::flag_8))
+                {
+                    viewport->flags &= ~(viewport_flags::flag_8);
+                    flagsChanged = true;
+                }
 
-            if (viewport->flags & (viewport_flags::height_marks_on_tracks_roads))
-            {
-                viewport->flags &= ~(viewport_flags::height_marks_on_tracks_roads);
-                flagsChanged = true;
-            }
-        }
-        else if (flags == 1)
-        {
-            if (!(viewport->flags & (viewport_flags::underground_view)))
-            {
-                viewport->flags |= (viewport_flags::underground_view);
-                flagsChanged = true;
-            }
-        }
-        else if (flags < 3)
-        {
-            if (!(viewport->flags & (viewport_flags::height_marks_on_land)))
-            {
-                viewport->flags |= (viewport_flags::height_marks_on_land);
-                flagsChanged = true;
-            }
-        }
-        else if (flags == 3)
-        {
-            if ((viewport->flags & (viewport_flags::underground_view)))
-            {
-                viewport->flags &= ~(viewport_flags::underground_view);
-                flagsChanged = true;
+                if (viewport->flags & (viewport_flags::hide_foreground_tracks_roads))
+                {
+                    viewport->flags &= ~(viewport_flags::hide_foreground_tracks_roads);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::hide_foreground_scenery_buildings))
+                {
+                    viewport->flags &= ~(viewport_flags::hide_foreground_scenery_buildings);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::height_marks_on_land))
+                {
+                    viewport->flags &= ~(viewport_flags::height_marks_on_land);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::height_marks_on_tracks_roads))
+                {
+                    viewport->flags &= ~(viewport_flags::height_marks_on_tracks_roads);
+                    flagsChanged = true;
+                }
+                break;
             }
         }
 

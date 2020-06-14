@@ -9,6 +9,14 @@
 
 namespace openloco::ui::WindowManager
 {
+    enum class viewport_visibility
+    {
+        reset,
+        undergroundView,
+        heightMarksOnLand,
+        overgroundView,
+    };
+
     void init();
     void registerHooks();
     WindowType getCurrentModalType();
@@ -55,7 +63,7 @@ namespace openloco::ui::WindowManager
     int32_t getCurrentRotation();
 
     void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
-    void viewportSetVisibility(uint8_t flags);
+    void viewportSetVisibility(viewport_visibility flags);
 }
 
 namespace openloco::ui::windows

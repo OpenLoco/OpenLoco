@@ -4,6 +4,7 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
+#include "../map/tile_loop.hpp"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
@@ -432,9 +433,9 @@ namespace openloco::ui::windows::station
 
                 case widx::station_catchment:
                 {
-                    auto windowNumber = self->number;
-                    if (self->number == _lastSelectedStation)
-                        windowNumber = -1;
+                    station_id_t windowNumber = self->number;
+                    if (windowNumber == _lastSelectedStation)
+                        windowNumber = station_id::null;
 
                     showStationCatchment(windowNumber);
                     break;
@@ -724,23 +725,20 @@ namespace openloco::ui::windows::station
     // 0x00491BC6
     static void sub_491BC6()
     {
-        auto posId = 0;
-        for (coord_t y = 0; y < 0x3000; y += 0x20)
+        tile_loop tileLoop;
+
+        for (uint32_t posId = 0; posId < 0x24000; posId++)
         {
-            for (coord_t x = 0; x < 0x3000; x += 0x20)
+            if (_byte_F00484[posId] & (1 << 0))
             {
-                if (_byte_F00484[posId] & (1 << 0))
-                {
-                    map_pos pos = { x, y };
-                    tilemgr::map_invalidate_tile_full(pos);
-                }
-                posId++;
+                tilemgr::map_invalidate_tile_full(tileLoop.current());
             }
+            tileLoop.next();
         }
     }
 
     // 0x00491D70
-    static void sub_491D70(openloco::station* station, uint16_t dx)
+    static void setStationCatchmentDisplay(openloco::station* station, uint16_t dx)
     {
         registers regs;
         regs.ebp = uint32_t(station);
@@ -753,25 +751,32 @@ namespace openloco::ui::windows::station
     {
         if (stationId == _lastSelectedStation)
             return;
-        auto oldStationId = _lastSelectedStation;
+
+        uint16_t oldStationId = *_lastSelectedStation;
         _lastSelectedStation = stationId;
-        if (oldStationId != 0xFFFF)
+
+        if (oldStationId != station_id::null)
         {
-            if (_mapSelectionFlags & (1 << 6))
+            if (input::hasMapSelectionFlag(input::map_selection_flags::catchment_area))
             {
                 WindowManager::invalidate(WindowType::station, oldStationId);
                 sub_491BC6();
-                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 5);
+                input::resetMapSelectionFlag(input::map_selection_flags::catchment_area);
             }
         }
+
         auto newStationId = _lastSelectedStation;
-        if (newStationId != 0xFFFF)
+
+        if (newStationId != station_id::null)
         {
             ui::windows::construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
-            sub_491D70(station, 0);
-            _mapSelectionFlags = _mapSelectionFlags | (1 << 5);
+
+            setStationCatchmentDisplay(station, 0);
+            input::setMapSelectionFlags(input::map_selection_flags::catchment_area);
+
             WindowManager::invalidate(WindowType::station, newStationId);
+
             sub_491BC6();
         }
     }
@@ -907,7 +912,7 @@ namespace openloco::ui::windows::station
             if (widgetIndex == widx::tab_cargo)
                 if (self->number == _lastSelectedStation)
                 {
-                    showStationCatchment(-1);
+                    showStationCatchment(station_id::null);
                 }
 
             if (input::is_tool_active(self->type, self->number))

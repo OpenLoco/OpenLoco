@@ -109,7 +109,6 @@ namespace openloco::map
         uint8_t base_z() const { return _base_z; }
         uint8_t clear_z() const { return _clear_z; }
 
-        bool is_not_surface() const { return _type & 0x3C; }
         bool has_high_type_flag() const { return _type & 0x80; }
         bool is_flag_4() const { return _flags & element_flags::flag_4; }
         void set_flag_6() { _flags |= element_flags::flag_6; }
