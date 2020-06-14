@@ -25,6 +25,8 @@
 
 using namespace openloco::interop;
 
+using namespace openloco::interop;
+
 namespace openloco::ui::NewsWindow
 {
     static loco_global<uint8_t[31][4], 0x004F8B08> _byte_4F8B08;
@@ -82,7 +84,7 @@ namespace openloco::ui::NewsWindow
         const uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
 
 #define commonWidgets(frameWidth, frameHeight, frameType)                                                                                 \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),                                                                     \
+    make_widget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),
         make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
         make_widget({ 2, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                          \
         make_widget({ 180, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                        \
@@ -685,10 +687,6 @@ namespace openloco::ui::NewsWindow
         // 0x00429EEB
         static void on_update(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x00429EEB, regs);
-
             auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
             if (window == self)
@@ -711,48 +709,49 @@ namespace openloco::ui::NewsWindow
                 if (!is_paused())
                 {
                     _word_525CE0 = _word_525CE0 + 2;
-                    
-                    if (!(_word_525CE0 & 0x8007))
+                    if (!(_word_525CE0 & ((1 << 15) | (1 << 2) | (1 << 1) | (1 << 0))))
                     {
                         if (_activeMessageIndex != 0xFFFF)
                         {
                             auto news = messagemgr::get(_activeMessageIndex);
-                            auto cx = _word_525CE0 >> 2;
+                            auto cx = _word_525CE0;
+                            cx >>= 2;
                             char* buffer = news->messageString;
-                            auto al = *buffer;
-
-                            while (true)
+                            while (*buffer != 0)
                             {
-                                al = *buffer;
-                                if (al == control_codes::newline)
+                                if (*buffer == control_codes::newline)
                                 {
-                                    al = 32;
+                                    *buffer = 32;
                                     cx--;
                                     if (cx < 0)
+                                    {
                                         break;
+                                    }
                                 }
 
-                                if (al != 0xFF)
+                                if (*buffer == 0xFF)
                                 {
                                     cx--;
                                     if (cx < 0)
+                                    {
                                         break;
-                                    buffer++;
-                                    if (!al)
-                                        break;
+                                    }
+
+                                    *buffer++;
                                 }
                                 else
                                 {
                                     cx--;
                                     if (cx < 0)
+                                    {
                                         break;
-                                    buffer += 3;
+                                    }
+                                    *buffer += 3;
                                 }
                             }
-
-                            if (al != 32)
+                            if (*buffer != 32)
                             {
-                                if (al != 0)
+                                if (*buffer != 0)
                                 {
                                     audio::play_sound(audio::sound_id::ticker, ui::width());
                                 }
@@ -770,109 +769,93 @@ namespace openloco::ui::NewsWindow
             WindowManager::close(self);
         }
 
-        //static void sub_4950EF(gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
-        //{
-        //    registers regs;
-        //    regs.bx = buffer;
-        //    regs.eax = eax;
-        //    regs.cx = x;
-        //    regs.dx = y;
-        //    regs.ebp = ebp;
-        //    regs.edi = (int32_t)clipped;
-        //    call(0x004950EF, regs);
-
-        //    //_currentFontSpriteBase = font::medium_bold;
-        //    //gfx::draw_string(clipped, clipped->x, clipped->y, colour::black, _unk_5215B5);
-        //    //stringmgr::format_string(byte_112CC04, buffer);
-
-        //    //registers regs;
-        //    //regs.esi =
-        //    //call(0x0049544E, regs);
-        //}
+        static void sub_4950EF(string_id buffer, uint32_t eax, uint32_t ebp, uint16_t cx, uint16_t dx)
+        {
+            registers regs;
+            regs.bx = buffer;
+            regs.eax = eax;
+            regs.cx = cx;
+            regs.dx = dx;
+            regs.ebp = ebp;
+            call(0x004950EF, regs);
+        }
 
         // 0x00429DAA
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00429DAA, regs);
+            if (self->var_852 != 0)
+                return;
 
-            //if (self->var_852 != 0)
-            //    return;
+            if (get_pause_flags() & 4)
+                return;
 
-            //if (get_pause_flags() & 4)
-            //    return;
+            auto news = messagemgr::get(_activeMessageIndex);
 
-            //auto news = messagemgr::get(_activeMessageIndex);
+            auto x = self->x;
+            auto y = self->y;
+            auto width = self->width;
+            auto height = self->height;
+            gfx::drawpixelinfo_t* clipped = nullptr;
 
-            //auto x = self->x;
-            //auto y = self->y;
-            //auto width = self->width;
-            //auto height = self->height;
-            //gfx::drawpixelinfo_t* clipped = nullptr;
+            gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height);
 
-            //gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height);
+            if (clipped == nullptr)
+                return;
 
-            //if (clipped == nullptr)
-            //    return;
+            uint32_t colour = 0x14141414;
 
-            //uint32_t colour = 0x14141414;
+            if (!(_word_4F8BE4[news->var_00] & (1 << 1)))
+            {
+                colour = colour::translucent(colour::inset(colour::icy_blue));
+                colour *= 0x1010101;
+            }
 
-            //if (!(_word_4F8BE4[news->var_00] & (1 << 1)))
-            //{
-            //    colour = colour::translucent(colour::inset(colour::icy_blue));
-            //    colour *= 0x1010101;
-            //}
+            gfx::clear(*clipped, colour);
 
-            //gfx::clear(*clipped, colour);
+            char* buffer = news->messageString;
+            auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-            //char* buffer = news->messageString;
-            //auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            *str = -112;
+            *str++;
+            *str = control_codes::font_small;
+            *str++;
 
-            //strncpy(str, buffer, 512);
+            auto al = *buffer;
+            auto i = 0;
 
-            ////*str = -112;
-            ////*str++;
-            ////*str = control_codes::font_small;
-            ////*str++;
+            while (*buffer != 0)
+            {
+                if (al != control_codes::newline)
+                {
+                    al = 32;
+                    *str = al;
+                    *str++;
+                }
 
-            ////auto al = *buffer;
-            //auto i = 0;
+                if (al == 0xFF)
+                {
+                    *str = al;
+                    *str++;
+                    *buffer++;
+                    *str = *buffer;
+                    *str++;
+                    *buffer++;
+                    al = *buffer;
+                }
 
-            ////while (*buffer != 0)
-            ////{
-            ////    if (al != control_codes::newline)
-            ////    {
-            ////        al = 32;
-            ////        *str = al;
-            ////        *str++;
-            ////    }
+                *str = al;
+                *str++;
+                *buffer++;
+                i++;
+            }
 
-            ////    if (al == 0xFF)
-            ////    {
-            ////        *str = al;
-            ////        *str++;
-            ////        *buffer++;
-            ////        *str = *buffer;
-            ////        *str++;
-            ////        *buffer++;
-            ////        al = *buffer;
-            ////    }
+            if ((_word_525CE0 >> 2) > i)
+            {
+                _word_525CE0 = _word_525CE0 | (1 << 15);
+            }
+            auto ebp = ((_word_525CE0 & ~(1 << 15)) << 14) | 109;
 
-            ////    *str = al;
-            ////    *str++;
-            ////    *buffer++;
-            ////    i++;
-            ////}
-
-            //if ((_word_525CE0 >> 2) > i)
-            //{
-            //    _word_525CE0 = _word_525CE0 | (1 << 15);
-            //}
-            //uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 14) | 109;
-
-            //sub_4950EF(clipped, string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
+            sub_4950EF(string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
         }
 
         static void initEvents()
@@ -1008,7 +991,7 @@ namespace openloco::ui::NewsWindow
 
             int16_t x = (ui::width() / 2) - (news1::windowSize.width / 2);
             gfx::point_t origin = { x, y };
-            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
+            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
 
             auto window = WindowManager::createWindow(WindowType::news, origin, news1::windowSize, flags, &news1::events);
 
