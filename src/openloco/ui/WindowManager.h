@@ -255,6 +255,7 @@ namespace openloco::ui::windows::vehicle_list
 namespace openloco::ui::build_vehicle
 {
     window* open(uint32_t vehicle, uint32_t flags);
+    void sub_4B92A5(ui::window* window);
     void registerHooks();
 }
 

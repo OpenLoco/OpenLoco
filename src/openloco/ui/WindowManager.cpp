@@ -246,6 +246,16 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x00428F8B,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                ui::NewsWindow::open(regs.ax);
+                regs = backup;
+
+                return 0;
+            });
+
+        register_hook(
             0x004B93A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
