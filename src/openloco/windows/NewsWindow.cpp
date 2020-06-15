@@ -6,6 +6,7 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
+#include "../industrymgr.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"
@@ -15,15 +16,19 @@
 #include "../objects/objectmgr.h"
 #include "../objects/vehicle_object.h"
 #include "../openloco.h"
+#include "../stationmgr.h"
+#include "../things/thingmgr.h"
+#include "../townmgr.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
+#include "../viewportmgr.h"
 
 using namespace openloco::interop;
 
 namespace openloco::ui::NewsWindow
 {
-    static loco_global<uint8_t[122], 0x004F8B08> _byte_4F8B08;
-    static loco_global<uint8_t[122], 0x004F8B09> _byte_4F8B09;
+    static loco_global<uint32_t[31], 0x004F8B08> _byte_4F8B08;
+    static loco_global<uint32_t[31], 0x004F8B09> _byte_4F8B09;
     static loco_global<uint16_t[31], 0x004F8BE4> _word_4F8BE4;
     static loco_global<uint8_t[31], 0x004F8C22> _messageTypes;
     static loco_global<audio::sound_id[31], 0x004F8C41> _messageSounds;
@@ -38,6 +43,7 @@ namespace openloco::ui::NewsWindow
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
+    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
@@ -83,6 +89,16 @@ namespace openloco::ui::NewsWindow
 
         static window_event_list events;
 
+        enum newsItems
+        {
+            industry,
+            station,
+            town,
+            vehicle,
+            company,
+            vehicleTab = 7,
+        };
+
         // 0x00429BB7
         static void on_mouse_up(window* self, widget_index widgetIndex)
         {
@@ -109,7 +125,7 @@ namespace openloco::ui::NewsWindow
 
                         if (_word_4F8BE4[news->var_00] & (1 << 2))
                         {
-                            uint8_t itemType;
+                            uint32_t itemType;
 
                             if (widgetIndex == common::widx::viewport1Button)
                             {
@@ -124,23 +140,23 @@ namespace openloco::ui::NewsWindow
 
                             switch (itemType)
                             {
-                                case 0:
+                                case newsItems::industry:
                                     ui::windows::industry::open(itemId);
                                     break;
 
-                                case 1:
+                                case newsItems::station:
                                     ui::windows::station::open(itemId);
                                     break;
 
-                                case 2:
+                                case newsItems::town:
                                     ui::windows::town::open(itemId);
                                     break;
 
-                                case 3:
+                                case newsItems::vehicle:
                                     ui::build_vehicle::open(itemId, 0);
                                     break;
 
-                                case 4:
+                                case newsItems::company:
                                     ui::windows::CompanyWindow::open(itemId);
                                     break;
 
@@ -148,7 +164,7 @@ namespace openloco::ui::NewsWindow
                                 case 6:
                                     break;
 
-                                case 7:
+                                case newsItems::vehicleTab:
                                     auto vehicleObj = objectmgr::get<vehicle_object>(itemId);
                                     auto window = ui::build_vehicle::open(static_cast<uint32_t>(vehicleObj->type), 0x80000000);
                                     window->row_hover = itemId;
@@ -219,9 +235,326 @@ namespace openloco::ui::NewsWindow
 
         static void sub_429209(window* self)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            call(0x00429209, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //call(0x00429209, regs);
+
+            map::map_pos3 pos;
+            pos.x = -1;
+            pos.y = -1;
+            pos.z = -1;
+            int8_t rotation = -1;
+            ZoomLevel zoomLevel = ZoomLevel::full;
+            auto news = messagemgr::get(_activeMessageIndex);
+            uint16_t thingId = 0xFFFF; 
+            bool isThing = false;
+            if (_activeMessageIndex != 0xFFFF)
+            {
+                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                {
+                    auto itemType = _byte_4F8B08[news->var_00];
+
+                    if (news->item_id != 0xFFFF)
+                    {
+                        switch (itemType)
+                        {
+                            case newsItems::industry:
+                            {
+                                auto industry = industrymgr::get(news->item_id);
+
+                                pos.x = industry->x;
+                                pos.y = industry->y;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::half;
+                                break;
+                            }
+
+                            case newsItems::station:
+                            {
+                                auto station = stationmgr::get(news->item_id);
+
+                                pos.x = station->x;
+                                pos.y = station->y;
+                                pos.z = station->z;
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::full;
+                                break;
+                            }
+
+                            case newsItems::town:
+                            {
+                                auto town = townmgr::get(news->item_id);
+
+                                pos.x = town->x;
+                                pos.y = town->y;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::half;
+                                break;
+                            }
+
+                            case newsItems::vehicle:
+                            {
+                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id);
+
+                                vehicle = vehicle->next_car()->next_car();
+                                thingId = vehicle->id;
+                                vehicle = vehicle->next_car();
+
+                                if (vehicle->type != vehicle_thing_type::vehicle_6)
+                                {
+                                    thingId = vehicle->id;
+                                    if (vehicle->type == vehicle_thing_type::vehicle_bogie)
+                                    {
+                                        vehicle = vehicle->next_car();
+                                        thingId = vehicle->next_car_id;
+                                    }
+                                }
+                                isThing = true;
+                                zoomLevel = ZoomLevel::full;
+                                rotation = gCurrentRotation;
+                                break;
+                            }
+
+                            case newsItems::company:
+                                zoomLevel = (ZoomLevel)-2;
+                                break;
+
+                            case 5:
+                                pos.x = news->item_id; // possible union?
+                                pos.y = news->var_CC;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                zoomLevel = ZoomLevel::full;
+                                rotation = gCurrentRotation;
+                                break;
+
+                            case 6:
+                                break;
+
+                            case newsItems::vehicleTab:
+                                zoomLevel = (ZoomLevel)-3;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            self->widgets[common::widx::viewport1].type = widget_type::none;
+            self->widgets[common::widx::viewport1Button].type = widget_type::none;
+
+            if (pos.x != -1 && pos.y != -1)
+            {
+                self->widgets[common::widx::viewport1].type = widget_type::viewport;
+            }
+
+            if (pos.z != -1 && rotation != -1)
+            {
+                self->widgets[common::widx::viewport1Button].type = widget_type::wt_9;
+            }
+
+            uint32_t ecx = pos.z << 16 | rotation << 8 | (uint8_t)zoomLevel;
+            uint32_t edx = pos.y << 16 | pos.x;
+
+            if (isThing)
+            {
+                ecx = rotation << 8 | (uint8_t)zoomLevel;
+                edx = thingId;
+            }
+
+            if (_dword_525CD0 != ecx || _dword_525CD4 != edx)
+            {
+                _dword_525CD0 = ecx;
+                _dword_525CD4 = edx;
+                auto viewport = self->viewports[0];
+                if (viewport != nullptr)
+                {
+                    viewport = nullptr;
+                    self->invalidate();
+                }
+
+                self->widgets[common::widx::viewport1].left = 6;
+                self->widgets[common::widx::viewport1].right = 353;
+                self->widgets[common::widx::viewport1Button].left = 4;
+                self->widgets[common::widx::viewport1Button].right = 355;
+
+                if (_word_4F8BE4[news->var_00] & (1 << 3))
+                {
+                    self->widgets[common::widx::viewport1].left = 6;
+                    self->widgets[common::widx::viewport1].right = 173;
+                    self->widgets[common::widx::viewport1Button].left = 4;
+                    self->widgets[common::widx::viewport1Button].right = 175;
+                }
+
+                if (edx != 0xFFFFFFFF)
+                {
+                    gfx::point_t origin = { self->widgets[common::widx::viewport1].left + 1 + self->x, self->widgets[common::widx::viewport1].top + 1 + self->y };
+                    gfx::ui_size_t viewportSize = { self->widgets[common::widx::viewport1].width(), 62 };
+
+                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    {
+                        origin = { self->widgets[common::widx::viewport1].left + self->x, self->widgets[common::widx::viewport1].top + self->y };
+                        viewportSize = { self->widgets[common::widx::viewport1].width() + 2U, 64 };
+                    }
+
+                    viewportmgr::create(self, 0, origin, viewportSize, zoomLevel, pos);
+                    self->invalidate();
+                }
+            }
+
+            pos.x = -1;
+            pos.y = -1;
+            pos.z = -1;
+            rotation = -1;
+            zoomLevel = ZoomLevel::full;
+            thingId = 0xFFFF;
+            isThing = false;
+
+            if (_activeMessageIndex != 0xFFFF)
+            {
+                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                {
+                    auto itemType = _byte_4F8B09[news->var_00];
+
+                    if (news->item_id != 0xFFFF)
+                    {
+                        switch (itemType)
+                        {
+                            case newsItems::industry:
+                            {
+                                auto industry = industrymgr::get(news->item_id);
+
+                                pos.x = industry->x;
+                                pos.y = industry->y;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::half;
+                                break;
+                            }
+
+                            case newsItems::station:
+                            {
+                                auto station = stationmgr::get(news->item_id);
+
+                                pos.x = station->x;
+                                pos.y = station->y;
+                                pos.z = station->z;
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::full;
+                                break;
+                            }
+
+                            case newsItems::town:
+                            {
+                                auto town = townmgr::get(news->item_id);
+
+                                pos.x = town->x;
+                                pos.y = town->y;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                rotation = gCurrentRotation;
+                                zoomLevel = ZoomLevel::half;
+                                break;
+                            }
+
+                            case newsItems::vehicle:
+                            {
+                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id);
+
+                                vehicle = vehicle->next_car()->next_car();
+                                thingId = vehicle->id;
+                                vehicle = vehicle->next_car();
+
+                                if (vehicle->type != vehicle_thing_type::vehicle_6)
+                                {
+                                    thingId = vehicle->id;
+                                    if (vehicle->type == vehicle_thing_type::vehicle_bogie)
+                                    {
+                                        vehicle = vehicle->next_car();
+                                        thingId = vehicle->next_car_id;
+                                    }
+                                }
+                                isThing = true;
+                                zoomLevel = ZoomLevel::full;
+                                rotation = gCurrentRotation;
+                                break;
+                            }
+
+                            case newsItems::company:
+                                zoomLevel = (ZoomLevel)-2;
+                                break;
+
+                            case 5:
+                                pos.x = news->item_id; // possible union?
+                                pos.y = news->var_CC;
+                                pos.z = tile_element_height(pos.x, pos.y);
+                                zoomLevel = ZoomLevel::full;
+                                rotation = gCurrentRotation;
+                                break;
+
+                            case 6:
+                                break;
+
+                            case newsItems::vehicleTab:
+                                zoomLevel = (ZoomLevel)-3;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            self->widgets[common::widx::viewport2].type = widget_type::none;
+            self->widgets[common::widx::viewport2Button].type = widget_type::none;
+
+            if (pos.x != -1 && pos.y != -1)
+            {
+                self->widgets[common::widx::viewport2].type = widget_type::viewport;
+            }
+
+            if (pos.z != -1 && rotation != -1)
+            {
+                self->widgets[common::widx::viewport2Button].type = widget_type::wt_9;
+            }
+
+            ecx = pos.z << 16 | rotation << 8 | (uint8_t)zoomLevel;
+            edx = pos.y << 16 | pos.x;
+
+            if (isThing)
+            {
+                ecx = rotation << 8 | (uint8_t)zoomLevel;
+                edx = thingId;
+            }
+
+            if (_dword_525CD8 != ecx || _dword_525CDC != edx)
+            {
+                _dword_525CD8 = ecx;
+                _dword_525CDC = edx;
+                auto viewport = self->viewports[0];
+                if (viewport != nullptr)
+                {
+                    viewport = nullptr;
+                    self->invalidate();
+                }
+
+                self->widgets[common::widx::viewport2].left = 186;
+                self->widgets[common::widx::viewport2].right = 353;
+                self->widgets[common::widx::viewport2Button].left = 184;
+                self->widgets[common::widx::viewport2Button].right = 355;
+
+                if (edx != 0xFFFFFFFF)
+                {
+                    gfx::point_t origin = { self->widgets[common::widx::viewport2].left + 1 + self->x, self->widgets[common::widx::viewport1].top + 1 + self->y };
+                    gfx::ui_size_t viewportSize = { self->widgets[common::widx::viewport2].width(), 62 };
+
+                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    {
+                        origin = { self->widgets[common::widx::viewport2].left + self->x, self->widgets[common::widx::viewport1].top + self->y };
+                        viewportSize = { self->widgets[common::widx::viewport2].width() + 2U, 64 };
+                    }
+
+                    viewportmgr::create(self, 1, origin, viewportSize, zoomLevel, pos);
+                    self->invalidate();
+                }
+            }
         }
 
         // 0x00429DA2
@@ -281,7 +614,7 @@ namespace openloco::ui::NewsWindow
         {
             if (widgetIndex != 0)
                 return;
-
+            
             if (_activeMessageIndex == 0xFFFF)
                 return;
 
