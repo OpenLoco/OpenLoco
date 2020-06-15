@@ -25,8 +25,6 @@
 
 using namespace openloco::interop;
 
-using namespace openloco::interop;
-
 namespace openloco::ui::NewsWindow
 {
     static loco_global<uint8_t[31][4], 0x004F8B08> _byte_4F8B08;
@@ -255,7 +253,7 @@ namespace openloco::ui::NewsWindow
             }
         }
 
-        // 0x00429209
+        // 0x00429DA2
         static void initViewport(window* self)
         {
             map::map_pos3 pos;
@@ -651,7 +649,7 @@ namespace openloco::ui::NewsWindow
         {
             if (widgetIndex != 0)
                 return;
-
+            
             if (_activeMessageIndex == 0xFFFF)
                 return;
 
