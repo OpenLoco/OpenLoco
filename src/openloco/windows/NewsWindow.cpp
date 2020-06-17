@@ -27,12 +27,13 @@ using namespace openloco::interop;
 
 namespace openloco::ui::NewsWindow
 {
-    static loco_global<uint32_t[31], 0x004F8B08> _byte_4F8B08;
-    static loco_global<uint32_t[31], 0x004F8B09> _byte_4F8B09;
+    static loco_global<uint8_t[31][4], 0x004F8B08> _byte_4F8B08;
+    static loco_global<uint8_t[31][4], 0x004F8B09> _byte_4F8B09;
     static loco_global<uint16_t[31], 0x004F8BE4> _word_4F8BE4;
     static loco_global<uint8_t[31], 0x004F8C22> _messageTypes;
-    static loco_global<audio::sound_id[31], 0x004F8C41> _messageSounds;
+    static loco_global<uint8_t[31], 0x004F8C41> _messageSounds;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
+    static loco_global<uint8_t[3], 0x005215B5> _unk_5215B5;
     static loco_global<uint32_t, 0x00523338> _cursorX2;
     static loco_global<uint32_t, 0x0052333C> _cursorY2;
     static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;
@@ -44,6 +45,8 @@ namespace openloco::ui::NewsWindow
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<char[512], 0x0112CC04> byte_112CC04;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
@@ -53,6 +56,17 @@ namespace openloco::ui::NewsWindow
         {
             none = 0,
             ticker,
+            newsWindow,
+        };
+
+        enum newsItem
+        {
+            majorCompany,
+            majorCompetitor,
+            minorCompany,
+            minorCompetitor,
+            general,
+            advice,
         };
 
         enum widx
@@ -67,8 +81,8 @@ namespace openloco::ui::NewsWindow
 
         const uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
 
-#define commonWidgets(frameWidth, frameHeight)                                                                                            \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::wt_3, 0),                                                             \
+#define commonWidgets(frameWidth, frameHeight, frameType)                                                                                 \
+    make_widget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),                                                                     \
         make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
         make_widget({ 2, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                          \
         make_widget({ 180, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                        \
@@ -83,7 +97,7 @@ namespace openloco::ui::NewsWindow
         static const gfx::ui_size_t windowSize = { 360, 117 };
 
         widget_t widgets[] = {
-            commonWidgets(360, 117),
+            commonWidgets(360, 117, widget_type::wt_3),
             widget_end(),
         };
 
@@ -126,17 +140,17 @@ namespace openloco::ui::NewsWindow
                         if (_word_4F8BE4[news->var_00] & (1 << 2))
                         {
                             uint32_t itemType;
-
+                            uint16_t itemId;
                             if (widgetIndex == common::widx::viewport1Button)
                             {
-                                itemType = _byte_4F8B08[news->var_00];
+                                itemType = _byte_4F8B08[news->var_00][0];
+                                itemId = news->item_id_1;
                             }
                             else
                             {
-                                itemType = _byte_4F8B09[news->var_00];
+                                itemType = _byte_4F8B09[news->var_00][0];
+                                itemId = news->item_id_2;
                             }
-
-                            auto itemId = news->item_id;
 
                             switch (itemType)
                             {
@@ -153,8 +167,14 @@ namespace openloco::ui::NewsWindow
                                     break;
 
                                 case newsItems::vehicle:
-                                    ui::build_vehicle::open(itemId, 0);
+                                {
+                                    registers regs;
+                                    auto vehicle = thingmgr::get<openloco::vehicle>(itemId);
+
+                                    regs.edx = (int32_t)vehicle;
+                                    call(0x004B6033, regs);
                                     break;
+                                }
 
                                 case newsItems::company:
                                     ui::windows::CompanyWindow::open(itemId);
@@ -233,70 +253,72 @@ namespace openloco::ui::NewsWindow
             }
         }
 
-        static void sub_429209(window* self)
+        // 0x00429209
+        static void initViewport(window* self)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //call(0x00429209, regs);
-
             map::map_pos3 pos;
             pos.x = -1;
             pos.y = -1;
             pos.z = -1;
             int8_t rotation = -1;
-            ZoomLevel zoomLevel = ZoomLevel::full;
+            ZoomLevel zoomLevel = (ZoomLevel)-1;
             auto news = messagemgr::get(_activeMessageIndex);
-            uint16_t thingId = 0xFFFF; 
+            uint16_t thingId = 0xFFFF;
             bool isThing = false;
+            bool selectable = false;
+
             if (_activeMessageIndex != 0xFFFF)
             {
                 if (_word_4F8BE4[news->var_00] & (1 << 2))
                 {
-                    auto itemType = _byte_4F8B08[news->var_00];
+                    auto itemType = _byte_4F8B08[news->var_00][0];
 
-                    if (news->item_id != 0xFFFF)
+                    if (news->item_id_1 != 0xFFFF)
                     {
                         switch (itemType)
                         {
                             case newsItems::industry:
                             {
-                                auto industry = industrymgr::get(news->item_id);
+                                auto industry = industrymgr::get(news->item_id_1);
 
                                 pos.x = industry->x;
                                 pos.y = industry->y;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::half;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::station:
                             {
-                                auto station = stationmgr::get(news->item_id);
+                                auto station = stationmgr::get(news->item_id_1);
 
                                 pos.x = station->x;
                                 pos.y = station->y;
                                 pos.z = station->z;
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::full;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::town:
                             {
-                                auto town = townmgr::get(news->item_id);
+                                auto town = townmgr::get(news->item_id_1);
 
                                 pos.x = town->x;
                                 pos.y = town->y;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::half;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::vehicle:
                             {
-                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id);
+                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id_1);
 
                                 vehicle = vehicle->next_car()->next_car();
                                 thingId = vehicle->id;
@@ -314,19 +336,22 @@ namespace openloco::ui::NewsWindow
                                 isThing = true;
                                 zoomLevel = ZoomLevel::full;
                                 rotation = gCurrentRotation;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::company:
                                 zoomLevel = (ZoomLevel)-2;
+                                selectable = true;
                                 break;
 
                             case 5:
-                                pos.x = news->item_id; // possible union?
-                                pos.y = news->var_CC;
+                                pos.x = news->item_id_1; // possible union?
+                                pos.y = news->item_id_2;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 zoomLevel = ZoomLevel::full;
                                 rotation = gCurrentRotation;
+                                selectable = true;
                                 break;
 
                             case 6:
@@ -334,6 +359,7 @@ namespace openloco::ui::NewsWindow
 
                             case newsItems::vehicleTab:
                                 zoomLevel = (ZoomLevel)-3;
+                                selectable = true;
                                 break;
                         }
                     }
@@ -348,18 +374,18 @@ namespace openloco::ui::NewsWindow
                 self->widgets[common::widx::viewport1].type = widget_type::viewport;
             }
 
-            if (pos.z != -1 && rotation != -1)
+            if (selectable)
             {
                 self->widgets[common::widx::viewport1Button].type = widget_type::wt_9;
             }
 
             uint32_t ecx = pos.z << 16 | rotation << 8 | (uint8_t)zoomLevel;
-            uint32_t edx = pos.y << 16 | pos.x;
+            uint32_t edx = pos.y << 16 | pos.x | 1 << 30;
 
             if (isThing)
             {
                 ecx = rotation << 8 | (uint8_t)zoomLevel;
-                edx = thingId;
+                edx = thingId | 1 << 31;
             }
 
             if (_dword_525CD0 != ecx || _dword_525CD4 != edx)
@@ -397,7 +423,14 @@ namespace openloco::ui::NewsWindow
                         viewportSize = { self->widgets[common::widx::viewport1].width() + 2U, 64 };
                     }
 
-                    viewportmgr::create(self, 0, origin, viewportSize, zoomLevel, pos);
+                    if (isThing)
+                    {
+                        viewportmgr::create(self, 0, origin, viewportSize, zoomLevel, thingId);
+                    }
+                    else
+                    {
+                        viewportmgr::create(self, 0, origin, viewportSize, zoomLevel, pos);
+                    }
                     self->invalidate();
                 }
             }
@@ -409,56 +442,60 @@ namespace openloco::ui::NewsWindow
             zoomLevel = ZoomLevel::full;
             thingId = 0xFFFF;
             isThing = false;
+            selectable = false;
 
             if (_activeMessageIndex != 0xFFFF)
             {
                 if (_word_4F8BE4[news->var_00] & (1 << 2))
                 {
-                    auto itemType = _byte_4F8B09[news->var_00];
+                    auto itemType = _byte_4F8B09[news->var_00][0];
 
-                    if (news->item_id != 0xFFFF)
+                    if (news->item_id_2 != 0xFFFF)
                     {
                         switch (itemType)
                         {
                             case newsItems::industry:
                             {
-                                auto industry = industrymgr::get(news->item_id);
+                                auto industry = industrymgr::get(news->item_id_2);
 
                                 pos.x = industry->x;
                                 pos.y = industry->y;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::half;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::station:
                             {
-                                auto station = stationmgr::get(news->item_id);
+                                auto station = stationmgr::get(news->item_id_2);
 
                                 pos.x = station->x;
                                 pos.y = station->y;
                                 pos.z = station->z;
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::full;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::town:
                             {
-                                auto town = townmgr::get(news->item_id);
+                                auto town = townmgr::get(news->item_id_2);
 
                                 pos.x = town->x;
                                 pos.y = town->y;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 rotation = gCurrentRotation;
                                 zoomLevel = ZoomLevel::half;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::vehicle:
                             {
-                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id);
+                                auto vehicle = thingmgr::get<openloco::vehicle>(news->item_id_2);
 
                                 vehicle = vehicle->next_car()->next_car();
                                 thingId = vehicle->id;
@@ -476,19 +513,22 @@ namespace openloco::ui::NewsWindow
                                 isThing = true;
                                 zoomLevel = ZoomLevel::full;
                                 rotation = gCurrentRotation;
+                                selectable = true;
                                 break;
                             }
 
                             case newsItems::company:
                                 zoomLevel = (ZoomLevel)-2;
+                                selectable = true;
                                 break;
 
                             case 5:
-                                pos.x = news->item_id; // possible union?
-                                pos.y = news->var_CC;
+                                pos.x = news->item_id_1; // possible union?
+                                pos.y = news->item_id_2;
                                 pos.z = tile_element_height(pos.x, pos.y);
                                 zoomLevel = ZoomLevel::full;
                                 rotation = gCurrentRotation;
+                                selectable = true;
                                 break;
 
                             case 6:
@@ -496,6 +536,7 @@ namespace openloco::ui::NewsWindow
 
                             case newsItems::vehicleTab:
                                 zoomLevel = (ZoomLevel)-3;
+                                selectable = true;
                                 break;
                         }
                     }
@@ -510,18 +551,18 @@ namespace openloco::ui::NewsWindow
                 self->widgets[common::widx::viewport2].type = widget_type::viewport;
             }
 
-            if (pos.z != -1 && rotation != -1)
+            if (selectable)
             {
                 self->widgets[common::widx::viewport2Button].type = widget_type::wt_9;
             }
 
             ecx = pos.z << 16 | rotation << 8 | (uint8_t)zoomLevel;
-            edx = pos.y << 16 | pos.x;
+            edx = pos.y << 16 | pos.x | 1 << 30;
 
             if (isThing)
             {
                 ecx = rotation << 8 | (uint8_t)zoomLevel;
-                edx = thingId;
+                edx = thingId | 1 << 31;
             }
 
             if (_dword_525CD8 != ecx || _dword_525CDC != edx)
@@ -557,12 +598,6 @@ namespace openloco::ui::NewsWindow
             }
         }
 
-        // 0x00429DA2
-        static void initViewport(window* self)
-        {
-            sub_429209(self);
-        }
-
         // 0x00429739
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
@@ -587,7 +622,7 @@ namespace openloco::ui::NewsWindow
         static const gfx::ui_size_t windowSize = { 360, 159 };
 
         widget_t widgets[] = {
-            commonWidgets(360, 159),
+            commonWidgets(360, 159, widget_type::wt_5),
             widget_end(),
         };
     }
@@ -614,7 +649,7 @@ namespace openloco::ui::NewsWindow
         {
             if (widgetIndex != 0)
                 return;
-            
+
             if (_activeMessageIndex == 0xFFFF)
                 return;
 
@@ -680,38 +715,27 @@ namespace openloco::ui::NewsWindow
                             auto cx = _word_525CE0;
                             cx >>= 2;
                             char* buffer = news->messageString;
-                            while (*buffer != 0)
+
+                            while (*buffer != 0 && cx >= 0)
                             {
                                 if (*buffer == control_codes::newline)
                                 {
                                     *buffer = 32;
                                     cx--;
-                                    if (cx < 0)
-                                    {
-                                        break;
-                                    }
                                 }
 
                                 if (*buffer == 0xFF)
                                 {
                                     cx--;
-                                    if (cx < 0)
-                                    {
-                                        break;
-                                    }
-
                                     *buffer++;
                                 }
                                 else
                                 {
                                     cx--;
-                                    if (cx < 0)
-                                    {
-                                        break;
-                                    }
                                     *buffer += 3;
                                 }
                             }
+
                             if (*buffer != 32)
                             {
                                 if (*buffer != 0)
@@ -732,93 +756,109 @@ namespace openloco::ui::NewsWindow
             WindowManager::close(self);
         }
 
-        static void sub_4950EF(string_id buffer, uint32_t eax, uint32_t ebp, uint16_t cx, uint16_t dx)
-        {
-            registers regs;
-            regs.bx = buffer;
-            regs.eax = eax;
-            regs.cx = cx;
-            regs.dx = dx;
-            regs.ebp = ebp;
-            call(0x004950EF, regs);
-        }
+        //static void sub_4950EF(gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
+        //{
+        //    //registers regs;
+        //    //regs.bx = buffer;
+        //    //regs.eax = eax;
+        //    //regs.cx = x;
+        //    //regs.dx = y;
+        //    //regs.ebp = ebp;
+        //    //regs.edi = (int32_t)clipped;
+        //    //call(0x004950EF, regs);
+
+        //    _currentFontSpriteBase = font::medium_bold;
+        //    gfx::draw_string(clipped, clipped->x, clipped->y, colour::black, _unk_5215B5);
+        //    stringmgr::format_string(byte_112CC04, buffer);
+
+        //    registers regs;
+        //    regs.esi =
+        //    call(0x0049544E, regs);
+        //}
 
         // 0x00429DAA
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            if (self->var_852 != 0)
-                return;
+            registers regs;
+            regs.esi = (int32_t)self;
+            regs.edi = (int32_t)dpi;
+            call(0x00429DAA, regs);
 
-            if (get_pause_flags() & 4)
-                return;
+            //if (self->var_852 != 0)
+            //    return;
 
-            auto news = messagemgr::get(_activeMessageIndex);
+            //if (get_pause_flags() & 4)
+            //    return;
 
-            auto x = self->x;
-            auto y = self->y;
-            auto width = self->width;
-            auto height = self->height;
-            gfx::drawpixelinfo_t* clipped = nullptr;
+            //auto news = messagemgr::get(_activeMessageIndex);
 
-            gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height);
+            //auto x = self->x;
+            //auto y = self->y;
+            //auto width = self->width;
+            //auto height = self->height;
+            //gfx::drawpixelinfo_t* clipped = nullptr;
 
-            if (clipped == nullptr)
-                return;
+            //gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height);
 
-            uint32_t colour = 0x14141414;
+            //if (clipped == nullptr)
+            //    return;
 
-            if (!(_word_4F8BE4[news->var_00] & (1 << 1)))
-            {
-                colour = colour::translucent(colour::inset(colour::icy_blue));
-                colour *= 0x1010101;
-            }
+            //uint32_t colour = 0x14141414;
 
-            gfx::clear(*clipped, colour);
+            //if (!(_word_4F8BE4[news->var_00] & (1 << 1)))
+            //{
+            //    colour = colour::translucent(colour::inset(colour::icy_blue));
+            //    colour *= 0x1010101;
+            //}
 
-            char* buffer = news->messageString;
-            auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            //gfx::clear(*clipped, colour);
 
-            *str = -112;
-            *str++;
-            *str = control_codes::font_small;
-            *str++;
+            //char* buffer = news->messageString;
+            //auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-            auto al = *buffer;
-            auto i = 0;
+            //strncpy(str, buffer, 512);
 
-            while (*buffer != 0)
-            {
-                if (al != control_codes::newline)
-                {
-                    al = 32;
-                    *str = al;
-                    *str++;
-                }
+            ////*str = -112;
+            ////*str++;
+            ////*str = control_codes::font_small;
+            ////*str++;
 
-                if (al == 0xFF)
-                {
-                    *str = al;
-                    *str++;
-                    *buffer++;
-                    *str = *buffer;
-                    *str++;
-                    *buffer++;
-                    al = *buffer;
-                }
+            ////auto al = *buffer;
+            //auto i = 0;
 
-                *str = al;
-                *str++;
-                *buffer++;
-                i++;
-            }
+            ////while (*buffer != 0)
+            ////{
+            ////    if (al != control_codes::newline)
+            ////    {
+            ////        al = 32;
+            ////        *str = al;
+            ////        *str++;
+            ////    }
 
-            if ((_word_525CE0 >> 2) > i)
-            {
-                _word_525CE0 = _word_525CE0 | (1 << 15);
-            }
-            auto ebp = ((_word_525CE0 & ~(1 << 15)) << 14) | 109;
+            ////    if (al == 0xFF)
+            ////    {
+            ////        *str = al;
+            ////        *str++;
+            ////        *buffer++;
+            ////        *str = *buffer;
+            ////        *str++;
+            ////        *buffer++;
+            ////        al = *buffer;
+            ////    }
 
-            sub_4950EF(string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
+            ////    *str = al;
+            ////    *str++;
+            ////    *buffer++;
+            ////    i++;
+            ////}
+
+            //if ((_word_525CE0 >> 2) > i)
+            //{
+            //    _word_525CE0 = _word_525CE0 | (1 << 15);
+            //}
+            //uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 14) | 109;
+
+            //sub_4950EF(clipped, string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
         }
 
         static void initEvents()
@@ -833,23 +873,23 @@ namespace openloco::ui::NewsWindow
     // 0x00428F8B
     void open(uint16_t messageIndex)
     {
-        auto i = 0;
+        auto companyId = 0;
         auto news = messagemgr::get(messageIndex);
 
         if ((news->var_C8 != 0) && (getScreenAge() >= 10))
         {
-            i++;
+            companyId++;
         }
 
         _activeMessageIndex = messageIndex;
 
         auto activeMessage = news->var_00;
 
-        if (i == 0)
+        if (companyId == 0)
         {
             auto messageType = _messageTypes[activeMessage];
 
-            if (messageType == 0 || messageType == 2)
+            if (messageType == common::newsItem::majorCompany || messageType == common::newsItem::minorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
@@ -891,13 +931,13 @@ namespace openloco::ui::NewsWindow
             }
         }
 
-        if (i == 0)
+        if (companyId == 0)
         {
             audio::sound_id soundId = audio::sound_id::notification;
 
-            if (news->companyId == 0xFF || i == _playerCompany)
+            if (news->companyId == company_id::null || companyId == _playerCompany)
             {
-                soundId = _messageSounds[activeMessage];
+                soundId = static_cast<audio::sound_id>(_messageSounds[activeMessage]);
             }
 
             if (soundId != audio::sound_id::null)
@@ -913,7 +953,7 @@ namespace openloco::ui::NewsWindow
 
             int16_t y = ui::height() - _word_525CE0;
 
-            if (_gameSpeed == 0 || i != 0)
+            if (_gameSpeed != 0 || companyId != 0)
             {
                 y = ui::height() - news2::windowSize.height;
                 _word_525CE0 = news2::windowSize.height;
@@ -926,6 +966,7 @@ namespace openloco::ui::NewsWindow
             auto window = WindowManager::createWindow(WindowType::news, origin, news2::windowSize, flags, &news1::events);
 
             window->widgets = news2::widgets;
+            window->enabled_widgets = common::enabledWidgets;
 
             common::initEvents();
 
@@ -937,7 +978,7 @@ namespace openloco::ui::NewsWindow
             _dword_525CD8 = 0xFFFFFFFF;
             _dword_525CDC = 0xFFFFFFFF;
 
-            news1::sub_429209(window);
+            news1::initViewport(window);
         }
         else
         {
@@ -945,7 +986,7 @@ namespace openloco::ui::NewsWindow
 
             int16_t y = ui::height() - _word_525CE0;
 
-            if (_gameSpeed == 0 || i != 0)
+            if (_gameSpeed != 0 || companyId != 0)
             {
                 y = ui::height() - news1::windowSize.height;
                 _word_525CE0 = news1::windowSize.height;
@@ -953,11 +994,12 @@ namespace openloco::ui::NewsWindow
 
             int16_t x = (ui::width() / 2) - (news1::windowSize.width / 2);
             gfx::point_t origin = { x, y };
-            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
+            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
 
             auto window = WindowManager::createWindow(WindowType::news, origin, news1::windowSize, flags, &news1::events);
 
             window->widgets = news1::widgets;
+            window->enabled_widgets = common::enabledWidgets;
 
             common::initEvents();
 
@@ -969,7 +1011,7 @@ namespace openloco::ui::NewsWindow
             _dword_525CD8 = 0xFFFFFFFF;
             _dword_525CDC = 0xFFFFFFFF;
 
-            news1::sub_429209(window);
+            news1::initViewport(window);
         }
     }
 

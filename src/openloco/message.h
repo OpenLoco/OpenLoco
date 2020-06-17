@@ -9,11 +9,11 @@ namespace openloco
     struct message
     {
         uint8_t var_00;
-        char messageString[198];
-        uint8_t companyId; // 0xC7
+        char messageString[198]; // 0x01
+        uint8_t companyId;       // 0xC7
         uint16_t var_C8;
-        uint16_t item_id;   // 0xCA
-        uint16_t var_CC;
+        uint16_t item_id_1; // 0xCA
+        uint16_t item_id_2;
         uint8_t pad_CE[0xD0 - 0xCE];
         uint32_t date; // 0xD0
     };
