@@ -685,6 +685,10 @@ namespace openloco::ui::NewsWindow
         // 0x00429EEB
         static void on_update(window* self)
         {
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //call(0x00429EEB, regs);
+
             auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
             if (window == self)
@@ -707,38 +711,48 @@ namespace openloco::ui::NewsWindow
                 if (!is_paused())
                 {
                     _word_525CE0 = _word_525CE0 + 2;
-                    if (!(_word_525CE0 & ((1 << 15) | (1 << 2) | (1 << 1) | (1 << 0))))
+                    
+                    if (!(_word_525CE0 & 0x8007))
                     {
                         if (_activeMessageIndex != 0xFFFF)
                         {
                             auto news = messagemgr::get(_activeMessageIndex);
-                            auto cx = _word_525CE0;
-                            cx >>= 2;
+                            auto cx = _word_525CE0 >> 2;
                             char* buffer = news->messageString;
+                            auto al = *buffer;
 
-                            while (*buffer != 0 && cx >= 0)
+                            while (true)
                             {
-                                if (*buffer == control_codes::newline)
+                                al = *buffer;
+                                if (al == control_codes::newline)
                                 {
-                                    *buffer = 32;
+                                    al = 32;
                                     cx--;
+                                    if (cx < 0)
+                                        break;
                                 }
 
-                                if (*buffer == 0xFF)
+                                if (al != 0xFF)
                                 {
                                     cx--;
-                                    *buffer++;
+                                    if (cx < 0)
+                                        break;
+                                    buffer++;
+                                    if (!al)
+                                        break;
                                 }
                                 else
                                 {
                                     cx--;
-                                    *buffer += 3;
+                                    if (cx < 0)
+                                        break;
+                                    buffer += 3;
                                 }
                             }
 
-                            if (*buffer != 32)
+                            if (al != 32)
                             {
-                                if (*buffer != 0)
+                                if (al != 0)
                                 {
                                     audio::play_sound(audio::sound_id::ticker, ui::width());
                                 }
@@ -758,22 +772,22 @@ namespace openloco::ui::NewsWindow
 
         //static void sub_4950EF(gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
         //{
-        //    //registers regs;
-        //    //regs.bx = buffer;
-        //    //regs.eax = eax;
-        //    //regs.cx = x;
-        //    //regs.dx = y;
-        //    //regs.ebp = ebp;
-        //    //regs.edi = (int32_t)clipped;
-        //    //call(0x004950EF, regs);
-
-        //    _currentFontSpriteBase = font::medium_bold;
-        //    gfx::draw_string(clipped, clipped->x, clipped->y, colour::black, _unk_5215B5);
-        //    stringmgr::format_string(byte_112CC04, buffer);
-
         //    registers regs;
-        //    regs.esi =
-        //    call(0x0049544E, regs);
+        //    regs.bx = buffer;
+        //    regs.eax = eax;
+        //    regs.cx = x;
+        //    regs.dx = y;
+        //    regs.ebp = ebp;
+        //    regs.edi = (int32_t)clipped;
+        //    call(0x004950EF, regs);
+
+        //    //_currentFontSpriteBase = font::medium_bold;
+        //    //gfx::draw_string(clipped, clipped->x, clipped->y, colour::black, _unk_5215B5);
+        //    //stringmgr::format_string(byte_112CC04, buffer);
+
+        //    //registers regs;
+        //    //regs.esi =
+        //    //call(0x0049544E, regs);
         //}
 
         // 0x00429DAA
