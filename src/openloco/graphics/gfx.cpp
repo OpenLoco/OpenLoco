@@ -183,18 +183,10 @@ namespace openloco::gfx
         uint16_t width = 0;
         uint8_t* str = (uint8_t*)buffer;
 
-        while (true)
+        while (*str != (uint8_t)0)
         {
-            localisation::utf32_t chr = localisation::readCodePoint(&str);
-
-            if (chr == 0)
-                break;
-
-            if (chr >= 256)
-            {
-                // we don't accept unicode characters yet
-                assert(false);
-            }
+            uint8_t chr = *str;
+            str++;
 
             if (chr >= 32)
             {
