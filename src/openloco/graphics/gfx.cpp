@@ -148,10 +148,15 @@ namespace openloco::gfx
     // ebp: fill
     void clear(drawpixelinfo_t& dpi, uint32_t fill)
     {
-        registers regs;
-        regs.edi = (int32_t)&dpi;
-        regs.ebp = (int32_t)fill;
-        call(0x00447485, regs);
+        int32_t w = dpi.width / (1 << dpi.zoom_level);
+        int32_t h = dpi.height / (1 << dpi.zoom_level);
+        uint8_t* ptr = dpi.bits;
+
+        for (int32_t y = 0; y < h; y++)
+        {
+            std::fill_n(ptr, w, fill);
+            ptr += w + dpi.pitch;
+        }
     }
 
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId)
