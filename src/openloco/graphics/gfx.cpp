@@ -5,7 +5,6 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/languagefiles.h"
-#include "../localisation/unicode.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
