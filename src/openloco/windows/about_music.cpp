@@ -134,7 +134,7 @@ namespace openloco::ui::about_music
         const int16_t x = 240;
         int16_t y = 2;
 
-        for (const auto song_strings : strings_to_draw)
+        for (const auto& song_strings : strings_to_draw)
         {
             // TODO: optimisation: don't draw past fold.
 
