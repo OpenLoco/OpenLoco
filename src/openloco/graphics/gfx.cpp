@@ -182,19 +182,20 @@ namespace openloco::gfx
      * @param buffer @<esi>
      * @return width @<cx>
      */
-    uint16_t get_string_width(const char* buffer)
+    uint16_t getStringWidth(char* buffer)
     {
         uint16_t width = 0;
-        uint8_t* str = (uint8_t*)buffer;
+        uint8_t* str = reinterpret_cast<uint8_t*>(buffer);
+        int16_t fontSpriteBase = _currentFontSpriteBase;
 
         while (*str != (uint8_t)0)
         {
-            uint8_t chr = *str;
+            const uint8_t chr = *str;
             str++;
 
             if (chr >= 32)
             {
-                width += _characterWidths[chr - 32 + _currentFontSpriteBase];
+                width += _characterWidths[chr - 32 + fontSpriteBase];
                 continue;
             }
 
@@ -216,19 +217,19 @@ namespace openloco::gfx
                     continue;
 
                 case control_codes::font_small:
-                    _currentFontSpriteBase = font::small;
+                    fontSpriteBase = font::small;
                     break;
 
                 case control_codes::font_large:
-                    _currentFontSpriteBase = font::large;
+                    fontSpriteBase = font::large;
                     break;
 
                 case control_codes::font_bold:
-                    _currentFontSpriteBase = font::medium_bold;
+                    fontSpriteBase = font::medium_bold;
                     break;
 
                 case control_codes::font_regular:
-                    _currentFontSpriteBase = font::medium_normal;
+                    fontSpriteBase = font::medium_normal;
                     break;
 
                 case control_codes::outline:
@@ -237,11 +238,11 @@ namespace openloco::gfx
                 case control_codes::window_colour_2:
                 case control_codes::window_colour_3:
                 case 0x10:
-                    continue;
+                    break;
 
                 case control_codes::inline_sprite_str:
                 {
-                    uint32_t image = ((uint32_t*)str)[0];
+                    uint32_t image = reinterpret_cast<uint32_t*>(str)[0];
                     uint32_t imageId = image & 0x7FFFF;
                     str += 4;
                     width += _g1Elements[imageId].width;
@@ -252,9 +253,11 @@ namespace openloco::gfx
                     if (chr <= 0x16)
                     {
                         str += 2;
-                        continue;
                     }
-                    str += 4;
+                    else
+                    {
+                        str += 4;
+                    }
                     break;
             }
         }

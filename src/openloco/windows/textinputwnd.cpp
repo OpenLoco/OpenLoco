@@ -413,8 +413,8 @@ namespace openloco::ui::textinput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = font::medium_bold;
-        auto stringWidth = gfx::get_string_width(_buffer.data());
-        auto cursorX = gfx::get_string_width(cursorStr.data());
+        auto stringWidth = gfx::getStringWidth(_buffer.data());
+        auto cursorX = gfx::getStringWidth(cursorStr.data());
 
         int x = _xOffset + cursorX;
 
@@ -440,8 +440,8 @@ namespace openloco::ui::textinput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = font::medium_bold;
-        auto stringWidth = gfx::get_string_width(_buffer.data());
-        auto cursorX = gfx::get_string_width(cursorStr.data());
+        auto stringWidth = gfx::getStringWidth(_buffer.data());
+        auto cursorX = gfx::getStringWidth(cursorStr.data());
 
         auto midX = containerWidth / 2;
 

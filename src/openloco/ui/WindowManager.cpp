@@ -204,8 +204,8 @@ namespace openloco::ui::WindowManager
             0x00495685,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                const char* buffer = (const char*)regs.esi;
-                uint16_t width = gfx::get_string_width(buffer);
+                char* buffer = (char*)regs.esi;
+                uint16_t width = gfx::getStringWidth(buffer);
                 regs = backup;
                 regs.cx = width;
 
