@@ -601,10 +601,110 @@ namespace openloco::ui::NewsWindow
         // 0x00429739
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.edi = (int32_t)dpi;
-            call(0x00429739, regs);
+            //registers regs;
+            //regs.esi = (int32_t)self;
+            //regs.edi = (int32_t)dpi;
+            //call(0x00429739, regs);
+
+            auto news = messagemgr::get(_activeMessageIndex);
+
+            if (_word_4F8BE4[news->var_00] & (1 << 1))
+            {
+                if (news->date >= 52925)
+                {
+                    gfx::draw_image(dpi, self->x, self->y, image_ids::news_background_new_left);
+
+                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_left);
+
+                    self->draw(dpi);
+
+                    char* buffer = news->messageString;
+                    auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+
+                    if (_word_4F8BE4[news->var_00] & (1 << 5))
+                    {
+                        *str = control_codes::font_large;
+                        str++;
+                    }
+
+                    *str = -112;
+                    str++;
+
+                    strncpy(str, buffer, 512);
+
+                    gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+
+                    gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
+
+                    origin = { self->x + 1, self->y + 1 };
+
+                    gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+
+                    self->drawViewports(dpi);
+
+                    if (news->date < 67525)
+                    {
+                        if (_word_4F8BE4[news->var_00] & (1 << 2))
+                        {
+                            if (_word_4F8BE4[news->var_00] & (1 << 1))
+                            {
+                                if (news->item_id_1 != 0xFFFF)
+                                {
+                                    auto x = self->widgets[common::widx::viewport1].left + self->x;
+                                    auto y = self->widgets[common::widx::viewport1].top + self->y;
+                                    auto width = self->widgets[common::widx::viewport1].width();
+                                    auto height = self->widgets[common::widx::viewport1].height();
+                                    auto colour = (1 << 29) | palette_index::index_35;
+                                    gfx::draw_rect(dpi, x, y, width, height, colour);
+                                }
+                            }
+                        }
+
+                        if (_word_4F8BE4[news->var_00] & (1 << 3))
+                        {
+                            if (_word_4F8BE4[news->var_00] & (1 << 1))
+                            {
+                                if (news->item_id_2 != 0xFFFF)
+                                {
+                                    auto x = self->widgets[common::widx::viewport1].left + self->x;
+                                    auto y = self->widgets[common::widx::viewport1].top + self->y;
+                                    auto width = self->widgets[common::widx::viewport1].width();
+                                    auto height = self->widgets[common::widx::viewport1].height();
+                                    auto colour = (1 << 29) | palette_index::index_35;
+                                    gfx::draw_rect(dpi, x, y, width, height, colour);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    auto imageId = gfx::recolour(image_ids::news_background_old_left, colour::outline(colour::inset(colour::icy_blue)));
+                    
+                    gfx::draw_image(dpi, self->x, self->y, image_ids::news_background_new_left);
+                    
+                    imageId = gfx::recolour(image_ids::news_background_old_right, colour::outline(colour::inset(colour::icy_blue)));
+                    
+                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_left);
+
+                    self->draw(dpi);
+
+                    char* buffer = news->messageString;
+                    auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+
+                    if (_word_4F8BE4[news->var_00] & (1 << 5))
+                    {
+                        *str = control_codes::font_large;
+                        str++;
+                    }
+
+                    *str = -112;
+                    str++;
+
+                    strncpy(str, buffer, 512);
+                }
+            }
         }
 
         static void initEvents()
@@ -707,7 +807,7 @@ namespace openloco::ui::NewsWindow
                 if (!is_paused())
                 {
                     _word_525CE0 = _word_525CE0 + 2;
-                    
+
                     if (!(_word_525CE0 & 0x8007))
                     {
                         if (_activeMessageIndex != 0xFFFF)
@@ -776,24 +876,11 @@ namespace openloco::ui::NewsWindow
             regs.ebp = ebp;
             regs.edi = (int32_t)clipped;
             call(0x004950EF, regs);
-
-            //_currentFontSpriteBase = font::medium_bold;
-            //gfx::draw_string(clipped, clipped->x, clipped->y, colour::black, _unk_5215B5);
-            //stringmgr::format_string(byte_112CC04, buffer);
-
-            //registers regs;
-            //regs.esi =
-            //call(0x0049544E, regs);
         }
 
         // 0x00429DAA
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x00429DAA, regs);
-
             if (self->var_852 != 0)
                 return;
 
@@ -825,17 +912,6 @@ namespace openloco::ui::NewsWindow
 
             char* buffer = news->messageString;
             auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
-            
-            //// Reset buffer_2039
-            //while (true)
-            //{
-            //    if (*str == 0)
-            //        break;
-            //    *str = 0;
-            //    str++;
-            //}
-
-            //str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
             *str = -112;
             str++;

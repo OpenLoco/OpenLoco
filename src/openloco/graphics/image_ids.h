@@ -129,6 +129,10 @@ namespace openloco::image_ids
     constexpr uint32_t random_map_watermark = 2468;
     constexpr uint32_t height_map_compass = 2469;
 
+    constexpr uint32_t news_background_old_left = 3539;
+    constexpr uint32_t news_background_old_right = 3540;
+    constexpr uint32_t news_background_new_left = 3541;
+    constexpr uint32_t news_background_new_right = 3542;
     constexpr uint32_t volume_slider_track = 3543;
     constexpr uint32_t volume_slider_thumb = 3544;
 

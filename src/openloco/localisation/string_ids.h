@@ -792,6 +792,7 @@ namespace openloco::string_ids
     constexpr string_id error_reason_stringid_belongs_to = 1421;
     constexpr string_id error_reason_signal_belongs_to = 1422;
     constexpr string_id station_cargo_rating_percent = 1423;
+    constexpr string_id news_date = 1424;
 
     constexpr string_id title_messages = 1425;
     constexpr string_id tooltip_recent_messages = 1426;
