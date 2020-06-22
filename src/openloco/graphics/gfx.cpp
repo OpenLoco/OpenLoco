@@ -840,15 +840,15 @@ namespace openloco::gfx
         return regs.cx;
     }
 
-    uint16_t wrap_string(const char* buffer, uint16_t stringWidth, uint16_t* breakLineCount)
+    std::pair<uint16_t, uint16_t> wrap_string(const char* buffer, uint16_t stringWidth)
     {
         // gfx_wrap_string
         registers regs;
         regs.esi = (uintptr_t)buffer;
         regs.di = stringWidth;
         call(0x00495301, regs);
-        *breakLineCount = regs.di;
-        return regs.cx;
+
+        return std::make_pair(regs.cx, regs.di);
     }
 
     // 0x004474BA

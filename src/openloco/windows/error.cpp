@@ -19,7 +19,7 @@ namespace openloco::ui::windows::error
     static loco_global<ui::widget_t[1], 0x00508F1C> _widgets;
     static loco_global<char[512], 0x009C64B4> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
-    static loco_global<uint8_t, 0x009C68EC> _byte_9C68EC;
+    static loco_global<uint8_t, 0x009C68EC> _errorCompetitorId;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
@@ -60,16 +60,14 @@ namespace openloco::ui::windows::error
         };
     }
 
-    static char* formatErrorString(string_id title, string_id message, char* buffer)
+    static char* formatErrorString(string_id title, string_id message, FormatArguments args, char* buffer)
     {
         char* ptr = (char*)buffer;
-        ptr[0] = -112;
+        ptr[0] = control_codes::colour_black;
         ptr++;
 
         if (title != string_ids::null)
         {
-            auto args = FormatArguments();
-
             ptr = stringmgr::format_string(ptr, title, &args);
         }
 
@@ -81,26 +79,23 @@ namespace openloco::ui::windows::error
                 *ptr = control_codes::newline;
                 ptr++;
             }
-
-            auto args = FormatArguments();
-
             stringmgr::format_string(ptr, message, &args);
         }
+
         return ptr;
     }
 
-    // 0x00431A8A
-    void open(string_id title, string_id message)
+    void createErrorWindow(string_id title, string_id message)
     {
-        _byte_9C68EC = 0xFF;
-
         WindowManager::close(WindowType::error);
 
         char* buffer = _byte_9C64B3;
 
-        buffer = formatErrorString(title, message, buffer);
+        auto args = FormatArguments();
 
-        if (buffer[0] != _byte_9C64B3[0])
+        buffer = formatErrorString(title, message, args, buffer);
+
+        if (*buffer != *_byte_9C64B3)
         {
             gCurrentFontSpriteBase = font::medium_bold;
             int16_t strWidth;
@@ -113,37 +108,57 @@ namespace openloco::ui::windows::error
             gCurrentFontSpriteBase = font::medium_bold;
             {
                 uint16_t breakLineCount = 0;
-                strWidth = gfx::wrap_string(&_byte_9C64B3[0], strWidth, &breakLineCount);
+                std::tie(strWidth, breakLineCount) = gfx::wrap_string(&_byte_9C64B3[0], strWidth);
                 _word_9C66B3 = breakLineCount;
             }
 
-            int width = strWidth + 3;
-            int height = (_word_9C66B3 + 1) * 10 + 4;
+            uint16_t frameWidth = strWidth + 3;
+            uint16_t frameHeight = (_word_9C66B3 + 1) * 10 + 4;
+            uint16_t width = frameWidth;
+            uint16_t height = frameHeight;
+
+            if (_errorCompetitorId != 0xFF)
+            {
+                width = 250;
+                height = 70;
+            }
 
             int x, y;
 
             int maxY = ui::height() - height;
             y = _cursorY + 26; // Normally, we'd display the tooltip 26 lower
             if (y > maxY)
+            {
                 // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
                 // so we'll subtract a bit more
                 y -= height + 40;
+            }
             y = std::clamp(y, 22, maxY);
 
             x = std::clamp(_cursorX - (width / 2), 0, ui::width() - width);
 
+            gfx::ui_size_t windowSize = { width, height };
+
             auto error = WindowManager::createWindow(
                 WindowType::error,
                 gfx::point_t(x, y),
-                gfx::ui_size_t(width, height),
+                windowSize,
                 window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
                 &common::events);
 
             common::init_events();
 
-            error->widgets = error::widgets;
-            error->widgets[error::widx::frame].right = width;
-            error->widgets[error::widx::frame].bottom = height;
+            if (_errorCompetitorId != 0xFF)
+            {
+                error->widgets = errorCompetitor::widgets;
+            }
+            else
+            {
+                error->widgets = error::widgets;
+            }
+
+            error->widgets[error::widx::frame].right = frameWidth;
+            error->widgets[error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
             if (!(_suppressErrorSound & (1 << 0)))
@@ -154,69 +169,20 @@ namespace openloco::ui::windows::error
         }
     }
 
-    // 0x00431908
-    void open_with_competitor(string_id title, string_id message, uint8_t competitorId)
+    // 0x00431A8A
+    void open(string_id title, string_id message)
     {
-        _byte_9C68EC = competitorId;
+        _errorCompetitorId = 0xFF;
 
-        WindowManager::close(WindowType::error);
+        createErrorWindow(title, message);
+    }
 
-        char* buffer = _byte_9C64B3;
+    // 0x00431908
+    void openWithCompetitor(string_id title, string_id message, uint8_t competitorId)
+    {
+        _errorCompetitorId = competitorId;
 
-        buffer = formatErrorString(title, message, buffer);
-
-        if (buffer[0] != _byte_9C64B3[0])
-        {
-            gCurrentFontSpriteBase = font::medium_bold;
-            int16_t strWidth;
-            {
-                strWidth = gfx::get_string_width_new_lined(&_byte_9C64B3[0]);
-            }
-
-            strWidth = std::min<int16_t>(strWidth, 178);
-
-            gCurrentFontSpriteBase = font::medium_bold;
-            {
-                uint16_t breakLineCount = 0;
-                strWidth = gfx::wrap_string(&_byte_9C64B3[0], strWidth, &breakLineCount);
-                _word_9C66B3 = breakLineCount;
-            }
-
-            int width = strWidth + 3;
-            int height = (_word_9C66B3 + 1) * 10 + 4;
-
-            int x, y;
-
-            int maxY = ui::height() - 70;
-            y = _cursorY + 26; // Normally, we'd display the tooltip 26 lower
-            if (y > maxY)
-                // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
-                // so we'll subtract a bit more
-                y -= 70 + 40;
-            y = std::clamp(y, 22, maxY);
-
-            x = std::clamp(_cursorX - (250 / 2), 0, ui::width() - 250);
-
-            auto error = WindowManager::createWindow(
-                WindowType::error,
-                gfx::point_t(x, y),
-                gfx::ui_size_t(250, 70),
-                window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
-                &common::events);
-
-            common::init_events();
-
-            error->widgets = errorCompetitor::widgets;
-            error->widgets[error::widx::frame].right = width;
-            error->widgets[error::widx::frame].bottom = height;
-            error->var_846 = 0;
-
-            if (!(_suppressErrorSound & (1 << 0)))
-            {
-                int32_t pan = (error->width / 2) + error->x;
-                audio::play_sound(audio::sound_id::error, pan);
-            }
-        }
+        createErrorWindow(title, message);
     }
 
     void registerHooks()
@@ -231,7 +197,7 @@ namespace openloco::ui::windows::error
         register_hook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::windows::error::open_with_competitor(regs.bx, regs.dx, regs.al);
+                ui::windows::error::openWithCompetitor(regs.bx, regs.dx, regs.al);
                 return 0;
             });
     }
@@ -245,9 +211,10 @@ namespace openloco::ui::windows::error
             uint16_t y = self->y;
             uint16_t width = self->width;
             uint16_t height = self->height;
+            auto skin = objectmgr::get<interface_skin_object>()->colour_09;
 
             gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_09));
+            gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
 
             gfx::draw_rect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
             gfx::draw_rect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
@@ -259,7 +226,7 @@ namespace openloco::ui::windows::error
             gfx::draw_rect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
             gfx::draw_rect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-            if (_byte_9C68EC == 0xFF)
+            if (_errorCompetitorId == 0xFF)
             {
                 gfx::draw_string_centred_raw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
             }
@@ -268,7 +235,7 @@ namespace openloco::ui::windows::error
                 auto xPos = self->widgets[errorCompetitor::widx::innerFrame].left + self->x;
                 auto yPos = self->widgets[errorCompetitor::widx::innerFrame].top + self->y;
 
-                auto company = companymgr::get(_byte_9C68EC);
+                auto company = companymgr::get(_errorCompetitorId);
                 auto companyObj = objectmgr::get<competitor_object>(company->id());
 
                 auto imageId = companyObj->images[company->owner_emotion];
