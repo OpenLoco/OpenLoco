@@ -74,7 +74,7 @@ namespace openloco::gfx
     void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId);
 
     int16_t clip_string(int16_t width, char* string);
-    uint16_t getStringWidth(char* buffer);
+    uint16_t getStringWidth(const char* buffer);
 
     gfx::point_t draw_string(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str);
 

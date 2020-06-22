@@ -182,10 +182,10 @@ namespace openloco::gfx
      * @param buffer @<esi>
      * @return width @<cx>
      */
-    uint16_t getStringWidth(char* buffer)
+    uint16_t getStringWidth(const char* buffer)
     {
         uint16_t width = 0;
-        uint8_t* str = reinterpret_cast<uint8_t*>(buffer);
+        const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
         int16_t fontSpriteBase = _currentFontSpriteBase;
 
         while (*str != (uint8_t)0)
@@ -242,8 +242,8 @@ namespace openloco::gfx
 
                 case control_codes::inline_sprite_str:
                 {
-                    uint32_t image = reinterpret_cast<uint32_t*>(str)[0];
-                    uint32_t imageId = image & 0x7FFFF;
+                    const uint32_t image = reinterpret_cast<const uint32_t*>(str)[0];
+                    const uint32_t imageId = image & 0x7FFFF;
                     str += 4;
                     width += _g1Elements[imageId].width;
                     break;
