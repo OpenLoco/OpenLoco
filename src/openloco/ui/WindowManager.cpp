@@ -201,6 +201,18 @@ namespace openloco::ui::WindowManager
             });
 
         register_hook(
+            0x00495685,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                const char* buffer = (const char*)regs.esi;
+                uint16_t width = gfx::getStringWidth(buffer);
+                regs = backup;
+                regs.cx = width;
+
+                return 0;
+            });
+
+        register_hook(
             0x00499B7E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
