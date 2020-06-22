@@ -17,7 +17,7 @@ namespace openloco::ui::windows::error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<ui::widget_t[1], 0x00508F1C> _widgets;
-    static loco_global<char[512], 0x009C64B4> _byte_9C64B3;
+    static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
     static loco_global<uint8_t, 0x009C68EC> _errorCompetitorId;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
@@ -95,7 +95,7 @@ namespace openloco::ui::windows::error
 
         buffer = formatErrorString(title, message, args, buffer);
 
-        if (*buffer != *_byte_9C64B3)
+        if (buffer != &_byte_9C64B3[0])
         {
             gCurrentFontSpriteBase = font::medium_bold;
             int16_t strWidth;
