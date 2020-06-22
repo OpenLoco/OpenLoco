@@ -9,6 +9,7 @@
 #include "../industrymgr.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
+#include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../message.h"
 #include "../messagemgr.h"
@@ -598,14 +599,112 @@ namespace openloco::ui::NewsWindow
             }
         }
 
+        static void sub_42A136(window* self, gfx::drawpixelinfo_t* dpi, message* news)
+        {
+            registers regs;
+            regs.edi = (int32_t)dpi;
+            regs.esi = (int32_t)self;
+            regs.ebp = (int32_t)news;
+            call(0x0042A136, regs);
+        }
+
+        // 0x0042A036
+        static void drawViewportString(gfx::drawpixelinfo_t* dpi, uint8_t itemType, uint16_t itemIndex, uint16_t width, uint16_t x, uint16_t y)
+        {
+            auto args = FormatArguments();
+
+            switch (itemType)
+            {
+                case newsItems::industry:
+                {
+                    auto industry = industrymgr::get(itemIndex);
+                    args.push(industry->name);
+                    args.push(industry->town);
+                    break;
+                }
+
+                case newsItems::station:
+                {
+                    auto station = stationmgr::get(itemIndex);
+                    args.push(station->name);
+                    args.push(station->town);
+                    break;
+                }
+
+                case newsItems::town:
+                {
+                    auto town = townmgr::get(itemIndex);
+                    args.push(town->name);
+                    break;
+                }
+
+                case newsItems::vehicle:
+                {
+                    auto vehicle = thingmgr::get<openloco::vehicle>(itemIndex);
+                    auto company = companymgr::get(vehicle->owner);
+                    if (is_player_company(vehicle->owner))
+                    {
+                        args.push(string_ids::company_vehicle);
+                    }
+                    else
+                    {
+                        args.push(string_ids::competitor_vehicle);
+                    }
+                    args.push(company->name);
+                    args.skip(2);
+                    args.push(vehicle->var_22);
+                    args.push(vehicle->var_44);
+                    break;
+                }
+
+                case newsItems::company:
+                {
+                    auto company = companymgr::get(itemIndex);
+                    args.push(company->name);
+                    break;
+                }
+
+                case 5:
+                case 6:
+                    break;
+                case newsItems::vehicleTab:
+                {
+                    auto vehicleObj = objectmgr::get<vehicle_object>(itemIndex);
+                    args.push(vehicleObj->name);
+                    break;
+                }
+            }
+
+            switch (itemType)
+            {
+                case newsItems::industry:
+                case newsItems::station:
+                case newsItems::town:
+                case newsItems::vehicle:
+                case newsItems::company:
+                case newsItems::vehicleTab:
+                {
+                    stringmgr::format_string(byte_112CC04, string_ids::black_tiny_font, &args);
+
+                    _currentFontSpriteBase = 224;
+
+                    auto strWidth = gfx::clip_string(width, byte_112CC04);
+                    strWidth--;
+                    strWidth /= 2;
+
+                    gfx::draw_string(dpi, x - strWidth, y, colour::black, byte_112CC04);
+                    break;
+                }
+
+                case 5:
+                case 6:
+                    break;
+            }
+        }
+
         // 0x00429739
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x00429739, regs);
-
             auto news = messagemgr::get(_activeMessageIndex);
 
             if (_word_4F8BE4[news->var_00] & (1 << 1))
@@ -614,20 +713,20 @@ namespace openloco::ui::NewsWindow
                 {
                     gfx::draw_image(dpi, self->x, self->y, image_ids::news_background_new_left);
 
-                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_left);
+                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_right);
 
                     self->draw(dpi);
 
                     char* buffer = news->messageString;
                     auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                    if (_word_4F8BE4[news->var_00] & (1 << 5))
+                    if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
                     {
                         *str = control_codes::font_large;
                         str++;
                     }
 
-                    *str = -112;
+                    *str = control_codes::colour_black;
                     str++;
 
                     strncpy(str, buffer, 512);
@@ -642,6 +741,8 @@ namespace openloco::ui::NewsWindow
 
                     self->drawViewports(dpi);
 
+                    sub_42A136(self, dpi, news);
+
                     if (news->date < 67525)
                     {
                         if (_word_4F8BE4[news->var_00] & (1 << 2))
@@ -652,9 +753,9 @@ namespace openloco::ui::NewsWindow
                                 {
                                     auto x = self->widgets[common::widx::viewport1].left + self->x;
                                     auto y = self->widgets[common::widx::viewport1].top + self->y;
-                                    auto width = self->widgets[common::widx::viewport1].width();
-                                    auto height = self->widgets[common::widx::viewport1].height();
-                                    auto colour = (1 << 29) | palette_index::index_35;
+                                    auto width = self->widgets[common::widx::viewport1].width() + 1;
+                                    auto height = self->widgets[common::widx::viewport1].height() + 1;
+                                    auto colour = (1 << 25) | palette_index::index_35;
                                     gfx::draw_rect(dpi, x, y, width, height, colour);
                                 }
                             }
@@ -666,43 +767,153 @@ namespace openloco::ui::NewsWindow
                             {
                                 if (news->item_id_2 != 0xFFFF)
                                 {
-                                    auto x = self->widgets[common::widx::viewport1].left + self->x;
-                                    auto y = self->widgets[common::widx::viewport1].top + self->y;
-                                    auto width = self->widgets[common::widx::viewport1].width();
-                                    auto height = self->widgets[common::widx::viewport1].height();
-                                    auto colour = (1 << 29) | palette_index::index_35;
+                                    auto x = self->widgets[common::widx::viewport2].left + self->x;
+                                    auto y = self->widgets[common::widx::viewport2].top + self->y;
+                                    auto width = self->widgets[common::widx::viewport2].width() + 1;
+                                    auto height = self->widgets[common::widx::viewport2].height() + 1;
+                                    auto colour = (1 << 25) | palette_index::index_35;
                                     gfx::draw_rect(dpi, x, y, width, height, colour);
                                 }
                             }
                         }
-
                     }
                 }
                 else
                 {
                     auto imageId = gfx::recolour(image_ids::news_background_old_left, colour::outline(colour::inset(colour::icy_blue)));
-                    
-                    gfx::draw_image(dpi, self->x, self->y, image_ids::news_background_new_left);
-                    
+
+                    gfx::draw_image(dpi, self->x, self->y, imageId);
+
                     imageId = gfx::recolour(image_ids::news_background_old_right, colour::outline(colour::inset(colour::icy_blue)));
-                    
-                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_left);
+
+                    gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, imageId);
 
                     self->draw(dpi);
 
                     char* buffer = news->messageString;
                     auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                    if (_word_4F8BE4[news->var_00] & (1 << 5))
+                    if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
                     {
                         *str = control_codes::font_large;
                         str++;
                     }
 
-                    *str = -112;
+                    *str = control_codes::colour_black;
                     str++;
 
                     strncpy(str, buffer, 512);
+
+                    gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+
+                    gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
+
+                    origin = { self->x + 4, self->y + 5 };
+
+                    gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+
+                    self->drawViewports(dpi);
+
+                    sub_42A136(self, dpi, news);
+
+                    auto x = 3 + self->x;
+                    auto y = 5 + self->y;
+                    auto width = self->width - 6;
+                    auto height = self->height;
+                    auto colour = (1 << 25) | palette_index::index_68;
+                    gfx::draw_rect(dpi, x, y, width, height, colour);
+
+                    x = self->widgets[common::widx::viewport1].left + self->x;
+                    y = self->widgets[common::widx::viewport1].top + self->y;
+                    width = self->widgets[common::widx::viewport1].width();
+                    height = self->widgets[common::widx::viewport1].height();
+                    colour = (1 << 25) | palette_index::index_68;
+                    gfx::draw_rect(dpi, x, y, width, height, colour);
+                }
+            }
+            else
+            {
+                self->draw(dpi);
+
+                char* buffer = news->messageString;
+                auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+
+                if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
+                {
+                    *str = control_codes::font_large;
+                    str++;
+                }
+
+                *str = control_codes::colour_black;
+                str++;
+
+                strncpy(str, buffer, 512);
+
+                gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+
+                gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
+
+                origin = { self->x + 1, self->y + 1 };
+
+                gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+
+                self->drawViewports(dpi);
+
+                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                {
+                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    {
+                        if (news->item_id_1 != 0xFFFF)
+                        {
+                            auto x = self->widgets[common::widx::viewport1].left + self->x;
+                            auto y = self->widgets[common::widx::viewport1].top + self->y;
+                            auto width = self->widgets[common::widx::viewport1].width();
+                            auto height = self->widgets[common::widx::viewport1].height();
+                            auto colour = (1 << 25) | palette_index::index_35;
+                            gfx::draw_rect(dpi, x, y, width, height, colour);
+                        }
+                    }
+                }
+
+                if (_word_4F8BE4[news->var_00] & (1 << 3))
+                {
+                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    {
+                        if (news->item_id_2 != 0xFFFF)
+                        {
+                            auto x = self->widgets[common::widx::viewport2].left + self->x;
+                            auto y = self->widgets[common::widx::viewport2].top + self->y;
+                            auto width = self->widgets[common::widx::viewport2].width();
+                            auto height = self->widgets[common::widx::viewport2].height();
+                            auto colour = (1 << 25) | palette_index::index_35;
+                            gfx::draw_rect(dpi, x, y, width, height, colour);
+                        }
+                    }
+                }
+            }
+
+            if (_word_4F8BE4[news->var_00] & (1 << 2))
+            {
+                if (news->item_id_1 != 0xFFFF)
+                {
+                    auto x = (self->widgets[common::widx::viewport1Button].left + self->widgets[common::widx::viewport1Button].right) / 2;
+                    x += self->x;
+                    auto y = self->widgets[common::widx::viewport1Button].bottom - 7 + self->y;
+                    auto width = self->widgets[common::widx::viewport1Button].width() - 1;
+
+                    drawViewportString(dpi, _byte_4F8B08[news->var_00][0], news->item_id_1, width, x, y);
+                }
+            }
+            if (_word_4F8BE4[news->var_00] & (1 << 3))
+            {
+                if (news->item_id_2 != 0xFFFF)
+                {
+                    auto x = (self->widgets[common::widx::viewport2Button].left + self->widgets[common::widx::viewport2Button].right) / 2;
+                    x += self->x;
+                    auto y = self->widgets[common::widx::viewport2Button].bottom - 7 + self->y;
+                    auto width = self->widgets[common::widx::viewport2Button].width() - 1;
+
+                    drawViewportString(dpi, _byte_4F8B09[news->var_00][0], news->item_id_2, width, x, y);
                 }
             }
         }
@@ -913,7 +1124,7 @@ namespace openloco::ui::NewsWindow
             char* buffer = news->messageString;
             auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-            *str = -112;
+            *str = control_codes::colour_black;
             str++;
             *str = control_codes::font_small;
             str++;

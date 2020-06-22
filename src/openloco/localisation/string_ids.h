@@ -274,11 +274,14 @@ namespace openloco::string_ids
 
     constexpr string_id outlined_wcolour2_stringid = 450;
 
+    constexpr string_id black_tiny_font = 453;
     constexpr string_id red_stringid = 454;
     constexpr string_id black_stringid = 455;
 
     constexpr string_id wcolour2_stringid = 457;
 
+    constexpr string_id competitor_vehicle = 475;
+    constexpr string_id company_vehicle = 476;
     constexpr string_id error_cant_lower_water_here = 477;
     constexpr string_id error_cant_raise_water_here = 478;
     constexpr string_id audio_device_none = 479;
