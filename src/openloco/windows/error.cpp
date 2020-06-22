@@ -85,7 +85,7 @@ namespace openloco::ui::windows::error
         return ptr;
     }
 
-    void createErrorWindow(string_id title, string_id message)
+    static void createErrorWindow(string_id title, string_id message)
     {
         WindowManager::close(WindowType::error);
 
