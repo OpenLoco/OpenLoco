@@ -271,7 +271,7 @@ namespace openloco::ui::windows::construction
             return;
         if (window->current_tab == common::widx::tab_station - common::widx::tab_construction)
         {
-            if (_byte_1136063 & (1 << 7) | (1 << 6))
+            if (_byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
             else
                 window->call_on_mouse_up(common::widx::tab_construction);
@@ -1580,7 +1580,6 @@ namespace openloco::ui::windows::construction
 
             auto skin = objectmgr::get<interface_skin_object>();
             window->colours[1] = skin->colour_0D;
-
 
             WindowManager::sub_4CEE0B(window);
             ui::windows::showDirectionArrows();

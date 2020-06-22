@@ -28,7 +28,6 @@
 #include "../../ui/dropdown.h"
 #include "../../utility/numeric.hpp"
 #include "../../widget.h"
-#include "Construction.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;
