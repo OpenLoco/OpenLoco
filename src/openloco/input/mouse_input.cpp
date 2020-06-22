@@ -281,19 +281,19 @@ namespace openloco::input
         return _mapSelectionFlags;
     }
 
-    bool hasMapSelectionFlag(map_selection_flags flags)
+    bool hasMapSelectionFlag(uint8_t flags)
     {
-        return (_mapSelectionFlags & (uint16_t)flags) != 0;
+        return (_mapSelectionFlags & flags) != 0;
     }
 
-    void setMapSelectionFlags(map_selection_flags flags)
+    void setMapSelectionFlags(uint8_t flags)
     {
-        _mapSelectionFlags = _mapSelectionFlags | (uint16_t)flags;
+        _mapSelectionFlags = _mapSelectionFlags | flags;
     }
 
-    void resetMapSelectionFlag(map_selection_flags flags)
+    void resetMapSelectionFlag(uint8_t flags)
     {
-        _mapSelectionFlags = _mapSelectionFlags & ~(uint16_t)flags;
+        _mapSelectionFlags = _mapSelectionFlags & ~flags;
     }
 
 #pragma mark - Mouse input

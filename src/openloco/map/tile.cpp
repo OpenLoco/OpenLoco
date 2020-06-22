@@ -167,4 +167,31 @@ namespace openloco::map
 
         return coordinate_2d;
     }
+
+    map_pos rotate2DCoordinate(map_pos pos, uint8_t rotation)
+    {
+        map_pos coordinate2D;
+
+        switch (rotation)
+        {
+            default:
+            case 0:
+                coordinate2D = pos;
+                break;
+            case 1:
+                coordinate2D.x = pos.y;
+                coordinate2D.y = -pos.x;
+                break;
+            case 2:
+                coordinate2D.x = -pos.y;
+                coordinate2D.y = -pos.x;
+                break;
+            case 3:
+                coordinate2D.x = -pos.y;
+                coordinate2D.y = pos.x;
+                break;
+        }
+
+        return coordinate2D;
+    }
 }

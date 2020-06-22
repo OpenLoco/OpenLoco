@@ -20,11 +20,11 @@ namespace openloco
         uint16_t sell_cost_factor;   // 0x12
         uint16_t disabled_track_cfg; // 0x14
         uint32_t var_16;
-        uint8_t pad_16[0x22 - 0x1A];
-        uint8_t var_22;
-        uint8_t var_23;
-        uint8_t pad_24[0x2A - 0x24];
-        uint16_t designed_year; //0x2A
+        uint8_t track_num_compatible; // 0x1A
+        uint8_t track_mods[7];        // 0x1B
+        uint8_t road_num_compatible;  // 0x22
+        uint8_t road_mods[7];         // 0x23
+        uint16_t designed_year;       // 0x2A
     };
 #pragma pack(pop)
 }

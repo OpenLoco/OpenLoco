@@ -52,9 +52,9 @@ namespace openloco::input
         VSCROLLBAR_DOWN_PRESSED = (1 << 7),
     };
 
-    enum class map_selection_flags
+    namespace map_selection_flags
     {
-        catchment_area = 1 << 5,
+        constexpr uint8_t catchment_area = 1 << 5;
     };
 
     namespace key_modifier
@@ -92,9 +92,9 @@ namespace openloco::input
 
     bool has_key_modifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();
-    bool hasMapSelectionFlag(map_selection_flags flags);
-    void setMapSelectionFlags(map_selection_flags flags);
-    void resetMapSelectionFlag(map_selection_flags flags);
+    bool hasMapSelectionFlag(uint8_t flags);
+    void setMapSelectionFlags(uint8_t flags);
+    void resetMapSelectionFlag(uint8_t flags);
 
     void handle_keyboard();
     void handle_mouse(int16_t x, int16_t y, mouse_button button);

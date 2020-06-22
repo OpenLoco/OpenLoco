@@ -17,9 +17,8 @@ namespace openloco
         uint8_t var_0B;
         uint16_t var_0C;
         uint32_t var_0E;
-        uint8_t var_12;
-        uint8_t var_13;
-        uint8_t pad_14[0x1A - 0x14];
+        uint8_t num_compatible; // 0x12
+        uint8_t mods[7];        // 0x13
         uint16_t designed_year; // 0x1A
         uint16_t obsolete_year; // 0x1C
     };
