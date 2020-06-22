@@ -1,3 +1,4 @@
+#include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
@@ -209,17 +210,7 @@ namespace openloco::ui::tooltip
         gfx::draw_rect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
         gfx::draw_rect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        {
-            // draw_string_centred_raw
-            registers regs;
-            regs.cx = ((width + 1) / 2) + x - 1;
-            regs.dx = y + 1;
-            regs.al = 0;
-            regs.bp = _lineBreakCount;
-            regs.edi = (uint32_t)dpi;
-            regs.esi = (uint32_t)&_text[0];
-            call(0x00494E33, regs);
-        }
+        gfx::draw_string_centred_raw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, colour::black, &_text[0]);
     }
 
     // 0x004C94F7

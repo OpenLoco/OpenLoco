@@ -150,6 +150,15 @@ namespace openloco::gfx
         uint8_t colour,
         string_id stringId,
         const void* args = nullptr);
+    void draw_string_centred_raw(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        int16_t width,
+        uint8_t colour,
+        const void* args);
+    uint16_t get_string_width_new_lined(const char* buffer);
+    std::pair<uint16_t, uint16_t> wrap_string(const char* buffer, uint16_t stringWidth);
 
     void fill_rect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
     void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);

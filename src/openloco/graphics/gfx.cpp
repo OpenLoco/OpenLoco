@@ -803,6 +803,54 @@ namespace openloco::gfx
         origin->y = regs.dx;
     }
 
+    // 0x00494E33
+    // al: colour
+    // bx: string id
+    // bp: width
+    // cx: x
+    // dx: y
+    // esi: args
+    // edi: dpi
+    void draw_string_centred_raw(
+        drawpixelinfo_t& dpi,
+        int16_t x,
+        int16_t y,
+        int16_t width,
+        uint8_t colour,
+        const void* args)
+    {
+        registers regs;
+        regs.edi = (int32_t)&dpi;
+        regs.esi = (int32_t)args;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.bp = width;
+        call(0x00494E33, regs);
+    }
+
+    // 0x00495715
+    // @param buffer @<esi>
+    // @return width @<cx>
+    uint16_t get_string_width_new_lined(const char* buffer)
+    {
+        registers regs;
+        regs.esi = (uintptr_t)buffer;
+        call(0x00495715, regs);
+        return regs.cx;
+    }
+
+    std::pair<uint16_t, uint16_t> wrap_string(const char* buffer, uint16_t stringWidth)
+    {
+        // gfx_wrap_string
+        registers regs;
+        regs.esi = (uintptr_t)buffer;
+        regs.di = stringWidth;
+        call(0x00495301, regs);
+
+        return std::make_pair(regs.cx, regs.di);
+    }
+
     // 0x004474BA
     static void draw_rect_impl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
