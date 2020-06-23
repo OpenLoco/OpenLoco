@@ -226,13 +226,13 @@ namespace openloco::ui::NewsWindow
             _word_525CE0 = std::min(height, self->height);
 
             height = ui::height() - _word_525CE0 - self->y;
-            auto width = (ui::width() / 2) - 180 - self->x;
+            auto width = (ui::width() / 2) - (windowSize.width / 2) - self->x;
 
             if (width != 0 || height != 0)
             {
                 self->invalidate();
-                self->height = height;
-                self->width = width;
+                self->y += height;
+                self->x += width;
 
                 auto viewport1 = self->viewports[0];
 
@@ -343,6 +343,7 @@ namespace openloco::ui::NewsWindow
 
                             case newsItems::company:
                                 zoomLevel = (ZoomLevel)-2;
+                                self->invalidate();
                                 selectable = true;
                                 break;
 
@@ -360,6 +361,7 @@ namespace openloco::ui::NewsWindow
 
                             case newsItems::vehicleTab:
                                 zoomLevel = (ZoomLevel)-3;
+                                self->invalidate();
                                 selectable = true;
                                 break;
                         }
@@ -415,13 +417,23 @@ namespace openloco::ui::NewsWindow
 
                 if (edx != 0xFFFFFFFF)
                 {
-                    gfx::point_t origin = { self->widgets[common::widx::viewport1].left + 1 + self->x, self->widgets[common::widx::viewport1].top + 1 + self->y };
-                    gfx::ui_size_t viewportSize = { self->widgets[common::widx::viewport1].width(), 62 };
+                    int16_t x = self->widgets[common::widx::viewport1].left + 1 + self->x;
+                    int16_t y = self->widgets[common::widx::viewport1].top + 1 + self->y;
+                    gfx::point_t origin = { x, y };
+
+                    uint16_t viewportWidth = self->widgets[common::widx::viewport1].width();
+                    uint16_t viewportHeight = 62;
+                    gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->var_00] & (1 << 1))
                     {
-                        origin = { self->widgets[common::widx::viewport1].left + self->x, self->widgets[common::widx::viewport1].top + self->y };
-                        viewportSize = { self->widgets[common::widx::viewport1].width() + 2U, 64 };
+                        x = self->widgets[common::widx::viewport1].left + self->x;
+                        y = self->widgets[common::widx::viewport1].top + self->y;
+                        origin = { x, y };
+
+                        viewportWidth = self->widgets[common::widx::viewport1].width() + 2;
+                        viewportHeight = 64;
+                        viewportSize = { viewportWidth, viewportHeight };
                     }
 
                     if (isThing)
@@ -584,13 +596,23 @@ namespace openloco::ui::NewsWindow
 
                 if (edx != 0xFFFFFFFF)
                 {
-                    gfx::point_t origin = { self->widgets[common::widx::viewport2].left + 1 + self->x, self->widgets[common::widx::viewport1].top + 1 + self->y };
-                    gfx::ui_size_t viewportSize = { self->widgets[common::widx::viewport2].width(), 62 };
+                    int16_t x = self->widgets[common::widx::viewport2].left + 1 + self->x;
+                    int16_t y = self->widgets[common::widx::viewport2].top + 1 + self->y;
+                    gfx::point_t origin = { x, y };
+
+                    uint16_t viewportWidth = self->widgets[common::widx::viewport2].width();
+                    uint16_t viewportHeight = 62;
+                    gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->var_00] & (1 << 1))
                     {
-                        origin = { self->widgets[common::widx::viewport2].left + self->x, self->widgets[common::widx::viewport1].top + self->y };
-                        viewportSize = { self->widgets[common::widx::viewport2].width() + 2U, 64 };
+                        x = self->widgets[common::widx::viewport2].left + self->x;
+                        y = self->widgets[common::widx::viewport2].top + self->y;
+                        origin = { x, y };
+
+                        viewportWidth = self->widgets[common::widx::viewport2].width() + 2;
+                        viewportHeight = 64;
+                        viewportSize = { viewportWidth, viewportHeight };
                     }
 
                     viewportmgr::create(self, 1, origin, viewportSize, zoomLevel, pos);
@@ -717,25 +739,29 @@ namespace openloco::ui::NewsWindow
 
                     self->draw(dpi);
 
-                    char* buffer = news->messageString;
-                    auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+                    char* newsString = news->messageString;
+                    auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
                     if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
                     {
-                        *str = control_codes::font_large;
-                        str++;
+                        *buffer = control_codes::font_large;
+                        buffer++;
                     }
 
-                    *str = control_codes::colour_black;
-                    str++;
+                    *buffer = control_codes::colour_black;
+                    buffer++;
 
-                    strncpy(str, buffer, 512);
+                    strncpy(buffer, newsString, 512);
 
-                    gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+                    int16_t x = (self->width / 2) + self->x;
+                    int16_t y = self->y + 38;
+                    gfx::point_t origin = { x, y };
 
                     gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
 
-                    origin = { self->x + 1, self->y + 1 };
+                    x = self->x + 1;
+                    y = self->y + 1;
+                    origin = { x, y };
 
                     gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
 
@@ -751,8 +777,8 @@ namespace openloco::ui::NewsWindow
                             {
                                 if (news->item_id_1 != 0xFFFF)
                                 {
-                                    auto x = self->widgets[common::widx::viewport1].left + self->x;
-                                    auto y = self->widgets[common::widx::viewport1].top + self->y;
+                                    x = self->widgets[common::widx::viewport1].left + self->x;
+                                    y = self->widgets[common::widx::viewport1].top + self->y;
                                     auto width = self->widgets[common::widx::viewport1].width() + 1;
                                     auto height = self->widgets[common::widx::viewport1].height() + 1;
                                     auto colour = (1 << 25) | palette_index::index_35;
@@ -767,8 +793,8 @@ namespace openloco::ui::NewsWindow
                             {
                                 if (news->item_id_2 != 0xFFFF)
                                 {
-                                    auto x = self->widgets[common::widx::viewport2].left + self->x;
-                                    auto y = self->widgets[common::widx::viewport2].top + self->y;
+                                    x = self->widgets[common::widx::viewport2].left + self->x;
+                                    y = self->widgets[common::widx::viewport2].top + self->y;
                                     auto width = self->widgets[common::widx::viewport2].width() + 1;
                                     auto height = self->widgets[common::widx::viewport2].height() + 1;
                                     auto colour = (1 << 25) | palette_index::index_35;
@@ -790,25 +816,29 @@ namespace openloco::ui::NewsWindow
 
                     self->draw(dpi);
 
-                    char* buffer = news->messageString;
-                    auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+                    char* newsString = news->messageString;
+                    auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
                     if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
                     {
-                        *str = control_codes::font_large;
-                        str++;
+                        *buffer = control_codes::font_large;
+                        buffer++;
                     }
 
-                    *str = control_codes::colour_black;
-                    str++;
+                    *buffer = control_codes::colour_black;
+                    buffer++;
 
-                    strncpy(str, buffer, 512);
+                    strncpy(buffer, newsString, 512);
 
-                    gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+                    int16_t x = (self->width / 2) + self->x;
+                    int16_t y = self->y + 38;
+                    gfx::point_t origin = { x, y };
 
                     gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
 
-                    origin = { self->x + 4, self->y + 5 };
+                    x = self->x + 4;
+                    y = self->y + 5;
+                    origin = { x, y };
 
                     gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
 
@@ -816,8 +846,8 @@ namespace openloco::ui::NewsWindow
 
                     sub_42A136(self, dpi, news);
 
-                    auto x = 3 + self->x;
-                    auto y = 5 + self->y;
+                    x = self->x + 3;
+                    y = self->y + 5;
                     auto width = self->width - 6;
                     auto height = self->height;
                     auto colour = (1 << 25) | palette_index::index_68;
@@ -835,25 +865,29 @@ namespace openloco::ui::NewsWindow
             {
                 self->draw(dpi);
 
-                char* buffer = news->messageString;
-                auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+                char* newsString = news->messageString;
+                auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
                 if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
                 {
-                    *str = control_codes::font_large;
-                    str++;
+                    *buffer = control_codes::font_large;
+                    buffer++;
                 }
 
-                *str = control_codes::colour_black;
-                str++;
+                *buffer = control_codes::colour_black;
+                buffer++;
 
-                strncpy(str, buffer, 512);
+                strncpy(buffer, newsString, 512);
 
-                gfx::point_t origin = { (self->width / 2) + self->x, self->y + 38 };
+                int16_t x = (self->width / 2) + self->x;
+                int16_t y = self->y + 38;
+                gfx::point_t origin = { x, y };
 
                 gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
 
-                origin = { self->x + 1, self->y + 1 };
+                x = self->x + 1;
+                y = self->y + 1;
+                origin = { x, y };
 
                 gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
 
@@ -865,8 +899,8 @@ namespace openloco::ui::NewsWindow
                     {
                         if (news->item_id_1 != 0xFFFF)
                         {
-                            auto x = self->widgets[common::widx::viewport1].left + self->x;
-                            auto y = self->widgets[common::widx::viewport1].top + self->y;
+                            x = self->widgets[common::widx::viewport1].left + self->x;
+                            y = self->widgets[common::widx::viewport1].top + self->y;
                             auto width = self->widgets[common::widx::viewport1].width();
                             auto height = self->widgets[common::widx::viewport1].height();
                             auto colour = (1 << 25) | palette_index::index_35;
@@ -881,8 +915,8 @@ namespace openloco::ui::NewsWindow
                     {
                         if (news->item_id_2 != 0xFFFF)
                         {
-                            auto x = self->widgets[common::widx::viewport2].left + self->x;
-                            auto y = self->widgets[common::widx::viewport2].top + self->y;
+                            x = self->widgets[common::widx::viewport2].left + self->x;
+                            y = self->widgets[common::widx::viewport2].top + self->y;
                             auto width = self->widgets[common::widx::viewport2].width();
                             auto height = self->widgets[common::widx::viewport2].height();
                             auto colour = (1 << 25) | palette_index::index_35;
@@ -1025,27 +1059,27 @@ namespace openloco::ui::NewsWindow
                         {
                             auto news = messagemgr::get(_activeMessageIndex);
                             auto cx = _word_525CE0 >> 2;
-                            char* buffer = news->messageString;
-                            auto al = *buffer;
+                            char* newsString = news->messageString;
+                            auto newsStringChar = *newsString;
 
                             while (true)
                             {
-                                al = *buffer;
-                                if (al == control_codes::newline)
+                                newsStringChar = *newsString;
+                                if (newsStringChar == control_codes::newline)
                                 {
-                                    al = 32;
+                                    newsStringChar = 32;
                                     cx--;
                                     if (cx < 0)
                                         break;
                                 }
 
-                                if (al != 0xFF)
+                                if (newsStringChar != -1)
                                 {
                                     cx--;
                                     if (cx < 0)
                                         break;
-                                    buffer++;
-                                    if (!al)
+                                    newsString++;
+                                    if (!newsStringChar)
                                         break;
                                 }
                                 else
@@ -1053,13 +1087,13 @@ namespace openloco::ui::NewsWindow
                                     cx--;
                                     if (cx < 0)
                                         break;
-                                    buffer += 3;
+                                    newsString += 3;
                                 }
                             }
 
-                            if (al != 32)
+                            if (newsStringChar != 32)
                             {
-                                if (al != 0)
+                                if (newsStringChar != 0)
                                 {
                                     audio::play_sound(audio::sound_id::ticker, ui::width());
                                 }
@@ -1121,43 +1155,43 @@ namespace openloco::ui::NewsWindow
 
             gfx::clear(*clipped, colour);
 
-            char* buffer = news->messageString;
-            auto str = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            char* newsString = news->messageString;
+            auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-            *str = control_codes::colour_black;
-            str++;
-            *str = control_codes::font_small;
-            str++;
+            *buffer = control_codes::colour_black;
+            buffer++;
+            *buffer = control_codes::font_small;
+            buffer++;
 
-            auto al = *buffer;
+            auto newsStringChar = *newsString;
             auto i = 0;
 
             while (true)
             {
-                al = *buffer;
-                if (al == control_codes::newline)
+                newsStringChar = *newsString;
+                if (newsStringChar == control_codes::newline)
                 {
-                    al = 32;
-                    *str = al;
-                    str++;
+                    newsStringChar = 32;
+                    *buffer = newsStringChar;
+                    buffer++;
                 }
 
-                if (al == 0xFF)
+                if (newsStringChar == -1)
                 {
-                    *str = al;
-                    str++;
+                    *buffer = newsStringChar;
                     buffer++;
-                    *str = *buffer;
-                    str++;
+                    newsString++;
+                    *buffer = *newsString;
                     buffer++;
-                    al = *buffer;
+                    newsString++;
+                    newsStringChar = *newsString;
                 }
 
-                *str = al;
-                str++;
+                *buffer = newsStringChar;
                 buffer++;
+                newsString++;
                 i++;
-                if (!al)
+                if (!newsStringChar)
                     break;
             }
 
