@@ -67,6 +67,7 @@ namespace openloco::ui::MessageWindow
     {
         static const gfx::ui_size_t minWindowSize = { 366, 217 };
         static const gfx::ui_size_t maxWindowSize = { 366, 1200 };
+        static int8_t messageHeight = 39;
 
         enum widx
         {
@@ -138,13 +139,13 @@ namespace openloco::ui::MessageWindow
         // 0x0042A871
         static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = _messageCount * 39;
+            *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
         static void scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            auto messageIndex = y / 39;
+            auto messageIndex = y / messageHeight;
 
             if (messageIndex >= _messageCount)
                 return;
@@ -176,7 +177,7 @@ namespace openloco::ui::MessageWindow
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
-            auto messageIndex = y / 39;
+            auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
 
             if (messageIndex < _messageCount)
@@ -215,22 +216,21 @@ namespace openloco::ui::MessageWindow
         static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto colour = colour::get_shade(self->colours[1], 4);
-            auto fill = colour << 24 | colour << 16 | colour << 8 | colour;
 
-            gfx::clear(*dpi, fill);
+            gfx::clear_single(*dpi, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
             {
-                if (height + 39 <= dpi->y)
+                if (height + messageHeight <= dpi->y)
                 {
-                    height += 39;
+                    height += messageHeight;
                     continue;
                 }
 
                 if (height >= dpi->y + dpi->height)
                 {
-                    height += 39;
+                    height += messageHeight;
                     continue;
                 }
                 auto message = messagemgr::get(i);
@@ -261,7 +261,7 @@ namespace openloco::ui::MessageWindow
 
                     auto width = self->widgets[widx::scrollview].width() - 14;
                     gfx::draw_string_495224(*dpi, 0, height + 6, width, colour::black, stringId, &args);
-                    height += 39;
+                    height += messageHeight;
                 }
             }
         }
@@ -294,6 +294,7 @@ namespace openloco::ui::MessageWindow
             events.draw_scroll = draw_scroll;
         }
     }
+
     // 0x0042A3FF
     void open()
     {
@@ -302,7 +303,7 @@ namespace openloco::ui::MessageWindow
 
         if (window != nullptr)
         {
-            if (input::is_tool_active(_toolWindowType, _toolWindowNumber))
+            if (input::is_tool_active(window->type, window->number))
             {
                 input::cancel_tool();
                 window = WindowManager::bringToFront(WindowType::messages);
@@ -343,32 +344,34 @@ namespace openloco::ui::MessageWindow
 
             window->width = messages::minWindowSize.width;
             window->height = messages::minWindowSize.height;
-
-            window->invalidate();
-
-            window->widgets = messages::widgets;
-            window->holdable_widgets = 0;
-            window->event_handlers = &messages::events;
-            window->disabled_widgets = 0;
-
-            common::initEvents();
-
-            window->call_on_resize();
-            window->call_prepare_draw();
-            window->init_scroll_widgets();
-
-            uint16_t scrollHeight = 0;
-            window->call_get_scroll_size(0, 0, &scrollHeight);
-
-            scrollHeight -= window->widgets[messages::widx::scrollview].height();
-
-            if (static_cast<int16_t>(scrollHeight) < 0)
-                scrollHeight = 0;
-
-            window->scroll_areas[0].v_top = scrollHeight;
-
-            ui::scrollview::update_thumbs(window, messages::widx::scrollview);
         }
+
+        window->current_tab = 0;
+        window->invalidate();
+
+        window->widgets = messages::widgets;
+        window->enabled_widgets = messages::enabledWidgets;
+        window->holdable_widgets = 0;
+        window->event_handlers = &messages::events;
+        window->disabled_widgets = 0;
+
+        common::initEvents();
+
+        window->call_on_resize();
+        window->call_prepare_draw();
+        window->init_scroll_widgets();
+
+        uint16_t scrollHeight = 0;
+        window->call_get_scroll_size(0, 0, &scrollHeight);
+
+        scrollHeight -= window->widgets[messages::widx::scrollview].height();
+
+        if (static_cast<int16_t>(scrollHeight) < 0)
+            scrollHeight = 0;
+
+        window->scroll_areas[0].v_top = scrollHeight;
+
+        ui::scrollview::update_thumbs(window, messages::widx::scrollview);
     }
 
     namespace settings
@@ -606,6 +609,7 @@ namespace openloco::ui::MessageWindow
             self->widgets[common::widx::close_button].right = self->width - 3;
         }
 
+        // 0x0042A716
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::is_tool_active(self->type, self->number))
