@@ -96,7 +96,7 @@ namespace openloco
         company_id_t id() const;
         bool empty() const;
         void ai_think();
-        const bool isVehicleIndexUnlocked(const uint8_t vehicleIndex);
+        bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
     };
 #pragma pack(pop)
 
