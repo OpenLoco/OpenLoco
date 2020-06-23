@@ -1,3 +1,21 @@
+#include "../../companymgr.h"
+#include "../../date.h"
+#include "../../graphics/image_ids.h"
+#include "../../input.h"
+#include "../../objects/airport_object.h"
+#include "../../objects/bridge_object.h"
+#include "../../objects/dock_object.h"
+#include "../../objects/interface_skin_object.h"
+#include "../../objects/objectmgr.h"
+#include "../../objects/road_extra_object.h"
+#include "../../objects/road_object.h"
+#include "../../objects/road_station_object.h"
+#include "../../objects/track_extra_object.h"
+#include "../../objects/track_object.h"
+#include "../../objects/train_signal_object.h"
+#include "../../objects/train_station_object.h"
+#include "../../stationmgr.h"
+#include "../../widget.h"
 #include "Construction.h"
 
 using namespace openloco::interop;
@@ -280,37 +298,96 @@ namespace openloco::ui::windows::construction
 
     namespace common
     {
+        const uint8_t trackPieceWidgets[] = {
+            construction::widx::straight,
+            construction::widx::left_hand_curve_very_small,
+            construction::widx::right_hand_curve_very_small,
+            construction::widx::left_hand_curve_small,
+            construction::widx::right_hand_curve_small,
+            construction::widx::left_hand_curve,
+            construction::widx::right_hand_curve,
+            construction::widx::left_hand_curve_large,
+            construction::widx::right_hand_curve_large,
+            construction::widx::s_bend_left,
+            construction::widx::s_bend_right,
+        };
+
+        // 0x004F6D1C
+        const previewTrack* roadPieces[] = {
+            _unk_4F6D44,
+            _unk_4F6D4F,
+            _unk_4F6D5A,
+            _unk_4F6D65,
+            _unk_4F6D8E,
+            _unk_4F6DB7,
+            _unk_4F6DCC,
+            _unk_4F6DE1,
+            _unk_4F6DEC,
+            _unk_4F6DF7,
+        };
+
+        // 0x004F73D8
+        const previewTrack* trackPieces[] = {
+            _unk_4F7488,
+            _unk_4F7493,
+            _unk_4F74BC,
+            _unk_4F74C7,
+            _unk_4F74D2,
+            _unk_4F74FB,
+            _unk_4F7524,
+            _unk_4F7557,
+            _unk_4F758A,
+            _unk_4F75BD,
+            _unk_4F75F0,
+            _unk_4F7623,
+            _unk_4F7656,
+            _unk_4F767F,
+            _unk_4F76A8,
+            _unk_4F76BD,
+            _unk_4F76D2,
+            _unk_4F76DD,
+            _unk_4F76E8,
+            _unk_4F7711,
+            _unk_4F773A,
+            _unk_4F7763,
+            _unk_4F778C,
+            _unk_4F77B5,
+            _unk_4F77DE,
+            _unk_4F7807,
+            _unk_4F7830,
+            _unk_4F783B,
+            _unk_4F7846,
+            _unk_4F7851,
+            _unk_4F785C,
+            _unk_4F7867,
+            _unk_4F7872,
+            _unk_4F787D,
+            _unk_4F7888,
+            _unk_4F7893,
+            _unk_4F789E,
+            _unk_4F78A9,
+            _unk_4F78B4,
+            _unk_4F78BF,
+            _unk_4F78CA,
+            _unk_4F78D5,
+            _unk_4F78E0,
+            _unk_4F78EB,
+        };
+
         struct TabInformation
         {
             widget_t* widgets;
             const widx widgetIndex;
             window_event_list* events;
             const uint64_t enabledWidgets;
-            void tabReset(window* self)
-            {
-                switch (self->current_tab)
-                {
-                    case common::widx::tab_construction - common::widx::tab_construction:
-                        construction::tabReset(self);
-                        break;
-                    case common::widx::tab_station - common::widx::tab_construction:
-                        construction::tabReset(self);
-                        break;
-                    case common::widx::tab_signal - common::widx::tab_construction:
-                        construction::tabReset(self);
-                        break;
-                    case common::widx::tab_overhead - common::widx::tab_construction:
-                        construction::tabReset(self);
-                        break;
-                }
-            }
+            void (*tabReset)(window*);
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { construction::widgets, widx::tab_construction, &construction::events, construction::enabledWidgets },
-            { station::widgets, widx::tab_station, &station::events, station::enabledWidgets },
-            { signal::widgets, widx::tab_signal, &signal::events, signal::enabledWidgets },
-            { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets },
+            { construction::widgets, widx::tab_construction, &construction::events, construction::enabledWidgets, &construction::tabReset },
+            { station::widgets, widx::tab_station, &station::events, station::enabledWidgets, &station::tabReset },
+            { signal::widgets, widx::tab_signal, &signal::events, signal::enabledWidgets, &signal::tabReset },
+            { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets, &overhead::tabReset },
         };
 
         void prepare_draw(window* self)
@@ -551,9 +628,9 @@ namespace openloco::ui::windows::construction
                         if (self->current_tab == widx::tab_signal - widx::tab_construction)
                         {
                             auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
-                            auto frameCount = std::size(frames);
+                            auto frameCount = std::size(frames) - 1;
                             frameCount &= (self->frame_no >> trainSignalObject->var_04);
-                            auto frameIndex = frames[frameCount + 1];
+                            auto frameIndex = frames[frameCount];
                             frameIndex <<= 3;
                             imageId += frameIndex;
                         }
@@ -1589,29 +1666,27 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x004723BD
-        static void sortList(uint8_t* list, size_t listSize)
+        static void sortList(uint8_t* list)
         {
-            //size_t count = 0;
-            //while (list[count] != 0xFF)
-            //{
-            //    count++;
-            //}
-            //while (count > 1)
-            //{
-            //    for (size_t i = 1; i < count; i++)
-            //    {
-            //        uint8_t item1 = list[i];
-            //        uint8_t item2 = list[i - 1];
-            //        if (item2 > item1)
-            //        {
-            //            list[i - 1] = item1;
-            //            list[i] = item2;
-            //        }
-            //    }
-            //    count--;
-            //}
-
-            std::sort(list, list + listSize);
+            size_t count = 0;
+            while (list[count] != 0xFF)
+            {
+                count++;
+            }
+            while (count > 1)
+            {
+                for (size_t i = 1; i < count; i++)
+                {
+                    uint8_t item1 = list[i];
+                    uint8_t item2 = list[i - 1];
+                    if (item2 > item1)
+                    {
+                        list[i - 1] = item1;
+                        list[i] = item2;
+                    }
+                }
+                count--;
+            }
         }
 
         // 0x0048D70C
@@ -1633,7 +1708,7 @@ namespace openloco::ui::windows::construction
             }
             stationList[airportCount] = 0xFF;
 
-            sortList(stationList, std::size(_stationList));
+            sortList(stationList);
         }
 
         // 0x0048D753
@@ -1655,7 +1730,7 @@ namespace openloco::ui::windows::construction
             }
             stationList[dockCount] = 0xFF;
 
-            sortList(stationList, std::size(_stationList));
+            sortList(stationList);
         }
 
         // 0x0048D678, 0x0048D5E4
@@ -1763,7 +1838,7 @@ namespace openloco::ui::windows::construction
 
             stationList[stationCount] = 0xFF;
 
-            sortList(stationList, std::size(_stationList));
+            sortList(stationList);
         }
 
         // 0x0042C518, 0x0042C490
@@ -1851,7 +1926,7 @@ namespace openloco::ui::windows::construction
 
             _bridgeList[bridgeCount] = 0xFF;
 
-            sortList(_bridgeList, std::size(_bridgeList));
+            sortList(_bridgeList);
         }
 
         // 0x004781C5, 0x004A693D
@@ -2009,7 +2084,7 @@ namespace openloco::ui::windows::construction
 
             signalList[signalCount] = 0xFF;
 
-            sortList(signalList, std::size(_signalList));
+            sortList(signalList);
         }
     }
 

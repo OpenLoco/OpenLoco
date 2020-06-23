@@ -1,33 +1,9 @@
 #pragma once
 
-#include "../../companymgr.h"
-#include "../../date.h"
-#include "../../graphics/colours.h"
-#include "../../graphics/image_ids.h"
-#include "../../input.h"
 #include "../../interop/interop.hpp"
-#include "../../localisation/FormatArguments.hpp"
 #include "../../map/tilemgr.h"
-#include "../../objects/airport_object.h"
-#include "../../objects/bridge_object.h"
-#include "../../objects/cargo_object.h"
-#include "../../objects/dock_object.h"
-#include "../../objects/interface_skin_object.h"
-#include "../../objects/objectmgr.h"
-#include "../../objects/road_extra_object.h"
-#include "../../objects/road_object.h"
-#include "../../objects/road_station_object.h"
-#include "../../objects/track_extra_object.h"
-#include "../../objects/track_object.h"
-#include "../../objects/train_signal_object.h"
-#include "../../objects/train_station_object.h"
 #include "../../objects/vehicle_object.h"
-#include "../../stationmgr.h"
-#include "../../things/thingmgr.h"
 #include "../../ui/WindowManager.h"
-#include "../../ui/dropdown.h"
-#include "../../utility/numeric.hpp"
-#include "../../widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;
@@ -35,6 +11,7 @@ using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction
 {
+#pragma pack(push, 1)
     struct previewTrack
     {
         uint8_t index; // 0x00
@@ -45,6 +22,7 @@ namespace openloco::ui::windows::construction
         uint8_t var_08;
         uint8_t flags; // 0x09
     };
+#pragma pack(pop)
 
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<previewTrack[1], 0x004F6D44> _unk_4F6D44;
@@ -259,67 +237,9 @@ namespace openloco::ui::windows::construction
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
 
-        // 0x004F6D1C
-        static const previewTrack* roadPieces[] = {
-            _unk_4F6D44,
-            _unk_4F6D4F,
-            _unk_4F6D5A,
-            _unk_4F6D65,
-            _unk_4F6D8E,
-            _unk_4F6DB7,
-            _unk_4F6DCC,
-            _unk_4F6DE1,
-            _unk_4F6DEC,
-            _unk_4F6DF7,
-        };
-
-        // 0x004F73D8
-        static const previewTrack* trackPieces[] = {
-            _unk_4F7488,
-            _unk_4F7493,
-            _unk_4F74BC,
-            _unk_4F74C7,
-            _unk_4F74D2,
-            _unk_4F74FB,
-            _unk_4F7524,
-            _unk_4F7557,
-            _unk_4F758A,
-            _unk_4F75BD,
-            _unk_4F75F0,
-            _unk_4F7623,
-            _unk_4F7656,
-            _unk_4F767F,
-            _unk_4F76A8,
-            _unk_4F76BD,
-            _unk_4F76D2,
-            _unk_4F76DD,
-            _unk_4F76E8,
-            _unk_4F7711,
-            _unk_4F773A,
-            _unk_4F7763,
-            _unk_4F778C,
-            _unk_4F77B5,
-            _unk_4F77DE,
-            _unk_4F7807,
-            _unk_4F7830,
-            _unk_4F783B,
-            _unk_4F7846,
-            _unk_4F7851,
-            _unk_4F785C,
-            _unk_4F7867,
-            _unk_4F7872,
-            _unk_4F787D,
-            _unk_4F7888,
-            _unk_4F7893,
-            _unk_4F789E,
-            _unk_4F78A9,
-            _unk_4F78B4,
-            _unk_4F78BF,
-            _unk_4F78CA,
-            _unk_4F78D5,
-            _unk_4F78E0,
-            _unk_4F78EB,
-        };
+        extern const uint8_t trackPieceWidgets[11];
+        extern const previewTrack* roadPieces[10];
+        extern const previewTrack* trackPieces[44];
     }
 
     namespace construction
@@ -383,36 +303,11 @@ namespace openloco::ui::windows::construction
             (1ULL << widx::remove) |
             (1ULL << widx::rotate_90)
         };
+        //clang-format on
 
-        static widget_t widgets[] = {
-            commonWidgets(138, 276, string_ids::stringid_2),
-            make_widget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_very_small, string_ids::tooltip_left_hand_curve_very_small),
-            make_widget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_small, string_ids::tooltip_left_hand_curve_small),
-            make_widget({ 25, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve, string_ids::tooltip_left_hand_curve),
-            make_widget({ 47, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_large, string_ids::tooltip_left_hand_curve_large),
-            make_widget({ 69, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_large, string_ids::tooltip_right_hand_curve_large),
-            make_widget({ 91, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve, string_ids::tooltip_right_hand_curve),
-            make_widget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_small, string_ids::tooltip_right_hand_curve_small),
-            make_widget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_very_small, string_ids::tooltip_right_hand_curve_very_small),
-            make_widget({ 9, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_left, string_ids::tooltip_s_bend_left_dual_track),
-            make_widget({ 33, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_left, string_ids::tooltip_s_bend_left),
-            make_widget({ 57, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_straight, string_ids::tooltip_straight),
-            make_widget({ 81, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_right, string_ids::tooltip_s_bend_right),
-            make_widget({ 105, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_right, string_ids::tooltip_s_bend_right_dual_track),
-            make_widget({ 9, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_down, string_ids::tooltip_steep_slope_down),
-            make_widget({ 33, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_down, string_ids::tooltip_slope_down),
-            make_widget({ 57, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_level, string_ids::tooltip_level),
-            make_widget({ 81, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_up, string_ids::tooltip_slope_up),
-            make_widget({ 105, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_up, string_ids::tooltip_steep_slope_up),
-            make_widget({ 40, 123 }, { 58, 20 }, widget_type::wt_18, 1, string_ids::empty, string_ids::tooltip_bridge_stats),
-            make_widget({ 86, 124 }, { 11, 18 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_bridge_stats),
-            make_widget({ 3, 145 }, { 132, 100 }, widget_type::wt_5, 1, 0xFFFFFFFF, string_ids::tooltip_construct),
-            make_widget({ 6, 248 }, { 46, 24 }, widget_type::wt_9, 1, image_ids::construction_remove, string_ids::tooltip_remove),
-            make_widget({ 57, 248 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
-            widget_end(),
-        };
+        extern widget_t widgets[32];
 
-        static window_event_list events;
+        extern window_event_list events;
         constexpr uint64_t enabledWidgets = common::enabledWidgets | allConstruction;
         void tabReset(window* self);
         void init_events();        
@@ -430,18 +325,11 @@ namespace openloco::ui::windows::construction
             rotate,
         };
 
-        static widget_t widgets[] = {
-            commonWidgets(138, 190, string_ids::stringid_2),
-            make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_station_type),
-            make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_station_type),
-            make_widget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
-            make_widget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
-            widget_end(),
-        };
+        extern widget_t widgets[13];
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
-        static window_event_list events;        
+        extern window_event_list events;        
         void tabReset(window* self);
         void init_events();
     }
@@ -456,18 +344,11 @@ namespace openloco::ui::windows::construction
             single_direction,
         };
         
-        static widget_t widgets[] = {
-            commonWidgets(138, 167, string_ids::stringid_2),
-            make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
-            make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
-            make_widget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
-            make_widget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_single_direction),
-            widget_end(),
-        };
+        extern widget_t widgets[13];
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
-        static window_event_list events;        
+        extern window_event_list events;        
         void tabReset(window* self);
         void init_events();
     }
@@ -485,39 +366,12 @@ namespace openloco::ui::windows::construction
             track_dropdown,
         };
 
-        static widget_t widgets[] = {
-            commonWidgets(138, 192, string_ids::stringid_2),
-            make_widget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-            make_widget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-            make_widget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-            make_widget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-            make_widget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
-            make_widget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_track_to_upgrade),
-            make_widget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_track_to_upgrade),
-            widget_end(),
-        };
+        extern widget_t widgets[16];
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
-        static window_event_list events;        
+        extern window_event_list events;        
         void tabReset(window* self);
         void init_events();
-    }
-
-    namespace common 
-    {
-        static const uint8_t trackPieceWidgets[] = {
-            construction::widx::straight,
-            construction::widx::left_hand_curve_very_small,
-            construction::widx::right_hand_curve_very_small,
-            construction::widx::left_hand_curve_small,
-            construction::widx::right_hand_curve_small,
-            construction::widx::left_hand_curve,
-            construction::widx::right_hand_curve,
-            construction::widx::left_hand_curve_large,
-            construction::widx::right_hand_curve_large,
-            construction::widx::s_bend_left,
-            construction::widx::s_bend_right,
-        };
     }
 }
