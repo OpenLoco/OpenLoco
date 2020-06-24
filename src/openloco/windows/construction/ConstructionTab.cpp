@@ -1022,26 +1022,26 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x004A0AE5
-    void drawTrack(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx)
+    void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
     {
         registers regs;
         regs.ax = x;
         regs.cx = y;
-        regs.edi = edi;
+        regs.edi = selectedMods << 16 | di;
         regs.bh = bh;
-        regs.edx = edx;
+        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
         call(0x004A0AE5, regs);
     }
 
     // 0x00478F1F
-    void drawRoad(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx)
+    void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
     {
         registers regs;
         regs.ax = x;
         regs.cx = y;
-        regs.edi = edi;
+        regs.edi = selectedMods << 16 | di;
         regs.bh = bh;
-        regs.edx = edx;
+        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
         call(0x00478F1F, regs);
     }
 
@@ -1079,13 +1079,11 @@ namespace openloco::ui::windows::construction::construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = (uint32_t)clipped;
+        _dword_E0C3E0 = clipped;
 
-        uint32_t edi = _word_1135FD8 << 16 | 0x1E0;
-        uint32_t trackPieceImage = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawTrack(0x2000, 0x2000, edi, _byte_1136078, trackPieceImage);
+        drawTrack(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -1102,13 +1100,11 @@ namespace openloco::ui::windows::construction::construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = (uint32_t)clipped;
+        _dword_E0C3E0 = clipped;
 
-        uint32_t edi = _word_1135FD8 << 16 | 0x1E0;
-        uint32_t roadPieceImage = _word_1135FD6 << 16 | _lastSelectedTrackPieceId << 8 | _byte_1136077;
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawRoad(0x2000, 0x2000, edi, _byte_1136078, roadPieceImage);
+        drawRoad(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 

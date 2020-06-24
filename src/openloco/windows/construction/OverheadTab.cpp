@@ -51,12 +51,9 @@ namespace openloco::ui::windows::construction::overhead
             case widx::checkbox_3:
             case widx::checkbox_4:
             {
-                auto checkboxIndex = widgetIndex - 8;
+                auto checkboxIndex = widgetIndex - widx::checkbox_1;
 
-                if (_lastSelectedMods & 1 << checkboxIndex)
-                    _lastSelectedMods = _lastSelectedMods & ~(1 << checkboxIndex);
-                else
-                    _lastSelectedMods = _lastSelectedMods | (1 << checkboxIndex);
+                _lastSelectedMods = _lastSelectedMods ^ (1 << checkboxIndex);
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
                 _scenarioTrackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
@@ -82,7 +79,7 @@ namespace openloco::ui::windows::construction::overhead
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, 0x80);
+                dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, (1 << 7));
 
                 dropdown::add(0, string_ids::single_section);
                 dropdown::add(1, string_ids::block_section);
@@ -142,13 +139,22 @@ namespace openloco::ui::windows::construction::overhead
         call(0x0049EC20, regs);
     }
 
+    static void setCheckbox(window* self, widget_index checkboxIndex, string_id name)
+    {
+        auto widgetIndex = checkboxIndex + widx::checkbox_1;
+        self->widgets[widgetIndex].type = widget_type::checkbox;
+        self->widgets[widgetIndex].text = name;
+
+        if (_lastSelectedMods & (1 << checkboxIndex))
+            self->activated_widgets |= (1ULL << widgetIndex);
+    }
+
     // 0x0049E7D3
     static void prepare_draw(window* self)
     {
         common::prepare_draw(self);
 
-        auto activatedWidgets = self->activated_widgets;
-        activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
+        self->activated_widgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
         self->widgets[widx::checkbox_1].type = widget_type::none;
         self->widgets[widx::checkbox_2].type = widget_type::none;
@@ -163,24 +169,13 @@ namespace openloco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push(roadObj->name);
 
-            if (_modList[0] != 0xFF)
+            for (auto i = 0; i < 2; i++)
             {
-                auto roadExtraObject = objectmgr::get<road_extra_object>(_modList[0]);
-                self->widgets[widx::checkbox_1].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_1].text = roadExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 0)
-                    activatedWidgets |= 1 << widx::checkbox_1;
-            }
-
-            if (_modList[1] != 0xFF)
-            {
-                auto roadExtraObject = objectmgr::get<road_extra_object>(_modList[1]);
-                self->widgets[widx::checkbox_2].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_2].text = roadExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 1)
-                    activatedWidgets |= 1 << widx::checkbox_2;
+                if (_modList[i] != 0xFF)
+                {
+                    auto extraName = objectmgr::get<road_extra_object>(_modList[i])->name;
+                    setCheckbox(self, i, extraName);
+                }
             }
         }
         else
@@ -190,48 +185,17 @@ namespace openloco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push(trackObj->name);
 
-            if (_modList[0] != 0xFF)
+            for (auto i = 0; i < 4; i++)
             {
-                auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[0]);
-                self->widgets[widx::checkbox_1].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_1].text = trackExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 0)
-                    activatedWidgets |= 1 << widx::checkbox_1;
-            }
-
-            if (_modList[1] != 0xFF)
-            {
-                auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[1]);
-                self->widgets[widx::checkbox_2].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_2].text = trackExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 1)
-                    activatedWidgets |= 1 << widx::checkbox_2;
-            }
-
-            if (_modList[2] != 0xFF)
-            {
-                auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[2]);
-                self->widgets[widx::checkbox_3].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_3].text = trackExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 2)
-                    activatedWidgets |= 1 << widx::checkbox_3;
-            }
-
-            if (_modList[3] != 0xFF)
-            {
-                auto trackExtraObject = objectmgr::get<track_extra_object>(_modList[3]);
-                self->widgets[widx::checkbox_4].type = widget_type::checkbox;
-                self->widgets[widx::checkbox_4].text = trackExtraObject->name;
-
-                if (_lastSelectedMods & 1 << 3)
-                    activatedWidgets |= 1 << widx::checkbox_4;
+                if (_modList[i] != 0xFF)
+                {
+                    auto extraName = objectmgr::get<track_extra_object>(_modList[i])->name;
+                    setCheckbox(self, i, extraName);
+                }
             }
         }
 
-        self->activated_widgets = activatedWidgets;
+        //self->activated_widgets = activatedWidgets;
 
         self->widgets[widx::image].type = widget_type::none;
         self->widgets[widx::track].type = widget_type::none;
@@ -280,76 +244,34 @@ namespace openloco::ui::windows::construction::overhead
 
             if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
             {
-                auto x = 0x2010;
-                auto y = 0x2010;
+                coord_t x = 0x2010;
+                coord_t y = 0x2010;
 
-                switch (gCurrentRotation)
-                {
-                    case 0:
-                    {
-                        auto bx = x;
-                        x = -x + y;
-                        y += bx;
-                        y >>= 1;
-                        y -= 460;
-                        break;
-                    }
-                    case 1:
-                    {
-                        x = -x;
-                        auto bx = x;
-                        x -= y;
-                        y += bx;
-                        y >>= 1;
-                        y -= 460;
-                        break;
-                    }
-                    case 2:
-                    {
-                        auto bx = x;
-                        x -= y;
-                        y = -y;
-                        y -= bx;
-                        y >>= 1;
-                        y -= 460;
-                        break;
-                    }
-                    case 3:
-                    {
-                        auto bx = x;
-                        x += y;
-                        y = -y;
-                        y += bx;
-                        y >>= 1;
-                        y -= 460;
-                        break;
-                    }
-                }
-                x -= (self->widgets[widx::image].width() / 2);
-                y -= ((self->widgets[widx::image].width() / 2) + 16);
-                clipped->x += x;
-                clipped->y += y;
+                auto rotCoord = rotate2DCoordinate({ x, y }, gCurrentRotation);
+                gfx::point_t screenPos = { rotCoord.y - rotCoord.x, ((rotCoord.x + rotCoord.y) >> 1) - 460 };
 
-                _dword_E0C3E0 = (uint32_t)clipped;
+                screenPos.x -= (self->widgets[widx::image].width() / 2);
+                screenPos.y -= ((self->widgets[widx::image].width() / 2) + 16);
+                clipped->x += screenPos.x;
+                clipped->y += screenPos.y;
+
+                _dword_E0C3E0 = clipped;
 
                 x = 0x2000;
                 y = 0x2000;
 
                 auto company = companymgr::get(_playerCompany);
                 auto companyColour = company->mainColours.primary;
-                auto edi = _lastSelectedMods << 16 | 0x1D0;
                 _byte_522095 = _byte_522095 | (1 << 0);
 
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    auto edx = (companyColour << 16) | trackType;
-                    construction::drawRoad(x, y, edi, gCurrentRotation, edx);
+                    construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, gCurrentRotation);
                 }
                 else
                 {
-                    auto edx = (companyColour << 16) | _trackType;
-                    construction::drawTrack(x, y, edi, gCurrentRotation, edx);
+                    construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, gCurrentRotation);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
             }

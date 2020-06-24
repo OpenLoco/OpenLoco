@@ -106,7 +106,7 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint32_t, 0x00E0C3E0> _dword_E0C3E0;
+    static loco_global<gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -311,8 +311,8 @@ namespace openloco::ui::windows::construction
         constexpr uint64_t enabledWidgets = common::enabledWidgets | allConstruction;
         void tabReset(window* self);
         void init_events();        
-        void drawTrack(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx);
-        void drawRoad(uint16_t x, uint16_t y, uint32_t edi, uint8_t bh, uint32_t edx);
+        void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
+        void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
     }
 
     namespace station

@@ -74,7 +74,7 @@ namespace openloco::ui::windows::construction
 
         _lastSelectedSignal = lastSignal;
 
-        common::refreshStationList(_stationList, _trackType, TransportMode::road);
+        common::refreshStationList(_stationList, _trackType, TransportMode::rail);
 
         auto lastStation = _scenarioTrainStations[_trackType];
 
@@ -224,7 +224,7 @@ namespace openloco::ui::windows::construction
 
                         if (roadObj->flags & flags_12::unk_03)
                         {
-                            _trackType = flags;
+                            _trackType = static_cast<uint8_t>(flags);
 
                             common::sub_4A3A50();
 
@@ -454,6 +454,7 @@ namespace openloco::ui::windows::construction
             self->moveInsideScreenEdges();
         }
 
+        // 0x0049EFEF
         static void drawRoadTabs(window* self, gfx::drawpixelinfo_t* dpi)
         {
             auto company = companymgr::get(_playerCompany);
@@ -529,6 +530,7 @@ namespace openloco::ui::windows::construction
             }
         }
 
+        // 0x0049ED40
         static void drawTrackTabs(window* self, gfx::drawpixelinfo_t* dpi)
         {
             auto company = companymgr::get(_playerCompany);
