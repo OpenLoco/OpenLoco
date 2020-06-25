@@ -1,10 +1,22 @@
 #include "messagemgr.h"
 #include "interop/interop.hpp"
+#include "openloco.h"
 
 using namespace openloco::interop;
 
 namespace openloco::messagemgr
 {
+    static loco_global<message[max_messages], 0x005271D2> _messages;
+
+    message* get(message_id_t id)
+    {
+        if (id >= _messages.size())
+        {
+            return nullptr;
+        }
+        return &_messages[id];
+    }
+
     void post(
         message_type type,
         company_id_t companyId,

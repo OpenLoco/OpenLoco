@@ -728,6 +728,11 @@ namespace openloco::string_ids
     constexpr string_id error_reason_signal_belongs_to = 1422;
     constexpr string_id station_cargo_rating_percent = 1423;
 
+    constexpr string_id title_messages = 1425;
+    constexpr string_id tooltip_recent_messages = 1426;
+    constexpr string_id tooltip_message_options = 1427;
+    constexpr string_id title_message_options = 1428;
+    constexpr string_id tiny_font_date = 1429;
     constexpr string_id waiting_cargo_separator = 1430;
     constexpr string_id waiting = 1431;
     constexpr string_id nothing_waiting = 1432;
@@ -783,6 +788,15 @@ namespace openloco::string_ids
     constexpr string_id current_game_currency = 1504;
     constexpr string_id new_game_currency = 1505;
     constexpr string_id preferred_currency_buffer = 1506;
+    constexpr string_id company_major_news = 1507;
+    constexpr string_id competitor_major_news = 1508;
+    constexpr string_id company_minor_news = 1509;
+    constexpr string_id competitor_minor_news = 1510;
+    constexpr string_id general_news = 1511;
+    constexpr string_id advice = 1512;
+    constexpr string_id message_off = 1513;
+    constexpr string_id message_ticker = 1514;
+    constexpr string_id message_window = 1515;
 
     constexpr string_id forbid_trains = 1518;
     constexpr string_id forbid_buses = 1519;

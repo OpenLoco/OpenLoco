@@ -185,6 +185,8 @@ namespace openloco
         constexpr uint32_t toolbar_menu_stations = 190;
         constexpr uint32_t toolbar_menu_industries = 191;
 
+        constexpr uint32_t tab_messages = 196;
+        constexpr uint32_t tab_message_settings = 197;
         constexpr uint32_t tab_cargo_delivered_frame0 = 198;
         constexpr uint32_t tab_cargo_delivered_frame1 = 199;
         constexpr uint32_t tab_cargo_delivered_frame2 = 200;

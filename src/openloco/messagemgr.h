@@ -1,10 +1,12 @@
 #pragma once
 
 #include "company.h"
+#include "message.h"
 #include <cstdint>
 
 namespace openloco
 {
+
     enum class message_type
     {
         cargo_now_accepted = 9,
@@ -14,6 +16,9 @@ namespace openloco
 
 namespace openloco::messagemgr
 {
+    constexpr size_t max_messages = 199;
+
+    message* get(message_id_t id);
 
     // 0x004285BA
     // al: type

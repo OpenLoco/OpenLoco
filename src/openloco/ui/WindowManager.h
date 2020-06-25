@@ -250,6 +250,11 @@ namespace openloco::ui::MessageWindow
     void open();
 }
 
+namespace openloco::ui::NewsWindow
+{
+    void open(uint16_t messageIndex);
+}
+
 namespace openloco::ui::windows::CompanyFaceSelection
 {
     void open(company_id_t id);
