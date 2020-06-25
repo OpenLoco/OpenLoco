@@ -76,7 +76,7 @@ namespace openloco
             if (acceptedBefore && !acceptedNow)
             {
                 messagemgr::post(
-                    message_type::cargo_no_longer_accepted,
+                    messageType::cargoNoLongerAccepted,
                     owner,
                     id(),
                     cargoId);
@@ -84,7 +84,7 @@ namespace openloco
             else if (!acceptedBefore && acceptedNow)
             {
                 messagemgr::post(
-                    message_type::cargo_now_accepted,
+                    messageType::cargoNowAccepted,
                     owner,
                     id(),
                     cargoId);

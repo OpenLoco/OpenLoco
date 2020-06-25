@@ -1,5 +1,6 @@
 #include "News.h"
 #include "../../companymgr.h"
+#include "../../date.h"
 #include "../../graphics/colours.h"
 #include "../../graphics/image_ids.h"
 #include "../../industrymgr.h"
@@ -53,18 +54,18 @@ namespace openloco::ui::NewsWindow
                     {
                         auto news = messagemgr::get(_activeMessageIndex);
 
-                        if (_word_4F8BE4[news->var_00] & (1 << 2))
+                        if (_word_4F8BE4[news->type] & (1 << 2))
                         {
                             uint32_t itemType;
                             uint16_t itemId;
                             if (widgetIndex == common::widx::viewport1Button)
                             {
-                                itemType = _byte_4F8B08[news->var_00][0];
+                                itemType = _byte_4F8B08[news->type][0];
                                 itemId = news->item_id_1;
                             }
                             else
                             {
-                                itemType = _byte_4F8B09[news->var_00][0];
+                                itemType = _byte_4F8B09[news->type][0];
                                 itemId = news->item_id_2;
                             }
 
@@ -185,9 +186,9 @@ namespace openloco::ui::NewsWindow
 
             if (_activeMessageIndex != 0xFFFF)
             {
-                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                if (_word_4F8BE4[news->type] & (1 << 2))
                 {
-                    auto itemType = _byte_4F8B08[news->var_00][0];
+                    auto itemType = _byte_4F8B08[news->type][0];
 
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -322,7 +323,7 @@ namespace openloco::ui::NewsWindow
                 self->widgets[common::widx::viewport1Button].left = 4;
                 self->widgets[common::widx::viewport1Button].right = 355;
 
-                if (_word_4F8BE4[news->var_00] & (1 << 3))
+                if (_word_4F8BE4[news->type] & (1 << 3))
                 {
                     self->widgets[common::widx::viewport1].left = 6;
                     self->widgets[common::widx::viewport1].right = 173;
@@ -340,7 +341,7 @@ namespace openloco::ui::NewsWindow
                     uint16_t viewportHeight = 62;
                     gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
 
-                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    if (_word_4F8BE4[news->type] & (1 << 1))
                     {
                         x = self->widgets[common::widx::viewport1].left + self->x;
                         y = self->widgets[common::widx::viewport1].top + self->y;
@@ -374,9 +375,9 @@ namespace openloco::ui::NewsWindow
 
             if (_activeMessageIndex != 0xFFFF)
             {
-                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                if (_word_4F8BE4[news->type] & (1 << 2))
                 {
-                    auto itemType = _byte_4F8B09[news->var_00][0];
+                    auto itemType = _byte_4F8B09[news->type][0];
 
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -519,7 +520,7 @@ namespace openloco::ui::NewsWindow
                     uint16_t viewportHeight = 62;
                     gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
 
-                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    if (_word_4F8BE4[news->type] & (1 << 1))
                     {
                         x = self->widgets[common::widx::viewport2].left + self->x;
                         y = self->widgets[common::widx::viewport2].top + self->y;
@@ -644,9 +645,9 @@ namespace openloco::ui::NewsWindow
         {
             auto news = messagemgr::get(_activeMessageIndex);
 
-            if (_word_4F8BE4[news->var_00] & (1 << 1))
+            if (_word_4F8BE4[news->type] & (1 << 1))
             {
-                if (news->date >= 52925)
+                if (calc_date(news->date).year >= 1945)
                 {
                     gfx::draw_image(dpi, self->x, self->y, image_ids::news_background_new_left);
 
@@ -657,7 +658,7 @@ namespace openloco::ui::NewsWindow
                     char* newsString = news->messageString;
                     auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                    if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
+                    if (!(_word_4F8BE4[news->type] & (1 << 5)))
                     {
                         *buffer = control_codes::font_large;
                         buffer++;
@@ -684,11 +685,11 @@ namespace openloco::ui::NewsWindow
 
                     sub_42A136(self, dpi, news);
 
-                    if (news->date < 67525)
+                    if (calc_date(news->date).year < 1985)
                     {
-                        if (_word_4F8BE4[news->var_00] & (1 << 2))
+                        if (_word_4F8BE4[news->type] & (1 << 2))
                         {
-                            if (_word_4F8BE4[news->var_00] & (1 << 1))
+                            if (_word_4F8BE4[news->type] & (1 << 1))
                             {
                                 if (news->item_id_1 != 0xFFFF)
                                 {
@@ -702,9 +703,9 @@ namespace openloco::ui::NewsWindow
                             }
                         }
 
-                        if (_word_4F8BE4[news->var_00] & (1 << 3))
+                        if (_word_4F8BE4[news->type] & (1 << 3))
                         {
-                            if (_word_4F8BE4[news->var_00] & (1 << 1))
+                            if (_word_4F8BE4[news->type] & (1 << 1))
                             {
                                 if (news->item_id_2 != 0xFFFF)
                                 {
@@ -734,7 +735,7 @@ namespace openloco::ui::NewsWindow
                     char* newsString = news->messageString;
                     auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                    if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
+                    if (!(_word_4F8BE4[news->type] & (1 << 5)))
                     {
                         *buffer = control_codes::font_large;
                         buffer++;
@@ -796,9 +797,9 @@ namespace openloco::ui::NewsWindow
 
                 self->drawViewports(dpi);
 
-                if (_word_4F8BE4[news->var_00] & (1 << 2))
+                if (_word_4F8BE4[news->type] & (1 << 2))
                 {
-                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    if (_word_4F8BE4[news->type] & (1 << 1))
                     {
                         if (news->item_id_1 != 0xFFFF)
                         {
@@ -812,9 +813,9 @@ namespace openloco::ui::NewsWindow
                     }
                 }
 
-                if (_word_4F8BE4[news->var_00] & (1 << 3))
+                if (_word_4F8BE4[news->type] & (1 << 3))
                 {
-                    if (_word_4F8BE4[news->var_00] & (1 << 1))
+                    if (_word_4F8BE4[news->type] & (1 << 1))
                     {
                         if (news->item_id_2 != 0xFFFF)
                         {
@@ -829,7 +830,7 @@ namespace openloco::ui::NewsWindow
                 }
             }
 
-            if (_word_4F8BE4[news->var_00] & (1 << 2))
+            if (_word_4F8BE4[news->type] & (1 << 2))
             {
                 if (news->item_id_1 != 0xFFFF)
                 {
@@ -838,10 +839,10 @@ namespace openloco::ui::NewsWindow
                     auto y = self->widgets[common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(dpi, _byte_4F8B08[news->var_00][0], news->item_id_1, width, x, y);
+                    drawViewportString(dpi, _byte_4F8B08[news->type][0], news->item_id_1, width, x, y);
                 }
             }
-            if (_word_4F8BE4[news->var_00] & (1 << 3))
+            if (_word_4F8BE4[news->type] & (1 << 3))
             {
                 if (news->item_id_2 != 0xFFFF)
                 {
@@ -850,7 +851,7 @@ namespace openloco::ui::NewsWindow
                     auto y = self->widgets[common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(dpi, _byte_4F8B09[news->var_00][0], news->item_id_2, width, x, y);
+                    drawViewportString(dpi, _byte_4F8B09[news->type][0], news->item_id_2, width, x, y);
                 }
             }
         }

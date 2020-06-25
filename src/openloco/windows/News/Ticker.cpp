@@ -174,7 +174,7 @@ namespace openloco::ui::NewsWindow::ticker
 
         uint32_t colour = 0x14141414;
 
-        if (!(_word_4F8BE4[news->var_00] & (1 << 1)))
+        if (!(_word_4F8BE4[news->type] & (1 << 1)))
         {
             colour = colour::translucent(colour::inset(colour::icy_blue));
             colour *= 0x1010101;

@@ -50,20 +50,6 @@ namespace openloco::ui::NewsWindow
             advice,
         };
 
-        enum messageType
-        {
-            industryClosingDown = 1,
-            newCompany = 11,
-            citizensCelebrate = 13,
-            workersCelebrate,
-            newVehicle,
-            newIndustry = 17,
-            industryProductionUp,
-            industryProductionDown,
-            vehicleCrashed = 27,
-            newSpeedRecord = 29,
-        };
-
         enum widx
         {
             frame,

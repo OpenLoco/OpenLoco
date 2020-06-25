@@ -25,9 +25,8 @@ namespace openloco::ui::NewsWindow
 
         _activeMessageIndex = messageIndex;
 
-        auto activeMessage = news->var_00;
-        std::printf(news->messageString);
-        std::printf("\nactiveMessage: %d\n", activeMessage);
+        auto activeMessage = news->type;
+
         if (!isOld)
         {
             auto messageType = _messageTypes[activeMessage];

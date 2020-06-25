@@ -4,16 +4,6 @@
 #include "message.h"
 #include <cstdint>
 
-namespace openloco
-{
-
-    enum class message_type
-    {
-        cargo_now_accepted = 9,
-        cargo_no_longer_accepted = 10,
-    };
-}
-
 namespace openloco::messagemgr
 {
     constexpr size_t max_messages = 199;
@@ -27,7 +17,7 @@ namespace openloco::messagemgr
     // cx: subjectId B (cargo)
     // dx: subjectId C
     void post(
-        message_type type,
+        messageType type,
         company_id_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,
