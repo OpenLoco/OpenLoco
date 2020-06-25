@@ -783,28 +783,16 @@ namespace openloco::ui::NewsWindow
                 char* newsString = news->messageString;
                 auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
 
-                if (!(_word_4F8BE4[news->var_00] & (1 << 5)))
-                {
-                    *buffer = control_codes::font_large;
-                    buffer++;
-                }
-
                 *buffer = control_codes::colour_black;
                 buffer++;
 
                 strncpy(buffer, newsString, 512);
 
                 int16_t x = (self->width / 2) + self->x;
-                int16_t y = self->y + 38;
+                int16_t y = self->y + 17;
                 gfx::point_t origin = { x, y };
 
-                gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
-
-                x = self->x + 1;
-                y = self->y + 1;
-                origin = { x, y };
-
-                gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+                gfx::draw_string_centred_wrapped(dpi, &origin, 338, colour::black, string_ids::buffer_2039);
 
                 self->drawViewports(dpi);
 

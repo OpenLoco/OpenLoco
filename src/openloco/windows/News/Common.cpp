@@ -15,19 +15,20 @@ namespace openloco::ui::NewsWindow
     // 0x00428F8B
     void open(uint16_t messageIndex)
     {
-        auto companyId = 0;
+        bool isOld = false;
         auto news = messagemgr::get(messageIndex);
 
         if ((news->var_C8 != 0) && (getScreenAge() >= 10))
         {
-            companyId++;
+            isOld = true;
         }
 
         _activeMessageIndex = messageIndex;
 
         auto activeMessage = news->var_00;
-
-        if (companyId == 0)
+        std::printf(news->messageString);
+        std::printf("\nactiveMessage: %d\n", activeMessage);
+        if (!isOld)
         {
             auto messageType = _messageTypes[activeMessage];
 
@@ -73,11 +74,11 @@ namespace openloco::ui::NewsWindow
             }
         }
 
-        if (companyId == 0)
+        if (!isOld)
         {
             audio::sound_id soundId = audio::sound_id::notification;
 
-            if (news->companyId == company_id::null || companyId == _playerCompany)
+            if (news->companyId == company_id::null || news->companyId == _playerCompany)
             {
                 soundId = static_cast<audio::sound_id>(_messageSounds[activeMessage]);
             }
@@ -95,7 +96,7 @@ namespace openloco::ui::NewsWindow
 
             int16_t y = ui::height() - _word_525CE0;
 
-            if (_gameSpeed != 0 || companyId != 0)
+            if (_gameSpeed != 0 || isOld)
             {
                 y = ui::height() - news2::windowSize.height;
                 _word_525CE0 = news2::windowSize.height;
@@ -128,7 +129,7 @@ namespace openloco::ui::NewsWindow
 
             int16_t y = ui::height() - _word_525CE0;
 
-            if (_gameSpeed != 0 || companyId != 0)
+            if (_gameSpeed != 0 || isOld)
             {
                 y = ui::height() - news1::windowSize.height;
                 _word_525CE0 = news1::windowSize.height;
@@ -146,7 +147,7 @@ namespace openloco::ui::NewsWindow
             common::initEvents();
 
             window->init_scroll_widgets();
-            window->colours[0] = colour::translucent(colour::dark_yellow);
+            window->colours[0] = colour::translucent(colour::salmon_pink);
 
             _dword_525CD0 = 0xFFFFFFFF;
             _dword_525CD4 = 0xFFFFFFFF;
