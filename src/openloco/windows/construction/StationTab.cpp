@@ -72,70 +72,58 @@ namespace openloco::ui::windows::construction::station
                 auto yPos = widget.top + self->y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, 0x80);
+                dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {
-                    stationCount = 0;
-                    while (_stationList[stationCount] != 0xFF)
+                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
                     {
-                        auto station = _stationList[stationCount];
+                        auto station = _stationList[stationIndex];
                         if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationCount);
+                            dropdown::set_highlighted_item(stationIndex);
 
                         auto airportObj = objectmgr::get<airport_object>(station);
 
-                        dropdown::add(stationCount, airportObj->name);
-
-                        stationCount++;
+                        dropdown::add(stationIndex, airportObj->name);
                     }
                 }
                 else if (_byte_1136063 & (1 << 6))
                 {
-                    stationCount = 0;
-                    while (_stationList[stationCount] != 0xFF)
+                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
                     {
-                        auto station = _stationList[stationCount];
+                        auto station = _stationList[stationIndex];
                         if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationCount);
+                            dropdown::set_highlighted_item(stationIndex);
 
                         auto dockObj = objectmgr::get<dock_object>(station);
 
-                        dropdown::add(stationCount, dockObj->name);
-
-                        stationCount++;
+                        dropdown::add(stationIndex, dockObj->name);
                     }
                 }
                 else if (_trackType & (1 << 7))
                 {
-                    stationCount = 0;
-                    while (_stationList[stationCount] != 0xFF)
+                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
                     {
-                        auto station = _stationList[stationCount];
+                        auto station = _stationList[stationIndex];
                         if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationCount);
+                            dropdown::set_highlighted_item(stationIndex);
 
                         auto roadStationObj = objectmgr::get<road_station_object>(station);
 
-                        dropdown::add(stationCount, roadStationObj->name);
-
-                        stationCount++;
+                        dropdown::add(stationIndex, roadStationObj->name);
                     }
                 }
                 else
                 {
-                    stationCount = 0;
-                    while (_stationList[stationCount] != 0xFF)
+                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
                     {
-                        auto station = _stationList[stationCount];
+                        auto station = _stationList[stationIndex];
                         if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationCount);
+                            dropdown::set_highlighted_item(stationIndex);
 
                         auto trainStationObj = objectmgr::get<train_station_object>(station);
 
-                        dropdown::add(stationCount, trainStationObj->name);
-
-                        stationCount++;
+                        dropdown::add(stationIndex, trainStationObj->name);
                     }
                 }
                 break;
@@ -374,6 +362,7 @@ namespace openloco::ui::windows::construction::station
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 29;
         gfx::point_t origin = { xPos, yPos };
+
         gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_accepts);
 
         if (_dword_1135F74 == 0)
@@ -402,6 +391,7 @@ namespace openloco::ui::windows::construction::station
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 49;
         origin = { xPos, yPos };
+
         gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_produces);
 
         if (_dword_1135F78 == 0)

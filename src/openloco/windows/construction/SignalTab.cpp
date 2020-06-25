@@ -59,20 +59,17 @@ namespace openloco::ui::windows::construction::signal
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, 0x80);
+                dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, (1 << 7));
 
-                signalCount = 0;
-                while (_signalList[signalCount] != 0xFF)
+                for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {
-                    auto signal = _signalList[signalCount];
+                    auto signal = _signalList[signalIndex];
                     if (signal == _lastSelectedSignal)
-                        dropdown::set_highlighted_item(signalCount);
+                        dropdown::set_highlighted_item(signalIndex);
 
                     auto trainSignalObj = objectmgr::get<train_signal_object>(signal);
 
-                    dropdown::add(signalCount, trainSignalObj->name);
-
-                    signalCount++;
+                    dropdown::add(signalIndex, trainSignalObj->name);
                 }
                 break;
             }
@@ -173,17 +170,16 @@ namespace openloco::ui::windows::construction::signal
             gfx::draw_string_495224(*dpi, xPos, yPos, width, colour::black, string_ids::signal_black, &args);
         }
 
-        auto signalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
-        auto imageId = signalObject->var_0E;
+        auto imageId = trainSignalObject->var_0E;
 
-        xPos = (self->widgets[widx::both_directions].left + self->widgets[widx::both_directions].right) / 2 + self->x;
+        xPos = self->widgets[widx::both_directions].mid_x() + self->x;
         yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
 
         gfx::draw_image(dpi, xPos - 8, yPos, imageId);
 
         gfx::draw_image(dpi, xPos + 8, yPos, imageId + 4);
 
-        xPos = (self->widgets[widx::single_direction].left + self->widgets[widx::single_direction].right) / 2 + self->x;
+        xPos = self->widgets[widx::single_direction].mid_x() + self->x;
         yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
 
         gfx::draw_image(dpi, xPos, yPos, imageId);
