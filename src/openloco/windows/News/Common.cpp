@@ -1,5 +1,3 @@
-#pragma once
-
 #include "../../audio/audio.h"
 #include "../../config.h"
 #include "../../graphics/colours.h"
