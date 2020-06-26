@@ -4,6 +4,28 @@
 #include "message.h"
 #include <cstdint>
 
+namespace openloco
+{
+    enum class messageType
+    {
+        industryClosingDown = 1,
+        cargoNowAccepted = 9,
+        cargoNoLongerAccepted = 10,
+        newCompany,
+        citizensCelebrate = 13,
+        workersCelebrate,
+        newVehicle,
+        newIndustry = 17,
+        industryProductionUp,
+        industryProductionDown,
+        bankruptcyWarning6Months = 23,
+        bankruptcyWarning3Months,
+        bankruptcyDeclared,
+        vehicleCrashed = 27,
+        newSpeedRecord = 29,
+    };
+}
+
 namespace openloco::messagemgr
 {
     constexpr size_t max_messages = 199;

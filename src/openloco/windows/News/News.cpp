@@ -722,11 +722,11 @@ namespace openloco::ui::NewsWindow
                 }
                 else
                 {
-                    auto imageId = gfx::recolour(image_ids::news_background_old_left, colour::outline(colour::inset(colour::icy_blue)));
+                    auto imageId = gfx::recolour(image_ids::news_background_old_left, palette_index::index_68);
 
                     gfx::draw_image(dpi, self->x, self->y, imageId);
 
-                    imageId = gfx::recolour(image_ids::news_background_old_right, colour::outline(colour::inset(colour::icy_blue)));
+                    imageId = gfx::recolour(image_ids::news_background_old_right, palette_index::index_68);
 
                     gfx::draw_image(dpi, self->x + (windowSize.width / 2), self->y, imageId);
 
