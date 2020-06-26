@@ -68,7 +68,7 @@ namespace openloco::ui::windows::industry
 
     namespace industry
     {
-        static const gfx::ui_size_t windowSize = { 223, 136 };
+        static const gfx::ui_size_t windowSize = { 223, 137 };
 
         static const gfx::ui_size_t minWindowSize = { 192, 137 };
 
@@ -83,8 +83,8 @@ namespace openloco::ui::windows::industry
         };
 
         static widget_t widgets[] = {
-            commonWidgets(223, 136, string_ids::title_town),
-            make_widget({ 3, 44 }, { 195, 79 }, widget_type::viewport, 1, 0xFFFFFFFE),
+            commonWidgets(223, 137, string_ids::title_town),
+            make_widget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
             make_widget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
             make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
             make_widget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_industry),
