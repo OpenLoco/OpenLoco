@@ -139,9 +139,9 @@ namespace openloco
         return (_screen_flags & screen_flags::networked) != 0;
     }
 
-    bool is_unknown_3_mode()
+    bool isTrackUpgradeMode()
     {
-        return (_screen_flags & screen_flags::unknown_3) != 0;
+        return (_screen_flags & screen_flags::trackUpgrade) != 0;
     }
 
     bool is_unknown_4_mode()
@@ -393,7 +393,7 @@ namespace openloco
         }
 
         // Host/client?
-        if ((get_screen_flags() & screen_flags::unknown_3) != 0)
+        if (isTrackUpgradeMode())
         {
             _updating_company_id = companymgr::get_controlling_id();
 

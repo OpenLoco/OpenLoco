@@ -118,9 +118,9 @@ namespace openloco::ui::windows::construction
     static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint32_t, 0x01135F4E> _signalCost;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
-    static loco_global<uint32_t, 0x01135F70> _dword_1135F70;
-    static loco_global<uint32_t, 0x01135F74> _dword_1135F74;
-    static loco_global<uint32_t, 0x01135F78> _dword_1135F78;
+    static loco_global<uint32_t, 0x01135F70> _constructingStationId;
+    static loco_global<uint32_t, 0x01135F74> _constructingStationAcceptedCargoTypes;
+    static loco_global<uint32_t, 0x01135F78> _constructingStationProducedCargoTypes;
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;

@@ -56,6 +56,20 @@ namespace openloco::ui::windows::construction::station
         }
     }
 
+    template<typename obj_type>
+    void AddStationsToDropdown(const uint8_t stationCount)
+    {
+        for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
+        {
+            auto station = _stationList[stationIndex];
+            if (station == _lastSelectedStationType)
+                dropdown::set_highlighted_item(stationIndex);
+
+            auto obj = objectmgr::get<obj_type>(station);
+            dropdown::add(stationIndex, obj->name);
+        }
+    }
+
     // 0x0049E249
     static void on_mouse_down(window* self, widget_index widgetIndex)
     {
@@ -76,55 +90,19 @@ namespace openloco::ui::windows::construction::station
 
                 if (_byte_1136063 & (1 << 7))
                 {
-                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
-                    {
-                        auto station = _stationList[stationIndex];
-                        if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationIndex);
-
-                        auto airportObj = objectmgr::get<airport_object>(station);
-
-                        dropdown::add(stationIndex, airportObj->name);
-                    }
+                    AddStationsToDropdown<airport_object>(stationCount);
                 }
                 else if (_byte_1136063 & (1 << 6))
                 {
-                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
-                    {
-                        auto station = _stationList[stationIndex];
-                        if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationIndex);
-
-                        auto dockObj = objectmgr::get<dock_object>(station);
-
-                        dropdown::add(stationIndex, dockObj->name);
-                    }
+                    AddStationsToDropdown<dock_object>(stationCount);
                 }
                 else if (_trackType & (1 << 7))
                 {
-                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
-                    {
-                        auto station = _stationList[stationIndex];
-                        if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationIndex);
-
-                        auto roadStationObj = objectmgr::get<road_station_object>(station);
-
-                        dropdown::add(stationIndex, roadStationObj->name);
-                    }
+                    AddStationsToDropdown<road_station_object>(stationCount);
                 }
                 else
                 {
-                    for (auto stationIndex = 0; stationIndex < stationCount; stationIndex++)
-                    {
-                        auto station = _stationList[stationIndex];
-                        if (station == _lastSelectedStationType)
-                            dropdown::set_highlighted_item(stationIndex);
-
-                        auto trainStationObj = objectmgr::get<train_station_object>(station);
-
-                        dropdown::add(stationIndex, trainStationObj->name);
-                    }
+                    AddStationsToDropdown<train_station_object>(stationCount);
                 }
                 break;
             }
@@ -338,26 +316,21 @@ namespace openloco::ui::windows::construction::station
 
         auto args = FormatArguments();
 
-        if (_dword_1135F70 == 0xFFFFFFFF)
+        if (_constructingStationId == 0xFFFFFFFF)
         {
             args.push(string_ids::new_station);
         }
         else
         {
-            auto station = stationmgr::get(_dword_1135F70);
+            auto station = stationmgr::get(_constructingStationId);
             args.push(station->name);
             args.push(station->town);
         }
 
-        stringmgr::format_string(&_stringFormatBuffer[0], string_ids::new_station_buffer, &args);
-
-        _currentFontSpriteBase = font::medium_bold;
-        width = self->width - 4;
-        int16_t stringWidth = gfx::clip_string(width, _stringFormatBuffer);
-        xPos = self->x + 69 - ((stringWidth - 1) / 2);
+        xPos = self->x + 69;
         yPos = self->widgets[widx::image].bottom + self->y + 18;
-
-        gfx::draw_string(dpi, xPos, yPos, colour::black, _stringFormatBuffer);
+        width = self->width - 4;
+        gfx::draw_string_centred_clipped(*dpi, xPos, yPos, width, colour::black, string_ids::new_station_buffer, &args);
 
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 29;
@@ -365,7 +338,7 @@ namespace openloco::ui::windows::construction::station
 
         gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_accepts);
 
-        if (_dword_1135F74 == 0)
+        if (_constructingStationAcceptedCargoTypes == 0)
         {
             gfx::draw_string_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
         }
@@ -374,7 +347,7 @@ namespace openloco::ui::windows::construction::station
             yPos--;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
             {
-                if (_dword_1135F74 & (1 << i))
+                if (_constructingStationAcceptedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)
@@ -394,7 +367,7 @@ namespace openloco::ui::windows::construction::station
 
         gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_produces);
 
-        if (_dword_1135F78 == 0)
+        if (_constructingStationProducedCargoTypes == 0)
         {
             gfx::draw_string_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
         }
@@ -403,7 +376,7 @@ namespace openloco::ui::windows::construction::station
             yPos--;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
             {
-                if (_dword_1135F78 & (1 << i))
+                if (_constructingStationProducedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)

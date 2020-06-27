@@ -13,7 +13,7 @@ namespace openloco
         constexpr uint8_t title = 1 << 0;
         constexpr uint8_t editor = 1 << 1;
         constexpr uint8_t networked = 1 << 2;
-        constexpr uint8_t unknown_3 = 1 << 3;
+        constexpr uint8_t trackUpgrade = 1 << 3;
         constexpr uint8_t unknown_4 = 1 << 4;
         constexpr uint8_t unknown_5 = 1 << 5;
         constexpr uint8_t unknown_6 = 1 << 6;
@@ -30,7 +30,7 @@ namespace openloco
     bool is_editor_mode();
     bool is_title_mode();
     bool isNetworked();
-    bool is_unknown_3_mode();
+    bool isTrackUpgradeMode();
     bool is_unknown_4_mode();
     bool is_paused();
     uint8_t get_pause_flags();
