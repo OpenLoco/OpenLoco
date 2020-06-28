@@ -543,7 +543,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x004A2395
-    std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
+    static std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
     {
         auto tile = tilemgr::get(mapPos);
 
@@ -605,7 +605,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x00478361
-    std::optional<int16_t> sub_478361(int16_t x, int16_t y)
+    static std::optional<int16_t> sub_478361(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -619,7 +619,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x004A4011
-    std::optional<int16_t> sub_4A4011(int16_t x, int16_t y)
+    static std::optional<int16_t> sub_4A4011(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -848,7 +848,7 @@ namespace openloco::ui::windows::construction::construction
             _word_1136000 = trackHeight;
             _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
 
-            auto height = sub_478361(x, y);
+            auto height = sub_4A4011(x, y);
             map_pos mapPos;
 
             if (height)
