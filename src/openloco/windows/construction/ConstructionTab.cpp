@@ -853,7 +853,7 @@ namespace openloco::ui::windows::construction::construction
 
             if (height)
             {
-                if (_word_4F7B62[trackHeight * 8] == 0)
+                if (_word_4F7B62[track->id * 8] == 0)
                 {
                     auto pos = screenGetMapXyWithZ(xy32(x, y), trackHeight * 8 | height.value());
                     if (pos)
@@ -872,7 +872,7 @@ namespace openloco::ui::windows::construction::construction
                 }
             }
 
-            if (!height || mapPos.x == -32768)
+            if (!height || mapPos.x == -32768 || _word_4F7B62[track->id * 8] != 0)
             {
                 mapPos = sub_460781(x, y);
 
