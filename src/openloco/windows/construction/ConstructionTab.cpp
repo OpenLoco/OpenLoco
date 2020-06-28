@@ -46,6 +46,24 @@ namespace openloco::ui::windows::construction::construction
 
     window_event_list events;
 
+    // 0x0049F92D
+    static void constructTrack(window* self, widget_index widgetIndex)
+    {
+        registers regs;
+        regs.edx = widgetIndex;
+        regs.esi = (int32_t)self;
+        call(0x0049F92D, regs);
+    }
+
+    // 0x004A0121
+    static void removeTrack(window* self, widget_index widgetIndex)
+    {
+        registers regs;
+        regs.edx = widgetIndex;
+        regs.esi = (int32_t)self;
+        call(0x004A0121, regs);
+    }
+
     // 0x0049D3F6
     static void on_mouse_up(window* self, widget_index widgetIndex)
     {
@@ -76,14 +94,14 @@ namespace openloco::ui::windows::construction::construction
             case widx::construct:
                 for (int i = 0; i < multiplier; i++)
                 {
-                    call(0x0049F92D, regs);
+                    constructTrack(self, widgetIndex);
                 }
                 break;
 
             case widx::remove:
                 for (int i = 0; i < multiplier; i++)
                 {
-                    call(0x004A0121, regs);
+                    removeTrack(self, widgetIndex);
                 }
                 break;
 
@@ -112,44 +130,43 @@ namespace openloco::ui::windows::construction::construction
         }
     }
 
-    // 0x0049DBEC
-    static void disableUnusedRoadPieces(window* self, uint64_t disabledWidgets)
+    // 0x0049DB71
+    static void disableUnusedPiecesRotation(uint64_t* disabledWidgets)
     {
-        if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
-        {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
-            disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
-        }
-
-        if (_lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
-        {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
-            disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
-        }
-
         if (_constructionRotation < 12)
         {
             if (_constructionRotation >= 8)
             {
-                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                *disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                *disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
             }
             else
             {
                 if (_constructionRotation >= 4)
                 {
-                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                    disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
+                    *disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
+                    *disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
                 }
             }
         }
         else
         {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
+            *disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
+            *disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
         }
+    }
+
+    // 0x0049DBEC
+    static void disableUnusedRoadPieces(window* self, uint64_t disabledWidgets)
+    {
+        if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6 || _lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
+        {
+            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
+            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
+            disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
+        }
+
+        disableUnusedPiecesRotation(&disabledWidgets);
 
         if (_constructionHover == 0)
         {
@@ -163,7 +180,7 @@ namespace openloco::ui::windows::construction::construction
     // 0x0049DB1F
     static void disableUnusedTrackPieces(window* self, track_object trackObj, uint64_t disabledWidgets)
     {
-        if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6)
+        if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6 || _lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
         {
             disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
             disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
@@ -172,36 +189,7 @@ namespace openloco::ui::windows::construction::construction
                 disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
         }
 
-        if (_lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
-        {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
-
-            if (!(trackObj.track_pieces & (1 << 8)))
-                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
-        }
-
-        if (_constructionRotation < 12)
-        {
-            if (_constructionRotation >= 8)
-            {
-                disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                disabledWidgets |= (1 << widx::s_bend_right) | (1 << widx::slope_down) | (1 << widx::slope_up);
-            }
-            else
-            {
-                if (_constructionRotation >= 4)
-                {
-                    disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_small);
-                    disabledWidgets |= (1 << widx::s_bend_left) | (1 << widx::slope_down) | (1 << widx::slope_up);
-                }
-            }
-        }
-        else
-        {
-            disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve_small) | (1 << widx::left_hand_curve) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small) | (1 << widx::right_hand_curve_small);
-            disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right) | (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-        }
+        disableUnusedPiecesRotation(&disabledWidgets);
 
         if (_constructionHover == 0)
         {
@@ -319,6 +307,7 @@ namespace openloco::ui::windows::construction::construction
         }
     }
 
+    // 0x0049d600 (based on)
     static void changeTrackPiece(uint8_t trackPiece, bool slope)
     {
         _byte_113603A = 0xFF;
@@ -333,6 +322,7 @@ namespace openloco::ui::windows::construction::construction
         common::activateSelectedConstructionWidgets();
     }
 
+    // 0x0049D83A
     static void bridgeDropdown(window* self)
     {
         auto bridgeCount = 0;
@@ -506,7 +496,7 @@ namespace openloco::ui::windows::construction::construction
                 auto bridge = _bridgeList[itemIndex];
                 _lastSelectedBridge = bridge;
 
-                // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
+                // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
                 _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
                 common::sub_49FEC7();
                 _trackCost = 0x80000000;
@@ -535,7 +525,7 @@ namespace openloco::ui::windows::construction::construction
         }
         if (_constructionHover == 0)
         {
-            if (input::has_flag(input::input_flags::tool_active) && _toolWindowType == WindowType::construction)
+            if (input::is_tool_active(WindowType::construction, self->number))
                 input::cancel_tool();
         }
         sub_49FD66();
@@ -552,26 +542,17 @@ namespace openloco::ui::windows::construction::construction
         call(0x0049DC8C, regs);
     }
 
-    static void getConstructionHeight(map_pos mapPos, int16_t* height, bool isSelected)
+    // 0x004A2395
+    std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
     {
         auto tile = tilemgr::get(mapPos);
 
-        auto tileElement = tile.begin();
-
-        if (tileElement->type() != element_type::surface)
-        {
-            while (tileElement->type() != element_type::surface)
-            {
-                tileElement += 8;
-            }
-        }
-
-        auto surfaceTile = tileElement->as_surface();
+        auto surfaceTile = tile.surface();
 
         if (surfaceTile == nullptr)
-            return;
+            return std::nullopt;
 
-        int16_t tileHeight = surfaceTile->base_z() << 2;
+        int16_t tileHeight = surfaceTile->base_z() * 4;
 
         if (surfaceTile->slope_corners())
         {
@@ -585,35 +566,150 @@ namespace openloco::ui::windows::construction::construction
 
         if (isSelected)
         {
-            if (tileHeight > *height)
+            if (tileHeight > height)
             {
-                *height = tileHeight;
+                height = tileHeight;
             }
         }
         else
         {
             if (tileHeight > _word_1136000)
             {
-                *height = _word_1136000;
+                height = _word_1136000;
             }
         }
 
-        if (surfaceTile->water())
+        if (isSelected)
         {
-            tileHeight = surfaceTile->water() << 4;
-            tileHeight += 16;
+            if (surfaceTile->water())
+            {
+                tileHeight = surfaceTile->water() * 16;
+                tileHeight += 16;
+
+                if (tileHeight > height)
+                {
+                    height = tileHeight;
+                }
+            }
+        }
+        else
+        {
+            tileHeight = surfaceTile->water() * 16;
+            if (tileHeight > height)
+            {
+                height = tileHeight;
+            }
         }
 
-        if (tileHeight > *height)
-        {
-            *height = tileHeight;
-        }
+        return height;
     }
 
+    // 0x00478361
+    std::optional<int16_t> sub_478361(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        auto flags = call(0x00478361, regs);
+
+        if (flags & (1 << 8))
+            return std::nullopt;
+
+        return regs.di;
+    }
+
+    // 0x004A4011
+    std::optional<int16_t> sub_4A4011(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        auto flags = call(0x004A4011, regs);
+
+        if (flags & (1 << 8))
+            return std::nullopt;
+
+        return regs.di;
+    }
+
+    // 0x00460781
+    static map_pos sub_460781(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        call(0x00460781, regs);
+
+        map_pos mapPos = { regs.ax, regs.bx };
+
+        return mapPos;
+    }
+
+    static void constructionLoop(map_pos mapPos, uint32_t maxRetries, int16_t height)
+    {
+        while (true)
+        {
+            _constructionHover = 0;
+            _byte_113607E = 0;
+            _x = mapPos.x;
+            _y = mapPos.y;
+            _word_1135FB8 = height;
+            _byte_522096 = 0;
+            _byte_1136066 = 0;
+
+            common::activateSelectedConstructionWidgets();
+            auto window = WindowManager::find(WindowType::construction);
+
+            if (window == nullptr)
+                return;
+
+            _byte_508F09 = _byte_508F09 | (1 << 0);
+
+            on_mouse_up(window, widx::construct);
+
+            _byte_508F09 = _byte_508F09 & ~(1 << 0);
+
+            if (_dword_1135F42 == 0x80000000)
+            {
+                if (gGameCommandErrorText != string_ids::error_can_only_build_above_ground)
+                {
+                    maxRetries--;
+                    if (maxRetries != 0)
+                    {
+                        height -= 16;
+                        if (height >= 0)
+                        {
+                            if (input::has_key_modifier(input::key_modifier::shift))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                height += 32;
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _byte_113607E = 1;
+                WindowManager::close(WindowType::error, 0);
+                return;
+            }
+
+            on_mouse_up(window, widx::rotate_90);
+
+            audio::play_sound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
+
+            return;
+        }
+    }
     // 0x0049DC97
     static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != 28)
+        if (widgetIndex != widx::construct)
             return;
 
         if (_trackType & (1 << 7))
@@ -626,54 +722,40 @@ namespace openloco::ui::windows::construction::construction
             if (!road)
                 return;
 
-            _byte_1136065 = (*road).id;
+            _byte_1136065 = road->id;
             int16_t roadHeight = 0;
 
             auto i = 0;
-            if (_mapSelectionFlags & 1 << 1)
+            if (_mapSelectionFlags & (1 << 1))
             {
-                auto xPos = _mapSelectedTiles[i].x;
-                while (xPos != -1)
+                for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
                 {
-                    auto yPos = _mapSelectedTiles[i].y;
-
-                    if (xPos >= 0x2FFF)
-                    {
-                        i++;
-                        xPos = _mapSelectedTiles[i].x;
+                    if (tile.x >= 0x2FFF)
                         continue;
-                    }
 
-                    if (yPos >= 0x2FFF)
-                    {
-                        i++;
-                        xPos = _mapSelectedTiles[i].x;
+                    if (tile.y >= 0x2FFF)
                         continue;
-                    }
 
-                    getConstructionHeight(_mapSelectedTiles[i], &roadHeight, true);
+                    auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
 
-                    i++;
-                    xPos = _mapSelectedTiles[i].x;
+                    if (height)
+                        roadHeight = height.value();
                 }
             }
             // loc_4A23F8
             _word_1136000 = roadHeight;
-            _mapSelectionFlags = _mapSelectionFlags & ~(0x7);
+            _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
 
-            registers regs2;
-            regs2.ax = x;
-            regs2.bx = y;
-            auto flags = call(0x00478361, regs2);
-            map_pos mapPos = { regs2.ax, regs2.bx };
+            auto height = sub_478361(x, y);
+            map_pos mapPos;
 
-            if (!(flags & 1 << 8))
+            if (height)
             {
-                auto pos = screenGetMapXyWithZ(xy32(x, y), roadHeight << 3);
+                auto pos = screenGetMapXyWithZ(xy32(x, y), roadHeight * 8 | height.value());
                 if (pos)
                 {
-                    mapPos.x = (*pos).x;
-                    mapPos.y = (*pos).y;
+                    mapPos.x = pos->x;
+                    mapPos.y = pos->y;
                     mapPos.x &= 0xFFE0;
                     mapPos.y &= 0xFFE0;
                     _byte_113605D = 1;
@@ -681,118 +763,57 @@ namespace openloco::ui::windows::construction::construction
                 }
                 else
                 {
-                    mapPos.x = -1;
+                    mapPos.x = -32768;
                 }
             }
 
-            if (flags & 1 << 8 || mapPos.x == -1)
+            if (!height || mapPos.x == -32768)
             {
-                registers regs3;
-                regs3.ax = x;
-                regs3.bx = y;
-                regs3.edi = _mapSelectedTiles[i].x << 16 | _mapSelectedTiles[i].x;
-                call(0x00460781, regs3);
+                mapPos = sub_460781(x, y);
 
-                if (regs3.ax == -32768)
+                if (mapPos.x == -32768)
                     return;
 
-                mapPos.x = regs3.ax;
-                mapPos.y = regs3.bx;
+                auto constructionHeight = getConstructionHeight(mapPos, roadHeight, false);
 
-                getConstructionHeight(mapPos, &roadHeight, true);
+                if (constructionHeight)
+                    roadHeight = constructionHeight.value();
 
                 _byte_113605D = 0;
             }
             input::cancel_tool();
 
-            auto ebx = 0;
+            auto maxRetries = 0;
             if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto roadPiece = common::roadPieces[_byte_1136065];
                 i = 0;
-                auto height = 0;
+                auto maxRoadPieceHeight = 0;
 
                 while (roadPiece[i].index != 0xFF)
                 {
-                    if (height > roadPiece[i].z)
-                        height = roadPiece[i].z;
+                    if (maxRoadPieceHeight > roadPiece[i].z)
+                        maxRoadPieceHeight = roadPiece[i].z;
                     i++;
                 }
 
-                roadHeight -= height;
+                roadHeight -= maxRoadPieceHeight;
                 roadHeight -= 16;
-                ebx = 2;
+                maxRetries = 2;
 
                 if (input::has_key_modifier(input::key_modifier::shift))
                 {
-                    ebx = 0x80000000;
+                    maxRetries = 0x80000008;
                     roadHeight -= 16;
                 }
             }
             else
             {
-                ebx = 1;
+                maxRetries = 1;
                 roadHeight = _word_1135FFE;
             }
 
-            while (true)
-            {
-                _constructionHover = 0;
-                _byte_113607E = 0;
-                _x = mapPos.x;
-                _y = mapPos.y;
-                _word_1135FB8 = roadHeight;
-                _byte_522096 = 0;
-                _byte_1136066 = 0;
-
-                common::activateSelectedConstructionWidgets();
-                auto window = WindowManager::find(WindowType::construction);
-
-                if (window == nullptr)
-                    return;
-
-                _byte_508F09 = _byte_508F09 | (1 << 0);
-
-                on_mouse_up(window, widx::construct);
-
-                _byte_508F09 = _byte_508F09 & ~(1 << 0);
-
-                if (_dword_1135F42 == 0x80000000)
-                {
-                    if (gGameCommandErrorText != string_ids::error_can_only_build_above_ground)
-                    {
-                        ebx--;
-                        if (ebx != 0)
-                        {
-                            roadHeight -= 16;
-                            if (roadHeight >= 0)
-                            {
-                                if (ebx < 0)
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    roadHeight += 32;
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    _byte_113607E = 1;
-                    WindowManager::close(WindowType::error, 0);
-                    return;
-                }
-
-                on_mouse_up(window, widx::rotate_90);
-
-                audio::play_sound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
-
-                return;
-            }
+            constructionLoop(mapPos, maxRetries, roadHeight);
         }
         else
         {
@@ -804,55 +825,41 @@ namespace openloco::ui::windows::construction::construction
             if (!track)
                 return;
 
-            _byte_1136065 = (*track).id;
+            _byte_1136065 = track->id;
             int16_t trackHeight = 0;
             auto i = 0;
 
-            if (_mapSelectionFlags & 1 << 1)
+            if (_mapSelectionFlags & (1 << 1))
             {
-                auto xPos = _mapSelectedTiles[i].x;
-                while (xPos != -1)
+                for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
                 {
-                    auto yPos = _mapSelectedTiles[i].y;
-
-                    if (xPos >= 0x2FFF)
-                    {
-                        i++;
-                        xPos = _mapSelectedTiles[i].x;
+                    if (tile.x >= 0x2FFF)
                         continue;
-                    }
 
-                    if (yPos >= 0x2FFF)
-                    {
-                        i++;
-                        xPos = _mapSelectedTiles[i].x;
+                    if (tile.y >= 0x2FFF)
                         continue;
-                    }
 
-                    getConstructionHeight(_mapSelectedTiles[i], &trackHeight, true);
+                    auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
 
-                    i++;
-                    xPos = _mapSelectedTiles[i].x;
+                    if (height)
+                        trackHeight = height.value();
                 }
             }
             _word_1136000 = trackHeight;
-            _mapSelectionFlags = _mapSelectionFlags & ~(0x7);
+            _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
 
-            registers regs2;
-            regs2.ax = x;
-            regs2.bx = y;
-            auto flags = call(0x004A4011, regs2);
-            map_pos mapPos = { regs2.ax, regs2.bx };
+            auto height = sub_478361(x, y);
+            map_pos mapPos;
 
-            if (!(flags & 1 << 8))
+            if (height)
             {
-                if (_word_4F7B62[trackHeight << 3] == 0)
+                if (_word_4F7B62[trackHeight * 8] == 0)
                 {
-                    auto pos = screenGetMapXyWithZ(xy32(x, y), trackHeight << 3);
+                    auto pos = screenGetMapXyWithZ(xy32(x, y), trackHeight * 8 | height.value());
                     if (pos)
                     {
-                        mapPos.x = (*pos).x;
-                        mapPos.y = (*pos).y;
+                        mapPos.x = pos->x;
+                        mapPos.y = pos->y;
                         mapPos.x &= 0xFFE0;
                         mapPos.y &= 0xFFE0;
                         _byte_113605D = 1;
@@ -860,119 +867,58 @@ namespace openloco::ui::windows::construction::construction
                     }
                     else
                     {
-                        mapPos.x = -1;
+                        mapPos.x = -32768;
                     }
                 }
             }
 
-            if (flags & 1 << 8 || mapPos.x == -1)
+            if (!height || mapPos.x == -32768)
             {
-                registers regs3;
-                regs3.ax = x;
-                regs3.bx = y;
-                regs3.edi = _mapSelectedTiles[i].x << 16 | _mapSelectedTiles[i].x;
-                call(0x00460781, regs3);
+                mapPos = sub_460781(x, y);
 
-                if (regs3.ax == -32768)
+                if (mapPos.x == -32768)
                     return;
 
-                mapPos.x = regs3.ax;
-                mapPos.y = regs3.bx;
+                auto constructionHeight = getConstructionHeight(mapPos, trackHeight, false);
 
-                getConstructionHeight(mapPos, &trackHeight, false);
+                if (constructionHeight)
+                    trackHeight = constructionHeight.value();
 
                 _byte_113605D = 0;
             }
             input::cancel_tool();
 
-            auto ebx = 0;
+            auto maxRetries = 0;
             if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto trackPiece = common::trackPieces[_byte_1136065];
                 i = 0;
-                auto height = 0;
+                auto maxTrackPieceHeight = 0;
 
                 while (trackPiece[i].index != 0xFF)
                 {
-                    if (height > trackPiece[i].z)
-                        height = trackPiece[i].z;
+                    if (maxTrackPieceHeight > trackPiece[i].z)
+                        maxTrackPieceHeight = trackPiece[i].z;
                     i++;
                 }
 
-                trackHeight -= height;
+                trackHeight -= maxTrackPieceHeight;
                 trackHeight -= 16;
-                ebx = 2;
+                maxRetries = 2;
 
                 if (input::has_key_modifier(input::key_modifier::shift))
                 {
-                    ebx = 0x80000000;
+                    maxRetries = 0x80000008;
                     trackHeight -= 16;
                 }
             }
             else
             {
-                ebx = 1;
+                maxRetries = 1;
                 trackHeight = _word_1135FFE;
             }
 
-            while (true)
-            {
-                _constructionHover = 0;
-                _byte_113607E = 0;
-                _x = mapPos.x;
-                _y = mapPos.y;
-                _word_1135FB8 = trackHeight;
-                _byte_522096 = 0;
-                _byte_1136066 = 0;
-
-                common::activateSelectedConstructionWidgets();
-                auto window = WindowManager::find(WindowType::construction);
-
-                if (window == nullptr)
-                    return;
-
-                _byte_508F09 = _byte_508F09 | (1 << 0);
-
-                on_mouse_up(window, widx::construct);
-
-                _byte_508F09 = _byte_508F09 & ~(1 << 0);
-
-                if (_dword_1135F42 == 0x80000000)
-                {
-                    if (gGameCommandErrorText != string_ids::error_can_only_build_above_ground)
-                    {
-                        ebx--;
-                        if (ebx != 0)
-                        {
-                            trackHeight -= 16;
-                            if (trackHeight >= 0)
-                            {
-                                if (ebx < 0)
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    trackHeight += 32;
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    _byte_113607E = 1;
-                    WindowManager::close(WindowType::error, 0);
-                    return;
-                }
-
-                on_mouse_up(window, widx::rotate_90);
-
-                audio::play_sound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
-
-                return;
-            }
+            constructionLoop(mapPos, maxRetries, trackHeight);
         }
     }
 
@@ -1048,8 +994,7 @@ namespace openloco::ui::windows::construction::construction
     // 0x0049D38A and 0x0049D16B
     static void drawCostString(window* self, gfx::drawpixelinfo_t* dpi)
     {
-        auto x = self->widgets[widx::construct].width() + 1;
-        x >>= 1;
+        auto x = self->widgets[widx::construct].mid_x();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
@@ -1070,7 +1015,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x0049D106
-    static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, map_pos pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1091,7 +1036,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x0049D325
-    static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, map_pos pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1147,8 +1092,8 @@ namespace openloco::ui::windows::construction::construction
                 return;
 
             _byte_1136077 = _trackType;
-            _byte_1136078 = (*road).rotation;
-            _lastSelectedTrackPieceId = (*road).id;
+            _byte_1136078 = road->rotation;
+            _lastSelectedTrackPieceId = road->id;
             _word_1135FD6 = (_lastSelectedBridge << 8) & 0x1F;
 
             auto x = self->x + self->widgets[widx::construct].left + 1;
@@ -1184,8 +1129,8 @@ namespace openloco::ui::windows::construction::construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = coordinate_3d_to_2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
-
-                drawRoadCost(self, clipped, dpi, pos2D, width, height);
+                xy32 pos = { pos2D.x, pos2D.y };
+                drawRoadCost(self, clipped, dpi, pos, width, height);
             }
             else
             {
@@ -1202,8 +1147,8 @@ namespace openloco::ui::windows::construction::construction
                 return;
 
             _byte_1136077 = _trackType;
-            _byte_1136078 = (*track).rotation;
-            _lastSelectedTrackPieceId = (*track).id;
+            _byte_1136078 = track->rotation;
+            _lastSelectedTrackPieceId = track->id;
             _word_1135FD6 = (_lastSelectedBridge << 8) & 0x1F;
 
             auto x = self->x + self->widgets[widx::construct].left + 1;
@@ -1239,8 +1184,8 @@ namespace openloco::ui::windows::construction::construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = coordinate_3d_to_2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
-
-                drawTrackCost(self, clipped, dpi, pos2D, width, height);
+                xy32 pos = { pos2D.x, pos2D.y };
+                drawTrackCost(self, clipped, dpi, pos, width, height);
             }
             else
             {

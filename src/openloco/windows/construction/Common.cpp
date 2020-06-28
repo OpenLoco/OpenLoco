@@ -1162,8 +1162,8 @@ namespace openloco::ui::windows::construction
             }
             else
             {
-                rotation = (*road).rotation;
-                roadId = (*road).id;
+                rotation = road->rotation;
+                roadId = road->id;
             }
 
             auto roadPiece = roadPieces[roadId];
@@ -1356,8 +1356,8 @@ namespace openloco::ui::windows::construction
             }
             else
             {
-                rotation = (*track).rotation;
-                trackId = (*track).id;
+                rotation = track->rotation;
+                trackId = track->id;
             }
 
             auto trackPiece = trackPieces[trackId];
