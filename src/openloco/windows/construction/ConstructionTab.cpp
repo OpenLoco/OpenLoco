@@ -604,7 +604,7 @@ namespace openloco::ui::windows::construction::construction
         if (flags & (1 << 8))
             return std::nullopt;
 
-        return std::make_pair(regs.di, regs.dl);
+        return { std::make_pair(regs.di, regs.dl) };
     }
 
     // 0x004A4011
@@ -618,7 +618,7 @@ namespace openloco::ui::windows::construction::construction
         if (flags & (1 << 8))
             return std::nullopt;
 
-        return std::make_pair(regs.di, regs.dl);
+        return { std::make_pair(regs.di, regs.dl) };
     }
 
     // 0x00460781
