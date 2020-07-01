@@ -1092,7 +1092,7 @@ namespace openloco::ui::windows::construction::construction
             if (!road)
                 return;
 
-            _byte_1136077 = _trackType;
+            _byte_1136077 = _trackType & ~(1 << 7);
             _byte_1136078 = road->rotation;
             _lastSelectedTrackPieceId = road->id;
             _word_1135FD6 = (_lastSelectedBridge << 8) & 0x1F;

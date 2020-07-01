@@ -39,7 +39,7 @@ namespace openloco
         uint8_t stations[7];  // 0x1D
         uint8_t var_24;
         uint8_t num_mods;       // 0x25
-        uint8_t mods[2];        // 0x27
+        uint8_t mods[2];        // 0x26
         uint8_t num_compatible; // 0x28
         uint8_t pad_29[0x30 - 0x29];
     };
