@@ -531,17 +531,6 @@ namespace openloco::ui::windows::construction::construction
         sub_49FD66();
     }
 
-    // 0x0049DC8C
-    static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
-    {
-        registers regs;
-        regs.esi = (int32_t)&self;
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049DC8C, regs);
-    }
-
     // 0x004A2395
     static std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
     {
@@ -605,7 +594,7 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x00478361
-    static std::optional<int16_t> sub_478361(int16_t x, int16_t y)
+    static std::optional<std::pair<int16_t, int16_t>> sub_478361(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -615,11 +604,11 @@ namespace openloco::ui::windows::construction::construction
         if (flags & (1 << 8))
             return std::nullopt;
 
-        return regs.di;
+        return std::make_pair(regs.di, regs.dl);
     }
 
     // 0x004A4011
-    static std::optional<int16_t> sub_4A4011(int16_t x, int16_t y)
+    static std::optional<std::pair<int16_t, int16_t>> sub_4A4011(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -629,7 +618,7 @@ namespace openloco::ui::windows::construction::construction
         if (flags & (1 << 8))
             return std::nullopt;
 
-        return regs.di;
+        return std::make_pair(regs.di, regs.dl);
     }
 
     // 0x00460781
@@ -706,6 +695,18 @@ namespace openloco::ui::windows::construction::construction
             return;
         }
     }
+
+    // 0x0049DC8C
+    static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    {
+        registers regs;
+        regs.esi = (int32_t)&self;
+        regs.dx = widgetIndex;
+        regs.ax = x;
+        regs.bx = y;
+        call(0x0049DC8C, regs);
+    }
+
     // 0x0049DC97
     static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
@@ -739,7 +740,7 @@ namespace openloco::ui::windows::construction::construction
                     auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
 
                     if (height)
-                        roadHeight = height.value();
+                        roadHeight = *height;
                 }
             }
             // loc_4A23F8
@@ -751,7 +752,7 @@ namespace openloco::ui::windows::construction::construction
 
             if (height)
             {
-                auto pos = screenGetMapXyWithZ(xy32(x, y), roadHeight * 8 | height.value());
+                auto pos = screenGetMapXyWithZ(xy32(x, y), height->first);
                 if (pos)
                 {
                     mapPos.x = pos->x;
@@ -777,7 +778,7 @@ namespace openloco::ui::windows::construction::construction
                 auto constructionHeight = getConstructionHeight(mapPos, roadHeight, false);
 
                 if (constructionHeight)
-                    roadHeight = constructionHeight.value();
+                    roadHeight = *constructionHeight;
 
                 _byte_113605D = 0;
             }
@@ -842,7 +843,7 @@ namespace openloco::ui::windows::construction::construction
                     auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
 
                     if (height)
-                        trackHeight = height.value();
+                        trackHeight = *height;
                 }
             }
             _word_1136000 = trackHeight;
@@ -853,9 +854,9 @@ namespace openloco::ui::windows::construction::construction
 
             if (height)
             {
-                if (_word_4F7B62[track->id * 8] == 0)
+                if (_word_4F7B62[height->second] == 0)
                 {
-                    auto pos = screenGetMapXyWithZ(xy32(x, y), trackHeight * 8 | height.value());
+                    auto pos = screenGetMapXyWithZ(xy32(x, y), height->first);
                     if (pos)
                     {
                         mapPos.x = pos->x;
@@ -882,7 +883,7 @@ namespace openloco::ui::windows::construction::construction
                 auto constructionHeight = getConstructionHeight(mapPos, trackHeight, false);
 
                 if (constructionHeight)
-                    trackHeight = constructionHeight.value();
+                    trackHeight = *constructionHeight;
 
                 _byte_113605D = 0;
             }

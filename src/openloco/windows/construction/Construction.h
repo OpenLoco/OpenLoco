@@ -24,6 +24,11 @@ namespace openloco::ui::windows::construction
     };
 #pragma pack(pop)
 
+    enum previewTrackFlags
+    {
+        diagonal = 1 << 7,
+    };
+
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<previewTrack[1], 0x004F6D44> _unk_4F6D44;
     static loco_global<previewTrack[1], 0x004F6D4F> _unk_4F6D4F;
@@ -105,6 +110,10 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAC> _lastAirport;
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
+    static loco_global<uint8_t, 0x00F24948> _byte_F24948;
+    static loco_global<uint16_t, 0x00F24942> _word_F24942;
+    static loco_global<uint16_t, 0x00F24944> _word_F24944;
+    static loco_global<uint16_t, 0x00F24946> _word_F24946;
     static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
@@ -125,6 +134,9 @@ namespace openloco::ui::windows::construction
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
+    static loco_global<uint16_t, 0x01135FBA> _word_1135FBA;
+    static loco_global<uint16_t, 0x01135FBC> _word_1135FBC;
+    static loco_global<uint16_t, 0x01135FBE> _word_1135FBE;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
@@ -149,6 +161,8 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
+    static loco_global<uint8_t, 0x01136073> _byte_1136073;
+    static loco_global<uint8_t, 0x01136075> _byte_1136075;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
     static loco_global<uint8_t, 0x01136077> _byte_1136077;
     static loco_global<uint8_t, 0x01136078> _byte_1136078;

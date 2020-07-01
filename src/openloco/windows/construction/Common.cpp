@@ -1172,9 +1172,10 @@ namespace openloco::ui::windows::construction
 
             while (roadPiece[i].index != 0xFF)
             {
-                if (roadPiece[i].flags & (1 << 7))
+                if (roadPiece[i].flags & previewTrackFlags::diagonal)
                 {
                     i++;
+                    continue;
                 }
 
                 map_pos pos = { roadPiece[i].x, roadPiece[i].y };
@@ -1185,7 +1186,7 @@ namespace openloco::ui::windows::construction
                 pos.y += y;
                 _mapSelectedTiles[posId] = pos;
                 posId++;
-                i += 10;
+                i++;
             }
 
             _mapSelectedTiles[posId].x = -1;
@@ -1366,9 +1367,10 @@ namespace openloco::ui::windows::construction
 
             while (trackPiece[i].index != 0xFF)
             {
-                if (trackPiece[i].flags & (1 << 7))
+                if (trackPiece[i].flags & previewTrackFlags::diagonal)
                 {
                     i++;
+                    continue;
                 }
                 map_pos pos = { trackPiece[i].x, trackPiece[i].y };
 
@@ -1378,7 +1380,7 @@ namespace openloco::ui::windows::construction
                 pos.y += y;
                 _mapSelectedTiles[posId] = pos;
                 posId++;
-                i += 10;
+                i++;
             }
 
             _mapSelectedTiles[posId].x = -1;
