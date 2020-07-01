@@ -11,6 +11,8 @@ namespace openloco
 {
     namespace things::vehicle
     {
+        constexpr auto max_vehicle_length = 176; // TODO: Units?
+
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
     }
 

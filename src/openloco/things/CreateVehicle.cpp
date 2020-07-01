@@ -21,12 +21,14 @@ using namespace openloco::objectmgr;
 
 namespace openloco::things::vehicle
 {
+    constexpr uint32_t max_orders = 256000;
+    constexpr auto max_ai_vehicles = 500;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
     static loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
     static loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
-    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // multiplied by 4
+    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
@@ -42,10 +44,10 @@ namespace openloco::things::vehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _525FB8;
     static loco_global<thing_id_t[64 * 1000], 0x0096885C> _96885C;
-    static loco_global<uint8_t[256000], 0x00987C5C> _987C5C;
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;
 
     // 0x004B1D96
-    static bool checkMaxAIVehicles()
+    static bool aiIsBelowVehicleLimit()
     {
         if (is_player_company(_updating_company_id))
         {
@@ -54,12 +56,14 @@ namespace openloco::things::vehicle
 
         const auto& companies = companymgr::companies();
         auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](int32_t& total, const auto& company) {
+            if (company.empty())
+                return total;
             if (is_player_company(company.id()))
-                return 0;
-            return std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
+                return total;
+            return total + std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
         });
 
-        if (totalAiVehicles > 500)
+        if (totalAiVehicles > max_ai_vehicles)
         {
             gGameCommandErrorText = string_ids::too_many_vehicles;
             return false;
@@ -69,9 +73,9 @@ namespace openloco::things::vehicle
     }
 
     // 0x004B1E44
-    static bool checkMaxVehicles()
+    static bool isEmptyVehicleSlotAvailable()
     {
-        if (!checkMaxAIVehicles())
+        if (!aiIsBelowVehicleLimit())
         {
             return false;
         }
@@ -79,7 +83,7 @@ namespace openloco::things::vehicle
         for (auto i = 0; i < 64 * 1000; i += 64)
         {
             auto id = _96885C[i];
-            if (id == 0xFFFF)
+            if (id == thing_id::null)
             {
                 return true;
             }
@@ -88,6 +92,9 @@ namespace openloco::things::vehicle
         return false;
     }
 
+    // 0x00431E6A
+    // al  : company
+    // esi : tile
     static bool sub_431E6A(const company_id_t company, map::tile_element* const tile)
     {
         if (company == company_id::neutral)
@@ -192,6 +199,8 @@ namespace openloco::things::vehicle
         return reinterpret_cast<T*>(base);
     }
 
+    // 0x004BA873
+    // esi : vehBogie
     static void sub_4BA873(openloco::vehicle_bogie* const vehBogie)
     {
         vehBogie->var_68 = 0xFFFF;
@@ -202,7 +211,7 @@ namespace openloco::things::vehicle
             reliabilityFactor /= 16;
 
             auto& prng = gprng();
-            int32_t randVal = (prng.rand_next(65535) * reliabilityFactor / 2) / 256;
+            int32_t randVal = (prng.rand_next(65535) * reliabilityFactor / 2) / 65536;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
             vehBogie->var_68 = static_cast<uint16_t>(std::max(4, reliabilityFactor));
@@ -497,7 +506,7 @@ namespace openloco::things::vehicle
 
     static std::optional<uint16_t> sub_4B1E00()
     {
-        if (!checkMaxAIVehicles())
+        if (!aiIsBelowVehicleLimit())
         {
             return {};
         }
@@ -696,7 +705,7 @@ namespace openloco::things::vehicle
             return {};
         }
 
-        if (_525FB8 > 256000)
+        if (_525FB8 >= max_orders)
         {
             gGameCommandErrorText = string_ids::no_space_for_more_vehicle_orders;
             return {};
@@ -845,7 +854,7 @@ namespace openloco::things::vehicle
             return 0x80000000;
         }
 
-        if (!checkMaxVehicles())
+        if (!isEmptyVehicleSlotAvailable())
         {
             return 0x80000000;
         }
@@ -893,6 +902,7 @@ namespace openloco::things::vehicle
         }
         // 0x4AE733
         auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
         auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
         return cost;
     }

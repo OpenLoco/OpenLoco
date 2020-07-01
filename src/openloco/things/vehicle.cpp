@@ -1552,6 +1552,9 @@ void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
     exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
+// 0x004B90F0
+// eax : newVehicleTypeId
+// ebx : sourceVehicleTypeId;
 static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
 {
     auto newObject = objectmgr::get<vehicle_object>(newVehicleTypeId);       //edi
@@ -1568,14 +1571,11 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
         return true;
     }
 
-    if (newObject->num_compat != 0)
+    for (auto i = 0; i < newObject->num_compat; ++i)
     {
-        for (auto i = 0; i < newObject->num_compat; ++i)
+        if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
         {
-            if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
-            {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -1590,7 +1590,7 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
         }
     }
 
-    if ((newObject->num_compat != 0) && (sourceObject->num_compat != 0))
+    if ((newObject->num_compat != 0) || (sourceObject->num_compat != 0))
     {
         gGameCommandErrorText = string_ids::incompatible_vehicle;
         return false;
@@ -1636,6 +1636,8 @@ uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 }
 
 // 0x004B8FA2
+// esi : self
+// ax  : vehicleTypeId
 bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
 {
     auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
@@ -1706,7 +1708,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
     auto curTotalLength = getVehicleTotalLength();
     auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
-    if (curTotalLength + additionalNewLength > 176)
+    if (curTotalLength + additionalNewLength > openloco::things::vehicle::max_vehicle_length)
     {
         gGameCommandErrorText = string_ids::vehicle_too_long;
         return false;
