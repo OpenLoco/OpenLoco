@@ -1,6 +1,7 @@
 #include "dropdown.h"
 #include "../companymgr.h"
 #include "../console.h"
+#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../window.h"
@@ -15,7 +16,14 @@ namespace openloco::ui::dropdown
 {
     static constexpr int bytes_per_item = 8;
 
+    static loco_global<uint8_t[31], 0x00504619> _byte_504619;
+    static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
+    static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
+    static loco_global<uint32_t, 0x0113DC6C> _dropdownItemWidth;
+    static loco_global<uint32_t, 0x0113DC70> _dropdownColumnCount;
+    static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
+    static loco_global<uint16_t, 0x0113DC78> _word_113DC78;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
@@ -123,6 +131,11 @@ namespace openloco::ui::dropdown
         _dropdownSelection |= (1U << static_cast<uint8_t>(index));
     }
 
+    enum widx
+    {
+        frame = 0,
+    };
+
     /**
      * 0x004CC807
      *
@@ -134,20 +147,54 @@ namespace openloco::ui::dropdown
      * @param count
      * @param flags
      */
-    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour;
-        regs.bl = static_cast<uint8_t>(count);
-        regs.bh = flags;
-        regs.bp = width;
-        regs.di = height;
+        //registers regs;
+        //regs.cx = x;
+        //regs.dx = y;
+        //regs.al = colour;
+        //regs.bl = static_cast<uint8_t>(count);
+        //regs.bh = flags;
+        //regs.bp = width;
+        //regs.di = height;
 
-        call(0x004CC807, regs);
+        //call(0x004CC807, regs);
+
+        if (colour & colour::translucent_flag)
+        {
+            colour = _byte_504619[colour & 0x7F];
+            colour = colour::translucent(colour);
+        }
+
+        input::reset_flag(input::input_flags::flag1); 
+        input::reset_flag(input::input_flags::flag2);
+
+        if (flags & (1 << 7))
+        {
+            input::set_flag(input::input_flags::widget_pressed);
+        }
+
+        flags &= ~(1 << 7);
+
+        WindowManager::close(WindowType::dropdown, 0);
+        _word_113DC78 = 0;
+        _dropdownColumnCount = 1;
+        _dropdownItemWidth = 0;
+        _dropdownItemWidth = width;
+        _dropdownItemHeight = 10;
+
+        if (flags & (1 << 6))
+        {
+            _dropdownItemHeight = itemHeight;
+        }
+
+        flags &= ~(1 << 6);
+
+        _dropdownItemCount = count;
+        _dropdownRowCount = 0;
+        _dropdownRowCount = count;
     }
 
     // Custom dropdown height if flags & (1<<6) is true
