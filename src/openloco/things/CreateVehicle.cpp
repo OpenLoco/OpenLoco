@@ -23,6 +23,11 @@ namespace openloco::things::vehicle
 {
     constexpr uint32_t max_orders = 256000;
     constexpr auto max_ai_vehicles = 500;
+    constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to vehicle_object
+    constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
+    constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
+    constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
+
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
     static loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
@@ -42,9 +47,9 @@ namespace openloco::things::vehicle
     static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _525FB8;
-    static loco_global<thing_id_t[64 * 1000], 0x0096885C> _96885C;
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;
+    static loco_global<uint32_t, 0x00525FB8> _525FB8;              // total used length of _987C5C
+    static loco_global<thing_id_t[64 * 1000], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;   // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -218,7 +223,7 @@ namespace openloco::things::vehicle
         }
     }
 
-    // 0x4AE8F1
+    // 0x004AE8F1, 0x004AEA9E
     static openloco::vehicle_bogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, openloco::vehicle* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<vehicle_bogie>();
@@ -245,8 +250,8 @@ namespace openloco::things::vehicle
         newBogie->var_51 = 0;
         newBogie->var_5E = 0;
         newBogie->var_5F = 0;
-        newBogie->var_60 = 0; // different
-        newBogie->var_61 = 0; // different
+        newBogie->var_60 = 0; // different to createbody
+        newBogie->var_61 = 0; // different to createbody
 
         newBogie->var_14 = 1;
         newBogie->var_09 = 1;
@@ -270,9 +275,11 @@ namespace openloco::things::vehicle
         int32_t reliability = vehObject.reliability * 256;
         if (current_year() + 2 > vehObject.designed)
         {
+            // Reduce reliability by an eighth after 2 years past design
             reliability -= reliability / 8;
             if (current_year() + 3 > vehObject.designed)
             {
+                // Reduce reliability by a further eighth (quarter total) after 3 years past design
                 reliability -= reliability / 8;
             }
         }
@@ -283,12 +290,17 @@ namespace openloco::things::vehicle
         newBogie->reliability = reliability;
         sub_4BA873(newBogie);
 
+        // Calculate refund cost == 7/8 * cost
+        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
         auto cost = (vehObject.cost_fact * currencyMultiplicationFactor[vehObject.cost_ind]) / 64;
-        newBogie->var_62 = cost - cost / 8;
+        newBogie->refund_cost = cost - cost / 8;
 
         if (bodyNumber == 0)
         {
-            if (vehObject.num_simultaneous_cargo_types >= 2)
+            // Only front car components front bogie can have cargo
+            // stores only secondary cargo presumably due to space constraints
+            // in the front car component body
+            if (vehObject.num_simultaneous_cargo_types > 1)
             {
                 newBogie->max_cargo = vehObject.max_secondary_cargo;
                 newBogie->accepted_cargo_types = vehObject.secondary_cargo_types;
@@ -303,9 +315,9 @@ namespace openloco::things::vehicle
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
         if (newBogie->object_sprite_type != 0xFF)
         {
-            newBogie->var_14 = vehObject.var_B4[newBogie->object_sprite_type].var_02;
-            newBogie->var_09 = vehObject.var_B4[newBogie->object_sprite_type].var_03;
-            newBogie->var_15 = vehObject.var_B4[newBogie->object_sprite_type].var_04;
+            newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
+            newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
+            newBogie->var_15 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_04;
         }
         return newBogie;
     }
@@ -322,9 +334,9 @@ namespace openloco::things::vehicle
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
         if (newBogie->object_sprite_type != 0xFF)
         {
-            newBogie->var_14 = vehObject.var_B4[newBogie->object_sprite_type].var_02;
-            newBogie->var_09 = vehObject.var_B4[newBogie->object_sprite_type].var_03;
-            newBogie->var_15 = vehObject.var_B4[newBogie->object_sprite_type].var_04;
+            newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
+            newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
+            newBogie->var_15 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_04;
         }
         return newBogie;
     }
@@ -334,7 +346,7 @@ namespace openloco::things::vehicle
     {
         auto newBody = createVehicleThing<vehicle_body>();
         // TODO: move this into the create function somehow
-        newBody->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_end : vehicle_thing_type::vehicle_body_cont;
+        newBody->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_start : vehicle_thing_type::vehicle_body_cont;
         newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;
@@ -346,7 +358,7 @@ namespace openloco::things::vehicle
         newBody->var_2E = 0;
         newBody->var_2C = 0;
         newBody->var_36 = lastVeh->var_36;
-        newBody->var_38 = (1 << 0); // different
+        newBody->var_38 = (1 << 0); // different to create bogie
         newBody->object_id = vehicleTypeId;
 
         auto& prng = gprng();
@@ -357,10 +369,11 @@ namespace openloco::things::vehicle
         newBody->accepted_cargo_types = 0;
         newBody->cargo_type = 0xFF;
         newBody->var_51 = 0;
-        newBody->var_55 = 0; // different
+        newBody->var_55 = 0; // different to create bogie
         newBody->var_5E = 0;
         newBody->var_5F = 0;
 
+        // different to create bogie
         if (bodyNumber == 0)
         {
             if (vehObject.num_simultaneous_cargo_types >= 1)
@@ -379,7 +392,7 @@ namespace openloco::things::vehicle
         newBody->var_09 = 1;
         newBody->var_15 = 1;
 
-        // different onwards
+        // different onwards to create bogie
         auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
         if (spriteType != 0xFF)
         {
@@ -398,7 +411,7 @@ namespace openloco::things::vehicle
             newBody->var_15 = vehObject.sprites[newBody->object_sprite_type].var_0A;
         }
 
-        newBody->colour_scheme = colourScheme; // same
+        newBody->colour_scheme = colourScheme; // same as create bogie
 
         if (bodyNumber == 0 && vehObject.flags & flags_E0::flag_02)
         {
@@ -410,57 +423,26 @@ namespace openloco::things::vehicle
             newBody->var_38 |= (1 << 3);
         }
 
-        lastVeh->next_car_id = newBody->id; // same
+        lastVeh->next_car_id = newBody->id; // same as create bogie
         return newBody;
     }
 
     static void sub_4B7CC3(openloco::vehicle_head* const head)
     {
-        //if (veh0->mode == TransportMode::road)
-        //{
-        //    auto trackType = veh0->track_type;
-        //    if (veh0->track_type == 0xFF)
-        //    {
-        //        trackType = _525FC5;
-        //    }
-
-        //    const auto roadObj = objectmgr::get<road_object>(trackType);
-        //    auto* const veh3 = veh0->next_car()->next_car()->next_car(); // bogie or 6
-        //    _11360FC = 0;
-        //    if (veh3->type == vehicle_thing_type::vehicle_6)
-        //    {
-        //        // 0x4B7F16
-        //    }
-        //    else
-        //    {
-        //        // 0x4B7E57
-        //        bool unk_ah = false;
-        //        const auto vehicleObj = veh3->object();
-        //        if (vehicleObj->sprites[0].var_05)
-        //        {
-        //            unk_ah = true;
-        //        }
-
-        //        if (vehicleObj->flags & flags_E0::rack_rail)
-        //        {
-        //            const auto rackRail = vehicleObj->rack_rail_type;
-        //        }
-        //    }
-        //}
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(head);
         call(0x004B7CC3, regs);
     }
 
     // 0x004AE86D
-    static bool createBody(openloco::vehicle_head* const head, const uint16_t vehicleTypeId)
+    static bool createCar(openloco::vehicle_head* const head, const uint16_t vehicleTypeId)
     {
-        if (!thingmgr::checkNumFreeThings(12))
+        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
             return false;
         }
 
-        openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_body_end at end of loop
+        openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_body_start at end of loop
         openloco::vehicle* endVeh = lastVeh;                                     // will be of type vehicle_6 at end of loop
         for (; endVeh->type != vehicle_thing_type::vehicle_6; endVeh = lastVeh->next_car())
         {
@@ -530,7 +512,7 @@ namespace openloco::things::vehicle
     static void sub_470312(vehicle_head* const newHead)
     {
         _987C5C[_525FB8] = 0;
-        newHead->var_46 = _525FB8;
+        newHead->length_of_var_4C = _525FB8;
         _525FB8++;
         newHead->var_4A = 0;
         newHead->var_4C = 1;
@@ -660,7 +642,7 @@ namespace openloco::things::vehicle
         newVeh2->var_48 = 0;
         newVeh2->var_4A = 0;
         newVeh2->var_5E = 0;
-        newVeh2->var_62 = 0;
+        newVeh2->refund_cost = 0;
         newVeh2->var_66 = 0;
         newVeh2->var_6A = 0;
         newVeh2->var_6E = 0;
@@ -700,7 +682,7 @@ namespace openloco::things::vehicle
     // 0x004AE318
     static std::optional<openloco::vehicle_head*> createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!thingmgr::checkNumFreeThings(4))
+        if (!thingmgr::checkNumFreeThings(num_vehicle_components_in_base))
         {
             return {};
         }
@@ -751,30 +733,6 @@ namespace openloco::things::vehicle
         call(0x004AF7A4, regs);
     }
 
-    // 0x00437ED0
-    static void companyRecalculateTransportCounts(const company_id_t companyId)
-    {
-        auto company = companymgr::get(companyId);
-        for (auto& count : company->transportTypeCount)
-        {
-            count = 0;
-        }
-
-        auto v = thingmgr::first<openloco::vehicle>();
-        while (v != nullptr)
-        {
-            auto next = v->next_vehicle();
-
-            if (v->owner == companyId)
-            {
-                company->transportTypeCount[static_cast<uint8_t>(v->vehicleType)]++;
-            }
-            v = next;
-        }
-
-        ui::WindowManager::invalidate(ui::WindowType::company, companyId);
-    }
-
     // 0x004B05E4
     static void sub_4B05E4(openloco::vehicle_head* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
@@ -799,7 +757,7 @@ namespace openloco::things::vehicle
         }
     }
 
-    static void sub_470795(const uint32_t var46, const uint16_t var4C)
+    static void sub_470795(const uint32_t var46, const int16_t var4C)
     {
         auto v = thingmgr::first<openloco::vehicle>();
         while (v != nullptr)
@@ -813,24 +771,20 @@ namespace openloco::things::vehicle
                 continue;
             }
 
-            if (head->var_46 > var46)
+            if (head->length_of_var_4C >= var46)
             {
-                head->var_46 += var4C;
+                head->length_of_var_4C += var4C;
             }
         }
     }
 
     // 0x00470334
+    // Remove vehicle ?orders?
     static void sub_470334(openloco::vehicle_head* const head)
     {
-        sub_470795(head->var_46, head->var_4C * -1);
-        auto unk = _525FB8 - head->var_46 - head->var_4C;
-        auto var46 = head->var_46;
-        for (; unk != 0; --unk)
-        {
-            _987C5C[var46] = _987C5C[head->var_4C + var46];
-            var46++;
-        }
+        sub_470795(head->length_of_var_4C, head->var_4C * -1);
+        auto length = _525FB8 - head->length_of_var_4C - head->var_4C;
+        memmove(&_987C5C[head->length_of_var_4C], &_987C5C[head->var_4C + head->length_of_var_4C], length);
 
         _525FB8 = _525FB8 - head->var_4C;
     }
@@ -871,11 +825,12 @@ namespace openloco::things::vehicle
 
             auto _head = *head;
             _113642A = _head->id;
-            if (createBody(_head, vehicleTypeId))
+            if (createCar(_head, vehicleTypeId))
             {
                 // 0x004AE6DE
                 sub_4AF7A4(_head);
-                companyRecalculateTransportCounts(_updating_company_id);
+                auto company = companymgr::get(_updating_company_id);
+                company->recalculateTransportCounts();
 
                 if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
                 {
@@ -962,11 +917,12 @@ namespace openloco::things::vehicle
                     sub_4B08DD(head);
                 }
 
-                if (createBody(head, vehicleTypeId))
+                if (createCar(head, vehicleTypeId))
                 {
                     // 0x004AE6DE
                     sub_4AF7A4(head);
-                    companyRecalculateTransportCounts(_updating_company_id);
+                    auto company = companymgr::get(_updating_company_id);
+                    company->recalculateTransportCounts();
 
                     if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
                     {
@@ -993,6 +949,7 @@ namespace openloco::things::vehicle
             }
             // 0x4AE733
             auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+            // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
             auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
             return cost;
         }

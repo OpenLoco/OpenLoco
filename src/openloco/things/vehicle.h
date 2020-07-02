@@ -37,7 +37,7 @@ namespace openloco
         vehicle_1,
         vehicle_2,
         vehicle_bogie,
-        vehicle_body_end,
+        vehicle_body_start,
         vehicle_body_cont,
         vehicle_6,
     };
@@ -86,7 +86,7 @@ namespace openloco
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
         {
-            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_end>();
+            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_start>();
             if (vehicle != nullptr)
                 return vehicle;
             return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
@@ -199,9 +199,9 @@ namespace openloco
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         int16_t var_44;
-        uint32_t var_46;
+        uint32_t length_of_var_4C; // 0x46
         uint16_t var_4A;
-        uint16_t var_4C;     // 0x4C
+        uint16_t var_4C;     // 0x4C index into ?order? array
         uint8_t pad_4E[0x2]; // 0x4E
         uint8_t pad_50;
         uint8_t pad_51; // 0x51
@@ -294,7 +294,7 @@ namespace openloco
         uint8_t var_5B;
         uint8_t pad_5C[0x5E - 0x5C];
         uint32_t var_5E;
-        uint32_t var_62;
+        uint32_t refund_cost;
         uint32_t var_66;
         uint32_t var_6A;
         uint32_t var_6E;
@@ -392,9 +392,9 @@ namespace openloco
         uint16_t var_44;
         uint8_t var_46;
         uint8_t var_47;
-        uint32_t accepted_cargo_types; // 0x48
-        uint8_t cargo_type;            // 0x4C
-        uint8_t max_cargo;             // 0x4D
+        uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
+        uint8_t cargo_type;            // 0x4C front car component front bogie only
+        uint8_t max_cargo;             // 0x4D front car component front bogie only
         uint8_t pad_4E[0x51 - 0x4E];
         uint8_t var_51;
         uint8_t pad_52[0x54 - 0x52];
@@ -406,8 +406,8 @@ namespace openloco
         uint8_t var_5F;
         uint8_t var_60;
         uint8_t var_61;
-        uint32_t var_62;
-        uint16_t reliability; // 0x66
+        uint32_t refund_cost; // 0x62 front bogies only
+        uint16_t reliability; // 0x66 front bogies only
         uint16_t var_68;
     };
     static_assert(sizeof(vehicle_bogie) == 0x6A); // Can't use offset_of change this to last field if more found

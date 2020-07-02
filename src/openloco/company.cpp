@@ -2,6 +2,8 @@
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "localisation/string_ids.h"
+#include "things/thingmgr.h"
+#include "ui/WindowManager.h"
 #include <algorithm>
 #include <array>
 #include <map>
@@ -39,6 +41,31 @@ namespace openloco
         registers regs;
         regs.esi = (int32_t)this;
         call(0x00430762, regs);
+    }
+
+    // 0x00437ED0
+    void company::recalculateTransportCounts()
+    {
+        // Reset all counts to 0
+        for (auto& count : transportTypeCount)
+        {
+            count = 0;
+        }
+
+        auto companyId = id();
+        auto v = thingmgr::first<openloco::vehicle>();
+        while (v != nullptr)
+        {
+            auto next = v->next_vehicle();
+
+            if (v->owner == companyId)
+            {
+                transportTypeCount[static_cast<uint8_t>(v->vehicleType)]++;
+            }
+            v = next;
+        }
+
+        ui::WindowManager::invalidate(ui::WindowType::company, companyId);
     }
 
     // Converts performance index to rating

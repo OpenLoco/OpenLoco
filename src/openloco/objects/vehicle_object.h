@@ -96,13 +96,13 @@ namespace openloco
     {
         uint8_t length; // 0x00
         uint8_t pad_01;
-        uint8_t front_bogie_sprite_ind; // 0x02 index of var_B4 struct
-        uint8_t back_bogie_sprite_ind;  // 0x03 index of var_B4 struct
+        uint8_t front_bogie_sprite_ind; // 0x02 index of bogie_sprites struct
+        uint8_t back_bogie_sprite_ind;  // 0x03 index of bogie_sprites struct
         uint8_t body_sprite_ind;        // 0x04 index of a sprites struct
         uint8_t var_05;
     };
 
-    struct vehicle_object_unk2
+    struct vehicle_object_bogie_sprite
     {
         uint8_t pad_00[0x02 - 0x00];
         uint8_t var_02;
@@ -161,17 +161,17 @@ namespace openloco
         uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
         uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
-        vehicle_object_sprite sprites[4]; // 0x3C
-        vehicle_object_unk2 var_B4[2];
-        uint16_t power;                 // 0xD8
-        uint16_t speed;                 // 0xDA
-        uint16_t rack_speed;            // 0xDC
-        uint16_t weight;                // 0xDE
-        uint16_t flags;                 // 0xE0
-        uint8_t max_primary_cargo;      // 0xE2
-        uint8_t max_secondary_cargo;    // 0xE3
-        uint32_t primary_cargo_types;   // 0xE4
-        uint32_t secondary_cargo_types; // 0xE8
+        vehicle_object_sprite sprites[4];             // 0x3C
+        vehicle_object_bogie_sprite bogie_sprites[2]; // 0xB4
+        uint16_t power;                               // 0xD8
+        uint16_t speed;                               // 0xDA
+        uint16_t rack_speed;                          // 0xDC
+        uint16_t weight;                              // 0xDE
+        uint16_t flags;                               // 0xE0
+        uint8_t max_primary_cargo;                    // 0xE2
+        uint8_t max_secondary_cargo;                  // 0xE3
+        uint32_t primary_cargo_types;                 // 0xE4
+        uint32_t secondary_cargo_types;               // 0xE8
         uint8_t pad_EC[0x10C - 0xEC];
         uint8_t num_simultaneous_cargo_types; // 0x10C
         simple_animation animation[2];        // 0x10D

@@ -101,6 +101,7 @@ namespace openloco
         bool empty() const;
         void ai_think();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
+        void recalculateTransportCounts();
     };
 #pragma pack(pop)
 

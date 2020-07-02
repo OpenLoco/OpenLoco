@@ -115,7 +115,7 @@ bool vehicle::update()
         case vehicle_thing_type::vehicle_bogie:
             result = call(0x004AA008, regs);
             break;
-        case vehicle_thing_type::vehicle_body_end:
+        case vehicle_thing_type::vehicle_body_start:
         case vehicle_thing_type::vehicle_body_cont:
             result = as_vehicle_body()->update();
             break;
@@ -143,7 +143,7 @@ void vehicle::sub_4BA8D4()
             return;
     }
 
-    auto v = next_car()->next_car()->next_car();
+    auto v = next_car()->next_car()->next_car(); // bogie or tail
     if (v->type != vehicle_thing_type::vehicle_6)
     {
         while (true)
@@ -152,7 +152,7 @@ void vehicle::sub_4BA8D4()
             {
                 if ((scenario_ticks() & 3) == 0)
                 {
-                    auto v2 = v->next_car()->next_car();
+                    auto v2 = v->next_car()->next_car(); // body
                     smoke::create(loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
@@ -173,7 +173,7 @@ void vehicle::sub_4BA8D4()
                 }
             }
 
-            v = v->next_car()->next_car()->next_car();
+            v = v->next_car()->next_car()->next_car(); // next bogie
             vehicle* u;
             do
             {
@@ -182,9 +182,9 @@ void vehicle::sub_4BA8D4()
                     return;
                 }
                 u = v->next_car()->next_car();
-                if (u->type != vehicle_thing_type::vehicle_body_end)
+                if (u->type != vehicle_thing_type::vehicle_body_start)
                     v = u->next_car();
-            } while (u->type != vehicle_thing_type::vehicle_body_end);
+            } while (u->type != vehicle_thing_type::vehicle_body_start);
         }
     }
 }
@@ -1626,7 +1626,7 @@ uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
     auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
     while (veh->type != vehicle_thing_type::vehicle_6)
     {
-        if (veh->type == vehicle_thing_type::vehicle_body_end)
+        if (veh->type == vehicle_thing_type::vehicle_body_start)
         {
             totalLength += getVehicleTypeLength(veh->object_id);
         }
