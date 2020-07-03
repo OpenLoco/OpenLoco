@@ -707,15 +707,6 @@ void openloco::interop::register_hooks()
         });
 
     register_hook(
-        0x0049D3F6,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            registers backup = regs;
-            ui::windows::construction::on_mouse_up(*((ui::window*)regs.esi), regs.dx);
-            regs = backup;
-            return 0;
-        });
-
-    register_hook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
@@ -775,6 +766,7 @@ void openloco::interop::register_hooks()
     ui::build_vehicle::registerHooks();
     ui::windows::terraform::registerHooks();
     ui::windows::error::registerHooks();
+    ui::windows::construction::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
     game_commands::registerHooks();

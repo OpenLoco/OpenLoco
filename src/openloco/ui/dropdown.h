@@ -64,6 +64,7 @@ namespace openloco::ui::dropdown
     void set_item_selected(size_t index);
 
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags);
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags);
     void show_image(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count);
     void show_below(window* window, widget_index widgetIndex, size_t count);
     void show_below(window* window, widget_index widgetIndex, size_t count, int8_t height);
@@ -72,7 +73,6 @@ namespace openloco::ui::dropdown
 
     void populateCompanySelect(window* window, widget_t* widget);
     company_id_t getCompanyIdFromSelection(int16_t itemIndex);
-    void populateTownSizeSelect(window* window, widget_t* widget);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
     uint16_t getItemsPerRow(uint8_t itemCount);
 }

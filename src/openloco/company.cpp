@@ -76,4 +76,11 @@ namespace openloco
         args.push(performanceIndex);
         args.push(getCorporateRatingAsStringId(performanceToRating(performanceIndex)));
     }
+
+    bool company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
+    {
+        auto vehicleTypeIndex = vehicleIndex >> 5;
+
+        return (unlocked_vehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
+    }
 }

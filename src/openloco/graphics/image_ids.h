@@ -21,6 +21,31 @@ namespace openloco::image_ids
     constexpr uint32_t inline_green_up_arrow = 2324;
     constexpr uint32_t inline_red_down_arrow = 2325;
 
+    constexpr uint32_t construction_straight = 2335;
+
+    constexpr uint32_t construction_left_hand_curve_very_small = 2340;
+    constexpr uint32_t construction_right_hand_curve_very_small = 2341;
+    constexpr uint32_t construction_left_hand_curve_small = 2342;
+    constexpr uint32_t construction_right_hand_curve_small = 2343;
+    constexpr uint32_t construction_left_hand_curve = 2344;
+    constexpr uint32_t construction_right_hand_curve = 2345;
+    constexpr uint32_t construction_left_hand_curve_large = 2346;
+    constexpr uint32_t construction_right_hand_curve_large = 2347;
+    constexpr uint32_t construction_steep_slope_down = 2348;
+    constexpr uint32_t construction_slope_down = 2349;
+    constexpr uint32_t construction_level = 2350;
+    constexpr uint32_t construction_slope_up = 2351;
+    constexpr uint32_t construction_steep_slope_up = 2352;
+    constexpr uint32_t construction_s_bend_left = 2353;
+    constexpr uint32_t construction_s_bend_right = 2354;
+    constexpr uint32_t construction_s_bend_dual_track_left = 2355;
+    constexpr uint32_t construction_s_bend_dual_track_right = 2356;
+    constexpr uint32_t construction_s_bend_to_single_track_left = 2357;
+    constexpr uint32_t construction_s_bend_to_single_track_right = 2358;
+    constexpr uint32_t construction_right_turnaround = 2359;
+    constexpr uint32_t construction_left_turnaround = 2360;
+    constexpr uint32_t construction_remove = 2361;
+    constexpr uint32_t construction_new_position = 2362;
     constexpr uint32_t rubbish_bin = 2363;
     constexpr uint32_t centre_viewport = 2364;
     constexpr uint32_t rotate_object = 2365;

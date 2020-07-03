@@ -436,7 +436,7 @@ namespace openloco::ui::build_vehicle
         for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < objectmgr::get_max_objects(object_type::vehicle); ++vehicleObjIndex)
         {
             auto vehicleObj = objectmgr::get<vehicle_object>(vehicleObjIndex);
-            if ((uint32_t)vehicleObj == 0xFFFFFFFF)
+            if (vehicleObj == nullptr)
             {
                 continue;
             }

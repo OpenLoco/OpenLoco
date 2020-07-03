@@ -147,6 +147,8 @@ namespace openloco::objectmgr
     template<>
     cargo_object* get(size_t id);
     template<>
+    train_signal_object* get(size_t id);
+    template<>
     road_station_object* get(size_t id);
     template<>
     vehicle_object* get(size_t id);
@@ -161,11 +163,17 @@ namespace openloco::objectmgr
     template<>
     currency_object* get();
     template<>
+    bridge_object* get();
+    template<>
+    train_station_object* get();
+    template<>
     track_object* get(size_t id);
     template<>
     road_object* get(size_t id);
     template<>
     airport_object* get(size_t id);
+    template<>
+    dock_object* get(size_t id);
     template<>
     land_object* get(size_t id);
     template<>

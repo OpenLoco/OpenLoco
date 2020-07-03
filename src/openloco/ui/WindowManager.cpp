@@ -1836,6 +1836,104 @@ namespace openloco::ui::WindowManager
         }
     }
 
+    /**
+     * 0x004A0A18
+     *
+     * @param visibility @<al>
+     */
+    void viewportSetVisibility(viewport_visibility visibility)
+    {
+        auto window = WindowManager::getMainWindow();
+
+        if (window == nullptr)
+            return;
+
+        auto viewport = window->viewports[0];
+        bool flagsChanged = false;
+
+        switch (visibility)
+        {
+            case viewport_visibility::undergroundView:
+            {
+                if (!(viewport->flags & (viewport_flags::underground_view)))
+                {
+                    viewport->flags |= (viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
+                break;
+            }
+
+            case viewport_visibility::heightMarksOnLand:
+            {
+                if (!(viewport->flags & (viewport_flags::height_marks_on_land)))
+                {
+                    viewport->flags |= (viewport_flags::height_marks_on_land);
+                    flagsChanged = true;
+                }
+                break;
+            }
+
+            case viewport_visibility::overgroundView:
+            {
+                if ((viewport->flags & (viewport_flags::underground_view)))
+                {
+                    viewport->flags &= ~(viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
+                break;
+            }
+
+            default:
+            {
+                if (viewport->flags & (viewport_flags::underground_view))
+                {
+                    viewport->flags &= ~(viewport_flags::underground_view);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::flag_7))
+                {
+                    viewport->flags &= ~(viewport_flags::flag_7);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::flag_8))
+                {
+                    viewport->flags &= ~(viewport_flags::flag_8);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::hide_foreground_tracks_roads))
+                {
+                    viewport->flags &= ~(viewport_flags::hide_foreground_tracks_roads);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::hide_foreground_scenery_buildings))
+                {
+                    viewport->flags &= ~(viewport_flags::hide_foreground_scenery_buildings);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::height_marks_on_land))
+                {
+                    viewport->flags &= ~(viewport_flags::height_marks_on_land);
+                    flagsChanged = true;
+                }
+
+                if (viewport->flags & (viewport_flags::height_marks_on_tracks_roads))
+                {
+                    viewport->flags &= ~(viewport_flags::height_marks_on_tracks_roads);
+                    flagsChanged = true;
+                }
+                break;
+            }
+        }
+
+        if (flagsChanged)
+            window->invalidate();
+    }
+
     // 0x004CF456
     void closeAllFloatingWindows()
     {
@@ -1871,7 +1969,8 @@ namespace openloco::ui::WindowManager
 namespace openloco::ui::windows
 {
     static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
-    static loco_global<int8_t, 0x00F2533F> _gridlines_state;
+    static loco_global<int8_t, 0x00F2533F> _gridlinesState;
+    static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
 
     // 0x00431A8A
     void show_error(string_id title, string_id message, bool sound)
@@ -1889,7 +1988,7 @@ namespace openloco::ui::windows
     // 0x00468FD3
     void showGridlines()
     {
-        if (!_gridlines_state)
+        if (!_gridlinesState)
         {
             auto window = WindowManager::getMainWindow();
             if (window != nullptr)
@@ -1901,14 +2000,14 @@ namespace openloco::ui::windows
                 window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
             }
         }
-        _gridlines_state++;
+        _gridlinesState++;
     }
 
     // 0x00468FFE
     void hideGridlines()
     {
-        _gridlines_state--;
-        if (!_gridlines_state)
+        _gridlinesState--;
+        if (!_gridlinesState)
         {
             if (!(config::get().flags & config::flags::gridlines_on_landscape))
             {
@@ -1919,7 +2018,43 @@ namespace openloco::ui::windows
                     {
                         window->invalidate();
                     }
-                    window->viewports[0]->flags ^= viewport_flags::gridlines_on_landscape;
+                    window->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
+                }
+            }
+        }
+    }
+
+    // 0x004793C4
+    void showDirectionArrows()
+    {
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if (!(mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags |= viewport_flags::one_way_direction_arrows;
+                    mainWindow->invalidate();
+                }
+            }
+        }
+        _directionArrowsState++;
+    }
+
+    // 0x004793EF
+    void hideDirectionArrows()
+    {
+        _directionArrowsState--;
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if ((mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags &= ~viewport_flags::one_way_direction_arrows;
+                    mainWindow->invalidate();
                 }
             }
         }

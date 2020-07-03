@@ -8,6 +8,8 @@
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
+#include "../map/tile_loop.hpp"
+#include "../map/tilemgr.h"
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
@@ -18,10 +20,13 @@
 #include "../widget.h"
 
 using namespace openloco::interop;
+using namespace openloco::map;
 
 namespace openloco::ui::windows::station
 {
-    static loco_global<uint16_t, 0x00112C786> word_112C786;
+    static loco_global<uint16_t[0x24000], 0x000F00484> _byte_F00484;
+    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
+    static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -361,7 +366,7 @@ namespace openloco::ui::windows::station
             common::repositionTabs(self);
 
             self->activated_widgets &= ~(1 << widx::station_catchment);
-            if (self->number == word_112C786)
+            if (self->number == _lastSelectedStation)
                 self->activated_widgets |= (1 << widx::station_catchment);
         }
 
@@ -427,15 +432,14 @@ namespace openloco::ui::windows::station
                     break;
 
                 case widx::station_catchment:
-                    auto windowNumber = self->number;
-                    if (self->number == word_112C786)
-                        windowNumber = -1;
+                {
+                    station_id_t windowNumber = self->number;
+                    if (windowNumber == _lastSelectedStation)
+                        windowNumber = station_id::null;
 
-                    // 0x0049271A
-                    registers regs;
-                    regs.ax = windowNumber;
-                    call(0x0049271A, regs);
+                    showStationCatchment(windowNumber);
                     break;
+                }
             }
         }
 
@@ -718,6 +722,65 @@ namespace openloco::ui::windows::station
         }
     }
 
+    // 0x00491BC6
+    static void sub_491BC6()
+    {
+        tile_loop tileLoop;
+
+        for (uint32_t posId = 0; posId < 0x24000; posId++)
+        {
+            if (_byte_F00484[posId] & (1 << 0))
+            {
+                tilemgr::map_invalidate_tile_full(tileLoop.current());
+            }
+            tileLoop.next();
+        }
+    }
+
+    // 0x00491D70
+    static void setStationCatchmentDisplay(openloco::station* station, uint16_t dx)
+    {
+        registers regs;
+        regs.ebp = uint32_t(station);
+        regs.dx = dx;
+        call(0x00491D70, regs);
+    }
+
+    // 0x0049271A
+    void showStationCatchment(uint16_t stationId)
+    {
+        if (stationId == _lastSelectedStation)
+            return;
+
+        uint16_t oldStationId = *_lastSelectedStation;
+        _lastSelectedStation = stationId;
+
+        if (oldStationId != station_id::null)
+        {
+            if (input::hasMapSelectionFlag(input::map_selection_flags::catchment_area))
+            {
+                WindowManager::invalidate(WindowType::station, oldStationId);
+                sub_491BC6();
+                input::resetMapSelectionFlag(input::map_selection_flags::catchment_area);
+            }
+        }
+
+        auto newStationId = _lastSelectedStation;
+
+        if (newStationId != station_id::null)
+        {
+            ui::windows::construction::sub_4A6FAC();
+            auto station = stationmgr::get(_lastSelectedStation);
+
+            setStationCatchmentDisplay(station, 0);
+            input::setMapSelectionFlags(input::map_selection_flags::catchment_area);
+
+            WindowManager::invalidate(WindowType::station, newStationId);
+
+            sub_491BC6();
+        }
+    }
+
     namespace common
     {
         struct TabInformation
@@ -847,12 +910,9 @@ namespace openloco::ui::windows::station
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::tab_cargo)
-                if (self->number == word_112C786)
+                if (self->number == _lastSelectedStation)
                 {
-                    // 0x0049271A
-                    registers regs;
-                    regs.ax = -1;
-                    call(0x0049271A, regs);
+                    showStationCatchment(station_id::null);
                 }
 
             if (input::is_tool_active(self->type, self->number))

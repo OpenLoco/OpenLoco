@@ -108,6 +108,31 @@ namespace openloco::string_ids
     constexpr string_id screenshot_saved_as = 109;
     constexpr string_id screenshot_failed = 110;
 
+    constexpr string_id stringid_2 = 113;
+    constexpr string_id tooltip_left_hand_curve = 114;
+    constexpr string_id tooltip_right_hand_curve = 115;
+    constexpr string_id tooltip_left_hand_curve_small = 116;
+    constexpr string_id tooltip_right_hand_curve_small = 117;
+    constexpr string_id tooltip_left_hand_curve_very_small = 118;
+    constexpr string_id tooltip_right_hand_curve_very_small = 119;
+    constexpr string_id tooltip_left_hand_curve_large = 120;
+    constexpr string_id tooltip_right_hand_curve_large = 121;
+    constexpr string_id tooltip_straight = 122;
+    constexpr string_id tooltip_s_bend_left = 123;
+    constexpr string_id tooltip_s_bend_right = 124;
+    constexpr string_id tooltip_s_bend_left_dual_track = 125;
+    constexpr string_id tooltip_s_bend_right_dual_track = 126;
+    constexpr string_id tooltip_s_bend_to_single_track = 127;
+    constexpr string_id tooltip_turnaround = 128;
+    constexpr string_id tooltip_start_construction = 129;
+    constexpr string_id tooltip_construct = 130;
+    constexpr string_id tooltip_remove = 131;
+    constexpr string_id tooltip_steep_slope_down = 132;
+    constexpr string_id tooltip_slope_down = 133;
+    constexpr string_id tooltip_level = 134;
+    constexpr string_id tooltip_slope_up = 135;
+    constexpr string_id tooltip_steep_slope_up = 136;
+    constexpr string_id build_this = 137;
     constexpr string_id build_cost = 138;
 
     constexpr string_id menu_underground_view = 145;
@@ -187,12 +212,36 @@ namespace openloco::string_ids
     constexpr string_id title_company_colour_scheme = 250;
     constexpr string_id title_company_challenge = 251;
 
+    constexpr string_id velocity = 263;
+    constexpr string_id unlimited_speed = 264;
+
+    constexpr string_id tooltip_select_track_to_upgrade = 268;
+
+    constexpr string_id signal_black = 270;
+    constexpr string_id tab_track_road_construction = 271;
+    constexpr string_id tab_station_construction = 272;
+    constexpr string_id tab_signal_construction = 273;
+    constexpr string_id tab_electrification_construction = 274;
+    constexpr string_id tooltip_select_signal_type = 275;
+    constexpr string_id tooltip_signal_both_directions = 276;
+    constexpr string_id tooltip_signal_single_direction = 277;
+    constexpr string_id tooltip_bridge_stats = 278;
+    constexpr string_id tooltip_select_station_type = 279;
+
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
 
     constexpr string_id stringid_stringid = 347;
+    constexpr string_id single_section = 348;
+    constexpr string_id block_section = 349;
+    constexpr string_id all_connected_track = 350;
 
+    constexpr string_id upgrade_track_with_mods = 352;
+    constexpr string_id click_track_to_upgrade = 353;
+    constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
+
+    constexpr string_id error_can_only_build_above_ground = 360;
 
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
@@ -250,6 +299,9 @@ namespace openloco::string_ids
 
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
+
+    constexpr string_id new_construction_position = 579;
+    constexpr string_id rotate_90 = 580;
 
     constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
@@ -645,6 +697,11 @@ namespace openloco::string_ids
     constexpr string_id prompt_type_new_town_name = 1309;
     constexpr string_id status_town_population = 1310;
     constexpr string_id error_cant_rename_town = 1311;
+    constexpr string_id new_station = 1312;
+    constexpr string_id new_station_buffer = 1313;
+    constexpr string_id catchment_area_accepts = 1314;
+    constexpr string_id catchment_area_produces = 1315;
+    constexpr string_id catchment_area_nothing = 1316;
 
     constexpr string_id title_industries = 1318;
     constexpr string_id title_fund_new_industries = 1319;
@@ -804,6 +861,8 @@ namespace openloco::string_ids
     constexpr string_id forbid_trams = 1521;
     constexpr string_id forbid_aircraft = 1522;
     constexpr string_id forbid_ships = 1523;
+    constexpr string_id title_airport = 1524;
+    constexpr string_id title_ship_port = 1525;
 
     constexpr string_id currently_playing = 1535;
     constexpr string_id music_controls_stop_tip = 1536;
@@ -1088,6 +1147,7 @@ namespace openloco::string_ids
     constexpr string_id title_industry_name = 2017;
     constexpr string_id prompt_enter_new_industry_name = 2018;
     constexpr string_id error_cant_rename_industry = 2019;
+    constexpr string_id dropdown_bridge_stats = 2020;
 
     constexpr string_id position_1st = 2023;
     constexpr string_id position_2nd = 2024;

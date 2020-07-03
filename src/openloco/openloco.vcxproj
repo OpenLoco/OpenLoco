@@ -92,7 +92,11 @@
     <ClCompile Include="windows\CompanyFaceSelection.cpp" />
     <ClCompile Include="windows\CompanyList.cpp" />
     <ClCompile Include="windows\CompanyWindow.cpp" />
-    <ClCompile Include="windows\constructionwnd.cpp" />
+    <ClCompile Include="windows\construction\Common.cpp" />
+    <ClCompile Include="windows\construction\ConstructionTab.cpp" />
+    <ClCompile Include="windows\construction\OverheadTab.cpp" />
+    <ClCompile Include="windows\construction\SignalTab.cpp" />
+    <ClCompile Include="windows\construction\StationTab.cpp" />
     <ClCompile Include="windows\EditKeyboardShortcut.cpp" />
     <ClCompile Include="windows\Error.cpp" />
     <ClCompile Include="windows\IndustryWindow.cpp" />
@@ -175,10 +179,12 @@
     <ClInclude Include="messagemgr.h" />
     <ClInclude Include="multiplayer.h" />
     <ClInclude Include="objects\airport_object.h" />
+    <ClInclude Include="objects\bridge_object.h" />
     <ClInclude Include="objects\building_object.h" />
     <ClInclude Include="objects\cargo_object.h" />
     <ClInclude Include="objects\competitor_object.h" />
     <ClInclude Include="objects\currency_object.h" />
+    <ClInclude Include="objects\dock_object.h" />
     <ClInclude Include="objects\industry_object.h" />
     <ClInclude Include="objects\interface_skin_object.h" />
     <ClInclude Include="objects\land_object.h" />
@@ -191,6 +197,8 @@
     <ClInclude Include="objects\steam_object.h" />
     <ClInclude Include="objects\track_extra_object.h" />
     <ClInclude Include="objects\track_object.h" />
+    <ClInclude Include="objects\train_signal_object.h" />
+    <ClInclude Include="objects\train_station_object.h" />
     <ClInclude Include="objects\tree_object.h" />
     <ClInclude Include="objects\vehicle_object.h" />
     <ClInclude Include="objects\wall_object.h" />
@@ -230,6 +238,7 @@
     <ClInclude Include="widget.h" />
     <ClInclude Include="win32.h" />
     <ClInclude Include="window.h" />
+    <ClInclude Include="windows\construction\Construction.h" />
     <ClInclude Include="windows\toolbar_top_common.h" />
   </ItemGroup>
   <ItemGroup>

@@ -81,15 +81,30 @@ namespace openloco::objectmgr
     }
 
     template<>
+    train_signal_object* get(size_t id)
+    {
+        if (_trainSignalObjects[id] != reinterpret_cast<train_signal_object*>(-1))
+            return _trainSignalObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
     road_station_object* get(size_t id)
     {
-        return _roadStationObjects[id];
+        if (_roadStationObjects[id] != reinterpret_cast<road_station_object*>(-1))
+            return _roadStationObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
     vehicle_object* get(size_t id)
     {
-        return _vehicleObjects[id];
+        if (_vehicleObjects[id] != reinterpret_cast<vehicle_object*>(-1))
+            return _vehicleObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
@@ -122,7 +137,7 @@ namespace openloco::objectmgr
     template<>
     industry_object* get(size_t id)
     {
-        if (_industryObjects[id] != (industry_object*)-1)
+        if (_industryObjects[id] != reinterpret_cast<industry_object*>(-1))
             return _industryObjects[id];
         else
             return nullptr;
@@ -135,6 +150,24 @@ namespace openloco::objectmgr
     }
 
     template<>
+    bridge_object* get(size_t id)
+    {
+        if (_bridgeObjects[id] != reinterpret_cast<bridge_object*>(-1))
+            return _bridgeObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    train_station_object* get(size_t id)
+    {
+        if (_trainStationObjects[id] != reinterpret_cast<train_station_object*>(-1))
+            return _trainStationObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
     track_extra_object* get(size_t id)
     {
         return _trackExtraObjects[id];
@@ -143,7 +176,10 @@ namespace openloco::objectmgr
     template<>
     track_object* get(size_t id)
     {
-        return _trackObjects[id];
+        if (_trackObjects[id] != reinterpret_cast<track_object*>(-1))
+            return _trackObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
@@ -155,13 +191,28 @@ namespace openloco::objectmgr
     template<>
     road_object* get(size_t id)
     {
-        return _roadObjects[id];
+        if (_roadObjects[id] != reinterpret_cast<road_object*>(-1))
+            return _roadObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
     airport_object* get(size_t id)
     {
-        return _airportObjects[id];
+        if (_airportObjects[id] != reinterpret_cast<airport_object*>(-1))
+            return _airportObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    dock_object* get(size_t id)
+    {
+        if (_dockObjects[id] != reinterpret_cast<dock_object*>(-1))
+            return _dockObjects[id];
+        else
+            return nullptr;
     }
 
     template<>

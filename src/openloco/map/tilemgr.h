@@ -6,6 +6,12 @@
 
 namespace openloco::map::tilemgr
 {
+    enum MapSelectFlag : uint16_t
+    {
+        enable = (1 << 0),
+        enableConstruct = (1 << 1)
+    };
+
     tile get(map_pos pos);
     tile get(coord_t x, coord_t y);
     std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y);
