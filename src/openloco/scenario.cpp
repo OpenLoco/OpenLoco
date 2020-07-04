@@ -23,4 +23,12 @@ namespace openloco::scenario
     {
         call(0x0043C90C);
     }
+
+    // 0x0044400C
+    void start(int32_t ebx)
+    {
+        registers regs;
+        regs.ebx = ebx;
+        call(0x0044400C, regs);
+    }
 }

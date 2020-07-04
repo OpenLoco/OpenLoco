@@ -116,6 +116,38 @@ namespace openloco::input
         audio::play_sound(audio::sound_id::click_press, ui::width() / 2);
     }
 
+    static void loc_4BEFEF()
+    {
+        switch (tutorial::state())
+        {
+            case tutorial::tutorial_state::none:
+                break;
+
+            case tutorial::tutorial_state::playing:
+            {
+                const uint16_t next = tutorial::nextInput();
+                _keyModifier = next;
+                if ((_keyModifier & key_modifier::unknown) == 0)
+                    return;
+
+                tooltip::closeAndReset();
+
+                auto tutStringId = tutorial::nextString();
+                auto main = WindowManager::getMainWindow();
+                auto cursor = getMouseLocation();
+
+                tooltip::update(main, 0, tutStringId, cursor.x, cursor.y);
+                break;
+            }
+
+            case tutorial::tutorial_state::recording:
+            {
+                call(0x004BF005);
+                break;
+            }
+        }
+    }
+
     static key* get_next_key()
     {
         registers regs;
@@ -135,13 +167,14 @@ namespace openloco::input
         return false;
     }
 
-    /** 0x004BEC5B */
+    // 0x004BEC5B
     void process_keyboard_input()
     {
         cheat();
         normal_key();
     }
 
+    // 0x004BEC5B
     static void cheat()
     {
         // Used to handle INSERT cheat
@@ -212,13 +245,17 @@ namespace openloco::input
         config::write();
     }
 
+    // 0x004BEDA0
     static void normal_key()
     {
         while (true)
         {
             auto eax = get_next_key();
-            if (eax == nullptr)
+            if (eax == 0)
+            {
+                loc_4BEFEF();
                 break;
+            }
 
             if (eax->keyCode >= 255)
                 continue;

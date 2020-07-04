@@ -1042,7 +1042,7 @@ namespace openloco::ui
             WindowManager::callEvent8OnAllWindows();
 
             WindowManager::invalidateAllWindowsAfterInput();
-            call(0x004c6e65); // update_cursor_position
+            input::updateCursorPosition();
 
             uint32_t x;
             int16_t y;
@@ -1088,7 +1088,7 @@ namespace openloco::ui
         WindowManager::callEvent8OnAllWindows();
 
         WindowManager::invalidateAllWindowsAfterInput();
-        call(0x004c6e65); // update_cursor_position
+        input::updateCursorPosition();
 
         uint32_t x;
         int16_t y;
