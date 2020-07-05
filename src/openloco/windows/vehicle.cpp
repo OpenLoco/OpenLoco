@@ -68,7 +68,7 @@ namespace openloco::ui::vehicle
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
 
-            if (vehicle->tile_x != -1 && (vehicle->var_38 & (1 << 4)) == 0)
+            if (vehicle->tile_x != -1 && (vehicle->var_38 & things::vehicle::flags_38::unk_4) == 0)
             {
                 return;
             }
@@ -119,7 +119,7 @@ namespace openloco::ui::vehicle
             }
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
-            if (vehicle->tile_x != -1 && (vehicle->var_38 & (1 << 4)) == 0)
+            if (vehicle->tile_x != -1 && (vehicle->var_38 & things::vehicle::flags_38::unk_4) == 0)
                 return;
 
             if (!WindowManager::isInFrontAlt(w))

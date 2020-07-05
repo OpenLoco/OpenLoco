@@ -14,6 +14,14 @@ namespace openloco
         constexpr auto max_vehicle_length = 176; // TODO: Units?
 
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
+
+        namespace flags_38
+        {
+            constexpr uint8_t unk_0 = 1 << 0;
+            constexpr uint8_t unk_1 = 1 << 1;
+            constexpr uint8_t unk_3 = 1 << 3;
+            constexpr uint8_t unk_4 = 1 << 4;
+        }
     }
 
     struct vehicle_head;

@@ -36,6 +36,13 @@ namespace openloco
         diesel_exhaust2,
         ship_wake
     };
+
+    namespace sprite_ind
+    {
+        constexpr uint8_t null = 0xFF;
+        constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
+    }
+
 #pragma pack(push, 1)
     struct vehicle_object_sound_1
     {
@@ -133,8 +140,8 @@ namespace openloco
 
     namespace flags_E0
     {
-        constexpr uint16_t flag_02 = 1 << 2;
-        constexpr uint16_t flag_03 = 1 << 3;
+        constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
+        constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
         constexpr uint16_t rack_rail = 1 << 6;
         constexpr uint16_t unk_09 = 1 << 9; //anytrack??
         constexpr uint16_t can_couple = 1 << 11;

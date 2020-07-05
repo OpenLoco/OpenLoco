@@ -27,6 +27,7 @@ namespace openloco::things::vehicle
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
+    constexpr thing_id_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
@@ -313,7 +314,7 @@ namespace openloco::things::vehicle
         }
 
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != 0xFF)
+        if (newBogie->object_sprite_type != sprite_ind::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -330,9 +331,9 @@ namespace openloco::things::vehicle
         {
             return nullptr;
         }
-        newBogie->var_38 = (1 << 1);
+        newBogie->var_38 = flags_38::unk_1;
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != 0xFF)
+        if (newBogie->object_sprite_type != sprite_ind::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -358,7 +359,7 @@ namespace openloco::things::vehicle
         newBody->var_2E = 0;
         newBody->var_2C = 0;
         newBody->var_36 = lastVeh->var_36;
-        newBody->var_38 = (1 << 0); // different to create bogie
+        newBody->var_38 = flags_38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
 
         auto& prng = gprng();
@@ -376,7 +377,10 @@ namespace openloco::things::vehicle
         // different to create bogie
         if (bodyNumber == 0)
         {
-            if (vehObject.num_simultaneous_cargo_types >= 1)
+            // If the car carries any type of cargo then it will have a primary
+            // cargo in the first body of the first car component of the car.
+            // Locomotives do not carry any cargo.
+            if (vehObject.num_simultaneous_cargo_types != 0)
             {
                 newBody->max_cargo = vehObject.max_primary_cargo;
                 newBody->accepted_cargo_types = vehObject.primary_cargo_types;
@@ -394,17 +398,17 @@ namespace openloco::things::vehicle
 
         // different onwards to create bogie
         auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
-        if (spriteType != 0xFF)
+        if (spriteType != sprite_ind::null)
         {
-            if (spriteType & (1 << 7))
+            if (spriteType & sprite_ind::flag_unk7)
             {
-                newBody->var_38 |= (1 << 1);
-                spriteType &= ~(1 << 7);
+                newBody->var_38 |= flags_38::unk_1;
+                spriteType &= ~sprite_ind::flag_unk7;
             }
         }
         newBody->object_sprite_type = spriteType;
 
-        if (newBody->object_sprite_type != 0xFF)
+        if (newBody->object_sprite_type != sprite_ind::null)
         {
             newBody->var_14 = vehObject.sprites[newBody->object_sprite_type].var_08;
             newBody->var_09 = vehObject.sprites[newBody->object_sprite_type].var_09;
@@ -415,12 +419,12 @@ namespace openloco::things::vehicle
 
         if (bodyNumber == 0 && vehObject.flags & flags_E0::flag_02)
         {
-            newBody->var_38 |= (1 << 3);
+            newBody->var_38 |= flags_38::unk_3;
         }
 
         if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & flags_E0::flag_03)
         {
-            newBody->var_38 |= (1 << 3);
+            newBody->var_38 |= flags_38::unk_3;
         }
 
         lastVeh->next_car_id = newBody->id; // same as create bogie
@@ -442,20 +446,23 @@ namespace openloco::things::vehicle
             return false;
         }
 
-        openloco::vehicle* lastVeh = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_body_start at end of loop
-        openloco::vehicle* endVeh = lastVeh;                                     // will be of type vehicle_6 at end of loop
-        for (; endVeh->type != vehicle_thing_type::vehicle_6; endVeh = lastVeh->next_car())
+        // Get Car insertion location
+        // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
+        openloco::vehicle* lastVeh = nullptr;                                 // will be of type vehicle_body_start or unk_2 at end of loop
+        openloco::vehicle* tail = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_6 at end of loop
+        while (tail->type != vehicle_thing_type::vehicle_6)
         {
-            lastVeh = lastVeh->next_car();
+            lastVeh = tail;
+            tail = lastVeh->next_car();
         }
 
         const auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
         const auto company = companymgr::get(_updating_company_id);
-        _1136140 = company->mainColours;
+        _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
         if (company->customVehicleColoursSet & (1 << vehObject->colour_type))
         {
-            _1136140 = company->vehicleColours[vehObject->colour_type - 1];
+            _1136140 = company->vehicleColours[vehObject->colour_type - 1]; // Copy to global variable. Can be removed when all global uses confirmed
             colourScheme = company->vehicleColours[vehObject->colour_type - 1];
         }
 
@@ -481,7 +488,7 @@ namespace openloco::things::vehicle
         {
             return false;
         }
-        lastVeh->next_car_id = endVeh->id;
+        lastVeh->next_car_id = tail->id;
         sub_4B7CC3(head);
         return true;
     }
@@ -493,6 +500,7 @@ namespace openloco::things::vehicle
             return {};
         }
 
+        // ?Routing? related. Max 64 routing stops.
         for (auto i = 0; i < 64 * 1000; i += 64)
         {
             auto id = _96885C[i];
@@ -500,7 +508,7 @@ namespace openloco::things::vehicle
             {
                 for (auto j = 0; j < 64; ++j)
                 {
-                    _96885C[i + j] = -2;
+                    _96885C[i + j] = allocated_but_free_routing_station;
                 }
                 return { i };
             }
@@ -570,6 +578,7 @@ namespace openloco::things::vehicle
         newHead->var_3C = 0;
         newHead->vehicleType = vehicleType;
         newHead->var_22 = static_cast<uint8_t>(vehicleType) + 4;
+        newHead->var_44 = 0; // Reset to null value so ignored in next function
         newHead->var_44 = createUniqueTypeNumber(vehicleType);
         newHead->var_5D = 0;
         newHead->var_54 = -1;
@@ -753,7 +762,7 @@ namespace openloco::things::vehicle
         uint16_t baseOrderId = orderId & ~(0x3F);
         for (auto i = 0; i < 64; ++i)
         {
-            _96885C[i + baseOrderId] = -1;
+            _96885C[i + baseOrderId] = thing_id::null;
         }
     }
 

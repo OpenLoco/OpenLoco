@@ -236,7 +236,7 @@ int32_t openloco::vehicle_body::update()
 // 0x004AAC4E
 void openloco::vehicle_body::animation_update()
 {
-    if (var_38 & (1 << 4))
+    if (var_38 & things::vehicle::flags_38::unk_4)
         return;
 
     vehicle* veh = vehicle_1136118;
@@ -287,7 +287,7 @@ void openloco::vehicle_body::animation_update()
 void openloco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         eax = -eax;
     }
@@ -327,7 +327,7 @@ void openloco::vehicle_body::sub_4AAB0B()
 
             if (ah < 0)
             {
-                if (var_38 & (1 << 1))
+                if (var_38 & things::vehicle::flags_38::unk_1)
                 {
                     ah = 2;
                     if (al != 0 && al != ah)
@@ -346,7 +346,7 @@ void openloco::vehicle_body::sub_4AAB0B()
             }
             else if (ah > 0)
             {
-                if (var_38 & (1 << 1))
+                if (var_38 & things::vehicle::flags_38::unk_1)
                 {
                     ah = 1;
                     if (al != 0 && al != ah)
@@ -1037,7 +1037,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 
     auto _var_44 = var_44;
     // Reversing
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -_var_44;
@@ -1196,7 +1196,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
         if (veh_3->var_56 == 0)
             return;
 
-        if (var_38 & (1 << 1))
+        if (var_38 & things::vehicle::flags_38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1221,7 +1221,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
         if (veh_3->var_5A != 1)
             return;
 
-        if (var_38 & (1 << 1))
+        if (var_38 & things::vehicle::flags_38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1282,7 +1282,7 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32
     if (veh_3->var_56 > 917504)
         return;
 
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
     }
@@ -1355,7 +1355,7 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1415,7 +1415,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1458,7 +1458,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
     loc.y += yFactor;
 
     auto yaw = (sprite_yaw + 16) & 0x3F;
-    auto firstBogie = var_38 & (1 << 1) ? backBogie : frontBogie;
+    auto firstBogie = var_38 & things::vehicle::flags_38::unk_1 ? backBogie : frontBogie;
     xyFactor = 5;
     if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
     {
