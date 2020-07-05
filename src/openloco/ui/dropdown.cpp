@@ -136,6 +136,36 @@ namespace openloco::ui::dropdown
         frame = 0,
     };
 
+    widget_t widgets[] = {
+        make_widget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
+        widget_end()
+    };
+
+    static window_event_list events;
+
+    // 0x004CD015
+    static void onUpdate(window* self)
+    {
+        self->invalidate();
+    }
+
+    // 0x004CD00E
+    static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+    {
+        registers regs;
+        regs.edi = (int32_t)dpi;
+        regs.esi = (int32_t)self;
+        call(0x004CD00E, regs);
+
+        //self->draw(dpi);
+    }
+
+    static void initEvents()
+    {
+        events.on_update = onUpdate;
+        events.draw = draw;
+    }
+
     /**
      * 0x004CC807
      *
@@ -145,6 +175,7 @@ namespace openloco::ui::dropdown
      * @param height
      * @param colour
      * @param count
+     * @param itemHeight
      * @param flags
      */
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
@@ -155,6 +186,7 @@ namespace openloco::ui::dropdown
         //regs.cx = x;
         //regs.dx = y;
         //regs.al = colour;
+        //regs.ah = itemHeight;
         //regs.bl = static_cast<uint8_t>(count);
         //regs.bh = flags;
         //regs.bp = width;
@@ -168,7 +200,7 @@ namespace openloco::ui::dropdown
             colour = colour::translucent(colour);
         }
 
-        input::reset_flag(input::input_flags::flag1); 
+        input::reset_flag(input::input_flags::flag1);
         input::reset_flag(input::input_flags::flag2);
 
         if (flags & (1 << 7))
@@ -192,9 +224,90 @@ namespace openloco::ui::dropdown
 
         flags &= ~(1 << 6);
 
-        _dropdownItemCount = count;
+        _dropdownItemCount = (uint16_t)count;
         _dropdownRowCount = 0;
         _dropdownRowCount = count;
+
+        widgets[0].colour = colour;
+        int16_t dropdownHeight = ((int16_t)count * _dropdownItemHeight) + 3;
+        widgets[0].bottom = dropdownHeight;
+        gfx::ui_size_t size = { (uint16_t)width, (uint16_t)height };
+        gfx::point_t origin = { x, y};
+        origin.y += height;
+
+        size.height = origin.y + dropdownHeight + 1;
+        size.width = x;
+        if (size.height > ui::height() || origin.y > 32767)
+        {
+            origin.y -= (height + dropdownHeight + 1);
+
+            if (origin.y >= 0)
+            {
+                size.height = origin.y + dropdownHeight + 1;
+            }
+
+            if (origin.y < 0 || size.height > ui::height())
+            {
+                origin.x += width + 3;
+                origin.y = 0;
+            }
+        }
+
+        widgets[0].right = width + 3;
+
+        if (origin.x > 32767)
+        {
+            origin.x = 0;
+        }
+
+        origin.x += width + 4;
+
+        if (origin.x > ui::width())
+        {
+            origin.x = ui::width();
+        }
+
+        origin.x -= width + 4;
+
+        auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, window_flags::stick_to_front, &events);
+
+        window->widgets = widgets;
+
+        if (colour & colour::translucent_flag)
+        {
+            window->flags |= window_flags::transparent;
+        }
+
+        initEvents();
+
+        widgets[0].colour = colour::black;
+        window->colours[0] = colour;
+
+        for (auto i = 0; i < _dropdownItemCount; i++)
+        {
+            _dropdownItemFormats[i] = string_ids::empty;
+        }
+
+        _dropdownHighlightedIndex = -1;
+        _dropdownDisabledItems = 0;
+        _dropdownSelection = 0;
+        input::state(input::input_state::dropdown_active);
+    }
+
+    /**
+     * 0x004CC807
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param colour
+     * @param count
+     * @param flags
+     */
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    {
+        show(x, y, width, height, colour, count, 0, flags);
     }
 
     // Custom dropdown height if flags & (1<<6) is true
