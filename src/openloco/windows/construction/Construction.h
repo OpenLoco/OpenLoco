@@ -113,39 +113,6 @@ namespace openloco::ui::windows::construction
             tab_overhead,
         };
 
-        enum trackPiece
-        {
-            straight,
-            left_hand_curve_very_small,
-            right_hand_curve_very_small,
-            left_hand_curve_small,
-            right_hand_curve_small,
-            left_hand_curve,
-            right_hand_curve,
-            left_hand_curve_large,
-            right_hand_curve_large,
-            s_bend_left,
-            s_bend_right,
-            s_bend_to_dual_track,
-            s_bend_to_single_track,
-            turnaround,
-        };
-
-        enum trackGradient
-        {
-            level = 0,
-            slope_up = 2,
-            steep_slope_up = 4,
-            slope_down = 6,
-            steep_slope_down = 8,
-        };
-
-        struct trackPieceId
-        {
-            uint8_t id;
-            uint8_t rotation;
-        };
-
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
     make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
@@ -163,9 +130,6 @@ namespace openloco::ui::windows::construction
         void repositionTabs(window* self);
         void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         void init_events();
-        std::optional<trackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
-        std::optional<trackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
-        void activateSelectedConstructionWidgets();
         void sub_49FEC7();
         void on_close(window* self);
         void on_update(window* self, uint8_t flag);
@@ -180,10 +144,6 @@ namespace openloco::ui::windows::construction
         void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
-
-        extern const uint8_t trackPieceWidgets[11];
-        extern const previewTrack* roadPieces[10];
-        extern const previewTrack* trackPieces[44];
     }
 
     namespace construction
@@ -253,6 +213,8 @@ namespace openloco::ui::windows::construction
 
         extern window_event_list events;
         constexpr uint64_t enabledWidgets = common::enabledWidgets | allConstruction;
+
+        void activateSelectedConstructionWidgets();
         void tabReset(window* self);
         void init_events();
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
