@@ -16,6 +16,8 @@ using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction::construction
 {
+    static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
+
     widget_t widgets[] = {
         commonWidgets(138, 276, string_ids::stringid_2),
         make_widget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_very_small, string_ids::tooltip_left_hand_curve_very_small),
@@ -67,17 +69,6 @@ namespace openloco::ui::windows::construction::construction
     // 0x0049D3F6
     static void on_mouse_up(window* self, widget_index widgetIndex)
     {
-        // Allow shift key to repeat the action multiple times
-        // This is useful for building very long tracks.
-        int multiplier = 1;
-        if (input::has_key_modifier(input::key_modifier::shift))
-        {
-            multiplier = 10;
-        }
-
-        registers regs;
-        regs.edx = widgetIndex;
-        regs.esi = (int32_t)self;
         switch (widgetIndex)
         {
             case common::widx::close_button:
@@ -92,17 +83,11 @@ namespace openloco::ui::windows::construction::construction
                 break;
 
             case widx::construct:
-                for (int i = 0; i < multiplier; i++)
-                {
-                    constructTrack(self, widgetIndex);
-                }
+                constructTrack(self, widgetIndex);
                 break;
 
             case widx::remove:
-                for (int i = 0; i < multiplier; i++)
-                {
-                    removeTrack(self, widgetIndex);
-                }
+                removeTrack(self, widgetIndex);
                 break;
 
             case widx::rotate_90:
@@ -481,6 +466,20 @@ namespace openloco::ui::windows::construction::construction
             case widx::bridge_dropdown:
             {
                 bridgeDropdown(self);
+                break;
+            }
+
+            case widx::construct:
+            {
+                if (*_clickRepeatTicks >= 40)
+                    constructTrack(self, widgetIndex);
+                break;
+            }
+
+            case widx::remove:
+            {
+                if (*_clickRepeatTicks >= 40)
+                    removeTrack(self, widgetIndex);
                 break;
             }
         }

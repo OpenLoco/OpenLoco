@@ -1,6 +1,8 @@
 20.05.1+ (???)
 ------------------------------------------------------------------------
+- Feature: Holding the construction window's build or remove button will keep repeating the action.
 - Fix: [#485] Incorrect position of exhaust smoke on vehicles.
+- Removed: Click (while holding shift) track / road construction will place 10 pieces in a row.
 
 20.05.1 (2020-05-30)
 ------------------------------------------------------------------------
