@@ -155,7 +155,7 @@ namespace openloco
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
         vehicle* next_vehicle();
-        vehicle* next_car();
+        vehicle* next_vehicle_component();
         vehicle_object* object() const;
 
         void update_head();

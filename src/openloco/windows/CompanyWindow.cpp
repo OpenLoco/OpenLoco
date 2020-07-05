@@ -544,7 +544,7 @@ namespace openloco::ui::windows::CompanyWindow
                 }
 
                 // loc_43419F
-                auto car = thing->next_car()->next_car()->next_car()->next_car();
+                auto car = thing->next_vehicle_component()->next_vehicle_component()->next_vehicle_component()->next_vehicle_component();
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(

@@ -892,11 +892,11 @@ namespace openloco::audio
         while (v != nullptr)
         {
             auto next = v->next_vehicle();
-            auto v2 = v->next_car()->next_car();
+            auto v2 = v->next_vehicle_component()->next_vehicle_component();
             off_4FEB58(v2, x);
             do
             {
-                v2 = v2->next_car();
+                v2 = v2->next_vehicle_component();
             } while (v2->type != vehicle_thing_type::vehicle_6);
             off_4FEB58(v2, x);
             v = next;
