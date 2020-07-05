@@ -300,7 +300,7 @@ namespace openloco::ui::windows::CompanyList
                     shouldInvalidate = true;
                 }
 
-                self->row_count ++;
+                self->row_count++;
                 if (self->row_count > self->var_83C)
                 {
                     self->var_83C = self->row_count;
@@ -521,7 +521,7 @@ namespace openloco::ui::windows::CompanyList
 
                 auto performanceStringId = string_ids::performance_index;
 
-                if ((company->challenge_flags & company_flags::increased_performance) && (company->challenge_flags &company_flags::decreased_performance))
+                if ((company->challenge_flags & company_flags::increased_performance) && (company->challenge_flags & company_flags::decreased_performance))
                 {
                     performanceStringId = string_ids::performance_index_decrease;
 
