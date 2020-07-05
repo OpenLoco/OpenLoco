@@ -16,6 +16,8 @@ using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction::overhead
 {
+    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+
     widget_t widgets[] = {
         commonWidgets(138, 192, string_ids::stringid_2),
         make_widget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),

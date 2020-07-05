@@ -16,7 +16,14 @@ using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction::construction
 {
+    static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
+    static loco_global<uint8_t, 0x00508F09> _byte_508F09;
+
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
+    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
+    static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
+
+    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
     widget_t widgets[] = {
         commonWidgets(138, 276, string_ids::stringid_2),

@@ -29,75 +29,10 @@ namespace openloco::ui::windows::construction
         diagonal = 1 << 7,
     };
 
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-    static loco_global<previewTrack[1], 0x004F6D44> _unk_4F6D44;
-    static loco_global<previewTrack[1], 0x004F6D4F> _unk_4F6D4F;
-    static loco_global<previewTrack[1], 0x004F6D5A> _unk_4F6D5A;
-    static loco_global<previewTrack[4], 0x004F6D65> _unk_4F6D65;
-    static loco_global<previewTrack[4], 0x004F6D8E> _unk_4F6D8E;
-    static loco_global<previewTrack[2], 0x004F6DB7> _unk_4F6DB7;
-    static loco_global<previewTrack[2], 0x004F6DCC> _unk_4F6DCC;
-    static loco_global<previewTrack[1], 0x004F6DE1> _unk_4F6DE1;
-    static loco_global<previewTrack[1], 0x004F6DEC> _unk_4F6DEC;
-    static loco_global<previewTrack[1], 0x004F6DF7> _unk_4F6DF7;
-
-    static loco_global<previewTrack[1], 0x004F7488> _unk_4F7488;
-    static loco_global<previewTrack[4], 0x004F7493> _unk_4F7493;
-    static loco_global<previewTrack[1], 0x004F74BC> _unk_4F74BC;
-    static loco_global<previewTrack[1], 0x004F74C7> _unk_4F74C7;
-    static loco_global<previewTrack[4], 0x004F74D2> _unk_4F74D2;
-    static loco_global<previewTrack[4], 0x004F74FB> _unk_4F74FB;
-    static loco_global<previewTrack[5], 0x004F7524> _unk_4F7524;
-    static loco_global<previewTrack[5], 0x004F7557> _unk_4F7557;
-    static loco_global<previewTrack[5], 0x004F758A> _unk_4F758A;
-    static loco_global<previewTrack[5], 0x004F75BD> _unk_4F75BD;
-    static loco_global<previewTrack[5], 0x004F75F0> _unk_4F75F0;
-    static loco_global<previewTrack[5], 0x004F7623> _unk_4F7623;
-    static loco_global<previewTrack[4], 0x004F7656> _unk_4F7656;
-    static loco_global<previewTrack[4], 0x004F767F> _unk_4F767F;
-    static loco_global<previewTrack[2], 0x004F76A8> _unk_4F76A8;
-    static loco_global<previewTrack[2], 0x004F76BD> _unk_4F76BD;
-    static loco_global<previewTrack[1], 0x004F76D2> _unk_4F76D2;
-    static loco_global<previewTrack[1], 0x004F76DD> _unk_4F76DD;
-    static loco_global<previewTrack[4], 0x004F76E8> _unk_4F76E8;
-    static loco_global<previewTrack[4], 0x004F7711> _unk_4F7711;
-    static loco_global<previewTrack[4], 0x004F773A> _unk_4F773A;
-    static loco_global<previewTrack[4], 0x004F7763> _unk_4F7763;
-    static loco_global<previewTrack[4], 0x004F778C> _unk_4F778C;
-    static loco_global<previewTrack[4], 0x004F77B5> _unk_4F77B5;
-    static loco_global<previewTrack[4], 0x004F77DE> _unk_4F77DE;
-    static loco_global<previewTrack[4], 0x004F7807> _unk_4F7807;
-    static loco_global<previewTrack[1], 0x004F7830> _unk_4F7830;
-    static loco_global<previewTrack[1], 0x004F783B> _unk_4F783B;
-    static loco_global<previewTrack[1], 0x004F7846> _unk_4F7846;
-    static loco_global<previewTrack[1], 0x004F7851> _unk_4F7851;
-    static loco_global<previewTrack[1], 0x004F785C> _unk_4F785C;
-    static loco_global<previewTrack[1], 0x004F7867> _unk_4F7867;
-    static loco_global<previewTrack[1], 0x004F7872> _unk_4F7872;
-    static loco_global<previewTrack[1], 0x004F787D> _unk_4F787D;
-    static loco_global<previewTrack[1], 0x004F7888> _unk_4F7888;
-    static loco_global<previewTrack[1], 0x004F7893> _unk_4F7893;
-    static loco_global<previewTrack[1], 0x004F789E> _unk_4F789E;
-    static loco_global<previewTrack[1], 0x004F78A9> _unk_4F78A9;
-    static loco_global<previewTrack[1], 0x004F78B4> _unk_4F78B4;
-    static loco_global<previewTrack[1], 0x004F78BF> _unk_4F78BF;
-    static loco_global<previewTrack[1], 0x004F78CA> _unk_4F78CA;
-    static loco_global<previewTrack[1], 0x004F78D5> _unk_4F78D5;
-    static loco_global<previewTrack[1], 0x004F78E0> _unk_4F78E0;
-    static loco_global<previewTrack[1], 0x004F78EB> _unk_4F78EB;
-
-    static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
-    static loco_global<uint8_t, 0x00508F09> _byte_508F09;
-    static loco_global<uint8_t, 0x00522090> _byte_522090;
-    static loco_global<uint8_t, 0x00522091> _byte_522091;
-    static loco_global<uint8_t, 0x00522092> _byte_522092;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
-    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
-    static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint8_t[8], 0x0525F72> _scenarioSignals;
     static loco_global<uint8_t[8], 0x0525F7A> _scenarioBridges;
@@ -110,11 +45,6 @@ namespace openloco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAC> _lastAirport;
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
-    static loco_global<uint8_t, 0x00F24948> _byte_F24948;
-    static loco_global<uint16_t, 0x00F24942> _word_F24942;
-    static loco_global<uint16_t, 0x00F24944> _word_F24944;
-    static loco_global<uint16_t, 0x00F24946> _word_F24946;
-    static loco_global<company_id_t, 0x009C68EB> _updatingCompanyId;
     static loco_global<gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
@@ -324,7 +254,7 @@ namespace openloco::ui::windows::construction
         extern window_event_list events;
         constexpr uint64_t enabledWidgets = common::enabledWidgets | allConstruction;
         void tabReset(window* self);
-        void init_events();        
+        void init_events();
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
     }
@@ -343,7 +273,7 @@ namespace openloco::ui::windows::construction
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
-        extern window_event_list events;        
+        extern window_event_list events;
         void tabReset(window* self);
         void init_events();
     }
@@ -357,12 +287,12 @@ namespace openloco::ui::windows::construction
             both_directions,
             single_direction,
         };
-        
+
         extern widget_t widgets[13];
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
-        extern window_event_list events;        
+        extern window_event_list events;
         void tabReset(window* self);
         void init_events();
     }
@@ -384,7 +314,7 @@ namespace openloco::ui::windows::construction
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
-        extern window_event_list events;        
+        extern window_event_list events;
         void tabReset(window* self);
         void init_events();
     }
