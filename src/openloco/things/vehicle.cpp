@@ -142,49 +142,32 @@ void vehicle_head::sub_4BA8D4()
         case 9:
             return;
     }
-
-    auto v = reinterpret_cast<vehicle*>(this)->next_vehicle_component()->next_vehicle_component()->next_vehicle_component(); // bogie or tail
-    if (v->type != vehicle_thing_type::vehicle_6)
+    things::vehicle::Train train(this);
+    for (auto car : train.cars)
     {
-        while (true)
+        if (car.carComponents[0].front->var_5F & flags_5f::broken_down)
         {
-            if (v->var_5F & flags_5f::broken_down)
+            if ((scenario_ticks() & 3) == 0)
             {
-                if ((scenario_ticks() & 3) == 0)
-                {
-                    auto v2 = v->next_vehicle_component()->next_vehicle_component(); // body
-                    smoke::create(loc16(v2->x, v2->y, v2->z + 4));
-                }
+                auto v2 = car.carComponents[0].body; // body
+                smoke::create(loc16(v2->x, v2->y, v2->z + 4));
             }
+        }
 
-            if ((v->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
+        if ((car.carComponents[0].front->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
+        {
+            auto newConfig = config::get_new();
+            if (!newConfig.breakdowns_disabled)
             {
-                auto newConfig = config::get_new();
-                if (!newConfig.breakdowns_disabled)
-                {
-                    v->var_5F &= ~flags_5f::breakdown_pending;
-                    v->var_5F |= flags_5f::broken_down;
-                    v->var_6A = 5;
-                    sub_4BAA76();
+                car.carComponents[0].front->var_5F &= ~flags_5f::breakdown_pending;
+                car.carComponents[0].front->var_5F |= flags_5f::broken_down;
+                car.carComponents[0].front->var_6A = 5;
+                sub_4BAA76();
 
-                    auto v2 = v->next_vehicle_component()->next_vehicle_component();
-                    auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
-                    audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
-                }
+                auto v2 = car.carComponents[0].body;
+                auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
+                audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
             }
-
-            v = v->next_vehicle_component()->next_vehicle_component()->next_vehicle_component(); // next bogie
-            vehicle* u;
-            do
-            {
-                if (v->type == vehicle_thing_type::vehicle_6)
-                {
-                    return;
-                }
-                u = v->next_vehicle_component()->next_vehicle_component();
-                if (u->type != vehicle_thing_type::vehicle_body_start)
-                    v = u->next_vehicle_component();
-            } while (u->type != vehicle_thing_type::vehicle_body_start);
         }
     }
 }
@@ -1714,4 +1697,26 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
         return false;
     }
     return true;
+}
+
+namespace openloco::things::vehicle
+{
+    Train::Train(uint16_t _head)
+    {
+        auto component = thingmgr::get<openloco::vehicle>(_head);
+        head = component->as_vehicle_head();
+        component = component->next_vehicle_component();
+        veh1 = component->as_vehicle_1();
+        component = component->next_vehicle_component();
+        veh2 = component->as_vehicle_2();
+        component = component->next_vehicle_component();
+        while (component->type != vehicle_thing_type::vehicle_6)
+        {
+            if (component->type == vehicle_thing_type::vehicle_bogie)
+            {
+                cars.push_back(Car(component));
+            }
+        }
+        tail = component->as_vehicle_tail();
+    }
 }

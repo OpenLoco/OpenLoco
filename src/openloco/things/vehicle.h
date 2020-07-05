@@ -417,8 +417,9 @@ namespace openloco
         uint32_t refund_cost; // 0x62 front bogies only
         uint16_t reliability; // 0x66 front bogies only
         uint16_t var_68;
+        uint8_t var_6A;
     };
-    static_assert(sizeof(vehicle_bogie) == 0x6A); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_bogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
     struct vehicle_tail : vehicle_base
     {
@@ -449,4 +450,47 @@ namespace openloco
     static_assert(sizeof(vehicle_tail) == 0x4C); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
+    namespace things::vehicle
+    {
+        struct CarComponent
+        {
+            vehicle_bogie* front;
+            vehicle_bogie* back;
+            vehicle_body* body;
+        };
+
+        struct Car
+        {
+            std::vector<CarComponent> carComponents;
+            Car(openloco::vehicle*& component)
+            {
+                for (;
+                     component->type != vehicle_thing_type::vehicle_6 && component->type != vehicle_thing_type::vehicle_body_start;
+                     component = component->next_vehicle_component())
+                {
+                    auto front = component->as_vehicle_bogie();
+                    component = component->next_vehicle_component();
+                    auto back = component->as_vehicle_bogie();
+                    component = component->next_vehicle_component();
+                    auto body = component->as_vehicle_body();
+                    carComponents.push_back(CarComponent{ front, back, body });
+                }
+            }
+        };
+
+        struct Train
+        {
+            vehicle_head* head;
+            vehicle_1* veh1;
+            vehicle_2* veh2;
+            vehicle_tail* tail;
+
+            std::vector<Car> cars;
+            Train(vehicle_head* _head)
+                : Train(_head->id)
+            {
+            }
+            Train(uint16_t _head);
+        };
+    }
 }
