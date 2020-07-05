@@ -260,7 +260,7 @@ namespace openloco::ui::windows::CompanyList
             return false;
         }
 
-        // 0x00499E0B
+        // 0x00437AE2
         static void updateCompanyList(window* self)
         {
             auto chosenCompany = -1;
@@ -300,7 +300,7 @@ namespace openloco::ui::windows::CompanyList
                     shouldInvalidate = true;
                 }
 
-                self->row_count += 1;
+                self->row_count ++;
                 if (self->row_count > self->var_83C)
                 {
                     self->var_83C = self->row_count;
@@ -465,46 +465,32 @@ namespace openloco::ui::windows::CompanyList
         // 0x00435EA7
         static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            //registers regs;
-            //regs.esi = (int32_t)self;
-            //regs.edi = (int32_t)dpi;
-            //call(0x00435EA7, regs);
-
             auto colour = colour::get_shade(self->colours[1], 3);
-            gfx::clear(*dpi, colour * 0x01010101);
+            gfx::clear_single(*dpi, colour);
 
-            auto y = 0;
-            for (auto i = 0; i < self->var_83C; i++)
+            auto yBottom = 0;
+            for (auto i = 0; i < self->var_83C; i++, yBottom += 25)
             {
-                auto yPos = y + 25;
+                auto yTop = yBottom + 25;
 
-                if (yPos <= dpi->y)
-                {
-                    y += 25;
+                if (yTop <= dpi->y)
                     continue;
-                }
 
-                yPos = dpi->y + dpi->height;
+                yTop = dpi->y + dpi->height;
 
-                if (y >= yPos)
-                {
-                    y += 25;
+                if (yBottom >= yTop)
                     continue;
-                }
 
                 auto rowItem = self->row_info[i];
 
                 if (rowItem == -1)
-                {
-                    y += 25;
                     continue;
-                }
 
                 auto stringId = string_ids::black_stringid;
 
                 if (rowItem == self->row_hover)
                 {
-                    gfx::draw_rect(dpi, 0, y, self->width, 24, (1 << 25) | palette_index::index_30);
+                    gfx::draw_rect(dpi, 0, yBottom, self->width, 24, (1 << 25) | palette_index::index_30);
 
                     stringId = string_ids::wcolour2_stringid;
                 }
@@ -519,7 +505,7 @@ namespace openloco::ui::windows::CompanyList
                     args.push(imageId);
                     args.push(company->name);
 
-                    gfx::draw_string_494BBF(*dpi, 0, y - 1, 173, colour::black, stringId, &args);
+                    gfx::draw_string_494BBF(*dpi, 0, yBottom - 1, 173, colour::black, stringId, &args);
                 }
 
                 {
@@ -530,12 +516,12 @@ namespace openloco::ui::windows::CompanyList
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
 
-                    gfx::draw_string_494BBF(*dpi, 175, y + 7, 208, colour::black, stringId, &args);
+                    gfx::draw_string_494BBF(*dpi, 175, yBottom + 7, 208, colour::black, stringId, &args);
                 }
 
                 auto performanceStringId = string_ids::performance_index;
 
-                if (company->challenge_flags & (company_flags::increased_performance | company_flags::decreased_performance))
+                if ((company->challenge_flags & company_flags::increased_performance) && (company->challenge_flags &company_flags::decreased_performance))
                 {
                     performanceStringId = string_ids::performance_index_decrease;
 
@@ -551,7 +537,7 @@ namespace openloco::ui::windows::CompanyList
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performance_index, args);
 
-                    gfx::draw_string_494BBF(*dpi, 385, y - 1, 143, colour::black, stringId, &args);
+                    gfx::draw_string_494BBF(*dpi, 385, yBottom - 1, 143, colour::black, stringId, &args);
                 }
 
                 {
@@ -560,20 +546,8 @@ namespace openloco::ui::windows::CompanyList
                     args.push(string_ids::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
-                    gfx::draw_string_494BBF(*dpi, 530, y - 1, 98, colour::black, stringId, &args);
+                    gfx::draw_string_494BBF(*dpi, 530, yBottom - 1, 98, colour::black, stringId, &args);
                 }
-                y += 25;
-            }
-        }
-
-        // 0x00437AB6
-        static void sub_437AB6(window* self)
-        {
-            self->row_count = 0;
-
-            for (auto& company : companymgr::companies())
-            {
-                company.challenge_flags &= ~(1 << 3);
             }
         }
 
@@ -630,15 +604,14 @@ namespace openloco::ui::windows::CompanyList
             window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &company_list::events);
         }
 
-        //window->enabled_widgets = company_list::enabledWidgets;
-        //window->current_tab = 0;
         window->frame_no = 0;
         window->saved_view.clear();
         window->flags |= window_flags::resizable;
+        window->sort_mode = 2;
         window->var_83C = 0;
         window->row_hover = -1;
 
-        company_list::sub_437AB6(window);
+        common::refreshCompanyList(window);
 
         auto skin = objectmgr::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;
@@ -1457,7 +1430,7 @@ namespace openloco::ui::windows::CompanyList
 
             self->invalidate();
 
-            switch (self->current_tab + widx::tab_company_list)
+            switch (widgetIndex)
             {
                 case widx::tab_company_list:
                     company_list::tabReset(self);
@@ -1685,6 +1658,7 @@ namespace openloco::ui::windows::CompanyList
             }
         }
 
+        // 0x004365E4
         static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi)
         {
             auto totalMonths = (current_year() * 12) + static_cast<uint16_t>(current_month());
@@ -1698,7 +1672,8 @@ namespace openloco::ui::windows::CompanyList
             if (self->var_854 != 0)
             {
                 auto i = 0;
-                while (utility::bitscanforward(self->var_854) != _graphItemId[i])
+                auto bitScan = utility::bitscanforward(self->var_854);
+                while (bitScan != _graphItemId[i] && bitScan != -1)
                 {
                     i++;
                 }
