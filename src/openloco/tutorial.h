@@ -16,8 +16,6 @@ namespace openloco::tutorial
     void registerHooks();
 
     void start(int16_t tutorialNumber);
-    void sub_43C6CC();
-
     void stop();
 
     uint16_t nextInput();

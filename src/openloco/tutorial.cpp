@@ -1,10 +1,15 @@
 #include "tutorial.h"
 #include "config.h"
 #include "environment.h"
+#include "gui.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "scenario.h"
 #include "ui.h"
+
+#include <fstream>
+#include <iterator>
+#include <vector>
 
 using namespace openloco::interop;
 
@@ -12,10 +17,15 @@ namespace openloco::tutorial
 {
     static loco_global<uint8_t, 0x00508F19> _state;
 
+    // The following two globals are unused, but left here for documentation purposes.
     static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
+    static loco_global<uint16_t*, 0x009C8704> _tutorialEnd;
+
     static loco_global<string_id, 0x009C8708> _tutorialString;
-    static loco_global<uint16_t*, 0x009C8704> _tutorialEnd; // ?
     static loco_global<uint8_t, 0x009C870A> _tutorialNumber;
+
+    static std::vector<uint16_t> _tutorialData;
+    static std::vector<uint16_t>::const_iterator _tutorialIt;
 
     tutorial_state state()
     {
@@ -24,18 +34,6 @@ namespace openloco::tutorial
 
     void registerHooks()
     {
-        interop::write_nop(0x0043C626, 0x0043C62D - 0x0043C626);
-        interop::write_nop(0x0043C66E, 0x0043C6CC - 0x0043C66E);
-
-        register_hook(
-            0x0043C6CC,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                sub_43C6CC();
-                regs = backup;
-                return 0;
-            });
-
         register_hook(
             0x0043C7A2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
@@ -49,6 +47,33 @@ namespace openloco::tutorial
 
     static void getTutorialScenarioFilename();
 
+    static std::vector<uint16_t> readTutorialFile(fs::path filename)
+    {
+        std::ifstream file(filename, std::ios::in | std::ios::binary);
+        file.unsetf(std::ios::skipws);
+        if (!file)
+            throw;
+
+        std::vector<uint16_t> tutorial;
+        auto start = std::istream_iterator<uint8_t>(file);
+        auto const end = std::istream_iterator<uint8_t>();
+
+        for (auto it = start; it != end; ++it)
+        {
+            auto const first_byte = *it;
+            ++it;
+
+            // We expect an even number of bytes
+            if (it == end)
+                throw;
+
+            auto const second_byte = *it;
+            tutorial.push_back(second_byte << 8 | first_byte);
+        }
+
+        return tutorial;
+    }
+
     // 0x0043C590
     void start(int16_t tutorialNumber)
     {
@@ -58,50 +83,49 @@ namespace openloco::tutorial
         // NB: only used by tutorial widget drawing after.
         _tutorialNumber = tutorialNumber;
 
-        // Ensure that we're in windowed mode, using dimensions 1024x768.
-        const auto& display = config::get_new().display;
-        const config::resolution_t tutorialResolution = { 1024, 768 };
-        if (display.mode != config::screen_mode::window || display.window_resolution != tutorialResolution)
+        // All destructors must be called prior to calling scenario::start due to the interaction of longjmp.
+        // This can be removed when scenerio::start has been implemented.
         {
-            if (!ui::setDisplayMode(config::screen_mode::window, tutorialResolution))
-                return;
+            // Ensure that we're in windowed mode, using dimensions 1024x768.
+            const auto& display = config::get_new().display;
+            const config::resolution_t tutorialResolution = { 1024, 768 };
+            if (display.mode != config::screen_mode::window || display.window_resolution != tutorialResolution)
+            {
+                if (!ui::setDisplayMode(config::screen_mode::window, tutorialResolution))
+                    return;
+            }
+
+            // TODO(avgeffen) Maybe the window should not be scaled, either?
+
+            // Get the environment file for this tutorial.
+            static const environment::path_id tutorialFileIds[] = {
+                environment::path_id::tut1024_1,
+                environment::path_id::tut1024_2,
+                environment::path_id::tut1024_3,
+            };
+
+            auto fileId = tutorialFileIds[tutorialNumber];
+
+            auto tutPath = environment::get_path(fileId);
+            _tutorialData = readTutorialFile(tutPath);
+            _tutorialIt = _tutorialData.cbegin();
+
+            // Set the first string to show.
+            static const string_id openingStringIds[] = {
+                string_ids::tutorial_1_string_1,
+                string_ids::tutorial_2_string_1,
+                string_ids::tutorial_3_string_1,
+            };
+
+            *_state = static_cast<uint8_t>(tutorial_state::playing);
+            *_tutorialString = openingStringIds[*_tutorialNumber];
+
+            // Set up the scenario.
+            getTutorialScenarioFilename();
+            addr<0x0050AE83, uint32_t>() = 0x12345678;
+            addr<0x0050AE87, uint32_t>() = 0x9ABCDEF0;
         }
 
-        // TODO(avgeffen) Maybe the window should not be scaled, either?
-
-        // Get the environment file for this tutorial.
-        static const environment::path_id tutorialFileIds[] = {
-            environment::path_id::tut1024_1,
-            environment::path_id::tut1024_2,
-            environment::path_id::tut1024_3,
-        };
-
-        auto fileId = tutorialFileIds[tutorialNumber];
-
-        // Jump back into the original routine.
-        registers regs;
-        regs.eax = tutorialNumber;
-        regs.ebx = static_cast<int32_t>(fileId);
-        call(0x0043C590, regs);
-    }
-
-    // 0x0043C6CC
-    void sub_43C6CC()
-    {
-        // Set the first string to show.
-        static const string_id openingStringIds[] = {
-            string_ids::tutorial_1_string_1,
-            string_ids::tutorial_2_string_1,
-            string_ids::tutorial_3_string_1,
-        };
-
-        *_state = static_cast<uint8_t>(tutorial_state::playing);
-        *_tutorialString = openingStringIds[*_tutorialNumber];
-
-        // Set up the scenario.
-        getTutorialScenarioFilename();
-        addr<0x0050AE83, uint32_t>() = 0x12345678;
-        addr<0x0050AE87, uint32_t>() = 0x9ABCDEF0;
         scenario::start(-1);
 
         // Unreachable?
@@ -111,19 +135,21 @@ namespace openloco::tutorial
     // 0x0043C70E
     void stop()
     {
-        call(0x0043C70E);
+        *_state = static_cast<uint8_t>(tutorial_state::none);
+        gfx::invalidate_screen();
+        gui::resize();
     }
 
     // 0x0043C7A2
     uint16_t nextInput()
     {
-        uint16_t next = **_tutorialOffset;
-        _tutorialOffset++;
+        uint16_t next = *_tutorialIt;
+        _tutorialIt++;
 
-        if (*_tutorialOffset == *_tutorialEnd)
+        if (_tutorialIt == _tutorialData.end())
         {
             stop();
-            addr<0x00508F12, uint16_t>() = 0;
+            addr<0x00508F12, uint16_t>() = 0; // screen_age
         }
 
         return next;
