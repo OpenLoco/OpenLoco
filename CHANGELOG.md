@@ -1,6 +1,9 @@
 20.05.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#523] Holding the construction window's build or remove button will keep repeating the action.
+- Fix: [#158] Pressing shift to build underground tracks automatically builds ten track pieces.
 - Fix: [#485] Incorrect position of exhaust smoke on vehicles.
+- Removed: Clicking track / road construction while holding shift will place 10 pieces in a row.
 
 20.05.1 (2020-05-30)
 ------------------------------------------------------------------------
@@ -43,6 +46,7 @@
 19.03 (2019-03-01)
 ------------------------------------------------------------------------
 - Feature: [#163] Remove terraforming limits outside of scenario editor.
+- Feature: [#178] Allow zooming to cursor position instead of viewport centre.
 - Feature: [#192] The option window now includes OpenLoco-specific settings.
 - Feature: [#203] Support multiple languages by loading text strings from YAML files.
 - Feature: [#212] Add fullscreen support.
@@ -63,7 +67,7 @@
 - Feature: Towns can now always be renamed (As seen in OpenTTD).
 - Feature: Vehicle breakdowns can now be disabled (As seen in OpenTTD).
 - Feature: Playable in a resizable window.
-- Feature: Click (while holding shift) track / road construction will place 10 pieces in a row.
+- Feature: Clicking track / road construction while holding shift will place 10 pieces in a row.
 - Change: [#79] Store `game.cfg`, `plugin.dat` and `scores.dat` in:
   - Windows: `%APPDATA%\OpenLoco`
   - Linux: `~/.config/openloco`

@@ -436,6 +436,7 @@ namespace openloco::ui::windows::construction
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
+            self->holdable_widgets = 0;
 
             setDisabledWidgets(self);
 
@@ -1191,7 +1192,8 @@ namespace openloco::ui::windows::construction
 
             _mapSelectedTiles[posId].x = -1;
             map_invalidate_map_selection_tiles();
-            window->holdable_widgets = 0;
+            window->holdable_widgets = (1 << construction::widx::construct) | (1 << construction::widx::remove);
+
             auto trackType = _trackType & ~(1 << 7);
             auto roadObj = objectmgr::get<road_object>(trackType);
 
@@ -1385,7 +1387,7 @@ namespace openloco::ui::windows::construction
 
             _mapSelectedTiles[posId].x = -1;
             map_invalidate_map_selection_tiles();
-            window->holdable_widgets = 0;
+            window->holdable_widgets = (1 << construction::widx::construct) | (1 << construction::widx::remove);
 
             auto trackObj = objectmgr::get<track_object>(_trackType);
 
