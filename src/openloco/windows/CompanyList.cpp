@@ -593,7 +593,7 @@ namespace openloco::ui::windows::CompanyList
             if (input::is_tool_active(_toolWindowType, _toolWindowNumber))
             {
                 input::cancel_tool();
-                window = WindowManager::bringToFront(WindowType::messages);
+                window = WindowManager::bringToFront(WindowType::companyList);
             }
         }
 
@@ -602,22 +602,23 @@ namespace openloco::ui::windows::CompanyList
             gfx::ui_size_t windowSize = { 640, 272 };
 
             window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &company_list::events);
+
+            window->frame_no = 0;
+            window->saved_view.clear();
+            window->flags |= window_flags::resizable;
+            window->sort_mode = 2;
+            window->var_83C = 0;
+            window->row_hover = -1;
+
+            common::refreshCompanyList(window);
+
+            auto skin = objectmgr::get<interface_skin_object>();
+            window->colours[0] = skin->colour_0B;
+            window->colours[1] = skin->colour_0C;
+
+            window->var_854 = 0;
         }
 
-        window->frame_no = 0;
-        window->saved_view.clear();
-        window->flags |= window_flags::resizable;
-        window->sort_mode = 2;
-        window->var_83C = 0;
-        window->row_hover = -1;
-
-        common::refreshCompanyList(window);
-
-        auto skin = objectmgr::get<interface_skin_object>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_0C;
-
-        window->var_854 = 0;
         window->current_tab = 0;
         window->min_width = company_list::minWindowSize.width;
         window->min_height = company_list::minWindowSize.height;
