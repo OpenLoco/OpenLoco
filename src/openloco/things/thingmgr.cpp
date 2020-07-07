@@ -22,9 +22,9 @@ namespace openloco::thingmgr
     }
 
     template<>
-    vehicle* first()
+    vehicle_head* first()
     {
-        return get<vehicle>(first_id(thing_list::vehicle));
+        return get<vehicle_head>(first_id(thing_list::vehicle_head));
     }
 
     template<>
@@ -59,11 +59,11 @@ namespace openloco::thingmgr
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
-            auto v = first<vehicle>();
+            auto v = first<vehicle_head>();
             while (v != nullptr)
             {
-                auto next = v->next_vehicle();
-                v->update_head();
+                auto next = reinterpret_cast<vehicle_head*>(reinterpret_cast<vehicle*>(v)->next_vehicle());
+                v->updateVehicle();
                 v = next;
             }
         }

@@ -888,7 +888,7 @@ namespace openloco::audio
             _numActiveVehicleSounds = 0;
         }
 
-        auto v = thingmgr::first<vehicle>();
+        auto v = reinterpret_cast<vehicle*>(thingmgr::first<vehicle_head>());
         while (v != nullptr)
         {
             auto next = v->next_vehicle();

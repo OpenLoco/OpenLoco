@@ -12,7 +12,7 @@ namespace openloco::thingmgr
     enum class thing_list
     {
         null,
-        vehicle,
+        vehicle_head,
         misc = 3,
     };
 

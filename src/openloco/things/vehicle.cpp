@@ -83,12 +83,12 @@ vehicle_object* vehicle_body::object() const
     return objectmgr::get<vehicle_object>(object_id);
 }
 
-void vehicle::update_head()
+void vehicle_head::updateVehicle()
 {
-    auto v = this;
+    auto v = reinterpret_cast<vehicle*>(this);
     while (v != nullptr)
     {
-        if (v->update())
+        if (v->updateComponent())
         {
             break;
         }
@@ -96,7 +96,14 @@ void vehicle::update_head()
     }
 }
 
-bool vehicle::update()
+uint16_t vehicle_head::update()
+{
+    registers regs;
+    regs.esi = (int32_t)this;
+    return call(0x004A8B81, regs);
+}
+
+bool vehicle::updateComponent()
 {
     int32_t result = 0;
     registers regs;
@@ -104,7 +111,7 @@ bool vehicle::update()
     switch (type)
     {
         case vehicle_thing_type::vehicle_0:
-            result = call(0x004A8B81, regs);
+            result = as_vehicle_head()->update();
             break;
         case vehicle_thing_type::vehicle_1:
             result = call(0x004A9788, regs);

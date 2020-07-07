@@ -158,10 +158,7 @@ namespace openloco
         vehicle* nextVehicleComponent();
         vehicle_object* object() const;
 
-        void update_head();
-
-    private:
-        bool update();
+        bool updateComponent();
     };
     static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -231,6 +228,8 @@ namespace openloco
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
         void sub_4BA8D4();
+        void updateVehicle();
+        uint16_t update();
 
     private:
         void sub_4BAA76();

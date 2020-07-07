@@ -53,10 +53,10 @@ namespace openloco
         }
 
         auto companyId = id();
-        auto v = thingmgr::first<openloco::vehicle>();
+        auto v = thingmgr::first<openloco::vehicle_head>();
         while (v != nullptr)
         {
-            auto next = v->next_vehicle();
+            auto next = reinterpret_cast<vehicle_head*>(reinterpret_cast<vehicle*>(v)->next_vehicle());
 
             if (v->owner == companyId)
             {
