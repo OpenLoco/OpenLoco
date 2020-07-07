@@ -74,7 +74,7 @@ namespace openloco
         constexpr uint32_t toolbar_build_vehicle_boat_hover = 42;
         constexpr uint32_t toolbar_stations = 43;
         constexpr uint32_t toolbar_stations_hover = 44;
-
+        constexpr uint32_t tab_awards = 45;
         constexpr uint32_t toolbar_menu_airport = 46;
         constexpr uint32_t toolbar_menu_ship_port = 47;
         constexpr uint32_t tab_cargo_ratings = 48;
@@ -95,7 +95,30 @@ namespace openloco
         constexpr uint32_t tab_population_frame5 = 62;
         constexpr uint32_t tab_population_frame6 = 63;
         constexpr uint32_t tab_population_frame7 = 64;
-
+        constexpr uint32_t tab_performance_index_frame0 = 65;
+        constexpr uint32_t tab_performance_index_frame1 = 66;
+        constexpr uint32_t tab_performance_index_frame2 = 67;
+        constexpr uint32_t tab_performance_index_frame3 = 68;
+        constexpr uint32_t tab_performance_index_frame4 = 69;
+        constexpr uint32_t tab_performance_index_frame5 = 70;
+        constexpr uint32_t tab_performance_index_frame6 = 71;
+        constexpr uint32_t tab_performance_index_frame7 = 72;
+        constexpr uint32_t tab_cargo_units_frame0 = 73;
+        constexpr uint32_t tab_cargo_units_frame1 = 74;
+        constexpr uint32_t tab_cargo_units_frame2 = 75;
+        constexpr uint32_t tab_cargo_units_frame3 = 76;
+        constexpr uint32_t tab_cargo_units_frame4 = 77;
+        constexpr uint32_t tab_cargo_units_frame5 = 78;
+        constexpr uint32_t tab_cargo_units_frame6 = 79;
+        constexpr uint32_t tab_cargo_units_frame7 = 80;
+        constexpr uint32_t tab_cargo_distance_frame0 = 81;
+        constexpr uint32_t tab_cargo_distance_frame1 = 82;
+        constexpr uint32_t tab_cargo_distance_frame2 = 83;
+        constexpr uint32_t tab_cargo_distance_frame3 = 84;
+        constexpr uint32_t tab_cargo_distance_frame4 = 85;
+        constexpr uint32_t tab_cargo_distance_frame5 = 86;
+        constexpr uint32_t tab_cargo_distance_frame6 = 87;
+        constexpr uint32_t tab_cargo_distance_frame7 = 88;
         constexpr uint32_t tab_production_frame0 = 89;
         constexpr uint32_t tab_production_frame1 = 90;
         constexpr uint32_t tab_production_frame2 = 91;
@@ -191,6 +214,7 @@ namespace openloco
         constexpr uint32_t tab_cargo_delivered_frame1 = 199;
         constexpr uint32_t tab_cargo_delivered_frame2 = 200;
         constexpr uint32_t tab_cargo_delivered_frame3 = 201;
+        constexpr uint32_t tab_cargo_payment_rates = 202;
 
         constexpr uint32_t build_vehicle_train_frame_0 = 251;
         constexpr uint32_t build_vehicle_train_frame_1 = 252;

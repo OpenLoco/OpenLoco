@@ -1056,7 +1056,33 @@ namespace openloco::string_ids
     constexpr string_id menu_map = 1742;
     constexpr string_id dropdown_companies_list = 1743;
     constexpr string_id dropdown_company_performance = 1744;
-
+    constexpr string_id title_company_list = 1745;
+    constexpr string_id title_company_performance = 1746;
+    constexpr string_id title_company_cargo_units = 1747;
+    constexpr string_id title_company_values = 1748;
+    constexpr string_id title_cargo_payment_rates = 1749;
+    constexpr string_id tab_compare_companies = 1750;
+    constexpr string_id tab_company_performance = 1751;
+    constexpr string_id tab_cargo_graphs = 1752;
+    constexpr string_id tab_company_values = 1753;
+    constexpr string_id tab_cargo_payment_rates = 1754;
+    constexpr string_id tooltip_sort_company_name = 1755;
+    constexpr string_id tooltip_sort_company_status = 1756;
+    constexpr string_id tooltip_sort_company_performance = 1757;
+    constexpr string_id tooltip_sort_company_value = 1758;
+    constexpr string_id table_header_company_name = 1759;
+    constexpr string_id table_header_company_name_desc = 1760;
+    constexpr string_id table_header_company_status = 1761;
+    constexpr string_id table_header_company_status_desc = 1762;
+    constexpr string_id table_header_company_performance = 1763;
+    constexpr string_id table_header_company_performance_desc = 1764;
+    constexpr string_id table_header_company_value = 1765;
+    constexpr string_id table_header_company_value_desc = 1766;
+    constexpr string_id table_item_company = 1767;
+    constexpr string_id performance_index = 1768;
+    constexpr string_id performance_index_decrease = 1769;
+    constexpr string_id performance_index_increase = 1770;
+    constexpr string_id company_value_currency = 1771;
     constexpr string_id corporate_rating_platelayer = 1772;
     constexpr string_id corporate_rating_engineer = 1773;
     constexpr string_id corporate_rating_traffic_manager = 1774;
@@ -1067,10 +1093,24 @@ namespace openloco::string_ids
     constexpr string_id corporate_rating_chairman = 1779;
     constexpr string_id corporate_rating_president = 1780;
     constexpr string_id corporate_rating_tycoon = 1781;
+    constexpr string_id company_singular = 1782;
+    constexpr string_id companies_plural = 1783;
+    constexpr string_id rawdate_short = 1784;
+    constexpr string_id percentage_one_decimal_place = 1785;
 
+    constexpr string_id cargo_units_delivered = 1787;
     constexpr string_id player_info_performance = 1788;
     constexpr string_id player_info_performance_decrease = 1789;
     constexpr string_id player_info_performance_increase = 1790;
+    constexpr string_id small_company_value_currency = 1791;
+    constexpr string_id small_black_string = 1792;
+    constexpr string_id small_white_string = 1793;
+
+    constexpr string_id currency_symbol = 1795;
+    constexpr string_id cargo_delivered_days = 1796;
+    constexpr string_id cargo_delivered_currency = 1797;
+    constexpr string_id cargo_deliver_graph_title = 1798;
+    constexpr string_id cargo_transit_time = 1799;
 
     constexpr string_id toolbar_status_paused = 1800;
 
@@ -1132,6 +1172,16 @@ namespace openloco::string_ids
     constexpr string_id the_other_player = 1934;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
+    constexpr string_id title_cargo_distance_graphs = 1983;
+    constexpr string_id tab_cargo_distance_graphs = 1984;
+
+    constexpr string_id tab_speed_records = 1995;
+    constexpr string_id speed_records = 1995;
+    constexpr string_id title_speed_records = 1996;
+    constexpr string_id land_speed_record = 1997;
+    constexpr string_id air_speed_record = 1998;
+    constexpr string_id water_speed_record = 1999;
+    constexpr string_id record_date_achieved = 2000;
 
     constexpr string_id window_browse_input_caret = 2003;
     constexpr string_id window_browse_filename = 2004;

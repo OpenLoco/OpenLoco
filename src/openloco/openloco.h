@@ -32,6 +32,7 @@ namespace openloco
     bool isNetworked();
     bool isTrackUpgradeMode();
     bool is_unknown_4_mode();
+    bool is_unknown_5_mode();
     bool is_paused();
     uint8_t get_pause_flags();
     uint32_t scenario_ticks();

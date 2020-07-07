@@ -149,6 +149,11 @@ namespace openloco
         return (_screen_flags & screen_flags::unknown_4) != 0;
     }
 
+    bool is_unknown_5_mode()
+    {
+        return (_screen_flags & screen_flags::unknown_5) != 0;
+    }
+
     bool is_paused()
     {
         return paused_state;

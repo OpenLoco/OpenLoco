@@ -276,7 +276,7 @@ namespace openloco::ui::windows::CompanyFaceSelection
 namespace openloco::ui::windows::CompanyList
 {
     void openPerformanceIndexes();
-    void openUnk();
+    window* open();
 }
 
 namespace openloco::ui::windows::CompanyWindow

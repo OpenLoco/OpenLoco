@@ -151,7 +151,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
         // If its index is bigger than the list then its the company list extra item
         if (static_cast<uint16_t>(itemIndex) >= _sortedCompanies.size())
         {
-            windows::CompanyList::openUnk();
+            windows::CompanyList::open();
         }
         else
         {
@@ -353,7 +353,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static void companyValueTooltip(FormatArguments& args)
     {
         auto playerCompany = companymgr::get(companymgr::get_controlling_id());
-        args.push(playerCompany->companyValue);
+        args.push(playerCompany->companyValueHistory[0]);
         args.push(playerCompany->vehicleProfit);
     }
 
