@@ -18,6 +18,7 @@
 using namespace openloco;
 using namespace openloco::interop;
 using namespace openloco::objectmgr;
+using namespace openloco::game_commands;
 
 namespace openloco::things::vehicle
 {
@@ -48,9 +49,9 @@ namespace openloco::things::vehicle
     static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _525FB8;              // total used length of _987C5C
-    static loco_global<thing_id_t[64 * 1000], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;   // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _525FB8;             // total used length of _987C5C
+    static loco_global<thing_id_t[64][1000], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;  // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -86,34 +87,15 @@ namespace openloco::things::vehicle
             return false;
         }
 
-        for (auto i = 0; i < 64 * 1000; i += 64)
+        for (auto i = 0; i < 1000; i++)
         {
-            auto id = _96885C[i];
+            auto id = _96885C[i][0];
             if (id == thing_id::null)
             {
                 return true;
             }
         }
         gGameCommandErrorText = string_ids::too_many_vehicles;
-        return false;
-    }
-
-    // 0x00431E6A
-    // al  : company
-    // esi : tile
-    static bool sub_431E6A(const company_id_t company, map::tile_element* const tile)
-    {
-        if (company == company_id::neutral)
-        {
-            return true;
-        }
-        if (_updating_company_id == company || _updating_company_id == company_id::neutral)
-        {
-            return true;
-        }
-        gGameCommandErrorText = -2;
-        _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<map::tile_element*>(-1) : tile;
         return false;
     }
 
@@ -181,7 +163,8 @@ namespace openloco::things::vehicle
         }
     }
 
-    static void sub_4B08DD(openloco::vehicle_head* const head)
+    // 0x004B08DD
+    static void liftUpVehicle(openloco::vehicle_head* const head)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(head);
@@ -292,8 +275,8 @@ namespace openloco::things::vehicle
         sub_4BA873(newBogie);
 
         // Calculate refund cost == 7/8 * cost
-        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
-        auto cost = (vehObject.cost_fact * currencyMultiplicationFactor[vehObject.cost_ind]) / 64;
+        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
+        auto cost = (vehObject.cost_factor * currencyMultiplicationFactor[vehObject.cost_index]) / 64;
         newBogie->refund_cost = cost - cost / 8;
 
         if (bodyNumber == 0)
@@ -501,14 +484,14 @@ namespace openloco::things::vehicle
         }
 
         // ?Routing? related. Max 64 routing stops.
-        for (auto i = 0; i < 64 * 1000; i += 64)
+        for (auto i = 0; i < 1000; i++)
         {
-            auto id = _96885C[i];
+            auto id = _96885C[i][0];
             if (id == thing_id::null)
             {
                 for (auto j = 0; j < 64; ++j)
                 {
-                    _96885C[i + j] = allocated_but_free_routing_station;
+                    _96885C[i][j] = allocated_but_free_routing_station;
                 }
                 return { i };
             }
@@ -689,7 +672,7 @@ namespace openloco::things::vehicle
         return newTail;
     }
     // 0x004AE318
-    static std::optional<openloco::vehicle_head*> createBase(const TransportMode mode, const VehicleType type, const uint8_t trackType)
+    static std::optional<openloco::vehicle_head*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
         if (!thingmgr::checkNumFreeThings(num_vehicle_components_in_base))
         {
@@ -743,7 +726,7 @@ namespace openloco::things::vehicle
     }
 
     // 0x004B05E4
-    static void sub_4B05E4(openloco::vehicle_head* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
+    static void placeDownVehicle(openloco::vehicle_head* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(head);
@@ -762,7 +745,7 @@ namespace openloco::things::vehicle
         uint16_t baseOrderId = orderId & ~(0x3F);
         for (auto i = 0; i < 64; ++i)
         {
-            _96885C[i + baseOrderId] = thing_id::null;
+            _96885C[baseOrderId][i] = thing_id::null;
         }
     }
 
@@ -808,28 +791,43 @@ namespace openloco::things::vehicle
         call(0x0042851C, regs);
     }
 
+    // 0x004AE6DE
+    static void updateWholeVehicle(vehicle_head* const head)
+    {
+        sub_4AF7A4(head);
+        auto company = companymgr::get(_updating_company_id);
+        company->recalculateTransportCounts();
+
+        if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
+        {
+            placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+        }
+
+        ui::WindowManager::invalidate(ui::WindowType::vehicleList, head->owner);
+    }
+
     // 0x004AE74E
-    static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId)
+    static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         gameCommandMapX = location::null;
-        if (!thingmgr::checkNumFreeThings(16))
+        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
-            return 0x80000000;
+            return FAILURE;
         }
 
         if (!isEmptyVehicleSlotAvailable())
         {
-            return 0x80000000;
+            return FAILURE;
         }
 
         if (flags & game_commands::GameCommandFlag::apply)
         {
             auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
 
-            auto head = createBase(vehObject->mode, vehObject->type, vehObject->track_type);
+            auto head = createBaseVehicle(vehObject->mode, vehObject->type, vehObject->track_type);
             if (!head)
             {
-                return 0x80000000;
+                return FAILURE;
             }
 
             auto _head = *head;
@@ -837,37 +835,103 @@ namespace openloco::things::vehicle
             if (createCar(_head, vehicleTypeId))
             {
                 // 0x004AE6DE
-                sub_4AF7A4(_head);
-                auto company = companymgr::get(_updating_company_id);
-                company->recalculateTransportCounts();
-
-                if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
-                {
-                    sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
-                }
-
-                ui::WindowManager::invalidate(ui::WindowType::vehicleList, _head->owner);
+                updateWholeVehicle(_head);
             }
             else
             {
-                // Cleanup and delete base before exit.
+                // Cleanup and delete base vehicle before exit.
                 sub_4B1E77(_head->var_36);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
                 auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->next_car();
-                thingmgr::freeThing(_head);
                 auto veh2 = veh1->next_car();
+                auto tail = veh2->next_car();
+                // Get all vehicles before freeing
+                thingmgr::freeThing(_head);
                 thingmgr::freeThing(veh1);
-                auto veh6 = veh2->next_car();
                 thingmgr::freeThing(veh2);
-                thingmgr::freeThing(veh6);
-                return 0x80000000;
+                thingmgr::freeThing(tail);
+                return FAILURE;
             }
         }
         // 0x4AE733
         auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
-        auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
+        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
+        auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
+        return cost;
+    }
+
+    // 0x004AE5FF
+    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
+    {
+        auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
+        auto head = veh0->as_vehicle_head();
+        auto veh2 = veh0->next_car()->next_car()->as_vehicle_2();
+        if (veh2 == nullptr || head == nullptr)
+        {
+            return FAILURE;
+        }
+        gameCommandMapX = veh2->x;
+        gameCommandMapY = veh2->y;
+        gameCommandMapZ = veh2->z;
+
+        if (!sub_431E6A(head->owner))
+        {
+            return FAILURE;
+        }
+
+        if (!sub_4B0BDD(head))
+        {
+            return FAILURE;
+        }
+
+        if (!head->isVehicleTypeCompatible(vehicleTypeId))
+        {
+            return FAILURE;
+        }
+
+        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car))
+        {
+            return FAILURE;
+        }
+
+        if (flags & game_commands::GameCommandFlag::apply)
+        {
+            if (head->tile_x != -1)
+            {
+                _backupX = head->tile_x;
+                _backupY = head->tile_y;
+                _backupZ = head->tile_base_z;
+                _backup2C = head->var_2C;
+                _backup2E = head->var_2E;
+                _backupVeh0 = head;
+                liftUpVehicle(head);
+            }
+
+            if (createCar(head, vehicleTypeId))
+            {
+                updateWholeVehicle(head);
+            }
+            else
+            {
+                if (_backupVeh0 == reinterpret_cast<openloco::vehicle_head*>(-1))
+                {
+                    return FAILURE;
+                }
+
+                vehicle_head* veh0backup = _backupVeh0;
+                // If it has an existing body
+                if (reinterpret_cast<openloco::vehicle*>(veh0backup)->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
+                {
+                    placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                }
+                return FAILURE;
+            }
+        }
+        // 0x4AE733
+        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
+        auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;
     }
 
@@ -878,89 +942,11 @@ namespace openloco::things::vehicle
         _backupVeh0 = reinterpret_cast<openloco::vehicle_head*>(-1);
         if (vehicleThingId == (uint16_t)-1)
         {
-            return create(flags, vehicleTypeId);
+            return createNewVehicle(flags, vehicleTypeId);
         }
         else
         {
-            auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
-            auto head = veh0->as_vehicle_head();
-            auto veh2 = veh0->next_car()->next_car()->as_vehicle_2();
-            if (veh2 == nullptr || head == nullptr)
-            {
-                return 0x80000000;
-            }
-            gameCommandMapX = veh2->x;
-            gameCommandMapY = veh2->y;
-            gameCommandMapZ = veh2->z;
-
-            if (!sub_431E6A(head->owner, nullptr))
-            {
-                return 0x80000000;
-            }
-
-            if (!sub_4B0BDD(head))
-            {
-                return 0x80000000;
-            }
-
-            if (!head->isVehicleTypeCompatible(vehicleTypeId))
-            {
-                return 0x80000000;
-            }
-
-            if (!thingmgr::checkNumFreeThings(12))
-            {
-                return 0x80000000;
-            }
-
-            if (flags & game_commands::GameCommandFlag::apply)
-            {
-                if (head->tile_x != -1)
-                {
-                    _backupX = head->tile_x;
-                    _backupY = head->tile_y;
-                    _backupZ = head->tile_base_z;
-                    _backup2C = head->var_2C;
-                    _backup2E = head->var_2E;
-                    _backupVeh0 = head;
-                    sub_4B08DD(head);
-                }
-
-                if (createCar(head, vehicleTypeId))
-                {
-                    // 0x004AE6DE
-                    sub_4AF7A4(head);
-                    auto company = companymgr::get(_updating_company_id);
-                    company->recalculateTransportCounts();
-
-                    if (_backupVeh0 != reinterpret_cast<openloco::vehicle_head*>(-1))
-                    {
-                        sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
-                    }
-
-                    ui::WindowManager::invalidate(ui::WindowType::vehicleList, head->owner);
-                }
-                else
-                {
-                    if (_backupVeh0 == reinterpret_cast<openloco::vehicle_head*>(-1))
-                    {
-                        return 0x80000000;
-                    }
-
-                    vehicle_head* veh0backup = _backupVeh0;
-                    // If it has an existing body
-                    if (reinterpret_cast<openloco::vehicle*>(veh0backup)->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
-                    {
-                        sub_4B05E4(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
-                    }
-                    return 0x80000000;
-                }
-            }
-            // 0x4AE733
-            auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
-            // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_ind
-            auto cost = (vehObject->cost_fact * currencyMultiplicationFactor[vehObject->cost_ind]) / 64;
-            return cost;
+            return addCarToVehicle(flags, vehicleTypeId, vehicleThingId);
         }
     }
 }

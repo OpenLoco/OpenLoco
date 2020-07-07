@@ -304,4 +304,23 @@ namespace openloco::game_commands
         windows::error::openWithCompetitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
         return 0x80000000;
     }
+
+    // 0x00431E6A
+    // al  : company
+    // esi : tile
+    bool sub_431E6A(const company_id_t company, map::tile_element* const tile /*= nullptr*/)
+    {
+        if (company == company_id::neutral)
+        {
+            return true;
+        }
+        if (_updating_company_id == company || _updating_company_id == company_id::neutral)
+        {
+            return true;
+        }
+        gGameCommandErrorText = -2;
+        _errorCompanyId = company;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<map::tile_element*>(-1) : tile;
+        return false;
+    }
 }

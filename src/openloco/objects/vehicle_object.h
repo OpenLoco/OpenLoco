@@ -158,11 +158,11 @@ namespace openloco
         uint8_t var_04;
         uint8_t track_type;               // 0x05
         uint8_t num_mods;                 // 0x06
-        uint8_t cost_ind;                 // 0x07
-        int16_t cost_fact;                // 0x08
+        uint8_t cost_index;               // 0x07
+        int16_t cost_factor;              // 0x08
         uint8_t reliability;              // 0x0A
-        uint8_t run_cost_ind;             // 0x0B
-        int16_t run_cost_fact;            // 0x0C
+        uint8_t run_cost_index;           // 0x0B
+        int16_t run_cost_factor;          // 0x0C
         uint8_t colour_type;              // 0x0E
         uint8_t num_compat;               // 0x0F
         uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types

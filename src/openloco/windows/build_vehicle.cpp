@@ -931,14 +931,14 @@ namespace openloco::ui::build_vehicle
         auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
 
         {
-            auto cost = (vehicleObj->cost_fact * currencyMultiplicationFactor[vehicleObj->cost_ind]) / 64;
+            auto cost = (vehicleObj->cost_factor * currencyMultiplicationFactor[vehicleObj->cost_index]) / 64;
             FormatArguments args{};
             args.push(cost);
             buffer = stringmgr::format_string(buffer, string_ids::stats_cost, &args);
         }
 
         {
-            auto runningCost = (vehicleObj->run_cost_fact * currencyMultiplicationFactor[vehicleObj->run_cost_ind]) / 1024;
+            auto runningCost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
             FormatArguments args{};
             args.push(runningCost);
             buffer = stringmgr::format_string(buffer, string_ids::stats_running_cost, &args);

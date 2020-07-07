@@ -9,7 +9,6 @@
 
 namespace openloco
 {
-    using company_id_t = uint8_t;
 
     namespace company_id
     {
