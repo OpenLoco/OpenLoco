@@ -36,6 +36,13 @@ namespace openloco
         diesel_exhaust2,
         ship_wake
     };
+
+    namespace sprite_ind
+    {
+        constexpr uint8_t null = 0xFF;
+        constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
+    }
+
 #pragma pack(push, 1)
     struct vehicle_object_sound_1
     {
@@ -95,9 +102,20 @@ namespace openloco
     struct vehicle_object_unk
     {
         uint8_t length; // 0x00
-        uint8_t pad_01[0x04 - 0x01];
-        uint8_t sprite_ind; // 0x04
+        uint8_t pad_01;
+        uint8_t front_bogie_sprite_ind; // 0x02 index of bogie_sprites struct
+        uint8_t back_bogie_sprite_ind;  // 0x03 index of bogie_sprites struct
+        uint8_t body_sprite_ind;        // 0x04 index of a sprites struct
         uint8_t var_05;
+    };
+
+    struct vehicle_object_bogie_sprite
+    {
+        uint8_t pad_00[0x02 - 0x00];
+        uint8_t var_02;
+        uint8_t var_03;
+        uint8_t var_04;
+        uint8_t pad_05[0x12 - 0x5];
     };
 
     struct vehicle_object_sprite
@@ -110,7 +128,9 @@ namespace openloco
         uint8_t var_05;
         uint8_t bogey_position; // 0x06
         uint8_t flags;          // 0x07
-        uint8_t pad_08[0x0B - 0x08];
+        uint8_t var_08;
+        uint8_t var_09;
+        uint8_t var_0A;
         uint8_t var_0B;
         uint8_t var_0C;
         uint8_t pad_0D;
@@ -120,12 +140,14 @@ namespace openloco
 
     namespace flags_E0
     {
+        constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
+        constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
         constexpr uint16_t rack_rail = 1 << 6;
-        constexpr uint16_t unk_09 = 1 << 9;  //anytrack??
-        constexpr uint16_t unk_11 = 1 << 10; //cancouple??
-        constexpr uint16_t unk_12 = 1 << 6;  //dualhead??
-        constexpr uint16_t refittable = 1 << 9;
-        constexpr uint16_t unk_15 = 1 << 10; //noannounce??
+        constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t can_couple = 1 << 11;
+        constexpr uint16_t unk_12 = 1 << 12; //dualhead??
+        constexpr uint16_t refittable = 1 << 14;
+        constexpr uint16_t unk_15 = 1 << 15; //noannounce??
     }
 
     struct vehicle_object
@@ -133,30 +155,30 @@ namespace openloco
         string_id name;     // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
-        uint8_t pad_04;
-        uint8_t track_type;    // 0x05
-        uint8_t num_mods;      // 0x06
-        uint8_t cost_ind;      // 0x07
-        int16_t cost_fact;     // 0x08
-        uint8_t reliability;   // 0x0A
-        uint8_t run_cost_ind;  // 0x0B
-        int16_t run_cost_fact; // 0x0C
-        uint8_t colour_type;   // 0x0E
-        uint8_t num_compat;    // 0x0F
-        uint8_t pad_10[0x20 - 0x10];
+        uint8_t var_04;
+        uint8_t track_type;               // 0x05
+        uint8_t num_mods;                 // 0x06
+        uint8_t cost_index;               // 0x07
+        int16_t cost_factor;              // 0x08
+        uint8_t reliability;              // 0x0A
+        uint8_t run_cost_index;           // 0x0B
+        int16_t run_cost_factor;          // 0x0C
+        uint8_t colour_type;              // 0x0E
+        uint8_t num_compat;               // 0x0F
+        uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
         uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
-        vehicle_object_sprite sprites[4]; // 0x3C
-        uint8_t pad_B4[0xD8 - 0xB4];
-        uint16_t power;                 // 0xD8
-        uint16_t speed;                 // 0xDA
-        uint16_t rack_speed;            // 0xDC
-        uint16_t weight;                // 0xDE
-        uint16_t flags;                 // 0xE0
-        uint8_t max_primary_cargo;      // 0xE2
-        uint8_t max_secondary_cargo;    // 0xE3
-        uint32_t primary_cargo_types;   // 0xE4
-        uint32_t secondary_cargo_types; // 0xE8
+        vehicle_object_sprite sprites[4];             // 0x3C
+        vehicle_object_bogie_sprite bogie_sprites[2]; // 0xB4
+        uint16_t power;                               // 0xD8
+        uint16_t speed;                               // 0xDA
+        uint16_t rack_speed;                          // 0xDC
+        uint16_t weight;                              // 0xDE
+        uint16_t flags;                               // 0xE0
+        uint8_t max_primary_cargo;                    // 0xE2
+        uint8_t max_secondary_cargo;                  // 0xE3
+        uint32_t primary_cargo_types;                 // 0xE4
+        uint32_t secondary_cargo_types;               // 0xE8
         uint8_t pad_EC[0x10C - 0xEC];
         uint8_t num_simultaneous_cargo_types; // 0x10C
         simple_animation animation[2];        // 0x10D
@@ -176,4 +198,5 @@ namespace openloco
         uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
     };
 #pragma pack(pop)
+    static_assert(sizeof(vehicle_object) == 0x15E);
 }

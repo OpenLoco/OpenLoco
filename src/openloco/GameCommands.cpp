@@ -7,6 +7,7 @@
 #include "objects/road_object.h"
 #include "objects/track_object.h"
 #include "stationmgr.h"
+#include "things/vehicle.h"
 #include "ui/WindowManager.h"
 #include <cassert>
 
@@ -41,6 +42,17 @@ namespace openloco::game_commands
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto ebx = do_command(regs.esi, backup);
+
+                regs = backup;
+                regs.ebx = ebx;
+                return 0;
+            });
+
+        register_hook(
+            0x004AE5E4,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto ebx = things::vehicle::create(regs.bl, regs.dx, regs.di);
 
                 regs = backup;
                 regs.ebx = ebx;
@@ -291,5 +303,24 @@ namespace openloco::game_commands
         _commonFormatArgs[0] = companymgr::get(_errorCompanyId)->name;
         windows::error::openWithCompetitor(gGameCommandErrorTitle, string_ids::error_reason_stringid_belongs_to, _errorCompanyId);
         return 0x80000000;
+    }
+
+    // 0x00431E6A
+    // al  : company
+    // esi : tile
+    bool sub_431E6A(const company_id_t company, map::tile_element* const tile /*= nullptr*/)
+    {
+        if (company == company_id::neutral)
+        {
+            return true;
+        }
+        if (_updating_company_id == company || _updating_company_id == company_id::neutral)
+        {
+            return true;
+        }
+        gGameCommandErrorText = -2;
+        _errorCompanyId = company;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<map::tile_element*>(-1) : tile;
+        return false;
     }
 }

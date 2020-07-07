@@ -19,10 +19,20 @@ namespace openloco::game_commands
         flag_6 = 1 << 6, // 0x40
     };
 
+    enum class GameCommand : uint8_t
+    {
+        vehicle_rearange = 0,
+        vehicle_place = 1,
+        vehicle_pickup = 2,
+        vehicle_create = 5,
+        vehicle_sell = 6,
+    };
+
     constexpr uint32_t FAILURE = 0x80000000;
 
     void registerHooks();
     uint32_t do_command(int esi, const registers& registers);
+    bool sub_431E6A(const company_id_t company, map::tile_element* const tile = nullptr);
 
     // Build vehicle
     inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)

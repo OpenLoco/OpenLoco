@@ -30,6 +30,7 @@ loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
 loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
 loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
 // 0x00503E5C
 static constexpr uint8_t vehicleBodyIndexToPitch[] = {
@@ -114,7 +115,7 @@ bool vehicle::update()
         case vehicle_thing_type::vehicle_bogie:
             result = call(0x004AA008, regs);
             break;
-        case vehicle_thing_type::vehicle_body_end:
+        case vehicle_thing_type::vehicle_body_start:
         case vehicle_thing_type::vehicle_body_cont:
             result = as_vehicle_body()->update();
             break;
@@ -142,7 +143,7 @@ void vehicle::sub_4BA8D4()
             return;
     }
 
-    auto v = next_car()->next_car()->next_car();
+    auto v = next_car()->next_car()->next_car(); // bogie or tail
     if (v->type != vehicle_thing_type::vehicle_6)
     {
         while (true)
@@ -151,7 +152,7 @@ void vehicle::sub_4BA8D4()
             {
                 if ((scenario_ticks() & 3) == 0)
                 {
-                    auto v2 = v->next_car()->next_car();
+                    auto v2 = v->next_car()->next_car(); // body
                     smoke::create(loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
@@ -172,7 +173,7 @@ void vehicle::sub_4BA8D4()
                 }
             }
 
-            v = v->next_car()->next_car()->next_car();
+            v = v->next_car()->next_car()->next_car(); // next bogie
             vehicle* u;
             do
             {
@@ -181,9 +182,9 @@ void vehicle::sub_4BA8D4()
                     return;
                 }
                 u = v->next_car()->next_car();
-                if (u->type != vehicle_thing_type::vehicle_body_end)
+                if (u->type != vehicle_thing_type::vehicle_body_start)
                     v = u->next_car();
-            } while (u->type != vehicle_thing_type::vehicle_body_end);
+            } while (u->type != vehicle_thing_type::vehicle_body_start);
         }
     }
 }
@@ -235,7 +236,7 @@ int32_t openloco::vehicle_body::update()
 // 0x004AAC4E
 void openloco::vehicle_body::animation_update()
 {
-    if (var_38 & (1 << 4))
+    if (var_38 & things::vehicle::flags_38::unk_4)
         return;
 
     vehicle* veh = vehicle_1136118;
@@ -243,7 +244,7 @@ void openloco::vehicle_body::animation_update()
         return;
 
     auto vehicleObject = object();
-    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
+    int32_t var_05 = vehicleObject->var_24[body_index].var_05;
     if (var_05 == 0)
     {
         return;
@@ -286,7 +287,7 @@ void openloco::vehicle_body::animation_update()
 void openloco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         eax = -eax;
     }
@@ -326,7 +327,7 @@ void openloco::vehicle_body::sub_4AAB0B()
 
             if (ah < 0)
             {
-                if (var_38 & (1 << 1))
+                if (var_38 & things::vehicle::flags_38::unk_1)
                 {
                     ah = 2;
                     if (al != 0 && al != ah)
@@ -345,7 +346,7 @@ void openloco::vehicle_body::sub_4AAB0B()
             }
             else if (ah > 0)
             {
-                if (var_38 & (1 << 1))
+                if (var_38 & things::vehicle::flags_38::unk_1)
                 {
                     ah = 1;
                     if (al != 0 && al != ah)
@@ -976,7 +977,8 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_4(int16_t x_offset, int16_t y_
 void openloco::vehicle_body::secondary_animation_update()
 {
     auto vehicleObject = object();
-    int32_t var_05 = vehicleObject->var_24[var_54].var_05;
+
+    uint8_t var_05 = vehicleObject->var_24[body_index].var_05;
     if (var_05 == 0)
         return;
 
@@ -1035,7 +1037,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 
     auto _var_44 = var_44;
     // Reversing
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -_var_44;
@@ -1189,12 +1191,12 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
     vehicle* veh_3 = vehicle_1136120;
     auto vehicleObject = object();
 
-    if (veh->var_5E == 5)
+    if (veh->vehicleType == VehicleType::ship)
     {
         if (veh_3->var_56 == 0)
             return;
 
-        if (var_38 & (1 << 1))
+        if (var_38 & things::vehicle::flags_38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1219,7 +1221,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
         if (veh_3->var_5A != 1)
             return;
 
-        if (var_38 & (1 << 1))
+        if (var_38 & things::vehicle::flags_38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1280,7 +1282,7 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32
     if (veh_3->var_56 > 917504)
         return;
 
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
     }
@@ -1353,7 +1355,7 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1413,7 +1415,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & (1 << 1))
+    if (var_38 & things::vehicle::flags_38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1456,7 +1458,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
     loc.y += yFactor;
 
     auto yaw = (sprite_yaw + 16) & 0x3F;
-    auto firstBogie = var_38 & (1 << 1) ? backBogie : frontBogie;
+    auto firstBogie = var_38 & things::vehicle::flags_38::unk_1 ? backBogie : frontBogie;
     xyFactor = 5;
     if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
     {
@@ -1548,4 +1550,168 @@ void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
     loc.y += yFactor;
 
     exhaust::create(loc, vehicleObject->animation[num].object_id);
+}
+
+// 0x004B90F0
+// eax : newVehicleTypeId
+// ebx : sourceVehicleTypeId;
+static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
+{
+    auto newObject = objectmgr::get<vehicle_object>(newVehicleTypeId);       //edi
+    auto sourceObject = objectmgr::get<vehicle_object>(sourceVehicleTypeId); // esi
+
+    if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    if (newVehicleTypeId == sourceVehicleTypeId)
+    {
+        return true;
+    }
+
+    for (auto i = 0; i < newObject->num_compat; ++i)
+    {
+        if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
+        {
+            return true;
+        }
+    }
+
+    if (sourceObject->num_compat != 0)
+    {
+        for (auto i = 0; i < sourceObject->num_compat; ++i)
+        {
+            if (sourceObject->compatible_vehicles[i] == newVehicleTypeId)
+            {
+                return true;
+            }
+        }
+    }
+
+    if ((newObject->num_compat != 0) || (sourceObject->num_compat != 0))
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    return true;
+}
+
+// 0x004B9780
+// used by road vehicles only maybe??
+static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
+{
+    auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    auto length = 0;
+    for (auto i = 0; i < vehObject->var_04; ++i)
+    {
+        if (vehObject->var_24[i].body_sprite_ind == 0xFF)
+        {
+            continue;
+        }
+
+        auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
+        length += vehObject->sprites[unk].bogey_position * 2;
+    }
+    return length;
+}
+
+// 0x004B97B7
+// used by road vehicles only maybe??
+uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
+{
+    auto totalLength = 0;
+    auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+    while (veh->type != vehicle_thing_type::vehicle_6)
+    {
+        if (veh->type == vehicle_thing_type::vehicle_body_start)
+        {
+            totalLength += getVehicleTypeLength(veh->object_id);
+        }
+        veh = veh->next_car();
+    }
+    return totalLength;
+}
+
+// 0x004B8FA2
+// esi : self
+// ax  : vehicleTypeId
+bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
+{
+    auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
+    {
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+        if (veh->type != vehicle_thing_type::vehicle_6)
+        {
+            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            return false;
+        }
+    }
+    else
+    {
+        if (newObject->track_type != track_type)
+        {
+            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            return false;
+        }
+    }
+
+    if (newObject->mode != mode)
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    if (newObject->type != vehicleType)
+    {
+        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        return false;
+    }
+
+    {
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_car()->next_car()->next_car();
+        if (veh->type != vehicle_thing_type::vehicle_6)
+        {
+            while (veh->type != vehicle_thing_type::vehicle_6)
+            {
+                if (!sub_4B90F0(vehicleTypeId, veh->object_id))
+                {
+                    return false;
+                }
+
+                vehicle_body* vehUnk = nullptr;
+                do
+                {
+                    veh = veh->next_car()->next_car()->next_car();
+                    if (veh->type == vehicle_thing_type::vehicle_6)
+                    {
+                        break;
+                    }
+
+                    vehUnk = veh->next_car()->next_car()->as_vehicle_body();
+                } while (vehUnk != nullptr && vehUnk->type == vehicle_thing_type::vehicle_body_cont);
+            }
+        }
+    }
+    if (mode != TransportMode::road)
+    {
+        return true;
+    }
+
+    if (track_type != 0xFF)
+    {
+        return true;
+    }
+
+    auto curTotalLength = getVehicleTotalLength();
+    auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
+    if (curTotalLength + additionalNewLength > openloco::things::vehicle::max_vehicle_length)
+    {
+        gGameCommandErrorText = string_ids::vehicle_too_long;
+        return false;
+    }
+    return true;
 }

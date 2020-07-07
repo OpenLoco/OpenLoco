@@ -9,7 +9,6 @@
 
 namespace openloco
 {
-    using company_id_t = uint8_t;
 
     namespace company_id
     {
@@ -101,6 +100,7 @@ namespace openloco
         bool empty() const;
         void ai_think();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
+        void recalculateTransportCounts();
     };
 #pragma pack(pop)
 

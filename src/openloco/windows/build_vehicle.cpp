@@ -281,7 +281,7 @@ namespace openloco::ui::build_vehicle
             if (!tabMode)
             {
                 auto veh = thingmgr::get<openloco::vehicle>(vehicle);
-                tab += veh->var_5E;
+                tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
             {
@@ -309,7 +309,7 @@ namespace openloco::ui::build_vehicle
             {
                 _buildTargetVehicle = vehicle;
                 auto veh = thingmgr::get<openloco::vehicle>(vehicle);
-                window->current_tab = veh->var_5E;
+                window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
             {
@@ -391,19 +391,6 @@ namespace openloco::ui::build_vehicle
             });
     }
 
-    static bool sub_4B8FA2(openloco::vehicle* esi, uint32_t eax)
-    {
-        registers regs;
-        regs.eax = eax;
-        regs.esi = (uintptr_t)esi;
-        if (esi == nullptr)
-        {
-            regs.esi = -1;
-        }
-
-        return call(0x004B8FA2, regs) & (X86_FLAG_CARRY << 8);
-    }
-
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
@@ -443,7 +430,8 @@ namespace openloco::ui::build_vehicle
 
             if (vehicle)
             {
-                if (sub_4B8FA2(vehicle, vehicleObjIndex))
+                auto* const head = vehicle->as_vehicle_head();
+                if (head && !head->isVehicleTypeCompatible(vehicleObjIndex))
                 {
                     continue;
                 }
@@ -943,14 +931,14 @@ namespace openloco::ui::build_vehicle
         auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
 
         {
-            auto cost = (vehicleObj->cost_fact * currencyMultiplicationFactor[vehicleObj->cost_ind]) / 64;
+            auto cost = (vehicleObj->cost_factor * currencyMultiplicationFactor[vehicleObj->cost_index]) / 64;
             FormatArguments args{};
             args.push(cost);
             buffer = stringmgr::format_string(buffer, string_ids::stats_cost, &args);
         }
 
         {
-            auto runningCost = (vehicleObj->run_cost_fact * currencyMultiplicationFactor[vehicleObj->run_cost_ind]) / 1024;
+            auto runningCost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
             FormatArguments args{};
             args.push(runningCost);
             buffer = stringmgr::format_string(buffer, string_ids::stats_running_cost, &args);
