@@ -85,11 +85,13 @@ namespace openloco::ui::NewsWindow
 
                                 case newsItems::vehicle:
                                 {
-                                    registers regs;
                                     auto vehicle = thingmgr::get<openloco::vehicle>(itemId);
 
+                                    // ui::vehicle::open
+                                    registers regs;
                                     regs.edx = (int32_t)vehicle;
                                     call(0x004B6033, regs);
+
                                     break;
                                 }
 
@@ -150,20 +152,16 @@ namespace openloco::ui::NewsWindow
                 self->y += height;
                 self->x += width;
 
-                auto viewport1 = self->viewports[0];
-
-                if (viewport1 != nullptr)
+                if (self->viewports[0] != nullptr)
                 {
-                    viewport1->x += width;
-                    viewport1->y += height;
+                    self->viewports[0]->x += width;
+                    self->viewports[0]->y += height;
                 }
 
-                auto viewport2 = self->viewports[1];
-
-                if (viewport2 != nullptr)
+                if (self->viewports[1] != nullptr)
                 {
-                    viewport2->x += width;
-                    viewport2->y += height;
+                    self->viewports[1]->x += width;
+                    self->viewports[1]->y += height;
                 }
 
                 self->invalidate();
@@ -537,6 +535,7 @@ namespace openloco::ui::NewsWindow
             }
         }
 
+        // 0x0042A136
         static void sub_42A136(window* self, gfx::drawpixelinfo_t* dpi, message* news)
         {
             registers regs;
@@ -547,7 +546,7 @@ namespace openloco::ui::NewsWindow
         }
 
         // 0x0042A036
-        static void drawViewportString(gfx::drawpixelinfo_t* dpi, uint8_t itemType, uint16_t itemIndex, uint16_t width, uint16_t x, uint16_t y)
+        static void drawViewportString(gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y, uint16_t width, uint8_t itemType, uint16_t itemIndex)
         {
             auto args = FormatArguments();
 
@@ -605,6 +604,7 @@ namespace openloco::ui::NewsWindow
                 case 5:
                 case 6:
                     break;
+
                 case newsItems::vehicleTab:
                 {
                     auto vehicleObj = objectmgr::get<vehicle_object>(itemIndex);
@@ -752,9 +752,8 @@ namespace openloco::ui::NewsWindow
 
                     gfx::draw_string_centred_wrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
 
-                    x = self->x + 4;
-                    y = self->y + 5;
-                    origin = { x, y };
+                    origin.x = self->x + 4;
+                    origin.y = self->y + 5;
 
                     gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
 
@@ -839,7 +838,7 @@ namespace openloco::ui::NewsWindow
                     auto y = self->widgets[common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(dpi, _byte_4F8B08[news->type][0], news->item_id_1, width, x, y);
+                    drawViewportString(dpi, x, y, width, _byte_4F8B08[news->type][0], news->item_id_1);
                 }
             }
             if (_word_4F8BE4[news->type] & (1 << 3))
@@ -851,7 +850,7 @@ namespace openloco::ui::NewsWindow
                     auto y = self->widgets[common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(dpi, _byte_4F8B09[news->type][0], news->item_id_2, width, x, y);
+                    drawViewportString(dpi, x, y, width, _byte_4F8B09[news->type][0], news->item_id_2);
                 }
             }
         }

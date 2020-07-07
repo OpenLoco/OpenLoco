@@ -38,17 +38,16 @@ namespace openloco::ui::NewsWindow::ticker
     // 0x00429FE4
     static void on_resize(window* self)
     {
-        auto y = ui::height() - 25;
-        auto x = ui::width() - 138;
-        auto width = 111;
-        auto height = 25;
+        auto y = ui::height() - windowSize.height + 1;
+        auto x = ui::width() - windowSize.width - 27;
+        auto height = windowSize.height - 1;
 
-        if (y != self->y || x != self->x || width != self->width || height != self->height)
+        if (y != self->y || x != self->x || windowSize.width != self->width || height != self->height)
         {
             self->invalidate();
             self->y = y;
             self->x = x;
-            self->width = width;
+            self->width = windowSize.width;
             self->height = height;
             self->invalidate();
         }
@@ -138,6 +137,7 @@ namespace openloco::ui::NewsWindow::ticker
         WindowManager::close(self);
     }
 
+    // 0x004950EF
     static void sub_4950EF(gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
     {
         registers regs;
@@ -172,15 +172,14 @@ namespace openloco::ui::NewsWindow::ticker
         if (clipped == nullptr)
             return;
 
-        uint32_t colour = 0x14141414;
+        auto colour = colour::get_shade(colour::white, 5);
 
         if (!(_word_4F8BE4[news->type] & (1 << 1)))
         {
             colour = colour::get_shade(colour::salmon_pink, 5);
-            colour *= 0x1010101;
         }
 
-        gfx::clear(*clipped, colour);
+        gfx::clear_single(*clipped, colour);
 
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
