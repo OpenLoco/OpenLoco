@@ -14,7 +14,6 @@ namespace openloco::thingmgr
         null,
         vehicle,
         misc = 3,
-        vehicle_head,
     };
 
     template<typename T>

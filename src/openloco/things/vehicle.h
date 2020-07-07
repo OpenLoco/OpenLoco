@@ -155,7 +155,7 @@ namespace openloco
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
         vehicle* next_vehicle();
-        vehicle* next_vehicle_component();
+        vehicle* nextVehicleComponent();
         vehicle_object* object() const;
 
         void update_head();
@@ -466,19 +466,19 @@ namespace openloco
             {
                 for (;
                      component->type != vehicle_thing_type::vehicle_6 && component->type != vehicle_thing_type::vehicle_body_start;
-                     component = component->next_vehicle_component())
+                     component = component->nextVehicleComponent())
                 {
                     auto front = component->as_vehicle_bogie();
-                    component = component->next_vehicle_component();
+                    component = component->nextVehicleComponent();
                     auto back = component->as_vehicle_bogie();
-                    component = component->next_vehicle_component();
+                    component = component->nextVehicleComponent();
                     auto body = component->as_vehicle_body();
                     carComponents.push_back(CarComponent{ front, back, body });
                 }
             }
         };
 
-        struct Train
+        struct Vehicle
         {
             vehicle_head* head;
             vehicle_1* veh1;
@@ -486,11 +486,11 @@ namespace openloco
             vehicle_tail* tail;
 
             std::vector<Car> cars;
-            Train(vehicle_head* _head)
-                : Train(_head->id)
+            Vehicle(vehicle_head* _head)
+                : Vehicle(_head->id)
             {
             }
-            Train(uint16_t _head);
+            Vehicle(uint16_t _head);
         };
     }
 }

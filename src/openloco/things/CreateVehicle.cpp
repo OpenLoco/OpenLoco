@@ -116,8 +116,8 @@ namespace openloco::things::vehicle
                 return false;
             default:
             {
-                auto veh1 = reinterpret_cast<openloco::vehicle*>(head)->next_vehicle_component();
-                auto veh2 = veh1->next_vehicle_component()->as_vehicle_2();
+                auto veh1 = reinterpret_cast<openloco::vehicle*>(head)->nextVehicleComponent();
+                auto veh2 = veh1->nextVehicleComponent()->as_vehicle_2();
                 if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
                 {
                     if (veh2->var_73 & (1 << 0))
@@ -438,7 +438,7 @@ namespace openloco::things::vehicle
         while (tail->type != vehicle_thing_type::vehicle_6)
         {
             lastVeh = tail;
-            tail = lastVeh->next_vehicle_component();
+            tail = lastVeh->nextVehicleComponent();
         }
 
         const auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
@@ -845,9 +845,9 @@ namespace openloco::things::vehicle
                 sub_4B1E77(_head->var_36);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
-                auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->next_vehicle_component();
-                auto veh2 = veh1->next_vehicle_component();
-                auto tail = veh2->next_vehicle_component();
+                auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->nextVehicleComponent();
+                auto veh2 = veh1->nextVehicleComponent();
+                auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
                 thingmgr::freeThing(_head);
                 thingmgr::freeThing(veh1);
@@ -868,7 +868,7 @@ namespace openloco::things::vehicle
     {
         auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
         auto head = veh0->as_vehicle_head();
-        auto veh2 = veh0->next_vehicle_component()->next_vehicle_component()->as_vehicle_2();
+        auto veh2 = veh0->nextVehicleComponent()->nextVehicleComponent()->as_vehicle_2();
         if (veh2 == nullptr || head == nullptr)
         {
             return FAILURE;
@@ -923,7 +923,7 @@ namespace openloco::things::vehicle
 
                 vehicle_head* veh0backup = _backupVeh0;
                 // If it has an existing body
-                if (reinterpret_cast<openloco::vehicle*>(veh0backup)->next_vehicle_component()->next_vehicle_component()->next_vehicle_component()->type == vehicle_thing_type::vehicle_6)
+                if (reinterpret_cast<openloco::vehicle*>(veh0backup)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent()->type == vehicle_thing_type::vehicle_6)
                 {
                     placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                 }

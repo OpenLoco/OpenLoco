@@ -68,7 +68,7 @@ vehicle* vehicle::next_vehicle()
     return thingmgr::get<vehicle>(next_thing_id);
 }
 
-vehicle* vehicle::next_vehicle_component()
+vehicle* vehicle::nextVehicleComponent()
 {
     return thingmgr::get<vehicle>(next_car_id);
 }
@@ -92,7 +92,7 @@ void vehicle::update_head()
         {
             break;
         }
-        v = v->next_vehicle_component();
+        v = v->nextVehicleComponent();
     }
 }
 
@@ -142,7 +142,7 @@ void vehicle_head::sub_4BA8D4()
         case 9:
             return;
     }
-    things::vehicle::Train train(this);
+    things::vehicle::Vehicle train(this);
     for (auto car : train.cars)
     {
         if (car.carComponents[0].front->var_5F & flags_5f::broken_down)
@@ -1606,14 +1606,14 @@ static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
 uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 {
     auto totalLength = 0;
-    auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_vehicle_component()->next_vehicle_component()->next_vehicle_component();
+    auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
     while (veh->type != vehicle_thing_type::vehicle_6)
     {
         if (veh->type == vehicle_thing_type::vehicle_body_start)
         {
             totalLength += getVehicleTypeLength(veh->object_id);
         }
-        veh = veh->next_vehicle_component();
+        veh = veh->nextVehicleComponent();
     }
     return totalLength;
 }
@@ -1626,7 +1626,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
-        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_vehicle_component()->next_vehicle_component()->next_vehicle_component();
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
         if (veh->type != vehicle_thing_type::vehicle_6)
         {
             gGameCommandErrorText = string_ids::incompatible_vehicle;
@@ -1655,7 +1655,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     }
 
     {
-        auto veh = reinterpret_cast<openloco::vehicle*>(this)->next_vehicle_component()->next_vehicle_component()->next_vehicle_component();
+        auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
         if (veh->type != vehicle_thing_type::vehicle_6)
         {
             while (veh->type != vehicle_thing_type::vehicle_6)
@@ -1668,13 +1668,13 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
                 vehicle_body* vehUnk = nullptr;
                 do
                 {
-                    veh = veh->next_vehicle_component()->next_vehicle_component()->next_vehicle_component();
+                    veh = veh->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
                     if (veh->type == vehicle_thing_type::vehicle_6)
                     {
                         break;
                     }
 
-                    vehUnk = veh->next_vehicle_component()->next_vehicle_component()->as_vehicle_body();
+                    vehUnk = veh->nextVehicleComponent()->nextVehicleComponent()->as_vehicle_body();
                 } while (vehUnk != nullptr && vehUnk->type == vehicle_thing_type::vehicle_body_cont);
             }
         }
@@ -1701,15 +1701,15 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
 namespace openloco::things::vehicle
 {
-    Train::Train(uint16_t _head)
+    Vehicle::Vehicle(uint16_t _head)
     {
         auto component = thingmgr::get<openloco::vehicle>(_head);
         head = component->as_vehicle_head();
-        component = component->next_vehicle_component();
+        component = component->nextVehicleComponent();
         veh1 = component->as_vehicle_1();
-        component = component->next_vehicle_component();
+        component = component->nextVehicleComponent();
         veh2 = component->as_vehicle_2();
-        component = component->next_vehicle_component();
+        component = component->nextVehicleComponent();
         while (component->type != vehicle_thing_type::vehicle_6)
         {
             if (component->type == vehicle_thing_type::vehicle_bogie)

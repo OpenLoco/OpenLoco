@@ -80,7 +80,7 @@ namespace openloco::thingmgr
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);
-        regs.ecx = static_cast<int8_t>(list);
+        regs.ecx = (static_cast<int8_t>(list) + 1) * 2; // Loco function expects to use this to access an array of words
         call(0x0047019F, regs);
     }
 
