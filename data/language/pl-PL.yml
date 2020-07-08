@@ -2173,3 +2173,12 @@ strings:
   2128: Okno
   2129: Pełen Ekran
   2130: Bez Krawędzi
+  2132: "{COLOUR WINDOW_2}Współczynnik skalowania okien:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Powiększ do pozycji kursora"
+  2137: "{SMALLFONT}{COLOUR BLACK}Po włączeniu tej funkcji widok będzie przybliżany do kursora, a nie do środka ekranu."
+  2138: "{COLOUR WINDOW_2}Odtwarzaj muzykę tytułową w menu"
+  2139: "Wyjdź do menu"
+  2140: "Zamknij OpenLoco"
