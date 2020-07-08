@@ -165,7 +165,7 @@ namespace openloco
         int16_t tmp_d = std::min(tmp_c / 25, 255);
         if (tmp_d < obj->var_EB)
         {
-            var_DF = tmp_d / obj->var_EB;
+            var_DF = ((tmp_d << 8) / obj->var_EB) & 0xFF;
         }
         else
         {
