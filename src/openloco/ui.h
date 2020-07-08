@@ -79,6 +79,7 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
+    config::resolution_t getDesktopResolution();
     bool setDisplayMode(config::screen_mode mode, config::resolution_t newResolution);
     bool setDisplayMode(config::screen_mode mode);
     void updateFullscreenResolutions();
@@ -86,6 +87,7 @@ namespace openloco::ui
     Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);
     void handleInput();
     void minimalHandleInput();
+    void setWindowScaling(float newScaleFactor);
     void adjust_window_scale(float adjust_by);
 
     namespace viewport_interaction

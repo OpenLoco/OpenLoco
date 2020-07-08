@@ -27,6 +27,8 @@ namespace openloco::tutorial
     static std::vector<uint16_t> _tutorialData;
     static std::vector<uint16_t>::const_iterator _tutorialIt;
 
+    constexpr config::resolution_t tutorialResolution = { 1024, 768 };
+
     tutorial_state state()
     {
         return (tutorial_state)*_state;
@@ -86,12 +88,24 @@ namespace openloco::tutorial
         // All destructors must be called prior to calling scenario::start due to the interaction of longjmp.
         // This can be removed when scenerio::start has been implemented.
         {
+            // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
+            const auto& config = config::get_new();
+            config::resolution_t newResolution = tutorialResolution;
+            if (config.scale_factor > 1.0)
+            {
+                newResolution *= config.scale_factor;
+                config::resolution_t desktopResolution = ui::getDesktopResolution();
+
+                // Don't scale if it means the new window won't fit the desktop.
+                if (newResolution > desktopResolution)
+                {
+                    ui::setWindowScaling(1.0);
+                    newResolution = tutorialResolution;
+                }
+            }
+
             // Ensure that we're in windowed mode, using dimensions 1024x768.
-            const auto& newConfig = config::get_new();
-            const auto& display = config::get_new().display;
-            auto scaleFactor = newConfig.scale_factor;
-            const config::resolution_t tutorialResolution = { static_cast<int32_t>(1024 * scaleFactor), static_cast<int32_t>(768 * scaleFactor) };
-            if (display.mode != config::screen_mode::window || display.window_resolution != tutorialResolution)
+            if (config.display.mode != config::screen_mode::window || config.display.window_resolution != tutorialResolution)
             {
                 if (!ui::setDisplayMode(config::screen_mode::window, tutorialResolution))
                     return;
