@@ -2173,7 +2173,7 @@ strings:
   2128: Okno
   2129: Pełen Ekran
   2130: Bez Krawędzi
-  2132: "{COLOUR WINDOW_2}Współczynnik skalowania okien:"
+  2132: "{COLOUR WINDOW_2}Współczynnik skali okien:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
   2135: "{COLOUR BLACK}{INT32_1DP}"
