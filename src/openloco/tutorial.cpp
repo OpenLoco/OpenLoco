@@ -87,15 +87,15 @@ namespace openloco::tutorial
         // This can be removed when scenerio::start has been implemented.
         {
             // Ensure that we're in windowed mode, using dimensions 1024x768.
+            const auto& newConfig = config::get_new();
             const auto& display = config::get_new().display;
-            const config::resolution_t tutorialResolution = { 1024, 768 };
+            auto scaleFactor = newConfig.scale_factor;
+            const config::resolution_t tutorialResolution = { static_cast<int32_t>(1024 * scaleFactor), static_cast<int32_t>(768 * scaleFactor) };
             if (display.mode != config::screen_mode::window || display.window_resolution != tutorialResolution)
             {
                 if (!ui::setDisplayMode(config::screen_mode::window, tutorialResolution))
                     return;
             }
-
-            // TODO(avgeffen) Maybe the window should not be scaled, either?
 
             // Get the environment file for this tutorial.
             static const environment::path_id tutorialFileIds[] = {
