@@ -53,16 +53,12 @@ namespace openloco
         }
 
         auto companyId = id();
-        auto v = thingmgr::first<openloco::vehicle_head>();
-        while (v != nullptr)
+        for (auto v : thingmgr::VehicleList())
         {
-            auto next = reinterpret_cast<vehicle_head*>(reinterpret_cast<vehicle*>(v)->next_vehicle());
-
             if (v->owner == companyId)
             {
                 transportTypeCount[static_cast<uint8_t>(v->vehicleType)]++;
             }
-            v = next;
         }
 
         ui::WindowManager::invalidate(ui::WindowType::company, companyId);

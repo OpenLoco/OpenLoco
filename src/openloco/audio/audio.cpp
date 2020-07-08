@@ -888,18 +888,15 @@ namespace openloco::audio
             _numActiveVehicleSounds = 0;
         }
 
-        auto v = reinterpret_cast<vehicle*>(thingmgr::first<vehicle_head>());
-        while (v != nullptr)
+        for (auto v : thingmgr::VehicleList())
         {
-            auto next = v->next_vehicle();
-            auto v2 = v->nextVehicleComponent()->nextVehicleComponent();
+            auto v2 = reinterpret_cast<vehicle*>(v)->nextVehicleComponent()->nextVehicleComponent();
             off_4FEB58(v2, x);
             do
             {
                 v2 = v2->nextVehicleComponent();
             } while (v2->type != vehicle_thing_type::vehicle_6);
             off_4FEB58(v2, x);
-            v = next;
         }
     }
 

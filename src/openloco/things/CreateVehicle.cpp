@@ -515,11 +515,8 @@ namespace openloco::things::vehicle
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, max_num_vehicles> _unkArr{};
-        auto v = thingmgr::first<openloco::vehicle_head>();
-        while (v != nullptr)
+        for (auto v : thingmgr::VehicleList())
         {
-            auto next = reinterpret_cast<vehicle_head*>(reinterpret_cast<openloco::vehicle*>(v)->next_vehicle());
-
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
                 if (v->var_44 != 0)
@@ -527,7 +524,6 @@ namespace openloco::things::vehicle
                     _unkArr[v->var_44 - 1] = true;
                 }
             }
-            v = next;
         }
 
         uint16_t newNum = 0;
@@ -753,18 +749,8 @@ namespace openloco::things::vehicle
 
     static void sub_470795(const uint32_t var46, const int16_t var4C)
     {
-        auto v = thingmgr::first<openloco::vehicle_head>();
-        while (v != nullptr)
+        for (auto head : thingmgr::VehicleList())
         {
-            auto next = reinterpret_cast<vehicle_head*>(reinterpret_cast<openloco::vehicle*>(v)->next_vehicle());
-
-            auto head = v;
-            v = next;
-            if (head == nullptr) // Can never happen
-            {
-                continue;
-            }
-
             if (head->length_of_var_4C >= var46)
             {
                 head->length_of_var_4C += var4C;
