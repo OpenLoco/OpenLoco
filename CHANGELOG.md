@@ -3,6 +3,8 @@
 - Feature: [#523] Holding the construction window's build or remove button will keep repeating the action.
 - Fix: [#158] Pressing shift to build underground tracks automatically builds ten track pieces.
 - Fix: [#485] Incorrect position of exhaust smoke on vehicles.
+- Fix: [#529] Tree-related industries are not updating properly.
+- Fix: [#530] Industry production not starting up under some conditions.
 - Removed: Clicking track / road construction while holding shift will place 10 pieces in a row.
 
 20.05.1 (2020-05-30)
