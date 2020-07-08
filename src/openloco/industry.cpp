@@ -51,13 +51,13 @@ namespace openloco
         return produceCargoState;
     }
 
-    static bool find_5(surface_element* surface)
+    static bool find_tree(surface_element* surface)
     {
         auto element = surface;
         while (!element->is_last())
         {
             element++;
-            if (element->type() == element_type::industry)
+            if (element->type() == element_type::tree)
             {
                 return true;
             }
@@ -146,7 +146,7 @@ namespace openloco
                     if (bl == 0 || bl != obj->var_EA)
                     {
                         var_DB++;
-                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || find_5(surface))
+                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || find_tree(surface))
                         {
                             var_DD++;
                         }
