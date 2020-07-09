@@ -1615,7 +1615,7 @@ uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 {
     auto totalLength = 0;
     things::vehicle::Vehicle train(this);
-    for (const auto& car: train.cars)
+    for (const auto& car : train.cars)
     {
         totalLength += getVehicleTypeLength(car.carComponents[0].body->object_id);
     }
@@ -1660,7 +1660,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
     {
         things::vehicle::Vehicle train(this);
-        for (const auto& car:train.cars)
+        for (const auto& car : train.cars)
         {
             // The object_id is the same for all vehicle components and car components of a car
             if (!sub_4B90F0(vehicleTypeId, car.carComponents[0].front->object_id))

@@ -433,7 +433,7 @@ namespace openloco::things::vehicle
         // Get Car insertion location
         Vehicle train(head);
         // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
-        openloco::vehicle* lastVeh = nullptr; 
+        openloco::vehicle* lastVeh = nullptr;
         if (train.cars.size() > 0)
         {
             lastVeh = reinterpret_cast<openloco::vehicle*>(train.cars.back().carComponents.back().body);
