@@ -111,23 +111,23 @@ bool vehicle::updateComponent()
     regs.esi = (int32_t)this;
     switch (type)
     {
-        case vehicle_thing_type::vehicle_0:
+        case VehicleThingType::head:
             result = as_vehicle_head()->update();
             break;
-        case vehicle_thing_type::vehicle_1:
+        case VehicleThingType::vehicle_1:
             result = call(0x004A9788, regs);
             break;
-        case vehicle_thing_type::vehicle_2:
+        case VehicleThingType::vehicle_2:
             result = call(0x004A9B0B, regs);
             break;
-        case vehicle_thing_type::vehicle_bogie:
+        case VehicleThingType::bogie:
             result = call(0x004AA008, regs);
             break;
-        case vehicle_thing_type::vehicle_body_start:
-        case vehicle_thing_type::vehicle_body_cont:
+        case VehicleThingType::body_start:
+        case VehicleThingType::body_continued:
             result = as_vehicle_body()->update();
             break;
-        case vehicle_thing_type::vehicle_6:
+        case VehicleThingType::tail:
             result = call(0x004AA24A, regs);
             break;
         default:
@@ -1700,9 +1700,9 @@ namespace openloco::things::vehicle
         component = component->nextVehicleComponent();
         veh2 = component->as_vehicle_2();
         component = component->nextVehicleComponent();
-        while (component->type != vehicle_thing_type::vehicle_6)
+        while (component->type != VehicleThingType::tail)
         {
-            if (component->type == vehicle_thing_type::vehicle_bogie)
+            if (component->type == VehicleThingType::bogie)
             {
                 cars.push_back(Car(component));
             }

@@ -39,21 +39,21 @@ namespace openloco
         constexpr uint8_t broken_down = 1 << 2;
     }
 
-    enum class vehicle_thing_type : uint8_t
+    enum class VehicleThingType : uint8_t
     {
-        vehicle_0 = 0,
+        head = 0,
         vehicle_1,
         vehicle_2,
-        vehicle_bogie,
-        vehicle_body_start,
-        vehicle_body_cont,
-        vehicle_6,
+        bogie,
+        body_start,
+        body_continued,
+        tail,
     };
 
 #pragma pack(push, 1)
     struct vehicle_base : thing_base
     {
-        vehicle_thing_type type;
+        VehicleThingType type;
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
@@ -74,7 +74,7 @@ namespace openloco
         uint8_t sprite_pitch;  // 0x1F
 
     private:
-        template<typename TType, vehicle_thing_type TClass>
+        template<typename TType, VehicleThingType TClass>
         TType* as() const
         {
             // This can not use reinterpret_cast due to being a const member without considerable more code
@@ -94,17 +94,17 @@ namespace openloco
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
         {
-            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_start>();
+            auto vehicle = as<vehicle_body, VehicleThingType::body_start>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
+            return as<vehicle_body, VehicleThingType::body_continued>();
         }
         vehicle_26* as_vehicle_2or6() const
         {
-            auto vehicle = as<vehicle_26, vehicle_thing_type::vehicle_2>();
+            auto vehicle = as<vehicle_26, VehicleThingType::vehicle_2>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_26, vehicle_thing_type::vehicle_6>();
+            return as<vehicle_26, VehicleThingType::tail>();
         }
         vehicle_tail* as_vehicle_tail() const { return as<vehicle_tail>(); }
     };
@@ -180,7 +180,7 @@ namespace openloco
 
     struct vehicle_head : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_0;
+        static constexpr auto VehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint16_t var_22;
@@ -239,7 +239,7 @@ namespace openloco
 
     struct vehicle_1 : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_1;
+        static constexpr auto VehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -272,7 +272,7 @@ namespace openloco
 
     struct vehicle_2 : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_2;
+        static constexpr auto VehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -312,7 +312,7 @@ namespace openloco
 
     struct vehicle_body : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_body_cont;
+        static constexpr auto VehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -375,7 +375,7 @@ namespace openloco
 
     struct vehicle_bogie : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_bogie;
+        static constexpr auto VehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -422,7 +422,7 @@ namespace openloco
 
     struct vehicle_tail : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_6;
+        static constexpr auto VehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -464,7 +464,7 @@ namespace openloco
             Car(openloco::vehicle*& component)
             {
                 for (;
-                     component->type != vehicle_thing_type::vehicle_6 && component->type != vehicle_thing_type::vehicle_body_start;
+                     component->type != VehicleThingType::tail && component->type != VehicleThingType::body_start;
                      component = component->nextVehicleComponent())
                 {
                     auto front = component->as_vehicle_bogie();

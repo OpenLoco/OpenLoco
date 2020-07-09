@@ -331,7 +331,7 @@ namespace openloco::things::vehicle
     {
         auto newBody = createVehicleThing<vehicle_body>();
         // TODO: move this into the create function somehow
-        newBody->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_start : vehicle_thing_type::vehicle_body_cont;
+        newBody->type = bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued;
         newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;
