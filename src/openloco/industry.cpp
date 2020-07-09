@@ -170,7 +170,7 @@ namespace openloco
         auto obj = object();
         if (tmp_d < obj->var_EB)
         {
-            var_DF = ((tmp_d << 8) / obj->var_EB) & 0xFF;
+            var_DF = ((tmp_d * 256) / obj->var_EB) & 0xFF;
         }
         else
         {
