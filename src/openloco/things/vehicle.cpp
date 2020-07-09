@@ -85,6 +85,7 @@ vehicle_object* vehicle_body::object() const
 
 void vehicle_head::updateVehicle()
 {
+    // TODO: Refactor to use the Vehicle super class
     auto v = reinterpret_cast<vehicle*>(this);
     while (v != nullptr)
     {
@@ -1613,14 +1614,10 @@ static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
 uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 {
     auto totalLength = 0;
-    auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
-    while (veh->type != vehicle_thing_type::vehicle_6)
+    things::vehicle::Vehicle train(this);
+    for (const auto& car: train.cars)
     {
-        if (veh->type == vehicle_thing_type::vehicle_body_start)
-        {
-            totalLength += getVehicleTypeLength(veh->object_id);
-        }
-        veh = veh->nextVehicleComponent();
+        totalLength += getVehicleTypeLength(car.carComponents[0].body->object_id);
     }
     return totalLength;
 }
@@ -1633,8 +1630,8 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
-        auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
-        if (veh->type != vehicle_thing_type::vehicle_6)
+        things::vehicle::Vehicle train(this);
+        if (train.cars.size() != 0)
         {
             gGameCommandErrorText = string_ids::incompatible_vehicle;
             return false;
@@ -1662,27 +1659,13 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     }
 
     {
-        auto veh = reinterpret_cast<openloco::vehicle*>(this)->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
-        if (veh->type != vehicle_thing_type::vehicle_6)
+        things::vehicle::Vehicle train(this);
+        for (const auto& car:train.cars)
         {
-            while (veh->type != vehicle_thing_type::vehicle_6)
+            // The object_id is the same for all vehicle components and car components of a car
+            if (!sub_4B90F0(vehicleTypeId, car.carComponents[0].front->object_id))
             {
-                if (!sub_4B90F0(vehicleTypeId, veh->object_id))
-                {
-                    return false;
-                }
-
-                vehicle_body* vehUnk = nullptr;
-                do
-                {
-                    veh = veh->nextVehicleComponent()->nextVehicleComponent()->nextVehicleComponent();
-                    if (veh->type == vehicle_thing_type::vehicle_6)
-                    {
-                        break;
-                    }
-
-                    vehUnk = veh->nextVehicleComponent()->nextVehicleComponent()->as_vehicle_body();
-                } while (vehUnk != nullptr && vehUnk->type == vehicle_thing_type::vehicle_body_cont);
+                return false;
             }
         }
     }

@@ -890,13 +890,9 @@ namespace openloco::audio
 
         for (auto v : thingmgr::VehicleList())
         {
-            auto v2 = reinterpret_cast<vehicle*>(v)->nextVehicleComponent()->nextVehicleComponent();
-            off_4FEB58(v2, x);
-            do
-            {
-                v2 = v2->nextVehicleComponent();
-            } while (v2->type != vehicle_thing_type::vehicle_6);
-            off_4FEB58(v2, x);
+            things::vehicle::Vehicle train(v);
+            off_4FEB58(reinterpret_cast<vehicle*>(train.veh2), x);
+            off_4FEB58(reinterpret_cast<vehicle*>(train.tail), x);
         }
     }
 
