@@ -122,6 +122,8 @@ namespace openloco
             for (int i = 0; i < 100; i++)
             {
                 sub_45329B(tile_loop.current());
+
+                // loc_453318
                 if (tile_loop.next() == map_pos())
                 {
                     sub_453354();
@@ -145,6 +147,7 @@ namespace openloco
                     auto obj = object();
                     if (bl == 0 || bl != obj->var_EA)
                     {
+                        // loc_4532E5
                         var_DB++;
                         if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || find_tree(surface))
                         {
@@ -158,20 +161,24 @@ namespace openloco
 
     void industry::sub_453354()
     {
-        auto obj = object();
+        // 0x00453366
         int16_t tmp_a = var_DB / 16;
         int16_t tmp_b = std::max(0, var_DD - tmp_a);
         int16_t tmp_c = var_DB - tmp_b;
         int16_t tmp_d = std::min(tmp_c / 25, 255);
+
+        auto obj = object();
         if (tmp_d < obj->var_EB)
         {
-            var_DF = tmp_d / obj->var_EB;
+            var_DF = ((tmp_d * 256) / obj->var_EB) & 0xFF;
         }
         else
         {
+            // 0x0045335F; moved here.
             var_DF = 255;
         }
 
+        // 0x004533B2
         var_DB = 0;
         var_DD = 0;
         if (var_DF < 224)
