@@ -592,7 +592,7 @@ static void register_audio_hooks()
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((vehicle*)regs.esi);
+            audio::play_sound((vehicle_26*)regs.esi);
             return 0;
         });
     register_hook(

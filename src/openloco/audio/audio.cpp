@@ -551,11 +551,11 @@ namespace openloco::audio
     }
 
     // 0x0048A4BF
-    void play_sound(vehicle* v)
+    void play_sound(vehicle_26* v)
     {
         if (v->var_4A & 1)
         {
-            console::log_verbose("play_sound(vehicle #%d)", v->object_id);
+            console::log_verbose("play_sound(vehicle #%d)", v->id);
             auto vc = get_free_vehicle_channel();
             if (vc != nullptr)
             {
@@ -785,10 +785,8 @@ namespace openloco::audio
         return false;
     }
 
-    static void sub_48A274(vehicle* baseVehicle)
+    static void sub_48A274(vehicle_26* v)
     {
-        // TODO: move vehicle_26 cast up
-        auto v = baseVehicle->as_vehicle_2or6();
         if (v == nullptr)
             return;
 
@@ -856,7 +854,7 @@ namespace openloco::audio
         }
     }
 
-    static void off_4FEB58(vehicle* v, int32_t x)
+    static void off_4FEB58(vehicle_26* v, int32_t x)
     {
         switch (x)
         {
@@ -891,8 +889,8 @@ namespace openloco::audio
         for (auto v : thingmgr::VehicleList())
         {
             things::vehicle::Vehicle train(v);
-            off_4FEB58(reinterpret_cast<vehicle*>(train.veh2), x);
-            off_4FEB58(reinterpret_cast<vehicle*>(train.tail), x);
+            off_4FEB58(reinterpret_cast<vehicle_26*>(train.veh2), x);
+            off_4FEB58(reinterpret_cast<vehicle_26*>(train.tail), x);
         }
     }
 
