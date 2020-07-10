@@ -171,11 +171,6 @@ namespace openloco::ui::dropdown
     // 0x004CD00E
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
-        //registers regs;
-        //regs.edi = (int32_t)dpi;
-        //regs.esi = (int32_t)self;
-        //call(0x004CD00E, regs);
-
         self->draw(dpi);
         _windowDropdownOnpaintCellX = 0;
         _windowDropdownOnpaintCellY = 0;
@@ -251,12 +246,12 @@ namespace openloco::ui::dropdown
                     auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                     auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
 
-                    auto imageId = (uint32_t)&args;
+                    auto imageId = (uint32_t*)&args;
                     if (dropdownItemFormat == (string_id)-2 && itemCount == _dropdownHighlightedIndex)
                     {
                         imageId++;
                     }
-                    gfx::draw_image(dpi, x, y, imageId);
+                    gfx::draw_image(dpi, x, y, *imageId);
                 }
             }
             else
@@ -355,8 +350,7 @@ namespace openloco::ui::dropdown
         gfx::point_t origin = { x, y };
         origin.y += height;
 
-        size.height = origin.y + dropdownHeight + 1;
-        size.width = x;
+        size.height = dropdownHeight + 1;
         if (size.height > ui::height() || origin.y < 0)
         {
             origin.y -= (height + dropdownHeight + 1);
