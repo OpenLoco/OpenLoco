@@ -357,7 +357,7 @@ namespace openloco::ui::dropdown
 
         size.height = origin.y + dropdownHeight + 1;
         size.width = x;
-        if (size.height > ui::height() || origin.y > 32767)
+        if (size.height > ui::height() || origin.y < 0)
         {
             origin.y -= (height + dropdownHeight + 1);
 
@@ -375,7 +375,7 @@ namespace openloco::ui::dropdown
 
         widgets[0].right = width + 3;
 
-        if (origin.x > 32767)
+        if (origin.x < 0)
         {
             origin.x = 0;
         }
