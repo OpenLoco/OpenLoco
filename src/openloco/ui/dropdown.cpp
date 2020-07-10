@@ -314,18 +314,6 @@ namespace openloco::ui::dropdown
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        //registers regs;
-        //regs.cx = x;
-        //regs.dx = y;
-        //regs.al = colour;
-        //regs.ah = itemHeight;
-        //regs.bl = static_cast<uint8_t>(count);
-        //regs.bh = flags;
-        //regs.bp = width;
-        //regs.di = height;
-
-        //call(0x004CC807, regs);
-
         if (colour & colour::translucent_flag)
         {
             colour = _byte_504619[colour::opaque(colour)];
@@ -337,7 +325,7 @@ namespace openloco::ui::dropdown
 
         if (flags & (1 << 7))
         {
-            input::set_flag(input::input_flags::widget_pressed);
+            input::set_flag(input::input_flags::flag1);
         }
 
         flags &= ~(1 << 7);

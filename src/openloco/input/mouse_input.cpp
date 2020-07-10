@@ -821,10 +821,10 @@ namespace openloco::input
                     {
                         if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
                         {
-                            if (has_flag(input_flags::widget_pressed))
+                            if (has_flag(input_flags::flag1))
                             {
-                                bool flagSet = has_flag(input_flags::flag1);
-                                set_flag(input_flags::flag1);
+                                bool flagSet = has_flag(input_flags::flag2);
+                                set_flag(input_flags::flag2);
                                 if (!flagSet)
                                 {
                                     return;
