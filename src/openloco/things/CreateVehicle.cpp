@@ -23,6 +23,8 @@ using namespace openloco::game_commands;
 namespace openloco::things::vehicle
 {
     constexpr uint32_t max_orders = 256000;
+    constexpr auto max_num_vehicles = 1000;
+    constexpr auto max_num_routing_steps = 64;
     constexpr auto max_ai_vehicles = 500;
     constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to vehicle_object
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
@@ -49,9 +51,9 @@ namespace openloco::things::vehicle
     static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _525FB8;             // total used length of _987C5C
-    static loco_global<thing_id_t[64][1000], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;  // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _525FB8;                                            // total used length of _987C5C
+    static loco_global<thing_id_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                 // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -87,7 +89,7 @@ namespace openloco::things::vehicle
             return false;
         }
 
-        for (auto i = 0; i < 1000; i++)
+        for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
             if (id == thing_id::null)
@@ -484,12 +486,12 @@ namespace openloco::things::vehicle
         }
 
         // ?Routing? related. Max 64 routing stops.
-        for (auto i = 0; i < 1000; i++)
+        for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
             if (id == thing_id::null)
             {
-                for (auto j = 0; j < 64; ++j)
+                for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
                     _96885C[i][j] = allocated_but_free_routing_station;
                 }
@@ -512,7 +514,7 @@ namespace openloco::things::vehicle
     // 0x004B64F9
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
-        std::array<bool, 1000> _unkArr{};
+        std::array<bool, max_num_vehicles> _unkArr{};
         auto v = thingmgr::first<openloco::vehicle>();
         while (v != nullptr)
         {
@@ -553,7 +555,7 @@ namespace openloco::things::vehicle
         newHead->var_28 = 0;
         newHead->var_2E = 0;
         newHead->var_2C = 0;
-        newHead->var_36 = orderId;
+        newHead->var_36 = orderId * max_num_routing_steps;
         newHead->var_14 = 0;
         newHead->var_09 = 0;
         newHead->var_15 = 0;
@@ -742,8 +744,8 @@ namespace openloco::things::vehicle
     // Free orderId?
     static void sub_4B1E77(const uint16_t orderId)
     {
-        uint16_t baseOrderId = orderId & ~(0x3F);
-        for (auto i = 0; i < 64; ++i)
+        uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
+        for (auto i = 0; i < max_num_routing_steps; ++i)
         {
             _96885C[baseOrderId][i] = thing_id::null;
         }

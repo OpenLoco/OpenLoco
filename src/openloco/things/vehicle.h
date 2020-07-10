@@ -198,7 +198,7 @@ namespace openloco
         int16_t tile_y;      // 0x32
         uint8_t tile_base_z; // 0x34
         uint8_t track_type;  // 0x35 field same in all vehicles
-        uint16_t var_36;     // 0x36 field same in all vehicles
+        uint16_t var_36;     // 0x36 field same in all vehicles orderId * max_num_routing_steps
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
         thing_id_t next_car_id; // 0x3A
