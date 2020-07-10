@@ -16,12 +16,7 @@ namespace openloco::ui::dropdown
 {
     static constexpr int bytes_per_item = 8;
 
-    static loco_global<uint8_t[31], 0x0050457A> _byte_50457A;
     static loco_global<uint8_t[31], 0x00504619> _byte_504619;
-    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
-    static loco_global<char[512], 0x0112CC04> _byte_112CC04;
-    static loco_global<uint8_t, 0x01136F94> _windowDropdownOnpaintCellX;
-    static loco_global<uint8_t, 0x01136F96> _windowDropdownOnpaintCellY;
     static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
     static loco_global<uint32_t, 0x0113DC68> _dropdownItemHeight;
@@ -154,141 +149,15 @@ namespace openloco::ui::dropdown
         self->invalidate();
     }
 
-    // 0x00494BF6
-    static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
-    {
-        stringmgr::format_string(_byte_112CC04, stringId, &args);
-
-        _currentFontSpriteBase = font::medium_bold;
-
-        gfx::clip_string(width, _byte_112CC04);
-
-        _currentFontSpriteBase = font::m1;
-
-        gfx::draw_string(dpi, x, y, colour, _byte_112CC04);
-    }
-
     // 0x004CD00E
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
-        //registers regs;
-        //regs.edi = (int32_t)dpi;
-        //regs.esi = (int32_t)self;
-        //call(0x004CD00E, regs);
+        registers regs;
+        regs.edi = (int32_t)dpi;
+        regs.esi = (int32_t)self;
+        call(0x004CD00E, regs);
 
-        self->draw(dpi);
-        _windowDropdownOnpaintCellX = 0;
-        _windowDropdownOnpaintCellY = 0;
-
-        for (auto itemCount = 0; itemCount < _dropdownItemCount; itemCount++)
-        {
-            if (_dropdownItemFormats[itemCount] != string_ids::empty)
-            {
-                if (itemCount == _dropdownHighlightedIndex)
-                {
-                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | palette_index::index_2E);
-                }
-
-                auto args = FormatArguments();
-                std::byte* dropdownArgs = &_dropdownItemArgs[itemCount][0];
-
-                uint32_t* ptr = (uint32_t*)dropdownArgs;
-                dropdownArgs = &_dropdownItemArgs[itemCount][4];
-                args.push(*ptr);
-
-                ptr = (uint32_t*)dropdownArgs;
-                args.push(*ptr);
-
-                dropdownArgs = &_dropdownItemArgs2[itemCount][0];
-
-                ptr = (uint32_t*)dropdownArgs;
-                dropdownArgs = &_dropdownItemArgs2[itemCount][4];
-                args.push(*ptr);
-
-                ptr = (uint32_t*)dropdownArgs;
-                args.push(*ptr);
-
-                auto dropdownItemFormat = _dropdownItemFormats[itemCount];
-
-                if (dropdownItemFormat != (string_id)-2)
-                {
-                    if (dropdownItemFormat != string_ids::null)
-                    {
-                        if (itemCount < 32)
-                        {
-                            if (_dropdownSelection & (1 << itemCount))
-                            {
-                                dropdownItemFormat++;
-                            }
-                        }
-
-                        auto colour = colour::opaque(self->colours[0]);
-
-                        if (itemCount == _dropdownHighlightedIndex)
-                        {
-                            colour = colour::white;
-                        }
-
-                        if ((_dropdownDisabledItems & (1 << itemCount)))
-                        {
-                            if (itemCount < 32)
-                            {
-                                colour = colour::inset(colour::opaque(self->colours[0]));
-                            }
-                        }
-
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1;
-                        auto width = self->width - 5;
-                        sub_494BF6(self, dpi, dropdownItemFormat, x, y, width, colour, args);
-                    }
-                }
-
-                if (dropdownItemFormat == (string_id)-2 || dropdownItemFormat != string_ids::null)
-                {
-                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-
-                    auto imageId = (uint32_t)&args;
-                    if (dropdownItemFormat == (string_id)-2 && itemCount == _dropdownHighlightedIndex)
-                    {
-                        imageId++;
-                    }
-                    gfx::draw_image(dpi, x, y, imageId);
-                }
-            }
-            else
-            {
-                auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                auto y = _windowDropdownOnpaintCellY * 3 * (_dropdownItemHeight / 2) + self->y + 1;
-
-                if (!(self->colours[0] & colour::translucent_flag))
-                {
-                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, colour::get_shade(self->colours[0], 3));
-                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth, 0, colour::get_shade(self->colours[0], 7));
-                }
-                else
-                {
-                    auto colour = _byte_50457A[self->colours[0]] | (1 << 25);
-                    colour++;
-                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, colour);
-                    colour++;
-                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth, 0, colour);
-                }
-            }
-
-            if (itemCount + 1 >= _dropdownItemCount)
-                return;
-
-            _windowDropdownOnpaintCellX++;
-            if (_windowDropdownOnpaintCellX >= _dropdownColumnCount)
-            {
-                _windowDropdownOnpaintCellX = 0;
-                _windowDropdownOnpaintCellY++;
-            }
-        }
+        //self->draw(dpi);
     }
 
     static void initEvents()
@@ -309,7 +178,6 @@ namespace openloco::ui::dropdown
      * @param itemHeight
      * @param flags
      */
-    // Custom dropdown height if flags & (1<<6) is true
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
@@ -328,7 +196,7 @@ namespace openloco::ui::dropdown
 
         if (colour & colour::translucent_flag)
         {
-            colour = _byte_504619[colour::opaque(colour)];
+            colour = _byte_504619[colour & 0x7F];
             colour = colour::translucent(colour);
         }
 
@@ -364,7 +232,7 @@ namespace openloco::ui::dropdown
         int16_t dropdownHeight = ((int16_t)count * _dropdownItemHeight) + 3;
         widgets[0].bottom = dropdownHeight;
         gfx::ui_size_t size = { (uint16_t)width, (uint16_t)height };
-        gfx::point_t origin = { x, y };
+        gfx::point_t origin = { x, y};
         origin.y += height;
 
         size.height = origin.y + dropdownHeight + 1;
@@ -439,7 +307,24 @@ namespace openloco::ui::dropdown
      */
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
-        show(x, y, width, height, colour, count, 0, flags & ~(1 << 6));
+        show(x, y, width, height, colour, count, 0, flags);
+    }
+
+    // Custom dropdown height if flags & (1<<6) is true
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
+    {
+        assert(count < std::numeric_limits<uint8_t>::max());
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.al = colour;
+        regs.ah = itemHeight;
+        regs.bl = static_cast<uint8_t>(count);
+        regs.bh = flags;
+        regs.bp = width;
+        regs.di = height;
+
+        call(0x004CC807, regs);
     }
 
     /**
