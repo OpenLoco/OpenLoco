@@ -2178,8 +2178,18 @@ strings:
   2123: hp
   2124: kW
   2125: "{COLOUR WINDOW_2}언어:"
-
+  2126: "{COLOUR WINDOW_2}차량 고장 비활성화"
   2127: "{COLOUR WINDOW_2}전체 화면 모드:"
   2128: 창 모드
   2129: 전체 화면
   2130: 전체 화면 (창 모드)
+  2131: 기본 사운드 장치
+  2132: "{COLOUR WINDOW_2}창 크기 조절 배수:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}커서 위치를 기준으로 확대/축소"
+  2137: "{SMALLFONT}{COLOUR BLACK}이 설정을 켜면, 화면을 게임 화면 중심 대신 마우스 커서를 중심으로 확대/축소합니다."
+  2138: "{COLOUR WINDOW_2}타이틀 스크린 음악 재생"
+  2139: "메뉴로 나가기"
+  2140: "OpenLoco 종료"
