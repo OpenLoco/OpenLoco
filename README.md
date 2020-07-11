@@ -11,8 +11,8 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 - 3 - [Building the game](#3-building-the-game)
   - 3.1 - [Building prerequisites](#31-building-prerequisites)
   - 3.2 - [Compiling and running](#32-compiling-and-running)
-- 4 - [Licence](#5-licence)
-- 5 - [More information](#6-more-information)
+- 4 - [Licence](#4-licence)
+- 5 - [More information](#5-more-information)
 
 ---
 
