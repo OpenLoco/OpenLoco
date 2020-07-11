@@ -484,11 +484,12 @@ namespace openloco::ui::dropdown
         _dropdownColumnCount = columnCount;
         widgets[0].colour = colour;
         _dropdownRowCount = _dropdownItemCount / _dropdownColumnCount + 1 * (_dropdownItemCount % _dropdownColumnCount);
-        widgets[0].right = _dropdownItemWidth * _dropdownColumnCount + 3;
+        uint16_t dropdownWidth = _dropdownItemWidth * _dropdownColumnCount + 3;
+        widgets[0].right = dropdownWidth;
         uint16_t dropdownHeight = _dropdownItemHeight * _dropdownRowCount + 3;
         widgets[0].bottom = dropdownHeight;
 
-        gfx::ui_size_t size = { (uint16_t)width, (uint16_t)height };
+        gfx::ui_size_t size = { dropdownWidth, dropdownHeight };
         gfx::point_t origin = { x, y };
         origin.y += heightOffset;
 
