@@ -115,7 +115,7 @@ namespace openloco::ui::tooltip
             y -= height + 40;
         y = std::clamp(y, 22, maxY);
 
-        x = std::clamp(cursorX - (width / 2), 0, ui::width() - width);
+        x = width <= ui::width() ? std::clamp(cursorX - (width / 2), 0, ui::width() - width) : 0;
 
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,

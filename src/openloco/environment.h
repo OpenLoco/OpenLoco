@@ -4,7 +4,7 @@
 
 namespace openloco::environment
 {
-    enum class path_id
+    enum class path_id : uint8_t
     {
         g1,
         plugin1,

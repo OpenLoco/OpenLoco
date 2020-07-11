@@ -11,6 +11,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"
+#include "../tutorial.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
@@ -419,9 +420,9 @@ namespace openloco::ui::windows
 
     static void sub_439112(window* window)
     {
-        dropdown::add(0, string_ids::tutorial_1);
-        dropdown::add(1, string_ids::tutorial_2);
-        dropdown::add(2, string_ids::tutorial_3);
+        dropdown::add(0, string_ids::tutorial_1_title);
+        dropdown::add(1, string_ids::tutorial_2_title);
+        dropdown::add(2, string_ids::tutorial_3_title);
 
         widget_t* widget = &window->widgets[widx::tutorial_btn];
         dropdown::show_text(
@@ -460,9 +461,7 @@ namespace openloco::ui::windows
         if (itemIndex == -1)
             return;
 
-        registers regs;
-        regs.ax = itemIndex;
-        call(0x43c590, regs); // tutorial::start();
+        tutorial::start(itemIndex);
     }
 
     static void sub_4391DA()

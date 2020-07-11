@@ -99,7 +99,6 @@ namespace openloco::ui
     static void resize(int32_t width, int32_t height);
     static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
     static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode);
-    static config::resolution_t getDesktopResolution();
 
 #if !(defined(__APPLE__) && defined(__MACH__))
     static void toggle_fullscreen_desktop();
@@ -783,7 +782,7 @@ namespace openloco::ui
             return getDesktopResolution();
     }
 
-    static config::resolution_t getDesktopResolution()
+    config::resolution_t getDesktopResolution()
     {
         int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
         SDL_DisplayMode desktopDisplayMode;
@@ -1042,7 +1041,7 @@ namespace openloco::ui
             WindowManager::callEvent8OnAllWindows();
 
             WindowManager::invalidateAllWindowsAfterInput();
-            call(0x004c6e65); // update_cursor_position
+            input::updateCursorPosition();
 
             uint32_t x;
             int16_t y;
@@ -1088,7 +1087,7 @@ namespace openloco::ui
         WindowManager::callEvent8OnAllWindows();
 
         WindowManager::invalidateAllWindowsAfterInput();
-        call(0x004c6e65); // update_cursor_position
+        input::updateCursorPosition();
 
         uint32_t x;
         int16_t y;
@@ -1115,16 +1114,27 @@ namespace openloco::ui
         WindowManager::callEvent9OnAllWindows();
     }
 
+    void setWindowScaling(float newScaleFactor)
+    {
+        auto& config = config::get_new();
+        newScaleFactor = std::clamp(newScaleFactor, ScaleFactor::min, ScaleFactor::max);
+        if (config.scale_factor == newScaleFactor)
+            return;
+
+        config.scale_factor = newScaleFactor;
+
+        openloco::config::write();
+        gfx::invalidate_screen();
+        ui::trigger_resize();
+    }
+
     void adjust_window_scale(float adjust_by)
     {
         auto& config = config::get_new();
         float newScaleFactor = std::clamp(config.scale_factor + adjust_by, ScaleFactor::min, ScaleFactor::max);
         if (config.scale_factor == newScaleFactor)
             return;
-        config.scale_factor = newScaleFactor;
 
-        openloco::config::write();
-        gfx::invalidate_screen();
-        ui::trigger_resize();
+        setWindowScaling(newScaleFactor);
     }
 }

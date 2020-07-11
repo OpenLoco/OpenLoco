@@ -665,7 +665,7 @@ namespace openloco
                 editor_tick();
                 audio::play_background_music();
                 audio::play_title_screen_music();
-                if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() == 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
 

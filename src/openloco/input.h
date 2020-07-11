@@ -85,6 +85,8 @@ namespace openloco::input
     bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
     ui::widget_index get_pressed_widget_index();
 
+    void updateCursorPosition();
+
     bool is_tool_active(ui::WindowType, ui::window_number);
     bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool);
     void cancel_tool();
