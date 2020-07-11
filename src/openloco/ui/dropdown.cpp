@@ -113,26 +113,26 @@ namespace openloco::ui::dropdown
         add(static_cast<uint8_t>(index), title, { l });
     }
 
-    int16_t get_highlighted_item()
+    int16_t getHighlightedItem()
     {
         return _dropdownHighlightedIndex;
     }
 
-    void set_item_disabled(size_t index)
+    void setItemDisabled(size_t index)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
         _dropdownDisabledItems |= (1U << static_cast<uint8_t>(index));
     }
 
-    void set_highlighted_item(size_t index)
+    void setHighlightedItem(size_t index)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
         _dropdownHighlightedIndex = static_cast<uint8_t>(index);
     }
 
-    void set_item_selected(size_t index)
+    void setItemSelected(size_t index)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
@@ -558,7 +558,7 @@ namespace openloco::ui::dropdown
      * @param heightOffset
      */
 
-    void show_image(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count)
+    void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
         assert(count < std::size(_appropriateImageDropdownItemsPerRow));
@@ -625,7 +625,7 @@ namespace openloco::ui::dropdown
     }
 
     // 0x004CC989
-    void show_below(window* window, widget_index widgetIndex, size_t count, int8_t height, uint8_t flags)
+    void showBelow(window* window, widget_index widgetIndex, size_t count, int8_t height, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -674,9 +674,9 @@ namespace openloco::ui::dropdown
     }
 
     // 0x004CC989
-    void show_below(window* window, widget_index widgetIndex, size_t count, uint8_t flags)
+    void showBelow(window* window, widget_index widgetIndex, size_t count, uint8_t flags)
     {
-        show_below(window, widgetIndex, count, 0, flags & ~(1 << 6));
+        showBelow(window, widgetIndex, count, 0, flags & ~(1 << 6));
     }
 
     /**
@@ -691,7 +691,7 @@ namespace openloco::ui::dropdown
      * flags @<bh>
      */
     // Custom dropdown height if flags & (1<<6) is true
-    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
+    void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -701,9 +701,9 @@ namespace openloco::ui::dropdown
     }
 
     // 0x004CCA6D
-    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    void showText(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
-        show_text(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
+        showText(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
 
     /**
@@ -716,7 +716,7 @@ namespace openloco::ui::dropdown
      * count @<bl>
      * flags @<bh>
      */
-    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
+    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -781,9 +781,9 @@ namespace openloco::ui::dropdown
         common::open(origin, size, colour);
     }
 
-    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
     {
-        show_text_2(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
+        showText2(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
 
     // 0x004CF2B3

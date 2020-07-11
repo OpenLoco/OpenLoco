@@ -85,7 +85,7 @@ namespace openloco::ui::windows::construction::overhead
                 dropdown::add(1, string_ids::block_section);
                 dropdown::add(2, string_ids::all_connected_track);
 
-                dropdown::set_highlighted_item(_lastSelectedTrackModSection);
+                dropdown::setHighlightedItem(_lastSelectedTrackModSection);
                 break;
             }
 

@@ -122,15 +122,15 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(6, 0);
         dropdown::add(7, string_ids::menu_quit_to_menu);
         dropdown::add(8, string_ids::menu_exit_openloco);
-        dropdown::show_below(window, widgetIndex, 9, 0);
-        dropdown::set_highlighted_item(1);
+        dropdown::showBelow(window, widgetIndex, 9, 0);
+        dropdown::setHighlightedItem(1);
     }
 
     // 0x0043B154
     static void loadsave_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -178,22 +178,22 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_play_music);
         dropdown::add(2, 0);
         dropdown::add(3, string_ids::menu_music_options);
-        dropdown::show_below(window, widgetIndex, 4, 0);
+        dropdown::showBelow(window, widgetIndex, 4, 0);
 
         if (!audio::isAudioEnabled())
-            dropdown::set_item_selected(0);
+            dropdown::setItemSelected(0);
 
         if (config::get().music_playing)
-            dropdown::set_item_selected(1);
+            dropdown::setItemSelected(1);
 
-        dropdown::set_highlighted_item(0);
+        dropdown::setHighlightedItem(0);
     }
 
     // 0x0043B0B8
     static void audio_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -267,15 +267,15 @@ namespace openloco::ui::windows::toolbar_top::game
                 highlighted_item = i;
         }
 
-        dropdown::show_below(window, widgetIndex, i, 25, (1 << 6));
-        dropdown::set_highlighted_item(highlighted_item);
+        dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
+        dropdown::setHighlightedItem(highlighted_item);
     }
 
     // 0x0043A39F
     static void railroad_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -306,20 +306,20 @@ namespace openloco::ui::windows::toolbar_top::game
         if (ddIndex == 0)
             return;
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
+        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
 
         ddIndex = 0;
         if (last_port_option != menu_options[0])
             ddIndex++;
 
-        dropdown::set_highlighted_item(ddIndex);
+        dropdown::setHighlightedItem(ddIndex);
     }
 
     // 0x0043AA0A
     static void port_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         last_port_option = menu_options[itemIndex];
 
@@ -375,15 +375,15 @@ namespace openloco::ui::windows::toolbar_top::game
             ddIndex++;
         }
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
-        dropdown::set_highlighted_item(last_build_vehicles_option);
+        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
+        dropdown::setHighlightedItem(last_build_vehicles_option);
     }
 
     // 0x0043ADC7
     static void build_vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -439,15 +439,15 @@ namespace openloco::ui::windows::toolbar_top::game
             ddIndex++;
         }
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
-        dropdown::set_highlighted_item(last_vehicles_option);
+        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
+        dropdown::setHighlightedItem(last_vehicles_option);
     }
 
     // 0x0043ACEF
     static void vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -473,15 +473,15 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(2, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::road_stations, string_ids::road_stations });
         dropdown::add(3, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::airports, string_ids::airports });
         dropdown::add(4, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::ship_ports, string_ids::ship_ports });
-        dropdown::show_below(window, widgetIndex, 5, 25, (1 << 6));
-        dropdown::set_highlighted_item(0);
+        dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
+        dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A596
     static void stations_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         if (itemIndex > 4)
             return;

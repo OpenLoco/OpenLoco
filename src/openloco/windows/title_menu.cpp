@@ -425,7 +425,7 @@ namespace openloco::ui::windows
         dropdown::add(2, string_ids::tutorial_3_title);
 
         widget_t* widget = &window->widgets[widx::tutorial_btn];
-        dropdown::show_text(
+        dropdown::showText(
             window->x + widget->left,
             window->y + widget->top,
             widget->width(),

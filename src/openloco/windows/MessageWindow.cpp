@@ -464,7 +464,7 @@ namespace openloco::ui::MessageWindow
 
                     auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
-                    dropdown::set_item_selected(dropdownIndex);
+                    dropdown::setItemSelected(dropdownIndex);
                     break;
                 }
             }

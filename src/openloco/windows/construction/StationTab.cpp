@@ -63,7 +63,7 @@ namespace openloco::ui::windows::construction::station
         {
             auto station = _stationList[stationIndex];
             if (station == _lastSelectedStationType)
-                dropdown::set_highlighted_item(stationIndex);
+                dropdown::setHighlightedItem(stationIndex);
 
             auto obj = objectmgr::get<obj_type>(station);
             dropdown::add(stationIndex, obj->name);

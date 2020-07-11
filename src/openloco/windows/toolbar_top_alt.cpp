@@ -115,15 +115,15 @@ namespace openloco::ui::windows::toolbar_top::editor
         dropdown::add(6, 0);
         dropdown::add(7, string_ids::menu_quit_to_menu);
         dropdown::add(8, string_ids::menu_exit_openloco);
-        dropdown::show_below(window, widgetIndex, 9, 0);
-        dropdown::set_highlighted_item(1);
+        dropdown::showBelow(window, widgetIndex, 9, 0);
+        dropdown::setHighlightedItem(1);
     }
 
     // 0x0043D695
     static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -168,19 +168,19 @@ namespace openloco::ui::windows::toolbar_top::editor
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
-        dropdown::show_below(window, widgetIndex, 1, 0);
+        dropdown::showBelow(window, widgetIndex, 1, 0);
 
         if (!audio::isAudioEnabled())
-            dropdown::set_item_selected(0);
+            dropdown::setItemSelected(0);
 
-        dropdown::set_highlighted_item(0);
+        dropdown::setHighlightedItem(0);
     }
 
     // 0x0043D7C1
     static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -194,15 +194,15 @@ namespace openloco::ui::windows::toolbar_top::editor
     static void mapGenerationMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::landscape_generation_options);
-        dropdown::show_below(window, widgetIndex, 1, 0);
-        dropdown::set_highlighted_item(0);
+        dropdown::showBelow(window, widgetIndex, 1, 0);
+        dropdown::setHighlightedItem(0);
     }
 
     // 0x004402DA
     static void mapGenerationMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {

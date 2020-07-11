@@ -270,7 +270,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, objectiveTypeLabelIds[i]);
 
-                    dropdown::set_item_selected(*objectiveType);
+                    dropdown::setItemSelected(*objectiveType);
                     break;
                 }
 
@@ -376,7 +376,7 @@ namespace openloco::ui::windows::ScenarioOptions
                         cargoByDropdownIndex[dropdownIndex] = cargoIdx;
 
                         if (cargoIdx == *objectiveDeliveredCargoType)
-                            dropdown::set_item_selected(dropdownIndex);
+                            dropdown::setItemSelected(dropdownIndex);
 
                         dropdownIndex++;
                     }
@@ -727,7 +727,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
 
-                    dropdown::set_item_selected(*preferredAIIntelligence);
+                    dropdown::setItemSelected(*preferredAIIntelligence);
                     break;
                 }
 
@@ -739,7 +739,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
 
-                    dropdown::set_item_selected(*preferredAIAggressiveness);
+                    dropdown::setItemSelected(*preferredAIAggressiveness);
                     break;
                 }
 
@@ -751,7 +751,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
 
-                    dropdown::set_item_selected(*preferredAICompetitiveness);
+                    dropdown::setItemSelected(*preferredAICompetitiveness);
                     break;
                 }
             }
@@ -1070,7 +1070,7 @@ namespace openloco::ui::windows::ScenarioOptions
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
                     dropdown::add(i, string_ids::dropdown_stringid, scenarioGroupLabelIds[i]);
 
-                dropdown::set_item_selected(s5::getOptions().difficulty);
+                dropdown::setItemSelected(s5::getOptions().difficulty);
             }
         }
 
