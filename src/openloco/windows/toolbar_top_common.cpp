@@ -98,7 +98,7 @@ namespace openloco::ui::windows::toolbar_top::common
         uint32_t map_sprite = map_sprites_by_rotation[current_rotation];
 
         dropdown::add(2, string_ids::menu_sprite_stringid, { interface->img + map_sprite, string_ids::menu_map });
-        dropdown::show_below(window, widgetIndex, 3, 25);
+        dropdown::show_below(window, widgetIndex, 3, 25, (1 << 6));
         dropdown::set_highlighted_item(0);
 
         auto mainWindow = WindowManager::getMainWindow();
@@ -125,7 +125,7 @@ namespace openloco::ui::windows::toolbar_top::common
 
         dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_rotate_clockwise, string_ids::menu_rotate_clockwise });
         dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_rotate_anti_clockwise, string_ids::menu_rotate_anti_clockwise });
-        dropdown::show_below(window, widgetIndex, 2, 25);
+        dropdown::show_below(window, widgetIndex, 2, 25, (1 << 6));
         dropdown::set_highlighted_item(0);
     }
 
@@ -142,7 +142,7 @@ namespace openloco::ui::windows::toolbar_top::common
         dropdown::add(7, 0);
         dropdown::add(8, string_ids::dropdown_without_checkmark, string_ids::menu_town_names_displayed);
         dropdown::add(9, string_ids::dropdown_without_checkmark, string_ids::menu_station_names_displayed);
-        dropdown::show_below(window, widgetIndex, 10);
+        dropdown::show_below(window, widgetIndex, 10, 0);
 
         uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
@@ -185,7 +185,7 @@ namespace openloco::ui::windows::toolbar_top::common
         dropdown::add(2, string_ids::menu_sprite_stringid, { water->var_06 + water::image_ids::toolbar_terraform_water, string_ids::menu_adjust_water });
         dropdown::add(3, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_plant_trees, string_ids::menu_plant_trees });
         dropdown::add(4, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_build_walls, string_ids::menu_build_walls });
-        dropdown::show_below(window, widgetIndex, 5, 25);
+        dropdown::show_below(window, widgetIndex, 5, 25, (1 << 6));
         dropdown::set_highlighted_item(0);
     }
 
@@ -233,7 +233,7 @@ namespace openloco::ui::windows::toolbar_top::common
                 highlighted_item = i;
         }
 
-        dropdown::show_below(window, widgetIndex, i, 25);
+        dropdown::show_below(window, widgetIndex, i, 25, (1 << 6));
         dropdown::set_highlighted_item(highlighted_item);
     }
 
@@ -243,7 +243,7 @@ namespace openloco::ui::windows::toolbar_top::common
         auto interface = objectmgr::get<interface_skin_object>();
         dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_towns, string_ids::menu_towns });
         dropdown::add(1, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_industries, string_ids::menu_industries });
-        dropdown::show_below(window, widgetIndex, 2, 25);
+        dropdown::show_below(window, widgetIndex, 2, 25, (1 << 6));
         dropdown::set_highlighted_item(last_town_option);
     }
 

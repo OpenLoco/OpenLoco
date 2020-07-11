@@ -122,7 +122,7 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(6, 0);
         dropdown::add(7, string_ids::menu_quit_to_menu);
         dropdown::add(8, string_ids::menu_exit_openloco);
-        dropdown::show_below(window, widgetIndex, 9);
+        dropdown::show_below(window, widgetIndex, 9, 0);
         dropdown::set_highlighted_item(1);
     }
 
@@ -178,7 +178,7 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_play_music);
         dropdown::add(2, 0);
         dropdown::add(3, string_ids::menu_music_options);
-        dropdown::show_below(window, widgetIndex, 4);
+        dropdown::show_below(window, widgetIndex, 4, 0);
 
         if (!audio::isAudioEnabled())
             dropdown::set_item_selected(0);
@@ -267,7 +267,7 @@ namespace openloco::ui::windows::toolbar_top::game
                 highlighted_item = i;
         }
 
-        dropdown::show_below(window, widgetIndex, i, 25);
+        dropdown::show_below(window, widgetIndex, i, 25, (1 << 6));
         dropdown::set_highlighted_item(highlighted_item);
     }
 
@@ -306,7 +306,7 @@ namespace openloco::ui::windows::toolbar_top::game
         if (ddIndex == 0)
             return;
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
 
         ddIndex = 0;
         if (last_port_option != menu_options[0])
@@ -375,7 +375,7 @@ namespace openloco::ui::windows::toolbar_top::game
             ddIndex++;
         }
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
         dropdown::set_highlighted_item(last_build_vehicles_option);
     }
 
@@ -439,7 +439,7 @@ namespace openloco::ui::windows::toolbar_top::game
             ddIndex++;
         }
 
-        dropdown::show_below(window, widgetIndex, ddIndex, 25);
+        dropdown::show_below(window, widgetIndex, ddIndex, 25, (1 << 6));
         dropdown::set_highlighted_item(last_vehicles_option);
     }
 
@@ -473,7 +473,7 @@ namespace openloco::ui::windows::toolbar_top::game
         dropdown::add(2, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::road_stations, string_ids::road_stations });
         dropdown::add(3, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::airports, string_ids::airports });
         dropdown::add(4, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::ship_ports, string_ids::ship_ports });
-        dropdown::show_below(window, widgetIndex, 5, 25);
+        dropdown::show_below(window, widgetIndex, 5, 25, (1 << 6));
         dropdown::set_highlighted_item(0);
     }
 

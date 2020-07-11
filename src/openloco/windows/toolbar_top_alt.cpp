@@ -115,7 +115,7 @@ namespace openloco::ui::windows::toolbar_top::editor
         dropdown::add(6, 0);
         dropdown::add(7, string_ids::menu_quit_to_menu);
         dropdown::add(8, string_ids::menu_exit_openloco);
-        dropdown::show_below(window, widgetIndex, 9);
+        dropdown::show_below(window, widgetIndex, 9, 0);
         dropdown::set_highlighted_item(1);
     }
 
@@ -168,7 +168,7 @@ namespace openloco::ui::windows::toolbar_top::editor
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
-        dropdown::show_below(window, widgetIndex, 1);
+        dropdown::show_below(window, widgetIndex, 1, 0);
 
         if (!audio::isAudioEnabled())
             dropdown::set_item_selected(0);
@@ -194,7 +194,7 @@ namespace openloco::ui::windows::toolbar_top::editor
     static void mapGenerationMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::landscape_generation_options);
-        dropdown::show_below(window, widgetIndex, 1);
+        dropdown::show_below(window, widgetIndex, 1, 0);
         dropdown::set_highlighted_item(0);
     }
 
