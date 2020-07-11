@@ -177,6 +177,20 @@ namespace openloco::ui::dropdown
             args.push(*ptr);
         }
 
+        // 0x00494BF6
+        static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
+        {
+            stringmgr::format_string(_byte_112CC04, stringId, &args);
+
+            _currentFontSpriteBase = font::medium_bold;
+
+            gfx::clip_string(width, _byte_112CC04);
+
+            _currentFontSpriteBase = font::m1;
+
+            gfx::draw_string(dpi, x, y, colour, _byte_112CC04);
+        }
+
         // 0x004CD00E
         static void draw(window* self, gfx::drawpixelinfo_t* dpi)
         {
@@ -282,20 +296,6 @@ namespace openloco::ui::dropdown
             events.on_update = onUpdate;
             events.draw = draw;
         }
-    }
-
-    // 0x00494BF6
-    static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
-    {
-        stringmgr::format_string(_byte_112CC04, stringId, &args);
-
-        _currentFontSpriteBase = font::medium_bold;
-
-        gfx::clip_string(width, _byte_112CC04);
-
-        _currentFontSpriteBase = font::m1;
-
-        gfx::draw_string(dpi, x, y, colour, _byte_112CC04);
     }
 
     // 0x004CCF1E
@@ -580,7 +580,6 @@ namespace openloco::ui::dropdown
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        auto word_113659E = width;
         setColourAndInputFlags(&colour, &flags);
 
         _dropdownColumnCount = 1;
@@ -634,12 +633,12 @@ namespace openloco::ui::dropdown
 
             if (origin.y < 0 || size.height > ui::height())
             {
-                origin.x += word_113659E;
+                origin.x += width;
                 origin.x += maxStringWidth + 3;
 
                 if (origin.x > ui::width())
                 {
-                    origin.x -= word_113659E;
+                    origin.x -= width;
                     origin.x -= (maxStringWidth + 7);
                 }
 
@@ -683,20 +682,85 @@ namespace openloco::ui::dropdown
      * count @<bl>
      * flags @<bh>
      */
-    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour;
-        regs.bl = static_cast<uint8_t>(count);
-        regs.bh = flags;
-        regs.bp = width;
-        regs.di = height;
+        //registers regs;
+        //regs.cx = x;
+        //regs.dx = y;
+        //regs.al = colour;
+        //regs.bl = static_cast<uint8_t>(count);
+        //regs.bh = flags;
+        //regs.bp = width;
+        //regs.di = height;
 
-        call(0x4CCC7C, regs);
+        //call(0x4CCC7C, regs);
+
+        setColourAndInputFlags(&colour, &flags);
+
+        _dropdownColumnCount = 1;
+        _dropdownItemWidth = width;
+        _dropdownItemHeight = 10;
+
+        if (flags & (1 << 6))
+        {
+            _dropdownItemHeight = itemHeight;
+        }
+
+        flags &= ~(1 << 6);
+
+        _dropdownItemCount = (uint16_t)count;
+        _dropdownRowCount = (uint32_t)count;
+        common::widgets[0].colour = colour;
+        uint16_t dropdownHeight = (uint16_t)count * _dropdownItemHeight + 3;
+        common::widgets[0].bottom = dropdownHeight;
+
+        gfx::ui_size_t size = { (uint16_t)width, (uint16_t)height };
+        gfx::point_t origin = { x, y };
+        origin.y += height;
+
+        size.height = dropdownHeight + 1;
+        if (size.height > ui::height() || origin.y < 0)
+        {
+            origin.y -= (height + dropdownHeight + 1);
+
+            if (origin.y >= 0)
+            {
+                size.height = origin.y + dropdownHeight + 1;
+            }
+
+            if (origin.y < 0 || size.height > ui::height())
+            {
+                origin.x += width + 3;
+                origin.y = 0;
+            }
+        }
+
+        size.width = width + 3;
+        common::widgets[0].right = size.width;
+        size.width++;
+
+        if (origin.x < 0)
+        {
+            origin.x = 0;
+        }
+
+        origin.x += size.width;
+
+        if (origin.x > ui::width())
+        {
+            origin.x = ui::width();
+        }
+
+        origin.x -= size.width;
+
+        open(origin, size, colour);
+    }
+
+    void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    {
+        show_text_2(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
 
     // 0x004CF2B3
