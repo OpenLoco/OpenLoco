@@ -1021,7 +1021,7 @@ strings:
   999: Zmiana Skrótu Klawiszowego
   1000: '{COLOUR WINDOW_2}Wciśnij nowy klawisz skrótu dla:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”'
   1001: '{SMALLFONT}{COLOUR BLACK}Kliknij na opis skrótu, aby wybrać nowy klawisz'
-  1002: Przesuwaj kamerę kursorem na krawędzi ekranu
+  1002: Przesuwaj widok wskaźnikiem na krawędzi ekranu
   1003: '{SMALLFONT}{COLOUR BLACK}Wybierz, czy chcesz przewijać widok, gdy wskaźnik myszy znajduje się na krawędzi ekranu'
   1004: '{SMALLFONT}{COLOUR BLACK}Zobacz lub zmień przypisanie klawiszy'
   1005: Mapa
@@ -1113,8 +1113,8 @@ strings:
   1090: Biały
   1091: Przezroczysty
   1092: '{COLOUR WINDOW_2}Znacznik konstrukcji:'
-  1093: '{COLOUR WINDOW_2}Min. skala wyśw. pojazdów:'
-  1094: '{COLOUR WINDOW_2}Min. skala wyśw. nazw stacji:'
+  1093: '{COLOUR WINDOW_2}Minimalna skala wyświetlania pojazdów:'
+  1094: '{COLOUR WINDOW_2}Minimalna skala wyświetlania nazw stacji:'
   1095: Pełna
   1096: 1/2
   1097: 1/4
@@ -2173,3 +2173,12 @@ strings:
   2128: Okno
   2129: Pełen Ekran
   2130: Bez Krawędzi
+  2132: "{COLOUR WINDOW_2}Współczynnik skalowania okien:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Powiększaj do pozycji kursora"
+  2137: "{SMALLFONT}{COLOUR BLACK}Po włączeniu tej funkcji widok będzie przybliżany do kursora, a nie do środka ekranu."
+  2138: "{COLOUR WINDOW_2}Odtwarzaj muzykę tytułową w menu"
+  2139: "Wyjdź do menu"
+  2140: "Zamknij OpenLoco"
