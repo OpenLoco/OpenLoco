@@ -4,6 +4,7 @@
 #include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"
 #include "../stationmgr.h"
+#include "../tutorial.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../window.h"
@@ -54,6 +55,10 @@ namespace openloco::input
 
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
+
+    // TODO: name?
+    static loco_global<int32_t, 0x00523338> _cursorX2;
+    static loco_global<int32_t, 0x0052333C> _cursorY2;
 
     static loco_global<ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
@@ -202,6 +207,34 @@ namespace openloco::input
     ui::widget_index get_pressed_widget_index()
     {
         return _pressedWidgetIndex;
+    }
+
+    // 0x004C6E65
+    void updateCursorPosition()
+    {
+        switch (tutorial::state())
+        {
+            case tutorial::tutorial_state::none:
+            {
+                _cursorX2 = _cursorX;
+                _cursorY2 = _cursorY;
+                break;
+            }
+
+            case tutorial::tutorial_state::playing:
+            {
+                _cursorX2 = tutorial::nextInput();
+                _cursorY2 = tutorial::nextInput();
+                ui::set_cursor_pos(*_cursorX2, *_cursorY2);
+                break;
+            }
+
+            case tutorial::tutorial_state::recording:
+            {
+                call(0x004C6EC3);
+                break;
+            }
+        }
     }
 
     bool is_tool_active(ui::WindowType type, ui::window_number number)

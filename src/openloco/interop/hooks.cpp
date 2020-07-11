@@ -19,6 +19,7 @@
 #include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
+#include "../tutorial.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
@@ -770,6 +771,7 @@ void openloco::interop::register_hooks()
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
     game_commands::registerHooks();
+    tutorial::registerHooks();
 
     // Part of 0x004691FA
     register_hook(

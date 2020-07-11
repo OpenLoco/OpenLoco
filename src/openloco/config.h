@@ -96,6 +96,28 @@ namespace openloco::config
         {
             return width > 0 && height > 0;
         }
+
+        bool operator==(const resolution_t& rhs) const
+        {
+            return width == rhs.width && height == rhs.height;
+        }
+
+        bool operator!=(const resolution_t& rhs) const
+        {
+            return width != rhs.width || height != rhs.height;
+        }
+
+        bool operator>(const resolution_t& rhs) const
+        {
+            return width > rhs.width || height > rhs.height;
+        }
+
+        resolution_t& operator*=(const float scalar)
+        {
+            width *= scalar;
+            height *= scalar;
+            return *this;
+        }
     };
 
     struct display_config

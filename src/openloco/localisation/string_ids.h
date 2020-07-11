@@ -1162,9 +1162,49 @@ namespace openloco::string_ids
     constexpr string_id forbid_competing_companies_from_using = 1875;
     constexpr string_id forbid_player_companies_from_using = 1876;
 
-    constexpr string_id tutorial_1 = 1879;
-    constexpr string_id tutorial_2 = 1880;
-    constexpr string_id tutorial_3 = 1881;
+    constexpr string_id tutorial_1_title = 1879;
+    constexpr string_id tutorial_2_title = 1880;
+    constexpr string_id tutorial_3_title = 1881;
+
+    constexpr string_id tutorial_1_string_1 = 1882;
+    constexpr string_id tutorial_1_string_2 = 1883;
+    constexpr string_id tutorial_1_string_3 = 1884;
+    constexpr string_id tutorial_1_string_4 = 1885;
+    constexpr string_id tutorial_1_string_5 = 1886;
+    constexpr string_id tutorial_1_string_6 = 1887;
+    constexpr string_id tutorial_1_string_7 = 1888;
+    constexpr string_id tutorial_1_string_8 = 1889;
+    constexpr string_id tutorial_1_string_9 = 1890;
+    constexpr string_id tutorial_1_string_10 = 1891;
+    constexpr string_id tutorial_1_string_11 = 1892;
+    constexpr string_id tutorial_1_string_12 = 1893;
+    constexpr string_id tutorial_1_string_13 = 1894;
+    constexpr string_id tutorial_1_string_14 = 1895;
+    constexpr string_id tutorial_1_string_15 = 1896;
+    constexpr string_id tutorial_1_string_16 = 1897;
+    constexpr string_id tutorial_1_string_17 = 1898;
+
+    constexpr string_id tutorial_2_string_1 = 1899;
+    constexpr string_id tutorial_2_string_2 = 1900;
+    constexpr string_id tutorial_2_string_3 = 1901;
+    constexpr string_id tutorial_2_string_4 = 1902;
+    constexpr string_id tutorial_2_string_5 = 1903;
+    constexpr string_id tutorial_2_string_6 = 1904;
+    constexpr string_id tutorial_2_string_7 = 1905;
+    constexpr string_id tutorial_2_string_8 = 1906;
+    constexpr string_id tutorial_2_string_9 = 1907;
+    constexpr string_id tutorial_2_string_10 = 1908;
+    constexpr string_id tutorial_2_string_11 = 1909;
+
+    constexpr string_id tutorial_3_string_1 = 1910;
+    constexpr string_id tutorial_3_string_2 = 1911;
+    constexpr string_id tutorial_3_string_3 = 1912;
+    constexpr string_id tutorial_3_string_4 = 1913;
+    constexpr string_id tutorial_3_string_5 = 1914;
+    constexpr string_id tutorial_3_string_6 = 1915;
+    constexpr string_id tutorial_3_string_7 = 1916;
+    constexpr string_id tutorial_3_string_8 = 1917;
+    constexpr string_id tutorial_3_string_9 = 1918;
 
     constexpr string_id use_preferred_owner_name = 1919;
     constexpr string_id use_preferred_owner_name_tip = 1920;
