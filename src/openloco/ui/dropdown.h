@@ -68,6 +68,7 @@ namespace openloco::ui::dropdown
     void show_image(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, colour_t colour, uint8_t columnCount, uint8_t count);
     void show_below(window* window, widget_index widgetIndex, size_t count);
     void show_below(window* window, widget_index widgetIndex, size_t count, int8_t height);
+    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags);
     void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags);
     void show_text_2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags);
 

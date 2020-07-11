@@ -168,6 +168,27 @@ namespace openloco::ui::dropdown
         gfx::draw_string(dpi, x, y, colour, _byte_112CC04);
     }
 
+    static void dropdownFormatArgsToFormatArgs(int itemCount, FormatArguments args)
+    {
+        std::byte* dropdownArgs = &_dropdownItemArgs[itemCount][0];
+
+        uint32_t* ptr = (uint32_t*)dropdownArgs;
+        dropdownArgs = &_dropdownItemArgs[itemCount][4];
+        args.push(*ptr);
+
+        ptr = (uint32_t*)dropdownArgs;
+        args.push(*ptr);
+
+        dropdownArgs = &_dropdownItemArgs2[itemCount][0];
+
+        ptr = (uint32_t*)dropdownArgs;
+        dropdownArgs = &_dropdownItemArgs2[itemCount][4];
+        args.push(*ptr);
+
+        ptr = (uint32_t*)dropdownArgs;
+        args.push(*ptr);
+    }
+
     // 0x004CD00E
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
@@ -187,23 +208,8 @@ namespace openloco::ui::dropdown
                 }
 
                 auto args = FormatArguments();
-                std::byte* dropdownArgs = &_dropdownItemArgs[itemCount][0];
 
-                uint32_t* ptr = (uint32_t*)dropdownArgs;
-                dropdownArgs = &_dropdownItemArgs[itemCount][4];
-                args.push(*ptr);
-
-                ptr = (uint32_t*)dropdownArgs;
-                args.push(*ptr);
-
-                dropdownArgs = &_dropdownItemArgs2[itemCount][0];
-
-                ptr = (uint32_t*)dropdownArgs;
-                dropdownArgs = &_dropdownItemArgs2[itemCount][4];
-                args.push(*ptr);
-
-                ptr = (uint32_t*)dropdownArgs;
-                args.push(*ptr);
+                dropdownFormatArgsToFormatArgs(itemCount, args);
 
                 auto dropdownItemFormat = _dropdownItemFormats[itemCount];
 
@@ -261,21 +267,21 @@ namespace openloco::ui::dropdown
 
                 if (!(self->colours[0] & colour::translucent_flag))
                 {
-                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, colour::get_shade(self->colours[0], 3));
-                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth, 0, colour::get_shade(self->colours[0], 7));
+                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 0, colour::get_shade(self->colours[0], 3));
+                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 0, colour::get_shade(self->colours[0], 7));
                 }
                 else
                 {
-                    auto colour = _byte_50457A[self->colours[0]] | (1 << 25);
+                    auto colour = _byte_50457A[colour::opaque(self->colours[0])] | (1 << 25);
                     colour++;
-                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, colour);
+                    gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 0, colour);
                     colour++;
-                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth, 0, colour);
+                    gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 0, colour);
                 }
             }
 
-            if (itemCount + 1 >= _dropdownItemCount)
-                return;
+            //if (itemCount + 1 >= _dropdownItemCount)
+            //    return;
 
             _windowDropdownOnpaintCellX++;
             if (_windowDropdownOnpaintCellX >= _dropdownColumnCount)
@@ -309,15 +315,32 @@ namespace openloco::ui::dropdown
         widgets[0].colour = colour::black;
         window->colours[0] = colour;
 
-        for (auto i = 0; i < _dropdownItemCount; i++)
-        {
-            _dropdownItemFormats[i] = string_ids::empty;
-        }
-
         _dropdownHighlightedIndex = -1;
         _dropdownDisabledItems = 0;
         _dropdownSelection = 0;
         input::state(input::input_state::dropdown_active);
+    }
+
+    static void setColourAndInputFlags(colour_t* colour, uint8_t* flags)
+    {
+        if (*colour & colour::translucent_flag)
+        {
+            *colour = _byte_504619[colour::opaque(*colour)];
+            *colour = colour::translucent(*colour);
+        }
+
+        input::reset_flag(input::input_flags::flag1);
+        input::reset_flag(input::input_flags::flag2);
+
+        if (*flags & (1 << 7))
+        {
+            input::set_flag(input::input_flags::flag1);
+        }
+
+        *flags &= ~(1 << 7);
+
+        WindowManager::close(WindowType::dropdown, 0);
+        _word_113DC78 = 0;
     }
 
     /**
@@ -337,21 +360,7 @@ namespace openloco::ui::dropdown
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        if (colour & colour::translucent_flag)
-        {
-            colour = _byte_504619[colour::opaque(colour)];
-            colour = colour::translucent(colour);
-        }
-
-        input::reset_flag(input::input_flags::flag1);
-        input::reset_flag(input::input_flags::flag2);
-
-        if (flags & (1 << 7))
-        {
-            input::set_flag(input::input_flags::flag1);
-        }
-
-        flags &= ~(1 << 7);
+        setColourAndInputFlags(&colour, &flags);
 
         WindowManager::close(WindowType::dropdown, 0);
         _word_113DC78 = 0;
@@ -395,23 +404,30 @@ namespace openloco::ui::dropdown
             }
         }
 
-        widgets[0].right = width + 3;
+        size.width = width + 3;
+        widgets[0].right = size.width;
+        size.width++;
 
         if (origin.x < 0)
         {
             origin.x = 0;
         }
 
-        origin.x += width + 4;
+        origin.x += size.width;
 
         if (origin.x > ui::width())
         {
             origin.x = ui::width();
         }
 
-        origin.x -= width + 4;
+        origin.x -= size.width;
 
         open(origin, size, colour);
+
+        for (auto i = 0; i < _dropdownItemCount; i++)
+        {
+            _dropdownItemFormats[i] = string_ids::empty;
+        }
     }
 
     /**
@@ -448,33 +464,7 @@ namespace openloco::ui::dropdown
         assert(count < std::numeric_limits<uint8_t>::max());
         assert(count < std::size(_appropriateImageDropdownItemsPerRow));
 
-        //registers regs;
-        //regs.cx = x;
-        //regs.dx = y;
-        //regs.al = colour;
-        //regs.bl = columnCount;
-        //regs.bh = count;
-        //regs.bp = width;
-        //regs.ah = height;
-        //regs.di = heightOffset;
-
-        //call(0x004CCDE7, regs);
-
-        if (colour & colour::translucent_flag)
-        {
-            colour = _byte_504619[colour::opaque(colour)];
-            colour = colour::translucent(colour);
-        }
-
-        input::reset_flag(input::input_flags::flag1);
-        input::reset_flag(input::input_flags::flag2);
-
-        if (count & (1 << 7))
-        {
-            input::set_flag(input::input_flags::flag1);
-        }
-
-        count &= ~(1 << 7);
+        setColourAndInputFlags(&colour, &count);
 
         WindowManager::close(WindowType::dropdown, 0);
         _word_113DC78 = 0;
@@ -507,24 +497,32 @@ namespace openloco::ui::dropdown
             {
                 origin.x += widgets[0].right;
                 origin.y = 0;
+          
             }
         }
+
+        size.width = widgets[0].right + 1;
 
         if (origin.x < 0)
         {
             origin.x = 0;
         }
 
-        origin.x += widgets[0].right + 1;
+        origin.x +=size.width;
 
         if (origin.x > ui::width())
         {
             origin.x = ui::width();
         }
 
-        origin.x -= widgets[0].right + 1;
+        origin.x -= size.width;
 
         open(origin, size, colour);
+
+        for (auto i = 0; i < _dropdownItemCount; i++)
+        {
+            _dropdownItemFormats[i] = string_ids::empty;
+        }
     }
 
     // 0x004CC989
@@ -556,6 +554,16 @@ namespace openloco::ui::dropdown
         call(0x4CC989, regs);
     }
 
+    // 0x004955BC
+    static uint16_t sub_4955BC(char* buffer)
+    {
+        registers regs;
+        regs.esi = (int32_t)buffer;
+        call(0x004955BC, regs);
+
+        return regs.cx;
+    }
+
     /**
      * 0x004CCA6D
      * x @<cx>
@@ -563,23 +571,106 @@ namespace openloco::ui::dropdown
      * width @<bp>
      * height @<di>
      * colour @<al>
+     * itemHeight @ <ah>
      * count @<bl>
      * flags @<bh>
      */
-    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    // Custom dropdown height if flags & (1<<6) is true
+    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour;
-        regs.bl = static_cast<uint8_t>(count);
-        regs.bh = flags;
-        regs.bp = width;
-        regs.di = height;
+        auto word_113659E = width;
+        setColourAndInputFlags(&colour, &flags);
 
-        call(0x4CCA6D, regs);
+        _dropdownColumnCount = 1;
+        _dropdownItemWidth = 0;
+
+        _dropdownItemHeight = 10;
+
+        if (flags & (1 << 6))
+        {
+            _dropdownItemHeight = itemHeight;
+        }
+
+        flags &= ~(1 << 6);
+
+        uint16_t maxStringWidth = 0;
+        for (uint8_t itemCount = 0; itemCount < count; itemCount++)
+        {
+            auto args = FormatArguments();
+
+            dropdownFormatArgsToFormatArgs(itemCount, args);
+
+            stringmgr::format_string(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
+
+            _currentFontSpriteBase = font::medium_bold;
+
+            auto stringWidth = sub_4955BC(_byte_112CC04);
+
+            maxStringWidth = std::max(maxStringWidth, stringWidth);
+        }
+
+        _dropdownItemWidth = maxStringWidth + 3;
+        _dropdownItemCount = (uint16_t)count;
+        _dropdownRowCount = (uint32_t)count;
+        widgets[0].colour = colour;
+        uint16_t dropdownHeight = _dropdownItemHeight * (uint16_t)count + 3;
+        widgets[0].bottom = dropdownHeight;
+
+        gfx::ui_size_t size = { (uint16_t)_dropdownItemWidth, dropdownHeight };
+        gfx::point_t origin = { x, y };
+        origin.y += height;
+
+        size.height = dropdownHeight + 1;
+        if (size.height > ui::height() || origin.y < 0)
+        {
+            origin.y -= (height + dropdownHeight + 1);
+
+            if (origin.y >= 0)
+            {
+                size.height = origin.y + dropdownHeight + 1;
+            }
+
+            if (origin.y < 0 || size.height > ui::height())
+            {
+                origin.x += word_113659E;
+                origin.x += maxStringWidth + 3;
+
+                if (origin.x > ui::width())
+                {
+                    origin.x -= word_113659E;
+                    origin.x -= (maxStringWidth + 7);
+                }
+
+                origin.y = 0;
+            }
+        }
+
+        size.width = maxStringWidth + 6;
+        widgets[0].right = size.width;
+
+        if (origin.x < 0)
+        {
+            origin.x = 0;
+        }
+
+        origin.x += size.width + 1;
+
+        if (origin.x > ui::width())
+        {
+            origin.x = ui::width();
+        }
+
+        origin.x -= (size.width + 1);
+
+        open(origin, size, colour);
+    }
+
+    // 0x004CCA6D
+    void show_text(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags)
+    {
+        show_text(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
 
     /**
