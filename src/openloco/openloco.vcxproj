@@ -66,6 +66,7 @@
     <ClCompile Include="things\thing.cpp" />
     <ClCompile Include="things\thingmgr.cpp" />
     <ClCompile Include="things\vehicle.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="town.cpp" />
     <ClCompile Include="townmgr.cpp" />
     <ClCompile Include="tutorial.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="things\thingmgr.h" />
     <ClInclude Include="things\vehicle.h" />
     <ClInclude Include="thirdparty\filesystem.hpp" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="town.h" />
     <ClInclude Include="townmgr.h" />
     <ClInclude Include="tutorial.h" />

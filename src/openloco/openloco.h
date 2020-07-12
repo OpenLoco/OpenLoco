@@ -35,6 +35,7 @@ namespace openloco
     bool is_unknown_5_mode();
     bool is_paused();
     uint8_t get_pause_flags();
+    void toggle_paused(bool value);
     uint32_t scenario_ticks();
     utility::prng& gprng();
     void initialise_viewports();

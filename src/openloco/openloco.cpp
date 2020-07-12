@@ -42,6 +42,7 @@
 #include "scenariomgr.h"
 #include "stationmgr.h"
 #include "things/thingmgr.h"
+#include "title.h"
 #include "townmgr.h"
 #include "tutorial.h"
 #include "ui.h"
@@ -162,6 +163,15 @@ namespace openloco
     uint8_t get_pause_flags()
     {
         return paused_state;
+    }
+
+    // 0x00431E32
+    // value: bl (false will no-op, seems pointless to me)
+    void toggle_paused(bool value)
+    {
+        registers regs;
+        regs.bl = value ? 1 : 0;
+        call(0x00431E32, regs);
     }
 
     uint32_t scenario_ticks()
@@ -341,7 +351,7 @@ namespace openloco
 #else
         intro::state(intro::intro_state::end);
 #endif
-        call(0x0046AD7D);
+        title::start();
         gui::init();
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
