@@ -79,6 +79,7 @@ namespace openloco::ui
     void render();
     bool process_messages();
     void show_message_box(const std::string& title, const std::string& message);
+    config::resolution_t getResolution();
     config::resolution_t getDesktopResolution();
     bool setDisplayMode(config::screen_mode mode, config::resolution_t newResolution);
     bool setDisplayMode(config::screen_mode mode);

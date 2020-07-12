@@ -105,9 +105,10 @@ namespace openloco::tutorial
             }
 
             // Ensure that we're in windowed mode, using dimensions 1024x768.
-            if (config.display.mode != config::screen_mode::window || config.display.window_resolution != tutorialResolution)
+            auto currentResolution = ui::getResolution();
+            if (config.display.mode != config::screen_mode::window || currentResolution != newResolution)
             {
-                if (!ui::setDisplayMode(config::screen_mode::window, tutorialResolution))
+                if (!ui::setDisplayMode(config::screen_mode::window, newResolution))
                     return;
             }
 
