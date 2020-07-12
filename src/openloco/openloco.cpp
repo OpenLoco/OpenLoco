@@ -674,7 +674,13 @@ namespace openloco
                 _525F62++;
                 editor_tick();
                 audio::play_background_music();
-                audio::play_title_screen_music();
+
+                // TODO move stop title music to title::stop (when mode changes)
+                if (!is_title_mode())
+                {
+                    audio::stop_title_music();
+                }
+
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();

@@ -1,4 +1,5 @@
 #include "title.h"
+#include "audio/audio.h"
 #include "companymgr.h"
 #include "gui.h"
 #include "interop/interop.hpp"
@@ -53,6 +54,8 @@ namespace openloco::title
         call(0x00444357);
         gfx::invalidate_screen();
         _screenAge = 0;
+
+        audio::play_title_screen_music();
     }
 
     static void sub_473A95(int32_t eax)

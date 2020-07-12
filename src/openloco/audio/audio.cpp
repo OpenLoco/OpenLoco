@@ -1136,7 +1136,10 @@ namespace openloco::audio
     // 0x0048AC2B
     void stop_title_music()
     {
-        stop_channel(channel_id::title);
+        if (is_channel_playing(channel_id::title))
+        {
+            stop_channel(channel_id::title);
+        }
     }
 
     bool isAudioEnabled()
