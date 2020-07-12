@@ -4,6 +4,8 @@
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
+#include "../objects/competitor_object.h"
+#include "../objects/objectmgr.h"
 #include "../window.h"
 
 #include <cassert>
@@ -18,6 +20,7 @@ namespace openloco::ui::dropdown
 
     static loco_global<uint8_t[31], 0x0050457A> _byte_50457A;
     static loco_global<uint8_t[31], 0x00504619> _byte_504619;
+    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
@@ -34,11 +37,10 @@ namespace openloco::ui::dropdown
     static loco_global<uint16_t, 0x0113DC78> _word_113DC78;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
-    static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
-
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
+    static loco_global<uint8_t[40], 0x00113DB20> _menuOptions;
 
     void add(size_t index, string_id title)
     {
@@ -789,24 +791,87 @@ namespace openloco::ui::dropdown
     // 0x004CF2B3
     void populateCompanySelect(window* window, widget_t* widget)
     {
-        registers regs;
-        // regs.edx = widgetIndex;
-        regs.edi = (int32_t)widget;
-        regs.esi = (int32_t)window;
+        char* buffer = _byte_112CC04;
 
-        call(0x004CF2B3, regs);
+        while (&buffer[0] < &_byte_112CC04[15])
+        {
+            *buffer = '\0';
+            buffer++;
+        }
+
+        int16_t maxPerformanceIndex;
+        company_id_t companyId = company_id::null;
+        auto count = 0;
+
+        while (true)
+        {
+            maxPerformanceIndex = -1;
+            for (const auto& company : companymgr::companies())
+            {
+                if (company.empty())
+                    continue;
+
+                if (_byte_112CC04[company.id()] & 1)
+                    continue;
+
+                if (maxPerformanceIndex < company.performance_index)
+                {
+                    maxPerformanceIndex = company.performance_index;
+                    companyId = company.id();
+                }
+            }
+
+            if (maxPerformanceIndex == -1)
+                break;
+
+            _byte_112CC04[companyId] = _byte_112CC04[companyId] | 1;
+            _dropdownItemFormats[count] = string_ids::dropdown_company_select;
+            _menuOptions[count] = companyId;
+
+            auto company = companymgr::get(companyId);
+            auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
+            auto ownerEmotion = company->owner_emotion;
+            auto imageId = competitorObj->images[ownerEmotion];
+            imageId = gfx::recolour(imageId, company->mainColours.primary);
+
+            add(count, string_ids::dropdown_company_select, { imageId, company->name });
+            count++;
+        }
+        auto x = widget->left + window->x;
+        auto y = widget->top + window->y;
+        auto colour = colour::translucent(window->colours[widget->colour]);
+
+        showText(x, y, widget->width(), widget->height(), 25, colour, count, (1 << 6));
+
+        auto highlightedIndex = company_id::null;
+        highlightedIndex++;
+
+        while (window->owner != _menuOptions[highlightedIndex])
+        {
+            highlightedIndex++;
+        }
+
+        setHighlightedItem(highlightedIndex);
+        _word_113DC78 = _word_113DC78 | (1 << 1);
     }
 
     // 0x004CF284
     company_id_t getCompanyIdFromSelection(int16_t itemIndex)
     {
-        registers regs;
-        // regs.edx = (int32_t)widgetIndex;
-        // regs.esi = (int32_t)window;
-        regs.ax = itemIndex;
+        if (itemIndex == -1)
+        {
+            itemIndex = _dropdownHighlightedIndex;
+        }
 
-        call(0x004CF284, regs);
-        return regs.eax;
+        auto companyId = _menuOptions[itemIndex];
+        auto company = companymgr::get(companyId);
+
+        if (company->name == string_ids::empty)
+        {
+            companyId = company_id::null;
+        }
+
+        return companyId;
     }
 
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument)

@@ -30,7 +30,6 @@ namespace openloco::ui::windows::town_list
     static loco_global<uint8_t, 0x00525FC9> _lastSelectedMiscBuilding;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
-    static loco_global<std::uint8_t[40][8], 0x0113D8A0> _dropdownItemArgs;
 
     namespace common
     {

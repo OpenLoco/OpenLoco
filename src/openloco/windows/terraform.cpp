@@ -61,8 +61,6 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x0113649C> _byte_113649C;
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
-    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<std::byte[40][8], 0x0113D8A0> _dropdownItemArgs;
 
     namespace common
     {
