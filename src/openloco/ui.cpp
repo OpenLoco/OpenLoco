@@ -782,6 +782,11 @@ namespace openloco::ui
             return getDesktopResolution();
     }
 
+    config::resolution_t getResolution()
+    {
+        return { ui::width(), ui::height() };
+    }
+
     config::resolution_t getDesktopResolution()
     {
         int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
@@ -805,6 +810,13 @@ namespace openloco::ui
         SDL_SetWindowFullscreen(window, 0);
 
         // Set the new dimensions of the screen.
+        if (mode == config::screen_mode::window)
+        {
+            auto desktopResolution = getDesktopResolution();
+            auto x = (desktopResolution.width - newResolution.width) / 2;
+            auto y = (desktopResolution.height - newResolution.height) / 2;
+            SDL_SetWindowPosition(window, x, y);
+        }
         SDL_SetWindowSize(window, newResolution.width, newResolution.height);
 
         // Set the window fullscreen mode.
