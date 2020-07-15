@@ -9,9 +9,43 @@
 #include "News.h"
 
 using namespace openloco::interop;
+using namespace openloco::config;
 
 namespace openloco::ui::NewsWindow
 {
+    static void createNewsWindow(gfx::ui_size_t windowSize, widget_t* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    {
+        _word_525CE0 = 5;
+
+        int16_t y = ui::height() - _word_525CE0;
+
+        if (_gameSpeed != 0 || isOld)
+        {
+            y = ui::height() - windowSize.height;
+            _word_525CE0 = windowSize.height;
+        }
+
+        int16_t x = (ui::width() / 2) - (windowSize.width / 2);
+        gfx::point_t origin = { x, y };
+
+        auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &news1::events);
+
+        window->widgets = widgets;
+        window->enabled_widgets = common::enabledWidgets;
+
+        common::initEvents();
+
+        window->init_scroll_widgets();
+        window->colours[0] = colour;
+
+        _dword_525CD0 = 0xFFFFFFFF;
+        _dword_525CD4 = 0xFFFFFFFF;
+        _dword_525CD8 = 0xFFFFFFFF;
+        _dword_525CDC = 0xFFFFFFFF;
+
+        news1::initViewport(window);
+    }
+
     // 0x00428F8B
     void open(uint16_t messageIndex)
     {
@@ -29,25 +63,67 @@ namespace openloco::ui::NewsWindow
 
         if (!isOld)
         {
-            auto messageType = _messageTypes[activeMessage];
+            newsItemSubType messageSubTypes[31] = {
+                newsItemSubType::advice,
+                newsItemSubType::general,
+                newsItemSubType::advice,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::advice,
+                newsItemSubType::advice,
+                newsItemSubType::majorCompany,
+                newsItemSubType::advice,
+                newsItemSubType::minorCompany,
+                newsItemSubType::minorCompany,
+                newsItemSubType::general,
+                newsItemSubType::majorCompany,
+                newsItemSubType::general,
+                newsItemSubType::general,
+                newsItemSubType::general,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompetitor,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompany,
+                newsItemSubType::majorCompetitor,
+            };
 
-            if (messageType == common::newsItem::majorCompany || messageType == common::newsItem::minorCompany)
+            auto messageSubType = messageSubTypes[activeMessage];
+
+            if (messageSubType == newsItemSubType::majorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageType++;
+                    messageSubType = newsItemSubType::majorCompetitor;
                 }
             }
 
-            auto newsSettings = config::get().news_settings[messageType];
+            if (messageSubType == newsItemSubType::minorCompany)
+            {
+                if (news->companyId != _playerCompany)
+                {
+                    messageSubType = newsItemSubType::minorCompetitor;
+                }
+            }
 
-            if (newsSettings == common::newsType::none)
+            auto newsSettings = config::get().news_settings[static_cast<uint8_t>(messageSubType)];
+
+            if (newsSettings == newsType::none)
             {
                 news->var_C8 = 0xFFFF;
                 return;
             }
 
-            if (newsSettings == common::newsType::ticker)
+            if (newsSettings == newsType::ticker)
             {
                 _word_525CE0 = 0;
                 int16_t x = ui::width() - 138;
@@ -67,7 +143,7 @@ namespace openloco::ui::NewsWindow
                 auto skin = objectmgr::get<interface_skin_object>();
                 window->colours[0] = colour::translucent(skin->colour_0C);
 
-                window->var_854 = 0;
+                window->var_852 = 0;
 
                 return;
             }
@@ -79,7 +155,41 @@ namespace openloco::ui::NewsWindow
 
             if (news->companyId == company_id::null || news->companyId == _playerCompany)
             {
-                soundId = static_cast<audio::sound_id>(_messageSounds[activeMessage]);
+                audio::sound_id messageSounds[31] = {
+                    audio::sound_id::notification,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::notification,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::news_oooh,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::news_oooh,
+                    audio::sound_id::news_oooh,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::notification,
+                    audio::sound_id::news_awww,
+                    audio::sound_id::applause_2,
+                    audio::sound_id::news_oooh
+                };
+
+                soundId = messageSounds[activeMessage];
             }
 
             if (soundId != audio::sound_id::null)
@@ -91,69 +201,16 @@ namespace openloco::ui::NewsWindow
 
         if (_word_4F8BE4[activeMessage] & (1 << 1))
         {
-            _word_525CE0 = 5;
-
-            int16_t y = ui::height() - _word_525CE0;
-
-            if (_gameSpeed != 0 || isOld)
-            {
-                y = ui::height() - news2::windowSize.height;
-                _word_525CE0 = news2::windowSize.height;
-            }
-
-            int16_t x = (ui::width() / 2) - (news2::windowSize.width / 2);
-            gfx::point_t origin = { x, y };
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
 
-            auto window = WindowManager::createWindow(WindowType::news, origin, news2::windowSize, flags, &news1::events);
-
-            window->widgets = news2::widgets;
-            window->enabled_widgets = common::enabledWidgets;
-
-            common::initEvents();
-
-            window->init_scroll_widgets();
-            window->colours[0] = colour::grey;
-
-            _dword_525CD0 = 0xFFFFFFFF;
-            _dword_525CD4 = 0xFFFFFFFF;
-            _dword_525CD8 = 0xFFFFFFFF;
-            _dword_525CDC = 0xFFFFFFFF;
-
-            news1::initViewport(window);
+            createNewsWindow(news2::windowSize, news2::widgets, colour::grey, isOld, flags);
         }
         else
         {
-            _word_525CE0 = 5;
-
-            int16_t y = ui::height() - _word_525CE0;
-
-            if (_gameSpeed != 0 || isOld)
-            {
-                y = ui::height() - news1::windowSize.height;
-                _word_525CE0 = news1::windowSize.height;
-            }
-
-            int16_t x = (ui::width() / 2) - (news1::windowSize.width / 2);
-            gfx::point_t origin = { x, y };
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
+            auto colour = colour::translucent(colour::salmon_pink);
 
-            auto window = WindowManager::createWindow(WindowType::news, origin, news1::windowSize, flags, &news1::events);
-
-            window->widgets = news1::widgets;
-            window->enabled_widgets = common::enabledWidgets;
-
-            common::initEvents();
-
-            window->init_scroll_widgets();
-            window->colours[0] = colour::translucent(colour::salmon_pink);
-
-            _dword_525CD0 = 0xFFFFFFFF;
-            _dword_525CD4 = 0xFFFFFFFF;
-            _dword_525CD8 = 0xFFFFFFFF;
-            _dword_525CDC = 0xFFFFFFFF;
-
-            news1::initViewport(window);
+            createNewsWindow(news1::windowSize, news1::widgets, colour, isOld, flags);
         }
     }
 

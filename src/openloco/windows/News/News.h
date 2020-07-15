@@ -8,8 +8,16 @@ using namespace openloco::interop;
 
 namespace openloco::ui::NewsWindow
 {
-    static loco_global<uint8_t[31][4], 0x004F8B08> _byte_4F8B08;
-    static loco_global<uint8_t[31][4], 0x004F8B09> _byte_4F8B09;
+#pragma pack(push, 1)
+    struct messageItemType
+    {
+        uint8_t type;      // 0x00
+        uint8_t pad_01[3]; // 0x01
+    };
+#pragma pack(pop)
+
+    static loco_global<messageItemType[31], 0x004F8B08> _byte_4F8B08;
+    static loco_global<messageItemType[31], 0x004F8B09> _byte_4F8B09;
     static loco_global<uint16_t[31], 0x004F8BE4> _word_4F8BE4;
     static loco_global<uint8_t[31], 0x004F8C22> _messageTypes;
     static loco_global<uint8_t[31], 0x004F8C41> _messageSounds;
@@ -33,23 +41,6 @@ namespace openloco::ui::NewsWindow
 
     namespace common
     {
-        enum newsType
-        {
-            none = 0,
-            ticker,
-            newsWindow,
-        };
-
-        enum newsItem
-        {
-            majorCompany,
-            majorCompetitor,
-            minorCompany,
-            minorCompetitor,
-            general,
-            advice,
-        };
-
         enum widx
         {
             frame,
@@ -81,7 +72,7 @@ namespace openloco::ui::NewsWindow
 
         extern window_event_list events;
 
-        enum newsItems
+        enum newsItemSubTypes
         {
             industry,
             station,

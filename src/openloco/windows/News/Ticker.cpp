@@ -73,56 +73,53 @@ namespace openloco::ui::NewsWindow::ticker
 
         self->invalidate();
 
-        if (self->var_852 == 0)
+        if (self->var_852 == 0 && !is_paused())
         {
-            if (!is_paused())
+            _word_525CE0 = _word_525CE0 + 2;
+
+            if (!(_word_525CE0 & 0x8007))
             {
-                _word_525CE0 = _word_525CE0 + 2;
-
-                if (!(_word_525CE0 & 0x8007))
+                if (_activeMessageIndex != 0xFFFF)
                 {
-                    if (_activeMessageIndex != 0xFFFF)
+                    auto news = messagemgr::get(_activeMessageIndex);
+                    auto cx = _word_525CE0 >> 2;
+                    char* newsString = news->messageString;
+                    auto newsStringChar = *newsString;
+
+                    while (true)
                     {
-                        auto news = messagemgr::get(_activeMessageIndex);
-                        auto cx = _word_525CE0 >> 2;
-                        char* newsString = news->messageString;
-                        auto newsStringChar = *newsString;
-
-                        while (true)
+                        newsStringChar = *newsString;
+                        if (newsStringChar == control_codes::newline)
                         {
-                            newsStringChar = *newsString;
-                            if (newsStringChar == control_codes::newline)
-                            {
-                                newsStringChar = 32;
-                                cx--;
-                                if (cx < 0)
-                                    break;
-                            }
-
-                            if (newsStringChar != -1)
-                            {
-                                cx--;
-                                if (cx < 0)
-                                    break;
-                                newsString++;
-                                if (!newsStringChar)
-                                    break;
-                            }
-                            else
-                            {
-                                cx--;
-                                if (cx < 0)
-                                    break;
-                                newsString += 3;
-                            }
+                            newsStringChar = ' ';
+                            cx--;
+                            if (cx < 0)
+                                break;
                         }
 
-                        if (newsStringChar != 32)
+                        if (newsStringChar != -1)
                         {
-                            if (newsStringChar != 0)
-                            {
-                                audio::play_sound(audio::sound_id::ticker, ui::width());
-                            }
+                            cx--;
+                            if (cx < 0)
+                                break;
+                            newsString++;
+                            if (!newsStringChar)
+                                break;
+                        }
+                        else
+                        {
+                            cx--;
+                            if (cx < 0)
+                                break;
+                            newsString += 3;
+                        }
+                    }
+
+                    if (newsStringChar != ' ')
+                    {
+                        if (newsStringChar != 0)
+                        {
+                            audio::play_sound(audio::sound_id::ticker, ui::width());
                         }
                     }
                 }
@@ -156,7 +153,7 @@ namespace openloco::ui::NewsWindow::ticker
         if (self->var_852 != 0)
             return;
 
-        if (get_pause_flags() & 4)
+        if (get_pause_flags() & (1 << 2))
             return;
 
         auto news = messagemgr::get(_activeMessageIndex);
@@ -197,19 +194,15 @@ namespace openloco::ui::NewsWindow::ticker
             newsStringChar = *newsString;
             if (newsStringChar == control_codes::newline)
             {
-                newsStringChar = 32;
+                newsStringChar = ' ';
                 *buffer = newsStringChar;
                 buffer++;
             }
 
             if (newsStringChar == -1)
             {
-                *buffer = newsStringChar;
-                buffer++;
-                newsString++;
-                *buffer = *newsString;
-                buffer++;
-                newsString++;
+                *buffer++ = *newsString++;
+                *buffer++ = *newsString++;
                 newsStringChar = *newsString;
             }
 

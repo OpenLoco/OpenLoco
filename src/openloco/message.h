@@ -1,10 +1,29 @@
 #pragma once
+
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
+#include <limits>
 
 namespace openloco
 {
+
     using message_id_t = uint16_t;
+
+    namespace message_id
+    {
+        constexpr message_id_t null = std::numeric_limits<message_id_t>::max();
+    }
+
+    enum class newsItemSubType : uint8_t
+    {
+        majorCompany,
+        majorCompetitor,
+        minorCompany,
+        minorCompetitor,
+        general,
+        advice,
+    };
+
 #pragma pack(push, 1)
     struct message
     {

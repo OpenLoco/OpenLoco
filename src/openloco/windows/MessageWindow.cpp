@@ -464,7 +464,7 @@ namespace openloco::ui::MessageWindow
 
                     auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
-                    dropdown::set_highlighted_item(dropdownIndex);
+                    dropdown::set_highlighted_item(static_cast<size_t>(dropdownIndex));
                     break;
                 }
             }
@@ -493,9 +493,9 @@ namespace openloco::ui::MessageWindow
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
-                    if (itemIndex != config::get().news_settings[dropdownIndex])
+                    if (static_cast<config::newsType>(itemIndex) != config::get().news_settings[dropdownIndex])
                     {
-                        config::get().news_settings[dropdownIndex] = itemIndex;
+                        config::get().news_settings[dropdownIndex] = static_cast<config::newsType>(itemIndex);
                         config::write();
                         gfx::invalidate_screen();
                     }
@@ -538,7 +538,7 @@ namespace openloco::ui::MessageWindow
                 {
                     auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
                     auto args = FormatArguments();
-                    args.push(newsDropdownStringIds[config::get().news_settings[i]]);
+                    args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
 
                     gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
                 }
