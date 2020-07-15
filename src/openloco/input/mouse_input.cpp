@@ -655,6 +655,8 @@ namespace openloco::input
                             case InteractionItem::industry:
                                 ui::windows::industry_list::open();
                                 break;
+                            default:
+                                break;
                         }
 
                         break;
@@ -663,30 +665,38 @@ namespace openloco::input
                     case InteractionItem::track:
                     {
                         auto track = ((map::tile_element*)ptr.object)->as_track();
-                        if (track->owner() == companymgr::get_controlling_id())
+                        if (track != nullptr)
                         {
-                            ui::windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
-                        }
-                        else
-                        {
-                            ui::windows::CompanyWindow::open(track->owner());
+                            if (track->owner() == companymgr::get_controlling_id())
+                            {
+                                ui::windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
+                            }
+                            else
+                            {
+                                ui::windows::CompanyWindow::open(track->owner());
+                            }
                         }
                         break;
                     }
                     case InteractionItem::road:
                     {
                         auto road = reinterpret_cast<map::tile_element*>(ptr.object)->as_road();
-                        auto owner = road->owner();
+                        if (road != nullptr)
+                        {
 
-                        auto roadObject = objectmgr::get<road_object>(road->road_object_id());
-                        if (owner == companymgr::get_controlling_id() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
-                        {
-                            ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                            auto owner = road->owner();
+
+                            auto roadObject = objectmgr::get<road_object>(road->road_object_id());
+                            if (owner == companymgr::get_controlling_id() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
+                            {
+                                ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                            }
+                            else
+                            {
+                                ui::windows::CompanyWindow::open(owner);
+                            }
                         }
-                        else
-                        {
-                            ui::windows::CompanyWindow::open(owner);
-                        }
+                        break;
                     }
                     case InteractionItem::t_5:
                     case InteractionItem::t_17:
