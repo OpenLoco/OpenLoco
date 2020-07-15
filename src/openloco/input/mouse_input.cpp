@@ -495,7 +495,6 @@ namespace openloco::input
                 }
                 else if (!has_flag(input_flags::flag4))
                 {
-
                     viewport_interaction::InteractionArg ptr{};
 
                     auto interactionItem = viewport_interaction::get_item_left(x, y, &ptr);
@@ -514,20 +513,12 @@ namespace openloco::input
 
                         case InteractionItem::town:
                         {
-                            char buffer[256] = { 0 };
-                            auto town = townmgr::get(ptr.value);
-                            stringmgr::format_string(buffer, town->name);
-                            console::log("Clicked town '%s' (%d)", buffer, ptr.value);
                             ui::windows::town::open(ptr.value);
                             break;
                         }
 
                         case InteractionItem::station:
                         {
-                            char buffer[256] = { 0 };
-                            auto station = stationmgr::get(ptr.value);
-                            stringmgr::format_string(buffer, station->name, &station->town);
-                            console::log("Clicked station '%s' (%d)", buffer, ptr.value);
                             ui::windows::station::open(ptr.value);
                             break;
                         }
@@ -562,13 +553,11 @@ namespace openloco::input
 
                         case InteractionItem::industry:
                         {
-                            console::log("Clicked industry");
                             ui::windows::industry::open(ptr.value);
                             break;
                         }
 
                         default:
-                            console::log("%d %X", interactionItem, ptr.object);
                             break;
                     }
                 }
