@@ -229,7 +229,7 @@ namespace openloco::ui::NewsWindow
                 {
                     auto vehicle = thingmgr::get<openloco::vehicle>(itemId);
 
-                    if (vehicle->tile_x == 0xFFFF)
+                    if (vehicle->tile_x == -1)
                         break;
 
                     vehicle = vehicle->next_car()->next_car();
