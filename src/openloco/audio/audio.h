@@ -22,7 +22,7 @@ namespace openloco::audio
         Mix_Chunk* chunk{};
     };
 
-    enum class sound_id
+    enum class sound_id : uint8_t
     {
         click_down = 0,
         click_up = 1,

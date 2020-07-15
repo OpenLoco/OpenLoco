@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../company.h"
 #include "../companymgr.h"
 #include "../core/Optional.hpp"
@@ -185,7 +186,7 @@ namespace openloco::things::vehicle
     {
         auto* const base = createVehicleThing();
         base->base_type = thing_base_type::vehicle;
-        base->type = T::VehicleThingType;
+        base->type = T::vehicleThingType;
         return reinterpret_cast<T*>(base);
     }
 
@@ -629,7 +630,7 @@ namespace openloco::things::vehicle
         newVeh2->var_56 = 0;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
-        newVeh2->var_44 = -1;
+        newVeh2->soundId = audio::sound_id::null;
         newVeh2->var_48 = -1;
         newVeh2->var_48 = 0;
         newVeh2->var_4A = 0;
@@ -664,7 +665,7 @@ namespace openloco::things::vehicle
         newTail->var_15 = 0;
         newTail->var_38 = 0;
 
-        newTail->var_44 = -1;
+        newTail->soundId = audio::sound_id::null;
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;

@@ -84,7 +84,7 @@ namespace openloco
         template<typename TType>
         TType* as() const
         {
-            return as<TType, TType::VehicleThingType>();
+            return as<TType, TType::vehicleThingType>();
         }
 
     public:
@@ -178,7 +178,7 @@ namespace openloco
 
     struct vehicle_head : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::head;
+        static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint16_t var_22;
@@ -237,7 +237,7 @@ namespace openloco
 
     struct vehicle_1 : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::vehicle_1;
+        static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -270,7 +270,7 @@ namespace openloco
 
     struct vehicle_2 : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::vehicle_2;
+        static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -289,7 +289,7 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint8_t sound_id; // 0x44 common with tail
+        audio::sound_id soundId; // 0x44 common with tail
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with tail
@@ -312,7 +312,7 @@ namespace openloco
 
     struct vehicle_body : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::body_continued;
+        static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -375,7 +375,7 @@ namespace openloco
 
     struct vehicle_bogie : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::bogie;
+        static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -422,7 +422,7 @@ namespace openloco
 
     struct vehicle_tail : vehicle_base
     {
-        static constexpr auto VehicleThingType = VehicleThingType::tail;
+        static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -441,14 +441,14 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint8_t var_44;
+        audio::sound_id soundId; // 0x44
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with veh_2
         ui::window_number sound_window_number; // 0x4C common with veh_2
         ui::WindowType sound_window_type;      // 0x4E common with veh_2
     };
-    static_assert(sizeof(vehicle_tail) == 0x4C); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
     namespace things::vehicle

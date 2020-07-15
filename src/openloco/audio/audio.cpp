@@ -635,8 +635,8 @@ namespace openloco::audio
                     auto data = (sound_object_data*)obj->data;
                     assert(data->offset == 8);
                     auto sample = load_sound_from_wave_memory(data->pcm_header, data->pcm(), data->length);
-                    _object_samples[(int16_t)id] = sample;
-                    return &_object_samples[(int16_t)id];
+                    _object_samples[static_cast<size_t>(id)] = sample;
+                    return &_object_samples[static_cast<size_t>(id)];
                 }
             }
             else
@@ -644,9 +644,9 @@ namespace openloco::audio
                 return &sr->second;
             }
         }
-        else if ((int32_t)id >= 0 && (int32_t)id < (int32_t)_samples.size())
+        else if (static_cast<size_t>(id) < _samples.size())
         {
-            return &_samples[(int32_t)id];
+            return &_samples[static_cast<size_t>(id)];
         }
         return nullptr;
     }
