@@ -644,8 +644,8 @@ namespace openloco::ui::prompt_browse
                 {
                     for (auto& f : fs::directory_iterator(directory))
                     {
-                        auto isDirectory = f.is_directory();
-                        if (!isDirectory)
+                        bool isDirectory = f.is_directory();
+                        if (f.is_regular_file())
                         {
                             auto extension = f.path().extension().u8string();
                             if (!utility::iequals(extension, filterExtension))
@@ -653,7 +653,10 @@ namespace openloco::ui::prompt_browse
                                 continue;
                             }
                         }
-
+                        else if (!isDirectory) // Only list directories or normal files
+                        {
+                            continue;
+                        }
                         auto name = f.path().stem().u8string();
                         _newFiles.emplace_back(name, isDirectory);
                     }
