@@ -698,9 +698,9 @@ namespace openloco::input
                         }
                         break;
                     }
-                    case InteractionItem::t_5:
-                    case InteractionItem::t_17:
-                    case InteractionItem::t_6:
+                    case InteractionItem::trackExtra:
+                    case InteractionItem::roadExtra:
+                    case InteractionItem::signal:
                     case InteractionItem::trackStation:
                     case InteractionItem::roadStation:
                     case InteractionItem::airport:
