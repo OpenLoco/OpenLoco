@@ -165,7 +165,7 @@ namespace openloco
     struct vehicle_26 : vehicle_base
     {
         uint8_t pad_20[0x44 - 0x20];
-        uint8_t sound_id; // 0x44
+        audio::sound_t sound_id; // 0x44
         uint8_t pad_45[0x4A - 0x45];
         uint16_t var_4A;                       // sound-related flag(s)
         ui::window_number sound_window_number; // 0x4C
@@ -289,7 +289,7 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        audio::sound_id soundId; // 0x44 common with tail
+        audio::sound_t soundId; // 0x44 common with tail
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with tail
@@ -441,7 +441,7 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        audio::sound_id soundId; // 0x44
+        audio::sound_t soundId; // 0x44
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with veh_2

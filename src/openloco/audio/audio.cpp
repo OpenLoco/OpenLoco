@@ -89,8 +89,8 @@ namespace openloco::audio
     static std::vector<sample> _samples;
     static std::unordered_map<uint16_t, sample> _object_samples;
 
-    static void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
-    static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
+    static void play_sound(const Sound& snd, loc16 loc, int32_t volume, int32_t pan, int32_t frequency);
+    static void mix_sound(const Sound& snd, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
     static const music_info MusicInfo[] = {
@@ -442,10 +442,9 @@ namespace openloco::audio
         _audioIsPaused = false;
     }
 
-    static sound_object* get_sound_object(sound_id id)
+    sound_object* Sound::getSoundObject() const
     {
-        auto idx = (int32_t)id & ~0x8000;
-        return objectmgr::get<sound_object>(idx);
+        return isObjectSound ? objectmgr::get<sound_object>(id) : nullptr;
     }
 
     static viewport* find_best_viewport_for_sound(viewport_pos vpos)
@@ -476,11 +475,11 @@ namespace openloco::audio
         return nullptr;
     }
 
-    static int32_t get_volume_for_sound_id(sound_id id)
+    static int32_t get_volume_for_sound_id(const Sound& snd)
     {
-        if (is_object_sound_id(id))
+        if (snd.isObjectSound)
         {
-            auto obj = get_sound_object(id);
+            auto obj = snd.getSoundObject();
             if (obj != nullptr)
             {
                 return obj->volume;
@@ -490,11 +489,11 @@ namespace openloco::audio
         else
         {
             loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
-            return unk_4FEAB8[(int32_t)id];
+            return unk_4FEAB8[snd.id];
         }
     }
 
-    static int32_t calculate_volume_from_viewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    static int32_t calculate_volume_from_viewport(const Sound&, const map::map_pos3& mpos, const viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
@@ -514,14 +513,14 @@ namespace openloco::audio
         return volume;
     }
 
-    void play_sound(sound_id id, loc16 loc)
+    void play_sound(const Sound& snd, loc16 loc)
     {
-        play_sound(id, loc, play_at_location);
+        play_sound(snd, loc, play_at_location);
     }
 
-    void play_sound(sound_id id, int32_t pan)
+    void play_sound(const Sound& snd, int32_t pan)
     {
-        play_sound(id, {}, pan);
+        play_sound(snd, {}, pan);
     }
 
     static vehicle_channel* get_free_vehicle_channel()
@@ -536,17 +535,17 @@ namespace openloco::audio
         return nullptr;
     }
 
-    bool should_sound_loop(sound_id id)
+    bool should_sound_loop(const Sound& snd)
     {
         loco_global<uint8_t[64], 0x0050D514> unk_50D514;
-        if (is_object_sound_id(id))
+        if (snd.isObjectSound)
         {
-            auto obj = get_sound_object(id);
+            auto obj = snd.getSoundObject();
             return obj->var_06 != 0;
         }
         else
         {
-            return unk_50D514[(int32_t)id * 2] != 0;
+            return unk_50D514[snd.id * 2] != 0;
         }
     }
 
@@ -565,26 +564,26 @@ namespace openloco::audio
     }
 
     // 0x00489F1B
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency)
+    void play_sound(const Sound& snd, loc16 loc, int32_t volume, int32_t frequency)
     {
-        play_sound(id, loc, volume, play_at_location, frequency);
+        play_sound(snd, loc, volume, play_at_location, frequency);
     }
 
     // 0x00489CB5
-    void play_sound(sound_id id, loc16 loc, int32_t pan)
+    void play_sound(const Sound& snd, loc16 loc, int32_t pan)
     {
-        play_sound(id, loc, 0, pan, 0);
+        play_sound(snd, loc, 0, pan, 0);
     }
 
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
+    void play_sound(const Sound& snd, loc16 loc, int32_t volume, int32_t pan, int32_t frequency)
     {
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
         if (_audioIsEnabled)
         {
-            volume += get_volume_for_sound_id(id);
+            volume += get_volume_for_sound_id(snd);
             if (pan == play_at_location)
             {
                 auto vpos = viewport::map_from_3d(loc, current_rotation);
@@ -594,7 +593,7 @@ namespace openloco::audio
                     return;
                 }
 
-                volume += calculate_volume_from_viewport(id, { loc.x, loc.y }, *viewport);
+                volume += calculate_volume_from_viewport(snd, { loc.x, loc.y }, *viewport);
                 pan = viewport->map_to_ui(vpos).x;
                 if (volume < -10000)
                 {
@@ -617,26 +616,26 @@ namespace openloco::audio
                 pan = (((pan << 16) / uiWidth) - 0x8000) >> 4;
             }
 
-            mix_sound(id, 0, volume, pan, frequency);
+            mix_sound(snd, 0, volume, pan, frequency);
         }
     }
 
-    sample* get_sound_sample(sound_id id)
+    sample* get_sound_sample(const Sound& snd)
     {
-        if (is_object_sound_id(id))
+        if (snd.isObjectSound)
         {
             // TODO use a LRU queue for object samples
-            auto sr = _object_samples.find((uint16_t)id);
+            auto sr = _object_samples.find(snd.id);
             if (sr == _object_samples.end())
             {
-                auto obj = get_sound_object(id);
+                auto obj = snd.getSoundObject();
                 if (obj != nullptr)
                 {
                     auto data = (sound_object_data*)obj->data;
                     assert(data->offset == 8);
                     auto sample = load_sound_from_wave_memory(data->pcm_header, data->pcm(), data->length);
-                    _object_samples[static_cast<size_t>(id)] = sample;
-                    return &_object_samples[static_cast<size_t>(id)];
+                    _object_samples[snd.id] = sample;
+                    return &_object_samples[snd.id];
                 }
             }
             else
@@ -644,17 +643,17 @@ namespace openloco::audio
                 return &sr->second;
             }
         }
-        else if (static_cast<size_t>(id) < _samples.size())
+        else if (snd.id < _samples.size())
         {
-            return &_samples[static_cast<size_t>(id)];
+            return &_samples[snd.id];
         }
         return nullptr;
     }
 
-    static void mix_sound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq)
+    static void mix_sound(const Sound& snd, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log_verbose("mix_sound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
-        auto sample = get_sound_sample(id);
+        console::log_verbose("mix_sound(%d, %s, %d, %d, %d)", (int32_t)snd.id, loop ? "true" : "false", volume, pan, freq);
+        auto sample = get_sound_sample(snd);
         if (sample != nullptr && sample->chunk != nullptr)
         {
             auto loops = loop == 0 ? 0 : -1;

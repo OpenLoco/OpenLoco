@@ -630,7 +630,7 @@ namespace openloco::things::vehicle
         newVeh2->var_56 = 0;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
-        newVeh2->soundId = audio::sound_id::null;
+        newVeh2->soundId = audio::sound::null;
         newVeh2->var_48 = -1;
         newVeh2->var_48 = 0;
         newVeh2->var_4A = 0;
@@ -665,7 +665,7 @@ namespace openloco::things::vehicle
         newTail->var_15 = 0;
         newTail->var_38 = 0;
 
-        newTail->soundId = audio::sound_id::null;
+        newTail->soundId = audio::sound::null;
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;

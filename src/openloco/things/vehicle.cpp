@@ -1122,7 +1122,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 
     if (itemFound)
     {
-        auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
+        auto soundId = static_cast<audio::sound_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
         if (veh_2->var_56 > 983040)
             return;
@@ -1136,7 +1136,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
             volume -= 1500;
         }
 
-        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
+        audio::play_sound(soundId, loc, volume, 22050);
     }
     else
     {
@@ -1145,8 +1145,8 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
         {
             soundModifier = 0;
         }
-        auto underSoundId = static_cast<audio::sound_id>(steam_obj->var_1F[soundModifier + var_55]);
-        auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55]);
+        auto underSoundId = static_cast<audio::sound_t>(steam_obj->var_1F[soundModifier + var_55]);
+        auto soundId = static_cast<audio::sound_t>(steam_obj->var_1F[var_55]);
 
         if (veh_2->var_56 > 983040)
             return;
@@ -1166,7 +1166,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
             volume = -400;
         }
 
-        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
+        audio::play_sound(soundId, loc, volume, 22050);
     }
 }
 

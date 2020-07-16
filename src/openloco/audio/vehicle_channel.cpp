@@ -7,12 +7,12 @@ using namespace openloco;
 using namespace openloco::audio;
 using namespace openloco::interop;
 
-static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
+static std::tuple<Sound, channel_attributes> sub_48A590(const vehicle* v)
 {
     registers regs;
     regs.esi = (int32_t)v;
     call(0x0048A590, regs);
-    return std::make_tuple<sound_id, channel_attributes>((sound_id)regs.eax, { regs.ecx, regs.edx, regs.ebx });
+    return std::make_tuple<Sound, channel_attributes>({ regs.ax }, { regs.ecx, regs.edx, regs.ebx });
 }
 
 vehicle_channel::vehicle_channel(channel&& c)

@@ -598,13 +598,13 @@ static void register_audio_hooks()
     register_hook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            audio::play_sound({ regs.ax }, { regs.cx, regs.dx, regs.bp }, regs.ebx);
             return 0;
         });
     register_hook(
         0x00489F1B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            audio::play_sound({ regs.ax }, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
             return 0;
         });
 }

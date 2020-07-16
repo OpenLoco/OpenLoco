@@ -11,6 +11,7 @@ struct Mix_Chunk;
 namespace openloco
 {
     struct vehicle_26;
+    struct sound_object;
 }
 
 namespace openloco::audio
@@ -22,6 +23,14 @@ namespace openloco::audio
         Mix_Chunk* chunk{};
     };
 
+    // An sound object reference
+    using sound_t = uint8_t;
+    namespace sound
+    {
+        constexpr sound_t null = 0xFF;
+    }
+
+    // A sound reference (not a object)
     enum class sound_id : uint8_t
     {
         click_down = 0,
@@ -60,6 +69,44 @@ namespace openloco::audio
         null = 0xFF
     };
 
+    struct Sound
+    {
+        sound_t id = 0;
+        bool isObjectSound = false;
+
+        constexpr Sound(sound_id _id)
+            : id(static_cast<sound_t>(_id))
+            , isObjectSound(false)
+        {
+        }
+
+        constexpr Sound(sound_t _id)
+            : id(_id)
+            , isObjectSound(true)
+        {
+        }
+
+        constexpr Sound(int16_t reg)
+            : id(reg & 0xFF)
+            , isObjectSound(reg & (1 << 15))
+        {
+        }
+
+        Sound() = default;
+
+        bool operator==(const Sound& b) const
+        {
+            return (b.isObjectSound == isObjectSound) && (b.id == id);
+        }
+
+        bool operator!=(const Sound& b) const
+        {
+            return !(*this == b);
+        }
+
+        sound_object* getSoundObject() const;
+    };
+
     enum class channel_id
     {
         bgm,
@@ -88,17 +135,17 @@ namespace openloco::audio
     size_t get_current_device();
     void set_device(size_t index);
 
-    sample* get_sound_sample(sound_id id);
-    bool should_sound_loop(sound_id id);
+    sample* get_sound_sample(const Sound& snd);
+    bool should_sound_loop(const Sound& snd);
 
     void toggle_sound();
     void pause_sound();
     void unpause_sound();
     void play_sound(vehicle_26* t);
-    void play_sound(sound_id id, loc16 loc);
-    void play_sound(sound_id id, loc16 loc, int32_t pan);
-    void play_sound(sound_id id, int32_t pan);
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
+    void play_sound(const Sound& snd, loc16 loc);
+    void play_sound(const Sound& snd, loc16 loc, int32_t pan);
+    void play_sound(const Sound& snd, int32_t pan);
+    void play_sound(const Sound& snd, loc16 loc, int32_t volume, int32_t frequency);
     void update_sounds();
 
     bool load_channel(channel_id id, const char* path, int32_t c);
@@ -131,16 +178,6 @@ namespace openloco::audio
      *          library header includes in our own headers.
      */
     int32_t volume_loco_to_sdl(int32_t loco);
-
-    constexpr bool is_object_sound_id(sound_id id)
-    {
-        return ((int32_t)id & 0x8000);
-    }
-
-    constexpr sound_id make_object_sound_id(sound_id id)
-    {
-        return (sound_id)((int32_t)id | 0x8000);
-    }
 
     /**
      * Converts a Locomotion pan range to a left and right value for SDL2 mixer.

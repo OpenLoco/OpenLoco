@@ -18,7 +18,7 @@ namespace openloco::audio
     private:
         channel _channel;
         thing_id_t _vehicle_id = thing_id::null;
-        sound_id _sound_id{};
+        Sound _sound_id{};
         channel_attributes _attributes;
 
     public:
