@@ -385,6 +385,12 @@ namespace openloco::ui::NewsWindow
                 }
             }
 
+            view.mapX = -1;
+            view.mapY = -1;
+            view.surfaceZ = -1;
+            view.rotation = -1;
+            view.zoomLevel = (ZoomLevel)-1;
+            view.thingId = 0xFFFF;
             selectable = false;
 
             if (_activeMessageIndex != 0xFFFF)
