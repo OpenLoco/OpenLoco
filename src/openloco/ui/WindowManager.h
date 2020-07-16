@@ -117,6 +117,7 @@ namespace openloco::ui::windows::construction
     window* openWithFlags(uint32_t flags);
     window* openAtTrack(window* main, openloco::map::track_element* track, const openloco::map::map_pos pos);
     window* openAtRoad(window* main, openloco::map::road_element* track, const openloco::map::map_pos pos);
+    window* openAtTrackExtra(window* main, openloco::map::track_element* track, const openloco::map::map_pos pos);
     void sub_4A6FAC();
     void registerHooks();
 }

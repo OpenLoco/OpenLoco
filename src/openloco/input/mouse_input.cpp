@@ -699,6 +699,14 @@ namespace openloco::input
                         break;
                     }
                     case InteractionItem::trackExtra:
+                    {
+                        auto track = ((map::tile_element*)ptr.object)->as_track();
+                        if (track != nullptr)
+                        {
+                            ui::windows::construction::openAtTrackExtra(window, track, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
                     case InteractionItem::roadExtra:
                     case InteractionItem::signal:
                     case InteractionItem::trackStation:
