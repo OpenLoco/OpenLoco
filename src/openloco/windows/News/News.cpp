@@ -227,24 +227,22 @@ namespace openloco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = thingmgr::get<openloco::vehicle>(itemId);
-
-                    if (vehicle->tile_x == -1)
+                    things::vehicle::Vehicle train(itemId);
+                    if (train.head->tile_x == -1)
                         break;
 
-                    vehicle = vehicle->next_car()->next_car();
-                    view.thingId = vehicle->id;
-                    vehicle = vehicle->next_car();
+                    view.thingId = train.veh2->id;
 
-                    if (vehicle->type != vehicle_thing_type::vehicle_6)
+                    if (train.cars.size() != 0)
                     {
-                        view.thingId = vehicle->id;
-                        if (vehicle->type == vehicle_thing_type::vehicle_bogie)
+                        view.thingId = train.tail->id;
+
+                        if (train.cars[0].carComponents[0].front->type == VehicleThingType::bogie)
                         {
-                            vehicle = vehicle->next_car();
-                            view.thingId = vehicle->next_car_id;
+                            view.thingId = train.cars[0].carComponents[0].back->id;
                         }
                     }
+
                     view.flags = (1 << 15);
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = gCurrentRotation;
