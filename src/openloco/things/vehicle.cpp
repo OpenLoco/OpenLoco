@@ -1014,14 +1014,14 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     bool soundCode = false;
-    if (veh_3->var_5A == 1 || veh_3->var_5A == 4)
+    if (veh_2->var_5A == 1 || veh_2->var_5A == 4)
     {
         soundCode = true;
     }
     bool tickCalc = true;
-    if (veh_3->var_5A != 0 && veh_3->var_56 >= 65536)
+    if (veh_2->var_5A != 0 && veh_2->var_56 >= 65536)
     {
         tickCalc = false;
     }
@@ -1124,10 +1124,10 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
     {
         auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
-        if (veh_3->var_56 > 983040)
+        if (veh_2->var_56 > 983040)
             return;
 
-        int32_t volume = 0 - (veh_3->var_56 >> 9);
+        int32_t volume = 0 - (veh_2->var_56 >> 9);
 
         auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
 
@@ -1148,10 +1148,10 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
         auto underSoundId = static_cast<audio::sound_id>(steam_obj->var_1F[soundModifier + var_55]);
         auto soundId = static_cast<audio::sound_id>(steam_obj->var_1F[var_55]);
 
-        if (veh_3->var_56 > 983040)
+        if (veh_2->var_56 > 983040)
             return;
 
-        int32_t volume = 0 - (veh_3->var_56 >> 9);
+        int32_t volume = 0 - (veh_2->var_56 >> 9);
 
         auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
 
@@ -1179,12 +1179,12 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
 
     if (headVeh->vehicleType == VehicleType::ship)
     {
-        if (veh_3->var_56 == 0)
+        if (veh_2->var_56 == 0)
             return;
 
         if (var_38 & things::vehicle::flags_38::unk_1)
@@ -1209,7 +1209,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
     }
     else
     {
-        if (veh_3->var_5A != 1)
+        if (veh_2->var_5A != 1)
             return;
 
         if (var_38 & things::vehicle::flags_38::unk_1)
@@ -1264,13 +1264,13 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
 
-    if (veh_3->var_5A != 1)
+    if (veh_2->var_5A != 1)
         return;
 
-    if (veh_3->var_56 > 917504)
+    if (veh_2->var_56 > 917504)
         return;
 
     if (var_38 & things::vehicle::flags_38::unk_1)
@@ -1339,10 +1339,10 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
 
-    if (veh_3->var_5A != 2 && veh_3->var_5A != 1)
+    if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
         return;
 
     auto _var_44 = var_44;
@@ -1399,10 +1399,10 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
     if (frontBogie->var_5F & flags_5f::broken_down)
         return;
 
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
 
-    if (veh_3->var_5A != 2 && veh_3->var_5A != 1)
+    if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
         return;
 
     auto _var_44 = var_44;
@@ -1476,23 +1476,23 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
 // 0x004ABC8A & 0x004AB2A7
 void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
 {
-    vehicle_2* veh_3 = vehicleUpdate_2;
+    vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
 
-    if (veh_3->var_5A == 0)
+    if (veh_2->var_5A == 0)
         return;
 
-    if (veh_3->var_56 < 393216)
+    if (veh_2->var_56 < 393216)
         return;
 
     auto frequency = 32;
-    if (veh_3->var_56 >= 589824)
+    if (veh_2->var_56 >= 589824)
     {
         frequency = 16;
-        if (veh_3->var_56 >= 851968)
+        if (veh_2->var_56 >= 851968)
         {
             frequency = 8;
-            if (veh_3->var_56 >= 1638400)
+            if (veh_2->var_56 >= 1638400)
             {
                 frequency = 4;
             }
