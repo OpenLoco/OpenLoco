@@ -535,20 +535,19 @@ namespace openloco::ui::windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = thingmgr::get<openloco::vehicle>(company->observation_thing);
+                auto thing = thingmgr::get<openloco::vehicle_head>(company->observation_thing);
 
-                if (thing->base_type != thing_base_type::vehicle || thing->type != vehicle_thing_type::vehicle_0 || (thing->x == location::null))
+                if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == location::null))
                 {
                     invalidViewport(self);
                     return;
                 }
 
-                // loc_43419F
-                auto car = thing->next_car()->next_car()->next_car()->next_car();
+                things::vehicle::Vehicle train(thing);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(
-                    car->next_car_id,
+                    train.cars[0].carComponents[0].body->id,
                     0xC000,
                     ZoomLevel::full,
                     rotation,

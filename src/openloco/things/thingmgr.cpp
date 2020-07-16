@@ -22,9 +22,9 @@ namespace openloco::thingmgr
     }
 
     template<>
-    vehicle* first()
+    vehicle_head* first()
     {
-        return get<vehicle>(first_id(thing_list::vehicle));
+        return get<vehicle_head>(first_id(thing_list::vehicle_head));
     }
 
     template<>
@@ -59,12 +59,9 @@ namespace openloco::thingmgr
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
-            auto v = first<vehicle>();
-            while (v != nullptr)
+            for (auto v : VehicleList())
             {
-                auto next = v->next_vehicle();
-                v->update_head();
-                v = next;
+                v->updateVehicle();
             }
         }
     }
@@ -80,7 +77,7 @@ namespace openloco::thingmgr
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);
-        regs.ecx = static_cast<int8_t>(list);
+        regs.ecx = (static_cast<int8_t>(list) + 1) * 2; // Loco function expects to use this to access an array of words
         call(0x0047019F, regs);
     }
 

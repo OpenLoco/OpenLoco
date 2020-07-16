@@ -592,7 +592,7 @@ static void register_audio_hooks()
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((vehicle*)regs.esi);
+            audio::play_sound((vehicle_26*)regs.esi);
             return 0;
         });
     register_hook(
@@ -710,7 +710,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (openloco::vehicle*)regs.esi;
+            auto v = (openloco::vehicle_head*)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });

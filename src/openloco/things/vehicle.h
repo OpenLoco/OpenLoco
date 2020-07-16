@@ -39,21 +39,21 @@ namespace openloco
         constexpr uint8_t broken_down = 1 << 2;
     }
 
-    enum class vehicle_thing_type : uint8_t
+    enum class VehicleThingType : uint8_t
     {
-        vehicle_0 = 0,
+        head = 0,
         vehicle_1,
         vehicle_2,
-        vehicle_bogie,
-        vehicle_body_start,
-        vehicle_body_cont,
-        vehicle_6,
+        bogie,
+        body_start,
+        body_continued,
+        tail,
     };
 
 #pragma pack(push, 1)
     struct vehicle_base : thing_base
     {
-        vehicle_thing_type type;
+        VehicleThingType type;
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
@@ -74,7 +74,7 @@ namespace openloco
         uint8_t sprite_pitch;  // 0x1F
 
     private:
-        template<typename TType, vehicle_thing_type TClass>
+        template<typename TType, VehicleThingType TClass>
         TType* as() const
         {
             // This can not use reinterpret_cast due to being a const member without considerable more code
@@ -84,7 +84,7 @@ namespace openloco
         template<typename TType>
         TType* as() const
         {
-            return as<TType, TType::VehicleThingType>();
+            return as<TType, TType::vehicleThingType>();
         }
 
     public:
@@ -94,17 +94,17 @@ namespace openloco
         vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie>(); }
         vehicle_body* as_vehicle_body() const
         {
-            auto vehicle = as<vehicle_body, vehicle_thing_type::vehicle_body_start>();
+            auto vehicle = as<vehicle_body, VehicleThingType::body_start>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_body, vehicle_thing_type::vehicle_body_cont>();
+            return as<vehicle_body, VehicleThingType::body_continued>();
         }
         vehicle_26* as_vehicle_2or6() const
         {
-            auto vehicle = as<vehicle_26, vehicle_thing_type::vehicle_2>();
+            auto vehicle = as<vehicle_26, VehicleThingType::vehicle_2>();
             if (vehicle != nullptr)
                 return vehicle;
-            return as<vehicle_26, vehicle_thing_type::vehicle_6>();
+            return as<vehicle_26, VehicleThingType::tail>();
         }
         vehicle_tail* as_vehicle_tail() const { return as<vehicle_tail>(); }
     };
@@ -155,23 +155,16 @@ namespace openloco
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
         vehicle* next_vehicle();
-        vehicle* next_car();
+        vehicle* nextVehicleComponent();
         vehicle_object* object() const;
 
-        void update_head();
-        void sub_4BA8D4();
-
-    private:
-        bool update();
-        void sub_4BAA76();
+        bool updateComponent();
     };
     static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct vehicle_26 : vehicle_base
     {
-        uint8_t pad_20[0x40 - 0x20];
-        uint16_t object_id; // 0x40
-        uint8_t pad_42[0x44 - 0x42];
+        uint8_t pad_20[0x44 - 0x20];
         uint8_t sound_id; // 0x44
         uint8_t pad_45[0x4A - 0x45];
         uint16_t var_4A;                       // sound-related flag(s)
@@ -185,7 +178,7 @@ namespace openloco
 
     struct vehicle_head : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_0;
+        static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint16_t var_22;
@@ -232,15 +225,19 @@ namespace openloco
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
+        void sub_4BA8D4();
+        void updateVehicle();
+        uint16_t update();
 
     private:
+        void sub_4BAA76();
         uint32_t getVehicleTotalLength();
     };
     static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
 
     struct vehicle_1 : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_1;
+        static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -273,7 +270,7 @@ namespace openloco
 
     struct vehicle_2 : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_2;
+        static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -292,11 +289,13 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint8_t var_44;
+        audio::sound_id soundId; // 0x44 common with tail
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
-        uint16_t var_4A;
-        uint8_t pad_4C[0x56 - 0x4C];
+        uint16_t var_4A;                       // sound-related flag(s) common with tail
+        ui::window_number sound_window_number; // 0x4C common with tail
+        ui::WindowType sound_window_type;      // 0x4E common with tail
+        uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t var_5A;
         uint8_t var_5B;
@@ -313,7 +312,7 @@ namespace openloco
 
     struct vehicle_body : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_body_cont;
+        static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -357,13 +356,13 @@ namespace openloco
     private:
         void sub_4AAB0B();
         void animation_update();
-        void sub_4AC255(vehicle* back_bogie, vehicle* front_bogie);
+        void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
         void steam_puffs_animation_update(uint8_t num, int32_t var_05);
         void diesel_exhaust1_animation_update(uint8_t num, int32_t var_05);
         void diesel_exhaust2_animation_update(uint8_t num, int32_t var_05);
         void electric_spark1_animation_update(uint8_t num, int32_t var_05);
         void electric_spark2_animation_update(uint8_t num, int32_t var_05);
-        void ship_wake_animation_update(uint8_t num, int32_t);
+        void ship_wake_animation_update(uint8_t num, int32_t var_05);
         uint8_t update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
@@ -376,7 +375,7 @@ namespace openloco
 
     struct vehicle_bogie : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_bogie;
+        static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
@@ -417,12 +416,13 @@ namespace openloco
         uint32_t refund_cost; // 0x62 front bogies only
         uint16_t reliability; // 0x66 front bogies only
         uint16_t var_68;
+        uint8_t var_6A;
     };
-    static_assert(sizeof(vehicle_bogie) == 0x6A); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_bogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
     struct vehicle_tail : vehicle_base
     {
-        static constexpr auto VehicleThingType = vehicle_thing_type::vehicle_6;
+        static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
@@ -441,12 +441,57 @@ namespace openloco
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint8_t var_44;
+        audio::sound_id soundId; // 0x44
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
-        uint16_t var_4A;
+        uint16_t var_4A;                       // sound-related flag(s) common with veh_2
+        ui::window_number sound_window_number; // 0x4C common with veh_2
+        ui::WindowType sound_window_type;      // 0x4E common with veh_2
     };
-    static_assert(sizeof(vehicle_tail) == 0x4C); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
+    namespace things::vehicle
+    {
+        struct CarComponent
+        {
+            vehicle_bogie* front;
+            vehicle_bogie* back;
+            vehicle_body* body;
+        };
+
+        struct Car
+        {
+            std::vector<CarComponent> carComponents;
+            Car(openloco::vehicle*& component)
+            {
+                for (;
+                     component->type != VehicleThingType::tail && component->type != VehicleThingType::body_start;
+                     component = component->nextVehicleComponent())
+                {
+                    auto front = component->as_vehicle_bogie();
+                    component = component->nextVehicleComponent();
+                    auto back = component->as_vehicle_bogie();
+                    component = component->nextVehicleComponent();
+                    auto body = component->as_vehicle_body();
+                    carComponents.push_back(CarComponent{ front, back, body });
+                }
+            }
+        };
+
+        struct Vehicle
+        {
+            vehicle_head* head;
+            vehicle_1* veh1;
+            vehicle_2* veh2;
+            vehicle_tail* tail;
+
+            std::vector<Car> cars;
+            Vehicle(vehicle_head* _head)
+                : Vehicle(_head->id)
+            {
+            }
+            Vehicle(uint16_t _head);
+        };
+    }
 }

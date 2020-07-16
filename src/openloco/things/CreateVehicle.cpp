@@ -1,3 +1,4 @@
+#include "../audio/audio.h"
 #include "../company.h"
 #include "../companymgr.h"
 #include "../core/Optional.hpp"
@@ -116,11 +117,10 @@ namespace openloco::things::vehicle
                 return false;
             default:
             {
-                auto veh1 = reinterpret_cast<openloco::vehicle*>(head)->next_car();
-                auto veh2 = veh1->next_car()->as_vehicle_2();
+                things::vehicle::Vehicle train(head);
                 if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
                 {
-                    if (veh2->var_73 & (1 << 0))
+                    if (train.veh2->var_73 & (1 << 0))
                     {
                         gGameCommandErrorText = string_ids::vehicle_has_broken_down;
                         return false;
@@ -136,7 +136,7 @@ namespace openloco::things::vehicle
                         gGameCommandErrorText = string_ids::vehicle_must_be_stopped;
                         return false;
                     }
-                    if (veh2->var_56 == 0)
+                    if (train.veh2->var_56 == 0)
                     {
                         return true;
                     }
@@ -150,11 +150,11 @@ namespace openloco::things::vehicle
                     {
                         return true;
                     }
-                    if (veh2->var_56 == 0)
+                    if (train.veh2->var_56 == 0)
                     {
                         return true;
                     }
-                    if (veh1->var_3C <= 13961)
+                    if (train.veh1->var_3C <= 13961)
                     {
                         return true;
                     }
@@ -186,7 +186,7 @@ namespace openloco::things::vehicle
     {
         auto* const base = createVehicleThing();
         base->base_type = thing_base_type::vehicle;
-        base->type = T::VehicleThingType;
+        base->type = T::vehicleThingType;
         return reinterpret_cast<T*>(base);
     }
 
@@ -332,7 +332,7 @@ namespace openloco::things::vehicle
     {
         auto newBody = createVehicleThing<vehicle_body>();
         // TODO: move this into the create function somehow
-        newBody->type = bodyNumber == 0 ? vehicle_thing_type::vehicle_body_start : vehicle_thing_type::vehicle_body_cont;
+        newBody->type = bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued;
         newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;
@@ -432,13 +432,16 @@ namespace openloco::things::vehicle
         }
 
         // Get Car insertion location
+        Vehicle train(head);
         // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
-        openloco::vehicle* lastVeh = nullptr;                                 // will be of type vehicle_body_start or unk_2 at end of loop
-        openloco::vehicle* tail = reinterpret_cast<openloco::vehicle*>(head); // will be of type vehicle_6 at end of loop
-        while (tail->type != vehicle_thing_type::vehicle_6)
+        openloco::vehicle* lastVeh = nullptr;
+        if (train.cars.size() > 0)
         {
-            lastVeh = tail;
-            tail = lastVeh->next_car();
+            lastVeh = reinterpret_cast<openloco::vehicle*>(train.cars.back().carComponents.back().body);
+        }
+        else
+        {
+            lastVeh = reinterpret_cast<openloco::vehicle*>(train.veh2);
         }
 
         const auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
@@ -473,7 +476,7 @@ namespace openloco::things::vehicle
         {
             return false;
         }
-        lastVeh->next_car_id = tail->id;
+        lastVeh->next_car_id = train.tail->id;
         sub_4B7CC3(head);
         return true;
     }
@@ -515,11 +518,8 @@ namespace openloco::things::vehicle
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, max_num_vehicles> _unkArr{};
-        auto v = thingmgr::first<openloco::vehicle>();
-        while (v != nullptr)
+        for (auto v : thingmgr::VehicleList())
         {
-            auto next = v->next_vehicle();
-
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
                 if (v->var_44 != 0)
@@ -527,7 +527,6 @@ namespace openloco::things::vehicle
                     _unkArr[v->var_44 - 1] = true;
                 }
             }
-            v = next;
         }
 
         uint16_t newNum = 0;
@@ -631,7 +630,7 @@ namespace openloco::things::vehicle
         newVeh2->var_56 = 0;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
-        newVeh2->var_44 = -1;
+        newVeh2->soundId = audio::sound_id::null;
         newVeh2->var_48 = -1;
         newVeh2->var_48 = 0;
         newVeh2->var_4A = 0;
@@ -666,7 +665,7 @@ namespace openloco::things::vehicle
         newTail->var_15 = 0;
         newTail->var_38 = 0;
 
-        newTail->var_44 = -1;
+        newTail->soundId = audio::sound_id::null;
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;
@@ -753,18 +752,8 @@ namespace openloco::things::vehicle
 
     static void sub_470795(const uint32_t var46, const int16_t var4C)
     {
-        auto v = thingmgr::first<openloco::vehicle>();
-        while (v != nullptr)
+        for (auto head : thingmgr::VehicleList())
         {
-            auto next = v->next_vehicle();
-
-            auto head = v->as_vehicle_head();
-            v = next;
-            if (head == nullptr) // Can never happen
-            {
-                continue;
-            }
-
             if (head->length_of_var_4C >= var46)
             {
                 head->length_of_var_4C += var4C;
@@ -845,9 +834,9 @@ namespace openloco::things::vehicle
                 sub_4B1E77(_head->var_36);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
-                auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->next_car();
-                auto veh2 = veh1->next_car();
-                auto tail = veh2->next_car();
+                auto veh1 = reinterpret_cast<openloco::vehicle*>(_head)->nextVehicleComponent();
+                auto veh2 = veh1->nextVehicleComponent();
+                auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
                 thingmgr::freeThing(_head);
                 thingmgr::freeThing(veh1);
@@ -866,28 +855,22 @@ namespace openloco::things::vehicle
     // 0x004AE5FF
     static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
-        auto veh0 = thingmgr::get<openloco::vehicle>(vehicleThingId);
-        auto head = veh0->as_vehicle_head();
-        auto veh2 = veh0->next_car()->next_car()->as_vehicle_2();
-        if (veh2 == nullptr || head == nullptr)
-        {
-            return FAILURE;
-        }
-        gameCommandMapX = veh2->x;
-        gameCommandMapY = veh2->y;
-        gameCommandMapZ = veh2->z;
+        Vehicle train(vehicleThingId);
+        gameCommandMapX = train.veh2->x;
+        gameCommandMapY = train.veh2->y;
+        gameCommandMapZ = train.veh2->z;
 
-        if (!sub_431E6A(head->owner))
+        if (!sub_431E6A(train.head->owner))
         {
             return FAILURE;
         }
 
-        if (!sub_4B0BDD(head))
+        if (!sub_4B0BDD(train.head))
         {
             return FAILURE;
         }
 
-        if (!head->isVehicleTypeCompatible(vehicleTypeId))
+        if (!train.head->isVehicleTypeCompatible(vehicleTypeId))
         {
             return FAILURE;
         }
@@ -899,20 +882,21 @@ namespace openloco::things::vehicle
 
         if (flags & game_commands::GameCommandFlag::apply)
         {
-            if (head->tile_x != -1)
+            if (train.head->tile_x != -1)
             {
-                _backupX = head->tile_x;
-                _backupY = head->tile_y;
-                _backupZ = head->tile_base_z;
-                _backup2C = head->var_2C;
-                _backup2E = head->var_2E;
-                _backupVeh0 = head;
-                liftUpVehicle(head);
+                _backupX = train.head->tile_x;
+                _backupY = train.head->tile_y;
+                _backupZ = train.head->tile_base_z;
+                _backup2C = train.head->var_2C;
+                _backup2E = train.head->var_2E;
+                _backupVeh0 = train.head;
+                liftUpVehicle(train.head);
             }
 
-            if (createCar(head, vehicleTypeId))
+            if (createCar(train.head, vehicleTypeId))
             {
-                updateWholeVehicle(head);
+                // Note train.cars is no longer valid from after createCar
+                updateWholeVehicle(train.head);
             }
             else
             {
@@ -923,7 +907,8 @@ namespace openloco::things::vehicle
 
                 vehicle_head* veh0backup = _backupVeh0;
                 // If it has an existing body
-                if (reinterpret_cast<openloco::vehicle*>(veh0backup)->next_car()->next_car()->next_car()->type == vehicle_thing_type::vehicle_6)
+                Vehicle bkupTrain(veh0backup);
+                if (bkupTrain.cars.size() > 0)
                 {
                     placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                 }
