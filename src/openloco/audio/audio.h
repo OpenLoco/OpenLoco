@@ -22,7 +22,8 @@ namespace openloco::audio
         Mix_Chunk* chunk{};
     };
 
-    enum class sound_id : uint8_t
+    // TODO: This should only be a byte needs to be split off from sound object
+    enum class sound_id : uint16_t
     {
         click_down = 0,
         click_up = 1,
@@ -137,7 +138,7 @@ namespace openloco::audio
         return ((int32_t)id & 0x8000);
     }
 
-    constexpr sound_id make_object_sound_id(sound_id id)
+    constexpr sound_id make_object_sound_id(sound_object_id_t id)
     {
         return (sound_id)((int32_t)id | 0x8000);
     }
