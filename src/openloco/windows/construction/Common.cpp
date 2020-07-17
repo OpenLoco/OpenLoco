@@ -223,16 +223,27 @@ namespace openloco::ui::windows::construction
     }
 
     // 0x004A1303
-    window* openAtTrackExtra(window* main, track_element* track, const map_pos pos)
+    void setToTrackExtra(window* main, track_element* track, const uint8_t bh, const map_pos pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
         regs.edx = reinterpret_cast<uint32_t>(track);
+        regs.bh = bh;
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004A1303, regs);
+    }
 
-        return reinterpret_cast<window*>(regs.esi);
+    // 0x004A13C1
+    void setToRoadExtra(window* main, road_element* road, const uint8_t bh, const map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(road);
+        regs.bh = bh;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A13C1, regs);
     }
 
     // 0x004A3B0D

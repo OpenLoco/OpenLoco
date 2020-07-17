@@ -102,6 +102,7 @@ namespace openloco::ui
                 uint32_t value;
                 void* object;
             };
+            uint8_t unkBh;
         };
 
         enum class InteractionItem : uint8_t

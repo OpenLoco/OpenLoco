@@ -94,6 +94,7 @@ namespace openloco::map
     struct signal_element;
     struct building_element;
     struct tree_element;
+    struct wall_element;
     struct road_element;
     struct industry_element;
 
@@ -141,6 +142,7 @@ namespace openloco::map
         signal_element* as_signal() const { return as<signal_element, element_type::signal>(); }
         building_element* as_building() const { return as<building_element, element_type::building>(); }
         tree_element* as_tree() const { return as<tree_element, element_type::tree>(); }
+        wall_element* as_wall() const { return as<wall_element, element_type::wall>(); }
         road_element* as_road() const { return as<road_element, element_type::road>(); }
         industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
     };
@@ -222,6 +224,15 @@ namespace openloco::map
     };
 
     struct tree_element : public tile_element_base
+    {
+    private:
+        uint8_t _4;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+    };
+
+    struct wall_element : public tile_element_base
     {
     private:
         uint8_t _4;
