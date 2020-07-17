@@ -12,6 +12,7 @@ namespace openloco
     using string_id = uint16_t;
     using thing_id_t = uint16_t;
     using tile_coord_t = int16_t;
+    using sound_object_id_t = uint8_t;
 
 #pragma pack(push, 1)
     struct currency48_t
