@@ -18,7 +18,7 @@ namespace openloco::messagemgr
     }
 
     void post(
-        message_type type,
+        messageType type,
         company_id_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,

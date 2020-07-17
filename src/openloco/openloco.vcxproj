@@ -108,13 +108,15 @@
     <ClCompile Include="windows\map.cpp" />
     <ClCompile Include="windows\MessageWindow.cpp" />
     <ClCompile Include="windows\music_selection.cpp" />
+    <ClCompile Include="windows\News\Common.cpp" />
+    <ClCompile Include="windows\News\News.cpp" />
+    <ClCompile Include="windows\News\Ticker.cpp" />
     <ClCompile Include="windows\ObjectSelectionWindow.cpp" />
     <ClCompile Include="windows\options.cpp" />
     <ClCompile Include="windows\PlayerInfoPanel.cpp" />
     <ClCompile Include="windows\promptbrowsewnd.cpp" />
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\ScenarioOptions.cpp" />
-    <ClCompile Include="windows\NewsWindow.cpp" />
     <ClCompile Include="windows\stationwnd.cpp" />
     <ClCompile Include="windows\station_list.cpp" />
     <ClCompile Include="windows\terraform.cpp" />
@@ -157,7 +159,6 @@
     <ClInclude Include="graphics\image_ids.h" />
     <ClInclude Include="graphics\types.h" />
     <ClInclude Include="gui.h" />
-    <ClInclude Include="message.h" />
     <ClInclude Include="industry.h" />
     <ClInclude Include="industrymgr.h" />
     <ClInclude Include="input.h" />
@@ -240,6 +241,8 @@
     <ClInclude Include="win32.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windows\construction\Construction.h" />
+    <ClInclude Include="message.h" />
+    <ClInclude Include="windows\News\News.h" />
     <ClInclude Include="windows\toolbar_top_common.h" />
   </ItemGroup>
   <ItemGroup>

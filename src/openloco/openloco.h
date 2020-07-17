@@ -26,6 +26,7 @@ namespace openloco
     void* hInstance();
     const char* lpCmdLine();
     void lpCmdLine(const char* path);
+    uint16_t getScreenAge();
     uint8_t get_screen_flags();
     bool is_editor_mode();
     bool is_title_mode();

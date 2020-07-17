@@ -119,6 +119,11 @@ namespace openloco
     }
 #endif
 
+    uint16_t getScreenAge()
+    {
+        return _screen_age;
+    }
+
     uint8_t get_screen_flags()
     {
         return _screen_flags;

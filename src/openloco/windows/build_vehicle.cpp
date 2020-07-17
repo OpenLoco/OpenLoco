@@ -235,7 +235,6 @@ namespace openloco::ui::build_vehicle
 
     static window_event_list _events;
 
-    static void sub_4B92A5(ui::window* window);
     static void setDisabledTransportTabs(ui::window* window);
     static void setTrackTypeTabs(ui::window* window);
     static void resetTrackTypeTabSelection(ui::window* window);
@@ -522,7 +521,7 @@ namespace openloco::ui::build_vehicle
      *
      * @param window @<esi>
      */
-    static void sub_4B92A5(ui::window* window)
+    void sub_4B92A5(ui::window* window)
     {
         auto w = getTopEditingVehicleWindow();
         int32_t vehicleId = -1;

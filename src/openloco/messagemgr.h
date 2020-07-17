@@ -6,11 +6,23 @@
 
 namespace openloco
 {
-
-    enum class message_type
+    enum class messageType
     {
-        cargo_now_accepted = 9,
-        cargo_no_longer_accepted = 10,
+        industryClosingDown = 1,
+        cargoNowAccepted = 9,
+        cargoNoLongerAccepted = 10,
+        newCompany,
+        citizensCelebrate = 13,
+        workersCelebrate,
+        newVehicle,
+        newIndustry = 17,
+        industryProductionUp,
+        industryProductionDown,
+        bankruptcyWarning6Months = 23,
+        bankruptcyWarning3Months,
+        bankruptcyDeclared,
+        vehicleCrashed = 27,
+        newSpeedRecord = 29,
     };
 }
 
@@ -27,7 +39,7 @@ namespace openloco::messagemgr
     // cx: subjectId B (cargo)
     // dx: subjectId C
     void post(
-        message_type type,
+        messageType type,
         company_id_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,
