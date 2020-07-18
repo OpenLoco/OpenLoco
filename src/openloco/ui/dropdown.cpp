@@ -799,7 +799,7 @@ namespace openloco::ui::dropdown
 
         company_id_t companyId = company_id::null;
 
-        auto index = 0;
+        size_t index = 0;
         for (; index < companymgr::max_companies; index++)
         {
             int16_t maxPerformanceIndex = -1;
@@ -839,7 +839,7 @@ namespace openloco::ui::dropdown
 
         showText(x, y, widget->width(), widget->height(), 25, colour, index, (1 << 6));
 
-        auto highlightedIndex = 0;
+        size_t highlightedIndex = 0;
 
         while (window->owner != _menuOptions[highlightedIndex])
         {
