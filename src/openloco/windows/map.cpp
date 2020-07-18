@@ -69,11 +69,28 @@ namespace openloco::ui::windows::map
     // 0x0046B8CF
     static void onMouseUp(window* self, widget_index widgetIndex)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.edx = widgetIndex;
+        switch (widgetIndex)
+        {
+            case widx::closeButton:
+                WindowManager::close(self);
+                break;
 
-        call(0x0046B8CF, regs);
+            case widx::tabOverall:
+            case widx::tabVehicles:
+            case widx::tabIndustries:
+            case widx::tabRoutes:
+            case widx::tabOwnership:
+            case widx::scrollview:
+            {
+                auto tabIndex = widgetIndex - widx::tabOverall;
+                if (tabIndex == self->current_tab)
+                    return;
+                self->current_tab = tabIndex;
+                self->frame_no = 0;
+                self->var_854 = 0;
+                break;
+            }
+        }
     }
 
     // 0x0046B9F7
@@ -102,6 +119,7 @@ namespace openloco::ui::windows::map
         auto i = 0;
 
         if (!input::has_flag(input::input_flags::flag5))
+        {
             int32_t cursorX = _cursorX2;
             int32_t cursorY = _cursorY2;
             auto window = WindowManager::findAt(cursorX, cursorY);
@@ -137,7 +155,7 @@ namespace openloco::ui::windows::map
 
         if (y < 0)
         {
-            eax |= (1 << i);
+            eax = (1 << i);
         }
         else
         {
@@ -285,19 +303,21 @@ namespace openloco::ui::windows::map
     // 0x0046D223
     static void leftAlignTabs(window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
     {
-        auto disabledWidgets = self->disabled_widgets;
-        disabledWidgets >>= firstTabIndex;
+        auto disabledWidgets = self->disabled_widgets >> firstTabIndex;
         auto pos = self->widgets[firstTabIndex].left;
         auto tabWidth = self->widgets[firstTabIndex].right - pos;
 
         for (auto index = firstTabIndex; index <= lastTabIndex; index++)
         {
             self->widgets[index].type = widget_type::none;
+
             if (!(disabledWidgets & (1ULL << index)))
             {
                 self->widgets[index].type = widget_type::wt_8;
+
                 self->widgets[index].left = pos;
                 pos += tabWidth;
+
                 self->widgets[index].right = pos;
                 pos++;
             }
@@ -382,7 +402,7 @@ namespace openloco::ui::windows::map
         events.on_update = onUpdate;
         events.get_scroll_size = getScrollSize;
         events.scroll_mouse_down = event18;
-        events.scroll_mouse_over = event18;
+        events.event_18 = (uint32_t)0x0046B97C;
         events.tooltip = tooltip;
         events.prepare_draw = prepareDraw;
         events.draw = draw;
