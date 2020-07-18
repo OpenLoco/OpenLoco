@@ -444,7 +444,7 @@ namespace openloco::ui::dropdown
      * @param itemHeight
      * @param flags
      * Custom dropdown height if flags & (1<<6) is true
-     */    
+     */
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
@@ -798,7 +798,7 @@ namespace openloco::ui::dropdown
         std::array<bool, 16> companyOrdered = {};
 
         company_id_t companyId = company_id::null;
-        
+
         auto index = 0;
         for (; index < companymgr::max_companies; index++)
         {
