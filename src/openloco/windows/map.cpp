@@ -6,6 +6,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
+#include "../ui/scrollview.h"
 
 using namespace openloco::interop;
 
@@ -13,6 +14,8 @@ namespace openloco::ui::windows::map
 {
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;
+    static loco_global<uint16_t[7], 0x004FDC4C> _word_4FDC4C;
+    static loco_global<uint16_t[7], 0x004FDC4E> _word_4FDC4E;
     static loco_global<uint32_t, 0x0526284> _dword_526284;
     static loco_global<uint16_t, 0x00526288> _word_526288;
     static loco_global<uint16_t, 0x0052628A> _word_52628A;
@@ -227,7 +230,7 @@ namespace openloco::ui::windows::map
         self->frame_no++;
         self->call_prepare_draw();
 
-        WindowManager::invalidateWidget(WindowType::map, self->number, self->current_tab + tabOverall);
+        WindowManager::invalidateWidget(WindowType::map, self->number, self->current_tab + widx::tabOverall);
 
         _word_F2541D++;
 
@@ -250,7 +253,7 @@ namespace openloco::ui::windows::map
         auto x = self->x + self->width - 104;
         auto y = self->y + 44;
 
-        switch (self->current_tab + tabOverall)
+        switch (self->current_tab + widx::tabOverall)
         {
             case tabOverall:
                 sub_46D300(self, x, y);
@@ -342,35 +345,35 @@ namespace openloco::ui::windows::map
 
         widgets[1].text = captionText[self->current_tab];
         auto activatedWidgets = self->activated_widgets;
-        activatedWidgets &= ~((1ULL << statusBar) | (1ULL << scrollview) | (1ULL << tabOwnership) | (1ULL << tabRoutes) | (1ULL << tabIndustries) | (1ULL << tabVehicles) | (1ULL << tabOverall));
+        activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
 
-        auto currentWidget = self->current_tab + tabOverall;
+        auto currentWidget = self->current_tab + widx::tabOverall;
         activatedWidgets |= (1ULL << currentWidget);
         self->activated_widgets = activatedWidgets;
 
-        self->widgets[frame].right = self->x - 1;
-        self->widgets[frame].bottom = self->y - 1;
-        self->widgets[panel].right = self->x - 1;
-        self->widgets[panel].bottom = self->y + 1;
-
-        self->widgets[caption].right = self->x - 2;
-        self->widgets[closeButton].left = self->x - 15;
-        self->widgets[closeButton].right = self->x - 3;
-        self->widgets[scrollview].bottom = self->y - 14;
-        self->widgets[scrollview].right = self->x - 108;
-
-        self->widgets[statusBar].top = self->y - 12;
-        self->widgets[statusBar].bottom = self->y - 3;
-        self->widgets[statusBar].right = self->x - 14;
+        self->widgets[widx::frame].right = self->x - 1;
+        self->widgets[widx::frame].bottom = self->y - 1;
+        self->widgets[widx::panel].right = self->x - 1;
+        self->widgets[widx::panel].bottom = self->y + 1;
+                     
+        self->widgets[widx::caption].right = self->x - 2;
+        self->widgets[widx::closeButton].left = self->x - 15;
+        self->widgets[widx::closeButton].right = self->x - 3;
+        self->widgets[widx::scrollview].bottom = self->y - 14;
+        self->widgets[widx::scrollview].right = self->x - 108;
+                      
+        self->widgets[widx::statusBar].top = self->y - 12;
+        self->widgets[widx::statusBar].bottom = self->y - 3;
+        self->widgets[widx::statusBar].right = self->x - 14;
 
         auto disabledWidgets = 0;
         if (is_editor_mode())
         {
-            disabledWidgets |= (1 << tabVehicles) | (1 << tabRoutes) | (1 << tabOwnership);
+            disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
         self->disabled_widgets = disabledWidgets;
 
-        leftAlignTabs(self, tabOverall, tabOwnership);
+        leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
     }
 
     // 0x0046B779
@@ -475,7 +478,7 @@ namespace openloco::ui::windows::map
 
         sub_46B69C();
 
-        center_on_view_point();
+        centerOnViewPoint();
 
         window->current_tab = 0;
         window->saved_view.mapX = 1;
@@ -489,8 +492,63 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046B5C0
-    void center_on_view_point()
+    void centerOnViewPoint()
     {
-        call(0x0046B5C0);
+        //call(0x0046B5C0);
+
+        auto mainWindow = WindowManager::getMainWindow();
+
+        if (mainWindow == nullptr)
+            return;
+
+        auto viewport = mainWindow->viewports[0];
+
+        if (viewport == nullptr)
+            return;
+
+        auto window = WindowManager::find(WindowType::map, 0);
+
+        if (window == nullptr)
+            return;
+
+        auto x = viewport->view_width / 2;
+        auto y = viewport->view_height / 2;
+        x += viewport->view_x;
+        y += viewport->view_y;
+        x /= 16;
+        y /= 8;
+        x += _word_4FDC4C[gCurrentRotation * 2];
+        y += _word_4FDC4E[gCurrentRotation * 2];
+
+        auto width = widgets[widx::scrollview].width() - 10;
+        auto height = widgets[widx::scrollview].height() - 10;
+        x -= width / 2;
+        x = std::max(x, 0);
+        y -= height / 2;
+        y = std::max(y, 0);
+
+        width = -width;
+        height = -height;
+        width += window->scroll_areas[0].h_right;
+        height += window->scroll_areas[0].v_bottom;
+
+        width -= x;
+        if (x > width)
+        {
+            x += width;
+            x = std::max(x, 0);
+        }
+
+        height -= y;
+        if (y > height)
+        {
+            y += height;
+            y = std::max(y, 0);
+        }
+
+        window->scroll_areas[0].h_right = x;
+        window->scroll_areas[0].v_bottom = y;
+
+        ui::scrollview::update_thumbs(window, widx::scrollview);
     }
 }
