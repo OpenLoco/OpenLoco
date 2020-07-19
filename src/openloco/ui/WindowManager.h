@@ -4,6 +4,7 @@
 #include "../graphics/gfx.h"
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"
+#include "../viewport.hpp"
 #include "../window.h"
 #include <cstddef>
 
@@ -58,7 +59,7 @@ namespace openloco::ui::WindowManager
     void allWheelInput();
     bool isInFront(ui::window* w);
     bool isInFrontAlt(ui::window* w);
-    ui::window* findWindowShowing(map::map_pos position);
+    ui::window* findWindowShowing(const viewport_pos& position);
     void closeAllFloatingWindows();
     int32_t getCurrentRotation();
 

@@ -140,9 +140,9 @@ namespace openloco::map
      * @param rotation
      * @return
      */
-    map_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
+    ui::viewport_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
     {
-        map_pos coordinate_2d;
+        ui::viewport_pos coordinate_2d;
 
         switch (rotation)
         {
