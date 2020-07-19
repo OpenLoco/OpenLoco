@@ -238,14 +238,14 @@ namespace openloco::ui::TimePanel
         {
             dropdown::add(0, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + interface_skin::image_ids::phone, string_ids::chat_send_message });
             dropdown::add(1, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], string_ids::menu_map });
-            dropdown::show_below(self, widgetIndex, 2, 25);
-            dropdown::set_highlighted_item(1);
+            dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
+            dropdown::setHighlightedItem(1);
         }
         else
         {
             dropdown::add(0, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], string_ids::menu_map });
-            dropdown::show_below(self, widgetIndex, 1, 25);
-            dropdown::set_highlighted_item(0);
+            dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
+            dropdown::setHighlightedItem(0);
         }
     }
 
@@ -253,7 +253,7 @@ namespace openloco::ui::TimePanel
     static void map_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
 
         if (isNetworked())
         {

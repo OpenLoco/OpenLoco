@@ -61,8 +61,6 @@ namespace openloco::ui::windows::terraform
     static loco_global<uint8_t, 0x0113649C> _byte_113649C;
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
-    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<std::byte[40][8], 0x0113D8A0> _dropdownItemArgs;
 
     namespace common
     {
@@ -319,7 +317,7 @@ namespace openloco::ui::windows::terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = dropdown::get_highlighted_item();
+            _treeColour = dropdown::getHighlightedItem();
             self->invalidate();
         }
 
@@ -1007,7 +1005,7 @@ namespace openloco::ui::windows::terraform
             auto colour = self->colours[1] | 0x80;
             auto count = dropdown::getItemsPerRow(landCount);
 
-            dropdown::show_image(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
+            dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
             auto landIndex = 0;
             for (uint16_t i = 0; i < objectmgr::get_max_objects(object_type::land); i++)
@@ -1017,7 +1015,7 @@ namespace openloco::ui::windows::terraform
                     continue;
 
                 if (landObj->name == _lastSelectedLand)
-                    dropdown::set_highlighted_item(landIndex);
+                    dropdown::setHighlightedItem(landIndex);
 
                 auto args = FormatArguments();
                 args.push(landObj->var_16 + land::image_ids::landscape_generator_tile_icon);
@@ -1069,7 +1067,7 @@ namespace openloco::ui::windows::terraform
                 return;
             if (itemIndex == -1)
                 return;
-            _lastSelectedLand = dropdown::get_highlighted_item();
+            _lastSelectedLand = dropdown::getHighlightedItem();
             self->invalidate();
         }
 

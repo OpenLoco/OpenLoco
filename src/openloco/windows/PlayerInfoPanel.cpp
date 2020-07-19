@@ -132,10 +132,10 @@ namespace openloco::ui::windows::PlayerInfoPanel
         }
 
         dropdown::add(index++, string_ids::dropdown_companies_list, image_ids::company_list_dropdown_icon);
-        dropdown::show_below(self, widgetIndex, index, 25);
+        dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
         if (highlightIndex != -1)
         {
-            dropdown::set_highlighted_item(highlightIndex);
+            dropdown::setHighlightedItem(highlightIndex);
         }
         _113DC78 = _113DC78 | (1 << 1);
     }
@@ -145,7 +145,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     {
         if (itemIndex == -1)
         {
-            itemIndex = dropdown::get_highlighted_item();
+            itemIndex = dropdown::getHighlightedItem();
         }
 
         // If its index is bigger than the list then its the company list extra item

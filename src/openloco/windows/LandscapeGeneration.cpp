@@ -529,7 +529,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
                         dropdown::add(i, topographyStyleIds[i]);
 
-                    dropdown::set_highlighted_item(options.topographyStyle);
+                    dropdown::setHighlightedItem(options.topographyStyle);
                     break;
                 }
 
@@ -613,7 +613,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 dropdown::add(i, string_ids::dropdown_stringid, landDistributionLabelIds[i]);
 
-            dropdown::set_item_selected(s5::getOptions().landDistributionPatterns[landIndex]);
+            dropdown::setItemSelected(s5::getOptions().landDistributionPatterns[landIndex]);
         }
 
         // 0x0043DEBF
@@ -1028,7 +1028,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         dropdown::add(i, townSizeLabels[i]);
 
-                    dropdown::set_highlighted_item(options.maxTownSize);
+                    dropdown::setHighlightedItem(options.maxTownSize);
                     break;
                 }
             }
@@ -1139,7 +1139,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
                 dropdown::add(i, numIndustriesLabels[i]);
 
-            dropdown::set_highlighted_item(s5::getOptions().numberOfIndustries);
+            dropdown::setHighlightedItem(s5::getOptions().numberOfIndustries);
         }
 
         // 0x0043EBCA

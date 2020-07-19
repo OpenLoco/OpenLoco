@@ -65,7 +65,7 @@ namespace openloco::ui::windows::construction::signal
                 {
                     auto signal = _signalList[signalIndex];
                     if (signal == _lastSelectedSignal)
-                        dropdown::set_highlighted_item(signalIndex);
+                        dropdown::setHighlightedItem(signalIndex);
 
                     auto trainSignalObj = objectmgr::get<train_signal_object>(signal);
 

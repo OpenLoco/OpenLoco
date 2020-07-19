@@ -333,7 +333,7 @@ namespace openloco::ui::windows::construction::construction
                 return;
 
             if (bridge == _lastSelectedBridge)
-                dropdown::set_highlighted_item(i);
+                dropdown::setHighlightedItem(i);
 
             auto bridgeObj = objectmgr::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
