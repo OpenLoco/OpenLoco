@@ -1,4 +1,5 @@
 #include "../audio/audio.h"
+#include "../console.h"
 #include "../core/FileSystem.hpp"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
@@ -639,20 +640,30 @@ namespace openloco::ui::prompt_browse
             auto directory = fs::path((char*)_directory);
             if (fs::is_directory(directory))
             {
-                for (auto& f : fs::directory_iterator(directory))
+                try
                 {
-                    bool isDirectory = fs::is_directory(f);
-                    if (!isDirectory)
+                    for (auto& f : fs::directory_iterator(directory))
                     {
-                        auto extension = f.path().extension().u8string();
-                        if (!utility::iequals(extension, filterExtension))
+                        bool isDirectory = f.is_directory();
+                        if (f.is_regular_file())
+                        {
+                            auto extension = f.path().extension().u8string();
+                            if (!utility::iequals(extension, filterExtension))
+                            {
+                                continue;
+                            }
+                        }
+                        else if (!isDirectory) // Only list directories or normal files
                         {
                             continue;
                         }
+                        auto name = f.path().stem().u8string();
+                        _newFiles.emplace_back(name, isDirectory);
                     }
-
-                    auto name = f.path().stem().u8string();
-                    _newFiles.emplace_back(name, isDirectory);
+                }
+                catch (const fs::filesystem_error& err)
+                {
+                    console::error("Invalid directory or file: %s", err.what());
                 }
             }
         }
