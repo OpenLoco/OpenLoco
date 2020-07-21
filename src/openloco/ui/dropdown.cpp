@@ -261,16 +261,16 @@ namespace openloco::ui::dropdown
 
                     if (!(self->colours[0] & colour::translucent_flag))
                     {
-                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 0, colour::get_shade(self->colours[0], 3));
-                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 0, colour::get_shade(self->colours[0], 7));
+                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 1, colour::get_shade(self->colours[0], 3));
+                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour::get_shade(self->colours[0], 7));
                     }
                     else
                     {
                         uint32_t colour = _byte_5045FA[colour::opaque(self->colours[0])] | (1 << 25);
                         colour++;
-                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 0, colour);
+                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
-                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 0, colour);
+                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 
