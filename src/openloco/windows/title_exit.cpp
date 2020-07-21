@@ -30,11 +30,13 @@ namespace openloco::ui::windows
     static window_event_list _events;
 
     static void on_mouse_up(window* window, widget_index widgetIndex);
+    static void prepare_draw(ui::window* self);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     window* open_title_exit()
     {
         _events.on_mouse_up = on_mouse_up;
+        _events.prepare_draw = prepare_draw;
         _events.draw = draw;
 
         auto window = openloco::ui::WindowManager::createWindow(
@@ -53,6 +55,14 @@ namespace openloco::ui::windows
         window->colours[1] = colour::translucent(colour::saturated_green);
 
         return window;
+    }
+
+    static void prepare_draw(ui::window* self)
+    {
+        auto exitString = stringmgr::get_string(string_ids::title_exit_game);
+        self->width = gfx::get_string_width_new_lined(exitString) + 10;
+        self->x = ui::width() - self->width;
+        self->widgets[widx::exit_button].right = self->width;
     }
 
     // 0x00439236
