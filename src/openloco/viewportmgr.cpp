@@ -22,7 +22,7 @@ namespace openloco::ui::viewportmgr
 
     static loco_global<int32_t, 0x00E3F0B8> currentRotation;
 
-    static void create(registers regs, int index);
+    static viewport* create(registers regs, int index);
 
     void init()
     {
@@ -97,7 +97,7 @@ namespace openloco::ui::viewportmgr
         viewport->view_y = dest_y;
     }
 
-    static void create(registers regs, int index)
+    static viewport* create(registers regs, int index)
     {
         ui::window* window = (ui::window*)regs.esi;
         ZoomLevel zoom = ZoomLevel::full;
@@ -115,7 +115,7 @@ namespace openloco::ui::viewportmgr
         if (regs.edx & (1 << 31))
         {
             thing_id_t id = regs.dx;
-            create(window, index, { x, y }, { width, height }, zoom, id);
+            return create(window, index, { x, y }, { width, height }, zoom, id);
         }
         else
         {
@@ -123,7 +123,7 @@ namespace openloco::ui::viewportmgr
             tile.x = regs.dx;
             tile.y = regs.edx >> 16;
             tile.z = regs.ecx >> 16;
-            create(window, index, { x, y }, { width, height }, zoom, tile);
+            return create(window, index, { x, y }, { width, height }, zoom, tile);
         }
     }
 
@@ -142,17 +142,18 @@ namespace openloco::ui::viewportmgr
      * 2.
      * dx : thing_id
      */
-    void create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
+    viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
     {
         viewport* viewport = init_viewport(origin, size, zoom);
 
         if (viewport == nullptr)
-            return;
+            return nullptr;
 
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, thing_id);
 
         collectGarbage();
+        return viewport;
     }
 
     /* 0x004CA2D0
@@ -170,17 +171,18 @@ namespace openloco::ui::viewportmgr
      * 2.
      * dx : thing_id
      */
-    void create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
+    viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
     {
         viewport* viewport = init_viewport(origin, size, zoom);
 
         if (viewport == nullptr)
-            return;
+            return nullptr;
 
         window->viewports[viewportIndex] = viewport;
         focusViewportOn(window, viewportIndex, tile);
 
         collectGarbage();
+        return viewport;
     }
 
     static void invalidate(const ViewportRect& rect, ZoomLevel zoom)
@@ -345,16 +347,18 @@ namespace openloco::ui::viewportmgr
             0x004CA2D0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                create(regs, 0);
+                auto viewport = create(regs, 0);
                 regs = backup;
+                regs.edi = reinterpret_cast<uint32_t>(viewport);
                 return 0;
             });
         register_hook(
             0x004CA38A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                create(regs, 1);
+                auto viewport = create(regs, 1);
                 regs = backup;
+                regs.edi = reinterpret_cast<uint32_t>(viewport);
                 return 0;
             });
         register_hook(

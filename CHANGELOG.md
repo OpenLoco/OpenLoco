@@ -4,6 +4,7 @@
 - Fix: [#158] Pressing shift to build underground tracks automatically builds ten track pieces.
 - Fix: [#397] Opening a tutorial crashes the game.
 - Fix: [#485] Incorrect position of exhaust smoke on vehicles.
+- Fix: [#491] Station/city name labels are hidden from viewport when saving.
 - Fix: [#529] Tree-related industries are not updating properly.
 - Fix: [#530] Industry production not starting up under some conditions.
 - Removed: Clicking track / road construction while holding shift will place 10 pieces in a row.
