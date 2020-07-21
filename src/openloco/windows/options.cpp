@@ -166,7 +166,7 @@ namespace openloco::ui::options
 
     namespace display
     {
-        static const gfx::ui_size_t _window_size = { 366, 184 };
+        static const gfx::ui_size_t _window_size = { 400, 184 };
 
         namespace widx
         {
@@ -192,19 +192,19 @@ namespace openloco::ui::options
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_display),
-            make_widget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            make_widget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 183, 64 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
-            make_widget({ 344, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_stepper_widgets({ 183, 79 }, { 173, 12 }, widget_type::wt_17, 1, string_ids::empty),
+            make_widget({ 235, 49 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_widget({ 379, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 235, 64 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
+            make_widget({ 379, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_stepper_widgets({ 235, 79 }, { 156, 12 }, widget_type::wt_17, 1, string_ids::empty),
             make_widget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
             make_widget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
-            make_widget({ 183, 133 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
-            make_widget({ 344, 134 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
-            make_widget({ 183, 148 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
-            make_widget({ 344, 149 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
-            make_widget({ 183, 163 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            make_widget({ 344, 164 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            make_widget({ 235, 133 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
+            make_widget({ 379, 134 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
+            make_widget({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
+            make_widget({ 379, 149 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
+            make_widget({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            make_widget({ 379, 164 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widget_end(),
         };
 
