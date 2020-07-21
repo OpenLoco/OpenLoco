@@ -288,14 +288,14 @@ namespace openloco::ui::windows::toolbar_top::common
             window->viewport_rotate_left();
             townmgr::update_labels();
             stationmgr::update_labels();
-            windows::map::center_on_view_point();
+            windows::map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewport_rotate_right();
             townmgr::update_labels();
             stationmgr::update_labels();
-            windows::map::center_on_view_point();
+            windows::map::centerOnViewPoint();
         }
     }
 

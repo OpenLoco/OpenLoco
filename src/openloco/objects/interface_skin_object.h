@@ -207,7 +207,10 @@ namespace openloco
         constexpr uint32_t toolbar_menu_towns = 189;
         constexpr uint32_t toolbar_menu_stations = 190;
         constexpr uint32_t toolbar_menu_industries = 191;
-
+        constexpr uint32_t tab_routes_frame_0 = 192;
+        constexpr uint32_t tab_routes_frame_1 = 193;
+        constexpr uint32_t tab_routes_frame_2 = 194;
+        constexpr uint32_t tab_routes_frame_3 = 195;
         constexpr uint32_t tab_messages = 196;
         constexpr uint32_t tab_message_settings = 197;
         constexpr uint32_t tab_cargo_delivered_frame0 = 198;
@@ -379,7 +382,14 @@ namespace openloco
         constexpr uint32_t build_misc_buildings_frame_15 = 410;
 
         constexpr uint32_t build_headquarters = 417;
-        constexpr uint32_t vehicle_train = 418;
+        constexpr uint32_t vehicle_train_frame_0 = 418;
+        constexpr uint32_t vehicle_train_frame_1 = 419;
+        constexpr uint32_t vehicle_train_frame_2 = 420;
+        constexpr uint32_t vehicle_train_frame_3 = 421;
+        constexpr uint32_t vehicle_train_frame_4 = 422;
+        constexpr uint32_t vehicle_train_frame_5 = 423;
+        constexpr uint32_t vehicle_train_frame_6 = 424;
+        constexpr uint32_t vehicle_train_frame_7 = 425;
 
         constexpr uint32_t vehicle_aircraft = 426;
 

@@ -1,3 +1,5 @@
+#include "../companymgr.h"
+#include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
@@ -7,6 +9,7 @@
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
+#include "../widget.h"
 
 using namespace openloco::interop;
 
@@ -25,6 +28,7 @@ namespace openloco::ui::windows::map
     static loco_global<uint32_t, 0x00F253A8> _dword_F253A8;
     static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
     static loco_global<uint16_t[2], 0x0110015E> _unk_110015E;
+    static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
 
     enum widx
     {
@@ -99,10 +103,19 @@ namespace openloco::ui::windows::map
     // 0x0046B9F7
     static void onResize(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
+        //registers regs;
+        //regs.esi = (int32_t)self;
 
-        call(0x0046B9F7, regs);
+        //call(0x0046B9F7, regs);
+
+        self->flags |= (1 << widx::scrollview);
+        self->min_width = 350;
+        self->max_width = 800;
+        self->max_height = 800;
+
+        gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
+        gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+        self->set_size(minWindowSize, maxWindowSize);
     }
 
     static void sub_46C544(window* self)
@@ -255,23 +268,23 @@ namespace openloco::ui::windows::map
 
         switch (self->current_tab + widx::tabOverall)
         {
-            case tabOverall:
+            case widx::tabOverall:
                 sub_46D300(self, x, y);
                 break;
 
-            case tabVehicles:
+            case widx::tabVehicles:
                 sub_46D406(self, x, y);
                 break;
 
-            case tabIndustries:
+            case widx::tabIndustries:
                 sub_46D520(self, x, y);
                 break;
 
-            case tabRoutes:
+            case widx::tabRoutes:
                 sub_46D66A(self, x, y);
                 break;
 
-            case tabOwnership:
+            case widx::tabOwnership:
                 sub_46D789(self, x, y);
                 break;
         }
@@ -355,13 +368,13 @@ namespace openloco::ui::windows::map
         self->widgets[widx::frame].bottom = self->y - 1;
         self->widgets[widx::panel].right = self->x - 1;
         self->widgets[widx::panel].bottom = self->y + 1;
-                     
+
         self->widgets[widx::caption].right = self->x - 2;
         self->widgets[widx::closeButton].left = self->x - 15;
         self->widgets[widx::closeButton].right = self->x - 3;
         self->widgets[widx::scrollview].bottom = self->y - 14;
         self->widgets[widx::scrollview].right = self->x - 108;
-                      
+
         self->widgets[widx::statusBar].top = self->y - 12;
         self->widgets[widx::statusBar].bottom = self->y - 3;
         self->widgets[widx::statusBar].right = self->x - 14;
@@ -376,14 +389,123 @@ namespace openloco::ui::windows::map
         leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
     }
 
+    // 0x0046D0E0
+    static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+    {
+        auto skin = objectmgr::get<interface_skin_object>();
+
+        // tabOverall
+        {
+            uint32_t imageId = skin->img;
+            imageId += interface_skin::image_ids::toolbar_menu_map_north;
+
+            widget::draw_tab(self, dpi, imageId, widx::tabOverall);
+        }
+
+        // tabVehicles,
+        {
+            if (!(self->disabled_widgets & (1 << widx::tabVehicles)))
+            {
+                static const uint32_t vehicleImageIds[] = {
+                    interface_skin::image_ids::vehicle_train_frame_0,
+                    interface_skin::image_ids::vehicle_train_frame_1,
+                    interface_skin::image_ids::vehicle_train_frame_2,
+                    interface_skin::image_ids::vehicle_train_frame_3,
+                    interface_skin::image_ids::vehicle_train_frame_4,
+                    interface_skin::image_ids::vehicle_train_frame_5,
+                    interface_skin::image_ids::vehicle_train_frame_6,
+                    interface_skin::image_ids::vehicle_train_frame_7,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tabVehicles - widx::tabOverall)
+                    imageId += vehicleImageIds[(self->frame_no / 2) % std::size(vehicleImageIds)];
+                else
+                    imageId += vehicleImageIds[0];
+
+                auto colour = colour::black;
+
+                if (!is_editor_mode())
+                {
+                    auto company = companymgr::get(_playerCompanyId);
+                    colour = company->mainColours.primary;
+                }
+
+                imageId = gfx::recolour(imageId, colour);
+
+                widget::draw_tab(self, dpi, imageId, widx::tabVehicles);
+            }
+        }
+
+        // tabIndustries,
+        {
+            uint32_t imageId = skin->img;
+            imageId += interface_skin::image_ids::toolbar_menu_industries;
+
+            widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
+        }
+
+        // tabRoutes,
+        {
+            if (!(self->disabled_widgets & (1 << widx::tabRoutes)))
+            {
+                static const uint32_t routeImageIds[] = {
+                    interface_skin::image_ids::tab_routes_frame_0,
+                    interface_skin::image_ids::tab_routes_frame_1,
+                    interface_skin::image_ids::tab_routes_frame_2,
+                    interface_skin::image_ids::tab_routes_frame_3,
+                };
+
+                uint32_t imageId = skin->img;
+                if (self->current_tab == widx::tabRoutes - widx::tabOverall)
+                    imageId += routeImageIds[(self->frame_no / 2) % std::size(routeImageIds)];
+                else
+                    imageId += routeImageIds[0];
+
+                widget::draw_tab(self, dpi, imageId, widx::tabRoutes);
+            }
+        }
+
+        // tabOwnership,
+        {
+            if (!(self->disabled_widgets & (1 << widx::tabOwnership)))
+            {
+                uint32_t imageId = skin->img;
+                imageId += interface_skin::image_ids::tab_companies;
+
+                widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
+            }
+        }
+    }
+
     // 0x0046B779
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.edi = (int32_t)dpi;
+        //registers regs;
+        //regs.esi = (int32_t)self;
+        //regs.edi = (int32_t)dpi;
 
-        call(0x0046B779, regs);
+        //call(0x0046B779, regs);
+        self->draw(dpi);
+        drawTabs(self, dpi);
+
+        switch (self->current_tab)
+        {
+            case widx::tabOverall:
+                break;
+
+            case widx::tabVehicles:
+                break;
+
+            case widx::tabIndustries:
+                break;
+
+            case widx::tabRoutes:
+                break;
+
+            case widx::tabOwnership:
+                break;
+        }
     }
 
     // 0x0046B806
@@ -452,7 +574,7 @@ namespace openloco::ui::windows::map
 
         if (_dword_526284 != 0)
         {
-            size = { _word_52628A, _word_526288 };
+            size = { _word_526288, _word_52628A };
         }
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
@@ -465,7 +587,7 @@ namespace openloco::ui::windows::map
         {
             window->var_88A = _word_52628C;
             window->var_88C = _word_52628E;
-            window->flags = _dword_526284 & window_flags::flag_16;
+            window->flags |= (_dword_526284 & window_flags::flag_16);
         }
 
         initEvents();
@@ -483,7 +605,6 @@ namespace openloco::ui::windows::map
         window->current_tab = 0;
         window->saved_view.mapX = 1;
         window->var_854 = 0;
-        window->var_856 = 0;
 
         sub_46CFF0();
         sub_46CED0();
