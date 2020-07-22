@@ -40,18 +40,6 @@ namespace openloco::input
         viewport_scrolling = 1 << 7,
     };
 
-    enum class scroll_flags
-    {
-        HSCROLLBAR_VISIBLE = (1 << 0),
-        HSCROLLBAR_THUMB_PRESSED = (1 << 1),
-        HSCROLLBAR_LEFT_PRESSED = (1 << 2),
-        HSCROLLBAR_RIGHT_PRESSED = (1 << 3),
-        VSCROLLBAR_VISIBLE = (1 << 4),
-        VSCROLLBAR_THUMB_PRESSED = (1 << 5),
-        VSCROLLBAR_UP_PRESSED = (1 << 6),
-        VSCROLLBAR_DOWN_PRESSED = (1 << 7),
-    };
-
     namespace map_selection_flags
     {
         constexpr uint8_t catchment_area = 1 << 5;

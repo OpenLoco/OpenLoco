@@ -165,7 +165,7 @@ namespace openloco::ui
     struct scroll_area_t
     {
         uint16_t flags;          // 0x00
-        uint16_t h_left;         // 0x02
+        int16_t h_left;          // 0x02
         int16_t h_right;         // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
@@ -197,6 +197,18 @@ namespace openloco::ui
         constexpr uint32_t white_border_one = (1 << 17);
         constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
         constexpr uint32_t flag_19 = 1 << 19;
+    }
+
+    namespace scroll_flags
+    {
+        constexpr uint16_t HSCROLLBAR_VISIBLE = 1 << 0;
+        constexpr uint16_t HSCROLLBAR_THUMB_PRESSED = 1 << 1;
+        constexpr uint16_t HSCROLLBAR_LEFT_PRESSED = 1 << 2;
+        constexpr uint16_t HSCROLLBAR_RIGHT_PRESSED = 1 << 3;
+        constexpr uint16_t VSCROLLBAR_VISIBLE = 1 << 4;
+        constexpr uint16_t VSCROLLBAR_THUMB_PRESSED = 1 << 5;
+        constexpr uint16_t VSCROLLBAR_UP_PRESSED = 1 << 6;
+        constexpr uint16_t VSCROLLBAR_DOWN_PRESSED = 1 << 7;
     }
 
     struct window_event_list
