@@ -2,11 +2,15 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
+#include "../industrymgr.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
+#include "../objects/industry_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
+#include "../objects/road_object.h"
+#include "../objects/track_object.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../widget.h"
@@ -20,14 +24,16 @@ namespace openloco::ui::windows::map
     static loco_global<uint16_t[7], 0x004FDC4C> _word_4FDC4C;
     static loco_global<uint16_t[7], 0x004FDC4E> _word_4FDC4E;
     static loco_global<uint32_t, 0x0526284> _dword_526284;
-    static loco_global<uint16_t, 0x00526288> _word_526288;
-    static loco_global<uint16_t, 0x0052628A> _word_52628A;
+    static loco_global<gfx::ui_size_t, 0x00526288> _word_526288;
     static loco_global<uint16_t, 0x0052628C> _word_52628C;
     static loco_global<uint16_t, 0x0052628E> _word_52628E;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-    static loco_global<uint32_t, 0x00F253A8> _dword_F253A8;
+    static loco_global<uint32_t*, 0x00F253A8> _dword_F253A8;
+    static loco_global<uint16_t[6], 0x00F253BA> _word_F253BA;
+    static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
+    static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
+    static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
     static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
-    static loco_global<uint16_t[2], 0x0110015E> _unk_110015E;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
 
     enum widx
@@ -103,12 +109,7 @@ namespace openloco::ui::windows::map
     // 0x0046B9F7
     static void onResize(window* self)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-
-        //call(0x0046B9F7, regs);
-
-        self->flags |= (1 << widx::scrollview);
+        self->flags |= window_flags::resizable;
         self->min_width = 350;
         self->max_width = 800;
         self->max_height = 800;
@@ -127,11 +128,6 @@ namespace openloco::ui::windows::map
 
     static void sub_46D300(window* self, int16_t x, int16_t y)
     {
-        //registers regs;
-        //regs.cx = x;
-        //regs.dx = y;
-        //regs.esi = (int32_t)self;
-        //call(0x0046D300, regs);
         auto i = 0;
 
         if (!input::has_flag(input::input_flags::flag5))
@@ -235,11 +231,6 @@ namespace openloco::ui::windows::map
     // 0x0046BA5B
     static void onUpdate(window* self)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-
-        //call(0x0046BA5B, regs);
-
         self->frame_no++;
         self->call_prepare_draw();
 
@@ -343,11 +334,6 @@ namespace openloco::ui::windows::map
     // 0x0046B6BF
     static void prepareDraw(window* self)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-
-        //call(0x0046B6BF, regs);
-
         const string_id captionText[] = {
             string_ids::title_map,
             string_ids::title_map_vehicles,
@@ -364,20 +350,20 @@ namespace openloco::ui::windows::map
         activatedWidgets |= (1ULL << currentWidget);
         self->activated_widgets = activatedWidgets;
 
-        self->widgets[widx::frame].right = self->x - 1;
-        self->widgets[widx::frame].bottom = self->y - 1;
-        self->widgets[widx::panel].right = self->x - 1;
-        self->widgets[widx::panel].bottom = self->y + 1;
+        self->widgets[widx::frame].right = self->width - 1;
+        self->widgets[widx::frame].bottom = self->height - 1;
+        self->widgets[widx::panel].right = self->width - 1;
+        self->widgets[widx::panel].bottom = self->height + 1;
 
-        self->widgets[widx::caption].right = self->x - 2;
-        self->widgets[widx::closeButton].left = self->x - 15;
-        self->widgets[widx::closeButton].right = self->x - 3;
-        self->widgets[widx::scrollview].bottom = self->y - 14;
-        self->widgets[widx::scrollview].right = self->x - 108;
+        self->widgets[widx::caption].right = self->width - 2;
+        self->widgets[widx::closeButton].left = self->width - 15;
+        self->widgets[widx::closeButton].right = self->width - 3;
+        self->widgets[widx::scrollview].bottom = self->height - 14;
+        self->widgets[widx::scrollview].right = self->width - 108;
 
-        self->widgets[widx::statusBar].top = self->y - 12;
-        self->widgets[widx::statusBar].bottom = self->y - 3;
-        self->widgets[widx::statusBar].right = self->x - 14;
+        self->widgets[widx::statusBar].top = self->height - 12;
+        self->widgets[widx::statusBar].bottom = self->height - 3;
+        self->widgets[widx::statusBar].right = self->width - 14;
 
         auto disabledWidgets = 0;
         if (is_editor_mode())
@@ -478,6 +464,391 @@ namespace openloco::ui::windows::map
         }
     }
 
+    // 0x0046D273
+    static void drawGraphKeyOverall(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    {
+        static uint8_t byte_4FDD5C[] = {
+            65,
+            125,
+            12,
+            17,
+            186,
+            100,
+        };
+
+        static string_id lineNames[] = {
+            string_ids::map_key_towns,
+            string_ids::map_key_industries,
+            string_ids::map_key_roads,
+            string_ids::map_key_railways,
+            string_ids::map_key_stations,
+            string_ids::map_key_vegetation,
+        };
+
+        for (auto i = 0; i < 6; i++)
+        {
+            auto colour = byte_4FDD5C[i];
+            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            {
+                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+            }
+            auto args = FormatArguments();
+            args.push(lineNames[i]);
+
+            auto stringId = string_ids::small_black_string;
+
+            if (self->var_854 & (1 << i))
+            {
+                stringId = string_ids::small_white_string;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+            y += 10;
+        }
+    }
+
+    // 0x0046D379
+    static void drawGraphKeyVehicles(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    {
+        static uint8_t byte_4FDD62[] = {
+            173,
+            103,
+            162,
+            188,
+            21,
+            136,
+        };
+
+        static string_id lineNames[] = {
+            string_ids::forbid_trains,
+            string_ids::forbid_buses,
+            string_ids::forbid_trucks,
+            string_ids::forbid_trams,
+            string_ids::forbid_aircraft,
+            string_ids::forbid_ships,
+        };
+
+        for (auto i = 0; i < 6; i++)
+        {
+            auto colour = byte_4FDD62[i];
+            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            {
+                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+            }
+            auto args = FormatArguments();
+            args.push(lineNames[i]);
+
+            auto stringId = string_ids::small_black_string;
+
+            if (self->var_854 & (1 << i))
+            {
+                stringId = string_ids::small_white_string;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+            y += 10;
+        }
+    }
+
+    // 0x0046D47F
+    static void drawGraphKeyIndustries(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    {
+        static uint8_t byte_4FB464[] = {
+            10,
+            14,
+            21,
+            31,
+            41,
+            53,
+            56,
+            63,
+            67,
+            75,
+            80,
+            88,
+            102,
+            113,
+            125,
+            133,
+            137,
+            157,
+            161,
+            163,
+            172,
+            184,
+            187,
+            195,
+            198,
+            208,
+            211,
+            219,
+            222,
+            36,
+            18,
+        };
+
+        for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::industry); i++)
+        {
+            auto colour = byte_4FB464[_byte_F253CE[i]];
+
+            auto industry = objectmgr::get<industry_object>(i);
+
+            if (industry == nullptr)
+                return;
+
+            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            {
+                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+            }
+
+            auto args = FormatArguments();
+            args.push(industry->name);
+
+            auto stringId = string_ids::small_black_string;
+
+            if (self->var_854 & (1 << i))
+            {
+                stringId = string_ids::small_white_string;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+            y += 10;
+        }
+    }
+
+    // 0x0046D5A4
+    static void drawGraphKeyRoutes(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    {
+        for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
+        {
+            auto index = _byte_F253DF[i];
+            auto colour = _byte_F253F2[i];
+
+            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            {
+                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+            }
+
+            auto routeType = string_ids::map_routes_aircraft;
+
+            if (index != 0xFE)
+            {
+                routeType = string_ids::map_routes_ships;
+
+                if (index != 0xFD)
+                {
+                    if (index & (1 << 7))
+                    {
+                        auto roadObj = objectmgr::get<road_object>(index & ~(1 << 7));
+                        routeType = roadObj->name;
+                    }
+                    else
+                    {
+                        auto trackObj = objectmgr::get<track_object>(index & ~(1 << 7));
+                        routeType = trackObj->name;
+                    }
+                }
+            }
+
+            auto args = FormatArguments();
+            args.push(routeType);
+
+            auto stringId = string_ids::small_black_string;
+
+            if (self->var_854 & (1 << i))
+            {
+                stringId = string_ids::small_white_string;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+            y += 10;
+        }
+    }
+
+    // 0x0046D6E1
+    static void drawGraphKeyCompanies(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    {
+        auto i = 0;
+        for (const auto& company : companymgr::companies())
+        {
+            if (company.empty())
+            {
+                i++;
+                continue;
+            }
+
+            auto colour = colour::get_shade(company.mainColours.primary, 6);
+
+            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            {
+                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+            }
+
+            auto args = FormatArguments();
+            args.push(company.name);
+
+            auto stringId = string_ids::small_black_string;
+
+            if (self->var_854 & (1 << i))
+            {
+                stringId = string_ids::small_white_string;
+            }
+
+            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+
+            y += 10;
+            i++;
+        }
+    }
+
+    // 0x0046D81F
+    static void sub_46D81F(window* self, FormatArguments args)
+    {
+        static string_id vehicleStringSingular[] = {
+            string_ids::num_trains_singular,
+            string_ids::num_buses_singular,
+            string_ids::num_trucks_singular,
+            string_ids::num_trams_singular,
+            string_ids::num_aircrafts_singular,
+            string_ids::num_ships_singular,
+        };
+
+        static string_id vehicleStringPlural[] = {
+            string_ids::num_trains_plural,
+            string_ids::num_buses_plural,
+            string_ids::num_trucks_plural,
+            string_ids::num_trams_plural,
+            string_ids::num_aircrafts_plural,
+            string_ids::num_ships_plural,
+        };
+
+        int16_t vehicleIndex = utility::bitscanforward(self->var_854);
+
+        if (vehicleIndex == -1)
+        {
+            uint16_t vehicleCount = 0;
+
+            for (auto i = 0; i < 6; i++)
+            {
+                vehicleCount += _word_F253BA[i];
+            }
+
+            auto stringId = string_ids::status_num_vehicles_plural;
+
+            if (vehicleCount == 1)
+            {
+                stringId = string_ids::status_num_vehicles_singular;
+            }
+
+            args.push(stringId);
+            args.push(vehicleCount);
+        }
+        else
+        {
+            auto vehicleCount = _word_F253BA[vehicleIndex];
+            auto stringId = vehicleStringPlural[vehicleIndex];
+
+            if (vehicleCount == 1)
+            {
+                stringId = vehicleStringSingular[vehicleIndex];
+            }
+
+            args.push(stringId);
+            args.push(vehicleCount);
+        }
+    }
+
+    // 0x0046D87C
+    static void sub_46D87C(window* self, FormatArguments args)
+    {
+        int16_t industryIndex = utility::bitscanforward(self->var_854);
+
+        if (industryIndex == -1)
+        {
+            auto industryCount = 0;
+            for (const auto& industry : industrymgr::industries())
+            {
+                if (industry.empty())
+                    continue;
+
+                industryCount++;
+            }
+
+            auto stringId = string_ids::status_num_industries_plural;
+
+            if (industryCount == 1)
+            {
+                stringId = string_ids::status_num_industries_singular;
+            }
+
+            args.push(stringId);
+            args.push(industryCount);
+        }
+        else
+        {
+            auto industryCount = 0;
+            for (const auto& industry : industrymgr::industries())
+            {
+                if (industry.empty())
+                    continue;
+
+                if (industry.object_id == industryIndex)
+                {
+                    industryCount++;
+                }
+            }
+
+            auto industryObj = objectmgr::get<industry_object>(industryIndex);
+            auto stringId = industryObj->namePlural;
+
+            if (industryCount == 1)
+            {
+                stringId = industryObj->nameSingular;
+            }
+
+            auto buffer = stringmgr::get_string(string_ids::buffer_1250);
+            char* ptr = (char*)buffer;
+
+            ptr = stringmgr::format_string(ptr, stringId, &industryCount);
+            
+            *ptr = ' ';
+            ptr++;
+            *ptr = '(';
+            ptr++;
+
+            if (industryObj->requiresCargo())
+            {
+                ptr = stringmgr::format_string(ptr, string_ids::industry_require);
+
+                ptr = industryObj->getRequiredCargoString(ptr);
+
+                if (industryObj->producesCargo())
+                {
+                    ptr = stringmgr::format_string(ptr, string_ids::cargo_to_produce);
+
+                    ptr = industryObj->getProducedCargoString(ptr);
+                }
+            }
+            else if (industryObj->producesCargo())
+            {
+                ptr = stringmgr::format_string(ptr, string_ids::industry_produce);
+
+                ptr = industryObj->getProducedCargoString(ptr);
+            }
+
+            *ptr = ')';
+            ptr++;
+            *ptr = '\0';
+
+            args.push(string_ids::buffer_1250);
+            args.push(industryCount);
+        }
+    }
+
     // 0x0046B779
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
@@ -489,23 +860,69 @@ namespace openloco::ui::windows::map
         self->draw(dpi);
         drawTabs(self, dpi);
 
-        switch (self->current_tab)
+        {
+            auto x = self->x + self->width - 104;
+            auto y = self->y + 44;
+
+            switch (self->current_tab + widx::tabOverall)
+            {
+                case widx::tabOverall:
+                    drawGraphKeyOverall(self, dpi, x, y);
+                    break;
+
+                case widx::tabVehicles:
+                    drawGraphKeyVehicles(self, dpi, x, y);
+                    break;
+
+                case widx::tabIndustries:
+                    drawGraphKeyIndustries(self, dpi, x, y);
+                    break;
+
+                case widx::tabRoutes:
+                    drawGraphKeyRoutes(self, dpi, x, y);
+                    break;
+
+                case widx::tabOwnership:
+                    drawGraphKeyCompanies(self, dpi, x, y);
+                    break;
+            }
+
+            y -= self->y;
+            y += 14;
+            y = std::max(y, 92);
+
+            self->min_height = y;
+        }
+
+        auto args = FormatArguments();
+
+        switch (self->current_tab + widx::tabOverall)
         {
             case widx::tabOverall:
+                args.push(string_ids::empty);
                 break;
 
             case widx::tabVehicles:
+                sub_46D81F(self, args);
                 break;
 
             case widx::tabIndustries:
+                sub_46D87C(self, args);
                 break;
 
             case widx::tabRoutes:
+                args.push(string_ids::empty);
                 break;
 
             case widx::tabOwnership:
+                args.push(string_ids::empty);
                 break;
         }
+        auto x = self->x + self->widgets[widx::statusBar].left - 1;
+        auto y = self->y + self->widgets[widx::statusBar].top - 1;
+        auto width = self->widgets[widx::statusBar].width();
+
+        gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
     }
 
     // 0x0046B806
@@ -534,14 +951,6 @@ namespace openloco::ui::windows::map
         events.draw_scroll = drawScroll;
     }
 
-    static uint32_t sub_406BF7()
-    {
-        registers regs;
-        call(0x00406BF7, regs);
-
-        return regs.eax;
-    }
-
     static void sub_46CFF0()
     {
         registers regs;
@@ -556,25 +965,24 @@ namespace openloco::ui::windows::map
     // 0x0046B490
     void open()
     {
-        //call(0x0046B490);
-
         auto window = WindowManager::bringToFront(WindowType::map, 0);
 
         if (window != nullptr)
             return;
 
         addr<0x00113E87C, int32_t>() = 3;
-        auto eax = sub_406BF7();
+        auto ptr = malloc(0x120000);
         addr<0x00113E87C, int32_t>() = 0;
-        if (!eax)
+
+        if (ptr == NULL)
             return;
 
-        _dword_F253A8 = eax;
-        gfx::ui_size_t size = { _unk_110015E[0], _unk_110015E[1] };
+        _dword_F253A8 = static_cast<uint32_t*>(ptr);
+        gfx::ui_size_t size = { 350, 272 };
 
         if (_dword_526284 != 0)
         {
-            size = { _word_526288, _word_52628A };
+            size = _word_526288;
         }
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
@@ -605,6 +1013,7 @@ namespace openloco::ui::windows::map
         window->current_tab = 0;
         window->saved_view.mapX = 1;
         window->var_854 = 0;
+        window->var_856 = 0;
 
         sub_46CFF0();
         sub_46CED0();
@@ -615,8 +1024,6 @@ namespace openloco::ui::windows::map
     // 0x0046B5C0
     void centerOnViewPoint()
     {
-        //call(0x0046B5C0);
-
         auto mainWindow = WindowManager::getMainWindow();
 
         if (mainWindow == nullptr)
