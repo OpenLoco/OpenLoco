@@ -28,12 +28,13 @@ namespace openloco::ui::windows::map
     static loco_global<uint16_t, 0x0052628C> _word_52628C;
     static loco_global<uint16_t, 0x0052628E> _word_52628E;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-    static loco_global<uint32_t*, 0x00F253A8> _dword_F253A8;
+    static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static loco_global<uint16_t[6], 0x00F253BA> _word_F253BA;
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
     static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
+    static loco_global<uint32_t, 0x00F25E28> _dword_F25E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
 
     enum widx
@@ -73,10 +74,18 @@ namespace openloco::ui::windows::map
     // 0x0046B8E6
     static void onClose(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
+        //registers regs;
+        //regs.esi = (int32_t)self;
+        //
+        //call(0x0046B8E6, regs);
 
-        call(0x0046B8E6, regs);
+        _word_526288 = gfx::ui_size_t(self->width, self->height);
+        _word_52628C = self->var_88A;
+        _word_52628E = self->var_88C;
+        _dword_526284 = self->flags | window_flags::flag_31;
+        addr<0x00113E87C, int32_t>() = 3;
+        free(_dword_F253A8);
+        addr<0x00113E87C, int32_t>() = 0;
     }
 
     // 0x0046B8CF
@@ -289,16 +298,84 @@ namespace openloco::ui::windows::map
         *scrollHeight = 0x300;
     }
 
+    // 0x004C6801
+    static void moveMainWindowToLocation(window* self, map_pos pos)
+    {
+        if (self->viewport_configurations->viewport_target_sprite != 0xFFFF)
+            return;
+
+        if (self->flags & window_flags::viewport_no_scrolling)
+            return;
+
+        self->viewport_configurations->saved_view_x = pos.x;
+        self->viewport_configurations->saved_view_y = pos.y;
+        self->flags |= window_flags::scrolling_to_location;
+    }
+
+    // 0x004C6827
+    static void sub_4C6827(window* self, int16_t x, int16_t y, uint32_t z)
+    {
+        auto viewport = self->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        auto height = tile_element_height(x, y);
+        height -= 16;
+
+        if (z < height)
+        {
+            if (!(viewport->flags & viewport_flags::underground_view))
+            {
+                self->invalidate();
+            }
+
+            viewport->flags |= viewport_flags::underground_view;
+        }
+        else
+        {
+            if (viewport->flags & viewport_flags::underground_view)
+            {
+                self->invalidate();
+            }
+
+            viewport->flags &= ~viewport_flags::underground_view;
+        }
+
+        auto pos = coordinate_3d_to_2d(x, y, z, gCurrentRotation);
+
+        moveMainWindowToLocation(self, pos);
+    }
+
+    // 0x0046B9D4
+    static void sub_46B9D4(map_pos pos)
+    {
+        auto z = tile_element_height(pos.x, pos.y);
+        auto window = WindowManager::getMainWindow();
+
+        if (window == nullptr)
+            return;
+
+        sub_4C6827(window, pos.x, pos.y, z);
+    }
+
     // 0x0046B97C
     static void event18(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.ax = scrollIndex;
-        regs.cx = x;
-        regs.dx = y;
+        x += 8;
+        y += 8;
+        x -= 384;
+        x /= 2;
+        y /= 2;
+        auto yCopy = y;
+        y -= x;
+        x += yCopy;
+        x *= 32;
+        y *= 32;
 
-        call(0x0046B97C, regs);
+        map_pos pos = { x, y };
+        pos = rotate2DCoordinate(pos, gCurrentRotation);
+
+        sub_46B9D4(pos);
     }
 
     // 0x0046B946
@@ -444,7 +521,7 @@ namespace openloco::ui::windows::map
 
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tabRoutes - widx::tabOverall)
-                    imageId += routeImageIds[(self->frame_no / 2) % std::size(routeImageIds)];
+                    imageId += routeImageIds[(self->frame_no / 16) % std::size(routeImageIds)];
                 else
                     imageId += routeImageIds[0];
 
@@ -814,7 +891,7 @@ namespace openloco::ui::windows::map
             char* ptr = (char*)buffer;
 
             ptr = stringmgr::format_string(ptr, stringId, &industryCount);
-            
+
             *ptr = ' ';
             ptr++;
             *ptr = '(';
@@ -852,11 +929,6 @@ namespace openloco::ui::windows::map
     // 0x0046B779
     static void draw(window* self, gfx::drawpixelinfo_t* dpi)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-        //regs.edi = (int32_t)dpi;
-
-        //call(0x0046B779, regs);
         self->draw(dpi);
         drawTabs(self, dpi);
 
@@ -899,6 +971,8 @@ namespace openloco::ui::windows::map
         switch (self->current_tab + widx::tabOverall)
         {
             case widx::tabOverall:
+            case widx::tabRoutes:
+            case widx::tabOwnership:
                 args.push(string_ids::empty);
                 break;
 
@@ -909,15 +983,8 @@ namespace openloco::ui::windows::map
             case widx::tabIndustries:
                 sub_46D87C(self, args);
                 break;
-
-            case widx::tabRoutes:
-                args.push(string_ids::empty);
-                break;
-
-            case widx::tabOwnership:
-                args.push(string_ids::empty);
-                break;
         }
+
         auto x = self->x + self->widgets[widx::statusBar].left - 1;
         auto y = self->y + self->widgets[widx::statusBar].top - 1;
         auto width = self->widgets[widx::statusBar].width();
@@ -928,12 +995,40 @@ namespace openloco::ui::windows::map
     // 0x0046B806
     static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.edi = (int32_t)dpi;
-        regs.eax = scrollIndex;
+        //registers regs;
+        //regs.esi = (int32_t)self;
+        //regs.edi = (int32_t)dpi;
+        //regs.eax = scrollIndex;
 
-        call(0x0046B806, regs);
+        //call(0x0046B806, regs);
+
+        if (!(_dword_F25E28 & (1 << 0)))
+            return;
+
+        gfx::clear_single(*dpi, palette_index::index_0A);
+
+        auto element = gfx::get_g1element(0);
+        auto offset = _dword_F253A8;
+
+        if (_word_F2541D & (1 << 3))
+            offset += 0x90000;
+
+        gfx::get_g1element(0)->offset = offset;
+        gfx::get_g1element(0)->width = 0x300;
+        gfx::get_g1element(0)->height = 0x300;
+        gfx::get_g1element(0)->x_offset = -8;
+        gfx::get_g1element(0)->y_offset = -8;
+        gfx::get_g1element(0)->flags = 0;
+
+        gfx::draw_image(dpi, 0, 0, 0);
+
+        gfx::get_g1element(0)->offset = element->offset;
+        gfx::get_g1element(0)->width = element->width;
+        gfx::get_g1element(0)->height = element->height;
+        gfx::get_g1element(0)->x_offset = element->x_offset;
+        gfx::get_g1element(0)->y_offset = element->y_offset;
+        gfx::get_g1element(0)->flags = element->flags;
+        gfx::get_g1element(0)->unused = element->unused;  
     }
 
     static void initEvents()
@@ -977,7 +1072,7 @@ namespace openloco::ui::windows::map
         if (ptr == NULL)
             return;
 
-        _dword_F253A8 = static_cast<uint32_t*>(ptr);
+        _dword_F253A8 = static_cast<uint8_t*>(ptr);
         gfx::ui_size_t size = { 350, 272 };
 
         if (_dword_526284 != 0)

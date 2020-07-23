@@ -197,6 +197,7 @@ namespace openloco::ui
         constexpr uint32_t white_border_one = (1 << 17);
         constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
         constexpr uint32_t flag_19 = 1 << 19;
+        constexpr uint32_t flag_31 = 1 << 31;
     }
 
     struct window_event_list
