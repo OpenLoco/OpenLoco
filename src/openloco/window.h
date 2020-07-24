@@ -121,9 +121,9 @@ namespace openloco::ui
 
     [[maybe_unused]] static constexpr widget_t make_stepper_decrease_widget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
     {
-        const int16_t xPos = origin.x + size.width - 25;
+        const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
-        const uint16_t width = 12;
+        const uint16_t width = 13;
         const uint16_t height = size.height - 2;
 
         return make_widget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_minus);
