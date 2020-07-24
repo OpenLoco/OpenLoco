@@ -24,7 +24,7 @@ using namespace openloco::map;
 
 namespace openloco::ui::windows::station
 {
-    static loco_global<uint16_t[0x24000], 0x000F00484> _byte_F00484;
+    static loco_global<uint8_t[0x24000], 0x00F00484> _byte_F00484;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
@@ -551,8 +551,18 @@ namespace openloco::ui::windows::station
             }
         }
 
+        // 0x0048EC21
+        static void on_close(window* self)
+        {
+            if (self->number == _lastSelectedStation)
+            {
+                showStationCatchment(station_id::null);
+            }
+        }
+
         static void initEvents()
         {
+            events.on_close = on_close;
             events.draw = draw;
             events.on_mouse_up = on_mouse_up;
             events.on_resize = on_resize;
@@ -725,15 +735,18 @@ namespace openloco::ui::windows::station
     // 0x00491BC6
     static void sub_491BC6()
     {
-        tile_loop tileLoop;
+        uint32_t posId = 0;
 
-        for (uint32_t posId = 0; posId < 0x24000; posId++)
+        for (int16_t y = 0; y < 0x3000; y += 32)
         {
-            if (_byte_F00484[posId] & (1 << 0))
+            for (int16_t x = 0; x < 0x3000; x += 32)
             {
-                tilemgr::map_invalidate_tile_full(tileLoop.current());
+                if (_byte_F00484[posId] & (1 << 0))
+                {
+                    tilemgr::map_invalidate_tile_full({ x, y });
+                }
+                posId++;
             }
-            tileLoop.next();
         }
     }
 
@@ -752,7 +765,7 @@ namespace openloco::ui::windows::station
         if (stationId == _lastSelectedStation)
             return;
 
-        uint16_t oldStationId = *_lastSelectedStation;
+        uint16_t oldStationId = _lastSelectedStation;
         _lastSelectedStation = stationId;
 
         if (oldStationId != station_id::null)
@@ -909,7 +922,7 @@ namespace openloco::ui::windows::station
         // 0x0048E520
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (widgetIndex == widx::tab_cargo)
+            if (widgetIndex != widx::tab_cargo)
                 if (self->number == _lastSelectedStation)
                 {
                     showStationCatchment(station_id::null);
