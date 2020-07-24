@@ -736,11 +736,12 @@ namespace openloco::ui::windows::station
     static void sub_491BC6()
     {
         tile_loop tileLoop;
+
         for (uint32_t posId = 0; posId < 0x24000; posId++)
         {
             if (_byte_F00484[posId] & (1 << 0))
             {
-                tilemgr::map_invalidate_tile_full({ tileLoop.current() });
+                tilemgr::map_invalidate_tile_full(tileLoop.current());
             }
             tileLoop.next();
         }
