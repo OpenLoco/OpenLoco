@@ -745,20 +745,6 @@ namespace openloco::ui::windows::station
             }
             tileLoop.next();
         }
-
-        //uint32_t posId = 0;
-
-        //for (int16_t y = 0; y < 0x3000; y += 32)
-        //{
-        //    for (int16_t x = 0; x < 0x3000; x += 32)
-        //    {
-        //        if (_byte_F00484[posId] & (1 << 0))
-        //        {
-        //            tilemgr::map_invalidate_tile_full({ x, y });
-        //        }
-        //        posId++;
-        //    }
-        //}
     }
 
     // 0x00491D70
