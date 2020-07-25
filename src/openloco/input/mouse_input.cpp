@@ -1263,7 +1263,7 @@ namespace openloco::input
         {
             case ui::scrollview::scroll_part::hscrollbar_button_left:
             {
-                ui::window* w = WindowManager::find((WindowType)_pressedWindowType, _pressedWindowNumber);
+                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_LEFT_PRESSED;
