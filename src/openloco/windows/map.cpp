@@ -11,6 +11,9 @@
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
+#include "../things/thing.h"
+#include "../things/thingmgr.h"
+#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../widget.h"
@@ -28,14 +31,17 @@ namespace openloco::ui::windows::map
     static loco_global<uint16_t, 0x0052628C> _word_52628C;
     static loco_global<uint16_t, 0x0052628E> _word_52628E;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+    static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static loco_global<uint16_t[6], 0x00F253BA> _word_F253BA;
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
     static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
-    static loco_global<uint32_t, 0x00F25E28> _dword_F25E28;
+    static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
+    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
     enum widx
     {
@@ -74,11 +80,6 @@ namespace openloco::ui::windows::map
     // 0x0046B8E6
     static void onClose(window* self)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-        //
-        //call(0x0046B8E6, regs);
-
         _word_526288 = gfx::ui_size_t(self->width, self->height);
         _word_52628C = self->var_88A;
         _word_52628E = self->var_88C;
@@ -783,7 +784,7 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046D81F
-    static void sub_46D81F(window* self, FormatArguments args)
+    static void formatVehicleString(window* self, FormatArguments args)
     {
         static string_id vehicleStringSingular[] = {
             string_ids::num_trains_singular,
@@ -840,7 +841,7 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046D87C
-    static void sub_46D87C(window* self, FormatArguments args)
+    static void formatIndustryString(window* self, FormatArguments args)
     {
         int16_t industryIndex = utility::bitscanforward(self->var_854);
 
@@ -977,11 +978,11 @@ namespace openloco::ui::windows::map
                 break;
 
             case widx::tabVehicles:
-                sub_46D81F(self, args);
+                formatVehicleString(self, args);
                 break;
 
             case widx::tabIndustries:
-                sub_46D87C(self, args);
+                formatIndustryString(self, args);
                 break;
         }
 
@@ -990,6 +991,267 @@ namespace openloco::ui::windows::map
         auto width = self->widgets[widx::statusBar].width();
 
         gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
+    }
+
+    map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
+    {
+        map_pos coordinate2D;
+
+        switch (rotation)
+        {
+            default:
+            case 0:
+                coordinate2D = pos;
+                break;
+            case 1:
+                coordinate2D.x = pos.y;
+                coordinate2D.y = -pos.x + 0x2FFF;
+                break;
+            case 2:
+                coordinate2D.x = -pos.x + 0x2FFF;
+                coordinate2D.y = -pos.y + 0x2FFF;
+                break;
+            case 3:
+                coordinate2D.x = -pos.y + 0x2FFF;
+                coordinate2D.y = pos.x;
+                break;
+        }
+
+        return coordinate2D;
+    }
+
+    // 0x0046BE6E
+    static void sub_46BE6E()
+    {
+        auto vehicle = thingmgr::first<openloco::vehicle>();
+    }
+
+    // 0x0046BF64
+    static void sub_46BF64()
+    {
+    }
+
+    // 0x0046C0AE
+    static void sub_46C0AE()
+    {
+    }
+
+    // 0x0046C35A
+    static void sub_46C35A()
+    {
+    }
+
+    // 0x0046BE51, 0x0046BE34
+    static void drawRectOnMap(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    {
+        if (left > right)
+        {
+            std::swap(left, right);
+        }
+
+        if (top > bottom)
+        {
+            std::swap(top, bottom);
+        }
+
+        gfx::fill_rect(dpi, left, top, right, bottom, colour);
+    }
+
+    // 0x0046BE51
+    static void drawViewOnMap(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    {
+        left /= 32;
+        top /= 16;
+        right /= 32;
+        bottom /= 16;
+        left += _word_4FDC4C[gCurrentRotation * 2];
+        top += _word_4FDC4E[gCurrentRotation * 2];
+        right += _word_4FDC4C[gCurrentRotation * 2];
+        bottom += _word_4FDC4E[gCurrentRotation * 2];
+
+        uint32_t colour = (1 << 24) | palette_index::index_0A;
+
+        drawRectOnMap(dpi, left, top, right, bottom, colour);
+    }
+
+    // 0x0046BE34
+    static void drawViewCornersOnMap(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t leftOffset, int16_t topOffset, int16_t rightOffset, int16_t bottomOffset)
+    {
+        left /= 32;
+        top /= 16;
+        left += _word_4FDC4C[gCurrentRotation * 2];
+        top += _word_4FDC4E[gCurrentRotation * 2];
+        auto right = left;
+        auto bottom = top;
+        left += leftOffset;
+        top += topOffset;
+        right += rightOffset;
+        bottom += bottomOffset;
+
+        uint32_t colour = palette_index::index_0A;
+
+        drawRectOnMap(dpi, left, top, right, bottom, colour);
+    }
+
+    // 0x0046BAD5
+    static void sub_46BAD5(gfx::drawpixelinfo_t* dpi)
+    {
+        auto window = WindowManager::getMainWindow();
+
+        if (window == nullptr)
+            return;
+
+        auto viewport = window->viewports[0];
+
+        if (viewport == nullptr)
+            return;
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            auto right = viewport->view_x;
+            auto bottom = viewport->view_y;
+            right += viewport->view_width;
+
+            drawViewOnMap(dpi, left, top, right, bottom);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+            auto right = viewport->view_x;
+            auto bottom = viewport->view_y;
+            right += viewport->view_width;
+            bottom += viewport->view_height;
+
+            drawViewOnMap(dpi, left, top, right, bottom);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            auto right = viewport->view_x;
+            auto bottom = viewport->view_y;
+            bottom += viewport->view_height;
+
+            drawViewOnMap(dpi, left, top, right, bottom);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            left += viewport->view_width;
+            auto right = viewport->view_x;
+            auto bottom = viewport->view_y;
+            right += viewport->view_width;
+            bottom += viewport->view_height;
+
+            drawViewOnMap(dpi, left, top, right, bottom);
+        }
+
+        if (!(_word_F2541D & (1 << 2)))
+            return;
+
+        if (_dword_F253A4 != 0)
+            return;
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 5, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+
+            drawViewCornersOnMap(dpi, left, top, -5, 0, 0, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, 5);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+
+            drawViewCornersOnMap(dpi, left, top, 0, -5, 0, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 5, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+
+            drawViewCornersOnMap(dpi, left, top, -5, 0, 0, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, 5);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+
+            drawViewCornersOnMap(dpi, left, top, 0, -5, 0, 0);
+        }
+    }
+
+    // 0x0046C481
+    static void drawTownNames(gfx::drawpixelinfo_t* dpi)
+    {
+        for (const auto& town : townmgr::towns())
+        {
+            if (town.empty())
+                continue;
+
+            auto townPos = rotateMapCoordinate({ town.x, town.y }, gCurrentRotation);
+
+            townPos.x /= 32;
+            townPos.y /= 32;
+            auto yCopy = townPos.y;
+            townPos.y += townPos.x;
+            townPos.x = -townPos.x;
+            townPos.x += yCopy + 376;
+            townPos.y -= 8;
+
+            stringmgr::format_string(_stringFormatBuffer, town.name);
+            _currentFontSpriteBase = font::small;
+
+            auto strWidth = gfx::getStringWidth(_stringFormatBuffer);
+
+            strWidth /= 2;
+
+            townPos.x -= strWidth;
+            townPos.y -= 3;
+
+            _currentFontSpriteBase = font::small;
+            gfx::draw_string(dpi, townPos.x, townPos.y, colour::outline(colour::bright_purple), _stringFormatBuffer);
+        }
     }
 
     // 0x0046B806
@@ -1002,15 +1264,15 @@ namespace openloco::ui::windows::map
 
         //call(0x0046B806, regs);
 
-        if (!(_dword_F25E28 & (1 << 0)))
+        if (!(_dword_525E28 & (1 << 0)))
             return;
 
         gfx::clear_single(*dpi, palette_index::index_0A);
 
         auto element = gfx::get_g1element(0);
-        auto offset = _dword_F253A8;
+        auto offset = *_dword_F253A8;
 
-        if (_word_F2541D & (1 << 3))
+        if (_word_F2541D & (1 << 2))
             offset += 0x90000;
 
         gfx::get_g1element(0)->offset = offset;
@@ -1028,7 +1290,30 @@ namespace openloco::ui::windows::map
         gfx::get_g1element(0)->x_offset = element->x_offset;
         gfx::get_g1element(0)->y_offset = element->y_offset;
         gfx::get_g1element(0)->flags = element->flags;
-        gfx::get_g1element(0)->unused = element->unused;  
+        gfx::get_g1element(0)->unused = element->unused;
+
+        switch (self->current_tab + widx::tabOverall)
+        {
+            case widx::tabOverall:
+            case widx::tabIndustries:
+                sub_46BE6E();
+                break;
+            case widx::tabVehicles:
+                sub_46BF64();
+                break;
+            case widx::tabRoutes:
+                sub_46C0AE();
+                break;
+            case widx::tabOwnership:
+                sub_46C35A();
+        }
+
+        sub_46BAD5(dpi);
+
+        if (self->saved_view.mapX & (1 << 0))
+        {
+            drawTownNames(dpi);
+        }
     }
 
     static void initEvents()
