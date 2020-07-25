@@ -1095,7 +1095,7 @@ namespace openloco::ui::windows::map
         word_F25419 = right;
         word_F2541B = bottom;
 
-        if (word_F25415 == (1<<15))
+        if (word_F25415 == (1 << 15))
         {
             word_F25415 = right;
             word_F25417 = bottom;
