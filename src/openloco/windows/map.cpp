@@ -11,6 +11,7 @@
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
+#include "../stationmgr.h"
 #include "../things/thing.h"
 #include "../things/thingmgr.h"
 #include "../townmgr.h"
@@ -36,11 +37,14 @@ namespace openloco::ui::windows::map
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static loco_global<uint16_t[6], 0x00F253BA> _word_F253BA;
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
+    static loco_global<VehicleType, 0x00F253DE> _byte_F253DE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
-    static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
+    static loco_global<uint16_t, 0x00F2541D> _word_F2541D;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
+    constexpr uint32_t max_orders = 256000;
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C; // ?orders? ?routing related?
     static loco_global<uint8_t[companymgr::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
@@ -588,18 +592,19 @@ namespace openloco::ui::windows::map
         }
     }
 
+    // 0x004FDD62
+    static uint8_t vehicleTypeColours[] = {
+        173,
+        103,
+        162,
+        188,
+        21,
+        136,
+    };
+
     // 0x0046D379
     static void drawGraphKeyVehicles(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
     {
-        static uint8_t byte_4FDD62[] = {
-            173,
-            103,
-            162,
-            188,
-            21,
-            136,
-        };
-
         static string_id lineNames[] = {
             string_ids::forbid_trains,
             string_ids::forbid_buses,
@@ -611,7 +616,7 @@ namespace openloco::ui::windows::map
 
         for (auto i = 0; i < 6; i++)
         {
-            auto colour = byte_4FDD62[i];
+            auto colour = vehicleTypeColours[i];
             if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
@@ -1022,9 +1027,181 @@ namespace openloco::ui::windows::map
         return coordinate2D;
     }
 
-    // 0x0046BE6E, 0x0046C35A
-    static void drawVehiclesOnMap(gfx::drawpixelinfo_t* dpi, bool isCompanyColour)
+    static void drawVehicleOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Car car, widget_index widgetIndex, int16_t x, int16_t y)
     {
+        auto trainPos = rotateMapCoordinate({ x, y }, gCurrentRotation);
+
+        auto left = trainPos.x;
+        auto top = trainPos.y;
+        left /= 32;
+        top /= 32;
+        auto bottom = top;
+        bottom += left;
+        left = -left;
+        left += top;
+        left += 376;
+        bottom -= 8;
+        auto right = left;
+        top = bottom;
+
+        auto colour = palette_index::index_15;
+
+        if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
+        {
+            uint8_t index = car.carComponents[0].front->owner;
+            colour = colour::get_shade(_companyColours[index], 7);
+
+            if (widgetIndex == widx::tabVehicles)
+            {
+                index = static_cast<uint8_t>(*_byte_F253DE);
+                colour = vehicleTypeColours[index];
+            }
+
+            if (_dword_F253A4 & (1 << index))
+            {
+                if (!(_word_F2541D & (1 << 2)))
+                {
+                    colour = _byte_4FDC5C[colour];
+                }
+            }
+        }
+
+        gfx::fill_rect(dpi, left, top, right, bottom, colour);
+    }
+
+    static uint8_t byte_F25414 = 0xFF;
+    static uint16_t word_F25415 = 0xFFFF;
+    static uint16_t word_F25417 = 0xFFFF;
+    static uint16_t word_F25419 = 0xFFFF;
+    static uint16_t word_F2541B = 0xFFFF;
+
+    // 0x0046C294
+    static void drawRouteLine(gfx::drawpixelinfo_t* dpi, map_pos pos)
+    {
+        auto left = pos.x / 32;
+        auto right = pos.y / 32;
+        auto bottom = right;
+        bottom += left;
+        left = -left;
+        right += left;
+        right += 376;
+        bottom -= 8;
+
+        if (word_F25419 != (1 << 15))
+        {
+            gfx::draw_line(dpi, word_F25419, word_F2541B, right, bottom, byte_F25414);
+        }
+
+        word_F25419 = right;
+        word_F2541B = bottom;
+
+        if (word_F25415 == (1<<15))
+        {
+            word_F25415 = right;
+            word_F25417 = bottom;
+        }
+    }
+
+    // 0x0046C18D
+    static void drawRoutesOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Vehicle train)
+    {
+        uint8_t colour;
+        if (train.head->vehicleType == VehicleType::plane)
+        {
+            colour = 211;
+            auto index = utility::bitscanforward(_dword_F253A4);
+            if (index != -1)
+            {
+                if (_byte_F253DF[index] == 0xFE)
+                {
+                    if (_word_F2541D & (1 << 2))
+                    {
+                        colour = _byte_4FDC5C[colour];
+                    }
+                }
+            }
+        }
+        else if (train.head->vehicleType == VehicleType::ship)
+        {
+            colour = 139;
+            auto index = utility::bitscanforward(_dword_F253A4);
+            if (index != -1)
+            {
+                if (_byte_F253DF[index] == 0xFD)
+                {
+                    if (_word_F2541D & (1 << 2))
+                    {
+                        colour = _byte_4FDC5C[colour];
+                    }
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        uint8_t byte_4FE088[] = {
+            0,
+            11,
+            11,
+            3,
+            4,
+            4,
+            0,
+            0,
+        };
+
+        uint8_t dword_4FE070[] = {
+            1,
+            2,
+            2,
+            6,
+            1,
+            1,
+        };
+
+        byte_F25414 = colour;
+        word_F25415 = (1 << 15);
+        word_F25419 = (1 << 15);
+        auto index = train.head->length_of_var_4C;
+        auto lastOrder = _dword_987C5C[index] & ((1 << 2) | (1 << 1) | (1 << 0));
+
+        while (lastOrder != 0)
+        {
+            if (byte_4FE088[lastOrder] & (1 << 3))
+            {
+                auto order = _dword_987C5C[index] & ((1 << 7) | (1 << 6));
+                order <<= 2;
+                order |= _dword_987C5C[index + 1];
+
+                auto station = stationmgr::get(order);
+                auto stationPos = rotateMapCoordinate({ station->x, station->y }, gCurrentRotation);
+
+                drawRouteLine(dpi, stationPos);
+            }
+
+            index += dword_4FE070[lastOrder];
+            lastOrder = _dword_987C5C[index] & ((1 << 2) | (1 << 1) | (1 << 0));
+        }
+
+        if (word_F25415 == (1 << 15) || word_F25419 == (1 << 15))
+            return;
+
+        gfx::draw_line(dpi, word_F25415, word_F25417, word_F25419, word_F2541B, byte_F25414);
+    }
+
+    // 0x0046BE6E, 0x0046C35A
+    static void drawVehiclesOnMap(gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
+    {
+        if (widgetIndex == widx::tabVehicles)
+        {
+            for (auto i = 0; i < 6; i++)
+            {
+                _word_F253BA[i] = 0;
+            }
+        }
+
         for (auto vehicle : thingmgr::VehicleList())
         {
             things::vehicle::Vehicle train(vehicle);
@@ -1032,65 +1209,66 @@ namespace openloco::ui::windows::map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == (1 << 15))
+            if (train.head->x < 0)
                 continue;
+
+            if (widgetIndex == widx::tabVehicles)
+            {
+                auto vehicleType = train.head->vehicleType;
+                _byte_F253DE = vehicleType;
+                _word_F253BA[static_cast<uint8_t>(vehicleType)] = _word_F253BA[static_cast<uint8_t>(vehicleType)] + 1;
+            }
 
             for (auto car : train.cars)
             {
                 for (auto carComponent : car.carComponents)
                 {
-                    auto x = carComponent.front->x;
-                    auto y = carComponent.front->y;
-
-                    if (x == (1 << 15))
-                        continue;
-
-                    auto trainPos = rotateMapCoordinate({ x, y }, gCurrentRotation);
-
-                    auto left = trainPos.x;
-                    auto top = trainPos.y;
-                    left /= 32;
-                    top /= 32;
-                    auto bottom = top;
-                    bottom += left;
-                    left = -left;
-                    left += top;
-                    left += 376;
-                    bottom -= 8;
-                    auto right = left;
-                    top = bottom;
-
-                    auto colour = palette_index::index_15;
-
-                    if (isCompanyColour)
                     {
-                        auto companyId = car.carComponents[0].front->owner;
-                        colour = colour::get_shade(_companyColours[companyId], 7);
+                        auto x = carComponent.front->x;
+                        auto y = carComponent.front->y;
 
-                        if (_dword_F253A4 & (1 << companyId))
+                        if (x >= 0)
                         {
-                            if (!(_word_F2541D & (1 << 2)))
-                            {
-                                colour = _byte_4FDC5C[colour];
-                            }
+                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
                         }
                     }
+                    {
+                        auto x = carComponent.body->x;
+                        auto y = carComponent.body->y;
 
-                    gfx::fill_rect(dpi, left, top, right, bottom, colour);
+                        if (x >= 0)
+                        {
+                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
+                        }
+                    }
+                    {
+                        auto x = carComponent.back->x;
+                        auto y = carComponent.back->y;
+
+                        if (x >= 0)
+                        {
+                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
+                        }
+                    }
                 }
+            }
+
+            if (widgetIndex == widx::tabRoutes)
+            {
+                drawRoutesOnMap(dpi, train);
             }
         }
     }
 
-    // 0x0046BF64
-    static void sub_46BF64()
-    {
-    }
+    //// 0x0046BF64
+    //static void sub_46BF64()
+    //{
+    //}
 
-    // 0x0046C0AE
-    static void sub_46C0AE()
-    {
-    }
+    //// 0x0046C0AE
+    //static void sub_46C0AE()
+    //{
+    //}
 
     // 0x0046BE51, 0x0046BE34
     static void drawRectOnMap(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
@@ -1343,21 +1521,23 @@ namespace openloco::ui::windows::map
         gfx::get_g1element(0)->flags = element->flags;
         gfx::get_g1element(0)->unused = element->unused;
 
-        switch (self->current_tab + widx::tabOverall)
-        {
-            case widx::tabOverall:
-            case widx::tabIndustries:
-                drawVehiclesOnMap(dpi, false);
-                break;
-            case widx::tabVehicles:
-                sub_46BF64();
-                break;
-            case widx::tabRoutes:
-                sub_46C0AE();
-                break;
-            case widx::tabOwnership:
-                drawVehiclesOnMap(dpi, true);
-        }
+        drawVehiclesOnMap(dpi, self->current_tab + widx::tabOverall);
+
+        //switch (self->current_tab + widx::tabOverall)
+        //{
+        //    case widx::tabOverall:
+        //    case widx::tabIndustries:
+        //        drawVehiclesOnMap(dpi, false);
+        //        break;
+        //    case widx::tabVehicles:
+        //        sub_46BF64();
+        //        break;
+        //    case widx::tabRoutes:
+        //        sub_46C0AE();
+        //        break;
+        //    case widx::tabOwnership:
+        //
+        //}
 
         drawViewportPosition(dpi);
 
