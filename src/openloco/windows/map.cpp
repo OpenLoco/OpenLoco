@@ -26,6 +26,7 @@ namespace openloco::ui::windows::map
     static loco_global<int32_t, 0x0052333C> _cursorY2;
     static loco_global<uint16_t[7], 0x004FDC4C> _word_4FDC4C;
     static loco_global<uint16_t[7], 0x004FDC4E> _word_4FDC4E;
+    static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
     static loco_global<uint32_t, 0x0526284> _dword_526284;
     static loco_global<gfx::ui_size_t, 0x00526288> _word_526288;
     static loco_global<uint16_t, 0x0052628C> _word_52628C;
@@ -40,6 +41,7 @@ namespace openloco::ui::windows::map
     static loco_global<uint32_t, 0x00F2541D> _word_F2541D;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
+    static loco_global<uint8_t[companymgr::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -993,7 +995,7 @@ namespace openloco::ui::windows::map
         gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
     }
 
-    map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
+    static map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
     {
         map_pos coordinate2D;
 
@@ -1020,10 +1022,64 @@ namespace openloco::ui::windows::map
         return coordinate2D;
     }
 
-    // 0x0046BE6E
-    static void sub_46BE6E()
+    // 0x0046BE6E, 0x0046C35A
+    static void drawVehiclesOnMap(gfx::drawpixelinfo_t* dpi, bool isCompanyColour)
     {
-        auto vehicle = thingmgr::first<openloco::vehicle>();
+        for (auto vehicle : thingmgr::VehicleList())
+        {
+            things::vehicle::Vehicle train(vehicle);
+
+            if (train.head->var_38 & (1 << 4))
+                continue;
+
+            if (train.head->x == (1 << 15))
+                continue;
+
+            for (auto car : train.cars)
+            {
+                for (auto carComponent : car.carComponents)
+                {
+                    auto x = carComponent.front->x;
+                    auto y = carComponent.front->y;
+
+                    if (x == (1 << 15))
+                        continue;
+
+                    auto trainPos = rotateMapCoordinate({ x, y }, gCurrentRotation);
+
+                    auto left = trainPos.x;
+                    auto top = trainPos.y;
+                    left /= 32;
+                    top /= 32;
+                    auto bottom = top;
+                    bottom += left;
+                    left = -left;
+                    left += top;
+                    left += 376;
+                    bottom -= 8;
+                    auto right = left;
+                    top = bottom;
+
+                    auto colour = palette_index::index_15;
+
+                    if (isCompanyColour)
+                    {
+                        auto companyId = car.carComponents[0].front->owner;
+                        colour = colour::get_shade(_companyColours[companyId], 7);
+
+                        if (_dword_F253A4 & (1 << companyId))
+                        {
+                            if (!(_word_F2541D & (1 << 2)))
+                            {
+                                colour = _byte_4FDC5C[colour];
+                            }
+                        }
+                    }
+
+                    gfx::fill_rect(dpi, left, top, right, bottom, colour);
+                }
+            }
+        }
     }
 
     // 0x0046BF64
@@ -1033,11 +1089,6 @@ namespace openloco::ui::windows::map
 
     // 0x0046C0AE
     static void sub_46C0AE()
-    {
-    }
-
-    // 0x0046C35A
-    static void sub_46C35A()
     {
     }
 
@@ -1094,7 +1145,7 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046BAD5
-    static void sub_46BAD5(gfx::drawpixelinfo_t* dpi)
+    static void drawViewportPosition(gfx::drawpixelinfo_t* dpi)
     {
         auto window = WindowManager::getMainWindow();
 
@@ -1296,7 +1347,7 @@ namespace openloco::ui::windows::map
         {
             case widx::tabOverall:
             case widx::tabIndustries:
-                sub_46BE6E();
+                drawVehiclesOnMap(dpi, false);
                 break;
             case widx::tabVehicles:
                 sub_46BF64();
@@ -1305,10 +1356,10 @@ namespace openloco::ui::windows::map
                 sub_46C0AE();
                 break;
             case widx::tabOwnership:
-                sub_46C35A();
+                drawVehiclesOnMap(dpi, true);
         }
 
-        sub_46BAD5(dpi);
+        drawViewportPosition(dpi);
 
         if (self->saved_view.mapX & (1 << 0))
         {
