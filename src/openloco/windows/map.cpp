@@ -40,7 +40,6 @@ namespace openloco::ui::windows::map
     static loco_global<VehicleType, 0x00F253DE> _byte_F253DE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
-    static loco_global<uint16_t, 0x00F2541D> _word_F2541D;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
     constexpr uint32_t max_orders = 256000;
@@ -71,11 +70,11 @@ namespace openloco::ui::windows::map
         make_widget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0),
         make_widget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         make_widget({ 0, 41 }, { 350, 230 }, widget_type::panel, 1),
-        make_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_overall),
-        make_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_vehicles),
-        make_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_industries),
-        make_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_routes),
-        make_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_ownership),
+        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_overall),
+        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_vehicles),
+        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_industries),
+        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_routes),
+        make_remap_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_ownership),
         make_widget({ 3, 44 }, { 240, 215 }, widget_type::scrollview, 1, horizontal | vertical),
         make_widget({ 3, 250 }, { 322, 21 }, widget_type::wt_13, 1),
         widget_end()
@@ -135,6 +134,7 @@ namespace openloco::ui::windows::map
         self->set_size(minWindowSize, maxWindowSize);
     }
 
+    // 0x0046C544
     static void sub_46C544(window* self)
     {
         registers regs;
@@ -142,14 +142,15 @@ namespace openloco::ui::windows::map
         call(0x0046C544, regs);
     }
 
-    static void sub_46D300(window* self, int16_t x, int16_t y)
+    // 0x0046D300
+    static void setHoverItemVehicles(window* self, int16_t x, int16_t y)
     {
         auto i = 0;
 
         if (!input::has_flag(input::input_flags::flag5))
         {
-            int32_t cursorX = _cursorX2;
-            int32_t cursorY = _cursorY2;
+            uint32_t cursorX = _cursorX2;
+            uint32_t cursorY = _cursorY2;
             auto window = WindowManager::findAt(cursorX, cursorY);
 
             if (window != nullptr)
@@ -179,20 +180,20 @@ namespace openloco::ui::windows::map
             }
         }
 
-        uint32_t eax;
+        uint32_t itemHover;
 
         if (y < 0)
         {
-            eax = (1 << i);
+            itemHover = (1 << i);
         }
         else
         {
-            eax = 0;
+            itemHover = 0;
         }
 
-        if (eax != self->var_854)
+        if (itemHover != self->var_854)
         {
-            self->var_854 = eax;
+            self->var_854 = itemHover;
             self->invalidate();
         }
 
@@ -202,15 +203,7 @@ namespace openloco::ui::windows::map
         }
     }
 
-    static void sub_46D406(window* self, int16_t x, int16_t y)
-    {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x0046D406, regs);
-    }
-
+    // 0x0046D520
     static void sub_46D520(window* self, int16_t x, int16_t y)
     {
         registers regs;
@@ -220,6 +213,7 @@ namespace openloco::ui::windows::map
         call(0x0046D520, regs);
     }
 
+    // 0x0046D66A
     static void sub_46D66A(window* self, int16_t x, int16_t y)
     {
         registers regs;
@@ -229,6 +223,7 @@ namespace openloco::ui::windows::map
         call(0x0046D66A, regs);
     }
 
+    // 0x0046D789
     static void sub_46D789(window* self, int16_t x, int16_t y)
     {
         registers regs;
@@ -238,11 +233,15 @@ namespace openloco::ui::windows::map
         call(0x0046D789, regs);
     }
 
+    // 0x0046B69C
     static void sub_46B69C()
     {
         registers regs;
         call(0x0046B69C, regs);
     }
+
+    // 0x00F2541D
+    static uint16_t mapFrameNumber = 0;
 
     // 0x0046BA5B
     static void onUpdate(window* self)
@@ -252,7 +251,7 @@ namespace openloco::ui::windows::map
 
         WindowManager::invalidateWidget(WindowType::map, self->number, self->current_tab + widx::tabOverall);
 
-        _word_F2541D++;
+        mapFrameNumber++;
 
         if (gCurrentRotation != self->var_846)
         {
@@ -276,11 +275,8 @@ namespace openloco::ui::windows::map
         switch (self->current_tab + widx::tabOverall)
         {
             case widx::tabOverall:
-                sub_46D300(self, x, y);
-                break;
-
             case widx::tabVehicles:
-                sub_46D406(self, x, y);
+                setHoverItemVehicles(self, x, y);
                 break;
 
             case widx::tabIndustries:
@@ -365,6 +361,33 @@ namespace openloco::ui::windows::map
         sub_4C6827(window, pos.x, pos.y, z);
     }
 
+    static map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
+    {
+        map_pos coordinate2D;
+
+        switch (rotation)
+        {
+            default:
+            case 0:
+                coordinate2D = pos;
+                break;
+            case 1:
+                coordinate2D.x = pos.y;
+                coordinate2D.y = -pos.x + 0x2FFF;
+                break;
+            case 2:
+                coordinate2D.x = -pos.x + 0x2FFF;
+                coordinate2D.y = -pos.y + 0x2FFF;
+                break;
+            case 3:
+                coordinate2D.x = -pos.y + 0x2FFF;
+                coordinate2D.y = pos.x;
+                break;
+        }
+
+        return coordinate2D;
+    }
+
     // 0x0046B97C
     static void event18(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
@@ -380,7 +403,7 @@ namespace openloco::ui::windows::map
         y *= 32;
 
         map_pos pos = { x, y };
-        pos = rotate2DCoordinate(pos, gCurrentRotation);
+        pos = rotateMapCoordinate(pos, gCurrentRotation);
 
         sub_46B9D4(pos);
     }
@@ -450,10 +473,12 @@ namespace openloco::ui::windows::map
         self->widgets[widx::statusBar].right = self->width - 14;
 
         auto disabledWidgets = 0;
+
         if (is_editor_mode())
         {
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
+
         self->disabled_widgets = disabledWidgets;
 
         leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
@@ -572,7 +597,7 @@ namespace openloco::ui::windows::map
         for (auto i = 0; i < 6; i++)
         {
             auto colour = byte_4FDD5C[i];
-            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
             }
@@ -617,7 +642,7 @@ namespace openloco::ui::windows::map
         for (auto i = 0; i < 6; i++)
         {
             auto colour = vehicleTypeColours[i];
-            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
             }
@@ -683,7 +708,7 @@ namespace openloco::ui::windows::map
             if (industry == nullptr)
                 return;
 
-            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
             }
@@ -712,7 +737,7 @@ namespace openloco::ui::windows::map
             auto index = _byte_F253DF[i];
             auto colour = _byte_F253F2[i];
 
-            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
             }
@@ -768,7 +793,7 @@ namespace openloco::ui::windows::map
 
             auto colour = colour::get_shade(company.mainColours.primary, 6);
 
-            if (!(self->var_854 & (1 << i)) || !(_word_F2541D & (1 << 2)))
+            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
             }
@@ -1000,33 +1025,7 @@ namespace openloco::ui::windows::map
         gfx::draw_string_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
     }
 
-    static map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
-    {
-        map_pos coordinate2D;
-
-        switch (rotation)
-        {
-            default:
-            case 0:
-                coordinate2D = pos;
-                break;
-            case 1:
-                coordinate2D.x = pos.y;
-                coordinate2D.y = -pos.x + 0x2FFF;
-                break;
-            case 2:
-                coordinate2D.x = -pos.x + 0x2FFF;
-                coordinate2D.y = -pos.y + 0x2FFF;
-                break;
-            case 3:
-                coordinate2D.x = -pos.y + 0x2FFF;
-                coordinate2D.y = pos.x;
-                break;
-        }
-
-        return coordinate2D;
-    }
-
+    // 0x0046BF0F based on
     static void drawVehicleOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Car car, widget_index widgetIndex, int16_t x, int16_t y)
     {
         auto trainPos = rotateMapCoordinate({ x, y }, gCurrentRotation);
@@ -1059,7 +1058,7 @@ namespace openloco::ui::windows::map
 
             if (_dword_F253A4 & (1 << index))
             {
-                if (!(_word_F2541D & (1 << 2)))
+                if (!(mapFrameNumber & (1 << 2)))
                 {
                     colour = _byte_4FDC5C[colour];
                 }
@@ -1114,7 +1113,7 @@ namespace openloco::ui::windows::map
             {
                 if (_byte_F253DF[index] == 0xFE)
                 {
-                    if (_word_F2541D & (1 << 2))
+                    if (mapFrameNumber & (1 << 2))
                     {
                         colour = _byte_4FDC5C[colour];
                     }
@@ -1129,7 +1128,7 @@ namespace openloco::ui::windows::map
             {
                 if (_byte_F253DF[index] == 0xFD)
                 {
-                    if (_word_F2541D & (1 << 2))
+                    if (mapFrameNumber & (1 << 2))
                     {
                         colour = _byte_4FDC5C[colour];
                     }
@@ -1260,16 +1259,6 @@ namespace openloco::ui::windows::map
         }
     }
 
-    //// 0x0046BF64
-    //static void sub_46BF64()
-    //{
-    //}
-
-    //// 0x0046C0AE
-    //static void sub_46C0AE()
-    //{
-    //}
-
     // 0x0046BE51, 0x0046BE34
     static void drawRectOnMap(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
@@ -1379,17 +1368,19 @@ namespace openloco::ui::windows::map
             drawViewOnMap(dpi, left, top, right, bottom);
         }
 
-        if (!(_word_F2541D & (1 << 2)))
+        if (!(mapFrameNumber & (1 << 2)))
             return;
 
         if (_dword_F253A4 != 0)
             return;
 
+        uint8_t cornerSize = 5;
+
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
 
-            drawViewCornersOnMap(dpi, left, top, 0, 0, 5, 0);
+            drawViewCornersOnMap(dpi, left, top, 0, 0, cornerSize, 0);
         }
 
         {
@@ -1397,22 +1388,14 @@ namespace openloco::ui::windows::map
             left += viewport->view_width;
             auto top = viewport->view_y;
 
-            drawViewCornersOnMap(dpi, left, top, -5, 0, 0, 0);
+            drawViewCornersOnMap(dpi, left, top, -cornerSize, 0, 0, 0);
         }
 
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
 
-            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, 5);
-        }
-
-        {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
-            top += viewport->view_height;
-
-            drawViewCornersOnMap(dpi, left, top, 0, -5, 0, 0);
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, cornerSize);
         }
 
         {
@@ -1420,24 +1403,15 @@ namespace openloco::ui::windows::map
             auto top = viewport->view_y;
             top += viewport->view_height;
 
-            drawViewCornersOnMap(dpi, left, top, 0, 0, 5, 0);
+            drawViewCornersOnMap(dpi, left, top, 0, -cornerSize, 0, 0);
         }
 
         {
             auto left = viewport->view_x;
-            left += viewport->view_width;
             auto top = viewport->view_y;
             top += viewport->view_height;
 
-            drawViewCornersOnMap(dpi, left, top, -5, 0, 0, 0);
-        }
-
-        {
-            auto left = viewport->view_x;
-            left += viewport->view_width;
-            auto top = viewport->view_y;
-
-            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, 5);
+            drawViewCornersOnMap(dpi, left, top, 0, 0, cornerSize, 0);
         }
 
         {
@@ -1446,7 +1420,24 @@ namespace openloco::ui::windows::map
             auto top = viewport->view_y;
             top += viewport->view_height;
 
-            drawViewCornersOnMap(dpi, left, top, 0, -5, 0, 0);
+            drawViewCornersOnMap(dpi, left, top, -cornerSize, 0, 0, 0);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+
+            drawViewCornersOnMap(dpi, left, top, 0, 0, 0, cornerSize);
+        }
+
+        {
+            auto left = viewport->view_x;
+            left += viewport->view_width;
+            auto top = viewport->view_y;
+            top += viewport->view_height;
+
+            drawViewCornersOnMap(dpi, left, top, 0, -cornerSize, 0, 0);
         }
     }
 
@@ -1486,13 +1477,6 @@ namespace openloco::ui::windows::map
     // 0x0046B806
     static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        //registers regs;
-        //regs.esi = (int32_t)self;
-        //regs.edi = (int32_t)dpi;
-        //regs.eax = scrollIndex;
-
-        //call(0x0046B806, regs);
-
         if (!(_dword_525E28 & (1 << 0)))
             return;
 
@@ -1501,7 +1485,7 @@ namespace openloco::ui::windows::map
         auto element = gfx::get_g1element(0);
         auto offset = *_dword_F253A8;
 
-        if (_word_F2541D & (1 << 2))
+        if (mapFrameNumber & (1 << 2))
             offset += 0x90000;
 
         gfx::get_g1element(0)->offset = offset;
@@ -1522,22 +1506,6 @@ namespace openloco::ui::windows::map
         gfx::get_g1element(0)->unused = element->unused;
 
         drawVehiclesOnMap(dpi, self->current_tab + widx::tabOverall);
-
-        //switch (self->current_tab + widx::tabOverall)
-        //{
-        //    case widx::tabOverall:
-        //    case widx::tabIndustries:
-        //        drawVehiclesOnMap(dpi, false);
-        //        break;
-        //    case widx::tabVehicles:
-        //        sub_46BF64();
-        //        break;
-        //    case widx::tabRoutes:
-        //        sub_46C0AE();
-        //        break;
-        //    case widx::tabOwnership:
-        //
-        //}
 
         drawViewportPosition(dpi);
 
@@ -1629,7 +1597,7 @@ namespace openloco::ui::windows::map
         sub_46CFF0();
         sub_46CED0();
 
-        _word_F2541D = 0;
+        mapFrameNumber = 0;
     }
 
     // 0x0046B5C0
