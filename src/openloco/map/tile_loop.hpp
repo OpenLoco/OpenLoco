@@ -15,11 +15,11 @@ namespace openloco::map
         map_pos next()
         {
             _pos.x += tile_size;
-            if (_pos.x >= map_size - 1)
+            if (_pos.x >= map_width - 1)
             {
                 _pos.x = 0;
                 _pos.y += tile_size;
-                if (_pos.y >= map_size - 1)
+                if (_pos.y >= map_height - 1)
                 {
                     _pos.y = 0;
                 }

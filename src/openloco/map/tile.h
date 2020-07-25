@@ -16,7 +16,9 @@ namespace openloco::map
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
     constexpr coord_t map_columns = 384;
-    constexpr coord_t map_size = map_columns * tile_size;
+    constexpr coord_t map_height = map_rows * tile_size;
+    constexpr coord_t map_width = map_columns * tile_size;
+    constexpr int32_t map_size = map_columns * map_rows;
 
     constexpr coord_t tile_floor(coord_t coord)
     {

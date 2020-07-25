@@ -24,7 +24,7 @@ using namespace openloco::map;
 
 namespace openloco::ui::windows::station
 {
-    static loco_global<uint8_t[0x24000], 0x00F00484> _byte_F00484;
+    static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
@@ -737,7 +737,7 @@ namespace openloco::ui::windows::station
     {
         tile_loop tileLoop;
 
-        for (uint32_t posId = 0; posId < 0x24000; posId++)
+        for (uint32_t posId = 0; posId < map_size; posId++)
         {
             if (_byte_F00484[posId] & (1 << 0))
             {
@@ -920,10 +920,12 @@ namespace openloco::ui::windows::station
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (widgetIndex != widx::tab_cargo)
+            {
                 if (self->number == _lastSelectedStation)
                 {
                     showStationCatchment(station_id::null);
                 }
+            }
 
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
