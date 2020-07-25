@@ -1702,9 +1702,15 @@ namespace openloco::things::vehicle
         component = component->nextVehicleComponent();
         while (component->type != VehicleThingType::tail)
         {
-            if (component->type == VehicleThingType::bogie)
+            CarComponent carComponent(component);
+            // If this is a body start then we need a new Car
+            if (carComponent.body->type == VehicleThingType::body_start)
             {
-                cars.push_back(Car(component));
+                cars.push_back(Car{ carComponent });
+            }
+            else // If not then it is part of the previous Car
+            {
+                cars.back().AddComponent(carComponent);
             }
         }
         tail = component->as_vehicle_tail();

@@ -458,24 +458,28 @@ namespace openloco
             vehicle_bogie* front;
             vehicle_bogie* back;
             vehicle_body* body;
+            CarComponent(openloco::vehicle*& component)
+            {
+                front = component->as_vehicle_bogie();
+                component = component->nextVehicleComponent();
+                back = component->as_vehicle_bogie();
+                component = component->nextVehicleComponent();
+                body = component->as_vehicle_body();
+                component = component->nextVehicleComponent();
+            }
         };
 
         struct Car
         {
             std::vector<CarComponent> carComponents;
-            Car(openloco::vehicle*& component)
+            Car(CarComponent& carComponent)
             {
-                for (;
-                     component->type != VehicleThingType::tail && component->type != VehicleThingType::body_start;
-                     component = component->nextVehicleComponent())
-                {
-                    auto front = component->as_vehicle_bogie();
-                    component = component->nextVehicleComponent();
-                    auto back = component->as_vehicle_bogie();
-                    component = component->nextVehicleComponent();
-                    auto body = component->as_vehicle_body();
-                    carComponents.push_back(CarComponent{ front, back, body });
-                }
+                AddComponent(carComponent);
+            }
+
+            void AddComponent(CarComponent& carComponent)
+            {
+                carComponents.push_back(carComponent);
             }
         };
 
