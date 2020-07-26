@@ -1242,10 +1242,11 @@ namespace openloco::input
 
         _currentScrollArea = (uint16_t)scrollArea;
         _currentScrollOffset = scrollAreaOffset;
+        int16_t scrollAreaIndex = scrollAreaOffset / sizeof(ui::scroll_area_t);
 
         if (scrollArea == ui::scrollview::scroll_part::view)
         {
-            window->call_scroll_mouse_down(outX, outY, scrollAreaOffset / sizeof(ui::scroll_area_t));
+            window->call_scroll_mouse_down(outX, outY, scrollAreaIndex);
             return;
         }
 
@@ -1261,8 +1262,17 @@ namespace openloco::input
         switch (scrollArea)
         {
             case ui::scrollview::scroll_part::hscrollbar_button_left:
-                call(0x4c894f, regs);
+            {
+                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
+                if (w != nullptr)
+                {
+                    w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_LEFT_PRESSED;
+                    w->scroll_areas[scrollAreaIndex].h_left = std::max(w->scroll_areas[scrollAreaIndex].h_left - 3, 0);
+                    scrollview::update_thumbs(w, _pressedWidgetIndex);
+                    WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                }
                 break;
+            }
             case ui::scrollview::scroll_part::hscrollbar_button_right:
                 call(0x4c89ae, regs);
                 break;
