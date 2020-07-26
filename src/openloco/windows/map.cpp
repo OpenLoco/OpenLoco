@@ -299,7 +299,7 @@ namespace openloco::ui::windows::map
     // 0x0046D789
     static void setHoverItemCompanies(window* self, int16_t x, int16_t y)
     {
-        auto i = 0;
+        uint8_t i = 0;
 
         if (!input::has_flag(input::input_flags::flag5))
         {
@@ -733,7 +733,7 @@ namespace openloco::ui::windows::map
         162,
         188,
         21,
-        136,
+        184, // changed from 136 to make ships more viewable on the map
     };
 
     // 0x0046D379
