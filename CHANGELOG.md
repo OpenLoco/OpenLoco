@@ -1,4 +1,4 @@
-20.05.1+ (???)
+20.07 (2020-07-26)
 ------------------------------------------------------------------------
 - Feature: [#523] Holding the construction window's build or remove button will keep repeating the action.
 - Fix: [#158] Pressing shift to build underground tracks automatically builds ten track pieces.
