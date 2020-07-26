@@ -142,6 +142,32 @@ namespace openloco::ui::windows::map
         call(0x0046C544, regs);
     }
 
+    // 0x0046D34D based on
+    static void setHoverItem(window* self, int16_t y, int index)
+    {
+        uint32_t itemHover;
+
+        if (y < 0)
+        {
+            itemHover = (1 << index);
+        }
+        else
+        {
+            itemHover = 0;
+        }
+
+        if (itemHover != self->var_854)
+        {
+            self->var_854 = itemHover;
+            self->invalidate();
+        }
+
+        if (self->var_854 != 0)
+        {
+            self->invalidate();
+        }
+    }
+
     // 0x0046D300
     static void setHoverItemVehicles(window* self, int16_t x, int16_t y)
     {
@@ -180,57 +206,140 @@ namespace openloco::ui::windows::map
             }
         }
 
-        uint32_t itemHover;
-
-        if (y < 0)
-        {
-            itemHover = (1 << i);
-        }
-        else
-        {
-            itemHover = 0;
-        }
-
-        if (itemHover != self->var_854)
-        {
-            self->var_854 = itemHover;
-            self->invalidate();
-        }
-
-        if (self->var_854 != 0)
-        {
-            self->invalidate();
-        }
+        setHoverItem(self, y, i);
     }
 
     // 0x0046D520
-    static void sub_46D520(window* self, int16_t x, int16_t y)
+    static void setHoverItemIndustries(window* self, int16_t x, int16_t y)
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x0046D520, regs);
+        uint8_t i = 0;
+
+        if (!input::has_flag(input::input_flags::flag5))
+        {
+            uint32_t cursorX = _cursorX2;
+            uint32_t cursorY = _cursorY2;
+            auto window = WindowManager::findAt(cursorX, cursorY);
+
+            if (window != nullptr)
+            {
+                if (window == self)
+                {
+                    cursorX -= x;
+                    if (cursorX <= 100)
+                    {
+                        cursorY -= y;
+                        if (cursorY < 160)
+                        {
+                            y = cursorY;
+
+                            for (; i < objectmgr::get_max_objects(object_type::industry); i++)
+                            {
+                                auto industryObj = objectmgr::get<industry_object>(i);
+
+                                if (industryObj == nullptr)
+                                    continue;
+
+                                y -= 10;
+
+                                if (y < 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        setHoverItem(self, y, i);
     }
 
     // 0x0046D66A
-    static void sub_46D66A(window* self, int16_t x, int16_t y)
+    static void setHoverItemRoutes(window* self, int16_t x, int16_t y)
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x0046D66A, regs);
+        auto i = 0;
+
+        if (!input::has_flag(input::input_flags::flag5))
+        {
+            uint32_t cursorX = _cursorX2;
+            uint32_t cursorY = _cursorY2;
+            auto window = WindowManager::findAt(cursorX, cursorY);
+
+            if (window != nullptr)
+            {
+                if (window == self)
+                {
+                    cursorX -= x;
+                    if (cursorX <= 100)
+                    {
+                        cursorY -= y;
+                        y = cursorY;
+
+                        for (; i < 19; i++)
+                        {
+                            if (_byte_F253DF[i] == 0xFF)
+                                break;
+
+                            y -= 10;
+
+                            if (y < 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        setHoverItem(self, y, i);
     }
 
     // 0x0046D789
-    static void sub_46D789(window* self, int16_t x, int16_t y)
+    static void setHoverItemCompanies(window* self, int16_t x, int16_t y)
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x0046D789, regs);
+        auto i = 0;
+
+        if (!input::has_flag(input::input_flags::flag5))
+        {
+            uint32_t cursorX = _cursorX2;
+            uint32_t cursorY = _cursorY2;
+            auto window = WindowManager::findAt(cursorX, cursorY);
+
+            if (window != nullptr)
+            {
+                if (window == self)
+                {
+                    cursorX -= x;
+                    if (cursorX <= 100)
+                    {
+                        cursorY -= y;
+                        if (cursorY < 150)
+                        {
+                            y = cursorY;
+
+                            for (; i < companymgr::max_companies; i++)
+                            {
+                                auto company = companymgr::get(i);
+
+                                if (company->empty())
+                                    continue;
+
+                                y -= 10;
+
+                                if (y < 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        setHoverItem(self, y, i);
     }
 
     // 0x0046B69C
@@ -280,15 +389,15 @@ namespace openloco::ui::windows::map
                 break;
 
             case widx::tabIndustries:
-                sub_46D520(self, x, y);
+                setHoverItemIndustries(self, x, y);
                 break;
 
             case widx::tabRoutes:
-                sub_46D66A(self, x, y);
+                setHoverItemRoutes(self, x, y);
                 break;
 
             case widx::tabOwnership:
-                sub_46D789(self, x, y);
+                setHoverItemCompanies(self, x, y);
                 break;
         }
     }
@@ -706,7 +815,7 @@ namespace openloco::ui::windows::map
             auto industry = objectmgr::get<industry_object>(i);
 
             if (industry == nullptr)
-                return;
+                continue;
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
