@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../types.hpp"
+#include "../viewport.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -63,7 +64,7 @@ namespace openloco::map
 #pragma pack(pop)
 
     uint32_t tile_element_height(int16_t x, int16_t y);
-    map_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
+    ui::viewport_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2DCoordinate(map_pos pos, uint8_t rotation);
 
     enum class element_type

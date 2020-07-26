@@ -1593,7 +1593,7 @@ namespace openloco::ui::WindowManager
     }
 
     // 0x0046960C
-    ui::window* findWindowShowing(map::map_pos position)
+    ui::window* findWindowShowing(const viewport_pos& position)
     {
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
@@ -1604,7 +1604,7 @@ namespace openloco::ui::WindowManager
             if (viewport->zoom != 0)
                 continue;
 
-            if (!viewport->contains({ position.x, position.y }))
+            if (!viewport->contains(position))
                 continue;
 
             return w;
