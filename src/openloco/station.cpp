@@ -5,6 +5,7 @@
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
 #include "messagemgr.h"
+#include "objects/airport_object.h"
 #include "objects/building_object.h"
 #include "objects/cargo_object.h"
 #include "objects/industry_object.h"
@@ -24,6 +25,7 @@ namespace openloco
 {
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;
+    constexpr uint8_t catchmentSize = 4;
 
     struct CargoSearchState
     {
@@ -44,6 +46,56 @@ namespace openloco
         void mapRemove2(tile_coord_t x, tile_coord_t y)
         {
             _map[y * map_columns + x] &= ~(1 << 1);
+        }
+
+        void setTile(tile_coord_t x, tile_coord_t y, uint8_t flag)
+        {
+            _map[y * map_columns + x] |= (1 << flag);
+        }
+
+        void resetTile(tile_coord_t x, tile_coord_t y, uint8_t flag)
+        {
+            _map[y * map_columns + x] &= ~(1 << flag);
+        }
+
+        void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, uint8_t flag)
+        {
+            auto xStart = x;
+            auto xTileStartCount = xTileCount;
+            while (yTileCount > 0)
+            {
+                while (xTileCount > 0)
+                {
+                    setTile(x, y, flag);
+                    x++;
+                    xTileCount--;
+                }
+
+                x = xStart;
+                xTileCount = xTileStartCount;
+                y++;
+                yTileCount--;
+            }
+        }
+
+        void resetTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, uint8_t flag)
+        {
+            auto xStart = x;
+            auto xTileStartCount = xTileCount;
+            while (yTileCount > 0)
+            {
+                while (xTileCount > 0)
+                {
+                    resetTile(x, y, flag);
+                    x++;
+                    xTileCount--;
+                }
+
+                x = xStart;
+                xTileCount = xTileStartCount;
+                y++;
+                yTileCount--;
+            }
         }
 
         uint32_t filter() const
@@ -102,7 +154,7 @@ namespace openloco
         }
     };
 
-    static void sub_491BF5(map_pos pos);
+    static void sub_491BF5(map_pos pos, uint8_t flag);
 
     station_id_t station::id() const
     {
@@ -189,6 +241,7 @@ namespace openloco
     {
         cargoSearchState.byte_112C7F2(0);
         cargoSearchState.filter(0);
+
         if (location.x != -1)
         {
             cargoSearchState.filter(ebx);
@@ -196,36 +249,40 @@ namespace openloco
 
         cargoSearchState.resetIndustryMap();
 
-        setStationCatchmentDisplay(true);
+        setStationCatchmentDisplay((1 << 0));
 
         if (location.x != -1)
         {
-            sub_491BF5(location);
+            sub_491BF5(location, 1);
         }
 
         cargoSearchState.resetScores();
         cargoSearchState.dword_112C710(0);
+
         if (this != (station*)0xFFFFFFFF)
         {
-            for (uint16_t i = 0; i < var_1CE; i++)
+            for (uint16_t i = 0; i < stationTileSize; i++)
             {
-                auto pos = var_1D0[i];
+                auto pos = stationTiles[i];
                 auto baseZ = pos.z / 4;
                 auto tile = tilemgr::get(pos);
                 for (auto& el : tile)
                 {
                     auto stationEl = el.as_station();
+
                     if (stationEl != nullptr && stationEl->base_z() != baseZ && !(stationEl->flags() & (1 << 5)))
                     {
                         cargoSearchState.byte_112C7F2(0);
-                        if (stationEl->unk_5b() == 1)
+
+                        if (stationEl->stationType() == stationType::roadStation)
                         {
                             auto obj = objectmgr::get<road_station_object>(stationEl->object_id());
-                            if (obj->flags & (1 << 1))
+
+                            if (obj->flags & road_station_flags::passenger)
                             {
                                 cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
                             }
-                            else if (obj->flags & (1 << 2))
+                            else if (obj->flags & road_station_flags::freight)
                             {
                                 cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
                             }
@@ -253,6 +310,7 @@ namespace openloco
                 {
                     auto pos = map_pos(tx * tile_size, ty * tile_size);
                     auto tile = tilemgr::get(pos);
+
                     for (auto& el : tile)
                     {
                         if (!el.is_flag_4())
@@ -263,9 +321,11 @@ namespace openloco
                                 {
                                     auto industryEl = el.as_industry();
                                     auto industry = industryEl->industry();
+
                                     if (industry != nullptr && industry->under_construction == 0xFF)
                                     {
                                         auto obj = industry->object();
+
                                         if (obj != nullptr)
                                         {
                                             for (auto cargoId : obj->required_cargo_type)
@@ -292,6 +352,7 @@ namespace openloco
                                 {
                                     auto buildingEl = el.as_building();
                                     auto obj = buildingEl->object();
+
                                     if (obj != nullptr)
                                     {
                                         for (int i = 0; i < 2; i++)
@@ -299,6 +360,7 @@ namespace openloco
                                             if (obj->var_A2[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A2[i])))
                                             {
                                                 cargoSearchState.addScore(obj->var_A2[i], obj->var_A6[i]);
+
                                                 if (obj->var_A0[i] != 0)
                                                 {
                                                     cargoSearchState.dword_112C710(cargoSearchState.dword_112C710() | (1 << obj->var_A2[i]));
@@ -331,12 +393,13 @@ namespace openloco
                                             };
 
                                             auto rotation = buildingEl->var_5b();
-                                            tile_coord_t x = (pos.x - word_4F9296[rotation]) / tile_size;
-                                            tile_coord_t y = (pos.y - word_4F9298[rotation]) / tile_size;
-                                            cargoSearchState.mapRemove2(x + 0, y + 0);
-                                            cargoSearchState.mapRemove2(x + 0, y + 1);
-                                            cargoSearchState.mapRemove2(x + 1, y + 0);
-                                            cargoSearchState.mapRemove2(x + 1, y + 1);
+                                            tile_coord_t xPos = (pos.x - word_4F9296[rotation]) / tile_size;
+                                            tile_coord_t yPos = (pos.y - word_4F9298[rotation]) / tile_size;
+
+                                            cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
+                                            cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
+                                            cargoSearchState.mapRemove2(xPos + 1, yPos + 0);
+                                            cargoSearchState.mapRemove2(xPos + 1, yPos + 1);
                                         }
                                     }
                                     break;
@@ -351,6 +414,7 @@ namespace openloco
         }
 
         uint32_t acceptedCargos = 0;
+
         for (uint8_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
             if (cargoSearchState.score(cargoId) >= 8)
@@ -358,16 +422,112 @@ namespace openloco
                 acceptedCargos |= (1 << cargoId);
             }
         }
+
         return acceptedCargos;
     }
 
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, map_pos minPos, map_pos maxPos, uint8_t flags);
+
+    static std::tuple<tile_element, bool> sub_48F6D4(map_pos3 pos);
+
     // 0x00491D70
-    void station::setStationCatchmentDisplay(bool hideCatchment)
+    void station::setStationCatchmentDisplay(uint8_t catchmentFlag)
     {
-        registers regs;
-        regs.dx = (int16_t)hideCatchment;
-        regs.ebp = (int32_t)this;
-        call(0x00491D70, regs);
+        CargoSearchState cargoSearchState;
+        cargoSearchState.resetTileRegion(0, 0, map_columns, map_rows, catchmentFlag);
+
+        if (this == (station*)0xFFFFFFFF)
+            return;
+
+        if (stationTileSize == 0)
+            return;
+
+        for (uint16_t i = 0; i < stationTileSize; i++)
+        {
+            auto pos = stationTiles[i];
+            pos.z &= ~((1 << 1) | (1 << 0));
+
+            auto [element, carry] = sub_48F6D4(pos);
+
+            if (!carry)
+            {
+                auto stationElement = element.as_station();
+
+                if (stationElement == nullptr)
+                    continue;
+
+                if (stationElement->stationType() == stationType::airport)
+                {
+                    auto airportObject = objectmgr::get<airport_object>(stationElement->object_id());
+
+                    map_pos minPos, maxPos;
+                    minPos.x = airportObject->min_x;
+                    minPos.y = airportObject->min_y;
+                    maxPos.x = airportObject->max_x;
+                    maxPos.y = airportObject->max_y;
+
+                    minPos = rotate2DCoordinate(minPos, stationElement->rotation());
+                    maxPos = rotate2DCoordinate(maxPos, stationElement->rotation());
+
+                    minPos.x += pos.x;
+                    minPos.y += pos.y;
+                    maxPos.x += pos.x;
+                    maxPos.y += pos.y;
+
+                    if (minPos.x > maxPos.x)
+                    {
+                        std::swap(minPos.x, maxPos.x);
+                    }
+
+                    if (minPos.y > maxPos.y)
+                    {
+                        std::swap(minPos.y, maxPos.y);
+                    }
+
+                    minPos.x /= tile_size;
+                    minPos.y /= tile_size;
+                    maxPos.x /= tile_size;
+                    maxPos.y /= tile_size;
+
+                    minPos.x -= catchmentSize;
+                    minPos.y -= catchmentSize;
+                    maxPos.x += catchmentSize;
+                    maxPos.y += catchmentSize;
+
+                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                }
+                else if (stationElement->stationType() == stationType::docks)
+                {
+                    map_pos minPos, maxPos;
+                    minPos = pos;
+                    minPos.x /= tile_size;
+                    minPos.y /= tile_size;
+                    maxPos = minPos;
+
+                    minPos.x -= catchmentSize;
+                    minPos.y -= catchmentSize;
+                    maxPos.x += catchmentSize + 1;
+                    maxPos.y += catchmentSize + 1;
+
+                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                }
+                else
+                {
+                    map_pos minPos, maxPos;
+                    minPos = pos;
+                    minPos.x /= tile_size;
+                    minPos.y /= tile_size;
+                    maxPos = minPos;
+
+                    minPos.x -= catchmentSize;
+                    minPos.y -= catchmentSize;
+                    maxPos.x += catchmentSize;
+                    maxPos.y += catchmentSize;
+
+                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                }
+            }
+        }
     }
 
     // 0x0048F7D1
@@ -563,11 +723,76 @@ namespace openloco
         WindowManager::invalidate(WindowType::station, id());
     }
 
-    static void sub_491BF5(map_pos pos)
+    // 0x0048F6D4
+    static std::tuple<tile_element, bool> sub_48F6D4(map_pos3 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x00491BF5, regs);
+        auto tile = tilemgr::get(pos.x, pos.y);
+        pos.z /= 4;
+
+        for (auto& element : tile)
+        {
+            auto stationElement = element.as_station();
+
+            if (stationElement == nullptr)
+            {
+                if (element.is_last())
+                {
+                    return std::make_tuple(element, false);
+                }
+
+                continue;
+            }
+
+            if (stationElement->base_z() != pos.z)
+            {
+                if (stationElement->is_last())
+                {
+                    return std::make_tuple(element, false);
+                }
+
+                continue;
+            }
+
+            if (stationElement->flags() & (1 << 5))
+            {
+                return std::make_tuple(element, true);
+            }
+            else
+            {
+                return std::make_tuple(element, false);
+            }
+        }
+        return std::make_tuple(*tile.end(), false);
+    }
+
+    // 0x00491EDC
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, map_pos minPos, map_pos maxPos, uint8_t flag)
+    {
+        minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
+        minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
+        maxPos.x = std::min(maxPos.x, static_cast<coord_t>(map_columns - 1));
+        maxPos.y = std::min(maxPos.y, static_cast<coord_t>(map_rows - 1));
+
+        maxPos.x -= minPos.x;
+        maxPos.y -= minPos.y;
+        maxPos.x++;
+        maxPos.y++;
+
+        cargoSearchState.setTileRegion(minPos.x, minPos.y, maxPos.x, maxPos.y, flag);
+    }
+
+    // 0x00491BF5
+    static void sub_491BF5(map_pos pos, uint8_t flag)
+    {
+        pos.x /= tile_size;
+        pos.y /= tile_size;
+        coord_t x = pos.x + catchmentSize;
+        coord_t y = pos.y + catchmentSize;
+        pos.x -= catchmentSize;
+        pos.y -= catchmentSize;
+
+        CargoSearchState cargoSearchState;
+
+        setStationCatchmentRegion(cargoSearchState, pos, { x, y }, flag);
     }
 }

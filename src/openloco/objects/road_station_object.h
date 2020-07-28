@@ -7,6 +7,9 @@ namespace openloco
     namespace road_station_flags
     {
         constexpr uint8_t recolourable = 1 << 0;
+        constexpr uint8_t passenger = 1 << 1;
+        constexpr uint8_t freight = 1 << 2;
+        constexpr uint8_t roadEnd = 1 << 3;
     }
 
 #pragma pack(push, 1)

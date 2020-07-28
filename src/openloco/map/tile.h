@@ -208,7 +208,7 @@ namespace openloco::map
 
     public:
         uint8_t object_id() const { return _5 & 0x1F; }
-        uint8_t unk_5b() const { return _5 >> 5; }
+        uint8_t stationType() const { return _5 >> 5; }
         uint8_t rotation() const { return _type & 0x3; }
         station_id_t station_id() const { return _station_id & 0x3FF; }
     };

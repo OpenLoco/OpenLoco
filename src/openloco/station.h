@@ -49,6 +49,14 @@ namespace openloco
 
     constexpr size_t max_cargo_stats = 32;
 
+    enum stationType
+    {
+        trainStation = 0,
+        roadStation,
+        airport,
+        docks,
+    };
+
     enum station_flags : uint16_t
     {
         transport_mode_rail = (1 << 0),
@@ -81,9 +89,8 @@ namespace openloco
         uint16_t flags;
         town_id_t town;                                   // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
-        uint16_t var_1CE;
-        map_pos3 var_1D0[1];
-        uint8_t pad_1D6[0x3B0 - 0x1D6];
+        uint16_t stationTileSize;                         // 0x1CE
+        map_pos3 stationTiles[80];                        // 0x1D0
         uint8_t var_3B0;
         uint8_t var_3B1;
         uint8_t pad_3B2[0x3D2 - 0x3B2];
@@ -99,7 +106,7 @@ namespace openloco
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
         void invalidate();
         void invalidate_window();
-        void setStationCatchmentDisplay(bool hideCatchment);
+        void setStationCatchmentDisplay(uint8_t flags);
 
     private:
         void update_cargo_acceptance();
