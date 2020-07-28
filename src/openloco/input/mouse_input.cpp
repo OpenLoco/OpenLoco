@@ -1436,8 +1436,17 @@ namespace openloco::input
                 break;
 
             case ui::scrollview::scroll_part::vscrollbar_button_top:
-                call(0x4c8b26, regs);
+            {
+                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
+                if (w != nullptr)
+                {
+                    w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::VSCROLLBAR_UP_PRESSED;
+                    w->scroll_areas[scrollAreaIndex].v_top = std::max(w->scroll_areas[scrollAreaIndex].v_top - 3, 0);
+                    scrollview::update_thumbs(w, _pressedWidgetIndex);
+                    WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                }
                 break;
+            }
             case ui::scrollview::scroll_part::vscrollbar_button_bottom:
                 call(0x4c8b85, regs);
                 break;
