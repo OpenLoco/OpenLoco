@@ -93,7 +93,44 @@ namespace openloco::ui
 
     namespace viewport_interaction
     {
-        uint8_t get_item_left(int16_t x, int16_t y, void* arg);
-        void right_over(int16_t x, int16_t y);
+        struct InteractionArg
+        {
+            coord_t x;
+            coord_t y;
+            union
+            {
+                uint32_t value;
+                void* object;
+            };
+        };
+
+        enum class InteractionItem : uint8_t
+        {
+            t_0 = 0,
+            t_1 = 1,
+            t_2 = 2,
+            thing = 3,
+            track = 4,
+            t_5 = 5,
+            t_6 = 6,
+            trackStation = 7,
+            roadStation = 8,
+            airport = 9,
+            dock = 10,
+            t_11 = 11,
+            tree = 12,
+            wall = 13,
+            town = 14,
+            station = 15,
+            road = 16,
+            t_17 = 17,
+            t_18 = 18, // bridge?
+            building = 19,
+            industry = 20,
+            headquarterBuilding = 21,
+        };
+
+        InteractionItem get_item_left(int16_t tempX, int16_t tempY, InteractionArg* arg);
+        InteractionItem right_over(int16_t x, int16_t y, InteractionArg* arg);
     }
 }

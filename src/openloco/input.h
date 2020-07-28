@@ -7,11 +7,11 @@ namespace openloco::input
 {
     enum class mouse_button : uint16_t
     {
-        released,
-        left_pressed,
-        left_released,
-        right_pressed,
-        right_released,
+        released = 0,
+        left_pressed = 1,
+        left_released = 2,
+        right_pressed = 3,
+        right_released = 4,
     };
 
     enum class input_state

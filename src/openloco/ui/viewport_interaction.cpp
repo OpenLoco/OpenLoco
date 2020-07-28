@@ -12,23 +12,36 @@ using namespace openloco::interop;
 namespace openloco::ui::viewport_interaction
 {
     // 0x004CD658
-    uint8_t get_item_left(int16_t x, int16_t y, void* arg)
+    InteractionItem get_item_left(int16_t tempX, int16_t tempY, InteractionArg* arg)
     {
         registers regs;
-        regs.ax = x;
-        regs.bx = y;
+        regs.ax = tempX;
+        regs.bx = tempY;
 
         call(0x004CD658, regs);
-        return regs.bl;
+        if (arg != nullptr)
+        {
+            arg->value = regs.edx;
+            arg->x = regs.ax;
+            arg->y = regs.cx;
+        }
+        return static_cast<InteractionItem>(regs.bl);
     }
 
     // 0x004CDB2B
-    void right_over(int16_t x, int16_t y)
+    InteractionItem right_over(int16_t x, int16_t y, InteractionArg* arg)
     {
         registers regs;
         regs.ax = x;
         regs.bx = y;
 
         call(0x004CDB2B, regs);
+        if (arg != nullptr)
+        {
+            arg->value = regs.edx;
+            arg->x = regs.ax;
+            arg->y = regs.cx;
+        }
+        return static_cast<InteractionItem>(regs.bl);
     }
 }

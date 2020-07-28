@@ -25,7 +25,7 @@ namespace openloco
         uint8_t produced_cargo_type[2]; // 0xDE (0xFF = null)
         uint8_t required_cargo_type[3]; // 0xE0 (0xFF = null)
         uint8_t pad_E3;
-        uint32_t flags;
+        uint32_t flags; // 0xE4
         uint8_t pad_E8[0xEA - 0xE8];
         uint8_t var_EA;
         uint8_t var_EB;

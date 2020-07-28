@@ -920,6 +920,40 @@ namespace openloco::ui
         event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
+    void window::call_12(const int16_t widget_index)
+    {
+        if (event_handlers->event_12 == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->event_12))
+        {
+            registers regs;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->event_12, regs);
+            return;
+        }
+
+        event_handlers->event_12(*this, widget_index);
+    }
+
+    void window::call_13(const int16_t widget_index)
+    {
+        if (event_handlers->event_13 == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->event_13))
+        {
+            registers regs;
+            regs.dx = widget_index;
+            regs.esi = (int32_t)this;
+            call((uint32_t)this->event_handlers->event_13, regs);
+            return;
+        }
+
+        event_handlers->event_13(*this, widget_index);
+    }
+
     void window::call_tool_abort(int16_t widget_index)
     {
         if (event_handlers->on_tool_abort == nullptr)
