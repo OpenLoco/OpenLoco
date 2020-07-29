@@ -1431,13 +1431,13 @@ namespace openloco::input
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_RIGHT_PRESSED;
-                    int16_t widget_width = w->widgets[_pressedWidgetIndex].right - w->widgets[_pressedWidgetIndex].left - 1;
+                    int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::VSCROLLBAR_VISIBLE) != 0)
                     {
-                        widget_width -= SCROLLBAR_WIDTH + 1;
+                        widgetWidth -= SCROLLBAR_WIDTH + 1;
                     }
-                    int16_t widget_content_width = std::max(w->scroll_areas[scrollAreaIndex].h_right - widget_width, 0);
-                    w->scroll_areas[scrollAreaIndex].h_left = std::min((int16_t)(w->scroll_areas[scrollAreaIndex].h_left + 3), widget_content_width);
+                    int16_t widgetContentWidth = std::max(w->scroll_areas[scrollAreaIndex].h_right - widgetWidth, 0);
+                    w->scroll_areas[scrollAreaIndex].h_left = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].h_left + 3, widgetContentWidth);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
                 }
