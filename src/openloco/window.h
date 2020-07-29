@@ -211,6 +211,8 @@ namespace openloco::ui
         constexpr uint16_t VSCROLLBAR_DOWN_PRESSED = 1 << 7;
     }
 
+    constexpr uint8_t SCROLLBAR_WIDTH = 10;
+
     struct window_event_list
     {
         union
