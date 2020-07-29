@@ -1427,6 +1427,7 @@ namespace openloco::input
             }
             case ui::scrollview::scroll_part::hscrollbar_button_right:
             {
+                // 0x004C89AE
                 ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
