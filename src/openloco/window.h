@@ -169,7 +169,7 @@ namespace openloco::ui
         int16_t h_right;         // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
-        uint16_t v_top;          // 0x0A
+        int16_t v_top;           // 0x0A
         int16_t v_bottom;        // 0x0C
         uint16_t v_thumb_top;    // 0x0E
         uint16_t v_thumb_bottom; // 0x10
