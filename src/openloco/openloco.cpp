@@ -18,6 +18,7 @@
 #undef small
 #endif
 
+#include "Title.h"
 #include "audio/audio.h"
 #include "companymgr.h"
 #include "config.h"
@@ -42,7 +43,6 @@
 #include "scenariomgr.h"
 #include "stationmgr.h"
 #include "things/thingmgr.h"
-#include "title.h"
 #include "townmgr.h"
 #include "tutorial.h"
 #include "ui.h"
@@ -166,8 +166,9 @@ namespace openloco
     }
 
     // 0x00431E32
-    // value: bl (false will no-op, seems pointless to me)
-    void toggle_paused(bool value)
+    // value: bl (false will no-op)
+    // **Gamecommand**
+    void togglePause(bool value)
     {
         registers regs;
         regs.bl = value ? 1 : 0;

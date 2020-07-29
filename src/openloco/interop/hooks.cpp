@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../Title.h"
 #include "../audio/audio.h"
 #include "../console.h"
 #include "../core/FileSystem.hpp"
@@ -19,7 +20,6 @@
 #include "../platform/platform.h"
 #include "../station.h"
 #include "../things/vehicle.h"
-#include "../title.h"
 #include "../tutorial.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
