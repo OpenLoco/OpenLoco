@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#523] Holding the construction window's build or remove button will keep repeating the action.
 - Fix: [#158] Pressing shift to build underground tracks automatically builds ten track pieces.
+- Fix: [#390] Load/save window causes a crash when trying to access bad directories.
 - Fix: [#397] Opening a tutorial crashes the game.
 - Fix: [#485] Incorrect position of exhaust smoke on vehicles.
 - Fix: [#491] Station/city name labels are hidden from viewport when saving.
