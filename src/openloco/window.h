@@ -212,6 +212,7 @@ namespace openloco::ui
     }
 
     constexpr uint8_t SCROLLBAR_WIDTH = 10;
+    constexpr uint8_t SCROLLBAR_BUTTON_CLICK_STEP = 3;
 
     struct window_event_list
     {
