@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../Title.h"
 #include "../audio/audio.h"
 #include "../console.h"
 #include "../core/FileSystem.hpp"
@@ -771,6 +772,7 @@ void openloco::interop::register_hooks()
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
     game_commands::registerHooks();
+    title::registerHooks();
     tutorial::registerHooks();
 
     // Part of 0x004691FA

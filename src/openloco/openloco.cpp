@@ -18,6 +18,7 @@
 #undef small
 #endif
 
+#include "Title.h"
 #include "audio/audio.h"
 #include "companymgr.h"
 #include "config.h"
@@ -167,6 +168,16 @@ namespace openloco
     uint8_t get_pause_flags()
     {
         return paused_state;
+    }
+
+    // 0x00431E32
+    // value: bl (false will no-op)
+    // **Gamecommand**
+    void togglePause(bool value)
+    {
+        registers regs;
+        regs.bl = value ? 1 : 0;
+        call(0x00431E32, regs);
     }
 
     uint32_t scenario_ticks()
@@ -346,7 +357,7 @@ namespace openloco
 #else
         intro::state(intro::intro_state::end);
 #endif
-        call(0x0046AD7D);
+        title::start();
         gui::init();
         gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
     }
@@ -669,7 +680,13 @@ namespace openloco
                 _525F62++;
                 editor_tick();
                 audio::play_background_music();
-                audio::play_title_screen_music();
+
+                // TODO move stop title music to title::stop (when mode changes)
+                if (!is_title_mode())
+                {
+                    audio::stop_title_music();
+                }
+
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
                     tutorial::stop();
