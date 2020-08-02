@@ -89,7 +89,7 @@ namespace openloco::input
     void handle_keyboard();
     void handle_mouse(int16_t x, int16_t y, mouse_button button);
     mouse_button getLastKnownButtonState();
-    void enqueue_mouse_button(mouse_button button);
+    void enqueue_mouse_button(int32_t button);
     void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();

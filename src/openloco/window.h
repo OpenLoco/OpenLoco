@@ -199,21 +199,6 @@ namespace openloco::ui
         constexpr uint32_t flag_19 = 1 << 19;
     }
 
-    namespace scroll_flags
-    {
-        constexpr uint16_t HSCROLLBAR_VISIBLE = 1 << 0;
-        constexpr uint16_t HSCROLLBAR_THUMB_PRESSED = 1 << 1;
-        constexpr uint16_t HSCROLLBAR_LEFT_PRESSED = 1 << 2;
-        constexpr uint16_t HSCROLLBAR_RIGHT_PRESSED = 1 << 3;
-        constexpr uint16_t VSCROLLBAR_VISIBLE = 1 << 4;
-        constexpr uint16_t VSCROLLBAR_THUMB_PRESSED = 1 << 5;
-        constexpr uint16_t VSCROLLBAR_UP_PRESSED = 1 << 6;
-        constexpr uint16_t VSCROLLBAR_DOWN_PRESSED = 1 << 7;
-    }
-
-    constexpr uint8_t SCROLLBAR_WIDTH = 10;
-    constexpr uint8_t SCROLLBAR_BUTTON_CLICK_STEP = 3;
-
     struct window_event_list
     {
         union
