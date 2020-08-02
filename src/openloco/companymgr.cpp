@@ -1,4 +1,5 @@
 #include "companymgr.h"
+#include "config.h"
 #include "game_commands.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
@@ -70,7 +71,7 @@ namespace openloco::companymgr
     // 0x00430319
     void update()
     {
-        if (!is_editor_mode())
+        if (!is_editor_mode() && !config::get_new().company_ai_disabled)
         {
             company_id_t id = scenario_ticks() & 0x0F;
             auto company = get(id);
