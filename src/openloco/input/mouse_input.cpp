@@ -1407,26 +1407,22 @@ namespace openloco::input
         // window->call_22()
 
         ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
-
-        switch (scrollArea)
+        if (w != nullptr)
         {
-            case ui::scrollview::scroll_part::hscrollbar_button_left:
+            switch (scrollArea)
             {
-                // 0x004C894F
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::hscrollbar_button_left:
                 {
+                    // 0x004C894F
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_LEFT_PRESSED;
                     w->scroll_areas[scrollAreaIndex].h_left = std::max(w->scroll_areas[scrollAreaIndex].h_left - SCROLLBAR_BUTTON_CLICK_STEP, 0);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::hscrollbar_button_right:
-            {
-                // 0x004C89AE
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::hscrollbar_button_right:
                 {
+                    // 0x004C89AE
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_RIGHT_PRESSED;
                     int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::VSCROLLBAR_VISIBLE) != 0)
@@ -1437,14 +1433,11 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].h_left = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].h_left + SCROLLBAR_BUTTON_CLICK_STEP, widgetContentWidth);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::hscrollbar_track_left:
-            {
-                // 0x004C8A36
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::hscrollbar_track_left:
                 {
+                    // 0x004C8A36
                     int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::VSCROLLBAR_VISIBLE) != 0)
                     {
@@ -1453,14 +1446,11 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].h_left = std::max(w->scroll_areas[scrollAreaIndex].h_left - widgetWidth, 0);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::hscrollbar_track_right:
-            {
-                // 0x004C8AA6
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::hscrollbar_track_right:
                 {
+                    // 0x004C8AA6
                     int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::VSCROLLBAR_VISIBLE) != 0)
                     {
@@ -1470,27 +1460,21 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].h_left = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].h_left + widgetWidth, widgetContentWidth);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
 
-            case ui::scrollview::scroll_part::vscrollbar_button_top:
-            {
-                // 0x004C8B26
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::vscrollbar_button_top:
                 {
+                    // 0x004C8B26
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::VSCROLLBAR_UP_PRESSED;
                     w->scroll_areas[scrollAreaIndex].v_top = std::max(w->scroll_areas[scrollAreaIndex].v_top - SCROLLBAR_BUTTON_CLICK_STEP, 0);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::vscrollbar_button_bottom:
-            {
-                // 0x004C8B85
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::vscrollbar_button_bottom:
                 {
+                    // 0x004C8B85
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::VSCROLLBAR_DOWN_PRESSED;
                     int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
@@ -1501,14 +1485,11 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].v_top = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].v_top + SCROLLBAR_BUTTON_CLICK_STEP, widgetContentHeight);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::vscrollbar_track_top:
-            {
-                // 0x004C8C0D
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::vscrollbar_track_top:
                 {
+                    // 0x004C8C0D
                     int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
                     {
@@ -1517,14 +1498,11 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].v_top = std::max(w->scroll_areas[scrollAreaIndex].v_top - widgetHeight, 0);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
-            case ui::scrollview::scroll_part::vscrollbar_track_bottom:
-            {
-                // 0x004C8C7D
-                if (w != nullptr)
+                case ui::scrollview::scroll_part::vscrollbar_track_bottom:
                 {
+                    // 0x004C8C7D
                     int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
                     if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
                     {
@@ -1534,12 +1512,12 @@ namespace openloco::input
                     w->scroll_areas[scrollAreaIndex].v_top = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].v_top + widgetHeight, widgetContentHeight);
                     scrollview::update_thumbs(w, _pressedWidgetIndex);
                     WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    break;
                 }
-                break;
-            }
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
 
