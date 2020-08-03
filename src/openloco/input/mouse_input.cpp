@@ -1406,18 +1406,13 @@ namespace openloco::input
         // Not implemented for any window
         // window->call_22()
 
-        registers regs;
-        regs.eax = outX;
-        regs.ebx = outY;
-        regs.cx = (int16_t)scrollArea;
-        regs.edx = scrollAreaOffset;
+        ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
 
         switch (scrollArea)
         {
             case ui::scrollview::scroll_part::hscrollbar_button_left:
             {
                 // 0x004C894F
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_LEFT_PRESSED;
@@ -1430,7 +1425,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::hscrollbar_button_right:
             {
                 // 0x004C89AE
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::HSCROLLBAR_RIGHT_PRESSED;
@@ -1449,7 +1443,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::hscrollbar_track_left:
             {
                 // 0x004C8A36
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
@@ -1466,7 +1459,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::hscrollbar_track_right:
             {
                 // 0x004C8AA6
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     int16_t widgetWidth = w->widgets[_pressedWidgetIndex].width() - 2;
@@ -1485,7 +1477,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::vscrollbar_button_top:
             {
                 // 0x004C8B26
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::VSCROLLBAR_UP_PRESSED;
@@ -1498,7 +1489,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::vscrollbar_button_bottom:
             {
                 // 0x004C8B85
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     w->scroll_areas[scrollAreaIndex].flags |= scroll_flags::VSCROLLBAR_DOWN_PRESSED;
@@ -1517,7 +1507,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::vscrollbar_track_top:
             {
                 // 0x004C8C0D
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
@@ -1534,7 +1523,6 @@ namespace openloco::input
             case ui::scrollview::scroll_part::vscrollbar_track_bottom:
             {
                 // 0x004C8C7D
-                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
                 if (w != nullptr)
                 {
                     int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
