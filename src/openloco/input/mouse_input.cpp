@@ -1532,8 +1532,23 @@ namespace openloco::input
                 break;
             }
             case ui::scrollview::scroll_part::vscrollbar_track_bottom:
-                call(0x4c8c7d, regs);
+            {
+                // 0x004C8C7D
+                ui::window* w = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
+                if (w != nullptr)
+                {
+                    int16_t widgetHeight = w->widgets[_pressedWidgetIndex].height() - 2;
+                    if ((w->scroll_areas[scrollAreaIndex].flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+                    {
+                        widgetHeight -= SCROLLBAR_WIDTH + 1;
+                    }
+                    int16_t widgetContentHeight = std::max(w->scroll_areas[scrollAreaIndex].v_bottom - widgetHeight, 0);
+                    w->scroll_areas[scrollAreaIndex].v_top = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].v_top + widgetHeight, widgetContentHeight);
+                    scrollview::update_thumbs(w, _pressedWidgetIndex);
+                    WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                }
                 break;
+            }
 
             default:
                 break;
