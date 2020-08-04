@@ -102,6 +102,7 @@ namespace openloco::ui
                 uint32_t value;
                 void* object;
             };
+            uint8_t unkBh;
         };
 
         enum class InteractionItem : uint8_t
@@ -111,8 +112,8 @@ namespace openloco::ui
             t_2 = 2,
             thing = 3,
             track = 4,
-            t_5 = 5,
-            t_6 = 6,
+            trackExtra = 5,
+            signal = 6,
             trackStation = 7,
             roadStation = 8,
             airport = 9,
@@ -123,7 +124,7 @@ namespace openloco::ui
             town = 14,
             station = 15,
             road = 16,
-            t_17 = 17,
+            roadExtra = 17,
             t_18 = 18, // bridge?
             building = 19,
             industry = 20,

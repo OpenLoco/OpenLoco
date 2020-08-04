@@ -569,14 +569,338 @@ namespace openloco::input
         }
     }
 
+    // 0x004A5AA1 TODO: Move to a better file
+    static void signalInteract(window* main, map::signal_element* signal, const uint8_t bh, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(signal);
+        regs.bh = bh;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A5AA1, regs);
+    }
+
+    // 0x004A5B66 TODO: Move to a better file
+    static void trackStationInteract(window* main, map::station_element* station, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A5B66, regs);
+    }
+
+    // 0x004A5BDF TODO: Move to a better file
+    static void roadStationInteract(window* main, map::station_element* station, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A5BDF, regs);
+    }
+
+    // 0x004A5C58 TODO: Move to a better file
+    static void airportInteract(window* main, map::station_element* station, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A5C58, regs);
+    }
+
+    // 0x004A5CC5 TODO: Move to a better file
+    static void dockInteract(window* main, map::station_element* station, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(main);
+        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004A5CC5, regs);
+    }
+
+    // 0x004BB116 TODO: Move to a better file
+    static void treeInteract(map::tree_element* tree, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.edx = reinterpret_cast<uint32_t>(tree);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004BB116, regs);
+    }
+
+    // 0x0042D9BF TODO: Move to a better file
+    static void buildingInteract(map::building_element* building, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.edx = reinterpret_cast<uint32_t>(building);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x0042D9BF, regs);
+    }
+
+    // 0x004C4809 TODO: Move to a better file
+    static void wallInteract(map::wall_element* wall, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.edx = reinterpret_cast<uint32_t>(wall);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004C4809, regs);
+    }
+
+    // 0x0042F007 TODO: Move to a better file
+    static void headquarterInteract(map::building_element* building, const map::map_pos pos)
+    {
+        registers regs{};
+        regs.edx = reinterpret_cast<uint32_t>(building);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x0042F007, regs);
+    }
+
     // 0x004C74BB
     static void state_viewport_right(const mouse_button button, const int16_t x, const int16_t y)
     {
-        registers regs{};
-        regs.cx = static_cast<uint16_t>(button);
-        regs.ax = x;
-        regs.bx = y;
-        call(0x004C74BB, regs);
+        auto window = WindowManager::find(_dragWindowType, _dragWindowNumber);
+        if (window == nullptr)
+        {
+            input::state(input_state::reset);
+            return;
+        }
+
+        switch (button)
+        {
+
+            case mouse_button::released:
+            {
+                // 4C74E4
+                _ticksSinceDragStart += time_since_last_tick;
+                auto vp = window->viewports[0];
+                if (vp == nullptr)
+                {
+                    vp = window->viewports[1];
+                }
+                if (vp == nullptr)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                if (window->flags & window_flags::viewport_no_scrolling)
+                {
+                    return;
+                }
+
+                if (x != 0 || y != 0)
+                {
+                    _ticksSinceDragStart = 1000;
+                    window->viewport_configurations[0].saved_view_x += x << (vp->zoom + 1);
+                    window->viewport_configurations[0].saved_view_y += y << (vp->zoom + 1);
+                }
+
+                break;
+            }
+
+            case mouse_button::right_released:
+            {
+                if (_ticksSinceDragStart > 500)
+                {
+                    input::state(input_state::reset);
+                    return;
+                }
+
+                input::state(input_state::reset);
+                viewport_interaction::InteractionArg ptr{};
+                auto item = viewport_interaction::right_over(_dragLastX, _dragLastY, &ptr);
+
+                switch (item)
+                {
+                    case InteractionItem::t_0:
+                    default:
+                    {
+                        auto item2 = viewport_interaction::get_item_left(_dragLastX, _dragLastY, &ptr);
+                        switch (item2)
+                        {
+                            case InteractionItem::thing:
+                            {
+                                auto _thing = reinterpret_cast<Thing*>(ptr.object);
+                                auto veh = _thing->as_vehicle();
+                                if (veh != nullptr)
+                                {
+                                    auto head = thingmgr::get<vehicle>(reinterpret_cast<openloco::vehicle*>(veh)->head);
+                                    ui::windows::vehicle_list::open(head->owner, static_cast<uint8_t>(head->vehicleType));
+                                }
+                                break;
+                            }
+                            case InteractionItem::town:
+                                ui::windows::town_list::open();
+                                break;
+                            case InteractionItem::station:
+                            {
+                                auto station = stationmgr::get(ptr.value);
+                                ui::windows::station_list::open(station->owner);
+                                break;
+                            }
+                            case InteractionItem::industry:
+                                ui::windows::industry_list::open();
+                                break;
+                            default:
+                                break;
+                        }
+
+                        break;
+                    }
+
+                    case InteractionItem::track:
+                    {
+                        auto track = ((map::tile_element*)ptr.object)->as_track();
+                        if (track != nullptr)
+                        {
+                            if (track->owner() == companymgr::get_controlling_id())
+                            {
+                                ui::windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
+                            }
+                            else
+                            {
+                                ui::windows::CompanyWindow::open(track->owner());
+                            }
+                        }
+                        break;
+                    }
+                    case InteractionItem::road:
+                    {
+                        auto road = reinterpret_cast<map::tile_element*>(ptr.object)->as_road();
+                        if (road != nullptr)
+                        {
+
+                            auto owner = road->owner();
+
+                            auto roadObject = objectmgr::get<road_object>(road->road_object_id());
+                            if (owner == companymgr::get_controlling_id() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
+                            {
+                                ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                            }
+                            else
+                            {
+                                ui::windows::CompanyWindow::open(owner);
+                            }
+                        }
+                        break;
+                    }
+                    case InteractionItem::trackExtra:
+                    {
+                        auto track = ((map::tile_element*)ptr.object)->as_track();
+                        if (track != nullptr)
+                        {
+                            ui::windows::construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::roadExtra:
+                    {
+                        auto road = ((map::tile_element*)ptr.object)->as_road();
+                        if (road != nullptr)
+                        {
+                            ui::windows::construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::signal:
+                    {
+                        auto signal = ((map::tile_element*)ptr.object)->as_signal();
+                        if (signal != nullptr)
+                        {
+                            signalInteract(window, signal, ptr.unkBh, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::trackStation:
+                    {
+                        auto station = ((map::tile_element*)ptr.object)->as_station();
+                        if (station != nullptr)
+                        {
+                            trackStationInteract(window, station, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::roadStation:
+                    {
+                        auto station = ((map::tile_element*)ptr.object)->as_station();
+                        if (station != nullptr)
+                        {
+                            roadStationInteract(window, station, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::airport:
+                    {
+                        auto station = ((map::tile_element*)ptr.object)->as_station();
+                        if (station != nullptr)
+                        {
+                            airportInteract(window, station, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::dock:
+                    {
+                        auto station = ((map::tile_element*)ptr.object)->as_station();
+                        if (station != nullptr)
+                        {
+                            dockInteract(window, station, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::tree:
+                    {
+                        auto tree = ((map::tile_element*)ptr.object)->as_tree();
+                        if (tree != nullptr)
+                        {
+                            treeInteract(tree, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::building:
+                    {
+                        auto building = ((map::tile_element*)ptr.object)->as_building();
+                        if (building != nullptr)
+                        {
+                            buildingInteract(building, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::wall:
+                    {
+                        auto wall = ((map::tile_element*)ptr.object)->as_wall();
+                        if (wall != nullptr)
+                        {
+                            wallInteract(wall, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                    case InteractionItem::headquarterBuilding:
+                    {
+                        auto building = ((map::tile_element*)ptr.object)->as_building();
+                        if (building != nullptr)
+                        {
+                            headquarterInteract(building, { ptr.x, ptr.y });
+                        }
+                        break;
+                    }
+                }
+
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 
     mouse_button getLastKnownButtonState()

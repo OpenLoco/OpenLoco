@@ -41,6 +41,7 @@ namespace openloco::ui::viewport_interaction
             arg->value = regs.edx;
             arg->x = regs.ax;
             arg->y = regs.cx;
+            arg->unkBh = regs.bh;
         }
         return static_cast<InteractionItem>(regs.bl);
     }
