@@ -1411,8 +1411,8 @@ namespace openloco::ui::WindowManager
             int size = widget->bottom - widget->top - 1;
             if (scroll->flags & scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
                 size -= 11;
-            size = std::max(0, scroll->v_bottom - size);
-            scroll->v_top = std::clamp(scroll->v_top + wheel, 0, size);
+            size = std::max(0, scroll->contentHeight - size);
+            scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
         else if (window->scroll_areas[scrollIndex].flags & scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
         {

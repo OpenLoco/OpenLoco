@@ -106,12 +106,12 @@ namespace openloco::ui::MessageWindow
             auto scrollview = self->widgets[widx::scrollview];
             auto scrollarea = self->scroll_areas[0];
 
-            auto y = scrollarea.v_bottom - scrollview.height() - 1;
+            auto y = scrollarea.contentHeight - scrollview.height() - 1;
             y = std::max(0, y);
 
-            if (y < scrollarea.v_top)
+            if (y < scrollarea.contentOffsetY)
             {
-                scrollarea.v_top = y;
+                scrollarea.contentOffsetY = y;
                 ui::scrollview::update_thumbs(self, widx::scrollview);
                 self->invalidate();
             }
@@ -369,7 +369,7 @@ namespace openloco::ui::MessageWindow
         if (static_cast<int16_t>(scrollHeight) < 0)
             scrollHeight = 0;
 
-        window->scroll_areas[0].v_top = scrollHeight;
+        window->scroll_areas[0].contentOffsetY = scrollHeight;
 
         ui::scrollview::update_thumbs(window, messages::widx::scrollview);
     }
