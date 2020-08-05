@@ -46,4 +46,6 @@ namespace openloco::ui::scrollview
         scroll_part* output_scroll_area,
         int32_t* scroll_id);
     void update_thumbs(window* window, widget_index widgetIndex);
+    void scrollLeft(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const int8_t widgetIndex);
+    void scrollModalRight(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const int8_t widgetIndex);
 }
