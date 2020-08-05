@@ -1557,7 +1557,7 @@ namespace openloco::input
                 _pressedWindowNumber = window->number;
                 _tooltipCursorX = x;
                 _tooltipCursorY = y;
-                ui::scrollview::scrollLeft(x, y, window, widget, widgetIndex);
+                ui::scrollview::scrollLeftBegin(x, y, window, widget, widgetIndex);
                 break;
 
             default:
