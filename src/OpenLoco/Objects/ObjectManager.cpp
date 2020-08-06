@@ -72,6 +72,15 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
+    rock_object* get(size_t id)
+    {
+        if (_rockObjects[id] != reinterpret_cast <rock_object*>(-1))
+            return _rockObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
     cargo_object* get(size_t id)
     {
         if (_cargoObjects[id] != (cargo_object*)-1)
@@ -245,6 +254,14 @@ namespace OpenLoco::ObjectManager
             return nullptr;
     }
 
+    template<>
+    region_object* get(size_t id)
+    {
+        if (_regionObjects[id] != reinterpret_cast<region_object*>(-1))
+            return _regionObjects[id];
+        else
+            return nullptr;
+    }
     /*
     static void printHeader(header data)
     {

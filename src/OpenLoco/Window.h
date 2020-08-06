@@ -7,6 +7,7 @@
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/Tile.h"
+#include "Objects/ObjectManager.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Ui/WindowType.h"
@@ -354,7 +355,7 @@ namespace OpenLoco::Ui
         uint16_t var_858 = 0;
         union
         {
-            char* object; // 0x85A union
+            objectmgr::object_index_entry* object; // 0x85A union
             struct
             {
                 int16_t var_85A;

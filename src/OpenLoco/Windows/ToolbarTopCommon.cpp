@@ -175,17 +175,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A3C3
     void terraformMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
-        auto land = ObjectManager::get<land_object>(addr<0x00525FB6, uint8_t>());
-        auto water = ObjectManager::get<water_object>();
+        auto interface = objectmgr::get<interface_skin_object>();
+        auto land = objectmgr::get<land_object>(addr<0x00525FB6, uint8_t>());
+        auto water = objectmgr::get<water_object>();
 
-        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
-        Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
-        Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
-        Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
-        Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
-        Dropdown::setHighlightedItem(0);
+        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_bulldozer, string_ids::menu_clear_area });
+        dropdown::add(1, string_ids::menu_sprite_stringid, { land->var_16 + land::image_ids::toolbar_terraform_land, string_ids::menu_adjust_land });
+        dropdown::add(2, string_ids::menu_sprite_stringid, { water->image + water::image_ids::toolbar_terraform_water, string_ids::menu_adjust_water });
+        dropdown::add(3, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_plant_trees, string_ids::menu_plant_trees });
+        dropdown::add(4, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_build_walls, string_ids::menu_build_walls });
+        dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
+        dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A19F

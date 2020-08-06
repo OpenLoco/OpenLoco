@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
         self->row_hover = rowIndex;
-        self->object = object._name;
+        self->object = &object;
         ObjectManager::freeScenarioText();
         if (object._header)
         {
@@ -232,10 +232,10 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto x = self->x + self->widgets[widx::face_frame].mid_x();
             const auto y = self->y + self->widgets[widx::face_frame].bottom + 3;
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
-            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            *str++ = ControlCodes::window_colour_2;
-            strcpy(str, self->object);
-            Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
+            auto str = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            *str++ = control_codes::window_colour_2;
+            strcpy(str, self->object->_name);
+            gfx::drawStringCentredClipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none

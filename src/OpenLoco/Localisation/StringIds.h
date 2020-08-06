@@ -1348,6 +1348,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id object_selection_advanced = 2093;
     constexpr string_id object_selection_advanced_tooltip = 2094;
+    constexpr string_id object_currency_big_font = 2095;
 
     constexpr string_id unit_mph = 2113;
     constexpr string_id unit_kmh = 2114;

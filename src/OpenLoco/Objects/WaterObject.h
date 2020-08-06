@@ -12,7 +12,7 @@ namespace OpenLoco
         uint8_t var_03;
         uint8_t cost_factor; //0x04
         uint8_t var_05;
-        uint32_t var_06;
+        uint32_t image;
     };
 #pragma pack(pop)
 

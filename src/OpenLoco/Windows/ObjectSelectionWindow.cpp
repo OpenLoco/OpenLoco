@@ -7,6 +7,9 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RegionObject.h"
+#include "../Objects/RockObject.h"
+#include "../Objects/WaterObject.h"
 #include "../Ui/WindowManager.h"
 #include "../Window.h"
 
@@ -19,23 +22,37 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static loco_global<uint16_t[32], 0x004FE250> object_entry_group_counts;
 
+    static loco_global<uint8_t[999], 0x004FE384> _4FE384;
+
+#pragma pack(push, 1)
+    struct unk1
+    {
+        uint8_t var_0;
+        uint8_t var_1;
+    };
+#pragma pack(pop)
+
     static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<uint8_t*, 0x50D144> _50D144;
 
+    static loco_global<uint16_t, 0x0052334A> _52334A;
+    static loco_global<uint16_t, 0x0052334C> _52334C;
+
     static loco_global<uint16_t[80], 0x00112C181> _112C181;
+    static loco_global<unk1[36], 0x0112C21C> _112C21C;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
 
-    static void on_close(window*);
-    static void on_mouse_up(window*, widget_index);
-    static void on_update(window*);
-    static void get_scroll_size(window*, uint32_t, uint16_t*, uint16_t*);
-    static void on_scroll_mouse_down(window*, int16_t, int16_t, uint8_t);
-    static void on_scroll_mouse_over(window*, int16_t, int16_t, uint8_t);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
-    static void prepare_draw(window*);
-    static void draw(window*, Gfx::drawpixelinfo_t*);
-    static void draw_scroll(window*, Gfx::drawpixelinfo_t*, uint32_t);
+    static void onClose(window*);
+    static void onMouseUp(window*, widget_index);
+    static void onUpdate(window*);
+    static void getScrollSize(window*, uint32_t, uint16_t*, uint16_t*);
+    static void onScrollMouseDown(window*, int16_t, int16_t, uint8_t);
+    static void onScrollMouseOver(window*, int16_t, int16_t, uint8_t);
+    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
+    static void prepareDraw(window*);
+    static void draw(window*, gfx::drawpixelinfo_t*);
+    static void drawScroll(window*, gfx::drawpixelinfo_t*, uint32_t);
 
     enum widx
     {
@@ -51,11 +68,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 600, 398 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_25, 0, StringIds::title_object_selection),
-        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_25, 0, string_ids::title_object_selection),
+        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 65 }, { 600, 333 }, widget_type::panel, 1),
         makeWidget({ 3, 15 }, { 589, 50 }, widget_type::wt_5, 1),
-        makeWidget({ 470, 20 }, { 122, 12 }, widget_type::wt_11, 0, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
+        makeWidget({ 470, 20 }, { 122, 12 }, widget_type::wt_11, 0, string_ids::object_selection_advanced, string_ids::object_selection_advanced_tooltip),
         makeWidget({ 4, 68 }, { 288, 317 }, widget_type::scrollview, 1, vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, widget_type::wt_9, 1),
         widgetEnd(),
@@ -80,54 +97,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         call(0x004731EE, regs);
     }
 
-    //// 0x00472D3F
-    //static void sub_472D3F()
-    //{
-    //}
-
-    //// 0x00472C84
-    //static void resetSelectedObjectCountAndSize()
-    //{
-    //}
-
-    //// 0x00472C84
-    //static void windowEditorObjectSelectionSelectRequiredObjects()
-    //{
-    //}
-
-    //// 0x00472D19
-    //static void sub_472D19()
-    //{
-    //}
-
-    //// 0x004740CF
-    //static void sub_4740CF()
-    //{
-    //}
-
-    //// 0x00473B5A
-    //static void sub_473B5A()
-    //{
-    //    if (!(ObjectManager::getNumInstalledObjects() & (1 << 0)))
-    //    {
-    //        sub_472D3F();
-    //    }
-
-    //    resetSelectedObjectCountAndSize();
-    //    windowEditorObjectSelectionSelectRequiredObjects();
-    //    sub_472D19();
-    //    sub_4740CF();
-    //    resetSelectedObjectCountAndSize();
-    //}
-
     // 0x00472BBC
     static ObjectManager::ObjIndexPair sub_472BBC(window* self)
     {
-        //registers regs;
-        //regs.esi = (uintptr_t)self;
-        //call(0x00472BBC, regs);
-        //return { regs.bx, static_cast<ObjectManager::object_index_entry>(regs.ebp) };
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<object_type>(self->current_tab));
+        const auto objects = objectmgr::getAvailableObjects(static_cast<object_type>(self->current_tab));
+
         for (auto [index, object] : objects)
         {
             if (_50D144[index] & (1 << 0))
@@ -136,12 +110,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
-        //for (auto [index, object] : objects)
-        //{
-        //    return { 0, object };
-        //}
-
-        return { -1, ObjectManager::object_index_entry{} };
+        return { -1, objectmgr::object_index_entry{} };
     }
 
     // 0x00473A95
@@ -154,17 +123,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void initEvents()
     {
-        _events.on_close = on_close;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
-        _events.get_scroll_size = get_scroll_size;
-        //        _events.scroll_mouse_down = on_scroll_mouse_down;
+        _events.on_close = onClose;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_update = onUpdate;
+        _events.get_scroll_size = getScrollSize;
+        //_events.scroll_mouse_down = on_scroll_mouse_down;
         _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x00473948);
-        _events.scroll_mouse_over = on_scroll_mouse_over;
+        _events.scroll_mouse_over = onScrollMouseOver;
         _events.tooltip = tooltip;
-        _events.prepare_draw = prepare_draw;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.draw_scroll = drawScroll;
     }
 
     // 0x00472A20
@@ -197,8 +166,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (objIndex.index != -1)
         {
             window->row_hover = objIndex.index;
-            window->object = objIndex.object._name;
-            ObjectManager::getScenarioText(*objIndex.object._header);
+            window->object = &objIndex.object;
+            objectmgr::getScenarioText(*objIndex.object._header);
         }
 
         auto skin = ObjectManager::get<interface_skin_object>();
@@ -209,7 +178,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004733AC
-    static void prepare_draw(Ui::window* self)
+    static void prepareDraw(ui::window* self)
     {
         self->activated_widgets |= (1 << widx::objectImage);
         widgets[widx::closeButton].type = widget_type::wt_9;
@@ -269,104 +238,218 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
 
+    static uint32_t tabImages[] = {
+        image_ids::tab_object_settings,
+        image_ids::tab_object_audio,
+        image_ids::tab_object_currency,
+        image_ids::tab_object_smoke,
+        image_ids::tab_object_cliff,
+        image_ids::tab_object_water,
+        image_ids::tab_object_landscape,
+        image_ids::tab_object_town_names,
+        image_ids::tab_object_cargo,
+        image_ids::tab_object_walls,
+        image_ids::tab_object_signals,
+        image_ids::tab_object_level_crossings,
+        image_ids::tab_object_streetlights,
+        image_ids::tab_object_tunnels,
+        image_ids::tab_object_bridges,
+        image_ids::tab_object_track_stations,
+        image_ids::tab_object_track_mods,
+        image_ids::tab_object_track,
+        image_ids::tab_object_road_stations,
+        image_ids::tab_object_road_mods,
+        image_ids::tab_object_road,
+        image_ids::tab_object_airports,
+        image_ids::tab_object_docks,
+        image_ids::tab_object_vehicles,
+        image_ids::tab_object_trees,
+        image_ids::tab_object_snow,
+        image_ids::tab_object_climate,
+        image_ids::tab_object_map,
+        image_ids::tab_object_buildings,
+        image_ids::tab_object_construction,
+        image_ids::tab_object_industries,
+        image_ids::tab_object_world,
+        image_ids::tab_object_companies,
+        image_ids::tab_object_scenarios,
+    };
+
     // 0x0047328D
-    static void sub_47328D(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
     {
+        auto y = self->widgets[widx::panel].top + self->y - 26;
+        auto x = self->y + 3;
+
+        for (auto widgetRow = 1; widgetRow > 0; widgetRow--)
+        {
+            auto xPos = x + (widgetRow * 10);
+            auto yPos = y - (widgetRow * 24);
+            for (auto index = 0; _112C21C[index].var_0 != 0xFF; index++)
+            {
+                if (_112C21C[index].var_1 != widgetRow)
+                    continue;
+
+                auto image = gfx::recolour(image_ids::tab, self->colours[1]);
+                if (_112C21C[index].var_0 == self->current_tab)
+                {
+                    image = gfx::recolour(image_ids::selected_tab, self->colours[1]);
+                    gfx::drawImage(dpi, xPos, yPos, image);
+                    image = gfx::recolour(tabImages[_112C21C[index].var_0], colour::saturated_green);
+                    gfx::drawImage(dpi, xPos, yPos, image);
+                }
+                else
+                {
+                    gfx::drawImage(dpi, xPos, yPos, image);
+
+                    image = gfx::recolour(tabImages[_112C21C[index].var_0], colour::saturated_green);
+                    gfx::drawImage(dpi, xPos, yPos, image);
+
+                    image = 0x41980953;
+                    gfx::drawImage(dpi, xPos, yPos, image);
+
+                    if (widgetRow < 1)
+                    {
+                        auto colour = colour::getShade(self->colours[1], 7);
+                        gfx::drawRect(dpi, xPos, yPos, 30, 26, colour);
+                    }
+                }
+            }
+        }
     }
 
-    //static void* getDescription(ObjectManager::header* header, void* rawObject)
+    // 0x00473579
+    static void drawDescription(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, size_t objectId)
+    {
+        switch (header->get_type())
+        {
+            case object_type::interface_skin:
+            {
+                auto object = objectmgr::get<interface_skin_object>();
+                auto image = gfx::recolour(object->img, colour::saturated_green);
+
+                gfx::drawImage(dpi, x - 32, y - 32, image);
+                break;
+            }
+
+            case object_type::sound:
+                // null
+                break;
+
+            case object_type::currency:
+                // auto object = objectmgr::get<currency_object>(objectId);
+
+                gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::object_currency_big_font);
+                break;
+
+            case object_type::steam:
+                // null
+                break;
+
+            case object_type::rock:
+            {
+                auto object = objectmgr::get<rock_object>(objectId);
+                auto image = object->image;
+
+                gfx::drawImage(dpi, x - 30, y, image);
+
+                image += 16;
+                gfx::drawImage(dpi, x - 30, y, image);
+                break;
+            }
+
+            case object_type::water:
+            {
+                auto object = objectmgr::get<water_object>();
+                auto image = object->image;
+                image += 0x61000023;
+                gfx::drawImage(dpi, x, y, image);
+
+                image = object->image;
+                image += 30;
+                gfx::drawImage(dpi, x, y, image);
+                break;
+            }
+
+            case object_type::land:
+            {
+                auto object = objectmgr::get<land_object>(objectId);
+                uint32_t imageId = object->image + (object->var_03 - 1) * object->var_0E;
+                gfx::drawImage(dpi, x, y, imageId);
+                break;
+            }
+
+            case object_type::town_names:
+                // null
+                break;
+
+            case object_type::cargo:
+                // null
+                break;
+
+            case object_type::wall: break;
+            case object_type::track_signal: break;
+            case object_type::level_crossing: break;
+            case object_type::street_light: break;
+            case object_type::tunnel: break;
+            case object_type::bridge: break;
+            case object_type::track_station: break;
+            case object_type::track_extra: break;
+            case object_type::track: break;
+            case object_type::road_station: break;
+            case object_type::road_extra: break;
+            case object_type::road: break;
+            case object_type::airport: break;
+            case object_type::dock: break;
+            case object_type::vehicle: break;
+            case object_type::tree: break;
+            case object_type::snow: break;
+            case object_type::climate: break;
+            case object_type::hill_shapes: break;
+            case object_type::building: break;
+            case object_type::scaffolding: break;
+            case object_type::industry: break;
+            case object_type::region:
+            {
+                auto object = objectmgr::get<region_object>(objectId);
+                auto image = object->image;
+
+                gfx::drawImage(dpi, x, y, image);
+                break;
+            }
+            case object_type::competitor: break;
+            case object_type::scenario_text:
+                // null
+                break;
+        }
+    }
+
+    //static loco_global<uintptr_t[34], 0x004FE1C8> _paintEntryTable;
+
+    //static void drawDescription(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, void* ebp, int x, int y)
     //{
-    //    switch (header->get_type())
-    //    {
-    //        case object_type::interface_skin:
-    //        {
-    //            auto object = (interface_skin_object*)rawObject;
-    //            Gfx::recolour(object->img, 11);
-    //            break;
-    //        }
-
-    //        case object_type::sound:
-    //            // null
-    //            break;
-
-    //        case object_type::currency: break;
-
-    //        case object_type::steam:
-    //            // null
-    //            break;
-
-    //        case object_type::rock: break;
-    //        case object_type::water: break;
-
-    //        case object_type::land:
-    //        {
-    //            auto object = (land_object*)rawObject;
-    //            uint32_t imageId = object->image + (object->var_3 - 1) * object->var_E;
-    //            break;
-    //        }
-
-    //        case object_type::town_names:
-    //            // null
-    //            break;
-
-    //        case object_type::cargo:
-    //            // null
-    //            break;
-
-    //        case object_type::wall: break;
-    //        case object_type::track_signal: break;
-    //        case object_type::level_crossing: break;
-    //        case object_type::street_light: break;
-    //        case object_type::tunnel: break;
-    //        case object_type::bridge: break;
-    //        case object_type::track_station: break;
-    //        case object_type::track_extra: break;
-    //        case object_type::track: break;
-    //        case object_type::road_station: break;
-    //        case object_type::road_extra: break;
-    //        case object_type::road: break;
-    //        case object_type::airport: break;
-    //        case object_type::dock: break;
-    //        case object_type::vehicle: break;
-    //        case object_type::tree: break;
-    //        case object_type::snow: break;
-    //        case object_type::climate: break;
-    //        case object_type::hill_shapes: break;
-    //        case object_type::building: break;
-    //        case object_type::scaffolding: break;
-    //        case object_type::industry: break;
-    //        case object_type::region: break;
-    //        case object_type::competitor: break;
-    //        case object_type::scenario_text: break;
-    //    }
+    //    registers regs;
+    //    regs.edi = (uintptr_t)dpi;
+    //    regs.ebp = (uintptr_t)ebp;
+    //    regs.ax = 3;
+    //    regs.cx = x;
+    //    regs.dx = y;
+    //    call(_paintEntryTable[static_cast<int>(header->get_type())], regs);
     //}
-
-    static loco_global<uintptr_t[34], 0x004FE1C8> _paintEntryTable;
-    static void drawDescription(ObjectManager::header* header, Gfx::drawpixelinfo_t* dpi, void* ebp, int x, int y)
-    {
-
-        registers regs;
-        regs.edi = (uintptr_t)dpi;
-        regs.ebp = (uintptr_t)ebp;
-        regs.ax = 3;
-        regs.cx = x;
-        regs.dx = y;
-        call(_paintEntryTable[(int)header->getType()], regs);
-    }
 
     // 0x004733F5
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        Gfx::fillRectInset(dpi, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
+        gfx::fillRectInset(dpi, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
         self->draw(dpi);
 
-        sub_47328D(self, dpi);
+        drawTabs(self, dpi);
 
         bool doDefault = true;
         if (self->object != nullptr)
         {
-            auto var = (OpenLoco::ObjectManager::header*)self->object;
-            if (var->getType() != object_type::town_names && var->getType() != object_type::climate)
+            auto var = self->object->_header;
+            if (var->get_type() != object_type::town_names && var->get_type() != object_type::climate)
             {
                 doDefault = false;
             }
@@ -375,37 +458,44 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (doDefault)
         {
             auto widget = widgets[widx::objectImage];
-            auto colour = Colour::getShade(self->colours[1], 5);
-            Gfx::drawRect(dpi, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            auto colour = colour::getShade(self->colours[1], 5);
+            gfx::drawRect(dpi, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
         }
+        else
+        {
+            auto widget = widgets[widx::objectImage];
+            auto colour = colour::getShade(self->colours[1], 0);
+            gfx::drawRect(dpi, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 1, widget.height() - 1, colour);
+        }
+
         auto type = self->current_tab;
 
         auto args = FormatArguments();
         args.push(_112C1C5[type]);
         args.push(object_entry_group_counts[type]);
 
-        Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
+        gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
 
         if (self->row_hover == -1)
             return;
 
-        loco_global<void*, 0x0050D15C> _50D15C;
+        loco_global<int16_t, 0x0050D15C> _50D15C;
 
-        if (_50D15C == (void*)-1)
+        if (_50D15C == -1)
             return;
 
         drawDescription(
-            (ObjectManager::header*)self->object,
+            self->object->_header,
             dpi,
-            _50D15C,
             widgets[widx::objectImage].mid_x() + 1 + self->x,
-            widgets[widx::objectImage].mid_y() + 1 + self->y);
+            widgets[widx::objectImage].mid_y() + 1 + self->y,
+            _50D15C);
     }
 
     // 0x0047361D
-    static void draw_scroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t)
+    static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t)
     {
-        Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
+        gfx::clearSingle(*dpi, colour::getShade(self->colours[1], 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
@@ -415,14 +505,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(dpi, 2, y, 11, y + 10, self->colours[1], flags);
+            gfx::fillRectInset(dpi, 2, y, 11, y + 10, self->colours[1], flags);
 
             uint8_t textColour = ControlCodes::colour_black;
 
-            if (object._name == self->object)
+            if (object._name == self->object->_name)
             {
-                Gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
-                textColour = ControlCodes::window_colour_2;
+                gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | palette_index::index_30);
+                textColour = control_codes::window_colour_2;
             }
 
             if (_50D144[i] & (1 << 0))
@@ -442,49 +532,37 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     textColour = Colour::inset(textColour);
                 }
 
-                Gfx::drawString(dpi, x, y, textColour, _strCheckmark);
+                gfx::drawString(dpi, x, y, textColour, _strCheckmark);
             }
 
             _byte_112CC04[0] = textColour;
             strncpy(&_byte_112CC04[1], object._name, 512);
             _currentFontSpriteBase = Font::medium_bold;
 
-            Gfx::drawString(dpi, 15, y, Colour::black, _byte_112CC04);
+            gfx::drawString(dpi, 15, y, colour::black, _byte_112CC04);
             y += rowHeight;
         }
     }
 
-    static loco_global<uint8_t[999], 0x004FE384> _4FE384;
-
-    struct unk1
-    {
-        uint8_t var_0;
-        uint8_t var_1;
-    };
-    static loco_global<unk1[36], 0x0112C21C> _112C21C;
-
-    static loco_global<uint16_t, 0x0052334A> _52334A;
-    static loco_global<uint16_t, 0x0052334C> _52334C;
-
     // 0x004737BA
-    void on_mouse_up(window* self, widget_index w)
+    void onMouseUp(window* self, widget_index w)
     {
         switch (w)
         {
-            case 2:
+            case widx::closeButton:
                 call(0x00473A13);
                 break;
 
-            case 4:
+            case widx::tabArea:
             {
                 int clickedTab = -1;
-                int dx = widgets[widx::panel].top + self->y - 26;
-                int cx = self->x + 3;
+                int y = widgets[widx::panel].top + self->y - 26;
+                int x = self->x + 3;
 
                 for (int bx = 0; bx < 2; bx++)
                 {
-                    int y = dx - bx * 24;
-                    int x = bx * 10 + cx;
+                    y -= (bx * 24);
+                    x += (bx * 10);
 
                     for (int i = 0; _112C21C[i].var_0 != 0xFF; i++)
                     {
@@ -512,10 +590,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     self->scroll_areas[0].contentOffsetY = 0;
                     ObjectManager::freeScenarioText();
                     auto objIndex = sub_472BBC(self);
+
                     if (objIndex.index != -1)
                     {
                         self->row_hover = objIndex.index;
-                        self->object = objIndex.object._name;
+                        self->object = &objIndex.object;
 
                         ObjectManager::getScenarioText(*objIndex.object._header);
                     }
@@ -526,7 +605,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case 5:
+            case widx::advancedButton:
             {
                 self->var_856 ^= 1;
                 int eax = self->current_tab;
@@ -548,7 +627,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = _112C181[self->current_tab] * rowHeight;
     }
@@ -560,36 +639,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472B54
-    static ObjectManager::ObjIndexPair getObjectFromSelection(window* self, const int16_t& y)
+    static objectmgr::ObjIndexPair getObjectFromSelection(window* self, int16_t& y)
     {
-        //registers regs;
-        //regs.esi = reinterpret_cast<uintptr_t>(self);
-        //regs.dx = y;
-        //call(0x00472B54, regs);
+        const auto objects = objectmgr::getAvailableObjects(static_cast<object_type>(self->current_tab));
 
-        //uint8_t* edi = (uint8_t*)regs.edi;
-
-        //return std::make_tuple(regs.bx, (ObjectManager::object_index_entry)regs.ebp, *edi);
-
-        const int16_t rowIndex = y / rowHeight;
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<object_type>(self->current_tab));
         for (auto [index, object] : objects)
         {
-            if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
+            y -= rowHeight;
+            if (y < 0)
             {
-                return { -1, ObjectManager::object_index_entry{} };
+                return { static_cast<int16_t>(index), object };
             }
         }
 
-        //if (isInUseCompetitor(objects[rowIndex].first))
-        //{
-        //    return { -1, ObjectManager::object_index_entry{} };
-        //}
-        return { rowIndex, objects[rowIndex].second };
+        return { -1, objectmgr::object_index_entry{} };
     }
 
     // 0x0047390A
-    static void on_scroll_mouse_over(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto objIndex = getObjectFromSelection(self, y);
 
@@ -597,8 +664,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         self->row_hover = objIndex.index;
-        self->object = objIndex.object._name;
-        ObjectManager::freeScenarioText();
+        self->object = &objIndex.object;
+        objectmgr::freeScenarioText();
 
         if (objIndex.index != -1)
         {
@@ -639,22 +706,46 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     //    window_editor_object_selection_select_object(bx2, ebp);
     //}
 
+    // 0x00474821
+    static void unloadUnselectedObjects()
+    {
+        call(0x00474821); // unload_unselected_objects
+    }
+
+    // 0x00474874
+    static void editorLoadSelectedObjects()
+    {
+        call(0x00474874); // editor_load_selected_objects
+    }
+
+    // 0x0047237D
+    static void resetLoadedObjects()
+    {
+        call(0x0047237D); // reset_loaded_objects
+    }
+
+    // 0x00473B91
+    static void editorObjectFlagsFree0()
+    {
+        call(0x00473B91); // editor_object_flags_free_0
+    }
+
     // 0x004739DD
-    static void on_close(window* self)
+    static void onClose(window* self)
     {
         if (!isEditorMode())
             return;
 
-        call(0x00474821); // unload_unselected_objects
-        call(0x00474874); // editor_load_selected_objects
-        call(0x0047237D); // reset_loaded_objects
-        ObjectManager::freeScenarioText();
-        call(0x00473B91); // editor_object_flags_free_0
+        unloadUnselectedObjects();
+        editorLoadSelectedObjects();
+        resetLoadedObjects();
+        objectmgr::freeScenarioText();
+        editorObjectFlagsFree0();
     }
 
     // 0x00473A04
-    static void on_update(window* self)
+    static void onUpdate(window* self)
     {
-        WindowManager::invalidateWidget(WindowType::objectSelection, self->number, 7);
+        WindowManager::invalidateWidget(WindowType::objectSelection, self->number, widx::objectImage);
     }
 }

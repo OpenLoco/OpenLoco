@@ -147,6 +147,8 @@ namespace OpenLoco::ObjectManager
     template<>
     steam_object* get(size_t id);
     template<>
+    rock_object* get(size_t id);
+    template<>
     cargo_object* get(size_t id);
     template<>
     train_signal_object* get(size_t id);
@@ -180,6 +182,8 @@ namespace OpenLoco::ObjectManager
     land_object* get(size_t id);
     template<>
     water_object* get();
+    template<>
+    region_object* get(size_t id);
     template<>
     competitor_object* get(size_t id);
     template<>
