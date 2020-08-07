@@ -1491,7 +1491,7 @@ namespace openloco::ui::WindowManager
                 return;
 
             auto main = WindowManager::getMainWindow();
-            if (main != nullptr)
+            if (main != nullptr && wheel != 0)
             {
                 if (wheel > 0)
                 {
