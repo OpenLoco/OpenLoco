@@ -42,6 +42,7 @@ namespace OpenLoco::Ui
         hand_pointer,
         busy,
         diagonal_arrows,
+        arrows_inward = 37
     };
 
     struct Resolution

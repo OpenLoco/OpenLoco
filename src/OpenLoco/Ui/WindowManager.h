@@ -262,7 +262,7 @@ namespace OpenLoco
     struct vehicle;
 }
 
-namespace OpenLoco::Ui::vehicle
+namespace OpenLoco::Ui::Vehicle
 {
     void registerHooks();
     namespace Main

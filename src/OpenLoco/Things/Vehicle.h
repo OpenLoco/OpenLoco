@@ -201,12 +201,10 @@ namespace OpenLoco
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         int16_t var_44;
-        uint32_t length_of_var_4C; // 0x46
-        uint16_t var_4A;
-        uint16_t var_4C;     // 0x4C index into ?order? array
-        uint8_t pad_4E[0x2]; // 0x4E
-        uint8_t pad_50;
-        uint8_t pad_51; // 0x51
+        uint32_t orderTableOffset; // 0x46 offset into Order Table
+        uint16_t currentOrder;     // 0x4A offset, combine with orderTableOffset
+        uint16_t sizeOfOrderTable; // 0x4C size of Order Table
+        uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
         int16_t var_54;
@@ -348,8 +346,9 @@ namespace OpenLoco
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
         uint8_t max_cargo;             // 0x4D
-        uint8_t pad_4E[0x51 - 0x4E];
-        uint8_t var_51;
+        station_id_t townCargoFrom;    // 0x4E
+        uint8_t pad_50;
+        uint8_t primaryCargoQty; // 0x51
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         int8_t var_55;
@@ -411,8 +410,9 @@ namespace OpenLoco
         uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
         uint8_t cargo_type;            // 0x4C front car component front bogie only
         uint8_t max_cargo;             // 0x4D front car component front bogie only
-        uint8_t pad_4E[0x51 - 0x4E];
-        uint8_t var_51;
+        station_id_t townCargoFrom;    // 0x4E
+        uint8_t pad_50;
+        uint8_t secondaryCargoQty; // 0x51 front car component front bogie only
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         uint8_t pad_55;

@@ -293,6 +293,7 @@ namespace OpenLoco::StringIds
     constexpr string_id black_stringid = 455;
 
     constexpr string_id wcolour2_stringid = 457;
+    constexpr string_id white_stringid = 458;
 
     constexpr string_id competitor_vehicle = 475;
     constexpr string_id company_vehicle = 476;
@@ -639,6 +640,12 @@ namespace OpenLoco::StringIds
 
     constexpr string_id cant_pass_signal_at_danger = 1165;
 
+    constexpr string_id cargo_from = 1170;
+    constexpr string_id cargo_empty = 1171;
+    constexpr string_id cargo_capacity_tooltip = 1172;
+    constexpr string_id cargo_capacity = 1173;
+    constexpr string_id cargo_capacity_plus = 1174;
+
     constexpr string_id tab_map_overall = 1178;
     constexpr string_id tab_map_vehicles = 1179;
     constexpr string_id tab_map_industries = 1180;
@@ -678,6 +685,26 @@ namespace OpenLoco::StringIds
     constexpr string_id station_cargo_en_route_start = 1212;
     constexpr string_id station_cargo_en_route_end = 1213;
     constexpr string_id no_space_for_more_vehicle_orders = 1214;
+
+    constexpr string_id local_seperator = 1216;
+    constexpr string_id express_seperator = 1217;
+    constexpr string_id no_route_defined = 1218;
+    constexpr string_id orders_end = 1219;
+    constexpr string_id orders_stop_at = 1220;
+    constexpr string_id orders_route_through = 1221;
+    constexpr string_id orders_route_thought_waypoint = 1222;
+    constexpr string_id orders_unload_all = 1223;
+    constexpr string_id orders_wait_for_full_load_of = 1224;
+
+    constexpr string_id orders_current_order = 1227;
+
+    constexpr string_id tooltip_route_insert_wait_full_cargo = 1232;
+    constexpr string_id tooltip_route_insert_force_unload = 1233;
+    constexpr string_id tooltip_route_skip_next_order = 1234;
+    constexpr string_id tooltip_route_delete_order = 1235;
+    constexpr string_id route_click_on_waypoint = 1236;
+    constexpr string_id tooltip_route_scrollview = 1237;
+    constexpr string_id tooltip_route_scrollview_copy = 1238;
 
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;
@@ -726,6 +753,7 @@ namespace OpenLoco::StringIds
     constexpr string_id aircraft = 1280;
     constexpr string_id ship = 1281;
     constexpr string_id str_1282 = 1282;
+    constexpr string_id cargo_empty_2 = 1283;
 
     constexpr string_id tooltip_vehicles_for = 1286;
 
@@ -923,6 +951,7 @@ namespace OpenLoco::StringIds
     constexpr string_id title_ship_port = 1525;
 
     constexpr string_id refit_vehicle_tip = 1532;
+    constexpr string_id cant_refit_vehicle = 1533;
 
     constexpr string_id currently_playing = 1535;
     constexpr string_id music_controls_stop_tip = 1536;
@@ -1297,6 +1326,9 @@ namespace OpenLoco::StringIds
     constexpr string_id wcolour2_preferred_owner_name = 1921;
     constexpr string_id preferred_owner_name = 1922;
     constexpr string_id enter_preferred_owner_name = 1923;
+
+    constexpr string_id tooltip_route_move_order_up = 1926;
+    constexpr string_id tooltip_route_move_order_down = 1927;
 
     constexpr string_id atari_inc_credits_btn = UNUSED_STR(1929);
     constexpr string_id licenced_to_atari_inc = 1930;

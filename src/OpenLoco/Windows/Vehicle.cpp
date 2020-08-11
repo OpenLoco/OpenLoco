@@ -14,6 +14,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
+#include "../StationManager.h"
 #include "../Things/ThingManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
@@ -65,7 +66,7 @@ namespace OpenLoco::Ui::Vehicle
         static void repositionTabs(window* const self);
         static void sub_4B1E94(window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
-
+        static vehicle_bogie* sub_4B5CC1(window* const self, const int16_t y);
     }
 
     namespace VehicleDetails
@@ -110,11 +111,30 @@ namespace OpenLoco::Ui::Vehicle
 
     namespace route
     {
+        enum widx
+        {
+            unk_9 = common::widx::tab_route + 1,
+            route_list,
+            order_force_unload,
+            order_wait,
+            order_skip,
+            order_delete,
+            order_up,
+            order_down
+        };
         // 0x00500554
         static window_event_list events;
         static widget_t widgets[] = {
             commonWidgets(265, 177, StringIds::stringid),
-            widgetEnd()
+            makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),
+            makeWidget({ 3, 44 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
+            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
+            makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
+            makeWidget({ 240, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
+            makeWidget({ 240, 116 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
+            makeWidget({ 240, 140 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
+            makeWidget({ 240, 152 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            widgetEnd(),
         };
         constexpr uint64_t enabledWidgets = 0b11111110111110100;
         constexpr uint64_t holdableWidgets = 0;
@@ -208,11 +228,11 @@ namespace OpenLoco::Ui::Vehicle
             thing_id_t targetThing = train.veh2->id;
             if (!train.cars.empty())
             {
-                targetThing = train.cars[0].carComponents[0].front->id;
+                targetThing = train.cars.firstCar.front->id;
                 // Always true so above is pointless
-                if (train.cars[0].carComponents[0].front->type == VehicleThingType::bogie)
+                if (train.cars.firstCar.front->type == VehicleThingType::bogie)
                 {
-                    targetThing = train.cars[0].carComponents[0].body->id;
+                    targetThing = train.cars.firstCar.body->id;
                 }
             }
 
@@ -263,7 +283,7 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
-        static uint16_t rowHeights[vehicleTypeCount] = {
+        static const uint16_t rowHeights[vehicleTypeCount] = {
             22,
             22,
             22,
@@ -666,13 +686,13 @@ namespace OpenLoco::Ui::Vehicle
                 case TransportMode::rail:
                 {
                     auto track = ObjectManager::get<track_object>(vehHead->track_type);
-                    image = 0x20000000 | (track->var_1E + 17);
+                    image = 0x20000000 | (track->image + 17);
                     tooltip = 255;
                     if (vehHead->tile_x != -1)
                     {
                         if ((vehHead->var_38 & 0x10) == 0)
                         {
-                            image = 0x20000000 | (track->var_1E + 16);
+                            image = 0x20000000 | (track->image + 16);
                             tooltip = 254;
                         }
                     }
@@ -687,13 +707,13 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     auto road = ObjectManager::get<road_object>(roadType);
 
-                    image = 0x20000000 | (road->var_0E + 33);
+                    image = 0x20000000 | (road->image + 33);
                     tooltip = 255;
                     if (vehHead->tile_x != -1)
                     {
                         if ((vehHead->var_38 & 0x10) == 0)
                         {
-                            image = 0x20000000 | (road->var_0E + 32);
+                            image = 0x20000000 | (road->image + 32);
                             tooltip = 254;
                         }
                     }
@@ -716,13 +736,13 @@ namespace OpenLoco::Ui::Vehicle
                 case TransportMode::water:
                 {
                     auto water = ObjectManager::get<water_object>();
-                    image = 0x20000000 | (water->var_06 + 59);
+                    image = 0x20000000 | (water->image + 59);
                     tooltip = 259;
                     if (vehHead->tile_x != -1)
                     {
                         if ((vehHead->var_38 & 0x10) == 0)
                         {
-                            image = 0x20000000 | (water->var_06 + 58);
+                            image = 0x20000000 | (water->image + 58);
                             tooltip = 258;
                         }
                     }
@@ -1012,7 +1032,7 @@ namespace OpenLoco::Ui::Vehicle
             widgetEnd()
         };
 
-        static void sub_4B41FF(window* w, widget_index wi);
+        static void onRefitButton(window* w, widget_index wi);
 
         static bool canRefit(OpenLoco::vehicle_head* headVehicle)
         {
@@ -1028,11 +1048,10 @@ namespace OpenLoco::Ui::Vehicle
                 return false;
             }
 
-            auto object = ObjectManager::get<vehicle_object>(train.cars[0].carComponents[0].front->object_id);
+            auto object = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
             return (object->flags & FlagsE0::refittable);
         }
 
-#pragma warning(disable : 4505)
         // 004B3DDE
         static void prepareDraw(window* const self)
         {
@@ -1072,9 +1091,51 @@ namespace OpenLoco::Ui::Vehicle
             common::repositionTabs(self);
         }
 
-        static void sub_4B6658(OpenLoco::vehicle_head* vehicle)
+        static void generateCargoTotalString(OpenLoco::vehicle_head* vehicle, char* buffer)
         {
-            // TODO: implement
+            uint32_t cargoTotals[ObjectManager::getMaxObjects(object_type::cargo)]{};
+            Things::Vehicle::Vehicle train(vehicle);
+            for (auto& car : train.cars)
+            {
+                auto front = car.front;
+                auto body = car.body;
+                if (front->cargo_type != 0xFF)
+                {
+                    cargoTotals[front->cargo_type] += front->secondaryCargoQty;
+                }
+                if (body->cargo_type != 0xFF)
+                {
+                    cargoTotals[body->cargo_type] += body->primaryCargoQty;
+                }
+            }
+
+            bool hasCargo = false;
+            for (size_t cargoType = 0; cargoType < ObjectManager::getMaxObjects(object_type::cargo); ++cargoType)
+            {
+                auto cargoTotal = cargoTotals[cargoType];
+                if (cargoTotal == 0)
+                {
+                    continue;
+                }
+
+                // On all but first loop insert a ", "
+                if (hasCargo)
+                {
+                    *buffer++ = ',';
+                    *buffer++ = ' ';
+                }
+                hasCargo = true;
+                auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                auto unitNameFormat = cargoTotal == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
+                FormatArguments args{};
+                args.push(cargoTotal);
+                buffer = StringManager::formatString(buffer, unitNameFormat, &args);
+            }
+
+            if (!hasCargo)
+            {
+                StringManager::formatString(buffer, StringIds::cargo_empty_2);
+            }
         }
 
         // 004B3F0D
@@ -1083,7 +1144,8 @@ namespace OpenLoco::Ui::Vehicle
             self->draw(context);
             common::drawTabs(self, context);
 
-            sub_4B6658(common::getVehicle(self));
+            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            generateCargoTotalString(common::getVehicle(self), buffer);
 
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
@@ -1091,9 +1153,84 @@ namespace OpenLoco::Ui::Vehicle
             Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::str_1282, &args);
         }
 
+        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        {
+            registers regs{};
+            regs.al = al;
+            regs.ah = ah;
+            regs.cx = cx;
+            regs.dx = dx;
+            regs.esi = reinterpret_cast<uint32_t>(vehicle);
+            regs.edi = reinterpret_cast<uint32_t>(pDrawpixelinfo);
+            call(0x004B743B, regs);
+            return regs.cx;
+        }
+
+        // based on 0x004B40C7
+        static void drawCargoText(Gfx::drawpixelinfo_t* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, station_id_t stationId)
+        {
+            if (cargoQty == 0)
+            {
+                return;
+            }
+
+            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+            auto unitNameFormat = cargoQty == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
+            auto station = StationManager::get(stationId);
+            FormatArguments args{};
+            args.push(StringIds::cargo_from);
+            args.push(unitNameFormat);
+            args.push<uint32_t>(cargoQty);
+            args.push(station->name);
+            args.push(station->town);
+            Gfx::drawString_494B3F(*pDrawpixelinfo, x, y, Colour::black, strFormat, &args);
+            y += 10;
+        }
+
         // 004B3F62
         static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
         {
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+            Things::Vehicle::Vehicle train{ common::getVehicle(self) };
+            int16_t y = 0;
+            for (auto& car : train.cars)
+            {
+                string_id strFormat = StringIds::black_stringid;
+                auto front = car.front;
+                auto body = car.body;
+                if (front->id == self->row_hover)
+                {
+                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + self->row_height - 1, 0x2000030);
+                    strFormat = StringIds::wcolour2_stringid;
+                }
+                // Get width of the drawing
+                auto width = sub_4B743B(1, 0, 0, y, front, pDrawpixelinfo);
+                // Actually draw it
+                width = sub_4B743B(0, 0, 24 - width, (self->row_height - 22) / 2 + y, car.front, pDrawpixelinfo);
+
+                if (body->cargo_type != 0xFF)
+                {
+
+                    int16_t cargoTextHeight = self->row_height / 2 + y - ((self->row_height - 22) / 2) - 10;
+                    if (front->secondaryCargoQty != 0 || body->primaryCargoQty != 0)
+                    {
+                        if (body->primaryCargoQty == 0 || front->secondaryCargoQty == 0)
+                        {
+                            cargoTextHeight += 5;
+                        }
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->primaryCargoQty, body->cargo_type, body->townCargoFrom);
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->secondaryCargoQty, front->cargo_type, front->townCargoFrom);
+                    }
+                    else
+                    {
+                        FormatArguments args{};
+                        args.push<string_id>(StringIds::cargo_empty);
+                        Gfx::drawString_494B3F(*pDrawpixelinfo, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
+                    }
+                }
+
+                y += self->row_height;
+            }
         }
 
         // 004B41BD
@@ -1110,6 +1247,7 @@ namespace OpenLoco::Ui::Vehicle
                 case common::widx::tab_cargo:
                 case common::widx::tab_finances:
                 case common::widx::tab_route:
+                    common::switchTab(self, i);
                     break;
 
                 case common::widx::caption:
@@ -1124,14 +1262,24 @@ namespace OpenLoco::Ui::Vehicle
             switch (i)
             {
                 case widx::refit_button:
-                    sub_4B41FF(self, i);
+                    onRefitButton(self, i);
                     break;
             }
         }
 
         // 004B41E9
-        static void onDropdown(window* const self, const widget_index i, const int16_t i1)
+        static void onDropdown(window* const self, const widget_index i, const int16_t dropdownIndex)
         {
+            switch (i)
+            {
+                case widx::refit_button:
+                    if (dropdownIndex == -1)
+                        break;
+
+                    gGameCommandErrorTitle = StringIds::cant_refit_vehicle;
+                    GameCommands::do_64(self->number, Dropdown::getItemArgument(dropdownIndex, 3));
+                    break;
+            }
         }
 
         static uint32_t sub_42F6B6(uint32_t eax, uint8_t bl, uint8_t cl)
@@ -1144,10 +1292,10 @@ namespace OpenLoco::Ui::Vehicle
             return regs.eax;
         }
 
-        static void sub_4B41FF(window* const self, const widget_index wi)
+        static void onRefitButton(window* const self, const widget_index wi)
         {
             Things::Vehicle::Vehicle train(common::getVehicle(self));
-            auto vehicleObject = ObjectManager::get<vehicle_object>(train.cars[0].carComponents[0].front->object_id);
+            auto vehicleObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
             auto eax = vehicleObject->max_primary_cargo;
             auto bl = Utility::bitScanForward(vehicleObject->primary_cargo_types);
 
@@ -1162,7 +1310,7 @@ namespace OpenLoco::Ui::Vehicle
                     continue;
 
                 string_id format = StringIds::dropdown_stringid;
-                if (cargoId == train.cars[0].carComponents[0].body->cargo_type)
+                if (cargoId == train.cars.firstCar.body->cargo_type)
                 {
                     format = StringIds::dropdown_stringid_selected;
                 }
@@ -1212,19 +1360,104 @@ namespace OpenLoco::Ui::Vehicle
             *height = rows * self->row_height;
         }
 
+        static char* generateCargoTooltipDetails(char* buffer, const string_id cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
+        {
+            if (cargoType == 0xFF)
+            {
+                return buffer;
+            }
+
+            {
+                auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                FormatArguments args{};
+                args.push(maxCargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural);
+                args.push<uint32_t>(maxCargo);
+                buffer = StringManager::formatString(buffer, cargoFormat, &args);
+            }
+
+            auto availableCargoTypes = acceptedCargoTypes & ~(1 << cargoType);
+            if (availableCargoTypes != 0)
+            {
+                *buffer++ = ' ';
+                *buffer++ = '(';
+
+                while (availableCargoTypes != 0)
+                {
+                    auto type = Utility::bitScanForward(availableCargoTypes);
+                    availableCargoTypes &= ~(1 << type);
+
+                    auto cargoObj = ObjectManager::get<cargo_object>(type);
+                    FormatArguments args{};
+                    args.push(cargoObj->name);
+                    buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
+                    *buffer++ = ' ';
+                }
+                --buffer;
+                *buffer++ = ')';
+                *buffer++ = '\0';
+            }
+            return buffer;
+        }
+
         // 0x004B4404
         static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
+            Input::setTooltipTimeout(2000);
+            self->flags &= ~WindowFlags::not_scroll_view;
+            auto car = common::sub_4B5CC1(self, y);
+            string_id tooltipFormat = StringIds::null;
+            thing_id_t tooltipContent = ThingId::null;
+            if (car != nullptr)
+            {
+                tooltipFormat = StringIds::buffer_337;
+                tooltipContent = car->id;
+                if (self->row_hover != tooltipContent)
+                {
+                    self->row_hover = tooltipContent;
+                    self->invalidate();
+                }
+            }
+
+            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+            if (*buffer != '\0')
+            {
+                if (self->widgets[widx::cargo_list].tooltip == tooltipFormat && self->var_85C == tooltipContent)
+                {
+                    return;
+                }
+            }
+
+            self->widgets[widx::cargo_list].tooltip = tooltipFormat;
+            self->var_85C = tooltipContent;
+            ToolTip::closeAndReset();
+
+            if (tooltipContent == ThingId::null)
+            {
+                return;
+            }
+
+            ToolTip::set_52336E(true);
+
+            {
+                auto vehicleObj = ObjectManager::get<vehicle_object>(car->object_id);
+                FormatArguments args{};
+                args.push(vehicleObj->name);
+                buffer = StringManager::formatString(buffer, StringIds::cargo_capacity_tooltip, &args);
+            }
+            // TODO get first body from car
+            vehicle_body* body = reinterpret_cast<OpenLoco::vehicle*>(car)->nextVehicleComponent()->nextVehicleComponent()->asVehicleBody();
+            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity, body->cargo_type, body->max_cargo, body->accepted_cargo_types);
+            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity_plus, car->cargo_type, car->max_cargo, car->accepted_cargo_types);
         }
 
         // 0x004B45DD
-        static void ui__vehicle__event_3_8(window* const self)
+        static void event8(window* const self)
         {
             self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x004B45E5
-        static void ui__vehicle__event_3_9(window* const self)
+        static void event9(window* const self)
         {
             if (self->flags & WindowFlags::not_scroll_view)
             {
@@ -1263,8 +1496,8 @@ namespace OpenLoco::Ui::Vehicle
             events.tooltip = tooltip;
             events.get_scroll_size = getScrollSize;
             events.scroll_mouse_over = scrollMouseOver;
-            events.event_08 = ui__vehicle__event_3_8;
-            events.event_09 = ui__vehicle__event_3_9;
+            events.event_08 = event8;
+            events.event_09 = event9;
             events.on_update = onUpdate;
             events.on_resize = onResize;
         }
@@ -1349,7 +1582,7 @@ namespace OpenLoco::Ui::Vehicle
             //    // Last journey average speed: {VELOCITY}
             //    auto args = FormatArguments();
             //    args.push(veh->var_77);
-            //    Gfx::draw_string_494B3F(*context, pos.x, pos.y, Colour::black, 1985);
+            //    Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, 1985);
             //    pos.y += 10 + 5;
             //}
 
@@ -1414,8 +1647,232 @@ namespace OpenLoco::Ui::Vehicle
         }
     }
 
-    namespace route_details
+    namespace route
     {
+        static loco_global<uint8_t, 0x00113646A> _113646A;
+        constexpr uint32_t max_orders = 256000; // TODO: MOVE
+        static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C;
+
+        // TODO: Move to orders file this is duplicated
+        static const uint8_t dword_4FE070[] = {
+            1,
+            2,
+            2,
+            6,
+            1,
+            1,
+        };
+
+        // 0x00470824
+        static void sub_470824(OpenLoco::vehicle_head* head)
+        {
+            registers regs{};
+            regs.esi = reinterpret_cast<uint32_t>(head);
+            call(0x00470824, regs);
+        }
+
+        // 0x004B509B
+        static void close(window* const self)
+        {
+            if (Input::isToolActive(self->type, self->number))
+            {
+                Input::toolCancel();
+            }
+        }
+
+        static void orderDelete(vehicle_head* const head, const uint32_t orderOffset)
+        {
+            gGameCommandErrorTitle = StringIds::empty;
+            GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
+            sub_470824(head);
+        }
+
+        // 0x004B4F6D
+        static void onOrderDelete(vehicle_head* const head, const int16_t orderId)
+        {
+            // No deleteable orders
+            if (head->sizeOfOrderTable <= 1)
+            {
+                return;
+            }
+
+            // First item on the list is the local/express button
+            if (orderId == 0)
+            {
+                return;
+            }
+
+            // Order id can be -1 at this point for none selected
+            auto i = 0;
+            auto orderOffset = head->orderTableOffset;
+            auto previousOffset = orderOffset;
+            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            while (orderType != 0)
+            {
+                if (i == orderId - 1)
+                {
+                    orderDelete(head, orderOffset);
+                    return;
+                }
+                orderType = _dword_987C5C[orderOffset] & 0x7;
+                // Will only occur when no order found, so deletes the last one
+                if (orderType == 0)
+                {
+                    // Passes the previous iterations offset
+                    orderDelete(head, previousOffset);
+                    return;
+                }
+                previousOffset = orderOffset;
+                orderOffset += dword_4FE070[orderType];
+                i++;
+            }
+            return;
+        }
+
+        // 0x004B4C14
+        static bool orderUp(vehicle_head* const head, const uint32_t orderOffset)
+        {
+            gGameCommandErrorTitle = StringIds::empty;
+            auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
+            sub_470824(head); // Note order changed check if this matters.
+            return result != GameCommands::FAILURE;
+        }
+
+        // 0x004B4CCB based on
+        static bool orderDown(vehicle_head* const head, const uint32_t orderOffset)
+        {
+            gGameCommandErrorTitle = StringIds::empty;
+            auto result = GameCommands::do_76(head->id, orderOffset - head->orderTableOffset);
+            sub_470824(head); // Note order changed check if this matters.
+            return result != GameCommands::FAILURE;
+        }
+
+        // 0x004B4BC1 / 0x004B4C78 based on
+        static bool onOrderMove(vehicle_head* const head, const int16_t orderId, bool(orderMoveFunc)(vehicle_head*, uint32_t))
+        {
+            // No moveable orders
+            if (head->sizeOfOrderTable <= 1)
+                return false;
+            // Null orderId and item 0 (local/express) no action
+            if (orderId <= 0)
+                return false;
+
+            auto i = 0;
+            auto orderOffset = head->orderTableOffset;
+            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            while (orderType != 0)
+            {
+                if (i == orderId - 1)
+                {
+                    return orderMoveFunc(head, orderOffset);
+                }
+                orderType = _dword_987C5C[orderOffset] & 0x7;
+                orderOffset += dword_4FE070[orderType];
+                i++;
+            }
+            return false;
+        }
+
+        // 0x004B4B43
+        static void onMouseUp(window* const self, const widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+                case common::widx::caption:
+                    common::renameVehicle(self, widgetIndex);
+                    break;
+                case common::widx::tab_main:
+                case common::widx::tab_vehicle_details:
+                case common::widx::tab_cargo:
+                case common::widx::tab_finances:
+                case common::widx::tab_route:
+                    common::switchTab(self, widgetIndex);
+                    break;
+                case widx::order_delete:
+                {
+
+                    onOrderDelete(common::getVehicle(self), self->var_842);
+                    if (self->var_842 == -1)
+                    {
+                        return;
+                    }
+                    auto i = 0;
+                    auto orderOffset = common::getVehicle(self)->orderTableOffset;
+                    auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+                    while (orderType != 0)
+                    {
+                        if (i == self->var_842)
+                        {
+                            return;
+                        }
+                        orderType = _dword_987C5C[orderOffset] & 0x7;
+                        if (orderType == 0)
+                        {
+                            self->var_842 = -1;
+                            return;
+                        }
+                        orderOffset += dword_4FE070[orderType];
+                        i++;
+                    }
+                }
+                break;
+                case widx::order_skip:
+                    gGameCommandErrorTitle = StringIds::empty;
+                    GameCommands::do_37(self->number);
+                    break;
+                case widx::order_up:
+                    if (onOrderMove(common::getVehicle(self), self->var_842, orderUp))
+                    {
+                        if (self->var_842 <= 1)
+                        {
+                            return;
+                        }
+                        self->var_842--;
+                    }
+                    break;
+                case widx::order_down:
+                    if (onOrderMove(common::getVehicle(self), self->var_842, orderDown))
+                    {
+                        if (self->var_842 <= 0)
+                        {
+                            return;
+                        }
+                        auto i = 0;
+                        auto orderOffset = common::getVehicle(self)->orderTableOffset;
+                        auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+                        while (orderType != 0)
+                        {
+                            orderType = _dword_987C5C[orderOffset] & 0x7;
+                            if (orderType == 0)
+                            {
+                                return;
+                            }
+                            orderOffset += dword_4FE070[orderType];
+                            i++;
+                            if (i == self->var_842)
+                            {
+                                orderType = _dword_987C5C[orderOffset] & 0x7;
+                                if (orderType != 0)
+                                {
+                                    self->var_842++;
+                                }
+                                return;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        // 0x004B564E
+        static void onResize(window* const self)
+        {
+            common::sub_4B1E94(self);
+            self->setSize({ 265, 178 }, { 600, 440 });
+        }
+
         // 0x004B55D1
         // "Show <vehicle> route details" tab in vehicle window
         static void onUpdate(window* const self)
@@ -1433,8 +1890,335 @@ namespace OpenLoco::Ui::Vehicle
 
             if (!Input::isToolActive(WindowType::vehicle, self->number))
             {
-                sub_4B28E2(self, 13);
+                if (Input::toolSet(self, widx::unk_9, 12))
+                {
+                    self->invalidate();
+                    sub_470824(common::getVehicle(self));
+                }
             }
+        }
+
+        // 0x004B4D74
+        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        {
+            args.push(StringIds::tooltip_scroll_orders_list);
+            auto head = common::getVehicle(self);
+            args.push(StringIds::getVehicleType(head->vehicleType));
+        }
+
+        // TODO: same as other tabs
+        // 0x004B55A7
+        static void event8(window* const self)
+        {
+            self->flags |= WindowFlags::not_scroll_view;
+        }
+
+        // TODO: same as other tabs
+        // 0x004B55B6
+        static void event9(window* const self)
+        {
+            if (self->flags & WindowFlags::not_scroll_view)
+            {
+                if (self->row_hover != -1)
+                {
+                    self->row_hover = -1;
+                    self->invalidate();
+                }
+            }
+        }
+
+        // 0x004B4D9B
+        static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        {
+            auto head = common::getVehicle(self);
+
+            *height = 10;
+            auto orderOffset = head->orderTableOffset;
+            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            while (orderType != 0)
+            {
+                orderType = _dword_987C5C[orderOffset] & 0x7;
+                orderOffset += dword_4FE070[orderType];
+                *height += 10;
+            }
+        }
+
+        // 0x004B530C
+        static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        {
+            self->flags &= ~WindowFlags::not_scroll_view;
+            auto item = y / 10;
+            if (self->row_hover != item)
+            {
+                self->row_hover = item;
+                self->invalidate();
+            }
+        }
+
+        // 0x004B5339
+        static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
+        {
+            if (widgetIdx != widx::route_list)
+            {
+                return fallback;
+            }
+
+            if (Input::isToolActive(self->type, self->number))
+            {
+                return cursor_id::arrows_inward;
+            }
+            return fallback;
+        }
+
+        // 0x004B468C
+        static void prepareDraw(window* const self)
+        {
+            if (self->widgets != widgets)
+            {
+                self->widgets = widgets;
+                self->initScrollWidgets();
+            }
+
+            common::setActiveTabs(self);
+            auto head = common::getVehicle(self);
+            FormatArguments args{};
+            args.push(head->var_22);
+            args.push(head->var_44);
+
+            self->widgets[widx::route_list].tooltip = Input::isToolActive(self->type, self->number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+
+            self->widgets[widx::route_list].right = self->width - 26;
+            self->widgets[widx::route_list].bottom = self->height - 14;
+            self->widgets[widx::order_force_unload].right = self->width - 2;
+            self->widgets[widx::order_wait].right = self->width - 2;
+            self->widgets[widx::order_skip].right = self->width - 2;
+            self->widgets[widx::order_delete].right = self->width - 2;
+            self->widgets[widx::order_up].right = self->width - 2;
+            self->widgets[widx::order_down].right = self->width - 2;
+            self->widgets[widx::order_force_unload].left = self->width - 25;
+            self->widgets[widx::order_wait].left = self->width - 25;
+            self->widgets[widx::order_skip].left = self->width - 25;
+            self->widgets[widx::order_delete].left = self->width - 25;
+            self->widgets[widx::order_up].left = self->width - 25;
+            self->widgets[widx::order_down].left = self->width - 25;
+
+            self->disabled_widgets |= (1 << widx::order_force_unload) | (1 << widx::order_wait) | (1 << widx::order_skip) | (1 << widx::order_delete);
+            if (head->sizeOfOrderTable != 1)
+            {
+                self->disabled_widgets &= ~((1 << widx::order_skip) | (1 << widx::order_delete));
+            }
+            if (head->var_4E != 0)
+            {
+                self->disabled_widgets &= ~((1 << widx::order_wait) | (1 << widx::order_force_unload));
+            }
+
+            widget_type type = head->owner == CompanyManager::getControllingId() ? widget_type::wt_9 : widget_type::none;
+            self->widgets[widx::order_force_unload].type = type;
+            self->widgets[widx::order_wait].type = type;
+            self->widgets[widx::order_skip].type = type;
+            self->widgets[widx::order_delete].type = type;
+            self->widgets[widx::order_up].type = type;
+            self->widgets[widx::order_down].type = type;
+            if (type == widget_type::none)
+            {
+                self->widgets[widx::route_list].right += 22;
+            }
+
+            self->disabled_widgets |= (1 << widx::order_up) | (1 << widx::order_down);
+            if (self->var_842 != -1)
+            {
+                self->disabled_widgets &= ~((1 << widx::order_up) | (1 << widx::order_down));
+            }
+            common::repositionTabs(self);
+        }
+
+        // 0x004B4866
+        static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
+        {
+            self->draw(context);
+            common::drawTabs(self, context);
+
+            if (Input::isToolActive(WindowType::vehicle, self->number))
+            {
+                // Location at bottom left edge of window
+                Gfx::point_t loc{ self->x + 3, self->y + self->height - 13 };
+
+                Gfx::drawString_494BBF(*context, loc.x, loc.y, self->width - 14, Colour::black, StringIds::route_click_on_waypoint);
+            }
+        }
+
+        const std::array<string_id, 6> orderString = {
+            StringIds::orders_end,
+            StringIds::orders_stop_at,
+            StringIds::orders_route_through,
+            StringIds::orders_route_thought_waypoint,
+            StringIds::orders_unload_all,
+            StringIds::orders_wait_for_full_load_of,
+        };
+
+        // TODO: Move to orders file this is duplicated
+        static const uint8_t byte_4FE088[] = {
+            0,
+            11,
+            11,
+            3,
+            4,
+            4,
+            0,
+            0,
+        };
+
+        // TODO: Go up to 64?
+        static const std::array<uint32_t, 9> numberCircle = {
+            ImageIds::number_circle_1,
+            ImageIds::number_circle_2,
+            ImageIds::number_circle_3,
+            ImageIds::number_circle_4,
+            ImageIds::number_circle_5,
+            ImageIds::number_circle_6,
+            ImageIds::number_circle_7,
+            ImageIds::number_circle_8,
+            ImageIds::number_circle_9,
+        };
+
+        // 0x004B49F8
+        static void sub_4B49F8(const uint32_t orderOffset, FormatArguments& args)
+        {
+            station_id_t stationId = ((_dword_987C5C[orderOffset] & 0xC0) << 2) + _dword_987C5C[orderOffset + 1];
+            auto station = StationManager::get(stationId);
+            args.push(station->name);
+            args.push(station->town);
+        }
+
+        // 0x004B4A31
+        static void sub_4B4A31(const uint32_t orderOffset, FormatArguments& args)
+        {
+            uint16_t cargoId = _dword_987C5C[orderOffset] >> 3;
+            auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
+            args.push(cargoObj->name);
+            args.push(cargoObj->unit_inline_sprite);
+        }
+
+        // 0x004B4A58 based on
+        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, const uint8_t orderType, int16_t& y)
+        {
+            Gfx::point_t loc = { 8, y - 1 };
+            Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
+            if (byte_4FE088[orderType] & (1 << 1))
+            {
+                if (Input::isToolActive(self->type, self->number))
+                {
+                    auto imageId = numberCircle[_113646A - 1];
+                    Gfx::drawImage(context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
+                }
+                _113646A++;
+            }
+        }
+
+        // 0x004B49F1
+        static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
+        {
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+
+            auto head = common::getVehicle(self);
+            Things::Vehicle::Vehicle train(head);
+            auto strFormat = StringIds::black_stringid;
+            if (self->row_hover == 0)
+            {
+                Gfx::fillRect(pDrawpixelinfo, 0, 0, self->width, 9, 0x2000030);
+                strFormat = StringIds::wcolour2_stringid;
+            }
+
+            {
+                FormatArguments args{};
+                args.push(train.veh1->var_48 & (1 << 1) ? StringIds::express_seperator : StringIds::local_seperator);
+                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, -1, Colour::black, strFormat, &args);
+            }
+            if (head->orderTableOffset == 1)
+            {
+                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, 9, Colour::black, StringIds::no_route_defined);
+            }
+
+            auto orderNum = 1;
+            _113646A = 1; // Number ?symbol? TODO: make not a global
+            auto orderOffset = head->orderTableOffset;
+            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            while (orderType != 0)
+            {
+                orderType = _dword_987C5C[orderOffset] & 0x7;
+                int16_t y = orderNum * 10;
+                strFormat = StringIds::black_stringid;
+                if (self->var_842 == orderNum)
+                {
+                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, Colour::aquamarine);
+                    strFormat = StringIds::white_stringid;
+                }
+                if (self->row_hover == orderNum)
+                {
+                    strFormat = StringIds::wcolour2_stringid;
+                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, 0x2000030);
+                }
+
+                FormatArguments args{};
+                args.push(orderString[orderType]);
+                switch (orderType)
+                {
+                    case 0: // end of list
+                    case 3: // route through waypoints
+                        // Fall through
+                        break;
+                    case 1: // stop at
+                    case 2: // route through
+                        sub_4B49F8(orderOffset, args);
+                        break;
+                    case 4: // unload all of
+                    case 5: // wait for full load of
+                        sub_4B4A31(orderOffset, args);
+                        break;
+                }
+
+                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, orderType, y);
+                if (head->currentOrder + head->orderTableOffset == orderOffset)
+                {
+                    Gfx::drawString_494B3F(*pDrawpixelinfo, 1, y - 1, Colour::black, StringIds::orders_current_order);
+                }
+
+                orderOffset += dword_4FE070[orderType];
+                orderNum++;
+            }
+        }
+
+        static void initEvents()
+        {
+            events.on_close = close;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
+            events.on_mouse_down;
+            events.on_dropdown;
+            events.on_update = onUpdate;
+            events.event_08 = event8;
+            events.event_09 = event9;
+            events.on_tool_down;
+            events.on_tool_abort;
+            events.event_15;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down;
+            events.scroll_mouse_over = scrollMouseOver;
+            events.text_input = common::textInput;
+            events.viewport_rotate;
+            events.tooltip = tooltip;
+            events.cursor = cursor;
+            events.prepare_draw = prepareDraw;
+            events.draw = draw;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -1551,6 +2335,23 @@ namespace OpenLoco::Ui::Vehicle
             call(0x004B1E94, regs);
         }
 
+        // 0x004B5CC1
+        static vehicle_bogie* sub_4B5CC1(window* const self, const int16_t y)
+        {
+            Things::Vehicle::Vehicle train(getVehicle(self));
+
+            auto heightOffset = y;
+            for (auto& car : train.cars)
+            {
+                heightOffset -= self->row_height;
+                if (heightOffset <= 0)
+                {
+                    return car.front;
+                }
+            }
+            return nullptr;
+        }
+
         struct TabIcons
         {
             uint32_t image;
@@ -1637,5 +2438,6 @@ namespace OpenLoco::Ui::Vehicle
         cargo::initEvents();
         VehicleDetails::initEvents();
         finances::initEvents();
+        route::initEvents();
     }
 }

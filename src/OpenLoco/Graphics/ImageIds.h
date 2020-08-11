@@ -25,6 +25,8 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t construction_straight = 2335;
 
+    constexpr uint32_t red_arrow_up = 2338;
+    constexpr uint32_t red_arrow_down = 2339;
     constexpr uint32_t construction_left_hand_curve_very_small = 2340;
     constexpr uint32_t construction_right_hand_curve_very_small = 2341;
     constexpr uint32_t construction_left_hand_curve_small = 2342;
@@ -56,6 +58,10 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t pass_signal = 2374;
 
+    constexpr uint32_t route_delete = 2375;
+    constexpr uint32_t route_skip = 2376;
+    constexpr uint32_t route_wait = 2377;
+    constexpr uint32_t route_force_unload = 2378;
     constexpr uint32_t show_station_catchment = 2379;
     constexpr uint32_t plant_cluster_selected_tree = 2380;
     constexpr uint32_t plant_cluster_random_tree = 2381;
@@ -138,6 +144,16 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t random_map_watermark = 2468;
     constexpr uint32_t height_map_compass = 2469;
 
+    constexpr uint32_t number_circle_1 = 3239;
+    constexpr uint32_t number_circle_2 = 3240;
+    constexpr uint32_t number_circle_3 = 3241;
+    constexpr uint32_t number_circle_4 = 3242;
+    constexpr uint32_t number_circle_5 = 3243;
+    constexpr uint32_t number_circle_6 = 3244;
+    constexpr uint32_t number_circle_7 = 3245;
+    constexpr uint32_t number_circle_8 = 3246;
+    constexpr uint32_t number_circle_9 = 3247;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;
@@ -172,6 +188,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t tab_object_world = 3536;
     constexpr uint32_t tab_object_companies = 3537;
     constexpr uint32_t tab_object_scenarios = 3538;
+
     constexpr uint32_t news_background_old_left = 3539;
     constexpr uint32_t news_background_old_right = 3540;
     constexpr uint32_t news_background_new_left = 3541;

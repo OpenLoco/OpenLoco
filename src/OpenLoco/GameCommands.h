@@ -38,6 +38,8 @@ namespace OpenLoco::GameCommands
         lower_raise_land_mountain = 27,
         raise_water = 28,
         lower_water = 29,
+        vehicle_order_delete = 36,
+        vehicle_order_skip = 37,
         change_company_name = 46,
         remove_industry = 54,
         build_company_headquarters = 55,
@@ -45,6 +47,8 @@ namespace OpenLoco::GameCommands
         load_multiplayer_map = 67,
         send_chat_message = 71,
         update_owner_status = 73,
+        vehicle_order_up = 75,
+        vehicle_order_down = 76,
         rename_industry = 79,
     };
 
@@ -240,6 +244,23 @@ namespace OpenLoco::GameCommands
         return doCommand(31, regs) != FAILURE;
     }
 
+    inline bool do_36(thing_id_t head, uint32_t orderOffset)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = head;
+        regs.edx = orderOffset;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_delete), regs);
+    }
+
+    inline bool do_37(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = head;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_skip), regs);
+    }
+
     // Rename town
     inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -296,6 +317,16 @@ namespace OpenLoco::GameCommands
         regs.ax = ax; // y?
         regs.di = di; // z?
         doCommand(55, regs);
+    }
+
+    // Refit vehicle
+    inline void do_64(thing_id_t vehicleHead, uint16_t option)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = vehicleHead;
+        regs.dx = option;
+        doCommand(64, regs);
     }
 
     // Change company face
@@ -364,6 +395,24 @@ namespace OpenLoco::GameCommands
         regs.ax = position.x;
         regs.cx = position.y;
         doCommand(73, regs);
+    }
+
+    inline uint32_t do_75(thing_id_t head, uint32_t orderOffset)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = head;
+        regs.edx = orderOffset;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_up), regs);
+    }
+
+    inline uint32_t do_76(thing_id_t head, uint32_t orderOffset)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.di = head;
+        regs.edx = orderOffset;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_down), regs);
     }
 
     // Rename industry

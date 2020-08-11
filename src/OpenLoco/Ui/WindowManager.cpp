@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004B6033,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto* w = vehicle::main::open(reinterpret_cast<OpenLoco::vehicle*>(regs.edx));
+                auto* w = Vehicle::Main::open(reinterpret_cast<OpenLoco::vehicle*>(regs.edx));
                 regs = backup;
                 regs.esi = reinterpret_cast<int32_t>(w);
                 return 0;
