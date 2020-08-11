@@ -28,16 +28,20 @@ namespace openloco::ui::windows::map
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;
     static std::array<int16_t, 4> _4FDC4C = {
-        376,
-        760,
-        376,
-        -8,
+        {
+            376,
+            760,
+            376,
+            -8,
+        }
     };
     static std::array<int16_t, 4> _4FDC4E = {
-        0,
-        384,
-        768,
-        384,
+        {
+            0,
+            384,
+            768,
+            384,
+        }
     };
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
     static loco_global<uint32_t, 0x0526284> _lastMapWindowFlags;
@@ -48,12 +52,14 @@ namespace openloco::ui::windows::map
     static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        {
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        }
     };
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
@@ -192,11 +198,13 @@ namespace openloco::ui::windows::map
     static const uint8_t overallGraphKeySize = 6;
 
     static std::array<size_t, 5> legendLengths = {
-        overallGraphKeySize,
-        std::size(_vehicleTypeCounts),
-        objectmgr::get_max_objects(object_type::industry),
-        0,
-        companymgr::max_companies,
+        {
+            overallGraphKeySize,
+            std::size(_vehicleTypeCounts),
+            objectmgr::get_max_objects(object_type::industry),
+            0,
+            companymgr::max_companies,
+        }
     };
 
     static void setHoverItemTab(window* self, int16_t legendLeft, int16_t legendBottom)
