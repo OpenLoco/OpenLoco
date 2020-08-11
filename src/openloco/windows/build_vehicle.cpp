@@ -677,7 +677,7 @@ namespace openloco::ui::build_vehicle
             window->invalidate();
         }
 
-        auto scrollPosition = window->scroll_areas[scrollIdx::vehicle_selection].v_bottom;
+        auto scrollPosition = window->scroll_areas[scrollIdx::vehicle_selection].contentHeight;
         scrollPosition -= window->widgets[widx::scrollview_vehicle_selection].bottom;
         scrollPosition += window->widgets[widx::scrollview_vehicle_selection].top;
         if (scrollPosition < 0)
@@ -685,9 +685,9 @@ namespace openloco::ui::build_vehicle
             scrollPosition = 0;
         }
 
-        if (scrollPosition < window->scroll_areas[scrollIdx::vehicle_selection].v_top)
+        if (scrollPosition < window->scroll_areas[scrollIdx::vehicle_selection].contentOffsetY)
         {
-            window->scroll_areas[scrollIdx::vehicle_selection].v_top = scrollPosition;
+            window->scroll_areas[scrollIdx::vehicle_selection].contentOffsetY = scrollPosition;
             ui::scrollview::update_thumbs(window, widx::scrollview_vehicle_selection);
         }
 

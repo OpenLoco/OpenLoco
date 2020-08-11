@@ -96,6 +96,8 @@ namespace openloco::input
     void process_mouse_over(int16_t x, int16_t y);
     void process_keyboard_input();
 
+    gfx::point_t getTooltipMouseLocation();
+    void setTooltipMouseLocation(const gfx::point_t& loc);
     uint16_t getTooltipTimeout();
     void setTooltipTimeout(uint16_t tooltipTimeout);
 }

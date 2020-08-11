@@ -5,7 +5,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::scrollview
 {
-    enum class scroll_part
+    enum class scroll_part : int16_t
     {
         none = -1,
         view = 0,
@@ -33,8 +33,9 @@ namespace openloco::ui::scrollview
         constexpr uint16_t VSCROLLBAR_DOWN_PRESSED = 1 << 7;
     }
 
-    constexpr uint8_t SCROLLBAR_WIDTH = 10;
-    constexpr uint8_t SCROLLBAR_BUTTON_CLICK_STEP = 3;
+    constexpr uint8_t thumbSize = 10;
+    constexpr uint8_t barWidth = 11;
+    constexpr uint8_t buttonClickStep = 3;
 
     void get_part(
         ui::window* window,
@@ -44,8 +45,10 @@ namespace openloco::ui::scrollview
         int16_t* output_x,
         int16_t* output_y,
         scroll_part* output_scroll_area,
-        int32_t* scroll_id);
+        size_t* scrollIndex);
     void update_thumbs(window* window, widget_index widgetIndex);
     void scrollLeftBegin(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
+    void scrollLeftContinue(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
     void scrollModalRight(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
+    void clearPressedButtons(const WindowType type, const window_number number, const widget_index widgetIndex);
 }

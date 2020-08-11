@@ -165,12 +165,12 @@ namespace openloco::ui
     struct scroll_area_t
     {
         uint16_t flags;          // 0x00
-        int16_t h_left;          // 0x02
-        int16_t h_right;         // 0x04
+        int16_t contentOffsetX;  // 0x02
+        int16_t contentWidth;    // 0x04
         uint16_t h_thumb_left;   // 0x06
         uint16_t h_thumb_right;  // 0x08
-        int16_t v_top;           // 0x0A
-        int16_t v_bottom;        // 0x0C
+        int16_t contentOffsetY;  // 0x0A
+        int16_t contentHeight;   // 0x0C
         uint16_t v_thumb_top;    // 0x0E
         uint16_t v_thumb_bottom; // 0x10
     };
@@ -224,7 +224,7 @@ namespace openloco::ui
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 void (*scroll_mouse_down)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
-                uint32_t event_18;
+                void (*scroll_mouse_drag)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*scroll_mouse_over)(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*text_input)(window*, widget_index, char*);
                 void (*viewport_rotate)(window*);
@@ -476,6 +476,7 @@ namespace openloco::ui
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
         void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
+        void call_scroll_mouse_drag(int16_t x, int16_t y, uint8_t scroll_index);                          // 18
         void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
         void call_text_input(widget_index caller, char* buffer);                                          // 20
         void call_viewport_rotate();                                                                      // 21

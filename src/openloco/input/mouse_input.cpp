@@ -25,6 +25,7 @@ using namespace openloco::ui::viewport_interaction;
 
 namespace openloco::input
 {
+    static void stateScrollLeft(mouse_button cx, widget_index edx, ui::window* window, ui::widget_t* widget, int16_t x, int16_t y);
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -420,7 +421,7 @@ namespace openloco::input
                 break;
 
             case input_state::scroll_left:
-                call(0x004C71F6, regs);
+                stateScrollLeft(button, widgetIndex, window, widget, x, y);
                 break;
 
             case input_state::resizing:
@@ -898,6 +899,35 @@ namespace openloco::input
         }
     }
 
+    // 0x004C71F6
+    static void stateScrollLeft(const mouse_button button, const widget_index widgetIndex, ui::window* const window, ui::widget_t* const widget, const int16_t x, const int16_t y)
+    {
+        switch (button)
+        {
+            case mouse_button::released:
+            {
+                if (widgetIndex != _pressedWidgetIndex || window->type != _pressedWindowType || window->number != _pressedWindowNumber)
+                {
+                    scrollview::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    return;
+                }
+                scrollview::scrollLeftContinue(x, y, window, widget, widgetIndex);
+
+                break;
+            }
+
+            case mouse_button::left_released:
+            {
+                input::state(input_state::reset);
+                scrollview::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                break;
+            }
+
+            default:
+                break;
+        }
+    }
+
     mouse_button getLastKnownButtonState()
     {
         return _lastKnownButtonState;
@@ -1000,10 +1030,10 @@ namespace openloco::input
         w->flags |= ui::window_flags::flag_15;
         w->call_on_resize();
         w->call_prepare_draw();
-        w->scroll_areas[0].h_right = -1;
-        w->scroll_areas[0].v_bottom = -1;
-        w->scroll_areas[1].h_right = -1;
-        w->scroll_areas[1].v_bottom = -1;
+        w->scroll_areas[0].contentWidth = -1;
+        w->scroll_areas[0].contentHeight = -1;
+        w->scroll_areas[1].contentWidth = -1;
+        w->scroll_areas[1].contentHeight = -1;
         window->update_scroll_widgets();
         w->invalidate();
 
@@ -1413,7 +1443,7 @@ namespace openloco::input
             {
                 ui::scrollview::scroll_part scrollArea;
                 int16_t scrollX, scrollY;
-                int32_t scrollIndex;
+                size_t scrollIndex;
                 ui::scrollview::get_part(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
                 if (scrollArea == ui::scrollview::scroll_part::none)
@@ -1421,7 +1451,7 @@ namespace openloco::input
                 }
                 else if (scrollArea == ui::scrollview::scroll_part::view)
                 {
-                    window->call_scroll_mouse_over(scrollX, scrollY, scrollIndex / sizeof(ui::scroll_area_t));
+                    window->call_scroll_mouse_over(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
                 }
                 else
                 {
@@ -1655,7 +1685,7 @@ namespace openloco::input
 
 #pragma mark - Window positioning
 
-    // 0x00C877D
+    // 0x004C877D
     static void window_position_begin(int16_t x, int16_t y, ui::window* window, ui::widget_index widget_index)
     {
         state(input_state::positioning_window);
@@ -1806,7 +1836,7 @@ namespace openloco::input
                         _5233A4 = x;
                         _5233A6 = y;
                         ui::scrollview::scroll_part output_scroll_area;
-                        int32_t scroll_id;
+                        size_t scroll_id;
                         int16_t scroll_x, scroll_y;
                         ui::scrollview::get_part(
                             window,
@@ -1884,6 +1914,17 @@ namespace openloco::input
     gfx::point_t getMouseLocation()
     {
         return gfx::point_t(_cursorX, _cursorY);
+    }
+
+    gfx::point_t getTooltipMouseLocation()
+    {
+        return gfx::point_t(_tooltipCursorX, _tooltipCursorY);
+    }
+
+    void setTooltipMouseLocation(const gfx::point_t& loc)
+    {
+        _tooltipCursorX = loc.x;
+        _tooltipCursorY = loc.y;
     }
 
     uint16_t getTooltipTimeout()

@@ -892,7 +892,7 @@ namespace openloco::ui::windows::town_list
                             self->saved_view.mapX += 1;
                             if (self->saved_view.mapX >= 8)
                             {
-                                auto y = std::min(self->scroll_areas[0].v_bottom - 1 + 60, 500);
+                                auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 500);
                                 if (ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
@@ -1001,7 +1001,7 @@ namespace openloco::ui::windows::town_list
         {
             uint16_t scrollHeight = 0;
             self->call_get_scroll_size(0, 0, &scrollHeight);
-            self->scroll_areas[0].v_bottom = scrollHeight;
+            self->scroll_areas[0].contentHeight = scrollHeight;
 
             auto i = 0;
             for (; i <= self->var_83C; i++)
@@ -1015,7 +1015,7 @@ namespace openloco::ui::windows::town_list
 
             i = (i / 5) * rowHeight;
 
-            self->scroll_areas[0].v_top = i;
+            self->scroll_areas[0].contentOffsetY = i;
 
             ui::scrollview::update_thumbs(self, widx::scrollview);
         }

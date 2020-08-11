@@ -436,18 +436,18 @@ namespace openloco::ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                if (this->scroll_areas[s].h_right != scrollWidth + 1)
+                if (this->scroll_areas[s].contentWidth != scrollWidth + 1)
                 {
-                    this->scroll_areas[s].h_right = scrollWidth + 1;
+                    this->scroll_areas[s].contentWidth = scrollWidth + 1;
                     invalidate = true;
                 }
             }
 
             if (widget->content & scrollbars::vertical)
             {
-                if (this->scroll_areas[s].v_bottom != scrollHeight + 1)
+                if (this->scroll_areas[s].contentHeight != scrollHeight + 1)
                 {
-                    this->scroll_areas[s].v_bottom = scrollHeight + 1;
+                    this->scroll_areas[s].contentHeight = scrollHeight + 1;
                     invalidate = true;
                 }
             }
@@ -480,10 +480,10 @@ namespace openloco::ui
 
             uint16_t scrollWidth = 0, scrollHeight = 0;
             this->call_get_scroll_size(s, &scrollWidth, &scrollHeight);
-            this->scroll_areas[s].h_left = 0;
-            this->scroll_areas[s].h_right = scrollWidth + 1;
-            this->scroll_areas[s].v_top = 0;
-            this->scroll_areas[s].v_bottom = scrollHeight + 1;
+            this->scroll_areas[s].contentOffsetX = 0;
+            this->scroll_areas[s].contentWidth = scrollWidth + 1;
+            this->scroll_areas[s].contentOffsetY = 0;
+            this->scroll_areas[s].contentHeight = scrollHeight + 1;
 
             if (widget->content & scrollbars::horizontal)
             {
@@ -1141,6 +1141,25 @@ namespace openloco::ui
         }
 
         this->event_handlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
+    }
+
+    void window::call_scroll_mouse_drag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
+    {
+        if (event_handlers->scroll_mouse_drag == nullptr)
+            return;
+
+        if (is_interop_event(event_handlers->scroll_mouse_drag))
+        {
+            registers regs;
+            regs.ax = scroll_index;
+            regs.esi = (int32_t)this;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
+            return;
+        }
+
+        this->event_handlers->scroll_mouse_drag(this, xPos, yPos, scroll_index);
     }
 
     void window::call_scroll_mouse_over(int16_t xPos, int16_t yPos, uint8_t scroll_index)

@@ -724,8 +724,8 @@ namespace openloco::ui::widget
 
         if (cropped.width > 0 && cropped.height > 0)
         {
-            cropped.x -= left - scroll_area->h_left;
-            cropped.y -= top - scroll_area->v_top;
+            cropped.x -= left - scroll_area->contentOffsetX;
+            cropped.y -= top - scroll_area->contentOffsetY;
 
             window->call_draw_scroll(&cropped, scrollview_index);
         }
