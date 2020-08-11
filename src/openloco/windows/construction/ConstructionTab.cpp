@@ -373,14 +373,14 @@ namespace openloco::ui::windows::construction::construction
     // 0x0049DAF3
     static void disableTrackSlopes(window* self, track_object trackObj, uint64_t disabledWidgets)
     {
-        auto trackPieces = trackObj.track_pieces & ((1 << 5) | (1 << 8));
+        auto maskedTrackPieces = trackObj.track_pieces & ((1 << 5) | (1 << 8));
 
-        if (trackPieces != ((1 << 5) | (1 << 8)))
+        if (maskedTrackPieces != ((1 << 5) | (1 << 8)))
             disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
 
-        trackPieces = trackObj.track_pieces & ((1 << 6) | (1 << 8));
+        maskedTrackPieces = trackObj.track_pieces & ((1 << 6) | (1 << 8));
 
-        if (trackPieces != ((1 << 6) | (1 << 8)))
+        if (maskedTrackPieces != ((1 << 6) | (1 << 8)))
             disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
 
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
