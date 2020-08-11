@@ -1415,7 +1415,7 @@ namespace openloco::ui::windows::map
         events.on_update = onUpdate;
         events.get_scroll_size = getScrollSize;
         events.scroll_mouse_down = scrollMouseDown;
-        events.event_18 = (uint32_t)0x0046B97C;
+        events.scroll_mouse_drag = scrollMouseDown;
         events.tooltip = tooltip;
         events.prepare_draw = prepareDraw;
         events.draw = draw;
@@ -1527,8 +1527,8 @@ namespace openloco::ui::windows::map
 
         width = -width;
         height = -height;
-        width += window->scroll_areas[0].h_right;
-        height += window->scroll_areas[0].v_bottom;
+        width += window->scroll_areas[0].contentWidth;
+        height += window->scroll_areas[0].contentHeight;
 
         width -= x;
         if (width < 0)
@@ -1544,8 +1544,8 @@ namespace openloco::ui::windows::map
             y = std::max(y, 0);
         }
 
-        window->scroll_areas[0].h_left = x;
-        window->scroll_areas[0].v_top = y;
+        window->scroll_areas[0].contentOffsetX = x;
+        window->scroll_areas[0].contentOffsetY = y;
 
         ui::scrollview::update_thumbs(window, widx::scrollview);
     }
