@@ -241,6 +241,6 @@ namespace openloco::map
         x /= tile_size;
         y /= tile_size;
 
-        return { -x + y + map_columns - 8, x + y - 8 };
+        return { static_cast<coord_t>(-x + y + map_columns - 8), static_cast<coord_t>(x + y - 8) };
     }
 }
