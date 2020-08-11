@@ -2,10 +2,12 @@
 #include "../industrymgr.h"
 #include "../interop/interop.hpp"
 #include "../objects/objectmgr.h"
+#include "../ui/WindowManager.h"
 #include <cassert>
 
 using namespace openloco;
 using namespace openloco::interop;
+using namespace openloco::ui::WindowManager;
 
 const uint8_t* tile_element_base::data() const
 {
@@ -188,5 +190,57 @@ namespace openloco::map
         }
 
         return coordinate2D;
+    }
+
+    xy32 mapWindowPosToLocation(map_pos pos)
+    {
+        pos.x = ((pos.x + 8) - map_columns) / 2;
+        pos.y = ((pos.y + 8)) / 2;
+        xy32 location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
+        location.x *= tile_size;
+        location.y *= tile_size;
+
+        switch (getCurrentRotation())
+        {
+            case 0:
+                return location;
+            case 1:
+                return { map_width - 1 - location.y, location.x };
+            case 2:
+                return { map_width - 1 - location.x, map_height - 1 - location.y };
+            case 3:
+                return { location.y, map_height - 1 - location.x };
+        }
+
+        return { 0, 0 }; // unreachable
+    }
+
+    map_pos locationToMapWindowPos(xy32 pos)
+    {
+        coord_t x = pos.x;
+        coord_t y = pos.y;
+
+        switch (getCurrentRotation())
+        {
+            case 3:
+                std::swap(x, y);
+                x = map_width - 1 - x;
+                break;
+            case 2:
+                x = map_width - 1 - x;
+                y = map_height - 1 - y;
+                break;
+            case 1:
+                std::swap(x, y);
+                y = map_height - 1 - y;
+                break;
+            case 0:
+                break;
+        }
+
+        x /= tile_size;
+        y /= tile_size;
+
+        return { -x + y + map_columns - 8, x + y - 8 };
     }
 }

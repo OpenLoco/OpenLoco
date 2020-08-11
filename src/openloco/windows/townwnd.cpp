@@ -173,7 +173,7 @@ namespace openloco::ui::windows::town
                         break;
 
                     auto main = WindowManager::getMainWindow();
-                    main->viewport_centre_on_tile(self->saved_view.getPos());
+                    main->viewportCentreOnTile(self->saved_view.getPos());
                     break;
                 }
 

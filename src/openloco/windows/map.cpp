@@ -15,31 +15,49 @@
 #include "../things/thing.h"
 #include "../things/thingmgr.h"
 #include "../townmgr.h"
+#include "../types.hpp"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../widget.h"
 
 using namespace openloco::interop;
+using namespace openloco::ui::WindowManager;
 
 namespace openloco::ui::windows::map
 {
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;
-    static loco_global<uint16_t[7], 0x004FDC4C> _word_4FDC4C;
-    static loco_global<uint16_t[7], 0x004FDC4E> _word_4FDC4E;
+    static std::array<int16_t, 4> _4FDC4C = {
+        376,
+        760,
+        376,
+        -8,
+    };
+    static std::array<int16_t, 4> _4FDC4E = {
+        0,
+        384,
+        768,
+        384,
+    };
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
-    static loco_global<uint32_t, 0x0526284> _dword_526284;
-    static loco_global<gfx::ui_size_t, 0x00526288> _word_526288;
-    static loco_global<uint16_t, 0x0052628C> _word_52628C;
-    static loco_global<uint16_t, 0x0052628E> _word_52628E;
+    static loco_global<uint32_t, 0x0526284> _lastMapWindowFlags;
+    static loco_global<gfx::ui_size_t, 0x00526288> _lastMapWindowSize;
+    static loco_global<uint16_t, 0x0052628C> _lastMapWindowVar88A;
+    static loco_global<uint16_t, 0x0052628E> _lastMapWindowVar88C;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
-    static loco_global<uint16_t[6], 0x00F253BA> _word_F253BA;
+    static std::array<uint16_t, 6> _vehicleTypeCounts = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    };
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
-    static loco_global<VehicleType, 0x00F253DE> _byte_F253DE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
-    static loco_global<uint8_t[19], 0x00F253F2> _byte_F253F2;
+    static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
     constexpr uint32_t max_orders = 256000;
@@ -85,13 +103,12 @@ namespace openloco::ui::windows::map
     // 0x0046B8E6
     static void onClose(window* self)
     {
-        _word_526288 = gfx::ui_size_t(self->width, self->height);
-        _word_52628C = self->var_88A;
-        _word_52628E = self->var_88C;
-        _dword_526284 = self->flags | window_flags::flag_31;
-        addr<0x00113E87C, int32_t>() = 3;
+        _lastMapWindowSize = gfx::ui_size_t(self->width, self->height);
+        _lastMapWindowVar88A = self->var_88A;
+        _lastMapWindowVar88C = self->var_88C;
+        _lastMapWindowFlags = self->flags | window_flags::flag_31;
+
         free(_dword_F253A8);
-        addr<0x00113E87C, int32_t>() = 0;
     }
 
     // 0x0046B8CF
@@ -111,8 +128,10 @@ namespace openloco::ui::windows::map
             case widx::scrollview:
             {
                 auto tabIndex = widgetIndex - widx::tabOverall;
+
                 if (tabIndex == self->current_tab)
                     return;
+
                 self->current_tab = tabIndex;
                 self->frame_no = 0;
                 self->var_854 = 0;
@@ -168,120 +187,41 @@ namespace openloco::ui::windows::map
         }
     }
 
-    // 0x0046D300
-    static void setHoverItemVehicles(window* self, int16_t x, int16_t y)
-    {
-        auto i = 0;
+    static uint8_t legendWidth = 100;
+    static uint8_t legendItemHeight = 10;
+    static const uint8_t overallGraphKeySize = 6;
 
-        if (!input::has_flag(input::input_flags::flag5))
-        {
-            uint32_t cursorX = _cursorX2;
-            uint32_t cursorY = _cursorY2;
-            auto window = WindowManager::findAt(cursorX, cursorY);
+    static std::array<size_t, 5> legendLengths = {
+        overallGraphKeySize,
+        std::size(_vehicleTypeCounts),
+        objectmgr::get_max_objects(object_type::industry),
+        0,
+        companymgr::max_companies,
+    };
 
-            if (window != nullptr)
-            {
-                if (window == self)
-                {
-                    cursorX -= x;
-                    if (cursorX <= 100)
-                    {
-                        cursorY -= y;
-                        if (cursorY < 60)
-                        {
-                            y = cursorY;
-
-                            for (; i < 6; i++)
-                            {
-                                y -= 10;
-
-                                if (y < 0)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        setHoverItem(self, y, i);
-    }
-
-    // 0x0046D520
-    static void setHoverItemIndustries(window* self, int16_t x, int16_t y)
+    static void setHoverItemTab(window* self, int16_t legendLeft, int16_t legendBottom)
     {
         uint8_t i = 0;
-
+        int16_t y = 0;
         if (!input::has_flag(input::input_flags::flag5))
         {
             uint32_t cursorX = _cursorX2;
             uint32_t cursorY = _cursorY2;
             auto window = WindowManager::findAt(cursorX, cursorY);
 
-            if (window != nullptr)
+            if (window == self)
             {
-                if (window == self)
+                cursorX -= legendLeft;
+                if (cursorX <= legendWidth)
                 {
-                    cursorX -= x;
-                    if (cursorX <= 100)
+                    cursorY -= legendBottom;
+                    if (self->current_tab == (widx::tabRoutes - widx::tabOverall))
                     {
-                        cursorY -= y;
-                        if (cursorY < 160)
-                        {
-                            y = cursorY;
-
-                            for (; i < objectmgr::get_max_objects(object_type::industry); i++)
-                            {
-                                auto industryObj = objectmgr::get<industry_object>(i);
-
-                                if (industryObj == nullptr)
-                                    continue;
-
-                                y -= 10;
-
-                                if (y < 0)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        setHoverItem(self, y, i);
-    }
-
-    // 0x0046D66A
-    static void setHoverItemRoutes(window* self, int16_t x, int16_t y)
-    {
-        auto i = 0;
-
-        if (!input::has_flag(input::input_flags::flag5))
-        {
-            uint32_t cursorX = _cursorX2;
-            uint32_t cursorY = _cursorY2;
-            auto window = WindowManager::findAt(cursorX, cursorY);
-
-            if (window != nullptr)
-            {
-                if (window == self)
-                {
-                    cursorX -= x;
-                    if (cursorX <= 100)
-                    {
-                        cursorY -= y;
                         y = cursorY;
 
-                        for (; i < 19; i++)
+                        for (; _byte_F253DF[i] != 0xFF; i++)
                         {
-                            if (_byte_F253DF[i] == 0xFF)
-                                break;
-
-                            y -= 10;
+                            y -= legendItemHeight;
 
                             if (y < 0)
                             {
@@ -289,44 +229,30 @@ namespace openloco::ui::windows::map
                             }
                         }
                     }
-                }
-            }
-        }
-
-        setHoverItem(self, y, i);
-    }
-
-    // 0x0046D789
-    static void setHoverItemCompanies(window* self, int16_t x, int16_t y)
-    {
-        uint8_t i = 0;
-
-        if (!input::has_flag(input::input_flags::flag5))
-        {
-            uint32_t cursorX = _cursorX2;
-            uint32_t cursorY = _cursorY2;
-            auto window = WindowManager::findAt(cursorX, cursorY);
-
-            if (window != nullptr)
-            {
-                if (window == self)
-                {
-                    cursorX -= x;
-                    if (cursorX <= 100)
+                    else
                     {
-                        cursorY -= y;
-                        if (cursorY < 150)
+                        if (cursorY < legendLengths[self->current_tab] * legendItemHeight)
                         {
                             y = cursorY;
 
-                            for (; i < companymgr::max_companies; i++)
+                            for (; i < legendLengths[self->current_tab]; i++)
                             {
-                                auto company = companymgr::get(i);
+                                if (self->current_tab == (widx::tabIndustries - widx::tabOverall))
+                                {
+                                    auto industryObj = objectmgr::get<industry_object>(i);
 
-                                if (company->empty())
-                                    continue;
+                                    if (industryObj == nullptr)
+                                        continue;
+                                }
+                                else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
+                                {
+                                    auto company = companymgr::get(i);
 
-                                y -= 10;
+                                    if (company->empty())
+                                        continue;
+                                }
+
+                                y -= legendItemHeight;
 
                                 if (y < 0)
                                 {
@@ -343,10 +269,9 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046B69C
-    static void sub_46B69C()
+    static void clearMap()
     {
-        registers regs;
-        call(0x0046B69C, regs);
+        std::fill(static_cast<uint8_t*>(_dword_F253A8), _dword_F253A8 + 0x120000, palette_index::index_0A);
     }
 
     // 0x00F2541D
@@ -362,10 +287,10 @@ namespace openloco::ui::windows::map
 
         mapFrameNumber++;
 
-        if (gCurrentRotation != self->var_846)
+        if (getCurrentRotation() != self->var_846)
         {
-            self->var_846 = gCurrentRotation;
-            sub_46B69C();
+            self->var_846 = getCurrentRotation();
+            clearMap();
         }
 
         auto i = 80;
@@ -381,140 +306,35 @@ namespace openloco::ui::windows::map
         auto x = self->x + self->width - 104;
         auto y = self->y + 44;
 
-        switch (self->current_tab + widx::tabOverall)
-        {
-            case widx::tabOverall:
-            case widx::tabVehicles:
-                setHoverItemVehicles(self, x, y);
-                break;
-
-            case widx::tabIndustries:
-                setHoverItemIndustries(self, x, y);
-                break;
-
-            case widx::tabRoutes:
-                setHoverItemRoutes(self, x, y);
-                break;
-
-            case widx::tabOwnership:
-                setHoverItemCompanies(self, x, y);
-                break;
-        }
+        setHoverItemTab(self, x, y);
     }
 
     // 0x0046B9E7
     static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self->call_prepare_draw();
-        *scrollWidth = 0x300;
-        *scrollHeight = 0x300;
-    }
-
-    // 0x004C6801
-    static void moveMainWindowToLocation(window* self, map_pos pos)
-    {
-        if (self->viewport_configurations->viewport_target_sprite != 0xFFFF)
-            return;
-
-        if (self->flags & window_flags::viewport_no_scrolling)
-            return;
-
-        self->viewport_configurations->saved_view_x = pos.x;
-        self->viewport_configurations->saved_view_y = pos.y;
-        self->flags |= window_flags::scrolling_to_location;
-    }
-
-    // 0x004C6827
-    static void sub_4C6827(window* self, int16_t x, int16_t y, uint32_t z)
-    {
-        auto viewport = self->viewports[0];
-        if (viewport == nullptr)
-            return;
-
-        auto height = tile_element_height(x, y);
-        height -= 16;
-
-        if (z < height)
-        {
-            if (!(viewport->flags & viewport_flags::underground_view))
-            {
-                self->invalidate();
-            }
-
-            viewport->flags |= viewport_flags::underground_view;
-        }
-        else
-        {
-            if (viewport->flags & viewport_flags::underground_view)
-            {
-                self->invalidate();
-            }
-
-            viewport->flags &= ~viewport_flags::underground_view;
-        }
-
-        auto pos = coordinate_3d_to_2d(x, y, z, gCurrentRotation);
-
-        moveMainWindowToLocation(self, pos);
+        *scrollWidth = map_columns * 2;
+        *scrollHeight = map_rows * 2;
     }
 
     // 0x0046B9D4
-    static void sub_46B9D4(map_pos pos)
+    static void moveMainViewToMapView(xy32 pos)
     {
-        auto z = tile_element_height(pos.x, pos.y);
+        auto z = tile_element_height(pos.x, pos.y) & 0xFFFF;
         auto window = WindowManager::getMainWindow();
 
         if (window == nullptr)
             return;
 
-        sub_4C6827(window, pos.x, pos.y, z);
-    }
-
-    static map_pos rotateMapCoordinate(map_pos pos, uint8_t rotation)
-    {
-        map_pos coordinate2D;
-
-        switch (rotation)
-        {
-            default:
-            case 0:
-                coordinate2D = pos;
-                break;
-            case 1:
-                coordinate2D.x = pos.y;
-                coordinate2D.y = -pos.x + 0x2FFF;
-                break;
-            case 2:
-                coordinate2D.x = -pos.x + 0x2FFF;
-                coordinate2D.y = -pos.y + 0x2FFF;
-                break;
-            case 3:
-                coordinate2D.x = -pos.y + 0x2FFF;
-                coordinate2D.y = pos.x;
-                break;
-        }
-
-        return coordinate2D;
+        window->viewportCentreOnTile({ static_cast<coord_t>(pos.x), static_cast<coord_t>(pos.y), static_cast<coord_t>(z) });
     }
 
     // 0x0046B97C
-    static void event18(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        x += 8;
-        y += 8;
-        x -= 384;
-        x /= 2;
-        y /= 2;
-        auto yCopy = y;
-        y -= x;
-        x += yCopy;
-        x *= 32;
-        y *= 32;
+        auto pos = mapWindowPosToLocation({ x, y });
 
-        map_pos pos = { x, y };
-        pos = rotateMapCoordinate(pos, gCurrentRotation);
-
-        sub_46B9D4(pos);
+        moveMainViewToMapView(pos);
     }
 
     // 0x0046B946
@@ -526,7 +346,7 @@ namespace openloco::ui::windows::map
     // 0x0046D223
     static void leftAlignTabs(window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
     {
-        auto disabledWidgets = self->disabled_widgets >> firstTabIndex;
+        auto disabledWidgets = self->disabled_widgets;
         auto pos = self->widgets[firstTabIndex].left;
         auto tabWidth = self->widgets[firstTabIndex].right - pos;
 
@@ -558,7 +378,7 @@ namespace openloco::ui::windows::map
             string_ids::title_map_companies,
         };
 
-        widgets[1].text = captionText[self->current_tab];
+        widgets[widx::caption].text = captionText[self->current_tab];
         auto activatedWidgets = self->activated_widgets;
         activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
 
@@ -683,18 +503,18 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046D273
-    static void drawGraphKeyOverall(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    static void drawGraphKeyOverall(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        static uint8_t byte_4FDD5C[] = {
-            65,
-            125,
-            12,
-            17,
-            186,
-            100,
+        static const palette_index_t overallColours[] = {
+            palette_index::index_41,
+            palette_index::index_7D,
+            palette_index::index_0C,
+            palette_index::index_11,
+            palette_index::index_BA,
+            palette_index::index_64,
         };
 
-        static string_id lineNames[] = {
+        static const string_id lineNames[] = {
             string_ids::map_key_towns,
             string_ids::map_key_industries,
             string_ids::map_key_roads,
@@ -703,12 +523,12 @@ namespace openloco::ui::windows::map
             string_ids::map_key_vegetation,
         };
 
-        for (auto i = 0; i < 6; i++)
+        for (auto i = 0; i < overallGraphKeySize; i++)
         {
-            auto colour = byte_4FDD5C[i];
+            auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+                gfx::draw_rect(dpi, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -720,26 +540,26 @@ namespace openloco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+            gfx::draw_string_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
 
-            y += 10;
+            *y += 10;
         }
     }
 
     // 0x004FDD62
-    static uint8_t vehicleTypeColours[] = {
-        173,
-        103,
-        162,
-        188,
-        21,
-        184, // changed from 136 to make ships more viewable on the map
+    static const palette_index_t vehicleTypeColours[] = {
+        palette_index::index_AD,
+        palette_index::index_67,
+        palette_index::index_A2,
+        palette_index::index_BC,
+        palette_index::index_15,
+        palette_index::index_B8, // changed from 136 to make ships more viewable on the map
     };
 
     // 0x0046D379
-    static void drawGraphKeyVehicles(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    static void drawGraphKeyVehicles(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        static string_id lineNames[] = {
+        static const string_id lineNames[] = {
             string_ids::forbid_trains,
             string_ids::forbid_buses,
             string_ids::forbid_trucks,
@@ -748,12 +568,13 @@ namespace openloco::ui::windows::map
             string_ids::forbid_ships,
         };
 
-        for (auto i = 0; i < 6; i++)
+        for (uint8_t i = 0; i < std::size(_vehicleTypeCounts); i++)
         {
-            auto colour = vehicleTypeColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+                auto colour = vehicleTypeColours[i];
+
+                gfx::draw_rect(dpi, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -765,53 +586,51 @@ namespace openloco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+            gfx::draw_string_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
 
-            y += 10;
+            *y += 10;
         }
     }
 
     // 0x0046D47F
-    static void drawGraphKeyIndustries(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    static void drawGraphKeyIndustries(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        static uint8_t byte_4FB464[] = {
-            10,
-            14,
-            21,
-            31,
-            41,
-            53,
-            56,
-            63,
-            67,
-            75,
-            80,
-            88,
-            102,
-            113,
-            125,
-            133,
-            137,
-            157,
-            161,
-            163,
-            172,
-            184,
-            187,
-            195,
-            198,
-            208,
-            211,
-            219,
-            222,
-            36,
-            18,
+        static const palette_index_t industryColours[] = {
+            palette_index::index_0A,
+            palette_index::index_0E,
+            palette_index::index_15,
+            palette_index::index_1F,
+            palette_index::index_29,
+            palette_index::index_35,
+            palette_index::index_38,
+            palette_index::index_3F,
+            palette_index::index_43,
+            palette_index::index_4B,
+            palette_index::index_50,
+            palette_index::index_58,
+            palette_index::index_66,
+            palette_index::index_71,
+            palette_index::index_7D,
+            palette_index::index_85,
+            palette_index::index_89,
+            palette_index::index_9D,
+            palette_index::index_A1,
+            palette_index::index_A3,
+            palette_index::index_AC,
+            palette_index::index_B8,
+            palette_index::index_BB,
+            palette_index::index_C3,
+            palette_index::index_C6,
+            palette_index::index_D0,
+            palette_index::index_D3,
+            palette_index::index_DB,
+            palette_index::index_DE,
+            palette_index::index_24,
+            palette_index::index_12,
         };
 
         for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::industry); i++)
         {
-            auto colour = byte_4FB464[_byte_F253CE[i]];
-
             auto industry = objectmgr::get<industry_object>(i);
 
             if (industry == nullptr)
@@ -819,7 +638,9 @@ namespace openloco::ui::windows::map
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+                auto colour = industryColours[_byte_F253CE[i]];
+
+                gfx::draw_rect(dpi, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -832,23 +653,23 @@ namespace openloco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+            gfx::draw_string_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
 
-            y += 10;
+            *y += 10;
         }
     }
 
     // 0x0046D5A4
-    static void drawGraphKeyRoutes(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    static void drawGraphKeyRoutes(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
         for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
         {
             auto index = _byte_F253DF[i];
-            auto colour = _byte_F253F2[i];
+            auto colour = _routeColours[i];
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+                gfx::draw_rect(dpi, x, *y + 3, 5, 5, colour);
             }
 
             auto routeType = string_ids::map_routes_aircraft;
@@ -866,7 +687,7 @@ namespace openloco::ui::windows::map
                     }
                     else
                     {
-                        auto trackObj = objectmgr::get<track_object>(index & ~(1 << 7));
+                        auto trackObj = objectmgr::get<track_object>(index);
                         routeType = trackObj->name;
                     }
                 }
@@ -882,29 +703,28 @@ namespace openloco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+            gfx::draw_string_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
 
-            y += 10;
+            *y += 10;
         }
     }
 
     // 0x0046D6E1
-    static void drawGraphKeyCompanies(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y)
+    static void drawGraphKeyCompanies(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        auto i = 0;
         for (const auto& company : companymgr::companies())
         {
             if (company.empty())
             {
-                i++;
                 continue;
             }
 
+            auto index = company.id();
             auto colour = colour::get_shade(company.mainColours.primary, 6);
 
-            if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self->var_854 & (1 << index)) || !(mapFrameNumber & (1 << 2)))
             {
-                gfx::draw_rect(dpi, x, y + 3, 5, 5, colour);
+                gfx::draw_rect(dpi, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -912,22 +732,21 @@ namespace openloco::ui::windows::map
 
             auto stringId = string_ids::small_black_string;
 
-            if (self->var_854 & (1 << i))
+            if (self->var_854 & (1 << index))
             {
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::draw_string_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+            gfx::draw_string_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
 
-            y += 10;
-            i++;
+            *y += 10;
         }
     }
 
     // 0x0046D81F
     static void formatVehicleString(window* self, FormatArguments args)
     {
-        static string_id vehicleStringSingular[] = {
+        static const string_id vehicleStringSingular[] = {
             string_ids::num_trains_singular,
             string_ids::num_buses_singular,
             string_ids::num_trucks_singular,
@@ -936,7 +755,7 @@ namespace openloco::ui::windows::map
             string_ids::num_ships_singular,
         };
 
-        static string_id vehicleStringPlural[] = {
+        static const string_id vehicleStringPlural[] = {
             string_ids::num_trains_plural,
             string_ids::num_buses_plural,
             string_ids::num_trucks_plural,
@@ -946,39 +765,34 @@ namespace openloco::ui::windows::map
         };
 
         int16_t vehicleIndex = utility::bitscanforward(self->var_854);
+        uint16_t totalVehicleCount = 0;
+        auto stringId = string_ids::status_num_vehicles_plural;
 
         if (vehicleIndex == -1)
         {
-            uint16_t vehicleCount = 0;
-
             for (auto i = 0; i < 6; i++)
             {
-                vehicleCount += _word_F253BA[i];
+                totalVehicleCount += _vehicleTypeCounts[i];
             }
 
-            auto stringId = string_ids::status_num_vehicles_plural;
-
-            if (vehicleCount == 1)
+            if (totalVehicleCount == 1)
             {
                 stringId = string_ids::status_num_vehicles_singular;
             }
-
-            args.push(stringId);
-            args.push(vehicleCount);
         }
         else
         {
-            auto vehicleCount = _word_F253BA[vehicleIndex];
-            auto stringId = vehicleStringPlural[vehicleIndex];
+            totalVehicleCount = _vehicleTypeCounts[vehicleIndex];
+            stringId = vehicleStringPlural[vehicleIndex];
 
-            if (vehicleCount == 1)
+            if (totalVehicleCount == 1)
             {
                 stringId = vehicleStringSingular[vehicleIndex];
             }
-
-            args.push(stringId);
-            args.push(vehicleCount);
         }
+
+        args.push(stringId);
+        args.push(totalVehicleCount);
     }
 
     // 0x0046D87C
@@ -1030,14 +844,12 @@ namespace openloco::ui::windows::map
             }
 
             auto buffer = stringmgr::get_string(string_ids::buffer_1250);
-            char* ptr = (char*)buffer;
+            char* ptr = const_cast<char*>(buffer);
 
             ptr = stringmgr::format_string(ptr, stringId, &industryCount);
 
-            *ptr = ' ';
-            ptr++;
-            *ptr = '(';
-            ptr++;
+            *ptr++ = ' ';
+            *ptr++ = '(';
 
             if (industryObj->requiresCargo())
             {
@@ -1059,8 +871,7 @@ namespace openloco::ui::windows::map
                 ptr = industryObj->getProducedCargoString(ptr);
             }
 
-            *ptr = ')';
-            ptr++;
+            *ptr++ = ')';
             *ptr = '\0';
 
             args.push(string_ids::buffer_1250);
@@ -1076,34 +887,34 @@ namespace openloco::ui::windows::map
 
         {
             auto x = self->x + self->width - 104;
-            auto y = self->y + 44;
+            uint16_t y = self->y + 44;
 
             switch (self->current_tab + widx::tabOverall)
             {
                 case widx::tabOverall:
-                    drawGraphKeyOverall(self, dpi, x, y);
+                    drawGraphKeyOverall(self, dpi, x, &y);
                     break;
 
                 case widx::tabVehicles:
-                    drawGraphKeyVehicles(self, dpi, x, y);
+                    drawGraphKeyVehicles(self, dpi, x, &y);
                     break;
 
                 case widx::tabIndustries:
-                    drawGraphKeyIndustries(self, dpi, x, y);
+                    drawGraphKeyIndustries(self, dpi, x, &y);
                     break;
 
                 case widx::tabRoutes:
-                    drawGraphKeyRoutes(self, dpi, x, y);
+                    drawGraphKeyRoutes(self, dpi, x, &y);
                     break;
 
                 case widx::tabOwnership:
-                    drawGraphKeyCompanies(self, dpi, x, y);
+                    drawGraphKeyCompanies(self, dpi, x, &y);
                     break;
             }
 
             y -= self->y;
             y += 14;
-            y = std::max(y, 92);
+            y = std::max(y, static_cast<uint16_t>(92));
 
             self->min_height = y;
         }
@@ -1135,83 +946,37 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046BF0F based on
-    static void drawVehicleOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Car car, widget_index widgetIndex, int16_t x, int16_t y)
+    static void drawVehicleOnMap(gfx::drawpixelinfo_t* dpi, vehicle_base* vehicle, uint8_t colour)
     {
-        auto trainPos = rotateMapCoordinate({ x, y }, gCurrentRotation);
+        if (vehicle->x == location::null)
+            return;
 
-        auto left = trainPos.x;
-        auto top = trainPos.y;
-        left /= 32;
-        top /= 32;
-        auto bottom = top;
-        bottom += left;
-        left = -left;
-        left += top;
-        left += 376;
-        bottom -= 8;
-        auto right = left;
-        top = bottom;
+        auto trainPos = locationToMapWindowPos({ vehicle->x, vehicle->y });
 
-        auto colour = palette_index::index_15;
-
-        if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
-        {
-            uint8_t index = car.carComponents[0].front->owner;
-            colour = colour::get_shade(_companyColours[index], 7);
-
-            if (widgetIndex == widx::tabVehicles)
-            {
-                index = static_cast<uint8_t>(*_byte_F253DE);
-                colour = vehicleTypeColours[index];
-            }
-
-            if (_dword_F253A4 & (1 << index))
-            {
-                if (!(mapFrameNumber & (1 << 2)))
-                {
-                    colour = _byte_4FDC5C[colour];
-                }
-            }
-        }
-
-        gfx::fill_rect(dpi, left, top, right, bottom, colour);
+        gfx::fill_rect(dpi, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
-
-    static uint8_t byte_F25414 = 0xFF;
-    static uint16_t word_F25415 = 0xFFFF;
-    static uint16_t word_F25417 = 0xFFFF;
-    static uint16_t word_F25419 = 0xFFFF;
-    static uint16_t word_F2541B = 0xFFFF;
 
     // 0x0046C294
-    static void drawRouteLine(gfx::drawpixelinfo_t* dpi, map_pos pos)
+    static std::pair<map_pos, map_pos> drawRouteLine(gfx::drawpixelinfo_t* dpi, map_pos startPos, map_pos endPos, map_pos stationPos, uint8_t colour)
     {
-        auto left = pos.x / 32;
-        auto right = pos.y / 32;
-        auto bottom = right;
-        bottom += left;
-        left = -left;
-        right += left;
-        right += 376;
-        bottom -= 8;
+        auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
-        if (word_F25419 != (1 << 15))
+        if (endPos.x != location::null)
         {
-            gfx::draw_line(dpi, word_F25419, word_F2541B, right, bottom, byte_F25414);
+            gfx::draw_line(dpi, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
-        word_F25419 = right;
-        word_F2541B = bottom;
+        endPos = newStartPos;
 
-        if (word_F25415 == (1 << 15))
+        if (startPos.x == location::null)
         {
-            word_F25415 = right;
-            word_F25417 = bottom;
+            startPos = newStartPos;
         }
+
+        return std::make_pair(startPos, endPos);
     }
 
-    // 0x0046C18D
-    static void drawRoutesOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Vehicle train)
+    static std::optional<uint8_t> getRouteColour(things::vehicle::Vehicle train)
     {
         uint8_t colour;
         if (train.head->vehicleType == VehicleType::plane)
@@ -1246,10 +1011,21 @@ namespace openloco::ui::windows::map
         }
         else
         {
-            return;
+            return std::nullopt;
         }
 
-        uint8_t byte_4FE088[] = {
+        return colour;
+    }
+
+    // 0x0046C18D
+    static void drawRoutesOnMap(gfx::drawpixelinfo_t* dpi, things::vehicle::Vehicle train)
+    {
+        auto colour = getRouteColour(train);
+
+        if (!colour)
+            return;
+
+        static const uint8_t byte_4FE088[] = {
             0,
             11,
             11,
@@ -1260,7 +1036,7 @@ namespace openloco::ui::windows::map
             0,
         };
 
-        uint8_t dword_4FE070[] = {
+        static const uint8_t dword_4FE070[] = {
             1,
             2,
             2,
@@ -1269,45 +1045,71 @@ namespace openloco::ui::windows::map
             1,
         };
 
-        byte_F25414 = colour;
-        word_F25415 = (1 << 15);
-        word_F25419 = (1 << 15);
+        map_pos startPos = { location::null, 0 };
+        map_pos endPos = { location::null, 0 };
         auto index = train.head->length_of_var_4C;
-        auto lastOrder = _dword_987C5C[index] & ((1 << 2) | (1 << 1) | (1 << 0));
+        auto lastOrder = _dword_987C5C[index] & 0x7;
 
         while (lastOrder != 0)
         {
             if (byte_4FE088[lastOrder] & (1 << 3))
             {
-                auto order = _dword_987C5C[index] & ((1 << 7) | (1 << 6));
+                auto order = _dword_987C5C[index] & 0xC0;
                 order <<= 2;
                 order |= _dword_987C5C[index + 1];
 
                 auto station = stationmgr::get(order);
-                auto stationPos = rotateMapCoordinate({ station->x, station->y }, gCurrentRotation);
+                map_pos stationPos = { station->x, station->y };
 
-                drawRouteLine(dpi, stationPos);
+                auto routePos = drawRouteLine(dpi, startPos, endPos, stationPos, *colour);
+                startPos = routePos.first;
+                endPos = routePos.second;
             }
 
             index += dword_4FE070[lastOrder];
-            lastOrder = _dword_987C5C[index] & ((1 << 2) | (1 << 1) | (1 << 0));
+            lastOrder = _dword_987C5C[index] & 0x7;
         }
 
-        if (word_F25415 == (1 << 15) || word_F25419 == (1 << 15))
+        if (startPos.x == location::null || endPos.x == location::null)
             return;
 
-        gfx::draw_line(dpi, word_F25415, word_F25417, word_F25419, word_F2541B, byte_F25414);
+        gfx::draw_line(dpi, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
     }
 
-    // 0x0046BE6E, 0x0046C35A
-    static void drawVehiclesOnMap(gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
+    // 0x0046C426
+    static uint8_t getVehicleColour(widget_index widgetIndex, things::vehicle::Vehicle train, things::vehicle::Car car)
     {
-        if (widgetIndex == widx::tabVehicles)
+        auto colour = palette_index::index_15;
+
+        if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
-            for (auto i = 0; i < 6; i++)
+            uint8_t index = car.carComponents[0].front->owner;
+            colour = colour::get_shade(_companyColours[index], 7);
+
+            if (widgetIndex == widx::tabVehicles)
             {
-                _word_F253BA[i] = 0;
+                index = static_cast<uint8_t>(train.head->vehicleType);
+                colour = vehicleTypeColours[index];
             }
+
+            if (_dword_F253A4 & (1 << index))
+            {
+                if (!(mapFrameNumber & (1 << 2)))
+                {
+                    colour = _byte_4FDC5C[colour];
+                }
+            }
+        }
+
+        return colour;
+    }
+
+    // 0x0046BFAD
+    static void countVehiclesOnMap()
+    {
+        for (auto i = 0; i < 6; i++)
+        {
+            _vehicleTypeCounts[i] = 0;
         }
 
         for (auto vehicle : thingmgr::VehicleList())
@@ -1317,47 +1119,36 @@ namespace openloco::ui::windows::map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x < 0)
+            if (train.head->x == location::null)
                 continue;
 
-            if (widgetIndex == widx::tabVehicles)
-            {
-                auto vehicleType = train.head->vehicleType;
-                _byte_F253DE = vehicleType;
-                _word_F253BA[static_cast<uint8_t>(vehicleType)] = _word_F253BA[static_cast<uint8_t>(vehicleType)] + 1;
-            }
+            auto vehicleType = train.head->vehicleType;
+            _vehicleTypeCounts[static_cast<uint8_t>(vehicleType)] = _vehicleTypeCounts[static_cast<uint8_t>(vehicleType)] + 1;
+        }
+    }
+
+    // 0x0046BE6E, 0x0046C35A
+    static void drawVehiclesOnMap(gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
+    {
+        for (auto vehicle : thingmgr::VehicleList())
+        {
+            things::vehicle::Vehicle train(vehicle);
+
+            if (train.head->var_38 & (1 << 4))
+                continue;
+
+            if (train.head->x == location::null)
+                continue;
 
             for (auto car : train.cars)
             {
+                auto colour = getVehicleColour(widgetIndex, train, car);
+
                 for (auto carComponent : car.carComponents)
                 {
-                    {
-                        auto x = carComponent.front->x;
-                        auto y = carComponent.front->y;
-
-                        if (x >= 0)
-                        {
-                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
-                        }
-                    }
-                    {
-                        auto x = carComponent.body->x;
-                        auto y = carComponent.body->y;
-
-                        if (x >= 0)
-                        {
-                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
-                        }
-                    }
-                    {
-                        auto x = carComponent.back->x;
-                        auto y = carComponent.back->y;
-
-                        if (x >= 0)
-                        {
-                            drawVehicleOnMap(dpi, car, widgetIndex, x, y);
-                        }
-                    }
+                    drawVehicleOnMap(dpi, carComponent.front, colour);
+                    drawVehicleOnMap(dpi, carComponent.back, colour);
+                    drawVehicleOnMap(dpi, carComponent.body, colour);
                 }
             }
 
@@ -1391,10 +1182,10 @@ namespace openloco::ui::windows::map
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += _word_4FDC4C[gCurrentRotation * 2];
-        top += _word_4FDC4E[gCurrentRotation * 2];
-        right += _word_4FDC4C[gCurrentRotation * 2];
-        bottom += _word_4FDC4E[gCurrentRotation * 2];
+        left += _4FDC4C[getCurrentRotation()];
+        top += _4FDC4E[getCurrentRotation()];
+        right += _4FDC4C[getCurrentRotation()];
+        bottom += _4FDC4E[getCurrentRotation()];
 
         uint32_t colour = (1 << 24) | palette_index::index_0A;
 
@@ -1406,8 +1197,8 @@ namespace openloco::ui::windows::map
     {
         left /= 32;
         top /= 16;
-        left += _word_4FDC4C[gCurrentRotation * 2];
-        top += _word_4FDC4E[gCurrentRotation * 2];
+        left += _4FDC4C[getCurrentRotation()];
+        top += _4FDC4E[getCurrentRotation()];
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -1558,15 +1349,7 @@ namespace openloco::ui::windows::map
             if (town.empty())
                 continue;
 
-            auto townPos = rotateMapCoordinate({ town.x, town.y }, gCurrentRotation);
-
-            townPos.x /= 32;
-            townPos.y /= 32;
-            auto yCopy = townPos.y;
-            townPos.y += townPos.x;
-            townPos.x = -townPos.x;
-            townPos.x += yCopy + 376;
-            townPos.y -= 8;
+            auto townPos = locationToMapWindowPos({ town.x, town.y });
 
             stringmgr::format_string(_stringFormatBuffer, town.name);
             _currentFontSpriteBase = font::small;
@@ -1592,27 +1375,27 @@ namespace openloco::ui::windows::map
         gfx::clear_single(*dpi, palette_index::index_0A);
 
         auto element = gfx::get_g1element(0);
+        auto backupElement = *element;
         auto offset = *_dword_F253A8;
 
         if (mapFrameNumber & (1 << 2))
             offset += 0x90000;
 
         gfx::get_g1element(0)->offset = offset;
-        gfx::get_g1element(0)->width = 0x300;
-        gfx::get_g1element(0)->height = 0x300;
+        gfx::get_g1element(0)->width = map_columns * 2;
+        gfx::get_g1element(0)->height = map_rows * 2;
         gfx::get_g1element(0)->x_offset = -8;
         gfx::get_g1element(0)->y_offset = -8;
         gfx::get_g1element(0)->flags = 0;
 
         gfx::draw_image(dpi, 0, 0, 0);
 
-        gfx::get_g1element(0)->offset = element->offset;
-        gfx::get_g1element(0)->width = element->width;
-        gfx::get_g1element(0)->height = element->height;
-        gfx::get_g1element(0)->x_offset = element->x_offset;
-        gfx::get_g1element(0)->y_offset = element->y_offset;
-        gfx::get_g1element(0)->flags = element->flags;
-        gfx::get_g1element(0)->unused = element->unused;
+        *element = backupElement;
+
+        if (self->current_tab + widx::tabOverall == widx::tabVehicles)
+        {
+            countVehiclesOnMap();
+        }
 
         drawVehiclesOnMap(dpi, self->current_tab + widx::tabOverall);
 
@@ -1631,7 +1414,7 @@ namespace openloco::ui::windows::map
         events.on_resize = onResize;
         events.on_update = onUpdate;
         events.get_scroll_size = getScrollSize;
-        events.scroll_mouse_down = event18;
+        events.scroll_mouse_down = scrollMouseDown;
         events.event_18 = (uint32_t)0x0046B97C;
         events.tooltip = tooltip;
         events.prepare_draw = prepareDraw;
@@ -1658,9 +1441,7 @@ namespace openloco::ui::windows::map
         if (window != nullptr)
             return;
 
-        addr<0x00113E87C, int32_t>() = 3;
-        auto ptr = malloc(0x120000);
-        addr<0x00113E87C, int32_t>() = 0;
+        auto ptr = malloc(map_size * 8);
 
         if (ptr == NULL)
             return;
@@ -1668,33 +1449,34 @@ namespace openloco::ui::windows::map
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
         gfx::ui_size_t size = { 350, 272 };
 
-        if (_dword_526284 != 0)
+        if (_lastMapWindowFlags != 0)
         {
-            size = _word_526288;
+            size = _lastMapWindowSize;
         }
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
         window->widgets = widgets;
         window->enabled_widgets |= enabledWidgets;
+
+        initEvents();
+
         window->init_scroll_widgets();
         window->frame_no = 0;
 
-        if (_dword_526284 != 0)
+        if (_lastMapWindowFlags != 0)
         {
-            window->var_88A = _word_52628C;
-            window->var_88C = _word_52628E;
-            window->flags |= (_dword_526284 & window_flags::flag_16);
+            window->var_88A = _lastMapWindowVar88A;
+            window->var_88C = _lastMapWindowVar88C;
+            window->flags |= (_lastMapWindowFlags & window_flags::flag_16);
         }
-
-        initEvents();
 
         auto skin = objectmgr::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;
         window->colours[1] = skin->colour_0F;
 
-        window->var_846 = gCurrentRotation;
+        window->var_846 = getCurrentRotation();
 
-        sub_46B69C();
+        clearMap();
 
         centerOnViewPoint();
 
@@ -1731,10 +1513,10 @@ namespace openloco::ui::windows::map
         auto y = viewport->view_height / 2;
         x += viewport->view_x;
         y += viewport->view_y;
-        x /= 16;
-        y /= 8;
-        x += _word_4FDC4C[gCurrentRotation * 2];
-        y += _word_4FDC4E[gCurrentRotation * 2];
+        x /= 32;
+        y /= 16;
+        x += _4FDC4C[getCurrentRotation()];
+        y += _4FDC4E[getCurrentRotation()];
 
         auto width = widgets[widx::scrollview].width() - 10;
         auto height = widgets[widx::scrollview].height() - 10;
@@ -1749,21 +1531,21 @@ namespace openloco::ui::windows::map
         height += window->scroll_areas[0].v_bottom;
 
         width -= x;
-        if (x > width)
+        if (width < 0)
         {
             x += width;
             x = std::max(x, 0);
         }
 
         height -= y;
-        if (y > height)
+        if (height < 0)
         {
             y += height;
             y = std::max(y, 0);
         }
 
-        window->scroll_areas[0].h_right = x;
-        window->scroll_areas[0].v_bottom = y;
+        window->scroll_areas[0].h_left = x;
+        window->scroll_areas[0].v_top = y;
 
         ui::scrollview::update_thumbs(window, widx::scrollview);
     }

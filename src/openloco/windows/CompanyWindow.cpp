@@ -293,11 +293,11 @@ namespace openloco::ui::windows::CompanyWindow
                     if (self->saved_view.isThingView())
                     {
                         auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
-                        main->viewport_centre_on_tile({ thing->x, thing->y, thing->z });
+                        main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else
                     {
-                        main->viewport_centre_on_tile(self->saved_view.getPos());
+                        main->viewportCentreOnTile(self->saved_view.getPos());
                     }
                     break;
                 }
@@ -523,7 +523,7 @@ namespace openloco::ui::windows::CompanyWindow
                     }
 
                     self->saved_view = view;
-                    self->viewport_centre_on_tile(view.getPos());
+                    self->viewportCentreOnTile(view.getPos());
                     return;
                 }
                 // Not observing anything at all?

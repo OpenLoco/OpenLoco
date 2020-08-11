@@ -560,14 +560,55 @@ namespace openloco::ui
         *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
     }
 
-    void window::viewport_centre_on_tile(const map::map_pos3& loc)
+    // 0x004C6801
+    void window::moveWindowToLocation(viewport_pos pos)
     {
-        registers regs;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dx = loc.z;
-        regs.esi = (int32_t)this;
-        call(0x004C6827, regs);
+        if (this->viewport_configurations->viewport_target_sprite != thing_id::null)
+            return;
+
+        if (this->flags & window_flags::viewport_no_scrolling)
+            return;
+
+        this->viewport_configurations->saved_view_x = pos.x;
+        this->viewport_configurations->saved_view_y = pos.y;
+        this->flags |= window_flags::scrolling_to_location;
+    }
+
+    // 0x004C6827
+    void window::viewportCentreOnTile(const map::map_pos3& loc)
+    {
+        auto viewport = this->viewports[0];
+        if (viewport == nullptr)
+            return;
+
+        int32_t tileHeight = tile_element_height(loc.x, loc.y);
+        tileHeight -= 16;
+
+        if (loc.z < tileHeight)
+        {
+            if (!(viewport->flags & viewport_flags::underground_view))
+            {
+                this->invalidate();
+            }
+
+            viewport->flags |= viewport_flags::underground_view;
+        }
+        else
+        {
+            if (viewport->flags & viewport_flags::underground_view)
+            {
+                this->invalidate();
+            }
+
+            viewport->flags &= ~viewport_flags::underground_view;
+        }
+
+        auto pos = coordinate_3d_to_2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
+
+        pos.x -= viewport->view_width * -32768;
+        pos.y -= viewport->view_height * -32768;
+
+        moveWindowToLocation(pos);
     }
 
     void window::viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
