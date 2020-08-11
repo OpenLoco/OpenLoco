@@ -150,7 +150,7 @@ namespace openloco::config
         std::string loco_install_path;
         std::string language = "en-GB";
         bool breakdowns_disabled = false;
-        bool company_ai_disabled = false;
+        bool companyAIDisabled = false;
         float scale_factor = 1.0f;
         bool zoom_to_cursor = true;
     };
