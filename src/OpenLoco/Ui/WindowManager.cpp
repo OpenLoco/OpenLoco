@@ -101,16 +101,6 @@ namespace OpenLoco::Ui::WindowManager
             });
 
         registerHook(
-            0x0043DA43,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::LandscapeGeneration::open();
-                regs = backup;
-
-                return 0;
-            });
-
-        registerHook(
             0x0043EE58,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

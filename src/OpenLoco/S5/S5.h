@@ -143,6 +143,16 @@ namespace OpenLoco::S5
     static_assert(0x009C8714 + offsetof(Options, numberOfIndustries) == 0x009C889D);
     static_assert(0x009C8714 + offsetof(Options, scenarioName) == 0x009C873E);
     static_assert(0x009C8714 + offsetof(Options, scenarioDetails) == 0x009C877E);
+    static_assert(0x009C8714 + offsetof(Options, objectiveType) == 0x009CC8A0);
+    static_assert(0x009C8714 + offsetof(Options, objectiveFlags) == 0x009CC8A1);
+    static_assert(0x009C8714 + offsetof(Options, objectiveCompanyValue) == 0x009CC8A2);
+    static_assert(0x009C8714 + offsetof(Options, objectiveMonthlyVehicleProfit) == 0x009CC8A6);
+    static_assert(0x009C8714 + offsetof(Options, objectivePerformanceIndex) == 0x009CC8AA);
+    static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargoType) == 0x009CC8AB);
+    static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargoAmount) == 0x009CC8AC);
+    static_assert(0x009C8714 + offsetof(Options, objectiveTimeLimitYears) == 0x009CC8B0);
+    static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargo) == 0x009CC8B1);
+    static_assert(0x009C8714 + offsetof(Options, currency) == 0x009CC8C1);
 
     static_assert(0x009CCA54 + offsetof(Options, scenarioFlags) == 0x009CCA5A);
     static_assert(0x009CCA54 + offsetof(Options, preview) == 0x009CCBDE);
