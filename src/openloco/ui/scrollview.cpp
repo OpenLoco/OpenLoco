@@ -53,11 +53,35 @@ namespace openloco::ui::scrollview
     }
 
     // 0x004C8898
+    // regs.bp: deltaY
     static void verticalFollow(ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex, const size_t scrollIndex, const int16_t deltaY)
     {
-        registers regs{};
-        regs.bp = deltaY;
-        call(0x004C8898, regs);
+        scroll_area_t& scrollArea = w->scroll_areas[scrollIndex];
+        scrollArea.flags |= scroll_flags::VSCROLLBAR_THUMB_PRESSED;
+
+        uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            trackHeight -= barWidth;
+        }
+
+        auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
+
+        int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
+
+        int frameHeight = widget->height() - 2;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            frameHeight -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentHeight - frameHeight;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetY = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(w, widgetIndex);
+        WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
 
     // 0x004C8EF0
