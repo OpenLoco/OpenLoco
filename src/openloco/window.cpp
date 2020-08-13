@@ -605,8 +605,8 @@ namespace openloco::ui
 
         auto pos = coordinate_3d_to_2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
 
-        pos.x -= (std::abs(viewport->view_width * -32768) >> 16);
-        pos.y -= (std::abs(viewport->view_height * -32768) >> 16);
+        pos.x -= viewport->view_width / 2;
+        pos.y -= viewport->view_height / 2;
 
         moveWindowToLocation(pos);
     }
