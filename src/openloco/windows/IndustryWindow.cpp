@@ -237,7 +237,7 @@ namespace openloco::ui::windows::industry
 
             // Figure out the industry's position on the map.
             auto industry = industrymgr::get(self->number);
-            int16_t tileZ = openloco::map::tile_element_height(industry->x, industry->y) & 0xFFFF;
+            int16_t tileZ = openloco::map::tileElementHeight(industry->x, industry->y).landHeight;
 
             // Compute views.
             SavedView view = {

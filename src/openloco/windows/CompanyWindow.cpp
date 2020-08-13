@@ -488,9 +488,9 @@ namespace openloco::ui::windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    auto tileZAndWater = openloco::map::tile_element_height(company->observation_x, company->observation_y);
-                    coord_t tileZ = tileZAndWater & 0xFFFF;
-                    coord_t waterZ = tileZAndWater >> 16;
+                    auto tileZAndWater = openloco::map::tileElementHeight(company->observation_x, company->observation_y);
+                    coord_t tileZ = tileZAndWater.landHeight;
+                    coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)
                     {
                         tileZ = waterZ;

@@ -328,7 +328,7 @@ namespace openloco::ui::windows::map
     // 0x0046B9D4
     static void moveMainViewToMapView(xy32 pos)
     {
-        auto z = tile_element_height(pos.x, pos.y) & 0xFFFF;
+        auto z = tileElementHeight(pos.x, pos.y).landHeight;
         auto window = WindowManager::getMainWindow();
 
         if (window == nullptr)

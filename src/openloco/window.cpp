@@ -308,7 +308,7 @@ namespace openloco::ui
             {
                 auto thing = thingmgr::get<Thing>(config->viewport_target_sprite);
 
-                int z = (tile_element_height(thing->x, thing->y) & 0xFFFF) - 16;
+                int z = (tileElementHeight(thing->x, thing->y).landHeight) - 16;
                 bool underground = (thing->z < z);
 
                 viewportSetUndergroundFlag(underground, viewport);
@@ -545,7 +545,7 @@ namespace openloco::ui
         get_map_coordinates_from_pos(mouse_x, mouse_y, 0, map_x, map_y);
 
         // Get viewport coordinates centring around the tile.
-        int32_t base_height = map::tile_element_height(*map_x, *map_y) & 0xFFFF;
+        int32_t base_height = map::tileElementHeight(*map_x, *map_y).landHeight;
         int16_t dest_x, dest_y;
         viewport* v = this->viewports[0];
         v->centre_2d_coordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
@@ -581,7 +581,7 @@ namespace openloco::ui
         if (viewport == nullptr)
             return;
 
-        int32_t tileHeight = tile_element_height(loc.x, loc.y);
+        auto tileHeight = tileElementHeight(loc.x, loc.y).landHeight;
         tileHeight -= 16;
 
         if (loc.z < tileHeight)
@@ -605,8 +605,8 @@ namespace openloco::ui
 
         auto pos = coordinate_3d_to_2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
 
-        pos.x -= viewport->view_width * -32768;
-        pos.y -= viewport->view_height * -32768;
+        pos.x -= (std::abs(viewport->view_width * -32768) >> 16);
+        pos.y -= (std::abs(viewport->view_height * -32768) >> 16);
 
         moveWindowToLocation(pos);
     }
@@ -615,7 +615,7 @@ namespace openloco::ui
     {
         // Get viewport coordinates centring around the tile.
         int16_t dest_x, dest_y;
-        int32_t base_height = map::tile_element_height(map_x, map_y) & 0xFFFF;
+        int32_t base_height = map::tileElementHeight(map_x, map_y).landHeight;
         viewport* v = this->viewports[0];
         v->centre_2d_coordinates(map_x, map_y, base_height, &dest_x, &dest_y);
 

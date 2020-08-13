@@ -119,14 +119,19 @@ namespace openloco::map
      *
      * 0x00467297
      */
-    uint32_t tile_element_height(int16_t x, int16_t y)
+    tileHeight tileElementHeight(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
         regs.cx = y;
         call(0x00467297, regs);
 
-        return regs.edx;
+        tileHeight tileZ;
+
+        tileZ.landHeight = regs.dx;
+        tileZ.waterHeight = regs.edx >> 16;
+
+        return tileZ;
     }
 
     /**

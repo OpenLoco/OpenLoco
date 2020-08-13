@@ -210,7 +210,7 @@ namespace openloco::ui::windows::town
                     town->history[town->history_size - 1] = historyEntry;
 
                     // Play construction sound at the town centre.
-                    int16_t tileZ = openloco::map::tile_element_height(town->x, town->y) & 0xFFFF;
+                    int16_t tileZ = openloco::map::tileElementHeight(town->x, town->y).landHeight;
                     audio::play_sound(audio::sound_id::construct, loc16(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
@@ -275,7 +275,7 @@ namespace openloco::ui::windows::town
 
             // Figure out the town's position on the map.
             auto town = townmgr::get(self->number);
-            int16_t tileZ = openloco::map::tile_element_height(town->x, town->y) & 0xFFFF;
+            int16_t tileZ = openloco::map::tileElementHeight(town->x, town->y).landHeight;
 
             // Compute views.
             SavedView view = {
