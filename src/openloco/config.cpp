@@ -15,6 +15,8 @@
 
 using namespace openloco::interop;
 
+// Test
+
 namespace openloco::config
 {
     static loco_global<config_t, 0x0050AEB4> _config;
