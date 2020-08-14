@@ -197,6 +197,7 @@ namespace openloco::ui
         constexpr uint32_t white_border_one = (1 << 17);
         constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
         constexpr uint32_t flag_19 = 1 << 19;
+        constexpr uint32_t flag_31 = 1 << 31;
     }
 
     struct window_event_list
@@ -444,7 +445,8 @@ namespace openloco::ui
         void drawViewports(gfx::drawpixelinfo_t* dpi);
         void viewportSetUndergroundFlag(bool underground, ui::viewport* vp);
         void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
-        void viewport_centre_on_tile(const map::map_pos3& loc);
+        void moveWindowToLocation(viewport_pos pos);
+        void viewportCentreOnTile(const map::map_pos3& loc);
         void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
         void viewport_zoom_set(int8_t zoomLevel, bool toCursor);
         void viewport_zoom_in(bool toCursor);

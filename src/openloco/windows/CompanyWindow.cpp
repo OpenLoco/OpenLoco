@@ -293,11 +293,11 @@ namespace openloco::ui::windows::CompanyWindow
                     if (self->saved_view.isThingView())
                     {
                         auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
-                        main->viewport_centre_on_tile({ thing->x, thing->y, thing->z });
+                        main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else
                     {
-                        main->viewport_centre_on_tile(self->saved_view.getPos());
+                        main->viewportCentreOnTile(self->saved_view.getPos());
                     }
                     break;
                 }
@@ -488,9 +488,9 @@ namespace openloco::ui::windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    auto tileZAndWater = openloco::map::tile_element_height(company->observation_x, company->observation_y);
-                    coord_t tileZ = tileZAndWater & 0xFFFF;
-                    coord_t waterZ = tileZAndWater >> 16;
+                    auto tileZAndWater = openloco::map::tileElementHeight(company->observation_x, company->observation_y);
+                    coord_t tileZ = tileZAndWater.landHeight;
+                    coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)
                     {
                         tileZ = waterZ;
@@ -523,7 +523,7 @@ namespace openloco::ui::windows::CompanyWindow
                     }
 
                     self->saved_view = view;
-                    self->viewport_centre_on_tile(view.getPos());
+                    self->viewportCentreOnTile(view.getPos());
                     return;
                 }
                 // Not observing anything at all?

@@ -204,7 +204,7 @@ namespace openloco::input::ShortcutManager
         main->viewport_rotate_right();
         townmgr::update_labels();
         stationmgr::update_labels();
-        windows::map::center_on_view_point();
+        windows::map::centerOnViewPoint();
     }
 
     // 0x004BF148

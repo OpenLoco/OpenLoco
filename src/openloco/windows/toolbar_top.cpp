@@ -346,7 +346,7 @@ namespace openloco::ui::windows::toolbar_top::game
         { VehicleType::bus, { interface_skin::image_ids::vehicle_bus, interface_skin::image_ids::build_vehicle_bus_frame_0, string_ids::build_buses, string_ids::num_buses_singular, string_ids::num_buses_plural } },
         { VehicleType::plane, { interface_skin::image_ids::vehicle_aircraft, interface_skin::image_ids::build_vehicle_aircraft_frame_0, string_ids::build_aircraft, string_ids::num_aircrafts_singular, string_ids::num_aircrafts_plural } },
         { VehicleType::ship, { interface_skin::image_ids::vehicle_ship, interface_skin::image_ids::build_vehicle_ship_frame_0, string_ids::build_ships, string_ids::num_ships_singular, string_ids::num_ships_plural } },
-        { VehicleType::train, { interface_skin::image_ids::vehicle_train, interface_skin::image_ids::build_vehicle_train_frame_0, string_ids::build_trains, string_ids::num_trains_singular, string_ids::num_trains_plural } },
+        { VehicleType::train, { interface_skin::image_ids::vehicle_train_frame_0, interface_skin::image_ids::build_vehicle_train_frame_0, string_ids::build_trains, string_ids::num_trains_singular, string_ids::num_trains_plural } },
         { VehicleType::tram, { interface_skin::image_ids::vehicle_tram, interface_skin::image_ids::build_vehicle_tram_frame_0, string_ids::build_trams, string_ids::num_trams_singular, string_ids::num_trams_plural } },
         { VehicleType::truck, { interface_skin::image_ids::vehicle_truck, interface_skin::image_ids::build_vehicle_truck_frame_0, string_ids::build_trucks, string_ids::num_trucks_singular, string_ids::num_trucks_plural } },
     };
@@ -614,7 +614,7 @@ namespace openloco::ui::windows::toolbar_top::game
             uint32_t y = window->widgets[common::widx::vehicles_menu].top + window->y;
 
             static const uint32_t button_face_image_ids[] = {
-                interface_skin::image_ids::vehicle_train,
+                interface_skin::image_ids::vehicle_train_frame_0,
                 interface_skin::image_ids::vehicle_bus,
                 interface_skin::image_ids::vehicle_truck,
                 interface_skin::image_ids::vehicle_tram,

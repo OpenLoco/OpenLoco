@@ -15,7 +15,10 @@ namespace openloco
     struct industry_object
     {
         string_id name;
-        uint8_t pad_02[0xCA - 0x02];
+        uint8_t pad_02[0x0A - 0x02];
+        uint16_t nameSingular; // 0x0A
+        uint16_t namePlural;   // 0x0C
+        uint8_t pad_0E[0xCA - 0x0E];
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
         uint8_t var_CE;

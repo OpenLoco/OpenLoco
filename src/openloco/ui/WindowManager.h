@@ -146,7 +146,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
 namespace openloco::ui::windows::map
 {
     void open();
-    void center_on_view_point();
+    void centerOnViewPoint();
 }
 
 namespace openloco::ui::windows::music_selection

@@ -192,7 +192,7 @@ namespace openloco::ui::NewsWindow
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
-                    view.surfaceZ = tile_element_height(view.mapX, view.mapY);
+                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
                     view.rotation = gCurrentRotation;
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -218,7 +218,7 @@ namespace openloco::ui::NewsWindow
 
                     view.mapX = town->x;
                     view.mapY = town->y;
-                    view.surfaceZ = tile_element_height(view.mapX, view.mapY);
+                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
                     view.rotation = gCurrentRotation;
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -254,7 +254,7 @@ namespace openloco::ui::NewsWindow
                 case 5:
                     view.mapX = news->item_id_1; // possible union?
                     view.mapY = news->item_id_2;
-                    view.surfaceZ = tile_element_height(view.mapX, view.mapY);
+                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = gCurrentRotation;
                     *selectable = true;

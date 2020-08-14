@@ -7,7 +7,7 @@
 namespace openloco::string_ids
 {
     constexpr string_id empty = 0;
-
+    constexpr string_id empty_pop = 1;
     constexpr string_id new_company = 2;
 
     constexpr string_id day_1st = 10;
@@ -295,6 +295,9 @@ namespace openloco::string_ids
     constexpr string_id status_num_stations_singular = 520;
     constexpr string_id status_num_stations_plural = 521;
 
+    constexpr string_id status_num_vehicles_singular = 527;
+    constexpr string_id status_num_vehicles_plural = 528;
+
     constexpr string_id status_towns_singular = 555;
     constexpr string_id status_towns_plural = 556;
 
@@ -474,7 +477,11 @@ namespace openloco::string_ids
     constexpr string_id scroll_screen_edge = 1002;
     constexpr string_id scroll_screen_edge_tip = 1003;
     constexpr string_id customise_keys_tip = 1004;
-
+    constexpr string_id title_map = 1005;
+    constexpr string_id title_map_vehicles = 1006;
+    constexpr string_id title_map_industries = 1007;
+    constexpr string_id title_map_routes = 1008;
+    constexpr string_id title_map_companies = 1009;
     constexpr string_id forced_software_buffer_mixing = UNUSED_STR(1010);
     constexpr string_id forced_software_buffer_mixing_tip = UNUSED_STR(1011);
 
@@ -609,6 +616,12 @@ namespace openloco::string_ids
     constexpr string_id vehicle_has_crashed = 1158;
     constexpr string_id vehicle_has_broken_down = 1159;
     constexpr string_id vehicle_is_stuck = 1160;
+
+    constexpr string_id tab_map_overall = 1178;
+    constexpr string_id tab_map_vehicles = 1179;
+    constexpr string_id tab_map_industries = 1180;
+    constexpr string_id tab_map_routes = 1181;
+    constexpr string_id tab_map_ownership = 1182;
 
     constexpr string_id cant_add_pop_5_string_id_string_id = 1184;
     constexpr string_id cant_build_pop_5_string_id = 1185;
@@ -746,10 +759,10 @@ namespace openloco::string_ids
     constexpr string_id industry_under_construction = 1366;
     constexpr string_id industry_producing = 1367;
     constexpr string_id industry_produces = 1368;
-
+    constexpr string_id industry_produce = 1369;
     constexpr string_id cargo_to_produce = 1370;
     constexpr string_id industry_requires = 1371;
-
+    constexpr string_id industry_require = 1372;
     constexpr string_id cargo_and = 1373;
     constexpr string_id cargo_or = 1374;
     constexpr string_id cargo_comma = 1375;
@@ -1128,6 +1141,15 @@ namespace openloco::string_ids
     constexpr string_id cargo_transit_time = 1799;
 
     constexpr string_id toolbar_status_paused = 1800;
+
+    constexpr string_id map_key_towns = 1802;
+    constexpr string_id map_key_industries = 1803;
+    constexpr string_id map_key_roads = 1804;
+    constexpr string_id map_key_railways = 1805;
+    constexpr string_id map_key_stations = 1806;
+    constexpr string_id map_key_vegetation = 1807;
+    constexpr string_id map_routes_aircraft = 1808;
+    constexpr string_id map_routes_ships = 1809;
 
     constexpr string_id tooltip_speed_pause = 1817;
     constexpr string_id tooltip_speed_normal = 1818;
