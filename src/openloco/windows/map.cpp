@@ -119,11 +119,11 @@ namespace openloco::ui::windows::map
             case 0:
                 return location;
             case 1:
-                return { map_width - 1 - location.y, location.x };
+                return { static_cast<coord_t>(map_width - 1 - location.y), location.x };
             case 2:
-                return { map_width - 1 - location.x, map_height - 1 - location.y };
+                return { static_cast<coord_t>(map_width - 1 - location.x), static_cast<coord_t>(map_height - 1 - location.y) };
             case 3:
-                return { location.y, map_height - 1 - location.x };
+                return { location.y, static_cast<coord_t>(map_height - 1 - location.x) };
         }
 
         return { 0, 0 }; // unreachable
@@ -131,8 +131,8 @@ namespace openloco::ui::windows::map
 
     static xy32 locationToMapWindowPos(map_pos pos)
     {
-        coord_t x = pos.x;
-        coord_t y = pos.y;
+        int32_t x = pos.x;
+        int32_t y = pos.y;
 
         switch (getCurrentRotation())
         {
@@ -155,7 +155,7 @@ namespace openloco::ui::windows::map
         x /= tile_size;
         y /= tile_size;
 
-        return { static_cast<coord_t>(-x + y + map_columns - 8), static_cast<coord_t>(x + y - 8) };
+        return { static_cast<int32_t>(-x + y + map_columns - 8), static_cast<int32_t>(x + y - 8) };
     }
 
     // 0x0046B8E6
