@@ -456,9 +456,9 @@ namespace openloco
     {
         struct CarComponent
         {
-            vehicle_bogie* front;
-            vehicle_bogie* back;
-            vehicle_body* body;
+            vehicle_bogie* front = nullptr;
+            vehicle_bogie* back = nullptr;
+            vehicle_body* body = nullptr;
             CarComponent(openloco::vehicle*& component)
             {
                 front = component->as_vehicle_bogie();
@@ -468,10 +468,91 @@ namespace openloco
                 body = component->as_vehicle_body();
                 component = component->nextVehicleComponent();
             }
+            CarComponent() = default;
         };
 
         struct Car
         {
+            class CarComponentIter
+            {
+            private:
+                CarComponent current;
+                openloco::vehicle* nextVehicleComponent;
+
+            public:
+                constexpr CarComponentIter(openloco::vehicle* component)
+                    : nextVehicleComponent(component)
+                {
+                    if (nextVehicleComponent == nullptr)
+                    {
+                        return;
+                    }
+                    if (nextVehicleComponent->type == VehicleThingType::tail)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return;
+                    }
+                    current = CarComponent{ nextVehicleComponent };
+                }
+
+                constexpr CarComponentIter& operator++()
+                {
+                    if (nextVehicleComponent == nullptr)
+                    {
+                        return *this;
+                    }
+                    if (nextVehicleComponent->type == VehicleThingType::tail)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return *this;
+                    }
+                    CarComponent next{ nextVehicleComponent };
+                    if (next.body->type == VehicleThingType::body_start)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return *this;
+                    }
+                    current = next;
+                    return *this;
+                }
+
+                constexpr CarComponentIter operator++(int)
+                {
+                    CarComponentIter retval = *this;
+                    ++(*this);
+                    return retval;
+                }
+
+                constexpr bool operator==(CarComponentIter other) const
+                {
+                    return nextVehicleComponent == other.nextVehicleComponent;
+                }
+                constexpr bool operator!=(CarComponentIter other) const
+                {
+                    return !(*this == other);
+                }
+
+                constexpr CarComponent& operator*()
+                {
+                    return current;
+                }
+                // iterator traits
+                using difference_type = std::ptrdiff_t;
+                using value_type = CarComponent;
+                using pointer = CarComponent*;
+                using reference = CarComponent&;
+                using iterator_category = std::forward_iterator_tag;
+            };
+
+            CarComponentIter begin() const
+            {
+                return CarComponentIter(reinterpret_cast<openloco::vehicle*>(carComponents[0].front));
+            }
+            CarComponentIter end() const
+            {
+                return CarComponentIter(nullptr);
+            }
+
             std::vector<CarComponent> carComponents;
             Car(CarComponent& carComponent)
             {
