@@ -106,6 +106,58 @@ namespace openloco::ui::windows::map
 
     static window_event_list events;
 
+    static map_pos mapWindowPosToLocation(xy32 pos)
+    {
+        pos.x = ((pos.x + 8) - map_columns) / 2;
+        pos.y = ((pos.y + 8)) / 2;
+        map_pos location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
+        location.x *= tile_size;
+        location.y *= tile_size;
+
+        switch (getCurrentRotation())
+        {
+            case 0:
+                return location;
+            case 1:
+                return { map_width - 1 - location.y, location.x };
+            case 2:
+                return { map_width - 1 - location.x, map_height - 1 - location.y };
+            case 3:
+                return { location.y, map_height - 1 - location.x };
+        }
+
+        return { 0, 0 }; // unreachable
+    }
+
+    static xy32 locationToMapWindowPos(map_pos pos)
+    {
+        coord_t x = pos.x;
+        coord_t y = pos.y;
+
+        switch (getCurrentRotation())
+        {
+            case 3:
+                std::swap(x, y);
+                x = map_width - 1 - x;
+                break;
+            case 2:
+                x = map_width - 1 - x;
+                y = map_height - 1 - y;
+                break;
+            case 1:
+                std::swap(x, y);
+                y = map_height - 1 - y;
+                break;
+            case 0:
+                break;
+        }
+
+        x /= tile_size;
+        y /= tile_size;
+
+        return { static_cast<coord_t>(-x + y + map_columns - 8), static_cast<coord_t>(x + y - 8) };
+    }
+
     // 0x0046B8E6
     static void onClose(window* self)
     {
@@ -326,7 +378,7 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046B9D4
-    static void moveMainViewToMapView(xy32 pos)
+    static void moveMainViewToMapView(map_pos pos)
     {
         auto z = tileElementHeight(pos.x, pos.y).landHeight;
         auto window = WindowManager::getMainWindow();
@@ -965,7 +1017,7 @@ namespace openloco::ui::windows::map
     }
 
     // 0x0046C294
-    static std::pair<map_pos, map_pos> drawRouteLine(gfx::drawpixelinfo_t* dpi, map_pos startPos, map_pos endPos, map_pos stationPos, uint8_t colour)
+    static std::pair<xy32, xy32> drawRouteLine(gfx::drawpixelinfo_t* dpi, xy32 startPos, xy32 endPos, map_pos stationPos, uint8_t colour)
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
@@ -1053,8 +1105,8 @@ namespace openloco::ui::windows::map
             1,
         };
 
-        map_pos startPos = { location::null, 0 };
-        map_pos endPos = { location::null, 0 };
+        xy32 startPos = { location::null, 0 };
+        xy32 endPos = { location::null, 0 };
         auto index = train.head->length_of_var_4C;
         auto lastOrder = _dword_987C5C[index] & 0x7;
 

@@ -61,18 +61,17 @@ namespace openloco::map
             return map_pos(x, y);
         }
     };
+#pragma pack(pop)
 
     struct tileHeight
     {
         coord_t landHeight;
         coord_t waterHeight;
     };
-#pragma pack(pop)
+
     tileHeight tileElementHeight(int16_t x, int16_t y);
     ui::viewport_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2DCoordinate(map_pos pos, uint8_t rotation);
-    map_pos locationToMapWindowPos(xy32 pos);
-    xy32 mapWindowPosToLocation(map_pos pos);
 
     enum class element_type
     {
