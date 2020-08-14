@@ -3,6 +3,21 @@ cmake_policy(VERSION 3.9)
 
 set (PROJECT openloco)
 
+# Note: Searching for CCache must be before project() so project() can use CCache too
+# if it is available
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+find_package(CCache)
+
+if (CCache_FOUND)
+    option(OPENLOCO_USE_CCACHE "Use CCache to improve recompilation speed (optional)" ON)
+    if (OPENLOCO_USE_CCACHE)
+        # Use e.g. "ccache clang++" instead of "clang++"
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCache_EXECUTABLE}")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK    "${CCache_EXECUTABLE}")
+    endif (OPENLOCO_USE_CCACHE)
+endif (CCache_FOUND)
+
 project(${PROJECT} CXX)
 
 if (APPLE)
