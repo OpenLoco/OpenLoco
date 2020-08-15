@@ -896,7 +896,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            if (rotation < 12)
+            if (rotation >= 12)
                 rotation &= 3;
 
             return trackPieceId{ id, rotation };
@@ -1195,7 +1195,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            if (rotation < 12)
+            if (rotation >= 12)
                 rotation &= 3;
 
             return trackPieceId{ id, rotation };
