@@ -436,7 +436,7 @@ namespace openloco::things::vehicle
         Vehicle train(head);
         // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
         openloco::vehicle* lastVeh = nullptr;
-        if (std::distance(train.cars.begin(), train.cars.end()) > 0)
+        if (!train.cars.empty())
         {
             for (auto& car : train.cars)
             {
@@ -914,7 +914,7 @@ namespace openloco::things::vehicle
                 vehicle_head* veh0backup = _backupVeh0;
                 // If it has an existing body
                 Vehicle bkupTrain(veh0backup);
-                if (std::distance(bkupTrain.cars.begin(), bkupTrain.cars.end()) > 0)
+                if (!bkupTrain.cars.empty())
                 {
                     placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                 }

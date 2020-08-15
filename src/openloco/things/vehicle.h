@@ -570,7 +570,7 @@ namespace openloco
                 public:
                     constexpr CarIter(const Car* carComponent)
                     {
-                        if (carComponent == nullptr)
+                        if (carComponent == nullptr || carComponent->body == nullptr)
                         {
                             nextVehicleComponent = nullptr;
                             return;
@@ -633,6 +633,24 @@ namespace openloco
                 CarIter end() const
                 {
                     return CarIter(nullptr);
+                }
+
+                std::size_t size() const
+                {
+                    if (firstCar.body == nullptr)
+                    {
+                        return 0;
+                    }
+                    return std::distance(begin(), end());
+                }
+
+                bool empty() const
+                {
+                    if (firstCar.body == nullptr)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 Cars(Car&& _firstCar)

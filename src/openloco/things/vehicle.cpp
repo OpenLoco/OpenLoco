@@ -1631,7 +1631,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
         things::vehicle::Vehicle train(this);
-        if (std::distance(train.cars.begin(), train.cars.end()) != 0)
+        if (!train.cars.empty())
         {
             gGameCommandErrorText = string_ids::incompatible_vehicle;
             return false;
