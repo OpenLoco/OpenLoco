@@ -480,7 +480,7 @@ namespace openloco
                 openloco::vehicle* nextVehicleComponent = nullptr;
 
             public:
-                constexpr CarComponentIter(const CarComponent* carComponent)
+                CarComponentIter(const CarComponent* carComponent)
                 {
                     if (carComponent == nullptr)
                     {
@@ -491,7 +491,7 @@ namespace openloco
                     nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
                 }
 
-                constexpr CarComponentIter& operator++()
+                CarComponentIter& operator++()
                 {
                     if (nextVehicleComponent == nullptr)
                     {
@@ -512,18 +512,18 @@ namespace openloco
                     return *this;
                 }
 
-                constexpr CarComponentIter operator++(int)
+                CarComponentIter operator++(int)
                 {
                     CarComponentIter retval = *this;
                     ++(*this);
                     return retval;
                 }
 
-                constexpr bool operator==(CarComponentIter other) const
+                bool operator==(CarComponentIter other) const
                 {
                     return nextVehicleComponent == other.nextVehicleComponent;
                 }
-                constexpr bool operator!=(CarComponentIter other) const
+                bool operator!=(CarComponentIter other) const
                 {
                     return !(*this == other);
                 }
@@ -568,7 +568,7 @@ namespace openloco
                     openloco::vehicle* nextVehicleComponent = nullptr;
 
                 public:
-                    constexpr CarIter(const Car* carComponent)
+                    CarIter(const Car* carComponent)
                     {
                         if (carComponent == nullptr || carComponent->body == nullptr)
                         {
@@ -579,7 +579,7 @@ namespace openloco
                         nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
                     }
 
-                    constexpr CarIter& operator++()
+                    CarIter& operator++()
                     {
                         if (nextVehicleComponent == nullptr)
                         {
@@ -598,18 +598,18 @@ namespace openloco
                         return *this;
                     }
 
-                    constexpr CarIter operator++(int)
+                    CarIter operator++(int)
                     {
                         CarIter retval = *this;
                         ++(*this);
                         return retval;
                     }
 
-                    constexpr bool operator==(CarIter other) const
+                    bool operator==(CarIter other) const
                     {
                         return nextVehicleComponent == other.nextVehicleComponent;
                     }
-                    constexpr bool operator!=(CarIter other) const
+                    bool operator!=(CarIter other) const
                     {
                         return !(*this == other);
                     }
