@@ -153,26 +153,26 @@ void vehicle_head::sub_4BA8D4()
     things::vehicle::Vehicle train(this);
     for (auto car : train.cars)
     {
-        if (car.carComponents[0].front->var_5F & flags_5f::broken_down)
+        if (car.front->var_5F & flags_5f::broken_down)
         {
             if ((scenario_ticks() & 3) == 0)
             {
-                auto v2 = car.carComponents[0].body; // body
+                auto v2 = car.body; // body
                 smoke::create(loc16(v2->x, v2->y, v2->z + 4));
             }
         }
 
-        if ((car.carComponents[0].front->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
+        if ((car.front->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
         {
             auto newConfig = config::get_new();
             if (!newConfig.breakdowns_disabled)
             {
-                car.carComponents[0].front->var_5F &= ~flags_5f::breakdown_pending;
-                car.carComponents[0].front->var_5F |= flags_5f::broken_down;
-                car.carComponents[0].front->var_6A = 5;
+                car.front->var_5F &= ~flags_5f::breakdown_pending;
+                car.front->var_5F |= flags_5f::broken_down;
+                car.front->var_6A = 5;
                 sub_4BAA76();
 
-                auto v2 = car.carComponents[0].body;
+                auto v2 = car.body;
                 auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
                 audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
             }
@@ -1617,7 +1617,7 @@ uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
     things::vehicle::Vehicle train(this);
     for (const auto& car : train.cars)
     {
-        totalLength += getVehicleTypeLength(car.carComponents[0].body->object_id);
+        totalLength += getVehicleTypeLength(car.body->object_id);
     }
     return totalLength;
 }
@@ -1631,7 +1631,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
         things::vehicle::Vehicle train(this);
-        if (train.cars.size() != 0)
+        if (std::distance(train.cars.begin(), train.cars.end()) != 0)
         {
             gGameCommandErrorText = string_ids::incompatible_vehicle;
             return false;
@@ -1663,7 +1663,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
         for (const auto& car : train.cars)
         {
             // The object_id is the same for all vehicle components and car components of a car
-            if (!sub_4B90F0(vehicleTypeId, car.carComponents[0].front->object_id))
+            if (!sub_4B90F0(vehicleTypeId, car.front->object_id))
             {
                 return false;
             }
@@ -1700,18 +1700,13 @@ namespace openloco::things::vehicle
         component = component->nextVehicleComponent();
         veh2 = component->as_vehicle_2();
         component = component->nextVehicleComponent();
+        if (component->type != VehicleThingType::tail)
+        {
+            cars = Cars{ Car{ component } };
+        }
         while (component->type != VehicleThingType::tail)
         {
-            CarComponent carComponent(component);
-            // If this is a body start then we need a new Car
-            if (carComponent.body->type == VehicleThingType::body_start)
-            {
-                cars.push_back(Car{ carComponent });
-            }
-            else // If not then it is part of the previous Car
-            {
-                cars.back().AddComponent(carComponent);
-            }
+            component = component->nextVehicleComponent();
         }
         tail = component->as_vehicle_tail();
     }
