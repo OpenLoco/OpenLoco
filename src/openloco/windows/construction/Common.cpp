@@ -58,6 +58,7 @@ namespace openloco::ui::windows::construction
         {
             window->call_on_mouse_up(construction::widx::rotate_90);
         }
+
         return window;
     }
 
@@ -460,10 +461,17 @@ namespace openloco::ui::windows::construction
         {
             if (self->current_tab == widgetIndex - widx::tab_construction)
                 return;
+
             if (widgetIndex == widx::tab_station)
             {
                 ui::windows::station::showStationCatchment(station_id::null);
             }
+
+            if (widgetIndex == widx::tab_construction)
+            {
+                common::activateSelectedConstructionWidgets();
+            }
+
             common::sub_49FEC7();
             tilemgr::map_invalidate_map_selection_tiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
@@ -1220,6 +1228,7 @@ namespace openloco::ui::windows::construction
             auto roadPiece = roadPieces[roadId];
             auto i = 0;
             auto posId = 0;
+            rotation &= 3;
 
             while (roadPiece[i].index != 0xFF)
             {
@@ -1416,6 +1425,7 @@ namespace openloco::ui::windows::construction
             auto trackPiece = trackPieces[trackId];
             auto i = 0;
             auto posId = 0;
+            rotation &= 3;
 
             while (trackPiece[i].index != 0xFF)
             {
@@ -1625,13 +1635,16 @@ namespace openloco::ui::windows::construction
             if (window == nullptr)
                 return;
 
-            if (_trackType & (1 << 7))
+            if (window->current_tab == widx::tab_construction - widx::tab_construction)
             {
-                activateSelectedRoadWidgets(window);
-            }
-            else
-            {
-                activateSelectedTrackWidgets(window);
+                if (_trackType & (1 << 7))
+                {
+                    activateSelectedRoadWidgets(window);
+                }
+                else
+                {
+                    activateSelectedTrackWidgets(window);
+                }
             }
         }
 
