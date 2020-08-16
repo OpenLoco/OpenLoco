@@ -896,7 +896,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            if (rotation >= 12)
+            if (rotation < 12)
                 rotation &= 3;
 
             return trackPieceId{ id, rotation };
@@ -1195,7 +1195,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            if (rotation >= 12)
+            if (rotation < 12)
                 rotation &= 3;
 
             return trackPieceId{ id, rotation };
@@ -1228,6 +1228,7 @@ namespace openloco::ui::windows::construction
             auto roadPiece = roadPieces[roadId];
             auto i = 0;
             auto posId = 0;
+            rotation &= 3;
 
             while (roadPiece[i].index != 0xFF)
             {
@@ -1424,6 +1425,7 @@ namespace openloco::ui::windows::construction
             auto trackPiece = trackPieces[trackId];
             auto i = 0;
             auto posId = 0;
+            rotation &= 3;
 
             while (trackPiece[i].index != 0xFF)
             {
