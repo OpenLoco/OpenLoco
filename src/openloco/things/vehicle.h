@@ -503,7 +503,7 @@ namespace openloco
                         return *this;
                     }
                     CarComponent next{ nextVehicleComponent };
-                    if (next.body->type == VehicleThingType::body_start)
+                    if (next.body == nullptr || next.body->type == VehicleThingType::body_start)
                     {
                         nextVehicleComponent = nullptr;
                         return *this;
@@ -588,6 +588,10 @@ namespace openloco
                         while (nextVehicleComponent->type != VehicleThingType::tail)
                         {
                             Car next{ nextVehicleComponent };
+                            if (next.body == nullptr)
+                            {
+                                break;
+                            }
                             if (next.body->type == VehicleThingType::body_start)
                             {
                                 current = next;
