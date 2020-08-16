@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (objIndex.index != -1)
         {
             window->row_hover = objIndex.index;
-            window->object = &objIndex.object;
+            window->object = reinterpret_cast<std::byte*>(objIndex.object._header);
             objectmgr::getScenarioText(*objIndex.object._header);
         }
 
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         bool doDefault = true;
         if (self->object != nullptr)
         {
-            auto var = self->object->_header;
+            auto var = objectmgr::object_index_entry::read(&self->object)._header;
             if (var->get_type() != object_type::town_names && var->get_type() != object_type::climate)
             {
                 doDefault = false;
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         drawDescription(
-            self->object->_header,
+            objectmgr::object_index_entry::read(&self->object)._header,
             dpi,
             widgets[widx::objectImage].mid_x() + 1 + self->x,
             widgets[widx::objectImage].mid_y() + 1 + self->y,
@@ -509,7 +509,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             uint8_t textColour = ControlCodes::colour_black;
 
-            if (object._name == self->object->_name)
+            if (object._name == objectmgr::object_index_entry::read(&self->object)._name)
             {
                 gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | palette_index::index_30);
                 textColour = control_codes::window_colour_2;
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if (objIndex.index != -1)
                     {
                         self->row_hover = objIndex.index;
-                        self->object = &objIndex.object;
+                        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
 
                         ObjectManager::getScenarioText(*objIndex.object._header);
                     }
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         self->row_hover = objIndex.index;
-        self->object = &objIndex.object;
+        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
         objectmgr::freeScenarioText();
 
         if (objIndex.index != -1)
