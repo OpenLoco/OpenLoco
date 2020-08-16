@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr int rowHeight = 12;
     static Gfx::ui_size_t windowSize = { 600, 398 };
 
-    static loco_global<uint16_t[32], 0x004FE250> object_entry_group_counts;
+    static loco_global<uint16_t[32], 0x004FE250> _objectEntryGroupCounts;
 
     static loco_global<uint8_t[999], 0x004FE384> _4FE384;
 
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case object_type::industry: break;
             case object_type::region:
             {
-                auto object = objectmgr::get<region_object>(objectId);
+                auto object = objectmgr::get<region_object>();
                 auto image = object->image;
 
                 gfx::drawImage(dpi, x, y, image);
@@ -448,7 +448,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         bool doDefault = true;
         if (self->object != nullptr)
         {
-            auto var = objectmgr::object_index_entry::read(&self->object)._header;
+            auto objectPtr = self->object;
+            auto var = objectmgr::object_index_entry::read(&objectPtr)._header;
             if (var->get_type() != object_type::town_names && var->get_type() != object_type::climate)
             {
                 doDefault = false;
@@ -472,7 +473,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto args = FormatArguments();
         args.push(_112C1C5[type]);
-        args.push(object_entry_group_counts[type]);
+        args.push(_objectEntryGroupCounts[type]);
 
         gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
 
@@ -484,8 +485,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (_50D15C == -1)
             return;
 
+        auto objectPtr = self->object;
         drawDescription(
-            objectmgr::object_index_entry::read(&self->object)._header,
+            objectmgr::object_index_entry::read(&objectPtr)._header,
             dpi,
             widgets[widx::objectImage].mid_x() + 1 + self->x,
             widgets[widx::objectImage].mid_y() + 1 + self->y,
@@ -509,10 +511,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             uint8_t textColour = ControlCodes::colour_black;
 
-            if (object._name == objectmgr::object_index_entry::read(&self->object)._name)
+            auto objectPtr = self->object;
+            if (objectPtr != nullptr)
             {
-                gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | palette_index::index_30);
-                textColour = control_codes::window_colour_2;
+                auto windowObjectName = objectmgr::object_index_entry::read(&objectPtr)._name;
+                if (object._name == windowObjectName)
+                {
+                    gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | palette_index::index_30);
+                    textColour = control_codes::window_colour_2;
+                }
             }
 
             if (_50D144[i] & (1 << 0))
@@ -525,14 +532,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     _currentFontSpriteBase = Font::m1;
                 }
 
-                textColour = Colour::opaque(self->colours[1]);
+                auto checkColour = colour::opaque(self->colours[1]);
 
-                if (_50D144[i] & ((1 << 4) | (1 << 3) | (1 << 2)))
+                if (_50D144[i] & 0x1C)
                 {
-                    textColour = Colour::inset(textColour);
+                    checkColour = colour::inset(textColour);
                 }
 
-                gfx::drawString(dpi, x, y, textColour, _strCheckmark);
+                gfx::drawString(dpi, x, y, checkColour, _strCheckmark);
             }
 
             _byte_112CC04[0] = textColour;

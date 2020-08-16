@@ -255,10 +255,10 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
-    region_object* get(size_t id)
+    region_object* get()
     {
-        if (_regionObjects[id] != reinterpret_cast<region_object*>(-1))
-            return _regionObjects[id];
+        if (_regionObjects[0] != reinterpret_cast<region_object*>(-1))
+            return _regionObjects[0];
         else
             return nullptr;
     }

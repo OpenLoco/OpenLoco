@@ -183,7 +183,7 @@ namespace OpenLoco::ObjectManager
     template<>
     water_object* get();
     template<>
-    region_object* get(size_t id);
+    region_object* get();
     template<>
     competitor_object* get(size_t id);
     template<>
