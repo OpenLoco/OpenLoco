@@ -22,7 +22,7 @@ namespace OpenLoco
         uint8_t var_0B;
         uint8_t flags; // 0x0C
         uint8_t var_0D;
-        uint32_t var_0E;
+        uint32_t image;
         uint8_t pad_12[0x22 - 0x12];
         uint8_t num_compatible; // 0x22
         uint8_t mods[7];

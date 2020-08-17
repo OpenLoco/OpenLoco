@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(trainStationObj->var_0E, companyColour);
+            auto imageId = gfx::recolour(trainStationObj->image, companyColour);
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
 

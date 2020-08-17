@@ -16,11 +16,21 @@ namespace OpenLoco
         uint8_t cost_index;        // 0x0A
         uint8_t var_0B;
         uint16_t var_0C;
-        uint32_t var_0E;
+        uint32_t image;
         uint8_t num_compatible; // 0x12
         uint8_t mods[7];        // 0x13
         uint16_t designed_year; // 0x1A
         uint16_t obsolete_year; // 0x1C
     };
 #pragma pack(pop)
+
+    const std::vector<uint8_t> signalFrames2State = { 1, 2, 3, 3, 3, 3, 3, 3, 2, 1, 0, 0, 0, 0, 0 };
+    const std::vector<uint8_t> signalFrames3State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0 };
+    const std::vector<uint8_t> signalFrames4State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+    static const std::vector<std::vector<uint8_t>> signalFrames = {
+        signalFrames2State,
+        signalFrames3State,
+        signalFrames4State,
+    };
 }

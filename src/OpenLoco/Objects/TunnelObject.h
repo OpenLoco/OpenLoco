@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../localisation/stringmgr.h"
 
 namespace openloco
 {
 #pragma pack(push, 1)
-    struct region_object
+    struct tunnel_object
     {
         string_id name;
         uint32_t image; // 0x02

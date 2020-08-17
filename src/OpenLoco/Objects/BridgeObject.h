@@ -19,7 +19,7 @@ namespace OpenLoco
         uint16_t height_cost_factor; // 0x10
         uint16_t sell_cost_factor;   // 0x12
         uint16_t disabled_track_cfg; // 0x14
-        uint32_t var_16;
+        uint32_t image;
         uint8_t track_num_compatible; // 0x1A
         uint8_t track_mods[7];        // 0x1B
         uint8_t road_num_compatible;  // 0x22

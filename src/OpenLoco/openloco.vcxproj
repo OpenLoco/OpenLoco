@@ -194,6 +194,7 @@
     <ClInclude Include="Objects\IndustryObject.h" />
     <ClInclude Include="Objects\InterfaceSkinObject.h" />
     <ClInclude Include="Objects\LandObject.h" />
+    <ClInclude Include="Objects\LevelCrossingObject.h" />
     <ClInclude Include="Objects\ObjectManager.h" />
     <ClInclude Include="Objects\RegionObject.h" />
     <ClInclude Include="Objects\RoadExtraObject.h" />
@@ -203,11 +204,13 @@
     <ClInclude Include="Objects\ScenarioTextObject.h" />
     <ClInclude Include="Objects\SoundObject.h" />
     <ClInclude Include="Objects\SteamObject.h" />
+    <ClInclude Include="Objects\StreetLightObject.h" />
     <ClInclude Include="Objects\TrackExtraObject.h" />
     <ClInclude Include="Objects\TrackObject.h" />
     <ClInclude Include="Objects\TrainSignalObject.h" />
     <ClInclude Include="Objects\TrainStationObject.h" />
     <ClInclude Include="Objects\TreeObject.h" />
+    <ClInclude Include="Objects\TunnelObject.h" />
     <ClInclude Include="Objects\VehicleObject.h" />
     <ClInclude Include="Objects\WallObject.h" />
     <ClInclude Include="Objects\WaterObject.h" />

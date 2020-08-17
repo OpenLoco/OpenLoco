@@ -5,10 +5,11 @@
 namespace openloco
 {
 #pragma pack(push, 1)
-    struct region_object
+    struct street_light_object
     {
         string_id name;
-        uint32_t image; // 0x02
+        uint16_t designedYear[3]; // 0x02
+        uint32_t image;           // 0x08
     };
 #pragma pack(pop)
 }

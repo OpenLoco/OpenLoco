@@ -567,9 +567,9 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->height *= 2;
                                 clipped->x *= 2;
                                 clipped->y *= 2;
-                                auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->var_0E, companyColour);
-                                Gfx::drawImage(clipped, -4, -9, imageId);
+                                auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStationType);
+                                auto imageId = gfx::recolour(trainStationObj->image, companyColour);
+                                gfx::drawImage(clipped, -4, -9, imageId);
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
                                 {
@@ -598,20 +598,10 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     Gfx::drawpixelinfo_t* clipped = nullptr;
 
-                    const std::vector<uint8_t> signalFrames2State = { 1, 2, 3, 3, 3, 3, 3, 3, 2, 1, 0, 0, 0, 0, 0 };
-                    const std::vector<uint8_t> signalFrames3State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0 };
-                    const std::vector<uint8_t> signalFrames4State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-                    static const std::vector<std::vector<uint8_t>> signalFrames = {
-                        signalFrames2State,
-                        signalFrames3State,
-                        signalFrames4State,
-                    };
-
-                    if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+                    if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
-                        auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
-                        auto imageId = trainSignalObject->var_0E;
+                        auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+                        auto imageId = trainSignalObject->image;
                         if (self->current_tab == widx::tab_signal - widx::tab_construction)
                         {
                             auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
