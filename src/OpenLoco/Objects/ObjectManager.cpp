@@ -74,7 +74,7 @@ namespace OpenLoco::ObjectManager
     template<>
     rock_object* get(size_t id)
     {
-        if (_rockObjects[id] != reinterpret_cast <rock_object*>(-1))
+        if (_rockObjects[id] != reinterpret_cast<rock_object*>(-1))
             return _rockObjects[id];
         else
             return nullptr;

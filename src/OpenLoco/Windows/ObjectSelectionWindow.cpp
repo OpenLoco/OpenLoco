@@ -279,9 +279,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
     {
         auto y = self->widgets[widx::panel].top + self->y - 26;
-        auto x = self->y + 3;
+        auto x = self->x + 3;
 
-        for (auto widgetRow = 1; widgetRow > 0; widgetRow--)
+        for (auto widgetRow = 1; widgetRow >= 0; widgetRow--)
         {
             auto xPos = x + (widgetRow * 10);
             auto yPos = y - (widgetRow * 24);
@@ -305,21 +305,22 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = gfx::recolour(tabImages[_112C21C[index].var_0], colour::saturated_green);
                     gfx::drawImage(dpi, xPos, yPos, image);
 
-                    image = 0x41980953;
+                    image = (1 << 30) | (1 << 24) | (1 << 23) | (1 << 20) | (1 << 19) | image_ids::tab;
                     gfx::drawImage(dpi, xPos, yPos, image);
 
                     if (widgetRow < 1)
                     {
                         auto colour = colour::getShade(self->colours[1], 7);
-                        gfx::drawRect(dpi, xPos, yPos, 30, 26, colour);
+                        gfx::drawRect(dpi, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
+                xPos += 31;
             }
         }
     }
 
     // 0x00473579
-    static void drawDescription(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, size_t objectId)
+    static void drawImage(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, size_t objectId)
     {
         switch (header->get_type())
         {
@@ -480,13 +481,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (self->row_hover == -1)
             return;
 
-        loco_global<int16_t, 0x0050D15C> _50D15C;
+        loco_global<int32_t, 0x0050D15C> _50D15C;
 
         if (_50D15C == -1)
             return;
 
         auto objectPtr = self->object;
-        drawDescription(
+        drawImage(
             objectmgr::object_index_entry::read(&objectPtr)._header,
             dpi,
             widgets[widx::objectImage].mid_x() + 1 + self->x,
@@ -536,7 +537,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (_50D144[i] & 0x1C)
                 {
-                    checkColour = colour::inset(textColour);
+                    checkColour = colour::inset(checkColour);
                 }
 
                 gfx::drawString(dpi, x, y, checkColour, _strCheckmark);
