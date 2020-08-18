@@ -456,9 +456,9 @@ namespace openloco
     {
         struct CarComponent
         {
-            vehicle_bogie* front;
-            vehicle_bogie* back;
-            vehicle_body* body;
+            vehicle_bogie* front = nullptr;
+            vehicle_bogie* back = nullptr;
+            vehicle_body* body = nullptr;
             CarComponent(openloco::vehicle*& component)
             {
                 front = component->as_vehicle_bogie();
@@ -468,30 +468,208 @@ namespace openloco
                 body = component->as_vehicle_body();
                 component = component->nextVehicleComponent();
             }
+            CarComponent() = default;
         };
 
-        struct Car
+        struct Car : public CarComponent
         {
-            std::vector<CarComponent> carComponents;
-            Car(CarComponent& carComponent)
+            class CarComponentIter
             {
-                AddComponent(carComponent);
+            private:
+                CarComponent current;
+                openloco::vehicle* nextVehicleComponent = nullptr;
+
+            public:
+                CarComponentIter(const CarComponent* carComponent)
+                {
+                    if (carComponent == nullptr)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return;
+                    }
+                    current = *carComponent;
+                    nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
+                }
+
+                CarComponentIter& operator++()
+                {
+                    if (nextVehicleComponent == nullptr)
+                    {
+                        return *this;
+                    }
+                    if (nextVehicleComponent->type == VehicleThingType::tail)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return *this;
+                    }
+                    CarComponent next{ nextVehicleComponent };
+                    if (next.body == nullptr || next.body->type == VehicleThingType::body_start)
+                    {
+                        nextVehicleComponent = nullptr;
+                        return *this;
+                    }
+                    current = next;
+                    return *this;
+                }
+
+                CarComponentIter operator++(int)
+                {
+                    CarComponentIter retval = *this;
+                    ++(*this);
+                    return retval;
+                }
+
+                bool operator==(CarComponentIter other) const
+                {
+                    return nextVehicleComponent == other.nextVehicleComponent;
+                }
+                bool operator!=(CarComponentIter other) const
+                {
+                    return !(*this == other);
+                }
+
+                constexpr CarComponent& operator*()
+                {
+                    return current;
+                }
+                // iterator traits
+                using difference_type = std::ptrdiff_t;
+                using value_type = CarComponent;
+                using pointer = CarComponent*;
+                using reference = CarComponent&;
+                using iterator_category = std::forward_iterator_tag;
+            };
+
+            CarComponentIter begin() const
+            {
+                return CarComponentIter(this);
+            }
+            CarComponentIter end() const
+            {
+                return CarComponentIter(nullptr);
             }
 
-            void AddComponent(CarComponent& carComponent)
+            Car(openloco::vehicle*& component)
+                : CarComponent(component)
             {
-                carComponents.push_back(carComponent);
             }
+            Car() = default;
         };
 
         struct Vehicle
         {
+            struct Cars
+            {
+                Car firstCar;
+                class CarIter
+                {
+                private:
+                    Car current;
+                    openloco::vehicle* nextVehicleComponent = nullptr;
+
+                public:
+                    CarIter(const Car* carComponent)
+                    {
+                        if (carComponent == nullptr || carComponent->body == nullptr)
+                        {
+                            nextVehicleComponent = nullptr;
+                            return;
+                        }
+                        current = *carComponent;
+                        nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
+                    }
+
+                    CarIter& operator++()
+                    {
+                        if (nextVehicleComponent == nullptr)
+                        {
+                            return *this;
+                        }
+                        while (nextVehicleComponent->type != VehicleThingType::tail)
+                        {
+                            Car next{ nextVehicleComponent };
+                            if (next.body == nullptr)
+                            {
+                                break;
+                            }
+                            if (next.body->type == VehicleThingType::body_start)
+                            {
+                                current = next;
+                                return *this;
+                            }
+                        }
+                        nextVehicleComponent = nullptr;
+                        return *this;
+                    }
+
+                    CarIter operator++(int)
+                    {
+                        CarIter retval = *this;
+                        ++(*this);
+                        return retval;
+                    }
+
+                    bool operator==(CarIter other) const
+                    {
+                        return nextVehicleComponent == other.nextVehicleComponent;
+                    }
+                    bool operator!=(CarIter other) const
+                    {
+                        return !(*this == other);
+                    }
+
+                    constexpr Car& operator*()
+                    {
+                        return current;
+                    }
+                    // iterator traits
+                    using difference_type = std::ptrdiff_t;
+                    using value_type = Car;
+                    using pointer = Car*;
+                    using reference = Car&;
+                    using iterator_category = std::forward_iterator_tag;
+                };
+
+                CarIter begin() const
+                {
+                    return CarIter(&firstCar);
+                }
+                CarIter end() const
+                {
+                    return CarIter(nullptr);
+                }
+
+                std::size_t size() const
+                {
+                    if (firstCar.body == nullptr)
+                    {
+                        return 0;
+                    }
+                    return std::distance(begin(), end());
+                }
+
+                bool empty() const
+                {
+                    if (firstCar.body == nullptr)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                Cars(Car&& _firstCar)
+                    : firstCar(_firstCar)
+                {
+                }
+                Cars() = default;
+            };
+
             vehicle_head* head;
             vehicle_1* veh1;
             vehicle_2* veh2;
             vehicle_tail* tail;
+            Cars cars;
 
-            std::vector<Car> cars;
             Vehicle(vehicle_head* _head)
                 : Vehicle(_head->id)
             {

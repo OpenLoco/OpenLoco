@@ -547,7 +547,7 @@ namespace openloco::ui::windows::CompanyWindow
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(
-                    train.cars[0].carComponents[0].body->id,
+                    train.cars.firstCar.body->id,
                     0xC000,
                     ZoomLevel::full,
                     rotation,

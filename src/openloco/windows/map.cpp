@@ -1143,7 +1143,7 @@ namespace openloco::ui::windows::map
 
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
-            uint8_t index = car.carComponents[0].front->owner;
+            uint8_t index = car.front->owner;
             colour = colour::get_shade(_companyColours[index], 7);
 
             if (widgetIndex == widx::tabVehicles)
@@ -1200,11 +1200,11 @@ namespace openloco::ui::windows::map
             if (train.head->x == location::null)
                 continue;
 
-            for (auto car : train.cars)
+            for (auto& car : train.cars)
             {
                 auto colour = getVehicleColour(widgetIndex, train, car);
 
-                for (auto carComponent : car.carComponents)
+                for (auto& carComponent : car)
                 {
                     drawVehicleOnMap(dpi, carComponent.front, colour);
                     drawVehicleOnMap(dpi, carComponent.back, colour);

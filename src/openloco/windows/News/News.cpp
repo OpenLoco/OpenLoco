@@ -233,9 +233,9 @@ namespace openloco::ui::NewsWindow
 
                     view.thingId = train.veh2->id;
 
-                    if (train.cars.size() > 0)
+                    if (!train.cars.empty())
                     {
-                        view.thingId = train.cars[0].carComponents[0].body->id;
+                        view.thingId = train.cars.firstCar.body->id;
                     }
 
                     view.flags = (1 << 15);
