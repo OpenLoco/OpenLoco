@@ -179,6 +179,7 @@ namespace OpenLoco::Gfx
     void redrawScreenRect(Ui::Rect rect);
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
-    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
+    bool clipDrawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
+    bool clipDrawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, xy32 pos, gfx::ui_size_t size);
     g1_element* getG1Element(uint32_t id);
 }

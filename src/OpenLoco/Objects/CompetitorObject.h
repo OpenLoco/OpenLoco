@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../Localisation/StringManager.h"
+#include "../localisation/StringIds.h"
+#include <array>
 
 namespace OpenLoco
 {
@@ -14,7 +16,7 @@ namespace OpenLoco
         uint32_t emotions;       // 0x0C
         uint32_t images[9];      // 0x10
         uint8_t intelligence;    // 0x34
-        uint8_t aggressiveness;   // 0x35
+        uint8_t aggressiveness;  // 0x35
         uint8_t competitiveness; // 0x36
         uint8_t var_37;          // 0x37
     };

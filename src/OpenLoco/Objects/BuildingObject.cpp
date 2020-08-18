@@ -13,7 +13,7 @@ namespace OpenLoco
         regs.dx = y;
         regs.esi = colour;
         regs.eax = buildingRotation;
-        regs.edi = (uint32_t)clipped;
+        regs.edi = (int32_t)clipped;
         regs.ebp = (uint32_t)this;
         call(0x0042DB95, regs);
     }

@@ -358,6 +358,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         call(0x4B7733, regs);
     }
 
+    static const xy32 objectPreviewOffset = {56, 56};
+    static const gfx::ui_size_t objectPreviewSize = {112, 112};
+
     // 0x00473579
     static void drawImage(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
@@ -441,7 +444,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<wall_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 112))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
                     auto image = object->sprite;
                     image = gfx::recolour(image, colour::salmon_pink);
@@ -678,11 +682,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<vehicle_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
                     uint8_t unk1 = _52622E & 0x3F;
                     uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                    drawVehicle(clipped, object, unk1, unk2, { 56, 75 });
+                    drawVehicle(clipped, object, unk1, unk2, { static_cast<int16_t>(objectPreviewOffset.x), 75 });
                 }
 
                 break;
@@ -693,7 +698,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<tree_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
                     uint32_t image = treeGrowth[object->growth] * object->num_rotations;
                     auto rotation = (object->num_rotations - 1) & 2;
@@ -714,7 +720,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         image = gfx::recolour(image, colour);
                     }
 
-                    xy32 treePos = { 56, 104 };
+                    xy32 treePos = { objectPreviewOffset.x, 104 };
                     if (object->var_08 & (1 << 0))
                     {
                         auto snowImage = treeGrowth[object->growth] * object->num_rotations;
@@ -767,7 +773,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<building_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
                     colour_t colour = utility::bitScanReverse(object->colours);
 
@@ -776,7 +783,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         colour = 0;
                     }
 
-                    object->drawBuilding(clipped, 1, 56, 96, colour);
+                    object->drawBuilding(clipped, 1, objectPreviewOffset.x, 96, colour);
                 }
 
                 break;
@@ -787,13 +794,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<building_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
                     auto image = gfx::recolour(object->name, colour::dark_olive_green);
 
-                    gfx::drawImage(dpi, 56, 79, image + 24);
-                    gfx::drawImage(dpi, 56, 79, image + 25);
-                    gfx::drawImage(dpi, 56, 79, image + 27);
+                    gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 24);
+                    gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 25);
+                    gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 27);
                 }
 
                 break;
@@ -804,10 +812,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<industry_object*>(objectPtr);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
                 {
-                    object->drawIndustry(clipped, 56, 96);
+                    object->drawIndustry(clipped, objectPreviewOffset.x, 96);
                 }
+
                 break;
             }
 
@@ -823,7 +833,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case object_type::competitor:
             {
                 auto object = reinterpret_cast<competitor_object*>(objectPtr);
-                gfx::drawRect(dpi, x - 56, y - 56, 112, 112, colour::inset(colour::dark_brown));
+
+                xy32 pos = {x - objectPreviewOffset.x, y - objectPreviewOffset.y};
+                gfx::drawRect(dpi, pos.x, pos.y, objectPreviewSize.width, objectPreviewSize.height, colour::inset(colour::dark_brown));
 
                 auto image = gfx::recolour(object->images[0], colour::inset(colour::dark_brown));
                 gfx::drawImage(dpi, x - 32, y - 32, image);
@@ -1010,6 +1022,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 break;
             }
+
             case object_type::competitor:
             {
                 auto object = reinterpret_cast<competitor_object*>(objectPtr);
@@ -1065,13 +1078,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = colour::getShade(self->colours[1], 5);
-            gfx::drawRect(dpi, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            gfx::drawRect(dpi, self->x + widget.left, self->y + widget.top, widget.width() - 1, widget.height() - 1, colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = colour::getShade(self->colours[1], 0);
-            gfx::drawRect(dpi, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 1, widget.height() - 1, colour);
+            gfx::drawRect(dpi, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
         auto type = self->current_tab;

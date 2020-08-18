@@ -1130,6 +1130,11 @@ namespace OpenLoco::Gfx
         return *dst != nullptr;
     }
 
+    bool clipDrawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, xy32 pos, gfx::ui_size_t size)
+    {
+        return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
+    }
+
     g1_element* getG1Element(uint32_t id)
     {
         if (id < _g1Elements.size())
