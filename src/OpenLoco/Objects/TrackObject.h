@@ -43,7 +43,7 @@ namespace OpenLoco
         uint8_t cost_index;          // 0x1A
         uint8_t var_1B;
         uint16_t curve_speed; // 0x1C
-        uint32_t var_1E;
+        uint32_t image;
         uint16_t flags;         // 0x22
         uint8_t num_bridges;    // 0x24
         uint8_t bridges[7];     // 0x25

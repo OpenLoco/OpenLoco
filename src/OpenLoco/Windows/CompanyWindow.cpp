@@ -730,27 +730,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
-        static std::array<string_id, 10> aiRatingToLevelArray = {
-            {
-                StringIds::low,
-                StringIds::low,
-                StringIds::low,
-                StringIds::low,
-                StringIds::medium,
-                StringIds::medium,
-                StringIds::medium,
-                StringIds::high,
-                StringIds::high,
-                StringIds::high,
-            }
-        };
-
-        constexpr string_id aiRatingToLevel(const uint8_t rating)
-        {
-            return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
-        }
-
-        static void drawAIdetails(Gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
+        static void drawAIdetails(gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
         {
             const auto competitor = ObjectManager::get<competitor_object>(company.competitor_id);
             {
@@ -762,9 +742,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
             {
                 FormatArguments args{};
-                args.push<uint16_t>(competitor->agressiveness);
-                args.push(aiRatingToLevel(competitor->agressiveness));
-                Gfx::drawString_494B3F(dpi, x, y, Colour::black, StringIds::company_details_aggressiveness, &args);
+                args.push<uint16_t>(competitor->aggressiveness);
+                args.push(aiRatingToLevel(competitor->aggressiveness));
+                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
                 y += 10;
             }
             {

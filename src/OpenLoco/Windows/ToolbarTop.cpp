@@ -252,13 +252,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 auto road = ObjectManager::get<road_object>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->var_0E, company_colour);
+                obj_image = gfx::recolour(road->image, company_colour);
             }
             else
             {
                 auto track = ObjectManager::get<track_object>(objIndex);
                 obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->var_1E, company_colour);
+                obj_image = gfx::recolour(track->image, company_colour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
@@ -584,13 +584,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
-                auto obj = ObjectManager::get<road_object>(ebx);
-                fg_image = Gfx::recolour(obj->var_0E, company_colour);
+                auto obj = objectmgr::get<road_object>(ebx);
+                fg_image = gfx::recolour(obj->image, company_colour);
             }
             else
             {
-                auto obj = ObjectManager::get<track_object>(ebx);
-                fg_image = Gfx::recolour(obj->var_1E, company_colour);
+                auto obj = objectmgr::get<track_object>(ebx);
+                fg_image = gfx::recolour(obj->image, company_colour);
             }
 
             auto interface = ObjectManager::get<interface_skin_object>();

@@ -2,7 +2,7 @@
 
 #include "../Localisation/StringManager.h"
 
-namespace openloco
+namespace OpenLoco
 {
 #pragma pack(push, 1)
     struct street_light_object

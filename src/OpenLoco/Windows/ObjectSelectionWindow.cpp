@@ -4,18 +4,34 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/AirportObject.h"
 #include "../Objects/BridgeObject.h"
+#include "../Objects/BuildingObject.h"
+#include "../Objects/CargoObject.h"
+#include "../Objects/CompetitorObject.h"
 #include "../Objects/CurrencyObject.h"
+#include "../Objects/DockObject.h"
+#include "../Objects/HillShapesObject.h"
+#include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/LevelCrossingObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RegionObject.h"
+#include "../Objects/RoadExtraObject.h"
+#include "../Objects/RoadObject.h"
+#include "../Objects/RoadStationObject.h"
 #include "../Objects/RockObject.h"
+#include "../Objects/ScaffoldingObject.h"
+#include "../Objects/SnowObject.h"
 #include "../Objects/StreetLightObject.h"
+#include "../Objects/TrackExtraObject.h"
+#include "../Objects/TrackObject.h"
 #include "../Objects/TrainSignalObject.h"
 #include "../Objects/TrainStationObject.h"
+#include "../Objects/TreeObject.h"
 #include "../Objects/TunnelObject.h"
+#include "../Objects/VehicleObject.h"
 #include "../Objects/WallObject.h"
 #include "../Objects/WaterObject.h"
 #include "../Ui/WindowManager.h"
@@ -43,6 +59,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
+    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static loco_global<uint16_t[80], 0x00112C181> _112C181;
     static loco_global<tabPosition[36], 0x0112C21C> _112C21C;
@@ -326,12 +343,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    // 0x004B7733
+    static void drawVehicle(gfx::drawpixelinfo_t* dpi, vehicle_object* vehicleObject, uint8_t eax, uint8_t esi, gfx::point_t offset)
+    {
+        registers regs;
+        regs.cx = offset.x;
+        regs.dx = offset.y;
+        regs.eax = eax;
+        regs.esi = esi;
+        regs.bl = colour::saturated_green;
+        regs.bh = 2;
+        regs.ebp = (uintptr_t)vehicleObject;
+        regs.edi = (uintptr_t)dpi;
+        call(0x4B7733, regs);
+    }
+
     // 0x00473579
     static void drawImage(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
-        auto type = header->get_type();
+        auto type = header->getType();
         switch (type)
         {
+            case object_type::sound:
+            case object_type::steam:
+            case object_type::town_names:
+            case object_type::cargo:
+            case object_type::climate:
+            case object_type::scenario_text:
+                // null
+                break;
+
             case object_type::interface_skin:
             {
                 auto object = objectmgr::get<interface_skin_object>();
@@ -340,10 +381,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 gfx::drawImage(dpi, x - 32, y - 32, image);
                 break;
             }
-
-            case object_type::sound:
-                // null
-                break;
 
             case object_type::currency:
             {
@@ -365,10 +402,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 *defaultElement = backupElement;
                 break;
             }
-
-            case object_type::steam:
-                // null
-                break;
 
             case object_type::rock:
             {
@@ -402,14 +435,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 gfx::drawImage(dpi, x, y, imageId);
                 break;
             }
-
-            case object_type::town_names:
-                // null
-                break;
-
-            case object_type::cargo:
-                // null
-                break;
 
             case object_type::wall:
             {
@@ -535,26 +560,257 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     colour = 46;
                 }
 
-                image = gfx::recolour(object->image, colour) + 1;
+                image = gfx::recolourTranslucent(object->image, colour) + 1;
 
                 gfx::drawImage(dpi, x - 34, y - 34, image);
                 break;
             }
-            case object_type::track_extra: break;
-            case object_type::track: break;
-            case object_type::road_station: break;
-            case object_type::road_extra: break;
-            case object_type::road: break;
-            case object_type::airport: break;
-            case object_type::dock: break;
-            case object_type::vehicle: break;
-            case object_type::tree: break;
-            case object_type::snow: break;
-            case object_type::climate: break;
-            case object_type::hill_shapes: break;
-            case object_type::building: break;
-            case object_type::scaffolding: break;
-            case object_type::industry: break;
+
+            case object_type::track_extra:
+            {
+                auto object = reinterpret_cast<track_extra_object*>(objectPtr);
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                if (object->is_overhead == 0)
+                {
+                    gfx::drawImage(dpi, x, y, image);
+                }
+                else
+                {
+                    gfx::drawImage(dpi, x, y, image);
+                    gfx::drawImage(dpi, x, y, image + 97);
+                    gfx::drawImage(dpi, x, y, image + 96);
+                }
+
+                break;
+            }
+
+            case object_type::track:
+            {
+                auto object = reinterpret_cast<track_object*>(objectPtr);
+
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                gfx::drawImage(dpi, x, y, image + 18);
+                gfx::drawImage(dpi, x, y, image + 20);
+                gfx::drawImage(dpi, x, y, image + 22);
+
+                break;
+            }
+
+            case object_type::road_station:
+            {
+                auto object = reinterpret_cast<road_station_object*>(objectPtr);
+
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                gfx::drawImage(dpi, x - 34, y - 34, image);
+
+                auto colour = 59;
+                if (!(object->flags & road_station_flags::recolourable))
+                {
+                    colour = 46;
+                }
+
+                image = gfx::recolourTranslucent(object->image, colour) + 1;
+
+                gfx::drawImage(dpi, x - 34, y - 34, image);
+                break;
+            }
+
+            case object_type::road_extra:
+            {
+                auto object = reinterpret_cast<road_extra_object*>(objectPtr);
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                gfx::drawImage(dpi, x, y, image + 36);
+                gfx::drawImage(dpi, x, y, image + 37);
+                gfx::drawImage(dpi, x, y, image);
+                gfx::drawImage(dpi, x, y, image + 33);
+                gfx::drawImage(dpi, x, y, image + 32);
+
+                break;
+            }
+
+            case object_type::road:
+            {
+                auto object = reinterpret_cast<road_object*>(objectPtr);
+
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+                if (object->var_24 == 1)
+                {
+                    gfx::drawImage(dpi, x, y, image + 34);
+                    gfx::drawImage(dpi, x, y, image + 36);
+                    gfx::drawImage(dpi, x, y, image + 38);
+                }
+                else
+                {
+                    gfx::drawImage(dpi, x, y, image + 34);
+                }
+
+                break;
+            }
+
+            case object_type::airport:
+            {
+                auto object = reinterpret_cast<airport_object*>(objectPtr);
+
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                gfx::drawImage(dpi, x - 34, y - 34, image);
+
+                break;
+            }
+
+            case object_type::dock:
+            {
+                auto object = reinterpret_cast<dock_object*>(objectPtr);
+
+                auto image = gfx::recolour(object->image, colour::salmon_pink);
+
+                gfx::drawImage(dpi, x - 34, y - 34, image);
+
+                break;
+            }
+
+            case object_type::vehicle:
+            {
+                auto object = reinterpret_cast<vehicle_object*>(objectPtr);
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                {
+                    uint8_t unk1 = _52622E & 0x3F;
+                    uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
+                    drawVehicle(clipped, object, unk1, unk2, { 56, 75 });
+                }
+
+                break;
+            }
+
+            case object_type::tree:
+            {
+                auto object = reinterpret_cast<tree_object*>(objectPtr);
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                {
+                    uint32_t image = treeGrowth[object->growth] * object->num_rotations;
+                    auto rotation = (object->num_rotations - 1) & 2;
+                    image += rotation;
+                    image += object->sprites[object->season_state];
+
+                    auto colourOptions = object->colours;
+                    if (colourOptions != 0)
+                    {
+
+                        colour_t colour = utility::bitScanReverse(colourOptions);
+
+                        if (colour == 0xFF)
+                        {
+                            colour = 0;
+                        }
+
+                        image = gfx::recolour(image, colour);
+                    }
+
+                    xy32 treePos = { 56, 104 };
+                    if (object->var_08 & (1 << 0))
+                    {
+                        auto snowImage = treeGrowth[object->growth] * object->num_rotations;
+                        snowImage += rotation;
+                        snowImage += object->sprites[object->season_state + 6];
+
+                        if (colourOptions != 0)
+                        {
+
+                            colour_t colour = utility::bitScanReverse(colourOptions);
+
+                            if (colour == 0xFF)
+                            {
+                                colour = 0;
+                            }
+
+                            snowImage = gfx::recolour(snowImage, colour);
+                        }
+                        treePos.x = 84;
+                        gfx::drawImage(clipped, treePos.x, treePos.y, snowImage);
+                        treePos.x = 28;
+                    }
+                    gfx::drawImage(clipped, treePos.x, treePos.y, image);
+                }
+
+                break;
+            }
+
+            case object_type::snow:
+            {
+                auto object = reinterpret_cast<snow_object*>(objectPtr);
+                auto image = object->image;
+
+                gfx::drawImage(dpi, x, y, image);
+                break;
+            }
+
+            case object_type::hill_shapes:
+            {
+                auto object = reinterpret_cast<hill_shapes_object*>(objectPtr);
+                auto image = object->image + object->hillHeightMapCount + object->mountainHeightMapCount;
+
+                gfx::drawImage(dpi, x, y, image);
+
+                break;
+            }
+
+            case object_type::building:
+            {
+                auto object = reinterpret_cast<building_object*>(objectPtr);
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                {
+                    colour_t colour = utility::bitScanReverse(object->colours);
+
+                    if (colour == 0xFF)
+                    {
+                        colour = 0;
+                    }
+
+                    object->drawBuilding(clipped, 1, 56, 96, colour);
+                }
+
+                break;
+            }
+
+            case object_type::scaffolding:
+            {
+                auto object = reinterpret_cast<building_object*>(objectPtr);
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                {
+                    auto image = gfx::recolour(object->name, colour::dark_olive_green);
+
+                    gfx::drawImage(dpi, 56, 79, image + 24);
+                    gfx::drawImage(dpi, 56, 79, image + 25);
+                    gfx::drawImage(dpi, 56, 79, image + 27);
+                }
+
+                break;
+            }
+
+            case object_type::industry:
+            {
+                auto object = reinterpret_cast<industry_object*>(objectPtr);
+                gfx::drawpixelinfo_t* clipped = nullptr;
+
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, x - 56, y - 56, 112, 122))
+                {
+                    object->drawIndustry(clipped, 56, 96);
+                }
+                break;
+            }
+
             case object_type::region:
             {
                 auto object = reinterpret_cast<region_object*>(objectPtr);
@@ -563,25 +819,228 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 gfx::drawImage(dpi, x, y, image);
                 break;
             }
-            case object_type::competitor: break;
-            case object_type::scenario_text:
-                // null
+
+            case object_type::competitor:
+            {
+                auto object = reinterpret_cast<competitor_object*>(objectPtr);
+                gfx::drawRect(dpi, x - 56, y - 56, 112, 112, colour::inset(colour::dark_brown));
+
+                auto image = gfx::recolour(object->images[0], colour::inset(colour::dark_brown));
+                gfx::drawImage(dpi, x - 32, y - 32, image);
+
                 break;
+            }
         }
     }
 
-    //static loco_global<uintptr_t[34], 0x004FE1C8> _paintEntryTable;
+    static void drawDescription(objectmgr::header* header, window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
+    {
+        switch (header->getType())
+        {
+            case object_type::interface_skin:
+            case object_type::sound:
+            case object_type::currency:
+            case object_type::steam:
+            case object_type::rock:
+            case object_type::water:
+            case object_type::land:
+            case object_type::town_names:
+            case object_type::cargo:
+            case object_type::wall:
+            case object_type::track_signal:
+            case object_type::street_light:
+            case object_type::tunnel:
+            case object_type::bridge:
+            case object_type::track_extra:
+            case object_type::track:
+            case object_type::road_extra:
+            case object_type::road:
+            case object_type::tree:
+            case object_type::snow:
+            case object_type::climate:
+            case object_type::hill_shapes:
+            case object_type::scaffolding:
+            case object_type::industry:
+            case object_type::region:
+            case object_type::scenario_text:
+                // null
+                break;
 
-    //static void drawDescription(objectmgr::header* header, gfx::drawpixelinfo_t* dpi, void* ebp, int x, int y)
-    //{
-    //    registers regs;
-    //    regs.edi = (uintptr_t)dpi;
-    //    regs.ebp = (uintptr_t)ebp;
-    //    regs.ax = 3;
-    //    regs.cx = x;
-    //    regs.dx = y;
-    //    call(_paintEntryTable[static_cast<int>(header->get_type())], regs);
-    //}
+            case object_type::level_crossing:
+            {
+                auto object = reinterpret_cast<level_crossing_object*>(objectPtr);
+
+                if (object->designedYear != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designedYear);
+                    y += 10;
+                }
+
+                break;
+            }
+
+            case object_type::track_station:
+            {
+                auto object = reinterpret_cast<train_station_object*>(objectPtr);
+
+                if (object->designed_year != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designed_year);
+                    y += 10;
+                }
+
+                if (object->obsolete_year != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_obsolete, &object->obsolete_year);
+                    y += 10;
+                }
+
+                break;
+            }
+
+            case object_type::road_station:
+            {
+                auto object = reinterpret_cast<road_station_object*>(objectPtr);
+
+                if (object->designed_year != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designed_year);
+                    y += 10;
+                }
+
+                if (object->obsolete_year != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_obsolete, &object->obsolete_year);
+                    y += 10;
+                }
+
+                break;
+            }
+
+            case object_type::airport:
+            {
+                auto object = reinterpret_cast<airport_object*>(objectPtr);
+
+                if (object->designed_year != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designed_year);
+                    y += 10;
+                }
+
+                if (object->obsolete_year != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_obsolete, &object->obsolete_year);
+                    y += 10;
+                }
+
+                break;
+            }
+
+            case object_type::dock:
+            {
+                auto object = reinterpret_cast<dock_object*>(objectPtr);
+
+                if (object->designed_year != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designed_year);
+                    y += 10;
+                }
+
+                if (object->obsolete_year != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_obsolete, &object->obsolete_year);
+                    y += 10;
+                }
+
+                break;
+            }
+
+            case object_type::vehicle:
+            {
+                auto object = reinterpret_cast<vehicle_object*>(objectPtr);
+
+                if (object->designed != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_designed, &object->designed);
+                    y += 10;
+                }
+
+                if (object->obsolete != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_obsolete, &object->obsolete);
+                    y += 10;
+                }
+
+                if (object->power != 0 && object->mode != TransportMode::air && object->mode != TransportMode::water)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_power, &object->power);
+                    y += 10;
+                }
+
+                gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_weight, &object->weight);
+                y += 10;
+
+                gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::object_selection_max_speed, &object->speed);
+
+                auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_1250));
+
+                object->getCargoString(buffer);
+
+                auto width = self->width + self->x - x + 4;
+                gfx::drawString_495224(*dpi, x, y, width, colour::black, string_ids::buffer_1250);
+
+                break;
+            }
+
+            case object_type::building:
+            {
+                auto object = reinterpret_cast<building_object*>(objectPtr);
+
+                if (object->designedYear != 0)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::building_earliest_construction_year, &object->designedYear);
+                    y += 10;
+                }
+
+                if (object->obsoleteYear != 0xFFFF)
+                {
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::building_latest_construction_year, &object->obsoleteYear);
+                    y += 10;
+                }
+
+                break;
+            }
+            case object_type::competitor:
+            {
+                auto object = reinterpret_cast<competitor_object*>(objectPtr);
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(object->intelligence);
+                    args.push(aiRatingToLevel(object->intelligence));
+
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::company_details_intelligence, &args);
+                    y += 10;
+                }
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(object->aggressiveness);
+                    args.push(aiRatingToLevel(object->aggressiveness));
+
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
+                    y += 10;
+                }
+                {
+                    auto args = FormatArguments();
+                    args.push<uint16_t>(object->competitiveness);
+                    args.push(aiRatingToLevel(object->competitiveness));
+
+                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::company_details_competitiveness, &args);
+                }
+
+                break;
+            }
+        }
+    }
 
     // 0x004733F5
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
@@ -596,7 +1055,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto objectPtr = self->object;
             auto var = objectmgr::object_index_entry::read(&objectPtr)._header;
-            if (var->get_type() != object_type::town_names && var->get_type() != object_type::climate)
+            if (var->getType() != object_type::town_names && var->getType() != object_type::climate)
             {
                 doDefault = false;
             }
@@ -619,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto args = FormatArguments();
         args.push(_112C1C5[type]);
-        args.push(objectmgr::get_max_objects(static_cast<object_type>(type)));
+        args.push(objectmgr::getMaxObjects(static_cast<object_type>(type)));
 
         gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
 
@@ -631,13 +1090,43 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (_50D15C == reinterpret_cast<void*>(-1))
             return;
 
-        auto objectPtr = self->object;
-        drawImage(
-            objectmgr::object_index_entry::read(&objectPtr)._header,
-            dpi,
-            widgets[widx::objectImage].mid_x() + 1 + self->x,
-            widgets[widx::objectImage].mid_y() + 1 + self->y,
-            _50D15C);
+        {
+            auto objectPtr = self->object;
+
+            drawImage(
+                objectmgr::object_index_entry::read(&objectPtr)._header,
+                dpi,
+                widgets[widx::objectImage].mid_x() + 1 + self->x,
+                widgets[widx::objectImage].mid_y() + 1 + self->y,
+                _50D15C);
+        }
+
+        auto x = self->widgets[widx::objectImage].mid_x() + self->x;
+        auto y = self->widgets[widx::objectImage].bottom + 3 + self->y;
+        auto width = self->width - self->widgets[widx::scrollview].right - 6;
+
+        {
+            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+
+            *buffer++ = control_codes::window_colour_2;
+            auto objectPtr = self->object;
+
+            strncpy(buffer, objectmgr::object_index_entry::read(&objectPtr)._name, 512);
+
+            gfx::drawStringCentredClipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
+        }
+
+        {
+            auto objectPtr = self->object;
+
+            drawDescription(
+                objectmgr::object_index_entry::read(&objectPtr)._header,
+                self,
+                dpi,
+                self->widgets[widx::scrollview].right + self->x + 4,
+                y + 10,
+                _50D15C);
+        }
     }
 
     // 0x0047361D
@@ -813,7 +1302,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto objIndex = getObjectFromSelection(self, y);
 
-        if (objIndex.index == self->row_hover || objIndex.index == 0xFFFF)
+        if (objIndex.index == self->row_hover || objIndex.index == -1)
             return;
 
         self->row_hover = objIndex.index;

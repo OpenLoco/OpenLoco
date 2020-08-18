@@ -14,7 +14,7 @@ namespace OpenLoco
         uint8_t cost_index;         // 0x05
         uint16_t build_cost_factor; // 0x06
         uint16_t sell_cost_factor;  // 0x08
-        uint8_t pad_0A[0x0E - 0x0A];
+        uint32_t image;             // 0x0A
         uint32_t var_0E;
     };
 #pragma pack(pop)

@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
             // Construction Tab
             {
-                auto imageId = roadObj->var_0E;
+                auto imageId = roadObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
                 Gfx::recolour(imageId, companyColour);
@@ -475,16 +475,16 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->height <<= 1;
                         clipped->x <<= 1;
                         clipped->y <<= 1;
-                        auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
-                        auto imageId = Gfx::recolour(roadStationObj->var_0C, companyColour);
-                        Gfx::drawImage(clipped, -4, -10, imageId);
+                        auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStationType);
+                        auto imageId = gfx::recolour(roadStationObj->image, companyColour);
+                        gfx::drawImage(clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = 46;
                         }
-                        imageId = Gfx::recolour(roadStationObj->var_0C, colour) + 1;
-                        Gfx::drawImage(clipped, -4, -10, imageId);
+                        imageId = gfx::recolour(roadStationObj->image, colour) + 1;
+                        gfx::drawImage(clipped, -4, -10, imageId);
                     }
 
                     Widget::draw_tab(self, dpi, -2, widx::tab_station);
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto trackObj = ObjectManager::get<track_object>(_trackType);
             // Construction Tab
             {
-                auto imageId = trackObj->var_1E;
+                auto imageId = trackObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
                 Gfx::recolour(imageId, companyColour);

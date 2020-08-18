@@ -50,8 +50,10 @@
     <ClCompile Include="Map\TileManager.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
+    <ClCompile Include="Objects\BuildingObject.cpp" />
     <ClCompile Include="Objects\IndustryObject.cpp" />
     <ClCompile Include="Objects\ObjectManager.cpp" />
+    <ClCompile Include="Objects\VehicleObject.cpp" />
     <ClCompile Include="OpenLoco.cpp" />
     <ClCompile Include="Platform\Platform.Posix.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
@@ -191,6 +193,7 @@
     <ClInclude Include="Objects\CompetitorObject.h" />
     <ClInclude Include="Objects\CurrencyObject.h" />
     <ClInclude Include="Objects\DockObject.h" />
+    <ClInclude Include="Objects\HillShapesObject.h" />
     <ClInclude Include="Objects\IndustryObject.h" />
     <ClInclude Include="Objects\InterfaceSkinObject.h" />
     <ClInclude Include="Objects\LandObject.h" />
@@ -201,7 +204,9 @@
     <ClInclude Include="Objects\RoadObject.h" />
     <ClInclude Include="Objects\RoadStationObject.h" />
     <ClInclude Include="Objects\RockObject.h" />
+    <ClInclude Include="Objects\ScaffoldingObject.h" />
     <ClInclude Include="Objects\ScenarioTextObject.h" />
+    <ClInclude Include="Objects\SnowObject.h" />
     <ClInclude Include="Objects\SoundObject.h" />
     <ClInclude Include="Objects\SteamObject.h" />
     <ClInclude Include="Objects\StreetLightObject.h" />

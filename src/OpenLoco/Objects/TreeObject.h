@@ -1,9 +1,24 @@
 #pragma once
 
 #include "../Types.hpp"
+#include <array>
 
 namespace OpenLoco
 {
+    static std::array<uint8_t, 11> treeGrowth = { {
+        1,
+        0,
+        1,
+        2,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0,
+        0,
+    } };
+
 #pragma pack(push, 1)
     struct tree_object
     {

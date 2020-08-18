@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../localisation/stringmgr.h"
+#include "../Localisation/StringManager.h"
 
-namespace openloco
+namespace OpenLoco
 {
 #pragma pack(push, 1)
     struct tunnel_object

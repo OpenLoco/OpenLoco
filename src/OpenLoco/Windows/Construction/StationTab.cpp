@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto airportObj = ObjectManager::get<airport_object>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(airportObj->var_08, companyColour);
+            auto imageId = gfx::recolour(airportObj->image, companyColour);
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto dockObj = ObjectManager::get<dock_object>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(dockObj->var_08, companyColour);
+            auto imageId = gfx::recolour(dockObj->image, companyColour);
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(roadStationObj->var_0C, companyColour);
+            auto imageId = gfx::recolour(roadStationObj->image, companyColour);
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
 

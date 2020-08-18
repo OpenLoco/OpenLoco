@@ -1070,6 +1070,13 @@ namespace OpenLoco::StringIds
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
 
+    constexpr string_id object_selection_designed = 1723;
+    constexpr string_id object_selection_obsolete = 1724;
+    constexpr string_id object_selection_power = 1725;
+    constexpr string_id object_selection_weight = 1726;
+    constexpr string_id object_selection_max_speed = 1727;
+    constexpr string_id object_selection_capacity = 1728;
+
     constexpr string_id land_distribution_everywhere = 1730;
     constexpr string_id land_distribution_nowhere = 1731;
     constexpr string_id land_distribution_far_from_water = 1732;
@@ -1163,6 +1170,8 @@ namespace OpenLoco::StringIds
     constexpr string_id competition_not_starting_for_month = 1825;
     constexpr string_id competition_not_starting_for_months = 1826;
 
+    constexpr string_id building_earliest_construction_year = 1831;
+    constexpr string_id building_latest_construction_year = 1832;
     constexpr string_id local_authority_ratings_transport_companies = 1833;
     constexpr string_id town_rating_appalling = 1834;
     constexpr string_id town_rating_poor = 1835;

@@ -169,6 +169,7 @@ namespace OpenLoco::Gfx
     void drawImagePaletteSet(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     uint32_t recolour(uint32_t image);
     uint32_t recolour(uint32_t image, uint8_t colour);
+    uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
 
     void invalidateScreen();
     void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);

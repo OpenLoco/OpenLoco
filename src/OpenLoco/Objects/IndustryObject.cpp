@@ -83,4 +83,15 @@ namespace OpenLoco
         }
         return ptr;
     }
+
+    // 0x00458C7F
+    void industry_object::drawIndustry(gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.edi = (uint32_t)clipped;
+        regs.ebp = (uint32_t)this;
+        call(0x00458C7F, regs);
+    }
 }

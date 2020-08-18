@@ -196,7 +196,10 @@ namespace OpenLoco
         uint8_t pad_135[0x15A - 0x135];
         uint8_t num_sounds;             // 0x15A  possibly something else stuffed in (1<<7)
         uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
+
+        void getCargoString(char* buffer);
     };
 #pragma pack(pop)
     static_assert(sizeof(vehicle_object) == 0x15E);
+
 }

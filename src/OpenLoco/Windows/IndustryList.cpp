@@ -861,17 +861,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             *scrollHeight *= rowHeight;
         }
 
-        // 0x00458C7F
-        static void drawIndustryThumb(Gfx::drawpixelinfo_t* clipped, const OpenLoco::industry_object* industryObj, int16_t x, int16_t y)
-        {
-            registers regs;
-            regs.cx = x;
-            regs.dx = y;
-            regs.edi = (uint32_t)clipped;
-            regs.ebp = (uint32_t)industryObj;
-            call(0x00458C7F, regs);
-        }
-
         // 0x00458352
         static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
@@ -902,8 +891,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
-                    drawIndustryThumb(clipped, industryObj, 56, 96);
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
+                {
+                    industryObj->drawIndustry(clipped, 56, 96);
+                }
 
                 xPos += rowHeight;
 
