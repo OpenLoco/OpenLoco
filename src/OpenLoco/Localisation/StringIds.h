@@ -1315,6 +1315,9 @@ namespace OpenLoco::StringIds
 
     constexpr string_id buffer_2045 = 2045;
 
+    constexpr string_id error_unable_to_select_object = 2049;
+    constexpr string_id error_unable_to_deselect_object = 2050;
+
     constexpr string_id title_object_selection = 2052;
     constexpr string_id object_interface_styles = 2053;
     constexpr string_id object_sounds = 2054;

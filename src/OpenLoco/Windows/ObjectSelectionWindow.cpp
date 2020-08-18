@@ -1,6 +1,8 @@
+#include "../Audio/Audio.h"
 #include "../Console.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
+#include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
@@ -61,16 +63,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t, 0x0052334C> _52334C;
     static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
+    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint16_t[80], 0x00112C181> _112C181;
     static loco_global<tabPosition[36], 0x0112C21C> _112C21C;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
+    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
 
     static void onClose(window*);
     static void onMouseUp(window*, widget_index);
     static void onUpdate(window*);
     static void getScrollSize(window*, uint32_t, uint16_t*, uint16_t*);
-    //static void onScrollMouseDown(window*, int16_t, int16_t, uint8_t);
+    static void onScrollMouseDown(window*, int16_t, int16_t, uint8_t);
     static void onScrollMouseOver(window*, int16_t, int16_t, uint8_t);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
     static void prepareDraw(window*);
@@ -150,8 +154,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _events.on_mouse_up = onMouseUp;
         _events.on_update = onUpdate;
         _events.get_scroll_size = getScrollSize;
-        //_events.scroll_mouse_down = on_scroll_mouse_down;
-        _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x00473948);
+        _events.scroll_mouse_down = onScrollMouseDown;
         _events.scroll_mouse_over = onScrollMouseOver;
         _events.tooltip = tooltip;
         _events.prepare_draw = prepareDraw;
@@ -392,22 +395,27 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case object_type::currency:
             {
                 auto object = reinterpret_cast<currency_object*>(objectPtr);
-                auto currencyIndex = (object->object_icon + 3) << 4;
-                std::printf("%d\n", currencyIndex);
-                auto defaultElement = gfx::getG1Element(0x77F0);
+                auto currencyIndex = (object->object_icon + 3);
+
+                auto defaultElement = gfx::getG1Element(0x77F);
                 auto backupElement = *defaultElement;
                 auto currencyElement = gfx::getG1Element(currencyIndex);
 
-                gfx::getG1Element(0x77F0)->offset = currencyElement->offset;
-                gfx::getG1Element(0x77F0)->width = currencyElement->width;
-                gfx::getG1Element(0x77F0)->height = currencyElement->height;
-                gfx::getG1Element(0x77F0)->x_offset = currencyElement->x_offset;
-                gfx::getG1Element(0x77F0)->y_offset = currencyElement->y_offset;
-                gfx::getG1Element(0x77F0)->flags = currencyElement->flags;
+                gfx::getG1Element(0x77F)->offset = currencyElement->offset;
+                gfx::getG1Element(0x77F)->width = currencyElement->width;
+                gfx::getG1Element(0x77F)->height = currencyElement->height;
+                gfx::getG1Element(0x77F)->x_offset = currencyElement->x_offset;
+                gfx::getG1Element(0x77F)->y_offset = currencyElement->y_offset;
+                gfx::getG1Element(0x77F)->flags = currencyElement->flags;
+
+                auto defaultWidth = _characterWidths[803];
+                _characterWidths[803] = currencyElement->width + 1;
 
                 gfx::drawStringCentred(*dpi, x, y - 9, colour::black, string_ids::object_currency_big_font);
 
+                _characterWidths[803] = defaultWidth;
                 *defaultElement = backupElement;
+
                 break;
             }
 
@@ -1335,36 +1343,68 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self->invalidate();
     }
 
-    //static void window_editor_object_selection_select_object(uint16_t bx, void* ebp)
-    //{
-    //    registers regs;
-    //    regs.bx = bx;
-    //    regs.ebp = (uintptr_t)ebp;
-    //    call(0x0000473D1D, regs);
-    //}
+    static std::pair<uint8_t*, bool> windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
+    {
+        registers regs;
+        regs.bx = bx;
+        regs.ebp = (uintptr_t)ebp;
+        bool carryFlag = call(0x0000473D1D, regs) & (1 << 8);
 
-    //// 0x00473948
-    //[[maybe_unused]] static void on_scroll_mouse_down(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
-    //{
-    //    auto [bx, ebp, edi] = sub_472B54(self, y);
-    //    if (bx == 0xFFFF)
-    //        return;
+        return std::make_pair((uint8_t*)regs.edi, carryFlag);
+    }
 
-    //    self->invalidate();
+    // 0x00473948
+    static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    {
+        auto objIndex = getObjectFromSelection(self, y);
+        auto index = objIndex.index;
+        auto object = objIndex.object._header;
 
-    //    int type = (int)ebp->get_type();
-    //    if (object_entry_group_counts[type] == 1)
-    //    {
-    //    }
+        if (index == -1)
+            return;
 
-    //    bool bx2 = 0;
-    //    if ((edi & 1) == 0)
-    //        bx2 |= 1;
+        self->invalidate();
+        audio::playSound(audio::sound_id::click_down, input::getMouseLocation().x);
 
-    //    bx2 |= 6;
+        auto type = objIndex.object._header->get_type();
+        auto edi = &_50D144[index];
 
-    //    window_editor_object_selection_select_object(bx2, ebp);
-    //}
+        if (objectmgr::get_max_objects(type) == 1)
+        {
+            if (!(*edi & (1 << 0)))
+            {
+                edi = static_cast<uint8_t*>(_50D144);
+                auto ebp = objectmgr::getActiveObject(type, _50D144);
+                object = ebp.object._header;
+
+                if (ebp.index != -1)
+                {
+                    edi = windowEditorObjectSelectionSelectObject(6, object).first;
+                }
+            }
+        }
+
+        auto bx = 0;
+
+        if (*edi & (1 << 0))
+        {
+            bx |= (1 << 0);
+        }
+
+        bx |= 6;
+        auto carryFlag = windowEditorObjectSelectionSelectObject(bx, object).second;
+
+        if (!carryFlag)
+            return;
+
+        auto errorTitle = string_ids::error_unable_to_select_object;
+        if (bx & (1 << 0))
+        {
+            errorTitle = string_ids::error_unable_to_deselect_object;
+        }
+
+        ui::windows::error::open(errorTitle, gGameCommandErrorText);
+    }
 
     // 0x00474821
     static void unloadUnselectedObjects()
