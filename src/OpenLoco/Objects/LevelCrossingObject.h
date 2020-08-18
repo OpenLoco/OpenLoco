@@ -8,7 +8,7 @@ namespace OpenLoco
     struct level_crossing_object
     {
         string_id name;
-        int16_t costFactor;         // 0x02
+        int16_t costFactor;          // 0x02
         uint8_t pad_04[0x06 - 0x04]; // 0x04
         uint8_t costIndex;           // 0x06
         uint8_t var_07;

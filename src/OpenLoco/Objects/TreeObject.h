@@ -5,7 +5,7 @@
 
 namespace OpenLoco
 {
-    static std::array<uint8_t, 11> treeGrowth = { {
+    const std::array<uint8_t, 11> treeGrowth = { {
         1,
         0,
         1,
