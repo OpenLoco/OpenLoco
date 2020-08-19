@@ -137,6 +137,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
         }
 
+        if (objects.size() > 0)
+        {
+            return { static_cast<int16_t>(objects[0].first), objects[0].second };
+        }
+
         return { -1, objectmgr::object_index_entry{} };
     }
 
@@ -1212,13 +1217,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    // 0x00473A13
+    static void closeWindow()
+    {
+        call(0x00473A13);
+    }
+
     // 0x004737BA
     void onMouseUp(window* self, widget_index w)
     {
         switch (w)
         {
             case widx::closeButton:
-                call(0x00473A13);
+                closeWindow();
                 break;
 
             case widx::tabArea:
@@ -1276,17 +1287,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::advancedButton:
             {
                 self->var_856 ^= 1;
-                int eax = self->current_tab;
+                int currentTab = self->current_tab;
                 sub_473154(self);
 
                 if ((self->var_856 & 1) == 0)
                 {
-                    if (_4FE384[eax] & 1 << 1)
+                    if (_4FE384[currentTab] & 1 << 1)
                     {
-                        eax = _112C21C[0].index;
+                        currentTab = _112C21C[0].index;
                     }
                 }
-                sub_4731EE(self, static_cast<object_type>(eax));
+                sub_4731EE(self, static_cast<object_type>(currentTab));
                 self->invalidate();
 
                 break;
@@ -1344,14 +1355,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473D1D
-    static std::pair<uint8_t*, bool> windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
+    static bool windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
     {
         registers regs;
         regs.bx = bx;
         regs.ebp = (uintptr_t)ebp;
-        bool carryFlag = call(0x00473D1D, regs) & (1 << 8);
 
-        return std::make_pair((uint8_t*)regs.edi, carryFlag);
+        return call(0x00473D1D, regs) & (1 << 8);
     }
 
     // 0x00473948
@@ -1368,37 +1378,34 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         audio::playSound(audio::sound_id::click_down, input::getMouseLocation().x);
 
         auto type = objIndex.object._header->get_type();
-        auto edi = &_50D144[index];
 
         if (objectmgr::get_max_objects(type) == 1)
         {
-            if (!(*edi & (1 << 0)))
+            if (!(_50D144[index] & (1 << 0)))
             {
-                //edi = static_cast<uint8_t*>(_50D144);
-                auto ebp = objectmgr::getActiveObject(type, _50D144);
-                auto oldObject = ebp.object._header;
+                auto [oldIndex, oldObject] = objectmgr::getActiveObject(type, _50D144);
 
-                if (ebp.index != -1)
+                if (oldIndex != -1)
                 {
-                    windowEditorObjectSelectionSelectObject(6, oldObject).first;
+                    windowEditorObjectSelectionSelectObject(6, oldObject._header);
                 }
             }
         }
 
         auto bx = 0;
 
-        if (!(*edi & (1 << 0)))
+        if (!(_50D144[index] & (1 << 0)))
         {
             bx |= (1 << 0);
         }
 
         bx |= 6;
-        auto carryFlag = windowEditorObjectSelectionSelectObject(bx, object).second;
 
-        if (!carryFlag)
+        if (!windowEditorObjectSelectionSelectObject(bx, object))
             return;
 
         auto errorTitle = string_ids::error_unable_to_select_object;
+
         if (bx & (1 << 0))
         {
             errorTitle = string_ids::error_unable_to_deselect_object;
