@@ -42,6 +42,7 @@ namespace OpenLoco::Input
 
     namespace MapSelectionFlags
     {
+        constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
         constexpr uint8_t catchment_area = 1 << 5;
     };
 
@@ -75,6 +76,7 @@ namespace OpenLoco::Input
 
     void updateCursorPosition();
 
+    Ui::window* toolGetActiveWindow();
     bool isToolActive(Ui::WindowType, Ui::window_number);
     bool toolSet(Ui::window* w, int16_t widgetIndex, uint8_t tool);
     void toolCancel();
@@ -96,6 +98,7 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
+    Gfx::point_t getDragLastLocation();
     Gfx::point_t getTooltipMouseLocation();
     void setTooltipMouseLocation(const Gfx::point_t& loc);
     uint16_t getTooltipTimeout();

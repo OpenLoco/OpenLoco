@@ -223,7 +223,7 @@ namespace OpenLoco::Ui
                 void (*toolDragContinue)(window&, const widget_index, const int16_t, const int16_t);
                 void (*toolDragEnd)(window&, const widget_index);
                 void (*on_tool_abort)(window&, const widget_index);
-                uint32_t event_15;
+                Ui::cursor_id (*event_15)(window&, const int16_t x, const int16_t y, const Ui::cursor_id, bool&);
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 void (*scroll_mouse_down)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*scroll_mouse_drag)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);

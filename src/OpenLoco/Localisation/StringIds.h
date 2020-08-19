@@ -695,8 +695,11 @@ namespace OpenLoco::StringIds
     constexpr string_id orders_route_thought_waypoint = 1222;
     constexpr string_id orders_unload_all = 1223;
     constexpr string_id orders_wait_for_full_load_of = 1224;
+    constexpr string_id orders_unload_all2 = 1225;
+    constexpr string_id orders_wait_for_full_load_of2 = 1226;
 
     constexpr string_id orders_current_order = 1227;
+    constexpr string_id orders_cant_insert = 1228;
 
     constexpr string_id tooltip_route_insert_wait_full_cargo = 1232;
     constexpr string_id tooltip_route_insert_force_unload = 1233;
@@ -1475,7 +1478,6 @@ namespace OpenLoco::StringIds
 
     constexpr string_id menu_quit_to_menu = 2139;
     constexpr string_id menu_exit_openloco = 2140;
-
 
     constexpr string_id disableAICompanies = 2141;
     constexpr string_id disableAICompanies_tip = 2142;

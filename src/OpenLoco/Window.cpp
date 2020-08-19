@@ -1032,17 +1032,24 @@ namespace OpenLoco::Ui
 
     Ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, Ui::cursor_id fallback, bool* out)
     {
-        registers regs;
-        regs.ax = xPos;
-        regs.bl = *out;
-        regs.cx = yPos;
-        regs.edi = (int32_t)fallback;
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->event_15, regs);
+        if (event_handlers->event_15 == nullptr)
+            return cursor_id::pointer;
+        if (isInteropEvent(event_handlers->event_15))
+        {
+            registers regs;
+            regs.ax = xPos;
+            regs.bl = *out;
+            regs.cx = yPos;
+            regs.edi = (int32_t)fallback;
+            regs.esi = (int32_t)this;
+            call(reinterpret_cast<uint32_t>(this->event_handlers->event_15), regs);
 
-        *out = regs.bl;
+            *out = regs.bl;
 
-        return (cursor_id)regs.edi;
+            return (cursor_id)regs.edi;
+        }
+
+        return event_handlers->event_15(*this, xPos, yPos, fallback, *out);
     }
 
     Ui::cursor_id window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)

@@ -1866,11 +1866,117 @@ namespace OpenLoco::Ui::Vehicle
                     break;
             }
         }
+
         // 0x004B564E
         static void onResize(window* const self)
         {
             common::sub_4B1E94(self);
             self->setSize({ 265, 178 }, { 600, 440 });
+        }
+
+        // 0x004B4DD3
+        static void createOrderDropdown(window* const self, const widget_index i, const string_id orderType)
+        {
+            auto head = common::getVehicle(self);
+            auto index = 0;
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(object_type::cargo); ++cargoId)
+            {
+                if (!(head->var_4E & (1 << cargoId)))
+                {
+                    continue;
+                }
+
+                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
+                FormatArguments args{};
+                args.push(cargoObj->name);
+                args.push(cargoObj->unit_inline_sprite);
+                args.push(cargoId);
+                Dropdown::add(index, orderType, args);
+                index++;
+            }
+
+            auto x = self->widgets[i].left + self->x;
+            auto y = self->widgets[i].top + self->y;
+            auto width = self->widgets[i].width();
+            auto height = self->widgets[i].height();
+            Dropdown::showText(x, y, width, height, self->colours[1], index, 0);
+            Dropdown::setHighlightedItem(0);
+        }
+
+        // 0x004B4B8C
+        static void onMouseDown(window* const self, const widget_index i)
+        {
+            switch (i)
+            {
+                case widx::order_force_unload:
+                    createOrderDropdown(self, i, StringIds::orders_unload_all2);
+                    break;
+                case widx::order_wait:
+                    createOrderDropdown(self, i, StringIds::orders_wait_for_full_load_of2);
+                    break;
+            }
+        }
+
+        // order : al (first 3 bits)
+        // order argument : eax (3 - 32 bits), cx
+        static void sub_4B4ECB(window* const self, const uint8_t order, const uint64_t orderArgument)
+        {
+            auto head = common::getVehicle(self);
+            auto chosenOffset = head->sizeOfOrderTable - 1;
+            if (self->var_842 != -1)
+            {
+                chosenOffset = 1;
+                auto orderOffset = head->orderTableOffset;
+                auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+                while (orderType != 0)
+                {
+                    orderType = _dword_987C5C[orderOffset] & 0x7;
+                    if (orderType == 0)
+                    {
+                        break;
+                    }
+                    orderOffset += dword_4FE070[orderType];
+                    if (chosenOffset == self->var_842)
+                    {
+                        break;
+                    }
+                    chosenOffset++;
+                }
+            }
+            gGameCommandErrorTitle = StringIds::orders_cant_insert;
+            auto previousSize = head->sizeOfOrderTable;
+            GameCommands::do_35(head->id, order, orderArgument, chosenOffset);
+            sub_470824(head);
+            if (head->sizeOfOrderTable == previousSize)
+            {
+                return;
+            }
+
+            if (self->var_842 == -1)
+            {
+                return;
+            }
+
+            self->var_842++;
+        }
+
+        // 0x004B4BAC
+        static void onDropdown(window* const self, const widget_index i, const int16_t dropdownIndex)
+        {
+            auto item = dropdownIndex == -1 ? Dropdown::getHighlightedItem() : dropdownIndex;
+            if (item == -1)
+            {
+                return;
+            }
+            switch (i)
+            {
+                case widx::order_force_unload:
+                    sub_4B4ECB(self, 4, Dropdown::getItemArgument(item, 3));
+                    break;
+                case widx::order_wait:
+                    sub_4B4ECB(self, 5, Dropdown::getItemArgument(item, 3));
+                    break;
+            }
         }
 
         // 0x004B55D1
@@ -1927,6 +2033,37 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
+        // 0x004B5A1A
+        static std::pair<uint8_t, Map::tile_element*> sub_4B5A1A(window& self, const int16_t x, const int16_t y)
+        {
+            registers regs{};
+            regs.esi = reinterpret_cast<uint32_t>(&self);
+            regs.ax = x;
+            regs.cx = y;
+            call(0x004B5A1A, regs);
+            return std::make_pair(regs.bl, reinterpret_cast<Map::tile_element*>(regs.edx));
+        }
+
+        // 0x004B5088
+        static void toolCancel(window& self, const widget_index widgetIdx)
+        {
+            self.invalidate();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_04);
+            Gfx::invalidateScreen();
+        }
+
+        // 0x004B50CE
+        static Ui::cursor_id event15(window& self, const int16_t x, const int16_t y, const Ui::cursor_id fallback, bool& out)
+        {
+            auto [type, _] = sub_4B5A1A(self, x, y);
+            out = type != 0;
+            if (out)
+            {
+                return cursor_id::arrows_inward;
+            }
+            return fallback;
+        }
+
         // 0x004B4D9B
         static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
@@ -1940,6 +2077,135 @@ namespace OpenLoco::Ui::Vehicle
                 orderType = _dword_987C5C[orderOffset] & 0x7;
                 orderOffset += dword_4FE070[orderType];
                 *height += 10;
+            }
+        }
+
+        static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        {
+            auto head = common::getVehicle(self);
+            auto item = y / 10;
+            auto orderOffset = head->orderTableOffset;
+            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            if (item != 0)
+            {
+                auto i = 1;
+                while (orderType != 0)
+                {
+                    orderType = _dword_987C5C[orderOffset] & 0x7;
+                    if (orderType == 0)
+                    {
+                        item = -1;
+                        break;
+                    }
+                    if (i == item)
+                    {
+                        break;
+                    }
+                    orderOffset += dword_4FE070[orderType];
+                    i++;
+                }
+            }
+
+            auto toolWindow = Input::toolGetActiveWindow();
+            // If another vehicle window is open and has focus (tool)
+            if (toolWindow != nullptr && toolWindow->type == self->type && toolWindow->number != self->number)
+            {
+                if (item == 0)
+                {
+                    return;
+                }
+                if (item == -1)
+                {
+                    // Copy complete order list
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    orderOffset = head->orderTableOffset;
+                    auto orderPosition = 0;
+                    orderType = -1; // Just to do one loop in all cases TODO ?do while?
+                    while (orderType != 0)
+                    {
+                        orderType = _dword_987C5C[orderOffset] & 0x7;
+                        if (orderType == 0)
+                        {
+                            break;
+                        }
+
+                        uint64_t orderArgs = _dword_987C5C[orderOffset];
+                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 1]) << 8;
+                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 2]) << 16;
+                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 3]) << 24;
+                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 4]) << 32;
+                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 5]) << 40;
+                        orderArgs >>= 3;
+                        sub_4B4ECB(toolWindow, orderType, orderArgs);
+                        orderPosition += dword_4FE070[orderType];
+                        // OrderOffset invalidated by sub_4B4ECB recalculate it
+                        orderOffset = orderPosition + head->orderTableOffset;
+                    }
+                    WindowManager::bringToFront(toolWindow);
+                }
+                else
+                {
+                    // Copy a single entry on the order list
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    orderType = _dword_987C5C[orderOffset] & 0x7;
+                    uint64_t orderArgs = _dword_987C5C[orderOffset];
+                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 1]) << 8;
+                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 2]) << 16;
+                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 3]) << 24;
+                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 4]) << 32;
+                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 5]) << 40;
+                    orderArgs >>= 3;
+                    sub_4B4ECB(toolWindow, orderType, orderArgs);
+                    WindowManager::bringToFront(toolWindow);
+                }
+                return;
+            }
+
+            // If Express/Local item
+            if (item == 0)
+            {
+                if (head->owner != CompanyManager::getControllingId())
+                    return;
+                gGameCommandErrorTitle = StringIds::empty;
+                GameCommands::do12(head->id, 2);
+                self->var_842 = -1;
+                return;
+            }
+
+            if (item != self->var_842)
+            {
+                self->var_842 = item;
+                self->invalidate();
+                return;
+            }
+
+            switch (orderType)
+            {
+                case 1:
+                case 2:
+                {
+                    station_id_t stationId = (static_cast<uint16_t>(_dword_987C5C[orderOffset] & 0xC) << 2) | (_dword_987C5C[orderOffset + 1]);
+                    auto station = StationManager::get(stationId);
+                    auto main = WindowManager::getMainWindow();
+                    if (main)
+                    {
+                        main->viewportCentreOnTile({ station->x, station->y, station->z + 32 });
+                    }
+                }
+                break;
+                case 3: // waypoint
+                {
+                    map_pos3 loc{};
+                    loc.x = ((static_cast<int16_t>(_dword_987C5C[orderOffset] & 0x80) << 8) | _dword_987C5C[orderOffset + 1]) * tile_size + 16;
+                    loc.y = ((static_cast<int16_t>(_dword_987C5C[orderOffset + 2] & 0x80) << 8) | _dword_987C5C[orderOffset + 3]) * tile_size + 16;
+                    loc.z = (_dword_987C5C[orderOffset + 2] & 0x7F) * 8 + 32;
+                    auto main = WindowManager::getMainWindow();
+                    if (main)
+                    {
+                        main->viewportCentreOnTile(loc);
+                    }
+                }
+                break;
             }
         }
 
@@ -2123,7 +2389,7 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
-        // 0x004B49F1
+        // 0x004B48BA
         static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
@@ -2137,31 +2403,33 @@ namespace OpenLoco::Ui::Vehicle
                 strFormat = StringIds::wcolour2_stringid;
             }
 
+            auto rowNum = 0;
             {
                 FormatArguments args{};
                 args.push(train.veh1->var_48 & (1 << 1) ? StringIds::express_seperator : StringIds::local_seperator);
                 Gfx::drawString_494B3F(*pDrawpixelinfo, 8, -1, Colour::black, strFormat, &args);
+                rowNum++;
             }
-            if (head->orderTableOffset == 1)
+            if (head->sizeOfOrderTable == 1)
             {
                 Gfx::drawString_494B3F(*pDrawpixelinfo, 8, 9, Colour::black, StringIds::no_route_defined);
+                rowNum++; // Used to move down the text
             }
 
-            auto orderNum = 1;
             _113646A = 1; // Number ?symbol? TODO: make not a global
             auto orderOffset = head->orderTableOffset;
             auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
             while (orderType != 0)
             {
                 orderType = _dword_987C5C[orderOffset] & 0x7;
-                int16_t y = orderNum * 10;
+                int16_t y = rowNum * 10;
                 strFormat = StringIds::black_stringid;
-                if (self->var_842 == orderNum)
+                if (self->var_842 == rowNum)
                 {
                     Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, Colour::aquamarine);
                     strFormat = StringIds::white_stringid;
                 }
-                if (self->row_hover == orderNum)
+                if (self->row_hover == rowNum)
                 {
                     strFormat = StringIds::wcolour2_stringid;
                     Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, 0x2000030);
@@ -2192,7 +2460,7 @@ namespace OpenLoco::Ui::Vehicle
                 }
 
                 orderOffset += dword_4FE070[orderType];
-                orderNum++;
+                rowNum++;
             }
         }
 
@@ -2201,16 +2469,16 @@ namespace OpenLoco::Ui::Vehicle
             events.on_close = close;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_mouse_down;
-            events.on_dropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
             events.on_update = onUpdate;
             events.event_08 = event8;
             events.event_09 = event9;
             events.on_tool_down;
-            events.on_tool_abort;
-            events.event_15;
+            events.on_tool_abort = toolCancel;
+            events.event_15 = event15;
             events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down;
+            events.scroll_mouse_down = scrollMouseDown;
             events.scroll_mouse_over = scrollMouseOver;
             events.text_input = common::textInput;
             events.viewport_rotate;

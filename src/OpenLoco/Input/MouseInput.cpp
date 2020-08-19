@@ -242,6 +242,16 @@ namespace OpenLoco::Input
         }
     }
 
+    window* toolGetActiveWindow()
+    {
+        if (!hasFlag(input_flags::tool_active))
+        {
+            return nullptr;
+        }
+
+        return WindowManager::find(_toolWindowType, _toolWindowNumber);
+    }
+
     bool isToolActive(Ui::WindowType type, Ui::window_number number)
     {
         if (!hasFlag(input_flags::tool_active))
@@ -1903,7 +1913,7 @@ namespace OpenLoco::Input
                             if (wnd)
                             {
                                 bool out = false;
-                                wnd->call_15(x, y, cursorId, &out);
+                                cursorId = wnd->call_15(x, y, cursorId, &out);
                                 if (out)
                                 {
                                     skipItem = true;
@@ -1957,6 +1967,11 @@ namespace OpenLoco::Input
     Gfx::point_t getTooltipMouseLocation()
     {
         return Gfx::point_t(_tooltipCursorX, _tooltipCursorY);
+    }
+
+    Gfx::point_t getDragLastLocation()
+    {
+        return Gfx::point_t(_dragLastX, _dragLastY);
     }
 
     void setTooltipMouseLocation(const Gfx::point_t& loc)

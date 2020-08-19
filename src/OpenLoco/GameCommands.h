@@ -29,6 +29,7 @@ namespace OpenLoco::GameCommands
         vehicle_sell = 6,
         build_vehicle = 9,
         change_station_name = 11,
+        vehicle_local_express = 12,
         change_company_colour_scheme = 19,
         pause_game = 20,
         load_save_quit_game = 21,
@@ -38,6 +39,7 @@ namespace OpenLoco::GameCommands
         lower_raise_land_mountain = 27,
         raise_water = 28,
         lower_water = 29,
+        vehicle_order_insert = 35,
         vehicle_order_delete = 36,
         vehicle_order_skip = 37,
         change_company_name = 46,
@@ -99,6 +101,15 @@ namespace OpenLoco::GameCommands
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
         doCommand(11, regs);
+    }
+
+    inline void do12(thing_id_t head, uint8_t bh)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.bh = bh;
+        regs.dx = head;
+        doCommand(12, regs);
     }
 
     // Change company colour scheme
@@ -242,6 +253,17 @@ namespace OpenLoco::GameCommands
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
         return doCommand(31, regs) != FAILURE;
+    }
+
+    inline bool do_35(thing_id_t head, uint8_t order, uint64_t orderArgument, uint32_t orderOffset)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.eax = order | (orderArgument << 3);
+        regs.cx = orderArgument >> 32;
+        regs.di = head;
+        regs.edx = orderOffset;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_insert), regs);
     }
 
     inline bool do_36(thing_id_t head, uint32_t orderOffset)
