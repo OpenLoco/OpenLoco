@@ -1343,12 +1343,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self->invalidate();
     }
 
+    // 0x00473D1D
     static std::pair<uint8_t*, bool> windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
     {
         registers regs;
         regs.bx = bx;
         regs.ebp = (uintptr_t)ebp;
-        bool carryFlag = call(0x0000473D1D, regs) & (1 << 8);
+        bool carryFlag = call(0x00473D1D, regs) & (1 << 8);
 
         return std::make_pair((uint8_t*)regs.edi, carryFlag);
     }
@@ -1373,20 +1374,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             if (!(*edi & (1 << 0)))
             {
-                edi = static_cast<uint8_t*>(_50D144);
+                //edi = static_cast<uint8_t*>(_50D144);
                 auto ebp = objectmgr::getActiveObject(type, _50D144);
-                object = ebp.object._header;
+                auto oldObject = ebp.object._header;
 
                 if (ebp.index != -1)
                 {
-                    edi = windowEditorObjectSelectionSelectObject(6, object).first;
+                    windowEditorObjectSelectionSelectObject(6, oldObject).first;
                 }
             }
         }
 
         auto bx = 0;
 
-        if (*edi & (1 << 0))
+        if (!(*edi & (1 << 0)))
         {
             bx |= (1 << 0);
         }
