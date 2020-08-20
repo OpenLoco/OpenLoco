@@ -1,3 +1,7 @@
+20.07+ (in development)
+------------------------------------------------------------------------
+- Feature: [#569] Option/cheat to disable AI companies entirely.
+
 20.07 (2020-07-26)
 ------------------------------------------------------------------------
 - Feature: [#523] Holding the construction window's build or remove button will keep repeating the action.

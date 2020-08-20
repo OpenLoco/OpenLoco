@@ -1847,27 +1847,29 @@ namespace openloco::ui::options
 
     namespace misc
     {
-        static const gfx::ui_size_t _window_size = { 420, 124 };
+        static const gfx::ui_size_t _window_size = { 420, 139 };
 
         namespace widx
         {
             enum
             {
                 disable_vehicle_breakdowns = 10,
+                disableAICompanies,
                 use_preferred_owner_name,
                 change_btn,
                 export_plugin_objects,
             };
         }
 
-        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
+        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << widx::disableAICompanies) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
             make_widget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disable_vehicle_breakdowns, string_ids::null),
-            make_widget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
-            make_widget({ 335, 79 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            make_widget({ 10, 94 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
+            make_widget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disableAICompanies, string_ids::disableAICompanies_tip),
+            make_widget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
+            make_widget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            make_widget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
             widget_end(),
         };
 
@@ -1879,6 +1881,7 @@ namespace openloco::ui::options
         static void set_preferred_name(window* w, char* str);
         static void use_preferred_owner_name_mouse_up(window* w);
         static void disable_vehicle_breakdowns_mouse_up(window* w);
+        static void disableAICompaniesMouseUp(window* w);
         static void export_plugin_objects_mouse_up(window* w);
 
         // 0x004C11B7
@@ -1902,6 +1905,11 @@ namespace openloco::ui::options
                 w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
             else
                 w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
+
+            if (config::get_new().companyAIDisabled)
+                w->activated_widgets |= (1 << widx::disableAICompanies);
+            else
+                w->activated_widgets &= ~(1 << widx::disableAICompanies);
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
             if (config::get().flags & config::flags::export_objects_with_saves)
@@ -1962,6 +1970,10 @@ namespace openloco::ui::options
 
                 case widx::disable_vehicle_breakdowns:
                     disable_vehicle_breakdowns_mouse_up(w);
+                    break;
+
+                case widx::disableAICompanies:
+                    disableAICompaniesMouseUp(w);
                     break;
 
                 case widx::export_plugin_objects:
@@ -2045,6 +2057,14 @@ namespace openloco::ui::options
         {
             auto& cfg = openloco::config::get_new();
             cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
+            config::write();
+            w->invalidate();
+        }
+
+        static void disableAICompaniesMouseUp(window* w)
+        {
+            auto& cfg = openloco::config::get_new();
+            cfg.companyAIDisabled = !cfg.companyAIDisabled;
             config::write();
             w->invalidate();
         }

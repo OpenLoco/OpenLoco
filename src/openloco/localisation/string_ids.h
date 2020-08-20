@@ -1338,4 +1338,7 @@ namespace openloco::string_ids
 
     constexpr string_id menu_quit_to_menu = 2139;
     constexpr string_id menu_exit_openloco = 2140;
+
+    constexpr string_id disableAICompanies = 2141;
+    constexpr string_id disableAICompanies_tip = 2142;
 }
