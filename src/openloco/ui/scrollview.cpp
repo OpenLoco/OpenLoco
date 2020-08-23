@@ -84,6 +84,76 @@ namespace openloco::ui::scrollview
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
 
+    // 0x004C8CFD
+    // regs.bp: deltaX
+    void horizontalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX)
+    {
+        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) == 0)
+        {
+            return;
+        }
+
+        uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            trackWidth -= barWidth;
+        }
+
+        auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
+
+        int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
+
+        int frameWidth = widget->width() - 2;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            frameWidth -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentWidth - frameWidth;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetX = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(w, dragWidgetIndex);
+        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
+    }
+
+    // 0x004C8E2E
+    // regs.bp: deltaY
+    void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY)
+    {
+        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
+        if ((scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE) == 0)
+        {
+            return;
+        }
+
+        uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            trackHeight -= barWidth;
+        }
+
+        auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
+
+        int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
+
+        int frameHeight = widget->height() - 2;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            frameHeight -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentHeight - frameHeight;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetY = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(w, dragWidgetIndex);
+        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
+    }
+
     // 0x004C8EF0
     // Note: Original function returns a scrollAreaOffset not an index
     void get_part(

@@ -27,8 +27,6 @@ namespace openloco::input
 {
     static void stateScrollLeft(mouse_button cx, widget_index edx, ui::window* window, ui::widget_t* widget, int16_t x, int16_t y);
     static void stateScrollRight(const mouse_button button, const int16_t x, const int16_t y);
-    static void horizontalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX);
-    static void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY);
     static void state_resizing(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_widget_pressed(mouse_button button, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
     static void state_normal(mouse_button state, int16_t x, int16_t y, ui::window* window, ui::widget_t* widget, ui::widget_index widgetIndex);
@@ -931,76 +929,6 @@ namespace openloco::input
         }
     }
 
-    // 0x004C8E2E
-    // regs.bp: deltaY
-    static void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY)
-    {
-        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
-        if ((scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE) == 0)
-        {
-            return;
-        }
-
-        uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
-        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
-        {
-            trackHeight -= barWidth;
-        }
-
-        auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
-
-        int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
-
-        int frameHeight = widget->height() - 2;
-        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
-        {
-            frameHeight -= barWidth;
-        }
-
-        int16_t maxOffset = scrollArea.contentHeight - frameHeight;
-        maxOffset = std::max<int16_t>(maxOffset, 0);
-
-        scrollArea.contentOffsetY = std::clamp<int16_t>(newOffset, 0, maxOffset);
-
-        scrollview::update_thumbs(w, dragWidgetIndex);
-        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
-    }
-
-    // 0x004C8CFD
-    // regs.bp: deltaX
-    static void horizontalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX)
-    {
-        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
-        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) == 0)
-        {
-            return;
-        }
-
-        uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
-        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
-        {
-            trackWidth -= barWidth;
-        }
-
-        auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
-
-        int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
-
-        int frameWidth = widget->width() - 2;
-        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
-        {
-            frameWidth -= barWidth;
-        }
-
-        int16_t maxOffset = scrollArea.contentWidth - frameWidth;
-        maxOffset = std::max<int16_t>(maxOffset, 0);
-
-        scrollArea.contentOffsetX = std::clamp<int16_t>(newOffset, 0, maxOffset);
-
-        scrollview::update_thumbs(w, dragWidgetIndex);
-        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
-    }
-
     // 0x004C76A7
     // regs.cx = (uint16_t)button;
     // regs.ax = x;
@@ -1023,8 +951,8 @@ namespace openloco::input
                 {
                     _ticksSinceDragStart = 1000;
                     ui::widget_t* widget = &window->widgets[_dragWidgetIndex];
-                    horizontalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, x);
-                    verticalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, y);
+                    ui::scrollview::horizontalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, x);
+                    ui::scrollview::verticalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, y);
                 }
 
                 break;
