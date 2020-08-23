@@ -22,6 +22,7 @@ namespace openloco::ui::scrollview
     }
 
     // 0x004C87E1
+    // regs.bp: deltaX
     static void horizontalFollow(ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex, const size_t scrollIndex, const int16_t deltaX)
     {
         scroll_area_t& scrollArea = w->scroll_areas[scrollIndex];
