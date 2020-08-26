@@ -23,13 +23,13 @@ namespace openloco::platform
 
     fs::path get_user_directory()
     {
-        std::string path;
-        wchar_t cpath[MAX_PATH];
-        if (SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, cpath)))
+        auto result = fs::path{};
+        wchar_t path[MAX_PATH];
+        if (SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, path)))
         {
-            path = utility::to_utf8(std::wstring(cpath)) + "/OpenLoco";
+            result = fs::path(path) / "OpenLoco";
         }
-        return path;
+        return result;
     }
 
     static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
