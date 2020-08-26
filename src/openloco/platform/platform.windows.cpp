@@ -23,20 +23,19 @@ namespace openloco::platform
 
     fs::path get_user_directory()
     {
-        auto result = fs::path();
-        PWSTR path = nullptr;
-        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
+        auto result = fs::path{};
+        wchar_t path[MAX_PATH];
+        if (SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, path)))
         {
             result = fs::path(path) / "OpenLoco";
         }
-        CoTaskMemFree(path);
         return result;
     }
 
     static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
     {
         std::wstring pszPath(MAX_PATH, 0);
-        while (!SHGetPathFromIDListEx(pidl, &pszPath[0], (DWORD)pszPath.size(), 0))
+        while (!SHGetPathFromIDListW(pidl, &pszPath[0]))
         {
             if (pszPath.size() >= SHRT_MAX)
             {
