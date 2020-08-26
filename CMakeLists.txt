@@ -244,7 +244,7 @@ if (NOT APPLE)
 endif()
 
 if (MINGW)
-    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600 SDL_MAIN_HANDLED=1)
+    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
 endif()
 
 if (APPLE)
