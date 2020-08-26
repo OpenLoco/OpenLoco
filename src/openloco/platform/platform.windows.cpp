@@ -23,34 +23,19 @@ namespace openloco::platform
 
     fs::path get_user_directory()
     {
-#if _WIN32_WINNT >= 0x0600
-        auto result = fs::path();
-        PWSTR path = nullptr;
-        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, nullptr, &path)))
-        {
-            result = fs::path(path) / "OpenLoco";
-        }
-        CoTaskMemFree(path);
-        return result;
-#else
         std::string path;
-        char cpath[MAX_PATH];
-        if (SUCCEEDED(SHGetFolderPathA(nullptr, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, cpath)))
+        wchar_t cpath[MAX_PATH];
+        if (SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, cpath)))
         {
-            path = cpath;
+            path = utility::to_utf8(std::wstring(cpath)) + "/OpenLoco";
         }
         return path;
-#endif // _WIN32_WINNT >= 0x0600
     }
 
     static std::wstring SHGetPathFromIDListLongPath(LPCITEMIDLIST pidl)
     {
         std::wstring pszPath(MAX_PATH, 0);
-#if _WIN32_WINNT >= 0x0600
-        while (!SHGetPathFromIDListEx(pidl, &pszPath[0], (DWORD)pszPath.size(), 0))
-#else
         while (!SHGetPathFromIDListW(pidl, &pszPath[0]))
-#endif // _WIN32_WINNT >= 0x0600
         {
             if (pszPath.size() >= SHRT_MAX)
             {
