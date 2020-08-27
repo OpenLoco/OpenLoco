@@ -1651,6 +1651,10 @@ namespace openloco::ui::windows::construction::construction
     }
 
     // 0x00460781
+    // regs.ax = x;
+    // regs.bx = y;
+    // returns
+    // regs.ax = 0x8000 - probably in case of failure
     static map_pos sub_460781(int16_t x, int16_t y)
     {
         registers regs;

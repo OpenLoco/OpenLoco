@@ -958,6 +958,23 @@ namespace openloco::ui::windows::CompanyWindow
             call(0x00468FFE, regs);
         }
 
+        // 0x00434EC7
+        // input:
+        // regs.esi = window* w;
+        // regs.dx = widgetIndex;
+        // regs.ax = x;
+        // regs.bx = y;
+        // output (not verified):
+        // regs.cx = x (tile coordinate)
+        // regs.ax = y (tile coordinate)
+        // regs.di = z (height)
+        // regs.dx = company index (value 1 in testing case)
+        static registers sub_434EC7(registers regs)
+        {
+            call(0x00434EC7, regs);
+            return regs;
+        }
+
         // 0x00432CA1
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -970,14 +987,32 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432D45
+        // regs.esi = window* w;
+        // regs.dx = widgetIndex;
+        // regs.ax = x;
+        // regs.bx = y;
         static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
+            sub_434E94();
+
             registers regs;
             regs.esi = (int32_t)&self;
             regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
-            call(0x00432D45, regs);
+            regs = sub_434EC7(regs);
+            if (regs.ax == static_cast<int16_t>(0x8000))
+            {
+                return;
+            }
+
+            gGameCommandErrorTitle = string_ids::error_cant_build_this_here;
+            uint8_t flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_1;
+            auto commandResult = game_commands::do_54(flags, regs.ax, regs.cx, regs.di, regs.dx);
+            if (commandResult == 0x80000000)
+            {
+                input::cancel_tool();
+            }
         }
 
         // 0x00432D7A

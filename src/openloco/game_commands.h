@@ -12,6 +12,7 @@ namespace openloco::game_commands
     enum GameCommandFlag : uint8_t
     {
         apply = 1 << 0,  // 0x01
+        flag_1 = 1 << 1, // 0x02
         flag_2 = 1 << 2, // 0x04
         flag_3 = 1 << 3, // 0x08
         flag_4 = 1 << 4, // 0x10
@@ -242,6 +243,22 @@ namespace openloco::game_commands
     }
 
     // Build company headquarters
+    // Note: The game seems to call do_55, then do_54 in success case and returns 0x0 code
+    //       if we try to build over the existing only do_54 is called and it returns 0x80000000 (in regs.ebx)
+    inline uint32_t do_54(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di, uint16_t dx)
+    {
+        registers regs;
+        regs.bl = bl; // flags
+        regs.cx = cx; // x
+        regs.ax = ax; // y
+        regs.di = di; // z
+        regs.dx = dx; // company index (value 1 in testing case)
+        return do_command(54, regs);
+    }
+
+    // Build company headquarters
+    // Note: The game seems to call do_55, then do_54 in success case
+    //       if we try to build over the existing one do_55 is not called
     inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
     {
         registers regs;
