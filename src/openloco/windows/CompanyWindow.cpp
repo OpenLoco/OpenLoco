@@ -1009,7 +1009,7 @@ namespace openloco::ui::windows::CompanyWindow
             gGameCommandErrorTitle = string_ids::error_cant_build_this_here;
             uint8_t flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_1;
             auto commandResult = game_commands::do_54(flags, regs.ax, regs.cx, regs.di, regs.dx);
-            if (commandResult == 0x80000000)
+            if (commandResult != 0x80000000)
             {
                 input::cancel_tool();
             }
