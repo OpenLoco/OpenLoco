@@ -242,7 +242,7 @@ namespace openloco::game_commands
         return do_command(50, regs) != FAILURE;
     }
 
-    // Build company headquarters
+    // Remove company headquarters (ghost)
     // Note: The game seems to call do_55, then do_54 in success case and returns 0x0 code
     //       if we try to build over the existing only do_54 is called and it returns 0x80000000 (in regs.ebx)
     inline uint32_t do_54(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di, uint16_t dx)
