@@ -34,6 +34,10 @@ namespace openloco::ui::scrollview
             trackWidth -= barWidth;
         }
 
+        if (trackWidth == 0)
+        {
+            return;
+        }
         auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
 
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
@@ -66,6 +70,10 @@ namespace openloco::ui::scrollview
             trackHeight -= barWidth;
         }
 
+        if (trackHeight == 0)
+        {
+            return;
+        }
         auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
 
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
@@ -101,6 +109,10 @@ namespace openloco::ui::scrollview
             trackWidth -= barWidth;
         }
 
+        if (trackWidth == 0)
+        {
+            return;
+        }
         auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
 
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
@@ -122,6 +134,7 @@ namespace openloco::ui::scrollview
 
     // 0x004C8E2E
     // regs.bp: deltaY
+    // possible extraction of common functionality in verticalDragFollow, horizontalDragFollow, verticalFollow, horizontalFollow
     void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY)
     {
         scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
@@ -136,6 +149,10 @@ namespace openloco::ui::scrollview
             trackHeight -= barWidth;
         }
 
+        if (trackHeight == 0)
+        {
+            return;
+        }
         auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
 
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
