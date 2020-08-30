@@ -22,6 +22,7 @@ namespace openloco::ui::scrollview
     }
 
     // 0x004C87E1
+    // regs.bp: deltaX
     static void horizontalFollow(ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex, const size_t scrollIndex, const int16_t deltaX)
     {
         scroll_area_t& scrollArea = w->scroll_areas[scrollIndex];
@@ -33,6 +34,10 @@ namespace openloco::ui::scrollview
             trackWidth -= barWidth;
         }
 
+        if (trackWidth == 0)
+        {
+            return;
+        }
         auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
 
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
@@ -65,6 +70,10 @@ namespace openloco::ui::scrollview
             trackHeight -= barWidth;
         }
 
+        if (trackHeight == 0)
+        {
+            return;
+        }
         auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
 
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
@@ -82,6 +91,85 @@ namespace openloco::ui::scrollview
 
         scrollview::update_thumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
+    }
+
+    // 0x004C8CFD
+    // regs.bp: deltaX
+    void horizontalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX)
+    {
+        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) == 0)
+        {
+            return;
+        }
+
+        uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            trackWidth -= barWidth;
+        }
+
+        if (trackWidth == 0)
+        {
+            return;
+        }
+        auto contentDeltaX = deltaX * scrollArea.contentWidth / trackWidth;
+
+        int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
+
+        int frameWidth = widget->width() - 2;
+        if (scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE)
+        {
+            frameWidth -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentWidth - frameWidth;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetX = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(w, dragWidgetIndex);
+        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
+    }
+
+    // 0x004C8E2E
+    // regs.bp: deltaY
+    // possible extraction of common functionality in verticalDragFollow, horizontalDragFollow, verticalFollow, horizontalFollow
+    void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY)
+    {
+        scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
+        if ((scrollArea.flags & scroll_flags::VSCROLLBAR_VISIBLE) == 0)
+        {
+            return;
+        }
+
+        uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            trackHeight -= barWidth;
+        }
+
+        if (trackHeight == 0)
+        {
+            return;
+        }
+        auto contentDeltaY = deltaY * scrollArea.contentHeight / trackHeight;
+
+        int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
+
+        int frameHeight = widget->height() - 2;
+        if ((scrollArea.flags & scroll_flags::HSCROLLBAR_VISIBLE) != 0)
+        {
+            frameHeight -= barWidth;
+        }
+
+        int16_t maxOffset = scrollArea.contentHeight - frameHeight;
+        maxOffset = std::max<int16_t>(maxOffset, 0);
+
+        scrollArea.contentOffsetY = std::clamp<int16_t>(newOffset, 0, maxOffset);
+
+        scrollview::update_thumbs(w, dragWidgetIndex);
+        WindowManager::invalidateWidget(w->type, w->number, dragWidgetIndex);
     }
 
     // 0x004C8EF0
