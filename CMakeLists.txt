@@ -238,13 +238,15 @@ if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
-target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 if (NOT APPLE)
     target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
+    target_link_libraries(${PROJECT} imm32 winmm version)
+else ()
+    target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 endif()
 
 if (APPLE)
