@@ -43,8 +43,8 @@ void vehicle_channel::begin(thing_id_t vid)
     if (v != nullptr)
     {
         auto [sid, sa] = sub_48A590(v);
-        auto loop = audio::should_sound_loop(sid);
-        auto sample = audio::get_sound_sample(sid);
+        auto loop = audio::shouldSoundLoop(sid);
+        auto sample = audio::getSoundSample(sid);
         if (sample != nullptr)
         {
             _vehicle_id = vid;

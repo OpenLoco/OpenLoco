@@ -174,7 +174,7 @@ void vehicle_head::sub_4BA8D4()
 
                 auto v2 = car.body;
                 auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
-                audio::play_sound(soundId, loc16(v2->x, v2->y, v2->z + 22));
+                audio::playSound(soundId, loc16(v2->x, v2->y, v2->z + 22));
             }
         }
     }
@@ -1136,7 +1136,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
             volume -= 1500;
         }
 
-        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
+        audio::playSound(audio::makeObjectSoundId(soundId), loc, volume, 22050);
     }
     else
     {
@@ -1166,7 +1166,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
             volume = -400;
         }
 
-        audio::play_sound(audio::make_object_sound_id(soundId), loc, volume, 22050);
+        audio::playSound(audio::makeObjectSoundId(soundId), loc, volume, 22050);
     }
 }
 

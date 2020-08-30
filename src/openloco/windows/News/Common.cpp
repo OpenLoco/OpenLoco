@@ -195,7 +195,7 @@ namespace openloco::ui::NewsWindow
             if (soundId != audio::sound_id::null)
             {
                 int32_t pan = ui::width() / 2;
-                audio::play_sound(soundId, pan);
+                audio::playSound(soundId, pan);
             }
         }
 

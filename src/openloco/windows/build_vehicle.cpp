@@ -743,7 +743,7 @@ namespace openloco::ui::build_vehicle
         }
 
         auto pan = window->width / 2 + window->x;
-        audio::play_sound(audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
+        audio::playSound(audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window->row_info[scrollItem];
         auto vehicleObj = objectmgr::get<vehicle_object>(item);
         FormatArguments args{};

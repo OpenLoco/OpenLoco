@@ -48,31 +48,31 @@ using namespace openloco;
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
 {
-    return audio::load_channel((audio::channel_id)a0, a1, a2) ? 1 : 0;
+    return audio::loadChannel((audio::channel_id)a0, a1, a2) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_play_channel(int a0, int a1, int a2, int a3, int a4)
 {
-    return audio::play_channel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
+    return audio::playChannel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audio_stop_channel(int a0, int a1, int a2, int a3, int a4)
 {
-    audio::stop_channel((audio::channel_id)a0);
+    audio::stopChannel((audio::channel_id)a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audio_set_channel_volume(int a0, int a1)
 {
-    audio::set_channel_volume((audio::channel_id)a0, a1);
+    audio::setChannelVolume((audio::channel_id)a0, a1);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audio_is_channel_playing(int a0)
 {
-    return audio::is_channel_playing((audio::channel_id)a0) ? 1 : 0;
+    return audio::isChannelPlaying((audio::channel_id)a0) ? 1 : 0;
 }
 
 static void STDCALL fn_40447f()
@@ -581,31 +581,31 @@ static void register_audio_hooks()
     register_hook(
         0x0048A18C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::update_sounds();
+            audio::updateSounds();
             return 0;
         });
     register_hook(
         0x00489C6A,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::stop_vehicle_noise();
+            audio::stopVehicleNoise();
             return 0;
         });
     register_hook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((vehicle_26*)regs.esi);
+            audio::playSound((vehicle_26*)regs.esi);
             return 0;
         });
     register_hook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            audio::playSound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
             return 0;
         });
     register_hook(
         0x00489F1B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            audio::play_sound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            audio::playSound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
             return 0;
         });
 }

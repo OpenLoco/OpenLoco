@@ -73,7 +73,7 @@ void channel::set_volume(int32_t volume)
 {
     if (!is_undefined())
     {
-        Mix_Volume(_id, volume_loco_to_sdl(volume));
+        Mix_Volume(_id, volumeLocoToSDL(volume));
     }
 }
 
@@ -81,7 +81,7 @@ void channel::set_pan(int32_t pan)
 {
     if (!is_undefined())
     {
-        auto [left, right] = pan_loco_to_sdl(pan);
+        auto [left, right] = panLocoToSDL(pan);
         Mix_SetPanning(_id, left, right);
     }
 }

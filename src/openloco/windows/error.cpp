@@ -164,7 +164,7 @@ namespace openloco::ui::windows::error
             if (!(_suppressErrorSound & (1 << 0)))
             {
                 int32_t pan = (error->width / 2) + error->x;
-                audio::play_sound(audio::sound_id::error, pan);
+                audio::playSound(audio::sound_id::error, pan);
             }
         }
     }

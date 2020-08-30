@@ -81,45 +81,45 @@ namespace openloco::audio
         uint16_t end_year;
     };
 
-    void initialise_dsound();
-    void dispose_dsound();
+    void initialiseDSound();
+    void disposeDSound();
 
-    const std::vector<std::string>& get_devices();
-    const char* get_current_device_name();
-    size_t get_current_device();
+    const std::vector<std::string>& getDevices();
+    const char* getCurrentDeviceName();
+    size_t getCurrentDevice();
     void set_device(size_t index);
 
-    sample* get_sound_sample(sound_id id);
-    bool should_sound_loop(sound_id id);
+    sample* getSoundSample(sound_id id);
+    bool shouldSoundLoop(sound_id id);
 
-    void toggle_sound();
-    void pause_sound();
-    void unpause_sound();
-    void play_sound(vehicle_26* t);
-    void play_sound(sound_id id, loc16 loc);
-    void play_sound(sound_id id, loc16 loc, int32_t pan);
-    void play_sound(sound_id id, int32_t pan);
-    void play_sound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
-    void update_sounds();
+    void toggleSound();
+    void pauseSound();
+    void unpauseSound();
+    void playSound(vehicle_26* t);
+    void playSound(sound_id id, loc16 loc);
+    void playSound(sound_id id, loc16 loc, int32_t pan);
+    void playSound(sound_id id, int32_t pan);
+    void playSound(sound_id id, loc16 loc, int32_t volume, int32_t frequency);
+    void updateSounds();
 
-    bool load_channel(channel_id id, const char* path, int32_t c);
-    bool play_channel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
-    void stop_channel(channel_id id);
-    void set_channel_volume(channel_id id, int32_t volume);
-    bool is_channel_playing(channel_id id);
+    bool loadChannel(channel_id id, const char* path, int32_t c);
+    bool playChannel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
+    void stopChannel(channel_id id);
+    void setChannelVolume(channel_id id, int32_t volume);
+    bool isChannelPlaying(channel_id id);
 
-    void update_vehicle_noise();
-    void stop_vehicle_noise();
+    void updateVehicleNoise();
+    void stopVehicleNoise();
 
-    void update_ambient_noise();
-    void stop_ambient_noise();
+    void updateAmbientNoise();
+    void stopAmbientNoise();
 
     void revalidateCurrentTrack();
 
-    void play_background_music();
-    void stop_background_music();
-    void play_title_screen_music();
-    void stop_title_music();
+    void playBackgroundMusic();
+    void stopBackgroundMusic();
+    void playTitleScreenMusic();
+    void stopTitleMusic();
 
     bool isAudioEnabled();
 
@@ -131,14 +131,14 @@ namespace openloco::audio
      * @remarks Not constexpr as it requires an SDL2 macro and we avoid
      *          library header includes in our own headers.
      */
-    int32_t volume_loco_to_sdl(int32_t loco);
+    int32_t volumeLocoToSDL(int32_t loco);
 
-    constexpr bool is_object_sound_id(sound_id id)
+    constexpr bool isObjectSoundId(sound_id id)
     {
         return ((int32_t)id & 0x8000);
     }
 
-    constexpr sound_id make_object_sound_id(sound_object_id_t id)
+    constexpr sound_id makeObjectSoundId(sound_object_id_t id)
     {
         return (sound_id)((int32_t)id | 0x8000);
     }
@@ -146,7 +146,7 @@ namespace openloco::audio
     /**
      * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
      */
-    constexpr std::tuple<int32_t, int32_t> pan_loco_to_sdl(int32_t pan)
+    constexpr std::tuple<int32_t, int32_t> panLocoToSDL(int32_t pan)
     {
         constexpr auto range = 2048.0f;
         if (pan == 0)

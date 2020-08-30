@@ -1719,7 +1719,7 @@ namespace openloco::ui::windows::construction::construction
 
             on_mouse_up(window, widx::rotate_90);
 
-            audio::play_sound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
+            audio::playSound(audio::sound_id::error, int32_t(input::getMouseLocation().x));
 
             return;
         }

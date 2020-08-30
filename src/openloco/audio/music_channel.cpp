@@ -46,7 +46,7 @@ void music_channel::stop()
 
 void music_channel::set_volume(int32_t volume)
 {
-    Mix_VolumeMusic(volume_loco_to_sdl(volume));
+    Mix_VolumeMusic(volumeLocoToSDL(volume));
 }
 
 void music_channel::dispose_music()

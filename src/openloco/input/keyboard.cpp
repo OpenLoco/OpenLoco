@@ -72,7 +72,7 @@ namespace openloco::input
     {
         _screenFlags |= screen_flags::unknown_6;
 
-        audio::play_sound(audio::sound_id::click_press, ui::width() / 2);
+        audio::playSound(audio::sound_id::click_press, ui::width() / 2);
     }
 
     static void loc_4BED04()
@@ -101,7 +101,7 @@ namespace openloco::input
             regs.cx = w->number;
             regs.bl = GameCommandFlag::apply;
             game_commands::do_command(77, regs);
-            audio::play_sound(audio::sound_id::click_press, ui::width() / 2);
+            audio::playSound(audio::sound_id::click_press, ui::width() / 2);
 
             return;
         }
@@ -113,7 +113,7 @@ namespace openloco::input
         regs.bl = GameCommandFlag::apply;
         game_commands::do_command(78, regs);
 
-        audio::play_sound(audio::sound_id::click_press, ui::width() / 2);
+        audio::playSound(audio::sound_id::click_press, ui::width() / 2);
     }
 
     static void loc_4BEFEF()

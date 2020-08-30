@@ -185,7 +185,7 @@ namespace openloco::ui::windows::toolbar_top::editor
         switch (itemIndex)
         {
             case 0:
-                audio::toggle_sound();
+                audio::toggleSound();
                 break;
         }
     }

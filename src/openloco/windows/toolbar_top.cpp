@@ -198,7 +198,7 @@ namespace openloco::ui::windows::toolbar_top::game
         switch (itemIndex)
         {
             case 0:
-                audio::toggle_sound();
+                audio::toggleSound();
                 break;
 
             case 1:
@@ -207,7 +207,7 @@ namespace openloco::ui::windows::toolbar_top::game
                 if (config.music_playing)
                 {
                     config.music_playing = false;
-                    audio::stop_background_music();
+                    audio::stopBackgroundMusic();
                 }
                 else
                 {

@@ -205,7 +205,7 @@ namespace openloco::ui::prompt_browse
             prompt_tick_loop(
                 []() {
                     input::handle_keyboard();
-                    audio::update_sounds();
+                    audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
                     input::process_keyboard_input();
                     WindowManager::update();
