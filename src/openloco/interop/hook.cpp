@@ -220,7 +220,7 @@ namespace openloco::interop
         {
             size_t size = 20 * 500;
 #ifdef _WIN32
-            _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+            _smallHooks = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 #else
             _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
             if (_smallHooks == MAP_FAILED)
@@ -228,8 +228,8 @@ namespace openloco::interop
                 perror("mmap");
                 exit(1);
             }
-            _offset = static_cast<uint8_t*>(_smallHooks);
 #endif // _WIN32
+            _offset = static_cast<uint8_t*>(_smallHooks);
         }
 
         int i = 0;
