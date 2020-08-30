@@ -703,7 +703,7 @@ namespace openloco::ui::windows::industry_list
 
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    audio::play_sound(audio::sound_id::click_down, loc, pan);
+                    audio::playSound(audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     dword_E0C39C = 0x80000000;
                     self->invalidate();

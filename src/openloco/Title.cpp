@@ -109,7 +109,7 @@ namespace openloco::title
         gfx::invalidate_screen();
         _screenAge = 0;
 
-        audio::play_title_screen_music();
+        audio::playTitleScreenMusic();
     }
 
     // 0x00473A95

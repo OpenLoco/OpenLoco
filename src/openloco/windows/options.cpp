@@ -692,7 +692,7 @@ namespace openloco::ui::options
 
             FormatArguments args = {};
 
-            auto audioDeviceName = audio::get_current_device_name();
+            auto audioDeviceName = audio::getCurrentDeviceName();
             if (audioDeviceName != nullptr)
             {
                 args.push(string_ids::stringptr);
@@ -766,7 +766,7 @@ namespace openloco::ui::options
         // 0x004C043D
         static void audio_device_mouse_down(ui::window* w)
         {
-            const auto& devices = audio::get_devices();
+            const auto& devices = audio::getDevices();
             if (devices.size() != 0)
             {
                 widget_t dropdown = w->widgets[widx::audio_device];
@@ -777,7 +777,7 @@ namespace openloco::ui::options
                     dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
                 }
 
-                auto currentDevice = audio::get_current_device();
+                auto currentDevice = audio::getCurrentDevice();
                 if (currentDevice != std::numeric_limits<size_t>().max())
                 {
                     dropdown::setItemSelected((int16_t)currentDevice);
@@ -803,7 +803,7 @@ namespace openloco::ui::options
             cfg.audio.play_title_music = !cfg.audio.play_title_music;
             config::write();
 
-            audio::play_title_screen_music();
+            audio::playTitleScreenMusic();
 
             w->invalidate();
         }
@@ -1041,7 +1041,7 @@ namespace openloco::ui::options
             cfg.music_playing = 0;
             config::write();
 
-            audio::stop_background_music();
+            audio::stopBackgroundMusic();
 
             _currentSong = -1;
 
@@ -1067,7 +1067,7 @@ namespace openloco::ui::options
             if (config::get().music_playing == 0)
                 return;
 
-            audio::stop_background_music();
+            audio::stopBackgroundMusic();
 
             _currentSong = -1;
 
@@ -1184,7 +1184,7 @@ namespace openloco::ui::options
             if (track == _currentSong)
                 return;
 
-            audio::stop_background_music();
+            audio::stopBackgroundMusic();
 
             _currentSong = track;
             _50D435 = track;

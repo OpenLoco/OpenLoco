@@ -192,7 +192,7 @@ namespace openloco::ui::windows::industry
                     loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
                     loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
 
-                    audio::play_sound(audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
+                    audio::playSound(audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
                     break;
                 }
             }

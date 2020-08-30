@@ -613,7 +613,7 @@ namespace openloco
             }
 
             input::handle_keyboard();
-            audio::update_sounds();
+            audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
             if (intro::is_active())
@@ -679,12 +679,12 @@ namespace openloco
 
                 _525F62++;
                 editor_tick();
-                audio::play_background_music();
+                audio::playBackgroundMusic();
 
                 // TODO move stop title music to title::stop (when mode changes)
                 if (!is_title_mode())
                 {
-                    audio::stop_title_music();
+                    audio::stopTitleMusic();
                 }
 
                 if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
@@ -773,8 +773,8 @@ namespace openloco
         sub_46FFCA();
         companymgr::update();
         invalidate_map_animations();
-        audio::update_vehicle_noise();
-        audio::update_ambient_noise();
+        audio::updateVehicleNoise();
+        audio::updateAmbientNoise();
         call(0x00444387);
 
         s5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
@@ -948,9 +948,9 @@ namespace openloco
                 call(0x004078FE);
                 call(0x00407B26);
                 ui::initialise_input();
-                audio::initialise_dsound();
+                audio::initialiseDSound();
                 run();
-                audio::dispose_dsound();
+                audio::disposeDSound();
                 ui::dispose_cursors();
                 ui::dispose_input();
 
