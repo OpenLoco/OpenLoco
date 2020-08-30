@@ -75,6 +75,7 @@ static int32_t CDECL audio_is_channel_playing(int a0)
     return audio::isChannelPlaying((audio::channel_id)a0) ? 1 : 0;
 }
 
+#ifdef _NO_LOCO_WIN32_
 static void STDCALL fn_40447f()
 {
     STUB();
@@ -92,6 +93,7 @@ static int STDCALL get_num_dsound_devices()
     STUB();
     return 0;
 }
+#endif // _NO_LOCO_WIN32_
 
 #pragma pack(push, 1)
 
@@ -103,6 +105,7 @@ struct palette_entry_t
 using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
 static interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
 
+#ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32_t count)
 {
@@ -290,6 +293,7 @@ static void CDECL fn_FindClose(Session* data)
 
     delete data;
 }
+#endif // _NO_LOCO_WIN32_
 
 [[maybe_unused]] static void CDECL fnc0(void)
 {
@@ -339,6 +343,7 @@ static void CDECL fn_free(void* block)
     return free(block);
 }
 
+#ifdef _NO_LOCO_WIN32_
 static void STDCALL fn_dump(uint32_t address)
 {
     console::log("Missing hook: 0x%x", address);
@@ -480,6 +485,7 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
     console::log("lib_PostQuitMessage(%d)", exitCode);
     exit(exitCode);
 }
+#endif // _NO_LOCO_WIN32_
 #pragma warning(pop)
 
 static void register_memory_hooks()
