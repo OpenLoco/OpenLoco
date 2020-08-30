@@ -961,12 +961,8 @@ namespace openloco::input
             case mouse_button::right_released:
             {
                 input::state(input_state::reset);
-                if (_ticksSinceDragStart <= 500)
-                {
-                    // in the assembly code:
-                    // regs.ax = _dragLastX
-                    // regs.bx = _dragLastY
-                }
+                // in the original assembly code we load into registers values from _dragLastX, _dragLastY
+                // if _ticksSinceDragStart <= 500, however the result was unused
                 break;
             }
 
