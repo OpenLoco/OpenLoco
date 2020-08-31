@@ -31,7 +31,7 @@ namespace openloco::ui::NewsWindow
         window_event_list events;
 
         // 0x00429BB7
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -144,7 +144,7 @@ namespace openloco::ui::NewsWindow
         }
 
         // 0x00429D2C
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             uint16_t height = _word_525CE0 + 4;
 
@@ -803,9 +803,9 @@ namespace openloco::ui::NewsWindow
 
         void initEvents()
         {
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_up = onMouseUp;
             events.on_resize = initViewport;
-            events.on_update = on_update;
+            events.on_update = onUpdate;
             events.viewport_rotate = initViewport;
             events.draw = draw;
         }
