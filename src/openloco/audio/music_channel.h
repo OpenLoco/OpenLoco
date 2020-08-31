@@ -21,12 +21,12 @@ namespace openloco::audio
         music_channel(const music_channel&) = delete;
         ~music_channel();
 
-        bool is_playing() const;
+        bool isPlaying() const;
 
         bool load(const fs::path& path);
         bool play(bool loop);
         void stop();
-        void set_volume(int32_t volume);
-        void dispose_music();
+        void setVolume(int32_t volume);
+        void disposeMusic();
     };
 }

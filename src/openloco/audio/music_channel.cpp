@@ -5,10 +5,10 @@ using namespace openloco::audio;
 
 music_channel::~music_channel()
 {
-    dispose_music();
+    disposeMusic();
 }
 
-bool music_channel::is_playing() const
+bool music_channel::isPlaying() const
 {
     return Mix_PlayingMusic() != 0;
 }
@@ -19,7 +19,7 @@ bool music_channel::load(const fs::path& path)
     auto music = Mix_LoadMUS(paths.c_str());
     if (music != nullptr)
     {
-        dispose_music();
+        disposeMusic();
         _music_track = music;
         return true;
     }
@@ -44,12 +44,12 @@ void music_channel::stop()
     Mix_HaltMusic();
 }
 
-void music_channel::set_volume(int32_t volume)
+void music_channel::setVolume(int32_t volume)
 {
     Mix_VolumeMusic(volumeLocoToSDL(volume));
 }
 
-void music_channel::dispose_music()
+void music_channel::disposeMusic()
 {
     Mix_FreeMusic(_music_track);
     _music_track = nullptr;
