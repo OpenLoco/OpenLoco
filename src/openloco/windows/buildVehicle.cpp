@@ -21,7 +21,7 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::build_vehicle
+namespace openloco::ui::buildVehicle
 {
     static const gfx::ui_size_t window_size = { 380, 233 };
 
