@@ -958,6 +958,28 @@ namespace openloco::ui::windows::CompanyWindow
             call(0x00468FFE, regs);
         }
 
+        // 0x00434EC7
+        // input:
+        // regs.ax = mouseX;
+        // regs.bx = mouseY;
+        // output (not verified):
+        // regs.cx = tileX (tile coordinate)
+        // regs.ax = tileY (tile coordinate)
+        // regs.di = tileZ (height)
+        // regs.dx = dx - company index (value 1 in testing case)
+        static void sub_434EC7(const int16_t mouseX, const int16_t mouseY, coord_t& tileX, coord_t& tileY, coord_t& tileZ, int16_t& dx)
+        {
+            registers regs;
+            regs.ax = mouseX;
+            regs.bx = mouseY;
+
+            call(0x00434EC7, regs);
+            tileX = regs.cx;
+            tileY = regs.ax;
+            tileZ = regs.di;
+            dx = regs.dx;
+        }
+
         // 0x00432CA1
         static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -970,14 +992,29 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432D45
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        // regs.esi = window* w;
+        // regs.dx = widgetIndex;
+        // regs.ax = mouseX;
+        // regs.bx = mouseY;
+        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t mouseX, const int16_t mouseY)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x00432D45, regs);
+            sub_434E94();
+
+            coord_t tileX, tileY, tileZ;
+            int16_t dx;
+            sub_434EC7(mouseX, mouseY, tileX, tileY, tileZ, dx);
+            if (tileY == location::null)
+            {
+                return;
+            }
+
+            gGameCommandErrorTitle = string_ids::error_cant_build_this_here;
+            uint8_t flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_1;
+            auto commandResult = game_commands::do_54(flags, tileY, tileX, tileZ, dx);
+            if (commandResult != game_commands::FAILURE)
+            {
+                input::cancel_tool();
+            }
         }
 
         // 0x00432D7A
