@@ -89,8 +89,8 @@
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="windows\about.cpp" />
-    <ClCompile Include="windows\about_music.cpp" />
-    <ClCompile Include="windows\build_vehicle.cpp" />
+    <ClCompile Include="windows\aboutMusic.cpp" />
+    <ClCompile Include="windows\buildVehicle.cpp" />
     <ClCompile Include="windows\CompanyFaceSelection.cpp" />
     <ClCompile Include="windows\CompanyList.cpp" />
     <ClCompile Include="windows\CompanyWindow.cpp" />
@@ -102,13 +102,13 @@
     <ClCompile Include="windows\EditKeyboardShortcut.cpp" />
     <ClCompile Include="windows\Error.cpp" />
     <ClCompile Include="windows\IndustryWindow.cpp" />
-    <ClCompile Include="windows\industry_list.cpp" />
+    <ClCompile Include="windows\industryList.cpp" />
     <ClCompile Include="windows\KeyboardShortcuts.cpp" />
     <ClCompile Include="windows\LandscapeGeneration.cpp" />
     <ClCompile Include="windows\LandscapeGenerationConfirm.cpp" />
     <ClCompile Include="windows\map.cpp" />
     <ClCompile Include="windows\MessageWindow.cpp" />
-    <ClCompile Include="windows\music_selection.cpp" />
+    <ClCompile Include="windows\musicSelection.cpp" />
     <ClCompile Include="windows\News\Common.cpp" />
     <ClCompile Include="windows\News\News.cpp" />
     <ClCompile Include="windows\News\Ticker.cpp" />
@@ -119,24 +119,24 @@
     <ClCompile Include="windows\promptokcancelwnd.cpp" />
     <ClCompile Include="windows\ScenarioOptions.cpp" />
     <ClCompile Include="windows\stationwnd.cpp" />
-    <ClCompile Include="windows\station_list.cpp" />
+    <ClCompile Include="windows\stationList.cpp" />
     <ClCompile Include="windows\terraform.cpp" />
     <ClCompile Include="windows\textinputwnd.cpp" />
     <ClCompile Include="windows\TimePanel.cpp" />
-    <ClCompile Include="windows\title_exit.cpp" />
-    <ClCompile Include="windows\title_logo.cpp" />
-    <ClCompile Include="windows\title_menu.cpp" />
-    <ClCompile Include="windows\title_options.cpp" />
-    <ClCompile Include="windows\title_version.cpp" />
+    <ClCompile Include="windows\titleExit.cpp" />
+    <ClCompile Include="windows\titleLogo.cpp" />
+    <ClCompile Include="windows\titleMenu.cpp" />
+    <ClCompile Include="windows\titleOptions.cpp" />
+    <ClCompile Include="windows\titleVersion.cpp" />
     <ClCompile Include="windows\ToolbarBottomEditor.cpp" />
-    <ClCompile Include="windows\toolbar_top.cpp" />
-    <ClCompile Include="windows\toolbar_top_alt.cpp" />
-    <ClCompile Include="windows\toolbar_top_common.cpp" />
+    <ClCompile Include="windows\toolbarTop.cpp" />
+    <ClCompile Include="windows\toolbarTopAlt.cpp" />
+    <ClCompile Include="windows\toolbarTopCommon.cpp" />
     <ClCompile Include="windows\tooltip.cpp" />
     <ClCompile Include="windows\townwnd.cpp" />
-    <ClCompile Include="windows\town_list.cpp" />
+    <ClCompile Include="windows\townList.cpp" />
     <ClCompile Include="windows\vehicle.cpp" />
-    <ClCompile Include="windows\vehicle_list.cpp" />
+    <ClCompile Include="windows\vehicleList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\resources\resource.h" />
@@ -245,7 +245,7 @@
     <ClInclude Include="windows\construction\Construction.h" />
     <ClInclude Include="message.h" />
     <ClInclude Include="windows\News\News.h" />
-    <ClInclude Include="windows\toolbar_top_common.h" />
+    <ClInclude Include="windows\toolbarTopCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resources\OpenLoco.rc" />
