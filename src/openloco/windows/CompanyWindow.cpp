@@ -120,7 +120,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x00431EBB
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -262,7 +262,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432244
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -318,14 +318,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432283
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
                 dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0043228E
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == common::widx::company_select)
                 common::switchCompany(self, itemIndex);
@@ -370,7 +370,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x004322F6
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -383,7 +383,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043270A
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -391,7 +391,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432724
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
 
@@ -472,7 +472,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x004327C8
-        static void viewport_rotate(window* self)
+        static void viewportRotate(window* self)
         {
             if (self->current_tab != 0)
             {
@@ -569,15 +569,15 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.on_dropdown = on_dropdown;
-            events.text_input = text_input;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
-            events.viewport_rotate = viewport_rotate;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
+            events.text_input = textInput;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
+            events.viewport_rotate = viewportRotate;
         }
     }
 
@@ -647,7 +647,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         // Allow setting company owner name if no preferred owner name has been set.
         if ((config::get().flags & config::flags::use_preferred_owner_name) == 0)
-            status::on_mouse_up(self, status::widx::change_owner_name);
+            status::onMouseUp(self, status::widx::change_owner_name);
 
         return self;
     }
@@ -681,7 +681,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x004327CF
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -873,7 +873,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432BDD
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -910,7 +910,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432C08
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -926,14 +926,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432C19
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == common::widx::company_select)
                 common::switchCompany(self, itemIndex);
         }
 
         // 0x00432C24
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -981,7 +981,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432CA1
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -996,7 +996,7 @@ namespace openloco::ui::windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t mouseX, const int16_t mouseY)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t mouseX, const int16_t mouseY)
         {
             sub_434E94();
 
@@ -1018,14 +1018,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432D7A
-        static void on_tool_abort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_434E94();
             sub_468FFE();
         }
 
         // 0x0432D85
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -1033,7 +1033,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432D9F
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
             self->set_size(windowSize);
@@ -1057,7 +1057,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00432E08
-        static void viewport_rotate(window* self)
+        static void viewportRotate(window* self)
         {
             if (self->current_tab != common::tab_details - common::tab_status)
                 return;
@@ -1123,18 +1123,18 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.on_dropdown = on_dropdown;
-            events.text_input = text_input;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.on_tool_abort = on_tool_abort;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
-            events.viewport_rotate = viewport_rotate;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
+            events.text_input = textInput;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.on_tool_abort = onToolAbort;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
+            events.viewport_rotate = viewportRotate;
         }
     }
 
@@ -1263,7 +1263,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x00432E0F
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -1375,7 +1375,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433032
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1420,7 +1420,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433067
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1471,7 +1471,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433092
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -1480,7 +1480,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043309D
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1539,7 +1539,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043325F
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -1547,7 +1547,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433279
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
             self->set_size(windowSize);
@@ -1555,14 +1555,14 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.text_input = text_input;
-            events.on_dropdown = on_dropdown;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.text_input = textInput;
+            events.on_dropdown = onDropdown;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
         }
     }
 
@@ -1594,7 +1594,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x004332E4
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -1856,7 +1856,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043361E
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* context, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* context, uint32_t scrollIndex)
         {
             int16_t y = 47 - self->widgets[widx::scrollview].top + 14;
 
@@ -1894,7 +1894,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433819
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1918,7 +1918,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043383E
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
@@ -1968,7 +1968,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043385D
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -1984,7 +1984,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433868
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == common::widx::company_select)
             {
@@ -1995,7 +1995,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043386F
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             const auto& company = companymgr::get(self->number);
             *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
@@ -2008,7 +2008,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043399D
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -2016,7 +2016,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x004339B7
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
             self->set_size(windowSize);
@@ -2024,17 +2024,17 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.text_input = text_input;
-            events.on_dropdown = on_dropdown;
-            events.get_scroll_size = get_scroll_size;
+            events.draw_scroll = drawScroll;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.text_input = textInput;
+            events.on_dropdown = onDropdown;
+            events.get_scroll_size = getScrollSize;
             events.tooltip = tooltip;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
         }
     }
 
@@ -2078,7 +2078,7 @@ namespace openloco::ui::windows::CompanyWindow
         return window;
     }
 
-    namespace cargo_delivered
+    namespace CargoDelivered
     {
         const gfx::ui_size_t windowSize = { 240, 382 };
 
@@ -2092,7 +2092,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x00433A22
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -2174,7 +2174,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433BE6
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -2198,14 +2198,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433C0B
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
                 dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x00433C16
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -2214,14 +2214,14 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433C21
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == common::widx::company_select)
                 common::switchCompany(self, itemIndex);
         }
 
         // 0x00433C7D
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -2229,7 +2229,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433C97
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
 
@@ -2251,14 +2251,14 @@ namespace openloco::ui::windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.text_input = text_input;
-            events.on_dropdown = on_dropdown;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.text_input = textInput;
+            events.on_dropdown = onDropdown;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
         }
     }
 
@@ -2276,7 +2276,7 @@ namespace openloco::ui::windows::CompanyWindow
         static window_event_list events;
 
         // 0x00433D39
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             common::switchTabWidgets(self);
 
@@ -2316,7 +2316,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00433FFE
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -2340,7 +2340,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00434023
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget == common::widx::caption)
             {
@@ -2349,7 +2349,7 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x0043402E
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no += 1;
             self->call_prepare_draw();
@@ -2357,19 +2357,19 @@ namespace openloco::ui::windows::CompanyWindow
         }
 
         // 0x00434048
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize);
         }
 
         static void initEvents()
         {
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.text_input = text_input;
-            events.on_update = on_update;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.text_input = textInput;
+            events.on_update = onUpdate;
+            events.on_resize = onResize;
         }
     }
 
@@ -2428,7 +2428,7 @@ namespace openloco::ui::windows::CompanyWindow
             { details::widgets, widx::tab_details, &details::events, &details::enabledWidgets, &details::windowSize },
             { colour_scheme::widgets, widx::tab_colour_scheme, &colour_scheme::events, &colour_scheme::enabledWidgets, &colour_scheme::windowSize },
             { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
-            { cargo_delivered::widgets, widx::tab_cargo_delivered, &cargo_delivered::events, &cargo_delivered::enabledWidgets, &cargo_delivered::windowSize },
+            { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::windowSize },
             { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
         };
 
@@ -2438,7 +2438,7 @@ namespace openloco::ui::windows::CompanyWindow
             details::initEvents();
             colour_scheme::initEvents();
             finances::initEvents();
-            cargo_delivered::initEvents();
+            CargoDelivered::initEvents();
             challenge::initEvents();
         }
 
@@ -2475,7 +2475,7 @@ namespace openloco::ui::windows::CompanyWindow
                 details::widgets,
                 colour_scheme::widgets,
                 finances::widgets,
-                cargo_delivered::widgets,
+                CargoDelivered::widgets,
                 challenge::widgets,
             };
 
