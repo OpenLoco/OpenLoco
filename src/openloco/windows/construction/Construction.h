@@ -125,14 +125,14 @@ namespace openloco::ui::windows::construction
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
-        void prepare_draw(window* self);
+        void prepareDraw(window* self);
         void switchTab(window* self, widget_index widgetIndex);
         void repositionTabs(window* self);
         void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
-        void init_events();
+        void initEvents();
         void sub_49FEC7();
-        void on_close(window* self);
-        void on_update(window* self, uint8_t flag);
+        void onClose(window* self);
+        void onUpdate(window* self, uint8_t flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(window* self);
@@ -216,7 +216,7 @@ namespace openloco::ui::windows::construction
 
         void activateSelectedConstructionWidgets();
         void tabReset(window* self);
-        void init_events();
+        void initEvents();
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
     }
@@ -237,7 +237,7 @@ namespace openloco::ui::windows::construction
 
         extern window_event_list events;
         void tabReset(window* self);
-        void init_events();
+        void initEvents();
     }
 
     namespace signal
@@ -256,7 +256,7 @@ namespace openloco::ui::windows::construction
 
         extern window_event_list events;
         void tabReset(window* self);
-        void init_events();
+        void initEvents();
     }
 
     namespace overhead
@@ -278,6 +278,6 @@ namespace openloco::ui::windows::construction
 
         extern window_event_list events;
         void tabReset(window* self);
-        void init_events();
+        void initEvents();
     }
 }

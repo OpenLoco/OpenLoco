@@ -367,7 +367,7 @@ namespace openloco::ui::windows::construction
             { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets, &overhead::tabReset },
         };
 
-        void prepare_draw(window* self)
+        void prepareDraw(window* self)
         {
             // Reset tab widgets if needed
             const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -694,7 +694,7 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049DD14
-        void on_close(window* self)
+        void onClose(window* self)
         {
             sub_49FEC7();
             WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
@@ -705,7 +705,7 @@ namespace openloco::ui::windows::construction
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
-        void on_update(window* self, uint8_t flag)
+        void onUpdate(window* self, uint8_t flag)
         {
             self->frame_no++;
             self->call_prepare_draw();
@@ -720,12 +720,12 @@ namespace openloco::ui::windows::construction
             sub_49FEC7();
         }
 
-        void init_events()
+        void initEvents()
         {
-            construction::init_events();
-            station::init_events();
-            signal::init_events();
-            overhead::init_events();
+            construction::initEvents();
+            station::initEvents();
+            signal::initEvents();
+            overhead::initEvents();
         }
 
         // 0x004CD454
@@ -811,7 +811,7 @@ namespace openloco::ui::windows::construction
             ui::windows::showDirectionArrows();
             ui::windows::showGridlines();
 
-            common::init_events();
+            common::initEvents();
         }
 
         // 0x004723BD
