@@ -21,7 +21,7 @@
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "toolbar_top_common.h"
+#include "toolbarTopCommon.h"
 
 using namespace openloco::interop;
 
