@@ -138,11 +138,6 @@ namespace openloco::gfx
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
-    g1_element* getG1Element(uint32_t image)
-    {
-        return &_g1Elements[image];
-    }
-
     // 0x00447485
     // edi: dpi
     // ebp: fill
