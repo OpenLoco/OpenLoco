@@ -107,7 +107,7 @@ namespace openloco::ui::EditKeyboardShortcut
     window* open(uint8_t shortcutIndex);
 }
 
-namespace openloco::ui::about_music
+namespace openloco::ui::aboutMusic
 {
     void open();
 }
@@ -266,7 +266,7 @@ namespace openloco::ui::windows::vehicle_list
     window* open(uint16_t companyId, uint8_t type);
 }
 
-namespace openloco::ui::build_vehicle
+namespace openloco::ui::buildVehicle
 {
     window* open(uint32_t vehicle, uint32_t flags);
     void sub_4B92A5(ui::window* window);

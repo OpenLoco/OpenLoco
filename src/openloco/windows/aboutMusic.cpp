@@ -10,7 +10,7 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::about_music
+namespace openloco::ui::aboutMusic
 {
     constexpr gfx::ui_size_t windowSize = { 500, 312 };
 
@@ -65,7 +65,7 @@ namespace openloco::ui::about_music
     }
 
     // 0x0043BFB0
-    static void on_mouse_up(ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(ui::window* const window, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -76,7 +76,7 @@ namespace openloco::ui::about_music
     }
 
     // 0x0043BFBB
-    static void get_scroll_size(ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         *scrollHeight = numSongs * (10 + 10 + 14);
     }
@@ -95,9 +95,9 @@ namespace openloco::ui::about_music
     }
 
     // 0x0043B8BE
-    static void draw_scroll(ui::window*, gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(ui::window*, gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
-        static const std::pair<string_id, string_id> strings_to_draw[numSongs] = {
+        static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },
             { string_ids::long_dusty_road, string_ids::long_dusty_road_credit },
             { string_ids::flying_high, string_ids::flying_high_credit },
@@ -134,16 +134,16 @@ namespace openloco::ui::about_music
         const int16_t x = 240;
         int16_t y = 2;
 
-        for (const auto& song_strings : strings_to_draw)
+        for (const auto& songStrings : stringsToDraw)
         {
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            draw_string_centred(*dpi, x, y, colour::black, song_strings.first, nullptr);
+            draw_string_centred(*dpi, x, y, colour::black, songStrings.first, nullptr);
             y += 10;
 
             // Credit line
-            draw_string_centred(*dpi, x, y, colour::black, song_strings.second, nullptr);
+            draw_string_centred(*dpi, x, y, colour::black, songStrings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
@@ -154,10 +154,10 @@ namespace openloco::ui::about_music
 
     static void initEvents()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.get_scroll_size = get_scroll_size;
+        _events.on_mouse_up = onMouseUp;
+        _events.get_scroll_size = getScrollSize;
         _events.tooltip = tooltip;
         _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.draw_scroll = drawScroll;
     }
 }
