@@ -164,19 +164,19 @@ namespace openloco::ui::NewsWindow::ticker
         auto height = self->height;
         gfx::drawpixelinfo_t* clipped = nullptr;
 
-        gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height);
+        gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height);
 
         if (clipped == nullptr)
             return;
 
-        auto colour = colour::get_shade(colour::white, 5);
+        auto colour = colour::getShade(colour::white, 5);
 
         if (!(_word_4F8BE4[news->type] & (1 << 1)))
         {
-            colour = colour::get_shade(colour::salmon_pink, 5);
+            colour = colour::getShade(colour::salmon_pink, 5);
         }
 
-        gfx::clear_single(*clipped, colour);
+        gfx::clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));

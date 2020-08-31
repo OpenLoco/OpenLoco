@@ -197,20 +197,20 @@ namespace openloco::ui::tooltip
         uint16_t width = window->width;
         uint16_t height = window->height;
 
-        gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
+        gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
 
-        gfx::draw_rect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        gfx::draw_rect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        gfx::draw_rect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        gfx::draw_string_centred_raw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, colour::black, &_text[0]);
+        gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, colour::black, &_text[0]);
     }
 
     // 0x004C94F7

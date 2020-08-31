@@ -269,7 +269,7 @@ namespace openloco::ui::WindowManager
             0x004C5C69,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                gfx::set_dirty_blocks(regs.ax, regs.bx, regs.dx, regs.bp);
+                gfx::setDirtyBlocks(regs.ax, regs.bx, regs.dx, regs.bp);
                 regs = backup;
 
                 return 0;
@@ -540,7 +540,7 @@ namespace openloco::ui::WindowManager
 
         if (!intro::isActive())
         {
-            gfx::draw_dirty_blocks();
+            gfx::drawDirtyBlocks();
         }
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -732,7 +732,7 @@ namespace openloco::ui::WindowManager
 
             if (widget.left != -2)
             {
-                gfx::set_dirty_blocks(
+                gfx::setDirtyBlocks(
                     w->x + widget.left,
                     w->y + widget.top,
                     w->x + widget.right + 1,
@@ -1672,7 +1672,7 @@ namespace openloco::ui::WindowManager
 
             if (left < right && top < bottom)
             {
-                gfx::redraw_screen_rect(left, top, right, bottom);
+                gfx::redrawScreenRect(left, top, right, bottom);
             }
         }
 
@@ -1810,7 +1810,7 @@ namespace openloco::ui::WindowManager
             if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
             {
                 // redraw whole viewport
-                gfx::redraw_screen_rect(left, top, right, bottom);
+                gfx::redrawScreenRect(left, top, right, bottom);
             }
             else
             {
@@ -1821,14 +1821,14 @@ namespace openloco::ui::WindowManager
                 {
                     // draw left
                     int16_t _right = left + x;
-                    gfx::redraw_screen_rect(left, top, _right, bottom);
+                    gfx::redrawScreenRect(left, top, _right, bottom);
                     left += x;
                 }
                 else if (x < 0)
                 {
                     // draw right
                     int16_t _left = right + x;
-                    gfx::redraw_screen_rect(_left, top, right, bottom);
+                    gfx::redrawScreenRect(_left, top, right, bottom);
                     right += x;
                 }
 
@@ -1836,13 +1836,13 @@ namespace openloco::ui::WindowManager
                 {
                     // draw top
                     bottom = top + y;
-                    gfx::redraw_screen_rect(left, top, right, bottom);
+                    gfx::redrawScreenRect(left, top, right, bottom);
                 }
                 else if (y < 0)
                 {
                     // draw bottom
                     top = bottom + y;
-                    gfx::redraw_screen_rect(left, top, right, bottom);
+                    gfx::redrawScreenRect(left, top, right, bottom);
                 }
             }
         }

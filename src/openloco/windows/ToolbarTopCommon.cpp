@@ -72,10 +72,10 @@ namespace openloco::ui::windows::toolbar_top::common
                 bgImage++;
             }
 
-            gfx::draw_image(dpi, x, y, fgImage);
+            gfx::drawImage(dpi, x, y, fgImage);
 
             y = self->widgets[widx::road_menu].top + self->y;
-            gfx::draw_image(dpi, x, y, bgImage);
+            gfx::drawImage(dpi, x, y, bgImage);
         }
     }
 

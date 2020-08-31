@@ -579,12 +579,12 @@ namespace openloco::ui::windows::terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                gfx::draw_string_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+                gfx::drawString_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &treeObj->name);
+            gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(tree_object* treeObj, gfx::drawpixelinfo_t* clipped)
@@ -606,14 +606,14 @@ namespace openloco::ui::windows::terraform
                 }
                 image = gfx::recolour(image, colour);
             }
-            gfx::draw_image(clipped, 32, 96, image);
+            gfx::drawImage(clipped, 32, 96, image);
         }
 
         // 0x004BB982
         static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::get_shade(self->colours[1], 3);
-            gfx::clear_single(*dpi, shade);
+            auto shade = colour::getShade(self->colours[1], 3);
+            gfx::clearSingle(*dpi, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -625,19 +625,19 @@ namespace openloco::ui::windows::terraform
                     if (self->row_info[i] == self->var_846)
                     {
                         _lastTreeColourFlag = colour::translucent_flag;
-                        gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
+                        gfx::drawRectInset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = colour::translucent_flag | colour::outline_flag;
-                    gfx::draw_rect_inset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                    gfx::drawRectInset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
                 auto treeObj = objectmgr::get<tree_object>(self->row_info[i]);
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
                 {
                     drawTreeThumb(treeObj, clipped);
                 }
@@ -907,7 +907,7 @@ namespace openloco::ui::windows::terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
+            gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -1467,7 +1467,7 @@ namespace openloco::ui::windows::terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
+                    gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
                 }
             }
 
@@ -1479,7 +1479,7 @@ namespace openloco::ui::windows::terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
+                    gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
                 }
             }
         }
@@ -1704,7 +1704,7 @@ namespace openloco::ui::windows::terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
+                    gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::increase_height_cost, &args);
                 }
             }
 
@@ -1717,7 +1717,7 @@ namespace openloco::ui::windows::terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
+                    gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::decrease_height_cost, &args);
                 }
             }
         }
@@ -2050,14 +2050,14 @@ namespace openloco::ui::windows::terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &wallObj->name);
+            gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C
         static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::get_shade(self->colours[1], 3);
-            gfx::clear_single(*dpi, shade);
+            auto shade = colour::getShade(self->colours[1], 3);
+            gfx::clearSingle(*dpi, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -2067,20 +2067,20 @@ namespace openloco::ui::windows::terraform
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        gfx::draw_rect_inset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], colour::translucent_flag);
+                        gfx::drawRectInset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    gfx::draw_rect_inset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                    gfx::drawRectInset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
                 auto wallObj = objectmgr::get<wall_object>(self->row_info[i]);
 
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
-                    gfx::draw_image(clipped, 34, 28, wallObj->sprite);
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
+                    gfx::drawImage(clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;
 

@@ -64,7 +64,7 @@ namespace openloco::ui::title_options
         int16_t y = window->y + window->widgets[widx::options_button].top + 2;
         gfx::point_t origin = { x, y };
 
-        gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid, (const char*)&string_ids::options);
+        gfx::drawStringCentredWrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid, (const char*)&string_ids::options);
     }
 
     static void onMouseUp(window* window, widget_index widgetIndex)

@@ -13,9 +13,9 @@ namespace openloco::drawing
     static loco_global<ui::screen_info_t, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
 
-    static void window_draw(drawpixelinfo_t* dpi, ui::window* w, Rect rect);
-    static void window_draw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool window_draw_split(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, Rect rect);
+    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     // T[m][n]
     template<typename T>
@@ -188,13 +188,13 @@ namespace openloco::drawing
             if (rect.left() >= w->x + w->width || rect.top() >= w->y + w->height)
                 continue;
 
-            window_draw(&windowDPI, w, rect);
+            windowDraw(&windowDPI, w, rect);
         }
     }
 
-    static void window_draw(drawpixelinfo_t* dpi, ui::window* w, Rect rect)
+    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, Rect rect)
     {
-        window_draw(dpi, w, rect.left(), rect.top(), rect.right(), rect.bottom());
+        windowDraw(dpi, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
 
     /**
@@ -206,13 +206,13 @@ namespace openloco::drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void window_draw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
 
         // Split window into only the regions that require drawing
-        if (window_draw_split(dpi, w, left, top, right, bottom))
+        if (windowDrawSplit(dpi, w, left, top, right, bottom))
             return;
 
         // Clamp region
@@ -251,7 +251,7 @@ namespace openloco::drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool window_draw_split(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (uint32_t index = ui::WindowManager::indexOf(w) + 1; index < ui::WindowManager::count(); index++)
@@ -270,26 +270,26 @@ namespace openloco::drawing
             if (topwindow->x > left)
             {
                 // Split draw at topwindow.left
-                window_draw(dpi, w, left, top, topwindow->x, bottom);
-                window_draw(dpi, w, topwindow->x, top, right, bottom);
+                windowDraw(dpi, w, left, top, topwindow->x, bottom);
+                windowDraw(dpi, w, topwindow->x, top, right, bottom);
             }
             else if (topwindow->x + topwindow->width < right)
             {
                 // Split draw at topwindow.right
-                window_draw(dpi, w, left, top, topwindow->x + topwindow->width, bottom);
-                window_draw(dpi, w, topwindow->x + topwindow->width, top, right, bottom);
+                windowDraw(dpi, w, left, top, topwindow->x + topwindow->width, bottom);
+                windowDraw(dpi, w, topwindow->x + topwindow->width, top, right, bottom);
             }
             else if (topwindow->y > top)
             {
                 // Split draw at topwindow.top
-                window_draw(dpi, w, left, top, right, topwindow->y);
-                window_draw(dpi, w, left, topwindow->y, right, bottom);
+                windowDraw(dpi, w, left, top, right, topwindow->y);
+                windowDraw(dpi, w, left, topwindow->y, right, bottom);
             }
             else if (topwindow->y + topwindow->height < bottom)
             {
                 // Split draw at topwindow.bottom
-                window_draw(dpi, w, left, top, right, topwindow->y + topwindow->height);
-                window_draw(dpi, w, left, topwindow->y + topwindow->height, right, bottom);
+                windowDraw(dpi, w, left, top, right, topwindow->y + topwindow->height);
+                windowDraw(dpi, w, left, topwindow->y + topwindow->height, right, bottom);
             }
 
             // Drawing for this region should be done now, exit

@@ -138,7 +138,7 @@ namespace openloco::ui::windows::industry_list
                 args.push(string_ids::status_num_industries_plural);
             args.push(self->var_83C);
 
-            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00457EC4
@@ -376,8 +376,8 @@ namespace openloco::ui::windows::industry_list
         // 0x00457D2A
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::get_shade(self->colours[1], 4);
-            gfx::clear_single(*dpi, shade);
+            auto shade = colour::getShade(self->colours[1], 4);
+            gfx::clearSingle(*dpi, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
@@ -396,7 +396,7 @@ namespace openloco::ui::windows::industry_list
                 // Highlight selection.
                 if (industryId == self->row_hover)
                 {
-                    gfx::draw_rect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
+                    gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
                     text_colour_id = string_ids::wcolour2_stringid;
                 }
 
@@ -410,7 +410,7 @@ namespace openloco::ui::windows::industry_list
                     args.push(industry->name);
                     args.push(industry->town);
 
-                    gfx::draw_string_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &args);
                 }
                 // Industry Status
                 {
@@ -420,7 +420,7 @@ namespace openloco::ui::windows::industry_list
                     auto args = FormatArguments();
                     args.push(string_ids::buffer_1250);
 
-                    gfx::draw_string_494BBF(*dpi, 200, yPos, 238, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 200, yPos, 238, colour::black, text_colour_id, &args);
                 }
                 // Industry Production Delivered
                 {
@@ -435,7 +435,7 @@ namespace openloco::ui::windows::industry_list
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    gfx::draw_string_494BBF(*dpi, 440, yPos, 138, colour::black, string_ids::production_transported_percent, &args);
+                    gfx::drawString_494BBF(*dpi, 440, yPos, 138, colour::black, string_ids::production_transported_percent, &args);
                 }
                 yPos += rowHeight;
             }
@@ -619,7 +619,7 @@ namespace openloco::ui::windows::industry_list
                 auto xPos = self->x + 3;
                 auto yPos = self->y + self->height - 13;
                 auto width = self->width - 19;
-                gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::no_industry_available);
+                gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::no_industry_available);
                 return;
             }
 
@@ -654,14 +654,14 @@ namespace openloco::ui::windows::industry_list
                 auto yPos = self->y + self->height - 13;
                 widthOffset = 138;
 
-                gfx::draw_string_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+                gfx::drawString_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
             }
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &industryObj->name);
+            gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A
@@ -875,8 +875,8 @@ namespace openloco::ui::windows::industry_list
         // 0x00458352
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::get_shade(self->colours[1], 4);
-            gfx::clear_single(*dpi, shade);
+            auto shade = colour::getShade(self->colours[1], 4);
+            gfx::clearSingle(*dpi, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
             uint16_t xPos = 0;
@@ -889,20 +889,20 @@ namespace openloco::ui::windows::industry_list
                     if (self->row_info[i] == self->var_846)
                     {
                         word_E0C3C6 = colour::translucent_flag;
-                        gfx::draw_rect_inset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], colour::translucent_flag);
+                        gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = colour::translucent_flag | colour::outline_flag;
-                    gfx::draw_rect_inset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                    gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
                 }
 
                 auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
 
                 gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
+                if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                     drawIndustryThumb(clipped, industryObj, 56, 96);
 
                 xPos += rowHeight;

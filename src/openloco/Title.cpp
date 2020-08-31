@@ -106,7 +106,7 @@ namespace openloco::title
         sub_4284C8();
         gui::init();
         sub_444357();
-        gfx::invalidate_screen();
+        gfx::invalidateScreen();
         _screenAge = 0;
 
         audio::playTitleScreenMusic();

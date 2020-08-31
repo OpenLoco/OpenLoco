@@ -253,11 +253,11 @@ namespace openloco::ui::textinput
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
-        gfx::draw_string_centred_wrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid, &_commonFormatArgs[0]);
+        gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[widx::input];
         gfx::drawpixelinfo_t* clipped = nullptr;
-        if (!gfx::clip_drawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
+        if (!gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
             return;
         }
@@ -268,7 +268,7 @@ namespace openloco::ui::textinput
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
 
         position = { _xOffset, 1 };
-        gfx::draw_string_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
 
         if ((_cursorFrame % 32) >= 16)
         {
@@ -280,8 +280,8 @@ namespace openloco::ui::textinput
 
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
         position = { _xOffset, 1 };
-        gfx::draw_string_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
-        gfx::fill_rect(clipped, position.x, position.y, position.x, position.y + 9, colour::get_shade(window->colours[1], 9));
+        gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, colour::getShade(window->colours[1], 9));
     }
 
     // 0x004CE8B6

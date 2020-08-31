@@ -54,7 +54,7 @@ namespace openloco::ui::windows
     // 0x00439298
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
-        gfx::draw_image(dpi, window->x, window->y, image_ids::locomotion_logo);
+        gfx::drawImage(dpi, window->x, window->y, image_ids::locomotion_logo);
     }
 
     // 0x004392AD

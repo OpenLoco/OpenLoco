@@ -66,8 +66,8 @@ namespace openloco
             return c & ~translucent_flag;
         }
 
-        void init_colour_map();
-        palette_index_t get_shade(colour_t colour, uint8_t shade);
+        void initColourMap();
+        palette_index_t getShade(colour_t colour, uint8_t shade);
     }
 
     namespace palette_index

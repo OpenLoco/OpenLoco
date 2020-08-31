@@ -244,7 +244,7 @@ namespace openloco::ui::windows::construction::overhead
             auto width = self->widgets[widx::image].width();
             auto height = self->widgets[widx::image].height();
 
-            if (gfx::clip_drawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
+            if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
             {
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
@@ -287,7 +287,7 @@ namespace openloco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
         }
     }
 

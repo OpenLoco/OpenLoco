@@ -243,7 +243,7 @@ namespace openloco::ui::options
                         cfg.flags |= config::flags::landscape_smoothing;
                     }
                     openloco::config::write();
-                    gfx::invalidate_screen();
+                    gfx::invalidateScreen();
                     return;
                 }
 
@@ -259,7 +259,7 @@ namespace openloco::ui::options
                         cfg.flags |= config::flags::gridlines_on_landscape;
                     }
                     openloco::config::write();
-                    gfx::invalidate_screen();
+                    gfx::invalidateScreen();
 
                     auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
@@ -302,7 +302,7 @@ namespace openloco::ui::options
             auto& cfg = openloco::config::get();
             cfg.construction_marker = ax;
             openloco::config::write();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
 #pragma mark - Vehicle zoom (Widget 15)
@@ -332,7 +332,7 @@ namespace openloco::ui::options
             auto& cfg = openloco::config::get();
             cfg.vehicles_min_scale = ax;
             openloco::config::write();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
 #pragma mark - Station names minimum scale (Widget 17)
@@ -362,7 +362,7 @@ namespace openloco::ui::options
             auto& cfg = openloco::config::get();
             cfg.station_names_min_scale = ax;
             openloco::config::write();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -595,26 +595,26 @@ namespace openloco::ui::options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
+            drawString_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
+            drawString_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
 
             y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
-            draw_string_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
-            draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
 
             int scale = (int)(config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
-            draw_string_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
+            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
@@ -937,14 +937,14 @@ namespace openloco::ui::options
 
             common::drawTabs(w, dpi);
 
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
 
-            gfx::draw_string_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
 
-            gfx::draw_image(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
+            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
 
             int16_t x = 90 + (config::get().volume / 32);
-            gfx::draw_image(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
+            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1341,11 +1341,11 @@ namespace openloco::ui::options
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1460,7 +1460,7 @@ namespace openloco::ui::options
             config::getNew().language = ld.locale;
             config::write();
             localisation::loadLanguageFile();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
         // 0x004C0C73
@@ -1639,7 +1639,7 @@ namespace openloco::ui::options
             }
 
             config::write();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
         // 0x004C0FFA
@@ -1681,7 +1681,7 @@ namespace openloco::ui::options
             }
 
             config::write();
-            gfx::invalidate_screen();
+            gfx::invalidateScreen();
         }
 
         // 0x004C1195
@@ -1947,7 +1947,7 @@ namespace openloco::ui::options
 
             FormatArguments args = {};
             args.push(string_ids::buffer_2039);
-            gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
+            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2

@@ -396,7 +396,7 @@ namespace openloco::ui
     {
         update(width, height);
         gui::resize();
-        gfx::invalidate_screen();
+        gfx::invalidateScreen();
 
         // Save window size to config if NOT maximized
         auto wf = SDL_GetWindowFlags(window);
@@ -433,7 +433,7 @@ namespace openloco::ui
             }
 
             // Copy pixels from the virtual screen buffer to the surface
-            auto& dpi = gfx::screen_dpi();
+            auto& dpi = gfx::screenDpi();
             if (dpi.bits != nullptr)
             {
                 std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
@@ -841,8 +841,8 @@ namespace openloco::ui
         legacyConfig.resolution_height = newResolution.height;
 
         openloco::config::write();
-        gfx::invalidate_screen();
         ui::triggerResize();
+        gfx::invalidateScreen();
 
         return true;
     }
@@ -1136,8 +1136,8 @@ namespace openloco::ui
         config.scale_factor = newScaleFactor;
 
         openloco::config::write();
-        gfx::invalidate_screen();
         ui::triggerResize();
+        gfx::invalidateScreen();
     }
 
     void adjustWindowScale(float adjust_by)

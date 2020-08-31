@@ -918,7 +918,7 @@ namespace openloco::ui::BuildVehicle
                 bottomLeftMessage = string_ids::select_vehicle_to_add_to_string_id;
             }
 
-            gfx::draw_string_494BBF(*dpi, x, y, window->width - 186, colour::black, bottomLeftMessage, &args);
+            gfx::drawString_494BBF(*dpi, x, y, window->width - 186, colour::black, bottomLeftMessage, &args);
         }
 
         if (window->row_hover == -1)
@@ -1120,7 +1120,7 @@ namespace openloco::ui::BuildVehicle
 
         auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
         auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
-        gfx::draw_string_495224(*dpi, x, y, 180, colour::black, string_ids::buffer_1250);
+        gfx::drawString_495224(*dpi, x, y, 180, colour::black, string_ids::buffer_1250);
     }
 
     // 0x4C3307
@@ -1130,7 +1130,7 @@ namespace openloco::ui::BuildVehicle
         {
             case scrollIdx::vehicle_selection:
             {
-                auto colour = colour::get_shade(window->colours[1], 4);
+                auto colour = colour::getShade(window->colours[1], 4);
                 gfx::clear(*dpi, colour * 0x01010101);
                 if (window->var_83C == 0)
                 {
@@ -1147,7 +1147,7 @@ namespace openloco::ui::BuildVehicle
                     auto widget = window->widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window->row_height - 10) / 2;
-                    gfx::draw_string_495224(*dpi, 3, y, width, colour::black, defaultMessage, &args);
+                    gfx::drawString_495224(*dpi, 3, y, width, colour::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1173,7 +1173,7 @@ namespace openloco::ui::BuildVehicle
                         auto colouredString = string_ids::black_stringid;
                         if (window->row_hover == vehicleType)
                         {
-                            gfx::fill_rect(dpi, 0, y, window->width, y + window->row_height - 1, 0x2000030);
+                            gfx::fillRect(dpi, 0, y, window->width, y + window->row_height - 1, 0x2000030);
                             colouredString = string_ids::wcolour2_stringid;
                         }
 
@@ -1184,14 +1184,14 @@ namespace openloco::ui::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window->row_height - 10) / 2;
-                        gfx::draw_string_494B3F(*dpi, x + 3, y + half, colour::black, colouredString, &args);
+                        gfx::drawString_494B3F(*dpi, x + 3, y + half, colour::black, colouredString, &args);
                     }
                 }
                 break;
             }
             case scrollIdx::vehicle_preview:
             {
-                auto colour = colour::get_shade(window->colours[1], 0);
+                auto colour = colour::getShade(window->colours[1], 0);
                 // gfx::clear needs the colour copied to each byte of eax
                 gfx::clear(*dpi, colour * 0x01010101);
 
@@ -1222,7 +1222,7 @@ namespace openloco::ui::BuildVehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(string_ids::buffer_1250);
-                gfx::draw_string_centred_clipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid, &args);
+                gfx::drawStringCentredClipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid, &args);
                 break;
             }
         }
@@ -1433,13 +1433,13 @@ namespace openloco::ui::BuildVehicle
         auto top = window->y + 69;
         auto right = left + window->width - 187;
         auto bottom = top;
-        gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 7));
+        gfx::fillRect(dpi, left, top, right, bottom, colour::getShade(window->colours[1], 7));
 
         left = window->x + window->width - 187;
         top = window->y + 41;
         right = left;
         bottom = top + 27;
-        gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 7));
+        gfx::fillRect(dpi, left, top, right, bottom, colour::getShade(window->colours[1], 7));
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
@@ -1450,7 +1450,7 @@ namespace openloco::ui::BuildVehicle
                 top = widget.top + window->y + 26;
                 right = left + 29;
                 bottom = top;
-                gfx::fill_rect(dpi, left, top, right, bottom, colour::get_shade(window->colours[1], 5));
+                gfx::fillRect(dpi, left, top, right, bottom, colour::getShade(window->colours[1], 5));
             }
 
             auto img = 0;

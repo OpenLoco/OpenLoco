@@ -603,10 +603,10 @@ namespace openloco::ui::windows::toolbar_top::game
                 bg_image++;
             }
 
-            gfx::draw_image(dpi, x, y, fg_image);
+            gfx::drawImage(dpi, x, y, fg_image);
 
             y = window->widgets[widx::railroad_menu].top + window->y;
-            gfx::draw_image(dpi, x, y, bg_image);
+            gfx::drawImage(dpi, x, y, bg_image);
         }
 
         {
@@ -633,10 +633,10 @@ namespace openloco::ui::windows::toolbar_top::game
                 bg_image++;
             }
 
-            gfx::draw_image(dpi, x, y, fg_image);
+            gfx::drawImage(dpi, x, y, fg_image);
 
             y = window->widgets[common::widx::vehicles_menu].top + window->y;
-            gfx::draw_image(dpi, x, y, bg_image);
+            gfx::drawImage(dpi, x, y, bg_image);
         }
 
         {
@@ -659,7 +659,7 @@ namespace openloco::ui::windows::toolbar_top::game
             if (input::isDropdownActive(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
                 fg_image++;
 
-            gfx::draw_image(dpi, x, y, fg_image);
+            gfx::drawImage(dpi, x, y, fg_image);
         }
     }
 

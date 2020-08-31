@@ -300,7 +300,7 @@ namespace openloco
         _mapTooltipFormatArguments = string_ids::null;
         _mapTooltipOwner = company_id::null;
 
-        colour::init_colour_map();
+        colour::initColourMap();
         ui::WindowManager::init();
         ui::viewportmgr::init();
 
@@ -339,7 +339,7 @@ namespace openloco
         scenariomgr::loadIndex(0);
         progressbar::begin(string_ids::loading, 0);
         progressbar::setProgress(60);
-        gfx::load_g1();
+        gfx::loadG1();
         progressbar::setProgress(220);
         call(0x004949BC);
         progressbar::setProgress(235);
@@ -359,7 +359,7 @@ namespace openloco
 #endif
         title::start();
         gui::init();
-        gfx::clear(gfx::screen_dpi(), 0x0A0A0A0A);
+        gfx::clear(gfx::screenDpi(), 0x0A0A0A0A);
     }
 
     // 0x00428E47
@@ -566,8 +566,8 @@ namespace openloco
         if (config::get().var_72 == 0)
         {
             config::get().var_72 = 16;
-            gfx::clear(gfx::screen_dpi(), 0);
             ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            gfx::clear(gfx::screenDpi(), 0);
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
@@ -589,7 +589,7 @@ namespace openloco
                     }
                 }
                 ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                gfx::invalidate_screen();
+                gfx::invalidateScreen();
                 if (config::get().var_72 != 96)
                 {
                     tickWait();

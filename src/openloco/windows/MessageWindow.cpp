@@ -215,9 +215,9 @@ namespace openloco::ui::MessageWindow
         // 0x0042A5D7
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto colour = colour::get_shade(self->colours[1], 4);
+            auto colour = colour::getShade(self->colours[1], 4);
 
-            gfx::clear_single(*dpi, colour);
+            gfx::clearSingle(*dpi, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
@@ -244,7 +244,7 @@ namespace openloco::ui::MessageWindow
 
                 if (self->row_hover == i)
                 {
-                    gfx::draw_rect(dpi, 0, height, self->width, 38, (1 << 25) | palette_index::index_30);
+                    gfx::drawRect(dpi, 0, height, self->width, 38, (1 << 25) | palette_index::index_30);
                     stringId = string_ids::wcolour2_stringid;
                 }
 
@@ -253,14 +253,14 @@ namespace openloco::ui::MessageWindow
                     args.push(string_ids::tiny_font_date);
                     args.push(message->date);
 
-                    gfx::draw_string_494B3F(*dpi, 0, height, colour::black, stringId, &args);
+                    gfx::drawString_494B3F(*dpi, 0, height, colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(string_ids::buffer_2039);
 
                     auto width = self->widgets[widx::scrollview].width() - 14;
-                    gfx::draw_string_495224(*dpi, 0, height + 6, width, colour::black, stringId, &args);
+                    gfx::drawString_495224(*dpi, 0, height + 6, width, colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -497,7 +497,7 @@ namespace openloco::ui::MessageWindow
                     {
                         config::get().news_settings[dropdownIndex] = static_cast<config::newsType>(itemIndex);
                         config::write();
-                        gfx::invalidate_screen();
+                        gfx::invalidateScreen();
                     }
                     break;
                 }
@@ -532,7 +532,7 @@ namespace openloco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    gfx::draw_string_494B3F(*dpi, self->x + 4, yPos, colour::black, string_ids::wcolour2_stringid, &args);
+                    gfx::drawString_494B3F(*dpi, self->x + 4, yPos, colour::black, string_ids::wcolour2_stringid, &args);
                 }
 
                 {
@@ -540,7 +540,7 @@ namespace openloco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
 
-                    gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+                    gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
                 }
                 yPos += 15;
             }

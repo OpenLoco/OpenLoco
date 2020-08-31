@@ -167,7 +167,7 @@ namespace openloco::ui::windows::construction::signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            gfx::draw_string_495224(*dpi, xPos, yPos, width, colour::black, string_ids::signal_black, &args);
+            gfx::drawString_495224(*dpi, xPos, yPos, width, colour::black, string_ids::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->var_0E;
@@ -175,14 +175,14 @@ namespace openloco::ui::windows::construction::signal
         xPos = self->widgets[widx::both_directions].mid_x() + self->x;
         yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
 
-        gfx::draw_image(dpi, xPos - 8, yPos, imageId);
+        gfx::drawImage(dpi, xPos - 8, yPos, imageId);
 
-        gfx::draw_image(dpi, xPos + 8, yPos, imageId + 4);
+        gfx::drawImage(dpi, xPos + 8, yPos, imageId + 4);
 
         xPos = self->widgets[widx::single_direction].mid_x() + self->x;
         yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
 
-        gfx::draw_image(dpi, xPos, yPos, imageId);
+        gfx::drawImage(dpi, xPos, yPos, imageId);
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
@@ -192,7 +192,7 @@ namespace openloco::ui::windows::construction::signal
             xPos = self->x + 69;
             yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
 
-            gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
         }
     }
 
