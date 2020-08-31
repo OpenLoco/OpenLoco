@@ -85,9 +85,9 @@ namespace openloco::ui::windows::CompanyList
         make_remap_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_payment_rates),            \
         make_remap_widget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_speed_records)
 
-        static void on_mouse_up(window* self, widget_index widgetIndex);
-        static void on_update(window* self);
-        static void prepare_draw(window* self);
+        static void onMouseUp(window* self, widget_index widgetIndex);
+        static void onUpdate(window* self);
+        static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void refreshCompanyList(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
@@ -96,7 +96,7 @@ namespace openloco::ui::windows::CompanyList
         static void initEvents();
     }
 
-    namespace company_list
+    namespace CompanyList
     {
         static const gfx::ui_size_t maxWindowSize = { 640, 470 };
         static const gfx::ui_size_t minWindowSize = { 300, 272 };
@@ -136,7 +136,7 @@ namespace openloco::ui::windows::CompanyList
         };
 
         // 0x004360A2
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -175,7 +175,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x004363CB
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(minWindowSize, maxWindowSize);
         }
@@ -325,7 +325,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x004362C0
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
 
@@ -360,13 +360,13 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00436321
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = self->var_83C * rowHeight;
         }
 
         // 0x004363A0
-        static void on_scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -380,7 +380,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00436361
-        static void on_scroll_mouse_over(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -417,9 +417,9 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00435D07
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -463,7 +463,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00435EA7
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto colour = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, colour);
@@ -567,19 +567,19 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = on_update;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = onUpdate;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = get_scroll_size;
-            events.scroll_mouse_down = on_scroll_mouse_down;
-            events.scroll_mouse_over = on_scroll_mouse_over;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down = onScrollMouseDown;
+            events.scroll_mouse_over = onScrollMouseOver;
             events.tooltip = tooltip;
             events.cursor = cursor;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -601,7 +601,7 @@ namespace openloco::ui::windows::CompanyList
         {
             gfx::ui_size_t windowSize = { 640, 272 };
 
-            window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &company_list::events);
+            window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &CompanyList::events);
 
             window->frame_no = 0;
             window->saved_view.clear();
@@ -620,19 +620,19 @@ namespace openloco::ui::windows::CompanyList
         }
 
         window->current_tab = 0;
-        window->min_width = company_list::minWindowSize.width;
-        window->min_height = company_list::minWindowSize.height;
-        window->max_width = company_list::maxWindowSize.width;
-        window->max_height = company_list::maxWindowSize.height;
+        window->min_width = CompanyList::minWindowSize.width;
+        window->min_height = CompanyList::minWindowSize.height;
+        window->max_width = CompanyList::maxWindowSize.width;
+        window->max_height = CompanyList::maxWindowSize.height;
 
         window->invalidate();
 
         common::initEvents();
 
-        window->widgets = company_list::widgets;
-        window->enabled_widgets = company_list::enabledWidgets;
+        window->widgets = CompanyList::widgets;
+        window->enabled_widgets = CompanyList::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &company_list::events;
+        window->event_handlers = &CompanyList::events;
         window->activated_widgets = 0;
         window->init_scroll_widgets();
 
@@ -646,7 +646,7 @@ namespace openloco::ui::windows::CompanyList
         window->call_on_mouse_up(common::widx::tab_performance);
     }
 
-    namespace company_performance
+    namespace CompanyPerformance
     {
         static const gfx::ui_size_t windowSize = { 635, 322 };
 
@@ -660,7 +660,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x004366D7
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -735,15 +735,15 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace cargo_units
+    namespace CargoUnits
     {
         static const gfx::ui_size_t windowSize = { 640, 272 };
 
@@ -757,7 +757,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x004369FB
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -832,15 +832,15 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace cargo_distance
+    namespace CargoDistance
     {
         static const gfx::ui_size_t windowSize = { 660, 272 };
 
@@ -854,7 +854,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x00436D1F
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -929,15 +929,15 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace company_values
+    namespace CompanyValues
     {
         static const gfx::ui_size_t windowSize = { 685, 322 };
 
@@ -951,7 +951,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x00437043
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -1026,15 +1026,15 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace cargo_payment_rates
+    namespace CargoPaymentRates
     {
         static const gfx::ui_size_t windowSize = { 495, 342 };
 
@@ -1048,7 +1048,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x0043737D
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -1193,15 +1193,15 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace company_speed_records
+    namespace CompanySpeedRecords
     {
         static const gfx::ui_size_t windowSize = { 495, 169 };
 
@@ -1215,7 +1215,7 @@ namespace openloco::ui::windows::CompanyList
         static window_event_list events;
 
         // 0x0043737D
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
@@ -1279,10 +1279,10 @@ namespace openloco::ui::windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -1298,17 +1298,17 @@ namespace openloco::ui::windows::CompanyList
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { company_list::widgets, widx::tab_company_list, &company_list::events, company_list::enabledWidgets },
-            { company_performance::widgets, widx::tab_performance, &company_performance::events, company_performance::enabledWidgets },
-            { cargo_units::widgets, widx::tab_cargo_units, &cargo_units::events, cargo_units::enabledWidgets },
-            { cargo_distance::widgets, widx::tab_cargo_distance, &cargo_distance::events, cargo_distance::enabledWidgets },
-            { company_values::widgets, widx::tab_values, &company_values::events, company_values::enabledWidgets },
-            { cargo_payment_rates::widgets, widx::tab_payment_rates, &cargo_payment_rates::events, cargo_payment_rates::enabledWidgets },
-            { company_speed_records::widgets, widx::tab_speed_records, &company_speed_records::events, company_speed_records::enabledWidgets },
+            { CompanyList::widgets, widx::tab_company_list, &CompanyList::events, CompanyList::enabledWidgets },
+            { CompanyPerformance::widgets, widx::tab_performance, &CompanyPerformance::events, CompanyPerformance::enabledWidgets },
+            { CargoUnits::widgets, widx::tab_cargo_units, &CargoUnits::events, CargoUnits::enabledWidgets },
+            { CargoDistance::widgets, widx::tab_cargo_distance, &CargoDistance::events, CargoDistance::enabledWidgets },
+            { CompanyValues::widgets, widx::tab_values, &CompanyValues::events, CompanyValues::enabledWidgets },
+            { CargoPaymentRates::widgets, widx::tab_payment_rates, &CargoPaymentRates::events, CargoPaymentRates::enabledWidgets },
+            { CompanySpeedRecords::widgets, widx::tab_speed_records, &CompanySpeedRecords::events, CompanySpeedRecords::enabledWidgets },
         };
 
         // 0x0043667B
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1347,7 +1347,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437570
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
             self->call_prepare_draw();
@@ -1379,7 +1379,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00436419
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed
             const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -1434,22 +1434,22 @@ namespace openloco::ui::windows::CompanyList
             switch (widgetIndex)
             {
                 case widx::tab_company_list:
-                    company_list::tabReset(self);
+                    CompanyList::tabReset(self);
                     break;
                 case widx::tab_performance:
-                    company_performance::tabReset(self);
+                    CompanyPerformance::tabReset(self);
                     break;
                 case widx::tab_cargo_units:
-                    cargo_units::tabReset(self);
+                    CargoUnits::tabReset(self);
                     break;
                 case widx::tab_cargo_distance:
-                    cargo_distance::tabReset(self);
+                    CargoDistance::tabReset(self);
                     break;
                 case widx::tab_values:
-                    company_values::tabReset(self);
+                    CompanyValues::tabReset(self);
                     break;
                 case widx::tab_payment_rates:
-                    cargo_payment_rates::tabReset(self);
+                    CargoPaymentRates::tabReset(self);
                     break;
             }
 
@@ -1696,13 +1696,13 @@ namespace openloco::ui::windows::CompanyList
         }
         static void initEvents()
         {
-            company_list::initEvents();
-            company_values::initEvents();
-            company_performance::initEvents();
-            cargo_distance::initEvents();
-            cargo_units::initEvents();
-            cargo_payment_rates::initEvents();
-            company_speed_records::initEvents();
+            CompanyList::initEvents();
+            CompanyValues::initEvents();
+            CompanyPerformance::initEvents();
+            CargoDistance::initEvents();
+            CargoUnits::initEvents();
+            CargoPaymentRates::initEvents();
+            CompanySpeedRecords::initEvents();
         }
     }
 }
