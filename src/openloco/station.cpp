@@ -33,32 +33,32 @@ namespace openloco
         inline static loco_global<uint8_t[map_size], 0x00F00484> _map;
         inline static loco_global<uint32_t, 0x0112C68C> _filter;
         inline static loco_global<uint32_t[max_cargo_stats], 0x0112C690> _score;
-        inline static loco_global<uint32_t, 0x0112C710> _dword_112C710;
-        inline static loco_global<uint8_t[max_cargo_stats], 0x0112C7D2> _industry;
+        inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
+        inline static loco_global<industry_id_t[max_cargo_stats], 0x0112C7D2> _industry;
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
-        bool mapHas2(tile_coord_t x, tile_coord_t y) const
+        bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
             return (_map[y * map_columns + x] & (1 << 1)) != 0;
         }
 
-        void mapRemove2(tile_coord_t x, tile_coord_t y)
+        void mapRemove2(const tile_coord_t x, const tile_coord_t y)
         {
             _map[y * map_columns + x] &= ~(1 << 1);
         }
 
-        void setTile(tile_coord_t x, tile_coord_t y, uint8_t flag)
+        void setTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
         {
             _map[y * map_columns + x] |= (1 << flag);
         }
 
-        void resetTile(tile_coord_t x, tile_coord_t y, uint8_t flag)
+        void resetTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
         {
             _map[y * map_columns + x] &= ~(1 << flag);
         }
 
-        void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, uint8_t flag)
+        void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const uint8_t flag)
         {
             auto xStart = x;
             auto xTileStartCount = xTileCount;
@@ -78,7 +78,7 @@ namespace openloco
             }
         }
 
-        void resetTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, uint8_t flag)
+        void resetTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const uint8_t flag)
         {
             auto xStart = x;
             auto xTileStartCount = xTileCount;
@@ -103,7 +103,7 @@ namespace openloco
             return _filter;
         }
 
-        void filter(uint32_t value)
+        void filter(const uint32_t value)
         {
             _filter = value;
         }
@@ -113,48 +113,54 @@ namespace openloco
             std::fill_n(_score.get(), max_cargo_stats, 0);
         }
 
-        uint32_t score(int cargo)
+        uint32_t score(const uint8_t cargo)
         {
             return _score[cargo];
         }
 
-        void addScore(int cargo, int32_t value)
+        void addScore(const uint8_t cargo, const int32_t value)
         {
             _score[cargo] += value;
         }
 
-        uint32_t dword_112C710() const
+        uint32_t producedCargoTypes() const
         {
-            return _dword_112C710;
+            return _producedCargoTypes;
         }
 
-        void dword_112C710(uint32_t value)
+        void resetProducedCargoTypes()
         {
-            _dword_112C710 = value;
+            _producedCargoTypes = 0;
         }
 
-        void byte_112C7F2(uint8_t value)
+        void addProducedCargoType(const uint8_t cargoId)
+        {
+            _producedCargoTypes = _producedCargoTypes | (1 << cargoId);
+        }
+
+        void byte_112C7F2(const uint8_t value)
         {
             _byte_112C7F2 = value;
         }
 
         void resetIndustryMap()
         {
-            std::fill_n(_industry.get(), max_cargo_stats, 0xFF);
+            std::fill_n(_industry.get(), max_cargo_stats, industry_id::null);
         }
 
-        industry_id_t getIndustry(int cargo) const
+        industry_id_t getIndustry(const uint8_t cargo) const
         {
             return _industry[cargo];
         }
 
-        void setIndustry(int cargo, industry_id_t id)
+        void setIndustry(const uint8_t cargo, const industry_id_t id)
         {
             _industry[cargo] = id;
         }
     };
 
-    static void sub_491BF5(map_pos pos, uint8_t flag);
+    static void sub_491BF5(const map_pos& pos, const uint8_t flag);
+    static station_element* getStationElement(const map_pos3& pos);
 
     station_id_t station::id() const
     {
@@ -230,26 +236,22 @@ namespace openloco
         }
     }
 
-    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState)
-    {
-        return calcAcceptedCargo(cargoSearchState, map_pos(-1, -1), 0);
-    }
-
     // 0x00491FE0
     // WARNING: this may be called with station (ebp) = -1
-    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState, map_pos location, uint32_t ebx)
+    // filter only used if location.x != -1
+    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location, const uint32_t filter)
     {
-        cargoSearchState.byte_112C7F2(0);
+        cargoSearchState.byte_112C7F2(1);
         cargoSearchState.filter(0);
 
         if (location.x != -1)
         {
-            cargoSearchState.filter(ebx);
+            cargoSearchState.filter(filter);
         }
 
         cargoSearchState.resetIndustryMap();
 
-        setStationCatchmentDisplay((1 << 0));
+        setCatchmentDisplay(1);
 
         if (location.x != -1)
         {
@@ -257,42 +259,38 @@ namespace openloco
         }
 
         cargoSearchState.resetScores();
-        cargoSearchState.dword_112C710(0);
+        cargoSearchState.resetProducedCargoTypes();
 
         if (this != (station*)0xFFFFFFFF)
         {
             for (uint16_t i = 0; i < stationTileSize; i++)
             {
                 auto pos = stationTiles[i];
-                auto baseZ = pos.z / 4;
-                auto tile = tilemgr::get(pos);
-                for (auto& el : tile)
+                auto stationElement = getStationElement(pos);
+
+                if (stationElement == nullptr)
                 {
-                    auto stationEl = el.as_station();
+                    continue;
+                }
 
-                    if (stationEl != nullptr && stationEl->base_z() != baseZ && !(stationEl->flags() & (1 << 5)))
+                cargoSearchState.byte_112C7F2(0);
+
+                if (stationElement->stationType() == stationType::roadStation)
+                {
+                    auto obj = objectmgr::get<road_station_object>(stationElement->object_id());
+
+                    if (obj->flags & road_station_flags::passenger)
                     {
-                        cargoSearchState.byte_112C7F2(0);
-
-                        if (stationEl->stationType() == stationType::roadStation)
-                        {
-                            auto obj = objectmgr::get<road_station_object>(stationEl->object_id());
-
-                            if (obj->flags & road_station_flags::passenger)
-                            {
-                                cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
-                            }
-                            else if (obj->flags & road_station_flags::freight)
-                            {
-                                cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
-                            }
-                        }
-                        else
-                        {
-                            cargoSearchState.filter(~0);
-                        }
-                        break;
+                        cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
                     }
+                    else if (obj->flags & road_station_flags::freight)
+                    {
+                        cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
+                    }
+                }
+                else
+                {
+                    cargoSearchState.filter(~0);
                 }
             }
         }
@@ -313,100 +311,104 @@ namespace openloco
 
                     for (auto& el : tile)
                     {
-                        if (!el.is_flag_4())
+                        if (el.is_flag_4())
                         {
-                            switch (el.type())
+                            continue;
+                        }
+                        switch (el.type())
+                        {
+                            case element_type::industry:
                             {
-                                case element_type::industry:
+                                auto industryEl = el.as_industry();
+                                auto industry = industryEl->industry();
+
+                                if (industry == nullptr || industry->under_construction != 0xFF)
                                 {
-                                    auto industryEl = el.as_industry();
-                                    auto industry = industryEl->industry();
-
-                                    if (industry != nullptr && industry->under_construction == 0xFF)
-                                    {
-                                        auto obj = industry->object();
-
-                                        if (obj != nullptr)
-                                        {
-                                            for (auto cargoId : obj->required_cargo_type)
-                                            {
-                                                if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
-                                                {
-                                                    cargoSearchState.addScore(cargoId, 8);
-                                                    cargoSearchState.setIndustry(cargoId, industry->id());
-                                                }
-                                            }
-
-                                            for (auto cargoId : obj->produced_cargo_type)
-                                            {
-                                                if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
-                                                {
-                                                    cargoSearchState.dword_112C710(cargoSearchState.dword_112C710() | (1 << cargoId));
-                                                }
-                                            }
-                                        }
-                                    }
                                     break;
                                 }
-                                case element_type::building:
+                                auto obj = industry->object();
+
+                                if (obj == nullptr)
                                 {
-                                    auto buildingEl = el.as_building();
-                                    auto obj = buildingEl->object();
-
-                                    if (obj != nullptr)
-                                    {
-                                        for (int i = 0; i < 2; i++)
-                                        {
-                                            if (obj->var_A2[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A2[i])))
-                                            {
-                                                cargoSearchState.addScore(obj->var_A2[i], obj->var_A6[i]);
-
-                                                if (obj->var_A0[i] != 0)
-                                                {
-                                                    cargoSearchState.dword_112C710(cargoSearchState.dword_112C710() | (1 << obj->var_A2[i]));
-                                                }
-                                            }
-                                        }
-
-                                        for (int i = 0; i < 2; i++)
-                                        {
-                                            if (obj->var_A4[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A4[i])))
-                                            {
-                                                cargoSearchState.addScore(obj->var_A4[i], obj->var_A8[i]);
-                                            }
-                                        }
-
-                                        if (obj->flags & (1 << 0))
-                                        {
-                                            static coord_t word_4F9296[] = {
-                                                0,
-                                                0,
-                                                32,
-                                                32,
-                                            };
-
-                                            static coord_t word_4F9298[] = {
-                                                0,
-                                                32,
-                                                32,
-                                                0,
-                                            };
-
-                                            auto rotation = buildingEl->var_5b();
-                                            tile_coord_t xPos = (pos.x - word_4F9296[rotation]) / tile_size;
-                                            tile_coord_t yPos = (pos.y - word_4F9298[rotation]) / tile_size;
-
-                                            cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
-                                            cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
-                                            cargoSearchState.mapRemove2(xPos + 1, yPos + 0);
-                                            cargoSearchState.mapRemove2(xPos + 1, yPos + 1);
-                                        }
-                                    }
                                     break;
                                 }
-                                default:
-                                    continue;
+
+                                for (auto cargoId : obj->required_cargo_type)
+                                {
+                                    if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
+                                    {
+                                        cargoSearchState.addScore(cargoId, 8);
+                                        cargoSearchState.setIndustry(cargoId, industry->id());
+                                    }
+                                }
+
+                                for (auto cargoId : obj->produced_cargo_type)
+                                {
+                                    if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
+                                    {
+                                        cargoSearchState.addProducedCargoType(cargoId);
+                                    }
+                                }
+
+                                break;
                             }
+                            case element_type::building:
+                            {
+                                auto buildingEl = el.as_building();
+
+                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->has_station_element())
+                                {
+                                    break;
+                                }
+
+                                auto obj = buildingEl->object();
+
+                                if (obj == nullptr)
+                                {
+                                    break;
+                                }
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    const auto cargoId = obj->producedCargoType[i];
+                                    if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
+                                    {
+                                        cargoSearchState.addScore(cargoId, obj->var_A6[i]);
+
+                                        if (obj->var_A0[i] != 0)
+                                        {
+                                            cargoSearchState.addProducedCargoType(cargoId);
+                                        }
+                                    }
+                                }
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    if (obj->var_A4[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A4[i])))
+                                    {
+                                        cargoSearchState.addScore(obj->var_A4[i], obj->var_A8[i]);
+                                    }
+                                }
+
+                                // Multi tile buildings should only be counted once so remove the other tiles from the search
+                                if (obj->flags & building_object_flags::large_tile)
+                                {
+                                    // 0x004F9296, 0x4F9298
+                                    static const map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+
+                                    auto index = buildingEl->multiTileIndex();
+                                    tile_coord_t xPos = (pos.x - offsets[index].x) / tile_size;
+                                    tile_coord_t yPos = (pos.y - offsets[index].y) / tile_size;
+
+                                    cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
+                                    cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
+                                    cargoSearchState.mapRemove2(xPos + 1, yPos + 0);
+                                    cargoSearchState.mapRemove2(xPos + 1, yPos + 1);
+                                }
+
+                                break;
+                            }
+                            default:
+                                continue;
                         }
                     }
                 }
@@ -426,12 +428,11 @@ namespace openloco
         return acceptedCargos;
     }
 
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, map_pos minPos, map_pos maxPos, uint8_t flags);
-
-    static std::tuple<tile_element, bool> sub_48F6D4(map_pos3 pos);
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flags);
 
     // 0x00491D70
-    void station::setStationCatchmentDisplay(uint8_t catchmentFlag)
+    // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
+    void station::setCatchmentDisplay(const uint8_t catchmentFlag)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.resetTileRegion(0, 0, map_columns, map_rows, catchmentFlag);
@@ -447,16 +448,14 @@ namespace openloco
             auto pos = stationTiles[i];
             pos.z &= ~((1 << 1) | (1 << 0));
 
-            auto [element, carry] = sub_48F6D4(pos);
+            auto stationElement = getStationElement(pos);
 
-            if (!carry)
+            if (stationElement == nullptr)
+                continue;
+
+            switch (stationElement->stationType())
             {
-                auto stationElement = element.as_station();
-
-                if (stationElement == nullptr)
-                    continue;
-
-                if (stationElement->stationType() == stationType::airport)
+                case stationType::airport:
                 {
                     auto airportObject = objectmgr::get<airport_object>(stationElement->object_id());
 
@@ -484,40 +483,35 @@ namespace openloco
                         std::swap(minPos.y, maxPos.y);
                     }
 
-                    minPos.x /= tile_size;
-                    minPos.y /= tile_size;
-                    maxPos.x /= tile_size;
-                    maxPos.y /= tile_size;
+                    TilePos tileMinPos(minPos);
+                    TilePos tileMaxPos(maxPos);
 
-                    minPos.x -= catchmentSize;
-                    minPos.y -= catchmentSize;
-                    maxPos.x += catchmentSize;
-                    maxPos.y += catchmentSize;
+                    tileMinPos.x -= catchmentSize;
+                    tileMinPos.y -= catchmentSize;
+                    tileMaxPos.x += catchmentSize;
+                    tileMaxPos.y += catchmentSize;
 
-                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
+                    setStationCatchmentRegion(cargoSearchState, tileMinPos, tileMaxPos, catchmentFlag);
                 }
-                else if (stationElement->stationType() == stationType::docks)
+                break;
+                case stationType::docks:
                 {
-                    map_pos minPos, maxPos;
-                    minPos = pos;
-                    minPos.x /= tile_size;
-                    minPos.y /= tile_size;
-                    maxPos = minPos;
+                    TilePos minPos(pos);
+                    auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
                     minPos.y -= catchmentSize;
+                    // Docks are always size 2x2
                     maxPos.x += catchmentSize + 1;
                     maxPos.y += catchmentSize + 1;
 
                     setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
                 }
-                else
+                break;
+                default:
                 {
-                    map_pos minPos, maxPos;
-                    minPos = pos;
-                    minPos.x /= tile_size;
-                    minPos.y /= tile_size;
-                    maxPos = minPos;
+                    TilePos minPos(pos);
+                    auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
                     minPos.y -= catchmentSize;
@@ -724,10 +718,10 @@ namespace openloco
     }
 
     // 0x0048F6D4
-    static std::tuple<tile_element, bool> sub_48F6D4(map_pos3 pos)
+    static station_element* getStationElement(const map_pos3& pos)
     {
         auto tile = tilemgr::get(pos.x, pos.y);
-        pos.z /= 4;
+        auto baseZ = pos.z / 4;
 
         for (auto& element : tile)
         {
@@ -735,38 +729,28 @@ namespace openloco
 
             if (stationElement == nullptr)
             {
-                if (element.is_last())
-                {
-                    return std::make_tuple(element, false);
-                }
-
                 continue;
             }
 
-            if (stationElement->base_z() != pos.z)
+            if (stationElement->base_z() != baseZ)
             {
-                if (stationElement->is_last())
-                {
-                    return std::make_tuple(element, false);
-                }
-
                 continue;
             }
 
-            if (stationElement->flags() & (1 << 5))
+            if (!stationElement->is_flag_5())
             {
-                return std::make_tuple(element, true);
+                return stationElement;
             }
             else
             {
-                return std::make_tuple(element, false);
+                return nullptr;
             }
         }
-        return std::make_tuple(*tile.end(), false);
+        return nullptr;
     }
 
     // 0x00491EDC
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, map_pos minPos, map_pos maxPos, uint8_t flag)
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flag)
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
@@ -782,17 +766,17 @@ namespace openloco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(map_pos pos, uint8_t flag)
+    static void sub_491BF5(const map_pos& pos, const uint8_t flag)
     {
-        pos.x /= tile_size;
-        pos.y /= tile_size;
-        coord_t x = pos.x + catchmentSize;
-        coord_t y = pos.y + catchmentSize;
-        pos.x -= catchmentSize;
-        pos.y -= catchmentSize;
+        TilePos minPos(pos);
+        auto maxPos = minPos;
+        maxPos.x += catchmentSize;
+        maxPos.y += catchmentSize;
+        minPos.x -= catchmentSize;
+        minPos.y -= catchmentSize;
 
         CargoSearchState cargoSearchState;
 
-        setStationCatchmentRegion(cargoSearchState, pos, { x, y }, flag);
+        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
     }
 }

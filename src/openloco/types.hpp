@@ -8,7 +8,7 @@ namespace openloco
     using company_id_t = uint8_t;
     using currency32_t = int32_t;
     using station_id_t = uint16_t;
-    using industry_id_t = uint16_t;
+    using industry_id_t = uint8_t;
     using string_id = uint16_t;
     using thing_id_t = uint16_t;
     using tile_coord_t = int16_t;

@@ -28,7 +28,7 @@ namespace openloco
         uint8_t enroute_age; // 0x35
         uint16_t var_36;     // 0x36
         uint8_t var_38;
-        uint8_t industry_id; // 0x39
+        industry_id_t industry_id; // 0x39
         uint8_t pad_40;
 
         bool empty() const
@@ -98,15 +98,14 @@ namespace openloco
         bool empty() const { return name == string_ids::null; }
         station_id_t id() const;
         void update();
-        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState);
-        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, map_pos location, uint32_t ebx);
+        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
         void getStatusString(const char* buffer);
         bool update_cargo();
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
         void invalidate();
         void invalidate_window();
-        void setStationCatchmentDisplay(uint8_t flags);
+        void setCatchmentDisplay(uint8_t flags);
 
     private:
         void update_cargo_acceptance();

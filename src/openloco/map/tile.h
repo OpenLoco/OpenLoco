@@ -39,6 +39,23 @@ namespace openloco::map
         {
         }
     };
+
+    struct TilePos
+    {
+        tile_coord_t x = 0;
+        tile_coord_t y = 0;
+        TilePos() = default;
+        TilePos(const map_pos& pos)
+            : x(pos.x / tile_size)
+            , y(pos.y / tile_size)
+        {
+        }
+        TilePos(const tile_coord_t _x, const tile_coord_t _y)
+            : x(_x)
+            , y(_y)
+        {
+        }
+    };
 #pragma pack(pop)
     constexpr bool operator==(const map_pos& lhs, const map_pos& rhs)
     {
@@ -226,7 +243,7 @@ namespace openloco::map
         bool has_station_element() const { return (_type & 0x80) != 0; }
         uint8_t object_id() const { return _4; }
         building_object* object() const;
-        uint8_t var_5b() const { return _5 & 3; }
+        uint8_t multiTileIndex() const { return _5 & 3; }
     };
 
     struct tree_element : public tile_element_base
@@ -291,6 +308,18 @@ namespace openloco::map
         uint8_t road_object_id() const { return _5 >> 4; } // _5u
         bool has_station_element() const { return (_type & 0x80) != 0; }
         uint8_t owner() const { return _7 & 0xF; } // _7l
+    };
+
+    struct industry_element : public tile_element_base
+    {
+    private:
+        industry_id_t _industryId;
+        uint8_t _5;
+        uint8_t _6;
+        uint8_t _7;
+
+    public:
+        openloco::industry* industry();
     };
 #pragma pack(pop)
 

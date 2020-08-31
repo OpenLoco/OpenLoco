@@ -526,10 +526,10 @@ namespace openloco::input
                             auto building = ((map::tile_element*)ptr.object)->as_building();
                             if (building != nullptr)
                             {
-                                auto bl = building->var_5b();
+                                auto index = building->multiTileIndex();
                                 map::map_pos pos{ ptr.x, ptr.y };
-                                pos.x -= _4F9296[bl].x;
-                                pos.y -= _4F9296[bl].y;
+                                pos.x -= _4F9296[index].x;
+                                pos.y -= _4F9296[index].y;
 
                                 auto z = building->base_z();
                                 for (auto& company : companymgr::companies())
