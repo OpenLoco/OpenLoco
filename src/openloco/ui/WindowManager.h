@@ -77,7 +77,7 @@ namespace openloco::ui::windows
     window* open_title_version();
     window* openTitleExit();
     window* open_title_menu();
-    window* open_title_logo();
+    window* openTitleLogo();
     void open_about_window();
 
     bool promptOkCancel(string_id okButtonStringId);
