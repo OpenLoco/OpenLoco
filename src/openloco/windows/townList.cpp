@@ -57,11 +57,11 @@ namespace openloco::ui::windows::town_list
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_buildings),             \
         make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_misc_buildings)
 
-        static void prepare_draw(window* self);
+        static void prepareDraw(window* self);
         static void repositionTabs(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void init_events();
+        static void initEvents();
         static void refreshTownList(window* self);
 
     }
@@ -106,9 +106,9 @@ namespace openloco::ui::windows::town_list
         };
 
         // 0x00499F53
-        static void prepare_draw(ui::window* self)
+        static void prepareDraw(ui::window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -135,7 +135,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A0F8
-        static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, shade);
@@ -218,7 +218,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A27F
-        static void on_mouse_up(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -254,7 +254,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A56D
-        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -268,7 +268,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A532
-        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -420,7 +420,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A4A0
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
 
@@ -453,7 +453,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A4FA
-        static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = rowHeight * self->var_83C;
         }
@@ -492,19 +492,19 @@ namespace openloco::ui::windows::town_list
             common::refreshTownList(self);
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
             events.cursor = cursor;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = get_scroll_size;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = on_update;
-            events.scroll_mouse_down = on_scroll_mouse_down;
-            events.scroll_mouse_over = on_scroll_mouse_over;
-            events.prepare_draw = prepare_draw;
+            events.get_scroll_size = getScrollSize;
+            events.on_mouse_up = onMouseUp;
+            events.on_update = onUpdate;
+            events.scroll_mouse_down = onScrollMouseDown;
+            events.scroll_mouse_over = onScrollMouseOver;
+            events.prepare_draw = prepareDraw;
             events.tooltip = tooltip;
         }
     }
@@ -556,7 +556,7 @@ namespace openloco::ui::windows::town_list
             window->width = town_list::windowSize.width;
             window->height = town_list::windowSize.height;
 
-            common::init_events();
+            common::initEvents();
 
             window->invalidate();
 
@@ -600,9 +600,9 @@ namespace openloco::ui::windows::town_list
         static window_event_list events;
 
         // 0x0049A59A
-        static void prepare_draw(ui::window* self)
+        static void prepareDraw(ui::window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             common::repositionTabs(self);
 
@@ -633,7 +633,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A675
-        static void on_mouse_up(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -651,7 +651,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A7F2
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
             self->call_prepare_draw();
@@ -663,7 +663,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A697
-        static void on_dropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
                 return;
@@ -676,13 +676,13 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A7C1
-        static void on_tool_abort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             ui::windows::hideGridlines();
         }
 
         // 0x0049A710
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -693,7 +693,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A75E
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -714,20 +714,20 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049A690
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::select_size)
                 populateTownSizeSelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0049A844
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(windowSize, windowSize);
         }
 
         // 0x0049A7C7
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
@@ -747,19 +747,19 @@ namespace openloco::ui::windows::town_list
             ui::windows::showGridlines();
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
-            events.on_close = on_close;
-            events.on_dropdown = on_dropdown;
-            events.on_resize = on_resize;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.on_update = on_update;
-            events.prepare_draw = prepare_draw;
-            events.on_tool_abort = on_tool_abort;
+            events.on_close = onClose;
+            events.on_dropdown = onDropdown;
+            events.on_resize = onResize;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.on_update = onUpdate;
+            events.prepare_draw = prepareDraw;
+            events.on_tool_abort = onToolAbort;
         }
     }
 
@@ -789,7 +789,7 @@ namespace openloco::ui::windows::town_list
         static window_event_list events;
 
         // 0x0049A8A6
-        static void prepare_draw(ui::window* self)
+        static void prepareDraw(ui::window* self)
         {
             self->widgets[widx::object_colour].image = (1 << 30) | gfx::recolour(image_ids::colour_swatch_recolourable, _buildingColour);
             self->widgets[widx::object_colour].type = widget_type::none;
@@ -801,7 +801,7 @@ namespace openloco::ui::windows::town_list
                     self->widgets[widx::object_colour].type = widget_type::wt_10;
             }
 
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 26;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -842,7 +842,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AB31
-        static void on_mouse_up(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -868,7 +868,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AD51
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             if (!input::has_flag(input::input_flags::flag5))
             {
@@ -936,7 +936,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AB59
-        static void on_dropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
                 return;
@@ -955,14 +955,14 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AD46
-        static void on_tool_abort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_49B37F();
             ui::windows::hideGridlines();
         }
 
         // 0x0049ABF0
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -973,7 +973,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049ACBD
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -984,7 +984,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AB52
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::object_colour)
             {
@@ -1021,7 +1021,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AF98
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
@@ -1032,7 +1032,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AE83
-        static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
@@ -1060,7 +1060,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AA1C
-        static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, shade);
@@ -1130,7 +1130,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AEFD
-        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / 112);
             int16_t yPos = (y / 112) * 5;
@@ -1165,7 +1165,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049AEBA
-        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
@@ -1184,7 +1184,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0049ABC5
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
@@ -1285,25 +1285,25 @@ namespace openloco::ui::windows::town_list
             byte_1135C65 = 0;
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
-            events.on_close = on_close;
-            events.on_resize = on_resize;
-            events.draw_scroll = draw_scroll;
+            events.on_close = onClose;
+            events.on_resize = onResize;
+            events.draw_scroll = drawScroll;
             events.event_08 = event_08;
-            events.on_dropdown = on_dropdown;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.on_mouse_down = on_mouse_down;
-            events.get_scroll_size = get_scroll_size;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = on_update;
-            events.scroll_mouse_down = on_scroll_mouse_down;
-            events.scroll_mouse_over = on_scroll_mouse_over;
-            events.prepare_draw = prepare_draw;
+            events.on_dropdown = onDropdown;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.on_mouse_down = onMouseDown;
+            events.get_scroll_size = getScrollSize;
+            events.on_mouse_up = onMouseUp;
+            events.on_update = onUpdate;
+            events.scroll_mouse_down = onScrollMouseDown;
+            events.scroll_mouse_over = onScrollMouseOver;
+            events.prepare_draw = prepareDraw;
             events.tooltip = tooltip;
-            events.on_tool_abort = on_tool_abort;
+            events.on_tool_abort = onToolAbort;
         }
     }
 
@@ -1324,7 +1324,7 @@ namespace openloco::ui::windows::town_list
             { build_buildings::widgets, widx::tab_build_misc_buildings, &build_buildings::events, build_buildings::enabledWidgets },
         };
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed
             const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -1529,11 +1529,11 @@ namespace openloco::ui::windows::town_list
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            town_list::init_events();
-            build_towns::init_events();
-            build_buildings::init_events();
+            town_list::initEvents();
+            build_towns::initEvents();
+            build_buildings::initEvents();
         }
     }
 }
