@@ -75,7 +75,7 @@ namespace openloco::ui::EditKeyboardShortcut
     }
 
     // 0x004BE821
-    static void on_mouse_up(window* const self, const widget_index widgetIndex)
+    static void onMouseUp(window* const self, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -87,7 +87,7 @@ namespace openloco::ui::EditKeyboardShortcut
 
     static void initEvents()
     {
-        events.on_mouse_up = on_mouse_up;
+        events.on_mouse_up = onMouseUp;
         events.draw = draw;
     }
 }

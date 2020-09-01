@@ -52,10 +52,10 @@ namespace openloco::ui::windows::industry_list
 
         static window_event_list _events;
 
-        static void init_events();
+        static void initEvents();
         static void refreshIndustryList(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
-        static void prepare_draw(window* self);
+        static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
     }
 
@@ -96,9 +96,9 @@ namespace openloco::ui::windows::industry_list
         };
 
         // 0x00457B94
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -142,7 +142,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00457EC4
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -175,7 +175,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         //0x00458172
-        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -189,7 +189,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458140
-        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -348,7 +348,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x004580AE
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
 
@@ -368,13 +368,13 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458108
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = rowHeight * self->var_83C;
         }
 
         // 0x00457D2A
-        static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 4);
             gfx::clear_single(*dpi, shade);
@@ -485,19 +485,19 @@ namespace openloco::ui::windows::industry_list
             common::refreshIndustryList(self);
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
             events.cursor = cursor;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = get_scroll_size;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = on_update;
-            events.scroll_mouse_down = on_scroll_mouse_down;
-            events.scroll_mouse_over = on_scroll_mouse_over;
-            events.prepare_draw = prepare_draw;
+            events.get_scroll_size = getScrollSize;
+            events.on_mouse_up = onMouseUp;
+            events.on_update = onUpdate;
+            events.scroll_mouse_down = onScrollMouseDown;
+            events.scroll_mouse_over = onScrollMouseOver;
+            events.prepare_draw = prepareDraw;
             events.tooltip = tooltip;
         }
     }
@@ -549,7 +549,7 @@ namespace openloco::ui::windows::industry_list
             window->width = industry_list::windowSize.width;
             window->height = industry_list::windowSize.height;
 
-            common::init_events();
+            common::initEvents();
 
             window->invalidate();
 
@@ -589,9 +589,9 @@ namespace openloco::ui::windows::industry_list
         static window_event_list events;
 
         // 0x0045819F
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -665,7 +665,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x0045843A
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -686,7 +686,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         //0x00458966
-        static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
@@ -713,7 +713,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458721
-        static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -777,7 +777,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x004585B8
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             if (!input::has_flag(input::input_flags::flag5))
             {
@@ -853,7 +853,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x004586EA
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
@@ -873,7 +873,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458352
-        static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 4);
             gfx::clear_single(*dpi, shade);
@@ -924,7 +924,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x0045848A
-        static void on_tool_update(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -935,7 +935,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x0045851F
-        static void on_tool_down(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -953,14 +953,14 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x004585AD
-        static void on_tool_abort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_458C09();
             ui::windows::hideGridlines();
         }
 
         // 0x0045845F
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             if (input::is_tool_active(self->type, self->number))
                 input::cancel_tool();
@@ -1061,7 +1061,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x004589E8
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
@@ -1071,23 +1071,23 @@ namespace openloco::ui::windows::industry_list
                 updateActiveThumb(self);
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
             events.event_08 = event_08;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.get_scroll_size = get_scroll_size;
-            events.on_mouse_up = on_mouse_up;
-            events.on_update = on_update;
-            events.scroll_mouse_down = on_scroll_mouse_down;
-            events.scroll_mouse_over = on_scroll_mouse_over;
-            events.prepare_draw = prepare_draw;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.get_scroll_size = getScrollSize;
+            events.on_mouse_up = onMouseUp;
+            events.on_update = onUpdate;
+            events.scroll_mouse_down = onScrollMouseDown;
+            events.scroll_mouse_over = onScrollMouseOver;
+            events.prepare_draw = prepareDraw;
             events.tooltip = tooltip;
-            events.on_tool_abort = on_tool_abort;
-            events.on_close = on_close;
-            events.on_resize = on_resize;
+            events.on_tool_abort = onToolAbort;
+            events.on_close = onClose;
+            events.on_resize = onResize;
         }
     }
 
@@ -1107,7 +1107,7 @@ namespace openloco::ui::windows::industry_list
         };
 
         // 0x00457B94
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -1226,10 +1226,10 @@ namespace openloco::ui::windows::industry_list
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            industry_list::init_events();
-            new_industries::init_events();
+            industry_list::initEvents();
+            new_industries::initEvents();
         }
     }
 }

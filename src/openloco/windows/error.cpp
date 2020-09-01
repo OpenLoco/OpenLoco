@@ -29,8 +29,8 @@ namespace openloco::ui::windows::error
         static window_event_list events;
 
         static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
-        static void on_periodic_update(ui::window* self);
-        static void init_events();
+        static void onPeriodicUpdate(ui::window* self);
+        static void initEvents();
     }
     namespace error
     {
@@ -146,7 +146,7 @@ namespace openloco::ui::windows::error
                 window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
                 &common::events);
 
-            common::init_events();
+            common::initEvents();
 
             if (_errorCompetitorId != 0xFF)
             {
@@ -254,7 +254,7 @@ namespace openloco::ui::windows::error
         }
 
         // 0x00431E1B
-        static void on_periodic_update(ui::window* self)
+        static void onPeriodicUpdate(ui::window* self)
         {
             self->var_846++;
             if (self->var_846 >= 7)
@@ -263,10 +263,10 @@ namespace openloco::ui::windows::error
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
             events.draw = common::draw;
-            events.on_periodic_update = common::on_periodic_update;
+            events.on_periodic_update = common::onPeriodicUpdate;
         }
     }
 }

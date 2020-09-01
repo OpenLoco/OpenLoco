@@ -169,7 +169,7 @@ namespace openloco::ui::windows::ScenarioOptions
             drawTabs(window, dpi);
         }
 
-        static void prepare_draw(window* self);
+        static void prepareDraw(window* self);
 
         static void switchTab(window* self, widget_index widgetIndex);
     }
@@ -237,7 +237,7 @@ namespace openloco::ui::windows::ScenarioOptions
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -258,7 +258,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043FD14
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -400,7 +400,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043FCED
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -428,9 +428,9 @@ namespace openloco::ui::windows::ScenarioOptions
             }
         }
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             widgets[widx::objective_type].text = objectiveTypeLabelIds[*objectiveType];
             widgets[widx::objective_cargo].type = widget_type::none;
@@ -488,11 +488,11 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
         }
     }
 
@@ -671,7 +671,7 @@ namespace openloco::ui::windows::ScenarioOptions
         };
 
         // 0x0043F67C
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -695,7 +695,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F639
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -758,7 +758,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F60C
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -808,9 +808,9 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F40C
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             commonFormatArgs[0] = *maxCompetingCompanies;
             commonFormatArgs[1] = *competitorStartDelay;
@@ -829,11 +829,11 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
         }
     }
 
@@ -889,7 +889,7 @@ namespace openloco::ui::windows::ScenarioOptions
             }
         }
 
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -925,7 +925,7 @@ namespace openloco::ui::windows::ScenarioOptions
             self->invalidate();
         }
 
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -946,9 +946,9 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F8CF
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
@@ -962,10 +962,10 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
         }
     }
 
@@ -1050,7 +1050,7 @@ namespace openloco::ui::windows::ScenarioOptions
         };
 
         // 0x0043F14B
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
@@ -1060,7 +1060,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F140
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::scenario_group_btn)
             {
@@ -1075,7 +1075,7 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043F11F
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1107,15 +1107,15 @@ namespace openloco::ui::windows::ScenarioOptions
         }
 
         // 0x0043EF8B
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             widgets[widx::scenario_group].text = scenarioGroupLabelIds[s5::getOptions().difficulty];
         }
 
         // 0x0043F156
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             switch (callingWidget)
             {
@@ -1140,12 +1140,12 @@ namespace openloco::ui::windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = textInput;
         }
     }
 
@@ -1167,7 +1167,7 @@ namespace openloco::ui::windows::ScenarioOptions
             { scenario::widgets, widx::tab_scenario, &scenario::events, &scenario::enabledWidgets, &scenario::holdableWidgets }
         };
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;

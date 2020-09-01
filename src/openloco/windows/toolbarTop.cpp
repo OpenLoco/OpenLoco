@@ -218,7 +218,7 @@ namespace openloco::ui::windows::toolbar_top::game
             }
 
             case 3:
-                options::open_music_settings();
+                options::openMusicSettings();
                 break;
         }
     }

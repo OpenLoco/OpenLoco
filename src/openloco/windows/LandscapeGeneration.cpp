@@ -68,7 +68,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void switchTab(window* window, widget_index widgetIndex);
 
         // 0x0043ECA4
-        static void draw_tabs(window* window, gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* window, gfx::drawpixelinfo_t* dpi)
         {
             auto skin = objectmgr::get<interface_skin_object>();
 
@@ -119,10 +119,10 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void draw(window* window, gfx::drawpixelinfo_t* dpi)
         {
             window->draw(dpi);
-            draw_tabs(window, dpi);
+            drawTabs(window, dpi);
         }
 
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
             switchTabWidgets(window);
 
@@ -184,9 +184,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043DB76
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
-            common::prepare_draw(window);
+            common::prepareDraw(window);
 
             commonFormatArgs[0] = s5::getOptions().scenarioStartYear;
 
@@ -220,7 +220,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043DC83
-        static void on_mouse_down(window* window, widget_index widgetIndex)
+        static void onMouseDown(window* window, widget_index widgetIndex)
         {
             auto& options = s5::getOptions();
 
@@ -241,7 +241,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043DC58
-        static void on_mouse_up(window* window, widget_index widgetIndex)
+        static void onMouseUp(window* window, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -279,9 +279,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepareDraw;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
         }
     }
@@ -416,7 +416,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -453,7 +453,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E2AC
-        static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = 0;
 
@@ -476,7 +476,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // 0x0043E1BA
-        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -499,7 +499,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E173
-        static void on_mouse_down(window* window, widget_index widgetIndex)
+        static void onMouseDown(window* window, widget_index widgetIndex)
         {
             auto& options = s5::getOptions();
 
@@ -551,7 +551,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E14E
-        static void on_mouse_up(window* window, widget_index widgetIndex)
+        static void onMouseUp(window* window, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -595,7 +595,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E1CF
-        static void scroll_mouse_down(window* window, int16_t xPos, int16_t yPos, uint8_t scrollIndex)
+        static void scrollMouseDown(window* window, int16_t xPos, int16_t yPos, uint8_t scrollIndex)
         {
             int16_t landIndex = scrollPosToLandIndex(xPos, yPos);
             if (landIndex == -1)
@@ -617,9 +617,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043DEBF
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
-            common::prepare_draw(window);
+            common::prepareDraw(window);
 
             commonFormatArgs[0] = *seaLevel;
             auto& options = s5::getOptions();
@@ -656,14 +656,14 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
-            events.get_scroll_size = get_scroll_size;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.draw_scroll = drawScroll;
+            events.get_scroll_size = getScrollSize;
+            events.prepare_draw = prepareDraw;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = update;
-            events.scroll_mouse_down = scroll_mouse_down;
+            events.scroll_mouse_down = scrollMouseDown;
             events.tooltip = tooltip;
         }
     }
@@ -780,7 +780,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E670
-        static void on_mouse_down(window* window, widget_index widgetIndex)
+        static void onMouseDown(window* window, widget_index widgetIndex)
         {
             auto& options = s5::getOptions();
 
@@ -888,7 +888,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E655
-        static void on_mouse_up(window* window, widget_index widgetIndex)
+        static void onMouseUp(window* window, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -907,9 +907,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E44F
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
-            common::prepare_draw(window);
+            common::prepareDraw(window);
 
             auto& options = s5::getOptions();
             commonFormatArgs[0] = options.numberOfForests;
@@ -925,9 +925,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepareDraw;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
         }
     }
@@ -988,7 +988,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
                 return;
@@ -998,7 +998,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EBF1
-        static void on_mouse_down(window* window, widget_index widgetIndex)
+        static void onMouseDown(window* window, widget_index widgetIndex)
         {
             auto& options = s5::getOptions();
 
@@ -1035,7 +1035,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void on_mouse_up(window* window, widget_index widgetIndex)
+        static void onMouseUp(window* window, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1054,9 +1054,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EAEB
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
-            common::prepare_draw(window);
+            common::prepareDraw(window);
 
             commonFormatArgs[0] = s5::getOptions().numberOfTowns;
 
@@ -1066,10 +1066,10 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepareDraw;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
         }
     }
@@ -1118,7 +1118,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
                 return;
@@ -1128,7 +1128,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EBF1
-        static void on_mouse_down(window* window, widget_index widgetIndex)
+        static void onMouseDown(window* window, widget_index widgetIndex)
         {
             if (widgetIndex != widx::num_industries_btn)
                 return;
@@ -1143,7 +1143,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void on_mouse_up(window* window, widget_index widgetIndex)
+        static void onMouseUp(window* window, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1172,9 +1172,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043EAEB
-        static void prepare_draw(window* window)
+        static void prepareDraw(window* window)
         {
-            common::prepare_draw(window);
+            common::prepareDraw(window);
 
             widgets[widx::num_industries].text = numIndustriesLabels[s5::getOptions().numberOfIndustries];
 
@@ -1188,10 +1188,10 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepare_draw;
-            events.on_dropdown = on_dropdown;
-            events.on_mouse_down = on_mouse_down;
-            events.on_mouse_up = on_mouse_up;
+            events.prepare_draw = prepareDraw;
+            events.on_dropdown = onDropdown;
+            events.on_mouse_down = onMouseDown;
+            events.on_mouse_up = onMouseUp;
             events.on_update = common::update;
         }
     };

@@ -44,23 +44,23 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
-    static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-    static void on_mouse_up(window* self, widget_index widgetIndex);
+    static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void onMouseUp(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
     static void tooltip(FormatArguments& args, window*, widget_index);
-    static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
 
-    static void init_events()
+    static void initEvents()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.get_scroll_size = get_scroll_size;
-        _events.scroll_mouse_down = on_scroll_mouse_down;
-        _events.scroll_mouse_over = on_scroll_mouse_over;
+        _events.on_mouse_up = onMouseUp;
+        _events.get_scroll_size = getScrollSize;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
         _events.tooltip = tooltip;
         _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.draw_scroll = drawScroll;
     }
 
     // 0x004BE6C7
@@ -72,7 +72,7 @@ namespace openloco::ui::KeyboardShortcuts
         if (window != nullptr)
             return window;
 
-        init_events();
+        initEvents();
 
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
@@ -99,7 +99,7 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE72C
-    static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
         auto shade = colour::get_shade(colour, 4);
@@ -141,7 +141,7 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void on_mouse_up(window* self, widget_index widgetIndex)
+    static void onMouseUp(window* self, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -170,13 +170,13 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE84E
-    static void get_scroll_size(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = self->row_count * rowHeight;
     }
 
     // 0x004BE853
-    static void on_scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
@@ -191,7 +191,7 @@ namespace openloco::ui::KeyboardShortcuts
     }
 
     // 0x004BE87B
-    static void on_scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
