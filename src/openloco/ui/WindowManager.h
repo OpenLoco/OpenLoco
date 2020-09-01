@@ -199,11 +199,11 @@ namespace openloco::ui::windows::station_list
 namespace openloco::ui::windows::terraform
 {
     window* open();
-    void open_clear_area();
-    void open_adjust_land();
-    void open_adjust_water();
-    void open_plant_trees();
-    void open_build_walls();
+    void openClearArea();
+    void openAdjustLand();
+    void openAdjustWater();
+    void openPlantTrees();
+    void openBuildWalls();
     void registerHooks();
 }
 
