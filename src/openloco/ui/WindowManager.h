@@ -76,7 +76,7 @@ namespace openloco::ui::windows
 {
     window* open_title_version();
     window* openTitleExit();
-    window* open_title_menu();
+    window* openTitleMenu();
     window* openTitleLogo();
     void open_about_window();
 

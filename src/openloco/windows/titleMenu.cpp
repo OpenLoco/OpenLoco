@@ -131,26 +131,26 @@ namespace openloco::ui::windows
     static void sub_439102();
     static void sub_46E328();
 
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
-    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void on_update(window* window);
-    static void on_text_input(window* window, widget_index widgetIndex, char* input);
-    static ui::cursor_id on_cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onMouseDown(ui::window* window, widget_index widgetIndex);
+    static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void onUpdate(window* window);
+    static void onTextInput(window* window, widget_index widgetIndex, char* input);
+    static ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void prepare_draw(ui::window* window);
+    static void prepareDraw(ui::window* window);
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
 
-    ui::window* open_title_menu()
+    ui::window* openTitleMenu()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.text_input = on_text_input;
-        _events.cursor = on_cursor;
-        _events.on_update = on_update;
-        _events.prepare_draw = prepare_draw;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
+        _events.text_input = onTextInput;
+        _events.cursor = onCursor;
+        _events.on_update = onUpdate;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
         auto window = openloco::ui::WindowManager::createWindow(
@@ -173,7 +173,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00438E0B
-    static void prepare_draw(ui::window* window)
+    static void prepareDraw(ui::window* window)
     {
         window->disabled_widgets = 0;
         window->widgets[widx::tutorial_btn].type = ui::widget_type::wt_9;
@@ -297,7 +297,7 @@ namespace openloco::ui::windows
     }
 
     // 0x00439094
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
@@ -327,7 +327,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390D1
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(ui::window* window, widget_index widgetIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -339,7 +339,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390DD
-    static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -351,7 +351,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390ED
-    static void on_text_input(window* window, widget_index widgetIndex, char* input)
+    static void onTextInput(window* window, widget_index widgetIndex, char* input)
     {
         switch (widgetIndex)
         {
@@ -362,7 +362,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004390f8
-    static ui::cursor_id on_cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;
@@ -480,7 +480,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004391F9
-    static void on_update(window* window)
+    static void onUpdate(window* window)
     {
         window->var_846++;
 
