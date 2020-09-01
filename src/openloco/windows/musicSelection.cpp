@@ -39,23 +39,23 @@ namespace openloco::ui::windows::music_selection
     static window_event_list _events;
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void on_update(window* window);
+    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onScrollMouseDown(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onUpdate(window* window);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
 
-    static void init_events()
+    static void initEvents()
     {
         _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
-        _events.get_scroll_size = get_scroll_size;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
-        _events.scroll_mouse_down = on_scroll_mouse_down;
-        _events.scroll_mouse_over = on_scroll_mouse_over;
+        _events.draw_scroll = drawScroll;
+        _events.get_scroll_size = getScrollSize;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_update = onUpdate;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
         _events.tooltip = tooltip;
     }
 
@@ -73,7 +73,7 @@ namespace openloco::ui::windows::music_selection
             &_events);
 
         // TODO: only needs to be called once.
-        init_events();
+        initEvents();
 
         window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::close;
@@ -97,7 +97,7 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C1663
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto shade = colour::get_shade(window->colours[1], 4);
         gfx::clear_single(*dpi, shade);
@@ -132,13 +132,13 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C176C
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = rowHeight * audio::num_music_tracks;
     }
 
     // 0x004C1757
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -149,7 +149,7 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C1799
-    static void on_scroll_mouse_down(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
         if (currentTrack > window->row_count)
@@ -175,7 +175,7 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C1771
-    static void on_scroll_mouse_over(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
         if (currentTrack > window->row_count || currentTrack == window->row_hover)
@@ -186,7 +186,7 @@ namespace openloco::ui::windows::music_selection
     }
 
     // 0x004C17E3
-    static void on_update(window* window)
+    static void onUpdate(window* window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
         if (optionsWindow == nullptr || optionsWindow->current_tab != options::tab_offset_music)

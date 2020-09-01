@@ -672,7 +672,7 @@ void openloco::interop::register_hooks()
     register_hook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = prompt_ok_cancel(regs.eax);
+            auto result = promptOkCancel(regs.eax);
             regs.eax = result ? 1 : 0;
             return 0;
         });
@@ -767,7 +767,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    ui::prompt_browse::register_hooks();
+    ui::prompt_browse::registerHooks();
     ui::textinput::register_hooks();
     ui::tooltip::register_hooks();
     ui::vehicle::registerHooks();

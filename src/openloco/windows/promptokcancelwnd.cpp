@@ -29,7 +29,7 @@ namespace openloco::ui::windows
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool prompt_ok_cancel(string_id okButtonStringId)
+    bool promptOkCancel(string_id okButtonStringId)
     {
         text_buffers_t buffers;
         _ok_button_string_id = okButtonStringId;

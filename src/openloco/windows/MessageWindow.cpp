@@ -56,9 +56,9 @@ namespace openloco::ui::MessageWindow
 
         static window_event_list _events;
 
-        static void prepare_draw(window* self);
+        static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void on_update(window* self);
+        static void onUpdate(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
@@ -85,7 +85,7 @@ namespace openloco::ui::MessageWindow
         static window_event_list events;
 
         // 0x0042A6F5
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -101,7 +101,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A95A
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             auto scrollview = self->widgets[widx::scrollview];
             auto scrollarea = self->scroll_areas[0];
@@ -137,13 +137,13 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A871
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
-        static void scroll_mouse_down(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -173,7 +173,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A87C
-        static void scroll_mouse_over(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -197,9 +197,9 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A545
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -213,7 +213,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A5D7
-        static void draw_scroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto colour = colour::get_shade(self->colours[1], 4);
 
@@ -280,18 +280,18 @@ namespace openloco::ui::MessageWindow
 
         static void initEvents()
         {
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = common::on_update;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = common::onUpdate;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = get_scroll_size;
-            events.scroll_mouse_down = scroll_mouse_down;
-            events.scroll_mouse_over = scroll_mouse_over;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down = scrollMouseDown;
+            events.scroll_mouse_over = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -416,7 +416,7 @@ namespace openloco::ui::MessageWindow
         static window_event_list events;
 
         // 0x0042AA84
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -432,7 +432,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042AA9F
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -471,7 +471,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042AAAC
-        static void on_dropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -559,11 +559,11 @@ namespace openloco::ui::MessageWindow
 
         static void initEvents()
         {
-            events.on_mouse_up = on_mouse_up;
-            events.on_mouse_down = on_mouse_down;
-            events.on_dropdown = on_dropdown;
-            events.on_update = common::on_update;
-            events.prepare_draw = common::prepare_draw;
+            events.on_mouse_up = onMouseUp;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
+            events.on_update = common::onUpdate;
+            events.prepare_draw = common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -583,7 +583,7 @@ namespace openloco::ui::MessageWindow
             { settings::widgets, widx::tab_settings, &settings::events, settings::enabledWidgets },
         };
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -671,7 +671,7 @@ namespace openloco::ui::MessageWindow
         }
 
         // 0x0042A826 and 0x0042AB6A
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             self->frame_no++;
             self->call_prepare_draw();

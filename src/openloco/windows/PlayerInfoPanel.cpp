@@ -61,14 +61,14 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static loco_global<uint8_t, 0x00508F1A> game_speed;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // dropdown flags?
 
-    static void prepare_draw(window* window);
+    static void prepareDraw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
-    static void on_dropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static ui::cursor_id on_cursor(ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onMouseDown(ui::window* window, widget_index widgetIndex);
+    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
+    static ui::cursor_id onCursor(ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
-    static void on_update(window* w);
+    static void onUpdate(window* w);
 
     // 0x43AA4C
     static void playerMouseDown(ui::window* self, widget_index widgetIndex)
@@ -165,14 +165,14 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
     static void initEvents()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.event_03 = on_mouse_down;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.on_update = on_update;
+        _events.on_mouse_up = onMouseUp;
+        _events.event_03 = onMouseDown;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
+        _events.on_update = onUpdate;
         _events.tooltip = tooltip;
-        _events.cursor = on_cursor;
-        _events.prepare_draw = prepare_draw;
+        _events.cursor = onCursor;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
     }
 
@@ -203,7 +203,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004393E7
-    static void prepare_draw(window* window)
+    static void prepareDraw(window* window)
     {
         window->widgets[widx::inner_frame].type = widget_type::none;
     }
@@ -275,7 +275,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -289,7 +289,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -300,7 +300,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395BC
-    static void on_dropdown(window* w, widget_index widgetIndex, int16_t item_index)
+    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -323,7 +323,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static ui::cursor_id on_cursor(ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static ui::cursor_id onCursor(ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
         switch (widgetIndex)
         {
@@ -366,7 +366,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     }
 
     // 0x00439670
-    static void on_update(window* w)
+    static void onUpdate(window* w)
     {
         w->var_854++;
         if (w->var_854 >= 24)

@@ -80,7 +80,7 @@ namespace openloco::ui::windows
     window* open_title_logo();
     void open_about_window();
 
-    bool prompt_ok_cancel(string_id okButtonStringId);
+    bool promptOkCancel(string_id okButtonStringId);
 
     void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
 
@@ -164,7 +164,7 @@ namespace openloco::ui::windows::error
 namespace openloco::ui::options
 {
     window* open();
-    window* open_music_settings();
+    window* openMusicSettings();
     constexpr uint8_t tab_offset_music = 2;
 }
 
@@ -176,7 +176,7 @@ namespace openloco::ui::prompt_browse
         save = 2
     };
     bool open(browse_type type, char* path, const char* filter, const char* title);
-    void register_hooks();
+    void registerHooks();
 }
 
 namespace openloco::ui::windows::ScenarioOptions
