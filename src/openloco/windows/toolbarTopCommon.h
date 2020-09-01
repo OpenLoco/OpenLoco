@@ -30,24 +30,24 @@ namespace openloco::ui::windows::toolbar_top::common
 
     void draw(window* window, gfx::drawpixelinfo_t* dpi);
 
-    void zoom_menu_mouse_down(window* window, widget_index widgetIndex);
-    void rotate_menu_mouse_down(window* window, widget_index widgetIndex);
-    void view_menu_mouse_down(window* window, widget_index widgetIndex);
-    void terraform_menu_mouse_down(window* window, widget_index widgetIndex);
-    void road_menu_mouse_down(window* window, widget_index widgetIndex);
-    void towns_menu_mouse_down(window* window, widget_index widgetIndex);
+    void zoomMenuMouseDown(window* window, widget_index widgetIndex);
+    void rotateMenuMouseDown(window* window, widget_index widgetIndex);
+    void viewMenuMouseDown(window* window, widget_index widgetIndex);
+    void terraformMenuMouseDown(window* window, widget_index widgetIndex);
+    void roadMenuMouseDown(window* window, widget_index widgetIndex);
+    void townsMenuMouseDown(window* window, widget_index widgetIndex);
 
-    void zoom_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void rotate_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void view_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void terraform_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void road_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void towns_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void zoomMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void rotateMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void viewMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void terraformMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void roadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void townsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
 
-    void on_update(window* window);
-    void on_resize(window* window);
-    void on_mouse_down(window* window, widget_index widgetIndex);
-    void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void onUpdate(window* window);
+    void onResize(window* window);
+    void onMouseDown(window* window, widget_index widgetIndex);
+    void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
 
     void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs);
 }
