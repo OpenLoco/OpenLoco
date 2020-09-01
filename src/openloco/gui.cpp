@@ -54,7 +54,7 @@ namespace openloco::gui
             ui::windows::openTitleMenu();
             ui::windows::openTitleExit();
             ui::windows::openTitleLogo();
-            ui::windows::open_title_version();
+            ui::windows::openTitleVersion();
             ui::title_options::open();
         }
         else

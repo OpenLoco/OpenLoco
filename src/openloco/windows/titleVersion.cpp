@@ -17,7 +17,7 @@ namespace openloco::ui::windows
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
-    window* open_title_version()
+    window* openTitleVersion()
     {
         auto width = 512;
         auto height = 16;
