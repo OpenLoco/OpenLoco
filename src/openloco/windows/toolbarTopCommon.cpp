@@ -80,7 +80,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A78E
-    void zoom_menu_mouse_down(window* window, widget_index widgetIndex)
+    void zoomMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = objectmgr::get<interface_skin_object>();
 
@@ -119,7 +119,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A5C5
-    void rotate_menu_mouse_down(window* window, widget_index widgetIndex)
+    void rotateMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = objectmgr::get<interface_skin_object>();
 
@@ -130,7 +130,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043ADF6
-    void view_menu_mouse_down(window* window, widget_index widgetIndex)
+    void viewMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_underground_view);
         dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_hide_foreground_tracks_roads);
@@ -174,7 +174,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A3C3
-    void terraform_menu_mouse_down(window* window, widget_index widgetIndex)
+    void terraformMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = objectmgr::get<interface_skin_object>();
         auto land = objectmgr::get<land_object>(addr<0x00525FB6, uint8_t>());
@@ -190,7 +190,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A19F
-    void road_menu_mouse_down(window* window, widget_index widgetIndex)
+    void roadMenuMouseDown(window* window, widget_index widgetIndex)
     {
         // Load objects.
         registers regs;
@@ -238,7 +238,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A8CE
-    void towns_menu_mouse_down(window* window, widget_index widgetIndex)
+    void townsMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = objectmgr::get<interface_skin_object>();
         dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_towns, string_ids::menu_towns });
@@ -248,7 +248,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A86D
-    void zoom_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void zoomMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -275,7 +275,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A624
-    void rotate_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void rotateMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -300,7 +300,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043AF37
-    void view_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void viewMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -329,7 +329,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A4A8
-    void terraform_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void terraformMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -359,7 +359,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A28C
-    void road_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void roadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -372,7 +372,7 @@ namespace openloco::ui::windows::toolbar_top::common
     }
 
     // 0x0043A932
-    void towns_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void townsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -389,74 +389,74 @@ namespace openloco::ui::windows::toolbar_top::common
         }
     }
 
-    void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
             case widx::zoom_menu:
-                zoom_menu_dropdown(window, widgetIndex, itemIndex);
+                zoomMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::rotate_menu:
-                rotate_menu_dropdown(window, widgetIndex, itemIndex);
+                rotateMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::view_menu:
-                view_menu_dropdown(window, widgetIndex, itemIndex);
+                viewMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::terraform_menu:
-                terraform_menu_dropdown(window, widgetIndex, itemIndex);
+                terraformMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::road_menu:
-                road_menu_dropdown(window, widgetIndex, itemIndex);
+                roadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::towns_menu:
-                towns_menu_dropdown(window, widgetIndex, itemIndex);
+                townsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
 
     // 0x0043A071
-    void on_mouse_down(window* window, widget_index widgetIndex)
+    void onMouseDown(window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::zoom_menu:
-                zoom_menu_mouse_down(window, widgetIndex);
+                zoomMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::rotate_menu:
-                rotate_menu_mouse_down(window, widgetIndex);
+                rotateMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::view_menu:
-                view_menu_mouse_down(window, widgetIndex);
+                viewMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::terraform_menu:
-                terraform_menu_mouse_down(window, widgetIndex);
+                terraformMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::road_menu:
-                road_menu_mouse_down(window, widgetIndex);
+                roadMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::towns_menu:
-                towns_menu_mouse_down(window, widgetIndex);
+                townsMenuMouseDown(window, widgetIndex);
                 break;
         }
     }
 
-    void on_update(window* window)
+    void onUpdate(window* window)
     {
         zoom_ticks++;
     }
 
     // 0x0043A17E
-    void on_resize(window* window)
+    void onResize(window* window)
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)

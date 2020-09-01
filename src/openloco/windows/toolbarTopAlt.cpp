@@ -59,18 +59,18 @@ namespace openloco::ui::windows::toolbar_top::editor
 
     static window_event_list _events;
 
-    static void on_mouse_down(window* window, widget_index widgetIndex);
-    static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void prepare_draw(window* window);
+    static void onMouseDown(window* window, widget_index widgetIndex);
+    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void prepareDraw(window* window);
 
     static void initEvents()
     {
-        _events.on_resize = common::on_resize;
-        _events.event_03 = on_mouse_down;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.on_update = common::on_update;
-        _events.prepare_draw = prepare_draw;
+        _events.on_resize = common::onResize;
+        _events.event_03 = onMouseDown;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
+        _events.on_update = common::onUpdate;
+        _events.prepare_draw = prepareDraw;
         _events.draw = common::draw;
     }
 
@@ -213,7 +213,7 @@ namespace openloco::ui::windows::toolbar_top::editor
     }
 
     // 0x0043D541
-    static void on_mouse_down(window* window, widget_index widgetIndex)
+    static void onMouseDown(window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -230,13 +230,13 @@ namespace openloco::ui::windows::toolbar_top::editor
                 break;
 
             default:
-                common::on_mouse_down(window, widgetIndex);
+                common::onMouseDown(window, widgetIndex);
                 break;
         }
     }
 
     // 0x0043D5A6
-    static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
@@ -253,13 +253,13 @@ namespace openloco::ui::windows::toolbar_top::editor
                 break;
 
             default:
-                common::on_dropdown(window, widgetIndex, itemIndex);
+                common::onDropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
 
     // 0x0043D2F3
-    static void prepare_draw(window* window)
+    static void prepareDraw(window* window)
     {
         uint32_t x = std::max(640, ui::width()) - 1;
 

@@ -70,9 +70,9 @@ namespace openloco::ui::windows::toolbar_top::game
 
     static window_event_list _events;
 
-    static void on_mouse_down(window* window, widget_index widgetIndex);
-    static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void prepare_draw(window* window);
+    static void onMouseDown(window* window, widget_index widgetIndex);
+    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void prepareDraw(window* window);
     static void draw(window* window, gfx::drawpixelinfo_t* dpi);
 
     // 0x00438B26
@@ -82,12 +82,12 @@ namespace openloco::ui::windows::toolbar_top::game
         last_town_option = 0;
         last_port_option = 0;
 
-        _events.on_resize = common::on_resize;
-        _events.event_03 = on_mouse_down;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.on_update = common::on_update;
-        _events.prepare_draw = prepare_draw;
+        _events.on_resize = common::onResize;
+        _events.event_03 = onMouseDown;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
+        _events.on_update = common::onUpdate;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
@@ -111,7 +111,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043B0F7
-    static void loadsave_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::menu_load_game);
         dropdown::add(1, string_ids::menu_save_game);
@@ -127,7 +127,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043B154
-    static void loadsave_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -172,7 +172,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043B04B
-    static void audio_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
         dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
         dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_play_music);
@@ -190,7 +190,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043B0B8
-    static void audio_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -224,7 +224,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A2B0
-    static void railroad_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void railroadMenuMouseDown(window* window, widget_index widgetIndex)
     {
         // Load objects.
         registers regs;
@@ -272,7 +272,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A39F
-    static void railroad_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void railroadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -285,7 +285,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A965
-    static void port_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void portMenuMouseDown(window* window, widget_index widgetIndex)
     {
         uint8_t ddIndex = 0;
         auto interface = objectmgr::get<interface_skin_object>();
@@ -316,7 +316,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043AA0A
-    static void port_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void portMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -352,7 +352,7 @@ namespace openloco::ui::windows::toolbar_top::game
     };
 
     // 0x0043AD1F
-    static void build_vehicles_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void buildVehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto company = companymgr::get(companymgr::get_controlling_id());
         uint16_t available_vehicles = company->available_vehicles;
@@ -380,7 +380,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043ADC7
-    static void build_vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void buildVehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -395,7 +395,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043ABCB
-    static void vehicles_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void vehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto player_company_id = companymgr::get_controlling_id();
         auto company = companymgr::get(player_company_id);
@@ -444,7 +444,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043ACEF
-    static void vehicles_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void vehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -459,7 +459,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A4E9
-    static void stations_menu_mouse_down(window* window, widget_index widgetIndex)
+    static void stationsMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = objectmgr::get<interface_skin_object>();
         uint32_t sprite_base = interface->img;
@@ -478,7 +478,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A596
-    static void stations_menu_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void stationsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -490,78 +490,78 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x0043A071
-    static void on_mouse_down(window* window, widget_index widgetIndex)
+    static void onMouseDown(window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
             case common::widx::loadsave_menu:
-                loadsave_menu_mouse_down(window, widgetIndex);
+                loadsaveMenuMouseDown(window, widgetIndex);
                 break;
 
             case common::widx::audio_menu:
-                audio_menu_mouse_down(window, widgetIndex);
+                audioMenuMouseDown(window, widgetIndex);
                 break;
 
             case widx::railroad_menu:
-                railroad_menu_mouse_down(window, widgetIndex);
+                railroadMenuMouseDown(window, widgetIndex);
                 break;
 
             case common::widx::port_menu:
-                port_menu_mouse_down(window, widgetIndex);
+                portMenuMouseDown(window, widgetIndex);
                 break;
 
             case common::widx::build_vehicles_menu:
-                build_vehicles_menu_mouse_down(window, widgetIndex);
+                buildVehiclesMenuMouseDown(window, widgetIndex);
                 break;
 
             case common::widx::vehicles_menu:
-                vehicles_menu_mouse_down(window, widgetIndex);
+                vehiclesMenuMouseDown(window, widgetIndex);
                 break;
 
             case common::widx::stations_menu:
-                stations_menu_mouse_down(window, widgetIndex);
+                stationsMenuMouseDown(window, widgetIndex);
                 break;
 
             default:
-                common::on_mouse_down(window, widgetIndex);
+                common::onMouseDown(window, widgetIndex);
                 break;
         }
     }
 
-    static void on_dropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
             case common::widx::loadsave_menu:
-                loadsave_menu_dropdown(window, widgetIndex, itemIndex);
+                loadsaveMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::audio_menu:
-                audio_menu_dropdown(window, widgetIndex, itemIndex);
+                audioMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case widx::railroad_menu:
-                railroad_menu_dropdown(window, widgetIndex, itemIndex);
+                railroadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::port_menu:
-                port_menu_dropdown(window, widgetIndex, itemIndex);
+                portMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::build_vehicles_menu:
-                build_vehicles_menu_dropdown(window, widgetIndex, itemIndex);
+                buildVehiclesMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::vehicles_menu:
-                vehicles_menu_dropdown(window, widgetIndex, itemIndex);
+                vehiclesMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             case common::widx::stations_menu:
-                stations_menu_dropdown(window, widgetIndex, itemIndex);
+                stationsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             default:
-                common::on_dropdown(window, widgetIndex, itemIndex);
+                common::onDropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
@@ -664,7 +664,7 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     // 0x00439BCB
-    static void prepare_draw(window* window)
+    static void prepareDraw(window* window)
     {
         auto interface = objectmgr::get<interface_skin_object>();
 
