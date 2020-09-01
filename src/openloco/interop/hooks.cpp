@@ -769,7 +769,7 @@ void openloco::interop::register_hooks()
 
     ui::prompt_browse::registerHooks();
     ui::textinput::registerHooks();
-    ui::tooltip::register_hooks();
+    ui::tooltip::registerHooks();
     ui::vehicle::registerHooks();
     ui::buildVehicle::registerHooks();
     ui::windows::terraform::registerHooks();
