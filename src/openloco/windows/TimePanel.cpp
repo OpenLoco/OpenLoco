@@ -263,7 +263,7 @@ namespace openloco::ui::TimePanel
                 {
                     auto opponent = companymgr::getOpponent();
                     _common_format_args[4] = opponent->owner_name;
-                    ui::textinput::open_textinput(self, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, widgetIndex, &*_common_format_args);
+                    ui::textinput::openTextinput(self, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, widgetIndex, &*_common_format_args);
                     break;
                 }
                 case 1:

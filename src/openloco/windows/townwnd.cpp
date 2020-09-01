@@ -688,7 +688,7 @@ namespace openloco::ui::windows::town
         {
             auto town = townmgr::get(self->number);
             commonFormatArgs[2] = town->name;
-            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+            textinput::openTextinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
 
         // 0x004999A7, 0x004999AD

@@ -887,7 +887,7 @@ namespace openloco::ui::windows::station
             args.push(station->name);
             args.push(station->town);
 
-            textinput::open_textinput(self, string_ids::title_station_name, string_ids::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            textinput::openTextinput(self, string_ids::title_station_name, string_ids::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
         // 0x0048EF82, 0x0048EF88

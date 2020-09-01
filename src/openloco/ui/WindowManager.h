@@ -209,9 +209,9 @@ namespace openloco::ui::windows::terraform
 
 namespace openloco::ui::textinput
 {
-    void register_hooks();
+    void registerHooks();
 
-    void open_textinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void openTextinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
     void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);

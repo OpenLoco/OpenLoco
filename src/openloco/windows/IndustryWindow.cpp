@@ -767,7 +767,7 @@ namespace openloco::ui::windows::industry
             args.push(industry->name);
             args.push(industry->town);
 
-            textinput::open_textinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            textinput::openTextinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
         // 0x00456A5E, 0x00456A64

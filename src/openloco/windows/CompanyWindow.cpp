@@ -311,7 +311,7 @@ namespace openloco::ui::windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    textinput::open_textinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
+                    textinput::openTextinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -2546,7 +2546,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void renameCompanyPrompt(window* self, widget_index widgetIndex)
         {
             auto company = companymgr::get(self->number);
-            textinput::open_textinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            textinput::openTextinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
         // 0x0043254F
