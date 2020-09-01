@@ -29,12 +29,12 @@ namespace openloco::ui::title_options
 
     static window_event_list _events;
 
-    static void on_mouse_up(window* window, widget_index widgetIndex);
+    static void onMouseUp(window* window, widget_index widgetIndex);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
     window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
@@ -67,7 +67,7 @@ namespace openloco::ui::title_options
         gfx::draw_string_centred_wrapped(dpi, &origin, window->width, colour::white, string_ids::outlined_wcolour2_stringid, (const char*)&string_ids::options);
     }
 
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void onMouseUp(window* window, widget_index widgetIndex)
     {
         if (intro::is_active())
         {
