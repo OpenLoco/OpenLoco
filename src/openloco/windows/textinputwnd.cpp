@@ -70,13 +70,13 @@ namespace openloco::ui::textinput
         widget_end(),
     };
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                open_textinput((ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                openTextinput((ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -100,14 +100,14 @@ namespace openloco::ui::textinput
             });
     }
 
-    static void prepare_draw(ui::window* window);
+    static void prepareDraw(ui::window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* context);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_update(ui::window* window);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onUpdate(ui::window* window);
 
-    static bool needs_reoffsetting(int16_t containerWidth);
-    static void calculate_text_offset(int16_t containerWidth);
-    static void sanitize_input();
+    static bool needsReoffsetting(int16_t containerWidth);
+    static void calculateTextOffset(int16_t containerWidth);
+    static void sanitizeInput();
 
     /**
      * 0x004CE523
@@ -118,7 +118,7 @@ namespace openloco::ui::textinput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void open_textinput(ui::window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void openTextinput(ui::window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;
@@ -137,9 +137,9 @@ namespace openloco::ui::textinput
         _buffer = temp;
 
         _events.draw = draw;
-        _events.prepare_draw = prepare_draw;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_update = on_update;
+        _events.prepare_draw = prepareDraw;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_update = onUpdate;
 
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
@@ -155,7 +155,7 @@ namespace openloco::ui::textinput
         _cursorFrame = 0;
 
         _xOffset = 0;
-        calculate_text_offset(_widgets[widx::input].width() - 2);
+        calculateTextOffset(_widgets[widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -233,7 +233,7 @@ namespace openloco::ui::textinput
      *
      * @param window @<esi>
      */
-    static void prepare_draw(ui::window* window)
+    static void prepareDraw(ui::window* window)
     {
         _widgets[widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
@@ -285,7 +285,7 @@ namespace openloco::ui::textinput
     }
 
     // 0x004CE8B6
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -293,7 +293,7 @@ namespace openloco::ui::textinput
                 WindowManager::close(window);
                 break;
             case widx::ok:
-                sanitize_input();
+                sanitizeInput();
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
@@ -305,7 +305,7 @@ namespace openloco::ui::textinput
     }
 
     // 0x004CE8FA
-    static void on_update(ui::window* window)
+    static void onUpdate(ui::window* window)
     {
         _cursorFrame++;
         if ((_cursorFrame % 16) == 0)
@@ -402,13 +402,13 @@ namespace openloco::ui::textinput
         _cursorFrame = 0;
 
         int containerWidth = _widgets[widx::input].width() - 2;
-        if (needs_reoffsetting(containerWidth))
+        if (needsReoffsetting(containerWidth))
         {
-            calculate_text_offset(containerWidth);
+            calculateTextOffset(containerWidth);
         }
     }
 
-    static bool needs_reoffsetting(int16_t containerWidth)
+    static bool needsReoffsetting(int16_t containerWidth)
     {
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
@@ -435,7 +435,7 @@ namespace openloco::ui::textinput
      *
      * @param containerWidth @<edx>
      */
-    static void calculate_text_offset(int16_t containerWidth)
+    static void calculateTextOffset(int16_t containerWidth)
     {
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
@@ -463,7 +463,7 @@ namespace openloco::ui::textinput
     /**
      * 0x004CEBFB
      */
-    static void sanitize_input()
+    static void sanitizeInput()
     {
         _buffer.erase(
             std::remove_if(
