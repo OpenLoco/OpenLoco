@@ -639,7 +639,6 @@ namespace openloco::things::vehicle
         newVeh2->var_5B = 0;
         newVeh2->soundId = sound_object_id::null;
         newVeh2->var_48 = -1;
-        newVeh2->var_48 = 0;
         newVeh2->var_4A = 0;
         newVeh2->var_5E = 0;
         newVeh2->refund_cost = 0;
