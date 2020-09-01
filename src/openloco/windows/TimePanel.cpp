@@ -56,16 +56,16 @@ namespace openloco::ui::TimePanel
 
     static window_event_list _events;
 
-    static void prepare_draw(window* window);
+    static void prepareDraw(window* window);
     static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex);
-    static void text_input(window* w, widget_index widgetIndex, char* str);
-    static void on_dropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static ui::cursor_id on_cursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onMouseDown(ui::window* window, widget_index widgetIndex);
+    static void textInput(window* w, widget_index widgetIndex, char* str);
+    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
+    static ui::cursor_id onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
-    static void text_input(window* w, widget_index widgetIndex, char* str);
-    static void on_update(window* w);
+    static void textInput(window* w, widget_index widgetIndex, char* str);
+    static void onUpdate(window* w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -80,15 +80,15 @@ namespace openloco::ui::TimePanel
 
     window* open()
     {
-        _events.on_mouse_up = on_mouse_up;
-        _events.event_03 = on_mouse_down;
-        _events.on_mouse_down = on_mouse_down;
-        _events.on_dropdown = on_dropdown;
-        _events.on_update = on_update;
-        _events.text_input = text_input;
+        _events.on_mouse_up = onMouseUp;
+        _events.event_03 = onMouseDown;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
+        _events.on_update = onUpdate;
+        _events.text_input = textInput;
         _events.tooltip = tooltip;
-        _events.cursor = on_cursor;
-        _events.prepare_draw = prepare_draw;
+        _events.cursor = onCursor;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
@@ -114,7 +114,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x004396A4
-    static void prepare_draw(window* window)
+    static void prepareDraw(window* window)
     {
         _widgets[widx::inner_frame].type = widget_type::none;
         _widgets[widx::pause_btn].image = gfx::recolour(image_ids::speed_pause);
@@ -207,7 +207,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x004398FB
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -230,7 +230,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x0043A67F
-    static void map_mouse_down(ui::window* self, widget_index widgetIndex)
+    static void mapMouseDown(ui::window* self, widget_index widgetIndex)
     {
         auto skin = objectmgr::get<interface_skin_object>();
 
@@ -250,7 +250,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x0043A72F
-    static void map_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void mapDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
@@ -283,29 +283,29 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x043992E
-    static void on_mouse_down(ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::map_chat_menu:
-                map_mouse_down(window, widgetIndex);
+                mapMouseDown(window, widgetIndex);
                 break;
         }
     }
 
     // 0x439939
-    static void on_dropdown(window* w, widget_index widgetIndex, int16_t item_index)
+    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
             case widx::map_chat_menu:
-                map_dropdown(w, widgetIndex, item_index);
+                mapDropdown(w, widgetIndex, item_index);
                 break;
         }
     }
 
     // 0x00439944
-    static ui::cursor_id on_cursor(ui::window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static ui::cursor_id onCursor(ui::window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
     {
         switch (widgetIdx)
         {
@@ -369,7 +369,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x00439A15
-    static void text_input(window* w, widget_index widgetIndex, char* str)
+    static void textInput(window* w, widget_index widgetIndex, char* str)
     {
         switch (widgetIndex)
         {
@@ -410,7 +410,7 @@ namespace openloco::ui::TimePanel
     }
 
     // 0x00439AD9
-    static void on_update(window* w)
+    static void onUpdate(window* w)
     {
         w->var_854 += 1;
         if (w->var_854 >= 24)
