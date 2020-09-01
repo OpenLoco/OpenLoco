@@ -92,15 +92,15 @@ namespace openloco::ui::windows::terraform
 
         static window_event_list _events;
 
-        static void init_events();
+        static void initEvents();
         static void sub_4BD297();
         static void switchTab(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
-        static void prepare_draw(window* self);
-        static void on_update(window* self);
-        static void on_resize(window* self, uint8_t height);
-        static void on_mouse_up(window* self, widget_index widgetIndex);
+        static void prepareDraw(window* self);
+        static void onUpdate(window* self);
+        static void onResize(window* self, uint8_t height);
+        static void onMouseUp(window* self, widget_index widgetIndex);
         static void sub_4A69DD();
     }
 
@@ -220,7 +220,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBB0A
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             common::sub_4BD297();
             ui::windows::hideGridlines();
@@ -240,7 +240,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBAB5
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -286,7 +286,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBFBD
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
@@ -297,7 +297,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBAEA
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == widx::object_colour)
             {
@@ -310,7 +310,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBAF5
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
                 return;
@@ -322,7 +322,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBDA5
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             if (!input::has_flag(input::input_flags::tool_active))
                 WindowManager::close(self);
@@ -405,7 +405,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBB15
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = uint32_t(&self);
@@ -416,7 +416,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBB20
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = uint32_t(&self);
@@ -427,7 +427,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBEC1
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (self->var_83C + 8) / 9;
             if (*scrollHeight == 0)
@@ -441,7 +441,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBF3B
-        static void scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / columnWidth);
             int16_t yPos = (y / rowHeight) * 5;
@@ -470,7 +470,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BBEF8
-        static void scroll_mouse_over(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
@@ -495,9 +495,9 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BB756
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->activated_widgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
@@ -610,7 +610,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BB982
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, shade);
@@ -652,24 +652,24 @@ namespace openloco::ui::windows::terraform
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            events.on_close = on_close;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_mouse_down = on_mouse_down;
-            events.on_dropdown = on_dropdown;
-            events.on_update = on_update;
+            events.on_close = onClose;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
+            events.on_update = onUpdate;
             events.event_08 = event_08;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.get_scroll_size = get_scroll_size;
-            events.scroll_mouse_down = scroll_mouse_down;
-            events.scroll_mouse_over = scroll_mouse_over;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down = scrollMouseDown;
+            events.scroll_mouse_over = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -718,7 +718,7 @@ namespace openloco::ui::windows::terraform
             ui::windows::showGridlines();
             _treeRotation = 2;
 
-            common::init_events();
+            common::initEvents();
 
             window->invalidate();
 
@@ -767,7 +767,7 @@ namespace openloco::ui::windows::terraform
         static window_event_list events;
 
         // 0x004BC671
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             ui::windows::hideGridlines();
         }
@@ -782,13 +782,13 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC7C6
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
-            common::on_resize(self, 105);
+            common::onResize(self, 105);
         }
 
         // 0x004BC65C
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -815,7 +815,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC677
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = int32_t(&self);
@@ -843,7 +843,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC689
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != common::widx::panel)
                 return;
@@ -876,9 +876,9 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC555
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
@@ -910,18 +910,18 @@ namespace openloco::ui::windows::terraform
             gfx::draw_string_centred(*dpi, xPos, yPos, colour::black, string_ids::clear_land_cost, &args);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            events.on_close = on_close;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_mouse_down = on_mouse_down;
-            events.on_update = common::on_update;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
+            events.on_close = onClose;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_mouse_down = onMouseDown;
+            events.on_update = common::onUpdate;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
             events.event_12 = (void (*)(window&, const widget_index))0x004BC682;
             events.event_13 = (void (*)(window&, const widget_index))0x004BC701;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -950,7 +950,7 @@ namespace openloco::ui::windows::terraform
         static window_event_list events;
 
         // 0x004BC9D1
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             ui::windows::hideGridlines();
         }
@@ -975,16 +975,16 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCBF8
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             if (is_editor_mode())
             {
-                common::on_resize(self, 115);
+                common::onResize(self, 115);
             }
             else
             {
                 // CHANGE: Resizes window to allow dropdown and cost string to be drawn seperately
-                common::on_resize(self, 140);
+                common::onResize(self, 140);
             }
         }
 
@@ -1028,7 +1028,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC9A7
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1061,7 +1061,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC9C6
-        static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::land_material)
                 return;
@@ -1287,7 +1287,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC9D7
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             uint16_t xPos = 0;
             if (widgetIndex != common::widx::panel)
@@ -1343,7 +1343,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC9ED
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != common::widx::panel)
                 return;
@@ -1427,9 +1427,9 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC83B
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
@@ -1484,19 +1484,19 @@ namespace openloco::ui::windows::terraform
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            events.on_close = on_close;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_mouse_down = on_mouse_down;
-            events.on_dropdown = on_dropdown;
-            events.on_update = common::on_update;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
+            events.on_close = onClose;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
+            events.on_update = common::onUpdate;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
             events.event_12 = (void (*)(window&, const widget_index))0x004BC9E2;
             events.event_13 = (void (*)(window&, const widget_index))0x004BCA5D;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -1523,7 +1523,7 @@ namespace openloco::ui::windows::terraform
         static window_event_list events;
 
         // 0x004BCDAE
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             ui::windows::hideGridlines();
         }
@@ -1539,13 +1539,13 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCEB4
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
-            common::on_resize(self, 115);
+            common::onResize(self, 115);
         }
 
         // 0x004BCD9D
-        static void on_mouse_down(window* self, widget_index widgetIndex)
+        static void onMouseDown(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1572,7 +1572,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCDB4
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = int32_t(&self);
@@ -1583,7 +1583,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCDCA
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = int32_t(&self);
@@ -1675,9 +1675,9 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCC6D
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
@@ -1722,18 +1722,18 @@ namespace openloco::ui::windows::terraform
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            events.on_close = on_close;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_mouse_down = on_mouse_down;
-            events.on_update = common::on_update;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
+            events.on_close = onClose;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_mouse_down = onMouseDown;
+            events.on_update = common::onUpdate;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
             events.event_12 = (void (*)(window&, const widget_index))0x004BCDBF;
             events.event_13 = (void (*)(window&, const widget_index))0x004BCDE8;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -1821,7 +1821,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC21C
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             common::sub_4BD297();
             ui::windows::hideGridlines();
@@ -1839,7 +1839,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC44B
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
@@ -1850,7 +1850,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC23D
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             if (!input::has_flag(input::input_flags::tool_active))
                 WindowManager::close(self);
@@ -1933,7 +1933,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC227
-        static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = int32_t(&self);
@@ -1944,7 +1944,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC232
-        static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = int32_t(&self);
@@ -1955,7 +1955,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC359
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (self->var_83C + 9) / 10;
             if (*scrollHeight == 0)
@@ -1969,7 +1969,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC3D3
-        static void scroll_mouse_down(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / 40);
             int16_t yPos = (y / rowHeight) * 10;
@@ -1995,7 +1995,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC390
-        static void scroll_mouse_over(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -2021,9 +2021,9 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC029
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -2054,7 +2054,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC11C
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = colour::get_shade(self->colours[1], 3);
             gfx::clear_single(*dpi, shade);
@@ -2092,22 +2092,22 @@ namespace openloco::ui::windows::terraform
             }
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            events.on_close = on_close;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
-            events.on_update = on_update;
+            events.on_close = onClose;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
+            events.on_update = onUpdate;
             events.event_08 = event_08;
-            events.on_tool_update = on_tool_update;
-            events.on_tool_down = on_tool_down;
-            events.get_scroll_size = get_scroll_size;
-            events.scroll_mouse_down = scroll_mouse_down;
-            events.scroll_mouse_over = scroll_mouse_over;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down = scrollMouseDown;
+            events.scroll_mouse_over = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepare_draw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -2129,7 +2129,7 @@ namespace openloco::ui::windows::terraform
             { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
         };
 
-        static void on_resize(window* self, uint8_t height)
+        static void onResize(window* self, uint8_t height)
         {
             self->flags |= window_flags::resizable;
 
@@ -2144,7 +2144,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BC78A, 0x004BCB0B
-        static void on_update(window* self)
+        static void onUpdate(window* self)
         {
             if (!input::has_flag(input::input_flags::tool_active))
                 WindowManager::close(self);
@@ -2158,7 +2158,7 @@ namespace openloco::ui::windows::terraform
         }
 
         // 0x004BCD82
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -2197,7 +2197,7 @@ namespace openloco::ui::windows::terraform
             }
         }
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -2343,46 +2343,46 @@ namespace openloco::ui::windows::terraform
             call(0x004A69DD, regs);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            plant_trees::init_events();
-            clear_area::init_events();
-            adjust_land::init_events();
-            adjust_water::init_events();
-            build_walls::init_events();
+            plant_trees::initEvents();
+            clear_area::initEvents();
+            adjust_land::initEvents();
+            adjust_water::initEvents();
+            build_walls::initEvents();
         }
     }
 
     // 0x004BB566
-    void open_clear_area()
+    void openClearArea()
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_clear_area);
     }
 
     // 0x004BB546
-    void open_adjust_land()
+    void openAdjustLand()
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_adjust_land);
     }
 
     // 0x004BB556
-    void open_adjust_water()
+    void openAdjustWater()
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_adjust_water);
     }
 
     // 0x004BB4A3
-    void open_plant_trees()
+    void openPlantTrees()
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_plant_trees);
     }
 
     // 0x004BB576
-    void open_build_walls()
+    void openBuildWalls()
     {
         auto terraform_window = open();
         terraform_window->call_on_mouse_up(common::widx::tab_build_walls);
