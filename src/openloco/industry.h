@@ -12,7 +12,7 @@
 namespace openloco
 {
     using namespace map;
-    using industry_id_t = uint16_t;
+    using industry_id_t = uint8_t;
 
     namespace industry_id
     {

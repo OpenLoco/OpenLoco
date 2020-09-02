@@ -107,6 +107,11 @@ surface_element* tile::surface()
     return result;
 }
 
+openloco::industry* industry_element::industry()
+{
+    return industrymgr::get(_industryId);
+}
+
 namespace openloco::map
 {
     /**

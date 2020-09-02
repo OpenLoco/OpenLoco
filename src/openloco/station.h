@@ -1,6 +1,7 @@
 #pragma once
 
 #include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include "town.h"
 #include "types.hpp"
 #include "utility/numeric.hpp"
@@ -9,6 +10,8 @@
 
 namespace openloco
 {
+    using namespace openloco::map;
+
     namespace station_id
     {
         constexpr station_id_t null = std::numeric_limits<station_id_t>::max();
@@ -25,7 +28,7 @@ namespace openloco
         uint8_t enroute_age; // 0x35
         uint16_t var_36;     // 0x36
         uint8_t var_38;
-        uint8_t var_39;
+        industry_id_t industry_id; // 0x39
         uint8_t pad_40;
 
         bool empty() const
@@ -46,6 +49,14 @@ namespace openloco
 
     constexpr size_t max_cargo_stats = 32;
 
+    enum stationType
+    {
+        trainStation = 0,
+        roadStation,
+        airport,
+        docks,
+    };
+
     enum station_flags : uint16_t
     {
         transport_mode_rail = (1 << 0),
@@ -60,6 +71,8 @@ namespace openloco
     };
 
     constexpr uint16_t station_mask_all_modes = station_flags::transport_mode_rail | station_flags::transport_mode_road | station_flags::transport_mode_air | station_flags::transport_mode_water;
+
+    struct CargoSearchState;
 
     struct station
     {
@@ -76,11 +89,8 @@ namespace openloco
         uint16_t flags;
         town_id_t town;                                   // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
-        uint16_t var_1CE;
-        uint16_t var_1D0;
-        uint16_t var_1D2;
-        uint16_t var_1D4;
-        uint8_t pad_1D6[0x3B0 - 0x1D6];
+        uint16_t stationTileSize;                         // 0x1CE
+        map_pos3 stationTiles[80];                        // 0x1D0
         uint8_t var_3B0;
         uint8_t var_3B1;
         uint8_t pad_3B2[0x3D2 - 0x3B2];
@@ -88,13 +98,14 @@ namespace openloco
         bool empty() const { return name == string_ids::null; }
         station_id_t id() const;
         void update();
-        uint32_t calc_accepted_cargo(uint16_t ax = 0xFFFF);
+        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
         void getStatusString(const char* buffer);
         bool update_cargo();
         int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
         void invalidate();
         void invalidate_window();
+        void setCatchmentDisplay(uint8_t flags);
 
     private:
         void update_cargo_acceptance();

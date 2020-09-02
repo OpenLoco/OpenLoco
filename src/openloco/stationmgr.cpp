@@ -87,7 +87,7 @@ namespace openloco::stationmgr
         {
             if (!station.empty())
             {
-                if (station.var_1CE == 0)
+                if (station.stationTileSize == 0)
                 {
                     station.var_29++;
                     if (station.var_29 != 5 && is_player_company(station.owner))
