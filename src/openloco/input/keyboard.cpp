@@ -41,7 +41,7 @@ namespace openloco::input
     };
 #pragma pack(pop)
 
-    static void normal_key();
+    static void normalKey();
     static void cheat();
     static void loc_4BECDE();
     static void loc_4BED04();
@@ -148,14 +148,14 @@ namespace openloco::input
         }
     }
 
-    static key* get_next_key()
+    static key* getNextKey()
     {
         registers regs;
         call(0x00407028, regs);
         return (key*)regs.eax;
     }
 
-    static bool try_shortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
+    static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
     {
         auto cfg = openloco::config::get();
         if (cfg.keyboard_shortcuts[sc].var_0 == keyCode && cfg.keyboard_shortcuts[sc].var_1 == modifiers)
@@ -171,7 +171,7 @@ namespace openloco::input
     void processKeyboardInput()
     {
         cheat();
-        normal_key();
+        normalKey();
     }
 
     // 0x004BEC5B
@@ -210,7 +210,7 @@ namespace openloco::input
         }
     }
 
-    static void edit_shortcut(key* k)
+    static void editShortcut(key* k)
     {
         if (k->keyCode == VK_UP)
             return;
@@ -246,11 +246,11 @@ namespace openloco::input
     }
 
     // 0x004BEDA0
-    static void normal_key()
+    static void normalKey()
     {
         while (true)
         {
-            auto eax = get_next_key();
+            auto eax = getNextKey();
             if (eax == 0)
             {
                 loc_4BEFEF();
@@ -284,7 +284,7 @@ namespace openloco::input
             auto ti = WindowManager::find(WindowType::textInput);
             if (ti != nullptr)
             {
-                if (try_shortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+                if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                     continue;
 
                 ui::textinput::sub_4CE910(eax->charCode, eax->keyCode);
@@ -296,7 +296,7 @@ namespace openloco::input
                 ti = WindowManager::find(WindowType::fileBrowserPrompt);
                 if (ti != nullptr)
                 {
-                    if (try_shortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+                    if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                         continue;
 
                     registers regs;
@@ -322,7 +322,7 @@ namespace openloco::input
             ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {
-                edit_shortcut(eax);
+                editShortcut(eax);
                 continue;
             }
 
@@ -336,7 +336,7 @@ namespace openloco::input
             {
                 for (int i = 0; i < 35; i++)
                 {
-                    if (try_shortcut((Shortcut)i, eax->keyCode, _keyModifier))
+                    if (tryShortcut((Shortcut)i, eax->keyCode, _keyModifier))
                         break;
                 }
                 continue;
@@ -353,10 +353,10 @@ namespace openloco::input
                 intro::state((intro::intro_state)8);
             }
 
-            if (try_shortcut(Shortcut::sendMessage, eax->keyCode, _keyModifier))
+            if (tryShortcut(Shortcut::sendMessage, eax->keyCode, _keyModifier))
                 continue;
 
-            if (try_shortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+            if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                 continue;
         }
     }
