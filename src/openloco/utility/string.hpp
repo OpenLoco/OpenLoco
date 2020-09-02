@@ -7,8 +7,8 @@
 
 namespace openloco::utility
 {
-    std::string to_utf8(const std::wstring_view& src);
-    std::wstring to_utf16(const std::string_view& src);
+    std::string toUtf8(const std::wstring_view& src);
+    std::wstring toUtf16(const std::string_view& src);
 
     inline bool iequals(const std::string_view& a, const std::string_view& b)
     {
