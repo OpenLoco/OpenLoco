@@ -391,7 +391,7 @@ namespace openloco::ui::windows::toolbar_top::game
         itemIndex = menu_options[itemIndex];
         last_build_vehicles_option = itemIndex;
 
-        buildVehicle::open(itemIndex, 1 << 31);
+        BuildVehicle::open(itemIndex, 1 << 31);
     }
 
     // 0x0043ABCB

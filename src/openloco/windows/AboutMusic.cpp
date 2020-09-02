@@ -10,7 +10,7 @@
 
 using namespace openloco::interop;
 
-namespace openloco::ui::aboutMusic
+namespace openloco::ui::AboutMusic
 {
     constexpr gfx::ui_size_t windowSize = { 500, 312 };
 

@@ -383,7 +383,7 @@ namespace openloco::input::ShortcutManager
         if (last_build_vehicles_option == 0xFF)
             return;
 
-        buildVehicle::open(last_build_vehicles_option, 1 << 31);
+        BuildVehicle::open(last_build_vehicles_option, 1 << 31);
     }
 
     // 0x004BF2D1

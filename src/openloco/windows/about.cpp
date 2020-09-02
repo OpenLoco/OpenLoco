@@ -68,7 +68,7 @@ namespace openloco::ui::about
                 break;
 
             case widx::music_acknowledgements_btn:
-                aboutMusic::open();
+                AboutMusic::open();
                 break;
         }
     }
