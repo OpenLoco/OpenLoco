@@ -1,4 +1,4 @@
-#include "toolbarTopCommon.h"
+#include "ToolbarTopCommon.h"
 #include "../audio/audio.h"
 #include "../companymgr.h"
 #include "../config.h"
