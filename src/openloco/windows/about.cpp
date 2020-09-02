@@ -59,7 +59,7 @@ namespace openloco::ui::about
     }
 
     // 0x0043B4AF
-    static void on_mouse_up(ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(ui::window* const window, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -68,7 +68,7 @@ namespace openloco::ui::about
                 break;
 
             case widx::music_acknowledgements_btn:
-                about_music::open();
+                AboutMusic::open();
                 break;
         }
     }
@@ -119,6 +119,6 @@ namespace openloco::ui::about
     static void initEvents()
     {
         _events.draw = draw;
-        _events.on_mouse_up = on_mouse_up;
+        _events.on_mouse_up = onMouseUp;
     }
 }

@@ -48,7 +48,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
     }
 
     // 0x004C18E4
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void onMouseUp(window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -72,7 +72,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
     static void init_events()
     {
         events.draw = draw;
-        events.on_mouse_up = on_mouse_up;
+        events.on_mouse_up = onMouseUp;
     }
 
     // 0x004C180C

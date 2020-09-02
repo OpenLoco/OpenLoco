@@ -17,7 +17,7 @@ namespace openloco::ui::NewsWindow::ticker
     window_event_list events;
 
     // 0x00429EA2
-    static void on_mouse_up(window* self, widget_index widgetIndex)
+    static void onMouseUp(window* self, widget_index widgetIndex)
     {
         if (widgetIndex != 0)
             return;
@@ -36,7 +36,7 @@ namespace openloco::ui::NewsWindow::ticker
     }
 
     // 0x00429FE4
-    static void on_resize(window* self)
+    static void onResize(window* self)
     {
         auto y = ui::height() - windowSize.height + 1;
         auto x = ui::width() - windowSize.width - 27;
@@ -54,7 +54,7 @@ namespace openloco::ui::NewsWindow::ticker
     }
 
     // 0x00429EEB
-    static void on_update(window* self)
+    static void onUpdate(window* self)
     {
         auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
@@ -225,9 +225,9 @@ namespace openloco::ui::NewsWindow::ticker
 
     void initEvents()
     {
-        events.on_mouse_up = on_mouse_up;
-        events.on_resize = on_resize;
-        events.on_update = on_update;
+        events.on_mouse_up = onMouseUp;
+        events.on_resize = onResize;
+        events.on_update = onUpdate;
         events.draw = draw;
     }
 }

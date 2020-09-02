@@ -23,7 +23,7 @@ using namespace openloco::interop;
 
 namespace openloco::ui::options
 {
-    static void tab_on_mouse_up(window* w, widget_index wi);
+    static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
     static void sub_4C1519();
     static void sub_4BF935();
@@ -36,7 +36,7 @@ namespace openloco::ui::options
     static loco_global<void*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
 
-    static void on_close(window* w)
+    static void onClose(window* w)
     {
         free(__11364A0);
     }
@@ -72,7 +72,7 @@ namespace openloco::ui::options
             miscellaneous,
         };
 
-        static void draw_tabs(window* w, gfx::drawpixelinfo_t* ctx)
+        static void drawTabs(window* w, gfx::drawpixelinfo_t* ctx)
         {
             widget::draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
             widget::draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
@@ -213,7 +213,7 @@ namespace openloco::ui::options
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
 
         // 0x004BFB8C
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -227,7 +227,7 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::landscape_smoothing:
@@ -280,7 +280,7 @@ namespace openloco::ui::options
 #pragma mark - Construction Marker (Widget 19)
 
         // 0x004BFE2E
-        static void construction_marker_mouse_down(window* w, widget_index wi)
+        static void constructionMarkerMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::construction_marker];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
@@ -291,7 +291,7 @@ namespace openloco::ui::options
         }
 
         // 0x004BFE98
-        static void construction_marker_dropdown(int16_t ax)
+        static void constructionMarkerDropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -308,7 +308,7 @@ namespace openloco::ui::options
 #pragma mark - Vehicle zoom (Widget 15)
 
         // 0x004BFEBE
-        static void vehicle_zoom_mouse_down(window* w, widget_index wi)
+        static void vehicleZoomMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::vehicles_min_scale];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
@@ -321,7 +321,7 @@ namespace openloco::ui::options
         }
 
         // 0x004BFF4C
-        static void vehicle_zoom_dropdown(int16_t ax)
+        static void vehicleZoomDropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -338,7 +338,7 @@ namespace openloco::ui::options
 #pragma mark - Station names minimum scale (Widget 17)
 
         // 0x004BFF72
-        static void station_names_scale_mouse_down(window* w, widget_index wi)
+        static void stationNamesScaleMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::station_names_min_scale];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
@@ -351,7 +351,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0000
-        static void station_names_scale_dropdown(int16_t ax)
+        static void stationNamesScaleDropdown(int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -366,7 +366,7 @@ namespace openloco::ui::options
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-        static void screen_mode_toggle_enabled(window* w)
+        static void screenModeToggleEnabled(window* w)
         {
             if (config::get_new().display.mode == config::screen_mode::fullscreen)
             {
@@ -381,7 +381,7 @@ namespace openloco::ui::options
         }
 #endif
 
-        static void screen_mode_mouse_down(window* w, widget_index wi)
+        static void screenModeMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::screen_mode];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
@@ -394,7 +394,7 @@ namespace openloco::ui::options
             dropdown::setItemSelected(selection);
         }
 
-        static void screen_mode_dropdown(window* w, int16_t selection)
+        static void screenModeDropdown(window* w, int16_t selection)
         {
             if (selection == -1)
                 return;
@@ -411,7 +411,7 @@ namespace openloco::ui::options
 #pragma mark - Resolution dropdown (Widget 11)
 
         // 0x004C0026
-        static void resolution_mouse_down(window* w, widget_index wi)
+        static void resolutionMouseDown(window* w, widget_index wi)
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
@@ -428,7 +428,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C00F4
-        static void resolution_dropdown(window* w, int16_t index)
+        static void resolutionDropdown(window* w, int16_t index)
         {
             if (index == -1)
                 return;
@@ -438,65 +438,65 @@ namespace openloco::ui::options
 
 #pragma mark -
 
-        static void display_scale_mouse_down(window* w, widget_index wi, float adjust_by)
+        static void displayScaleMouseDown(window* w, widget_index wi, float adjust_by)
         {
             openloco::ui::adjust_window_scale(adjust_by);
         }
 
         // 0x004BFBB7
-        static void on_mouse_down(window* w, widget_index wi)
+        static void onMouseDown(window* w, widget_index wi)
         {
             switch (wi)
             {
                 case widx::screen_mode_btn:
-                    screen_mode_mouse_down(w, wi);
+                    screenModeMouseDown(w, wi);
                     break;
                 case widx::display_resolution_btn:
-                    resolution_mouse_down(w, wi);
+                    resolutionMouseDown(w, wi);
                     break;
                 case widx::construction_marker_btn:
-                    construction_marker_mouse_down(w, wi);
+                    constructionMarkerMouseDown(w, wi);
                     break;
                 case widx::vehicles_min_scale_btn:
-                    vehicle_zoom_mouse_down(w, wi);
+                    vehicleZoomMouseDown(w, wi);
                     break;
                 case widx::station_names_min_scale_btn:
-                    station_names_scale_mouse_down(w, wi);
+                    stationNamesScaleMouseDown(w, wi);
                     break;
                 case widx::display_scale_down_btn:
-                    display_scale_mouse_down(w, wi, -openloco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, -openloco::ui::ScaleFactor::step);
                     break;
                 case widx::display_scale_up_btn:
-                    display_scale_mouse_down(w, wi, openloco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, openloco::ui::ScaleFactor::step);
                     break;
             }
         }
 
         // 0x004BFBE8
-        static void on_dropdown(window* w, widget_index wi, int16_t item_index)
+        static void onDropdown(window* w, widget_index wi, int16_t item_index)
         {
             switch (wi)
             {
                 case widx::screen_mode_btn:
-                    screen_mode_dropdown(w, item_index);
+                    screenModeDropdown(w, item_index);
                     break;
                 case widx::display_resolution_btn:
-                    resolution_dropdown(w, item_index);
+                    resolutionDropdown(w, item_index);
                     break;
                 case widx::construction_marker_btn:
-                    construction_marker_dropdown(item_index);
+                    constructionMarkerDropdown(item_index);
                     break;
                 case widx::vehicles_min_scale_btn:
-                    vehicle_zoom_dropdown(item_index);
+                    vehicleZoomDropdown(item_index);
                     break;
                 case widx::station_names_min_scale_btn:
-                    station_names_scale_dropdown(item_index);
+                    stationNamesScaleDropdown(item_index);
                     break;
             }
         }
 
         // 0x004C01F5
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
@@ -504,7 +504,7 @@ namespace openloco::ui::options
         }
 
         // 0x004BFA04
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::display);
             assert(w->widgets == _widgets);
@@ -579,7 +579,7 @@ namespace openloco::ui::options
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            screen_mode_toggle_enabled(w);
+            screenModeToggleEnabled(w);
 #endif
 
             sub_4C13BE(w);
@@ -591,7 +591,7 @@ namespace openloco::ui::options
             // Draw widgets.
             w->draw(dpi);
 
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
@@ -624,20 +624,20 @@ namespace openloco::ui::options
 
 #if !(defined(__APPLE__) && defined(__MACH__))
             w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
-            display::screen_mode_toggle_enabled(w);
+            display::screenModeToggleEnabled(w);
 #else
             w->disabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn) | (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 #endif
         }
 
-        static const window_event_list init_events()
+        static const window_event_list initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_mouse_down = on_mouse_down;
-            _events.on_dropdown = on_dropdown;
-            _events.on_update = on_update;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
+            _events.on_dropdown = onDropdown;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
             return _events;
         }
@@ -669,12 +669,12 @@ namespace openloco::ui::options
 
         static window_event_list _events;
 
-        static void audio_device_mouse_down(ui::window* window);
-        static void audio_device_dropdown(ui::window* window, int16_t itemIndex);
-        static void play_title_music_on_mouse_up(ui::window* window);
+        static void audioDeviceMouseDown(ui::window* window);
+        static void audioDeviceDropdown(ui::window* window, int16_t itemIndex);
+        static void playTitleMusicOnMouseUp(ui::window* window);
 
         // 0x004C0217
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::sound);
             assert(w->widgets == _widgets);
@@ -715,10 +715,10 @@ namespace openloco::ui::options
             // Draw widgets.
             w->draw(dpi);
 
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
         }
 
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -732,31 +732,31 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::play_title_music:
-                    play_title_music_on_mouse_up(w);
+                    playTitleMusicOnMouseUp(w);
                     return;
             }
         }
 
-        static void on_mouse_down(window* w, widget_index wi)
+        static void onMouseDown(window* w, widget_index wi)
         {
             switch (wi)
             {
                 case widx::audio_device_btn:
-                    audio_device_mouse_down(w);
+                    audioDeviceMouseDown(w);
                     break;
             }
         }
 
-        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case widx::audio_device_btn:
-                    audio_device_dropdown(window, itemIndex);
+                    audioDeviceDropdown(window, itemIndex);
                     break;
             }
         }
@@ -764,7 +764,7 @@ namespace openloco::ui::options
 #pragma mark - Widget 11
 
         // 0x004C043D
-        static void audio_device_mouse_down(ui::window* w)
+        static void audioDeviceMouseDown(ui::window* w)
         {
             const auto& devices = audio::getDevices();
             if (devices.size() != 0)
@@ -786,7 +786,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C04CA
-        static void audio_device_dropdown(ui::window* w, int16_t itemIndex)
+        static void audioDeviceDropdown(ui::window* w, int16_t itemIndex)
         {
             if (itemIndex != -1)
             {
@@ -797,7 +797,7 @@ namespace openloco::ui::options
 
 #pragma mark -
 
-        static void play_title_music_on_mouse_up(window* w)
+        static void playTitleMusicOnMouseUp(window* w)
         {
             auto& cfg = config::get_new();
             cfg.audio.play_title_music = !cfg.audio.play_title_music;
@@ -809,21 +809,21 @@ namespace openloco::ui::options
         }
 
         // 0x004C04E0
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
             WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_mouse_down = on_mouse_down;
-            _events.on_dropdown = on_dropdown;
-            _events.on_update = on_update;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
+            _events.on_dropdown = onDropdown;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -864,18 +864,18 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static void volume_mouse_down(window* w);
-        static void stop_music(window* w);
-        static void play_music(window* w);
-        static void play_next_song(window* w);
-        static void music_playlist_mouse_down(window* w);
-        static void music_playlist_dropdown(window* w, int16_t ax);
-        static void currently_playing_mouse_down(window* w);
-        static void currently_playing_dropdown(window* w, int16_t ax);
+        static void volumeMouseDown(window* w);
+        static void stopMusic(window* w);
+        static void playMusic(window* w);
+        static void playNextSong(window* w);
+        static void musicPlaylistMouseDown(window* w);
+        static void musicPlaylistDropdown(window* w, int16_t ax);
+        static void currentlyPlayingMouseDown(window* w);
+        static void currentlyPlayingDropdown(window* w, int16_t ax);
 
         static window_event_list _events;
 
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::music);
             assert(w->widgets == _widgets);
@@ -935,7 +935,7 @@ namespace openloco::ui::options
             // Draw widgets.
             w->draw(dpi);
 
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
 
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
 
@@ -947,7 +947,7 @@ namespace openloco::ui::options
             gfx::draw_image(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
         }
 
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -961,19 +961,19 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::music_controls_stop:
-                    stop_music(w);
+                    stopMusic(w);
                     return;
 
                 case widx::music_controls_play:
-                    play_music(w);
+                    playMusic(w);
                     return;
 
                 case widx::music_controls_next:
-                    play_next_song(w);
+                    playNextSong(w);
                     return;
 
                 case widx::edit_selection:
@@ -983,32 +983,32 @@ namespace openloco::ui::options
         }
 
         // 0x004C06F2
-        static void on_mouse_down(window* w, widget_index wi)
+        static void onMouseDown(window* w, widget_index wi)
         {
             switch (wi)
             {
                 case widx::music_playlist_btn:
-                    music_playlist_mouse_down(w);
+                    musicPlaylistMouseDown(w);
                     break;
                 case widx::currently_playing_btn:
-                    currently_playing_mouse_down(w);
+                    currentlyPlayingMouseDown(w);
                     break;
                 case widx::volume:
-                    volume_mouse_down(w);
+                    volumeMouseDown(w);
                     break;
             }
         }
 
         // 0x004C070D
-        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case widx::music_playlist_btn:
-                    music_playlist_dropdown(window, itemIndex);
+                    musicPlaylistDropdown(window, itemIndex);
                     break;
                 case widx::currently_playing_btn:
-                    currently_playing_dropdown(window, itemIndex);
+                    currentlyPlayingDropdown(window, itemIndex);
                     break;
             }
         }
@@ -1017,7 +1017,7 @@ namespace openloco::ui::options
         static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
         // 0x004C072A
-        static void volume_mouse_down(window* w)
+        static void volumeMouseDown(window* w)
         {
             _clickRepeatTicks = 31;
 
@@ -1032,7 +1032,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0778
-        static void stop_music(window* w)
+        static void stopMusic(window* w)
         {
             if (config::get().music_playing == 0)
                 return;
@@ -1049,7 +1049,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C07A4
-        static void play_music(window* w)
+        static void playMusic(window* w)
         {
             if (config::get().music_playing != 0)
                 return;
@@ -1062,7 +1062,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C07C4
-        static void play_next_song(window* w)
+        static void playNextSong(window* w)
         {
             if (config::get().music_playing == 0)
                 return;
@@ -1077,7 +1077,7 @@ namespace openloco::ui::options
 #pragma mark - Widget 17
 
         // 0x004C07E4
-        static void music_playlist_mouse_down(window* w)
+        static void musicPlaylistMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::music_playlist];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
@@ -1090,7 +1090,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C084A
-        static void music_playlist_dropdown(window* w, int16_t ax)
+        static void musicPlaylistDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -1154,7 +1154,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0875
-        static void currently_playing_mouse_down(window* w)
+        static void currentlyPlayingMouseDown(window* w)
         {
             auto tracks = get_available_tracks();
 
@@ -1174,7 +1174,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C09F8
-        static void currently_playing_dropdown(window* w, int16_t ax)
+        static void currentlyPlayingDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -1194,21 +1194,21 @@ namespace openloco::ui::options
         }
 
         // 0x004C0A37
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
             WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_mouse_down = on_mouse_down;
-            _events.on_dropdown = on_dropdown;
-            _events.on_update = on_update;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
+            _events.on_dropdown = onDropdown;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1255,23 +1255,23 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static void language_mouse_down(window* w);
-        static void language_dropdown(window* w, int16_t ax);
-        static void currency_mouse_down(window* w);
-        static void currency_dropdown(window* w, int16_t ax);
-        static void preferred_currency_mouse_down(window* w);
-        static void preferred_currency_dropdown(window* w, int16_t ax);
-        static void preferred_currency_new_game_mouse_up(window* w);
-        static void preferred_currency_always_mouse_up(window* w);
-        static void distance_speed_mouse_down(window* w);
-        static void distance_speed_dropdown(window* w, int16_t ax);
-        static void heights_labels_mouse_down(window* w);
-        static void heights_labels_dropdown(window* w, int16_t ax);
+        static void languageMouseDown(window* w);
+        static void languageDropdown(window* w, int16_t ax);
+        static void currencyMouseDown(window* w);
+        static void currencyDropdown(window* w, int16_t ax);
+        static void preferredCurrencyMouseDown(window* w);
+        static void preferredCurrencyDropdown(window* w, int16_t ax);
+        static void preferredCurrencyNewGameMouseUp(window* w);
+        static void preferredCurrencyAlwaysMouseUp(window* w);
+        static void distanceSpeedMouseDown(window* w);
+        static void distanceSpeedDropdown(window* w, int16_t ax);
+        static void heightsLabelsMouseDown(window* w);
+        static void heightsLabelsDropdown(window* w, int16_t ax);
 
         static window_event_list _events;
 
         // 0x004C0A59
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::regional);
             assert(w->widgets == _widgets);
@@ -1339,7 +1339,7 @@ namespace openloco::ui::options
         {
             // Draw widgets.
             w->draw(dpi);
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
 
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
@@ -1348,7 +1348,7 @@ namespace openloco::ui::options
             gfx::draw_string_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
         }
 
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -1362,72 +1362,72 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::preferred_currency_for_new_games:
-                    preferred_currency_new_game_mouse_up(w);
+                    preferredCurrencyNewGameMouseUp(w);
                     return;
 
                 case widx::preferred_currency_always:
-                    preferred_currency_always_mouse_up(w);
+                    preferredCurrencyAlwaysMouseUp(w);
                     return;
             }
         }
 
         // 0x004BFBB7
-        static void on_mouse_down(window* w, widget_index wi)
+        static void onMouseDown(window* w, widget_index wi)
         {
             switch (wi)
             {
                 case widx::language_btn:
-                    language_mouse_down(w);
+                    languageMouseDown(w);
                     break;
                 case widx::heights_btn:
-                    heights_labels_mouse_down(w);
+                    heightsLabelsMouseDown(w);
                     break;
                 case widx::distance_speed_btn:
-                    distance_speed_mouse_down(w);
+                    distanceSpeedMouseDown(w);
                     break;
                 case widx::currency_btn:
-                    currency_mouse_down(w);
+                    currencyMouseDown(w);
                     break;
                 case widx::preferred_currency_btn:
-                    preferred_currency_mouse_down(w);
+                    preferredCurrencyMouseDown(w);
                     break;
             }
         }
 
         // 0x004C0C4A
-        static void on_dropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case widx::language_btn:
-                    language_dropdown(window, itemIndex);
+                    languageDropdown(window, itemIndex);
                     break;
 
                 case widx::heights_btn:
-                    heights_labels_dropdown(window, itemIndex);
+                    heightsLabelsDropdown(window, itemIndex);
                     break;
 
                 case widx::distance_speed_btn:
-                    distance_speed_dropdown(window, itemIndex);
+                    distanceSpeedDropdown(window, itemIndex);
                     break;
 
                 case widx::currency_btn:
-                    currency_dropdown(window, itemIndex);
+                    currencyDropdown(window, itemIndex);
                     break;
 
                 case widx::preferred_currency_btn:
-                    preferred_currency_dropdown(window, itemIndex);
+                    preferredCurrencyDropdown(window, itemIndex);
                     break;
             }
         }
 
         static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
 
-        static void language_mouse_down(window* w)
+        static void languageMouseDown(window* w)
         {
             auto& lds = localisation::getLanguageDescriptors();
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
@@ -1447,7 +1447,7 @@ namespace openloco::ui::options
             }
         }
 
-        static void language_dropdown(window* w, int16_t ax)
+        static void languageDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
             {
@@ -1464,7 +1464,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0C73
-        static void currency_mouse_down(window* w)
+        static void currencyMouseDown(window* w)
         {
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
@@ -1484,7 +1484,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0D33
-        static void currency_dropdown(window* w, int16_t ax)
+        static void currencyDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
             {
@@ -1528,7 +1528,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0DCF
-        static void preferred_currency_mouse_down(window* w)
+        static void preferredCurrencyMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::preferred_currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
@@ -1544,7 +1544,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0E82
-        static void preferred_currency_dropdown(window* w, int16_t ax)
+        static void preferredCurrencyDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
             {
@@ -1575,7 +1575,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0F14
-        static void preferred_currency_new_game_mouse_up(window* w)
+        static void preferredCurrencyNewGameMouseUp(window* w)
         {
             auto& cfg = openloco::config::get();
             if (cfg.flags & config::flags::preferred_currency_for_new_games)
@@ -1592,7 +1592,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0F27
-        static void preferred_currency_always_mouse_up(window* w)
+        static void preferredCurrencyAlwaysMouseUp(window* w)
         {
             auto& cfg = openloco::config::get();
             if (cfg.flags & config::flags::preferred_currency_always)
@@ -1612,7 +1612,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0F49
-        static void distance_speed_mouse_down(window* w)
+        static void distanceSpeedMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::distance_speed];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
@@ -1623,7 +1623,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0FB3
-        static void distance_speed_dropdown(window* w, int16_t ax)
+        static void distanceSpeedDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -1643,7 +1643,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C0FFA
-        static void heights_labels_mouse_down(window* w)
+        static void heightsLabelsMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::heights];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
@@ -1660,7 +1660,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C106C
-        static void heights_labels_dropdown(window* w, int16_t ax)
+        static void heightsLabelsDropdown(window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -1685,21 +1685,21 @@ namespace openloco::ui::options
         }
 
         // 0x004C1195
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
             WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_mouse_down = on_mouse_down;
-            _events.on_dropdown = on_dropdown;
-            _events.on_update = on_update;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
+            _events.on_dropdown = onDropdown;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1728,13 +1728,13 @@ namespace openloco::ui::options
             widget_end(),
         };
 
-        static void edge_scrolling_mouse_up(window* w);
-        static void zoom_to_cursor_mouse_up(window* w);
-        static void open_keyboard_shortcuts();
+        static void edgeScrollingMouseUp(window* w);
+        static void zoomToCursorMouseUp(window* w);
+        static void openKeyboardShortcuts();
 
         static window_event_list _events;
 
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::controls);
             assert(w->widgets == _widgets);
@@ -1767,11 +1767,11 @@ namespace openloco::ui::options
         static void draw(window* w, gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
         }
 
         // 0x004C114A
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -1785,25 +1785,25 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::customize_keys:
-                    open_keyboard_shortcuts();
+                    openKeyboardShortcuts();
                     break;
 
                 case widx::edge_scrolling:
-                    edge_scrolling_mouse_up(w);
+                    edgeScrollingMouseUp(w);
                     break;
 
                 case widx::zoom_to_cursor:
-                    zoom_to_cursor_mouse_up(w);
+                    zoomToCursorMouseUp(w);
                     break;
             }
         }
 
         // 0x004C117A
-        static void edge_scrolling_mouse_up(window* w)
+        static void edgeScrollingMouseUp(window* w)
         {
             auto& cfg = openloco::config::get();
             cfg.edge_scrolling = !cfg.edge_scrolling;
@@ -1812,7 +1812,7 @@ namespace openloco::ui::options
             w->invalidate();
         }
 
-        static void zoom_to_cursor_mouse_up(window* w)
+        static void zoomToCursorMouseUp(window* w)
         {
             auto& cfg = openloco::config::get_new();
             cfg.zoom_to_cursor = !cfg.zoom_to_cursor;
@@ -1822,25 +1822,25 @@ namespace openloco::ui::options
         }
 
         // 0x004C118D
-        static void open_keyboard_shortcuts()
+        static void openKeyboardShortcuts()
         {
             KeyboardShortcuts::open();
         }
 
         // 0x004C1195
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
             WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_update = on_update;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1877,15 +1877,15 @@ namespace openloco::ui::options
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
-        static void change_preferred_name(window* w);
-        static void set_preferred_name(window* w, char* str);
-        static void use_preferred_owner_name_mouse_up(window* w);
-        static void disable_vehicle_breakdowns_mouse_up(window* w);
+        static void changePreferredName(window* w);
+        static void setPreferredName(window* w, char* str);
+        static void usePreferredOwnerNameMouseUp(window* w);
+        static void disableVehicleBreakdownsMouseUp(window* w);
         static void disableAICompaniesMouseUp(window* w);
-        static void export_plugin_objects_mouse_up(window* w);
+        static void exportPluginObjectsMouseUp(window* w);
 
         // 0x004C11B7
-        static void prepare_draw(window* w)
+        static void prepareDraw(window* w)
         {
             assert(w->current_tab == common::tab::miscellaneous);
             assert(w->widgets == _widgets);
@@ -1938,7 +1938,7 @@ namespace openloco::ui::options
         static void draw(window* w, gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
-            common::draw_tabs(w, dpi);
+            common::drawTabs(w, dpi);
 
             auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
             char* playerName = config::get().preferred_name;
@@ -1951,7 +1951,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C12D2
-        static void on_mouse_up(window* w, widget_index wi)
+        static void onMouseUp(window* w, widget_index wi)
         {
             switch (wi)
             {
@@ -1965,11 +1965,11 @@ namespace openloco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tab_on_mouse_up(w, wi);
+                    options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::disable_vehicle_breakdowns:
-                    disable_vehicle_breakdowns_mouse_up(w);
+                    disableVehicleBreakdownsMouseUp(w);
                     break;
 
                 case widx::disableAICompanies:
@@ -1977,43 +1977,43 @@ namespace openloco::ui::options
                     break;
 
                 case widx::export_plugin_objects:
-                    export_plugin_objects_mouse_up(w);
+                    exportPluginObjectsMouseUp(w);
                     break;
 
                 case widx::use_preferred_owner_name:
-                    use_preferred_owner_name_mouse_up(w);
+                    usePreferredOwnerNameMouseUp(w);
                     break;
 
                 case widx::change_btn:
-                    change_preferred_name(w);
+                    changePreferredName(w);
                     break;
             }
         }
 
         // 0x004C1304
-        static void text_input(window* w, widget_index i, char* str)
+        static void textInput(window* w, widget_index i, char* str)
         {
             switch (i)
             {
                 case widx::use_preferred_owner_name:
-                    set_preferred_name(w, str);
+                    setPreferredName(w, str);
                     break;
             }
         }
 
         // 0x004C1319
-        static void change_preferred_name(window* w)
+        static void changePreferredName(window* w)
         {
             auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::open_textinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, widx::use_preferred_owner_name, nullptr);
+            textinput::openTextinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
-        static void set_preferred_name(window* w, char* str)
+        static void setPreferredName(window* w, char* str)
         {
             auto& cfg = openloco::config::get();
 
@@ -2029,7 +2029,7 @@ namespace openloco::ui::options
         }
 
         // 0x004C135F
-        static void use_preferred_owner_name_mouse_up(window* w)
+        static void usePreferredOwnerNameMouseUp(window* w)
         {
             auto& cfg = openloco::config::get();
             if (cfg.flags & config::flags::use_preferred_owner_name)
@@ -2048,12 +2048,12 @@ namespace openloco::ui::options
             {
                 if (strlen(cfg.preferred_name) == 0)
                 {
-                    change_preferred_name(w);
+                    changePreferredName(w);
                 }
             }
         }
 
-        static void disable_vehicle_breakdowns_mouse_up(window* w)
+        static void disableVehicleBreakdownsMouseUp(window* w)
         {
             auto& cfg = openloco::config::get_new();
             cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
@@ -2069,7 +2069,7 @@ namespace openloco::ui::options
             w->invalidate();
         }
 
-        static void export_plugin_objects_mouse_up(window* w)
+        static void exportPluginObjectsMouseUp(window* w)
         {
             auto& cfg = openloco::config::get();
             if (cfg.flags & config::flags::export_objects_with_saves)
@@ -2086,20 +2086,20 @@ namespace openloco::ui::options
         }
 
         // 0x004C139C
-        static void on_update(window* w)
+        static void onUpdate(window* w)
         {
             w->frame_no += 1;
             w->call_prepare_draw();
             WindowManager::invalidateWidget(w->type, w->number, w->current_tab + 4);
         }
 
-        static void init_events()
+        static void initEvents()
         {
-            _events.on_close = on_close;
-            _events.on_mouse_up = on_mouse_up;
-            _events.on_update = on_update;
-            _events.text_input = text_input;
-            _events.prepare_draw = prepare_draw;
+            _events.on_close = onClose;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.text_input = textInput;
+            _events.prepare_draw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -2159,12 +2159,12 @@ namespace openloco::ui::options
             return window;
 
         // TODO: only needs to be called once
-        display::init_events();
-        sound::init_events();
-        music::init_events();
-        regional::init_events();
-        controls::init_events();
-        misc::init_events();
+        display::initEvents();
+        sound::initEvents();
+        music::initEvents();
+        regional::initEvents();
+        controls::initEvents();
+        misc::initEvents();
 
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
@@ -2201,7 +2201,7 @@ namespace openloco::ui::options
     }
 
     // 0x004BF823
-    window* open_music_settings()
+    window* openMusicSettings()
     {
         auto window = open();
 
@@ -2228,7 +2228,7 @@ namespace openloco::ui::options
     };
 
     // 0x004BFC11
-    static void tab_on_mouse_up(window* w, widget_index wi)
+    static void tabOnMouseUp(window* w, widget_index wi)
     {
         input::cancel_tool(w->type, w->number);
 

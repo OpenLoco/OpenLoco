@@ -53,8 +53,8 @@ namespace openloco::ui::windows::industry
         make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_statistics)
 
         // Defined at the bottom of this file.
-        static void prepare_draw(window* self);
-        static void text_input(window* self, widget_index callingWidget, char* input);
+        static void prepareDraw(window* self);
+        static void textInput(window* self, widget_index callingWidget, char* input);
         static void update(window* self);
         static void renameIndustryPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
@@ -62,7 +62,7 @@ namespace openloco::ui::windows::industry
         static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
         static void setDisabledWidgets(window* self);
         static void draw(window* self, gfx::drawpixelinfo_t* dpi);
-        static void on_mouse_up(window* self, widget_index widgetIndex);
+        static void onMouseUp(window* self, widget_index widgetIndex);
         static void initEvents();
     }
 
@@ -96,9 +96,9 @@ namespace openloco::ui::windows::industry
         static window_event_list events;
 
         // 0x00455ADD
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -151,7 +151,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x00455C86
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -201,7 +201,7 @@ namespace openloco::ui::windows::industry
         static void initViewport(window* self);
 
         // 0x00455F1A
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             self->set_size(minWindowSize, maxWindowSize);
 
@@ -289,11 +289,11 @@ namespace openloco::ui::windows::industry
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
             events.viewport_rotate = initViewport;
         }
     }
@@ -362,15 +362,15 @@ namespace openloco::ui::windows::industry
         static window_event_list events;
 
         // 0x00455FD9
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             common::repositionTabs(self);
         }
 
         // 0x0045654F
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             {
                 self->set_size(minWindowSize, maxWindowSize);
@@ -380,11 +380,11 @@ namespace openloco::ui::windows::industry
         static void initEvents()
         {
             events.draw = common::draw;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
         }
     }
 
@@ -402,15 +402,15 @@ namespace openloco::ui::windows::industry
         static window_event_list events;
 
         // 0x0045626F
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             common::repositionTabs(self);
         }
 
         // 0x004565FF
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             {
                 self->set_size(minWindowSize, maxWindowSize);
@@ -420,11 +420,11 @@ namespace openloco::ui::windows::industry
         static void initEvents()
         {
             events.draw = common::draw;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
         }
     }
 
@@ -440,9 +440,9 @@ namespace openloco::ui::windows::industry
         static window_event_list events;
 
         // 0x00456665
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             common::repositionTabs(self);
         }
@@ -526,7 +526,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x004569C2
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             {
                 self->set_size(windowSize, windowSize);
@@ -536,11 +536,11 @@ namespace openloco::ui::windows::industry
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = common::on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = common::onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
         }
     }
 
@@ -671,7 +671,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x004565B5, 0x00456505
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -692,7 +692,7 @@ namespace openloco::ui::windows::industry
             }
         }
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -727,7 +727,7 @@ namespace openloco::ui::windows::industry
         }
 
         // 0x00455CBC
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget != common::widx::caption)
                 return;
@@ -767,7 +767,7 @@ namespace openloco::ui::windows::industry
             args.push(industry->name);
             args.push(industry->town);
 
-            textinput::open_textinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            textinput::openTextinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
         // 0x00456A5E, 0x00456A64

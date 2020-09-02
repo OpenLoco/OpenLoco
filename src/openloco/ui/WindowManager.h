@@ -74,13 +74,13 @@ namespace openloco::ui::WindowManager
 
 namespace openloco::ui::windows
 {
-    window* open_title_version();
-    window* open_title_exit();
-    window* open_title_menu();
-    window* open_title_logo();
+    window* openTitleVersion();
+    window* openTitleExit();
+    window* openTitleMenu();
+    window* openTitleLogo();
     void open_about_window();
 
-    bool prompt_ok_cancel(string_id okButtonStringId);
+    bool promptOkCancel(string_id okButtonStringId);
 
     void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
 
@@ -107,7 +107,7 @@ namespace openloco::ui::EditKeyboardShortcut
     window* open(uint8_t shortcutIndex);
 }
 
-namespace openloco::ui::about_music
+namespace openloco::ui::AboutMusic
 {
     void open();
 }
@@ -164,7 +164,7 @@ namespace openloco::ui::windows::error
 namespace openloco::ui::options
 {
     window* open();
-    window* open_music_settings();
+    window* openMusicSettings();
     constexpr uint8_t tab_offset_music = 2;
 }
 
@@ -176,7 +176,7 @@ namespace openloco::ui::prompt_browse
         save = 2
     };
     bool open(browse_type type, char* path, const char* filter, const char* title);
-    void register_hooks();
+    void registerHooks();
 }
 
 namespace openloco::ui::windows::ScenarioOptions
@@ -199,19 +199,19 @@ namespace openloco::ui::windows::station_list
 namespace openloco::ui::windows::terraform
 {
     window* open();
-    void open_clear_area();
-    void open_adjust_land();
-    void open_adjust_water();
-    void open_plant_trees();
-    void open_build_walls();
+    void openClearArea();
+    void openAdjustLand();
+    void openAdjustWater();
+    void openPlantTrees();
+    void openBuildWalls();
     void registerHooks();
 }
 
 namespace openloco::ui::textinput
 {
-    void register_hooks();
+    void registerHooks();
 
-    void open_textinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void openTextinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
     void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);
@@ -235,7 +235,7 @@ namespace openloco::ui::windows::toolbar_top::editor
 
 namespace openloco::ui::tooltip
 {
-    void register_hooks();
+    void registerHooks();
     void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
     void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
     void set_52336E(bool value);
@@ -266,7 +266,7 @@ namespace openloco::ui::windows::vehicle_list
     window* open(uint16_t companyId, uint8_t type);
 }
 
-namespace openloco::ui::build_vehicle
+namespace openloco::ui::BuildVehicle
 {
     window* open(uint32_t vehicle, uint32_t flags);
     void sub_4B92A5(ui::window* window);

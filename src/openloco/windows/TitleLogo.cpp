@@ -25,12 +25,12 @@ namespace openloco::ui::windows
 
     static window_event_list _events;
 
-    static void on_mouse_up(window* window, widget_index widgetIndex);
+    static void onMouseUp(window* window, widget_index widgetIndex);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
 
-    ui::window* open_title_logo()
+    ui::window* openTitleLogo()
     {
-        _events.on_mouse_up = on_mouse_up;
+        _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
 
         auto window = openloco::ui::WindowManager::createWindow(
@@ -58,7 +58,7 @@ namespace openloco::ui::windows
     }
 
     // 0x004392AD
-    static void on_mouse_up(window* window, widget_index widgetIndex)
+    static void onMouseUp(window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {

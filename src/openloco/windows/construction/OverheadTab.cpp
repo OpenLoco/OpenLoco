@@ -33,7 +33,7 @@ namespace openloco::ui::windows::construction::overhead
     window_event_list events;
 
     // 0x0049EBD1
-    static void on_mouse_up(window* self, widget_index widgetIndex)
+    static void onMouseUp(window* self, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -67,7 +67,7 @@ namespace openloco::ui::windows::construction::overhead
     }
 
     // 0x0049EBFC
-    static void on_mouse_down(window* self, widget_index widgetIndex)
+    static void onMouseDown(window* self, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -101,7 +101,7 @@ namespace openloco::ui::windows::construction::overhead
     }
 
     // 0x0049EC09
-    static void on_dropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
             return;
@@ -114,13 +114,13 @@ namespace openloco::ui::windows::construction::overhead
     }
 
     // 0x0049ECD1
-    static void on_update(window* self)
+    static void onUpdate(window* self)
     {
-        common::on_update(self, (1 << 5));
+        common::onUpdate(self, (1 << 5));
     }
 
     // 0x0049EC15
-    static void on_tool_update(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -131,7 +131,7 @@ namespace openloco::ui::windows::construction::overhead
     }
 
     // 0x0049EC20
-    static void on_tool_down(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -152,9 +152,9 @@ namespace openloco::ui::windows::construction::overhead
     }
 
     // 0x0049E7D3
-    static void prepare_draw(window* self)
+    static void prepareDraw(window* self)
     {
-        common::prepare_draw(self);
+        common::prepareDraw(self);
 
         self->activated_widgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
@@ -296,16 +296,16 @@ namespace openloco::ui::windows::construction::overhead
         self->call_on_mouse_down(overhead::widx::image);
     }
 
-    void init_events()
+    void initEvents()
     {
-        events.on_close = common::on_close;
-        events.on_mouse_up = on_mouse_up;
-        events.on_mouse_down = on_mouse_down;
-        events.on_dropdown = on_dropdown;
-        events.on_update = on_update;
-        events.on_tool_update = on_tool_update;
-        events.on_tool_down = on_tool_down;
-        events.prepare_draw = prepare_draw;
+        events.on_close = common::onClose;
+        events.on_mouse_up = onMouseUp;
+        events.on_mouse_down = onMouseDown;
+        events.on_dropdown = onDropdown;
+        events.on_update = onUpdate;
+        events.on_tool_update = onToolUpdate;
+        events.on_tool_down = onToolDown;
+        events.prepare_draw = prepareDraw;
         events.draw = draw;
     }
 }

@@ -21,8 +21,8 @@ using namespace openloco::interop;
 
 namespace openloco::ui::prompt_browse
 {
-    static fs::path get_directory(const fs::path& path);
-    static std::string get_basename(const fs::path& path);
+    static fs::path getDirectory(const fs::path& path);
+    static std::string getBasename(const fs::path& path);
 
     enum browse_file_type : uint8_t
     {
@@ -110,21 +110,21 @@ namespace openloco::ui::prompt_browse
 
     static std::vector<file_entry> _newFiles;
 
-    static void on_close(window* window);
-    static void on_resize(window* window);
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex);
-    static void on_update(ui::window* window);
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onClose(window* window);
+    static void onResize(window* window);
+    static void onMouseUp(ui::window* window, widget_index widgetIndex);
+    static void onUpdate(ui::window* window);
+    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
-    static void prepare_draw(window* window);
+    static void prepareDraw(window* window);
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo);
-    static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
-    static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
-    static void up_one_level();
+    static void drawSavePreview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo);
+    static void drawLandscapePreview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
+    static void drawTextInput(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
+    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void upOneLevel();
     static void sub_446574(ui::window* window);
-    static void refresh_directory_list();
+    static void refreshDirectoryList();
 
     static void sub_4CEB67(int16_t dx)
     {
@@ -144,21 +144,21 @@ namespace openloco::ui::prompt_browse
         const char* filter,
         const char* title)
     {
-        _events.on_close = on_close;
-        _events.on_mouse_up = on_mouse_up;
-        _events.on_resize = on_resize;
-        _events.on_update = on_update;
-        _events.get_scroll_size = get_scroll_size;
+        _events.on_close = onClose;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_resize = onResize;
+        _events.on_update = onUpdate;
+        _events.get_scroll_size = getScrollSize;
         _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464F7);
         _events.scroll_mouse_over = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464B1);
         _events.tooltip = tooltip;
-        _events.prepare_draw = prepare_draw;
+        _events.prepare_draw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = draw_scroll;
+        _events.draw_scroll = drawScroll;
 
         auto path = fs::path(szPath);
-        auto directory = get_directory(path);
-        auto baseName = get_basename(path);
+        auto directory = getDirectory(path);
+        auto baseName = getBasename(path);
 
         textinput::cancel();
 
@@ -174,7 +174,7 @@ namespace openloco::ui::prompt_browse
         utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
         utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
-        refresh_directory_list();
+        refreshDirectoryList();
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
@@ -225,7 +225,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x0044647C
-    static void on_close(window*)
+    static void onClose(window*)
     {
         _newFiles = {};
         _numFiles = 0;
@@ -235,13 +235,13 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x004467F6
-    static void on_resize(window* window)
+    static void onResize(window* window)
     {
         window->cap_size(400, 300, 640, 800);
     }
 
     // 0x00446465
-    static void on_mouse_up(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -250,7 +250,7 @@ namespace openloco::ui::prompt_browse
                 WindowManager::close(window);
                 break;
             case widx::parent_button:
-                up_one_level();
+                upOneLevel();
                 window->invalidate();
                 break;
             case widx::ok_button:
@@ -260,7 +260,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x004467E1
-    static void on_update(ui::window* window)
+    static void onUpdate(ui::window* window)
     {
         _textInputFlags++;
         if ((_textInputFlags & 0x0F) == 0)
@@ -270,7 +270,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x004464A1
-    static void get_scroll_size(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window->row_height * _numFiles;
     }
@@ -282,7 +282,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00445C8F
-    static void prepare_draw(ui::window* self)
+    static void prepareDraw(ui::window* self)
     {
         // TODO: replace with a fixed length!
         char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
@@ -336,7 +336,7 @@ namespace openloco::ui::prompt_browse
         call(0x00445D91, regs);
     }
 
-    static void set_common_args_stringptr(const char* buffer)
+    static void setCommonArgsStringptr(const char* buffer)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         auto stringptrId = string_ids::stringptr;
@@ -353,7 +353,7 @@ namespace openloco::ui::prompt_browse
         window->draw(dpi);
 
         auto folder = (const char*)0x9DA084;
-        set_common_args_stringptr(folder);
+        setCommonArgsStringptr(folder);
         gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
@@ -369,7 +369,7 @@ namespace openloco::ui::prompt_browse
                 auto y = window->y + 45;
 
                 _nameBuffer = selectedFile.get_name();
-                set_common_args_stringptr(_nameBuffer.c_str());
+                setCommonArgsStringptr(_nameBuffer.c_str());
                 gfx::draw_string_centred_clipped(
                     *dpi,
                     x + (width / 2),
@@ -386,12 +386,12 @@ namespace openloco::ui::prompt_browse
                     auto saveInfo = *((const s5::SaveDetails**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
-                        draw_save_preview(*window, *dpi, x, y, width, 201, *saveInfo);
+                        drawSavePreview(*window, *dpi, x, y, width, 201, *saveInfo);
                     }
                 }
                 else if (*_fileType == browse_file_type::landscape)
                 {
-                    draw_landscape_preview(*window, *dpi, x, y, width, 129);
+                    drawLandscapePreview(*window, *dpi, x, y, width, 129);
                 }
             }
         }
@@ -412,12 +412,12 @@ namespace openloco::ui::prompt_browse
                     filenameBox.right - filenameBox.left - 1,
                     filenameBox.bottom - filenameBox.top - 1))
             {
-                draw_text_input(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
+                drawTextInput(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
             }
         }
     }
 
-    static void draw_save_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo)
+    static void drawSavePreview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -441,11 +441,11 @@ namespace openloco::ui::prompt_browse
         uint16_t maxWidth = window.width - window.widgets[widx::scrollview].right;
 
         // Company
-        set_common_args_stringptr(saveInfo.company);
+        setCommonArgsStringptr(saveInfo.company);
         y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_company, _commonFormatArgs);
 
         // Owner
-        set_common_args_stringptr(saveInfo.owner);
+        setCommonArgsStringptr(saveInfo.owner);
         y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::owner_label, _commonFormatArgs);
 
         // Date
@@ -470,7 +470,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static void draw_landscape_preview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
+    static void drawLandscapePreview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
@@ -503,7 +503,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static void draw_text_input(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret)
+    static void drawTextInput(ui::window* window, gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
@@ -511,7 +511,7 @@ namespace openloco::ui::prompt_browse
 
         // Draw text box text
         gfx::point_t origin = { 0, 1 };
-        set_common_args_stringptr(text);
+        setCommonArgsStringptr(text);
         gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
         if (showCaret)
@@ -526,7 +526,7 @@ namespace openloco::ui::prompt_browse
                 // Draw text[0:caret] over the top
                 // TODO this should really just be measuring the string
                 gbuffer = std::string_view(text, caret);
-                set_common_args_stringptr(gbuffer.c_str());
+                setCommonArgsStringptr(gbuffer.c_str());
                 origin = { 0, 1 };
                 gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
@@ -537,7 +537,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00446314
-    static void draw_scroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -575,14 +575,14 @@ namespace openloco::ui::prompt_browse
                 _nameBuffer = file.get_name();
 
                 // Draw the name
-                set_common_args_stringptr(_nameBuffer.c_str());
+                setCommonArgsStringptr(_nameBuffer.c_str());
                 gfx::draw_string_494B3F(*dpi, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
         }
     }
 
-    static fs::path get_directory(const fs::path& path)
+    static fs::path getDirectory(const fs::path& path)
     {
         if (path.has_extension())
         {
@@ -604,7 +604,7 @@ namespace openloco::ui::prompt_browse
         }
     }
 
-    static std::string get_basename(const fs::path& path)
+    static std::string getBasename(const fs::path& path)
     {
         auto baseName = path.stem().u8string();
         if (baseName == ".")
@@ -615,7 +615,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00446A93
-    static void refresh_directory_list()
+    static void refreshDirectoryList()
     {
         // All our filters are probably *.something so just truncate the *
         // and treat as an extension filter
@@ -681,7 +681,7 @@ namespace openloco::ui::prompt_browse
     }
 
     // 0x00446E2F
-    static void up_one_level()
+    static void upOneLevel()
     {
         char* ptr = _directory;
         while (*ptr != '\0')
@@ -699,11 +699,11 @@ namespace openloco::ui::prompt_browse
 
         *ptr = '\0';
 
-        refresh_directory_list();
+        refreshDirectoryList();
     }
 
     // 0x00446E62
-    static void append_directory(const char* to_append)
+    static void appendDirectory(const char* to_append)
     {
         char* dst = _directory;
         while (*dst != '\0')
@@ -718,10 +718,10 @@ namespace openloco::ui::prompt_browse
         *dst++ = fs::path::preferred_separator;
         *dst = '\0';
 
-        refresh_directory_list();
+        refreshDirectoryList();
     }
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x00445AB9,
@@ -738,7 +738,7 @@ namespace openloco::ui::prompt_browse
         register_hook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                append_directory((char*)regs.ebp);
+                appendDirectory((char*)regs.ebp);
                 return 0;
             });
     }

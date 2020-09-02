@@ -35,10 +35,10 @@ namespace openloco::ui::tooltip
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void on_close(ui::window* window);
+    static void onClose(ui::window* window);
     static void update(ui::window* window);
 
-    void register_hooks()
+    void registerHooks()
     {
         register_hook(
             0x004C906B,
@@ -61,7 +61,7 @@ namespace openloco::ui::tooltip
         register_hook(
             0x004C94F7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                on_close((ui::window*)regs.esi);
+                onClose((ui::window*)regs.esi);
                 return 0;
             });
         register_hook(
@@ -214,7 +214,7 @@ namespace openloco::ui::tooltip
     }
 
     // 0x004C94F7
-    static void on_close(ui::window* window)
+    static void onClose(ui::window* window)
     {
         _str0337[0] = '\0';
     }

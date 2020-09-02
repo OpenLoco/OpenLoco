@@ -291,7 +291,7 @@ namespace openloco::input::ShortcutManager
         if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::open_adjust_land();
+        windows::terraform::openAdjustLand();
     }
 
     // 0x004BF1E1
@@ -300,7 +300,7 @@ namespace openloco::input::ShortcutManager
         if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::open_adjust_water();
+        windows::terraform::openAdjustWater();
     }
 
     // 0x004BF1FC
@@ -309,7 +309,7 @@ namespace openloco::input::ShortcutManager
         if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::open_plant_trees();
+        windows::terraform::openPlantTrees();
     }
 
     // 0x004BF217
@@ -318,7 +318,7 @@ namespace openloco::input::ShortcutManager
         if (is_editor_mode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::open_clear_area();
+        windows::terraform::openClearArea();
     }
 
     // 0x004BF232
@@ -383,7 +383,7 @@ namespace openloco::input::ShortcutManager
         if (last_build_vehicles_option == 0xFF)
             return;
 
-        build_vehicle::open(last_build_vehicles_option, 1 << 31);
+        BuildVehicle::open(last_build_vehicles_option, 1 << 31);
     }
 
     // 0x004BF2D1

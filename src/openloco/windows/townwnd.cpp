@@ -53,8 +53,8 @@ namespace openloco::ui::windows::town
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
-        static void prepare_draw(window* self);
-        static void text_input(window* self, widget_index callingWidget, char* input);
+        static void prepareDraw(window* self);
+        static void textInput(window* self, widget_index callingWidget, char* input);
         static void update(window* self);
         static void renameTownPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
@@ -89,9 +89,9 @@ namespace openloco::ui::windows::town
         static window_event_list events;
 
         // 0x00498EAF
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -148,7 +148,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x00499079
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -237,7 +237,7 @@ namespace openloco::ui::windows::town
         static void initViewport(window* self);
 
         // 0x004993A5
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
@@ -328,11 +328,11 @@ namespace openloco::ui::windows::town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
             events.viewport_rotate = initViewport;
         }
     }
@@ -399,9 +399,9 @@ namespace openloco::ui::windows::town
         static window_event_list events;
 
         // 0x00499469
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
         }
 
         // 0x004994F9
@@ -476,7 +476,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x004996AC
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -497,7 +497,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x004996F6
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
@@ -507,11 +507,11 @@ namespace openloco::ui::windows::town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
         }
     }
 
@@ -525,9 +525,9 @@ namespace openloco::ui::windows::town
         static window_event_list events;
 
         // 0x00499761
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
         }
 
         // 0x004997F1
@@ -574,7 +574,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x004998E7
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -595,7 +595,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x00499936
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
@@ -605,11 +605,11 @@ namespace openloco::ui::windows::town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
         }
     }
 
@@ -629,7 +629,7 @@ namespace openloco::ui::windows::town
             { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &common::enabledWidgets }
         };
 
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -661,7 +661,7 @@ namespace openloco::ui::windows::town
         }
 
         // 0x00499287
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget != common::widx::caption)
                 return;
@@ -688,7 +688,7 @@ namespace openloco::ui::windows::town
         {
             auto town = townmgr::get(self->number);
             commonFormatArgs[2] = town->name;
-            textinput::open_textinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+            textinput::openTextinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
 
         // 0x004999A7, 0x004999AD

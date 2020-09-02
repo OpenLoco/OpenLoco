@@ -59,8 +59,8 @@ namespace openloco::ui::windows::station
         make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
-        static void prepare_draw(window* self);
-        static void text_input(window* self, widget_index callingWidget, char* input);
+        static void prepareDraw(window* self);
+        static void textInput(window* self, widget_index callingWidget, char* input);
         static void update(window* self);
         static void renameStationPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
@@ -95,9 +95,9 @@ namespace openloco::ui::windows::station
         static window_event_list events;
 
         // 0x0048E352
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::viewport].right = self->width - 4;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -137,7 +137,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048E4D4
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -178,7 +178,7 @@ namespace openloco::ui::windows::station
         static void initViewport(window* self);
 
         // 0x0048E70B
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
 
@@ -269,11 +269,11 @@ namespace openloco::ui::windows::station
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
             events.viewport_rotate = initViewport;
         }
     }
@@ -349,9 +349,9 @@ namespace openloco::ui::windows::station
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << station_catchment);
 
         // 0x0048E7C0
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 24;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -413,7 +413,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EB0B
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -444,7 +444,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EBB7
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
 
@@ -452,7 +452,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EB64
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = stationmgr::get(self->number);
             *scrollHeight = 0;
@@ -474,7 +474,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048E986
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             gfx::clear_single(*dpi, colour::get_shade(self->colours[1], 4));
 
@@ -552,7 +552,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EC21
-        static void on_close(window* self)
+        static void onClose(window* self)
         {
             if (self->number == _lastSelectedStation)
             {
@@ -562,16 +562,16 @@ namespace openloco::ui::windows::station
 
         static void initEvents()
         {
-            events.on_close = on_close;
+            events.on_close = onClose;
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
-            events.get_scroll_size = get_scroll_size;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
+            events.get_scroll_size = getScrollSize;
             events.tooltip = tooltip;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -597,9 +597,9 @@ namespace openloco::ui::windows::station
         static window_event_list events;
 
         // 0x0048EC3B
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
-            common::prepare_draw(self);
+            common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -619,7 +619,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EE1A
-        static void on_mouse_up(window* self, widget_index widgetIndex)
+        static void onMouseUp(window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -640,7 +640,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EE97
-        static void on_resize(window* self)
+        static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
 
@@ -648,7 +648,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EE4A
-        static void get_scroll_size(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = stationmgr::get(self->number);
             *scrollHeight = 0;
@@ -666,7 +666,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048EF02
-        static void draw_rating_bar(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
+        static void drawRatingBar(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
         {
             gfx::fill_rect_inset(dpi, x, y, x + 99, y + 9, self->colours[1], 48);
 
@@ -678,7 +678,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048ED2F
-        static void draw_scroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             gfx::clear_single(*dpi, colour::get_shade(self->colours[1], 4));
 
@@ -709,7 +709,7 @@ namespace openloco::ui::windows::station
                 }
 
                 uint8_t amount = (rating * 327) / 256;
-                draw_rating_bar(self, dpi, 100, y, amount, colour);
+                drawRatingBar(self, dpi, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
                 gfx::draw_string_494B3F(*dpi, 201, y, 0, string_ids::station_cargo_rating_percent, &percent);
@@ -721,14 +721,14 @@ namespace openloco::ui::windows::station
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = on_mouse_up;
-            events.on_resize = on_resize;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = common::update;
-            events.prepare_draw = prepare_draw;
-            events.text_input = common::text_input;
-            events.get_scroll_size = get_scroll_size;
+            events.prepare_draw = prepareDraw;
+            events.text_input = common::textInput;
+            events.get_scroll_size = getScrollSize;
             events.tooltip = tooltip;
-            events.draw_scroll = draw_scroll;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -799,7 +799,7 @@ namespace openloco::ui::windows::station
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
-        static void prepare_draw(window* self)
+        static void prepareDraw(window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -854,7 +854,7 @@ namespace openloco::ui::windows::station
         }
 
         // 0x0048E5DF
-        static void text_input(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, char* input)
         {
             if (callingWidget != common::widx::caption)
                 return;
@@ -887,7 +887,7 @@ namespace openloco::ui::windows::station
             args.push(station->name);
             args.push(station->town);
 
-            textinput::open_textinput(self, string_ids::title_station_name, string_ids::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            textinput::openTextinput(self, string_ids::title_station_name, string_ids::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
         // 0x0048EF82, 0x0048EF88
