@@ -289,10 +289,10 @@ namespace openloco::ui::windows::town_list
         static bool orderByName(const openloco::town& lhs, const openloco::town& rhs)
         {
             char lhsString[256] = { 0 };
-            stringmgr::format_string(lhsString, lhs.name);
+            stringmgr::formatString(lhsString, lhs.name);
 
             char rhsString[256] = { 0 };
-            stringmgr::format_string(rhsString, rhs.name);
+            stringmgr::formatString(rhsString, rhs.name);
 
             return strcmp(lhsString, rhsString) < 0;
         }

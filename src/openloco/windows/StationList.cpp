@@ -147,10 +147,10 @@ namespace openloco::ui::windows::station_list
     static bool orderByName(const openloco::station& lhs, const openloco::station& rhs)
     {
         char lhsString[256] = { 0 };
-        stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
+        stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
 
         char rhsString[256] = { 0 };
-        stringmgr::format_string(rhsString, rhs.name, (void*)&rhs.town);
+        stringmgr::formatString(rhsString, rhs.name, (void*)&rhs.town);
 
         return strcmp(lhsString, rhsString) < 0;
     }
@@ -184,7 +184,7 @@ namespace openloco::ui::windows::station_list
         {
             if (lhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -194,7 +194,7 @@ namespace openloco::ui::windows::station_list
         {
             if (rhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -525,7 +525,7 @@ namespace openloco::ui::windows::station_list
             gfx::drawString_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
-            const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
             station->getStatusString((char*)buffer);
 
             _common_format_args[0] = string_ids::buffer_1250;
@@ -552,9 +552,9 @@ namespace openloco::ui::windows::station_list
                     continue;
 
                 if (*buffer != '\0')
-                    ptr = stringmgr::format_string(ptr, string_ids::unit_separator);
+                    ptr = stringmgr::formatString(ptr, string_ids::unit_separator);
 
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
 
             _common_format_args[0] = string_ids::buffer_1250;

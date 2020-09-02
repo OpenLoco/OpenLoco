@@ -708,7 +708,7 @@ void openloco::interop::registerHooks()
         0x004958C6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            char* buffer = stringmgr::format_string((char*)regs.edi, regs.eax, (void*)regs.ecx);
+            char* buffer = stringmgr::formatString((char*)regs.edi, regs.eax, (void*)regs.ecx);
             regs = backup;
             regs.edi = (uint32_t)buffer;
             return 0;

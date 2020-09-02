@@ -475,7 +475,7 @@ namespace openloco::ui::widget
     void draw_23_caption(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = control_codes::colour_black;
-        stringmgr::format_string(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t width = widget->right - widget->left - 4 - 14;
         int16_t x = widget->left + window->x + 2 + (width / 2);
@@ -495,7 +495,7 @@ namespace openloco::ui::widget
     void draw_24_caption(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = control_codes::window_colour_1;
-        stringmgr::format_string(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t x = widget->left + window->x + 2;
         int16_t width = widget->right - widget->left - 4 - 14;
@@ -512,7 +512,7 @@ namespace openloco::ui::widget
     void draw_25_caption(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = control_codes::colour_white;
-        stringmgr::format_string(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t x = widget->left + window->x + 2;
         int16_t width = widget->right - widget->left - 4 - 14;

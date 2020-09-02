@@ -68,7 +68,7 @@ namespace openloco::ui::windows::error
 
         if (title != string_ids::null)
         {
-            ptr = stringmgr::format_string(ptr, title, &args);
+            ptr = stringmgr::formatString(ptr, title, &args);
         }
 
         if (message != string_ids::null)
@@ -79,7 +79,7 @@ namespace openloco::ui::windows::error
                 *ptr = control_codes::newline;
                 ptr++;
             }
-            stringmgr::format_string(ptr, message, &args);
+            stringmgr::formatString(ptr, message, &args);
         }
 
         return ptr;

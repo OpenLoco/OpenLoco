@@ -79,13 +79,13 @@ namespace openloco::stringmgr
         { month_id::december, { string_ids::month_short_december, string_ids::month_long_december } },
     };
 
-    const char* get_string(string_id id)
+    const char* getString(string_id id)
     {
         char* str = _strings[id];
         return str;
     }
 
-    static char* format_int32_grouped(int32_t value, char* buffer)
+    static char* formatInt32Grouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -95,7 +95,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_int32_ungrouped(int32_t value, char* buffer)
+    static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -105,7 +105,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_int48_grouped(uint64_t value, char* buffer, uint8_t separator)
+    static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -117,7 +117,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_short_with_decimals(int16_t value, char* buffer)
+    static char* formatShortWithDecimals(int16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -127,7 +127,7 @@ namespace openloco::stringmgr
         return (char*)regs.edi;
     }
 
-    static char* format_int_with_decimals(int32_t value, char* buffer)
+    static char* formatIntWithDecimals(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
@@ -138,75 +138,75 @@ namespace openloco::stringmgr
     }
 
     // 0x00495D09
-    static char* format_date_dmy_full(uint32_t totalDays, char* buffer)
+    static char* formatDateDMYFull(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         string_id day_string = day_to_string[date.day];
-        buffer = format_string(buffer, day_string, nullptr);
+        buffer = formatString(buffer, day_string, nullptr);
 
         *buffer = ' ';
         buffer++;
 
         string_id month_string = month_to_string[date.month].second;
-        buffer = format_string(buffer, month_string, nullptr);
+        buffer = formatString(buffer, month_string, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int32_ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
 
         return buffer;
     }
 
     // 0x00495D77
-    static char* format_date_my_full(uint32_t totalDays, char* buffer)
+    static char* formatDateMYFull(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         string_id month_string = month_to_string[date.month].second;
-        buffer = format_string(buffer, month_string, nullptr);
+        buffer = formatString(buffer, month_string, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int32_ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
 
         return buffer;
     }
 
     // 0x00495DC7
-    static char* format_date_my_abbrev(uint32_t totalDays, char* buffer)
+    static char* formatDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         string_id month_string = month_to_string[date.month].second;
-        buffer = format_string(buffer, month_string, nullptr);
+        buffer = formatString(buffer, month_string, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int32_ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
 
         return buffer;
     }
 
     // 0x00495DC7
-    static char* format_raw_date_my_abbrev(uint32_t totalDays, char* buffer)
+    static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto month = static_cast<month_id>(totalDays % 12);
         string_id month_string = month_to_string[month].first;
-        buffer = format_string(buffer, month_string, nullptr);
+        buffer = formatString(buffer, month_string, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        buffer = format_int32_ungrouped(totalDays / 12, buffer);
+        buffer = formatInt32Ungrouped(totalDays / 12, buffer);
 
         return buffer;
     }
 
-    static char* format_string_part(char* buffer, const char* sourceStr, void* args);
+    static char* formatStringPart(char* buffer, const char* sourceStr, void* args);
 
     static char* formatCurrency(int64_t value, char* buffer)
     {
@@ -221,20 +221,20 @@ namespace openloco::stringmgr
 
         int64_t localised_value = value * (1ULL << currency->factor);
 
-        const char* prefix_symbol = get_string(currency->prefix_symbol);
-        buffer = format_string_part(buffer, prefix_symbol, nullptr);
+        const char* prefix_symbol = getString(currency->prefix_symbol);
+        buffer = formatStringPart(buffer, prefix_symbol, nullptr);
 
-        buffer = format_int48_grouped(localised_value, buffer, currency->separator);
+        buffer = formatInt48Grouped(localised_value, buffer, currency->separator);
 
-        const char* suffix_symbol = get_string(currency->suffix_symbol);
-        buffer = format_string_part(buffer, suffix_symbol, nullptr);
+        const char* suffix_symbol = getString(currency->suffix_symbol);
+        buffer = formatStringPart(buffer, suffix_symbol, nullptr);
 
         return buffer;
     }
 
-    static char* format_string(char* buffer, string_id id, argswrapper& args);
+    static char* formatString(char* buffer, string_id id, argswrapper& args);
 
-    static char* format_string_part(char* buffer, const char* sourceStr, argswrapper& args)
+    static char* formatStringPart(char* buffer, const char* sourceStr, argswrapper& args)
     {
         while (true)
         {
@@ -284,42 +284,42 @@ namespace openloco::stringmgr
                     case control_codes::int32_grouped:
                     {
                         int32_t value = args.popS32();
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case control_codes::int32_ungrouped:
                     {
                         int32_t value = args.popS32();
-                        buffer = format_int32_ungrouped(value, buffer);
+                        buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
                     case control_codes::int16_decimals:
                     {
                         int16_t value = args.popS16();
-                        buffer = format_short_with_decimals(value, buffer);
+                        buffer = formatShortWithDecimals(value, buffer);
                         break;
                     }
 
                     case control_codes::int32_decimals:
                     {
                         int32_t value = args.popS32();
-                        buffer = format_int_with_decimals(value, buffer);
+                        buffer = formatIntWithDecimals(value, buffer);
                         break;
                     }
 
                     case control_codes::int16_grouped:
                     {
                         int16_t value = args.popS16();
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case control_codes::uint16_ungrouped:
                     {
                         int32_t value = args.pop16();
-                        buffer = format_int32_ungrouped(value, buffer);
+                        buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
@@ -342,7 +342,7 @@ namespace openloco::stringmgr
                     case control_codes::stringid_args:
                     {
                         string_id id = args.pop16();
-                        buffer = format_string(buffer, id, args);
+                        buffer = formatString(buffer, id, args);
                         break;
                     }
 
@@ -350,7 +350,7 @@ namespace openloco::stringmgr
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
-                        buffer = format_string(buffer, id, args);
+                        buffer = formatString(buffer, id, args);
                         break;
                     }
 
@@ -371,23 +371,23 @@ namespace openloco::stringmgr
                         switch (modifier)
                         {
                             case date_modifier::dmy_full:
-                                buffer = format_date_dmy_full(totalDays, buffer);
+                                buffer = formatDateDMYFull(totalDays, buffer);
                                 break;
 
                             case date_modifier::my_full:
-                                buffer = format_date_my_full(totalDays, buffer);
+                                buffer = formatDateMYFull(totalDays, buffer);
                                 break;
 
                             case date_modifier::my_abbr:
-                                buffer = format_date_my_abbrev(totalDays, buffer);
+                                buffer = formatDateMYAbbrev(totalDays, buffer);
                                 break;
 
                             case date_modifier::raw_my_abbr:
-                                buffer = format_raw_date_my_abbrev(totalDays, buffer);
+                                buffer = formatRawDateMYAbbrev(totalDays, buffer);
                                 break;
 
                             default:
-                                throw std::out_of_range("format_string: unexpected modifier: " + std::to_string((uint8_t)modifier));
+                                throw std::out_of_range("formatString: unexpected modifier: " + std::to_string((uint8_t)modifier));
                         }
 
                         break;
@@ -402,15 +402,15 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = get_string(string_ids::unit_mph);
+                            unit = getString(string_ids::unit_mph);
                         }
                         else
                         {
-                            unit = get_string(string_ids::unit_kmh);
+                            unit = getString(string_ids::unit_kmh);
                             value = std::round(value * 1.609375);
                         }
 
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
 
                         strcpy(buffer, unit);
                         buffer += strlen(unit);
@@ -440,15 +440,15 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = get_string(string_ids::unit_ft);
+                            unit = getString(string_ids::unit_ft);
                             value = std::round(value * 3.28125);
                         }
                         else
                         {
-                            unit = get_string(string_ids::unit_m);
+                            unit = getString(string_ids::unit_m);
                         }
 
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
 
                         strcpy(buffer, unit);
                         buffer += strlen(unit);
@@ -466,20 +466,20 @@ namespace openloco::stringmgr
 
                         if (show_height_as_units)
                         {
-                            unit = get_string(string_ids::unit_units);
+                            unit = getString(string_ids::unit_units);
                         }
                         else if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = get_string(string_ids::unit_ft);
+                            unit = getString(string_ids::unit_ft);
                             value *= 16;
                         }
                         else
                         {
-                            unit = get_string(string_ids::unit_m);
+                            unit = getString(string_ids::unit_m);
                             value *= 5;
                         }
 
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
 
                         strcpy(buffer, unit);
                         buffer += strlen(unit);
@@ -495,15 +495,15 @@ namespace openloco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = get_string(string_ids::unit_hp);
+                            unit = getString(string_ids::unit_hp);
                         }
                         else
                         {
-                            unit = get_string(string_ids::unit_kW);
+                            unit = getString(string_ids::unit_kW);
                             value = std::round(value * 0.746);
                         }
 
-                        buffer = format_int32_grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
 
                         strcpy(buffer, unit);
                         buffer += strlen(unit);
@@ -526,24 +526,24 @@ namespace openloco::stringmgr
         }
     }
 
-    static char* format_string_part(char* buffer, const char* sourceStr, void* args)
+    static char* formatStringPart(char* buffer, const char* sourceStr, void* args)
     {
         auto wrapped = argswrapper(args);
-        return format_string_part(buffer, sourceStr, wrapped);
+        return formatStringPart(buffer, sourceStr, wrapped);
     }
 
     // 0x004958C6
-    static char* format_string(char* buffer, string_id id, argswrapper& args)
+    static char* formatString(char* buffer, string_id id, argswrapper& args)
     {
         if (id < USER_STRINGS_START)
         {
-            const char* sourceStr = get_string(id);
+            const char* sourceStr = getString(id);
             if (sourceStr == nullptr)
             {
                 throw std::runtime_error("Got a nullptr for string id " + std::to_string(id) + " -- cowardly refusing");
             }
 
-            buffer = format_string_part(buffer, sourceStr, args);
+            buffer = formatStringPart(buffer, sourceStr, args);
             assert(*buffer == '\0');
             return buffer;
         }
@@ -566,23 +566,23 @@ namespace openloco::stringmgr
             uint16_t town_id = args.pop16();
             auto town = townmgr::get(town_id);
             void* town_name = (void*)&town->name;
-            return format_string(buffer, id, town_name);
+            return formatString(buffer, id, town_name);
         }
         else if (id == TOWN_NAMES_END)
         {
             uint16_t town_id = args.pop16();
             auto town = townmgr::get(town_id);
-            return format_string(buffer, town->name, nullptr);
+            return formatString(buffer, town->name, nullptr);
         }
         else
         {
-            throw std::out_of_range("format_string: invalid string id: " + std::to_string((uint32_t)id));
+            throw std::out_of_range("formatString: invalid string id: " + std::to_string((uint32_t)id));
         }
     }
 
-    char* format_string(char* buffer, string_id id, const void* args)
+    char* formatString(char* buffer, string_id id, const void* args)
     {
         auto wrapped = argswrapper(args);
-        return format_string(buffer, id, wrapped);
+        return formatString(buffer, id, wrapped);
     }
 }

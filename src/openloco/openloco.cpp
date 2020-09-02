@@ -315,8 +315,8 @@ namespace openloco
 
         ui::textinput::cancel();
 
-        stringmgr::format_string(_11367A0, string_ids::label_button_ok);
-        stringmgr::format_string(_11368A0, string_ids::label_button_cancel);
+        stringmgr::formatString(_11367A0, string_ids::label_button_ok);
+        stringmgr::formatString(_11368A0, string_ids::label_button_cancel);
     }
 
     static void initialise()

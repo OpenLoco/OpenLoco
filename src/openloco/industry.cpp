@@ -75,14 +75,14 @@ namespace openloco
         // Closing Down
         if (flags & industry_flags::closing_down)
         {
-            ptr = stringmgr::format_string(ptr, string_ids::industry_closing_down);
+            ptr = stringmgr::formatString(ptr, string_ids::industry_closing_down);
             return;
         }
 
         // Under Construction
         if (under_construction != 0xFF)
         {
-            ptr = stringmgr::format_string(ptr, string_ids::industry_under_construction);
+            ptr = stringmgr::formatString(ptr, string_ids::industry_under_construction);
             return;
         }
 
@@ -92,7 +92,7 @@ namespace openloco
             if (!canProduceCargo())
                 return;
 
-            ptr = stringmgr::format_string(ptr, string_ids::industry_producing);
+            ptr = stringmgr::formatString(ptr, string_ids::industry_producing);
 
             ptr = industryObj->getProducedCargoString(ptr);
 
@@ -100,7 +100,7 @@ namespace openloco
         }
 
         // Required Cargo
-        ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
+        ptr = stringmgr::formatString(ptr, string_ids::industry_requires);
 
         ptr = industryObj->getRequiredCargoString(ptr);
 
@@ -108,7 +108,7 @@ namespace openloco
             return;
 
         // Production and Received Cargo
-        ptr = stringmgr::format_string(ptr, string_ids::cargo_to_produce);
+        ptr = stringmgr::formatString(ptr, string_ids::cargo_to_produce);
 
         ptr = industryObj->getProducedCargoString(ptr);
     }

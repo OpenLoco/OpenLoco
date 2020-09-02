@@ -903,30 +903,30 @@ namespace openloco::ui::windows::map
                 stringId = industryObj->nameSingular;
             }
 
-            auto buffer = stringmgr::get_string(string_ids::buffer_1250);
+            auto buffer = stringmgr::getString(string_ids::buffer_1250);
             char* ptr = const_cast<char*>(buffer);
 
-            ptr = stringmgr::format_string(ptr, stringId, &industryCount);
+            ptr = stringmgr::formatString(ptr, stringId, &industryCount);
 
             *ptr++ = ' ';
             *ptr++ = '(';
 
             if (industryObj->requiresCargo())
             {
-                ptr = stringmgr::format_string(ptr, string_ids::industry_require);
+                ptr = stringmgr::formatString(ptr, string_ids::industry_require);
 
                 ptr = industryObj->getRequiredCargoString(ptr);
 
                 if (industryObj->producesCargo())
                 {
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_to_produce);
+                    ptr = stringmgr::formatString(ptr, string_ids::cargo_to_produce);
 
                     ptr = industryObj->getProducedCargoString(ptr);
                 }
             }
             else if (industryObj->producesCargo())
             {
-                ptr = stringmgr::format_string(ptr, string_ids::industry_produce);
+                ptr = stringmgr::formatString(ptr, string_ids::industry_produce);
 
                 ptr = industryObj->getProducedCargoString(ptr);
             }
@@ -1411,7 +1411,7 @@ namespace openloco::ui::windows::map
 
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
-            stringmgr::format_string(_stringFormatBuffer, town.name);
+            stringmgr::formatString(_stringFormatBuffer, town.name);
             _currentFontSpriteBase = font::small;
 
             auto strWidth = gfx::getStringWidth(_stringFormatBuffer);

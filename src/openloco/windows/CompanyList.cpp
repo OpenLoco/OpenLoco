@@ -184,10 +184,10 @@ namespace openloco::ui::windows::CompanyList
         static bool orderByName(const openloco::company& lhs, const openloco::company& rhs)
         {
             char lhsString[256] = { 0 };
-            stringmgr::format_string(lhsString, lhs.name);
+            stringmgr::formatString(lhsString, lhs.name);
 
             char rhsString[256] = { 0 };
-            stringmgr::format_string(rhsString, rhs.name);
+            stringmgr::formatString(rhsString, rhs.name);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -199,14 +199,14 @@ namespace openloco::ui::windows::CompanyList
             {
                 auto args = FormatArguments();
                 auto statusString = companymgr::getOwnerStatus(lhs.id(), args);
-                stringmgr::format_string(lhsString, statusString, &args);
+                stringmgr::formatString(lhsString, statusString, &args);
             }
 
             char rhsString[256] = { 0 };
             {
                 auto args = FormatArguments();
                 auto statusString = companymgr::getOwnerStatus(lhs.id(), args);
-                stringmgr::format_string(rhsString, statusString, &args);
+                stringmgr::formatString(rhsString, statusString, &args);
             }
 
             return strcmp(lhsString, rhsString) < 0;

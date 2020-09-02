@@ -207,10 +207,10 @@ namespace openloco::ui::windows::industry_list
         static bool orderByName(const openloco::industry& lhs, const openloco::industry& rhs)
         {
             char lhsString[256] = { 0 };
-            stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
+            stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
 
             char rhsString[256] = { 0 };
-            stringmgr::format_string(rhsString, rhs.name, (void*)&rhs.town);
+            stringmgr::formatString(rhsString, rhs.name, (void*)&rhs.town);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -219,16 +219,16 @@ namespace openloco::ui::windows::industry_list
         static bool orderByStatus(openloco::industry& lhs, openloco::industry& rhs)
         {
             char lhsString[256] = { 0 };
-            const char* lhsBuffer = stringmgr::get_string(string_ids::buffer_1250);
+            const char* lhsBuffer = stringmgr::getString(string_ids::buffer_1250);
             lhs.getStatusString((char*)lhsBuffer);
 
-            stringmgr::format_string(lhsString, string_ids::buffer_1250);
+            stringmgr::formatString(lhsString, string_ids::buffer_1250);
 
             char rhsString[256] = { 0 };
-            const char* rhsBuffer = stringmgr::get_string(string_ids::buffer_1250);
+            const char* rhsBuffer = stringmgr::getString(string_ids::buffer_1250);
             rhs.getStatusString((char*)rhsBuffer);
 
-            stringmgr::format_string(rhsString, string_ids::buffer_1250);
+            stringmgr::formatString(rhsString, string_ids::buffer_1250);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -414,7 +414,7 @@ namespace openloco::ui::windows::industry_list
                 }
                 // Industry Status
                 {
-                    const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+                    const char* buffer = stringmgr::getString(string_ids::buffer_1250);
                     industry->getStatusString((char*)buffer);
 
                     auto args = FormatArguments();
@@ -735,7 +735,7 @@ namespace openloco::ui::windows::industry_list
             if (rowInfo == 0xFFFF)
                 string = string_ids::null;
 
-            if (stringmgr::get_string(string_ids::buffer_337)[0] != '\0')
+            if (stringmgr::getString(string_ids::buffer_337)[0] != '\0')
             {
                 if (string == self->widgets[widx::scrollview].tooltip)
                 {
@@ -751,7 +751,7 @@ namespace openloco::ui::windows::industry_list
                 return;
 
             auto industryObj = objectmgr::get<industry_object>(rowInfo);
-            auto buffer = const_cast<char*>(stringmgr::get_string(string));
+            auto buffer = const_cast<char*>(stringmgr::getString(string));
             char* ptr = (char*)buffer;
 
             *ptr = '\0';
@@ -760,18 +760,18 @@ namespace openloco::ui::windows::industry_list
 
             if (industryObj->producesCargo())
             {
-                ptr = stringmgr::format_string(ptr, string_ids::industry_produces);
+                ptr = stringmgr::formatString(ptr, string_ids::industry_produces);
                 ptr = industryObj->getProducedCargoString(ptr);
 
                 if (industryObj->requiresCargo())
                 {
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_comma);
+                    ptr = stringmgr::formatString(ptr, string_ids::cargo_comma);
                 }
             }
 
             if (industryObj->requiresCargo())
             {
-                ptr = stringmgr::format_string(ptr, string_ids::industry_requires);
+                ptr = stringmgr::formatString(ptr, string_ids::industry_requires);
                 ptr = industryObj->getRequiredCargoString(ptr);
             }
         }

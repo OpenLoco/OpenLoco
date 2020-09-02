@@ -179,7 +179,7 @@ namespace openloco::ui::NewsWindow::ticker
         gfx::clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
-        auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+        auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
 
         *buffer = control_codes::colour_black;
         buffer++;

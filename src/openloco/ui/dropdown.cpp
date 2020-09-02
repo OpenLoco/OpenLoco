@@ -172,7 +172,7 @@ namespace openloco::ui::dropdown
         // 0x00494BF6
         static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
         {
-            stringmgr::format_string(_byte_112CC04, stringId, &args);
+            stringmgr::formatString(_byte_112CC04, stringId, &args);
 
             _currentFontSpriteBase = font::medium_bold;
 
@@ -363,7 +363,7 @@ namespace openloco::ui::dropdown
 
                 dropdownFormatArgsToFormatArgs(itemCount, args);
 
-                stringmgr::format_string(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
+                stringmgr::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
                 _currentFontSpriteBase = font::medium_bold;
 

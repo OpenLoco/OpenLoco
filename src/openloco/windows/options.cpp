@@ -1940,7 +1940,7 @@ namespace openloco::ui::options
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+            auto buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
@@ -2004,7 +2004,7 @@ namespace openloco::ui::options
         // 0x004C1319
         static void changePreferredName(window* w)
         {
-            auto buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+            auto buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
