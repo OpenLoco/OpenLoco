@@ -112,9 +112,9 @@ namespace openloco::companymgr
 
             auto& prng = gprng();
 
-            if (prng.rand_next(16) == 0)
+            if (prng.randNext(16) == 0)
             {
-                if (prng.rand_next(_company_max_competing) + 1 > companies_active)
+                if (prng.randNext(_company_max_competing) + 1 > companies_active)
                 {
                     // Creates new company.
                     sub_42F9AC();

@@ -16,7 +16,7 @@ namespace openloco::utility
         uint32_t srand_0() { return _srand_0; }
         uint32_t srand_1() { return _srand_1; }
 
-        uint32_t rand_next()
+        uint32_t randNext()
         {
             auto srand0 = _srand_0;
             auto srand1 = _srand_1;
@@ -25,20 +25,20 @@ namespace openloco::utility
             return _srand_1;
         }
 
-        int32_t rand_next(int32_t high)
+        int32_t randNext(int32_t high)
         {
-            return rand_next(0, high);
+            return randNext(0, high);
         }
 
-        int32_t rand_next(int32_t low, int32_t high)
+        int32_t randNext(int32_t low, int32_t high)
         {
-            int32_t positive = rand_next() & 0x7FFFFFFF;
+            int32_t positive = randNext() & 0x7FFFFFFF;
             return low + (positive % ((high + 1) - low));
         }
 
-        bool rand_bool()
+        bool randBool()
         {
-            return (rand_next() & 1) != 0;
+            return (randNext() & 1) != 0;
         }
     };
 #pragma pack(pop)

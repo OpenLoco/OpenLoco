@@ -37,7 +37,7 @@ void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
     if (w == nullptr)
         return;
 
-    uint16_t dx2 = _prng->rand_next() & 0xFFFF;
+    uint16_t dx2 = _prng->randNext() & 0xFFFF;
     if (dx2 > 0x1745)
         return;
 

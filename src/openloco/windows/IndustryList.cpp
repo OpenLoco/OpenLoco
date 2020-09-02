@@ -1055,7 +1055,7 @@ namespace openloco::ui::windows::industry_list
 
             updateBuildableIndustries(self);
 
-            _prng->rand_next();
+            _prng->randNext();
             _dword_E0C394 = _prng->srand_0();
             _dword_E0C398 = _prng->srand_1();
         }
