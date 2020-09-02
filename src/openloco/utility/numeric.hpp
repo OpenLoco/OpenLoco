@@ -7,9 +7,9 @@
 
 namespace openloco::utility
 {
-    int32_t bitscanforward(uint32_t source);
+    int32_t bitScanForward(uint32_t source);
 
-    int32_t bitscanreverse(uint32_t source);
+    int32_t bitScanReverse(uint32_t source);
 
     template<typename T>
     constexpr T rol(T val, size_t len)
@@ -26,15 +26,15 @@ namespace openloco::utility
     }
 
     template<typename T>
-    constexpr T set_mask(T x, T mask, bool value)
+    constexpr T setMask(T x, T mask, bool value)
     {
         return (value ? (x | mask) : (x & ~mask));
     }
 
     template<typename T>
-    constexpr T set_bit(T x, size_t index, bool value)
+    constexpr T setBit(T x, size_t index, bool value)
     {
         constexpr T mask = static_cast<T>(1 << index);
-        return set_mask(mask);
+        return setMask(mask);
     }
 }

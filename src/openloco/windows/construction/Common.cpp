@@ -1190,7 +1190,7 @@ namespace openloco::ui::windows::construction
             auto var_0E = trackObj->var_0E;
             while (var_0E > 0)
             {
-                auto ecx = utility::bitscanforward(var_0E);
+                auto ecx = utility::bitScanForward(var_0E);
                 if (ecx == -1)
                     break;
                 var_0E &= ~(1 << ecx);
