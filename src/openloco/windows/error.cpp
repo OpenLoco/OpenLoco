@@ -187,14 +187,14 @@ namespace openloco::ui::windows::error
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::windows::error::open(regs.bx, regs.dx);
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::windows::error::openWithCompetitor(regs.bx, regs.dx, regs.al);

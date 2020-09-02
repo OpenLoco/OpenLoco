@@ -36,7 +36,7 @@ namespace openloco::tutorial
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x0043C7A2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

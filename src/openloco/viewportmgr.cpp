@@ -335,7 +335,7 @@ namespace openloco::ui::viewportmgr
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -343,7 +343,7 @@ namespace openloco::ui::viewportmgr
                 regs = backup;
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CA2D0,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -352,7 +352,7 @@ namespace openloco::ui::viewportmgr
                 regs.edi = reinterpret_cast<uint32_t>(viewport);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CA38A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -361,79 +361,79 @@ namespace openloco::ui::viewportmgr
                 regs.edi = reinterpret_cast<uint32_t>(viewport);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBA2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 invalidate((station*)regs.esi);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 invalidate((Thing*)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 invalidate((Thing*)regs.esi, ZoomLevel::quarter);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 invalidate((Thing*)regs.esi, ZoomLevel::half);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 invalidate((Thing*)regs.esi, ZoomLevel::full);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 map::tilemgr::mapInvalidateTileFull(pos);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CBFBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth, 56);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CC098,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CC20F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::full);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CC390,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::half);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CC511,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::quarter);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004CEC25,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

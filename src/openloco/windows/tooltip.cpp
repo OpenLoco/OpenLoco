@@ -40,31 +40,31 @@ namespace openloco::ui::tooltip
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::tooltip::open((ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::tooltip::update((ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004C9397,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 draw((ui::window*)regs.esi, (gfx::drawpixelinfo_t*)regs.edi);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004C94F7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 onClose((ui::window*)regs.esi);
                 return 0;
             });
-        register_hook(
+        registerHook(
             0x004C94FF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 update((ui::window*)regs.esi);

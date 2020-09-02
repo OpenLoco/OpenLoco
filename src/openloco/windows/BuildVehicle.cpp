@@ -370,7 +370,7 @@ namespace openloco::ui::BuildVehicle
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x004B92A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -379,7 +379,7 @@ namespace openloco::ui::BuildVehicle
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x4C1AF7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

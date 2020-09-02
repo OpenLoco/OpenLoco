@@ -534,7 +534,7 @@ namespace openloco
             isInitialised = true;
 
             // This address is where those routines jump back to to end the tick prematurely
-            register_hook(
+            registerHook(
                 0x0046AD71,
                 [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                     longjmp(tickJump, 1);
@@ -941,7 +941,7 @@ namespace openloco
             const auto& cfg = config::readNewConfig();
             environment::resolvePaths();
 
-            register_hooks();
+            registerHooks();
             if (sub_4054B9())
             {
                 ui::createWindow(cfg.display);

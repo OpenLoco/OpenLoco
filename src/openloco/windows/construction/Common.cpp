@@ -1239,7 +1239,7 @@ namespace openloco::ui::windows::construction
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x0049F1B5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -1248,7 +1248,7 @@ namespace openloco::ui::windows::construction
                 return 0;
             });
 
-        //register_hook(
+        //registerHook(
         //    0x0049DC97,
         //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
         //        registers backup = regs;

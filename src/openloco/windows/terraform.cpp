@@ -2390,7 +2390,7 @@ namespace openloco::ui::windows::terraform
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x004BC9E2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -2399,7 +2399,7 @@ namespace openloco::ui::windows::terraform
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004BCA5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -2408,7 +2408,7 @@ namespace openloco::ui::windows::terraform
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004BCDBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -2417,7 +2417,7 @@ namespace openloco::ui::windows::terraform
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004BCDE8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -2426,7 +2426,7 @@ namespace openloco::ui::windows::terraform
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004BC682,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -2435,7 +2435,7 @@ namespace openloco::ui::windows::terraform
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004BC701,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

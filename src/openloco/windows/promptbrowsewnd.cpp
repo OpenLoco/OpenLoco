@@ -723,7 +723,7 @@ namespace openloco::ui::prompt_browse
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x00445AB9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto result = open(
@@ -735,7 +735,7 @@ namespace openloco::ui::prompt_browse
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 appendDirectory((char*)regs.ebp);

@@ -72,7 +72,7 @@ namespace openloco::ui::textinput
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -81,7 +81,7 @@ namespace openloco::ui::textinput
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004CE6C9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -90,7 +90,7 @@ namespace openloco::ui::textinput
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004CE6F2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

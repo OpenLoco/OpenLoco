@@ -96,7 +96,7 @@ namespace openloco::interop
 #endif
 #endif
 
-    constexpr uintptr_t remap_address(uintptr_t locoAddress)
+    constexpr uintptr_t remapAddress(uintptr_t locoAddress)
     {
         return GOOD_PLACE_FOR_DATA_SEGMENT - 0x008A4000 + locoAddress;
     }
@@ -104,7 +104,7 @@ namespace openloco::interop
     template<uint32_t TAddress, typename T>
     constexpr T& addr()
     {
-        return *((T*)remap_address(TAddress));
+        return *((T*)remapAddress(TAddress));
     }
 
     /**
@@ -348,7 +348,7 @@ namespace openloco::interop
         std::vector<std::byte> state;
 
     public:
-        const std::vector<std::byte>& get_state() const
+        const std::vector<std::byte>& getState() const
         {
             return state;
         }
@@ -356,26 +356,26 @@ namespace openloco::interop
         save_state(uintptr_t begin, uintptr_t end);
         void reset();
 
-        static void log_diff(const save_state& lhs, const save_state& rhs);
+        static void logDiff(const save_state& lhs, const save_state& rhs);
     };
 
     bool operator==(const save_state& lhs, const save_state& rhs);
     bool operator!=(const save_state& lhs, const save_state& rhs);
 
-    void read_memory(uint32_t address, void* data, size_t size);
-    void write_memory(uint32_t address, const void* data, size_t size);
+    void readMemory(uint32_t address, void* data, size_t size);
+    void writeMemory(uint32_t address, const void* data, size_t size);
 
     using hook_function = uint8_t (*)(registers& regs);
 
-    void register_hook(uintptr_t address, hook_function function);
-    void write_ret(uint32_t address);
-    void write_jmp(uint32_t address, void* fn);
-    void write_nop(uint32_t address, size_t count);
-    void hook_dump(uint32_t address, void* fn);
-    void hook_lib(uint32_t address, void* fn);
+    void registerHook(uintptr_t address, hook_function function);
+    void writeRet(uint32_t address);
+    void writeJmp(uint32_t address, void* fn);
+    void writeNop(uint32_t address, size_t count);
+    void hookDump(uint32_t address, void* fn);
+    void hookLib(uint32_t address, void* fn);
 
-    void register_hooks();
-    void load_sections();
+    void registerHooks();
+    void loadSections();
 }
 
 // these safe string function convenience overloads are located in this header, rather than in utility/string.hpp,

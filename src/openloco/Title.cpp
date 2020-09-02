@@ -18,7 +18,7 @@ namespace openloco::title
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x0046AD7D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 start();

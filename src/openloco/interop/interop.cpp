@@ -34,7 +34,7 @@ namespace openloco::interop
     volatile int32_t _originalAddress = 0;
 
 #ifdef _ENABLE_CALL_BYVALUE_
-    static int32_t DISABLE_OPT call_byval(int32_t address, int32_t _eax, int32_t _ebx, int32_t _ecx, int32_t _edx, int32_t _esi, int32_t _edi, int32_t _ebp)
+    static int32_t DISABLE_OPT callByVal(int32_t address, int32_t _eax, int32_t _ebx, int32_t _ecx, int32_t _edx, int32_t _esi, int32_t _edi, int32_t _ebp)
     {
         int32_t result = 0;
         _originalAddress = address;
@@ -93,7 +93,7 @@ namespace openloco::interop
     }
 #endif
 
-    static int32_t DISABLE_OPT call_byref(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
+    static int32_t DISABLE_OPT callByRef(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
 #ifdef _LOG_INTEROP_CALLS_
         openloco::console::group("0x%x", address);
@@ -260,9 +260,9 @@ namespace openloco::interop
     }
 
 #ifdef _ENABLE_CALL_BYVALUE_
-    static int32_t call_byval(int32_t address, const registers& registers)
+    static int32_t callByVal(int32_t address, const registers& registers)
     {
-        return call_byval(
+        return callByVal(
             address,
             registers.eax,
             registers.ebx,
@@ -282,7 +282,7 @@ namespace openloco::interop
 
     int32_t call(int32_t address, registers& registers)
     {
-        return call_byref(
+        return callByRef(
             address,
             &registers.eax,
             &registers.ebx,
@@ -293,7 +293,7 @@ namespace openloco::interop
             &registers.ebp);
     }
 
-    void read_memory(uint32_t address, void* data, size_t size)
+    void readMemory(uint32_t address, void* data, size_t size)
     {
 #ifdef _WIN32
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -306,7 +306,7 @@ namespace openloco::interop
 #endif // _WIN32
     }
 
-    void write_memory(uint32_t address, const void* data, size_t size)
+    void writeMemory(uint32_t address, const void* data, size_t size)
     {
 #ifdef _WIN32
         if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
@@ -324,15 +324,15 @@ namespace openloco::interop
         , end(end)
     {
         state.resize(end - begin);
-        read_memory(begin, state.data(), state.size());
+        readMemory(begin, state.data(), state.size());
     }
 
     void save_state::reset()
     {
-        interop::write_memory(begin, state.data(), state.size());
+        interop::writeMemory(begin, state.data(), state.size());
     }
 
-    void save_state::log_diff(const save_state& lhs, const save_state& rhs)
+    void save_state::logDiff(const save_state& lhs, const save_state& rhs)
     {
         // TODO should we allow different base addresses?
         //      if so then we need to do extra work for that.
@@ -352,10 +352,10 @@ namespace openloco::interop
     bool operator==(const save_state& lhs, const save_state& rhs)
     {
         return std::equal(
-            lhs.get_state().begin(),
-            lhs.get_state().end(),
-            rhs.get_state().begin(),
-            rhs.get_state().end());
+            lhs.getState().begin(),
+            lhs.getState().end(),
+            rhs.getState().begin(),
+            rhs.getState().end());
     }
 
     bool operator!=(const save_state& lhs, const save_state& rhs)
