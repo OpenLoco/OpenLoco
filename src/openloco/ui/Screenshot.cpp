@@ -17,13 +17,13 @@ using namespace openloco::ui;
 
 namespace openloco::input
 {
-    static void PngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
+    static void pngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
     {
         auto ostream = static_cast<std::ostream*>(png_get_io_ptr(png_ptr));
         ostream->write((const char*)data, length);
     }
 
-    static void PngFlush(png_structp png_ptr)
+    static void pngFlush(png_structp png_ptr)
     {
         auto ostream = static_cast<std::ostream*>(png_get_io_ptr(png_ptr));
         ostream->flush();
@@ -69,7 +69,7 @@ namespace openloco::input
             if (png_ptr == nullptr)
                 throw std::runtime_error("png_create_write_struct failed.");
 
-            png_set_write_fn(png_ptr, &outputStream, PngWriteData, PngFlush);
+            png_set_write_fn(png_ptr, &outputStream, pngWriteData, pngFlush);
 
             // Set error handler
             if (setjmp(png_jmpbuf(png_ptr)))
