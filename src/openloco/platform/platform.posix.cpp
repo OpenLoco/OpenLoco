@@ -29,7 +29,7 @@ int main(int argc, const char** argv)
 
 namespace openloco::platform
 {
-    uint32_t get_time()
+    uint32_t getTime()
     {
         struct timespec spec;
         clock_gettime(CLOCK_REALTIME, &spec);
@@ -61,7 +61,7 @@ namespace openloco::platform
         }
     }
 
-    fs::path get_user_directory()
+    fs::path getUserDirectory()
     {
         auto path = fs::path(GetEnvironmentVariable("XDG_CONFIG_HOME"));
         if (path.empty())
@@ -107,7 +107,7 @@ namespace openloco::platform
         return exePath;
     }
 
-    std::string prompt_directory(const std::string& title)
+    std::string promptDirectory(const std::string& title)
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";

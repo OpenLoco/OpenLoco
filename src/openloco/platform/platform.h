@@ -7,9 +7,9 @@
 
 namespace openloco::platform
 {
-    uint32_t get_time();
-    fs::path get_user_directory();
-    std::string prompt_directory(const std::string& title);
+    uint32_t getTime();
+    fs::path getUserDirectory();
+    std::string promptDirectory(const std::string& title);
     fs::path GetCurrentExecutablePath();
     std::vector<fs::path> getDrives();
 #if defined(__APPLE__) && defined(__MACH__)

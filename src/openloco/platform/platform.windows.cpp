@@ -16,12 +16,12 @@
 
 namespace openloco::platform
 {
-    uint32_t get_time()
+    uint32_t getTime()
     {
         return timeGetTime();
     }
 
-    fs::path get_user_directory()
+    fs::path getUserDirectory()
     {
         auto result = fs::path{};
         wchar_t path[MAX_PATH];
@@ -52,7 +52,7 @@ namespace openloco::platform
         return pszPath;
     }
 
-    std::string prompt_directory(const std::string& title)
+    std::string promptDirectory(const std::string& title)
     {
         std::string result;
 

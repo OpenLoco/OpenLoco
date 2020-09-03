@@ -8,7 +8,7 @@
 
 namespace openloco::platform
 {
-    fs::path get_user_directory()
+    fs::path getUserDirectory()
     {
         @autoreleasepool
         {
@@ -19,7 +19,7 @@ namespace openloco::platform
         }
     }
 
-    std::string prompt_directory(const std::string &title)
+    std::string promptDirectory(const std::string &title)
     {
         @autoreleasepool
         {

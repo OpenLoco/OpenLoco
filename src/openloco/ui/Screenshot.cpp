@@ -32,7 +32,7 @@ namespace openloco::input
     // 0x00452667
     std::string saveScreenshot()
     {
-        auto basePath = platform::get_user_directory();
+        auto basePath = platform::getUserDirectory();
         std::string scenarioName = s5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)

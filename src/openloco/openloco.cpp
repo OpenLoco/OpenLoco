@@ -541,10 +541,10 @@ namespace openloco
                 });
 
             initialise();
-            last_tick_time = platform::get_time();
+            last_tick_time = platform::getTime();
         }
 
-        uint32_t time = platform::get_time();
+        uint32_t time = platform::getTime();
         time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
         last_tick_time = time;
 
@@ -866,14 +866,14 @@ namespace openloco
         do
         {
             // Idle loop for a 40 FPS
-        } while (platform::get_time() - last_tick_time < 25);
+        } while (platform::getTime() - last_tick_time < 25);
     }
 
     void prompt_tick_loop(std::function<bool()> tickAction)
     {
         while (true)
         {
-            auto startTime = platform::get_time();
+            auto startTime = platform::getTime();
             time_since_last_tick = 31;
             if (!ui::process_messages() || !tickAction())
             {
@@ -883,7 +883,7 @@ namespace openloco
             do
             {
                 // Idle loop for a 40 FPS
-            } while (platform::get_time() - startTime < 25);
+            } while (platform::getTime() - startTime < 25);
         }
     }
 
