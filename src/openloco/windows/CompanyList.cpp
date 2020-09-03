@@ -1138,7 +1138,7 @@ namespace openloco::ui::windows::CompanyList
             if (self->var_854 != 0)
             {
                 auto i = 0;
-                while (utility::bitscanforward(self->var_854) != _graphItemId[i])
+                while (utility::bitScanForward(self->var_854) != _graphItemId[i])
                 {
                     i++;
                 }
@@ -1673,7 +1673,7 @@ namespace openloco::ui::windows::CompanyList
             if (self->var_854 != 0)
             {
                 auto i = 0;
-                auto bitScan = utility::bitscanforward(self->var_854);
+                auto bitScan = utility::bitScanForward(self->var_854);
                 while (bitScan != _graphItemId[i] && bitScan != -1)
                 {
                     i++;

@@ -60,7 +60,7 @@ namespace openloco::platform
         LPMALLOC lpMalloc;
         if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
-            auto titleW = utility::to_utf16(title);
+            auto titleW = utility::toUtf16(title);
             BROWSEINFOW bi{};
             bi.lpszTitle = titleW.c_str();
             bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON;
@@ -68,7 +68,7 @@ namespace openloco::platform
             LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
             if (pidl != nullptr)
             {
-                result = utility::to_utf8(SHGetPathFromIDListLongPath(pidl));
+                result = utility::toUtf8(SHGetPathFromIDListLongPath(pidl));
             }
             CoTaskMemFree(pidl);
         }
@@ -96,7 +96,7 @@ namespace openloco::platform
             wExePath = std::make_unique<wchar_t[]>(wExePathCapacity);
             size = GetModuleFileNameW(hModule, wExePath.get(), wExePathCapacity);
         } while (size >= wExePathCapacity);
-        return utility::to_utf8(wExePath.get());
+        return utility::toUtf8(wExePath.get());
     }
 
     fs::path GetCurrentExecutablePath()

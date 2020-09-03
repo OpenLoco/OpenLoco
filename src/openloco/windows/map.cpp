@@ -824,7 +824,7 @@ namespace openloco::ui::windows::map
             string_ids::num_ships_plural,
         };
 
-        int16_t vehicleIndex = utility::bitscanforward(self->var_854);
+        int16_t vehicleIndex = utility::bitScanForward(self->var_854);
         uint16_t totalVehicleCount = 0;
         auto stringId = string_ids::status_num_vehicles_plural;
 
@@ -858,7 +858,7 @@ namespace openloco::ui::windows::map
     // 0x0046D87C
     static void formatIndustryString(window* self, FormatArguments args)
     {
-        int16_t industryIndex = utility::bitscanforward(self->var_854);
+        int16_t industryIndex = utility::bitScanForward(self->var_854);
 
         if (industryIndex == -1)
         {
@@ -1042,7 +1042,7 @@ namespace openloco::ui::windows::map
         if (train.head->vehicleType == VehicleType::plane)
         {
             colour = 211;
-            auto index = utility::bitscanforward(_dword_F253A4);
+            auto index = utility::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
                 if (_byte_F253DF[index] == 0xFE)
@@ -1057,7 +1057,7 @@ namespace openloco::ui::windows::map
         else if (train.head->vehicleType == VehicleType::ship)
         {
             colour = 139;
-            auto index = utility::bitscanforward(_dword_F253A4);
+            auto index = utility::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
                 if (_byte_F253DF[index] == 0xFD)

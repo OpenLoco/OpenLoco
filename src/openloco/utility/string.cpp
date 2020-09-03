@@ -12,7 +12,7 @@
 
 namespace openloco::utility
 {
-    std::string to_utf8(const std::wstring_view& src)
+    std::string toUtf8(const std::wstring_view& src)
     {
 #ifdef _WIN32
         int srcLen = src.size();
@@ -30,7 +30,7 @@ namespace openloco::utility
 #endif
     }
 
-    std::wstring to_utf16(const std::string_view& src)
+    std::wstring toUtf16(const std::string_view& src)
     {
 #ifdef _WIN32
         int srcLen = src.size();

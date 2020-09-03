@@ -173,7 +173,7 @@ void vehicle_head::sub_4BA8D4()
                 sub_4BAA76();
 
                 auto v2 = car.body;
-                auto soundId = (audio::sound_id)gprng().rand_next(26, 26 + 5);
+                auto soundId = (audio::sound_id)gprng().randNext(26, 26 + 5);
                 audio::playSound(soundId, loc16(v2->x, v2->y, v2->z + 22));
             }
         }
@@ -1357,7 +1357,7 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32
 
     var_05 += 64;
 
-    if (gprng().rand_next(std::numeric_limits<uint16_t>::max()) > 819)
+    if (gprng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
         return;
 
     loc16 loc = {
@@ -1417,7 +1417,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
 
     var_05 += 64;
 
-    if (gprng().rand_next(std::numeric_limits<uint16_t>::max()) > 936)
+    if (gprng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
         return;
 
     loc16 loc = {

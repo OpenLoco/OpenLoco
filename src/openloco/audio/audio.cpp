@@ -217,10 +217,10 @@ namespace openloco::audio
 
         if (fs.is_open())
         {
-            auto numSounds = read_value<uint32_t>(fs);
+            auto numSounds = readValue<uint32_t>(fs);
 
             std::vector<uint32_t> offsets(numSounds, 0);
-            read_data(fs, offsets.data(), numSounds);
+            readData(fs, offsets.data(), numSounds);
 
             std::vector<std::byte> pcm;
             for (uint32_t i = 0; i < numSounds; i++)
@@ -229,11 +229,11 @@ namespace openloco::audio
                 fs.seekg(offsets[i]);
 
                 // Read length of wave data and load it into the pcm buffer
-                auto pcmLen = read_value<uint32_t>(fs);
-                auto format = read_value<WAVEFORMATEX>(fs);
+                auto pcmLen = readValue<uint32_t>(fs);
+                auto format = readValue<WAVEFORMATEX>(fs);
 
                 pcm.resize(pcmLen);
-                read_data(fs, pcm.data(), pcmLen);
+                readData(fs, pcm.data(), pcmLen);
 
                 auto s = loadSoundFromWaveMemory(format, pcm.data(), pcmLen);
                 results.push_back(s);

@@ -149,7 +149,7 @@ namespace openloco::ui::windows::terraform
                 auto treeObj = objectmgr::get<tree_object>(self->row_hover);
                 if (treeObj->colours != 0)
                 {
-                    colour_t colour = utility::bitscanreverse(treeObj->colours);
+                    colour_t colour = utility::bitScanReverse(treeObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
                     _treeColour = colour;
@@ -600,7 +600,7 @@ namespace openloco::ui::windows::terraform
                 colour_t colour = _treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
-                    colour = utility::bitscanreverse(colourOptions);
+                    colour = utility::bitScanReverse(colourOptions);
                     if (colour == 0xFF)
                         colour = 0;
                 }

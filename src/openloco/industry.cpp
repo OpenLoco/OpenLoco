@@ -185,17 +185,17 @@ namespace openloco
         {
             if (produced_cargo_quantity[0] / 8 <= produced_cargo_max[0] || produced_cargo_quantity[1] / 8 <= produced_cargo_max[1])
             {
-                if (prng.rand_bool())
+                if (prng.randBool())
                 {
-                    map::map_pos randTile{ static_cast<coord_t>(x + (prng.rand_next(-15, 16) * 32)), static_cast<coord_t>(y + (prng.rand_next(-15, 16) * 32)) };
+                    map::map_pos randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
                     uint8_t bl = obj->var_ED;
                     uint8_t bh = obj->var_EE;
-                    if (obj->var_EF != 0xFF && prng.rand_bool())
+                    if (obj->var_EF != 0xFF && prng.randBool())
                     {
                         bl = obj->var_EF;
                         bh = obj->var_F0;
                     }
-                    uint8_t dl = prng.rand_next(7) * 32;
+                    uint8_t dl = prng.randNext(7) * 32;
                     sub_454A43(randTile, bl, bh, dl);
                 }
             }

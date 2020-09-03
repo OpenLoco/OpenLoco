@@ -13,7 +13,7 @@
 namespace openloco::utility
 {
     // Finds the first bit set in a 32-bits numeral and returns its index, or -1 if no bit is set.
-    int32_t bitscanforward(uint32_t source)
+    int32_t bitScanForward(uint32_t source)
     {
 #if defined(_MSC_VER) && (_MSC_VER >= 1400) // Visual Studio 2005
         DWORD i;
@@ -32,7 +32,7 @@ namespace openloco::utility
 #endif
     }
 
-    int32_t bitscanreverse(uint32_t source)
+    int32_t bitScanReverse(uint32_t source)
     {
 #if defined(_MSC_VER) && (_MSC_VER >= 1400) // Visual Studio 2005
         DWORD i;

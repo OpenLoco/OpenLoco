@@ -82,7 +82,7 @@ namespace openloco::gfx
         }
 
         g1_header_t header;
-        if (!read_data(stream, header))
+        if (!readData(stream, header))
         {
             throw std::runtime_error("Reading g1 file header failed.");
         }
@@ -99,7 +99,7 @@ namespace openloco::gfx
 
         // Read element headers
         auto elements32 = std::vector<g1_element32_t>(header.num_entries);
-        if (!read_data(stream, elements32.data(), header.num_entries))
+        if (!readData(stream, elements32.data(), header.num_entries))
         {
             throw std::runtime_error("Reading g1 element headers failed.");
         }
@@ -107,7 +107,7 @@ namespace openloco::gfx
 
         // Read element data
         auto elementData = std::make_unique<std::byte[]>(header.total_size);
-        if (!read_data(stream, elementData.get(), header.total_size))
+        if (!readData(stream, elementData.get(), header.total_size))
         {
             throw std::runtime_error("Reading g1 elements failed.");
         }
