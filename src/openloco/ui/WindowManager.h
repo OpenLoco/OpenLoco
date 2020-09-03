@@ -68,7 +68,7 @@ namespace openloco::ui::WindowManager
     void closeAllFloatingWindows();
     int32_t getCurrentRotation();
 
-    void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
+    void viewportShiftPixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
     void viewportSetVisibility(viewport_visibility flags);
 }
 
@@ -82,7 +82,7 @@ namespace openloco::ui::windows
 
     bool promptOkCancel(string_id okButtonStringId);
 
-    void show_error(string_id title, string_id message = string_ids::null, bool sound = true);
+    void showError(string_id title, string_id message = string_ids::null, bool sound = true);
 
     void editorInit();
 

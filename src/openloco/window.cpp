@@ -283,7 +283,7 @@ namespace openloco::ui
             return;
         }
 
-        WindowManager::viewport_shift_pixels(w, vp, diffX, diffY);
+        WindowManager::viewportShiftPixels(w, vp, diffX, diffY);
 
         *vp = backup;
     }
