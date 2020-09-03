@@ -63,7 +63,7 @@ constexpr int16_t factor503B50[] = {
     84
 };
 
-vehicle* vehicle::next_vehicle()
+vehicle* vehicle::nextVehicle()
 {
     return thingmgr::get<vehicle>(next_thing_id);
 }
@@ -112,7 +112,7 @@ bool vehicle::updateComponent()
     switch (type)
     {
         case VehicleThingType::head:
-            result = as_vehicle_head()->update();
+            result = asVehicleHead()->update();
             break;
         case VehicleThingType::vehicle_1:
             result = call(0x004A9788, regs);
@@ -125,7 +125,7 @@ bool vehicle::updateComponent()
             break;
         case VehicleThingType::body_start:
         case VehicleThingType::body_continued:
-            result = as_vehicle_body()->update();
+            result = asVehicleBody()->update();
             break;
         case VehicleThingType::tail:
             result = call(0x004AA24A, regs);
@@ -197,7 +197,7 @@ int32_t openloco::vehicle_body::update()
 
     if (mode == TransportMode::air || mode == TransportMode::water)
     {
-        animation_update();
+        animationUpdate();
         return 0;
     }
 
@@ -218,14 +218,14 @@ int32_t openloco::vehicle_body::update()
 
         vehicle_var_1136130 += var_1136130 * 320 + 500;
     }
-    animation_update();
+    animationUpdate();
     sub_4AAB0B();
     vehicle_var_1136130 = backup1136130;
     return 0;
 }
 
 // 0x004AAC4E
-void openloco::vehicle_body::animation_update()
+void openloco::vehicle_body::animationUpdate()
 {
     if (var_38 & things::vehicle::flags_38::unk_4)
         return;
@@ -250,28 +250,28 @@ void openloco::vehicle_body::animation_update()
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(0, var_05);
+            steamPuffsAnimationUpdate(0, var_05);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(0, var_05);
+            dieselExhaust1AnimationUpdate(0, var_05);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(0, var_05);
+            electricSpark1AnimationUpdate(0, var_05);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(0, var_05);
+            electricSpark2AnimationUpdate(0, var_05);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(0, var_05);
+            dieselExhaust2AnimationUpdate(0, var_05);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(0, var_05);
+            shipWakeAnimationUpdate(0, var_05);
             break;
         default:
             assert(false);
             break;
     }
-    secondary_animation_update();
+    secondaryAnimationUpdate();
 }
 
 // 0x004AAB0B
@@ -394,17 +394,17 @@ void openloco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
 
     if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
     {
-        sprite_pitch = update_sprite_pitch_steep_slopes(offset, front_bogie->z - back_bogie->z);
+        sprite_pitch = updateSpritePitchSteepSlopes(offset, front_bogie->z - back_bogie->z);
     }
     else
     {
-        sprite_pitch = update_sprite_pitch(offset, front_bogie->z - back_bogie->z);
+        sprite_pitch = updateSpritePitch(offset, front_bogie->z - back_bogie->z);
     }
 
     // If the sprite_pitch is odd
     if (sprite_pitch & 1)
     {
-        sprite_yaw = update_sprite_yaw_1(distance_x, distance_y);
+        sprite_yaw = updateSpriteYaw1(distance_x, distance_y);
     }
     else
     {
@@ -413,19 +413,19 @@ void openloco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
         switch (i)
         {
             case 0:
-                sprite_yaw = update_sprite_yaw_0(distance_x, distance_y);
+                sprite_yaw = updateSpriteYaw0(distance_x, distance_y);
                 break;
             case 1:
-                sprite_yaw = update_sprite_yaw_1(distance_x, distance_y);
+                sprite_yaw = updateSpriteYaw1(distance_x, distance_y);
                 break;
             case 2:
-                sprite_yaw = update_sprite_yaw_2(distance_x, distance_y);
+                sprite_yaw = updateSpriteYaw2(distance_x, distance_y);
                 break;
             case 3:
-                sprite_yaw = update_sprite_yaw_3(distance_x, distance_y);
+                sprite_yaw = updateSpriteYaw3(distance_x, distance_y);
                 break;
             case 4:
-                sprite_yaw = update_sprite_yaw_4(distance_x, distance_y);
+                sprite_yaw = updateSpriteYaw4(distance_x, distance_y);
                 break;
         }
     }
@@ -442,7 +442,7 @@ static uint16_t sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t openloco::vehicle_body::update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -482,7 +482,7 @@ uint8_t openloco::vehicle_body::update_sprite_pitch_steep_slopes(uint16_t xy_off
 }
 
 // 0x004BF49D
-uint8_t openloco::vehicle_body::update_sprite_pitch(uint16_t xy_offset, int16_t z_offset)
+uint8_t openloco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -511,7 +511,7 @@ uint8_t openloco::vehicle_body::update_sprite_pitch(uint16_t xy_offset, int16_t 
 }
 
 // 0x004BF52B
-uint8_t openloco::vehicle_body::update_sprite_yaw_0(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -553,7 +553,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_0(int16_t x_offset, int16_t y_
 }
 
 // 0x004BF5B3
-uint8_t openloco::vehicle_body::update_sprite_yaw_1(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -603,7 +603,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_1(int16_t x_offset, int16_t y_
 }
 
 // 0x004BF5FB
-uint8_t openloco::vehicle_body::update_sprite_yaw_2(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -672,7 +672,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_2(int16_t x_offset, int16_t y_
 }
 
 // 0x004BF657
-uint8_t openloco::vehicle_body::update_sprite_yaw_3(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -782,7 +782,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_3(int16_t x_offset, int16_t y_
 }
 
 // 0x004BF6DF
-uint8_t openloco::vehicle_body::update_sprite_yaw_4(int16_t x_offset, int16_t y_offset)
+uint8_t openloco::vehicle_body::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -965,7 +965,7 @@ uint8_t openloco::vehicle_body::update_sprite_yaw_4(int16_t x_offset, int16_t y_
 }
 
 // 0x004AB655
-void openloco::vehicle_body::secondary_animation_update()
+void openloco::vehicle_body::secondaryAnimationUpdate()
 {
     auto vehicleObject = object();
 
@@ -982,22 +982,22 @@ void openloco::vehicle_body::secondary_animation_update()
         case simple_animation_type::steam_puff1:
         case simple_animation_type::steam_puff2:
         case simple_animation_type::steam_puff3:
-            steam_puffs_animation_update(1, var_05);
+            steamPuffsAnimationUpdate(1, var_05);
             break;
         case simple_animation_type::diesel_exhaust1:
-            diesel_exhaust1_animation_update(1, var_05);
+            dieselExhaust1AnimationUpdate(1, var_05);
             break;
         case simple_animation_type::electric_spark1:
-            electric_spark1_animation_update(1, var_05);
+            electricSpark1AnimationUpdate(1, var_05);
             break;
         case simple_animation_type::electric_spark2:
-            electric_spark2_animation_update(1, var_05);
+            electricSpark2AnimationUpdate(1, var_05);
             break;
         case simple_animation_type::diesel_exhaust2:
-            diesel_exhaust2_animation_update(1, var_05);
+            dieselExhaust2AnimationUpdate(1, var_05);
             break;
         case simple_animation_type::ship_wake:
-            ship_wake_animation_update(1, var_05);
+            shipWakeAnimationUpdate(1, var_05);
             break;
         default:
             assert(false);
@@ -1006,7 +1006,7 @@ void openloco::vehicle_body::secondary_animation_update()
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t var_05)
+void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
 {
     auto vehicleObject = object();
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
@@ -1089,7 +1089,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 
     bool itemFound = false;
 
-    // Looking for a bridge? or somthing ontop
+    // Looking for a bridge? or something on top
     if (steam_obj->var_08 & (1 << 2))
     {
         auto tile = map::tilemgr::get(frontBogie->tile_x, frontBogie->tile_y);
@@ -1171,7 +1171,7 @@ void openloco::vehicle_body::steam_puffs_animation_update(uint8_t num, int32_t v
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32_t var_05)
+void openloco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1257,7 +1257,7 @@ void openloco::vehicle_body::diesel_exhaust1_animation_update(uint8_t num, int32
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32_t var_05)
+void openloco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1332,7 +1332,7 @@ void openloco::vehicle_body::diesel_exhaust2_animation_update(uint8_t num, int32
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32_t var_05)
+void openloco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1392,7 +1392,7 @@ void openloco::vehicle_body::electric_spark1_animation_update(uint8_t num, int32
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32_t var_05)
+void openloco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1474,7 +1474,7 @@ void openloco::vehicle_body::electric_spark2_animation_update(uint8_t num, int32
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle_body::ship_wake_animation_update(uint8_t num, int32_t)
+void openloco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
 {
     vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
@@ -1694,11 +1694,11 @@ namespace openloco::things::vehicle
     Vehicle::Vehicle(uint16_t _head)
     {
         auto component = thingmgr::get<openloco::vehicle>(_head);
-        head = component->as_vehicle_head();
+        head = component->asVehicleHead();
         component = component->nextVehicleComponent();
-        veh1 = component->as_vehicle_1();
+        veh1 = component->asVehicle1();
         component = component->nextVehicleComponent();
-        veh2 = component->as_vehicle_2();
+        veh2 = component->asVehicle2();
         component = component->nextVehicleComponent();
         if (component->type != VehicleThingType::tail)
         {
@@ -1708,6 +1708,6 @@ namespace openloco::things::vehicle
         {
             component = component->nextVehicleComponent();
         }
-        tail = component->as_vehicle_tail();
+        tail = component->asVehicleTail();
     }
 }
