@@ -388,7 +388,7 @@ namespace openloco::ui::windows::construction::construction
 
     static void activateSelectedRoadWidgets(window* window)
     {
-        tilemgr::map_invalidate_map_selection_tiles();
+        tilemgr::mapInvalidateMapSelectionTiles();
         _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -435,7 +435,7 @@ namespace openloco::ui::windows::construction::construction
         }
 
         _mapSelectedTiles[posId].x = -1;
-        map_invalidate_map_selection_tiles();
+        mapInvalidateMapSelectionTiles();
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
@@ -586,7 +586,7 @@ namespace openloco::ui::windows::construction::construction
 
     static void activateSelectedTrackWidgets(window* window)
     {
-        tilemgr::map_invalidate_map_selection_tiles();
+        tilemgr::mapInvalidateMapSelectionTiles();
         _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -631,7 +631,7 @@ namespace openloco::ui::windows::construction::construction
         }
 
         _mapSelectedTiles[posId].x = -1;
-        map_invalidate_map_selection_tiles();
+        mapInvalidateMapSelectionTiles();
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = objectmgr::get<track_object>(_trackType);
@@ -1748,7 +1748,7 @@ namespace openloco::ui::windows::construction::construction
 
         if (_trackType & (1 << 7))
         {
-            map_invalidate_map_selection_tiles();
+            mapInvalidateMapSelectionTiles();
             common::sub_49FEC7();
 
             auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -1851,7 +1851,7 @@ namespace openloco::ui::windows::construction::construction
         }
         else
         {
-            map_invalidate_map_selection_tiles();
+            mapInvalidateMapSelectionTiles();
             common::sub_49FEC7();
 
             auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);

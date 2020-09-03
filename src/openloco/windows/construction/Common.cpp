@@ -399,7 +399,7 @@ namespace openloco::ui::windows::construction
             }
 
             common::sub_49FEC7();
-            tilemgr::map_invalidate_map_selection_tiles();
+            tilemgr::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
@@ -698,7 +698,7 @@ namespace openloco::ui::windows::construction
         {
             sub_49FEC7();
             WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
-            tilemgr::map_invalidate_map_selection_tiles();
+            tilemgr::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             windows::hideDirectionArrows();
             windows::hideGridlines();

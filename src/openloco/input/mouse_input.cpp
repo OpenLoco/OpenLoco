@@ -289,8 +289,8 @@ namespace openloco::input
         {
             input::reset_flag(input::input_flags::tool_active);
 
-            map::tilemgr::map_invalidate_selection_rect();
-            map::tilemgr::map_invalidate_map_selection_tiles();
+            map::tilemgr::mapInvalidateSelectionRect();
+            map::tilemgr::mapInvalidateMapSelectionTiles();
 
             // Reset map selection
             _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;

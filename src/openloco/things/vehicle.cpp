@@ -1129,7 +1129,7 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         int32_t volume = 0 - (veh_2->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+        auto height = std::get<0>(map::tilemgr::getHeight(loc.x, loc.y));
 
         if (loc.z <= height)
         {
@@ -1153,7 +1153,7 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         int32_t volume = 0 - (veh_2->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::get_height(loc.x, loc.y));
+        auto height = std::get<0>(map::tilemgr::getHeight(loc.x, loc.y));
 
         if (loc.z <= height)
         {
