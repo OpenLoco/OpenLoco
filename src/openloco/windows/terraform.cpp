@@ -177,7 +177,7 @@ namespace openloco::ui::windows::terraform
             i = (i / 9) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            ui::scrollview::update_thumbs(self, widx::scrollview);
+            ui::scrollview::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB63F
@@ -1779,7 +1779,7 @@ namespace openloco::ui::windows::terraform
             i = (i / 10) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            ui::scrollview::update_thumbs(self, widx::scrollview);
+            ui::scrollview::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB6D5

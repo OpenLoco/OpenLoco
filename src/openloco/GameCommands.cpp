@@ -227,7 +227,7 @@ namespace openloco::game_commands
 
         if (gGameCommandErrorText != 0xFFFE)
         {
-            windows::show_error(gGameCommandErrorTitle, gGameCommandErrorText);
+            windows::showError(gGameCommandErrorTitle, gGameCommandErrorText);
             return 0x80000000;
         }
 

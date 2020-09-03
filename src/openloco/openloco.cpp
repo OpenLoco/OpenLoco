@@ -788,7 +788,7 @@ namespace openloco
                 message = string_ids::null;
             }
             _50C197 = 0;
-            ui::windows::show_error(title, message);
+            ui::windows::showError(title, message);
         }
     }
 

@@ -53,7 +53,7 @@ namespace openloco::ui::WindowManager
     static loco_global<window[max_windows], 0x011370AC> _windows;
     static loco_global<window*, 0x0113D754> _windowsEnd;
 
-    static void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y);
+    static void viewportRedrawAfterShift(window* window, viewport* viewport, int16_t x, int16_t y);
 
     void init()
     {
@@ -818,7 +818,7 @@ namespace openloco::ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool window_fits_within_space(gfx::point_t position, gfx::ui_size_t size)
+    static bool windowFitsWithinSpace(gfx::point_t position, gfx::ui_size_t size)
     {
         if (position.x < 0)
             return false;
@@ -865,7 +865,7 @@ namespace openloco::ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool window_fits_on_screen(gfx::point_t origin, gfx::ui_size_t size)
+    static bool windowFitsOnScreen(gfx::point_t origin, gfx::ui_size_t size)
     {
         if (origin.x < -(size.width / 4))
             return false;
@@ -877,7 +877,7 @@ namespace openloco::ui::WindowManager
         if (origin.y > ui::height() - (size.height / 4))
             return false;
 
-        return window_fits_within_space(origin, size);
+        return windowFitsWithinSpace(origin, size);
     }
 
     /**
@@ -900,22 +900,22 @@ namespace openloco::ui::WindowManager
 
         position.x = 0;  // dx
         position.y = 30; // ax
-        if (window_fits_within_space(position, size))
+        if (windowFitsWithinSpace(position, size))
             return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = ui::width() - size.width;
         position.y = 30;
-        if (window_fits_within_space(position, size))
+        if (windowFitsWithinSpace(position, size))
             return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = 0;
         position.y = ui::height() - size.height - 29;
-        if (window_fits_within_space(position, size))
+        if (windowFitsWithinSpace(position, size))
             return createWindowOnScreen(type, position, size, flags, events);
 
         position.x = ui::width() - size.width;
         position.y = ui::height() - size.height - 29;
-        if (window_fits_within_space(position, size))
+        if (windowFitsWithinSpace(position, size))
             return createWindowOnScreen(type, position, size, flags, events);
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -925,37 +925,37 @@ namespace openloco::ui::WindowManager
 
             position.x = w->x + w->width + 2;
             position.y = w->y;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y + w->height + 2;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y - size.height - 2;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x + w->width + 2;
             position.y = w->y + w->height - size.height;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y + w->height - size.height;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x + w->width - size.width;
             position.y = w->y - size.height - 2;
-            if (window_fits_within_space(position, size))
+            if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
         }
 
@@ -966,22 +966,22 @@ namespace openloco::ui::WindowManager
 
             position.x = w->x + w->width + 2;
             position.y = w->y;
-            if (window_fits_on_screen(position, size))
+            if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x - size.width - 2;
             position.y = w->y;
-            if (window_fits_on_screen(position, size))
+            if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y + w->height + 2;
-            if (window_fits_on_screen(position, size))
+            if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
             position.x = w->x;
             position.y = w->y - size.height - 2;
-            if (window_fits_on_screen(position, size))
+            if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
         }
 
@@ -1423,7 +1423,7 @@ namespace openloco::ui::WindowManager
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
-        ui::scrollview::update_thumbs(window, widgetIndex);
+        ui::scrollview::updateThumbs(window, widgetIndex);
         invalidateWidget(window->type, window->number, widgetIndex);
     }
 
@@ -1621,7 +1621,7 @@ namespace openloco::ui::WindowManager
      * @param window @<edi>
      * @param viewport @<esi>
      */
-    void viewport_shift_pixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY)
+    void viewportShiftPixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY)
     {
         for (auto w = window; w < _windowsEnd; w++)
         {
@@ -1676,11 +1676,11 @@ namespace openloco::ui::WindowManager
             }
         }
 
-        viewport_redraw_after_shift(window, viewport, dX, dY);
+        viewportRedrawAfterShift(window, viewport, dX, dY);
     }
 
     // 0x00451DCB
-    static void copy_rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
+    static void copyRect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t dx, int16_t dy)
     {
         if (dx == 0 && dy == 0)
             return;
@@ -1731,7 +1731,7 @@ namespace openloco::ui::WindowManager
      * @param y @<bp>
      * @param viewport @<esi>
      */
-    void viewport_redraw_after_shift(window* window, viewport* viewport, int16_t x, int16_t y)
+    void viewportRedrawAfterShift(window* window, viewport* viewport, int16_t x, int16_t y)
     {
         if (window != nullptr)
         {
@@ -1740,7 +1740,7 @@ namespace openloco::ui::WindowManager
             {
                 size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
                 auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
-                viewport_redraw_after_shift(nextWindow, viewport, x, y);
+                viewportRedrawAfterShift(nextWindow, viewport, x, y);
                 return;
             }
 
@@ -1751,49 +1751,49 @@ namespace openloco::ui::WindowManager
             {
                 viewport->width = window->x - viewport->x;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->x + viewport->width > window->x + window->width)
             {
                 viewport->width = window->x + window->width - viewport->x;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y < window->y)
             {
                 viewport->height = window->y - viewport->y;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y + viewport->height > window->y + window->height)
             {
                 viewport->height = window->y + window->height - viewport->y;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
                 viewport->view_width = viewport->width << viewport->zoom;
-                viewport_redraw_after_shift(window, viewport, x, y);
+                viewportRedrawAfterShift(window, viewport, x, y);
             }
 
             // restore viewport
@@ -1815,7 +1815,7 @@ namespace openloco::ui::WindowManager
             else
             {
                 // update whole block ?
-                copy_rect(left, top, viewport->width, viewport->height, x, y);
+                copyRect(left, top, viewport->width, viewport->height, x, y);
 
                 if (x > 0)
                 {
@@ -1985,7 +1985,7 @@ namespace openloco::ui::windows
     static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
 
     // 0x00431A8A
-    void show_error(string_id title, string_id message, bool sound)
+    void showError(string_id title, string_id message, bool sound)
     {
         if (!sound)
         {

@@ -495,7 +495,7 @@ namespace openloco::input
                 {
                     viewport_interaction::InteractionArg ptr{};
 
-                    auto interactionItem = viewport_interaction::get_item_left(x, y, &ptr);
+                    auto interactionItem = viewport_interaction::getItemLeft(x, y, &ptr);
                     switch (interactionItem)
                     {
                         case InteractionItem::thing:
@@ -715,14 +715,14 @@ namespace openloco::input
 
                 input::state(input_state::reset);
                 viewport_interaction::InteractionArg ptr{};
-                auto item = viewport_interaction::right_over(_dragLastX, _dragLastY, &ptr);
+                auto item = viewport_interaction::rightOver(_dragLastX, _dragLastY, &ptr);
 
                 switch (item)
                 {
                     case InteractionItem::t_0:
                     default:
                     {
-                        auto item2 = viewport_interaction::get_item_left(_dragLastX, _dragLastY, &ptr);
+                        auto item2 = viewport_interaction::getItemLeft(_dragLastX, _dragLastY, &ptr);
                         switch (item2)
                         {
                             case InteractionItem::thing:
@@ -1487,7 +1487,7 @@ namespace openloco::input
                 ui::scrollview::scroll_part scrollArea;
                 int16_t scrollX, scrollY;
                 size_t scrollIndex;
-                ui::scrollview::get_part(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
+                ui::scrollview::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
                 if (scrollArea == ui::scrollview::scroll_part::none)
                 {
@@ -1881,7 +1881,7 @@ namespace openloco::input
                         ui::scrollview::scroll_part output_scroll_area;
                         size_t scroll_id;
                         int16_t scroll_x, scroll_y;
-                        ui::scrollview::get_part(
+                        ui::scrollview::getPart(
                             window,
                             &window->widgets[widgetIdx],
                             x,
@@ -1917,7 +1917,7 @@ namespace openloco::input
                         }
                         else
                         {
-                            switch (viewport_interaction::get_item_left(x, y, nullptr))
+                            switch (viewport_interaction::getItemLeft(x, y, nullptr))
                             {
                                 case InteractionItem::thing:
                                 case InteractionItem::town:
@@ -1939,7 +1939,7 @@ namespace openloco::input
 
         if (!skipItem)
         {
-            viewport_interaction::right_over(x, y, nullptr);
+            viewport_interaction::rightOver(x, y, nullptr);
         }
 
         if (input::state() == input::input_state::resizing)
