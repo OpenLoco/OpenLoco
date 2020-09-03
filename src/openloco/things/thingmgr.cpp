@@ -11,7 +11,7 @@ namespace openloco::thingmgr
     loco_global<Thing[max_things], 0x006DB6DC> _things;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
-    thing_id_t first_id(thing_list list)
+    thing_id_t firstId(thing_list list)
     {
         return _heads[(size_t)list];
     }
@@ -24,7 +24,7 @@ namespace openloco::thingmgr
     template<>
     vehicle_head* first()
     {
-        return get<vehicle_head>(first_id(thing_list::vehicle_head));
+        return get<vehicle_head>(firstId(thing_list::vehicle_head));
     }
 
     template<>
@@ -39,7 +39,7 @@ namespace openloco::thingmgr
     }
 
     // 0x004700A5
-    thing_base* create_thing()
+    thing_base* createThing()
     {
         registers regs;
         call(0x004700A5, regs);
@@ -55,7 +55,7 @@ namespace openloco::thingmgr
     }
 
     // 0x004A8826
-    void update_vehicles()
+    void updateVehicles()
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
@@ -67,7 +67,7 @@ namespace openloco::thingmgr
     }
 
     // 0x004402F4
-    void update_misc_things()
+    void updateMiscThings()
     {
         call(0x004402F4);
     }

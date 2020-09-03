@@ -25,7 +25,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
     if (loc.z <= surface->base_z() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<exhaust*>(thingmgr::create_thing());
+    auto _exhaust = static_cast<exhaust*>(thingmgr::createThing());
 
     if (_exhaust != nullptr)
     {
@@ -49,7 +49,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
 // 0x00440BEB
 smoke* openloco::smoke::create(loc16 loc)
 {
-    auto t = static_cast<smoke*>(thingmgr::create_thing());
+    auto t = static_cast<smoke*>(thingmgr::createThing());
     if (t != nullptr)
     {
         t->var_14 = 44;
