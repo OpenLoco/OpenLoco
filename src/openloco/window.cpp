@@ -454,7 +454,7 @@ namespace openloco::ui
 
             if (invalidate)
             {
-                ui::scrollview::update_thumbs(this, w);
+                ui::scrollview::updateThumbs(this, w);
                 this->invalidate();
             }
 
@@ -494,7 +494,7 @@ namespace openloco::ui
                 this->scroll_areas[s].flags |= ui::scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
             }
 
-            ui::scrollview::update_thumbs(this, w);
+            ui::scrollview::updateThumbs(this, w);
             s++;
         }
     }

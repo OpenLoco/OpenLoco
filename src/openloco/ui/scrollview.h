@@ -37,7 +37,7 @@ namespace openloco::ui::scrollview
     constexpr uint8_t barWidth = 11;
     constexpr uint8_t buttonClickStep = 3;
 
-    void get_part(
+    void getPart(
         ui::window* window,
         ui::widget_t* widget,
         int16_t x,
@@ -46,7 +46,7 @@ namespace openloco::ui::scrollview
         int16_t* output_y,
         scroll_part* output_scroll_area,
         size_t* scrollIndex);
-    void update_thumbs(window* window, widget_index widgetIndex);
+    void updateThumbs(window* window, widget_index widgetIndex);
     void scrollLeftBegin(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
     void scrollLeftContinue(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
     void scrollModalRight(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);

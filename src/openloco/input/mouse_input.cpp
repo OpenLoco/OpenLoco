@@ -1487,7 +1487,7 @@ namespace openloco::input
                 ui::scrollview::scroll_part scrollArea;
                 int16_t scrollX, scrollY;
                 size_t scrollIndex;
-                ui::scrollview::get_part(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
+                ui::scrollview::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
                 if (scrollArea == ui::scrollview::scroll_part::none)
                 {
@@ -1881,7 +1881,7 @@ namespace openloco::input
                         ui::scrollview::scroll_part output_scroll_area;
                         size_t scroll_id;
                         int16_t scroll_x, scroll_y;
-                        ui::scrollview::get_part(
+                        ui::scrollview::getPart(
                             window,
                             &window->widgets[widgetIdx],
                             x,

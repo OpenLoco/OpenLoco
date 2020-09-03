@@ -1423,7 +1423,7 @@ namespace openloco::ui::WindowManager
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
-        ui::scrollview::update_thumbs(window, widgetIndex);
+        ui::scrollview::updateThumbs(window, widgetIndex);
         invalidateWidget(window->type, window->number, widgetIndex);
     }
 
