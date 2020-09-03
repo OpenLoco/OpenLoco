@@ -44,7 +44,7 @@ namespace openloco::map::tilemgr
     * return edx >> 16: waterHeight
     * loco: 0x0067297 rct2: 0x00662783 (numbers different)
     */
-    std::tuple<int16_t, int16_t> get_height(coord_t x, coord_t y)
+    std::tuple<int16_t, int16_t> getHeight(coord_t x, coord_t y)
     {
         // Off the map
         if ((unsigned)x >= 12287 || (unsigned)y >= 12287)
@@ -63,9 +63,9 @@ namespace openloco::map::tilemgr
         }
 
         int16_t waterHeight = surfaceEl->water() * 16;
-        int16_t height = surfaceEl->base_z() * 4;
+        int16_t height = surfaceEl->baseZ() * 4;
 
-        auto slope = surfaceEl->slope_corners();
+        auto slope = surfaceEl->slopeCorners();
         int8_t quad = 0, quad_extra = 0; // which quadrant the element is in?
                                          // quad_extra is for extra height tiles
 
@@ -148,7 +148,7 @@ namespace openloco::map::tilemgr
                     break;
             }
 
-            if (surfaceEl->is_slope_dbl_height())
+            if (surfaceEl->isSlopeDoubleHeight())
             {
                 height += quad_extra / 2;
                 height++;
@@ -189,7 +189,7 @@ namespace openloco::map::tilemgr
     }
 
     // 0x004610F2
-    void map_invalidate_selection_rect()
+    void mapInvalidateSelectionRect()
     {
         if ((input::getMapSelectionFlags() & MapSelectFlag::enable) != 0)
         {
@@ -197,7 +197,7 @@ namespace openloco::map::tilemgr
             {
                 for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    map_invalidate_tile_full({ x, y });
+                    mapInvalidateTileFull({ x, y });
                 }
             }
         }
@@ -206,13 +206,13 @@ namespace openloco::map::tilemgr
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
-    void map_invalidate_tile_full(map::map_pos pos)
+    void mapInvalidateTileFull(map::map_pos pos)
     {
         ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
 
     // 0x0046112C
-    void map_invalidate_map_selection_tiles()
+    void mapInvalidateMapSelectionTiles()
     {
         if ((input::getMapSelectionFlags() & MapSelectFlag::enableConstruct) == 0)
             return;
@@ -222,7 +222,7 @@ namespace openloco::map::tilemgr
             auto& position = _mapSelectedTiles[index];
             if (position.x == -1)
                 break;
-            map_invalidate_tile_full(position);
+            mapInvalidateTileFull(position);
         }
     }
 }

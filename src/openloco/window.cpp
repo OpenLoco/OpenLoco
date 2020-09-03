@@ -347,7 +347,7 @@ namespace openloco::ui
 
                 if (atMapEdge)
                 {
-                    auto coord_2d = coordinate_3d_to_2d(mapCoord.x, mapCoord.y, 128, viewport->getRotation());
+                    auto coord_2d = coordinate3dTo2d(mapCoord.x, mapCoord.y, 128, viewport->getRotation());
 
                     config->saved_view_x = coord_2d.x - viewport->view_width / 2;
                     config->saved_view_y = coord_2d.y - viewport->view_height / 2;
@@ -603,7 +603,7 @@ namespace openloco::ui
             viewport->flags &= ~viewport_flags::underground_view;
         }
 
-        auto pos = coordinate_3d_to_2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
+        auto pos = coordinate3dTo2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
 
         pos.x -= viewport->view_width / 2;
         pos.y -= viewport->view_height / 2;

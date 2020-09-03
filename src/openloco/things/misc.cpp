@@ -22,7 +22,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
     if (surface == nullptr)
         return nullptr;
 
-    if (loc.z <= surface->base_z() * 4)
+    if (loc.z <= surface->baseZ() * 4)
         return nullptr;
 
     auto _exhaust = static_cast<exhaust*>(thingmgr::createThing());

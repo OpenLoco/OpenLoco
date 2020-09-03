@@ -317,10 +317,10 @@ namespace openloco::ui::viewportmgr
 
     void invalidate(const map::map_pos pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
     {
-        auto axbx = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
+        auto axbx = map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
         axbx.x -= radius;
         axbx.y -= radius;
-        auto dxbp = map::coordinate_3d_to_2d(pos.x + 16, pos.y + 16, zMin, currentRotation);
+        auto dxbp = map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMin, currentRotation);
         dxbp.x += radius;
         dxbp.y += radius;
 
@@ -339,7 +339,7 @@ namespace openloco::ui::viewportmgr
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                map::tilemgr::map_invalidate_map_selection_tiles();
+                map::tilemgr::mapInvalidateMapSelectionTiles();
                 regs = backup;
                 return 0;
             });
@@ -395,7 +395,7 @@ namespace openloco::ui::viewportmgr
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = map::map_pos(regs.ax, regs.cx);
-                map::tilemgr::map_invalidate_tile_full(pos);
+                map::tilemgr::mapInvalidateTileFull(pos);
                 return 0;
             });
         register_hook(

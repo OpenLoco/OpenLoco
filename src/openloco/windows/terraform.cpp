@@ -868,7 +868,7 @@ namespace openloco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::map_invalidate_selection_rect();
+                tilemgr::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
@@ -1216,7 +1216,7 @@ namespace openloco::ui::windows::terraform
                     count++;
                 }
 
-                tilemgr::map_invalidate_selection_rect();
+                tilemgr::mapInvalidateSelectionRect();
 
                 return count;
             }
@@ -1279,7 +1279,7 @@ namespace openloco::ui::windows::terraform
                     count++;
                 }
 
-                tilemgr::map_invalidate_selection_rect();
+                tilemgr::mapInvalidateSelectionRect();
 
                 return count;
             }
@@ -1293,7 +1293,7 @@ namespace openloco::ui::windows::terraform
             if (widgetIndex != common::widx::panel)
                 return;
 
-            tilemgr::map_invalidate_selection_rect();
+            tilemgr::mapInvalidateSelectionRect();
 
             if (_currentTool != 3)
             {
@@ -1418,7 +1418,7 @@ namespace openloco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::map_invalidate_selection_rect();
+                tilemgr::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
@@ -1666,7 +1666,7 @@ namespace openloco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::map_invalidate_selection_rect();
+                tilemgr::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);

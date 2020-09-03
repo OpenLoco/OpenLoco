@@ -277,7 +277,7 @@ namespace openloco
 
                 if (stationElement->stationType() == stationType::roadStation)
                 {
-                    auto obj = objectmgr::get<road_station_object>(stationElement->object_id());
+                    auto obj = objectmgr::get<road_station_object>(stationElement->objectId());
 
                     if (obj->flags & road_station_flags::passenger)
                     {
@@ -311,7 +311,7 @@ namespace openloco
 
                     for (auto& el : tile)
                     {
-                        if (el.is_flag_4())
+                        if (el.isFlag4())
                         {
                             continue;
                         }
@@ -319,7 +319,7 @@ namespace openloco
                         {
                             case element_type::industry:
                             {
-                                auto industryEl = el.as_industry();
+                                auto industryEl = el.asIndustry();
                                 auto industry = industryEl->industry();
 
                                 if (industry == nullptr || industry->under_construction != 0xFF)
@@ -354,9 +354,9 @@ namespace openloco
                             }
                             case element_type::building:
                             {
-                                auto buildingEl = el.as_building();
+                                auto buildingEl = el.asBuilding();
 
-                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->has_station_element())
+                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->hasStationElement())
                                 {
                                     break;
                                 }
@@ -457,7 +457,7 @@ namespace openloco
             {
                 case stationType::airport:
                 {
-                    auto airportObject = objectmgr::get<airport_object>(stationElement->object_id());
+                    auto airportObject = objectmgr::get<airport_object>(stationElement->objectId());
 
                     map_pos minPos, maxPos;
                     minPos.x = airportObject->min_x;
@@ -465,8 +465,8 @@ namespace openloco
                     maxPos.x = airportObject->max_x;
                     maxPos.y = airportObject->max_y;
 
-                    minPos = rotate2DCoordinate(minPos, stationElement->rotation());
-                    maxPos = rotate2DCoordinate(maxPos, stationElement->rotation());
+                    minPos = rotate2dCoordinate(minPos, stationElement->rotation());
+                    maxPos = rotate2dCoordinate(maxPos, stationElement->rotation());
 
                     minPos.x += pos.x;
                     minPos.y += pos.y;
@@ -725,19 +725,19 @@ namespace openloco
 
         for (auto& element : tile)
         {
-            auto stationElement = element.as_station();
+            auto stationElement = element.asStation();
 
             if (stationElement == nullptr)
             {
                 continue;
             }
 
-            if (stationElement->base_z() != baseZ)
+            if (stationElement->baseZ() != baseZ)
             {
                 continue;
             }
 
-            if (!stationElement->is_flag_5())
+            if (!stationElement->isFlag5())
             {
                 return stationElement;
             }

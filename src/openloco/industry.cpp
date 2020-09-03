@@ -54,7 +54,7 @@ namespace openloco
     static bool find_tree(surface_element* surface)
     {
         auto element = surface;
-        while (!element->is_last())
+        while (!element->isLast())
         {
             element++;
             if (element->type() == element_type::tree)
@@ -139,9 +139,9 @@ namespace openloco
         const auto& surface = tilemgr::get(pos).surface();
         if (surface != nullptr)
         {
-            if (surface->has_high_type_flag())
+            if (surface->hasHighTypeFlag())
             {
-                if (surface->industry_id() == id())
+                if (surface->industryId() == id())
                 {
                     uint8_t bl = surface->var_6_SLR5();
                     auto obj = object();

@@ -21,7 +21,7 @@ namespace openloco::map
     constexpr coord_t map_width = map_columns * tile_size;
     constexpr int32_t map_size = map_columns * map_rows;
 
-    constexpr coord_t tile_floor(coord_t coord)
+    constexpr coord_t tileFloor(coord_t coord)
     {
         return coord & (tile_size - 1);
     }
@@ -87,8 +87,8 @@ namespace openloco::map
     };
 
     tileHeight tileElementHeight(int16_t x, int16_t y);
-    ui::viewport_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation);
-    map_pos rotate2DCoordinate(map_pos pos, uint8_t rotation);
+    ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
+    map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
 
     enum class element_type
     {
@@ -135,14 +135,14 @@ namespace openloco::map
         const uint8_t* data() const;
         element_type type() const;
         uint8_t flags() const { return _flags; }
-        uint8_t base_z() const { return _base_z; }
-        uint8_t clear_z() const { return _clear_z; }
+        uint8_t baseZ() const { return _base_z; }
+        uint8_t clearZ() const { return _clear_z; }
 
-        bool has_high_type_flag() const { return _type & 0x80; }
-        bool is_flag_4() const { return _flags & element_flags::flag_4; }
-        bool is_flag_5() const { return _flags & element_flags::flag_5; }
-        void set_flag_6() { _flags |= element_flags::flag_6; }
-        bool is_last() const;
+        bool hasHighTypeFlag() const { return _type & 0x80; }
+        bool isFlag4() const { return _flags & element_flags::flag_4; }
+        bool isFlag5() const { return _flags & element_flags::flag_5; }
+        void setFlag6() { _flags |= element_flags::flag_6; }
+        bool isLast() const;
     };
 
     struct tile_element : public tile_element_base
@@ -156,18 +156,18 @@ namespace openloco::map
             return type() == TClass ? (TType*)this : nullptr;
         }
 
-        uint8_t base_z() const { return _base_z; }
+        uint8_t baseZ() const { return _base_z; }
 
     public:
-        surface_element* as_surface() const { return as<surface_element, element_type::surface>(); }
-        track_element* as_track() const { return as<track_element, element_type::track>(); }
-        station_element* as_station() const { return as<station_element, element_type::station>(); }
-        signal_element* as_signal() const { return as<signal_element, element_type::signal>(); }
-        building_element* as_building() const { return as<building_element, element_type::building>(); }
-        tree_element* as_tree() const { return as<tree_element, element_type::tree>(); }
-        wall_element* as_wall() const { return as<wall_element, element_type::wall>(); }
-        road_element* as_road() const { return as<road_element, element_type::road>(); }
-        industry_element* as_industry() const { return as<industry_element, element_type::industry>(); }
+        surface_element* asSurface() const { return as<surface_element, element_type::surface>(); }
+        track_element* asTrack() const { return as<track_element, element_type::track>(); }
+        station_element* asStation() const { return as<station_element, element_type::station>(); }
+        signal_element* asSignal() const { return as<signal_element, element_type::signal>(); }
+        building_element* asBuilding() const { return as<building_element, element_type::building>(); }
+        tree_element* asTree() const { return as<tree_element, element_type::tree>(); }
+        wall_element* asWall() const { return as<wall_element, element_type::wall>(); }
+        road_element* asRoad() const { return as<road_element, element_type::road>(); }
+        industry_element* asIndustry() const { return as<industry_element, element_type::industry>(); }
     };
     static_assert(sizeof(tile_element) == 8);
 
@@ -205,14 +205,14 @@ namespace openloco::map
         uint8_t _industry;
 
     public:
-        bool is_slope_dbl_height() const { return _slope & surface_slope::double_height; }
-        uint8_t slope_corners() const { return _slope & 0x0F; }
+        bool isSlopeDoubleHeight() const { return _slope & surface_slope::double_height; }
+        uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t var_6_SLR5() const { return _terrain >> 5; }
-        uint8_t industry_id() const { return _industry; }
+        uint8_t industryId() const { return _industry; }
         void createWave(int16_t x, int16_t y, int animationIndex);
     };
 
@@ -224,10 +224,10 @@ namespace openloco::map
         uint16_t _station_id;
 
     public:
-        uint8_t object_id() const { return _5 & 0x1F; }
+        uint8_t objectId() const { return _5 & 0x1F; }
         uint8_t stationType() const { return _5 >> 5; }
         uint8_t rotation() const { return _type & 0x3; }
-        station_id_t station_id() const { return _station_id & 0x3FF; }
+        station_id_t stationId() const { return _station_id & 0x3FF; }
     };
 
     struct building_element : public tile_element_base
@@ -240,8 +240,8 @@ namespace openloco::map
 
     public:
         bool has_40() const { return (_type & 0x40) != 0; }
-        bool has_station_element() const { return (_type & 0x80) != 0; }
-        uint8_t object_id() const { return _4; }
+        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        uint8_t objectId() const { return _4; }
         building_object* object() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
     };
@@ -273,13 +273,13 @@ namespace openloco::map
         uint8_t _7;
 
     public:
-        bool has_station_element() const { return (_type & 0x80) != 0; }
-        uint8_t unk_z() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
-        bool has_signal() const { return (_type & 0x40) != 0; }
-        uint8_t unk_direction() const { return _type & 0x03; }
+        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        uint8_t unkZ() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
+        bool hasSignal() const { return (_type & 0x40) != 0; }
+        uint8_t unkDirection() const { return _type & 0x03; }
         uint8_t unk_4() const { return _4 & 0x3F; }
         bool has_4_80() const { return (_4 & 0x80) != 0; }
-        uint8_t track_object_id() const { return _5 >> 4; } // _5u
+        uint8_t trackObjectId() const { return _5 >> 4; } // _5u
         uint8_t unk_5l() const { return _5 & 0xF; }
         uint8_t unk_6() const { return _6; }
         uint8_t owner() const { return _7 & 0xF; } // _7l
@@ -305,8 +305,8 @@ namespace openloco::map
 
     public:
         uint8_t unk_4_F() const { return _4 & 0xF; }
-        uint8_t road_object_id() const { return _5 >> 4; } // _5u
-        bool has_station_element() const { return (_type & 0x80) != 0; }
+        uint8_t roadObjectId() const { return _5 >> 4; } // _5u
+        bool hasStationElement() const { return (_type & 0x80) != 0; }
         uint8_t owner() const { return _7 & 0xF; } // _7l
     };
 
@@ -335,7 +335,7 @@ namespace openloco::map
         const tile_coord_t y;
 
         tile(tile_coord_t x, tile_coord_t y, tile_element* data);
-        bool is_null() const;
+        bool isNull() const;
         tile_element* begin();
         tile_element* begin() const;
         tile_element* end();
@@ -343,7 +343,7 @@ namespace openloco::map
         size_t size();
         tile_element* operator[](size_t i);
 
-        size_t index_of(const tile_element_base* element) const;
+        size_t indexOf(const tile_element_base* element) const;
         surface_element* surface();
     };
 }

@@ -19,14 +19,14 @@ element_type tile_element_base::type() const
     return (element_type)((_type & 0x3C) >> 2);
 }
 
-bool tile_element_base::is_last() const
+bool tile_element_base::isLast() const
 {
     return (_flags & element_flags::last) != 0;
 }
 
 building_object* building_element::object() const
 {
-    return objectmgr::get<building_object>(object_id());
+    return objectmgr::get<building_object>(objectId());
 }
 
 tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
@@ -36,7 +36,7 @@ tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
 {
 }
 
-bool tile::is_null() const
+bool tile::isNull() const
 {
     return _data == nullptr;
 }
@@ -57,7 +57,7 @@ tile_element* tile::end()
     do
     {
         el++;
-    } while (!(el - 1)->is_last());
+    } while (!(el - 1)->isLast());
     return el;
 }
 
@@ -79,7 +79,7 @@ tile_element* tile::operator[](size_t i)
     return &_data[i];
 }
 
-size_t tile::index_of(const tile_element_base* element) const
+size_t tile::indexOf(const tile_element_base* element) const
 {
     size_t i = 0;
     for (const auto& tile : *this)
@@ -98,7 +98,7 @@ surface_element* tile::surface()
     surface_element* result = nullptr;
     for (auto& tile : *this)
     {
-        result = tile.as_surface();
+        result = tile.asSurface();
         if (result != nullptr)
         {
             break;
@@ -147,7 +147,7 @@ namespace openloco::map
      * @param rotation
      * @return
      */
-    ui::viewport_pos coordinate_3d_to_2d(int16_t x, int16_t y, int16_t z, int rotation)
+    ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation)
     {
         ui::viewport_pos coordinate_2d;
 
@@ -175,7 +175,7 @@ namespace openloco::map
         return coordinate_2d;
     }
 
-    map_pos rotate2DCoordinate(map_pos pos, uint8_t rotation)
+    map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation)
     {
         map_pos coordinate2D;
 
