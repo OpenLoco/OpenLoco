@@ -103,7 +103,7 @@ namespace openloco::thingmgr
     public:
         ThingList()
         {
-            firstId = firstId(list);
+            firstId = thingmgr::firstId(list);
         }
 
         T begin()
