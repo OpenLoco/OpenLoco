@@ -499,12 +499,12 @@ namespace openloco::audio
         auto volume = 0;
         auto zVol = 0;
         auto tile = map::tilemgr::get(mpos);
-        if (!tile.is_null())
+        if (!tile.isNull())
         {
             auto surface = tile.surface();
             if (surface != nullptr)
             {
-                if ((surface->base_z() * 4) - 5 > mpos.z)
+                if ((surface->baseZ() * 4) - 5 > mpos.z)
                 {
                     zVol = 8;
                 }

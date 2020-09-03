@@ -1096,7 +1096,7 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         for (auto& el : tile)
         {
-            if (itemFound && !(el.is_flag_4() | el.is_flag_5()))
+            if (itemFound && !(el.isFlag4() | el.isFlag5()))
             {
                 break;
             }
@@ -1104,18 +1104,18 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
             {
                 itemFound = false;
             }
-            auto track = el.as_track();
+            auto track = el.asTrack();
             if (track == nullptr)
                 continue;
-            if (track->base_z() != frontBogie->tile_base_z)
+            if (track->baseZ() != frontBogie->tile_base_z)
                 continue;
-            if (track->unk_z() != loc.z)
-                continue;
-
-            if (!track->has_station_element())
+            if (track->unkZ() != loc.z)
                 continue;
 
-            if (!track->is_last())
+            if (!track->hasStationElement())
+                continue;
+
+            if (!track->isLast())
                 itemFound = true;
         }
     }

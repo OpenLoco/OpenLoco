@@ -32,7 +32,7 @@ static map_pos _offsets[4] = {
 // 0x0046959C
 void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
 {
-    auto coord2D = coordinate_3d_to_2d(x + 16, y + 16, this->water() * 16, gCurrentRotation);
+    auto coord2D = coordinate3dTo2d(x + 16, y + 16, this->water() * 16, gCurrentRotation);
     auto w = WindowManager::findWindowShowing(coord2D);
     if (w == nullptr)
         return;
@@ -49,7 +49,7 @@ void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
         if (y + offset.y > 0x2FFF)
             return;
         auto tile = map::tilemgr::get(x + offset.x, y + offset.y);
-        if (tile.is_null())
+        if (tile.isNull())
             return;
         auto surface = tile.surface();
         if (surface->water() == 0)
@@ -59,7 +59,7 @@ void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
     _9586DC[animationIndex].x = x;
     _9586DC[animationIndex].y = y;
     _9586DC[animationIndex].frame = 0;
-    this->set_flag_6();
+    this->setFlag6();
 
     viewportmgr::invalidate({ x, y }, this->water() * 16, this->water() * 16, ZoomLevel::full);
 }

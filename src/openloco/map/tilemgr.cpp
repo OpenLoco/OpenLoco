@@ -63,9 +63,9 @@ namespace openloco::map::tilemgr
         }
 
         int16_t waterHeight = surfaceEl->water() * 16;
-        int16_t height = surfaceEl->base_z() * 4;
+        int16_t height = surfaceEl->baseZ() * 4;
 
-        auto slope = surfaceEl->slope_corners();
+        auto slope = surfaceEl->slopeCorners();
         int8_t quad = 0, quad_extra = 0; // which quadrant the element is in?
                                          // quad_extra is for extra height tiles
 
@@ -148,7 +148,7 @@ namespace openloco::map::tilemgr
                     break;
             }
 
-            if (surfaceEl->is_slope_dbl_height())
+            if (surfaceEl->isSlopeDoubleHeight())
             {
                 height += quad_extra / 2;
                 height++;

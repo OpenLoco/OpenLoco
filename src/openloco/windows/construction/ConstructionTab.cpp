@@ -425,7 +425,7 @@ namespace openloco::ui::windows::construction::construction
 
             map_pos pos = { roadPiece[i].x, roadPiece[i].y };
 
-            pos = rotate2DCoordinate(pos, rotation);
+            pos = rotate2dCoordinate(pos, rotation);
 
             pos.x += x;
             pos.y += y;
@@ -621,7 +621,7 @@ namespace openloco::ui::windows::construction::construction
             }
             map_pos pos = { trackPiece[i].x, trackPiece[i].y };
 
-            pos = rotate2DCoordinate(pos, rotation);
+            pos = rotate2dCoordinate(pos, rotation);
 
             pos.x += x;
             pos.y += y;
@@ -1570,14 +1570,14 @@ namespace openloco::ui::windows::construction::construction
         if (surfaceTile == nullptr)
             return std::nullopt;
 
-        int16_t tileHeight = surfaceTile->base_z() * 4;
+        int16_t tileHeight = surfaceTile->baseZ() * 4;
 
-        if (surfaceTile->slope_corners())
+        if (surfaceTile->slopeCorners())
         {
             tileHeight += 16;
         }
 
-        if (surfaceTile->is_slope_dbl_height())
+        if (surfaceTile->isSlopeDoubleHeight())
         {
             tileHeight += 16;
         }
@@ -2155,14 +2155,14 @@ namespace openloco::ui::windows::construction::construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = rotate2DCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
+                auto rotatedPos = rotate2dCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
                 pos3D.y += 0x2010;
                 pos3D.z += 0x1CC;
 
-                auto pos2D = coordinate_3d_to_2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
+                auto pos2D = coordinate3dTo2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
                 xy32 pos = { pos2D.x, pos2D.y };
                 drawRoadCost(self, clipped, dpi, pos, width, height);
             }
@@ -2210,14 +2210,14 @@ namespace openloco::ui::windows::construction::construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = rotate2DCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
+                auto rotatedPos = rotate2dCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
                 pos3D.y += 0x2010;
                 pos3D.z += 0x1CC;
 
-                auto pos2D = coordinate_3d_to_2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
+                auto pos2D = coordinate3dTo2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
                 xy32 pos = { pos2D.x, pos2D.y };
                 drawTrackCost(self, clipped, dpi, pos, width, height);
             }
