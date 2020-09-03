@@ -203,9 +203,9 @@ int32_t openloco::vehicle_body::update()
 
     if (vehicle_var_1136237 | vehicle_var_1136238)
     {
-        invalidate_sprite();
+        invalidateSprite();
         sub_4AC255(vehicleUpdate_backBogie, vehicleUpdate_frontBogie);
-        invalidate_sprite();
+        invalidateSprite();
     }
     uint32_t backup1136130 = vehicle_var_1136130;
     if (var_5E != 0)
@@ -368,7 +368,7 @@ void openloco::vehicle_body::sub_4AAB0B()
     if (var_46 != al)
     {
         var_46 = al;
-        invalidate_sprite();
+        invalidateSprite();
     }
 }
 
@@ -380,7 +380,7 @@ void openloco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
         static_cast<int16_t>((front_bogie->y + back_bogie->y) / 2),
         static_cast<int16_t>((front_bogie->z + back_bogie->z) / 2)
     };
-    move_to(loc);
+    moveTo(loc);
 
     if (object_sprite_type == 0xFF)
         return;

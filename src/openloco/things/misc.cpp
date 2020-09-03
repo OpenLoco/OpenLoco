@@ -30,7 +30,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
     if (_exhaust != nullptr)
     {
         _exhaust->base_type = thing_base_type::misc;
-        _exhaust->move_to(loc);
+        _exhaust->moveTo(loc);
         _exhaust->object_id = type;
         auto obj = _exhaust->object();
         _exhaust->var_14 = obj->var_05;
@@ -56,7 +56,7 @@ smoke* openloco::smoke::create(loc16 loc)
         t->var_09 = 32;
         t->var_15 = 34;
         t->base_type = thing_base_type::misc;
-        t->move_to(loc);
+        t->moveTo(loc);
         t->type = misc_thing_type::smoke;
         t->var_28 = 0;
     }

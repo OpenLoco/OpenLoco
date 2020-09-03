@@ -26,8 +26,8 @@ namespace openloco
     {
         thing_base_type base_type;
 
-        void move_to(loc16 loc);
-        void invalidate_sprite();
+        void moveTo(loc16 loc);
+        void invalidateSprite();
     };
 
     // Max size of a thing. Use when needing to know thing size
@@ -63,8 +63,8 @@ namespace openloco
         }
 
     public:
-        vehicle_base* as_vehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
-        misc_thing* as_misc() const { return as<misc_thing, thing_base_type::misc>(); }
+        vehicle_base* asVehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
+        misc_thing* asMisc() const { return as<misc_thing, thing_base_type::misc>(); }
     };
     static_assert(sizeof(Thing) == 0x80);
 #pragma pack(pop)
