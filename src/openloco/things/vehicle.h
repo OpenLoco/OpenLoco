@@ -88,25 +88,25 @@ namespace openloco
         }
 
     public:
-        vehicle_head* as_vehicle_head() const { return as<vehicle_head>(); }
-        vehicle_1* as_vehicle_1() const { return as<vehicle_1>(); }
-        vehicle_2* as_vehicle_2() const { return as<vehicle_2>(); }
-        vehicle_bogie* as_vehicle_bogie() const { return as<vehicle_bogie>(); }
-        vehicle_body* as_vehicle_body() const
+        vehicle_head* asVehicleHead() const { return as<vehicle_head>(); }
+        vehicle_1* asVehicle1() const { return as<vehicle_1>(); }
+        vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
+        vehicle_bogie* asVehicleBogie() const { return as<vehicle_bogie>(); }
+        vehicle_body* asVehicleBody() const
         {
             auto vehicle = as<vehicle_body, VehicleThingType::body_start>();
             if (vehicle != nullptr)
                 return vehicle;
             return as<vehicle_body, VehicleThingType::body_continued>();
         }
-        vehicle_26* as_vehicle_2or6() const
+        vehicle_26* asVehicle2Or6() const
         {
             auto vehicle = as<vehicle_26, VehicleThingType::vehicle_2>();
             if (vehicle != nullptr)
                 return vehicle;
             return as<vehicle_26, VehicleThingType::tail>();
         }
-        vehicle_tail* as_vehicle_tail() const { return as<vehicle_tail>(); }
+        vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
     };
 
     struct vehicle : vehicle_base
@@ -155,7 +155,7 @@ namespace openloco
         uint8_t pad_6B[0x73 - 0x6B];
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
-        vehicle* next_vehicle();
+        vehicle* nextVehicle();
         vehicle* nextVehicleComponent();
         vehicle_object* object() const;
 
@@ -352,25 +352,25 @@ namespace openloco
 
         vehicle_object* object() const;
         int32_t update();
-        void secondary_animation_update();
+        void secondaryAnimationUpdate();
 
     private:
         void sub_4AAB0B();
-        void animation_update();
+        void animationUpdate();
         void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
-        void steam_puffs_animation_update(uint8_t num, int32_t var_05);
-        void diesel_exhaust1_animation_update(uint8_t num, int32_t var_05);
-        void diesel_exhaust2_animation_update(uint8_t num, int32_t var_05);
-        void electric_spark1_animation_update(uint8_t num, int32_t var_05);
-        void electric_spark2_animation_update(uint8_t num, int32_t var_05);
-        void ship_wake_animation_update(uint8_t num, int32_t var_05);
-        uint8_t update_sprite_pitch_steep_slopes(uint16_t xy_offset, int16_t z_offset);
-        uint8_t update_sprite_pitch(uint16_t xy_offset, int16_t z_offset);
-        uint8_t update_sprite_yaw_0(int16_t x_offset, int16_t y_offset);
-        uint8_t update_sprite_yaw_1(int16_t x_offset, int16_t y_offset);
-        uint8_t update_sprite_yaw_2(int16_t x_offset, int16_t y_offset);
-        uint8_t update_sprite_yaw_3(int16_t x_offset, int16_t y_offset);
-        uint8_t update_sprite_yaw_4(int16_t x_offset, int16_t y_offset);
+        void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
+        void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
+        void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
+        void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
+        void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
+        void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
+        uint8_t updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
+        uint8_t updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
+        uint8_t updateSpriteYaw0(int16_t x_offset, int16_t y_offset);
+        uint8_t updateSpriteYaw1(int16_t x_offset, int16_t y_offset);
+        uint8_t updateSpriteYaw2(int16_t x_offset, int16_t y_offset);
+        uint8_t updateSpriteYaw3(int16_t x_offset, int16_t y_offset);
+        uint8_t updateSpriteYaw4(int16_t x_offset, int16_t y_offset);
     };
     static_assert(sizeof(vehicle_body) == 0x60); // Can't use offset_of change this to last field if more found
 
@@ -461,11 +461,11 @@ namespace openloco
             vehicle_body* body = nullptr;
             CarComponent(openloco::vehicle*& component)
             {
-                front = component->as_vehicle_bogie();
+                front = component->asVehicleBogie();
                 component = component->nextVehicleComponent();
-                back = component->as_vehicle_bogie();
+                back = component->asVehicleBogie();
                 component = component->nextVehicleComponent();
-                body = component->as_vehicle_body();
+                body = component->asVehicleBody();
                 component = component->nextVehicleComponent();
             }
             CarComponent() = default;

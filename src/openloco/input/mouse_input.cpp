@@ -501,7 +501,7 @@ namespace openloco::input
                         case InteractionItem::thing:
                         {
                             auto _thing = reinterpret_cast<Thing*>(ptr.object);
-                            auto veh = _thing->as_vehicle();
+                            auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
                                 ui::vehicle::main::open(reinterpret_cast<openloco::vehicle*>(veh));
@@ -728,7 +728,7 @@ namespace openloco::input
                             case InteractionItem::thing:
                             {
                                 auto _thing = reinterpret_cast<Thing*>(ptr.object);
-                                auto veh = _thing->as_vehicle();
+                                auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
                                     auto head = thingmgr::get<vehicle>(reinterpret_cast<openloco::vehicle*>(veh)->head);

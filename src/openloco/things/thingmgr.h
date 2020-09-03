@@ -28,16 +28,16 @@ namespace openloco::thingmgr
         return static_cast<T*>(get<thing_base>(id));
     }
 
-    thing_id_t first_id(thing_list list);
+    thing_id_t firstId(thing_list list);
 
     template<typename T>
     T* first();
 
-    thing_base* create_thing();
+    thing_base* createThing();
     void freeThing(thing_base* const thing);
 
-    void update_vehicles();
-    void update_misc_things();
+    void updateVehicles();
+    void updateMiscThings();
 
     uint16_t getListCount(const thing_list list);
     void moveSpriteToList(thing_base* const thing, const thing_list list);
@@ -103,7 +103,7 @@ namespace openloco::thingmgr
     public:
         ThingList()
         {
-            firstId = first_id(list);
+            firstId = thingmgr::firstId(list);
         }
 
         T begin()

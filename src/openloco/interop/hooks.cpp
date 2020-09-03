@@ -801,7 +801,7 @@ void openloco::interop::register_hooks()
         0x004AB655,
         [](registers& regs) -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
-            v->as_vehicle_body()->secondary_animation_update();
+            v->asVehicleBody()->secondaryAnimationUpdate();
 
             return 0;
         });
