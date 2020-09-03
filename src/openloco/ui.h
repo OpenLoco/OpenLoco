@@ -131,7 +131,7 @@ namespace openloco::ui
             headquarterBuilding = 21,
         };
 
-        InteractionItem get_item_left(int16_t tempX, int16_t tempY, InteractionArg* arg);
-        InteractionItem right_over(int16_t x, int16_t y, InteractionArg* arg);
+        InteractionItem getItemLeft(int16_t tempX, int16_t tempY, InteractionArg* arg);
+        InteractionItem rightOver(int16_t x, int16_t y, InteractionArg* arg);
     }
 }
