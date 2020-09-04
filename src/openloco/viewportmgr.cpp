@@ -75,7 +75,7 @@ namespace openloco::ui::viewportmgr
         auto t = thingmgr::get<Thing>(dx);
 
         int16_t dest_x, dest_y;
-        viewport->centre_2d_coordinates(t->x, t->y, t->z, &dest_x, &dest_y);
+        viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);
         w->viewport_configurations[index].saved_view_x = dest_x;
         w->viewport_configurations[index].saved_view_y = dest_y;
         viewport->view_x = dest_x;
@@ -90,7 +90,7 @@ namespace openloco::ui::viewportmgr
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
 
         int16_t dest_x, dest_y;
-        viewport->centre_2d_coordinates(tile.x, tile.y, tile.z, &dest_x, &dest_y);
+        viewport->centre2dCoordinates(tile.x, tile.y, tile.z, &dest_x, &dest_y);
         w->viewport_configurations[index].saved_view_x = dest_x;
         w->viewport_configurations[index].saved_view_y = dest_y;
         viewport->view_x = dest_x;

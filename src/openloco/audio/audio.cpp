@@ -587,7 +587,7 @@ namespace openloco::audio
             volume += getVolumeForSoundId(id);
             if (pan == play_at_location)
             {
-                auto vpos = viewport::map_from_3d(loc, current_rotation);
+                auto vpos = viewport::mapFrom3d(loc, current_rotation);
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {
@@ -595,7 +595,7 @@ namespace openloco::audio
                 }
 
                 volume += calculateVolumeFromViewport(id, { loc.x, loc.y }, *viewport);
-                pan = viewport->map_to_ui(vpos).x;
+                pan = viewport->mapToUi(vpos).x;
                 if (volume < -10000)
                 {
                     return;

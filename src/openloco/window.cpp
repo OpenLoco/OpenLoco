@@ -138,9 +138,9 @@ namespace openloco::ui
             return std::nullopt;
         }
 
-        if (vp->containsUI(mouse))
+        if (vp->containsUi(mouse))
         {
-            viewport_pos vpos = vp->ui_to_map(mouse);
+            viewport_pos vpos = vp->uiToMap(mouse);
             map::map_pos position = viewport_coord_to_map_coord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
@@ -313,7 +313,7 @@ namespace openloco::ui
 
                 viewportSetUndergroundFlag(underground, viewport);
 
-                viewport->centre_2d_coordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY);
+                viewport->centre2dCoordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY);
             }
             else
             {
@@ -548,7 +548,7 @@ namespace openloco::ui
         int32_t base_height = map::tileElementHeight(*map_x, *map_y).landHeight;
         int16_t dest_x, dest_y;
         viewport* v = this->viewports[0];
-        v->centre_2d_coordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
+        v->centre2dCoordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
         int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
@@ -617,7 +617,7 @@ namespace openloco::ui
         int16_t dest_x, dest_y;
         int32_t base_height = map::tileElementHeight(map_x, map_y).landHeight;
         viewport* v = this->viewports[0];
-        v->centre_2d_coordinates(map_x, map_y, base_height, &dest_x, &dest_y);
+        v->centre2dCoordinates(map_x, map_y, base_height, &dest_x, &dest_y);
 
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
