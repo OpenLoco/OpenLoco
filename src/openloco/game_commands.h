@@ -32,7 +32,7 @@ namespace openloco::game_commands
     constexpr uint32_t FAILURE = 0x80000000;
 
     void registerHooks();
-    uint32_t do_command(int esi, const registers& registers);
+    uint32_t doCommand(int esi, const registers& registers);
     bool sub_431E6A(const company_id_t company, map::tile_element* const tile = nullptr);
 
     // Build vehicle
@@ -43,7 +43,7 @@ namespace openloco::game_commands
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
 
-        return do_command(5, regs) != FAILURE;
+        return doCommand(5, regs) != FAILURE;
     }
 
     // Change loan
@@ -52,7 +52,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.edx = newLoan;
-        do_command(9, regs);
+        doCommand(9, regs);
     }
 
     // Change station name
@@ -65,7 +65,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        do_command(11, regs);
+        doCommand(11, regs);
     }
 
     // Change company colour scheme
@@ -88,7 +88,7 @@ namespace openloco::game_commands
             regs.al = value; // [ 0, 1 ] -- off or on
         }
 
-        do_command(19, regs);
+        doCommand(19, regs);
     }
 
     // Pause game
@@ -96,7 +96,7 @@ namespace openloco::game_commands
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        do_command(20, regs);
+        doCommand(20, regs);
     }
 
     // Load/save/quit game
@@ -106,7 +106,7 @@ namespace openloco::game_commands
         regs.bl = GameCommandFlag::apply;
         regs.dl = dl; // [ 0, 2 ]
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
-        do_command(21, regs);
+        doCommand(21, regs);
     }
 
     // Change Land Material
@@ -119,7 +119,7 @@ namespace openloco::game_commands
         regs.bp = pointB.y;
         regs.dl = landType;
         regs.bl = flags;
-        do_command(24, regs);
+        doCommand(24, regs);
     }
 
     // Raise Land
@@ -132,7 +132,7 @@ namespace openloco::game_commands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return do_command(25, regs);
+        return doCommand(25, regs);
     }
 
     // Lower Land
@@ -145,7 +145,7 @@ namespace openloco::game_commands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return do_command(26, regs);
+        return doCommand(26, regs);
     }
 
     // Lower/Raise Land Mountain
@@ -158,7 +158,7 @@ namespace openloco::game_commands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return do_command(27, regs);
+        return doCommand(27, regs);
     }
 
     // Raise Water
@@ -170,7 +170,7 @@ namespace openloco::game_commands
         regs.di = pointB.x;
         regs.bp = pointB.y;
         regs.bl = flags;
-        return do_command(28, regs);
+        return doCommand(28, regs);
     }
 
     // Lower Water
@@ -182,7 +182,7 @@ namespace openloco::game_commands
         regs.di = pointB.x;
         regs.bp = pointB.y;
         regs.bl = flags;
-        return do_command(29, regs);
+        return doCommand(29, regs);
     }
 
     // Change company name
@@ -195,7 +195,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return do_command(30, regs) != FAILURE;
+        return doCommand(30, regs) != FAILURE;
     }
 
     // Change company owner name
@@ -208,7 +208,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return do_command(31, regs) != FAILURE;
+        return doCommand(31, regs) != FAILURE;
     }
 
     // Rename town
@@ -221,7 +221,7 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        do_command(46, regs);
+        doCommand(46, regs);
     }
 
     // Remove industry
@@ -230,7 +230,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.dx = industryId;
-        return do_command(48, regs) != FAILURE;
+        return doCommand(48, regs) != FAILURE;
     }
 
     // Remove town
@@ -239,7 +239,7 @@ namespace openloco::game_commands
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.edi = townId;
-        return do_command(50, regs) != FAILURE;
+        return doCommand(50, regs) != FAILURE;
     }
 
     // Remove company headquarters (or build - needs to be checked)
@@ -253,7 +253,7 @@ namespace openloco::game_commands
         regs.ax = ax; // y
         regs.di = di; // z
         regs.dx = dx; // company index (value 1 in testing case)
-        return do_command(54, regs);
+        return doCommand(54, regs);
     }
 
     // Build company headquarters (or remove - needs to be checked)
@@ -266,7 +266,7 @@ namespace openloco::game_commands
         regs.cx = cx; // x?
         regs.ax = ax; // y?
         regs.di = di; // z?
-        do_command(55, regs);
+        doCommand(55, regs);
     }
 
     // Change company face
@@ -280,7 +280,7 @@ namespace openloco::game_commands
         regs.edx = *objPtr++;
         regs.edi = *objPtr;
         regs.bh = company;
-        return do_command(65, regs) != FAILURE;
+        return doCommand(65, regs) != FAILURE;
     }
 
     // Clear Land
@@ -292,7 +292,7 @@ namespace openloco::game_commands
         regs.edx = pointB.x << 16 | pointA.x;
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
-        do_command(66, regs);
+        doCommand(66, regs);
     }
 
     // Send chat message
@@ -305,7 +305,7 @@ namespace openloco::game_commands
         memcpy(&regs.edx, &string[4], 4);
         memcpy(&regs.ebp, &string[8], 4);
         memcpy(&regs.edi, &string[12], 4);
-        do_command(71, regs);
+        doCommand(71, regs);
     }
 
     // Update owner status
@@ -315,7 +315,7 @@ namespace openloco::game_commands
         regs.bl = GameCommandFlag::apply;
         regs.ax = -2;
         regs.cx = id;
-        do_command(73, regs);
+        doCommand(73, regs);
     }
 
     // Update owner status
@@ -325,7 +325,7 @@ namespace openloco::game_commands
         regs.bl = GameCommandFlag::apply;
         regs.ax = position.x;
         regs.cx = position.y;
-        do_command(73, regs);
+        doCommand(73, regs);
     }
 
     // Rename industry
@@ -338,6 +338,6 @@ namespace openloco::game_commands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        do_command(79, regs);
+        doCommand(79, regs);
     }
 }

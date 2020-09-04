@@ -100,7 +100,7 @@ namespace openloco::input
             registers regs;
             regs.cx = w->number;
             regs.bl = GameCommandFlag::apply;
-            game_commands::do_command(77, regs);
+            game_commands::doCommand(77, regs);
             audio::playSound(audio::sound_id::click_press, ui::width() / 2);
 
             return;
@@ -111,7 +111,7 @@ namespace openloco::input
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        game_commands::do_command(78, regs);
+        game_commands::doCommand(78, regs);
 
         audio::playSound(audio::sound_id::click_press, ui::width() / 2);
     }

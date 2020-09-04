@@ -41,7 +41,7 @@ namespace openloco::game_commands
             0x00431315,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto ebx = do_command(regs.esi, backup);
+                auto ebx = doCommand(regs.esi, backup);
 
                 regs = backup;
                 regs.ebx = ebx;
@@ -64,7 +64,7 @@ namespace openloco::game_commands
     static uint32_t loc_4313C6(int esi, const registers& regs);
 
     // 0x00431315
-    uint32_t do_command(int esi, const registers& regs)
+    uint32_t doCommand(int esi, const registers& regs)
     {
         uint16_t flags = regs.bx;
 

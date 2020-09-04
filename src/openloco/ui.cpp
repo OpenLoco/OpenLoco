@@ -1017,7 +1017,7 @@ namespace openloco::ui
                 call(0x004CF456);
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
-                game_commands::do_command(69, regs);
+                game_commands::doCommand(69, regs);
             }
 
             if (multiplayer::reset_flag(multiplayer::flags::flag_3))
@@ -1026,7 +1026,7 @@ namespace openloco::ui
                 call(0x004CF456);
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
-                game_commands::do_command(70, regs);
+                game_commands::doCommand(70, regs);
             }
         }
 
@@ -1034,7 +1034,7 @@ namespace openloco::ui
         {
             registers regs;
             regs.bl = GameCommandFlag::apply;
-            game_commands::do_command(72, regs);
+            game_commands::doCommand(72, regs);
         }
 
         if (multiplayer::reset_flag(multiplayer::flags::flag_0))
