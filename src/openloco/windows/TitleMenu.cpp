@@ -299,7 +299,7 @@ namespace openloco::ui::windows
     // 0x00439094
     static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
-        if (intro::is_active())
+        if (intro::isActive())
         {
             return;
         }
@@ -484,7 +484,7 @@ namespace openloco::ui::windows
     {
         window->var_846++;
 
-        if (intro::is_active())
+        if (intro::isActive())
         {
             window->invalidate();
             return;

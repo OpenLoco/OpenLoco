@@ -1060,7 +1060,7 @@ namespace openloco::ui
             input::mouse_button state;
             while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
             {
-                if (is_title_mode() && intro::is_active() && state == input::mouse_button::left_pressed)
+                if (is_title_mode() && intro::isActive() && state == input::mouse_button::left_pressed)
                 {
                     if (intro::state() == intro::intro_state::state_9)
                     {

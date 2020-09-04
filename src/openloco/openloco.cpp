@@ -616,7 +616,7 @@ namespace openloco
             audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
-            if (intro::is_active())
+            if (intro::isActive())
             {
                 intro::update();
             }

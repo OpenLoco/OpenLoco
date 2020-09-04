@@ -69,7 +69,7 @@ namespace openloco::ui::title_options
 
     static void onMouseUp(window* window, widget_index widgetIndex)
     {
-        if (intro::is_active())
+        if (intro::isActive())
         {
             return;
         }
