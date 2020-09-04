@@ -699,7 +699,7 @@ namespace openloco::ui::windows::CompanyList
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::get_company_colour(companyId);
+                auto companyColour = companymgr::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -796,7 +796,7 @@ namespace openloco::ui::windows::CompanyList
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::get_company_colour(companyId);
+                auto companyColour = companymgr::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -893,7 +893,7 @@ namespace openloco::ui::windows::CompanyList
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::get_company_colour(companyId);
+                auto companyColour = companymgr::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -990,7 +990,7 @@ namespace openloco::ui::windows::CompanyList
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::get_company_colour(companyId);
+                auto companyColour = companymgr::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -1635,7 +1635,7 @@ namespace openloco::ui::windows::CompanyList
                 if (company.empty())
                     continue;
 
-                auto companyColour = companymgr::get_company_colour(company.id());
+                auto companyColour = companymgr::getCompanyColour(company.id());
                 auto colour = colour::get_shade(companyColour, 6);
                 auto stringId = string_ids::small_black_string;
 

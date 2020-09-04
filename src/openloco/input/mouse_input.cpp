@@ -760,7 +760,7 @@ namespace openloco::input
                         auto track = ((map::tile_element*)ptr.object)->asTrack();
                         if (track != nullptr)
                         {
-                            if (track->owner() == companymgr::get_controlling_id())
+                            if (track->owner() == companymgr::getControllingId())
                             {
                                 ui::windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
                             }
@@ -780,7 +780,7 @@ namespace openloco::input
                             auto owner = road->owner();
 
                             auto roadObject = objectmgr::get<road_object>(road->roadObjectId());
-                            if (owner == companymgr::get_controlling_id() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
+                            if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
                             {
                                 ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }

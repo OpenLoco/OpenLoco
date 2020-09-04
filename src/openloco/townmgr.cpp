@@ -38,7 +38,7 @@ namespace openloco::townmgr
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    companymgr::updating_company_id(company_id::neutral);
+                    companymgr::updatingCompanyId(company_id::neutral);
                     town->update();
                 }
             }

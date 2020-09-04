@@ -393,7 +393,7 @@ namespace openloco
     {
         if (!isNetworked())
         {
-            _updating_company_id = companymgr::get_controlling_id();
+            _updating_company_id = companymgr::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
                 sub_428E47();
@@ -416,7 +416,7 @@ namespace openloco
         // Host/client?
         if (isTrackUpgradeMode())
         {
-            _updating_company_id = companymgr::get_controlling_id();
+            _updating_company_id = companymgr::getControllingId();
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)

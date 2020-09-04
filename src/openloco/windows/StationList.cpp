@@ -568,7 +568,7 @@ namespace openloco::ui::windows::station_list
     static void drawTabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto skin = objectmgr::get<interface_skin_object>();
-        auto companyColour = companymgr::get_company_colour(window->number);
+        auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
         {

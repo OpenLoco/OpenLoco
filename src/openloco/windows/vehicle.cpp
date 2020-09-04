@@ -84,7 +84,7 @@ namespace openloco::ui::vehicle
             if (!WindowManager::isInFront(w))
                 return;
 
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
             if (!input::is_tool_active(WindowType::vehicle, w->number))
@@ -133,7 +133,7 @@ namespace openloco::ui::vehicle
             if (!WindowManager::isInFrontAlt(w))
                 return;
 
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
             if (!input::is_tool_active(WindowType::vehicle, w->number))
@@ -155,7 +155,7 @@ namespace openloco::ui::vehicle
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 8);
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
             if (!WindowManager::isInFront(w))

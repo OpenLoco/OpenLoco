@@ -25,14 +25,14 @@ namespace openloco::companymgr
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
-    static void produce_companies();
+    static void produceCompanies();
 
-    company_id_t updating_company_id()
+    company_id_t updatingCompanyId()
     {
         return _updating_company_id;
     }
 
-    void updating_company_id(company_id_t id)
+    void updatingCompanyId(company_id_t id)
     {
         _updating_company_id = id;
     }
@@ -53,17 +53,17 @@ namespace openloco::companymgr
         return nullptr;
     }
 
-    company_id_t get_controlling_id()
+    company_id_t getControllingId()
     {
         return _player_company[0];
     }
 
-    uint8_t get_company_colour(company_id_t id)
+    uint8_t getCompanyColour(company_id_t id)
     {
         return _company_colours[id];
     }
 
-    uint8_t get_player_company_colour()
+    uint8_t getPlayerCompanyColour()
     {
         return _company_colours[_player_company[0]];
     }
@@ -77,7 +77,7 @@ namespace openloco::companymgr
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
-                updating_company_id(id);
+                updatingCompanyId(id);
                 company->aiThink();
             }
 
@@ -85,7 +85,7 @@ namespace openloco::companymgr
             if (_byte_525FCB >= 192)
             {
                 _byte_525FCB = 0;
-                produce_companies();
+                produceCompanies();
             }
         }
     }
@@ -96,7 +96,7 @@ namespace openloco::companymgr
     }
 
     // 0x004306D1
-    static void produce_companies()
+    static void produceCompanies()
     {
         if (_company_competition_delay == 0 && _company_max_competing != 0)
         {

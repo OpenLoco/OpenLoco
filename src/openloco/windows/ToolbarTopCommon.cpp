@@ -41,7 +41,7 @@ namespace openloco::ui::windows::toolbar_top::common
         // Draw widgets.
         self->draw(dpi);
 
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
 
         if (self->widgets[widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
         {
@@ -204,7 +204,7 @@ namespace openloco::ui::windows::toolbar_top::common
         if (i == 0)
             return;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;

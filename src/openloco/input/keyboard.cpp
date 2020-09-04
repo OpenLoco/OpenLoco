@@ -91,7 +91,7 @@ namespace openloco::input
                 continue;
 
             auto t = thingmgr::get<openloco::vehicle>(w->number);
-            if (t->owner != companymgr::get_controlling_id())
+            if (t->owner != companymgr::getControllingId())
                 continue;
 
             if (t->mode != TransportMode::rail)

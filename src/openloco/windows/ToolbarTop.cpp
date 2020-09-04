@@ -238,7 +238,7 @@ namespace openloco::ui::windows::toolbar_top::game
         if (i == 0)
             return;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;
@@ -354,10 +354,10 @@ namespace openloco::ui::windows::toolbar_top::game
     // 0x0043AD1F
     static void buildVehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto company = companymgr::get(companymgr::get_controlling_id());
+        auto company = companymgr::get(companymgr::getControllingId());
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint8_t ddIndex = 0;
@@ -397,11 +397,11 @@ namespace openloco::ui::windows::toolbar_top::game
     // 0x0043ABCB
     static void vehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto player_company_id = companymgr::get_controlling_id();
+        auto player_company_id = companymgr::getControllingId();
         auto company = companymgr::get(player_company_id);
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
@@ -455,7 +455,7 @@ namespace openloco::ui::windows::toolbar_top::game
         auto vehicleType = menu_options[itemIndex];
         last_vehicles_option = vehicleType;
 
-        windows::vehicle_list::open(companymgr::get_controlling_id(), vehicleType);
+        windows::vehicle_list::open(companymgr::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -465,7 +465,7 @@ namespace openloco::ui::windows::toolbar_top::game
         uint32_t sprite_base = interface->img;
 
         // Apply company colour.
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
         sprite_base = gfx::recolour(sprite_base, company_colour);
 
         dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
@@ -486,7 +486,7 @@ namespace openloco::ui::windows::toolbar_top::game
         if (itemIndex > 4)
             return;
 
-        windows::station_list::open(companymgr::get_controlling_id(), itemIndex);
+        windows::station_list::open(companymgr::getControllingId(), itemIndex);
     }
 
     // 0x0043A071
@@ -571,7 +571,7 @@ namespace openloco::ui::windows::toolbar_top::game
     {
         common::draw(window, dpi);
 
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
 
         if (window->widgets[widx::railroad_menu].type != widget_type::none)
         {

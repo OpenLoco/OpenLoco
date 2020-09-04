@@ -333,7 +333,7 @@ namespace openloco::ui::TimePanel
     {
         args.push(current_day());
 
-        auto playerCompany = companymgr::get(companymgr::get_controlling_id());
+        auto playerCompany = companymgr::get(companymgr::getControllingId());
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {

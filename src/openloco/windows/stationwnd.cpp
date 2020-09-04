@@ -958,7 +958,7 @@ namespace openloco::ui::windows::station
         {
             auto skin = objectmgr::get<interface_skin_object>();
             auto station = stationmgr::get(self->number);
-            auto companyColour = companymgr::get_company_colour(station->owner);
+            auto companyColour = companymgr::getCompanyColour(station->owner);
 
             // Station tab
             {

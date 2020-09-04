@@ -256,7 +256,7 @@ namespace openloco::ui::BuildVehicle
         window->widgets = _widgets;
         window->number = company;
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
-        window->owner = companymgr::get_controlling_id();
+        window->owner = companymgr::getControllingId();
         window->frame_no = 0;
         auto skin = openloco::objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
@@ -272,7 +272,7 @@ namespace openloco::ui::BuildVehicle
      */
     window* open(uint32_t vehicle, uint32_t flags)
     {
-        auto window = WindowManager::bringToFront(WindowType::buildVehicle, companymgr::get_controlling_id());
+        auto window = WindowManager::bringToFront(WindowType::buildVehicle, companymgr::getControllingId());
         bool tabMode = flags & (1 << 31);
         if (window)
         {
@@ -300,7 +300,7 @@ namespace openloco::ui::BuildVehicle
         }
         else
         {
-            window = create(companymgr::get_controlling_id());
+            window = create(companymgr::getControllingId());
             window->width = window_size.width;
             window->height = window_size.height;
             _buildTargetVehicle = -1;
@@ -405,7 +405,7 @@ namespace openloco::ui::BuildVehicle
             }
         }
 
-        auto companyId = companymgr::get_controlling_id();
+        auto companyId = companymgr::getControllingId();
         if (vehicle != nullptr)
         {
             companyId = vehicle->owner;
@@ -507,7 +507,7 @@ namespace openloco::ui::BuildVehicle
                 continue;
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 continue;
 
             return w;
@@ -1178,7 +1178,7 @@ namespace openloco::ui::BuildVehicle
                         }
 
                         int16_t half = (window->row_height - 22) / 2;
-                        auto x = drawVehicleInline(dpi, vehicleType, 0, companymgr::get_controlling_id(), { 0, static_cast<int16_t>(y + half) });
+                        auto x = drawVehicleInline(dpi, vehicleType, 0, companymgr::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = objectmgr::get<vehicle_object>(vehicleType);
                         FormatArguments args{};
@@ -1202,7 +1202,7 @@ namespace openloco::ui::BuildVehicle
 
                 uint8_t unk1 = _52622E & 0x3F;
                 uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                drawVehicleOverview(dpi, window->row_hover, companymgr::get_controlling_id(), unk1, unk2, { 90, 37 });
+                drawVehicleOverview(dpi, window->row_hover, companymgr::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
                 auto buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_1250));
@@ -1409,7 +1409,7 @@ namespace openloco::ui::BuildVehicle
     static void drawTransportTypeTabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto skin = objectmgr::get<interface_skin_object>();
-        auto companyColour = companymgr::get_company_colour(window->number);
+        auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : _transportTypeTabInformation)
         {
@@ -1427,7 +1427,7 @@ namespace openloco::ui::BuildVehicle
     static void drawTrackTypeTabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto skin = objectmgr::get<interface_skin_object>();
-        auto companyColour = companymgr::get_company_colour(window->number);
+        auto companyColour = companymgr::getCompanyColour(window->number);
 
         auto left = window->x;
         auto top = window->y + 69;

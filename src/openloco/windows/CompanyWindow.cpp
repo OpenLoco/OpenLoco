@@ -63,14 +63,14 @@ namespace openloco::ui::windows::CompanyWindow
         static void disableChallengeTab(window* self)
         {
             self->disabled_widgets = 0;
-            if (self->number != companymgr::get_controlling_id())
+            if (self->number != companymgr::getControllingId())
                 self->disabled_widgets |= (1 << widx::tab_challenge);
         }
 
         // 0x00431E9B
         static void enableRenameByCaption(window* self)
         {
-            if (is_editor_mode() || self->number == companymgr::get_controlling_id())
+            if (is_editor_mode() || self->number == companymgr::getControllingId())
             {
                 self->enabled_widgets |= (1 << caption);
             }
@@ -136,7 +136,7 @@ namespace openloco::ui::windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (self->number != companymgr::get_controlling_id() && !is_editor_mode())
+            if (self->number != companymgr::getControllingId() && !is_editor_mode())
                 self->disabled_widgets |= (1 << widx::face);
 
             self->widgets[common::widx::frame].right = self->width - 1;
@@ -166,7 +166,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->widgets[widx::change_owner_name].type = widget_type::wt_9;
             else
                 self->widgets[widx::change_owner_name].type = widget_type::none;
@@ -642,7 +642,7 @@ namespace openloco::ui::windows::CompanyWindow
     // 0x00435ACC
     window* openAndSetName()
     {
-        company_id_t companyId = companymgr::get_controlling_id();
+        company_id_t companyId = companymgr::getControllingId();
         window* self = open(companyId);
 
         // Allow setting company owner name if no preferred owner name has been set.
@@ -689,7 +689,7 @@ namespace openloco::ui::windows::CompanyWindow
             auto company = companymgr::get(self->number);
             FormatArguments args{};
             args.push(company->name);
-            auto companyColour = companymgr::get_company_colour(self->number);
+            auto companyColour = companymgr::getCompanyColour(self->number);
             auto skin = objectmgr::get<interface_skin_object>();
             uint32_t image = skin->img + interface_skin::image_ids::build_headquarters;
             self->widgets[widx::build_hq].image = gfx::recolour(image, companyColour) | (1 << 30);
@@ -717,7 +717,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->widgets[widx::build_hq].type = widget_type::wt_9;
             else
                 self->widgets[widx::build_hq].type = widget_type::none;
@@ -1339,7 +1339,7 @@ namespace openloco::ui::windows::CompanyWindow
                 }
             }
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->enabled_widgets |= allColourChecks | allMainColours | allSecondaryColours;
             else
                 self->enabled_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
@@ -1621,7 +1621,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
             {
                 self->widgets[widx::current_loan].type = widget_type::wt_17;
                 self->widgets[widx::loan_decrease].type = widget_type::wt_11;

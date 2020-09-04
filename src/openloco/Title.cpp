@@ -83,7 +83,7 @@ namespace openloco::title
     // 0x0046AD7D
     void start()
     {
-        companymgr::updating_company_id(companymgr::get_controlling_id());
+        companymgr::updatingCompanyId(companymgr::getControllingId());
         if (is_paused())
         {
             togglePause(true);

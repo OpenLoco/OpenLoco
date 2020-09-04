@@ -1086,7 +1086,7 @@ namespace openloco::ui::windows::construction
                 trackType &= ~(1 << 7);
             }
 
-            auto companyId = companymgr::updating_company_id();
+            auto companyId = companymgr::updatingCompanyId();
 
             modList[0] = 0xFF;
             modList[1] = 0xFF;

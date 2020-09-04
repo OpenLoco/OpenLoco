@@ -175,7 +175,7 @@ namespace openloco::ui::textinput
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
-            window->owner = companymgr::get_controlling_id();
+            window->owner = companymgr::getControllingId();
         }
 
         _widgets[widx::title].type = widget_type::caption_25;
