@@ -60,7 +60,7 @@ namespace openloco::things::vehicle
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
     {
-        if (is_player_company(_updating_company_id))
+        if (isPlayerCompany(_updating_company_id))
         {
             return true;
         }
@@ -69,7 +69,7 @@ namespace openloco::things::vehicle
         auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](int32_t& total, const auto& company) {
             if (company.empty())
                 return total;
-            if (is_player_company(company.id()))
+            if (isPlayerCompany(company.id()))
                 return total;
             return total + std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
         });

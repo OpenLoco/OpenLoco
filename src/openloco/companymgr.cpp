@@ -75,10 +75,10 @@ namespace openloco::companymgr
         {
             company_id_t id = scenario_ticks() & 0x0F;
             auto company = get(id);
-            if (company != nullptr && !is_player_company(id) && !company->empty())
+            if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
                 updating_company_id(id);
-                company->ai_think();
+                company->aiThink();
             }
 
             _byte_525FCB++;

@@ -758,7 +758,7 @@ namespace openloco::ui::windows::industry
             {
                 if ((industry->flags & industry_flags::flag_04) == 0)
                     return;
-                if (!is_player_company(industry->owner))
+                if (!isPlayerCompany(industry->owner))
                     return;
             }
 

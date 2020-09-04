@@ -672,7 +672,7 @@ namespace openloco
             }
         }
 
-        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !is_player_company(owner))
+        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !isPlayerCompany(owner))
         {
             rating = 120;
         }

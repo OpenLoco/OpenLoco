@@ -509,7 +509,7 @@ namespace openloco::ui::NewsWindow
                 {
                     auto vehicle = thingmgr::get<openloco::vehicle>(itemIndex);
                     auto company = companymgr::get(vehicle->owner);
-                    if (is_player_company(vehicle->owner))
+                    if (isPlayerCompany(vehicle->owner))
                     {
                         args.push(string_ids::company_vehicle);
                     }

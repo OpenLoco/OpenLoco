@@ -828,7 +828,7 @@ namespace openloco::ui::windows::CompanyWindow
                 y += 10;
             }
 
-            if (!is_player_company(self->number))
+            if (!isPlayerCompany(self->number))
             {
                 drawAIdetails(*dpi, x + 5, y, *company);
             }

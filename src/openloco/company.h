@@ -98,7 +98,7 @@ namespace openloco
 
         company_id_t id() const;
         bool empty() const;
-        void ai_think();
+        void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
     };
@@ -111,5 +111,5 @@ namespace openloco
     static_assert(offsetof(company, var_8C4E) == 0x8C4E);
     static_assert(offsetof(company, var_8BB0) == 0x8BB0);
 
-    bool is_player_company(company_id_t id);
+    bool isPlayerCompany(company_id_t id);
 }
