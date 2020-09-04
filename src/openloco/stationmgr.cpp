@@ -111,7 +111,7 @@ namespace openloco::stationmgr
                     if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
                     {
                         town->flags |= town_flags::rating_adjusted;
-                        town->adjust_company_rating(station.owner, 1);
+                        town->adjustCompanyRating(station.owner, 1);
                     }
                 }
             }
