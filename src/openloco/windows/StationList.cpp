@@ -182,7 +182,7 @@ namespace openloco::ui::windows::station_list
         ptr = &lhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if (lhs.cargo_stats[cargoId].is_accepted())
+            if (lhs.cargo_stats[cargoId].isAccepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -192,7 +192,7 @@ namespace openloco::ui::windows::station_list
         ptr = &rhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if (rhs.cargo_stats[cargoId].is_accepted())
+            if (rhs.cargo_stats[cargoId].isAccepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -548,7 +548,7 @@ namespace openloco::ui::windows::station_list
             {
                 auto& stats = station->cargo_stats[cargoId];
 
-                if (!stats.is_accepted())
+                if (!stats.isAccepted())
                     continue;
 
                 if (*buffer != '\0')

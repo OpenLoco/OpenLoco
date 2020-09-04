@@ -105,7 +105,7 @@ namespace openloco::stationmgr
                 {
                     station.var_29 = 0;
                 }
-                if (station.update_cargo())
+                if (station.updateCargo())
                 {
                     auto town = townmgr::get(station.town);
                     if (town != nullptr && !(town->flags & town_flags::rating_adjusted))

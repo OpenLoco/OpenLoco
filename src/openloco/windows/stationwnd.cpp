@@ -386,7 +386,7 @@ namespace openloco::ui::windows::station
             {
                 auto& stats = station->cargo_stats[cargoId];
 
-                if (!stats.is_accepted())
+                if (!stats.isAccepted())
                     continue;
 
                 *buffer++ = ' ';
