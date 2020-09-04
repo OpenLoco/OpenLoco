@@ -211,7 +211,7 @@ namespace openloco::ui
 
     void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp)
     {
-        viewportSetUndergroundFlag(underground, this, vp);
+        ui::viewportSetUndergroundFlag(underground, this, vp);
     }
 
     // 0x004C68E4
