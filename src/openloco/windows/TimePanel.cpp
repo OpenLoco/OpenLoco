@@ -43,10 +43,10 @@ namespace openloco::ui::TimePanel
     static void changeGameSpeed(window* w, uint8_t speed);
 
     static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                           // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                           // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                          // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_daymonthyear_challenge),                              // 3,
+        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                          // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                          // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                         // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_daymonthyear_challenge),                             // 3,
         makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
         makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
         makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
