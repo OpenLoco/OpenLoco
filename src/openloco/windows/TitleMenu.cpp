@@ -490,7 +490,7 @@ namespace openloco::ui::windows
             return;
         }
 
-        if (!multiplayer::has_flag(multiplayer::flags::flag_8) && !multiplayer::has_flag(multiplayer::flags::flag_9))
+        if (!multiplayer::hasFlag(multiplayer::flags::flag_8) && !multiplayer::hasFlag(multiplayer::flags::flag_9))
         {
             window->invalidate();
             return;

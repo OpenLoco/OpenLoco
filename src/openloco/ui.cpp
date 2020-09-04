@@ -986,7 +986,7 @@ namespace openloco::ui
     // 0x004C96E7
     void handleInput()
     {
-        if (multiplayer::reset_flag(multiplayer::flags::flag_10))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
@@ -1004,14 +1004,14 @@ namespace openloco::ui
             }
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_5))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_5))
         {
             game_commands::do_21(2, 1);
         }
 
-        if (!multiplayer::has_flag(multiplayer::flags::flag_0) && !multiplayer::has_flag(multiplayer::flags::flag_4))
+        if (!multiplayer::hasFlag(multiplayer::flags::flag_0) && !multiplayer::hasFlag(multiplayer::flags::flag_4))
         {
-            if (multiplayer::reset_flag(multiplayer::flags::flag_2))
+            if (multiplayer::resetFlag(multiplayer::flags::flag_2))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1020,7 +1020,7 @@ namespace openloco::ui
                 game_commands::doCommand(69, regs);
             }
 
-            if (multiplayer::reset_flag(multiplayer::flags::flag_3))
+            if (multiplayer::resetFlag(multiplayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1030,20 +1030,20 @@ namespace openloco::ui
             }
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_4))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_4))
         {
             registers regs;
             regs.bl = GameCommandFlag::apply;
             game_commands::doCommand(72, regs);
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_0))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_0))
         {
             WindowManager::closeConstructionWindows();
             call(0x004CF456);
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_1))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_1))
         {
             game_commands::do_21(0, 2);
         }

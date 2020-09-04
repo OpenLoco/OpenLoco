@@ -609,7 +609,7 @@ namespace openloco
             if (addr<0x00525340, int32_t>() == 1)
             {
                 addr<0x00525340, int32_t>() = 0;
-                multiplayer::set_flag(multiplayer::flags::flag_1);
+                multiplayer::setFlag(multiplayer::flags::flag_1);
             }
 
             input::handleKeyboard();

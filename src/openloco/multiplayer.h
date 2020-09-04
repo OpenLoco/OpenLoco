@@ -22,7 +22,7 @@ namespace openloco::multiplayer
         flag_15 = 15,
     };
 
-    bool has_flag(flags flag);
-    bool set_flag(flags flag);
-    bool reset_flag(flags flag);
+    bool hasFlag(flags flag);
+    bool setFlag(flags flag);
+    bool resetFlag(flags flag);
 }
