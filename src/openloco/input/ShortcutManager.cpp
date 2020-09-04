@@ -179,7 +179,7 @@ namespace openloco::input::ShortcutManager
 
         main->viewport_zoom_out(false);
         townmgr::update_labels();
-        stationmgr::update_labels();
+        stationmgr::updateLabels();
     }
 
     // 0x004BF115
@@ -191,7 +191,7 @@ namespace openloco::input::ShortcutManager
 
         main->viewport_zoom_in(false);
         townmgr::update_labels();
-        stationmgr::update_labels();
+        stationmgr::updateLabels();
     }
 
     // 0x004BF12C
@@ -203,7 +203,7 @@ namespace openloco::input::ShortcutManager
 
         main->viewport_rotate_right();
         townmgr::update_labels();
-        stationmgr::update_labels();
+        stationmgr::updateLabels();
         windows::map::centerOnViewPoint();
     }
 

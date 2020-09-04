@@ -44,7 +44,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048DDC3
-    void update_labels()
+    void updateLabels()
     {
         call(0x0048DDC3);
     }
@@ -73,7 +73,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048B244
-    void update_daily()
+    void updateDaily()
     {
         for (auto& town : townmgr::towns())
         {

@@ -807,7 +807,7 @@ namespace openloco
         {
             if (updateDayCounter())
             {
-                stationmgr::update_daily();
+                stationmgr::updateDaily();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
