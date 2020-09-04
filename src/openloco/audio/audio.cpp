@@ -1063,7 +1063,7 @@ namespace openloco::audio
         }
 
         auto cfg = config::get();
-        if (cfg.music_playing == 0 || is_title_mode() || is_editor_mode())
+        if (cfg.music_playing == 0 || isTitleMode() || isEditorMode())
         {
             return;
         }
@@ -1104,7 +1104,7 @@ namespace openloco::audio
     // 0x0048AC66
     void playTitleScreenMusic()
     {
-        if (is_title_mode() && _audio_initialised && _audioIsEnabled && config::getNew().audio.play_title_music)
+        if (isTitleMode() && _audio_initialised && _audioIsEnabled && config::getNew().audio.play_title_music)
         {
             if (!isChannelPlaying(channel_id::title))
             {

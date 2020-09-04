@@ -117,7 +117,7 @@ namespace openloco::ui::windows::industry_list
             self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? string_ids::industry_table_header_status_desc : string_ids::industry_table_header_status;
             self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
 
-            if (is_editor_mode())
+            if (isEditorMode())
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
             else
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_fund_new_industries;
@@ -596,7 +596,7 @@ namespace openloco::ui::windows::industry_list
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[common::widx::caption].text = string_ids::title_build_new_industries;
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
@@ -648,7 +648,7 @@ namespace openloco::ui::windows::industry_list
 
             auto widthOffset = 0;
 
-            if (!is_editor_mode())
+            if (!isEditorMode())
             {
                 auto xPos = self->x + 3 + self->width - 19;
                 auto yPos = self->y + self->height - 13;
@@ -998,7 +998,7 @@ namespace openloco::ui::windows::industry_list
                 auto industryObj = objectmgr::get<industry_object>(i);
                 if (industryObj == nullptr)
                     break;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                 {
                     if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
                         continue;

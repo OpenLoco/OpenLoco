@@ -463,7 +463,7 @@ namespace openloco::ui::windows::map
 
         auto disabledWidgets = 0;
 
-        if (is_editor_mode())
+        if (isEditorMode())
         {
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
@@ -509,7 +509,7 @@ namespace openloco::ui::windows::map
 
                 auto colour = colour::black;
 
-                if (!is_editor_mode())
+                if (!isEditorMode())
                 {
                     auto company = companymgr::get(_playerCompanyId);
                     colour = company->mainColours.primary;

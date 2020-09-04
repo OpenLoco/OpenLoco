@@ -49,7 +49,7 @@ namespace openloco::gui
         addr<0x009c870F, int8_t>() = 2;
         addr<0x009c8710, int8_t>() = 1;
 
-        if (openloco::is_title_mode())
+        if (openloco::isTitleMode())
         {
             ui::windows::openTitleMenu();
             ui::windows::openTitleExit();
@@ -94,7 +94,7 @@ namespace openloco::gui
         const int32_t uiWidth = ui::width();
         const int32_t uiHeight = ui::height();
 
-        if (openloco::is_editor_mode())
+        if (openloco::isEditorMode())
         {
             call(0x43CD35);
             return;

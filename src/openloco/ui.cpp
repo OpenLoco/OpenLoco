@@ -995,7 +995,7 @@ namespace openloco::ui
         *_525E28 &= ~(1 << 2);
         if (set)
         {
-            if (!is_title_mode() && !is_editor_mode())
+            if (!isTitleMode() && !isEditorMode())
             {
                 if (tutorial::state() == tutorial::tutorial_state::none)
                 {
@@ -1060,7 +1060,7 @@ namespace openloco::ui
             input::mouse_button state;
             while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
             {
-                if (is_title_mode() && intro::isActive() && state == input::mouse_button::left_pressed)
+                if (isTitleMode() && intro::isActive() && state == input::mouse_button::left_pressed)
                 {
                     if (intro::state() == intro::intro_state::state_9)
                     {

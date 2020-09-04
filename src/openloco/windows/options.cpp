@@ -2122,12 +2122,12 @@ namespace openloco::ui::options
     static void sub_4C13BE(window* w)
     {
         w->disabled_widgets &= ~((1 << common::widx::tab_music) | (1 << common::widx::tab_regional));
-        if (is_editor_mode() || is_title_mode())
+        if (isEditorMode() || isTitleMode())
         {
             w->disabled_widgets |= 1 << common::widx::tab_music;
         }
 
-        if (is_editor_mode() && s5::getOptions().editorStep == 0)
+        if (isEditorMode() && s5::getOptions().editorStep == 0)
         {
             w->disabled_widgets |= 1 << common::widx::tab_regional;
         }

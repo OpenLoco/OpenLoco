@@ -569,7 +569,7 @@ namespace openloco
         var_3B0 = std::min(var_3B0 + 1, 255);
         var_3B1 = std::min(var_3B1 + 1, 255);
 
-        auto& rng = gprng();
+        auto& rng = gPrng();
         for (uint32_t i = 0; i < max_cargo_stats; i++)
         {
             auto& cargo = cargo_stats[i];

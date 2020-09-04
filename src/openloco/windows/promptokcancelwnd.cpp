@@ -54,7 +54,7 @@ namespace openloco::ui::windows
 
             auto originalModal = WindowManager::getCurrentModalType();
             WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
-            prompt_tick_loop(
+            promptTickLoop(
                 []() {
                     input::handleKeyboard();
                     audio::updateSounds();

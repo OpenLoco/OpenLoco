@@ -1692,7 +1692,7 @@ namespace openloco::input
             return;
         }
 
-        if (is_title_mode())
+        if (isTitleMode())
         {
             return;
         }

@@ -110,7 +110,7 @@ namespace openloco::ui::windows::industry
             self->widgets[widx::demolish_industry].right = self->width - 2;
             self->widgets[widx::demolish_industry].left = self->width - 25;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[widx::demolish_industry].type = widget_type::wt_9;
             }
@@ -208,7 +208,7 @@ namespace openloco::ui::windows::industry
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;
@@ -754,7 +754,7 @@ namespace openloco::ui::windows::industry
         static void renameIndustryPrompt(window* self, widget_index widgetIndex)
         {
             auto industry = industrymgr::get(self->number);
-            if (!is_editor_mode())
+            if (!isEditorMode())
             {
                 if ((industry->flags & industry_flags::flag_04) == 0)
                     return;

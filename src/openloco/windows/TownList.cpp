@@ -563,7 +563,7 @@ namespace openloco::ui::windows::town_list
             window->widgets = town_list::widgets;
             window->enabled_widgets = town_list::enabledWidgets;
 
-            if (is_editor_mode())
+            if (isEditorMode())
                 window->disabled_widgets = 0;
             else
                 window->disabled_widgets |= (1 << common::widx::tab_build_town) | (1 << common::widx::tab_build_buildings) | (1 << common::widx::tab_build_misc_buildings);
@@ -1494,7 +1494,7 @@ namespace openloco::ui::windows::town_list
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
 
-            if (is_editor_mode())
+            if (isEditorMode())
                 self->disabled_widgets = 0;
             else
                 self->disabled_widgets |= (1 << common::widx::tab_build_town) | (1 << common::widx::tab_build_buildings) | (1 << common::widx::tab_build_misc_buildings);

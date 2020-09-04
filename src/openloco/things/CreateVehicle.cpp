@@ -202,7 +202,7 @@ namespace openloco::things::vehicle
             reliabilityFactor *= reliabilityFactor;
             reliabilityFactor /= 16;
 
-            auto& prng = gprng();
+            auto& prng = gPrng();
             int32_t randVal = (prng.randNext(65535) * reliabilityFactor / 2) / 65536;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
@@ -227,7 +227,7 @@ namespace openloco::things::vehicle
         newBogie->var_36 = lastVeh->var_36;
         newBogie->object_id = vehicleTypeId;
 
-        auto& prng = gprng();
+        auto& prng = gPrng();
         newBogie->var_44 = prng.randNext();
         newBogie->creation_day = getCurrentDay();
         newBogie->var_46 = 0;
@@ -348,7 +348,7 @@ namespace openloco::things::vehicle
         newBody->var_38 = flags_38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
 
-        auto& prng = gprng();
+        auto& prng = gPrng();
         newBody->var_44 = prng.randNext();
         newBody->creation_day = getCurrentDay();
         newBody->var_46 = 0;

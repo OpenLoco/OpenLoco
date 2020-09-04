@@ -65,7 +65,7 @@ namespace openloco::ui::NewsWindow::ticker
 
         if (self->var_852 != 0)
         {
-            if (!is_paused())
+            if (!isPaused())
             {
                 self->var_852--;
             }
@@ -73,7 +73,7 @@ namespace openloco::ui::NewsWindow::ticker
 
         self->invalidate();
 
-        if (self->var_852 == 0 && !is_paused())
+        if (self->var_852 == 0 && !isPaused())
         {
             _word_525CE0 = _word_525CE0 + 2;
 
@@ -153,7 +153,7 @@ namespace openloco::ui::NewsWindow::ticker
         if (self->var_852 != 0)
             return;
 
-        if (get_pause_flags() & (1 << 2))
+        if (getPauseFlags() & (1 << 2))
             return;
 
         auto news = messagemgr::get(_activeMessageIndex);

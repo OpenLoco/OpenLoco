@@ -874,7 +874,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
-            initialise_viewports();
+            initialiseViewports();
             regs = backup;
             return 0;
         });

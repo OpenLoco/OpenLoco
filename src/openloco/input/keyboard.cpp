@@ -197,7 +197,7 @@ namespace openloco::input
 
         _keyModifier = _keyModifier & (~key_modifier::cheat);
 
-        if (is_title_mode())
+        if (isTitleMode())
             return;
 
         for (auto cheat : cheats)
@@ -332,7 +332,7 @@ namespace openloco::input
                 continue;
             }
 
-            if (!is_title_mode())
+            if (!isTitleMode())
             {
                 for (int i = 0; i < 35; i++)
                 {
@@ -397,7 +397,7 @@ namespace openloco::input
         if ((main->flags & window_flags::viewport_no_scrolling) != 0)
             return;
 
-        if (openloco::is_title_mode())
+        if (openloco::isTitleMode())
             return;
 
         auto viewport = main->viewports[0];
@@ -443,7 +443,7 @@ namespace openloco::input
         if ((main->flags & window_flags::viewport_no_scrolling) != 0)
             return;
 
-        if (openloco::is_title_mode())
+        if (openloco::isTitleMode())
             return;
 
         auto viewport = main->viewports[0];

@@ -32,9 +32,9 @@ namespace openloco::stationmgr
     // 0x0048B1FA
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            station_id_t id = scenario_ticks() & 0x3FF;
+            station_id_t id = scenarioTicks() & 0x3FF;
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {

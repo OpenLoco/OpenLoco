@@ -744,7 +744,7 @@ namespace openloco::ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (is_paused())
+        if (isPaused())
         {
             _523508++;
         }
@@ -1152,7 +1152,7 @@ namespace openloco::ui::WindowManager
                 return;
         }
 
-        if (is_unknown_4_mode() && w->type != WindowType::progressBar)
+        if (isUnknown4Mode() && w->type != WindowType::progressBar)
         {
             return;
         }
@@ -1487,7 +1487,7 @@ namespace openloco::ui::WindowManager
 
         if (input::hasFlag(input::input_flags::flag5))
         {
-            if (openloco::is_title_mode())
+            if (openloco::isTitleMode())
                 return;
 
             auto main = WindowManager::getMainWindow();
@@ -1516,7 +1516,7 @@ namespace openloco::ui::WindowManager
         {
             if (window->type == WindowType::main)
             {
-                if (openloco::is_title_mode())
+                if (openloco::isTitleMode())
                     return;
 
                 if (wheel > 0)

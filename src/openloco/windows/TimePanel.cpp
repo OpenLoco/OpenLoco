@@ -122,7 +122,7 @@ namespace openloco::ui::TimePanel
         _widgets[widx::fast_forward_btn].image = gfx::recolour(image_ids::speed_fast_forward);
         _widgets[widx::extra_fast_forward_btn].image = gfx::recolour(image_ids::speed_extra_fast_forward);
 
-        if (is_paused())
+        if (isPaused())
         {
             _widgets[widx::pause_btn].image = gfx::recolour(image_ids::speed_pause_active);
         }
@@ -187,7 +187,7 @@ namespace openloco::ui::TimePanel
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = string_ids::date_monthyear;
 
-        if (is_paused() && (get_pause_flags() & (1 << 2)) == 0)
+        if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
             if (self->var_856 >= 30)
             {
@@ -400,7 +400,7 @@ namespace openloco::ui::TimePanel
     // 0x00439AB6 (speed: 2)
     static void changeGameSpeed(window* w, uint8_t speed)
     {
-        if (get_pause_flags() & 1)
+        if (getPauseFlags() & 1)
         {
             game_commands::do_20();
         }
@@ -430,7 +430,7 @@ namespace openloco::ui::TimePanel
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
 
-        if (is_paused())
+        if (isPaused())
         {
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }

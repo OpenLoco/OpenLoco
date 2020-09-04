@@ -71,9 +71,9 @@ namespace openloco::companymgr
     // 0x00430319
     void update()
     {
-        if (!is_editor_mode() && !config::getNew().companyAIDisabled)
+        if (!isEditorMode() && !config::getNew().companyAIDisabled)
         {
-            company_id_t id = scenario_ticks() & 0x0F;
+            company_id_t id = scenarioTicks() & 0x0F;
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
@@ -110,7 +110,7 @@ namespace openloco::companymgr
                 }
             }
 
-            auto& prng = gprng();
+            auto& prng = gPrng();
 
             if (prng.randNext(16) == 0)
             {
@@ -159,7 +159,7 @@ namespace openloco::companymgr
     // 0x004383ED
     void updateOwnerStatus()
     {
-        if (openloco::is_title_mode() || openloco::is_editor_mode())
+        if (openloco::isTitleMode() || openloco::isEditorMode())
         {
             return;
         }

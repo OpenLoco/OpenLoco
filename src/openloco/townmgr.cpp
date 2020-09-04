@@ -29,9 +29,9 @@ namespace openloco::townmgr
     // 0x00496B6D
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            auto ticks = scenario_ticks();
+            auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
             {
                 town_id_t id = (ticks / 8) % 0x7F;

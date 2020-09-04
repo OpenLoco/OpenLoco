@@ -767,7 +767,7 @@ namespace openloco::ui::windows::construction
         void setDisabledWidgets(window* self)
         {
             auto disabledWidgets = 0;
-            if (is_editor_mode())
+            if (isEditorMode())
                 disabledWidgets |= (1ULL << common::widx::tab_station);
 
             if (_byte_1136063 & (1 << 7 | 1 << 6))

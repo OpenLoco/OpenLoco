@@ -106,7 +106,7 @@ namespace openloco::ui::windows::town
             self->widgets[widx::demolish_town].right = self->width - 2;
             self->widgets[widx::demolish_town].left = self->width - 25;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[widx::expand_town].type = widget_type::wt_9;
                 self->widgets[widx::demolish_town].type = widget_type::wt_9;
@@ -246,7 +246,7 @@ namespace openloco::ui::windows::town
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;

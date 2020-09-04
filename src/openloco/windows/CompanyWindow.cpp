@@ -70,7 +70,7 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x00431E9B
         static void enableRenameByCaption(window* self)
         {
-            if (is_editor_mode() || self->number == companymgr::getControllingId())
+            if (isEditorMode() || self->number == companymgr::getControllingId())
             {
                 self->enabled_widgets |= (1 << caption);
             }
@@ -136,7 +136,7 @@ namespace openloco::ui::windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (self->number != companymgr::getControllingId() && !is_editor_mode())
+            if (self->number != companymgr::getControllingId() && !isEditorMode())
                 self->disabled_widgets |= (1 << widx::face);
 
             self->widgets[common::widx::frame].right = self->width - 1;

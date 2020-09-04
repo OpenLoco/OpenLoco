@@ -575,7 +575,7 @@ namespace openloco::ui::windows::terraform
             auto args = FormatArguments();
             args.push<uint32_t>(treeCost);
 
-            if (!is_editor_mode())
+            if (!isEditorMode())
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
@@ -977,7 +977,7 @@ namespace openloco::ui::windows::terraform
         // 0x004BCBF8
         static void onResize(window* self)
         {
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 common::onResize(self, 115);
             }
@@ -1328,7 +1328,7 @@ namespace openloco::ui::windows::terraform
             uint32_t raiseCost = 0;
             uint32_t lowerCost = 0;
 
-            if (is_editor_mode() || xPos == 0x8000)
+            if (isEditorMode() || xPos == 0x8000)
             {
                 raiseCost = 0x80000000;
                 lowerCost = 0x80000000;
@@ -2134,7 +2134,7 @@ namespace openloco::ui::windows::terraform
             self->flags |= window_flags::resizable;
 
             /*auto width = 130;
-            if (is_editor_mode)
+            if (isEditorMode)
                 width += 31;*/
 
             // CHANGE: width set to 161 to include building walls tab
@@ -2300,7 +2300,7 @@ namespace openloco::ui::windows::terraform
             auto disabledWidgets = 0;
 
             // CHANGE: Disabled so the build walls tab shows outside of editor mode
-            /*if (!is_editor_mode())
+            /*if (!isEditorMode())
                 disabledWidgets |= common::widx::tab_build_walls;*/
 
             self->disabled_widgets = disabledWidgets;

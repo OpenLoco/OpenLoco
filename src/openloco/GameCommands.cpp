@@ -81,7 +81,7 @@ namespace openloco::game_commands
             && _4F9688[esi] == 1
             && _updating_company_id == _player_company[0])
         {
-            if (get_pause_flags() & 1)
+            if (getPauseFlags() & 1)
             {
                 paused_state = paused_state ^ 1;
                 WindowManager::invalidate(WindowType::timeToolbar);
@@ -95,7 +95,7 @@ namespace openloco::game_commands
                 WindowManager::invalidate(WindowType::timeToolbar);
             }
 
-            if (is_paused())
+            if (isPaused())
             {
                 gGameCommandErrorText = string_ids::empty;
                 return 0x80000000;
@@ -129,7 +129,7 @@ namespace openloco::game_commands
 
         if (ebx != static_cast<int32_t>(0x80000000))
         {
-            if (is_editor_mode())
+            if (isEditorMode())
                 ebx = 0;
 
             if (game_command_nest_level == 1)
@@ -176,7 +176,7 @@ namespace openloco::game_commands
             return loc_4314EA();
         }
 
-        if (is_editor_mode())
+        if (isEditorMode())
         {
             ebx = 0;
         }

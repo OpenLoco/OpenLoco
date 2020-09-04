@@ -202,7 +202,7 @@ namespace openloco::ui::prompt_browse
             window->colours[1] = colour::saturated_green;
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
-            prompt_tick_loop(
+            promptTickLoop(
                 []() {
                     input::handleKeyboard();
                     audio::updateSounds();
