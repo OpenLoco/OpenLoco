@@ -1114,7 +1114,7 @@ namespace openloco::ui::options
 
             if (config::get().music_playlist == config::music_playlist_type::current_era)
             {
-                uint16_t year = current_year();
+                uint16_t year = getCurrentYear();
                 for (int i = 0; i < audio::num_music_tracks; i++)
                 {
                     auto info = audio::getMusicInfo(i);

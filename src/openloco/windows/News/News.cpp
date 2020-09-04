@@ -756,11 +756,11 @@ namespace openloco::ui::NewsWindow
 
             if (_word_4F8BE4[news->type] & (1 << 1))
             {
-                if (calc_date(news->date).year >= 1945)
+                if (calcDate(news->date).year >= 1945)
                 {
                     drawLateNews(self, dpi, news);
 
-                    if (calc_date(news->date).year < 1985)
+                    if (calcDate(news->date).year < 1985)
                     {
                         drawMiddleNews(self, dpi, news);
                     }

@@ -183,9 +183,9 @@ namespace openloco::ui::windows::town
                     auto town = townmgr::get(self->number);
 
                     const uint32_t ebx = (town->var_38 >> 3) + 5;
-                    const int16_t currentYear = current_year();
+                    const int16_t currentYear = getCurrentYear();
                     int16_t tempYear = currentYear - 51;
-                    set_current_year(tempYear);
+                    setCurrentYear(tempYear);
 
                     for (uint8_t i = 8; i > 0; i--)
                     {
@@ -200,10 +200,10 @@ namespace openloco::ui::windows::town
                         }
 
                         tempYear += 7;
-                        set_current_year(tempYear);
+                        setCurrentYear(tempYear);
                     }
 
-                    set_current_year(currentYear);
+                    setCurrentYear(currentYear);
 
                     // Set new history entry.
                     uint8_t historyEntry = std::min<uint8_t>(town->population / 50, 255);
@@ -431,8 +431,8 @@ namespace openloco::ui::windows::town
                 yTick += 1000;
             }
 
-            int8_t month = static_cast<int8_t>(current_month());
-            int16_t year = current_year();
+            int8_t month = static_cast<int8_t>(getCurrentMonth());
+            int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
 
             for (uint8_t i = town->history_size - 1; i > 0; i--)

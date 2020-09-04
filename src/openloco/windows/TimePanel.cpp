@@ -184,7 +184,7 @@ namespace openloco::ui::TimePanel
 
         gfx::draw_rect_inset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
 
-        *(uint32_t*)&_common_format_args[0] = current_day();
+        *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = string_ids::date_monthyear;
 
         if (is_paused() && (get_pause_flags() & (1 << 2)) == 0)
@@ -331,7 +331,7 @@ namespace openloco::ui::TimePanel
     // 0x0043995C
     static void formatChallenge(FormatArguments& args)
     {
-        args.push(current_day());
+        args.push(getCurrentDay());
 
         auto playerCompany = companymgr::get(companymgr::getControllingId());
 

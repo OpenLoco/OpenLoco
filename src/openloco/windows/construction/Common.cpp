@@ -841,7 +841,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D70C
         void refreshAirportList(uint8_t* stationList)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto airportCount = 0;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::airport); i++)
             {
@@ -863,7 +863,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D753
         void refreshDockList(uint8_t* stationList)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto dockCount = 0;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::dock); i++)
             {
@@ -885,7 +885,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D678, 0x0048D5E4
         void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto stationCount = 0;
 
             if (transportMode == TransportMode::road)
@@ -993,7 +993,7 @@ namespace openloco::ui::windows::construction
         // 0x0042C518, 0x0042C490
         void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto bridgeCount = 0;
 
             if (transportMode == TransportMode::road)
@@ -1184,7 +1184,7 @@ namespace openloco::ui::windows::construction
         // 0x00488B4D
         void refreshSignalList(uint8_t* signalList, uint8_t trackType)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto trackObj = objectmgr::get<track_object>(trackType);
             auto signalCount = 0;
             auto var_0E = trackObj->var_0E;

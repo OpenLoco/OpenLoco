@@ -805,7 +805,7 @@ namespace openloco
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
         {
-            if (update_day_counter())
+            if (updateDayCounter())
             {
                 stationmgr::update_daily();
                 call(0x004B94CF);
@@ -814,9 +814,9 @@ namespace openloco
                 call(0x004969DA);
                 call(0x00439BA5);
 
-                auto yesterday = calc_date(current_day() - 1);
-                auto today = calc_date(current_day());
-                set_date(today);
+                auto yesterday = calcDate(getCurrentDay() - 1);
+                auto today = calcDate(getCurrentDay());
+                setDate(today);
                 sub_496A84(today.day_of_olympiad);
                 if (today.month != yesterday.month)
                 {

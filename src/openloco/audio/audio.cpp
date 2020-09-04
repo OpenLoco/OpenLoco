@@ -956,7 +956,7 @@ namespace openloco::audio
         {
             case music_playlist_type::current_era:
             {
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 auto info = MusicInfo[_currentSong];
                 if (currentYear < info.start_year || currentYear > info.end_year)
                     trackStillApplies = false;
@@ -992,7 +992,7 @@ namespace openloco::audio
         {
             case music_playlist_type::current_era:
             {
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 for (auto i = 0; i < num_music_tracks; i++)
                 {
                     const auto& mi = MusicInfo[i];
@@ -1041,7 +1041,7 @@ namespace openloco::audio
             else
             {
                 const auto& mi = MusicInfo[excludeTrack];
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 if (currentYear >= mi.start_year && currentYear <= mi.end_year)
                 {
                     playlist.push_back(excludeTrack);

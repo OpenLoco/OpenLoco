@@ -1874,7 +1874,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             const auto company = companymgr::get(self->number);
 
-            uint32_t curYear = current_year();
+            uint32_t curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.

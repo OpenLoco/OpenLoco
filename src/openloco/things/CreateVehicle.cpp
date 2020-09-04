@@ -229,7 +229,7 @@ namespace openloco::things::vehicle
 
         auto& prng = gprng();
         newBogie->var_44 = prng.randNext();
-        newBogie->creation_day = current_day();
+        newBogie->creation_day = getCurrentDay();
         newBogie->var_46 = 0;
         newBogie->var_47 = 0;
         newBogie->accepted_cargo_types = 0;
@@ -260,11 +260,11 @@ namespace openloco::things::vehicle
         newBogie->var_38 = 0;
 
         int32_t reliability = vehObject.reliability * 256;
-        if (current_year() + 2 > vehObject.designed)
+        if (getCurrentYear() + 2 > vehObject.designed)
         {
             // Reduce reliability by an eighth after 2 years past design
             reliability -= reliability / 8;
-            if (current_year() + 3 > vehObject.designed)
+            if (getCurrentYear() + 3 > vehObject.designed)
             {
                 // Reduce reliability by a further eighth (quarter total) after 3 years past design
                 reliability -= reliability / 8;
@@ -350,7 +350,7 @@ namespace openloco::things::vehicle
 
         auto& prng = gprng();
         newBody->var_44 = prng.randNext();
-        newBody->creation_day = current_day();
+        newBody->creation_day = getCurrentDay();
         newBody->var_46 = 0;
         newBody->var_47 = 0;
         newBody->accepted_cargo_types = 0;

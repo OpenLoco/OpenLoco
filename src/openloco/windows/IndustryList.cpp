@@ -1002,9 +1002,9 @@ namespace openloco::ui::windows::industry_list
                 {
                     if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
                         continue;
-                    if (current_year() < industryObj->designedYear)
+                    if (getCurrentYear() < industryObj->designedYear)
                         continue;
-                    if (current_year() > industryObj->obsoleteYear)
+                    if (getCurrentYear() > industryObj->obsoleteYear)
                         continue;
                 }
                 self->row_info[industryCount] = i;

@@ -611,8 +611,8 @@ namespace openloco::ui::windows::industry
                 yTick += 1000;
             }
 
-            month_id month = current_month();
-            int16_t year = current_year();
+            month_id month = getCurrentMonth();
+            int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
             // This is either 0 or 1 depending on selected tab
             // used to select the correct history

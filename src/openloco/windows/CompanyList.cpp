@@ -1662,7 +1662,7 @@ namespace openloco::ui::windows::CompanyList
         // 0x004365E4
         static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi)
         {
-            auto totalMonths = (current_year() * 12) + static_cast<uint16_t>(current_month());
+            auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 
             _graphXAxisRange = totalMonths;
             _dword_113DD7C = 1;
