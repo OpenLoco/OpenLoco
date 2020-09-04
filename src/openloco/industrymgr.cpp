@@ -41,7 +41,7 @@ namespace openloco::industrymgr
     }
 
     // 0x0045383B
-    void update_monthly()
+    void updateMonthly()
     {
         call(0x0045383B);
     }
