@@ -253,7 +253,7 @@ namespace openloco::interop
         _originalAddress = 0;
 
 #ifdef _LOG_INTEROP_CALLS_
-        openloco::console::group_end();
+        openloco::console::groupEnd();
 #endif
         // lahf only modifies ah, zero out the rest
         return result & 0xFF00;

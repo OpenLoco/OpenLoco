@@ -25,7 +25,7 @@ namespace openloco::console
         va_end(args);
     }
 
-    void log_verbose(const char* format, ...)
+    void logVerbose(const char* format, ...)
     {
 #ifdef VERBOSE
         va_list args;
@@ -60,7 +60,7 @@ namespace openloco::console
         _group++;
     }
 
-    void group_end()
+    void groupEnd()
     {
         _group--;
     }

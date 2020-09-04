@@ -29,7 +29,7 @@
 
 using namespace openloco;
 
-#define STUB() console::log_verbose(__FUNCTION__)
+#define STUB() console::logVerbose(__FUNCTION__)
 
 #ifdef _MSC_VER
 #define STDCALL __stdcall
@@ -179,7 +179,7 @@ static void CDECL fn_4081ad(int32_t wParam)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 {
-    console::log_verbose("seek %d bytes from start", distance);
+    console::logVerbose("seek %d bytes from start", distance);
     fseek(a0, distance, SEEK_SET);
     return ftell(a0);
 }
@@ -187,7 +187,7 @@ static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 {
-    console::log_verbose("seek %d bytes from current", distance);
+    console::logVerbose("seek %d bytes from current", distance);
     fseek(a0, distance, SEEK_CUR);
     return ftell(a0);
 }
@@ -195,7 +195,7 @@ static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 {
-    console::log_verbose("seek %d bytes from end", distance);
+    console::logVerbose("seek %d bytes from end", distance);
     fseek(a0, distance, SEEK_END);
     return ftell(a0);
 }
@@ -203,7 +203,7 @@ static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 {
-    console::log_verbose("read %d bytes (%d)", size, fileno(a0));
+    console::logVerbose("read %d bytes (%d)", size, fileno(a0));
     size = fread(buffer, 1, size, a0);
 
     return size;
@@ -234,7 +234,7 @@ public:
 FORCE_ALIGN_ARG_POINTER
 static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 {
-    console::log_verbose("%s (%s)", __FUNCTION__, lpFileName);
+    console::logVerbose("%s (%s)", __FUNCTION__, lpFileName);
 
     Session* data = new Session;
 
@@ -398,7 +398,7 @@ static bool STDCALL lib_WriteFile(
     uintptr_t lpOverlapped)
 {
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
-    console::log_verbose("WriteFile(%s)", buffer);
+    console::logVerbose("WriteFile(%s)", buffer);
 
     return true;
 }
@@ -422,7 +422,7 @@ static int32_t STDCALL lib_CreateFileA(
     uint32_t dwFlagsAndAttributes,
     uintptr_t hTemplateFile)
 {
-    console::log_verbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
+    console::logVerbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
     FILE* pFILE = nullptr;
     if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
