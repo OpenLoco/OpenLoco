@@ -51,7 +51,7 @@ namespace openloco
         return produceCargoState;
     }
 
-    static bool find_tree(surface_element* surface)
+    static bool findTree(surface_element* surface)
     {
         auto element = surface;
         while (!element->isLast())
@@ -149,7 +149,7 @@ namespace openloco
                     {
                         // loc_4532E5
                         var_DB++;
-                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || find_tree(surface))
+                        if ((!(obj->flags & industry_object_flags::flag_28) && surface->var_4_E0() != 0) || findTree(surface))
                         {
                             var_DD++;
                         }
