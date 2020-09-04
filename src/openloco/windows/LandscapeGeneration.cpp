@@ -51,11 +51,11 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
 
-#define common_options_widgets(frame_height, window_caption_id)                                                                            \
-    makeWidget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                   \
-        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                                 \
-        makeWidget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),              \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                       \
+#define common_options_widgets(frame_height, window_caption_id)                                                                          \
+    makeWidget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                  \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                                \
+        makeWidget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),             \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                      \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_options),  \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_land),    \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_forests), \
