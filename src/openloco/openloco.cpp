@@ -823,7 +823,7 @@ namespace openloco
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    townmgr::update_monthly();
+                    townmgr::updateMonthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);

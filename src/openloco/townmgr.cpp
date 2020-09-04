@@ -46,13 +46,13 @@ namespace openloco::townmgr
     }
 
     // 0x0049771C
-    void update_labels()
+    void updateLabels()
     {
         call(0x0049771C);
     }
 
     // 0x0049748C
-    void update_monthly()
+    void updateMonthly()
     {
         for (town& currTown : towns())
         {
