@@ -47,7 +47,7 @@ namespace openloco::config
 
     new_config& readNewConfig()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_yml);
+        auto configPath = environment::getPath(environment::path_id::openloco_yml);
 
         if (!fs::exists(configPath))
             return _new_config;
@@ -93,7 +93,7 @@ namespace openloco::config
 
     void writeNewConfig()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_yml);
+        auto configPath = environment::getPath(environment::path_id::openloco_yml);
         auto dir = configPath.parent_path();
         if (!fs::is_directory(dir))
         {

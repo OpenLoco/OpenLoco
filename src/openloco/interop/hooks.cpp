@@ -644,7 +644,7 @@ void openloco::interop::register_hooks()
             using namespace openloco::environment;
 
             auto buffer = (char*)0x009D0D72;
-            auto path = get_path((path_id)regs.ebx);
+            auto path = getPath((path_id)regs.ebx);
 
             // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
