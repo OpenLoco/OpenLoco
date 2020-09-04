@@ -4,5 +4,5 @@
 
 namespace openloco::scenariomgr
 {
-    void load_index(uint8_t al);
+    void loadIndex(uint8_t al);
 }

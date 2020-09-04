@@ -6,7 +6,7 @@ using namespace openloco::interop;
 namespace openloco::scenariomgr
 {
     // 0x0044452F
-    void load_index(uint8_t al)
+    void loadIndex(uint8_t al)
     {
         registers regs;
         regs.al = al;
