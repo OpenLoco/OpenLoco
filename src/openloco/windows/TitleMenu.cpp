@@ -110,13 +110,13 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game),
-        make_widget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game),
-        make_widget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial),
-        make_widget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor),
-        make_widget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip),
-        make_widget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip),
-        widget_end(),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -163,7 +163,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::scenario_list_btn) | (1 << widx::load_game_btn) | (1 << widx::tutorial_btn) | (1 << widx::scenario_editor_btn) | (1 << widx::chat_btn) | (1 << widx::multiplayer_toggle_btn);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);
@@ -375,8 +375,8 @@ namespace openloco::ui::windows
     }
 
     static widget_t _editorWidgets[] = {
-        make_widget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
+        widgetEnd(),
     };
 
     // 0x0043CB9F

@@ -25,7 +25,7 @@ namespace openloco::ui::NewsWindow
     {
         widget_t widgets[] = {
             commonWidgets(360, 117, widget_type::wt_3),
-            widget_end(),
+            widgetEnd(),
         };
 
         window_event_list events;
@@ -815,7 +815,7 @@ namespace openloco::ui::NewsWindow
     {
         widget_t widgets[] = {
             commonWidgets(360, 159, widget_type::wt_5),
-            widget_end(),
+            widgetEnd(),
         };
     }
 }

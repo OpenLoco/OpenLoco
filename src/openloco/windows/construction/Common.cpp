@@ -39,7 +39,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(common::widx::tab_station);
+            window->callOnMouseUp(common::widx::tab_station);
         }
         return window;
     }
@@ -58,7 +58,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(construction::widx::rotate_90);
+            window->callOnMouseUp(construction::widx::rotate_90);
         }
 
         return window;
@@ -345,7 +345,7 @@ namespace openloco::ui::windows::construction
             if (_byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
             else
-                window->call_on_mouse_up(common::widx::tab_construction);
+                window->callOnMouseUp(common::widx::tab_construction);
         }
     }
 
@@ -374,7 +374,7 @@ namespace openloco::ui::windows::construction
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab
@@ -429,9 +429,9 @@ namespace openloco::ui::windows::construction
             self->width = self->widgets[widx::frame].right + 1;
             self->height = self->widgets[widx::frame].bottom + 1;
 
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
 
             tabInfo.tabReset(self);
@@ -457,7 +457,7 @@ namespace openloco::ui::windows::construction
             // Station Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_station].left + self->x + 1;
                     auto y = self->widgets[widx::tab_station].top + self->y + 1;
@@ -493,7 +493,7 @@ namespace openloco::ui::windows::construction
             // Overhead tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
@@ -549,7 +549,7 @@ namespace openloco::ui::windows::construction
                     else
                     {
                         widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
-                        if (!self->is_disabled(widx::tab_station))
+                        if (!self->isDisabled(widx::tab_station))
                         {
                             auto x = self->widgets[widx::tab_station].left + self->x + 1;
                             auto y = self->widgets[widx::tab_station].top + self->y + 1;
@@ -587,7 +587,7 @@ namespace openloco::ui::windows::construction
             // Signal Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_signal);
-                if (!self->is_disabled(widx::tab_signal))
+                if (!self->isDisabled(widx::tab_signal))
                 {
                     auto x = self->widgets[widx::tab_signal].left + self->x + 1;
                     auto y = self->widgets[widx::tab_signal].top + self->y + 1;
@@ -630,7 +630,7 @@ namespace openloco::ui::windows::construction
             // Overhead Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
@@ -673,7 +673,7 @@ namespace openloco::ui::windows::construction
 
             for (uint8_t i = widx::tab_construction; i <= widx::tab_overhead; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                 {
                     self->widgets[i].type = widget_type::none;
                     continue;
@@ -708,7 +708,7 @@ namespace openloco::ui::windows::construction
         void onUpdate(window* self, uint8_t flag)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::construction, self->number, self->current_tab + common::widx::tab_construction);
 
             if (input::isToolActive(WindowType::construction, self->number))
@@ -801,7 +801,7 @@ namespace openloco::ui::windows::construction
 
             setDisabledWidgets(window);
 
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             window->owner = _playerCompany;
 
             auto skin = objectmgr::get<interface_skin_object>();

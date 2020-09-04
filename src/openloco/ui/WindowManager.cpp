@@ -136,7 +136,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_in(false);
+                window->viewportZoomIn(false);
                 regs = backup;
                 return 0;
             });
@@ -146,7 +146,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_out(false);
+                window->viewportZoomOut(false);
                 regs = backup;
                 return 0;
             });
@@ -545,7 +545,7 @@ namespace openloco::ui::WindowManager
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            w->viewports_update_position();
+            w->viewportsUpdatePosition();
         }
 
         // 1000 tick update
@@ -555,7 +555,7 @@ namespace openloco::ui::WindowManager
             _thousandthTickCounter = 0;
             for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
             {
-                w->call_on_periodic_update();
+                w->callOnPeriodicUpdate();
             }
         }
 
@@ -631,14 +631,14 @@ namespace openloco::ui::WindowManager
 
             if ((w->flags & window_flags::no_background) != 0)
             {
-                auto index = w->find_widget_at(x, y);
+                auto index = w->findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->call_on_resize() == nullptr)
+            if (w->callOnResize() == nullptr)
             {
                 return findAt(x, y);
             }
@@ -672,14 +672,14 @@ namespace openloco::ui::WindowManager
 
             if ((w->flags & window_flags::no_background) != 0)
             {
-                auto index = w->find_widget_at(x, y);
+                auto index = w->findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->call_on_resize() == nullptr)
+            if (w->callOnResize() == nullptr)
             {
                 return findAtAlt(x, y);
             }
@@ -751,9 +751,9 @@ namespace openloco::ui::WindowManager
 
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->update_scroll_widgets();
-            w->invalidate_pressed_image_buttons();
-            w->call_on_resize();
+            w->updateScrollWidgets();
+            w->invalidatePressedImageButtons();
+            w->callOnResize();
         }
     }
 
@@ -1173,8 +1173,8 @@ namespace openloco::ui::WindowManager
         windowColours[2] = colour::opaque(w->colours[2]);
         windowColours[3] = colour::opaque(w->colours[3]);
 
-        w->call_prepare_draw();
-        w->call_draw(&dpi);
+        w->callPrepareDraw();
+        w->callDraw(&dpi);
     }
 
     // 0x004CD3D0
@@ -1185,7 +1185,7 @@ namespace openloco::ui::WindowManager
 
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->call_update();
+            w->callUpdate();
         }
 
         ui::textinput::sub_4CE6FF();
@@ -1205,7 +1205,7 @@ namespace openloco::ui::WindowManager
         auto type = window->type;
         uint16_t number = window->number;
 
-        window->call_close();
+        window->callClose();
 
         window = find(type, number);
         if (window == nullptr)
@@ -1257,7 +1257,7 @@ namespace openloco::ui::WindowManager
     {
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->call_viewport_rotate();
+            w->callViewportRotate();
         }
     }
 
@@ -1402,7 +1402,7 @@ namespace openloco::ui::WindowManager
 
     static void windowScrollWheelInput(ui::window* window, widget_index widgetIndex, int wheel)
     {
-        int scrollIndex = window->get_scroll_data_index(widgetIndex);
+        int scrollIndex = window->getScrollDataIndex(widgetIndex);
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
         ui::widget_t* widget = &window->widgets[widgetIndex];
 
@@ -1495,11 +1495,11 @@ namespace openloco::ui::WindowManager
             {
                 if (wheel > 0)
                 {
-                    main->viewport_rotate_right();
+                    main->viewportRotateRight();
                 }
                 else if (wheel < 0)
                 {
-                    main->viewport_rotate_left();
+                    main->viewportRotateLeft();
                 }
                 townmgr::updateLabels();
                 stationmgr::updateLabels();
@@ -1521,11 +1521,11 @@ namespace openloco::ui::WindowManager
 
                 if (wheel > 0)
                 {
-                    window->viewport_zoom_out(true);
+                    window->viewportZoomOut(true);
                 }
                 else if (wheel < 0)
                 {
-                    window->viewport_zoom_in(true);
+                    window->viewportZoomIn(true);
                 }
                 townmgr::updateLabels();
                 stationmgr::updateLabels();
@@ -1534,12 +1534,12 @@ namespace openloco::ui::WindowManager
             }
             else
             {
-                auto widgetIndex = window->find_widget_at(cursorPosition.x, cursorPosition.y);
+                auto widgetIndex = window->findWidgetAt(cursorPosition.x, cursorPosition.y);
                 if (widgetIndex != -1)
                 {
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)
                     {
-                        auto scrollIndex = window->get_scroll_data_index(widgetIndex);
+                        auto scrollIndex = window->getScrollDataIndex(widgetIndex);
                         constexpr uint16_t scrollbarFlags = scrollview::scroll_flags::HSCROLLBAR_VISIBLE | scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
                         if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
                         {

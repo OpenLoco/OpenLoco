@@ -84,15 +84,15 @@ namespace openloco::ui::prompt_browse
     };
 
     static widget_t widgets[] = {
-        make_widget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, string_ids::buffer_2039),
-        make_widget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
-        make_widget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
-        make_widget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
-        make_widget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
-        make_widget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, string_ids::buffer_2039),
+        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
+        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
+        makeWidget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
+        makeWidget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
+        makeWidget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -186,7 +186,7 @@ namespace openloco::ui::prompt_browse
         {
             window->widgets = widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
 
             _textInputCaret = -1;
             _textInputFlags = 0;
@@ -237,7 +237,7 @@ namespace openloco::ui::prompt_browse
     // 0x004467F6
     static void onResize(window* window)
     {
-        window->cap_size(400, 300, 640, 800);
+        window->capSize(400, 300, 640, 800);
     }
 
     // 0x00446465

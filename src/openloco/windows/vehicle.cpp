@@ -60,7 +60,7 @@ namespace openloco::ui::vehicle
         static void onUpdate(window* w)
         {
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 4);
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 10);
@@ -68,7 +68,7 @@ namespace openloco::ui::vehicle
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 14);
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 15);
 
-            if (w->is_disabled(13))
+            if (w->isDisabled(13))
             {
                 input::cancelTool(WindowType::vehicle, w->number);
                 return;
@@ -111,16 +111,16 @@ namespace openloco::ui::vehicle
             }
 
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 5);
 
-            if (_1136156 == -1 && w->is_activated(11))
+            if (_1136156 == -1 && w->isActivated(11))
             {
                 WindowManager::invalidateWidget(WindowType::vehicle, w->number, 11);
             }
 
-            if (w->is_disabled(10))
+            if (w->isDisabled(10))
             {
                 input::cancelTool(WindowType::vehicle, w->number);
                 return;
@@ -150,7 +150,7 @@ namespace openloco::ui::vehicle
         static void onUpdate(window* w)
         {
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 8);
 

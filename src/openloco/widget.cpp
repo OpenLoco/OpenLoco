@@ -727,7 +727,7 @@ namespace openloco::ui::widget
             cropped.x -= left - scroll_area->contentOffsetX;
             cropped.y -= top - scroll_area->contentOffsetY;
 
-            window->call_draw_scroll(&cropped, scrollview_index);
+            window->callDrawScroll(&cropped, scrollview_index);
         }
     }
 
@@ -790,13 +790,13 @@ namespace openloco::ui::widget
         pos.x = widget->left + w->x;
         pos.y = widget->top + w->y;
 
-        if (w->is_disabled(index))
+        if (w->isDisabled(index))
         {
             return; // 0x8000
         }
 
         bool isActivated = false;
-        if (w->is_activated(index))
+        if (w->isActivated(index))
         {
             isActivated = true;
         }

@@ -975,7 +975,7 @@ namespace openloco::ui
         auto toolWindow = WindowManager::find(_toolWindowType, _toolWindowNumber);
         if (toolWindow != nullptr)
         {
-            toolWindow->call_tool_update(_toolWidgetIdx, x, y);
+            toolWindow->callToolUpdate(_toolWidgetIdx, x, y);
         }
         else
         {

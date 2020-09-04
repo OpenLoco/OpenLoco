@@ -19,8 +19,8 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, window_size, widget_type::wt_3, 0),
-        widget_end(),
+        makeWidget({ 0, 0 }, window_size, widget_type::wt_3, 0),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -43,7 +43,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::logo;
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::grey);
         window->colours[1] = colour::translucent(colour::grey);

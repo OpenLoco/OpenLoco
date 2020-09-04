@@ -47,12 +47,12 @@ namespace openloco::ui::MessageWindow
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                      \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_recent_messages),              \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_message_options)
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                      \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_recent_messages),              \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_message_options)
 
         static window_event_list _events;
 
@@ -78,8 +78,8 @@ namespace openloco::ui::MessageWindow
 
         widget_t widgets[] = {
             commonWidgets(366, 217, string_ids::title_messages),
-            make_widget({ 3, 45 }, { 360, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
-            widget_end(),
+            makeWidget({ 3, 45 }, { 360, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -357,12 +357,12 @@ namespace openloco::ui::MessageWindow
 
         common::initEvents();
 
-        window->call_on_resize();
-        window->call_prepare_draw();
-        window->init_scroll_widgets();
+        window->callOnResize();
+        window->callPrepareDraw();
+        window->initScrollWidgets();
 
         uint16_t scrollHeight = 0;
-        window->call_get_scroll_size(0, 0, &scrollHeight);
+        window->callGetScrollSize(0, 0, &scrollHeight);
 
         scrollHeight -= window->widgets[messages::widx::scrollview].height();
 
@@ -398,19 +398,19 @@ namespace openloco::ui::MessageWindow
 
         widget_t widgets[] = {
             commonWidgets(366, 217, string_ids::title_messages),
-            make_widget({ 236, 47 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 48 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 236, 62 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 63 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 236, 77 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 78 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 236, 92 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 93 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 236, 107 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 108 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 236, 122 }, { 124, 12 }, widget_type::wt_18, 1),
-            make_widget({ 348, 123 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            widget_end(),
+            makeWidget({ 236, 47 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 48 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 236, 62 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 63 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 236, 77 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 78 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 236, 92 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 93 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 236, 107 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 108 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 236, 122 }, { 124, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 348, 123 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -590,7 +590,7 @@ namespace openloco::ui::MessageWindow
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab..
@@ -641,9 +641,9 @@ namespace openloco::ui::MessageWindow
             if (self->current_tab == widx::tab_settings - widx::tab_messages)
                 settings::tabReset(self);
 
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }
@@ -674,7 +674,7 @@ namespace openloco::ui::MessageWindow
         static void onUpdate(window* self)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::messages, self->number, self->current_tab + common::widx::tab_messages);
         }
 

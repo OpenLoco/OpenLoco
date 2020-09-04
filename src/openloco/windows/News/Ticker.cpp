@@ -10,8 +10,8 @@ using namespace openloco::interop;
 namespace openloco::ui::NewsWindow::ticker
 {
     widget_t widgets[] = {
-        make_widget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
+        widgetEnd(),
     };
 
     window_event_list events;

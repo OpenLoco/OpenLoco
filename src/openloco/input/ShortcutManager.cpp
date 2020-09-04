@@ -177,7 +177,7 @@ namespace openloco::input::ShortcutManager
         if (main == nullptr)
             return;
 
-        main->viewport_zoom_out(false);
+        main->viewportZoomOut(false);
         townmgr::updateLabels();
         stationmgr::updateLabels();
     }
@@ -189,7 +189,7 @@ namespace openloco::input::ShortcutManager
         if (main == nullptr)
             return;
 
-        main->viewport_zoom_in(false);
+        main->viewportZoomIn(false);
         townmgr::updateLabels();
         stationmgr::updateLabels();
     }
@@ -201,7 +201,7 @@ namespace openloco::input::ShortcutManager
         if (main == nullptr)
             return;
 
-        main->viewport_rotate_right();
+        main->viewportRotateRight();
         townmgr::updateLabels();
         stationmgr::updateLabels();
         windows::map::centerOnViewPoint();

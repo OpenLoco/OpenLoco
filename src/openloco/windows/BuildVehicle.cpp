@@ -187,27 +187,27 @@ namespace openloco::ui::BuildVehicle
 
     // 0x5231D0
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 380, 233 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 378, 13 }, widget_type::caption_24, 0),
-        make_widget({ 365, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 41 }, { 380, 192 }, widget_type::panel, 1),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_train_vehicles),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_buses),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_trucks),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_trams),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_aircraft),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_ships),
-        make_remap_widget({ 5, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 36, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 67, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 98, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 129, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_remap_widget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
-        make_widget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
-        make_widget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1, scrollbars::none),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 380, 233 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 378, 13 }, widget_type::caption_24, 0),
+        makeWidget({ 365, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 380, 192 }, widget_type::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_train_vehicles),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_new_ships),
+        makeRemapWidget({ 5, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 36, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 67, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 98, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 129, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_vehicles_for),
+        makeWidget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
+        makeWidget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1, scrollbars::none),
+        widgetEnd(),
     };
 
     static constexpr uint32_t widxToTrackTypeTab(widget_index widgetIndex)
@@ -287,7 +287,7 @@ namespace openloco::ui::BuildVehicle
                 // Not a vehicle but a type
                 tab += vehicle;
             }
-            window->call_on_mouse_up(tab);
+            window->callOnMouseUp(tab);
 
             if (tabMode)
             {
@@ -330,9 +330,9 @@ namespace openloco::ui::BuildVehicle
             resetTrackTypeTabSelection(window);
             sub_4B92A5(window);
 
-            window->call_on_resize();
-            window->call_prepare_draw();
-            window->init_scroll_widgets();
+            window->callOnResize();
+            window->callPrepareDraw();
+            window->initScrollWidgets();
         }
 
         if (_buildTargetVehicle == -1)
@@ -364,7 +364,7 @@ namespace openloco::ui::BuildVehicle
             }
         }
 
-        window->call_on_mouse_up(widgetIndex);
+        window->callOnMouseUp(widgetIndex);
         return window;
     }
 
@@ -619,10 +619,10 @@ namespace openloco::ui::BuildVehicle
                 window->row_count = 0;
                 window->var_83C = 0;
                 window->row_hover = -1;
-                window->call_on_resize();
-                window->call_on_periodic_update();
-                window->call_prepare_draw();
-                window->init_scroll_widgets();
+                window->callOnResize();
+                window->callOnPeriodicUpdate();
+                window->callPrepareDraw();
+                window->initScrollWidgets();
                 window->invalidate();
                 window->moveInsideScreenEdges();
                 break;
@@ -646,10 +646,10 @@ namespace openloco::ui::BuildVehicle
                 window->row_count = 0;
                 window->var_83C = 0;
                 window->row_hover = -1;
-                window->call_on_resize();
-                window->call_on_periodic_update();
-                window->call_prepare_draw();
-                window->init_scroll_widgets();
+                window->callOnResize();
+                window->callOnPeriodicUpdate();
+                window->callPrepareDraw();
+                window->initScrollWidgets();
                 window->invalidate();
                 break;
             }
@@ -715,7 +715,7 @@ namespace openloco::ui::BuildVehicle
     static void onUpdate(window* window)
     {
         window->frame_no++;
-        window->call_prepare_draw();
+        window->callPrepareDraw();
 
         WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, window->current_tab + 4);
         WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, (window->current_secondary_tab & 0xFF) + 10);
@@ -863,7 +863,7 @@ namespace openloco::ui::BuildVehicle
         if (window->widgets != _widgets)
         {
             window->widgets = _widgets;
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
         }
 
         // Mask off all the tabs

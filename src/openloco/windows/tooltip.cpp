@@ -136,7 +136,7 @@ namespace openloco::ui::tooltip
             return;
         }
 
-        window->call_prepare_draw();
+        window->callPrepareDraw();
         if (window->widgets[widgetIndex].tooltip == string_ids::null)
         {
             return;
@@ -146,7 +146,7 @@ namespace openloco::ui::tooltip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto showString = window->call_tooltip(widgetIndex);
+        auto showString = window->callTooltip(widgetIndex);
         if (!showString)
         {
             return;
@@ -172,7 +172,7 @@ namespace openloco::ui::tooltip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto showString = window->call_tooltip(widgetIndex);
+        auto showString = window->callTooltip(widgetIndex);
         if (!showString)
         {
             return;

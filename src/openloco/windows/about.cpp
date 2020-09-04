@@ -23,12 +23,12 @@ namespace openloco::ui::about
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::about_locomotion_caption),
-        make_widget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
-        make_widget({ 100, 234 }, { windowSize.width / 2, 12 }, widget_type::wt_11, 1, string_ids::music_acknowledgements_btn),
-        widget_end(),
+        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::about_locomotion_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
+        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, widget_type::wt_11, 1, string_ids::music_acknowledgements_btn),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -51,7 +51,7 @@ namespace openloco::ui::about
 
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         const auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;

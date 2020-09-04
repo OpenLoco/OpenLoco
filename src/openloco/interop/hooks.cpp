@@ -818,7 +818,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (ui::window*)regs.esi;
-            window->viewports_update_position();
+            window->viewportsUpdatePosition();
             regs = backup;
             return 0;
         });
@@ -831,7 +831,7 @@ void openloco::interop::register_hooks()
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
-            auto widgetIndex = window->find_widget_at(x, y);
+            auto widgetIndex = window->findWidgetAt(x, y);
 
             regs = backup;
             regs.edx = widgetIndex;
@@ -852,7 +852,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             registers backup = regs;
             auto window = (ui::window*)regs.esi;
-            window->update_scroll_widgets();
+            window->updateScrollWidgets();
             regs = backup;
 
             return 0;
@@ -863,7 +863,7 @@ void openloco::interop::register_hooks()
         [](registers& regs) -> uint8_t {
             registers backup = regs;
             auto window = (ui::window*)regs.esi;
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             regs = backup;
 
             return 0;

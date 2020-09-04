@@ -52,15 +52,15 @@ namespace openloco::ui::windows::LandscapeGeneration
         const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
 
 #define common_options_widgets(frame_height, window_caption_id)                                                                            \
-    make_widget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                   \
-        make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                                 \
-        make_widget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),              \
-        make_widget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                       \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_options),  \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_land),    \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_forests), \
-        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_towns),   \
-        make_remap_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_industries)
+    makeWidget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                   \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                                 \
+        makeWidget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),              \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                       \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_options),  \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_land),    \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_forests), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_towns),   \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -141,7 +141,7 @@ namespace openloco::ui::windows::LandscapeGeneration
         static void update(window* window)
         {
             window->frame_no++;
-            window->call_prepare_draw();
+            window->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->current_tab + widx::tab_options);
         }
     }
@@ -162,10 +162,10 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_options),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::start_year_value),
-            make_widget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::label_generate_random_landscape_when_game_starts, string_ids::tooltip_generate_random_landscape_when_game_starts),
-            make_widget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::button_generate_landscape, string_ids::tooltip_generate_random_landscape),
-            widget_end()
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::start_year_value),
+            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::label_generate_random_landscape_when_game_starts, string_ids::tooltip_generate_random_landscape_when_game_starts),
+            makeWidget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::button_generate_landscape, string_ids::tooltip_generate_random_landscape),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -326,9 +326,9 @@ namespace openloco::ui::windows::LandscapeGeneration
         window->activated_widgets = 0;
         window->holdable_widgets = options::holdable_widgets;
 
-        window->call_on_resize();
-        window->call_prepare_draw();
-        window->init_scroll_widgets();
+        window->callOnResize();
+        window->callPrepareDraw();
+        window->initScrollWidgets();
 
         return window;
     }
@@ -357,14 +357,14 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(232, string_ids::title_landscape_generation_land),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::sea_level_units),
-            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_land_height_units),
-            make_widget({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_percent),
-            make_widget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::create_hills_right_up_to_edge_of_map),
-            make_widget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
-            widget_end()
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::sea_level_units),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_land_height_units),
+            makeWidget({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_percent),
+            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::create_hills_right_up_to_edge_of_map),
+            makeWidget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -704,15 +704,15 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_forests),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_forests_value),
-            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_radius_blocks),
-            make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_radius_blocks),
-            make_stepper_widgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_density_percent),
-            make_stepper_widgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_density_percent),
-            make_stepper_widgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_random_trees_value),
-            make_stepper_widgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_altitude_for_trees_height),
-            make_stepper_widgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_altitude_for_trees_height),
-            widget_end()
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_forests_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_radius_blocks),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_radius_blocks),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_density_percent),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_density_percent),
+            makeStepperWidgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_random_trees_value),
+            makeStepperWidgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_altitude_for_trees_height),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -948,10 +948,10 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_towns),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_towns_value),
-            make_widget({ 176, 67 }, { 180, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            widget_end()
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_towns_value),
+            makeWidget({ 176, 67 }, { 180, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -1089,11 +1089,11 @@ namespace openloco::ui::windows::LandscapeGeneration
 
         static widget_t widgets[] = {
             common_options_widgets(217, string_ids::title_landscape_generation_industries),
-            make_widget({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_industries_to_close_down_during_game),
-            make_widget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_new_industries_to_start_up_during_game),
-            widget_end()
+            makeWidget({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_industries_to_close_down_during_game),
+            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_new_industries_to_start_up_during_game),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -1223,7 +1223,7 @@ namespace openloco::ui::windows::LandscapeGeneration
             if (window->widgets != newWidgets)
             {
                 window->widgets = newWidgets;
-                window->init_scroll_widgets();
+                window->initScrollWidgets();
             }
 
             static const widx tabWidgetIdxByTabId[] = {
@@ -1287,11 +1287,11 @@ namespace openloco::ui::windows::LandscapeGeneration
             if (widgetIndex == widx::tab_land)
                 newSize = &land_tab_size;
 
-            window->set_size(*newSize);
+            window->setSize(*newSize);
 
-            window->call_on_resize();
-            window->call_prepare_draw();
-            window->init_scroll_widgets();
+            window->callOnResize();
+            window->callPrepareDraw();
+            window->initScrollWidgets();
             window->invalidate();
             window->moveInsideScreenEdges();
         }

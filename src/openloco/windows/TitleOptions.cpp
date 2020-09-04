@@ -23,8 +23,8 @@ namespace openloco::ui::title_options
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1),
-        widget_end(),
+        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -47,7 +47,7 @@ namespace openloco::ui::title_options
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::options_button);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);

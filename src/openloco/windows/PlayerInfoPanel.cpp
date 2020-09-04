@@ -44,12 +44,12 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
     // 0x00509d08
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
-        make_widget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
-        make_widget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        make_widget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
-        make_widget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
+        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
+        makeWidget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
+        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -190,7 +190,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::player) | (1 << widx::company_value) | (1 << widx::performance_index);
         window->var_854 = 0;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)

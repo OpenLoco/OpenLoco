@@ -204,7 +204,7 @@ namespace openloco::ui::scrollview
         registers regs;
 
         regs.esi = (uintptr_t)window;
-        regs.ebx = window->get_scroll_data_index(widgetIndex) * sizeof(scroll_area_t);
+        regs.ebx = window->getScrollDataIndex(widgetIndex) * sizeof(scroll_area_t);
         regs.edi = (uintptr_t)&window->widgets[widgetIndex];
         call(0x4CA1ED, regs);
     }
@@ -328,7 +328,7 @@ namespace openloco::ui::scrollview
         switch (scrollArea)
         {
             case ui::scrollview::scroll_part::view:
-                w->call_scroll_mouse_down(outX, outY, static_cast<uint8_t>(scrollIndex));
+                w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
                 break;
             case ui::scrollview::scroll_part::hscrollbar_button_left:
                 hButtonLeft(w, scrollIndex, widgetIndex);
@@ -373,7 +373,7 @@ namespace openloco::ui::scrollview
 
         if (scrollArea == ui::scrollview::scroll_part::view)
         {
-            w->call_scroll_mouse_down(outX, outY, static_cast<uint8_t>(scrollIndex));
+            w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
         }
     }
 
@@ -427,7 +427,7 @@ namespace openloco::ui::scrollview
             switch (scrollArea)
             {
                 case scroll_part::view: // 0x004C729A
-                    w->call_scroll_mouse_drag(point.x, point.y, static_cast<uint8_t>(scrollIndex));
+                    w->callScrollMouseDrag(point.x, point.y, static_cast<uint8_t>(scrollIndex));
                     break;
 
                 case scroll_part::hscrollbar_button_left:

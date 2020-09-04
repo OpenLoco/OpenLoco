@@ -39,22 +39,22 @@ namespace openloco::ui::windows::toolbar_top::editor
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),   // 0
-        make_widget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),  // 1
-        make_widget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),  // 2
-        make_widget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 3
-        make_widget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 4
+        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),   // 0
+        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),  // 1
+        makeWidget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),  // 2
+        makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 3
+        makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 4
 
-        make_widget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 5
-        make_widget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 6
-        make_widget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 7
-        make_widget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 8
-        make_widget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 9
+        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 5
+        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 6
+        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 7
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 9
 
-        make_widget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 10
-        make_widget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 11
-        make_widget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3), // 12
-        widget_end(),
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 10
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 11
+        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3), // 12
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -87,7 +87,7 @@ namespace openloco::ui::windows::toolbar_top::editor
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << common::widx::loadsave_menu) | (1 << common::widx::audio_menu) | (1 << common::widx::zoom_menu) | (1 << common::widx::rotate_menu) | (1 << common::widx::view_menu) | (1 << common::widx::terraform_menu) | (1 << widx::map_generation_menu) | (1 << common::widx::road_menu) | (1 << common::widx::towns_menu);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->colours[0] = colour::grey;
         window->colours[1] = colour::grey;
         window->colours[2] = colour::grey;

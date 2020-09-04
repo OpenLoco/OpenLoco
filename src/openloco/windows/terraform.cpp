@@ -80,15 +80,15 @@ namespace openloco::ui::windows::terraform
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_adjust_land) | (1 << widx::tab_adjust_water) | (1 << widx::tab_build_walls) | (1 << widx::tab_clear_area) | (1 << widx::tab_plant_trees);
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                       \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_clear_land),                   \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_land),                  \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_water),                 \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_plant_trees),                  \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_build_walls)
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                       \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_clear_land),                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_land),                  \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_water),                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_plant_trees),                  \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_build_walls)
 
         static window_event_list _events;
 
@@ -124,12 +124,12 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(634, 162, string_ids::title_plant_trees),
-            make_widget({ 3, 45 }, { 605, 101 }, widget_type::scrollview, 1, scrollbars::vertical),
-            make_widget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
-            make_widget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
-            make_widget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
-            make_widget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
-            widget_end(),
+            makeWidget({ 3, 45 }, { 605, 101 }, widget_type::scrollview, 1, scrollbars::vertical),
+            makeWidget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
+            makeWidget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
+            makeWidget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
+            makeWidget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -161,7 +161,7 @@ namespace openloco::ui::windows::terraform
         static void updateActiveThumb(window* self)
         {
             uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, 0, &scrollHeight);
             self->scroll_areas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -291,7 +291,7 @@ namespace openloco::ui::windows::terraform
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
         }
@@ -346,7 +346,7 @@ namespace openloco::ui::windows::terraform
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        widget_index activeWidget = self->find_widget_at(xPos, yPos);
+                        widget_index activeWidget = self->findWidgetAt(xPos, yPos);
 
                         if (activeWidget > common::widx::panel)
                         {
@@ -390,7 +390,7 @@ namespace openloco::ui::windows::terraform
             }
             self->frame_no++;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
         }
 
@@ -679,7 +679,7 @@ namespace openloco::ui::windows::terraform
         auto window = WindowManager::bringToFront(WindowType::terraform, 0);
         if (window != nullptr)
         {
-            window->call_on_mouse_up(common::widx::tab_plant_trees);
+            window->callOnMouseUp(common::widx::tab_plant_trees);
         }
         else
         {
@@ -729,9 +729,9 @@ namespace openloco::ui::windows::terraform
 
             window->disabled_widgets = 0;
 
-            window->call_on_resize();
-            window->call_prepare_draw();
-            window->init_scroll_widgets();
+            window->callOnResize();
+            window->callPrepareDraw();
+            window->initScrollWidgets();
 
             window->var_83C = 0;
             window->row_hover = -1;
@@ -758,10 +758,10 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::clear_area),
-            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_clear_area),
-            make_widget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_clear_area),
-            make_widget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_clear_area),
-            widget_end(),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_clear_area),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -940,11 +940,11 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::title_adjust_land),
-            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_land_tool),
-            make_widget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_land_area),
-            make_widget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_land_area),
-            make_widget({ 55 + 16, 92 }, { 20, 20 }, widget_type::wt_6, 0),
-            widget_end(),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_land_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_land_area),
+            makeWidget({ 55 + 16, 92 }, { 20, 20 }, widget_type::wt_6, 0),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -1376,7 +1376,7 @@ namespace openloco::ui::windows::terraform
             if (window == nullptr)
                 return;
 
-            widget_index newWidgetIndex = window->find_widget_at(x, y);
+            widget_index newWidgetIndex = window->findWidgetAt(x, y);
             if (newWidgetIndex == -1)
                 return;
 
@@ -1514,10 +1514,10 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::title_adjust_water),
-            make_widget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_water_tool),
-            make_widget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_water_area),
-            make_widget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_water_area),
-            widget_end(),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_water_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::decrease_tool_area, colour::white), string_ids::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, gfx::recolour(image_ids::increase_tool_area, colour::white), string_ids::tooltip_increase_adjust_water_area),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -1623,7 +1623,7 @@ namespace openloco::ui::windows::terraform
             if (window == nullptr)
                 return;
 
-            widget_index newWidgetIndex = window->find_widget_at(x, y);
+            widget_index newWidgetIndex = window->findWidgetAt(x, y);
             if (newWidgetIndex == -1)
                 return;
 
@@ -1753,8 +1753,8 @@ namespace openloco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(418, 108, string_ids::title_build_walls),
-            make_widget({ 2, 45 }, { 391, 48 }, widget_type::scrollview, 1, scrollbars::vertical),
-            widget_end(),
+            makeWidget({ 2, 45 }, { 391, 48 }, widget_type::scrollview, 1, scrollbars::vertical),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -1763,7 +1763,7 @@ namespace openloco::ui::windows::terraform
         static void updateActiveThumb(window* self)
         {
             uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, 0, &scrollHeight);
             self->scroll_areas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -1844,7 +1844,7 @@ namespace openloco::ui::windows::terraform
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
         }
@@ -1874,7 +1874,7 @@ namespace openloco::ui::windows::terraform
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        widget_index activeWidget = self->find_widget_at(xPos, yPos);
+                        widget_index activeWidget = self->findWidgetAt(xPos, yPos);
 
                         if (activeWidget > common::widx::panel)
                         {
@@ -1918,7 +1918,7 @@ namespace openloco::ui::windows::terraform
             }
             self->frame_no++;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
         }
 
@@ -2140,7 +2140,7 @@ namespace openloco::ui::windows::terraform
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
             gfx::ui_size_t windowSize = { width, height };
-            self->set_size(windowSize, windowSize);
+            self->setSize(windowSize, windowSize);
         }
 
         // 0x004BC78A, 0x004BCB0B
@@ -2153,7 +2153,7 @@ namespace openloco::ui::windows::terraform
                 WindowManager::close(self);
 
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
         }
 
@@ -2184,7 +2184,7 @@ namespace openloco::ui::windows::terraform
 
             for (uint8_t i = widx::tab_clear_area; i <= widx::tab_build_walls; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                 {
                     self->widgets[i].type = widget_type::none;
                     continue;
@@ -2204,7 +2204,7 @@ namespace openloco::ui::windows::terraform
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab..
@@ -2329,9 +2329,9 @@ namespace openloco::ui::windows::terraform
                     break;
             }
 
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }
@@ -2357,35 +2357,35 @@ namespace openloco::ui::windows::terraform
     void openClearArea()
     {
         auto terraform_window = open();
-        terraform_window->call_on_mouse_up(common::widx::tab_clear_area);
+        terraform_window->callOnMouseUp(common::widx::tab_clear_area);
     }
 
     // 0x004BB546
     void openAdjustLand()
     {
         auto terraform_window = open();
-        terraform_window->call_on_mouse_up(common::widx::tab_adjust_land);
+        terraform_window->callOnMouseUp(common::widx::tab_adjust_land);
     }
 
     // 0x004BB556
     void openAdjustWater()
     {
         auto terraform_window = open();
-        terraform_window->call_on_mouse_up(common::widx::tab_adjust_water);
+        terraform_window->callOnMouseUp(common::widx::tab_adjust_water);
     }
 
     // 0x004BB4A3
     void openPlantTrees()
     {
         auto terraform_window = open();
-        terraform_window->call_on_mouse_up(common::widx::tab_plant_trees);
+        terraform_window->callOnMouseUp(common::widx::tab_plant_trees);
     }
 
     // 0x004BB576
     void openBuildWalls()
     {
         auto terraform_window = open();
-        terraform_window->call_on_mouse_up(common::widx::tab_build_walls);
+        terraform_window->callOnMouseUp(common::widx::tab_build_walls);
     }
 
     void registerHooks()

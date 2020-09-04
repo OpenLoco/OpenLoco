@@ -28,12 +28,12 @@ namespace openloco::ui::windows::music_selection
     };
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::music_selection_title),
-        make_widget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
-        make_widget({ 4, 19 }, { 352, 218 }, widget_type::scrollview, 1, scrollbars::vertical, string_ids::music_selection_tooltip),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::music_selection_title),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
+        makeWidget({ 4, 19 }, { 352, 218 }, widget_type::scrollview, 1, scrollbars::vertical, string_ids::music_selection_tooltip),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -77,7 +77,7 @@ namespace openloco::ui::windows::music_selection
 
         window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::close;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto interface = objectmgr::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;

@@ -257,14 +257,14 @@ namespace openloco::ui::windows::toolbar_top::common
 
         if (itemIndex == 0)
         {
-            window->viewport_zoom_in(false);
+            window->viewportZoomIn(false);
             townmgr::updateLabels();
             stationmgr::updateLabels();
         }
         else if (itemIndex == 1)
         {
             zoom_ticks = 0;
-            window->viewport_zoom_out(false);
+            window->viewportZoomOut(false);
             townmgr::updateLabels();
             stationmgr::updateLabels();
         }
@@ -285,14 +285,14 @@ namespace openloco::ui::windows::toolbar_top::common
 
         if (itemIndex == 1 || mouseButtonUsed == input::mouse_button::right_pressed)
         {
-            window->viewport_rotate_left();
+            window->viewportRotateLeft();
             townmgr::updateLabels();
             stationmgr::updateLabels();
             windows::map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
-            window->viewport_rotate_right();
+            window->viewportRotateRight();
             townmgr::updateLabels();
             stationmgr::updateLabels();
             windows::map::centerOnViewPoint();
@@ -460,9 +460,9 @@ namespace openloco::ui::windows::toolbar_top::common
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
-            window->set_disabled_widgets_and_invalidate(widx::zoom_menu | widx::rotate_menu);
+            window->setDisabledWidgetsAndInvalidate(widx::zoom_menu | widx::rotate_menu);
         else
-            window->set_disabled_widgets_and_invalidate(0);
+            window->setDisabledWidgetsAndInvalidate(0);
     }
 
     void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)

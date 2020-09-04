@@ -21,11 +21,11 @@ namespace openloco::ui::EditKeyboardShortcut
     static loco_global<uint8_t, 0x011364A4> _11364A4;
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, windowSize, widget_type::frame, 0, 0xFFFFFFFF),                                                  // 0,
-        make_widget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::change_keyboard_shortcut), // 1,
-        make_widget({ 265, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),  // 2,
-        make_widget({ 0, 15 }, { windowSize.width, 57 }, widget_type::panel, 1, 0xFFFFFFFF),                                   // 3,
-        widget_end(),
+        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0, 0xFFFFFFFF),                                                  // 0,
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::change_keyboard_shortcut), // 1,
+        makeWidget({ 265, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),  // 2,
+        makeWidget({ 0, 15 }, { windowSize.width, 57 }, widget_type::panel, 1, 0xFFFFFFFF),                                   // 3,
+        widgetEnd(),
     };
 
     static void initEvents();
@@ -54,7 +54,7 @@ namespace openloco::ui::EditKeyboardShortcut
 
         window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::close;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         const auto skin = objectmgr::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;

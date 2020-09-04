@@ -74,7 +74,7 @@ namespace openloco::gui
                     ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
                     (ui::window_event_list*)0x4fa10c);
                 window->widgets = (ui::widget_t*)0x509de0;
-                window->init_scroll_widgets();
+                window->initScrollWidgets();
 
                 auto skin = openloco::objectmgr::get<interface_skin_object>();
                 if (skin != nullptr)

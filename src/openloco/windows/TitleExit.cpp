@@ -23,8 +23,8 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game),
-        widget_end(),
+        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -49,7 +49,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::exit_button);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);

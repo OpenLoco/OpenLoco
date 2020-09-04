@@ -149,8 +149,8 @@ namespace openloco::ui::dropdown
         };
 
         widget_t widgets[] = {
-            make_widget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
-            widget_end()
+            makeWidget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
+            widgetEnd()
         };
 
         static window_event_list events;

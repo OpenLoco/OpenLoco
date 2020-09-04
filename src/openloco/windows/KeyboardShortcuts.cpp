@@ -21,13 +21,13 @@ namespace openloco::ui::KeyboardShortcuts
     static loco_global<string_id[8], 0x0112C826> _commonFormatArgs;
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::keyboard_shortcuts),
-        make_widget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
-        make_widget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, string_ids::keyboard_shortcut_list_tip),
-        make_widget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, string_ids::reset_keys, string_ids::reset_keys_tip),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::keyboard_shortcuts),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
+        makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, string_ids::keyboard_shortcut_list_tip),
+        makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, string_ids::reset_keys, string_ids::reset_keys_tip),
+        widgetEnd(),
     };
 
     namespace widx
@@ -79,7 +79,7 @@ namespace openloco::ui::KeyboardShortcuts
 
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::reset_keys_btn);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;

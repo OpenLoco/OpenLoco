@@ -50,22 +50,22 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        make_widget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        make_widget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        make_widget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        make_widget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+        makeWidget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
 
-        make_widget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
 
-        make_widget({ 490, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        make_widget({ 520, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        make_widget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        widget_end(),
+        makeWidget({ 490, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        makeWidget({ 520, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -98,7 +98,7 @@ namespace openloco::ui::windows::toolbar_top::game
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << common::widx::loadsave_menu) | (1 << common::widx::audio_menu) | (1 << common::widx::zoom_menu) | (1 << common::widx::rotate_menu) | (1 << common::widx::view_menu) | (1 << common::widx::terraform_menu) | (1 << widx::railroad_menu) | (1 << common::widx::road_menu) | (1 << common::widx::port_menu) | (1 << common::widx::build_vehicles_menu) | (1 << common::widx::vehicles_menu) | (1 << common::widx::stations_menu) | (1 << common::widx::towns_menu);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)

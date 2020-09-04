@@ -303,7 +303,7 @@ namespace openloco::input
                 // Abort tool event
                 window* w = ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
                 if (w != nullptr)
-                    w->call_tool_abort(_toolWidgetIndex);
+                    w->callToolAbort(_toolWidgetIndex);
             }
         }
     }
@@ -350,7 +350,7 @@ namespace openloco::input
         ui::widget_index widgetIndex = -1;
         if (window != nullptr)
         {
-            widgetIndex = window->find_widget_at(x, y);
+            widgetIndex = window->findWidgetAt(x, y);
         }
 
         if (*_modalWindowType != ui::WindowType::undefined)
@@ -1071,13 +1071,13 @@ namespace openloco::input
         w->width = std::clamp<uint16_t>(w->width + dx, w->min_width, w->max_width);
         w->height = std::clamp<uint16_t>(w->height + dy, w->min_height, w->max_height);
         w->flags |= ui::window_flags::flag_15;
-        w->call_on_resize();
-        w->call_prepare_draw();
+        w->callOnResize();
+        w->callPrepareDraw();
         w->scroll_areas[0].contentWidth = -1;
         w->scroll_areas[0].contentHeight = -1;
         w->scroll_areas[1].contentWidth = -1;
         w->scroll_areas[1].contentHeight = -1;
-        window->update_scroll_widgets();
+        window->updateScrollWidgets();
         w->invalidate();
 
         _dragLastX = x;
@@ -1134,17 +1134,17 @@ namespace openloco::input
                     auto dragWindow = WindowManager::find(_dragWindowType, _dragWindowNumber);
                     if (dragWindow != nullptr)
                     {
-                        if (dragWindow->is_enabled(_pressedWidgetIndex))
+                        if (dragWindow->isEnabled(_pressedWidgetIndex))
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
                             audio::playSound(audio::sound_id::click_press, dragWindow->x + pressedWidget->mid_x());
-                            dragWindow->call_on_mouse_up(_pressedWidgetIndex);
+                            dragWindow->callOnMouseUp(_pressedWidgetIndex);
                         }
                     }
                 }
 
-                w->call_on_move(_dragLastX, _dragLastY);
+                w->callOnMove(_dragLastX, _dragLastY);
             }
             break;
 
@@ -1177,7 +1177,7 @@ namespace openloco::input
 
         if (*_modalWindowType == ui::WindowType::undefined || *_modalWindowType == window->type)
         {
-            window->call_on_dropdown(_pressedWidgetIndex, item);
+            window->callOnDropdown(_pressedWidgetIndex, item);
         }
     }
 
@@ -1289,7 +1289,7 @@ namespace openloco::input
 
                 if (window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex)
                 {
-                    if (!window->is_disabled(widgetIndex))
+                    if (!window->isDisabled(widgetIndex))
                     {
                         if (_clickRepeatTicks != 0)
                         {
@@ -1297,9 +1297,9 @@ namespace openloco::input
                         }
 
                         // Handle click repeat
-                        if (window->is_holdable(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
+                        if (window->isHoldable(widgetIndex) && _clickRepeatTicks >= 16 && (_clickRepeatTicks % 4) == 0)
                         {
-                            window->call_on_mouse_down(widgetIndex);
+                            window->callOnMouseDown(widgetIndex);
                         }
 
                         bool flagSet = input::hasFlag(input_flags::widget_pressed);
@@ -1396,10 +1396,10 @@ namespace openloco::input
                 audio::playSound(audio::sound_id::click_up, window->x + widget->mid_x());
             }
 
-            if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->is_disabled(widgetIndex))
+            if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->isDisabled(widgetIndex))
             {
                 WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
-                window->call_on_mouse_up(widgetIndex);
+                window->callOnMouseUp(widgetIndex);
                 return;
             }
         }
@@ -1473,7 +1473,7 @@ namespace openloco::input
 
         if (window != nullptr && widgetIndex != -1)
         {
-            if (!window->is_disabled(widgetIndex))
+            if (!window->isDisabled(widgetIndex))
             {
                 window->call_3(widgetIndex);
             }
@@ -1494,7 +1494,7 @@ namespace openloco::input
                 }
                 else if (scrollArea == ui::scrollview::scroll_part::view)
                 {
-                    window->call_scroll_mouse_over(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
+                    window->callScrollMouseOver(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
                 }
                 else
                 {
@@ -1596,7 +1596,7 @@ namespace openloco::input
 
             case ui::widget_type::panel:
             case ui::widget_type::frame:
-                if (window->can_resize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
+                if (window->canResize() && (x >= (window->x + window->width - 19)) && (y >= (window->y + window->height - 19)))
                 {
                     window_resize_begin(x, y, window, widgetIndex);
                 }
@@ -1617,7 +1617,7 @@ namespace openloco::input
                     auto w = WindowManager::find(_toolWindowType, _toolWindowNumber);
                     if (w != nullptr)
                     {
-                        w->call_tool_down(_toolWidgetIndex, x, y);
+                        w->callToolDown(_toolWidgetIndex, x, y);
                         setFlag(input_flags::flag4);
                     }
                 }
@@ -1634,7 +1634,7 @@ namespace openloco::input
                 break;
 
             default:
-                if (window->is_enabled(widgetIndex) && !window->is_disabled(widgetIndex))
+                if (window->isEnabled(widgetIndex) && !window->isDisabled(widgetIndex))
                 {
                     audio::playSound(audio::sound_id::click_down, window->x + widget->mid_x());
 
@@ -1647,7 +1647,7 @@ namespace openloco::input
                     _clickRepeatTicks = 1;
 
                     WindowManager::invalidateWidget(window->type, window->number, widgetIndex);
-                    window->call_on_mouse_down(widgetIndex);
+                    window->callOnMouseDown(widgetIndex);
                 }
 
                 break;
@@ -1786,7 +1786,7 @@ namespace openloco::input
         _dragWidgetIndex = widgetIndex;
         _ticksSinceDragStart = 0;
 
-        _dragScrollIndex = window->get_scroll_data_index(widgetIndex);
+        _dragScrollIndex = window->getScrollDataIndex(widgetIndex);
 
         ui::hideCursor();
         sub_407218();
@@ -1810,7 +1810,7 @@ namespace openloco::input
 
         if (oldWindow != nullptr)
         {
-            oldWindow->call_prepare_draw();
+            oldWindow->callPrepareDraw();
 
             ui::widget_t* oldWidget = &oldWindow->widgets[widgetIdx];
             if (
@@ -1847,7 +1847,7 @@ namespace openloco::input
 
         if (window != nullptr)
         {
-            int16_t widgetIdx = window->find_widget_at(x, y);
+            int16_t widgetIdx = window->findWidgetAt(x, y);
 
             if (widgetIdx != -1)
             {
@@ -1872,7 +1872,7 @@ namespace openloco::input
                     default:
                         _5233A4 = x;
                         _5233A6 = y;
-                        cursorId = window->call_cursor(widgetIdx, x, y, cursorId);
+                        cursorId = window->callCursor(widgetIdx, x, y, cursorId);
                         break;
 
                     case ui::widget_type::scrollview:
@@ -1894,7 +1894,7 @@ namespace openloco::input
                         if (output_scroll_area == ui::scrollview::scroll_part::view)
                         {
 
-                            cursorId = window->call_cursor(widgetIdx, scroll_x, scroll_y, cursorId);
+                            cursorId = window->callCursor(widgetIdx, scroll_x, scroll_y, cursorId);
                         }
 
                         break;

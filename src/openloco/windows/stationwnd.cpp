@@ -50,13 +50,13 @@ namespace openloco::ui::windows::station
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings);
 
 #define commonWidgets(frameWidth, frameHeight)                                                                                            \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, string_ids::title_station),                             \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station),                      \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo),               \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo_ratings)
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, string_ids::title_station),                             \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station),                      \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo),               \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -84,10 +84,10 @@ namespace openloco::ui::windows::station
         widget_t widgets[] = {
             // commonWidgets(windowSize.width, windowSize.height),
             commonWidgets(223, 136),
-            make_widget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
-            make_widget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            widget_end(),
+            makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport);
@@ -182,7 +182,7 @@ namespace openloco::ui::windows::station
         {
             common::enableRenameByCaption(self);
 
-            self->set_size(windowSize, common::maxWindowSize);
+            self->setSize(windowSize, common::maxWindowSize);
 
             if (self->viewports[0] != nullptr)
             {
@@ -209,7 +209,7 @@ namespace openloco::ui::windows::station
             if (self->current_tab != 0)
                 return;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
 
             // Figure out the station's position on the map.
             auto station = stationmgr::get(self->number);
@@ -321,7 +321,7 @@ namespace openloco::ui::windows::station
         window->event_handlers = &station::events;
         window->activated_widgets = 0;
         window->disabled_widgets = 0;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         station::initViewport(window);
 
         return window;
@@ -338,10 +338,10 @@ namespace openloco::ui::windows::station
 
         static widget_t widgets[] = {
             commonWidgets(223, 136),
-            make_widget({ 3, 44 }, { 217, 80 }, widget_type::scrollview, 1, 2),
-            make_widget({ 3, 125 }, { 195, 10 }, widget_type::wt_13, 1),
-            make_widget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::show_station_catchment, string_ids::station_catchment),
-            widget_end(),
+            makeWidget({ 3, 44 }, { 217, 80 }, widget_type::scrollview, 1, 2),
+            makeWidget({ 3, 125 }, { 195, 10 }, widget_type::wt_13, 1),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::show_station_catchment, string_ids::station_catchment),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -448,7 +448,7 @@ namespace openloco::ui::windows::station
         {
             common::enableRenameByCaption(self);
 
-            self->set_size(common::minWindowSize, common::maxWindowSize);
+            self->setSize(common::minWindowSize, common::maxWindowSize);
         }
 
         // 0x0048EB64
@@ -589,9 +589,9 @@ namespace openloco::ui::windows::station
 
         static widget_t widgets[] = {
             commonWidgets(249, 136),
-            make_widget({ 3, 44 }, { 244, 80 }, widget_type::scrollview, 1, 2),
-            make_widget({ 3, 125 }, { 221, 11 }, widget_type::wt_13, 1),
-            widget_end(),
+            makeWidget({ 3, 44 }, { 244, 80 }, widget_type::scrollview, 1, 2),
+            makeWidget({ 3, 125 }, { 221, 11 }, widget_type::wt_13, 1),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -644,7 +644,7 @@ namespace openloco::ui::windows::station
         {
             common::enableRenameByCaption(self);
 
-            self->set_size(windowSize, maxWindowSize);
+            self->setSize(windowSize, maxWindowSize);
         }
 
         // 0x0048EE4A
@@ -806,7 +806,7 @@ namespace openloco::ui::windows::station
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab.
@@ -874,7 +874,7 @@ namespace openloco::ui::windows::station
         static void update(window* self)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self->number);
         }
 
@@ -898,7 +898,7 @@ namespace openloco::ui::windows::station
 
             for (uint8_t i = widx::tab_station; i <= widx::tab_cargo_ratings; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                     continue;
 
                 self->widgets[i].left = xPos;
@@ -945,10 +945,10 @@ namespace openloco::ui::windows::station
 
             self->invalidate();
 
-            self->set_size(station::windowSize);
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->setSize(station::windowSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }

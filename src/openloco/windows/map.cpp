@@ -90,18 +90,18 @@ namespace openloco::ui::windows::map
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
     widget_t widgets[] = {
-        make_widget({ 0, 0 }, { 350, 272 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0),
-        make_widget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 41 }, { 350, 230 }, widget_type::panel, 1),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_overall),
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_vehicles),
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_industries),
-        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_routes),
-        make_remap_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_ownership),
-        make_widget({ 3, 44 }, { 240, 215 }, widget_type::scrollview, 1, horizontal | vertical),
-        make_widget({ 3, 250 }, { 322, 21 }, widget_type::wt_13, 1),
-        widget_end()
+        makeWidget({ 0, 0 }, { 350, 272 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0),
+        makeWidget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 350, 230 }, widget_type::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_overall),
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_vehicles),
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_industries),
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_routes),
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tab_map_ownership),
+        makeWidget({ 3, 44 }, { 240, 215 }, widget_type::scrollview, 1, horizontal | vertical),
+        makeWidget({ 3, 250 }, { 322, 21 }, widget_type::wt_13, 1),
+        widgetEnd()
     };
 
     static window_event_list events;
@@ -208,7 +208,7 @@ namespace openloco::ui::windows::map
 
         gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
         gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-        self->set_size(minWindowSize, maxWindowSize);
+        self->setSize(minWindowSize, maxWindowSize);
     }
 
     // 0x0046C544
@@ -341,7 +341,7 @@ namespace openloco::ui::windows::map
     static void onUpdate(window* self)
     {
         self->frame_no++;
-        self->call_prepare_draw();
+        self->callPrepareDraw();
 
         WindowManager::invalidateWidget(WindowType::map, self->number, self->current_tab + widx::tabOverall);
 
@@ -372,7 +372,7 @@ namespace openloco::ui::windows::map
     // 0x0046B9E7
     static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        self->call_prepare_draw();
+        self->callPrepareDraw();
         *scrollWidth = map_columns * 2;
         *scrollHeight = map_rows * 2;
     }
@@ -1520,7 +1520,7 @@ namespace openloco::ui::windows::map
 
         initEvents();
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->frame_no = 0;
 
         if (_lastMapWindowFlags != 0)
