@@ -287,7 +287,7 @@ namespace openloco::ui::windows::construction::construction
                 common::sub_49FEC7();
                 WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
                 input::toolSet(self, widx::construct, 12);
-                input::set_flag(input::input_flags::flag6);
+                input::setFlag(input::input_flags::flag6);
 
                 _constructionHover = 1;
                 _byte_113607E = 0;
@@ -1549,13 +1549,13 @@ namespace openloco::ui::windows::construction::construction
 
         if (_constructionHover == 1)
         {
-            if (!input::is_tool_active(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
+            if (!input::isToolActive(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
                 WindowManager::close(self);
         }
         if (_constructionHover == 0)
         {
-            if (input::is_tool_active(WindowType::construction, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(WindowType::construction, self->number))
+                input::cancelTool();
         }
         sub_49FD66();
     }
@@ -1701,7 +1701,7 @@ namespace openloco::ui::windows::construction::construction
                         height -= 16;
                         if (height >= 0)
                         {
-                            if (input::has_key_modifier(input::key_modifier::shift))
+                            if (input::hasKeyModifier(input::key_modifier::shift))
                             {
                                 continue;
                             }
@@ -1815,10 +1815,10 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancel_tool();
+            input::cancelTool();
 
             auto maxRetries = 0;
-            if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto roadPiece = roadPieces[_byte_1136065];
                 i = 0;
@@ -1835,7 +1835,7 @@ namespace openloco::ui::windows::construction::construction
                 roadHeight -= 16;
                 maxRetries = 2;
 
-                if (input::has_key_modifier(input::key_modifier::shift))
+                if (input::hasKeyModifier(input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     roadHeight -= 16;
@@ -1920,10 +1920,10 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancel_tool();
+            input::cancelTool();
 
             auto maxRetries = 0;
-            if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto trackPiece = trackPieces[_byte_1136065];
                 i = 0;
@@ -1940,7 +1940,7 @@ namespace openloco::ui::windows::construction::construction
                 trackHeight -= 16;
                 maxRetries = 2;
 
-                if (input::has_key_modifier(input::key_modifier::shift))
+                if (input::hasKeyModifier(input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     trackHeight -= 16;

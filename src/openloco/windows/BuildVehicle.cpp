@@ -584,9 +584,9 @@ namespace openloco::ui::BuildVehicle
             case widx::tab_build_new_ships:
             {
 
-                if (input::has_flag(input::input_flags::tool_active))
+                if (input::hasFlag(input::input_flags::tool_active))
                 {
-                    input::cancel_tool(window->type, window->number);
+                    input::cancelTool(window->type, window->number);
                 }
 
                 auto newTab = widgetIndex - widx::tab_build_new_trains;

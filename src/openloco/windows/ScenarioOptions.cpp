@@ -502,8 +502,8 @@ namespace openloco::ui::windows::ScenarioOptions
         auto window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::cancelTool();
 
             window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         }
@@ -1195,8 +1195,8 @@ namespace openloco::ui::windows::ScenarioOptions
         // 0x0043F16B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             textinput::sub_4CE6C9(self->type, self->number);
 

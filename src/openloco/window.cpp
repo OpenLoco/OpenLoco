@@ -1347,23 +1347,23 @@ namespace openloco::ui
         uint64_t pressed_widget = 0;
         if (input::state() == input::input_state::dropdown_active || input::state() == input::input_state::widget_pressed)
         {
-            if (input::is_pressed(type, number))
+            if (input::isPressed(type, number))
             {
-                const widget_index widgetIndex = input::get_pressed_widget_index();
+                const widget_index widgetIndex = input::getPressedWidgetIndex();
                 pressed_widget = 1ULL << widgetIndex;
             }
         }
 
         uint64_t tool_widget = 0;
-        if (input::is_tool_active(this->type, this->number))
+        if (input::isToolActive(this->type, this->number))
         {
             tool_widget = 1ULL << addr<0x00523394, uint32_t>();
         }
 
         uint64_t hovered_widget = 0;
-        if (input::is_hovering(this->type, this->number))
+        if (input::isHovering(this->type, this->number))
         {
-            hovered_widget = 1ULL << input::get_hovered_widget_index();
+            hovered_widget = 1ULL << input::getHoveredWidgetIndex();
         }
 
         int scrollviewIndex = 0;

@@ -292,8 +292,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         auto window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::cancelTool();
 
             window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         }
@@ -1241,8 +1241,8 @@ namespace openloco::ui::windows::LandscapeGeneration
         // 0x0043DC98
         static void switchTab(window* window, widget_index widgetIndex)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::cancelTool();
 
             window->current_tab = widgetIndex - widx::tab_options;
             window->frame_no = 0;

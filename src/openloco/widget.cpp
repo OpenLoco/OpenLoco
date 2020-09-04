@@ -61,13 +61,13 @@ namespace openloco::ui::widget
     void drawViewportCentreButton(gfx::drawpixelinfo_t* dpi, const window* window, const widget_index widgetIndex)
     {
         auto& widget = window->widgets[widgetIndex];
-        if (input::is_hovering(window->type, window->number, widgetIndex))
+        if (input::isHovering(window->type, window->number, widgetIndex))
         {
             gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
             gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
-            if (input::is_pressed(window->type, window->number, widgetIndex))
+            if (input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
             gfx::draw_rect_inset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), colour::translucent(window->colours[1]), flags);
@@ -802,7 +802,7 @@ namespace openloco::ui::widget
         }
         else if (input::state() == input::input_state::widget_pressed)
         {
-            isActivated = input::is_pressed(w->type, w->number, index);
+            isActivated = input::isPressed(w->type, w->number, index);
         }
 
         if (imageId == -1)

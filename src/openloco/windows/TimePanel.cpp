@@ -196,7 +196,7 @@ namespace openloco::ui::TimePanel
         }
 
         colour_t c = colour::opaque(self->colours[0]);
-        if (input::is_hovering(WindowType::timeToolbar) && (input::get_hovered_widget_index() == widx::date_btn))
+        if (input::isHovering(WindowType::timeToolbar) && (input::getHoveredWidgetIndex() == widx::date_btn))
         {
             c = colour::white;
         }

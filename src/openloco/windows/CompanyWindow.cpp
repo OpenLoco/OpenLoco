@@ -606,9 +606,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::cancelTool();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -920,7 +920,7 @@ namespace openloco::ui::windows::CompanyWindow
 
                 case widx::build_hq:
                     input::toolSet(self, widgetIndex, 43);
-                    input::set_flag(input::input_flags::flag5);
+                    input::setFlag(input::input_flags::flag5);
                     break;
             }
         }
@@ -1013,7 +1013,7 @@ namespace openloco::ui::windows::CompanyWindow
             auto commandResult = game_commands::do_54(flags, tileY, tileX, tileZ, dx);
             if (commandResult != game_commands::FAILURE)
             {
-                input::cancel_tool();
+                input::cancelTool();
             }
         }
 
@@ -2044,9 +2044,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::cancelTool();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -2379,9 +2379,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::cancelTool();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -2502,8 +2502,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043230B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             textinput::sub_4CE6C9(self->type, self->number);
 

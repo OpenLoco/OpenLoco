@@ -1035,7 +1035,7 @@ namespace openloco::gfx
             engine->drawDirtyBlocks();
         }
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
             call(0x004072EC); // NOP on _NO_LOCO_WIN32_
         }

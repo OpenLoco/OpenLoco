@@ -590,9 +590,9 @@ namespace openloco::ui::windows::CompanyList
 
         if (window != nullptr)
         {
-            if (input::is_tool_active(_toolWindowType, _toolWindowNumber))
+            if (input::isToolActive(_toolWindowType, _toolWindowNumber))
             {
-                input::cancel_tool();
+                input::cancelTool();
                 window = WindowManager::bringToFront(WindowType::companyList);
             }
         }
@@ -1408,8 +1408,8 @@ namespace openloco::ui::windows::CompanyList
         //0x004360FA
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             self->current_tab = widgetIndex - widx::tab_company_list;
             self->frame_no = 0;

@@ -25,17 +25,17 @@ namespace openloco::input
         _state = 0;
     }
 
-    bool has_flag(input_flags value)
+    bool hasFlag(input_flags value)
     {
         return (_flags & (uint32_t)value) != 0;
     }
 
-    void set_flag(input_flags value)
+    void setFlag(input_flags value)
     {
         _flags |= (uint32_t)value;
     }
 
-    void reset_flag(input_flags value)
+    void resetFlag(input_flags value)
     {
         _flags &= ~(uint32_t)value;
     }
@@ -51,7 +51,7 @@ namespace openloco::input
     }
 
     // 0x00406FEC
-    void enqueue_mouse_button(int32_t button)
+    void enqueueMouseButton(int32_t button)
     {
         ((void (*)(int))0x00406FEC)(button);
     }

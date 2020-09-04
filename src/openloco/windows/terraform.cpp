@@ -230,7 +230,7 @@ namespace openloco::ui::windows::terraform
         static void tabReset(window* self)
         {
             input::toolSet(self, common::widx::panel, 8);
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             _byte_113649A = 0;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
@@ -324,13 +324,13 @@ namespace openloco::ui::windows::terraform
         // 0x004BBDA5
         static void onUpdate(window* self)
         {
-            if (!input::has_flag(input::input_flags::tool_active))
+            if (!input::hasFlag(input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
                 WindowManager::close(self);
 
-            if (!input::has_flag(input::input_flags::flag5))
+            if (!input::hasFlag(input::input_flags::flag5))
             {
                 auto cursor = input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -740,7 +740,7 @@ namespace openloco::ui::windows::terraform
 
             input::toolSet(window, common::widx::panel, 18);
 
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
         }
         return window;
     }
@@ -776,7 +776,7 @@ namespace openloco::ui::windows::terraform
         static void tabReset(window* self)
         {
             input::toolSet(self, common::widx::panel, 41);
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
         }
@@ -959,7 +959,7 @@ namespace openloco::ui::windows::terraform
         static void tabReset(window* self)
         {
             input::toolSet(self, common::widx::panel, 18);
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
                 auto landObj = objectmgr::get<land_object>(i);
@@ -1532,7 +1532,7 @@ namespace openloco::ui::windows::terraform
         static void tabReset(window* self)
         {
             input::toolSet(self, common::widx::panel, 19);
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
             _adjustToolSize = _adjustWaterToolSize;
@@ -1831,7 +1831,7 @@ namespace openloco::ui::windows::terraform
         static void tabReset(window* self)
         {
             input::toolSet(self, common::widx::panel, 15);
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             _byte_113649A = 0;
             self->var_83C = 0;
             self->row_hover = -1;
@@ -1852,13 +1852,13 @@ namespace openloco::ui::windows::terraform
         // 0x004BC23D
         static void onUpdate(window* self)
         {
-            if (!input::has_flag(input::input_flags::tool_active))
+            if (!input::hasFlag(input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
                 WindowManager::close(self);
 
-            if (!input::has_flag(input::input_flags::flag5))
+            if (!input::hasFlag(input::input_flags::flag5))
             {
                 auto cursor = input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -2146,7 +2146,7 @@ namespace openloco::ui::windows::terraform
         // 0x004BC78A, 0x004BCB0B
         static void onUpdate(window* self)
         {
-            if (!input::has_flag(input::input_flags::tool_active))
+            if (!input::hasFlag(input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
@@ -2277,8 +2277,8 @@ namespace openloco::ui::windows::terraform
         // 0x004BBB2B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             self->current_tab = widgetIndex - widx::tab_clear_area;
             self->frame_no = 0;

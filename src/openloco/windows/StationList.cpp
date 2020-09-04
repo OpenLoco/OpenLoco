@@ -301,8 +301,8 @@ namespace openloco::ui::windows::station_list
         window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::cancelTool();
 
             // Still active?
             window = WindowManager::bringToFront(WindowType::stationList, companyId);
@@ -660,8 +660,8 @@ namespace openloco::ui::windows::station_list
             case tab_airports:
             case tab_ship_ports:
             {
-                if (input::is_tool_active(window->type, window->number))
-                    input::cancel_tool();
+                if (input::isToolActive(window->type, window->number))
+                    input::cancelTool();
 
                 window->current_tab = widgetIndex - widx::tab_all_stations;
                 window->frame_no = 0;

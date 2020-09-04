@@ -70,7 +70,7 @@ namespace openloco::ui::vehicle
 
             if (w->is_disabled(13))
             {
-                input::cancel_tool(WindowType::vehicle, w->number);
+                input::cancelTool(WindowType::vehicle, w->number);
                 return;
             }
 
@@ -87,7 +87,7 @@ namespace openloco::ui::vehicle
             if (vehicle->owner != companymgr::getControllingId())
                 return;
 
-            if (!input::is_tool_active(WindowType::vehicle, w->number))
+            if (!input::isToolActive(WindowType::vehicle, w->number))
             {
                 sub_4B28E2(w, 13);
             }
@@ -122,7 +122,7 @@ namespace openloco::ui::vehicle
 
             if (w->is_disabled(10))
             {
-                input::cancel_tool(WindowType::vehicle, w->number);
+                input::cancelTool(WindowType::vehicle, w->number);
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace openloco::ui::vehicle
             if (vehicle->owner != companymgr::getControllingId())
                 return;
 
-            if (!input::is_tool_active(WindowType::vehicle, w->number))
+            if (!input::isToolActive(WindowType::vehicle, w->number))
             {
                 sub_4B28E2(w, 10);
             }
@@ -161,7 +161,7 @@ namespace openloco::ui::vehicle
             if (!WindowManager::isInFront(w))
                 return;
 
-            if (input::is_tool_active(WindowType::vehicle, w->number))
+            if (input::isToolActive(WindowType::vehicle, w->number))
                 return;
 
             if (input::toolSet(w, 9 /* tool widget*/, 12 /* tool idx? */))

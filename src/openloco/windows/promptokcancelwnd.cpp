@@ -56,10 +56,10 @@ namespace openloco::ui::windows
             WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
             prompt_tick_loop(
                 []() {
-                    input::handle_keyboard();
+                    input::handleKeyboard();
                     audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
-                    input::process_keyboard_input();
+                    input::processKeyboardInput();
                     WindowManager::update();
                     ui::minimalHandleInput();
                     gfx::render();

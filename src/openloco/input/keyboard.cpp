@@ -62,7 +62,7 @@ namespace openloco::input
         { "FREECASH", loc_4BED79 }
     };
 
-    bool has_key_modifier(uint8_t modifier)
+    bool hasKeyModifier(uint8_t modifier)
     {
         uint8_t keyModifier = _keyModifier;
         return (keyModifier & modifier) != 0;
@@ -168,7 +168,7 @@ namespace openloco::input
     }
 
     // 0x004BEC5B
-    void process_keyboard_input()
+    void processKeyboardInput()
     {
         cheat();
         normal_key();
@@ -372,7 +372,7 @@ namespace openloco::input
         if (input::state() != input_state::normal && input::state() != input_state::dropdown_active)
             return;
 
-        if (has_key_modifier(key_modifier::shift) || has_key_modifier(key_modifier::control))
+        if (hasKeyModifier(key_modifier::shift) || hasKeyModifier(key_modifier::control))
             return;
 
         gfx::point_t delta = { 0, 0 };
@@ -408,7 +408,7 @@ namespace openloco::input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        input::set_flag(input_flags::viewport_scrolling);
+        input::setFlag(input_flags::viewport_scrolling);
     }
 
     static void keyScroll()
@@ -454,11 +454,11 @@ namespace openloco::input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        input::set_flag(input_flags::viewport_scrolling);
+        input::setFlag(input_flags::viewport_scrolling);
     }
 
     // 0x004BE92A
-    void handle_keyboard()
+    void handleKeyboard()
     {
         if (_screenshotCountdown != 0)
         {

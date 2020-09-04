@@ -673,7 +673,7 @@ namespace openloco::ui
                     auto y = (int32_t)(e.motion.y / scale_factor);
                     auto xrel = (int32_t)(e.motion.xrel / scale_factor);
                     auto yrel = (int32_t)(e.motion.yrel / scale_factor);
-                    input::move_mouse(x, y, xrel, yrel);
+                    input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
                 case SDL_MOUSEWHEEL:
@@ -688,11 +688,11 @@ namespace openloco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(1);
+                            input::enqueueMouseButton(1);
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(2);
+                            input::enqueueMouseButton(2);
                             addr<0x0113E0C0, int32_t>() = 1;
                             addr<0x005251C8, int32_t>() = 1;
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -709,11 +709,11 @@ namespace openloco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(3);
+                            input::enqueueMouseButton(3);
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(4);
+                            input::enqueueMouseButton(4);
                             addr<0x0113E0C0, int32_t>() = 0;
                             addr<0x005251C8, int32_t>() = 0;
                             addr<0x01140845, uint8_t>() = 0;
@@ -967,7 +967,7 @@ namespace openloco::ui
     // 0x004CD422
     static void process_mouse_tool(int16_t x, int16_t y)
     {
-        if (!input::has_flag(input::input_flags::tool_active))
+        if (!input::hasFlag(input::input_flags::tool_active))
         {
             return;
         }
@@ -979,7 +979,7 @@ namespace openloco::ui
         }
         else
         {
-            input::cancel_tool();
+            input::cancelTool();
         }
     }
 
@@ -1072,20 +1072,20 @@ namespace openloco::ui
                         intro::state(intro::intro_state::state_8);
                     }
                 }
-                input::handle_mouse(x, y, state);
+                input::handleMouse(x, y, state);
             }
 
-            if (input::has_flag(input::input_flags::flag5))
+            if (input::hasFlag(input::input_flags::flag5))
             {
-                input::handle_mouse(x, y, state);
+                input::handleMouse(x, y, state);
             }
             else if (x != 0x80000000)
             {
                 x = std::clamp<int16_t>(x, 0, ui::width() - 1);
                 y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-                input::handle_mouse(x, y, state);
-                input::process_mouse_over(x, y);
+                input::handleMouse(x, y, state);
+                input::processMouseOver(x, y);
                 process_mouse_tool(x, y);
             }
         }
@@ -1106,20 +1106,20 @@ namespace openloco::ui
         input::mouse_button state;
         while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
         {
-            input::handle_mouse(x, y, state);
+            input::handleMouse(x, y, state);
         }
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
-            input::handle_mouse(x, y, state);
+            input::handleMouse(x, y, state);
         }
         else if (x != 0x80000000)
         {
             x = std::clamp<int16_t>(x, 0, ui::width() - 1);
             y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-            input::handle_mouse(x, y, state);
-            input::process_mouse_over(x, y);
+            input::handleMouse(x, y, state);
+            input::processMouseOver(x, y);
             process_mouse_tool(x, y);
         }
 

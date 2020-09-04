@@ -305,7 +305,7 @@ namespace openloco
         ui::viewportmgr::init();
 
         input::init();
-        input::init_mouse();
+        input::initMouse();
 
         // rain-related
         _52339C = -1;
@@ -400,7 +400,7 @@ namespace openloco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             ui::handleInput();
             companymgr::updateOwnerStatus();
@@ -425,7 +425,7 @@ namespace openloco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -461,7 +461,7 @@ namespace openloco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -612,7 +612,7 @@ namespace openloco
                 multiplayer::set_flag(multiplayer::flags::flag_1);
             }
 
-            input::handle_keyboard();
+            input::handleKeyboard();
             audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
@@ -643,9 +643,9 @@ namespace openloco
                         case input_state::reset:
                         case input_state::normal:
                         case input_state::dropdown_active:
-                            if (input::has_flag(input_flags::viewport_scrolling))
+                            if (input::hasFlag(input_flags::viewport_scrolling))
                             {
-                                input::reset_flag(input_flags::viewport_scrolling);
+                                input::resetFlag(input_flags::viewport_scrolling);
                                 numUpdates = 1;
                             }
                             break;

@@ -108,7 +108,7 @@ namespace openloco::ui::windows::construction::station
             }
             case widx::image:
             {
-                input::cancel_tool();
+                input::cancelTool();
                 input::toolSet(self, widgetIndex, 44);
                 break;
             }

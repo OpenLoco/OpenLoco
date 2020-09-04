@@ -411,7 +411,7 @@ namespace openloco::ui::WindowManager
             0x004CE3D6,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                input::cancel_tool();
+                input::cancelTool();
                 regs = backup;
 
                 return 0;
@@ -1378,7 +1378,7 @@ namespace openloco::ui::WindowManager
     {
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
-        input::cancel_tool();
+        input::cancelTool();
         addr<0x00522096, uint8_t>() = 0;
     }
 
@@ -1485,7 +1485,7 @@ namespace openloco::ui::WindowManager
         if (tutorial::state() != tutorial::tutorial_state::none)
             return;
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
             if (openloco::is_title_mode())
                 return;

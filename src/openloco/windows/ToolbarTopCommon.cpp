@@ -66,7 +66,7 @@ namespace openloco::ui::windows::toolbar_top::common
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t bgImage = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
 
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::road_menu))
+            if (input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
             {
                 y++;
                 bgImage++;

@@ -304,8 +304,8 @@ namespace openloco::ui::windows::industry
         auto window = WindowManager::bringToFront(WindowType::industry, industryId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::cancelTool();
 
             window = WindowManager::bringToFront(WindowType::industry, industryId);
         }
@@ -790,8 +790,8 @@ namespace openloco::ui::windows::industry
         // 0x00455CC7
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             ui::textinput::sub_4CE6C9(self->type, self->number);
 

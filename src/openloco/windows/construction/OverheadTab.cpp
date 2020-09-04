@@ -93,7 +93,7 @@ namespace openloco::ui::windows::construction::overhead
 
             case widx::image:
             {
-                input::cancel_tool();
+                input::cancelTool();
                 input::toolSet(self, widgetIndex, 12);
                 break;
             }

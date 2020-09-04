@@ -779,7 +779,7 @@ namespace openloco::ui::windows::industry_list
         // 0x004585B8
         static void onUpdate(window* self)
         {
-            if (!input::has_flag(input::input_flags::flag5))
+            if (!input::hasFlag(input::input_flags::flag5))
             {
                 auto cursor = input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -842,7 +842,7 @@ namespace openloco::ui::windows::industry_list
             self->call_prepare_draw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
 
-            if (!input::is_tool_active(self->type, self->number))
+            if (!input::isToolActive(self->type, self->number))
                 WindowManager::close(self);
         }
 
@@ -962,8 +962,8 @@ namespace openloco::ui::windows::industry_list
         // 0x0045845F
         static void onClose(window* self)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
         }
 
         // 0x00458B51
@@ -1044,7 +1044,7 @@ namespace openloco::ui::windows::industry_list
             self->max_height = new_industries::window_size.height;
             input::toolSet(self, common::widx::tab_new_industry, 40);
 
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             ui::windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
@@ -1136,8 +1136,8 @@ namespace openloco::ui::windows::industry_list
         // 0x00457F27
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::cancelTool();
 
             self->current_tab = widgetIndex - widx::tab_industry_list;
             self->frame_no = 0;

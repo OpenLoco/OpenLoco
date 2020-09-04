@@ -263,7 +263,7 @@ namespace openloco::ui::windows::map
     {
         uint8_t i = 0;
         int16_t y = 0;
-        if (!input::has_flag(input::input_flags::flag5))
+        if (!input::hasFlag(input::input_flags::flag5))
         {
             uint32_t cursorX = _cursorX2;
             uint32_t cursorY = _cursorY2;
