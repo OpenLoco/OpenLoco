@@ -289,7 +289,7 @@ namespace openloco::audio
     void initialiseDSound()
     {
         const char* deviceName = nullptr;
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         if (!cfg.audio.device.empty())
         {
             deviceName = cfg.audio.device.c_str();
@@ -380,13 +380,13 @@ namespace openloco::audio
 #endif
         }
 
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         return cfg.audio.device.c_str();
     }
 
     size_t getCurrentDevice()
     {
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         return getDeviceIndex(cfg.audio.device);
     }
 
@@ -394,7 +394,7 @@ namespace openloco::audio
     {
         if (index < _devices.size())
         {
-            auto& cfg = config::get_new();
+            auto& cfg = config::getNew();
 #ifdef __HAS_DEFAULT_DEVICE__
             if (index == 0)
             {
@@ -405,7 +405,7 @@ namespace openloco::audio
             {
                 cfg.audio.device = _devices[index];
             }
-            config::write_new_config();
+            config::writeNewConfig();
             reinitialise();
         }
     }
@@ -1104,7 +1104,7 @@ namespace openloco::audio
     // 0x0048AC66
     void playTitleScreenMusic()
     {
-        if (is_title_mode() && _audio_initialised && _audioIsEnabled && config::get_new().audio.play_title_music)
+        if (is_title_mode() && _audio_initialised && _audioIsEnabled && config::getNew().audio.play_title_music)
         {
             if (!isChannelPlaying(channel_id::title))
             {

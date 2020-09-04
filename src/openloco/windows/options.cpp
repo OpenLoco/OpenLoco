@@ -368,7 +368,7 @@ namespace openloco::ui::options
 #if !(defined(__APPLE__) && defined(__MACH__))
         static void screenModeToggleEnabled(window* w)
         {
-            if (config::get_new().display.mode == config::screen_mode::fullscreen)
+            if (config::getNew().display.mode == config::screen_mode::fullscreen)
             {
                 w->enabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
                 w->disabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
@@ -390,7 +390,7 @@ namespace openloco::ui::options
             dropdown::add(1, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen);
             dropdown::add(2, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen_window);
 
-            auto selection = static_cast<uint16_t>(config::get_new().display.mode);
+            auto selection = static_cast<uint16_t>(config::getNew().display.mode);
             dropdown::setItemSelected(selection);
         }
 
@@ -400,7 +400,7 @@ namespace openloco::ui::options
                 return;
 
             auto new_mode = static_cast<config::screen_mode>(selection);
-            if (new_mode == config::get_new().display.mode)
+            if (new_mode == config::getNew().display.mode)
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -418,7 +418,7 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::display_resolution];
             dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
-            auto& cfg = config::get_new();
+            auto& cfg = config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 dropdown::add(i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
@@ -521,7 +521,7 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id screen_mode_string_id = string_ids::empty;
-            switch (config::get_new().display.mode)
+            switch (config::getNew().display.mode)
             {
                 case config::screen_mode::window:
                     screen_mode_string_id = string_ids::options_mode_windowed;
@@ -537,7 +537,7 @@ namespace openloco::ui::options
 
             FormatArguments args = {};
             args.skip(0x10);
-            auto& resolution = config::get_new().display.fullscreen_resolution;
+            auto& resolution = config::getNew().display.fullscreen_resolution;
             args.push<uint16_t>(resolution.width);
             args.push<uint16_t>(resolution.height);
 
@@ -568,12 +568,12 @@ namespace openloco::ui::options
                 w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
 
-            if (config::get_new().scale_factor <= openloco::ui::ScaleFactor::min)
+            if (config::getNew().scale_factor <= openloco::ui::ScaleFactor::min)
                 w->disabled_widgets |= (1 << widx::display_scale_down_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
 
-            if (config::get_new().scale_factor >= openloco::ui::ScaleFactor::max)
+            if (config::getNew().scale_factor >= openloco::ui::ScaleFactor::max)
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
@@ -612,14 +612,14 @@ namespace openloco::ui::options
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
             draw_string_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
 
-            int scale = (int)(config::get_new().scale_factor * 100);
+            int scale = (int)(config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
             draw_string_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
         {
-            if (config::get_new().display.mode != config::screen_mode::fullscreen)
+            if (config::getNew().display.mode != config::screen_mode::fullscreen)
                 w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -701,7 +701,7 @@ namespace openloco::ui::options
             else
                 args.push(string_ids::audio_device_none);
 
-            if (config::get_new().audio.play_title_music)
+            if (config::getNew().audio.play_title_music)
                 w->activated_widgets |= (1 << widx::play_title_music);
             else
                 w->activated_widgets &= ~(1 << widx::play_title_music);
@@ -799,7 +799,7 @@ namespace openloco::ui::options
 
         static void playTitleMusicOnMouseUp(window* w)
         {
-            auto& cfg = config::get_new();
+            auto& cfg = config::getNew();
             cfg.audio.play_title_music = !cfg.audio.play_title_music;
             config::write();
 
@@ -1289,7 +1289,7 @@ namespace openloco::ui::options
 
             FormatArguments args = {};
 
-            auto& language = localisation::getDescriptorForLanguage(config::get_new().language);
+            auto& language = localisation::getDescriptorForLanguage(config::getNew().language);
             args.push(language.native_name.c_str());
 
             string_id current_height_units = string_ids::height_units;
@@ -1435,7 +1435,7 @@ namespace openloco::ui::options
             widget_t dropdown = w->widgets[widx::language];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
 
-            std::string& current_language = config::get_new().language;
+            std::string& current_language = config::getNew().language;
 
             for (uint8_t index = 1; index < num_languages; index++)
             {
@@ -1457,7 +1457,7 @@ namespace openloco::ui::options
 
             auto& lds = localisation::getLanguageDescriptors();
             auto& ld = lds[ax + 1];
-            config::get_new().language = ld.locale;
+            config::getNew().language = ld.locale;
             config::write();
             localisation::loadLanguageFile();
             gfx::invalidate_screen();
@@ -1755,7 +1755,7 @@ namespace openloco::ui::options
             {
                 w->activated_widgets |= (1 << widx::edge_scrolling);
             }
-            if (config::get_new().zoom_to_cursor)
+            if (config::getNew().zoom_to_cursor)
             {
                 w->activated_widgets |= (1 << widx::zoom_to_cursor);
             }
@@ -1814,7 +1814,7 @@ namespace openloco::ui::options
 
         static void zoomToCursorMouseUp(window* w)
         {
-            auto& cfg = openloco::config::get_new();
+            auto& cfg = openloco::config::getNew();
             cfg.zoom_to_cursor = !cfg.zoom_to_cursor;
             config::write();
 
@@ -1901,12 +1901,12 @@ namespace openloco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            if (config::get_new().breakdowns_disabled)
+            if (config::getNew().breakdowns_disabled)
                 w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
             else
                 w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
 
-            if (config::get_new().companyAIDisabled)
+            if (config::getNew().companyAIDisabled)
                 w->activated_widgets |= (1 << widx::disableAICompanies);
             else
                 w->activated_widgets &= ~(1 << widx::disableAICompanies);
@@ -2055,7 +2055,7 @@ namespace openloco::ui::options
 
         static void disableVehicleBreakdownsMouseUp(window* w)
         {
-            auto& cfg = openloco::config::get_new();
+            auto& cfg = openloco::config::getNew();
             cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
             config::write();
             w->invalidate();
@@ -2063,7 +2063,7 @@ namespace openloco::ui::options
 
         static void disableAICompaniesMouseUp(window* w)
         {
-            auto& cfg = openloco::config::get_new();
+            auto& cfg = openloco::config::getNew();
             cfg.companyAIDisabled = !cfg.companyAIDisabled;
             config::write();
             w->invalidate();

@@ -158,10 +158,10 @@ namespace openloco::config
 #pragma pack(pop)
 
     config_t& get();
-    new_config& get_new();
+    new_config& getNew();
 
     config_t& read();
-    new_config& read_new_config();
+    new_config& readNewConfig();
     void write();
-    void write_new_config();
+    void writeNewConfig();
 }

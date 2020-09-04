@@ -164,7 +164,7 @@ void vehicle_head::sub_4BA8D4()
 
         if ((car.front->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
         {
-            auto newConfig = config::get_new();
+            auto newConfig = config::getNew();
             if (!newConfig.breakdowns_disabled)
             {
                 car.front->var_5F &= ~flags_5f::breakdown_pending;

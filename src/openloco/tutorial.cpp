@@ -89,7 +89,7 @@ namespace openloco::tutorial
         // This can be removed when scenerio::start has been implemented.
         {
             // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-            const auto& config = config::get_new();
+            const auto& config = config::getNew();
             config::resolution_t newResolution = tutorialResolution;
             if (config.scale_factor > 1.0)
             {

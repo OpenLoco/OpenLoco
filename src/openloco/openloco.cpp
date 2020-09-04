@@ -938,7 +938,7 @@ namespace openloco
         std::cout << versionInfo << std::endl;
         try
         {
-            const auto& cfg = config::read_new_config();
+            const auto& cfg = config::readNewConfig();
             environment::resolve_paths();
 
             register_hooks();
