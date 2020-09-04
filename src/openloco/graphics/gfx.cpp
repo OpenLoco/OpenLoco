@@ -1030,7 +1030,7 @@ namespace openloco::gfx
         std::memcpy(backup1, byte_112CC04, 512);
         std::memcpy(backup2, byte_112CE04, 512);
 
-        if (ui::dirty_blocks_initialised())
+        if (ui::dirtyBlocksInitialised())
         {
             engine->drawDirtyBlocks();
         }
@@ -1041,7 +1041,7 @@ namespace openloco::gfx
         }
         else
         {
-            ui::process_messages();
+            ui::processMessages();
         }
 
         if (addr<0x005252AC, uint32_t>() != 0)

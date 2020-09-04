@@ -92,7 +92,7 @@ namespace openloco::environment
         {
             std::cerr << "Unable to find install path for Locomotion." << std::endl
                       << "You will need to manually provide it." << std::endl;
-            ui::show_message_box("OpenLoco", "Select your Locomotion install path.");
+            ui::showMessageBox("OpenLoco", "Select your Locomotion install path.");
             path = platform::promptDirectory("Select your Locomotion install path.");
             if (validateLocoInstallPath(path))
             {
@@ -102,7 +102,7 @@ namespace openloco::environment
             }
 
             std::cerr << "Path is missing g1.dat." << std::endl;
-            ui::show_message_box("OpenLoco", "Path is missing Data/g1.DAT.");
+            ui::showMessageBox("OpenLoco", "Path is missing Data/g1.DAT.");
             std::exit(-1);
         }
     }

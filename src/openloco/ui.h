@@ -61,24 +61,24 @@ namespace openloco::ui
 #endif
     int32_t width();
     int32_t height();
-    bool dirty_blocks_initialised();
+    bool dirtyBlocksInitialised();
 
-    void create_window(const config::display_config& cfg);
+    void createWindow(const config::display_config& cfg);
     void initialise();
-    void initialise_cursors();
-    void initialise_input();
-    void dispose_input();
-    void dispose_cursors();
-    void set_cursor(cursor_id id);
-    void get_cursor_pos(int32_t& x, int32_t& y);
-    void set_cursor_pos(int32_t x, int32_t y);
-    void hide_cursor();
-    void show_cursor();
+    void initialiseCursors();
+    void initialiseInput();
+    void disposeInput();
+    void disposeCursors();
+    void setCursor(cursor_id id);
+    void getCursorPos(int32_t& x, int32_t& y);
+    void setCursorPos(int32_t x, int32_t y);
+    void hideCursor();
+    void showCursor();
     void update();
-    void trigger_resize();
+    void triggerResize();
     void render();
-    bool process_messages();
-    void show_message_box(const std::string& title, const std::string& message);
+    bool processMessages();
+    void showMessageBox(const std::string& title, const std::string& message);
     config::resolution_t getResolution();
     config::resolution_t getDesktopResolution();
     bool setDisplayMode(config::screen_mode mode, config::resolution_t newResolution);
@@ -89,7 +89,7 @@ namespace openloco::ui
     void handleInput();
     void minimalHandleInput();
     void setWindowScaling(float newScaleFactor);
-    void adjust_window_scale(float adjust_by);
+    void adjustWindowScale(float adjust_by);
 
     namespace viewport_interaction
     {

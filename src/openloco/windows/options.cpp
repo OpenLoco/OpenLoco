@@ -440,7 +440,7 @@ namespace openloco::ui::options
 
         static void displayScaleMouseDown(window* w, widget_index wi, float adjust_by)
         {
-            openloco::ui::adjust_window_scale(adjust_by);
+            openloco::ui::adjustWindowScale(adjust_by);
         }
 
         // 0x004BFBB7

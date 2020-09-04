@@ -533,7 +533,7 @@ namespace openloco::ui::WindowManager
     {
         _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
 
-        if (!ui::dirty_blocks_initialised())
+        if (!ui::dirtyBlocksInitialised())
         {
             return;
         }

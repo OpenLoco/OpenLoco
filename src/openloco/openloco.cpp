@@ -344,7 +344,7 @@ namespace openloco
         call(0x004949BC);
         progressbar::setProgress(235);
         progressbar::setProgress(250);
-        ui::initialise_cursors();
+        ui::initialiseCursors();
         progressbar::end();
         ui::initialise();
         initialiseViewports();
@@ -567,7 +567,7 @@ namespace openloco
         {
             config::get().var_72 = 16;
             gfx::clear(gfx::screen_dpi(), 0);
-            ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
@@ -588,7 +588,7 @@ namespace openloco
                         call(0x00403575);
                     }
                 }
-                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 gfx::invalidate_screen();
                 if (config::get().var_72 != 96)
                 {
@@ -712,8 +712,8 @@ namespace openloco
             if (config::get().var_72 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
-                ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
 
@@ -875,7 +875,7 @@ namespace openloco
         {
             auto startTime = platform::getTime();
             time_since_last_tick = 31;
-            if (!ui::process_messages() || !tickAction())
+            if (!ui::processMessages() || !tickAction())
             {
                 break;
             }
@@ -909,12 +909,12 @@ namespace openloco
         }
 #endif
 
-        // Call tick before ui::process_messages to ensure initialise is called
+        // Call tick before ui::processMessages to ensure initialise is called
         // otherwise window events can end up using an uninitialised window manager.
         // This can be removed when initialise is moved out of tick().
         tick();
 
-        while (ui::process_messages())
+        while (ui::processMessages())
         {
             if (addr<0x005252AC, uint32_t>() != 0)
             {
@@ -944,15 +944,15 @@ namespace openloco
             register_hooks();
             if (sub_4054B9())
             {
-                ui::create_window(cfg.display);
+                ui::createWindow(cfg.display);
                 call(0x004078FE);
                 call(0x00407B26);
-                ui::initialise_input();
+                ui::initialiseInput();
                 audio::initialiseDSound();
                 run();
                 audio::disposeDSound();
-                ui::dispose_cursors();
-                ui::dispose_input();
+                ui::disposeCursors();
+                ui::disposeInput();
 
                 // TODO extra clean up code
             }

@@ -539,7 +539,7 @@ namespace openloco::ui
     {
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
-        ui::get_cursor_pos(mouse_x, mouse_y);
+        ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
         get_map_coordinates_from_pos(mouse_x, mouse_y, 0, map_x, map_y);
@@ -621,7 +621,7 @@ namespace openloco::ui
 
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
-        ui::get_cursor_pos(mouse_x, mouse_y);
+        ui::getCursorPos(mouse_x, mouse_y);
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
         int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),

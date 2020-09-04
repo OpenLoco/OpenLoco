@@ -232,7 +232,7 @@ namespace openloco::input
             {
                 _cursorX2 = tutorial::nextInput();
                 _cursorY2 = tutorial::nextInput();
-                ui::set_cursor_pos(*_cursorX2, *_cursorY2);
+                ui::setCursorPos(*_cursorX2, *_cursorY2);
                 break;
             }
 
@@ -1708,7 +1708,7 @@ namespace openloco::input
                 _dragLastX = x;
                 _dragLastY = y;
 
-                ui::hide_cursor();
+                ui::hideCursor();
                 sub_407218();
 
                 _5233AE = 0;
@@ -1788,7 +1788,7 @@ namespace openloco::input
 
         _dragScrollIndex = window->get_scroll_data_index(widgetIndex);
 
-        ui::hide_cursor();
+        ui::hideCursor();
         sub_407218();
     }
 
@@ -1950,7 +1950,7 @@ namespace openloco::input
         if (cursorId != (ui::cursor_id)*_52336C)
         {
             _52336C = (int8_t)cursorId;
-            ui::set_cursor(cursorId);
+            ui::setCursor(cursorId);
         }
     }
 

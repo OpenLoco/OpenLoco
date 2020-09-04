@@ -665,7 +665,7 @@ void openloco::interop::register_hooks()
         0x00407BA3,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto cursor = (ui::cursor_id)regs.edx;
-            ui::set_cursor(cursor);
+            ui::setCursor(cursor);
             return 0;
         });
 
