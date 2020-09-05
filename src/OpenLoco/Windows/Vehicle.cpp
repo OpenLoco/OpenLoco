@@ -16,6 +16,7 @@
 #include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
+#include "../TrackData.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
@@ -2034,14 +2035,21 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B5A1A
-        static std::pair<uint8_t, Map::tile_element*> sub_4B5A1A(window& self, const int16_t x, const int16_t y)
+        static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(window& self, const int16_t x, const int16_t y)
         {
             registers regs{};
             regs.esi = reinterpret_cast<uint32_t>(&self);
             regs.ax = x;
             regs.cx = y;
+            regs.bl = 0; // Not set during function but needed to indicate failure
             call(0x004B5A1A, regs);
-            return std::make_pair(regs.bl, reinterpret_cast<Map::tile_element*>(regs.edx));
+            static loco_global<int16_t, 0x0113623C> _mapX;
+            static loco_global<int16_t, 0x0113623E> _mapY;
+            Ui::ViewportInteraction::InteractionArg output;
+            output.x = _mapX;
+            output.y = _mapY;
+            output.object = reinterpret_cast<void*>(regs.edx);
+            return std::make_pair(static_cast<Ui::ViewportInteraction::InteractionItem>(regs.bl), output);
         }
 
         // 0x004B5088
@@ -2052,11 +2060,101 @@ namespace OpenLoco::Ui::Vehicle
             Gfx::invalidateScreen();
         }
 
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            auto [type, args] = sub_4B5A1A(self, x, y);
+            switch (type)
+            {
+                case Ui::ViewportInteraction::InteractionItem::track:
+                {
+                    // 0x004B5160
+                    auto tileElement = static_cast<tile_element*>(args.object);
+                    auto trackElement = tileElement->asTrack();
+                    if (trackElement == nullptr)
+                        break;
+                    auto height = trackElement->baseZ() * 4;
+                    auto trackId = trackElement->trackId();
+                    const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
+                    const auto& trackPart = trackPiece[trackElement->unk_5l()];
+
+                    auto pos = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
+                    pos.x += args.x;
+                    pos.y += args.y;
+                    TilePos tPos{ pos };
+                    height -= trackPart.z;
+                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
+                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
+                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
+                    orderArgument |= static_cast<uint64_t>(trackElement->unkDirection()) << 32;
+                    orderArgument |= static_cast<uint64_t>(trackId) << 35;
+                    orderArgument >>= 3;
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    sub_4B4ECB(&self, 3, orderArgument);
+                }
+                break;
+                case Ui::ViewportInteraction::InteractionItem::t_11:
+                {
+                    // Water
+                    auto heights = Map::tileElementHeight(args.x, args.y);
+                    auto height = heights.landHeight;
+                    if (heights.waterHeight != 0)
+                    {
+                        height = heights.waterHeight;
+                    }
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    TilePos tPos{
+                        map_pos{ args.x, args.y }
+                    };
+
+                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
+                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
+                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
+                    orderArgument >>= 3;
+                    sub_4B4ECB(&self, 3, orderArgument);
+                }
+                break;
+                case Ui::ViewportInteraction::InteractionItem::station:
+                {
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    station_id_t stationId = args.value;
+                    sub_4B4ECB(&self, 1, (((stationId & 0x300) >> 2) | ((stationId & 0xFF) << 8)) >> 3);
+                }
+                break;
+                case Ui::ViewportInteraction::InteractionItem::road:
+                {
+                    // 0x004B5223
+                    auto tileElement = static_cast<tile_element*>(args.object);
+                    auto trackElement = tileElement->asTrack();
+                    if (trackElement == nullptr)
+                        break;
+                    auto height = trackElement->baseZ() * 4;
+                    auto roadId = trackElement->trackId();
+                    const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
+                    const auto& roadPart = roadPiece[trackElement->unk_5l()];
+
+                    auto pos = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, trackElement->unkDirection());
+                    pos.x += args.x;
+                    pos.y += args.y;
+                    TilePos tPos{ pos };
+                    height -= roadPart.z;
+                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
+                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
+                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
+                    orderArgument |= static_cast<uint64_t>(trackElement->unkDirection()) << 32;
+                    orderArgument |= static_cast<uint64_t>(roadId) << 35;
+                    orderArgument >>= 3;
+                    Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
+                    sub_4B4ECB(&self, 3, orderArgument);
+                }
+                break;
+            }
+        }
+
         // 0x004B50CE
         static Ui::cursor_id event15(window& self, const int16_t x, const int16_t y, const Ui::cursor_id fallback, bool& out)
         {
             auto [type, _] = sub_4B5A1A(self, x, y);
-            out = type != 0;
+            out = type != Ui::ViewportInteraction::InteractionItem::t_0;
             if (out)
             {
                 return cursor_id::arrows_inward;
@@ -2196,8 +2294,8 @@ namespace OpenLoco::Ui::Vehicle
                 case 3: // waypoint
                 {
                     map_pos3 loc{};
-                    loc.x = ((static_cast<int16_t>(_dword_987C5C[orderOffset] & 0x80) << 8) | _dword_987C5C[orderOffset + 1]) * tile_size + 16;
-                    loc.y = ((static_cast<int16_t>(_dword_987C5C[orderOffset + 2] & 0x80) << 8) | _dword_987C5C[orderOffset + 3]) * tile_size + 16;
+                    loc.x = ((static_cast<int16_t>(_dword_987C5C[orderOffset] & 0x80) << 1) | _dword_987C5C[orderOffset + 1]) * tile_size + 16;
+                    loc.y = ((static_cast<int16_t>(_dword_987C5C[orderOffset + 2] & 0x80) << 1) | _dword_987C5C[orderOffset + 3]) * tile_size + 16;
                     loc.z = (_dword_987C5C[orderOffset + 2] & 0x7F) * 8 + 32;
                     auto main = WindowManager::getMainWindow();
                     if (main)
@@ -2234,6 +2332,13 @@ namespace OpenLoco::Ui::Vehicle
                 return cursor_id::arrows_inward;
             }
             return fallback;
+        }
+
+        // 0x004B56B8 TODO Rename
+        static void createViewport(window* const self)
+        {
+            auto head = common::getVehicle(self);
+            sub_470824(head);
         }
 
         // 0x004B468C
@@ -2474,14 +2579,14 @@ namespace OpenLoco::Ui::Vehicle
             events.on_update = onUpdate;
             events.event_08 = event8;
             events.event_09 = event9;
-            events.on_tool_down;
+            events.on_tool_down = onToolDown;
             events.on_tool_abort = toolCancel;
             events.event_15 = event15;
             events.get_scroll_size = getScrollSize;
             events.scroll_mouse_down = scrollMouseDown;
             events.scroll_mouse_over = scrollMouseOver;
             events.text_input = common::textInput;
-            events.viewport_rotate;
+            events.viewport_rotate = createViewport;
             events.tooltip = tooltip;
             events.cursor = cursor;
             events.prepare_draw = prepareDraw;
