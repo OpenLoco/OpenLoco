@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../audio/audio.h"
-#include "../company.h"
+#include "../Company.h"
 #include "../objects/vehicle_object.h"
 #include "../ui/WindowType.h"
 #include "../window.h"

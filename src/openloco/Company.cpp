@@ -1,4 +1,4 @@
-#include "company.h"
+#include "Company.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "localisation/string_ids.h"

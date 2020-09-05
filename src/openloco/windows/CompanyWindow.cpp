@@ -1,4 +1,4 @@
-#include "../company.h"
+#include "../Company.h"
 #include "../companymgr.h"
 #include "../config.h"
 #include "../date.h"

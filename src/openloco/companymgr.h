@@ -1,6 +1,6 @@
 #pragma once
 
-#include "company.h"
+#include "Company.h"
 #include "types.hpp"
 #include <array>
 #include <cstddef>

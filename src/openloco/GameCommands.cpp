@@ -1,5 +1,5 @@
 #include "audio/audio.h"
-#include "company.h"
+#include "Company.h"
 #include "companymgr.h"
 #include "game_commands.h"
 #include "map/tile.h"

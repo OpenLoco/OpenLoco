@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../company.h"
+#include "../Company.h"
 #include "../graphics/gfx.h"
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"

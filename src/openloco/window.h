@@ -1,6 +1,6 @@
 #pragma once
 
-#include "company.h"
+#include "Company.h"
 #include "core/Optional.hpp"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"

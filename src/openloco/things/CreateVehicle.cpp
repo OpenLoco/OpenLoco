@@ -1,5 +1,5 @@
 #include "../audio/audio.h"
-#include "../company.h"
+#include "../Company.h"
 #include "../companymgr.h"
 #include "../core/Optional.hpp"
 #include "../date.h"
