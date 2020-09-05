@@ -18,7 +18,7 @@ namespace openloco::title
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x0046AD7D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 start();
@@ -106,7 +106,7 @@ namespace openloco::title
         sub_4284C8();
         gui::init();
         sub_444357();
-        gfx::invalidate_screen();
+        gfx::invalidateScreen();
         _screenAge = 0;
 
         audio::playTitleScreenMusic();

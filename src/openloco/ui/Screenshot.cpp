@@ -36,7 +36,7 @@ namespace openloco::input
         std::string scenarioName = s5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
-            scenarioName = stringmgr::get_string(string_ids::screenshot_filename_template);
+            scenarioName = stringmgr::getString(string_ids::screenshot_filename_template);
 
         std::string fileName = std::string(scenarioName) + ".png";
         fs::path path;
@@ -92,7 +92,7 @@ namespace openloco::input
                 palette[i].red = _113ED20[i][2];
             }
             png_set_PLTE(png_ptr, info_ptr, palette, 246);
-            auto& dpi = gfx::screen_dpi();
+            auto& dpi = gfx::screenDpi();
 
             png_byte transparentIndex = 0;
             png_set_tRNS(png_ptr, info_ptr, &transparentIndex, 1, nullptr);

@@ -24,13 +24,13 @@ namespace openloco::interop
 
 // This macro writes a little-endian 4-byte long value into *data
 // It is used to avoid type punning.
-#define write_address_strictalias(data, addr) \
+#define WRITE_ADDRESS_STRICTALIAS(data, addr) \
     *(data + 0) = ((addr)&0x000000ff) >> 0;   \
     *(data + 1) = ((addr)&0x0000ff00) >> 8;   \
     *(data + 2) = ((addr)&0x00ff0000) >> 16;  \
     *(data + 3) = ((addr)&0xff000000) >> 24;
 
-    static void hookfunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
+    static void hookFunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
     {
         int32_t i = 0;
         uint8_t data[HOOK_BYTE_COUNT] = { 0 };
@@ -39,37 +39,37 @@ namespace openloco::interop
 
         data[i++] = 0x89; // mov [_hookRegisters], eax
         data[i++] = (0b000 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 4], ebx
         data[i++] = (0b011 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 4);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 4);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 8], ecx
         data[i++] = (0b001 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 8);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 8);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 12], edx
         data[i++] = (0b010 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 12);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 12);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 16], esi
         data[i++] = (0b110 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 16);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 16);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 20], edi
         data[i++] = (0b111 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 20);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 20);
         i += 4;
 
         data[i++] = 0x89; // mov [_hookRegisters + 24], ebp
         data[i++] = (0b101 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 24);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 24);
         i += 4;
 
         data[i++] = 0x8B; //  mov    eax,DWORD PTR [esp]
@@ -77,7 +77,7 @@ namespace openloco::interop
         data[i++] = 0x24;
         data[i++] = 0x89; // mov [_hookRegisters], eax
         data[i++] = (0b000 << 3) | 0b101;
-        write_address_strictalias(&data[i], (uintptr_t)&_lastHook);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], (uintptr_t)&_lastHook);
         i += 4;
 
         // work out distance to nearest 0xC
@@ -87,12 +87,12 @@ namespace openloco::interop
 
         // push the registers to be on the stack to access as arguments
         data[i++] = 0x68; // push _hookRegisters
-        write_address_strictalias(&data[i], registerAddress);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress);
         i += 4;
 
         data[i++] = 0xE8; // call
 
-        write_address_strictalias(&data[i], hookAddress - address - i - 4);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], hookAddress - address - i - 4);
         i += 4;
 
         data[i++] = 0x83; // add esp, 4
@@ -112,37 +112,37 @@ namespace openloco::interop
 
         data[i++] = 0x8B; // mov eax, [_hookRegisters]
         data[i++] = (0b000 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress);
         i += 4;
 
         data[i++] = 0x8B; // mov ebx, [_hookRegisters + 4]
         data[i++] = (0b011 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 4);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 4);
         i += 4;
 
         data[i++] = 0x8B; // mov ecx, [_hookRegisters + 8]
         data[i++] = (0b001 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 8);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 8);
         i += 4;
 
         data[i++] = 0x8B; // mov edx, [_hookRegisters + 12]
         data[i++] = (0b010 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 12);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 12);
         i += 4;
 
         data[i++] = 0x8B; // mov esi, [_hookRegisters + 16]
         data[i++] = (0b110 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 16);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 16);
         i += 4;
 
         data[i++] = 0x8B; // mov edi, [_hookRegisters + 20]
         data[i++] = (0b111 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 20);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 20);
         i += 4;
 
         data[i++] = 0x8B; // mov ebp, [_hookRegisters + 24]
         data[i++] = (0b101 << 3) | 0b101;
-        write_address_strictalias(&data[i], registerAddress + 24);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], registerAddress + 24);
         i += 4;
 
         data[i++] = 0x9d; // popf
@@ -157,7 +157,7 @@ namespace openloco::interop
 #endif // _WIN32
     }
 
-    void register_hook(uintptr_t address, hook_function function)
+    void registerHook(uintptr_t address, hook_function function)
     {
         if (!_hookTableAddress)
         {
@@ -182,38 +182,38 @@ namespace openloco::interop
         int32_t i = 0;
         data[i++] = 0xE9; // jmp
 
-        write_address_strictalias(&data[i], hookaddress - address - i - 4);
+        WRITE_ADDRESS_STRICTALIAS(&data[i], hookaddress - address - i - 4);
         i += 4;
 
         data[i++] = 0xC3; // retn
 
-        write_memory(address, data, i);
+        writeMemory(address, data, i);
 
-        hookfunc(hookaddress, (uintptr_t)function, 0);
+        hookFunc(hookaddress, (uintptr_t)function, 0);
         _hookTableOffset++;
     }
 
-    void write_ret(uint32_t address)
+    void writeRet(uint32_t address)
     {
         uint8_t opcode = 0xC3;
-        write_memory(address, &opcode, sizeof(opcode));
+        writeMemory(address, &opcode, sizeof(opcode));
     }
 
-    void write_jmp(uint32_t address, void* fn)
+    void writeJmp(uint32_t address, void* fn)
     {
         uint8_t data[5] = { 0 };
         data[0] = 0xE9; // JMP
 
         auto addr = reinterpret_cast<uintptr_t>(fn);
-        write_address_strictalias(&data[1], addr - address - 5);
+        WRITE_ADDRESS_STRICTALIAS(&data[1], addr - address - 5);
 
-        write_memory(address, data, sizeof(data));
+        writeMemory(address, data, sizeof(data));
     }
 
     static void* _smallHooks;
     static uint8_t* _offset;
 
-    static void* make_jump(uint32_t address, void* fn)
+    static void* makeJump(uint32_t address, void* fn)
     {
 
         if (!_smallHooks)
@@ -237,7 +237,7 @@ namespace openloco::interop
         _offset[i++] = 0x58; // POP EAX
 
         _offset[i++] = 0x68; // PUSH
-        write_address_strictalias(&_offset[i], address);
+        WRITE_ADDRESS_STRICTALIAS(&_offset[i], address);
         i += 4;
 
         _offset[i++] = 0x50; // PUSH EAX
@@ -246,7 +246,7 @@ namespace openloco::interop
         uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
 
         _offset[i++] = 0xE9; // JMP
-        write_address_strictalias(&_offset[i], addr - base - 12);
+        WRITE_ADDRESS_STRICTALIAS(&_offset[i], addr - base - 12);
         i += 4;
 
         uint8_t* ptr = _offset;
@@ -255,33 +255,33 @@ namespace openloco::interop
         return ptr;
     }
 
-    void hook_dump(uint32_t address, void* fn)
+    void hookDump(uint32_t address, void* fn)
     {
         uint8_t data[4] = { 0 };
 
-        void* hook = make_jump(address, fn);
+        void* hook = makeJump(address, fn);
 
         uintptr_t addr = reinterpret_cast<uintptr_t>(hook);
 
-        write_address_strictalias(&data[0], addr);
+        WRITE_ADDRESS_STRICTALIAS(&data[0], addr);
 
-        write_memory(address, data, sizeof(data));
+        writeMemory(address, data, sizeof(data));
     }
 
-    void hook_lib(uint32_t address, void* fn)
+    void hookLib(uint32_t address, void* fn)
     {
         uint8_t data[4] = { 0 };
 
         uintptr_t addr = reinterpret_cast<uintptr_t>(fn);
 
-        write_address_strictalias(&data[0], addr);
+        WRITE_ADDRESS_STRICTALIAS(&data[0], addr);
 
-        write_memory(address, data, sizeof(data));
+        writeMemory(address, data, sizeof(data));
     }
 
-    void write_nop(uint32_t address, size_t count)
+    void writeNop(uint32_t address, size_t count)
     {
         std::vector<uint8_t> buffer(count, 0x90);
-        write_memory(address, buffer.data(), buffer.size());
+        writeMemory(address, buffer.data(), buffer.size());
     }
 }

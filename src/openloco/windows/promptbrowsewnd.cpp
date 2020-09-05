@@ -285,7 +285,7 @@ namespace openloco::ui::prompt_browse
     static void prepareDraw(ui::window* self)
     {
         // TODO: replace with a fixed length!
-        char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+        char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
         strcpy(buffer, _title);
 
         self->widgets[widx::frame].right = self->width - 1;
@@ -354,7 +354,7 @@ namespace openloco::ui::prompt_browse
 
         auto folder = (const char*)0x9DA084;
         setCommonArgsStringptr(folder);
-        gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
+        gfx::drawString_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
         if (selectedIndex != -1)
@@ -370,7 +370,7 @@ namespace openloco::ui::prompt_browse
 
                 _nameBuffer = selectedFile.get_name();
                 setCommonArgsStringptr(_nameBuffer.c_str());
-                gfx::draw_string_centred_clipped(
+                gfx::drawStringCentredClipped(
                     *dpi,
                     x + (width / 2),
                     y,
@@ -400,11 +400,11 @@ namespace openloco::ui::prompt_browse
         if (filenameBox.type != widget_type::none)
         {
             // Draw filename label
-            gfx::draw_string_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, string_ids::window_browse_filename, nullptr);
+            gfx::drawString_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, string_ids::window_browse_filename, nullptr);
 
             // Clip to text box
             gfx::drawpixelinfo_t* dpi2;
-            if (gfx::clip_drawpixelinfo(
+            if (gfx::clipDrawpixelinfo(
                     &dpi2,
                     dpi,
                     window->x + filenameBox.left + 1,
@@ -421,10 +421,10 @@ namespace openloco::ui::prompt_browse
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-        gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
+        gfx::fillRectInset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
         auto imageId = 0;
-        auto g1 = gfx::get_g1element(imageId);
+        auto g1 = gfx::getG1Element(imageId);
         if (g1 != nullptr)
         {
             // Temporarily substitute a g1 for the image data in the saved game
@@ -433,7 +433,7 @@ namespace openloco::ui::prompt_browse
             g1->offset = (uint8_t*)saveInfo.image;
             g1->width = 250;
             g1->height = 200;
-            gfx::draw_image(&dpi, x + 1, y + 1, imageId);
+            gfx::drawImage(&dpi, x + 1, y + 1, imageId);
             *g1 = backupg1;
         }
         y += 207;
@@ -442,14 +442,14 @@ namespace openloco::ui::prompt_browse
 
         // Company
         setCommonArgsStringptr(saveInfo.company);
-        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_company, _commonFormatArgs);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_company, _commonFormatArgs);
 
         // Owner
         setCommonArgsStringptr(saveInfo.owner);
-        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::owner_label, _commonFormatArgs);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::owner_label, _commonFormatArgs);
 
         // Date
-        y = gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_date, &saveInfo.date);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
@@ -466,19 +466,19 @@ namespace openloco::ui::prompt_browse
                     progress = saveInfo.challenge_progress;
                 }
             }
-            gfx::draw_string_495224(dpi, x, y, maxWidth, colour::black, stringId, &progress);
+            gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, stringId, &progress);
         }
     }
 
     static void drawLandscapePreview(ui::window& window, gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        gfx::fill_rect_inset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
+        gfx::fillRectInset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
         if (s5::getPreviewOptions().scenarioFlags & scenario::flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;
-            auto g1 = gfx::get_g1element(imageId);
+            auto g1 = gfx::getG1Element(imageId);
             if (g1 != nullptr)
             {
                 // Temporarily substitute a g1 for the height map image data in the saved game
@@ -487,19 +487,19 @@ namespace openloco::ui::prompt_browse
                 g1->offset = (uint8_t*)0x9CCBDE;
                 g1->width = 128;
                 g1->height = 128;
-                gfx::draw_image(&dpi, x + 1, y + 1, imageId);
+                gfx::drawImage(&dpi, x + 1, y + 1, imageId);
                 *g1 = backupg1;
 
-                gfx::draw_image(&dpi, x, y + 1, image_ids::height_map_compass);
+                gfx::drawImage(&dpi, x, y + 1, image_ids::height_map_compass);
             }
         }
         else
         {
             // Randomly generated landscape
             auto imageId = image_ids::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
-            gfx::draw_image(&dpi, x, y, imageId);
+            gfx::drawImage(&dpi, x, y, imageId);
             gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
-            gfx::draw_string_centred_wrapped(&dpi, &origin, 128, 0, string_ids::randomly_generated_landscape);
+            gfx::drawStringCentredWrapped(&dpi, &origin, 128, 0, string_ids::randomly_generated_landscape);
         }
     }
 
@@ -512,14 +512,14 @@ namespace openloco::ui::prompt_browse
         // Draw text box text
         gfx::point_t origin = { 0, 1 };
         setCommonArgsStringptr(text);
-        gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
+        gfx::drawString_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
         if (showCaret)
         {
             if (caret == -1)
             {
                 // Draw horizontal caret
-                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::window_browse_input_caret, nullptr);
+                gfx::drawString_494B3F(dpi, &origin, 0, string_ids::window_browse_input_caret, nullptr);
             }
             else
             {
@@ -528,10 +528,10 @@ namespace openloco::ui::prompt_browse
                 gbuffer = std::string_view(text, caret);
                 setCommonArgsStringptr(gbuffer.c_str());
                 origin = { 0, 1 };
-                gfx::draw_string_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
+                gfx::drawString_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
-                gfx::draw_rect(&dpi, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
+                gfx::drawRect(&dpi, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
             }
         }
     }
@@ -544,7 +544,7 @@ namespace openloco::ui::prompt_browse
         static std::string _nameBuffer;
 
         // Background
-        gfx::clear_single(*dpi, colour::get_shade(window->colours[1], 4));
+        gfx::clearSingle(*dpi, colour::getShade(window->colours[1], 4));
 
         // Directories / files
         auto y = 0;
@@ -559,7 +559,7 @@ namespace openloco::ui::prompt_browse
                 auto stringId = string_ids::black_stringid;
                 if (i == window->var_85A)
                 {
-                    gfx::draw_rect(dpi, 0, y, window->width, lineHeight, 0x2000000 | 48);
+                    gfx::drawRect(dpi, 0, y, window->width, lineHeight, 0x2000000 | 48);
                     stringId = string_ids::wcolour2_stringid;
                 }
 
@@ -567,7 +567,7 @@ namespace openloco::ui::prompt_browse
                 auto x = 1;
                 if (file.is_directory())
                 {
-                    gfx::draw_image(dpi, x, y, image_ids::icon_folder);
+                    gfx::drawImage(dpi, x, y, image_ids::icon_folder);
                     x += 14;
                 }
 
@@ -576,7 +576,7 @@ namespace openloco::ui::prompt_browse
 
                 // Draw the name
                 setCommonArgsStringptr(_nameBuffer.c_str());
-                gfx::draw_string_494B3F(*dpi, x, y, 0, stringId, _commonFormatArgs);
+                gfx::drawString_494B3F(*dpi, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
         }
@@ -723,7 +723,7 @@ namespace openloco::ui::prompt_browse
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x00445AB9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto result = open(
@@ -735,7 +735,7 @@ namespace openloco::ui::prompt_browse
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 appendDirectory((char*)regs.ebp);

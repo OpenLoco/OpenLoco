@@ -219,11 +219,11 @@ namespace openloco::ui::windows::ScenarioOptions
 
             const int16_t xPos = window->x + 5;
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
-            gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::challenge_label);
+            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::challenge_label);
 
             call(0x004384E9);
             yPos += 10;
-            gfx::draw_string_495224(*dpi, xPos, yPos, window->width - 10, colour::black, string_ids::challenge_value, &*commonFormatArgs);
+            gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, colour::black, string_ids::challenge_value, &*commonFormatArgs);
         }
 
         static const string_id objectiveTypeLabelIds[] = {
@@ -617,49 +617,49 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_competing_companies].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_competing_companies);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::delay_before_competing_companies_start].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::delay_before_competing_companies_start);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::delay_before_competing_companies_start);
             }
 
             {
                 const int16_t xPos = window->x + 15;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top - 14;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::selection_of_competing_companies);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::selection_of_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_intelligence);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_intelligence);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_aggressiveness].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_aggressiveness);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_aggressiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_competitiveness].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_competitiveness);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::preferred_competitiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::competitor_forbid_trains].top - 12;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_competing_companies_from_using);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_competing_companies_from_using);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::player_forbid_trains].top - 12;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_player_companies_from_using);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::forbid_player_companies_from_using);
             }
         }
 
@@ -873,19 +873,19 @@ namespace openloco::ui::windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::starting_loan].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::starting_loan);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::starting_loan);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_loan_size].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_loan_size);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::max_loan_size);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::loan_interest_rate].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::loan_interest_rate);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::loan_interest_rate);
             }
         }
 
@@ -1000,7 +1000,7 @@ namespace openloco::ui::windows::ScenarioOptions
 
             {
                 // Prepare scenario name text.
-                char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioName, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
@@ -1011,24 +1011,24 @@ namespace openloco::ui::windows::ScenarioOptions
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                gfx::draw_string_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::scenario_name_stringid, &*commonFormatArgs);
+                gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::scenario_name_stringid, &*commonFormatArgs);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::scenario_group].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_group);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_group);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_details_btn].top + 1;
-                gfx::draw_string_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_details);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::scenario_details);
             }
 
             {
                 // Prepare scenario details text.
-                char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioDetails, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
@@ -1037,7 +1037,7 @@ namespace openloco::ui::windows::ScenarioOptions
                     commonFormatArgs[0] = stex->details;
 
                 auto& target = window->widgets[widx::change_details_btn];
-                gfx::draw_string_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, colour::black, string_ids::black_stringid, &*commonFormatArgs);
+                gfx::drawString_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, colour::black, string_ids::black_stringid, &*commonFormatArgs);
             }
         }
 
@@ -1088,7 +1088,7 @@ namespace openloco::ui::windows::ScenarioOptions
 
                 case widx::change_name_btn:
                 {
-                    char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioName, 512);
 
                     textinput::openTextinput(self, string_ids::scenario_name_title, string_ids::enter_name_for_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
@@ -1097,7 +1097,7 @@ namespace openloco::ui::windows::ScenarioOptions
 
                 case widx::change_details_btn:
                 {
-                    char* buffer = (char*)stringmgr::get_string(string_ids::buffer_2039);
+                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
                     textinput::openTextinput(self, string_ids::scenario_details_title, string_ids::enter_description_of_this_scenario, string_ids::buffer_2039, widgetIndex, nullptr);

@@ -53,16 +53,16 @@ void vehicle_channel::begin(thing_id_t vid)
 
             _channel.load(*sample);
             _channel.play(loop);
-            _channel.set_volume(sa.volume);
-            _channel.set_pan(sa.pan);
-            _channel.set_frequency(sa.freq);
+            _channel.setVolume(sa.volume);
+            _channel.setPan(sa.pan);
+            _channel.setFrequency(sa.freq);
         }
     }
 }
 
 void vehicle_channel::update()
 {
-    if (!is_free())
+    if (!isFree())
     {
         auto v = thingmgr::get<vehicle>(_vehicle_id);
         if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->type == VehicleThingType::vehicle_2 || v->type == VehicleThingType::tail) && (v->var_4A & 1))
@@ -73,15 +73,15 @@ void vehicle_channel::update()
                 v->var_4A &= ~1;
                 if (_attributes.volume != sa.volume)
                 {
-                    _channel.set_volume(sa.volume);
+                    _channel.setVolume(sa.volume);
                 }
                 if (_attributes.pan != sa.pan)
                 {
-                    _channel.set_pan(sa.pan);
+                    _channel.setPan(sa.pan);
                 }
                 if (_attributes.freq != sa.freq)
                 {
-                    _channel.set_frequency(sa.freq);
+                    _channel.setFrequency(sa.freq);
                 }
                 _attributes = sa;
                 return;

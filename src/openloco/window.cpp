@@ -234,7 +234,7 @@ namespace openloco::ui
         if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
         {
             auto rect = ui::Rect(vp->x, vp->y, vp->width, vp->height);
-            gfx::redraw_screen_rect(rect);
+            gfx::redrawScreenRect(rect);
             return;
         }
 
@@ -412,7 +412,7 @@ namespace openloco::ui
     // input: regs.esi - window (this)
     void window::invalidate()
     {
-        gfx::set_dirty_blocks(x, y, x + width, y + height);
+        gfx::setDirtyBlocks(x, y, x + width, y + height);
     }
 
     // 0x004CA115
@@ -1341,7 +1341,7 @@ namespace openloco::ui
     {
         if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
         {
-            gfx::fill_rect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            gfx::fillRect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressed_widget = 0;
@@ -1515,7 +1515,7 @@ namespace openloco::ui
 
         if (this->flags & window_flags::white_border_mask)
         {
-            gfx::fill_rect_inset(
+            gfx::fillRectInset(
                 dpi,
                 this->x,
                 this->y,

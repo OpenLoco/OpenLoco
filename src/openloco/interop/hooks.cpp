@@ -46,31 +46,31 @@ using namespace openloco;
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audio_load_channel(int a0, const char* a1, int a2, int a3, int a4)
+static int32_t CDECL audioLoadChannel(int a0, const char* a1, int a2, int a3, int a4)
 {
     return audio::loadChannel((audio::channel_id)a0, a1, a2) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audio_play_channel(int a0, int a1, int a2, int a3, int a4)
+static int32_t CDECL audioPlayChannel(int a0, int a1, int a2, int a3, int a4)
 {
     return audio::playChannel((audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL audio_stop_channel(int a0, int a1, int a2, int a3, int a4)
+static void CDECL audioStopChannel(int a0, int a1, int a2, int a3, int a4)
 {
     audio::stopChannel((audio::channel_id)a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL audio_set_channel_volume(int a0, int a1)
+static void CDECL audioSetChannelVolume(int a0, int a1)
 {
     audio::setChannelVolume((audio::channel_id)a0, a1);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audio_is_channel_playing(int a0)
+static int32_t CDECL audioIsChannelPlaying(int a0)
 {
     return audio::isChannelPlaying((audio::channel_id)a0) ? 1 : 0;
 }
@@ -88,7 +88,7 @@ static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
     return;
 }
 
-static int STDCALL get_num_dsound_devices()
+static int STDCALL getNumDSoundDevices()
 {
     STUB();
     return 0;
@@ -488,74 +488,74 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 #endif // _NO_LOCO_WIN32_
 #pragma warning(pop)
 
-static void register_memory_hooks()
+static void registerMemoryHooks()
 {
     using namespace openloco::interop;
 
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
-    write_jmp(0x4d1401, (void*)&fn_malloc);
-    write_jmp(0x4D1B28, (void*)&fn_realloc);
-    write_jmp(0x4D1355, (void*)&fn_free);
+    writeJmp(0x4d1401, (void*)&fn_malloc);
+    writeJmp(0x4D1B28, (void*)&fn_realloc);
+    writeJmp(0x4D1355, (void*)&fn_free);
 }
 
 #ifdef _NO_LOCO_WIN32_
-static void register_no_win32_hooks()
+static void registerNoWin32Hooks()
 {
     using namespace openloco::interop;
 
-    write_jmp(0x40447f, (void*)&fn_40447f);
-    write_jmp(0x404b68, (void*)&fn_404b68);
-    write_jmp(0x404e8c, (void*)&get_num_dsound_devices);
-    write_jmp(0x4054b9, (void*)&fn_4054b9);
-    write_jmp(0x4064fa, (void*)&fn0);
-    write_jmp(0x4054a3, (void*)&fn_4054a3);
-    write_jmp(0x4072ec, (void*)&fn0);
-    write_jmp(0x4078be, (void*)&fn_4078be);
-    write_jmp(0x4078fe, (void*)&fn_4078fe);
-    write_jmp(0x407b26, (void*)&fn_407b26);
-    write_jmp(0x4080bb, (void*)&fn_4080bb);
-    write_jmp(0x408163, (void*)&fn_408163);
-    write_jmp(0x40817b, (void*)&fn_40817b);
-    write_jmp(0x4081ad, (void*)&fn_4081ad);
-    write_jmp(0x4081c5, (void*)&fn_FileSeekSet);
-    write_jmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
-    write_jmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
-    write_jmp(0x4081fe, (void*)&fn_FileRead);
-    write_jmp(0x40830e, (void*)&fn_FindFirstFile);
-    write_jmp(0x40831d, (void*)&fn_FindNextFile);
-    write_jmp(0x40832c, (void*)&fn_FindClose);
-    write_jmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
+    writeJmp(0x40447f, (void*)&fn_40447f);
+    writeJmp(0x404b68, (void*)&fn_404b68);
+    writeJmp(0x404e8c, (void*)&getNumDSoundDevices);
+    writeJmp(0x4054b9, (void*)&fn_4054b9);
+    writeJmp(0x4064fa, (void*)&fn0);
+    writeJmp(0x4054a3, (void*)&fn_4054a3);
+    writeJmp(0x4072ec, (void*)&fn0);
+    writeJmp(0x4078be, (void*)&fn_4078be);
+    writeJmp(0x4078fe, (void*)&fn_4078fe);
+    writeJmp(0x407b26, (void*)&fn_407b26);
+    writeJmp(0x4080bb, (void*)&fn_4080bb);
+    writeJmp(0x408163, (void*)&fn_408163);
+    writeJmp(0x40817b, (void*)&fn_40817b);
+    writeJmp(0x4081ad, (void*)&fn_4081ad);
+    writeJmp(0x4081c5, (void*)&fn_FileSeekSet);
+    writeJmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
+    writeJmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
+    writeJmp(0x4081fe, (void*)&fn_FileRead);
+    writeJmp(0x40830e, (void*)&fn_FindFirstFile);
+    writeJmp(0x40831d, (void*)&fn_FindNextFile);
+    writeJmp(0x40832c, (void*)&fn_FindClose);
+    writeJmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
 
     // fill DLL hooks for ease of debugging
     for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
     {
-        hook_dump(i, (void*)&fn_dump);
+        hookDump(i, (void*)&fn_dump);
     }
 
     // dsound.dll
-    hook_lib(0x4d7024, (void*)&lib_DirectSoundCreate);
+    hookLib(0x4d7024, (void*)&lib_DirectSoundCreate);
 
     // gdi32.dll
-    hook_lib(0x4d7078, (void*)&lib_CreateRectRgn);
+    hookLib(0x4d7078, (void*)&lib_CreateRectRgn);
 
     // kernel32.dll
-    hook_lib(0x4d70e0, (void*)&lib_CreateMutexA);
-    hook_lib(0x4d70e4, (void*)&lib_OpenMutexA);
-    hook_lib(0x4d70f0, (void*)&lib_WriteFile);
-    hook_lib(0x4d70f4, (void*)&lib_DeleteFileA);
-    hook_lib(0x4d70f8, (void*)&lib_SetFileAttributesA);
-    hook_lib(0x4d70fC, (void*)&lib_CreateFileA);
+    hookLib(0x4d70e0, (void*)&lib_CreateMutexA);
+    hookLib(0x4d70e4, (void*)&lib_OpenMutexA);
+    hookLib(0x4d70f0, (void*)&lib_WriteFile);
+    hookLib(0x4d70f4, (void*)&lib_DeleteFileA);
+    hookLib(0x4d70f8, (void*)&lib_SetFileAttributesA);
+    hookLib(0x4d70fC, (void*)&lib_CreateFileA);
 
     // user32.dll
-    hook_lib(0x4d71e8, (void*)&lib_PostQuitMessage);
-    hook_lib(0x4d714c, (void*)&lib_CloseHandle);
-    hook_lib(0x4d7248, (void*)&lib_GetUpdateRgn);
-    hook_lib(0x4d72b0, (void*)&lib_timeGetTime);
+    hookLib(0x4d71e8, (void*)&lib_PostQuitMessage);
+    hookLib(0x4d714c, (void*)&lib_CloseHandle);
+    hookLib(0x4d7248, (void*)&lib_GetUpdateRgn);
+    hookLib(0x4d72b0, (void*)&lib_timeGetTime);
 }
 #endif // _NO_LOCO_WIN32_
 
-void openloco::interop::load_sections()
+void openloco::interop::loadSections()
 {
 #ifndef _WIN32
     int32_t err = mprotect((void*)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
@@ -572,43 +572,43 @@ void openloco::interop::load_sections()
 #endif
 }
 
-static void register_audio_hooks()
+static void registerAudioHooks()
 {
     using namespace openloco::interop;
 
-    write_jmp(0x0040194E, (void*)&audio_load_channel);
-    write_jmp(0x00401999, (void*)&audio_play_channel);
-    write_jmp(0x00401A05, (void*)&audio_stop_channel);
-    write_jmp(0x00401AD3, (void*)&audio_set_channel_volume);
-    write_jmp(0x00401B10, (void*)&audio_is_channel_playing);
+    writeJmp(0x0040194E, (void*)&audioLoadChannel);
+    writeJmp(0x00401999, (void*)&audioPlayChannel);
+    writeJmp(0x00401A05, (void*)&audioStopChannel);
+    writeJmp(0x00401AD3, (void*)&audioSetChannelVolume);
+    writeJmp(0x00401B10, (void*)&audioIsChannelPlaying);
 
-    write_ret(0x0048AB36);
-    write_ret(0x00404B40);
-    register_hook(
+    writeRet(0x0048AB36);
+    writeRet(0x00404B40);
+    registerHook(
         0x0048A18C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::updateSounds();
             return 0;
         });
-    register_hook(
+    registerHook(
         0x00489C6A,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::stopVehicleNoise();
             return 0;
         });
-    register_hook(
+    registerHook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::playSound((vehicle_26*)regs.esi);
             return 0;
         });
-    register_hook(
+    registerHook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::playSound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
             return 0;
         });
-    register_hook(
+    registerHook(
         0x00489F1B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             audio::playSound((audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
@@ -616,19 +616,19 @@ static void register_audio_hooks()
         });
 }
 
-void openloco::interop::register_hooks()
+void openloco::interop::registerHooks()
 {
     using namespace openloco::ui::windows;
 
-    register_memory_hooks();
+    registerMemoryHooks();
 
 #ifdef _NO_LOCO_WIN32_
-    register_no_win32_hooks();
+    registerNoWin32Hooks();
 #endif // _NO_LOCO_WIN32_
 
-    register_audio_hooks();
+    registerAudioHooks();
 
-    register_hook(
+    registerHook(
         0x00431695,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
@@ -638,7 +638,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             using namespace openloco::environment;
@@ -654,14 +654,14 @@ void openloco::interop::register_hooks()
         });
 
     // Replace ui::update() with our own
-    register_hook(
+    registerHook(
         0x004524C1,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             ui::update();
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x00407BA3,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto cursor = (ui::cursor_id)regs.edx;
@@ -669,7 +669,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto result = promptOkCancel(regs.eax);
@@ -677,18 +677,18 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             openloco::input::sub_407231();
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = gfx::draw_string((gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
+            auto pos = gfx::drawString((gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -697,24 +697,24 @@ void openloco::interop::register_hooks()
         });
 
     // Until handling of input_state::viewport_left has been implemented in mouse_input...
-    register_hook(
+    registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             ui::windows::station_list::open(regs.ax);
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004958C6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            char* buffer = stringmgr::format_string((char*)regs.edi, regs.eax, (void*)regs.ecx);
+            char* buffer = stringmgr::formatString((char*)regs.edi, regs.eax, (void*)regs.ecx);
             regs = backup;
             regs.edi = (uint32_t)buffer;
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (openloco::vehicle_head*)regs.esi;
@@ -722,7 +722,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             gui::init();
@@ -732,7 +732,7 @@ void openloco::interop::register_hooks()
     /* This can be removed after implementing signal place and remove game commands.
      * It fixes an original bug with those two game commands.
      */
-    register_hook(
+    registerHook(
         0x004A2AD7,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             addr<0x001135F88, uint16_t>() = 0;
@@ -747,7 +747,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
@@ -758,7 +758,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004CF63B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
@@ -782,7 +782,7 @@ void openloco::interop::register_hooks()
     tutorial::registerHooks();
 
     // Part of 0x004691FA
-    register_hook(
+    registerHook(
         0x0046959C,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
@@ -797,7 +797,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004AB655,
         [](registers& regs) -> uint8_t {
             auto v = (openloco::vehicle*)regs.esi;
@@ -806,14 +806,14 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004392BD,
         [](registers& regs) -> uint8_t {
             gui::resize();
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
@@ -823,7 +823,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004C9513,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
@@ -847,7 +847,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004CA115,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
@@ -858,7 +858,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004CA17F,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
@@ -869,7 +869,7 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004C57C0,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
@@ -879,12 +879,12 @@ void openloco::interop::register_hooks()
             return 0;
         });
 
-    register_hook(
+    registerHook(
         0x004C5DD5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
-            gfx::redraw_screen_rect(regs.ax, regs.bx, regs.dx, regs.bp);
+            gfx::redrawScreenRect(regs.ax, regs.bx, regs.dx, regs.bp);
 
             regs = backup;
             return 0;
@@ -893,5 +893,5 @@ void openloco::interop::register_hooks()
     // Remove check for is road in use when removing roads. It is
     // quite annoying when it's sometimes only the player's own
     // vehicles that are using it.
-    write_nop(0x004776DD, 6);
+    writeNop(0x004776DD, 6);
 }

@@ -212,17 +212,17 @@ namespace openloco::ui::windows::PlayerInfoPanel
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         widget_t& frame = _widgets[widx::outer_frame];
-        gfx::draw_rect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        gfx::drawRect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         window->draw(dpi);
 
-        draw_rect_inset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
+        drawRectInset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
 
         auto playerCompany = companymgr::get(companymgr::getControllingId());
         auto competitor = objectmgr::get<competitor_object>(playerCompany->competitor_id);
         auto image = gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
-        gfx::draw_image(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
+        gfx::drawImage(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
 
         auto x = window->x + frame.width() / 2 + 12;
         {
@@ -247,7 +247,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            gfx::draw_string_centred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
+            gfx::drawStringCentred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -270,7 +270,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performance_index);
-            gfx::draw_string_centred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
+            gfx::drawStringCentred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
         }
     }
 

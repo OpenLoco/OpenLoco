@@ -172,15 +172,15 @@ namespace openloco::ui::dropdown
         // 0x00494BF6
         static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
         {
-            stringmgr::format_string(_byte_112CC04, stringId, &args);
+            stringmgr::formatString(_byte_112CC04, stringId, &args);
 
             _currentFontSpriteBase = font::medium_bold;
 
-            gfx::clip_string(width, _byte_112CC04);
+            gfx::clipString(width, _byte_112CC04);
 
             _currentFontSpriteBase = font::m1;
 
-            gfx::draw_string(dpi, x, y, colour, _byte_112CC04);
+            gfx::drawString(dpi, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E
@@ -198,7 +198,7 @@ namespace openloco::ui::dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | palette_index::index_2E);
+                        gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | palette_index::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -251,7 +251,7 @@ namespace openloco::ui::dropdown
                         {
                             imageId++;
                         }
-                        gfx::draw_image(dpi, x, y, imageId);
+                        gfx::drawImage(dpi, x, y, imageId);
                     }
                 }
                 else
@@ -261,16 +261,16 @@ namespace openloco::ui::dropdown
 
                     if (!(self->colours[0] & colour::translucent_flag))
                     {
-                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 1, colour::get_shade(self->colours[0], 3));
-                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour::get_shade(self->colours[0], 7));
+                        gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, colour::getShade(self->colours[0], 3));
+                        gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour::getShade(self->colours[0], 7));
                     }
                     else
                     {
                         uint32_t colour = _byte_5045FA[colour::opaque(self->colours[0])] | (1 << 25);
                         colour++;
-                        gfx::draw_rect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
+                        gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
-                        gfx::draw_rect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 
@@ -363,7 +363,7 @@ namespace openloco::ui::dropdown
 
                 dropdownFormatArgsToFormatArgs(itemCount, args);
 
-                stringmgr::format_string(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
+                stringmgr::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
                 _currentFontSpriteBase = font::medium_bold;
 

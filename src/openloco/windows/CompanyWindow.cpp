@@ -191,7 +191,7 @@ namespace openloco::ui::windows::CompanyWindow
             // Draw 'owner' label
             {
                 auto& widget = self->widgets[widx::face];
-                gfx::draw_string_centred(
+                gfx::drawStringCentred(
                     *dpi,
                     self->x + (widget.left + widget.right) / 2,
                     self->y + widget.top - 12,
@@ -205,7 +205,7 @@ namespace openloco::ui::windows::CompanyWindow
                 const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary) + 1;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
-                gfx::draw_image(dpi, x, y, image);
+                gfx::drawImage(dpi, x, y, image);
             }
 
             // If the owner's been naughty, draw some jail bars over them.
@@ -214,7 +214,7 @@ namespace openloco::ui::windows::CompanyWindow
                 const uint32_t image = image_ids::owner_jailed;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
-                gfx::draw_image(dpi, x, y, image);
+                gfx::drawImage(dpi, x, y, image);
             }
 
             // Draw owner name
@@ -223,7 +223,7 @@ namespace openloco::ui::windows::CompanyWindow
                 args.push(company->owner_name);
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
-                gfx::draw_string_centred_wrapped(
+                gfx::drawStringCentredWrapped(
                     dpi,
                     &origin,
                     widget.right - widget.left,
@@ -244,7 +244,7 @@ namespace openloco::ui::windows::CompanyWindow
                 companymgr::getOwnerStatus(self->number, args);
 
                 auto& widget = self->widgets[widx::unk_11];
-                gfx::draw_string_494BBF(
+                gfx::drawString_494BBF(
                     *dpi,
                     self->x + widget.left - 1,
                     self->y + widget.top - 1,
@@ -358,14 +358,14 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Temporarily store the new name in buffer string 2039.
             // TODO: replace with a fixed length!
-            char* buffer = const_cast<char*>(stringmgr::get_string(string_ids::buffer_2039));
+            char* buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
             strcpy(buffer, input);
 
             FormatArguments args = {};
             args.push(string_ids::buffer_2039);
 
             // Add the ' Transport' suffix to the company name, and rename the company.
-            stringmgr::format_string(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
+            stringmgr::formatString(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
             common::renameCompany(self, input);
         }
 
@@ -757,21 +757,21 @@ namespace openloco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->intelligence);
                 args.push(aiRatingToLevel(competitor->intelligence));
-                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_intelligence, &args);
+                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_intelligence, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->agressiveness);
                 args.push(aiRatingToLevel(competitor->agressiveness));
-                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
+                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->competitiveness);
                 args.push(aiRatingToLevel(competitor->competitiveness));
-                gfx::draw_string_494B3F(dpi, x, y, colour::black, string_ids::company_details_competitiveness, &args);
+                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_competitiveness, &args);
                 y += 10;
             }
         }
@@ -800,7 +800,7 @@ namespace openloco::ui::windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push(company->startedDate);
-                gfx::draw_string_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+                gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
                 y += 10;
             }
 
@@ -817,14 +817,14 @@ namespace openloco::ui::windows::CompanyWindow
                 {
                     formatId = string_ids::company_details_performance_increasing;
                 }
-                gfx::draw_string_494B3F(*dpi, x, y, colour::black, formatId, &args);
+                gfx::drawString_494B3F(*dpi, x, y, colour::black, formatId, &args);
                 y += 25;
             }
 
             {
                 FormatArguments args{};
                 args.push(company->owner_name);
-                gfx::draw_string_494BBF(*dpi, x, y, 213, colour::black, string_ids::owner_label, &args);
+                gfx::drawString_494BBF(*dpi, x, y, 213, colour::black, string_ids::owner_label, &args);
                 y += 10;
             }
 
@@ -842,7 +842,7 @@ namespace openloco::ui::windows::CompanyWindow
                     {
                         FormatArguments args{};
                         args.push(count);
-                        gfx::draw_string_494B3F(*dpi, x, y, colour::black, transportTypeCountString[i], &args);
+                        gfx::drawString_494B3F(*dpi, x, y, colour::black, transportTypeCountString[i], &args);
                         y += 10;
                     }
                 }
@@ -851,7 +851,7 @@ namespace openloco::ui::windows::CompanyWindow
             {
                 x = self->x + (self->widgets[widx::viewport].left + self->widgets[widx::viewport].right) / 2;
                 y = self->y + self->widgets[widx::viewport].top - 12;
-                gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::headquarters);
+                gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::headquarters);
             }
 
             if (company->headquarters_x == -1)
@@ -862,7 +862,7 @@ namespace openloco::ui::windows::CompanyWindow
                     static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
                 width -= 2;
-                gfx::draw_string_centred_wrapped(dpi, &loc, width, colour::black, string_ids::not_yet_constructed);
+                gfx::drawStringCentredWrapped(dpi, &loc, width, colour::black, string_ids::not_yet_constructed);
             }
 
             if (self->viewports[0] != nullptr)
@@ -1357,7 +1357,7 @@ namespace openloco::ui::windows::CompanyWindow
             uint16_t y = self->y + widget.top + 3;
 
             // 'Main colour scheme'
-            gfx::draw_string_494B3F(
+            gfx::drawString_494B3F(
                 *dpi,
                 x,
                 y,
@@ -1366,7 +1366,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // 'Special colour schemes used for'
             y += 17;
-            gfx::draw_string_494B3F(
+            gfx::drawString_494B3F(
                 *dpi,
                 x,
                 y,
@@ -1648,7 +1648,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // Draw 'expenditure/income' label
             {
-                gfx::draw_string_left_underline(
+                gfx::drawStringLeftUnderline(
                     *dpi,
                     self->x + 5,
                     self->y + 47,
@@ -1683,13 +1683,13 @@ namespace openloco::ui::windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
-                    gfx::fill_rect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
+                    auto colour = colour::getShade(self->colours[1], 6) | 0x1000000;
+                    gfx::fillRect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
                 FormatArguments args{};
                 args.push(ExpenditureLabels[i]);
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 5,
                     y - 1,
@@ -1702,7 +1702,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             // 'Current loan' label
             {
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top,
@@ -1715,7 +1715,7 @@ namespace openloco::ui::windows::CompanyWindow
                 loco_global<uint8_t, 0x00525FC6> loanInterestRate;
                 FormatArguments args{};
                 args.push<uint16_t>(loanInterestRate);
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + self->widgets[widx::current_loan].right + 3,
                     self->y + self->widgets[widx::current_loan].top + 1,
@@ -1736,7 +1736,7 @@ namespace openloco::ui::windows::CompanyWindow
                 if (company->cash.var_04 < 0)
                     cash_format = string_ids::cash_negative;
 
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 13,
@@ -1751,7 +1751,7 @@ namespace openloco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push(company->companyValueHistory[0]);
 
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 26,
@@ -1766,7 +1766,7 @@ namespace openloco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push(company->vehicleProfit);
 
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 39,
@@ -1788,7 +1788,7 @@ namespace openloco::ui::windows::CompanyWindow
                 format = string_ids::black_stringid;
             }
 
-            gfx::draw_string_underline(
+            gfx::drawStringUnderline(
                 *context,
                 x,
                 y,
@@ -1821,7 +1821,7 @@ namespace openloco::ui::windows::CompanyWindow
                     args.push<string_id>(currFormat);
                     args.push<currency48_t>(expenditures);
 
-                    gfx::draw_string_494C78(
+                    gfx::drawString_494C78(
                         *context,
                         x,
                         y,
@@ -1850,9 +1850,9 @@ namespace openloco::ui::windows::CompanyWindow
 
             y += 4;
 
-            gfx::draw_string_494C78(*context, x, y, colour::black, mainFormat, &args);
+            gfx::drawString_494C78(*context, x, y, colour::black, mainFormat, &args);
 
-            gfx::fill_rect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, colour::aquamarine);
+            gfx::fillRect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, colour::aquamarine);
         }
 
         // 0x0043361E
@@ -1865,8 +1865,8 @@ namespace openloco::ui::windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
-                    gfx::fill_rect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
+                    auto colour = colour::getShade(self->colours[1], 6) | 0x1000000;
+                    gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
                 y += 10;
@@ -2124,7 +2124,7 @@ namespace openloco::ui::windows::CompanyWindow
             uint16_t y = self->y + 47;
 
             // 'Cargo delivered'
-            gfx::draw_string_494B3F(
+            gfx::drawString_494B3F(
                 *dpi,
                 self->x + 5,
                 y,
@@ -2149,7 +2149,7 @@ namespace openloco::ui::windows::CompanyWindow
 
                 args.push(company->cargoDelivered[i]);
 
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 10,
                     y,
@@ -2164,7 +2164,7 @@ namespace openloco::ui::windows::CompanyWindow
             // No cargo delivered yet?
             if (numPrinted == 0)
             {
-                gfx::draw_string_494B3F(
+                gfx::drawString_494B3F(
                     *dpi,
                     self->x + 10,
                     y,
@@ -2572,7 +2572,7 @@ namespace openloco::ui::windows::CompanyWindow
             const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
-            gfx::draw_image(dpi, x, y, image);
+            gfx::drawImage(dpi, x, y, image);
         }
 
         // 0x00434413

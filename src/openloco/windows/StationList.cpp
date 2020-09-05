@@ -147,10 +147,10 @@ namespace openloco::ui::windows::station_list
     static bool orderByName(const openloco::station& lhs, const openloco::station& rhs)
     {
         char lhsString[256] = { 0 };
-        stringmgr::format_string(lhsString, lhs.name, (void*)&lhs.town);
+        stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
 
         char rhsString[256] = { 0 };
-        stringmgr::format_string(rhsString, rhs.name, (void*)&rhs.town);
+        stringmgr::formatString(rhsString, rhs.name, (void*)&rhs.town);
 
         return strcmp(lhsString, rhsString) < 0;
     }
@@ -184,7 +184,7 @@ namespace openloco::ui::windows::station_list
         {
             if (lhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -194,7 +194,7 @@ namespace openloco::ui::windows::station_list
         {
             if (rhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -471,8 +471,8 @@ namespace openloco::ui::windows::station_list
     // 0x0049157F
     static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        auto shade = colour::get_shade(window->colours[1], 4);
-        gfx::clear_single(*dpi, shade);
+        auto shade = colour::getShade(window->colours[1], 4);
+        gfx::clearSingle(*dpi, shade);
 
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window->var_83C; i++)
@@ -491,7 +491,7 @@ namespace openloco::ui::windows::station_list
             // Highlight selection.
             if (stationId == window->row_hover)
             {
-                gfx::draw_rect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
+                gfx::drawRect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
                 text_colour_id = string_ids::wcolour2_stringid;
             }
 
@@ -522,14 +522,14 @@ namespace openloco::ui::windows::station_list
             _common_format_args[2] = station->town;
             _common_format_args[3] = label_icons[station->flags & 0x0F];
 
-            gfx::draw_string_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
+            gfx::drawString_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
-            const char* buffer = stringmgr::get_string(string_ids::buffer_1250);
+            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
             station->getStatusString((char*)buffer);
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::draw_string_494BBF(*dpi, 200, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
+            gfx::drawString_494BBF(*dpi, 200, yPos, 198, colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -538,7 +538,7 @@ namespace openloco::ui::windows::station_list
 
             _common_format_args[0] = string_ids::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
-            gfx::draw_string_494BBF(*dpi, 400, yPos, 88, colour::black, text_colour_id, &*_common_format_args);
+            gfx::drawString_494BBF(*dpi, 400, yPos, 88, colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
             char* ptr = (char*)buffer;
@@ -552,13 +552,13 @@ namespace openloco::ui::windows::station_list
                     continue;
 
                 if (*buffer != '\0')
-                    ptr = stringmgr::format_string(ptr, string_ids::unit_separator);
+                    ptr = stringmgr::formatString(ptr, string_ids::unit_separator);
 
-                ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::draw_string_494BBF(*dpi, 490, yPos, 118, colour::black, text_colour_id, &*_common_format_args);
+            gfx::drawString_494BBF(*dpi, 490, yPos, 118, colour::black, text_colour_id, &*_common_format_args);
 
             yPos += rowHeight;
         }
@@ -590,7 +590,7 @@ namespace openloco::ui::windows::station_list
         uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
-        gfx::draw_image(dpi, x, y, image);
+        gfx::drawImage(dpi, x, y, image);
 
         // TODO: locale-based pluralisation.
         _common_format_args[0] = window->var_83C == 1 ? string_ids::status_num_stations_singular : string_ids::status_num_stations_plural;
@@ -598,7 +598,7 @@ namespace openloco::ui::windows::station_list
 
         // Draw number of stations.
         auto origin = gfx::point_t(window->x + 4, window->y + window->height - 12);
-        gfx::draw_string_494B3F(*dpi, &origin, colour::black, string_ids::black_stringid, &*_common_format_args);
+        gfx::drawString_494B3F(*dpi, &origin, colour::black, string_ids::black_stringid, &*_common_format_args);
     }
 
     // 0x004917BB

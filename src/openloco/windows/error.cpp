@@ -68,7 +68,7 @@ namespace openloco::ui::windows::error
 
         if (title != string_ids::null)
         {
-            ptr = stringmgr::format_string(ptr, title, &args);
+            ptr = stringmgr::formatString(ptr, title, &args);
         }
 
         if (message != string_ids::null)
@@ -79,7 +79,7 @@ namespace openloco::ui::windows::error
                 *ptr = control_codes::newline;
                 ptr++;
             }
-            stringmgr::format_string(ptr, message, &args);
+            stringmgr::formatString(ptr, message, &args);
         }
 
         return ptr;
@@ -100,7 +100,7 @@ namespace openloco::ui::windows::error
             gCurrentFontSpriteBase = font::medium_bold;
             int16_t strWidth;
             {
-                strWidth = gfx::get_string_width_new_lined(&_byte_9C64B3[0]);
+                strWidth = gfx::getStringWidthNewLined(&_byte_9C64B3[0]);
             }
 
             strWidth = std::min<int16_t>(strWidth, 196);
@@ -108,7 +108,7 @@ namespace openloco::ui::windows::error
             gCurrentFontSpriteBase = font::medium_bold;
             {
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = gfx::wrap_string(&_byte_9C64B3[0], strWidth);
+                std::tie(strWidth, breakLineCount) = gfx::wrapString(&_byte_9C64B3[0], strWidth);
                 _word_9C66B3 = breakLineCount;
             }
 
@@ -187,14 +187,14 @@ namespace openloco::ui::windows::error
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::windows::error::open(regs.bx, regs.dx);
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 ui::windows::error::openWithCompetitor(regs.bx, regs.dx, regs.al);
@@ -213,22 +213,22 @@ namespace openloco::ui::windows::error
             uint16_t height = self->height;
             auto skin = objectmgr::get<interface_skin_object>()->colour_09;
 
-            gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            gfx::draw_rect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
+            gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+            gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
 
-            gfx::draw_rect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-            gfx::draw_rect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-            gfx::draw_rect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
             if (_errorCompetitorId == 0xFF)
             {
-                gfx::draw_string_centred_raw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
+                gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
             }
             else
             {
@@ -242,14 +242,14 @@ namespace openloco::ui::windows::error
                 imageId = gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                gfx::draw_image(dpi, xPos, yPos, imageId);
+                gfx::drawImage(dpi, xPos, yPos, imageId);
 
                 if (company->jail_status != 0)
                 {
-                    gfx::draw_image(dpi, xPos, yPos, image_ids::owner_jailed);
+                    gfx::drawImage(dpi, xPos, yPos, image_ids::owner_jailed);
                 }
 
-                gfx::draw_string_centred_raw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
+                gfx::drawStringCentredRaw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
             }
         }
 

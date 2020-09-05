@@ -28,19 +28,19 @@ channel& channel::operator=(channel&& other)
 
 channel::~channel()
 {
-    dispose_chunk();
+    disposeChunk();
 }
 
 bool channel::load(sample& sample)
 {
-    dispose_chunk();
+    disposeChunk();
     _chunk = sample.chunk;
     return true;
 }
 
 bool channel::load(const fs::path& path)
 {
-    dispose_chunk();
+    disposeChunk();
     _chunk = Mix_LoadWAV(path.u8string().c_str());
     _chunk_owner = true;
     return _chunk != nullptr;
@@ -48,7 +48,7 @@ bool channel::load(const fs::path& path)
 
 bool channel::play(bool loop)
 {
-    if (!is_undefined())
+    if (!isUndefined())
     {
         int loops = loop ? -1 : 0;
         if (Mix_PlayChannel(_id, _chunk, loops) == -1)
@@ -63,40 +63,40 @@ bool channel::play(bool loop)
 
 void channel::stop()
 {
-    if (!is_undefined())
+    if (!isUndefined())
     {
         Mix_HaltChannel(_id);
     }
 }
 
-void channel::set_volume(int32_t volume)
+void channel::setVolume(int32_t volume)
 {
-    if (!is_undefined())
+    if (!isUndefined())
     {
         Mix_Volume(_id, volumeLocoToSDL(volume));
     }
 }
 
-void channel::set_pan(int32_t pan)
+void channel::setPan(int32_t pan)
 {
-    if (!is_undefined())
+    if (!isUndefined())
     {
         auto [left, right] = panLocoToSDL(pan);
         Mix_SetPanning(_id, left, right);
     }
 }
 
-void channel::set_frequency(int32_t freq)
+void channel::setFrequency(int32_t freq)
 {
     // TODO
 }
 
-bool channel::is_playing() const
+bool channel::isPlaying() const
 {
-    return is_undefined() ? false : (Mix_Playing(_id) != 0);
+    return isUndefined() ? false : (Mix_Playing(_id) != 0);
 }
 
-void channel::dispose_chunk()
+void channel::disposeChunk()
 {
     if (_chunk_owner)
     {

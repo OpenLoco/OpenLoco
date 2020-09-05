@@ -341,7 +341,7 @@ namespace openloco::audio
 #ifdef __HAS_DEFAULT_DEVICE__
     static const char* getDefaultDeviceName()
     {
-        return stringmgr::get_string(string_ids::default_audio_device_name);
+        return stringmgr::getString(string_ids::default_audio_device_name);
     }
 #endif
 
@@ -528,7 +528,7 @@ namespace openloco::audio
     {
         for (auto& vc : _vehicle_channels)
         {
-            if (vc.is_free())
+            if (vc.isFree())
             {
                 return &vc;
             }
@@ -709,7 +709,7 @@ namespace openloco::audio
         {
             if (_music_channel.play(loop != 0))
             {
-                _music_channel.set_volume(volume);
+                _music_channel.setVolume(volume);
             }
         }
         else
@@ -718,7 +718,7 @@ namespace openloco::audio
             if (channel != nullptr)
             {
                 channel->play(loop != 0);
-                channel->set_volume(volume);
+                channel->setVolume(volume);
                 return true;
             }
         }
@@ -754,7 +754,7 @@ namespace openloco::audio
         {
             if (_music_current_channel == id)
             {
-                _music_channel.set_volume(volume);
+                _music_channel.setVolume(volume);
             }
         }
         else
@@ -762,7 +762,7 @@ namespace openloco::audio
             auto channel = getChannel(id);
             if (channel != nullptr)
             {
-                channel->set_volume(volume);
+                channel->setVolume(volume);
             }
         }
     }
@@ -772,14 +772,14 @@ namespace openloco::audio
     {
         if (isMusicChannel(id))
         {
-            return _music_current_channel == id && _music_channel.is_playing();
+            return _music_current_channel == id && _music_channel.isPlaying();
         }
         else
         {
             auto channel = getChannel(id);
             if (channel != nullptr)
             {
-                return channel->is_playing();
+                return channel->isPlaying();
             }
         }
         return false;
@@ -1068,7 +1068,7 @@ namespace openloco::audio
             return;
         }
 
-        if (!_music_channel.is_playing())
+        if (!_music_channel.isPlaying())
         {
             _currentSong = chooseNextMusicTrack(_lastSong);
             _lastSong = _currentSong;
@@ -1095,7 +1095,7 @@ namespace openloco::audio
     // 0x0048AAE8
     void stopBackgroundMusic()
     {
-        if (_audio_initialised && _music_channel.is_playing())
+        if (_audio_initialised && _music_channel.isPlaying())
         {
             _music_channel.stop();
         }

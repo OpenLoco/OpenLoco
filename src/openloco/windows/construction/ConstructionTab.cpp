@@ -2033,7 +2033,7 @@ namespace openloco::ui::windows::construction::construction
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::build_this);
+            gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::build_this);
 
         y += 11;
 
@@ -2043,7 +2043,7 @@ namespace openloco::ui::windows::construction::construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                gfx::draw_string_centred(*dpi, x, y, colour::black, string_ids::build_cost, &args);
+                gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::build_cost, &args);
             }
         }
     }
@@ -2108,7 +2108,7 @@ namespace openloco::ui::windows::construction::construction
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;
 
-                    gfx::draw_image(dpi, x, y, imageId);
+                    gfx::drawImage(dpi, x, y, imageId);
                 }
             }
         }
@@ -2137,7 +2137,7 @@ namespace openloco::ui::windows::construction::construction
 
             gfx::drawpixelinfo_t* clipped = nullptr;
 
-            if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
                 auto roadPiece = roadPieces[_lastSelectedTrackPieceId];
                 auto i = 0;
@@ -2192,7 +2192,7 @@ namespace openloco::ui::windows::construction::construction
 
             gfx::drawpixelinfo_t* clipped = nullptr;
 
-            if (gfx::clip_drawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
                 auto trackPiece = trackPieces[_lastSelectedTrackPieceId];
                 auto i = 0;

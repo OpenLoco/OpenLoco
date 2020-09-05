@@ -37,7 +37,7 @@ namespace openloco::game_commands
 
     void registerHooks()
     {
-        register_hook(
+        registerHook(
             0x00431315,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
@@ -48,7 +48,7 @@ namespace openloco::game_commands
                 return 0;
             });
 
-        register_hook(
+        registerHook(
             0x004AE5E4,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

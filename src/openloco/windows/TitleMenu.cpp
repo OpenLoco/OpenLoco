@@ -218,13 +218,13 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::scenario_list_btn))
+            if (input::isHovering(WindowType::titleMenu, 0, widx::scenario_list_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_sparkle);
+            openloco::gfx::drawImage(dpi, x, y, image_id);
+            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_sparkle);
         }
 
         if (window->widgets[widx::load_game_btn].type != ui::widget_type::none)
@@ -233,13 +233,13 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::load_game_btn))
+            if (input::isHovering(WindowType::titleMenu, 0, widx::load_game_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_save);
+            openloco::gfx::drawImage(dpi, x, y, image_id);
+            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_save);
         }
 
         if (window->widgets[widx::tutorial_btn].type != ui::widget_type::none)
@@ -248,15 +248,15 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::tutorial_btn))
+            if (input::isHovering(WindowType::titleMenu, 0, widx::tutorial_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
+            openloco::gfx::drawImage(dpi, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            openloco::gfx::draw_image(dpi, x, y, image_ids::title_menu_lesson_l);
+            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_lesson_l);
         }
 
         if (window->widgets[widx::scenario_editor_btn].type != ui::widget_type::none)
@@ -265,12 +265,12 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_construct_24;
-            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::scenario_editor_btn))
+            if (input::isHovering(WindowType::titleMenu, 0, widx::scenario_editor_btn))
             {
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
 
-            openloco::gfx::draw_image(dpi, x, y, image_id);
+            openloco::gfx::drawImage(dpi, x, y, image_id);
         }
 
         {
@@ -282,7 +282,7 @@ namespace openloco::ui::windows
             if (openloco::isNetworked())
             {
                 // char[512+1]
-                auto buffer = stringmgr::get_string(string_ids::buffer_2039);
+                auto buffer = stringmgr::getString(string_ids::buffer_2039);
 
                 char* playerName = (char*)0xF254D0;
 
@@ -292,7 +292,7 @@ namespace openloco::ui::windows
                 string = string_ids::two_player_mode_connected;
             }
 
-            draw_string_centred_clipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
         }
     }
 

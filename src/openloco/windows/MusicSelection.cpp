@@ -99,8 +99,8 @@ namespace openloco::ui::windows::music_selection
     // 0x004C1663
     static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        auto shade = colour::get_shade(window->colours[1], 4);
-        gfx::clear_single(*dpi, shade);
+        auto shade = colour::getShade(window->colours[1], 4);
+        gfx::clearSingle(*dpi, shade);
 
         auto config = config::get();
 
@@ -112,20 +112,20 @@ namespace openloco::ui::windows::music_selection
             // Draw hovered track
             if (i == window->row_hover)
             {
-                gfx::draw_rect(dpi, 0, y, 800, rowHeight, 0x2000030);
+                gfx::drawRect(dpi, 0, y, 800, rowHeight, 0x2000030);
                 text_colour_id = string_ids::wcolour2_stringid;
             }
 
             // Draw checkbox.
-            gfx::fill_rect_inset(dpi, 2, y, 11, y + 10, window->colours[1], 0xE0);
+            gfx::fillRectInset(dpi, 2, y, 11, y + 10, window->colours[1], 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])
-                gfx::draw_string_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid, (void*)&string_ids::checkmark);
+                gfx::drawString_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid, (void*)&string_ids::checkmark);
 
             // Draw track name.
             string_id music_title_id = audio::getMusicInfo(i)->title_id;
-            gfx::draw_string_494B3F(*dpi, 15, y, window->colours[1], text_colour_id, (void*)&music_title_id);
+            gfx::drawString_494B3F(*dpi, 15, y, window->colours[1], text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }

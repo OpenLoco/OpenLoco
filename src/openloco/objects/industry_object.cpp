@@ -49,10 +49,10 @@ namespace openloco
                 producedCargoCount++;
 
                 if (producedCargoCount > 1)
-                    ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
+                    ptr = stringmgr::formatString(ptr, string_ids::cargo_and);
 
                 auto cargoObj = objectmgr::get<cargo_object>(producedCargo);
-                ptr = stringmgr::format_string(ptr, cargoObj->name);
+                ptr = stringmgr::formatString(ptr, cargoObj->name);
             }
         }
         return ptr;
@@ -72,13 +72,13 @@ namespace openloco
                 if (requiredCargoCount > 1)
                 {
                     if ((flags & industry_object_flags::requires_all_cargo) != 0)
-                        ptr = stringmgr::format_string(ptr, string_ids::cargo_and);
+                        ptr = stringmgr::formatString(ptr, string_ids::cargo_and);
                     else
-                        ptr = stringmgr::format_string(ptr, string_ids::cargo_or);
+                        ptr = stringmgr::formatString(ptr, string_ids::cargo_or);
                 }
 
                 auto cargoObj = objectmgr::get<cargo_object>(requiredCargo);
-                ptr = stringmgr::format_string(ptr, cargoObj->name);
+                ptr = stringmgr::formatString(ptr, cargoObj->name);
             }
         }
         return ptr;

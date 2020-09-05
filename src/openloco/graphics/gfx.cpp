@@ -54,12 +54,12 @@ namespace openloco::gfx
 
     static palette_index_t _textColours[8] = { 0 };
 
-    drawpixelinfo_t& screen_dpi()
+    drawpixelinfo_t& screenDpi()
     {
         return _screen_dpi;
     }
 
-    static std::vector<g1_element> convert_elements(const std::vector<g1_element32_t>& elements32)
+    static std::vector<g1_element> convertElements(const std::vector<g1_element32_t>& elements32)
     {
         auto elements = std::vector<g1_element>();
         elements.reserve(elements32.size());
@@ -72,7 +72,7 @@ namespace openloco::gfx
     }
 
     // 0x0044733C
-    void load_g1()
+    void loadG1()
     {
         auto g1Path = environment::getPath(environment::path_id::g1);
         std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
@@ -103,7 +103,7 @@ namespace openloco::gfx
         {
             throw std::runtime_error("Reading g1 element headers failed.");
         }
-        auto elements = convert_elements(elements32);
+        auto elements = convertElements(elements32);
 
         // Read element data
         auto elementData = std::make_unique<std::byte[]>(header.total_size);
@@ -138,11 +138,6 @@ namespace openloco::gfx
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
-    g1_element* get_g1_element(uint32_t image)
-    {
-        return &_g1Elements[image];
-    }
-
     // 0x00447485
     // edi: dpi
     // ebp: fill
@@ -159,14 +154,14 @@ namespace openloco::gfx
         }
     }
 
-    void clear_single(drawpixelinfo_t& dpi, uint8_t paletteId)
+    void clearSingle(drawpixelinfo_t& dpi, uint8_t paletteId)
     {
         auto fill = (paletteId << 24) | (paletteId << 16) | (paletteId << 8) | paletteId;
         clear(dpi, fill);
     }
 
     // 0x004957C4
-    int16_t clip_string(int16_t width, char* string)
+    int16_t clipString(int16_t width, char* string)
     {
 
         registers regs;
@@ -287,7 +282,7 @@ namespace openloco::gfx
     }
 
     // 0x00451189
-    static gfx::point_t loop_newline(drawpixelinfo_t* context, gfx::point_t origin, uint8_t* str)
+    static gfx::point_t loopNewline(drawpixelinfo_t* context, gfx::point_t origin, uint8_t* str)
     {
         gfx::point_t pos = origin;
         while (true)
@@ -391,19 +386,19 @@ namespace openloco::gfx
                 case control_codes::window_colour_1:
                 {
                     int hue = _windowColours[0];
-                    setTextColours(colour::get_shade(hue, 7), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(colour::getShade(hue, 7), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
                 case control_codes::window_colour_2:
                 {
                     int hue = _windowColours[1];
-                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
                 case control_codes::window_colour_3:
                 {
                     int hue = _windowColours[2];
-                    setTextColours(colour::get_shade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
 
@@ -415,12 +410,12 @@ namespace openloco::gfx
 
                     if ((_currentFontFlags & text_draw_flags::inset) != 0)
                     {
-                        gfx::draw_image_solid(context, pos.x, pos.y, imageId, _textColours[3]);
-                        gfx::draw_image_solid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
+                        gfx::drawImageSolid(context, pos.x, pos.y, imageId, _textColours[3]);
+                        gfx::drawImageSolid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
                     }
                     else
                     {
-                        gfx::draw_image(context, pos.x, pos.y, image);
+                        gfx::drawImage(context, pos.x, pos.y, image);
                     }
 
                     pos.x += _g1Elements[imageId].width;
@@ -489,7 +484,7 @@ namespace openloco::gfx
                         // When offscreen in the y dimension there is no requirement to keep pos.x correct
                         if (chr >= 32)
                         {
-                            gfx::draw_image_palette_set(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                            gfx::drawImagePaletteSet(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
                             pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
                         }
                         else
@@ -514,21 +509,21 @@ namespace openloco::gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    gfx::point_t draw_string(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str)
+    gfx::point_t drawString(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
         gfx::point_t origin = { x, y };
 
         if (colour == format_flags::fe)
         {
-            return loop_newline(context, origin, (uint8_t*)str);
+            return loopNewline(context, origin, (uint8_t*)str);
         }
 
         if (colour == format_flags::fd)
         {
             _currentFontFlags = 0;
             setTextColour(0);
-            return loop_newline(context, origin, (uint8_t*)str);
+            return loopNewline(context, origin, (uint8_t*)str);
         }
 
         if (x >= context->x + context->width)
@@ -545,7 +540,7 @@ namespace openloco::gfx
 
         if (colour == format_flags::ff)
         {
-            return loop_newline(context, origin, (uint8_t*)str);
+            return loopNewline(context, origin, (uint8_t*)str);
         }
 
         _currentFontFlags = 0;
@@ -562,9 +557,9 @@ namespace openloco::gfx
         }
 
         _textColours[0] = palette_index::transparent;
-        _textColours[1] = colour::get_shade(colour::dark_purple, 5);
-        _textColours[2] = colour::get_shade(colour::bright_pink, 5);
-        _textColours[3] = colour::get_shade(colour::light_blue, 5);
+        _textColours[1] = colour::getShade(colour::dark_purple, 5);
+        _textColours[2] = colour::getShade(colour::bright_pink, 5);
+        _textColours[3] = colour::getShade(colour::light_blue, 5);
 
         if (colour & format_flags::textflag_5)
         {
@@ -582,29 +577,29 @@ namespace openloco::gfx
         {
             if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
             {
-                _textColours[1] = colour::get_shade(colour, 2);
+                _textColours[1] = colour::getShade(colour, 2);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::get_shade(colour, 4);
+                _textColours[3] = colour::getShade(colour, 4);
             }
             else if ((_currentFontFlags & text_draw_flags::dark) != 0)
             {
-                _textColours[1] = colour::get_shade(colour, 3);
+                _textColours[1] = colour::getShade(colour, 3);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::get_shade(colour, 5);
+                _textColours[3] = colour::getShade(colour, 5);
             }
             else
             {
-                _textColours[1] = colour::get_shade(colour, 4);
+                _textColours[1] = colour::getShade(colour, 4);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::get_shade(colour, 6);
+                _textColours[3] = colour::getShade(colour, 6);
             }
         }
         else
         {
-            setTextColours(colour::get_shade(colour, 9), palette_index::index_0A, palette_index::index_0A);
+            setTextColours(colour::getShade(colour, 9), palette_index::index_0A, palette_index::index_0A);
         }
 
-        return loop_newline(context, origin, (uint8_t*)str);
+        return loopNewline(context, origin, (uint8_t*)str);
     }
 
     // 0x00495224
@@ -615,7 +610,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    int16_t draw_string_495224(
+    int16_t drawString_495224(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -644,7 +639,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_494B3F(
+    void drawString_494B3F(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -670,7 +665,7 @@ namespace openloco::gfx
      * @param stringId  @<bx>
      * @param args @<edi>
      */
-    void draw_string_494B3F(
+    void drawString_494B3F(
         drawpixelinfo_t& dpi,
         point_t* origin,
         uint8_t colour,
@@ -698,7 +693,7 @@ namespace openloco::gfx
     // esi: args
     // edi: dpi
     // bp: width
-    void draw_string_494BBF(
+    void drawString_494BBF(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -725,7 +720,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_494C78(
+    void drawString_494C78(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -750,7 +745,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_underline(
+    void drawStringUnderline(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -775,7 +770,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_left_underline(
+    void drawStringLeftUnderline(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -800,7 +795,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_centred(
+    void drawStringCentred(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -826,7 +821,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_centred_clipped(
+    void drawStringCentredClipped(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -856,7 +851,7 @@ namespace openloco::gfx
      * @param stringId @<bx>
      * @param args @<esi>
      */
-    void draw_string_centred_wrapped(
+    void drawStringCentredWrapped(
         drawpixelinfo_t* context,
         point_t* origin,
         uint16_t width,
@@ -886,7 +881,7 @@ namespace openloco::gfx
     // dx: y
     // esi: args
     // edi: dpi
-    void draw_string_centred_raw(
+    void drawStringCentredRaw(
         drawpixelinfo_t& dpi,
         int16_t x,
         int16_t y,
@@ -907,7 +902,7 @@ namespace openloco::gfx
     // 0x00495715
     // @param buffer @<esi>
     // @return width @<cx>
-    uint16_t get_string_width_new_lined(const char* buffer)
+    uint16_t getStringWidthNewLined(const char* buffer)
     {
         registers regs;
         regs.esi = (uintptr_t)buffer;
@@ -915,7 +910,7 @@ namespace openloco::gfx
         return regs.cx;
     }
 
-    std::pair<uint16_t, uint16_t> wrap_string(const char* buffer, uint16_t stringWidth)
+    std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth)
     {
         // gfx_wrap_string
         registers regs;
@@ -927,7 +922,7 @@ namespace openloco::gfx
     }
 
     // 0x004474BA
-    static void draw_rect_impl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    static void drawRectImpl(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -939,18 +934,18 @@ namespace openloco::gfx
         call(0x004474BA, regs);
     }
 
-    void fill_rect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void fillRect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
-        draw_rect_impl(dpi, left, top, right, bottom, colour);
+        drawRectImpl(dpi, left, top, right, bottom, colour);
     }
 
-    void draw_rect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
+    void drawRect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
     {
         // This makes the function signature more like a drawing application
-        draw_rect_impl(dpi, x, y, x + dx - 1, y + dy - 1, colour);
+        drawRectImpl(dpi, x, y, x + dx - 1, y + dy - 1, colour);
     }
 
-    void fill_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
+    void fillRectInset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
     {
         registers regs;
         regs.ax = left;
@@ -963,14 +958,14 @@ namespace openloco::gfx
         call(0x004C58C7, regs);
     }
 
-    void draw_rect_inset(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
+    void drawRectInset(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
     {
         // This makes the function signature more like a drawing application
-        fill_rect_inset(dpi, x, y, x + dx - 1, y + dy - 1, colour, flags);
+        fillRectInset(dpi, x, y, x + dx - 1, y + dy - 1, colour, flags);
     }
 
     // 0x00452DA4
-    void draw_line(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void drawLine(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -983,9 +978,9 @@ namespace openloco::gfx
     }
 
     // 0x004CD406
-    void invalidate_screen()
+    void invalidateScreen()
     {
-        set_dirty_blocks(0, 0, ui::width(), ui::height());
+        setDirtyBlocks(0, 0, ui::width(), ui::height());
     }
 
     drawing::SoftwareDrawingEngine* engine;
@@ -998,7 +993,7 @@ namespace openloco::gfx
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void set_dirty_blocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         if (engine == nullptr)
             engine = new drawing::SoftwareDrawingEngine();
@@ -1007,7 +1002,7 @@ namespace openloco::gfx
     }
 
     // 0x004C5CFA
-    void draw_dirty_blocks()
+    void drawDirtyBlocks()
     {
         if (engine == nullptr)
             engine = new drawing::SoftwareDrawingEngine();
@@ -1053,7 +1048,7 @@ namespace openloco::gfx
         std::memcpy(byte_112CE04, backup2, 512);
     }
 
-    void redraw_screen_rect(Rect rect)
+    void redrawScreenRect(Rect rect)
     {
         engine->drawRect(rect);
     }
@@ -1067,12 +1062,12 @@ namespace openloco::gfx
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void redraw_screen_rect(int16_t left, int16_t top, int16_t right, int16_t bottom)
+    void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
-        redraw_screen_rect(Rect::fromLTRB(left, top, right, bottom));
+        redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
     }
 
-    void draw_image(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
+    void drawImage(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
     {
         registers regs;
         regs.cx = x;
@@ -1095,16 +1090,16 @@ namespace openloco::gfx
     loco_global<uint8_t*, 0x0050B860> _50B860;
     loco_global<uint32_t, 0x00E04324> _E04324;
 
-    void draw_image_solid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
+    void drawImageSolid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
     {
         uint8_t palette[256];
         memset(palette, palette_index, 256);
         palette[0] = 0;
 
-        draw_image_palette_set(dpi, x, y, image, palette);
+        drawImagePaletteSet(dpi, x, y, image, palette);
     }
 
-    void draw_image_palette_set(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    void drawImagePaletteSet(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
         _50B860 = palette;
         _E04324 = 0x20000000;
@@ -1116,7 +1111,7 @@ namespace openloco::gfx
         call(0x00448D90, regs);
     }
 
-    bool clip_drawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height)
+    bool clipDrawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height)
     {
         registers regs;
         regs.ax = x;
@@ -1130,7 +1125,7 @@ namespace openloco::gfx
         return *dst != nullptr;
     }
 
-    g1_element* get_g1element(uint32_t id)
+    g1_element* getG1Element(uint32_t id)
     {
         if (id < _g1Elements.size())
         {

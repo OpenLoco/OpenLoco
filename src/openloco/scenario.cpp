@@ -16,7 +16,7 @@ namespace openloco::scenario
         call(0x0043C88C);
         s5::getOptions().madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0;
-        gfx::invalidate_screen();
+        gfx::invalidateScreen();
     }
 
     void generateLandscape()

@@ -21,7 +21,7 @@
 
 int main(int argc, const char** argv)
 {
-    openloco::interop::load_sections();
+    openloco::interop::loadSections();
     openloco::lpCmdLine((char*)argv[0]);
     openloco::main();
     return 0;

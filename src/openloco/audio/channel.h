@@ -29,14 +29,14 @@ namespace openloco::audio
         bool load(const fs::path& path);
         bool play(bool loop);
         void stop();
-        void set_volume(int32_t volume);
-        void set_pan(int32_t pan);
-        void set_frequency(int32_t freq);
-        bool is_playing() const;
-        bool is_undefined() const { return _id == undefined_id; }
+        void setVolume(int32_t volume);
+        void setPan(int32_t pan);
+        void setFrequency(int32_t freq);
+        bool isPlaying() const;
+        bool isUndefined() const { return _id == undefined_id; }
         int32_t id() { return _id; }
 
     private:
-        void dispose_chunk();
+        void disposeChunk();
     };
 }
