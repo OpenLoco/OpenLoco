@@ -1410,11 +1410,11 @@ namespace openloco::ui
                     break;
 
                 case widget_type::panel:
-                    widget::draw_1(dpi, this, widget, widgetFlags, colour);
+                    widget::drawPanel(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::frame:
-                    widget::draw_2(dpi, this, widget, widgetFlags, colour);
+                    widget::drawFrame(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::wt_3:
@@ -1492,7 +1492,7 @@ namespace openloco::ui
                     break;
 
                 case widget_type::scrollview:
-                    widget::draw_26(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
+                    widget::drawScrollview(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
                     scrollviewIndex++;
                     break;
 
