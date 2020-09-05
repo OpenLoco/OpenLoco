@@ -1,6 +1,6 @@
 #include "audio/audio.h"
 #include "Company.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "game_commands.h"
 #include "map/tile.h"
 #include "objects/objectmgr.h"

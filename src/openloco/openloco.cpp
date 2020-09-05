@@ -20,7 +20,7 @@
 
 #include "Title.h"
 #include "audio/audio.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "config.h"
 #include "date.h"
 #include "environment.h"

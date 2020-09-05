@@ -1,4 +1,4 @@
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"

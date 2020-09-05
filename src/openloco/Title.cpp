@@ -1,6 +1,6 @@
 #include "Title.h"
 #include "audio/audio.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "gui.h"
 #include "interop/interop.hpp"
 #include "openloco.h"

@@ -1,4 +1,4 @@
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"

@@ -1,5 +1,5 @@
 #include "../audio/audio.h"
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../config.h"
 #include "../console.h"
 #include "../game_commands.h"

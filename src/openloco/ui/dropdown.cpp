@@ -1,5 +1,5 @@
 #include "dropdown.h"
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../console.h"
 #include "../input.h"
 #include "../interop/interop.hpp"

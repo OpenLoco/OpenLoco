@@ -1,5 +1,5 @@
 #include "../audio/audio.h"
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"

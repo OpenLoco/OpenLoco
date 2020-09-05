@@ -20,7 +20,7 @@
     <ClCompile Include="audio\music_channel.cpp" />
     <ClCompile Include="audio\vehicle_channel.cpp" />
     <ClCompile Include="Company.cpp" />
-    <ClCompile Include="companymgr.cpp" />
+    <ClCompile Include="CompanyManager.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="date.cpp" />
@@ -145,7 +145,7 @@
     <ClInclude Include="audio\music_channel.h" />
     <ClInclude Include="audio\vehicle_channel.h" />
     <ClInclude Include="Company.h" />
-    <ClInclude Include="companymgr.h" />
+    <ClInclude Include="CompanyManager.h" />
     <ClInclude Include="config.convert.hpp" />
     <ClInclude Include="config.h" />
     <ClInclude Include="console.h" />

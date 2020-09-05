@@ -1,6 +1,6 @@
 #include "../audio/audio.h"
 #include "../Company.h"
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../core/Optional.hpp"
 #include "../date.h"
 #include "../game_commands.h"

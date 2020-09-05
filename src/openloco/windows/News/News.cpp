@@ -1,5 +1,5 @@
 #include "News.h"
-#include "../../companymgr.h"
+#include "../../CompanyManager.h"
 #include "../../date.h"
 #include "../../graphics/colours.h"
 #include "../../graphics/image_ids.h"

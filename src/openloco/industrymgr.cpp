@@ -1,5 +1,5 @@
 #include "industrymgr.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 

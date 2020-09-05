@@ -1,5 +1,5 @@
 #include "townmgr.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "ui/WindowManager.h"

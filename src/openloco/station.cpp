@@ -1,5 +1,5 @@
 #include "station.h"
-#include "companymgr.h"
+#include "CompanyManager.h"
 #include "industrymgr.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"

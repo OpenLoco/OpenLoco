@@ -1,4 +1,4 @@
-#include "../companymgr.h"
+#include "../CompanyManager.h"
 #include "../date.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
