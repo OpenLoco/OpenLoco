@@ -89,7 +89,7 @@ namespace openloco::tutorial
         // This can be removed when scenerio::start has been implemented.
         {
             // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-            const auto& config = config::get_new();
+            const auto& config = config::getNew();
             config::resolution_t newResolution = tutorialResolution;
             if (config.scale_factor > 1.0)
             {
@@ -121,7 +121,7 @@ namespace openloco::tutorial
 
             auto fileId = tutorialFileIds[tutorialNumber];
 
-            auto tutPath = environment::get_path(fileId);
+            auto tutPath = environment::getPath(fileId);
             _tutorialData = readTutorialFile(tutPath);
             _tutorialIt = _tutorialData.cbegin();
 
@@ -181,7 +181,7 @@ namespace openloco::tutorial
     static void getTutorialScenarioFilename()
     {
         static loco_global<char[512], 0x00112CE04> scenarioFilename;
-        auto bbPath = environment::get_path(environment::path_id::boulder_breakers);
+        auto bbPath = environment::getPath(environment::path_id::boulder_breakers);
 
         strncpy(&*scenarioFilename, bbPath.make_preferred().u8string().c_str(), 512);
     }

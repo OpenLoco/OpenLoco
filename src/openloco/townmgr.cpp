@@ -29,16 +29,16 @@ namespace openloco::townmgr
     // 0x00496B6D
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            auto ticks = scenario_ticks();
+            auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
             {
                 town_id_t id = (ticks / 8) % 0x7F;
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    companymgr::updating_company_id(company_id::neutral);
+                    companymgr::updatingCompanyId(company_id::neutral);
                     town->update();
                 }
             }
@@ -46,13 +46,13 @@ namespace openloco::townmgr
     }
 
     // 0x0049771C
-    void update_labels()
+    void updateLabels()
     {
         call(0x0049771C);
     }
 
     // 0x0049748C
-    void update_monthly()
+    void updateMonthly()
     {
         for (town& currTown : towns())
         {

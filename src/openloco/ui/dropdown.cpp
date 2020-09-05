@@ -149,8 +149,8 @@ namespace openloco::ui::dropdown
         };
 
         widget_t widgets[] = {
-            make_widget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
-            widget_end()
+            makeWidget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
+            widgetEnd()
         };
 
         static window_event_list events;
@@ -321,12 +321,12 @@ namespace openloco::ui::dropdown
                 colour = colour::translucent(colour);
             }
 
-            input::reset_flag(input::input_flags::flag1);
-            input::reset_flag(input::input_flags::flag2);
+            input::resetFlag(input::input_flags::flag1);
+            input::resetFlag(input::input_flags::flag2);
 
             if (flags & (1 << 7))
             {
-                input::set_flag(input::input_flags::flag1);
+                input::setFlag(input::input_flags::flag1);
             }
 
             flags &= ~(1 << 7);
@@ -630,7 +630,7 @@ namespace openloco::ui::dropdown
         WindowManager::close(WindowType::dropdown, 0);
         _word_113DC78 = 0;
 
-        if (input::state() != input::input_state::widget_pressed || input::has_flag(input::input_flags::widget_pressed))
+        if (input::state() != input::input_state::widget_pressed || input::hasFlag(input::input_flags::widget_pressed))
         {
             _word_113DC78 = _word_113DC78 | 1;
         }
@@ -658,12 +658,12 @@ namespace openloco::ui::dropdown
             colour = colour::translucent(colour);
         }
 
-        input::reset_flag(input::input_flags::flag1);
-        input::reset_flag(input::input_flags::flag2);
+        input::resetFlag(input::input_flags::flag1);
+        input::resetFlag(input::input_flags::flag2);
 
         if (flags & (1 << 7))
         {
-            input::set_flag(input::input_flags::flag1);
+            input::setFlag(input::input_flags::flag1);
         }
 
         flags &= ~(1 << 7);

@@ -140,7 +140,7 @@ namespace openloco::stringmgr
     // 0x00495D09
     static char* format_date_dmy_full(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(totalDays);
+        auto date = calcDate(totalDays);
 
         string_id day_string = day_to_string[date.day];
         buffer = format_string(buffer, day_string, nullptr);
@@ -162,7 +162,7 @@ namespace openloco::stringmgr
     // 0x00495D77
     static char* format_date_my_full(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(totalDays);
+        auto date = calcDate(totalDays);
 
         string_id month_string = month_to_string[date.month].second;
         buffer = format_string(buffer, month_string, nullptr);
@@ -178,7 +178,7 @@ namespace openloco::stringmgr
     // 0x00495DC7
     static char* format_date_my_abbrev(uint32_t totalDays, char* buffer)
     {
-        auto date = calc_date(totalDays);
+        auto date = calcDate(totalDays);
 
         string_id month_string = month_to_string[date.month].second;
         buffer = format_string(buffer, month_string, nullptr);

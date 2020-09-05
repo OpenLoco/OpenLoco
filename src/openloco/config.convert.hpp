@@ -20,7 +20,7 @@ namespace YAML
     {
         static Node encode(const T& rhs)
         {
-            for (const auto& e : convert<T>::get_entries())
+            for (const auto& e : convert<T>::getEntries())
             {
                 if (rhs == e.first)
                 {
@@ -35,7 +35,7 @@ namespace YAML
             if (node.IsScalar())
             {
                 auto sz = node.Scalar();
-                for (const auto& e : convert<T>::get_entries())
+                for (const auto& e : convert<T>::getEntries())
                 {
                     if (e.second == sz)
                     {
@@ -81,7 +81,7 @@ namespace YAML
     template<>
     struct convert<screen_mode> : convert_enum_base<screen_mode>
     {
-        static const convert_pair_vector<screen_mode>& get_entries() { return screen_mode_entries; }
+        static const convert_pair_vector<screen_mode>& getEntries() { return screen_mode_entries; }
     };
 }
 

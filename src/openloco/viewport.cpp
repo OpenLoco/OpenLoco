@@ -23,7 +23,7 @@ namespace openloco::ui
     }
 
     // 0x004CA444
-    void viewport::centre_2d_coordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
+    void viewport::centre2dCoordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
     {
         auto centre = map::coordinate3dTo2d(_x, _y, _z, getRotation());
 
@@ -31,7 +31,7 @@ namespace openloco::ui
         *outY = centre.y - view_height / 2;
     }
 
-    viewport_pos viewport::map_from_3d(loc16 loc, int32_t rotation)
+    viewport_pos viewport::mapFrom3d(loc16 loc, int32_t rotation)
     {
         ui::viewport_pos result;
         switch (rotation & 3)

@@ -42,13 +42,13 @@ namespace openloco::ui::windows::industry_list
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                               \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industries_list),              \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_fund_new_industries)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                               \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industries_list),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_fund_new_industries)
 
         static window_event_list _events;
 
@@ -79,11 +79,11 @@ namespace openloco::ui::windows::industry_list
 
         widget_t widgets[] = {
             commonWidgets(600, 197, string_ids::title_industries),
-            make_widget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_name),
-            make_widget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_status),
-            make_widget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_production_transported),
-            make_widget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
-            widget_end(),
+            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_production_transported),
+            makeWidget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -117,7 +117,7 @@ namespace openloco::ui::windows::industry_list
             self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? string_ids::industry_table_header_status_desc : string_ids::industry_table_header_status;
             self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
 
-            if (is_editor_mode())
+            if (isEditorMode())
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
             else
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_fund_new_industries;
@@ -352,7 +352,7 @@ namespace openloco::ui::windows::industry_list
         {
             self->frame_no++;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
 
             // Add three industries every tick.
@@ -508,7 +508,7 @@ namespace openloco::ui::windows::industry_list
         auto window = WindowManager::bringToFront(WindowType::industryList, 0);
         if (window != nullptr)
         {
-            window->call_on_mouse_up(common::widx::tab_industry_list);
+            window->callOnMouseUp(common::widx::tab_industry_list);
         }
         else
         {
@@ -559,9 +559,9 @@ namespace openloco::ui::windows::industry_list
             window->activated_widgets = 0;
             window->holdable_widgets = 0;
 
-            window->call_on_resize();
-            window->call_prepare_draw();
-            window->init_scroll_widgets();
+            window->callOnResize();
+            window->callPrepareDraw();
+            window->initScrollWidgets();
         }
         return window;
     }
@@ -582,8 +582,8 @@ namespace openloco::ui::windows::industry_list
 
         widget_t widgets[] = {
             commonWidgets(577, 171, string_ids::title_fund_new_industries),
-            make_widget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, scrollbars::vertical),
-            widget_end(),
+            makeWidget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, scrollbars::vertical),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -596,7 +596,7 @@ namespace openloco::ui::windows::industry_list
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[common::widx::caption].text = string_ids::title_build_new_industries;
                 self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
@@ -648,7 +648,7 @@ namespace openloco::ui::windows::industry_list
 
             auto widthOffset = 0;
 
-            if (!is_editor_mode())
+            if (!isEditorMode())
             {
                 auto xPos = self->x + 3 + self->width - 19;
                 auto yPos = self->y + self->height - 13;
@@ -779,7 +779,7 @@ namespace openloco::ui::windows::industry_list
         // 0x004585B8
         static void onUpdate(window* self)
         {
-            if (!input::has_flag(input::input_flags::flag5))
+            if (!input::hasFlag(input::input_flags::flag5))
             {
                 auto cursor = input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -795,7 +795,7 @@ namespace openloco::ui::windows::industry_list
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        widget_index activeWidget = self->find_widget_at(xPos, yPos);
+                        widget_index activeWidget = self->findWidgetAt(xPos, yPos);
 
                         if (activeWidget > common::widx::panel)
                         {
@@ -839,10 +839,10 @@ namespace openloco::ui::windows::industry_list
             }
             self->frame_no++;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
 
-            if (!input::is_tool_active(self->type, self->number))
+            if (!input::isToolActive(self->type, self->number))
                 WindowManager::close(self);
         }
 
@@ -962,15 +962,15 @@ namespace openloco::ui::windows::industry_list
         // 0x0045845F
         static void onClose(window* self)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
         }
 
         // 0x00458B51
         static void updateActiveThumb(window* self)
         {
             uint16_t scrollHeight = 0;
-            self->call_get_scroll_size(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, 0, &scrollHeight);
             self->scroll_areas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -998,13 +998,13 @@ namespace openloco::ui::windows::industry_list
                 auto industryObj = objectmgr::get<industry_object>(i);
                 if (industryObj == nullptr)
                     break;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                 {
                     if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
                         continue;
-                    if (current_year() < industryObj->designedYear)
+                    if (getCurrentYear() < industryObj->designedYear)
                         continue;
-                    if (current_year() > industryObj->obsoleteYear)
+                    if (getCurrentYear() > industryObj->obsoleteYear)
                         continue;
                 }
                 self->row_info[industryCount] = i;
@@ -1044,7 +1044,7 @@ namespace openloco::ui::windows::industry_list
             self->max_height = new_industries::window_size.height;
             input::toolSet(self, common::widx::tab_new_industry, 40);
 
-            input::set_flag(input::input_flags::flag6);
+            input::setFlag(input::input_flags::flag6);
             ui::windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
@@ -1066,7 +1066,7 @@ namespace openloco::ui::windows::industry_list
             self->invalidate();
             gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
             gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
-            bool hasResized = self->set_size(minWindowSize, maxWindowSize);
+            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
         }
@@ -1114,7 +1114,7 @@ namespace openloco::ui::windows::industry_list
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab..
@@ -1136,8 +1136,8 @@ namespace openloco::ui::windows::industry_list
         // 0x00457F27
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_industry_list;
             self->frame_no = 0;
@@ -1162,9 +1162,9 @@ namespace openloco::ui::windows::industry_list
             if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)
                 new_industries::tabReset(self);
 
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }

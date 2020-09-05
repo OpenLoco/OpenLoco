@@ -7,12 +7,12 @@ namespace openloco::multiplayer
 {
     static loco_global<uint16_t, 0x00508F10> _flags;
 
-    bool has_flag(flags flag)
+    bool hasFlag(flags flag)
     {
         return (_flags & (1 << flag)) != 0;
     }
 
-    bool set_flag(flags flag)
+    bool setFlag(flags flag)
     {
         bool val = (_flags & (1 << flag)) != 0;
 
@@ -20,7 +20,7 @@ namespace openloco::multiplayer
         return val;
     }
 
-    bool reset_flag(flags flag)
+    bool resetFlag(flags flag)
     {
         bool val = (_flags & (1 << flag)) != 0;
 

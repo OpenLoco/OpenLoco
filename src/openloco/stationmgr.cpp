@@ -32,9 +32,9 @@ namespace openloco::stationmgr
     // 0x0048B1FA
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            station_id_t id = scenario_ticks() & 0x3FF;
+            station_id_t id = scenarioTicks() & 0x3FF;
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
@@ -44,7 +44,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048DDC3
-    void update_labels()
+    void updateLabels()
     {
         call(0x0048DDC3);
     }
@@ -73,7 +73,7 @@ namespace openloco::stationmgr
     }
 
     // 0x0048B244
-    void update_daily()
+    void updateDaily()
     {
         for (auto& town : townmgr::towns())
         {
@@ -90,7 +90,7 @@ namespace openloco::stationmgr
                 if (station.stationTileSize == 0)
                 {
                     station.var_29++;
-                    if (station.var_29 != 5 && is_player_company(station.owner))
+                    if (station.var_29 != 5 && isPlayerCompany(station.owner))
                     {
                         sub_437F29(station.owner, 8);
                     }
@@ -105,13 +105,13 @@ namespace openloco::stationmgr
                 {
                     station.var_29 = 0;
                 }
-                if (station.update_cargo())
+                if (station.updateCargo())
                 {
                     auto town = townmgr::get(station.town);
                     if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
                     {
                         town->flags |= town_flags::rating_adjusted;
-                        town->adjust_company_rating(station.owner, 1);
+                        town->adjustCompanyRating(station.owner, 1);
                     }
                 }
             }

@@ -211,7 +211,7 @@ namespace openloco::audio
 
     static std::vector<sample> loadSoundsFromCSS(const fs::path& path)
     {
-        console::log_verbose("loadSoundsFromCSS(%s)", path.string().c_str());
+        console::logVerbose("loadSoundsFromCSS(%s)", path.string().c_str());
         std::vector<sample> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
@@ -289,7 +289,7 @@ namespace openloco::audio
     void initialiseDSound()
     {
         const char* deviceName = nullptr;
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         if (!cfg.audio.device.empty())
         {
             deviceName = cfg.audio.device.c_str();
@@ -322,7 +322,7 @@ namespace openloco::audio
             _vehicle_channels[i] = vehicle_channel(channel(4 + i));
         }
 
-        auto css1path = environment::get_path(environment::path_id::css1);
+        auto css1path = environment::getPath(environment::path_id::css1);
         _samples = loadSoundsFromCSS(css1path);
         _audio_initialised = 1;
     }
@@ -380,13 +380,13 @@ namespace openloco::audio
 #endif
         }
 
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         return cfg.audio.device.c_str();
     }
 
     size_t getCurrentDevice()
     {
-        const auto& cfg = config::get_new();
+        const auto& cfg = config::getNew();
         return getDeviceIndex(cfg.audio.device);
     }
 
@@ -394,7 +394,7 @@ namespace openloco::audio
     {
         if (index < _devices.size())
         {
-            auto& cfg = config::get_new();
+            auto& cfg = config::getNew();
 #ifdef __HAS_DEFAULT_DEVICE__
             if (index == 0)
             {
@@ -405,7 +405,7 @@ namespace openloco::audio
             {
                 cfg.audio.device = _devices[index];
             }
-            config::write_new_config();
+            config::writeNewConfig();
             reinitialise();
         }
     }
@@ -555,7 +555,7 @@ namespace openloco::audio
     {
         if (v->var_4A & 1)
         {
-            console::log_verbose("playSound(vehicle #%d)", v->id);
+            console::logVerbose("playSound(vehicle #%d)", v->id);
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
@@ -587,7 +587,7 @@ namespace openloco::audio
             volume += getVolumeForSoundId(id);
             if (pan == play_at_location)
             {
-                auto vpos = viewport::map_from_3d(loc, current_rotation);
+                auto vpos = viewport::mapFrom3d(loc, current_rotation);
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {
@@ -595,7 +595,7 @@ namespace openloco::audio
                 }
 
                 volume += calculateVolumeFromViewport(id, { loc.x, loc.y }, *viewport);
-                pan = viewport->map_to_ui(vpos).x;
+                pan = viewport->mapToUi(vpos).x;
                 if (volume < -10000)
                 {
                     return;
@@ -653,7 +653,7 @@ namespace openloco::audio
 
     static void mixSound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::log_verbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
+        console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
         if (sample != nullptr && sample->chunk != nullptr)
         {
@@ -674,7 +674,7 @@ namespace openloco::audio
 
     static bool loadChannel(channel_id id, const fs::path& path, int32_t c)
     {
-        console::log_verbose("loadChannel(%d, %s, %d)", id, path.string().c_str(), c);
+        console::logVerbose("loadChannel(%d, %s, %d)", id, path.string().c_str(), c);
         if (isMusicChannel(id))
         {
             if (_music_channel.load(path))
@@ -704,7 +704,7 @@ namespace openloco::audio
     // 0x00401999
     bool playChannel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
-        console::log_verbose("playChannel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
+        console::logVerbose("playChannel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (isMusicChannel(id))
         {
             if (_music_channel.play(loop != 0))
@@ -728,7 +728,7 @@ namespace openloco::audio
     // 0x00401A05
     void stopChannel(channel_id id)
     {
-        console::log_verbose("stopChannel(%d)", id);
+        console::logVerbose("stopChannel(%d)", id);
         if (isMusicChannel(id))
         {
             if (_music_current_channel == id)
@@ -749,7 +749,7 @@ namespace openloco::audio
     // 0x00401AD3
     void setChannelVolume(channel_id id, int32_t volume)
     {
-        console::log_verbose("setChannelVolume(%d, %d)", id, volume);
+        console::logVerbose("setChannelVolume(%d, %d)", id, volume);
         if (isMusicChannel(id))
         {
             if (_music_current_channel == id)
@@ -956,7 +956,7 @@ namespace openloco::audio
         {
             case music_playlist_type::current_era:
             {
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 auto info = MusicInfo[_currentSong];
                 if (currentYear < info.start_year || currentYear > info.end_year)
                     trackStillApplies = false;
@@ -992,7 +992,7 @@ namespace openloco::audio
         {
             case music_playlist_type::current_era:
             {
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 for (auto i = 0; i < num_music_tracks; i++)
                 {
                     const auto& mi = MusicInfo[i];
@@ -1041,7 +1041,7 @@ namespace openloco::audio
             else
             {
                 const auto& mi = MusicInfo[excludeTrack];
-                auto currentYear = current_year();
+                auto currentYear = getCurrentYear();
                 if (currentYear >= mi.start_year && currentYear <= mi.end_year)
                 {
                     playlist.push_back(excludeTrack);
@@ -1063,7 +1063,7 @@ namespace openloco::audio
         }
 
         auto cfg = config::get();
-        if (cfg.music_playing == 0 || is_title_mode() || is_editor_mode())
+        if (cfg.music_playing == 0 || isTitleMode() || isEditorMode())
         {
             return;
         }
@@ -1074,7 +1074,7 @@ namespace openloco::audio
             _lastSong = _currentSong;
 
             const auto& mi = MusicInfo[_currentSong];
-            auto path = environment::get_path((path_id)mi.path_id);
+            auto path = environment::getPath((path_id)mi.path_id);
             if (_music_channel.load(path))
             {
                 _music_current_channel = channel_id::bgm;
@@ -1104,11 +1104,11 @@ namespace openloco::audio
     // 0x0048AC66
     void playTitleScreenMusic()
     {
-        if (is_title_mode() && _audio_initialised && _audioIsEnabled && config::get_new().audio.play_title_music)
+        if (isTitleMode() && _audio_initialised && _audioIsEnabled && config::getNew().audio.play_title_music)
         {
             if (!isChannelPlaying(channel_id::title))
             {
-                auto path = environment::get_path(path_id::css5);
+                auto path = environment::getPath(path_id::css5);
                 if (loadChannel(channel_id::title, path, 0))
                 {
                     playChannel(channel_id::title, 1, -500, 0, 0);

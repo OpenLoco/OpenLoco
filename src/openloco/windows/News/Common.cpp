@@ -35,7 +35,7 @@ namespace openloco::ui::NewsWindow
 
         common::initEvents();
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->colours[0] = colour;
 
         _dword_525CD0 = 0xFFFFFFFF;
@@ -138,7 +138,7 @@ namespace openloco::ui::NewsWindow
 
                 common::initEvents();
 
-                window->init_scroll_widgets();
+                window->initScrollWidgets();
 
                 auto skin = objectmgr::get<interface_skin_object>();
                 window->colours[0] = colour::translucent(skin->colour_0C);

@@ -43,14 +43,14 @@ namespace openloco::ui::windows::town
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                               \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town),                         \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_population_graph),            \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_ratings_each_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                               \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town),                          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_population_graph),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -76,12 +76,12 @@ namespace openloco::ui::windows::town
 
         static widget_t widgets[] = {
             commonWidgets(223, 161, string_ids::title_town),
-            make_widget({ 3, 44 }, { 195, 104 }, widget_type::viewport, 1, 0xFFFFFFFE),
-            make_widget({ 3, 139 }, { 195, 21 }, widget_type::wt_13, 1),
-            make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            make_widget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::town_expand, string_ids::expand_this_town),
-            make_widget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_town),
-            widget_end(),
+            makeWidget({ 3, 44 }, { 195, 104 }, widget_type::viewport, 1, 0xFFFFFFFE),
+            makeWidget({ 3, 139 }, { 195, 21 }, widget_type::wt_13, 1),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::town_expand, string_ids::expand_this_town),
+            makeWidget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_town),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
@@ -106,7 +106,7 @@ namespace openloco::ui::windows::town
             self->widgets[widx::demolish_town].right = self->width - 2;
             self->widgets[widx::demolish_town].left = self->width - 25;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[widx::expand_town].type = widget_type::wt_9;
                 self->widgets[widx::demolish_town].type = widget_type::wt_9;
@@ -183,9 +183,9 @@ namespace openloco::ui::windows::town
                     auto town = townmgr::get(self->number);
 
                     const uint32_t ebx = (town->var_38 >> 3) + 5;
-                    const int16_t currentYear = current_year();
+                    const int16_t currentYear = getCurrentYear();
                     int16_t tempYear = currentYear - 51;
-                    set_current_year(tempYear);
+                    setCurrentYear(tempYear);
 
                     for (uint8_t i = 8; i > 0; i--)
                     {
@@ -200,10 +200,10 @@ namespace openloco::ui::windows::town
                         }
 
                         tempYear += 7;
-                        set_current_year(tempYear);
+                        setCurrentYear(tempYear);
                     }
 
-                    set_current_year(currentYear);
+                    setCurrentYear(currentYear);
 
                     // Set new history entry.
                     uint8_t historyEntry = std::min<uint8_t>(town->population / 50, 255);
@@ -241,12 +241,12 @@ namespace openloco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->set_size(gfx::ui_size_t(192, 161), gfx::ui_size_t(600, 440));
+            self->setSize(gfx::ui_size_t(192, 161), gfx::ui_size_t(600, 440));
 
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;
@@ -271,7 +271,7 @@ namespace openloco::ui::windows::town
             if (self->current_tab != 0)
                 return;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
 
             // Figure out the town's position on the map.
             auto town = townmgr::get(self->number);
@@ -343,8 +343,8 @@ namespace openloco::ui::windows::town
         auto window = WindowManager::bringToFront(WindowType::town, townId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::town, townId);
         }
@@ -383,7 +383,7 @@ namespace openloco::ui::windows::town
         window->event_handlers = &town::events;
         window->activated_widgets = 0;
         window->disabled_widgets = 0;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         town::initViewport(window);
 
         return window;
@@ -393,7 +393,7 @@ namespace openloco::ui::windows::town
     {
         static widget_t widgets[] = {
             commonWidgets(223, 161, string_ids::title_town_population),
-            widget_end(),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -431,8 +431,8 @@ namespace openloco::ui::windows::town
                 yTick += 1000;
             }
 
-            int8_t month = static_cast<int8_t>(current_month());
-            int16_t year = current_year();
+            int8_t month = static_cast<int8_t>(getCurrentMonth());
+            int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
 
             for (uint8_t i = town->history_size - 1; i > 0; i--)
@@ -501,7 +501,7 @@ namespace openloco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->set_size(gfx::ui_size_t(299, 172), gfx::ui_size_t(299, 327));
+            self->setSize(gfx::ui_size_t(299, 172), gfx::ui_size_t(299, 327));
         }
 
         static void initEvents()
@@ -519,7 +519,7 @@ namespace openloco::ui::windows::town
     {
         static widget_t widgets[] = {
             commonWidgets(340, 208, string_ids::title_town_local_authority),
-            widget_end(),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -599,7 +599,7 @@ namespace openloco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->set_size(gfx::ui_size_t(340, 208), gfx::ui_size_t(340, 208));
+            self->setSize(gfx::ui_size_t(340, 208), gfx::ui_size_t(340, 208));
         }
 
         static void initEvents()
@@ -636,7 +636,7 @@ namespace openloco::ui::windows::town
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab.
@@ -680,7 +680,7 @@ namespace openloco::ui::windows::town
         static void update(window* self)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self->number);
         }
 
@@ -699,7 +699,7 @@ namespace openloco::ui::windows::town
 
             for (uint8_t i = widx::tab_town; i <= widx::tab_company_ratings; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                     continue;
 
                 self->widgets[i].left = xPos;
@@ -711,8 +711,8 @@ namespace openloco::ui::windows::town
         // 0x004991BC
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             textinput::sub_4CE6C9(self->type, self->number);
 
@@ -738,10 +738,10 @@ namespace openloco::ui::windows::town
 
             self->invalidate();
 
-            self->set_size(windowSize);
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->setSize(windowSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }

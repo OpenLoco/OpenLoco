@@ -26,7 +26,7 @@ namespace openloco::config
         return _config;
     }
 
-    new_config& get_new()
+    new_config& getNew()
     {
         return _new_config;
     }
@@ -42,12 +42,12 @@ namespace openloco::config
     void write()
     {
         call(0x00441BB8);
-        write_new_config();
+        writeNewConfig();
     }
 
-    new_config& read_new_config()
+    new_config& readNewConfig()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_yml);
+        auto configPath = environment::getPath(environment::path_id::openloco_yml);
 
         if (!fs::exists(configPath))
             return _new_config;
@@ -91,9 +91,9 @@ namespace openloco::config
         return _new_config;
     }
 
-    void write_new_config()
+    void writeNewConfig()
     {
-        auto configPath = environment::get_path(environment::path_id::openloco_yml);
+        auto configPath = environment::getPath(environment::path_id::openloco_yml);
         auto dir = configPath.parent_path();
         if (!fs::is_directory(dir))
         {

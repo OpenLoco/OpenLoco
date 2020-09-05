@@ -58,7 +58,7 @@ namespace openloco
 
         bool empty() const;
         void update();
-        void adjust_company_rating(company_id_t cid, int amount);
+        void adjustCompanyRating(company_id_t cid, int amount);
         string_id getTownSizeString() const;
     };
     static_assert(sizeof(town) == 0x270);

@@ -21,28 +21,28 @@ namespace openloco
 
     extern const char version[];
 
-    std::string get_version_info();
+    std::string getVersionInfo();
 
     void* hInstance();
     const char* lpCmdLine();
     void lpCmdLine(const char* path);
     uint16_t getScreenAge();
-    uint8_t get_screen_flags();
-    bool is_editor_mode();
-    bool is_title_mode();
+    uint8_t getScreenFlags();
+    bool isEditorMode();
+    bool isTitleMode();
     bool isNetworked();
     bool isTrackUpgradeMode();
-    bool is_unknown_4_mode();
-    bool is_unknown_5_mode();
-    bool is_paused();
-    uint8_t get_pause_flags();
+    bool isUnknown4Mode();
+    bool isUnknown5Mode();
+    bool isPaused();
+    uint8_t getPauseFlags();
     void togglePause(bool value);
-    uint32_t scenario_ticks();
-    utility::prng& gprng();
-    void initialise_viewports();
+    uint32_t scenarioTicks();
+    utility::prng& gPrng();
+    void initialiseViewports();
 
     void sub_431695(uint16_t var_F253A0);
     void main();
-    void prompt_tick_loop(std::function<bool()> tickAction);
-    void exit_with_error(openloco::string_id message, uint32_t errorCode);
+    void promptTickLoop(std::function<bool()> tickAction);
+    void exitWithError(openloco::string_id message, uint32_t errorCode);
 }

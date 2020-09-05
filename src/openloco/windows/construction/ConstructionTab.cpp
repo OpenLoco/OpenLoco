@@ -187,30 +187,30 @@ namespace openloco::ui::windows::construction::construction
 
     widget_t widgets[] = {
         commonWidgets(138, 276, string_ids::stringid_2),
-        make_widget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_very_small, string_ids::tooltip_left_hand_curve_very_small),
-        make_widget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_small, string_ids::tooltip_left_hand_curve_small),
-        make_widget({ 25, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve, string_ids::tooltip_left_hand_curve),
-        make_widget({ 47, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_large, string_ids::tooltip_left_hand_curve_large),
-        make_widget({ 69, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_large, string_ids::tooltip_right_hand_curve_large),
-        make_widget({ 91, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve, string_ids::tooltip_right_hand_curve),
-        make_widget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_small, string_ids::tooltip_right_hand_curve_small),
-        make_widget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_very_small, string_ids::tooltip_right_hand_curve_very_small),
-        make_widget({ 9, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_left, string_ids::tooltip_s_bend_left_dual_track),
-        make_widget({ 33, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_left, string_ids::tooltip_s_bend_left),
-        make_widget({ 57, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_straight, string_ids::tooltip_straight),
-        make_widget({ 81, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_right, string_ids::tooltip_s_bend_right),
-        make_widget({ 105, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_right, string_ids::tooltip_s_bend_right_dual_track),
-        make_widget({ 9, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_down, string_ids::tooltip_steep_slope_down),
-        make_widget({ 33, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_down, string_ids::tooltip_slope_down),
-        make_widget({ 57, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_level, string_ids::tooltip_level),
-        make_widget({ 81, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_up, string_ids::tooltip_slope_up),
-        make_widget({ 105, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_up, string_ids::tooltip_steep_slope_up),
-        make_widget({ 40, 123 }, { 58, 20 }, widget_type::wt_18, 1, string_ids::empty, string_ids::tooltip_bridge_stats),
-        make_widget({ 86, 124 }, { 11, 18 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_bridge_stats),
-        make_widget({ 3, 145 }, { 132, 100 }, widget_type::wt_5, 1, 0xFFFFFFFF, string_ids::tooltip_construct),
-        make_widget({ 6, 248 }, { 46, 24 }, widget_type::wt_9, 1, image_ids::construction_remove, string_ids::tooltip_remove),
-        make_widget({ 57, 248 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
-        widget_end(),
+        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_very_small, string_ids::tooltip_left_hand_curve_very_small),
+        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_small, string_ids::tooltip_left_hand_curve_small),
+        makeWidget({ 25, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve, string_ids::tooltip_left_hand_curve),
+        makeWidget({ 47, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_left_hand_curve_large, string_ids::tooltip_left_hand_curve_large),
+        makeWidget({ 69, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_large, string_ids::tooltip_right_hand_curve_large),
+        makeWidget({ 91, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve, string_ids::tooltip_right_hand_curve),
+        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_small, string_ids::tooltip_right_hand_curve_small),
+        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, image_ids::construction_right_hand_curve_very_small, string_ids::tooltip_right_hand_curve_very_small),
+        makeWidget({ 9, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_left, string_ids::tooltip_s_bend_left_dual_track),
+        makeWidget({ 33, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_left, string_ids::tooltip_s_bend_left),
+        makeWidget({ 57, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_straight, string_ids::tooltip_straight),
+        makeWidget({ 81, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_right, string_ids::tooltip_s_bend_right),
+        makeWidget({ 105, 69 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_s_bend_dual_track_right, string_ids::tooltip_s_bend_right_dual_track),
+        makeWidget({ 9, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_down, string_ids::tooltip_steep_slope_down),
+        makeWidget({ 33, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_down, string_ids::tooltip_slope_down),
+        makeWidget({ 57, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_level, string_ids::tooltip_level),
+        makeWidget({ 81, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_slope_up, string_ids::tooltip_slope_up),
+        makeWidget({ 105, 96 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::construction_steep_slope_up, string_ids::tooltip_steep_slope_up),
+        makeWidget({ 40, 123 }, { 58, 20 }, widget_type::wt_18, 1, string_ids::empty, string_ids::tooltip_bridge_stats),
+        makeWidget({ 86, 124 }, { 11, 18 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_bridge_stats),
+        makeWidget({ 3, 145 }, { 132, 100 }, widget_type::wt_5, 1, 0xFFFFFFFF, string_ids::tooltip_construct),
+        makeWidget({ 6, 248 }, { 46, 24 }, widget_type::wt_9, 1, image_ids::construction_remove, string_ids::tooltip_remove),
+        makeWidget({ 57, 248 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
+        widgetEnd(),
     };
 
     const uint8_t trackPieceWidgets[] = {
@@ -287,7 +287,7 @@ namespace openloco::ui::windows::construction::construction
                 common::sub_49FEC7();
                 WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
                 input::toolSet(self, widx::construct, 12);
-                input::set_flag(input::input_flags::flag6);
+                input::setFlag(input::input_flags::flag6);
 
                 _constructionHover = 1;
                 _byte_113607E = 0;
@@ -343,7 +343,7 @@ namespace openloco::ui::windows::construction::construction
             if (!road)
                 disabledWidgets |= (1 << widx::construct);
         }
-        self->set_disabled_widgets_and_invalidate(disabledWidgets);
+        self->setDisabledWidgetsAndInvalidate(disabledWidgets);
     }
 
     // 0x0049DB1F
@@ -367,7 +367,7 @@ namespace openloco::ui::windows::construction::construction
             if (!track)
                 disabledWidgets |= (1 << widx::construct);
         }
-        self->set_disabled_widgets_and_invalidate(disabledWidgets);
+        self->setDisabledWidgetsAndInvalidate(disabledWidgets);
     }
 
     // 0x0049DAF3
@@ -1544,18 +1544,18 @@ namespace openloco::ui::windows::construction::construction
     static void onUpdate(window* self)
     {
         self->frame_no++;
-        self->call_prepare_draw();
+        self->callPrepareDraw();
         WindowManager::invalidate(WindowType::construction, self->number);
 
         if (_constructionHover == 1)
         {
-            if (!input::is_tool_active(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
+            if (!input::isToolActive(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
                 WindowManager::close(self);
         }
         if (_constructionHover == 0)
         {
-            if (input::is_tool_active(WindowType::construction, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(WindowType::construction, self->number))
+                input::toolCancel();
         }
         sub_49FD66();
     }
@@ -1701,7 +1701,7 @@ namespace openloco::ui::windows::construction::construction
                         height -= 16;
                         if (height >= 0)
                         {
-                            if (input::has_key_modifier(input::key_modifier::shift))
+                            if (input::hasKeyModifier(input::key_modifier::shift))
                             {
                                 continue;
                             }
@@ -1815,10 +1815,10 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancel_tool();
+            input::toolCancel();
 
             auto maxRetries = 0;
-            if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto roadPiece = roadPieces[_byte_1136065];
                 i = 0;
@@ -1835,7 +1835,7 @@ namespace openloco::ui::windows::construction::construction
                 roadHeight -= 16;
                 maxRetries = 2;
 
-                if (input::has_key_modifier(input::key_modifier::shift))
+                if (input::hasKeyModifier(input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     roadHeight -= 16;
@@ -1920,10 +1920,10 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancel_tool();
+            input::toolCancel();
 
             auto maxRetries = 0;
-            if (input::has_key_modifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
                 auto trackPiece = trackPieces[_byte_1136065];
                 i = 0;
@@ -1940,7 +1940,7 @@ namespace openloco::ui::windows::construction::construction
                 trackHeight -= 16;
                 maxRetries = 2;
 
-                if (input::has_key_modifier(input::key_modifier::shift))
+                if (input::hasKeyModifier(input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     trackHeight -= 16;
@@ -2234,7 +2234,7 @@ namespace openloco::ui::windows::construction::construction
         {
             _constructionHover = 0;
             _byte_113607E = 1;
-            self->call_on_mouse_up(widx::rotate_90);
+            self->callOnMouseUp(widx::rotate_90);
         }
     }
 

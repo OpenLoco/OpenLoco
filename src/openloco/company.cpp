@@ -14,7 +14,7 @@ namespace openloco
 {
     static loco_global<company_id_t[2], 0x00525E3C> _player_company[2];
 
-    bool is_player_company(company_id_t id)
+    bool isPlayerCompany(company_id_t id)
     {
         auto& player_company = *((std::array<company_id_t, 2>*)_player_company->get());
         auto findResult = std::find(
@@ -36,7 +36,7 @@ namespace openloco
     }
 
     // 0x00430762
-    void company::ai_think()
+    void company::aiThink()
     {
         registers regs;
         regs.esi = (int32_t)this;

@@ -21,13 +21,13 @@ namespace openloco::environment
     loco_global<char[257], 0x0050B518> _path_landscapes;
     loco_global<char[257], 0x0050B635> _path_objects;
 
-    static fs::path get_base_path(path_id id);
-    static fs::path get_sub_path(path_id id);
+    static fs::path getBasePath(path_id id);
+    static fs::path getSubPath(path_id id);
 #ifndef _WIN32
-    static fs::path find_similar_file(const fs::path& path);
+    static fs::path findSimilarFile(const fs::path& path);
 #endif
 
-    static bool validate_loco_install_path(const fs::path& path)
+    static bool validateLocoInstallPath(const fs::path& path)
     {
         if (path.empty())
         {
@@ -35,12 +35,12 @@ namespace openloco::environment
         }
         else
         {
-            auto g1Path = path / get_sub_path(path_id::g1);
+            auto g1Path = path / getSubPath(path_id::g1);
             bool g1Exists = fs::exists(g1Path);
 #ifndef _WIN32
             if (!g1Exists)
             {
-                g1Path = find_similar_file(g1Path);
+                g1Path = findSimilarFile(g1Path);
                 g1Exists = !g1Path.empty();
             }
 #endif
@@ -48,7 +48,7 @@ namespace openloco::environment
         }
     }
 
-    static fs::path auto_detect_loco_install_path()
+    static fs::path autoDetectLocoInstallPath()
     {
         static constexpr const char* searchPaths[] = {
             "C:/Program Files (x86)/Atari/Locomotion",
@@ -58,7 +58,7 @@ namespace openloco::environment
         std::cout << "Searching for Locomotion install path..." << std::endl;
         for (auto path : searchPaths)
         {
-            if (validate_loco_install_path(path))
+            if (validateLocoInstallPath(path))
             {
                 std::cout << "  found: " << path << std::endl;
                 return path;
@@ -67,47 +67,47 @@ namespace openloco::environment
         return fs::path();
     }
 
-    static fs::path resolve_loco_install_path()
+    static fs::path resolveLocoInstallPath()
     {
-        auto& cfg = config::get_new();
+        auto& cfg = config::getNew();
         auto path = fs::path(cfg.loco_install_path);
         if (!path.empty())
         {
-            if (validate_loco_install_path(path))
+            if (validateLocoInstallPath(path))
             {
-                config::write_new_config();
+                config::writeNewConfig();
                 return path;
             }
             std::cerr << "Configured install path for Locomotion is missing Data/g1.DAT." << std::endl;
         }
 
-        path = auto_detect_loco_install_path();
+        path = autoDetectLocoInstallPath();
         if (!path.empty())
         {
             cfg.loco_install_path = path.make_preferred().u8string();
-            config::write_new_config();
+            config::writeNewConfig();
             return path;
         }
         else
         {
             std::cerr << "Unable to find install path for Locomotion." << std::endl
                       << "You will need to manually provide it." << std::endl;
-            ui::show_message_box("OpenLoco", "Select your Locomotion install path.");
+            ui::showMessageBox("OpenLoco", "Select your Locomotion install path.");
             path = platform::promptDirectory("Select your Locomotion install path.");
-            if (validate_loco_install_path(path))
+            if (validateLocoInstallPath(path))
             {
                 cfg.loco_install_path = path.make_preferred().u8string();
-                config::write_new_config();
+                config::writeNewConfig();
                 return path;
             }
 
             std::cerr << "Path is missing g1.dat." << std::endl;
-            ui::show_message_box("OpenLoco", "Path is missing Data/g1.DAT.");
+            ui::showMessageBox("OpenLoco", "Path is missing Data/g1.DAT.");
             std::exit(-1);
         }
     }
 
-    static fs::path get_loco_install_path()
+    static fs::path getLocoInstallPath()
     {
         return _path_install.get();
     }
@@ -117,7 +117,7 @@ namespace openloco::environment
      * Performs a case-insensitive search on the containing directory of
      * the given file and returns the first match.
      */
-    static fs::path find_similar_file(const fs::path& path)
+    static fs::path findSimilarFile(const fs::path& path)
     {
         try
         {
@@ -142,15 +142,15 @@ namespace openloco::environment
 #endif // _WIN32
 
     // 0x004416B5
-    fs::path get_path(path_id id)
+    fs::path getPath(path_id id)
     {
-        auto basePath = get_base_path(id);
-        auto subPath = get_sub_path(id);
+        auto basePath = getBasePath(id);
+        auto subPath = getSubPath(id);
         auto result = basePath / subPath;
         if (!fs::exists(result))
         {
 #ifndef _WIN32
-            auto similarResult = find_similar_file(result);
+            auto similarResult = findSimilarFile(result);
             if (similarResult.empty())
             {
                 std::cerr << "Warning: file " << result << " could not be not found" << std::endl;
@@ -167,24 +167,24 @@ namespace openloco::environment
     }
 
     template<typename T>
-    static void set_directory(T& buffer, fs::path path)
+    static void setDirectory(T& buffer, fs::path path)
     {
         utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
     }
 
     // 0x004412CE
-    void resolve_paths()
+    void resolvePaths()
     {
-        auto basePath = resolve_loco_install_path();
-        set_directory(_path_install, basePath);
-        set_directory(_path_saves_single_player, basePath / "Single Player Saved Games/");
-        set_directory(_path_saves_two_player, basePath / "Two Player Saved Games/");
-        set_directory(_path_scenarios, basePath / "Scenarios/*.SC5");
-        set_directory(_path_landscapes, basePath / "Scenarios/Landscapes/*.SC5");
-        set_directory(_path_objects, basePath / "ObjData/*.DAT");
+        auto basePath = resolveLocoInstallPath();
+        setDirectory(_path_install, basePath);
+        setDirectory(_path_saves_single_player, basePath / "Single Player Saved Games/");
+        setDirectory(_path_saves_two_player, basePath / "Two Player Saved Games/");
+        setDirectory(_path_scenarios, basePath / "Scenarios/*.SC5");
+        setDirectory(_path_landscapes, basePath / "Scenarios/Landscapes/*.SC5");
+        setDirectory(_path_objects, basePath / "ObjData/*.DAT");
     }
 
-    static fs::path get_base_path(path_id id)
+    static fs::path getBasePath(path_id id)
     {
         switch (id)
         {
@@ -201,11 +201,11 @@ namespace openloco::environment
                 return platform::GetCurrentExecutablePath().parent_path() / "data";
 #endif
             default:
-                return get_loco_install_path();
+                return getLocoInstallPath();
         }
     }
 
-    static fs::path get_sub_path(path_id id)
+    static fs::path getSubPath(path_id id)
     {
         static constexpr const char* paths[] = {
             "Data/g1.DAT",

@@ -61,13 +61,13 @@ namespace openloco::ui::textinput
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 330, 90 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 328, 13 }, widget_type::caption_25, 0),
-        make_widget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 15 }, { 330, 75 }, widget_type::panel, 1),
-        make_widget({ 4, 58 }, { 322, 14 }, widget_type::wt_17, 1),
-        make_text_widget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 330, 90 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 328, 13 }, widget_type::caption_25, 0),
+        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 330, 75 }, widget_type::panel, 1),
+        makeWidget({ 4, 58 }, { 322, 14 }, widget_type::wt_17, 1),
+        makeTextWidget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
+        widgetEnd(),
     };
 
     void registerHooks()
@@ -149,7 +149,7 @@ namespace openloco::ui::textinput
         window->widgets = _widgets;
         window->enabled_widgets |= 1ULL << widx::close;
         window->enabled_widgets |= 1ULL << widx::ok;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         cursor_position = _buffer.length();
         _cursorFrame = 0;
@@ -175,7 +175,7 @@ namespace openloco::ui::textinput
         {
             interface_skin_object* interface = objectmgr::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
-            window->owner = companymgr::get_controlling_id();
+            window->owner = companymgr::getControllingId();
         }
 
         _widgets[widx::title].type = widget_type::caption_25;
@@ -297,7 +297,7 @@ namespace openloco::ui::textinput
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->call_text_input(_callingWidget, _buffer.data());
+                    caller->callTextInput(_callingWidget, _buffer.data());
                 }
                 WindowManager::close(window);
                 break;
@@ -361,12 +361,12 @@ namespace openloco::ui::textinput
         }
         else if (eax == VK_RETURN)
         {
-            w->call_on_mouse_up(widx::ok);
+            w->callOnMouseUp(widx::ok);
             return;
         }
         else if (eax == VK_ESCAPE)
         {
-            w->call_on_mouse_up(widx::close);
+            w->callOnMouseUp(widx::close);
             return;
         }
         else if (ebx == VK_HOME)

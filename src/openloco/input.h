@@ -54,47 +54,47 @@ namespace openloco::input
     };
 
     void init();
-    void init_mouse();
-    bool has_flag(input_flags value);
-    void set_flag(input_flags value);
-    void reset_flag(input_flags value);
+    void initMouse();
+    bool hasFlag(input_flags value);
+    void setFlag(input_flags value);
+    void resetFlag(input_flags value);
     input_state state();
     void state(input_state);
 
     gfx::point_t getMouseLocation();
-    bool is_hovering(ui::WindowType);
-    bool is_hovering(ui::WindowType, ui::window_number);
-    bool is_hovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex);
-    ui::widget_index get_hovered_widget_index();
+    bool isHovering(ui::WindowType);
+    bool isHovering(ui::WindowType, ui::window_number);
+    bool isHovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex);
+    ui::widget_index getHoveredWidgetIndex();
 
-    bool is_dropdown_active(ui::WindowType type, ui::widget_index index);
+    bool isDropdownActive(ui::WindowType type, ui::widget_index index);
 
-    bool is_pressed(ui::WindowType type, ui::window_number number);
-    bool is_pressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
-    ui::widget_index get_pressed_widget_index();
+    bool isPressed(ui::WindowType type, ui::window_number number);
+    bool isPressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
+    ui::widget_index getPressedWidgetIndex();
 
     void updateCursorPosition();
 
-    bool is_tool_active(ui::WindowType, ui::window_number);
+    bool isToolActive(ui::WindowType, ui::window_number);
     bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool);
-    void cancel_tool();
-    void cancel_tool(ui::WindowType, ui::window_number);
+    void toolCancel();
+    void toolCancel(ui::WindowType, ui::window_number);
 
-    bool has_key_modifier(uint8_t modifier);
+    bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();
     bool hasMapSelectionFlag(uint8_t flags);
     void setMapSelectionFlags(uint8_t flags);
     void resetMapSelectionFlag(uint8_t flags);
 
-    void handle_keyboard();
-    void handle_mouse(int16_t x, int16_t y, mouse_button button);
+    void handleKeyboard();
+    void handleMouse(int16_t x, int16_t y, mouse_button button);
     mouse_button getLastKnownButtonState();
-    void enqueue_mouse_button(int32_t button);
-    void move_mouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
+    void enqueueMouseButton(int32_t button);
+    void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
-    void process_mouse_over(int16_t x, int16_t y);
-    void process_keyboard_input();
+    void processMouseOver(int16_t x, int16_t y);
+    void processKeyboardInput();
 
     gfx::point_t getTooltipMouseLocation();
     void setTooltipMouseLocation(const gfx::point_t& loc);

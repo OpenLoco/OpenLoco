@@ -15,11 +15,11 @@ namespace openloco::ui::windows::construction::signal
 {
     widget_t widgets[] = {
         commonWidgets(138, 167, string_ids::stringid_2),
-        make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
-        make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
-        make_widget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
-        make_widget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_single_direction),
-        widget_end(),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
+        makeWidget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
+        makeWidget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_single_direction),
+        widgetEnd(),
     };
 
     window_event_list events;
@@ -77,7 +77,7 @@ namespace openloco::ui::windows::construction::signal
             case widx::both_directions:
             {
                 _isSignalBothDirections = 1;
-                input::cancel_tool();
+                input::toolCancel();
                 input::toolSet(self, widgetIndex, 42);
                 break;
             }
@@ -85,7 +85,7 @@ namespace openloco::ui::windows::construction::signal
             case widx::single_direction:
             {
                 _isSignalBothDirections = 0;
-                input::cancel_tool();
+                input::toolCancel();
                 input::toolSet(self, widgetIndex, 42);
                 break;
             }
@@ -198,7 +198,7 @@ namespace openloco::ui::windows::construction::signal
 
     void tabReset(window* self)
     {
-        self->call_on_mouse_down(signal::widx::both_directions);
+        self->callOnMouseDown(signal::widx::both_directions);
     }
 
     void initEvents()

@@ -50,22 +50,22 @@ namespace openloco::ui::windows::toolbar_top::game
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        make_widget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        make_widget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        make_widget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        make_widget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+        makeWidget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
 
-        make_widget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        make_widget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
 
-        make_widget({ 490, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        make_widget({ 520, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        make_widget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        widget_end(),
+        makeWidget({ 490, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        makeWidget({ 520, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -98,7 +98,7 @@ namespace openloco::ui::windows::toolbar_top::game
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << common::widx::loadsave_menu) | (1 << common::widx::audio_menu) | (1 << common::widx::zoom_menu) | (1 << common::widx::rotate_menu) | (1 << common::widx::view_menu) | (1 << common::widx::terraform_menu) | (1 << widx::railroad_menu) | (1 << common::widx::road_menu) | (1 << common::widx::port_menu) | (1 << common::widx::build_vehicles_menu) | (1 << common::widx::vehicles_menu) | (1 << common::widx::stations_menu) | (1 << common::widx::towns_menu);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
@@ -238,7 +238,7 @@ namespace openloco::ui::windows::toolbar_top::game
         if (i == 0)
             return;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;
@@ -354,10 +354,10 @@ namespace openloco::ui::windows::toolbar_top::game
     // 0x0043AD1F
     static void buildVehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto company = companymgr::get(companymgr::get_controlling_id());
+        auto company = companymgr::get(companymgr::getControllingId());
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint8_t ddIndex = 0;
@@ -397,11 +397,11 @@ namespace openloco::ui::windows::toolbar_top::game
     // 0x0043ABCB
     static void vehiclesMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto player_company_id = companymgr::get_controlling_id();
+        auto player_company_id = companymgr::getControllingId();
         auto company = companymgr::get(player_company_id);
         uint16_t available_vehicles = company->available_vehicles;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
         auto interface = objectmgr::get<interface_skin_object>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
@@ -455,7 +455,7 @@ namespace openloco::ui::windows::toolbar_top::game
         auto vehicleType = menu_options[itemIndex];
         last_vehicles_option = vehicleType;
 
-        windows::vehicle_list::open(companymgr::get_controlling_id(), vehicleType);
+        windows::vehicle_list::open(companymgr::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -465,7 +465,7 @@ namespace openloco::ui::windows::toolbar_top::game
         uint32_t sprite_base = interface->img;
 
         // Apply company colour.
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
         sprite_base = gfx::recolour(sprite_base, company_colour);
 
         dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
@@ -486,7 +486,7 @@ namespace openloco::ui::windows::toolbar_top::game
         if (itemIndex > 4)
             return;
 
-        windows::station_list::open(companymgr::get_controlling_id(), itemIndex);
+        windows::station_list::open(companymgr::getControllingId(), itemIndex);
     }
 
     // 0x0043A071
@@ -571,7 +571,7 @@ namespace openloco::ui::windows::toolbar_top::game
     {
         common::draw(window, dpi);
 
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
 
         if (window->widgets[widx::railroad_menu].type != widget_type::none)
         {
@@ -597,7 +597,7 @@ namespace openloco::ui::windows::toolbar_top::game
             uint32_t bg_image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[2]);
 
             y--;
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::railroad_menu))
+            if (input::isDropdownActive(ui::WindowType::topToolbar, widx::railroad_menu))
             {
                 y++;
                 bg_image++;
@@ -627,7 +627,7 @@ namespace openloco::ui::windows::toolbar_top::game
             uint32_t bg_image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[3]);
 
             y--;
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, common::widx::vehicles_menu))
+            if (input::isDropdownActive(ui::WindowType::topToolbar, common::widx::vehicles_menu))
             {
                 y++;
                 bg_image++;
@@ -656,7 +656,7 @@ namespace openloco::ui::windows::toolbar_top::game
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t fg_image = gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
 
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
+            if (input::isDropdownActive(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
                 fg_image++;
 
             gfx::draw_image(dpi, x, y, fg_image);

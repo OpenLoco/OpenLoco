@@ -10,8 +10,8 @@ using namespace openloco::interop;
 namespace openloco::ui::NewsWindow::ticker
 {
     widget_t widgets[] = {
-        make_widget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
+        widgetEnd(),
     };
 
     window_event_list events;
@@ -65,7 +65,7 @@ namespace openloco::ui::NewsWindow::ticker
 
         if (self->var_852 != 0)
         {
-            if (!is_paused())
+            if (!isPaused())
             {
                 self->var_852--;
             }
@@ -73,7 +73,7 @@ namespace openloco::ui::NewsWindow::ticker
 
         self->invalidate();
 
-        if (self->var_852 == 0 && !is_paused())
+        if (self->var_852 == 0 && !isPaused())
         {
             _word_525CE0 = _word_525CE0 + 2;
 
@@ -153,7 +153,7 @@ namespace openloco::ui::NewsWindow::ticker
         if (self->var_852 != 0)
             return;
 
-        if (get_pause_flags() & (1 << 2))
+        if (getPauseFlags() & (1 << 2))
             return;
 
         auto news = messagemgr::get(_activeMessageIndex);

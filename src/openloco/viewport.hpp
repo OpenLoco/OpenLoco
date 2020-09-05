@@ -71,7 +71,7 @@ namespace openloco::ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
-        constexpr bool containsUI(const xy32& pos)
+        constexpr bool containsUi(const xy32& pos)
         {
             return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }
@@ -112,7 +112,7 @@ namespace openloco::ui
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
-        xy32 map_to_ui(const viewport_pos& vpos)
+        xy32 mapToUi(const viewport_pos& vpos)
         {
             auto uiX = x + ((vpos.x - view_x) >> zoom);
             auto uiY = y + ((vpos.y - view_y) >> zoom);
@@ -122,7 +122,7 @@ namespace openloco::ui
         /**
          * Maps a UI (screen) position to a 2D viewport position.
          */
-        viewport_pos ui_to_map(const xy32& pos)
+        viewport_pos uiToMap(const xy32& pos)
         {
             int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
             int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
@@ -130,8 +130,8 @@ namespace openloco::ui
         }
 
         void render(gfx::drawpixelinfo_t* dpi);
-        static viewport_pos map_from_3d(loc16 loc, int32_t rotation);
-        void centre_2d_coordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
+        static viewport_pos mapFrom3d(loc16 loc, int32_t rotation);
+        void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
     };
 
     struct viewport_config

@@ -25,7 +25,7 @@ namespace openloco::ui::NewsWindow
     {
         widget_t widgets[] = {
             commonWidgets(360, 117, widget_type::wt_3),
-            widget_end(),
+            widgetEnd(),
         };
 
         window_event_list events;
@@ -509,7 +509,7 @@ namespace openloco::ui::NewsWindow
                 {
                     auto vehicle = thingmgr::get<openloco::vehicle>(itemIndex);
                     auto company = companymgr::get(vehicle->owner);
-                    if (is_player_company(vehicle->owner))
+                    if (isPlayerCompany(vehicle->owner))
                     {
                         args.push(string_ids::company_vehicle);
                     }
@@ -756,11 +756,11 @@ namespace openloco::ui::NewsWindow
 
             if (_word_4F8BE4[news->type] & (1 << 1))
             {
-                if (calc_date(news->date).year >= 1945)
+                if (calcDate(news->date).year >= 1945)
                 {
                     drawLateNews(self, dpi, news);
 
-                    if (calc_date(news->date).year < 1985)
+                    if (calcDate(news->date).year < 1985)
                     {
                         drawMiddleNews(self, dpi, news);
                     }
@@ -815,7 +815,7 @@ namespace openloco::ui::NewsWindow
     {
         widget_t widgets[] = {
             commonWidgets(360, 159, widget_type::wt_5),
-            widget_end(),
+            widgetEnd(),
         };
     }
 }

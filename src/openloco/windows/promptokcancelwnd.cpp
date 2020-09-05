@@ -46,7 +46,7 @@ namespace openloco::ui::windows
         {
             window->widgets = (widget_t*)0x0050AE00;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);
             window->flags |= ui::window_flags::transparent;
@@ -54,12 +54,12 @@ namespace openloco::ui::windows
 
             auto originalModal = WindowManager::getCurrentModalType();
             WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
-            prompt_tick_loop(
+            promptTickLoop(
                 []() {
-                    input::handle_keyboard();
+                    input::handleKeyboard();
                     audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
-                    input::process_keyboard_input();
+                    input::processKeyboardInput();
                     WindowManager::update();
                     ui::minimalHandleInput();
                     gfx::render();

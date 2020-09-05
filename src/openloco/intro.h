@@ -11,7 +11,7 @@ namespace openloco::intro
         end = 254,
     };
 
-    bool is_active();
+    bool isActive();
     intro_state state();
     void state(intro_state state);
 

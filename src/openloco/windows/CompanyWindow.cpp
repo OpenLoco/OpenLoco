@@ -46,31 +46,31 @@ namespace openloco::ui::windows::CompanyWindow
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                                 \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                            \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),      \
-        make_widget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                    \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_owner_and_status),          \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_headquarters_and_details), \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_colour_scheme),            \
-        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_finances),                 \
-        make_remap_widget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_cargo_delivered),                 \
-        make_remap_widget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_challenge_for_this_game), \
-        make_widget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_select_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                              \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                                \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                           \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),     \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_owner_and_status),          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_headquarters_and_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_colour_scheme),            \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_finances),                 \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_cargo_delivered),                 \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_challenge_for_this_game), \
+        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_select_company)
 
         // 0x004343FC
         static void disableChallengeTab(window* self)
         {
             self->disabled_widgets = 0;
-            if (self->number != companymgr::get_controlling_id())
+            if (self->number != companymgr::getControllingId())
                 self->disabled_widgets |= (1 << widx::tab_challenge);
         }
 
         // 0x00431E9B
         static void enableRenameByCaption(window* self)
         {
-            if (is_editor_mode() || self->number == companymgr::get_controlling_id())
+            if (isEditorMode() || self->number == companymgr::getControllingId())
             {
                 self->enabled_widgets |= (1 << caption);
             }
@@ -107,12 +107,12 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(270, 182, string_ids::title_company),
-            make_widget({ 3, 160 }, { 242, 21 }, widget_type::wt_13, 1),
-            make_widget({ 3, 44 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            make_widget({ 178, 57 }, { 66, 66 }, widget_type::wt_9, 1, image_ids::null),
-            make_widget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_change_owner_name),
-            widget_end(),
+            makeWidget({ 3, 160 }, { 242, 21 }, widget_type::wt_13, 1),
+            makeWidget({ 3, 44 }, { 96, 120 }, widget_type::viewport, 1, -2),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 178, 57 }, { 66, 66 }, widget_type::wt_9, 1, image_ids::null),
+            makeWidget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_change_owner_name),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
@@ -136,7 +136,7 @@ namespace openloco::ui::windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (self->number != companymgr::get_controlling_id() && !is_editor_mode())
+            if (self->number != companymgr::getControllingId() && !isEditorMode())
                 self->disabled_widgets |= (1 << widx::face);
 
             self->widgets[common::widx::frame].right = self->width - 1;
@@ -166,7 +166,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->widgets[widx::change_owner_name].type = widget_type::wt_9;
             else
                 self->widgets[widx::change_owner_name].type = widget_type::none;
@@ -386,7 +386,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
@@ -395,7 +395,7 @@ namespace openloco::ui::windows::CompanyWindow
         {
             common::enableRenameByCaption(self);
 
-            self->set_size(status::windowSize, gfx::ui_size_t(640, 400));
+            self->setSize(status::windowSize, gfx::ui_size_t(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
@@ -411,7 +411,7 @@ namespace openloco::ui::windows::CompanyWindow
                 }
             }
 
-            self->call_viewport_rotate();
+            self->callViewportRotate();
         }
 
         static void sub_434336(window* self, const SavedView& view)
@@ -479,7 +479,7 @@ namespace openloco::ui::windows::CompanyWindow
                 return;
             }
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
 
             const auto& company = companymgr::get(self->number);
 
@@ -606,9 +606,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -633,7 +633,7 @@ namespace openloco::ui::windows::CompanyWindow
         window->activated_widgets = 0;
 
         common::disableChallengeTab(window);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
         return window;
@@ -642,7 +642,7 @@ namespace openloco::ui::windows::CompanyWindow
     // 0x00435ACC
     window* openAndSetName()
     {
-        company_id_t companyId = companymgr::get_controlling_id();
+        company_id_t companyId = companymgr::getControllingId();
         window* self = open(companyId);
 
         // Allow setting company owner name if no preferred owner name has been set.
@@ -670,10 +670,10 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(340, 194, string_ids::title_company_details),
-            make_widget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            make_widget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_build_or_move_headquarters),
-            make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            widget_end(),
+            makeWidget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
+            makeWidget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_build_or_move_headquarters),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
@@ -689,7 +689,7 @@ namespace openloco::ui::windows::CompanyWindow
             auto company = companymgr::get(self->number);
             FormatArguments args{};
             args.push(company->name);
-            auto companyColour = companymgr::get_company_colour(self->number);
+            auto companyColour = companymgr::getCompanyColour(self->number);
             auto skin = objectmgr::get<interface_skin_object>();
             uint32_t image = skin->img + interface_skin::image_ids::build_headquarters;
             self->widgets[widx::build_hq].image = gfx::recolour(image, companyColour) | (1 << 30);
@@ -717,7 +717,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->widgets[widx::build_hq].type = widget_type::wt_9;
             else
                 self->widgets[widx::build_hq].type = widget_type::none;
@@ -828,7 +828,7 @@ namespace openloco::ui::windows::CompanyWindow
                 y += 10;
             }
 
-            if (!is_player_company(self->number))
+            if (!isPlayerCompany(self->number))
             {
                 drawAIdetails(*dpi, x + 5, y, *company);
             }
@@ -920,7 +920,7 @@ namespace openloco::ui::windows::CompanyWindow
 
                 case widx::build_hq:
                     input::toolSet(self, widgetIndex, 43);
-                    input::set_flag(input::input_flags::flag5);
+                    input::setFlag(input::input_flags::flag5);
                     break;
             }
         }
@@ -1013,7 +1013,7 @@ namespace openloco::ui::windows::CompanyWindow
             auto commandResult = game_commands::do_54(flags, tileY, tileX, tileZ, dx);
             if (commandResult != game_commands::FAILURE)
             {
-                input::cancel_tool();
+                input::toolCancel();
             }
         }
 
@@ -1028,7 +1028,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
@@ -1036,8 +1036,8 @@ namespace openloco::ui::windows::CompanyWindow
         static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
-            self->set_size(windowSize);
-            self->call_viewport_rotate();
+            self->setSize(windowSize);
+            self->callViewportRotate();
         }
 
         static void sub_434377(window* self, const SavedView& view)
@@ -1062,7 +1062,7 @@ namespace openloco::ui::windows::CompanyWindow
             if (self->current_tab != common::tab_details - common::tab_status)
                 return;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             auto company = companymgr::get(self->number);
             if (company->headquarters_x == -1)
             {
@@ -1223,39 +1223,39 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(265, 252, string_ids::title_company_colour_scheme),
-            make_widget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 98 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_diesel_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 115 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_electric_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 132 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_multiple_units, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 149 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_passenger_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 166 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_freight_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 183 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_buses, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 200 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_trucks, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 217 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_aircraft, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 15, 234 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_ships, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            make_widget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            make_widget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            make_widget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            widget_end(),
+            makeWidget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 98 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_diesel_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 115 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_electric_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 132 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_multiple_units, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 149 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_passenger_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 166 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_freight_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 183 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_buses, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 200 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_trucks, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 217 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_aircraft, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 234 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_ships, string_ids::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
@@ -1339,7 +1339,7 @@ namespace openloco::ui::windows::CompanyWindow
                 }
             }
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
                 self->enabled_widgets |= allColourChecks | allMainColours | allSecondaryColours;
             else
                 self->enabled_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
@@ -1542,7 +1542,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
@@ -1550,7 +1550,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
-            self->set_size(windowSize);
+            self->setSize(windowSize);
         }
 
         static void initEvents()
@@ -1582,9 +1582,9 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(636, 319, string_ids::title_company_finances),
-            make_widget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
-            make_stepper_widgets({ 87, 264 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::company_current_loan_value),
-            widget_end(),
+            makeWidget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
+            makeStepperWidgets({ 87, 264 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::company_current_loan_value),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
@@ -1621,7 +1621,7 @@ namespace openloco::ui::windows::CompanyWindow
             self->widgets[common::widx::company_select].right = self->width - 3;
             self->widgets[common::widx::company_select].left = self->width - 28;
 
-            if (self->number == companymgr::get_controlling_id())
+            if (self->number == companymgr::getControllingId())
             {
                 self->widgets[widx::current_loan].type = widget_type::wt_17;
                 self->widgets[widx::loan_decrease].type = widget_type::wt_11;
@@ -1874,7 +1874,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             const auto company = companymgr::get(self->number);
 
-            uint32_t curYear = current_year();
+            uint32_t curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
@@ -2011,7 +2011,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
@@ -2019,7 +2019,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onResize(window* self)
         {
             common::enableRenameByCaption(self);
-            self->set_size(windowSize);
+            self->setSize(windowSize);
         }
 
         static void initEvents()
@@ -2044,9 +2044,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -2071,7 +2071,7 @@ namespace openloco::ui::windows::CompanyWindow
         window->activated_widgets = 0;
 
         common::disableChallengeTab(window);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->moveInsideScreenEdges();
         finances::sub_4C8DBF(window);
 
@@ -2084,7 +2084,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(240, 382, string_ids::title_company_cargo_delivered),
-            widget_end(),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select);
@@ -2224,7 +2224,7 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
@@ -2246,7 +2246,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             const uint16_t windowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self->set_size({ windowSize.width, windowHeight });
+            self->setSize({ windowSize.width, windowHeight });
         }
 
         static void initEvents()
@@ -2268,7 +2268,7 @@ namespace openloco::ui::windows::CompanyWindow
 
         static widget_t widgets[] = {
             commonWidgets(320, 182, string_ids::title_company_challenge),
-            widget_end(),
+            widgetEnd(),
         };
 
         constexpr uint64_t enabledWidgets = common::enabledWidgets;
@@ -2352,14 +2352,14 @@ namespace openloco::ui::windows::CompanyWindow
         static void onUpdate(window* self)
         {
             self->frame_no += 1;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self->number);
         }
 
         // 0x00434048
         static void onResize(window* self)
         {
-            self->set_size(windowSize);
+            self->setSize(windowSize);
         }
 
         static void initEvents()
@@ -2379,9 +2379,9 @@ namespace openloco::ui::windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
+            if (input::isToolActive(window->type, window->number))
             {
-                input::cancel_tool();
+                input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, companyId);
             }
         }
@@ -2406,7 +2406,7 @@ namespace openloco::ui::windows::CompanyWindow
         window->activated_widgets = 0;
 
         common::disableChallengeTab(window);
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
         return window;
@@ -2483,7 +2483,7 @@ namespace openloco::ui::windows::CompanyWindow
             if (self->widgets != newWidgets)
             {
                 self->widgets = newWidgets;
-                // self->init_scroll_widgets();
+                // self->initScrollWidgets();
             }
 
             static const widx tabWidgetIdxByTabId[] = {
@@ -2502,8 +2502,8 @@ namespace openloco::ui::windows::CompanyWindow
         // 0x0043230B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             textinput::sub_4CE6C9(self->type, self->number);
 
@@ -2531,10 +2531,10 @@ namespace openloco::ui::windows::CompanyWindow
 
             common::disableChallengeTab(self);
             self->invalidate();
-            self->set_size(*tabInfo.windowSize);
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->setSize(*tabInfo.windowSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
 
@@ -2701,7 +2701,7 @@ namespace openloco::ui::windows::CompanyWindow
 
             for (uint8_t i = widx::tab_status; i <= widx::tab_challenge; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                     continue;
 
                 self->widgets[i].left = xPos;

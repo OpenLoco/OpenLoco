@@ -40,8 +40,8 @@ namespace openloco::ui::windows::error
         };
 
         widget_t widgets[] = {
-            make_widget({ 0, 0 }, { 200, 42 }, widget_type::wt_3, 0),
-            widget_end(),
+            makeWidget({ 0, 0 }, { 200, 42 }, widget_type::wt_3, 0),
+            widgetEnd(),
         };
     }
 
@@ -54,9 +54,9 @@ namespace openloco::ui::windows::error
         };
 
         widget_t widgets[] = {
-            make_widget({ 0, 0 }, { 250, 70 }, widget_type::wt_3, 0),
-            make_widget({ 3, 3 }, { 64, 64 }, widget_type::wt_3, 1),
-            widget_end(),
+            makeWidget({ 0, 0 }, { 250, 70 }, widget_type::wt_3, 0),
+            makeWidget({ 3, 3 }, { 64, 64 }, widget_type::wt_3, 1),
+            widgetEnd(),
         };
     }
 

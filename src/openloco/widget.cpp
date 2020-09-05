@@ -61,13 +61,13 @@ namespace openloco::ui::widget
     void drawViewportCentreButton(gfx::drawpixelinfo_t* dpi, const window* window, const widget_index widgetIndex)
     {
         auto& widget = window->widgets[widgetIndex];
-        if (input::is_hovering(window->type, window->number, widgetIndex))
+        if (input::isHovering(window->type, window->number, widgetIndex))
         {
             gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
             gfx::draw_rect(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
-            if (input::is_pressed(window->type, window->number, widgetIndex))
+            if (input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
             gfx::draw_rect_inset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), colour::translucent(window->colours[1]), flags);
@@ -156,7 +156,7 @@ namespace openloco::ui::widget
     }
 
     // 0x004CAB58
-    void draw_1(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
+    void drawPanel(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         gfx::fill_rect_inset(dpi, window->x + widget->left, window->y + widget->top, window->x + widget->right, window->y + widget->bottom, colour, flags);
 
@@ -164,7 +164,7 @@ namespace openloco::ui::widget
     }
 
     // 0x004CAAB9
-    void draw_2(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
+    void drawFrame(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         gfx::drawpixelinfo_t* clipped = nullptr;
         if (gfx::clip_drawpixelinfo(&clipped, dpi, widget->left + window->x, widget->top + window->y, widget->right - widget->left, 41))
@@ -656,7 +656,7 @@ namespace openloco::ui::widget
     }
 
     // 0x004CB31C
-    void draw_26(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index)
+    void drawScrollview(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index)
     {
         int16_t left = window->x + widget->left;
         int16_t top = window->y + widget->top;
@@ -727,7 +727,7 @@ namespace openloco::ui::widget
             cropped.x -= left - scroll_area->contentOffsetX;
             cropped.y -= top - scroll_area->contentOffsetY;
 
-            window->call_draw_scroll(&cropped, scrollview_index);
+            window->callDrawScroll(&cropped, scrollview_index);
         }
     }
 
@@ -790,19 +790,19 @@ namespace openloco::ui::widget
         pos.x = widget->left + w->x;
         pos.y = widget->top + w->y;
 
-        if (w->is_disabled(index))
+        if (w->isDisabled(index))
         {
             return; // 0x8000
         }
 
         bool isActivated = false;
-        if (w->is_activated(index))
+        if (w->isActivated(index))
         {
             isActivated = true;
         }
         else if (input::state() == input::input_state::widget_pressed)
         {
-            isActivated = input::is_pressed(w->type, w->number, index);
+            isActivated = input::isPressed(w->type, w->number, index);
         }
 
         if (imageId == -1)

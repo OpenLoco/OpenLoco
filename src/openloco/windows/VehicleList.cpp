@@ -54,7 +54,7 @@ namespace openloco::ui::windows::vehicle_list
             };
 
             widx target = type_to_widx[type];
-            vehicle_list->call_on_mouse_up(target);
+            vehicle_list->callOnMouseUp(target);
         }
 
         return vehicle_list;

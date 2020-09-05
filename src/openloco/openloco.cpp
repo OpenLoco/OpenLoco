@@ -90,13 +90,13 @@ namespace openloco
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
 
-    static void tick_logic(int32_t count);
-    static void tick_logic();
-    static void tick_wait();
-    static void date_tick();
+    static void tickLogic(int32_t count);
+    static void tickLogic();
+    static void tickWait();
+    static void dateTick();
     static void sub_46FFCA();
 
-    std::string get_version_info()
+    std::string getVersionInfo()
     {
         return version;
     }
@@ -125,17 +125,17 @@ namespace openloco
         return _screen_age;
     }
 
-    uint8_t get_screen_flags()
+    uint8_t getScreenFlags()
     {
         return _screen_flags;
     }
 
-    bool is_editor_mode()
+    bool isEditorMode()
     {
         return (_screen_flags & screen_flags::editor) != 0;
     }
 
-    bool is_title_mode()
+    bool isTitleMode()
     {
         return (_screen_flags & screen_flags::title) != 0;
     }
@@ -150,22 +150,22 @@ namespace openloco
         return (_screen_flags & screen_flags::trackUpgrade) != 0;
     }
 
-    bool is_unknown_4_mode()
+    bool isUnknown4Mode()
     {
         return (_screen_flags & screen_flags::unknown_4) != 0;
     }
 
-    bool is_unknown_5_mode()
+    bool isUnknown5Mode()
     {
         return (_screen_flags & screen_flags::unknown_5) != 0;
     }
 
-    bool is_paused()
+    bool isPaused()
     {
         return paused_state;
     }
 
-    uint8_t get_pause_flags()
+    uint8_t getPauseFlags()
     {
         return paused_state;
     }
@@ -180,12 +180,12 @@ namespace openloco
         call(0x00431E32, regs);
     }
 
-    uint32_t scenario_ticks()
+    uint32_t scenarioTicks()
     {
         return _scenario_ticks;
     }
 
-    utility::prng& gprng()
+    utility::prng& gPrng()
     {
         return _prng;
     }
@@ -255,14 +255,14 @@ namespace openloco
     }
 
     // 0x00407FFD
-    static bool is_already_running(const char* mutexName)
+    static bool isAlreadyRunning(const char* mutexName)
     {
         auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
     }
 
     // 0x004BE621
-    static void exit_with_error(string_id eax, string_id ebx)
+    static void exitWithError(string_id eax, string_id ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -271,7 +271,7 @@ namespace openloco
     }
 
     // 0x004BE5EB
-    void exit_with_error(string_id message, uint32_t errorCode)
+    void exitWithError(string_id message, uint32_t errorCode)
     {
         // Saves the error code for later writing to error log 1.TMP.
         registers regs;
@@ -281,11 +281,11 @@ namespace openloco
     }
 
     // 0x00441400
-    static void startup_checks()
+    static void startupChecks()
     {
-        if (is_already_running("Locomotion"))
+        if (isAlreadyRunning("Locomotion"))
         {
-            exit_with_error(string_ids::game_init_failure, string_ids::loco_already_running);
+            exitWithError(string_ids::game_init_failure, string_ids::loco_already_running);
         }
 
         // Originally the game would check that all the game
@@ -295,7 +295,7 @@ namespace openloco
     }
 
     // 0x004C57C0
-    void initialise_viewports()
+    void initialiseViewports()
     {
         _mapTooltipFormatArguments = string_ids::null;
         _mapTooltipOwner = company_id::null;
@@ -305,7 +305,7 @@ namespace openloco
         ui::viewportmgr::init();
 
         input::init();
-        input::init_mouse();
+        input::initMouse();
 
         // rain-related
         _52339C = -1;
@@ -325,29 +325,29 @@ namespace openloco
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
-        environment::resolve_paths();
+        environment::resolvePaths();
         localisation::enumerateLanguages();
         localisation::loadLanguageFile();
         progressbar::begin(string_ids::loading, 0);
-        progressbar::set_progress(30);
-        startup_checks();
-        progressbar::set_progress(40);
+        progressbar::setProgress(30);
+        startupChecks();
+        progressbar::setProgress(40);
         call(0x004BE5DE);
         progressbar::end();
         config::read();
         objectmgr::load_index();
-        scenariomgr::load_index(0);
+        scenariomgr::loadIndex(0);
         progressbar::begin(string_ids::loading, 0);
-        progressbar::set_progress(60);
+        progressbar::setProgress(60);
         gfx::load_g1();
-        progressbar::set_progress(220);
+        progressbar::setProgress(220);
         call(0x004949BC);
-        progressbar::set_progress(235);
-        progressbar::set_progress(250);
-        ui::initialise_cursors();
+        progressbar::setProgress(235);
+        progressbar::setProgress(250);
+        ui::initialiseCursors();
         progressbar::end();
         ui::initialise();
-        initialise_viewports();
+        initialiseViewports();
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
@@ -393,14 +393,14 @@ namespace openloco
     {
         if (!isNetworked())
         {
-            _updating_company_id = companymgr::get_controlling_id();
+            _updating_company_id = companymgr::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
                 sub_428E47();
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             ui::handleInput();
             companymgr::updateOwnerStatus();
@@ -416,7 +416,7 @@ namespace openloco
         // Host/client?
         if (isTrackUpgradeMode())
         {
-            _updating_company_id = companymgr::get_controlling_id();
+            _updating_company_id = companymgr::getControllingId();
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
@@ -425,7 +425,7 @@ namespace openloco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -441,7 +441,7 @@ namespace openloco
             auto eax = sub_4317BD();
 
             _updating_company_id = _player_company[0];
-            if (!is_title_mode())
+            if (!isTitleMode())
             {
                 auto edx = _prng->srand_0();
                 edx ^= companymgr::get(0)->cash.var_00;
@@ -461,7 +461,7 @@ namespace openloco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::process_keyboard_input();
+            input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -471,9 +471,9 @@ namespace openloco
     }
 
     // 0x0043D9D4
-    static void editor_tick()
+    static void editorTick()
     {
-        if (!is_editor_mode())
+        if (!isEditorMode())
             return;
 
         switch (_editorStep)
@@ -548,7 +548,7 @@ namespace openloco
         time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
         last_tick_time = time;
 
-        if (!is_paused())
+        if (!isPaused())
         {
             addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
         }
@@ -567,7 +567,7 @@ namespace openloco
         {
             config::get().var_72 = 16;
             gfx::clear(gfx::screen_dpi(), 0);
-            ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
@@ -588,11 +588,11 @@ namespace openloco
                         call(0x00403575);
                     }
                 }
-                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 gfx::invalidate_screen();
                 if (config::get().var_72 != 96)
                 {
-                    tick_wait();
+                    tickWait();
                     return;
                 }
                 config::get().var_72 = 1;
@@ -609,14 +609,14 @@ namespace openloco
             if (addr<0x00525340, int32_t>() == 1)
             {
                 addr<0x00525340, int32_t>() = 0;
-                multiplayer::set_flag(multiplayer::flags::flag_1);
+                multiplayer::setFlag(multiplayer::flags::flag_1);
             }
 
-            input::handle_keyboard();
+            input::handleKeyboard();
             audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
-            if (intro::is_active())
+            if (intro::isActive())
             {
                 intro::update();
             }
@@ -643,9 +643,9 @@ namespace openloco
                         case input_state::reset:
                         case input_state::normal:
                         case input_state::dropdown_active:
-                            if (input::has_flag(input_flags::viewport_scrolling))
+                            if (input::hasFlag(input_flags::viewport_scrolling))
                             {
-                                input::reset_flag(input_flags::viewport_scrolling);
+                                input::resetFlag(input_flags::viewport_scrolling);
                                 numUpdates = 1;
                             }
                             break;
@@ -659,7 +659,7 @@ namespace openloco
                     }
                 }
                 addr<0x0052622E, int16_t>() += numUpdates;
-                if (is_paused())
+                if (isPaused())
                 {
                     numUpdates = 0;
                 }
@@ -675,14 +675,14 @@ namespace openloco
                 }
 
                 sub_46FFCA();
-                tick_logic(numUpdates);
+                tickLogic(numUpdates);
 
                 _525F62++;
-                editor_tick();
+                editorTick();
                 audio::playBackgroundMusic();
 
                 // TODO move stop title music to title::stop (when mode changes)
-                if (!is_title_mode())
+                if (!isTitleMode())
                 {
                     audio::stopTitleMusic();
                 }
@@ -712,19 +712,19 @@ namespace openloco
             if (config::get().var_72 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
-                ui::get_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                ui::set_cursor_pos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
 
-        tick_wait();
+        tickWait();
     }
 
-    static void tick_logic(int32_t count)
+    static void tickLogic(int32_t count)
     {
         for (int32_t i = 0; i < count; i++)
         {
-            tick_logic();
+            tickLogic();
         }
     }
 
@@ -753,7 +753,7 @@ namespace openloco
     static loco_global<string_id, 0x0050C198> _50C198;
 
     // 0x0046ABCB
-    static void tick_logic()
+    static void tickLogic()
     {
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
@@ -761,7 +761,7 @@ namespace openloco
         addr<0x00525FD0, uint32_t>() = _prng->srand_1();
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = s5::getOptions().madeAnyChanges;
-        date_tick();
+        dateTick();
         call(0x00463ABA);
         call(0x004C56F6);
         townmgr::update();
@@ -801,29 +801,29 @@ namespace openloco
     }
 
     // 0x004968C7
-    static void date_tick()
+    static void dateTick()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            if (update_day_counter())
+            if (updateDayCounter())
             {
-                stationmgr::update_daily();
+                stationmgr::updateDaily();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
                 call(0x004969DA);
                 call(0x00439BA5);
 
-                auto yesterday = calc_date(current_day() - 1);
-                auto today = calc_date(current_day());
-                set_date(today);
+                auto yesterday = calcDate(getCurrentDay() - 1);
+                auto today = calcDate(getCurrentDay());
+                setDate(today);
                 sub_496A84(today.day_of_olympiad);
                 if (today.month != yesterday.month)
                 {
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    townmgr::update_monthly();
+                    townmgr::updateMonthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);
@@ -861,7 +861,7 @@ namespace openloco
     }
 
     // 0x0046AD4D
-    void tick_wait()
+    void tickWait()
     {
         do
         {
@@ -869,13 +869,13 @@ namespace openloco
         } while (platform::getTime() - last_tick_time < 25);
     }
 
-    void prompt_tick_loop(std::function<bool()> tickAction)
+    void promptTickLoop(std::function<bool()> tickAction)
     {
         while (true)
         {
             auto startTime = platform::getTime();
             time_since_last_tick = 31;
-            if (!ui::process_messages() || !tickAction())
+            if (!ui::processMessages() || !tickAction())
             {
                 break;
             }
@@ -909,12 +909,12 @@ namespace openloco
         }
 #endif
 
-        // Call tick before ui::process_messages to ensure initialise is called
+        // Call tick before ui::processMessages to ensure initialise is called
         // otherwise window events can end up using an uninitialised window manager.
         // This can be removed when initialise is moved out of tick().
         tick();
 
-        while (ui::process_messages())
+        while (ui::processMessages())
         {
             if (addr<0x005252AC, uint32_t>() != 0)
             {
@@ -934,25 +934,25 @@ namespace openloco
     // 0x00406D13
     void main()
     {
-        auto versionInfo = openloco::get_version_info();
+        auto versionInfo = openloco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
         {
-            const auto& cfg = config::read_new_config();
-            environment::resolve_paths();
+            const auto& cfg = config::readNewConfig();
+            environment::resolvePaths();
 
             register_hooks();
             if (sub_4054B9())
             {
-                ui::create_window(cfg.display);
+                ui::createWindow(cfg.display);
                 call(0x004078FE);
                 call(0x00407B26);
-                ui::initialise_input();
+                ui::initialiseInput();
                 audio::initialiseDSound();
                 run();
                 audio::disposeDSound();
-                ui::dispose_cursors();
-                ui::dispose_input();
+                ui::disposeCursors();
+                ui::disposeInput();
 
                 // TODO extra clean up code
             }

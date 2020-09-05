@@ -27,9 +27,9 @@ namespace openloco::industrymgr
     // 0x00453234
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            companymgr::updating_company_id(company_id::neutral);
+            companymgr::updatingCompanyId(company_id::neutral);
             for (auto& industry : industries())
             {
                 if (!industry.empty())
@@ -41,7 +41,7 @@ namespace openloco::industrymgr
     }
 
     // 0x0045383B
-    void update_monthly()
+    void updateMonthly()
     {
         call(0x0045383B);
     }

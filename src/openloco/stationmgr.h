@@ -11,6 +11,6 @@ namespace openloco::stationmgr
     std::array<station, max_stations>& stations();
     station* get(station_id_t id);
     void update();
-    void update_labels();
-    void update_daily();
+    void updateLabels();
+    void updateDaily();
 }

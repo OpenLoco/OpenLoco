@@ -136,7 +136,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_in(false);
+                window->viewportZoomIn(false);
                 regs = backup;
                 return 0;
             });
@@ -146,7 +146,7 @@ namespace openloco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = (ui::window*)regs.esi;
-                window->viewport_zoom_out(false);
+                window->viewportZoomOut(false);
                 regs = backup;
                 return 0;
             });
@@ -411,7 +411,7 @@ namespace openloco::ui::WindowManager
             0x004CE3D6,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                input::cancel_tool();
+                input::toolCancel();
                 regs = backup;
 
                 return 0;
@@ -533,19 +533,19 @@ namespace openloco::ui::WindowManager
     {
         _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
 
-        if (!ui::dirty_blocks_initialised())
+        if (!ui::dirtyBlocksInitialised())
         {
             return;
         }
 
-        if (!intro::is_active())
+        if (!intro::isActive())
         {
             gfx::draw_dirty_blocks();
         }
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            w->viewports_update_position();
+            w->viewportsUpdatePosition();
         }
 
         // 1000 tick update
@@ -555,7 +555,7 @@ namespace openloco::ui::WindowManager
             _thousandthTickCounter = 0;
             for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
             {
-                w->call_on_periodic_update();
+                w->callOnPeriodicUpdate();
             }
         }
 
@@ -631,14 +631,14 @@ namespace openloco::ui::WindowManager
 
             if ((w->flags & window_flags::no_background) != 0)
             {
-                auto index = w->find_widget_at(x, y);
+                auto index = w->findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->call_on_resize() == nullptr)
+            if (w->callOnResize() == nullptr)
             {
                 return findAt(x, y);
             }
@@ -672,14 +672,14 @@ namespace openloco::ui::WindowManager
 
             if ((w->flags & window_flags::no_background) != 0)
             {
-                auto index = w->find_widget_at(x, y);
+                auto index = w->findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->call_on_resize() == nullptr)
+            if (w->callOnResize() == nullptr)
             {
                 return findAtAlt(x, y);
             }
@@ -744,16 +744,16 @@ namespace openloco::ui::WindowManager
     // 0x004C9984
     void invalidateAllWindowsAfterInput()
     {
-        if (is_paused())
+        if (isPaused())
         {
             _523508++;
         }
 
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->update_scroll_widgets();
-            w->invalidate_pressed_image_buttons();
-            w->call_on_resize();
+            w->updateScrollWidgets();
+            w->invalidatePressedImageButtons();
+            w->callOnResize();
         }
     }
 
@@ -1152,7 +1152,7 @@ namespace openloco::ui::WindowManager
                 return;
         }
 
-        if (is_unknown_4_mode() && w->type != WindowType::progressBar)
+        if (isUnknown4Mode() && w->type != WindowType::progressBar)
         {
             return;
         }
@@ -1160,7 +1160,7 @@ namespace openloco::ui::WindowManager
         // Company colour
         if (w->owner != company_id::null)
         {
-            w->colours[0] = companymgr::get_company_colour(w->owner);
+            w->colours[0] = companymgr::getCompanyColour(w->owner);
         }
 
         addr<0x1136F9C, int16_t>() = w->x;
@@ -1173,19 +1173,19 @@ namespace openloco::ui::WindowManager
         windowColours[2] = colour::opaque(w->colours[2]);
         windowColours[3] = colour::opaque(w->colours[3]);
 
-        w->call_prepare_draw();
-        w->call_draw(&dpi);
+        w->callPrepareDraw();
+        w->callDraw(&dpi);
     }
 
     // 0x004CD3D0
     void dispatchUpdateAll()
     {
         _523508++;
-        companymgr::updating_company_id(companymgr::get_controlling_id());
+        companymgr::updatingCompanyId(companymgr::getControllingId());
 
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->call_update();
+            w->callUpdate();
         }
 
         ui::textinput::sub_4CE6FF();
@@ -1205,7 +1205,7 @@ namespace openloco::ui::WindowManager
         auto type = window->type;
         uint16_t number = window->number;
 
-        window->call_close();
+        window->callClose();
 
         window = find(type, number);
         if (window == nullptr)
@@ -1257,7 +1257,7 @@ namespace openloco::ui::WindowManager
     {
         for (ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            w->call_viewport_rotate();
+            w->callViewportRotate();
         }
     }
 
@@ -1378,7 +1378,7 @@ namespace openloco::ui::WindowManager
     {
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
-        input::cancel_tool();
+        input::toolCancel();
         addr<0x00522096, uint8_t>() = 0;
     }
 
@@ -1402,7 +1402,7 @@ namespace openloco::ui::WindowManager
 
     static void windowScrollWheelInput(ui::window* window, widget_index widgetIndex, int wheel)
     {
-        int scrollIndex = window->get_scroll_data_index(widgetIndex);
+        int scrollIndex = window->getScrollDataIndex(widgetIndex);
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
         ui::widget_t* widget = &window->widgets[widgetIndex];
 
@@ -1485,9 +1485,9 @@ namespace openloco::ui::WindowManager
         if (tutorial::state() != tutorial::tutorial_state::none)
             return;
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
-            if (openloco::is_title_mode())
+            if (openloco::isTitleMode())
                 return;
 
             auto main = WindowManager::getMainWindow();
@@ -1495,14 +1495,14 @@ namespace openloco::ui::WindowManager
             {
                 if (wheel > 0)
                 {
-                    main->viewport_rotate_right();
+                    main->viewportRotateRight();
                 }
                 else if (wheel < 0)
                 {
-                    main->viewport_rotate_left();
+                    main->viewportRotateLeft();
                 }
-                townmgr::update_labels();
-                stationmgr::update_labels();
+                townmgr::updateLabels();
+                stationmgr::updateLabels();
                 windows::map::centerOnViewPoint();
             }
 
@@ -1516,30 +1516,30 @@ namespace openloco::ui::WindowManager
         {
             if (window->type == WindowType::main)
             {
-                if (openloco::is_title_mode())
+                if (openloco::isTitleMode())
                     return;
 
                 if (wheel > 0)
                 {
-                    window->viewport_zoom_out(true);
+                    window->viewportZoomOut(true);
                 }
                 else if (wheel < 0)
                 {
-                    window->viewport_zoom_in(true);
+                    window->viewportZoomIn(true);
                 }
-                townmgr::update_labels();
-                stationmgr::update_labels();
+                townmgr::updateLabels();
+                stationmgr::updateLabels();
 
                 return;
             }
             else
             {
-                auto widgetIndex = window->find_widget_at(cursorPosition.x, cursorPosition.y);
+                auto widgetIndex = window->findWidgetAt(cursorPosition.x, cursorPosition.y);
                 if (widgetIndex != -1)
                 {
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)
                     {
-                        auto scrollIndex = window->get_scroll_data_index(widgetIndex);
+                        auto scrollIndex = window->getScrollDataIndex(widgetIndex);
                         constexpr uint16_t scrollbarFlags = scrollview::scroll_flags::HSCROLLBAR_VISIBLE | scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
                         if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
                         {

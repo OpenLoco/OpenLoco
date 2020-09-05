@@ -89,7 +89,7 @@ namespace openloco::ui
         both = (1 << 0) | (1 << 1),
     };
 
-    static constexpr widget_t make_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    static constexpr widget_t makeWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
         out.left = origin.x;
@@ -104,9 +104,9 @@ namespace openloco::ui
         return out;
     }
 
-    constexpr widget_t make_remap_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    constexpr widget_t makeRemapWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
     {
-        widget_t out = make_widget(origin, size, type, colour, content, tooltip);
+        widget_t out = makeWidget(origin, size, type, colour, content, tooltip);
 
         // TODO: implement this as a constant.
         out.content |= (1 << 29);
@@ -114,32 +114,32 @@ namespace openloco::ui
         return out;
     }
 
-#define make_stepper_widgets(...)                  \
-    make_widget(__VA_ARGS__),                      \
-        make_stepper_decrease_widget(__VA_ARGS__), \
-        make_stepper_increase_widget(__VA_ARGS__)
+#define makeStepperWidgets(...)                 \
+    makeWidget(__VA_ARGS__),                    \
+        makeStepperDecreaseWidget(__VA_ARGS__), \
+        makeStepperIncreaseWidget(__VA_ARGS__)
 
-    [[maybe_unused]] static constexpr widget_t make_stepper_decrease_widget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
         const uint16_t width = 13;
         const uint16_t height = size.height - 2;
 
-        return make_widget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_minus);
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_minus);
     }
 
-    [[maybe_unused]] static constexpr widget_t make_stepper_increase_widget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
         const uint16_t width = 12;
         const uint16_t height = size.height - 2;
 
-        return make_widget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_plus);
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_plus);
     }
 
-    constexpr widget_t make_text_widget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
+    constexpr widget_t makeTextWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
         out.left = origin.x;
@@ -154,7 +154,7 @@ namespace openloco::ui
         return out;
     }
 
-    constexpr widget_t widget_end()
+    constexpr widget_t widgetEnd()
     {
         widget_t out = {};
         out.type = widget_type::end;
@@ -376,7 +376,7 @@ namespace openloco::ui
 
         window(gfx::point_t position, gfx::ui_size_t size);
 
-        constexpr bool set_size(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
+        constexpr bool setSize(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
         {
             bool hasResized = false;
 
@@ -414,9 +414,9 @@ namespace openloco::ui
             return hasResized;
         }
 
-        constexpr void set_size(gfx::ui_size_t size)
+        constexpr void setSize(gfx::ui_size_t size)
         {
-            set_size(size, size);
+            setSize(size, size);
         }
 
         bool isVisible()
@@ -429,69 +429,69 @@ namespace openloco::ui
             return (this->flags & window_flags::transparent) != 0;
         }
 
-        bool is_enabled(int8_t widget_index);
-        bool is_disabled(int8_t widget_index);
-        bool is_activated(widget_index index);
-        bool is_holdable(widget_index index);
-        bool can_resize();
-        void cap_size(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
-        void viewports_update_position();
-        void invalidate_pressed_image_buttons();
+        bool isEnabled(int8_t widget_index);
+        bool isDisabled(int8_t widget_index);
+        bool isActivated(widget_index index);
+        bool isHoldable(widget_index index);
+        bool canResize();
+        void capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
+        void viewportsUpdatePosition();
+        void invalidatePressedImageButtons();
         void invalidate();
-        void update_scroll_widgets();
-        void init_scroll_widgets();
-        int8_t get_scroll_data_index(widget_index index);
-        void set_disabled_widgets_and_invalidate(uint32_t _disabled_widgets);
+        void updateScrollWidgets();
+        void initScrollWidgets();
+        int8_t getScrollDataIndex(widget_index index);
+        void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
         void drawViewports(gfx::drawpixelinfo_t* dpi);
         void viewportSetUndergroundFlag(bool underground, ui::viewport* vp);
-        void viewport_get_map_coords_by_cursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
+        void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const map::map_pos3& loc);
-        void viewport_centre_tile_around_cursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
-        void viewport_zoom_set(int8_t zoomLevel, bool toCursor);
-        void viewport_zoom_in(bool toCursor);
-        void viewport_zoom_out(bool toCursor);
-        void viewport_rotate_right();
-        void viewport_rotate_left();
+        void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
+        void viewportZoomSet(int8_t zoomLevel, bool toCursor);
+        void viewportZoomIn(bool toCursor);
+        void viewportZoomOut(bool toCursor);
+        void viewportRotateRight();
+        void viewportRotateLeft();
 
         bool move(int16_t dx, int16_t dy);
         void moveInsideScreenEdges();
         bool moveToCentre();
-        widget_index find_widget_at(int16_t xPos, int16_t yPos);
+        widget_index findWidgetAt(int16_t xPos, int16_t yPos);
         void draw(openloco::gfx::drawpixelinfo_t* dpi);
 
-        void call_close();                                                                                // 0
-        void call_on_mouse_up(widget_index widgetIndex);                                                  // 1
-        ui::window* call_on_resize();                                                                     // 2
-        void call_3(int8_t widget_index);                                                                 // 3
-        void call_on_mouse_down(int8_t widget_index);                                                     // 4
-        void call_on_dropdown(widget_index widget_index, int16_t item_index);                             // 5
-        void call_on_periodic_update();                                                                   // 6
-        void call_update();                                                                               // 7
-        void call_8();                                                                                    // 8
-        void call_9();                                                                                    // 9
-        void call_tool_update(int16_t widget_index, int16_t xPos, int16_t yPos);                          // 10
-        void call_tool_down(int16_t widget_index, int16_t xPos, int16_t yPos);                            // 11
-        void call_12(const int16_t widget_index);                                                         // 12
-        void call_13(const int16_t widget_index);                                                         // 13
-        void call_tool_abort(int16_t widget_index);                                                       // 14
-        ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);             // 15
-        void call_get_scroll_size(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
-        void call_scroll_mouse_down(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
-        void call_scroll_mouse_drag(int16_t x, int16_t y, uint8_t scroll_index);                          // 18
-        void call_scroll_mouse_over(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
-        void call_text_input(widget_index caller, char* buffer);                                          // 20
-        void call_viewport_rotate();                                                                      // 21
-        bool call_tooltip(int16_t widget_index);                                                          // 23
-        ui::cursor_id call_cursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
-        void call_on_move(int16_t xPos, int16_t yPos);                                                    // 25
-        void call_prepare_draw();                                                                         // 26
-        void call_draw(gfx::drawpixelinfo_t* dpi);                                                        // 27
-        void call_draw_scroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                           // 28
+        void callClose();                                                                                // 0
+        void callOnMouseUp(widget_index widgetIndex);                                                    // 1
+        ui::window* callOnResize();                                                                      // 2
+        void call_3(int8_t widget_index);                                                                // 3
+        void callOnMouseDown(int8_t widget_index);                                                       // 4
+        void callOnDropdown(widget_index widget_index, int16_t item_index);                              // 5
+        void callOnPeriodicUpdate();                                                                     // 6
+        void callUpdate();                                                                               // 7
+        void call_8();                                                                                   // 8
+        void call_9();                                                                                   // 9
+        void callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos);                           // 10
+        void callToolDown(int16_t widget_index, int16_t xPos, int16_t yPos);                             // 11
+        void call_12(const int16_t widget_index);                                                        // 12
+        void call_13(const int16_t widget_index);                                                        // 13
+        void callToolAbort(int16_t widget_index);                                                        // 14
+        ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);            // 15
+        void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);     // 16
+        void callScrollMouseDown(int16_t x, int16_t y, uint8_t scroll_index);                            // 17
+        void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scroll_index);                            // 18
+        void callScrollMouseOver(int16_t x, int16_t y, uint8_t scroll_index);                            // 19
+        void callTextInput(widget_index caller, char* buffer);                                           // 20
+        void callViewportRotate();                                                                       // 21
+        bool callTooltip(int16_t widget_index);                                                          // 23
+        ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
+        void callOnMove(int16_t xPos, int16_t yPos);                                                     // 25
+        void callPrepareDraw();                                                                          // 26
+        void callDraw(gfx::drawpixelinfo_t* dpi);                                                        // 27
+        void callDrawScroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                            // 28
     };
     static_assert(sizeof(window) == 0x88E);
 
-    map::map_pos viewport_coord_to_map_coord(int16_t x, int16_t y, int16_t z, int32_t rotation);
+    map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);
 #pragma pack(pop)
 }

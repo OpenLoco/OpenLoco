@@ -44,12 +44,12 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
     // 0x00509d08
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
-        make_widget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
-        make_widget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        make_widget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
-        make_widget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
+        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
+        makeWidget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
+        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -123,7 +123,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
             dropdown::add(index, string_ids::dropdown_company_performance, args);
 
-            if (is_player_company(company->id()))
+            if (isPlayerCompany(company->id()))
             {
                 highlightIndex = index;
             }
@@ -190,7 +190,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::player) | (1 << widx::company_value) | (1 << widx::performance_index);
         window->var_854 = 0;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
@@ -219,7 +219,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
         draw_rect_inset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
 
-        auto playerCompany = companymgr::get(companymgr::get_controlling_id());
+        auto playerCompany = companymgr::get(companymgr::getControllingId());
         auto competitor = objectmgr::get<competitor_object>(playerCompany->competitor_id);
         auto image = gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
         gfx::draw_image(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
@@ -240,7 +240,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
             }
 
             auto colour = colour::opaque(window->colours[0]);
-            if (input::is_hovering(WindowType::playerInfoToolbar, 0, widx::company_value))
+            if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
                 colour = colour::white;
             }
@@ -263,7 +263,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
             }
 
             auto colour = window->colours[0] & 0x7F;
-            if (input::is_hovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
+            if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
             {
                 colour = colour::white;
             }
@@ -313,7 +313,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     // 0x4395C7
     static void companyValueMouseUp()
     {
-        windows::CompanyWindow::openFinances(companymgr::get_controlling_id());
+        windows::CompanyWindow::openFinances(companymgr::getControllingId());
     }
 
     // 0x4395D6
@@ -352,7 +352,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
 
     static void companyValueTooltip(FormatArguments& args)
     {
-        auto playerCompany = companymgr::get(companymgr::get_controlling_id());
+        auto playerCompany = companymgr::get(companymgr::getControllingId());
         args.push(playerCompany->companyValueHistory[0]);
         args.push(playerCompany->vehicleProfit);
     }
@@ -360,7 +360,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
     // 0x439643
     static void performanceIndexTooltip(FormatArguments& args)
     {
-        auto playerCompany = companymgr::get(companymgr::get_controlling_id());
+        auto playerCompany = companymgr::get(companymgr::getControllingId());
 
         formatPerformanceIndex(playerCompany->performance_index, args);
     }

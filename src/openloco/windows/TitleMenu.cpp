@@ -110,13 +110,13 @@ namespace openloco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game),
-        make_widget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game),
-        make_widget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial),
-        make_widget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor),
-        make_widget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip),
-        make_widget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip),
-        widget_end(),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -163,7 +163,7 @@ namespace openloco::ui::windows
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::scenario_list_btn) | (1 << widx::load_game_btn) | (1 << widx::tutorial_btn) | (1 << widx::scenario_editor_btn) | (1 << widx::chat_btn) | (1 << widx::multiplayer_toggle_btn);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         window->colours[0] = colour::translucent(colour::saturated_green);
         window->colours[1] = colour::translucent(colour::saturated_green);
@@ -218,7 +218,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_list_btn))
+            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::scenario_list_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -233,7 +233,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::load_game_btn))
+            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::load_game_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -248,7 +248,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_spin_0;
-            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::tutorial_btn))
+            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::tutorial_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
@@ -265,7 +265,7 @@ namespace openloco::ui::windows
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
             uint32_t image_id = image_ids::title_menu_globe_construct_24;
-            if (input::is_hovering(WindowType::titleMenu) && (input::get_hovered_widget_index() == widx::scenario_editor_btn))
+            if (input::isHovering(WindowType::titleMenu) && (input::getHoveredWidgetIndex() == widx::scenario_editor_btn))
             {
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
@@ -299,7 +299,7 @@ namespace openloco::ui::windows
     // 0x00439094
     static void onMouseUp(ui::window* window, widget_index widgetIndex)
     {
-        if (intro::is_active())
+        if (intro::isActive())
         {
             return;
         }
@@ -375,8 +375,8 @@ namespace openloco::ui::windows
     }
 
     static widget_t _editorWidgets[] = {
-        make_widget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
+        widgetEnd(),
     };
 
     // 0x0043CB9F
@@ -484,13 +484,13 @@ namespace openloco::ui::windows
     {
         window->var_846++;
 
-        if (intro::is_active())
+        if (intro::isActive())
         {
             window->invalidate();
             return;
         }
 
-        if (!multiplayer::has_flag(multiplayer::flags::flag_8) && !multiplayer::has_flag(multiplayer::flags::flag_9))
+        if (!multiplayer::hasFlag(multiplayer::flags::flag_8) && !multiplayer::hasFlag(multiplayer::flags::flag_9))
         {
             window->invalidate();
             return;

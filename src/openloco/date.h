@@ -26,7 +26,7 @@ namespace openloco
         month_id month;
         int32_t year = 0;
 
-        // 0x0112C810 originally used as a return argument in calc_date
+        // 0x0112C810 originally used as a return argument in calcDate
         int32_t day_of_olympiad = 0;
 
         date() = default;
@@ -38,18 +38,18 @@ namespace openloco
         }
     };
 
-    uint32_t current_day();
-    month_id current_month();
-    uint16_t current_year();
-    void set_current_year(const int16_t year);
+    uint32_t getCurrentDay();
+    month_id getCurrentMonth();
+    uint16_t getCurrentYear();
+    void setCurrentYear(const int16_t year);
 
-    date current_date();
-    void set_date(const date& date);
+    date getCurrentDate();
+    void setDate(const date& date);
 
     /**
      * Updates the current day counter.
      * @returns true if the counter wraps indicating a new day.
      */
-    bool update_day_counter();
-    date calc_date(uint32_t totalDays);
+    bool updateDayCounter();
+    date calcDate(uint32_t totalDays);
 }

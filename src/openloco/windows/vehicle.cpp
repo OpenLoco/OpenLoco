@@ -60,7 +60,7 @@ namespace openloco::ui::vehicle
         static void onUpdate(window* w)
         {
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 4);
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 10);
@@ -68,9 +68,9 @@ namespace openloco::ui::vehicle
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 14);
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 15);
 
-            if (w->is_disabled(13))
+            if (w->isDisabled(13))
             {
-                input::cancel_tool(WindowType::vehicle, w->number);
+                input::toolCancel(WindowType::vehicle, w->number);
                 return;
             }
 
@@ -84,10 +84,10 @@ namespace openloco::ui::vehicle
             if (!WindowManager::isInFront(w))
                 return;
 
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
-            if (!input::is_tool_active(WindowType::vehicle, w->number))
+            if (!input::isToolActive(WindowType::vehicle, w->number))
             {
                 sub_4B28E2(w, 13);
             }
@@ -111,18 +111,18 @@ namespace openloco::ui::vehicle
             }
 
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 5);
 
-            if (_1136156 == -1 && w->is_activated(11))
+            if (_1136156 == -1 && w->isActivated(11))
             {
                 WindowManager::invalidateWidget(WindowType::vehicle, w->number, 11);
             }
 
-            if (w->is_disabled(10))
+            if (w->isDisabled(10))
             {
-                input::cancel_tool(WindowType::vehicle, w->number);
+                input::toolCancel(WindowType::vehicle, w->number);
                 return;
             }
 
@@ -133,10 +133,10 @@ namespace openloco::ui::vehicle
             if (!WindowManager::isInFrontAlt(w))
                 return;
 
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
-            if (!input::is_tool_active(WindowType::vehicle, w->number))
+            if (!input::isToolActive(WindowType::vehicle, w->number))
             {
                 sub_4B28E2(w, 10);
             }
@@ -150,18 +150,18 @@ namespace openloco::ui::vehicle
         static void onUpdate(window* w)
         {
             w->frame_no += 1;
-            w->call_prepare_draw();
+            w->callPrepareDraw();
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 8);
 
             auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
-            if (vehicle->owner != companymgr::get_controlling_id())
+            if (vehicle->owner != companymgr::getControllingId())
                 return;
 
             if (!WindowManager::isInFront(w))
                 return;
 
-            if (input::is_tool_active(WindowType::vehicle, w->number))
+            if (input::isToolActive(WindowType::vehicle, w->number))
                 return;
 
             if (input::toolSet(w, 9 /* tool widget*/, 12 /* tool idx? */))

@@ -58,6 +58,6 @@ namespace openloco::environment
         language_files,
     };
 
-    fs::path get_path(path_id id);
-    void resolve_paths();
+    fs::path getPath(path_id id);
+    void resolvePaths();
 }

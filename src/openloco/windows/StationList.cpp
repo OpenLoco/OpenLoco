@@ -47,22 +47,22 @@ namespace openloco::ui::windows::station_list
     };
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 600, 197 }, widget_type::frame, 0),
-        make_widget({ 1, 1 }, { 598, 13 }, widget_type::caption_24, 0, string_ids::stringid_all_stations),
-        make_widget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
-        make_widget({ 0, 41 }, { 600, 155 }, widget_type::panel, 1),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_all_stations),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_rail_stations),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_road_stations),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_airports),
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_ship_ports),
-        make_widget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, string_ids::null, string_ids::tooltip_select_company),
-        make_widget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_name),
-        make_widget({ 204, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_station_status),
-        make_widget({ 404, 43 }, { 90, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_total_units_waiting),
-        make_widget({ 494, 43 }, { 120, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_cargo_accepted),
-        make_widget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, scrollbars::vertical),
-        widget_end(),
+        makeWidget({ 0, 0 }, { 600, 197 }, widget_type::frame, 0),
+        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_24, 0, string_ids::stringid_all_stations),
+        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 600, 155 }, widget_type::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_all_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_rail_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_road_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_airports),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_ship_ports),
+        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, string_ids::null, string_ids::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_name),
+        makeWidget({ 204, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_station_status),
+        makeWidget({ 404, 43 }, { 90, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_total_units_waiting),
+        makeWidget({ 494, 43 }, { 120, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_cargo_accepted),
+        makeWidget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, scrollbars::vertical),
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -182,7 +182,7 @@ namespace openloco::ui::windows::station_list
         ptr = &lhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if (lhs.cargo_stats[cargoId].is_accepted())
+            if (lhs.cargo_stats[cargoId].isAccepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -192,7 +192,7 @@ namespace openloco::ui::windows::station_list
         ptr = &rhsString[0];
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            if (rhs.cargo_stats[cargoId].is_accepted())
+            if (rhs.cargo_stats[cargoId].isAccepted())
             {
                 ptr = stringmgr::format_string(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
@@ -301,8 +301,8 @@ namespace openloco::ui::windows::station_list
         window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::toolCancel();
 
             // Still active?
             window = WindowManager::bringToFront(WindowType::stationList, companyId);
@@ -349,9 +349,9 @@ namespace openloco::ui::windows::station_list
         window->activated_widgets = 0;
         window->holdable_widgets = 0;
 
-        window->call_on_resize();
-        window->call_prepare_draw();
-        window->init_scroll_widgets();
+        window->callOnResize();
+        window->callPrepareDraw();
+        window->initScrollWidgets();
 
         return window;
     }
@@ -363,7 +363,7 @@ namespace openloco::ui::windows::station_list
 
         window* station_list = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
-        station_list->call_on_mouse_up(target);
+        station_list->callOnMouseUp(target);
 
         return station_list;
     }
@@ -457,7 +457,7 @@ namespace openloco::ui::windows::station_list
 
         for (auto& tabInfo : tabInformationByType)
         {
-            if (window->is_disabled(tabInfo.widgetIndex))
+            if (window->isDisabled(tabInfo.widgetIndex))
                 continue;
 
             widget_t& tab = window->widgets[tabInfo.widgetIndex];
@@ -548,7 +548,7 @@ namespace openloco::ui::windows::station_list
             {
                 auto& stats = station->cargo_stats[cargoId];
 
-                if (!stats.is_accepted())
+                if (!stats.isAccepted())
                     continue;
 
                 if (*buffer != '\0')
@@ -568,7 +568,7 @@ namespace openloco::ui::windows::station_list
     static void drawTabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto skin = objectmgr::get<interface_skin_object>();
-        auto companyColour = companymgr::get_company_colour(window->number);
+        auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
         {
@@ -632,9 +632,9 @@ namespace openloco::ui::windows::station_list
         window->var_83C = 0;
         window->row_hover = -1;
 
-        window->call_on_resize();
-        window->call_prepare_draw();
-        window->init_scroll_widgets();
+        window->callOnResize();
+        window->callPrepareDraw();
+        window->initScrollWidgets();
         window->invalidate();
     }
 
@@ -660,8 +660,8 @@ namespace openloco::ui::windows::station_list
             case tab_airports:
             case tab_ship_ports:
             {
-                if (input::is_tool_active(window->type, window->number))
-                    input::cancel_tool();
+                if (input::isToolActive(window->type, window->number))
+                    input::toolCancel();
 
                 window->current_tab = widgetIndex - widx::tab_all_stations;
                 window->frame_no = 0;
@@ -673,9 +673,9 @@ namespace openloco::ui::windows::station_list
 
                 refreshStationList(window);
 
-                window->call_on_resize();
-                window->call_prepare_draw();
-                window->init_scroll_widgets();
+                window->callOnResize();
+                window->callPrepareDraw();
+                window->initScrollWidgets();
                 window->moveInsideScreenEdges();
                 break;
             }
@@ -737,7 +737,7 @@ namespace openloco::ui::windows::station_list
     {
         window->frame_no++;
 
-        window->call_prepare_draw();
+        window->callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::stationList, window->number, window->current_tab + 4);
 
         // Add three stations every tick.

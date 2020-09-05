@@ -94,14 +94,14 @@ namespace openloco::ui
     static SDL_Palette* palette;
     static std::vector<SDL_Cursor*> _cursors;
 
-    static void set_window_icon();
+    static void setWindowIcon();
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
-    static int32_t convert_sdl_keycode_to_windows(int32_t keyCode);
+    static int32_t convertSdlKeycodeToWindows(int32_t keyCode);
     static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    static void toggle_fullscreen_desktop();
+    static void toggleFullscreenDesktop();
 #endif
 
 #ifdef _WIN32
@@ -121,14 +121,14 @@ namespace openloco::ui
         return screen_info->height;
     }
 
-    bool dirty_blocks_initialised()
+    bool dirtyBlocksInitialised()
     {
         return screen_info->dirty_blocks_initialised != 0;
     }
 
-    void update_palette(const palette_entry_t* entries, int32_t index, int32_t count);
+    void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count);
 
-    static sdl_window_desc get_window_desc(const config::display_config& cfg)
+    static sdl_window_desc getWindowDesc(const config::display_config& cfg)
     {
         sdl_window_desc desc;
         desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
@@ -155,7 +155,7 @@ namespace openloco::ui
     }
 
     // 0x00405409
-    void create_window(const config::display_config& cfg)
+    void createWindow(const config::display_config& cfg)
     {
 #ifdef _LOCO_WIN32_
         _hwnd = CreateWindowExA(
@@ -178,7 +178,7 @@ namespace openloco::ui
         }
 
         // Create the window
-        auto desc = get_window_desc(cfg);
+        auto desc = getWindowDesc(cfg);
         window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (window == nullptr)
         {
@@ -196,17 +196,17 @@ namespace openloco::ui
         _hwnd = wmInfo.info.win.window;
 #endif
 
-        set_window_icon();
+        setWindowIcon();
 
         // Create a palette for the window
         palette = SDL_AllocPalette(256);
-        set_palette_callback = update_palette;
+        set_palette_callback = updatePalette;
 
         update(desc.width, desc.height);
 #endif
     }
 
-    static void set_window_icon()
+    static void setWindowIcon()
     {
 #ifdef _WIN32
         auto win32module = GetModuleHandleA("openloco.dll");
@@ -235,7 +235,7 @@ namespace openloco::ui
     }
 
     // 0x00452001
-    void initialise_cursors()
+    void initialiseCursors()
     {
         _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
         _cursors.push_back(nullptr);
@@ -246,7 +246,7 @@ namespace openloco::ui
         _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE));
     }
 
-    void dispose_cursors()
+    void disposeCursors()
     {
         for (auto cursor : _cursors)
         {
@@ -257,7 +257,7 @@ namespace openloco::ui
 
     // 0x00407BA3
     // edx: cusor_id
-    void set_cursor(cursor_id id)
+    void setCursor(cursor_id id)
     {
         if (_cursors.size() > 0)
         {
@@ -279,43 +279,43 @@ namespace openloco::ui
     }
 
     // 0x00407FCD
-    void get_cursor_pos(int32_t& x, int32_t& y)
+    void getCursorPos(int32_t& x, int32_t& y)
     {
         SDL_GetMouseState(&x, &y);
 
-        auto scale = config::get_new().scale_factor;
+        auto scale = config::getNew().scale_factor;
         x /= scale;
         y /= scale;
     }
 
     // 0x00407FEE
-    void set_cursor_pos(int32_t x, int32_t y)
+    void setCursorPos(int32_t x, int32_t y)
     {
-        auto scale = config::get_new().scale_factor;
+        auto scale = config::getNew().scale_factor;
         x *= scale;
         y *= scale;
 
         SDL_WarpMouseInWindow(window, x, y);
     }
 
-    void hide_cursor()
+    void hideCursor()
     {
         SDL_ShowCursor(0);
     }
 
-    void show_cursor()
+    void showCursor()
     {
         SDL_ShowCursor(1);
     }
 
     // 0x0040447F
-    void initialise_input()
+    void initialiseInput()
     {
         call(0x0040447F);
     }
 
     // 0x004045C2
-    void dispose_input()
+    void disposeInput()
     {
         call(0x004045C2);
     }
@@ -331,7 +331,7 @@ namespace openloco::ui
     void update(int32_t width, int32_t height)
     {
         // Scale the width and height by configured scale factor
-        auto scale_factor = config::get_new().scale_factor;
+        auto scale_factor = config::getNew().scale_factor;
         width = (int32_t)(width / scale_factor);
         height = (int32_t)(height / scale_factor);
 
@@ -380,15 +380,15 @@ namespace openloco::ui
         screen_info->dirty_blocks_initialised = 1;
     }
 
-    static void position_changed(int32_t x, int32_t y)
+    static void positionChanged(int32_t x, int32_t y)
     {
         auto displayIndex = SDL_GetWindowDisplayIndex(window);
 
-        auto& cfg = config::get_new().display;
+        auto& cfg = config::getNew().display;
         if (cfg.index != displayIndex)
         {
             cfg.index = displayIndex;
-            config::write_new_config();
+            config::writeNewConfig();
         }
     }
 
@@ -402,9 +402,9 @@ namespace openloco::ui
         auto wf = SDL_GetWindowFlags(window);
         if (!(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
         {
-            auto& cfg = config::get_new().display;
+            auto& cfg = config::getNew().display;
             cfg.window_resolution = { width, height };
-            config::write_new_config();
+            config::writeNewConfig();
         }
 
         auto options_window = WindowManager::find(WindowType::options);
@@ -412,7 +412,7 @@ namespace openloco::ui
             options_window->moveToCentre();
     }
 
-    void trigger_resize()
+    void triggerResize()
     {
         int width, height;
         SDL_GetWindowSize(window, &width, &height);
@@ -445,7 +445,7 @@ namespace openloco::ui
                 SDL_UnlockSurface(surface);
             }
 
-            auto scale_factor = config::get_new().scale_factor;
+            auto scale_factor = config::getNew().scale_factor;
             if (scale_factor == 1 || scale_factor <= 0)
             {
                 if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
@@ -475,7 +475,7 @@ namespace openloco::ui
         }
     }
 
-    void update_palette(const palette_entry_t* entries, int32_t index, int32_t count)
+    void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count)
     {
         SDL_Color base[256];
         for (int i = 0; i < 256; i++)
@@ -489,7 +489,7 @@ namespace openloco::ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
-    static void enqueue_text(const char* text)
+    static void enqueueText(const char* text)
     {
         if (text != nullptr && text[0] != '\0')
         {
@@ -507,7 +507,7 @@ namespace openloco::ui
     }
 
     // 0x00406FBA
-    static void enqueue_key(uint32_t keycode)
+    static void enqueueKey(uint32_t keycode)
     {
         ((void (*)(uint32_t))(0x00406FBA))(keycode);
 
@@ -518,13 +518,13 @@ namespace openloco::ui
             case SDLK_DELETE:
             {
                 char c[] = { (char)keycode, '\0' };
-                enqueue_text(c);
+                enqueueText(c);
                 break;
             }
         }
     }
 
-    static int32_t convert_sdl_scancode_to_dinput(int32_t scancode)
+    static int32_t convertSdlScancodeToDirectInput(int32_t scancode)
     {
         switch (scancode)
         {
@@ -547,7 +547,7 @@ namespace openloco::ui
         }
     }
 
-    static int32_t convert_sdl_keycode_to_windows(int32_t keyCode)
+    static int32_t convertSdlKeycodeToWindows(int32_t keyCode)
     {
         switch (keyCode)
         {
@@ -612,7 +612,7 @@ namespace openloco::ui
     }
 
     // 0x0040477F
-    static void read_keyboard_state()
+    static void readKeyboardState()
     {
         addr<0x005251CC, uint8_t>() = 0;
         auto dstSize = _keyboard_state.size();
@@ -630,7 +630,7 @@ namespace openloco::ui
                 if (!isDown)
                     continue;
 
-                auto dinputCode = convert_sdl_scancode_to_dinput(scanCode);
+                auto dinputCode = convertSdlScancodeToDirectInput(scanCode);
                 if (dinputCode != 0)
                 {
                     dst[dinputCode] = 0x80;
@@ -641,7 +641,7 @@ namespace openloco::ui
     }
 
     // 0x0040726D
-    bool process_messages()
+    bool processMessages()
     {
 #ifdef _LOCO_WIN32_
         return ((bool (*)())0x0040726D)();
@@ -659,7 +659,7 @@ namespace openloco::ui
                     switch (e.window.event)
                     {
                         case SDL_WINDOWEVENT_MOVED:
-                            position_changed(e.window.data1, e.window.data2);
+                            positionChanged(e.window.data1, e.window.data2);
                             break;
                         case SDL_WINDOWEVENT_SIZE_CHANGED:
                             resize(e.window.data1, e.window.data2);
@@ -668,12 +668,12 @@ namespace openloco::ui
                     break;
                 case SDL_MOUSEMOTION:
                 {
-                    auto scale_factor = config::get_new().scale_factor;
+                    auto scale_factor = config::getNew().scale_factor;
                     auto x = (int32_t)(e.motion.x / scale_factor);
                     auto y = (int32_t)(e.motion.y / scale_factor);
                     auto xrel = (int32_t)(e.motion.xrel / scale_factor);
                     auto yrel = (int32_t)(e.motion.yrel / scale_factor);
-                    input::move_mouse(x, y, xrel, yrel);
+                    input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
                 case SDL_MOUSEWHEEL:
@@ -681,18 +681,18 @@ namespace openloco::ui
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    auto scale_factor = config::get_new().scale_factor;
+                    auto scale_factor = config::getNew().scale_factor;
                     addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
                     addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(1);
+                            input::enqueueMouseButton(1);
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(2);
+                            input::enqueueMouseButton(2);
                             addr<0x0113E0C0, int32_t>() = 1;
                             addr<0x005251C8, int32_t>() = 1;
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -702,18 +702,18 @@ namespace openloco::ui
                 }
                 case SDL_MOUSEBUTTONUP:
                 {
-                    auto scale_factor = config::get_new().scale_factor;
+                    auto scale_factor = config::getNew().scale_factor;
                     addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
                     addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueue_mouse_button(3);
+                            input::enqueueMouseButton(3);
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueue_mouse_button(4);
+                            input::enqueueMouseButton(4);
                             addr<0x0113E0C0, int32_t>() = 0;
                             addr<0x005251C8, int32_t>() = 0;
                             addr<0x01140845, uint8_t>() = 0;
@@ -731,7 +731,7 @@ namespace openloco::ui
                     {
                         if ((e.key.keysym.mod & KMOD_LALT) || (e.key.keysym.mod & KMOD_RALT))
                         {
-                            toggle_fullscreen_desktop();
+                            toggleFullscreenDesktop();
                         }
                     }
 #endif
@@ -742,33 +742,33 @@ namespace openloco::ui
                         keycode = SDLK_RETURN;
                     }
 
-                    auto locokey = convert_sdl_keycode_to_windows(keycode);
+                    auto locokey = convertSdlKeycodeToWindows(keycode);
                     if (locokey != 0)
                     {
-                        enqueue_key(locokey);
+                        enqueueKey(locokey);
                     }
                     break;
                 }
                 case SDL_KEYUP:
                     break;
                 case SDL_TEXTINPUT:
-                    enqueue_text(e.text.text);
+                    enqueueText(e.text.text);
                     break;
             }
         }
-        read_keyboard_state();
+        readKeyboardState();
         return true;
 #endif
     }
 
-    void show_message_box(const std::string& title, const std::string& message)
+    void showMessageBox(const std::string& title, const std::string& message)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
     static config::resolution_t getDisplayResolutionByMode(config::screen_mode mode)
     {
-        auto& config = config::get_new();
+        auto& config = config::getNew();
         if (mode == config::screen_mode::window)
         {
             if (config.display.window_resolution.isPositive())
@@ -827,7 +827,7 @@ namespace openloco::ui
         }
 
         // It appears we were successful in setting the screen mode, so let's up date the config.
-        auto& config = config::get_new();
+        auto& config = config::getNew();
         config.display.mode = mode;
 
         if (mode == config::screen_mode::window)
@@ -842,7 +842,7 @@ namespace openloco::ui
 
         openloco::config::write();
         gfx::invalidate_screen();
-        ui::trigger_resize();
+        ui::triggerResize();
 
         return true;
     }
@@ -894,7 +894,7 @@ namespace openloco::ui
 
         // Update config fullscreen resolution if not set
         auto& cfg = config::get();
-        auto& cfg_new = config::get_new();
+        auto& cfg_new = config::getNew();
         if (!(cfg_new.display.fullscreen_resolution.isPositive() && cfg.resolution_width > 0 && cfg.resolution_height > 0))
         {
             cfg.resolution_width = resolutions.back().width;
@@ -938,7 +938,7 @@ namespace openloco::ui
     }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    static void toggle_fullscreen_desktop()
+    static void toggleFullscreenDesktop()
     {
         auto flags = SDL_GetWindowFlags(window);
         if (flags & SDL_WINDOW_FULLSCREEN)
@@ -953,7 +953,7 @@ namespace openloco::ui
 #endif
 
     // 0x004C6EE6
-    static input::mouse_button game_get_next_input(uint32_t* x, int16_t* y)
+    static input::mouse_button gameGetNextInput(uint32_t* x, int16_t* y)
     {
         registers regs;
         call(0x004c6ee6, regs);
@@ -965,9 +965,9 @@ namespace openloco::ui
     }
 
     // 0x004CD422
-    static void process_mouse_tool(int16_t x, int16_t y)
+    static void processMouseTool(int16_t x, int16_t y)
     {
-        if (!input::has_flag(input::input_flags::tool_active))
+        if (!input::hasFlag(input::input_flags::tool_active))
         {
             return;
         }
@@ -975,18 +975,18 @@ namespace openloco::ui
         auto toolWindow = WindowManager::find(_toolWindowType, _toolWindowNumber);
         if (toolWindow != nullptr)
         {
-            toolWindow->call_tool_update(_toolWidgetIdx, x, y);
+            toolWindow->callToolUpdate(_toolWidgetIdx, x, y);
         }
         else
         {
-            input::cancel_tool();
+            input::toolCancel();
         }
     }
 
     // 0x004C96E7
     void handleInput()
     {
-        if (multiplayer::reset_flag(multiplayer::flags::flag_10))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
@@ -995,7 +995,7 @@ namespace openloco::ui
         *_525E28 &= ~(1 << 2);
         if (set)
         {
-            if (!is_title_mode() && !is_editor_mode())
+            if (!isTitleMode() && !isEditorMode())
             {
                 if (tutorial::state() == tutorial::tutorial_state::none)
                 {
@@ -1004,51 +1004,51 @@ namespace openloco::ui
             }
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_5))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_5))
         {
             game_commands::do_21(2, 1);
         }
 
-        if (!multiplayer::has_flag(multiplayer::flags::flag_0) && !multiplayer::has_flag(multiplayer::flags::flag_4))
+        if (!multiplayer::hasFlag(multiplayer::flags::flag_0) && !multiplayer::hasFlag(multiplayer::flags::flag_4))
         {
-            if (multiplayer::reset_flag(multiplayer::flags::flag_2))
+            if (multiplayer::resetFlag(multiplayer::flags::flag_2))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
-                game_commands::do_command(69, regs);
+                game_commands::doCommand(69, regs);
             }
 
-            if (multiplayer::reset_flag(multiplayer::flags::flag_3))
+            if (multiplayer::resetFlag(multiplayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
-                game_commands::do_command(70, regs);
+                game_commands::doCommand(70, regs);
             }
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_4))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_4))
         {
             registers regs;
             regs.bl = GameCommandFlag::apply;
-            game_commands::do_command(72, regs);
+            game_commands::doCommand(72, regs);
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_0))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_0))
         {
             WindowManager::closeConstructionWindows();
             call(0x004CF456);
         }
 
-        if (multiplayer::reset_flag(multiplayer::flags::flag_1))
+        if (multiplayer::resetFlag(multiplayer::flags::flag_1))
         {
             game_commands::do_21(0, 2);
         }
 
-        if (ui::dirty_blocks_initialised())
+        if (ui::dirtyBlocksInitialised())
         {
             WindowManager::callEvent8OnAllWindows();
 
@@ -1058,9 +1058,9 @@ namespace openloco::ui
             uint32_t x;
             int16_t y;
             input::mouse_button state;
-            while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+            while ((state = gameGetNextInput(&x, &y)) != input::mouse_button::released)
             {
-                if (is_title_mode() && intro::is_active() && state == input::mouse_button::left_pressed)
+                if (isTitleMode() && intro::isActive() && state == input::mouse_button::left_pressed)
                 {
                     if (intro::state() == intro::intro_state::state_9)
                     {
@@ -1072,21 +1072,21 @@ namespace openloco::ui
                         intro::state(intro::intro_state::state_8);
                     }
                 }
-                input::handle_mouse(x, y, state);
+                input::handleMouse(x, y, state);
             }
 
-            if (input::has_flag(input::input_flags::flag5))
+            if (input::hasFlag(input::input_flags::flag5))
             {
-                input::handle_mouse(x, y, state);
+                input::handleMouse(x, y, state);
             }
             else if (x != 0x80000000)
             {
                 x = std::clamp<int16_t>(x, 0, ui::width() - 1);
                 y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-                input::handle_mouse(x, y, state);
-                input::process_mouse_over(x, y);
-                process_mouse_tool(x, y);
+                input::handleMouse(x, y, state);
+                input::processMouseOver(x, y);
+                processMouseTool(x, y);
             }
         }
 
@@ -1104,23 +1104,23 @@ namespace openloco::ui
         uint32_t x;
         int16_t y;
         input::mouse_button state;
-        while ((state = game_get_next_input(&x, &y)) != input::mouse_button::released)
+        while ((state = gameGetNextInput(&x, &y)) != input::mouse_button::released)
         {
-            input::handle_mouse(x, y, state);
+            input::handleMouse(x, y, state);
         }
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
-            input::handle_mouse(x, y, state);
+            input::handleMouse(x, y, state);
         }
         else if (x != 0x80000000)
         {
             x = std::clamp<int16_t>(x, 0, ui::width() - 1);
             y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-            input::handle_mouse(x, y, state);
-            input::process_mouse_over(x, y);
-            process_mouse_tool(x, y);
+            input::handleMouse(x, y, state);
+            input::processMouseOver(x, y);
+            processMouseTool(x, y);
         }
 
         WindowManager::callEvent9OnAllWindows();
@@ -1128,7 +1128,7 @@ namespace openloco::ui
 
     void setWindowScaling(float newScaleFactor)
     {
-        auto& config = config::get_new();
+        auto& config = config::getNew();
         newScaleFactor = std::clamp(newScaleFactor, ScaleFactor::min, ScaleFactor::max);
         if (config.scale_factor == newScaleFactor)
             return;
@@ -1137,12 +1137,12 @@ namespace openloco::ui
 
         openloco::config::write();
         gfx::invalidate_screen();
-        ui::trigger_resize();
+        ui::triggerResize();
     }
 
-    void adjust_window_scale(float adjust_by)
+    void adjustWindowScale(float adjust_by)
     {
-        auto& config = config::get_new();
+        auto& config = config::getNew();
         float newScaleFactor = std::clamp(config.scale_factor + adjust_by, ScaleFactor::min, ScaleFactor::max);
         if (config.scale_factor == newScaleFactor)
             return;

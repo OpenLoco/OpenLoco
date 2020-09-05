@@ -39,7 +39,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(common::widx::tab_station);
+            window->callOnMouseUp(common::widx::tab_station);
         }
         return window;
     }
@@ -58,7 +58,7 @@ namespace openloco::ui::windows::construction
 
         if (window != nullptr)
         {
-            window->call_on_mouse_up(construction::widx::rotate_90);
+            window->callOnMouseUp(construction::widx::rotate_90);
         }
 
         return window;
@@ -345,7 +345,7 @@ namespace openloco::ui::windows::construction
             if (_byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
             else
-                window->call_on_mouse_up(common::widx::tab_construction);
+                window->callOnMouseUp(common::widx::tab_construction);
         }
     }
 
@@ -374,7 +374,7 @@ namespace openloco::ui::windows::construction
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab
@@ -407,8 +407,8 @@ namespace openloco::ui::windows::construction
             _modCost = 0x80000000;
             _byte_1136076 = 0;
 
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_construction;
             self->frame_no = 0;
@@ -429,9 +429,9 @@ namespace openloco::ui::windows::construction
             self->width = self->widgets[widx::frame].right + 1;
             self->height = self->widgets[widx::frame].bottom + 1;
 
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
 
             tabInfo.tabReset(self);
@@ -457,7 +457,7 @@ namespace openloco::ui::windows::construction
             // Station Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_station].left + self->x + 1;
                     auto y = self->widgets[widx::tab_station].top + self->y + 1;
@@ -493,7 +493,7 @@ namespace openloco::ui::windows::construction
             // Overhead tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
@@ -549,7 +549,7 @@ namespace openloco::ui::windows::construction
                     else
                     {
                         widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
-                        if (!self->is_disabled(widx::tab_station))
+                        if (!self->isDisabled(widx::tab_station))
                         {
                             auto x = self->widgets[widx::tab_station].left + self->x + 1;
                             auto y = self->widgets[widx::tab_station].top + self->y + 1;
@@ -587,7 +587,7 @@ namespace openloco::ui::windows::construction
             // Signal Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_signal);
-                if (!self->is_disabled(widx::tab_signal))
+                if (!self->isDisabled(widx::tab_signal))
                 {
                     auto x = self->widgets[widx::tab_signal].left + self->x + 1;
                     auto y = self->widgets[widx::tab_signal].top + self->y + 1;
@@ -630,7 +630,7 @@ namespace openloco::ui::windows::construction
             // Overhead Tab
             {
                 widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
-                if (!self->is_disabled(widx::tab_station))
+                if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
                     auto y = self->widgets[widx::tab_overhead].top + self->y + 2;
@@ -673,7 +673,7 @@ namespace openloco::ui::windows::construction
 
             for (uint8_t i = widx::tab_construction; i <= widx::tab_overhead; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                 {
                     self->widgets[i].type = widget_type::none;
                     continue;
@@ -708,10 +708,10 @@ namespace openloco::ui::windows::construction
         void onUpdate(window* self, uint8_t flag)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::construction, self->number, self->current_tab + common::widx::tab_construction);
 
-            if (input::is_tool_active(WindowType::construction, self->number))
+            if (input::isToolActive(WindowType::construction, self->number))
                 return;
 
             if (!(_byte_522096 & flag))
@@ -735,7 +735,7 @@ namespace openloco::ui::windows::construction
             {
                 auto window = WindowManager::find(_toolWindowType, _toolWindowNumber);
                 if (window != nullptr)
-                    input::cancel_tool();
+                    input::toolCancel();
             }
         }
 
@@ -767,7 +767,7 @@ namespace openloco::ui::windows::construction
         void setDisabledWidgets(window* self)
         {
             auto disabledWidgets = 0;
-            if (is_editor_mode())
+            if (isEditorMode())
                 disabledWidgets |= (1ULL << common::widx::tab_station);
 
             if (_byte_1136063 & (1 << 7 | 1 << 6))
@@ -801,7 +801,7 @@ namespace openloco::ui::windows::construction
 
             setDisabledWidgets(window);
 
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             window->owner = _playerCompany;
 
             auto skin = objectmgr::get<interface_skin_object>();
@@ -841,7 +841,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D70C
         void refreshAirportList(uint8_t* stationList)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto airportCount = 0;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::airport); i++)
             {
@@ -863,7 +863,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D753
         void refreshDockList(uint8_t* stationList)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto dockCount = 0;
             for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::dock); i++)
             {
@@ -885,7 +885,7 @@ namespace openloco::ui::windows::construction
         // 0x0048D678, 0x0048D5E4
         void refreshStationList(uint8_t* stationList, uint8_t trackType, TransportMode transportMode)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto stationCount = 0;
 
             if (transportMode == TransportMode::road)
@@ -993,7 +993,7 @@ namespace openloco::ui::windows::construction
         // 0x0042C518, 0x0042C490
         void refreshBridgeList(uint8_t* bridgeList, uint8_t trackType, TransportMode transportMode)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto bridgeCount = 0;
 
             if (transportMode == TransportMode::road)
@@ -1086,7 +1086,7 @@ namespace openloco::ui::windows::construction
                 trackType &= ~(1 << 7);
             }
 
-            auto companyId = companymgr::updating_company_id();
+            auto companyId = companymgr::updatingCompanyId();
 
             modList[0] = 0xFF;
             modList[1] = 0xFF;
@@ -1184,7 +1184,7 @@ namespace openloco::ui::windows::construction
         // 0x00488B4D
         void refreshSignalList(uint8_t* signalList, uint8_t trackType)
         {
-            auto currentYear = current_year();
+            auto currentYear = getCurrentYear();
             auto trackObj = objectmgr::get<track_object>(trackType);
             auto signalCount = 0;
             auto var_0E = trackObj->var_0E;

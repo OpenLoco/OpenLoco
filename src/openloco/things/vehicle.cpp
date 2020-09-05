@@ -155,16 +155,16 @@ void vehicle_head::sub_4BA8D4()
     {
         if (car.front->var_5F & flags_5f::broken_down)
         {
-            if ((scenario_ticks() & 3) == 0)
+            if ((scenarioTicks() & 3) == 0)
             {
                 auto v2 = car.body; // body
                 smoke::create(loc16(v2->x, v2->y, v2->z + 4));
             }
         }
 
-        if ((car.front->var_5F & flags_5f::breakdown_pending) && !is_title_mode())
+        if ((car.front->var_5F & flags_5f::breakdown_pending) && !isTitleMode())
         {
-            auto newConfig = config::get_new();
+            auto newConfig = config::getNew();
             if (!newConfig.breakdowns_disabled)
             {
                 car.front->var_5F &= ~flags_5f::breakdown_pending;
@@ -173,7 +173,7 @@ void vehicle_head::sub_4BA8D4()
                 sub_4BAA76();
 
                 auto v2 = car.body;
-                auto soundId = (audio::sound_id)gprng().randNext(26, 26 + 5);
+                auto soundId = (audio::sound_id)gPrng().randNext(26, 26 + 5);
                 audio::playSound(soundId, loc16(v2->x, v2->y, v2->z + 22));
             }
         }
@@ -1036,7 +1036,7 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
     if (tickCalc && (soundCode == false))
     {
-        if (scenario_ticks() & 7)
+        if (scenarioTicks() & 7)
             return;
     }
     else
@@ -1192,7 +1192,7 @@ void openloco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
             var_05 = -var_05;
         }
 
-        if (scenario_ticks() & 3)
+        if (scenarioTicks() & 3)
             return;
 
         auto positionFactor = vehicleObject->sprites[0].bogey_position * var_05 / 256;
@@ -1217,7 +1217,7 @@ void openloco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
             var_05 = -var_05;
         }
 
-        if (scenario_ticks() & 3)
+        if (scenarioTicks() & 3)
             return;
 
         if (var_5E != 0)
@@ -1278,7 +1278,7 @@ void openloco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
         var_05 = -var_05;
     }
 
-    if (scenario_ticks() & 7)
+    if (scenarioTicks() & 7)
         return;
 
     var_05 += 64;
@@ -1357,7 +1357,7 @@ void openloco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
 
     var_05 += 64;
 
-    if (gprng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
+    if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
         return;
 
     loc16 loc = {
@@ -1417,7 +1417,7 @@ void openloco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
 
     var_05 += 64;
 
-    if (gprng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
+    if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
         return;
 
     loc16 loc = {
@@ -1499,7 +1499,7 @@ void openloco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
         }
     }
 
-    if ((scenario_ticks() % frequency) != 0)
+    if ((scenarioTicks() % frequency) != 0)
         return;
 
     auto positionFactor = vehicleObject->sprites[0].bogey_position;

@@ -41,7 +41,7 @@ namespace openloco::ui::windows::toolbar_top::common
         // Draw widgets.
         self->draw(dpi);
 
-        uint32_t company_colour = companymgr::get_player_company_colour();
+        uint32_t company_colour = companymgr::getPlayerCompanyColour();
 
         if (self->widgets[widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
         {
@@ -66,7 +66,7 @@ namespace openloco::ui::windows::toolbar_top::common
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t bgImage = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
 
-            if (input::is_dropdown_active(ui::WindowType::topToolbar, widx::road_menu))
+            if (input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
             {
                 y++;
                 bgImage++;
@@ -204,7 +204,7 @@ namespace openloco::ui::windows::toolbar_top::common
         if (i == 0)
             return;
 
-        auto company_colour = companymgr::get_player_company_colour();
+        auto company_colour = companymgr::getPlayerCompanyColour();
 
         // Add available objects to dropdown.
         uint16_t highlighted_item = 0;
@@ -257,16 +257,16 @@ namespace openloco::ui::windows::toolbar_top::common
 
         if (itemIndex == 0)
         {
-            window->viewport_zoom_in(false);
-            townmgr::update_labels();
-            stationmgr::update_labels();
+            window->viewportZoomIn(false);
+            townmgr::updateLabels();
+            stationmgr::updateLabels();
         }
         else if (itemIndex == 1)
         {
             zoom_ticks = 0;
-            window->viewport_zoom_out(false);
-            townmgr::update_labels();
-            stationmgr::update_labels();
+            window->viewportZoomOut(false);
+            townmgr::updateLabels();
+            stationmgr::updateLabels();
         }
         else if (itemIndex == 2)
         {
@@ -285,16 +285,16 @@ namespace openloco::ui::windows::toolbar_top::common
 
         if (itemIndex == 1 || mouseButtonUsed == input::mouse_button::right_pressed)
         {
-            window->viewport_rotate_left();
-            townmgr::update_labels();
-            stationmgr::update_labels();
+            window->viewportRotateLeft();
+            townmgr::updateLabels();
+            stationmgr::updateLabels();
             windows::map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
-            window->viewport_rotate_right();
-            townmgr::update_labels();
-            stationmgr::update_labels();
+            window->viewportRotateRight();
+            townmgr::updateLabels();
+            stationmgr::updateLabels();
             windows::map::centerOnViewPoint();
         }
     }
@@ -460,9 +460,9 @@ namespace openloco::ui::windows::toolbar_top::common
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
-            window->set_disabled_widgets_and_invalidate(widx::zoom_menu | widx::rotate_menu);
+            window->setDisabledWidgetsAndInvalidate(widx::zoom_menu | widx::rotate_menu);
         else
-            window->set_disabled_widgets_and_invalidate(0);
+            window->setDisabledWidgetsAndInvalidate(0);
     }
 
     void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)

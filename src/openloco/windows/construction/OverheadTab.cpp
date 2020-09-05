@@ -20,14 +20,14 @@ namespace openloco::ui::windows::construction::overhead
 
     widget_t widgets[] = {
         commonWidgets(138, 192, string_ids::stringid_2),
-        make_widget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        make_widget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        make_widget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        make_widget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        make_widget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
-        make_widget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_track_to_upgrade),
-        make_widget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_track_to_upgrade),
-        widget_end(),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+        makeWidget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+        makeWidget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+        makeWidget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+        makeWidget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
+        makeWidget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_track_to_upgrade),
+        makeWidget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_track_to_upgrade),
+        widgetEnd(),
     };
 
     window_event_list events;
@@ -93,7 +93,7 @@ namespace openloco::ui::windows::construction::overhead
 
             case widx::image:
             {
-                input::cancel_tool();
+                input::toolCancel();
                 input::toolSet(self, widgetIndex, 12);
                 break;
             }
@@ -293,7 +293,7 @@ namespace openloco::ui::windows::construction::overhead
 
     void tabReset(window* self)
     {
-        self->call_on_mouse_down(overhead::widx::image);
+        self->callOnMouseDown(overhead::widx::image);
     }
 
     void initEvents()

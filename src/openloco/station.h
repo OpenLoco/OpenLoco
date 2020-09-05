@@ -36,12 +36,12 @@ namespace openloco
             return origin == station_id::null;
         }
 
-        bool is_accepted() const
+        bool isAccepted() const
         {
             return flags & 1;
         }
 
-        void is_accepted(bool value)
+        void isAccepted(bool value)
         {
             flags = utility::setMask<uint8_t>(flags, 1, value);
         }
@@ -101,15 +101,15 @@ namespace openloco
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
         void getStatusString(const char* buffer);
-        bool update_cargo();
-        int32_t calculate_cargo_rating(const station_cargo_stats& cargo) const;
+        bool updateCargo();
+        int32_t calculateCargoRating(const station_cargo_stats& cargo) const;
         void invalidate();
-        void invalidate_window();
+        void invalidateWindow();
         void setCatchmentDisplay(uint8_t flags);
 
     private:
-        void update_cargo_acceptance();
-        void alert_cargo_acceptance_change(uint32_t oldCargoAcc, uint32_t newCargoAcc);
+        void updateCargoAcceptance();
+        void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
         void sub_4929DB();
     };
 #pragma pack(pop)

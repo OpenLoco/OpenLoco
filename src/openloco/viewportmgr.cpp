@@ -42,7 +42,7 @@ namespace openloco::ui::viewportmgr
             _viewports.end());
     }
 
-    static viewport* init_viewport(gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom)
+    static viewport* initViewport(gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom)
     {
         auto vp = _viewports.emplace_back(std::make_unique<viewport>()).get();
 
@@ -75,7 +75,7 @@ namespace openloco::ui::viewportmgr
         auto t = thingmgr::get<Thing>(dx);
 
         int16_t dest_x, dest_y;
-        viewport->centre_2d_coordinates(t->x, t->y, t->z, &dest_x, &dest_y);
+        viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);
         w->viewport_configurations[index].saved_view_x = dest_x;
         w->viewport_configurations[index].saved_view_y = dest_y;
         viewport->view_x = dest_x;
@@ -90,7 +90,7 @@ namespace openloco::ui::viewportmgr
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
 
         int16_t dest_x, dest_y;
-        viewport->centre_2d_coordinates(tile.x, tile.y, tile.z, &dest_x, &dest_y);
+        viewport->centre2dCoordinates(tile.x, tile.y, tile.z, &dest_x, &dest_y);
         w->viewport_configurations[index].saved_view_x = dest_x;
         w->viewport_configurations[index].saved_view_y = dest_y;
         viewport->view_x = dest_x;
@@ -144,7 +144,7 @@ namespace openloco::ui::viewportmgr
      */
     viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
     {
-        viewport* viewport = init_viewport(origin, size, zoom);
+        viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
             return nullptr;
@@ -173,7 +173,7 @@ namespace openloco::ui::viewportmgr
      */
     viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
     {
-        viewport* viewport = init_viewport(origin, size, zoom);
+        viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
             return nullptr;

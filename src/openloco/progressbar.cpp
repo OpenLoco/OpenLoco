@@ -17,7 +17,7 @@ namespace openloco::progressbar
 
     // 0x004CF621
     // eax: value
-    void set_progress(int32_t value)
+    void setProgress(int32_t value)
     {
         registers regs;
         regs.eax = value;

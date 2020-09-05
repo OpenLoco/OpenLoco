@@ -25,14 +25,14 @@ namespace openloco::companymgr
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
-    static void produce_companies();
+    static void produceCompanies();
 
-    company_id_t updating_company_id()
+    company_id_t updatingCompanyId()
     {
         return _updating_company_id;
     }
 
-    void updating_company_id(company_id_t id)
+    void updatingCompanyId(company_id_t id)
     {
         _updating_company_id = id;
     }
@@ -53,17 +53,17 @@ namespace openloco::companymgr
         return nullptr;
     }
 
-    company_id_t get_controlling_id()
+    company_id_t getControllingId()
     {
         return _player_company[0];
     }
 
-    uint8_t get_company_colour(company_id_t id)
+    uint8_t getCompanyColour(company_id_t id)
     {
         return _company_colours[id];
     }
 
-    uint8_t get_player_company_colour()
+    uint8_t getPlayerCompanyColour()
     {
         return _company_colours[_player_company[0]];
     }
@@ -71,21 +71,21 @@ namespace openloco::companymgr
     // 0x00430319
     void update()
     {
-        if (!is_editor_mode() && !config::get_new().companyAIDisabled)
+        if (!isEditorMode() && !config::getNew().companyAIDisabled)
         {
-            company_id_t id = scenario_ticks() & 0x0F;
+            company_id_t id = scenarioTicks() & 0x0F;
             auto company = get(id);
-            if (company != nullptr && !is_player_company(id) && !company->empty())
+            if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
-                updating_company_id(id);
-                company->ai_think();
+                updatingCompanyId(id);
+                company->aiThink();
             }
 
             _byte_525FCB++;
             if (_byte_525FCB >= 192)
             {
                 _byte_525FCB = 0;
-                produce_companies();
+                produceCompanies();
             }
         }
     }
@@ -96,7 +96,7 @@ namespace openloco::companymgr
     }
 
     // 0x004306D1
-    static void produce_companies()
+    static void produceCompanies()
     {
         if (_company_competition_delay == 0 && _company_max_competing != 0)
         {
@@ -110,7 +110,7 @@ namespace openloco::companymgr
                 }
             }
 
-            auto& prng = gprng();
+            auto& prng = gPrng();
 
             if (prng.randNext(16) == 0)
             {
@@ -159,7 +159,7 @@ namespace openloco::companymgr
     // 0x004383ED
     void updateOwnerStatus()
     {
-        if (openloco::is_title_mode() || openloco::is_editor_mode())
+        if (openloco::isTitleMode() || openloco::isEditorMode())
         {
             return;
         }

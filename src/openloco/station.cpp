@@ -178,11 +178,11 @@ namespace openloco
     // 0x0048B23E
     void station::update()
     {
-        update_cargo_acceptance();
+        updateCargoAcceptance();
     }
 
     // 0x00492640
-    void station::update_cargo_acceptance()
+    void station::updateCargoAcceptance()
     {
         CargoSearchState cargoSearchState;
         uint32_t currentAcceptedCargo = calcAcceptedCargo(cargoSearchState);
@@ -191,27 +191,27 @@ namespace openloco
         {
             auto& cs = cargo_stats[cargoId];
             cs.industry_id = cargoSearchState.getIndustry(cargoId);
-            if (cs.is_accepted())
+            if (cs.isAccepted())
             {
                 originallyAcceptedCargo |= (1 << cargoId);
             }
 
             bool isNowAccepted = (currentAcceptedCargo & (1 << cargoId)) != 0;
-            cs.is_accepted(isNowAccepted);
+            cs.isAccepted(isNowAccepted);
         }
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
         {
-            if (owner == companymgr::get_controlling_id())
+            if (owner == companymgr::getControllingId())
             {
-                alert_cargo_acceptance_change(originallyAcceptedCargo, currentAcceptedCargo);
+                alertCargoAcceptanceChange(originallyAcceptedCargo, currentAcceptedCargo);
             }
-            invalidate_window();
+            invalidateWindow();
         }
     }
 
     // 0x00492683
-    void station::alert_cargo_acceptance_change(uint32_t oldCargoAcc, uint32_t newCargoAcc)
+    void station::alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc)
     {
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
@@ -561,7 +561,7 @@ namespace openloco
     }
 
     // 0x00492793
-    bool station::update_cargo()
+    bool station::updateCargo()
     {
         bool atLeastOneGoodRating = false;
         bool quantityUpdated = false;
@@ -569,7 +569,7 @@ namespace openloco
         var_3B0 = std::min(var_3B0 + 1, 255);
         var_3B1 = std::min(var_3B1 + 1, 255);
 
-        auto& rng = gprng();
+        auto& rng = gPrng();
         for (uint32_t i = 0; i < max_cargo_stats; i++)
         {
             auto& cargo = cargo_stats[i];
@@ -581,7 +581,7 @@ namespace openloco
                 }
                 cargo.age = std::min(cargo.age + 1, 255);
 
-                auto targetRating = calculate_cargo_rating(cargo);
+                auto targetRating = calculateCargoRating(cargo);
                 // Limit to +/- 2 minimum change
                 auto ratingDelta = std::clamp(targetRating - cargo.rating, -2, 2);
                 cargo.rating += ratingDelta;
@@ -627,7 +627,7 @@ namespace openloco
     }
 
     // 0x004927F6
-    int32_t station::calculate_cargo_rating(const station_cargo_stats& cargo) const
+    int32_t station::calculateCargoRating(const station_cargo_stats& cargo) const
     {
         int32_t rating = 0;
 
@@ -672,7 +672,7 @@ namespace openloco
             }
         }
 
-        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !is_player_company(owner))
+        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !isPlayerCompany(owner))
         {
             rating = 120;
         }
@@ -712,7 +712,7 @@ namespace openloco
         ui::viewportmgr::invalidate(this);
     }
 
-    void station::invalidate_window()
+    void station::invalidateWindow()
     {
         WindowManager::invalidate(WindowType::station, id());
     }

@@ -42,15 +42,15 @@ namespace openloco::ui::windows::industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                           \
-    make_widget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        make_widget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        make_widget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        make_widget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industry),                     \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),            \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),            \
-        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_statistics)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industry),                      \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_production_graph),             \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_statistics)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -84,11 +84,11 @@ namespace openloco::ui::windows::industry
 
         static widget_t widgets[] = {
             commonWidgets(223, 137, string_ids::title_town),
-            make_widget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
-            make_widget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            make_widget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            make_widget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_industry),
-            widget_end(),
+            makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_industry),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
@@ -110,7 +110,7 @@ namespace openloco::ui::windows::industry
             self->widgets[widx::demolish_industry].right = self->width - 2;
             self->widgets[widx::demolish_industry].left = self->width - 25;
 
-            if (is_editor_mode())
+            if (isEditorMode())
             {
                 self->widgets[widx::demolish_industry].type = widget_type::wt_9;
             }
@@ -203,12 +203,12 @@ namespace openloco::ui::windows::industry
         // 0x00455F1A
         static void onResize(window* self)
         {
-            self->set_size(minWindowSize, maxWindowSize);
+            self->setSize(minWindowSize, maxWindowSize);
 
             if (self->viewports[0] != nullptr)
             {
                 uint16_t newWidth = self->width - 30;
-                if (!is_editor_mode())
+                if (!isEditorMode())
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;
@@ -233,7 +233,7 @@ namespace openloco::ui::windows::industry
             if (self->current_tab != common::widx::tab_industry - common::widx::tab_industry)
                 return;
 
-            self->call_prepare_draw();
+            self->callPrepareDraw();
 
             // Figure out the industry's position on the map.
             auto industry = industrymgr::get(self->number);
@@ -304,8 +304,8 @@ namespace openloco::ui::windows::industry
         auto window = WindowManager::bringToFront(WindowType::industry, industryId);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::industry, industryId);
         }
@@ -346,7 +346,7 @@ namespace openloco::ui::windows::industry
 
         common::setDisabledWidgets(window);
 
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
         industry::initViewport(window);
 
         return window;
@@ -373,7 +373,7 @@ namespace openloco::ui::windows::industry
         static void onResize(window* self)
         {
             {
-                self->set_size(minWindowSize, maxWindowSize);
+                self->setSize(minWindowSize, maxWindowSize);
             }
         }
 
@@ -396,7 +396,7 @@ namespace openloco::ui::windows::industry
 
         static widget_t widgets[] = {
             commonWidgets(222, 136, string_ids::title_industry_monthly_production),
-            widget_end(),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -413,7 +413,7 @@ namespace openloco::ui::windows::industry
         static void onResize(window* self)
         {
             {
-                self->set_size(minWindowSize, maxWindowSize);
+                self->setSize(minWindowSize, maxWindowSize);
             }
         }
 
@@ -434,7 +434,7 @@ namespace openloco::ui::windows::industry
 
         static widget_t widgets[] = {
             commonWidgets(300, 126, string_ids::title_statistics),
-            widget_end(),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -529,7 +529,7 @@ namespace openloco::ui::windows::industry
         static void onResize(window* self)
         {
             {
-                self->set_size(windowSize, windowSize);
+                self->setSize(windowSize, windowSize);
             }
         }
 
@@ -611,8 +611,8 @@ namespace openloco::ui::windows::industry
                 yTick += 1000;
             }
 
-            month_id month = current_month();
-            int16_t year = current_year();
+            month_id month = getCurrentMonth();
+            int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
             // This is either 0 or 1 depending on selected tab
             // used to select the correct history
@@ -699,7 +699,7 @@ namespace openloco::ui::windows::industry
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab.
@@ -746,7 +746,7 @@ namespace openloco::ui::windows::industry
         static void update(window* self)
         {
             self->frame_no++;
-            self->call_prepare_draw();
+            self->callPrepareDraw();
             WindowManager::invalidate(WindowType::industry, self->number);
         }
 
@@ -754,11 +754,11 @@ namespace openloco::ui::windows::industry
         static void renameIndustryPrompt(window* self, widget_index widgetIndex)
         {
             auto industry = industrymgr::get(self->number);
-            if (!is_editor_mode())
+            if (!isEditorMode())
             {
                 if ((industry->flags & industry_flags::flag_04) == 0)
                     return;
-                if (!is_player_company(industry->owner))
+                if (!isPlayerCompany(industry->owner))
                     return;
             }
 
@@ -778,7 +778,7 @@ namespace openloco::ui::windows::industry
 
             for (uint8_t i = widx::tab_industry; i <= widx::tab_transported; i++)
             {
-                if (self->is_disabled(i))
+                if (self->isDisabled(i))
                     continue;
 
                 self->widgets[i].left = xPos;
@@ -790,8 +790,8 @@ namespace openloco::ui::windows::industry
         // 0x00455CC7
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             ui::textinput::sub_4CE6C9(self->type, self->number);
 
@@ -818,10 +818,10 @@ namespace openloco::ui::windows::industry
 
             self->invalidate();
 
-            self->set_size(industry::windowSize);
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->setSize(industry::windowSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }

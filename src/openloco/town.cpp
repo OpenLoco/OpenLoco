@@ -23,7 +23,7 @@ namespace openloco
         call(0x0049742F, regs);
     }
 
-    void town::adjust_company_rating(company_id_t cid, int amount)
+    void town::adjustCompanyRating(company_id_t cid, int amount)
     {
         companies_with_rating |= (1 << cid);
         company_ratings[cid] = std::clamp(

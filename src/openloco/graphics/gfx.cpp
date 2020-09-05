@@ -74,7 +74,7 @@ namespace openloco::gfx
     // 0x0044733C
     void load_g1()
     {
-        auto g1Path = environment::get_path(environment::path_id::g1);
+        auto g1Path = environment::getPath(environment::path_id::g1);
         std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
         if (!stream)
         {
@@ -1030,18 +1030,18 @@ namespace openloco::gfx
         std::memcpy(backup1, byte_112CC04, 512);
         std::memcpy(backup2, byte_112CE04, 512);
 
-        if (ui::dirty_blocks_initialised())
+        if (ui::dirtyBlocksInitialised())
         {
             engine->drawDirtyBlocks();
         }
 
-        if (input::has_flag(input::input_flags::flag5))
+        if (input::hasFlag(input::input_flags::flag5))
         {
             call(0x004072EC); // NOP on _NO_LOCO_WIN32_
         }
         else
         {
-            ui::process_messages();
+            ui::processMessages();
         }
 
         if (addr<0x005252AC, uint32_t>() != 0)

@@ -57,7 +57,7 @@ namespace openloco::thingmgr
     // 0x004A8826
     void updateVehicles()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !is_editor_mode())
+        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
             for (auto v : VehicleList())
             {

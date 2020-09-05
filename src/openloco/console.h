@@ -3,9 +3,9 @@
 namespace openloco::console
 {
     void log(const char* format, ...);
-    void log_verbose(const char* format, ...);
+    void logVerbose(const char* format, ...);
     void error(const char* format, ...);
 
     void group(const char* format, ...);
-    void group_end();
+    void groupEnd();
 }

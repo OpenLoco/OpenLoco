@@ -24,12 +24,12 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
     };
 
     static widget_t widgets[] = {
-        make_widget({ 0, 0 }, { 280, 92 }, widget_type::panel, 0),
-        make_widget({ 1, 1 }, { 278, 13 }, widget_type::caption_22, 0),
-        make_widget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, string_ids::close_window_cross, string_ids::tooltip_close_window),
-        make_widget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_ok),
-        make_widget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_button_cancel),
-        widget_end()
+        makeWidget({ 0, 0 }, { 280, 92 }, widget_type::panel, 0),
+        makeWidget({ 1, 1 }, { 278, 13 }, widget_type::caption_22, 0),
+        makeWidget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, string_ids::close_window_cross, string_ids::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_button_cancel),
+        widgetEnd()
     };
 
     static window_event_list events;
@@ -84,7 +84,7 @@ namespace openloco::ui::windows::LandscapeGenerationConfirm
             window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, window_size, 0, &events);
             window->widgets = widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
-            window->init_scroll_widgets();
+            window->initScrollWidgets();
             window->colours[0] = colour::translucent(colour::salmon_pink);
             window->colours[1] = colour::translucent(colour::salmon_pink);
             window->flags |= window_flags::transparent;

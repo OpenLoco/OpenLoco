@@ -83,8 +83,8 @@ namespace openloco::title
     // 0x0046AD7D
     void start()
     {
-        companymgr::updating_company_id(companymgr::get_controlling_id());
-        if (is_paused())
+        companymgr::updatingCompanyId(companymgr::getControllingId());
+        if (isPaused())
         {
             togglePause(true);
         }
@@ -102,7 +102,7 @@ namespace openloco::title
         sub_47237D();
         sub_4748D4();
         sub_43C88C();
-        initialise_viewports();
+        initialiseViewports();
         sub_4284C8();
         gui::init();
         sub_444357();

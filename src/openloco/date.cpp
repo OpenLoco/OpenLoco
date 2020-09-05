@@ -14,41 +14,41 @@ namespace openloco
     static loco_global<int8_t, 0x00525E35> _current_day_of_month;
     static loco_global<int32_t, 0x0112C810> _current_day_in_olympiad;
 
-    static std::pair<month_id, uint8_t> get_month_day(int32_t dayOfYear);
+    static std::pair<month_id, uint8_t> getMonthDay(int32_t dayOfYear);
 
-    uint32_t current_day()
+    uint32_t getCurrentDay()
     {
         return _current_day;
     }
 
-    month_id current_month()
+    month_id getCurrentMonth()
     {
         return static_cast<month_id>(*_current_month);
     }
 
-    uint16_t current_year()
+    uint16_t getCurrentYear()
     {
         return _current_year;
     }
 
-    void set_current_year(const int16_t year)
+    void setCurrentYear(const int16_t year)
     {
         _current_year = year;
     }
 
-    date current_date()
+    date getCurrentDate()
     {
         return date(_current_year, (month_id)(*_current_month), _current_day_of_month + 1);
     }
 
-    void set_date(const date& date)
+    void setDate(const date& date)
     {
         _current_day_of_month = date.day - 1;
         _current_month = (int8_t)date.month;
         _current_year = date.year;
     }
 
-    bool update_day_counter()
+    bool updateDayCounter()
     {
         bool result = false;
         constexpr uint16_t increment = 682; // ~17s
@@ -70,7 +70,7 @@ namespace openloco
     //    eax: year
     //    ebx: month
     //    edx: day
-    date calc_date(uint32_t totalDays)
+    date calcDate(uint32_t totalDays)
     {
         constexpr auto base_year = 1800;
         constexpr auto days_in_year = 365;
@@ -100,14 +100,14 @@ namespace openloco
         _current_day_in_olympiad = day;
 
         auto year = base_year + years;
-        auto monthDay = get_month_day(day);
+        auto monthDay = getMonthDay(day);
 
         auto result = date(year, monthDay.first, monthDay.second);
         result.day_of_olympiad = day;
         return result;
     }
 
-    static std::pair<month_id, uint8_t> get_month_day(int32_t dayOfYear)
+    static std::pair<month_id, uint8_t> getMonthDay(int32_t dayOfYear)
     {
         static constexpr std::pair<month_id, uint8_t> month_table[] = {
             { month_id::january, 1 },

@@ -22,11 +22,11 @@ namespace openloco::ui::windows::construction::station
 {
     widget_t widgets[] = {
         commonWidgets(138, 190, string_ids::stringid_2),
-        make_widget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_station_type),
-        make_widget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_station_type),
-        make_widget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
-        make_widget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
-        widget_end(),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_station_type),
+        makeWidget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
+        makeWidget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_90),
+        widgetEnd(),
     };
 
     window_event_list events;
@@ -108,7 +108,7 @@ namespace openloco::ui::windows::construction::station
             }
             case widx::image:
             {
-                input::cancel_tool();
+                input::toolCancel();
                 input::toolSet(self, widgetIndex, 44);
                 break;
             }
@@ -393,7 +393,7 @@ namespace openloco::ui::windows::construction::station
 
     void tabReset(window* self)
     {
-        self->call_on_mouse_down(station::widx::image);
+        self->callOnMouseDown(station::widx::image);
     }
 
     void initEvents()

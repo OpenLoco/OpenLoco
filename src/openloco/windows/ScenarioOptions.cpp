@@ -65,14 +65,14 @@ namespace openloco::ui::windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                             \
-    make_widget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                         \
-        make_widget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                        \
-        make_widget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                            \
-        make_remap_widget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_scenario_challenge), \
-        make_remap_widget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_options),   \
-        make_remap_widget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_financial_options), \
-        make_remap_widget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_scenario_options)
+#define commonWidgets(frameHeight, windowCaptionId)                                                                           \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                        \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                           \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_scenario_challenge), \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_options),   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_financial_options), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_scenario_options)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -81,7 +81,7 @@ namespace openloco::ui::windows::ScenarioOptions
         static void update(window* window)
         {
             window->frame_no++;
-            window->call_prepare_draw();
+            window->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::scenarioOptions, window->number, window->current_tab + widx::tab_challenge);
         }
 
@@ -198,16 +198,16 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static widget_t widgets[] = {
             commonWidgets(197, string_ids::title_scenario_challenge),
-            make_widget({ 10, 52 }, { 346, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_stepper_widgets({ 10, 67 }, { 163, 12 }, widget_type::wt_17, 1),
-            make_widget({ 193, 67 }, { 163, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_the_top_company),
-            make_widget({ 10, 98 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_within_the_top_companies),
-            make_widget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::with_a_time_limit),
-            make_stepper_widgets({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::time_limit_years_value),
-            widget_end(),
+            makeWidget({ 10, 52 }, { 346, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeStepperWidgets({ 10, 67 }, { 163, 12 }, widget_type::wt_17, 1),
+            makeWidget({ 193, 67 }, { 163, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_the_top_company),
+            makeWidget({ 10, 98 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_within_the_top_companies),
+            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::with_a_time_limit),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::time_limit_years_value),
+            widgetEnd(),
         };
 
         static window_event_list events;
@@ -502,8 +502,8 @@ namespace openloco::ui::windows::ScenarioOptions
         auto window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         if (window != nullptr)
         {
-            if (input::is_tool_active(window->type, window->number))
-                input::cancel_tool();
+            if (input::isToolActive(window->type, window->number))
+                input::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         }
@@ -542,9 +542,9 @@ namespace openloco::ui::windows::ScenarioOptions
         window->event_handlers = &challenge::events;
         window->activated_widgets = 0;
 
-        window->call_on_resize();
-        window->call_prepare_draw();
-        window->init_scroll_widgets();
+        window->callOnResize();
+        window->callPrepareDraw();
+        window->initScrollWidgets();
 
         return window;
     }
@@ -581,27 +581,27 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static widget_t widgets[] = {
             commonWidgets(327, string_ids::title_company_options),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_competing_companies_value),
-            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::delay_before_competing_companies_start_months),
-            make_widget({ 246, 102 }, { 110, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 103 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 246, 117 }, { 110, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 118 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 246, 132 }, { 110, 12 }, widget_type::wt_18, 1),
-            make_widget({ 344, 133 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 15, 160 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
-            make_widget({ 15, 172 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
-            make_widget({ 15, 184 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
-            make_widget({ 15, 196 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
-            make_widget({ 15, 208 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
-            make_widget({ 15, 220 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
-            make_widget({ 15, 247 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
-            make_widget({ 15, 259 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
-            make_widget({ 15, 271 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
-            make_widget({ 15, 283 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
-            make_widget({ 15, 295 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
-            make_widget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
-            widget_end(),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_competing_companies_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::delay_before_competing_companies_start_months),
+            makeWidget({ 246, 102 }, { 110, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 103 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 246, 117 }, { 110, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 118 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 246, 132 }, { 110, 12 }, widget_type::wt_18, 1),
+            makeWidget({ 344, 133 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 15, 160 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
+            makeWidget({ 15, 172 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
+            makeWidget({ 15, 184 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
+            makeWidget({ 15, 196 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
+            makeWidget({ 15, 208 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
+            makeWidget({ 15, 220 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
+            makeWidget({ 15, 247 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
+            makeWidget({ 15, 259 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
+            makeWidget({ 15, 271 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
+            makeWidget({ 15, 283 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
+            makeWidget({ 15, 295 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
+            makeWidget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
@@ -854,10 +854,10 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static widget_t widgets[] = {
             commonWidgets(217, string_ids::title_financial_options),
-            make_stepper_widgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::starting_loan_value),
-            make_stepper_widgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_loan_size_value),
-            make_stepper_widgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::loan_interest_rate_value),
-            widget_end(),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::starting_loan_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_loan_size_value),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::loan_interest_rate_value),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
@@ -981,11 +981,11 @@ namespace openloco::ui::windows::ScenarioOptions
 
         static widget_t widgets[] = {
             commonWidgets(217, string_ids::title_scenario_options),
-            make_widget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            make_widget({ 196, 67 }, { 160, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            make_widget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            make_widget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            widget_end(),
+            makeWidget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            makeWidget({ 196, 67 }, { 160, 12 }, widget_type::wt_18, 1, string_ids::empty),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            widgetEnd(),
         };
 
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
@@ -1174,7 +1174,7 @@ namespace openloco::ui::windows::ScenarioOptions
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
-                self->init_scroll_widgets();
+                self->initScrollWidgets();
             }
 
             // Activate the current tab.
@@ -1195,8 +1195,8 @@ namespace openloco::ui::windows::ScenarioOptions
         // 0x0043F16B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::is_tool_active(self->type, self->number))
-                input::cancel_tool();
+            if (input::isToolActive(self->type, self->number))
+                input::toolCancel();
 
             textinput::sub_4CE6C9(self->type, self->number);
 
@@ -1223,10 +1223,10 @@ namespace openloco::ui::windows::ScenarioOptions
             else
                 newSize = &otherWindowSize;
 
-            self->set_size(*newSize);
-            self->call_on_resize();
-            self->call_prepare_draw();
-            self->init_scroll_widgets();
+            self->setSize(*newSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
         }

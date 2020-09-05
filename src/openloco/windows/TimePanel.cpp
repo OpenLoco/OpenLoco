@@ -43,15 +43,15 @@ namespace openloco::ui::TimePanel
     static void changeGameSpeed(window* w, uint8_t speed);
 
     static widget_t _widgets[] = {
-        make_widget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                           // 0,
-        make_widget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                           // 1,
-        make_widget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                          // 2,
-        make_widget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_daymonthyear_challenge),                              // 3,
-        make_remap_widget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
-        make_remap_widget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
-        make_remap_widget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
-        make_remap_widget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_extra_fast_forward, string_ids::tooltip_speed_extra_fast_forward), // 7,
-        widget_end(),
+        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                          // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                          // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                         // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_extra_fast_forward, string_ids::tooltip_speed_extra_fast_forward), // 7,
+        widgetEnd(),
     };
 
     static window_event_list _events;
@@ -101,7 +101,7 @@ namespace openloco::ui::TimePanel
         window->enabled_widgets = (1 << widx::map_chat_menu) | (1 << widx::date_btn) | (1 << widx::pause_btn) | (1 << widx::normal_speed_btn) | (1 << widx::fast_forward_btn) | (1 << widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->var_856 = 0;
-        window->init_scroll_widgets();
+        window->initScrollWidgets();
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
@@ -122,7 +122,7 @@ namespace openloco::ui::TimePanel
         _widgets[widx::fast_forward_btn].image = gfx::recolour(image_ids::speed_fast_forward);
         _widgets[widx::extra_fast_forward_btn].image = gfx::recolour(image_ids::speed_extra_fast_forward);
 
-        if (is_paused())
+        if (isPaused())
         {
             _widgets[widx::pause_btn].image = gfx::recolour(image_ids::speed_pause_active);
         }
@@ -184,10 +184,10 @@ namespace openloco::ui::TimePanel
 
         gfx::draw_rect_inset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
 
-        *(uint32_t*)&_common_format_args[0] = current_day();
+        *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = string_ids::date_monthyear;
 
-        if (is_paused() && (get_pause_flags() & (1 << 2)) == 0)
+        if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
             if (self->var_856 >= 30)
             {
@@ -196,7 +196,7 @@ namespace openloco::ui::TimePanel
         }
 
         colour_t c = colour::opaque(self->colours[0]);
-        if (input::is_hovering(WindowType::timeToolbar) && (input::get_hovered_widget_index() == widx::date_btn))
+        if (input::isHovering(WindowType::timeToolbar) && (input::getHoveredWidgetIndex() == widx::date_btn))
         {
             c = colour::white;
         }
@@ -331,9 +331,9 @@ namespace openloco::ui::TimePanel
     // 0x0043995C
     static void formatChallenge(FormatArguments& args)
     {
-        args.push(current_day());
+        args.push(getCurrentDay());
 
-        auto playerCompany = companymgr::get(companymgr::get_controlling_id());
+        auto playerCompany = companymgr::get(companymgr::getControllingId());
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {
@@ -400,7 +400,7 @@ namespace openloco::ui::TimePanel
     // 0x00439AB6 (speed: 2)
     static void changeGameSpeed(window* w, uint8_t speed)
     {
-        if (get_pause_flags() & 1)
+        if (getPauseFlags() & 1)
         {
             game_commands::do_20();
         }
@@ -430,7 +430,7 @@ namespace openloco::ui::TimePanel
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
 
-        if (is_paused())
+        if (isPaused())
         {
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
         }
