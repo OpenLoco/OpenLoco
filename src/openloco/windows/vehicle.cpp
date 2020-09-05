@@ -70,7 +70,7 @@ namespace openloco::ui::vehicle
 
             if (w->isDisabled(13))
             {
-                input::cancelTool(WindowType::vehicle, w->number);
+                input::toolCancel(WindowType::vehicle, w->number);
                 return;
             }
 
@@ -122,7 +122,7 @@ namespace openloco::ui::vehicle
 
             if (w->isDisabled(10))
             {
-                input::cancelTool(WindowType::vehicle, w->number);
+                input::toolCancel(WindowType::vehicle, w->number);
                 return;
             }
 

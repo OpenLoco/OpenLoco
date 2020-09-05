@@ -730,7 +730,7 @@ namespace openloco::ui::windows::town_list
         static void onClose(window* self)
         {
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
         }
 
         // 0x0049A3BE
@@ -1187,7 +1187,7 @@ namespace openloco::ui::windows::town_list
         static void onClose(window* self)
         {
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
         }
 
         // 0x0049AEA1
@@ -1474,7 +1474,7 @@ namespace openloco::ui::windows::town_list
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_town_list;
             self->frame_no = 0;

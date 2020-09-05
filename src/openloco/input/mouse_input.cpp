@@ -264,12 +264,12 @@ namespace openloco::input
             if (w->type == *_toolWindowType && w->number == _toolWindowNumber
                 && widgetIndex == _toolWidgetIndex)
             {
-                cancelTool();
+                toolCancel();
                 return true;
             }
             else
             {
-                cancelTool();
+                toolCancel();
             }
         }
 
@@ -283,7 +283,7 @@ namespace openloco::input
     }
 
     // 0x004CE3D6
-    void cancelTool()
+    void toolCancel()
     {
         if (input::hasFlag(input::input_flags::tool_active))
         {
@@ -308,12 +308,12 @@ namespace openloco::input
         }
     }
 
-    void cancelTool(ui::WindowType type, ui::window_number number)
+    void toolCancel(ui::WindowType type, ui::window_number number)
     {
         if (!isToolActive(type, number))
             return;
 
-        cancelTool();
+        toolCancel();
     }
 
     uint16_t getMapSelectionFlags()

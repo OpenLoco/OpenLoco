@@ -411,7 +411,7 @@ namespace openloco::ui::WindowManager
             0x004CE3D6,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                input::cancelTool();
+                input::toolCancel();
                 regs = backup;
 
                 return 0;
@@ -1378,7 +1378,7 @@ namespace openloco::ui::WindowManager
     {
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
-        input::cancelTool();
+        input::toolCancel();
         addr<0x00522096, uint8_t>() = 0;
     }
 

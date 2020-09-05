@@ -305,7 +305,7 @@ namespace openloco::ui::MessageWindow
         {
             if (input::isToolActive(window->type, window->number))
             {
-                input::cancelTool();
+                input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::messages);
             }
         }
@@ -613,7 +613,7 @@ namespace openloco::ui::MessageWindow
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_messages;
             self->frame_no = 0;

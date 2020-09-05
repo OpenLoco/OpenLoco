@@ -2278,7 +2278,7 @@ namespace openloco::ui::windows::terraform
         static void switchTab(window* self, widget_index widgetIndex)
         {
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_clear_area;
             self->frame_no = 0;

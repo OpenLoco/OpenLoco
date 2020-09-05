@@ -77,8 +77,8 @@ namespace openloco::input
 
     bool isToolActive(ui::WindowType, ui::window_number);
     bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool);
-    void cancelTool();
-    void cancelTool(ui::WindowType, ui::window_number);
+    void toolCancel();
+    void toolCancel(ui::WindowType, ui::window_number);
 
     bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();

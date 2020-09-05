@@ -408,7 +408,7 @@ namespace openloco::ui::windows::construction
             _byte_1136076 = 0;
 
             if (input::isToolActive(self->type, self->number))
-                input::cancelTool();
+                input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_construction;
             self->frame_no = 0;
@@ -735,7 +735,7 @@ namespace openloco::ui::windows::construction
             {
                 auto window = WindowManager::find(_toolWindowType, _toolWindowNumber);
                 if (window != nullptr)
-                    input::cancelTool();
+                    input::toolCancel();
             }
         }
 

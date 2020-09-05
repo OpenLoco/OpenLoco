@@ -1555,7 +1555,7 @@ namespace openloco::ui::windows::construction::construction
         if (_constructionHover == 0)
         {
             if (input::isToolActive(WindowType::construction, self->number))
-                input::cancelTool();
+                input::toolCancel();
         }
         sub_49FD66();
     }
@@ -1815,7 +1815,7 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancelTool();
+            input::toolCancel();
 
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
@@ -1920,7 +1920,7 @@ namespace openloco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::cancelTool();
+            input::toolCancel();
 
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)

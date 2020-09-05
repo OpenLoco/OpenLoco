@@ -2230,7 +2230,7 @@ namespace openloco::ui::options
     // 0x004BFC11
     static void tabOnMouseUp(window* w, widget_index wi)
     {
-        input::cancelTool(w->type, w->number);
+        input::toolCancel(w->type, w->number);
 
         textinput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - common::widx::tab_display;

@@ -979,7 +979,7 @@ namespace openloco::ui
         }
         else
         {
-            input::cancelTool();
+            input::toolCancel();
         }
     }
 
