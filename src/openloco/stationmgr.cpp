@@ -1,7 +1,7 @@
 #include "stationmgr.h"
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
-#include "openloco.h"
+#include "OpenLoco.h"
 #include "townmgr.h"
 #include "ui/WindowManager.h"
 #include "window.h"

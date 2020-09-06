@@ -2,7 +2,7 @@
 #include "../graphics/colours.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include <cstring>

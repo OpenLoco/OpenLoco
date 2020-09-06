@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../types.hpp"
 #include "../ui/Rect.h"
 #include "types.h"

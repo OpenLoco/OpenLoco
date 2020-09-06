@@ -4,7 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../Intro.h"
 #include "../localisation/string_ids.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 

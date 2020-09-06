@@ -7,7 +7,7 @@
 #include "../interop/interop.hpp"
 #include "../Intro.h"
 #include "../localisation/string_ids.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../tutorial.h"
 #include "../ui.h"

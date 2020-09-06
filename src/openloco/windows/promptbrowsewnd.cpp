@@ -7,7 +7,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../platform/platform.h"
 #include "../s5/s5.h"
 #include "../scenario.h"

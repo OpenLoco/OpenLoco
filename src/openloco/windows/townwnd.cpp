@@ -12,7 +12,7 @@
 #include "../map/tile.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"

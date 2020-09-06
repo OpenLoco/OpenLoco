@@ -1,6 +1,6 @@
 #include "../graphics/colours.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../window.h"

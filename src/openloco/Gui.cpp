@@ -4,7 +4,7 @@
 #include "map/tile.h"
 #include "objects/interface_skin_object.h"
 #include "objects/objectmgr.h"
-#include "openloco.h"
+#include "OpenLoco.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/WindowManager.h"

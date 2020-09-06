@@ -1,5 +1,5 @@
 #include "../interop/interop.hpp"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include <stdexcept>
 

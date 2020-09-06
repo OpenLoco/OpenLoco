@@ -36,7 +36,7 @@
 #include "localisation/string_ids.h"
 #include "MultiPlayer.h"
 #include "objects/objectmgr.h"
-#include "openloco.h"
+#include "OpenLoco.h"
 #include "platform/platform.h"
 #include "progressbar.h"
 #include "s5/s5.h"

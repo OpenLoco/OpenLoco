@@ -10,7 +10,7 @@
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include "../utility/numeric.hpp"
 #include "../widget.h"

@@ -1,4 +1,4 @@
-#include "openloco.h"
+#include "OpenLoco.h"
 
 #define NAME "OpenLoco"
 #define VERSION "20.07"

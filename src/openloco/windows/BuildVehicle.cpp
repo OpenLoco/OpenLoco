@@ -13,7 +13,7 @@
 #include "../objects/track_extra_object.h"
 #include "../objects/track_object.h"
 #include "../objects/vehicle_object.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"

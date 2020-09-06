@@ -6,7 +6,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/vehicle_object.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../utility/numeric.hpp"
 #include "../viewportmgr.h"
 #include "misc.h"

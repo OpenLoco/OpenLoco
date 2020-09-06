@@ -13,7 +13,7 @@
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../openloco.h"
+#include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"

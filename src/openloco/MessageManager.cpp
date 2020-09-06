@@ -1,6 +1,6 @@
 #include "MessageManager.h"
 #include "interop/interop.hpp"
-#include "openloco.h"
+#include "OpenLoco.h"
 
 using namespace openloco::interop;
 

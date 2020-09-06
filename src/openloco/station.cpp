@@ -11,7 +11,7 @@
 #include "objects/industry_object.h"
 #include "objects/objectmgr.h"
 #include "objects/road_station_object.h"
-#include "openloco.h"
+#include "OpenLoco.h"
 #include "ui/WindowManager.h"
 #include "viewportmgr.h"
 #include <algorithm>

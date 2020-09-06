@@ -1,7 +1,7 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
-#include "openloco.h"
+#include "OpenLoco.h"
 
 using namespace openloco::interop;
 

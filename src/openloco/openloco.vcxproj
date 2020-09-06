@@ -52,7 +52,7 @@
     <ClCompile Include="MultiPlayer.cpp" />
     <ClCompile Include="objects\industry_object.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />
-    <ClCompile Include="openloco.cpp" />
+    <ClCompile Include="OpenLoco.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="progressbar.cpp" />
@@ -206,7 +206,7 @@
     <ClInclude Include="objects\vehicle_object.h" />
     <ClInclude Include="objects\wall_object.h" />
     <ClInclude Include="objects\water_object.h" />
-    <ClInclude Include="openloco.h" />
+    <ClInclude Include="OpenLoco.h" />
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="progressbar.h" />
     <ClInclude Include="s5\s5.h" />

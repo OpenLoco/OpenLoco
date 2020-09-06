@@ -4,7 +4,7 @@
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "map/tile.h"
-#include "openloco.h"
+#include "OpenLoco.h"
 #include "things/thingmgr.h"
 #include "things/vehicle.h"
 #include "types.hpp"
