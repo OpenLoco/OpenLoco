@@ -11,24 +11,6 @@ using namespace openloco::map::tilemgr;
 
 namespace openloco::ui::windows::construction
 {
-#pragma pack(push, 1)
-    struct previewTrack
-    {
-        uint8_t index; // 0x00
-        int16_t x;     // 0x01
-        int16_t y;     // 0x03
-        int16_t z;     // 0x05
-        uint8_t var_07;
-        uint8_t var_08;
-        uint8_t flags; // 0x09
-    };
-#pragma pack(pop)
-
-    enum previewTrackFlags
-    {
-        diagonal = 1 << 7,
-    };
-
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
