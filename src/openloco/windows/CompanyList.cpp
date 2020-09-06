@@ -1,19 +1,19 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Date.h"
+#include "../Input.h"
+#include "../OpenLoco.h"
+#include "../Widget.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include "../utility/numeric.hpp"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 

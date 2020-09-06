@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../Company.h"
+#include "../Viewport.hpp"
+#include "../Window.h"
 #include "../graphics/gfx.h"
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"
-#include "../Viewport.hpp"
-#include "../Window.h"
 #include <cstddef>
 
 namespace openloco

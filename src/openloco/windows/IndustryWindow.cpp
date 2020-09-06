@@ -1,13 +1,15 @@
-#include "../audio/audio.h"
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands.h"
+#include "../IndustryManager.h"
+#include "../Input.h"
+#include "../ViewportManager.h"
+#include "../Widget.h"
+#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
 #include "../graphics/types.h"
-#include "../IndustryManager.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
@@ -16,8 +18,6 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
-#include "../ViewportManager.h"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::game_commands;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../audio/audio.h"
 #include "../Company.h"
+#include "../Window.h"
+#include "../audio/audio.h"
 #include "../objects/vehicle_object.h"
 #include "../ui/WindowType.h"
-#include "../Window.h"
 #include "thing.h"
 
 namespace openloco

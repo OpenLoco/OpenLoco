@@ -1,11 +1,11 @@
 #include "../GameCommands.h"
+#include "../Intro.h"
+#include "../OpenLoco.h"
+#include "../Ui.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
-#include "../Intro.h"
 #include "../localisation/string_ids.h"
-#include "../OpenLoco.h"
-#include "../Ui.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

@@ -3,8 +3,11 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands.h"
-#include "../graphics/image_ids.h"
 #include "../Input.h"
+#include "../OpenLoco.h"
+#include "../ViewportManager.h"
+#include "../Widget.h"
+#include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
@@ -13,13 +16,10 @@
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../ViewportManager.h"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 

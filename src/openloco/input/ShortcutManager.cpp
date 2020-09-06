@@ -1,11 +1,11 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands.h"
+#include "../StationManager.h"
+#include "../TownManager.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../s5/s5.h"
-#include "../StationManager.h"
-#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include <array>
 

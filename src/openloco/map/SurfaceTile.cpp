@@ -1,7 +1,7 @@
 #include "../IndustryManager.h"
+#include "../ViewportManager.h"
 #include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"
-#include "../ViewportManager.h"
 #include "tile.h"
 #include "tilemgr.h"
 

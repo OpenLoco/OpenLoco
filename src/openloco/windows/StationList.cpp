@@ -1,8 +1,12 @@
 #include "../CompanyManager.h"
+#include "../Input.h"
+#include "../OpenLoco.h"
+#include "../StationManager.h"
+#include "../TownManager.h"
+#include "../Widget.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
@@ -10,12 +14,8 @@
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../OpenLoco.h"
-#include "../StationManager.h"
-#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 

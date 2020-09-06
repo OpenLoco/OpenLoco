@@ -1,10 +1,13 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../GameCommands.h"
+#include "../Input.h"
+#include "../StationManager.h"
+#include "../ViewportManager.h"
+#include "../Widget.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
@@ -13,11 +16,8 @@
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
-#include "../ViewportManager.h"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;

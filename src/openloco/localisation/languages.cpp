@@ -1,6 +1,6 @@
 #include "languages.h"
-#include "../core/FileSystem.hpp"
 #include "../Environment.h"
+#include "../core/FileSystem.hpp"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "conversion.h"

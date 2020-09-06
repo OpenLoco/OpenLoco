@@ -1,8 +1,9 @@
-#include "../audio/audio.h"
 #include "../GameCommands.h"
+#include "../Input.h"
+#include "../Widget.h"
+#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../map/tile.h"
@@ -17,7 +18,6 @@
 #include "../ui/dropdown.h"
 #include "../ui/scrollview.h"
 #include "../utility/numeric.hpp"
-#include "../Widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;

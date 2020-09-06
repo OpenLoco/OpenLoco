@@ -1,11 +1,11 @@
+#include "../Input.h"
+#include "../Scenario.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
-#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../Scenario.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
