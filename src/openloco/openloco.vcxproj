@@ -59,7 +59,7 @@
     <ClCompile Include="s5\s5.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
-    <ClCompile Include="station.cpp" />
+    <ClCompile Include="Station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
     <ClCompile Include="things\CreateVehicle.cpp" />
     <ClCompile Include="things\misc.cpp" />
@@ -212,7 +212,7 @@
     <ClInclude Include="s5\s5.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
-    <ClInclude Include="station.h" />
+    <ClInclude Include="Station.h" />
     <ClInclude Include="stationmgr.h" />
     <ClInclude Include="things\misc.h" />
     <ClInclude Include="things\thing.h" />

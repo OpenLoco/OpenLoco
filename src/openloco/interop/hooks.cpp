@@ -18,7 +18,7 @@
 #include "../Input.h"
 #include "../map/tile.h"
 #include "../platform/platform.h"
-#include "../station.h"
+#include "../Station.h"
 #include "../things/vehicle.h"
 #include "../tutorial.h"
 #include "../ui.h"

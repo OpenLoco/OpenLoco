@@ -4,7 +4,7 @@
 #include "interop/interop.hpp"
 #include "map/tile.h"
 #include "map/tilemgr.h"
-#include "station.h"
+#include "Station.h"
 #include "things/thing.h"
 #include "things/thingmgr.h"
 #include "ui.h"

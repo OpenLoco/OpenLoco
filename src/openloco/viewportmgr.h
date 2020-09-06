@@ -1,7 +1,7 @@
 #pragma once
 
 #include "map/tile.h"
-#include "station.h"
+#include "Station.h"
 #include "things/thing.h"
 #include "types.hpp"
 #include "window.h"
