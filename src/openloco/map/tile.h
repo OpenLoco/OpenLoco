@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Types.hpp"
-#include "../viewport.hpp"
+#include "../Viewport.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <limits>

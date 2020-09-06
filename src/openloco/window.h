@@ -10,7 +10,7 @@
 #include "Types.hpp"
 #include "Ui.h"
 #include "ui/WindowType.h"
-#include "viewport.hpp"
+#include "Viewport.hpp"
 #include <algorithm>
 
 namespace openloco::ui

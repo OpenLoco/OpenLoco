@@ -4,7 +4,7 @@
 #include "../graphics/gfx.h"
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"
-#include "../viewport.hpp"
+#include "../Viewport.hpp"
 #include "../window.h"
 #include <cstddef>
 

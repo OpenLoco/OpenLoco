@@ -84,7 +84,7 @@
       <PreprocessorDefinitions Condition="'$(OPENLOCO_SHA1_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(OPENLOCO_SHA1_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="viewport.cpp" />
+    <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="viewportmgr.cpp" />
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="window.cpp" />
@@ -237,7 +237,7 @@
     <ClInclude Include="utility\stream.hpp" />
     <ClInclude Include="utility\string.hpp" />
     <ClInclude Include="utility\yaml.hpp" />
-    <ClInclude Include="viewport.hpp" />
+    <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="viewportmgr.h" />
     <ClInclude Include="widget.h" />
     <ClInclude Include="win32.h" />
