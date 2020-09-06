@@ -1,3 +1,4 @@
+#include "../../TrackData.h"
 #include "../../audio/audio.h"
 #include "../../companymgr.h"
 #include "../../graphics/image_ids.h"
@@ -8,7 +9,6 @@
 #include "../../objects/road_object.h"
 #include "../../objects/track_object.h"
 #include "../../ui/dropdown.h"
-#include "../../TrackData.h"
 #include "Construction.h"
 
 using namespace openloco::interop;
@@ -29,7 +29,7 @@ namespace openloco::ui::windows::construction::construction
 
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
-     namespace TrackPiece
+    namespace TrackPiece
     {
         enum
         {
@@ -293,7 +293,7 @@ namespace openloco::ui::windows::construction::construction
             roadId = road->id;
         }
 
-        auto roadPiece = openloco::map::TrackData::getRoadPiece(roadId);
+        const auto& roadPiece = openloco::map::TrackData::getRoadPiece(roadId);
         auto posId = 0;
         rotation &= 3;
 
@@ -487,7 +487,7 @@ namespace openloco::ui::windows::construction::construction
             trackId = track->id;
         }
 
-        auto trackPiece = openloco::map::TrackData::getTrackPiece(trackId);
+        const auto& trackPiece = openloco::map::TrackData::getTrackPiece(trackId);
         auto posId = 0;
         rotation &= 3;
 
@@ -1697,7 +1697,7 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                auto roadPiece = openloco::map::TrackData::getRoadPiece(_byte_1136065);
+                const auto& roadPiece = openloco::map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
 
                 for (const auto& roadPart : roadPiece)
@@ -1800,7 +1800,7 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                auto trackPiece = openloco::map::TrackData::getTrackPiece(_byte_1136065);
+                const auto& trackPiece = openloco::map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
 
                 for (const auto& trackPart : trackPiece)
@@ -2012,7 +2012,7 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                auto roadPiece = openloco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& roadPiece = openloco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
                 map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
@@ -2062,7 +2062,7 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                auto trackPiece = openloco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& trackPiece = openloco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
                 map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
