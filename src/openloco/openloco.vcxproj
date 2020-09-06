@@ -146,7 +146,7 @@
     <ClInclude Include="audio\vehicle_channel.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="CompanyManager.h" />
-    <ClInclude Include="config.convert.hpp" />
+    <ClInclude Include="ConfigConvert.hpp" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="core\FileSystem.hpp" />

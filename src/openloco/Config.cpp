@@ -6,7 +6,7 @@
 #include <windows.h>
 #endif
 
-#include "config.convert.hpp"
+#include "ConfigConvert.hpp"
 #include "Config.h"
 #include "core/FileSystem.hpp"
 #include "environment.h"
