@@ -2,7 +2,7 @@
 
 #include "localisation/stringmgr.h"
 #include "management/Expenditures.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <limits>

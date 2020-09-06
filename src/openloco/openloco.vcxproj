@@ -223,7 +223,7 @@
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
     <ClInclude Include="Tutorial.h" />
-    <ClInclude Include="types.hpp" />
+    <ClInclude Include="Types.hpp" />
     <ClInclude Include="ui.h" />
     <ClInclude Include="ui\dropdown.h" />
     <ClInclude Include="ui\Rect.h" />

@@ -7,7 +7,7 @@
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include "ui.h"
 #include "ui/WindowType.h"
 #include "viewport.hpp"

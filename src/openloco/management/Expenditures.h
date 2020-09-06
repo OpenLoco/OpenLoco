@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types.hpp"
+#include "../Types.hpp"
 
 enum ExpenditureType : uint8_t
 {

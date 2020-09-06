@@ -1,4 +1,4 @@
-#include "../types.hpp"
+#include "../Types.hpp"
 #include "Shortcut.h"
 #include <cstddef>
 

@@ -2,7 +2,7 @@
 
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
-#include "types.hpp"
+#include "Types.hpp"
 #include <algorithm>
 
 namespace openloco::ui

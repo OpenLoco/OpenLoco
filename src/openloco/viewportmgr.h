@@ -3,7 +3,7 @@
 #include "map/tile.h"
 #include "Station.h"
 #include "things/thing.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include "window.h"
 #include <array>
 

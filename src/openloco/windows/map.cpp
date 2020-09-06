@@ -15,7 +15,7 @@
 #include "../things/thing.h"
 #include "../things/thingmgr.h"
 #include "../TownManager.h"
-#include "../types.hpp"
+#include "../Types.hpp"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../widget.h"

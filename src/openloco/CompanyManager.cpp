@@ -7,7 +7,7 @@
 #include "OpenLoco.h"
 #include "things/thingmgr.h"
 #include "things/vehicle.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;

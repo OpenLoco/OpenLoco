@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../OpenLoco.h"
-#include "../types.hpp"
+#include "../Types.hpp"
 #include "../ui/Rect.h"
 #include "types.h"
 #include <cstdint>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Company.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include <array>
 #include <cstddef>
 

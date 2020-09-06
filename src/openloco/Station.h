@@ -3,7 +3,7 @@
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
 #include "Town.h"
-#include "types.hpp"
+#include "Types.hpp"
 #include "utility/numeric.hpp"
 #include <cstdint>
 #include <limits>
