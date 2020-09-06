@@ -1,5 +1,5 @@
 #include "audio.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../console.h"
 #include "../date.h"
 #include "../environment.h"

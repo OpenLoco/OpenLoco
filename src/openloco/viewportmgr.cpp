@@ -1,5 +1,5 @@
 #include "viewportmgr.h"
-#include "config.h"
+#include "Config.h"
 #include "console.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"

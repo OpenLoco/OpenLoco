@@ -1,5 +1,5 @@
 #include "window.h"
-#include "config.h"
+#include "Config.h"
 #include "console.h"
 #include "graphics/colours.h"
 #include "input.h"

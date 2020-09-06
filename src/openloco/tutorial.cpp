@@ -1,5 +1,5 @@
 #include "tutorial.h"
-#include "config.h"
+#include "Config.h"
 #include "environment.h"
 #include "gui.h"
 #include "interop/interop.hpp"

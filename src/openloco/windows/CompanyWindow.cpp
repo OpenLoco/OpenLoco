@@ -1,6 +1,6 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../date.h"
 #include "../game_commands.h"
 #include "../graphics/image_ids.h"

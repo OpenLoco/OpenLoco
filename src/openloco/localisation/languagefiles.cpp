@@ -1,5 +1,5 @@
 #include "languagefiles.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"

@@ -21,7 +21,7 @@
 #include "Title.h"
 #include "audio/audio.h"
 #include "CompanyManager.h"
-#include "config.h"
+#include "Config.h"
 #include "date.h"
 #include "environment.h"
 #include "graphics/colours.h"

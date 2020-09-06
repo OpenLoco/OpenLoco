@@ -1,5 +1,5 @@
 #include "CompanyManager.h"
-#include "config.h"
+#include "Config.h"
 #include "game_commands.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"

@@ -7,7 +7,7 @@
 #endif
 
 #include "config.convert.hpp"
-#include "config.h"
+#include "Config.h"
 #include "core/FileSystem.hpp"
 #include "environment.h"
 #include "interop/interop.hpp"

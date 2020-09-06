@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 #include "../audio/audio.h"
 #include "../CompanyManager.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../console.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"

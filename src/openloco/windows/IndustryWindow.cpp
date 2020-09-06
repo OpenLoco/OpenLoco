@@ -1,5 +1,5 @@
 #include "../audio/audio.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../date.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"

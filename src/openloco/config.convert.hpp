@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "Config.h"
 #include "utility/yaml.hpp"
 
 #define enum_def(x, y) \

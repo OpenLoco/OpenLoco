@@ -1,7 +1,7 @@
 #include "ToolbarTopCommon.h"
 #include "../audio/audio.h"
 #include "../CompanyManager.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"

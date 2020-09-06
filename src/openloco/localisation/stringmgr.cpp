@@ -1,5 +1,5 @@
 #include "stringmgr.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../date.h"
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"

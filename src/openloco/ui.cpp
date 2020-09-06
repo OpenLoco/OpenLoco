@@ -29,7 +29,7 @@
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 #endif
 
-#include "config.h"
+#include "Config.h"
 #include "console.h"
 #include "game_commands.h"
 #include "graphics/gfx.h"

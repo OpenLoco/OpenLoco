@@ -1,5 +1,5 @@
 #include "../../audio/audio.h"
-#include "../../config.h"
+#include "../../Config.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
 #include "../../message.h"

@@ -1,5 +1,5 @@
 #include "thing.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"

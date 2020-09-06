@@ -1,6 +1,6 @@
 #include "vehicle.h"
 #include "../audio/audio.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../map/tilemgr.h"
