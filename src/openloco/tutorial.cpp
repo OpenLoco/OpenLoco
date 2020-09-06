@@ -1,6 +1,6 @@
 #include "tutorial.h"
 #include "Config.h"
-#include "environment.h"
+#include "Environment.h"
 #include "gui.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"

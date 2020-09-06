@@ -25,7 +25,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="drawing\SoftwareDrawingEngine.cpp" />
-    <ClCompile Include="environment.cpp" />
+    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="graphics\colour.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
@@ -153,7 +153,7 @@
     <ClInclude Include="core\Optional.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="drawing\SoftwareDrawingEngine.h" />
-    <ClInclude Include="environment.h" />
+    <ClInclude Include="Environment.h" />
     <ClInclude Include="game_commands.h" />
     <ClInclude Include="graphics\colours.h" />
     <ClInclude Include="graphics\gfx.h" />

@@ -1,7 +1,7 @@
 #include "gfx.h"
 #include "../Console.h"
 #include "../drawing/SoftwareDrawingEngine.h"
-#include "../environment.h"
+#include "../Environment.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/languagefiles.h"

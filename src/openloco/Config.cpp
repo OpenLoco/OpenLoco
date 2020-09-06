@@ -9,7 +9,7 @@
 #include "ConfigConvert.hpp"
 #include "Config.h"
 #include "core/FileSystem.hpp"
-#include "environment.h"
+#include "Environment.h"
 #include "interop/interop.hpp"
 #include "utility/yaml.hpp"
 

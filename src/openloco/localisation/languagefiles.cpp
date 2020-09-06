@@ -1,7 +1,7 @@
 #include "languagefiles.h"
 #include "../Config.h"
 #include "../Console.h"
-#include "../environment.h"
+#include "../Environment.h"
 #include "../interop/interop.hpp"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"

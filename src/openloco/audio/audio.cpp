@@ -2,7 +2,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../Date.h"
-#include "../environment.h"
+#include "../Environment.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"

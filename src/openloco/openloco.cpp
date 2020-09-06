@@ -23,7 +23,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
-#include "environment.h"
+#include "Environment.h"
 #include "graphics/colours.h"
 #include "graphics/gfx.h"
 #include "gui.h"

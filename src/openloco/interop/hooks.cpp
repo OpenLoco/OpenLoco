@@ -10,7 +10,7 @@
 #include "../audio/audio.h"
 #include "../Console.h"
 #include "../core/FileSystem.hpp"
-#include "../environment.h"
+#include "../Environment.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
