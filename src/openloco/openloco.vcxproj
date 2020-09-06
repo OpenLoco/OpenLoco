@@ -78,7 +78,7 @@
     <ClCompile Include="ui\WindowManager.cpp" />
     <ClCompile Include="utility\numeric.cpp" />
     <ClCompile Include="utility\string.cpp" />
-    <ClCompile Include="version.cpp">
+    <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(OPENLOCO_SHA1_SHORT)'!=''">OPENLOCO_COMMIT_SHA1_SHORT="$(OPENLOCO_SHA1_SHORT)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
