@@ -431,8 +431,9 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_plant_trees = 683;
     constexpr string_id menu_build_walls = 684;
 
+    constexpr string_id title_vehicle_details = 685;
     constexpr string_id title_vehicle_cargo = 686;
-
+    constexpr string_id title_vehicle_route = 687;
     constexpr string_id company_details_trains_count = 689;
     constexpr string_id company_details_buses_count = 690;
     constexpr string_id company_details_trucks_count = 691;
@@ -943,7 +944,8 @@ namespace OpenLoco::StringIds
     constexpr string_id message_off = 1513;
     constexpr string_id message_ticker = 1514;
     constexpr string_id message_window = 1515;
-
+    constexpr string_id vehicle_monthly_running_cost = 1516;
+    constexpr string_id vehicle_monthly_profit = 1517;
     constexpr string_id forbid_trains = 1518;
     constexpr string_id forbid_buses = 1519;
     constexpr string_id forbid_trucks = 1520;
@@ -1232,7 +1234,10 @@ namespace OpenLoco::StringIds
     constexpr string_id challenge_competing_companies_up_to = 1824;
     constexpr string_id competition_not_starting_for_month = 1825;
     constexpr string_id competition_not_starting_for_months = 1826;
-
+    constexpr string_id sale_value_of_vehicle = 1827;
+    constexpr string_id last_income_na = 1828;
+    constexpr string_id last_income_on_date = 1829;
+    constexpr string_id transported_blocks_in_days = 1830;
     constexpr string_id building_earliest_construction_year = 1831;
     constexpr string_id building_latest_construction_year = 1832;
     constexpr string_id local_authority_ratings_transport_companies = 1833;
@@ -1344,6 +1349,7 @@ namespace OpenLoco::StringIds
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
     constexpr string_id title_cargo_distance_graphs = 1983;
     constexpr string_id tab_cargo_distance_graphs = 1984;
+    constexpr string_id last_journey_average_speed = 1985;
 
     constexpr string_id tab_speed_records = 1995;
     constexpr string_id speed_records = 1995;

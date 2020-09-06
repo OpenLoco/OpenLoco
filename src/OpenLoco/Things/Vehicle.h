@@ -308,10 +308,10 @@ namespace OpenLoco
         uint8_t var_5B;
         uint8_t pad_5C[0x5E - 0x5C];
         uint32_t var_5E;
-        uint32_t refund_cost;
-        uint32_t var_66;
-        uint32_t var_6A;
-        uint32_t var_6E;
+        int32_t refund_cost; // 0x62 currency maybe not refund cost
+        int32_t var_66;      // currency
+        int32_t var_6A;      // currency
+        int32_t var_6E;      // currency
         uint8_t var_72;
         uint8_t var_73; // 0x73 (bit 0 = broken down)
     };

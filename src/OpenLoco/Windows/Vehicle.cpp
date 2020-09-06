@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Vehicle
         constexpr uint64_t holdableWidgets = 0;
 
         static widget_t widgets[] = {
-            commonWidgets(265, 177, StringIds::stringid),
+            commonWidgets(265, 177, StringIds::title_vehicle_details),
             widgetEnd()
         };
     }
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x00500554
         static window_event_list events;
         static widget_t widgets[] = {
-            commonWidgets(265, 177, StringIds::stringid),
+            commonWidgets(265, 177, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),
             makeWidget({ 3, 44 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
             makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
@@ -145,6 +145,7 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<int16_t, 0x01136156> _1136156;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
+    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
     static void sub_4B28E2(window* w, int dx)
     {
@@ -1076,6 +1077,7 @@ namespace OpenLoco::Ui::Vehicle
             widgets[common::widx::frame].bottom = self->height - 1;
             widgets[common::widx::panel].right = self->width - 1;
             widgets[common::widx::panel].bottom = self->height - 1;
+            widgets[common::widx::caption].right = self->width - 2;
             widgets[common::widx::close_button].left = self->width - 15;
             widgets[common::widx::close_button].right = self->width - 3;
             widgets[widx::cargo_list].right = self->width - 26;
@@ -1507,22 +1509,44 @@ namespace OpenLoco::Ui::Vehicle
     namespace finances
     {
         // 0x004B56CE
-        static void onPrepareDraw(window* self)
+        static void prepareDraw(window* self)
         {
+            if (self->widgets != widgets)
+            {
+                self->widgets = widgets;
+                self->initScrollWidgets();
+            }
+
+            common::setActiveTabs(self);
+
             auto vehicle = common::getVehicle(self);
             auto args = FormatArguments();
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
 
-            self->widgets[0].right = self->width - 1;
-            self->widgets[0].bottom = self->height - 1;
-            self->widgets[3].right = self->width - 1;
-            self->widgets[3].bottom = self->height - 1;
-            self->widgets[1].right = self->width - 2;
-            self->widgets[2].left = self->width - 15;
-            self->widgets[2].right = self->width - 3;
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
 
             common::repositionTabs(self);
+        }
+
+        // 0x004C3BA6
+        static int32_t getMonthlyRunningCost(Things::Vehicle::Vehicle& train)
+        {
+            int32_t totalCost = 0;
+            for (const auto& car : train.cars)
+            {
+                auto vehicleObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+                // TODO: use FixedPoint with 10 {(1 << 10) == 1024} decimals for cost_index
+                auto cost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
+                totalCost += cost;
+            }
+            return totalCost;
         }
 
         // 0x004B576C
@@ -1533,26 +1557,23 @@ namespace OpenLoco::Ui::Vehicle
 
             auto pos = Gfx::point_t(self->x + 4, self->y + 46);
 
-            auto vehHead = common::getVehicle(self);
-            Things::Vehicle::Vehicle train(vehHead);
+            auto head = common::getVehicle(self);
+            Things::Vehicle::Vehicle train(head);
             auto veh1 = train.veh1;
-            self->draw(context);
             if (veh1->var_53 != -1)
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(veh1->var_53);
                 // Last income on: {DATE DMY}
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, 1829, &args);
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
                 pos.y += 10;
-
-                pos.x = self->x + 8;
                 for (int i = 0; i < 4; i++)
                 {
-                    auto al = veh1->var_57[i];
-                    if (al == -1)
+                    auto cargoType = veh1->var_57[i];
+                    if (cargoType == -1)
                         continue;
 
-                    auto cargoObject = ObjectManager::get<cargo_object>(al);
+                    auto cargoObject = ObjectManager::get<cargo_object>(cargoType);
 
                     auto str = veh1->var_5b[i] == 1 ? cargoObject->unit_name_singular : cargoObject->unit_name_plural;
 
@@ -1563,7 +1584,7 @@ namespace OpenLoco::Ui::Vehicle
                     args.push<uint16_t>(veh1->var_6B[i]);
                     args.push<currency32_t>(veh1->var_6F[i]);
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
-                    Gfx::drawString_495224(*context, pos.x, pos.y, self->width - 12, Colour::black, 1830, &args);
+                    Gfx::drawString_495224(*context, pos.x + 4, pos.y, self->width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
 
                     // TODO: fix function to take pointer to offset
                     pos.y += 12;
@@ -1572,24 +1593,45 @@ namespace OpenLoco::Ui::Vehicle
             else
             {
                 // Last income: N/A"
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, 1828);
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_income_na);
                 pos.y += 10;
             }
 
             pos.y += 5;
 
-            //if (veh->var_77 != 0)
-            //{
-            //    // Last journey average speed: {VELOCITY}
-            //    auto args = FormatArguments();
-            //    args.push(veh->var_77);
-            //    Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, 1985);
-            //    pos.y += 10 + 5;
-            //}
+            if (head->var_77 != 0)
+            {
+                // Last journey average speed: {VELOCITY}
+                auto args = FormatArguments();
+                args.push(head->var_77);
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
+                pos.y += 10 + 5;
+            }
 
-            // Monthly Running Cost: {CURRENCY32}
-            // Monthly Profit: {CURRENCY32}
-            // Sale value of vehicle: {CURRENCY32}
+            {
+                // Monthly Running Cost: {CURRENCY32}
+                auto args = FormatArguments();
+                args.push(getMonthlyRunningCost(train));
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
+                pos.y += 10;
+            }
+
+            {
+                // Monthly Profit: {CURRENCY32}
+                auto args = FormatArguments();
+                auto monthlyProfit = (train.veh2->refund_cost + train.veh2->var_66 + train.veh2->var_6A + train.veh2->var_6E) / 4;
+                args.push(monthlyProfit);
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
+                pos.y += 10 + 5;
+            }
+
+            {
+                // Sale value of vehicle: {CURRENCY32}
+                auto args = FormatArguments();
+                args.push(train.head->var_69);
+                pos.y = self->y + self->height - 14;
+                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
+            }
         }
 
         // 0x004B5945
@@ -1643,7 +1685,7 @@ namespace OpenLoco::Ui::Vehicle
             events.on_update = onUpdate;
             events.text_input = common::textInput;
             events.tooltip = tooltip;
-            events.prepare_draw = onPrepareDraw;
+            events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
     }
