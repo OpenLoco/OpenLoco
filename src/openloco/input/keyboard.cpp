@@ -12,7 +12,7 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ui/Screenshot.h"
-#include "../win32.h"
+#include "../Win32.h"
 #include "ShortcutManager.h"
 #include <cstdint>
 #include <functional>

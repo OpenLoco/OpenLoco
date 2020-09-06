@@ -6,7 +6,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
-#include "../win32.h"
+#include "../Win32.h"
 #include <cassert>
 
 #ifdef _WIN32

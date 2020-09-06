@@ -240,7 +240,7 @@
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />
-    <ClInclude Include="win32.h" />
+    <ClInclude Include="Win32.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windows\construction\Construction.h" />
     <ClInclude Include="Message.h" />
