@@ -2,7 +2,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/stringmgr.h"
 #include "../StationManager.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/scrollview.h"
 #include "../window.h"
 #include "WindowManager.h"

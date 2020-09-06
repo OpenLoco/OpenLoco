@@ -11,7 +11,7 @@
 #include "../platform/platform.h"
 #include "../s5/s5.h"
 #include "../Scenario.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
 #include <algorithm>

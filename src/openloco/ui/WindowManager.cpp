@@ -16,7 +16,7 @@
 #include "../things/vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../viewportmgr.h"
 #include "scrollview.h"
 #include <algorithm>

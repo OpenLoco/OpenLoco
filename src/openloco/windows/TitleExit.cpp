@@ -5,7 +5,7 @@
 #include "../Intro.h"
 #include "../localisation/string_ids.h"
 #include "../OpenLoco.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

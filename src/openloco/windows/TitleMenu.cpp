@@ -12,7 +12,7 @@
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../Tutorial.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../viewportmgr.h"

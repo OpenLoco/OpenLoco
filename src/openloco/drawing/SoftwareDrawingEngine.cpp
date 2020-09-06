@@ -1,6 +1,6 @@
 #include "SoftwareDrawingEngine.h"
 #include "../interop/interop.hpp"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include <algorithm>
 

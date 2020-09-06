@@ -21,7 +21,7 @@
 #include "../Station.h"
 #include "../things/vehicle.h"
 #include "../Tutorial.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
 #include "../viewportmgr.h"

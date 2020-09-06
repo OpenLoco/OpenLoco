@@ -4,7 +4,7 @@
 #include "../localisation/string_ids.h"
 #include "../platform/platform.h"
 #include "../s5/s5.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include <cstdint>
 #include <fstream>
 #include <png.h>

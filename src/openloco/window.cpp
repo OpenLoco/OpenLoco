@@ -8,7 +8,7 @@
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
-#include "ui.h"
+#include "Ui.h"
 #include "ui/Rect.h"
 #include "ui/scrollview.h"
 #include "widget.h"

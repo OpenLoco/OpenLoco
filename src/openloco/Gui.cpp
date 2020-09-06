@@ -6,7 +6,7 @@
 #include "objects/objectmgr.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
-#include "ui.h"
+#include "Ui.h"
 #include "ui/WindowManager.h"
 #include "viewportmgr.h"
 #include "window.h"

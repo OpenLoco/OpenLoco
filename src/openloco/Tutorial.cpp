@@ -5,7 +5,7 @@
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "Scenario.h"
-#include "ui.h"
+#include "Ui.h"
 
 #include <fstream>
 #include <iterator>

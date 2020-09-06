@@ -10,7 +10,7 @@
 #include "../OpenLoco.h"
 #include "../things/thingmgr.h"
 #include "../Tutorial.h"
-#include "../ui.h"
+#include "../Ui.h"
 #include "../ui/Screenshot.h"
 #include "../win32.h"
 #include "ShortcutManager.h"

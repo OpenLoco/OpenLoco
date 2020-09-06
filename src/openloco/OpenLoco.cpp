@@ -45,7 +45,7 @@
 #include "things/thingmgr.h"
 #include "TownManager.h"
 #include "Tutorial.h"
-#include "ui.h"
+#include "Ui.h"
 #include "ui/WindowManager.h"
 #include "utility/numeric.hpp"
 #include "viewportmgr.h"

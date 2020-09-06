@@ -1,7 +1,7 @@
 #include "scrollview.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../ui.h"
+#include "../Ui.h"
 #include "WindowManager.h"
 #include <cmath>
 
