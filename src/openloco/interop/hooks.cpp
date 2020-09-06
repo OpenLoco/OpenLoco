@@ -11,7 +11,7 @@
 #include "../Console.h"
 #include "../core/FileSystem.hpp"
 #include "../Environment.h"
-#include "../game_commands.h"
+#include "../GameCommands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../gui.h"

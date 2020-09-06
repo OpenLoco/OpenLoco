@@ -1,6 +1,6 @@
 #include "CompanyManager.h"
 #include "Config.h"
-#include "game_commands.h"
+#include "GameCommands.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "map/tile.h"

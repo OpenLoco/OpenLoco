@@ -31,7 +31,7 @@
 
 #include "Config.h"
 #include "Console.h"
-#include "game_commands.h"
+#include "GameCommands.h"
 #include "graphics/gfx.h"
 #include "gui.h"
 #include "input.h"

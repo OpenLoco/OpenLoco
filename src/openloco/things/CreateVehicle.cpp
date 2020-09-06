@@ -3,7 +3,7 @@
 #include "../CompanyManager.h"
 #include "../core/Optional.hpp"
 #include "../Date.h"
-#include "../game_commands.h"
+#include "../GameCommands.h"
 #include "../management/Expenditures.h"
 #include "../map/tile.h"
 #include "../objects/objectmgr.h"

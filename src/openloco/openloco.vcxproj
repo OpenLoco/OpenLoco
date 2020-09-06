@@ -154,7 +154,7 @@
     <ClInclude Include="Date.h" />
     <ClInclude Include="drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Environment.h" />
-    <ClInclude Include="game_commands.h" />
+    <ClInclude Include="GameCommands.h" />
     <ClInclude Include="graphics\colours.h" />
     <ClInclude Include="graphics\gfx.h" />
     <ClInclude Include="graphics\image_ids.h" />

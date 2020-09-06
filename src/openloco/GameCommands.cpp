@@ -1,7 +1,7 @@
 #include "audio/audio.h"
 #include "Company.h"
 #include "CompanyManager.h"
-#include "game_commands.h"
+#include "GameCommands.h"
 #include "map/tile.h"
 #include "objects/objectmgr.h"
 #include "objects/road_object.h"

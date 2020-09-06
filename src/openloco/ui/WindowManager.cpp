@@ -3,7 +3,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Console.h"
-#include "../game_commands.h"
+#include "../GameCommands.h"
 #include "../graphics/colours.h"
 #include "../input.h"
 #include "../interop/interop.hpp"

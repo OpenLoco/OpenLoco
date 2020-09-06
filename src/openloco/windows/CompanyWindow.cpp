@@ -2,7 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Date.h"
-#include "../game_commands.h"
+#include "../GameCommands.h"
 #include "../graphics/image_ids.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
