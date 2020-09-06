@@ -1,6 +1,6 @@
 #pragma once
 
-#include "town.h"
+#include "Town.h"
 #include <array>
 
 namespace openloco::townmgr

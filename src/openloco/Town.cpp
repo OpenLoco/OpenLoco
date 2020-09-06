@@ -1,4 +1,4 @@
-#include "town.h"
+#include "Town.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include <algorithm>

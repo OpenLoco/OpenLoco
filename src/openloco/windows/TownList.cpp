@@ -9,7 +9,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
-#include "../town.h"
+#include "../Town.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"

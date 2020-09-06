@@ -4,7 +4,7 @@
 #include "map/tile.h"
 #include "map/tile_loop.hpp"
 #include "objects/industry_object.h"
-#include "town.h"
+#include "Town.h"
 #include "utility/prng.hpp"
 #include <cstdint>
 #include <limits>

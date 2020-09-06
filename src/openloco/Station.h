@@ -2,7 +2,7 @@
 
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
-#include "town.h"
+#include "Town.h"
 #include "types.hpp"
 #include "utility/numeric.hpp"
 #include <cstdint>
