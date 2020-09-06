@@ -30,7 +30,7 @@
 #endif
 
 #include "Config.h"
-#include "console.h"
+#include "Console.h"
 #include "game_commands.h"
 #include "graphics/gfx.h"
 #include "gui.h"

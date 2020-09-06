@@ -1,6 +1,6 @@
 #include "dropdown.h"
 #include "../CompanyManager.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"

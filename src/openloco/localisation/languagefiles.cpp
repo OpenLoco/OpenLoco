@@ -1,6 +1,6 @@
 #include "languagefiles.h"
 #include "../Config.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../platform/platform.h"

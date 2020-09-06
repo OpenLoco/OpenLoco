@@ -1,5 +1,5 @@
 #include "gfx.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../drawing/SoftwareDrawingEngine.h"
 #include "../environment.h"
 #include "../input.h"

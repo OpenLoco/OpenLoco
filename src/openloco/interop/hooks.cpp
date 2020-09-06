@@ -8,7 +8,7 @@
 #endif
 #include "../Title.h"
 #include "../audio/audio.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../core/FileSystem.hpp"
 #include "../environment.h"
 #include "../game_commands.h"

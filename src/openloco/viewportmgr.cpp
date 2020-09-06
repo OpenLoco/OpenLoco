@@ -1,6 +1,6 @@
 #include "viewportmgr.h"
 #include "Config.h"
-#include "console.h"
+#include "Console.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"
 #include "map/tilemgr.h"

@@ -1,6 +1,6 @@
 #include "window.h"
 #include "Config.h"
-#include "console.h"
+#include "Console.h"
 #include "graphics/colours.h"
 #include "input.h"
 #include "interop/interop.hpp"

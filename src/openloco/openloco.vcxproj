@@ -22,7 +22,7 @@
     <ClCompile Include="Company.cpp" />
     <ClCompile Include="CompanyManager.cpp" />
     <ClCompile Include="Config.cpp" />
-    <ClCompile Include="console.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="date.cpp" />
     <ClCompile Include="drawing\SoftwareDrawingEngine.cpp" />
     <ClCompile Include="environment.cpp" />
@@ -148,7 +148,7 @@
     <ClInclude Include="CompanyManager.h" />
     <ClInclude Include="config.convert.hpp" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="console.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="core\FileSystem.hpp" />
     <ClInclude Include="core\Optional.hpp" />
     <ClInclude Include="date.h" />

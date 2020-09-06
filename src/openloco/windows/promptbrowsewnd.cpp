@@ -1,5 +1,5 @@
 #include "../audio/audio.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../core/FileSystem.hpp"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"

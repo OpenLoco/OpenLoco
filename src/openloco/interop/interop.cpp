@@ -11,7 +11,7 @@
 #include <windows.h>
 #endif // _WIN32
 
-#include "../console.h"
+#include "../Console.h"
 #include "interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code

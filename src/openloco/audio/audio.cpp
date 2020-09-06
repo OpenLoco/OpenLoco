@@ -1,6 +1,6 @@
 #include "audio.h"
 #include "../Config.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../date.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"

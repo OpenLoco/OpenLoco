@@ -1,7 +1,7 @@
 #include "../audio/audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
-#include "../console.h"
+#include "../Console.h"
 #include "../game_commands.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
