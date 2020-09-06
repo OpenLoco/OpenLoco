@@ -1,7 +1,7 @@
 #include "dropdown.h"
 #include "../CompanyManager.h"
 #include "../Console.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"

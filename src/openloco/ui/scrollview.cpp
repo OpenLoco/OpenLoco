@@ -1,5 +1,5 @@
 #include "scrollview.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../ui.h"
 #include "WindowManager.h"

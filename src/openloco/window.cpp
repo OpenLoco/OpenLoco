@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Console.h"
 #include "graphics/colours.h"
-#include "input.h"
+#include "Input.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "map/tile.h"

@@ -3,7 +3,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../GameCommands.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../localisation/string_ids.h"

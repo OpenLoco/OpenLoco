@@ -1,7 +1,7 @@
 #include "widget.h"
 #include "graphics/colours.h"
 #include "graphics/image_ids.h"
-#include "input.h"
+#include "Input.h"
 #include "interop/interop.hpp"
 #include "ui/scrollview.h"
 #include "window.h"

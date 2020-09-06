@@ -1,4 +1,4 @@
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/stringmgr.h"
 #include "../stationmgr.h"

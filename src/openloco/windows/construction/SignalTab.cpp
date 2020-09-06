@@ -1,5 +1,5 @@
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
+#include "../../Input.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/objectmgr.h"
 #include "../../objects/track_object.h"

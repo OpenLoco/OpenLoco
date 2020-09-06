@@ -34,7 +34,7 @@
 #include "GameCommands.h"
 #include "graphics/gfx.h"
 #include "Gui.h"
-#include "input.h"
+#include "Input.h"
 #include "interop/interop.hpp"
 #include "intro.h"
 #include "multiplayer.h"

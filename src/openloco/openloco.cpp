@@ -28,7 +28,7 @@
 #include "graphics/gfx.h"
 #include "Gui.h"
 #include "IndustryManager.h"
-#include "input.h"
+#include "Input.h"
 #include "interop/interop.hpp"
 #include "intro.h"
 #include "localisation/languagefiles.h"

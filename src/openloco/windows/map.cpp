@@ -3,7 +3,7 @@
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"
 #include "../IndustryManager.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/industry_object.h"

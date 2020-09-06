@@ -2,7 +2,7 @@
 #include "../Console.h"
 #include "../drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/languagefiles.h"
 #include "../ui.h"

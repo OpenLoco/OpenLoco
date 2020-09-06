@@ -1,6 +1,6 @@
 #include "../../CompanyManager.h"
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
+#include "../../Input.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/airport_object.h"
 #include "../../objects/cargo_object.h"

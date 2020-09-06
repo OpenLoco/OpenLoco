@@ -1,4 +1,4 @@
-#include "input.h"
+#include "Input.h"
 #include "audio/audio.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"

@@ -1,5 +1,5 @@
 #include "tilemgr.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../viewportmgr.h"
 

@@ -5,7 +5,7 @@
 #include "../Console.h"
 #include "../GameCommands.h"
 #include "../graphics/colours.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../intro.h"
 #include "../map/tile.h"

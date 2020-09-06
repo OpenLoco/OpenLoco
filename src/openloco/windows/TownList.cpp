@@ -2,7 +2,7 @@
 #include "../Config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/building_object.h"

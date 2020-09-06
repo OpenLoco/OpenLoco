@@ -1,6 +1,6 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"

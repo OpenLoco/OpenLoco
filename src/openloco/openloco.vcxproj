@@ -32,7 +32,7 @@
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Industry.cpp" />
     <ClCompile Include="IndustryManager.cpp" />
-    <ClCompile Include="input.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="input\keyboard.cpp" />
     <ClCompile Include="input\mouse_input.cpp" />
     <ClCompile Include="input\ShortcutManager.cpp" />
@@ -162,7 +162,7 @@
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Industry.h" />
     <ClInclude Include="IndustryManager.h" />
-    <ClInclude Include="input.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="input\Shortcut.h" />
     <ClInclude Include="input\ShortcutManager.h" />
     <ClInclude Include="interop\interop.hpp" />

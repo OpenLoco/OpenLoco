@@ -1,7 +1,7 @@
 #include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"

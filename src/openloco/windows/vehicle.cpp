@@ -1,5 +1,5 @@
 #include "../CompanyManager.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../things/thingmgr.h"

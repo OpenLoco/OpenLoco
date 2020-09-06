@@ -1,6 +1,6 @@
 #include "../audio/audio.h"
 #include "../graphics/colours.h"
-#include "../input.h"
+#include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../openloco.h"
 #include "../ui.h"

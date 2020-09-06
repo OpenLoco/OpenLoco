@@ -1,7 +1,7 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
+#include "../../Input.h"
 #include "../../objects/airport_object.h"
 #include "../../objects/bridge_object.h"
 #include "../../objects/dock_object.h"
