@@ -5,7 +5,7 @@
 #include "../localisation/string_ids.h"
 #include "../s5/s5.h"
 #include "../StationManager.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include <array>
 

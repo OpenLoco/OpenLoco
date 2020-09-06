@@ -14,7 +14,7 @@
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../things/thingmgr.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../viewportmgr.h"
 #include "../widget.h"

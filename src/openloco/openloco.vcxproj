@@ -68,7 +68,7 @@
     <ClCompile Include="things\vehicle.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
-    <ClCompile Include="townmgr.cpp" />
+    <ClCompile Include="TownManager.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="ui\dropdown.cpp" />
@@ -221,7 +221,7 @@
     <ClInclude Include="thirdparty\filesystem.hpp" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
-    <ClInclude Include="townmgr.h" />
+    <ClInclude Include="TownManager.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="types.hpp" />
     <ClInclude Include="ui.h" />

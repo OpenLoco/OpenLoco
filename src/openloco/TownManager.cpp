@@ -1,4 +1,4 @@
-#include "townmgr.h"
+#include "TownManager.h"
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "OpenLoco.h"

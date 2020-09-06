@@ -10,7 +10,7 @@
 #include "../objects/objectmgr.h"
 #include "../s5/s5.h"
 #include "../Scenario.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../widget.h"

@@ -13,7 +13,7 @@
 #include "../../objects/vehicle_object.h"
 #include "../../StationManager.h"
 #include "../../things/thingmgr.h"
-#include "../../townmgr.h"
+#include "../../TownManager.h"
 #include "../../viewportmgr.h"
 #include "../../window.h"
 

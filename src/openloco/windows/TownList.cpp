@@ -10,7 +10,7 @@
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../Town.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../ui/scrollview.h"

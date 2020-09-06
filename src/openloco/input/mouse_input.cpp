@@ -9,7 +9,7 @@
 #include "../objects/road_object.h"
 #include "../StationManager.h"
 #include "../things/thingmgr.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../tutorial.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"

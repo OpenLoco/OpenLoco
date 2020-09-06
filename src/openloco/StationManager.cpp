@@ -2,7 +2,7 @@
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "OpenLoco.h"
-#include "townmgr.h"
+#include "TownManager.h"
 #include "ui/WindowManager.h"
 #include "window.h"
 

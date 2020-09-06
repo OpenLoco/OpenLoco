@@ -14,7 +14,7 @@
 #include "../StationManager.h"
 #include "../things/thing.h"
 #include "../things/thingmgr.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../types.hpp"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"

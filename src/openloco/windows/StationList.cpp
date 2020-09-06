@@ -12,7 +12,7 @@
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../widget.h"

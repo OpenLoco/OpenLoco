@@ -43,7 +43,7 @@
 #include "ScenarioManager.h"
 #include "StationManager.h"
 #include "things/thingmgr.h"
-#include "townmgr.h"
+#include "TownManager.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "ui/WindowManager.h"

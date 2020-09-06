@@ -18,7 +18,7 @@
 #include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
-#include "../townmgr.h"
+#include "../TownManager.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "ToolbarTopCommon.h"
