@@ -69,6 +69,7 @@
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
+    <ClCompile Include="TrackData.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="ui\dropdown.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
+    <ClInclude Include="TrackData.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Types.hpp" />
     <ClInclude Include="Ui.h" />
