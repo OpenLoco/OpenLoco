@@ -29,7 +29,7 @@
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="graphics\colour.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
-    <ClCompile Include="gui.cpp" />
+    <ClCompile Include="Gui.cpp" />
     <ClCompile Include="industry.cpp" />
     <ClCompile Include="industrymgr.cpp" />
     <ClCompile Include="input.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="graphics\gfx.h" />
     <ClInclude Include="graphics\image_ids.h" />
     <ClInclude Include="graphics\types.h" />
-    <ClInclude Include="gui.h" />
+    <ClInclude Include="Gui.h" />
     <ClInclude Include="industry.h" />
     <ClInclude Include="industrymgr.h" />
     <ClInclude Include="input.h" />

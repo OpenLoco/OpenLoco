@@ -1,7 +1,7 @@
 #include "tutorial.h"
 #include "Config.h"
 #include "Environment.h"
-#include "gui.h"
+#include "Gui.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "scenario.h"

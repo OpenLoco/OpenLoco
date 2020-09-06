@@ -1,4 +1,4 @@
-#include "gui.h"
+#include "Gui.h"
 #include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"

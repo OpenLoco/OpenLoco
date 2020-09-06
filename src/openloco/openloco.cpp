@@ -26,7 +26,7 @@
 #include "Environment.h"
 #include "graphics/colours.h"
 #include "graphics/gfx.h"
-#include "gui.h"
+#include "Gui.h"
 #include "industrymgr.h"
 #include "input.h"
 #include "interop/interop.hpp"

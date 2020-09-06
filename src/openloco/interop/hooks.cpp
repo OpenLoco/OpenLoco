@@ -14,7 +14,7 @@
 #include "../GameCommands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
-#include "../gui.h"
+#include "../Gui.h"
 #include "../input.h"
 #include "../map/tile.h"
 #include "../platform/platform.h"

@@ -33,7 +33,7 @@
 #include "Console.h"
 #include "GameCommands.h"
 #include "graphics/gfx.h"
-#include "gui.h"
+#include "Gui.h"
 #include "input.h"
 #include "interop/interop.hpp"
 #include "intro.h"

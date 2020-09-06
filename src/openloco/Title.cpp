@@ -1,7 +1,7 @@
 #include "Title.h"
 #include "audio/audio.h"
 #include "CompanyManager.h"
-#include "gui.h"
+#include "Gui.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 #include "ui/WindowManager.h"
