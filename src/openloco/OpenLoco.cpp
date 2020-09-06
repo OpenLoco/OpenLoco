@@ -40,7 +40,7 @@
 #include "platform/platform.h"
 #include "ProgressBar.h"
 #include "s5/s5.h"
-#include "scenariomgr.h"
+#include "ScenarioManager.h"
 #include "stationmgr.h"
 #include "things/thingmgr.h"
 #include "townmgr.h"

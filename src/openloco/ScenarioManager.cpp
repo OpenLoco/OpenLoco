@@ -1,4 +1,4 @@
-#include "scenariomgr.h"
+#include "ScenarioManager.h"
 #include "interop/interop.hpp"
 
 using namespace openloco::interop;

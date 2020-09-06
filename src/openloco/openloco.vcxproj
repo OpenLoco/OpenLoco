@@ -58,7 +58,7 @@
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="s5\s5.cpp" />
     <ClCompile Include="Scenario.cpp" />
-    <ClCompile Include="scenariomgr.cpp" />
+    <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
     <ClCompile Include="things\CreateVehicle.cpp" />
@@ -211,7 +211,7 @@
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="s5\s5.h" />
     <ClInclude Include="Scenario.h" />
-    <ClInclude Include="scenariomgr.h" />
+    <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="station.h" />
     <ClInclude Include="stationmgr.h" />
     <ClInclude Include="things\misc.h" />
