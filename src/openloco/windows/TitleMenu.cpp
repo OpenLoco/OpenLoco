@@ -7,7 +7,7 @@
 #include "../Intro.h"
 #include "../localisation/string_ids.h"
 #include "../map/tile.h"
-#include "../multiplayer.h"
+#include "../MultiPlayer.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"

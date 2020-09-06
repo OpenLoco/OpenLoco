@@ -34,7 +34,7 @@
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"
-#include "multiplayer.h"
+#include "MultiPlayer.h"
 #include "objects/objectmgr.h"
 #include "openloco.h"
 #include "platform/platform.h"

@@ -1,4 +1,4 @@
-#include "multiplayer.h"
+#include "MultiPlayer.h"
 #include "interop/interop.hpp"
 
 using namespace openloco::interop;

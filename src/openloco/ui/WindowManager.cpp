@@ -10,7 +10,7 @@
 #include "../Intro.h"
 #include "../map/tile.h"
 #include "../map/tilemgr.h"
-#include "../multiplayer.h"
+#include "../MultiPlayer.h"
 #include "../stationmgr.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
