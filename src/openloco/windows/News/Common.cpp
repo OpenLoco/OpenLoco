@@ -2,7 +2,7 @@
 #include "../../Config.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
-#include "../../message.h"
+#include "../../Message.h"
 #include "../../messagemgr.h"
 #include "../../objects/interface_skin_object.h"
 #include "../../objects/objectmgr.h"

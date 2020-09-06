@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Company.h"
-#include "message.h"
+#include "Message.h"
 #include <cstdint>
 
 namespace openloco

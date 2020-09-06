@@ -7,7 +7,7 @@
 #include "../../interop/interop.hpp"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../localisation/string_ids.h"
-#include "../../message.h"
+#include "../../Message.h"
 #include "../../messagemgr.h"
 #include "../../objects/objectmgr.h"
 #include "../../objects/vehicle_object.h"

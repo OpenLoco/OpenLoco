@@ -11,7 +11,7 @@
 #include "../Intro.h"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
-#include "../message.h"
+#include "../Message.h"
 #include "../messagemgr.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"

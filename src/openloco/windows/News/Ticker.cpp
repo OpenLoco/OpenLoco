@@ -1,7 +1,7 @@
 #include "../../audio/audio.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
-#include "../../message.h"
+#include "../../Message.h"
 #include "../../messagemgr.h"
 #include "News.h"
 
