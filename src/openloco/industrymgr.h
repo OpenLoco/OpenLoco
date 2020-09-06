@@ -1,6 +1,6 @@
 #pragma once
 
-#include "industry.h"
+#include "Industry.h"
 #include <array>
 #include <cstddef>
 

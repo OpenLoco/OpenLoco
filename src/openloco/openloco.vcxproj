@@ -30,7 +30,7 @@
     <ClCompile Include="graphics\colour.cpp" />
     <ClCompile Include="graphics\gfx.cpp" />
     <ClCompile Include="Gui.cpp" />
-    <ClCompile Include="industry.cpp" />
+    <ClCompile Include="Industry.cpp" />
     <ClCompile Include="industrymgr.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="input\keyboard.cpp" />
@@ -160,7 +160,7 @@
     <ClInclude Include="graphics\image_ids.h" />
     <ClInclude Include="graphics\types.h" />
     <ClInclude Include="Gui.h" />
-    <ClInclude Include="industry.h" />
+    <ClInclude Include="Industry.h" />
     <ClInclude Include="industrymgr.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="input\Shortcut.h" />

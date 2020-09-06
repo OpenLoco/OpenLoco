@@ -1,4 +1,4 @@
-#include "industry.h"
+#include "Industry.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
