@@ -1,4 +1,4 @@
-#include "tutorial.h"
+#include "Tutorial.h"
 #include "Config.h"
 #include "Environment.h"
 #include "Gui.h"

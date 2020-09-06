@@ -44,7 +44,7 @@
 #include "StationManager.h"
 #include "things/thingmgr.h"
 #include "TownManager.h"
-#include "tutorial.h"
+#include "Tutorial.h"
 #include "ui.h"
 #include "ui/WindowManager.h"
 #include "utility/numeric.hpp"

@@ -20,7 +20,7 @@
 #include "../platform/platform.h"
 #include "../Station.h"
 #include "../things/vehicle.h"
-#include "../tutorial.h"
+#include "../Tutorial.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"

@@ -39,7 +39,7 @@
 #include "Intro.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"
-#include "tutorial.h"
+#include "Tutorial.h"
 #include "ui.h"
 #include "ui/WindowManager.h"
 #include "utility/string.hpp"

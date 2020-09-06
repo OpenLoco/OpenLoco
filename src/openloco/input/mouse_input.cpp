@@ -10,7 +10,7 @@
 #include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../TownManager.h"
-#include "../tutorial.h"
+#include "../Tutorial.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include "../window.h"
