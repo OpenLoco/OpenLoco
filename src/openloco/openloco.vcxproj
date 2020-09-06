@@ -60,7 +60,7 @@
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
-    <ClCompile Include="stationmgr.cpp" />
+    <ClCompile Include="StationManager.cpp" />
     <ClCompile Include="things\CreateVehicle.cpp" />
     <ClCompile Include="things\misc.cpp" />
     <ClCompile Include="things\thing.cpp" />
@@ -213,7 +213,7 @@
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="Station.h" />
-    <ClInclude Include="stationmgr.h" />
+    <ClInclude Include="StationManager.h" />
     <ClInclude Include="things\misc.h" />
     <ClInclude Include="things\thing.h" />
     <ClInclude Include="things\thingmgr.h" />

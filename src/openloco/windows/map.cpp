@@ -11,7 +11,7 @@
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/track_object.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../things/thing.h"
 #include "../things/thingmgr.h"
 #include "../townmgr.h"

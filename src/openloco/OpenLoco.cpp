@@ -41,7 +41,7 @@
 #include "ProgressBar.h"
 #include "s5/s5.h"
 #include "ScenarioManager.h"
-#include "stationmgr.h"
+#include "StationManager.h"
 #include "things/thingmgr.h"
 #include "townmgr.h"
 #include "tutorial.h"

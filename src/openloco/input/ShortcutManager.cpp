@@ -4,7 +4,7 @@
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../s5/s5.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include <array>

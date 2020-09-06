@@ -11,7 +11,7 @@
 #include "../../MessageManager.h"
 #include "../../objects/objectmgr.h"
 #include "../../objects/vehicle_object.h"
-#include "../../stationmgr.h"
+#include "../../StationManager.h"
 #include "../../things/thingmgr.h"
 #include "../../townmgr.h"
 #include "../../viewportmgr.h"

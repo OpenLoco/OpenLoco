@@ -1,4 +1,4 @@
-#include "stationmgr.h"
+#include "StationManager.h"
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "OpenLoco.h"

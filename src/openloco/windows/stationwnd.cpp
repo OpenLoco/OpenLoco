@@ -13,7 +13,7 @@
 #include "../objects/cargo_object.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../viewportmgr.h"

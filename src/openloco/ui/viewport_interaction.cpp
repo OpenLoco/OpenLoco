@@ -1,7 +1,7 @@
 #include "../Input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/stringmgr.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../ui.h"
 #include "../ui/scrollview.h"
 #include "../window.h"

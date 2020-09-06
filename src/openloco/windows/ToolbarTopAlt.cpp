@@ -15,7 +15,7 @@
 #include "../objects/track_object.h"
 #include "../objects/water_object.h"
 #include "../s5/s5.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../townmgr.h"

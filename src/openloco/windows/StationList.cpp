@@ -11,7 +11,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../OpenLoco.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"

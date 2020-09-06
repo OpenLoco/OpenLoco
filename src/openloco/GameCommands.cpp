@@ -6,7 +6,7 @@
 #include "objects/objectmgr.h"
 #include "objects/road_object.h"
 #include "objects/track_object.h"
-#include "stationmgr.h"
+#include "StationManager.h"
 #include "things/vehicle.h"
 #include "ui/WindowManager.h"
 #include <cassert>

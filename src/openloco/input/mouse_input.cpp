@@ -7,7 +7,7 @@
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../townmgr.h"
 #include "../tutorial.h"

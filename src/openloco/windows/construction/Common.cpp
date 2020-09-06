@@ -14,7 +14,7 @@
 #include "../../objects/track_object.h"
 #include "../../objects/train_signal_object.h"
 #include "../../objects/train_station_object.h"
-#include "../../stationmgr.h"
+#include "../../StationManager.h"
 #include "../../widget.h"
 #include "Construction.h"
 

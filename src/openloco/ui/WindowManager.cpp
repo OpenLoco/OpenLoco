@@ -11,7 +11,7 @@
 #include "../map/tile.h"
 #include "../map/tilemgr.h"
 #include "../MultiPlayer.h"
-#include "../stationmgr.h"
+#include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../townmgr.h"
