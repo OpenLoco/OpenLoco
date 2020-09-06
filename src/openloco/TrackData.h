@@ -26,6 +26,7 @@ namespace openloco::map::TrackData
         constexpr uint8_t unk2 = 1 << 2;
         constexpr uint8_t unk3 = 1 << 3;
         constexpr uint8_t unk4 = 1 << 4;
+        constexpr uint8_t unused = 1 << 6; // Not set on any track piece
         constexpr uint8_t diagonal = 1 << 7;
     }
 

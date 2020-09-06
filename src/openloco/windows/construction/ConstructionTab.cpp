@@ -2017,7 +2017,7 @@ namespace openloco::ui::windows::construction::construction
 
                 map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.flags & (1 << 6))
+                if (lastRoadPart.flags & openloco::map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2067,7 +2067,7 @@ namespace openloco::ui::windows::construction::construction
 
                 map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.flags & (1 << 6))
+                if (lastTrackPart.flags & openloco::map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
