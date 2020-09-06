@@ -22,7 +22,7 @@
 #include "audio/audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
-#include "date.h"
+#include "Date.h"
 #include "environment.h"
 #include "graphics/colours.h"
 #include "graphics/gfx.h"

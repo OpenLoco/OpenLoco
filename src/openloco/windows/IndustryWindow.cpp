@@ -1,6 +1,6 @@
 #include "../audio/audio.h"
 #include "../Config.h"
-#include "../date.h"
+#include "../Date.h"
 #include "../game_commands.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"

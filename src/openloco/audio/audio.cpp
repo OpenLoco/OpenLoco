@@ -1,7 +1,7 @@
 #include "audio.h"
 #include "../Config.h"
 #include "../Console.h"
-#include "../date.h"
+#include "../Date.h"
 #include "../environment.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"

@@ -1,6 +1,6 @@
 #include "stringmgr.h"
 #include "../Config.h"
-#include "../date.h"
+#include "../Date.h"
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"

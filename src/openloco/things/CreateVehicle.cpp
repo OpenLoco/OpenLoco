@@ -2,7 +2,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../core/Optional.hpp"
-#include "../date.h"
+#include "../Date.h"
 #include "../game_commands.h"
 #include "../management/Expenditures.h"
 #include "../map/tile.h"

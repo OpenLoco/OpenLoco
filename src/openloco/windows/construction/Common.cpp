@@ -1,5 +1,5 @@
 #include "../../CompanyManager.h"
-#include "../../date.h"
+#include "../../Date.h"
 #include "../../graphics/image_ids.h"
 #include "../../input.h"
 #include "../../objects/airport_object.h"
