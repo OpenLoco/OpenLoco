@@ -1,4 +1,4 @@
-#include "../industrymgr.h"
+#include "../IndustryManager.h"
 #include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"
 #include "../viewportmgr.h"

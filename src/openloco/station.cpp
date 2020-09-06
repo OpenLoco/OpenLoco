@@ -1,6 +1,6 @@
 #include "station.h"
 #include "CompanyManager.h"
-#include "industrymgr.h"
+#include "IndustryManager.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"

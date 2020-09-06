@@ -1,4 +1,4 @@
-#include "industrymgr.h"
+#include "IndustryManager.h"
 #include "CompanyManager.h"
 #include "interop/interop.hpp"
 #include "openloco.h"

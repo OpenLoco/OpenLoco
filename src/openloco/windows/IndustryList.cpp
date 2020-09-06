@@ -3,7 +3,7 @@
 #include "../Date.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../industrymgr.h"
+#include "../IndustryManager.h"
 #include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
