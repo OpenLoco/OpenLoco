@@ -203,7 +203,7 @@ namespace openloco::map::TrackData
     };
 
     // 0x004F73D8
-    const std::array<std::vector<PreviewTrack>, 44> trackPieces = {
+    const std::array<std::vector<PreviewTrack>, 44> trackPieces = { {
         trackPiece0,
         trackPiece1,
         trackPiece2,
@@ -248,7 +248,7 @@ namespace openloco::map::TrackData
         trackPiece41,
         trackPiece42,
         trackPiece43,
-    };
+    } };
 
     const std::vector<PreviewTrack> roadPiece0 = {
         PreviewTrack{ 0, 0, 0, 0, 0, 15, 0 },
@@ -290,9 +290,7 @@ namespace openloco::map::TrackData
     };
 
     // 0x004F6D1C
-    const std::array<std::vector<PreviewTrack>, 10> roadPieces = {
-        roadPiece0, roadPiece1, roadPiece2, roadPiece3, roadPiece4, roadPiece5, roadPiece6, roadPiece7, roadPiece8, roadPiece9
-    };
+    const std::array<std::vector<PreviewTrack>, 10> roadPieces = { { roadPiece0, roadPiece1, roadPiece2, roadPiece3, roadPiece4, roadPiece5, roadPiece6, roadPiece7, roadPiece8, roadPiece9 } };
 
     const std::vector<PreviewTrack>& getTrackPiece(size_t trackId)
     {
