@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Town.h"
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
 #include "map/tile_loop.hpp"
 #include "objects/industry_object.h"
-#include "Town.h"
 #include "utility/prng.hpp"
 #include <cstdint>
 #include <limits>

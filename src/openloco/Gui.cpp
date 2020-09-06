@@ -1,15 +1,15 @@
 #include "Gui.h"
+#include "OpenLoco.h"
+#include "Tutorial.h"
+#include "Ui.h"
+#include "ViewportManager.h"
+#include "Window.h"
 #include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"
 #include "objects/interface_skin_object.h"
 #include "objects/objectmgr.h"
-#include "OpenLoco.h"
-#include "Tutorial.h"
-#include "Ui.h"
 #include "ui/WindowManager.h"
-#include "ViewportManager.h"
-#include "Window.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;

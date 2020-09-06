@@ -1,19 +1,19 @@
 #include "Station.h"
 #include "CompanyManager.h"
 #include "IndustryManager.h"
+#include "MessageManager.h"
+#include "OpenLoco.h"
+#include "ViewportManager.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
-#include "MessageManager.h"
 #include "objects/airport_object.h"
 #include "objects/building_object.h"
 #include "objects/cargo_object.h"
 #include "objects/industry_object.h"
 #include "objects/objectmgr.h"
 #include "objects/road_station_object.h"
-#include "OpenLoco.h"
 #include "ui/WindowManager.h"
-#include "ViewportManager.h"
 #include <algorithm>
 #include <cassert>
 

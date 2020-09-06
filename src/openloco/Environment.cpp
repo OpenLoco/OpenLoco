@@ -1,8 +1,8 @@
 #include "Environment.h"
 #include "Config.h"
+#include "Ui.h"
 #include "interop/interop.hpp"
 #include "platform/platform.h"
-#include "Ui.h"
 #include "utility/collection.hpp"
 #include "utility/string.hpp"
 #include <cstring>

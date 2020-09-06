@@ -1,14 +1,14 @@
 #include "ViewportManager.h"
 #include "Config.h"
 #include "Console.h"
+#include "Station.h"
+#include "Ui.h"
+#include "Window.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"
 #include "map/tilemgr.h"
-#include "Station.h"
 #include "things/thing.h"
 #include "things/thingmgr.h"
-#include "Ui.h"
-#include "Window.h"
 #include <algorithm>
 #include <cassert>
 #include <memory>

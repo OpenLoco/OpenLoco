@@ -1,10 +1,10 @@
 #include "Widget.h"
+#include "Input.h"
+#include "Window.h"
 #include "graphics/colours.h"
 #include "graphics/image_ids.h"
-#include "Input.h"
 #include "interop/interop.hpp"
 #include "ui/scrollview.h"
-#include "Window.h"
 #include <cassert>
 
 using namespace openloco::interop;

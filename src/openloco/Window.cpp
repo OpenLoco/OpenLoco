@@ -1,17 +1,17 @@
 #include "Window.h"
 #include "Config.h"
 #include "Console.h"
-#include "graphics/colours.h"
 #include "Input.h"
+#include "Ui.h"
+#include "Widget.h"
+#include "graphics/colours.h"
 #include "interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "map/tile.h"
 #include "map/tilemgr.h"
 #include "things/thingmgr.h"
-#include "Ui.h"
 #include "ui/Rect.h"
 #include "ui/scrollview.h"
-#include "Widget.h"
 #include <cassert>
 #include <cinttypes>
 

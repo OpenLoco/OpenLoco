@@ -1,16 +1,16 @@
 #pragma once
 
 #include "Company.h"
+#include "Types.hpp"
+#include "Ui.h"
+#include "Viewport.hpp"
 #include "core/Optional.hpp"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"
 #include "map/tile.h"
-#include "Types.hpp"
-#include "Ui.h"
 #include "ui/WindowType.h"
-#include "Viewport.hpp"
 #include <algorithm>
 
 namespace openloco::ui

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Types.hpp"
 #include "localisation/stringmgr.h"
 #include "management/Expenditures.h"
-#include "Types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <limits>

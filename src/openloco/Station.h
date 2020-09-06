@@ -1,9 +1,9 @@
 #pragma once
 
-#include "localisation/stringmgr.h"
-#include "map/tile.h"
 #include "Town.h"
 #include "Types.hpp"
+#include "localisation/stringmgr.h"
+#include "map/tile.h"
 #include "utility/numeric.hpp"
 #include <cstdint>
 #include <limits>

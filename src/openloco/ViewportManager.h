@@ -1,10 +1,10 @@
 #pragma once
 
-#include "map/tile.h"
 #include "Station.h"
-#include "things/thing.h"
 #include "Types.hpp"
 #include "Window.h"
+#include "map/tile.h"
+#include "things/thing.h"
 #include <array>
 
 namespace openloco::ui::viewportmgr
