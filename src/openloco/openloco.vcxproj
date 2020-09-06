@@ -139,7 +139,7 @@
     <ClCompile Include="windows\VehicleList.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\resources\resource.h" />
+    <ClInclude Include="..\..\resources\Resource.h" />
     <ClInclude Include="audio\audio.h" />
     <ClInclude Include="audio\channel.h" />
     <ClInclude Include="audio\music_channel.h" />

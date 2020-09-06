@@ -9,7 +9,7 @@
 #include <vector>
 
 #ifdef _WIN32
-#include "../../resources/resource.h"
+#include "../../resources/Resource.h"
 
 #ifndef NOMINMAX
 #define NOMINMAX
