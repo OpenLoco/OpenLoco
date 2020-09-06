@@ -15,7 +15,7 @@
 #include "../../objects/train_signal_object.h"
 #include "../../objects/train_station_object.h"
 #include "../../StationManager.h"
-#include "../../widget.h"
+#include "../../Widget.h"
 #include "Construction.h"
 
 using namespace openloco::interop;

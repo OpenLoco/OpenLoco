@@ -17,7 +17,7 @@
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ViewportManager.h"
-#include "../widget.h"
+#include "../Widget.h"
 
 using namespace openloco::interop;
 using namespace openloco::game_commands;

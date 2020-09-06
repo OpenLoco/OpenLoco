@@ -86,7 +86,7 @@
     </ClCompile>
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="ViewportManager.cpp" />
-    <ClCompile Include="widget.cpp" />
+    <ClCompile Include="Widget.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="windows\about.cpp" />
     <ClCompile Include="windows\AboutMusic.cpp" />
@@ -239,7 +239,7 @@
     <ClInclude Include="utility\yaml.hpp" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
-    <ClInclude Include="widget.h" />
+    <ClInclude Include="Widget.h" />
     <ClInclude Include="win32.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="windows\construction\Construction.h" />

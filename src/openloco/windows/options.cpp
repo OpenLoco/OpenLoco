@@ -16,7 +16,7 @@
 #include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../widget.h"
+#include "../Widget.h"
 #include <cassert>
 
 using namespace openloco::interop;

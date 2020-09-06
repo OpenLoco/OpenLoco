@@ -20,7 +20,7 @@
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../ui/scrollview.h"
-#include "../widget.h"
+#include "../Widget.h"
 
 using namespace openloco::interop;
 

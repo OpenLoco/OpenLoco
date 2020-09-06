@@ -11,7 +11,7 @@
 #include "Ui.h"
 #include "ui/Rect.h"
 #include "ui/scrollview.h"
-#include "widget.h"
+#include "Widget.h"
 #include <cassert>
 #include <cinttypes>
 

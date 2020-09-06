@@ -1,4 +1,4 @@
-#include "widget.h"
+#include "Widget.h"
 #include "graphics/colours.h"
 #include "graphics/image_ids.h"
 #include "Input.h"

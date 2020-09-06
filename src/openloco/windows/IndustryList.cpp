@@ -13,7 +13,7 @@
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
-#include "../widget.h"
+#include "../Widget.h"
 
 using namespace openloco::interop;
 

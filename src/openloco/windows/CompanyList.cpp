@@ -13,7 +13,7 @@
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include "../utility/numeric.hpp"
-#include "../widget.h"
+#include "../Widget.h"
 
 using namespace openloco::interop;
 

@@ -19,7 +19,7 @@
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../ViewportManager.h"
-#include "../widget.h"
+#include "../Widget.h"
 
 using namespace openloco::interop;
 
