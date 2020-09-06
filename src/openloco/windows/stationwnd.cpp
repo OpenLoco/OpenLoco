@@ -16,7 +16,7 @@
 #include "../StationManager.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "../widget.h"
 
 using namespace openloco::interop;

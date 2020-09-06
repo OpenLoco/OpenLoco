@@ -16,7 +16,7 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "../widget.h"
 
 using namespace openloco::interop;

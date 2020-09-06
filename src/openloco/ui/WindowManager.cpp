@@ -17,7 +17,7 @@
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "scrollview.h"
 #include <algorithm>
 #include <cinttypes>

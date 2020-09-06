@@ -18,7 +18,7 @@
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "../widget.h"
 
 using namespace openloco::interop;

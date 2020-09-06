@@ -13,7 +13,7 @@
 #include "objects/road_station_object.h"
 #include "OpenLoco.h"
 #include "ui/WindowManager.h"
-#include "viewportmgr.h"
+#include "ViewportManager.h"
 #include <algorithm>
 #include <cassert>
 

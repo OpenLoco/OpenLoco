@@ -24,7 +24,7 @@
 #include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "interop.hpp"
 
 using namespace openloco;

@@ -8,7 +8,7 @@
 #include "../objects/vehicle_object.h"
 #include "../OpenLoco.h"
 #include "../utility/numeric.hpp"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 #include "misc.h"
 #include "thingmgr.h"
 #include <algorithm>

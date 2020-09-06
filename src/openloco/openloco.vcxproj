@@ -85,7 +85,7 @@
       <PreprocessorDefinitions Condition="'$(GIT_DESCRIBE)'!=''">OPENLOCO_VERSION_TAG="$(GIT_DESCRIBE)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Viewport.cpp" />
-    <ClCompile Include="viewportmgr.cpp" />
+    <ClCompile Include="ViewportManager.cpp" />
     <ClCompile Include="widget.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="windows\about.cpp" />
@@ -238,7 +238,7 @@
     <ClInclude Include="utility\string.hpp" />
     <ClInclude Include="utility\yaml.hpp" />
     <ClInclude Include="Viewport.hpp" />
-    <ClInclude Include="viewportmgr.h" />
+    <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="widget.h" />
     <ClInclude Include="win32.h" />
     <ClInclude Include="window.h" />

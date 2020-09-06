@@ -15,7 +15,7 @@
 #include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../viewportmgr.h"
+#include "../ViewportManager.h"
 
 using namespace openloco::interop;
 
