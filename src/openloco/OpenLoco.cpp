@@ -38,7 +38,7 @@
 #include "objects/objectmgr.h"
 #include "OpenLoco.h"
 #include "platform/platform.h"
-#include "progressbar.h"
+#include "ProgressBar.h"
 #include "s5/s5.h"
 #include "scenariomgr.h"
 #include "stationmgr.h"

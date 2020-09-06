@@ -1,4 +1,4 @@
-#include "progressbar.h"
+#include "ProgressBar.h"
 #include "interop/interop.hpp"
 
 using namespace openloco::interop;

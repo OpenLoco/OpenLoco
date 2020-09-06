@@ -55,7 +55,7 @@
     <ClCompile Include="OpenLoco.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
-    <ClCompile Include="progressbar.cpp" />
+    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="s5\s5.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="scenariomgr.cpp" />
@@ -208,7 +208,7 @@
     <ClInclude Include="objects\water_object.h" />
     <ClInclude Include="OpenLoco.h" />
     <ClInclude Include="platform\platform.h" />
-    <ClInclude Include="progressbar.h" />
+    <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="s5\s5.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="scenariomgr.h" />
