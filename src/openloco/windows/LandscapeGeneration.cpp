@@ -9,7 +9,7 @@
 #include "../objects/land_object.h"
 #include "../objects/objectmgr.h"
 #include "../s5/s5.h"
-#include "../scenario.h"
+#include "../Scenario.h"
 #include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"

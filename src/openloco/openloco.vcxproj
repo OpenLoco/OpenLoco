@@ -57,7 +57,7 @@
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="s5\s5.cpp" />
-    <ClCompile Include="scenario.cpp" />
+    <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="scenariomgr.cpp" />
     <ClCompile Include="station.cpp" />
     <ClCompile Include="stationmgr.cpp" />
@@ -210,7 +210,7 @@
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="s5\s5.h" />
-    <ClInclude Include="scenario.h" />
+    <ClInclude Include="Scenario.h" />
     <ClInclude Include="scenariomgr.h" />
     <ClInclude Include="station.h" />
     <ClInclude Include="stationmgr.h" />

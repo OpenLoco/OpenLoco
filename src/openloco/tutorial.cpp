@@ -4,7 +4,7 @@
 #include "Gui.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
-#include "scenario.h"
+#include "Scenario.h"
 #include "ui.h"
 
 #include <fstream>

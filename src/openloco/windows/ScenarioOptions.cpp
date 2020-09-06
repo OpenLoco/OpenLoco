@@ -8,7 +8,7 @@
 #include "../objects/objectmgr.h"
 #include "../objects/scenario_text_object.h"
 #include "../s5/s5.h"
-#include "../scenario.h"
+#include "../Scenario.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include "../widget.h"

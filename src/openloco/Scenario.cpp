@@ -1,4 +1,4 @@
-#include "scenario.h"
+#include "Scenario.h"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "s5/s5.h"

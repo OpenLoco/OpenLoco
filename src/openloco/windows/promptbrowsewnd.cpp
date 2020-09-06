@@ -10,7 +10,7 @@
 #include "../OpenLoco.h"
 #include "../platform/platform.h"
 #include "../s5/s5.h"
-#include "../scenario.h"
+#include "../Scenario.h"
 #include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"

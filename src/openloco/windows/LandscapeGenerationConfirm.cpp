@@ -5,7 +5,7 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../scenario.h"
+#include "../Scenario.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
