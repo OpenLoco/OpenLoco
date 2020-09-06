@@ -8,6 +8,7 @@
 #include "../../objects/road_object.h"
 #include "../../objects/track_object.h"
 #include "../../ui/dropdown.h"
+#include "../../TrackData.h"
 #include "Construction.h"
 
 using namespace openloco::interop;
@@ -28,125 +29,7 @@ namespace openloco::ui::windows::construction::construction
 
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
-    static loco_global<previewTrack[1], 0x004F6D44> _unk_4F6D44;
-    static loco_global<previewTrack[1], 0x004F6D4F> _unk_4F6D4F;
-    static loco_global<previewTrack[1], 0x004F6D5A> _unk_4F6D5A;
-    static loco_global<previewTrack[4], 0x004F6D65> _unk_4F6D65;
-    static loco_global<previewTrack[4], 0x004F6D8E> _unk_4F6D8E;
-    static loco_global<previewTrack[2], 0x004F6DB7> _unk_4F6DB7;
-    static loco_global<previewTrack[2], 0x004F6DCC> _unk_4F6DCC;
-    static loco_global<previewTrack[1], 0x004F6DE1> _unk_4F6DE1;
-    static loco_global<previewTrack[1], 0x004F6DEC> _unk_4F6DEC;
-    static loco_global<previewTrack[1], 0x004F6DF7> _unk_4F6DF7;
-
-    // 0x004F6D1C
-    const previewTrack* roadPieces[] = {
-        _unk_4F6D44,
-        _unk_4F6D4F,
-        _unk_4F6D5A,
-        _unk_4F6D65,
-        _unk_4F6D8E,
-        _unk_4F6DB7,
-        _unk_4F6DCC,
-        _unk_4F6DE1,
-        _unk_4F6DEC,
-        _unk_4F6DF7,
-    };
-
-    static loco_global<previewTrack[1], 0x004F7488> _unk_4F7488;
-    static loco_global<previewTrack[4], 0x004F7493> _unk_4F7493;
-    static loco_global<previewTrack[1], 0x004F74BC> _unk_4F74BC;
-    static loco_global<previewTrack[1], 0x004F74C7> _unk_4F74C7;
-    static loco_global<previewTrack[4], 0x004F74D2> _unk_4F74D2;
-    static loco_global<previewTrack[4], 0x004F74FB> _unk_4F74FB;
-    static loco_global<previewTrack[5], 0x004F7524> _unk_4F7524;
-    static loco_global<previewTrack[5], 0x004F7557> _unk_4F7557;
-    static loco_global<previewTrack[5], 0x004F758A> _unk_4F758A;
-    static loco_global<previewTrack[5], 0x004F75BD> _unk_4F75BD;
-    static loco_global<previewTrack[5], 0x004F75F0> _unk_4F75F0;
-    static loco_global<previewTrack[5], 0x004F7623> _unk_4F7623;
-    static loco_global<previewTrack[4], 0x004F7656> _unk_4F7656;
-    static loco_global<previewTrack[4], 0x004F767F> _unk_4F767F;
-    static loco_global<previewTrack[2], 0x004F76A8> _unk_4F76A8;
-    static loco_global<previewTrack[2], 0x004F76BD> _unk_4F76BD;
-    static loco_global<previewTrack[1], 0x004F76D2> _unk_4F76D2;
-    static loco_global<previewTrack[1], 0x004F76DD> _unk_4F76DD;
-    static loco_global<previewTrack[4], 0x004F76E8> _unk_4F76E8;
-    static loco_global<previewTrack[4], 0x004F7711> _unk_4F7711;
-    static loco_global<previewTrack[4], 0x004F773A> _unk_4F773A;
-    static loco_global<previewTrack[4], 0x004F7763> _unk_4F7763;
-    static loco_global<previewTrack[4], 0x004F778C> _unk_4F778C;
-    static loco_global<previewTrack[4], 0x004F77B5> _unk_4F77B5;
-    static loco_global<previewTrack[4], 0x004F77DE> _unk_4F77DE;
-    static loco_global<previewTrack[4], 0x004F7807> _unk_4F7807;
-    static loco_global<previewTrack[1], 0x004F7830> _unk_4F7830;
-    static loco_global<previewTrack[1], 0x004F783B> _unk_4F783B;
-    static loco_global<previewTrack[1], 0x004F7846> _unk_4F7846;
-    static loco_global<previewTrack[1], 0x004F7851> _unk_4F7851;
-    static loco_global<previewTrack[1], 0x004F785C> _unk_4F785C;
-    static loco_global<previewTrack[1], 0x004F7867> _unk_4F7867;
-    static loco_global<previewTrack[1], 0x004F7872> _unk_4F7872;
-    static loco_global<previewTrack[1], 0x004F787D> _unk_4F787D;
-    static loco_global<previewTrack[1], 0x004F7888> _unk_4F7888;
-    static loco_global<previewTrack[1], 0x004F7893> _unk_4F7893;
-    static loco_global<previewTrack[1], 0x004F789E> _unk_4F789E;
-    static loco_global<previewTrack[1], 0x004F78A9> _unk_4F78A9;
-    static loco_global<previewTrack[1], 0x004F78B4> _unk_4F78B4;
-    static loco_global<previewTrack[1], 0x004F78BF> _unk_4F78BF;
-    static loco_global<previewTrack[1], 0x004F78CA> _unk_4F78CA;
-    static loco_global<previewTrack[1], 0x004F78D5> _unk_4F78D5;
-    static loco_global<previewTrack[1], 0x004F78E0> _unk_4F78E0;
-    static loco_global<previewTrack[1], 0x004F78EB> _unk_4F78EB;
-
-    // 0x004F73D8
-    const previewTrack* trackPieces[] = {
-        _unk_4F7488,
-        _unk_4F7493,
-        _unk_4F74BC,
-        _unk_4F74C7,
-        _unk_4F74D2,
-        _unk_4F74FB,
-        _unk_4F7524,
-        _unk_4F7557,
-        _unk_4F758A,
-        _unk_4F75BD,
-        _unk_4F75F0,
-        _unk_4F7623,
-        _unk_4F7656,
-        _unk_4F767F,
-        _unk_4F76A8,
-        _unk_4F76BD,
-        _unk_4F76D2,
-        _unk_4F76DD,
-        _unk_4F76E8,
-        _unk_4F7711,
-        _unk_4F773A,
-        _unk_4F7763,
-        _unk_4F778C,
-        _unk_4F77B5,
-        _unk_4F77DE,
-        _unk_4F7807,
-        _unk_4F7830,
-        _unk_4F783B,
-        _unk_4F7846,
-        _unk_4F7851,
-        _unk_4F785C,
-        _unk_4F7867,
-        _unk_4F7872,
-        _unk_4F787D,
-        _unk_4F7888,
-        _unk_4F7893,
-        _unk_4F789E,
-        _unk_4F78A9,
-        _unk_4F78B4,
-        _unk_4F78BF,
-        _unk_4F78CA,
-        _unk_4F78D5,
-        _unk_4F78E0,
-        _unk_4F78EB,
-    };
-
-    namespace TrackPiece
+     namespace TrackPiece
     {
         enum
         {
@@ -410,20 +293,18 @@ namespace openloco::ui::windows::construction::construction
             roadId = road->id;
         }
 
-        auto roadPiece = roadPieces[roadId];
-        auto i = 0;
+        auto roadPiece = openloco::map::TrackData::getRoadPiece(roadId);
         auto posId = 0;
         rotation &= 3;
 
-        while (roadPiece[i].index != 0xFF)
+        for (const auto& roadPart : roadPiece)
         {
-            if (roadPiece[i].flags & previewTrackFlags::diagonal)
+            if (roadPart.flags & openloco::map::TrackData::PreviewTrackFlags::diagonal)
             {
-                i++;
                 continue;
             }
 
-            map_pos pos = { roadPiece[i].x, roadPiece[i].y };
+            map_pos pos = { roadPart.x, roadPart.y };
 
             pos = rotate2dCoordinate(pos, rotation);
 
@@ -431,7 +312,6 @@ namespace openloco::ui::windows::construction::construction
             pos.y += y;
             _mapSelectedTiles[posId] = pos;
             posId++;
-            i++;
         }
 
         _mapSelectedTiles[posId].x = -1;
@@ -607,19 +487,17 @@ namespace openloco::ui::windows::construction::construction
             trackId = track->id;
         }
 
-        auto trackPiece = trackPieces[trackId];
-        auto i = 0;
+        auto trackPiece = openloco::map::TrackData::getTrackPiece(trackId);
         auto posId = 0;
         rotation &= 3;
 
-        while (trackPiece[i].index != 0xFF)
+        for (const auto& trackPart : trackPiece)
         {
-            if (trackPiece[i].flags & previewTrackFlags::diagonal)
+            if (trackPart.flags & openloco::map::TrackData::PreviewTrackFlags::diagonal)
             {
-                i++;
                 continue;
             }
-            map_pos pos = { trackPiece[i].x, trackPiece[i].y };
+            map_pos pos = { trackPart.x, trackPart.y };
 
             pos = rotate2dCoordinate(pos, rotation);
 
@@ -627,7 +505,6 @@ namespace openloco::ui::windows::construction::construction
             pos.y += y;
             _mapSelectedTiles[posId] = pos;
             posId++;
-            i++;
         }
 
         _mapSelectedTiles[posId].x = -1;
@@ -1820,15 +1697,13 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                auto roadPiece = roadPieces[_byte_1136065];
-                i = 0;
+                auto roadPiece = openloco::map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
 
-                while (roadPiece[i].index != 0xFF)
+                for (const auto& roadPart : roadPiece)
                 {
-                    if (maxRoadPieceHeight > roadPiece[i].z)
-                        maxRoadPieceHeight = roadPiece[i].z;
-                    i++;
+                    if (maxRoadPieceHeight > roadPart.z)
+                        maxRoadPieceHeight = roadPart.z;
                 }
 
                 roadHeight -= maxRoadPieceHeight;
@@ -1925,15 +1800,13 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                auto trackPiece = trackPieces[_byte_1136065];
-                i = 0;
+                auto trackPiece = openloco::map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
 
-                while (trackPiece[i].index != 0xFF)
+                for (const auto& trackPart : trackPiece)
                 {
-                    if (maxTrackPieceHeight > trackPiece[i].z)
-                        maxTrackPieceHeight = trackPiece[i].z;
-                    i++;
+                    if (maxTrackPieceHeight > trackPart.z)
+                        maxTrackPieceHeight = trackPart.z;
                 }
 
                 trackHeight -= maxTrackPieceHeight;
@@ -2139,17 +2012,12 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                auto roadPiece = roadPieces[_lastSelectedTrackPieceId];
-                auto i = 0;
+                auto roadPiece = openloco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& lastRoadPart = roadPiece.back();
 
-                while (roadPiece[i + 1].index != 0xFF)
-                {
-                    i++;
-                }
+                map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                map_pos3 pos3D = { roadPiece[i].x, roadPiece[i].y, roadPiece[i].z };
-
-                if (roadPiece[i].flags & (1 << 6))
+                if (lastRoadPart.flags & (1 << 6))
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2194,17 +2062,12 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                auto trackPiece = trackPieces[_lastSelectedTrackPieceId];
-                auto i = 0;
+                auto trackPiece = openloco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& lastTrackPart = trackPiece.back();
 
-                while (trackPiece[i + 1].index != 0xFF)
-                {
-                    i++;
-                }
+                map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                map_pos3 pos3D = { trackPiece[i].x, trackPiece[i].y, trackPiece[i].z };
-
-                if (trackPiece[i].flags & (1 << 6))
+                if (lastTrackPart.flags & (1 << 6))
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
