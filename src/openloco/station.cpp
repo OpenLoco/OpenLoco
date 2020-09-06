@@ -4,7 +4,7 @@
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
-#include "messagemgr.h"
+#include "MessageManager.h"
 #include "objects/airport_object.h"
 #include "objects/building_object.h"
 #include "objects/cargo_object.h"

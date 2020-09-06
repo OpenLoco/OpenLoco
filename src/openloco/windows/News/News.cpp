@@ -8,7 +8,7 @@
 #include "../../localisation/FormatArguments.hpp"
 #include "../../localisation/string_ids.h"
 #include "../../Message.h"
-#include "../../messagemgr.h"
+#include "../../MessageManager.h"
 #include "../../objects/objectmgr.h"
 #include "../../objects/vehicle_object.h"
 #include "../../stationmgr.h"

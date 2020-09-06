@@ -12,7 +12,7 @@
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../Message.h"
-#include "../messagemgr.h"
+#include "../MessageManager.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../openloco.h"

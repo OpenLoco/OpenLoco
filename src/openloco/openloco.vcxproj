@@ -48,7 +48,7 @@
     <ClCompile Include="map\SurfaceTile.cpp" />
     <ClCompile Include="map\tile.cpp" />
     <ClCompile Include="map\tilemgr.cpp" />
-    <ClCompile Include="messagemgr.cpp" />
+    <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="multiplayer.cpp" />
     <ClCompile Include="objects\industry_object.cpp" />
     <ClCompile Include="objects\objectmgr.cpp" />
@@ -179,7 +179,7 @@
     <ClInclude Include="map\tile.h" />
     <ClInclude Include="map\tilemgr.h" />
     <ClInclude Include="map\tile_loop.hpp" />
-    <ClInclude Include="messagemgr.h" />
+    <ClInclude Include="MessageManager.h" />
     <ClInclude Include="multiplayer.h" />
     <ClInclude Include="objects\airport_object.h" />
     <ClInclude Include="objects\bridge_object.h" />

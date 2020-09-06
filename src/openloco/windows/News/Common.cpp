@@ -3,7 +3,7 @@
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
 #include "../../Message.h"
-#include "../../messagemgr.h"
+#include "../../MessageManager.h"
 #include "../../objects/interface_skin_object.h"
 #include "../../objects/objectmgr.h"
 #include "News.h"

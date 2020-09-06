@@ -1,4 +1,4 @@
-#include "messagemgr.h"
+#include "MessageManager.h"
 #include "interop/interop.hpp"
 #include "openloco.h"
 

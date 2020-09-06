@@ -2,7 +2,7 @@
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
 #include "../../Message.h"
-#include "../../messagemgr.h"
+#include "../../MessageManager.h"
 #include "News.h"
 
 using namespace openloco::interop;
