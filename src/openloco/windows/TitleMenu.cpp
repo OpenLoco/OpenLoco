@@ -4,7 +4,7 @@
 #include "../graphics/image_ids.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../intro.h"
+#include "../Intro.h"
 #include "../localisation/string_ids.h"
 #include "../map/tile.h"
 #include "../multiplayer.h"

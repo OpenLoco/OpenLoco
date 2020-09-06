@@ -30,7 +30,7 @@
 #include "IndustryManager.h"
 #include "Input.h"
 #include "interop/interop.hpp"
-#include "intro.h"
+#include "Intro.h"
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"

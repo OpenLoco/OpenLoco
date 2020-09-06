@@ -36,7 +36,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "interop/interop.hpp"
-#include "intro.h"
+#include "Intro.h"
 #include "multiplayer.h"
 #include "openloco.h"
 #include "tutorial.h"

@@ -7,7 +7,7 @@
 #include "../graphics/image_ids.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../intro.h"
+#include "../Intro.h"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/competitor_object.h"

@@ -7,7 +7,7 @@
 #include "../graphics/colours.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../intro.h"
+#include "../Intro.h"
 #include "../map/tile.h"
 #include "../map/tilemgr.h"
 #include "../multiplayer.h"

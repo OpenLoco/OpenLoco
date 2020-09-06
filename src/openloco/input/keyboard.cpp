@@ -5,7 +5,7 @@
 #include "../GameCommands.h"
 #include "../Input.h"
 #include "../interop/interop.hpp"
-#include "../intro.h"
+#include "../Intro.h"
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../things/thingmgr.h"

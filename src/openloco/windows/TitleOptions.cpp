@@ -2,7 +2,7 @@
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
-#include "../intro.h"
+#include "../Intro.h"
 #include "../localisation/string_ids.h"
 #include "../openloco.h"
 #include "../ui.h"

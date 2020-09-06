@@ -39,7 +39,7 @@
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
     <ClCompile Include="interop\interop.cpp" />
-    <ClCompile Include="intro.cpp" />
+    <ClCompile Include="Intro.cpp" />
     <ClCompile Include="localisation\conversion.cpp" />
     <ClCompile Include="localisation\languagefiles.cpp" />
     <ClCompile Include="localisation\languages.cpp" />
@@ -166,7 +166,7 @@
     <ClInclude Include="input\Shortcut.h" />
     <ClInclude Include="input\ShortcutManager.h" />
     <ClInclude Include="interop\interop.hpp" />
-    <ClInclude Include="intro.h" />
+    <ClInclude Include="Intro.h" />
     <ClInclude Include="localisation\argswrapper.hpp" />
     <ClInclude Include="localisation\conversion.h" />
     <ClInclude Include="localisation\FormatArguments.hpp" />
