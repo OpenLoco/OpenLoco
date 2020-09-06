@@ -13,7 +13,7 @@
 #include "../Tutorial.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
-#include "../window.h"
+#include "../Window.h"
 #include <map>
 
 using namespace openloco::interop;

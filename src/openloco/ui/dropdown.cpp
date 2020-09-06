@@ -6,7 +6,7 @@
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"
 #include "../objects/objectmgr.h"
-#include "../window.h"
+#include "../Window.h"
 
 #include <cassert>
 #include <cstdarg>

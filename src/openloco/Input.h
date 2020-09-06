@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui/WindowManager.h"
-#include "window.h"
+#include "Window.h"
 
 namespace openloco::input
 {

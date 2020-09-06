@@ -2,7 +2,7 @@
 
 #include "graphics/gfx.h"
 #include "localisation/stringmgr.h"
-#include "window.h"
+#include "Window.h"
 #include <cstdint>
 
 namespace openloco::ui::widget

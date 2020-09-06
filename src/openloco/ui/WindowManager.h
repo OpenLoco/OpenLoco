@@ -5,7 +5,7 @@
 #include "../localisation/stringmgr.h"
 #include "../map/tile.h"
 #include "../Viewport.hpp"
-#include "../window.h"
+#include "../Window.h"
 #include <cstddef>
 
 namespace openloco

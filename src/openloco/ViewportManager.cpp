@@ -8,7 +8,7 @@
 #include "things/thing.h"
 #include "things/thingmgr.h"
 #include "Ui.h"
-#include "window.h"
+#include "Window.h"
 #include <algorithm>
 #include <cassert>
 #include <memory>

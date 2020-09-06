@@ -1,4 +1,4 @@
-#include "window.h"
+#include "Window.h"
 #include "Config.h"
 #include "Console.h"
 #include "graphics/colours.h"

@@ -87,7 +87,7 @@
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="ViewportManager.cpp" />
     <ClCompile Include="Widget.cpp" />
-    <ClCompile Include="window.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClCompile Include="windows\about.cpp" />
     <ClCompile Include="windows\AboutMusic.cpp" />
     <ClCompile Include="windows\BuildVehicle.cpp" />
@@ -241,7 +241,7 @@
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="Win32.h" />
-    <ClInclude Include="window.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="windows\construction\Construction.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="windows\News\News.h" />

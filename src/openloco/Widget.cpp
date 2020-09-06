@@ -4,7 +4,7 @@
 #include "Input.h"
 #include "interop/interop.hpp"
 #include "ui/scrollview.h"
-#include "window.h"
+#include "Window.h"
 #include <cassert>
 
 using namespace openloco::interop;

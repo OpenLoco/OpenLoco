@@ -4,7 +4,7 @@
 #include "Station.h"
 #include "things/thing.h"
 #include "Types.hpp"
-#include "window.h"
+#include "Window.h"
 #include <array>
 
 namespace openloco::ui::viewportmgr

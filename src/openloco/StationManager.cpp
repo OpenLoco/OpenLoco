@@ -4,7 +4,7 @@
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "ui/WindowManager.h"
-#include "window.h"
+#include "Window.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;

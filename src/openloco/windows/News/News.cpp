@@ -15,7 +15,7 @@
 #include "../../things/thingmgr.h"
 #include "../../TownManager.h"
 #include "../../ViewportManager.h"
-#include "../../window.h"
+#include "../../Window.h"
 
 using namespace openloco::interop;
 
