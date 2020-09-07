@@ -23,7 +23,7 @@
 #include "Config.h"
 #include "Date.h"
 #include "Environment.h"
-#include "Graphics/Colours.h"
+#include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "IndustryManager.h"

@@ -3,7 +3,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../GameCommands.h"
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/image_ids.h"
 #include "../Input.h"

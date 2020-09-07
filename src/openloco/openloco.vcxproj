@@ -156,7 +156,7 @@
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="GameCommands.h" />
-    <ClInclude Include="Graphics\Colours.h" />
+    <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\image_ids.h" />
     <ClInclude Include="Graphics\types.h" />

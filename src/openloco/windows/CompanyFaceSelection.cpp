@@ -2,7 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Core/Optional.hpp"
 #include "../GameCommands.h"
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/image_ids.h"
 #include "../Input.h"
 #include "../OpenLoco.h"

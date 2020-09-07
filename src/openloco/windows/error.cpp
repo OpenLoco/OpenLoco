@@ -1,6 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/image_ids.h"
 #include "../OpenLoco.h"
 #include "../interop/interop.hpp"

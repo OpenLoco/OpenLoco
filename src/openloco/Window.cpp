@@ -1,7 +1,7 @@
 #include "Window.h"
 #include "Config.h"
 #include "Console.h"
-#include "Graphics/Colours.h"
+#include "Graphics/Colour.h"
 #include "Input.h"
 #include "Ui.h"
 #include "Widget.h"

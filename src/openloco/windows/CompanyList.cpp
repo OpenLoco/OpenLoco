@@ -1,7 +1,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Date.h"
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/image_ids.h"
 #include "../Input.h"
 #include "../OpenLoco.h"

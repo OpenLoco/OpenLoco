@@ -8,7 +8,7 @@
 #include "../localisation/languagefiles.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
-#include "Colours.h"
+#include "Colour.h"
 #include "image_ids.h"
 #include <algorithm>
 #include <cassert>

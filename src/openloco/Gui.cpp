@@ -1,5 +1,5 @@
 #include "Gui.h"
-#include "Graphics/Colours.h"
+#include "Graphics/Colour.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"

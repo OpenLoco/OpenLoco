@@ -1,4 +1,4 @@
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Scenario.h"

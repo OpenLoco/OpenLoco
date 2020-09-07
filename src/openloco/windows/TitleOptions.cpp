@@ -1,5 +1,5 @@
 #include "../GameCommands.h"
-#include "../Graphics/Colours.h"
+#include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Intro.h"
 #include "../OpenLoco.h"
