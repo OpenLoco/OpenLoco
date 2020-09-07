@@ -1,6 +1,6 @@
 #include "Viewport.hpp"
+#include "Graphics/gfx.h"
 #include "Window.h"
-#include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"
 

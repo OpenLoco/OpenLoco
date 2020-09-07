@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Graphics/gfx.h"
 #include "Types.hpp"
-#include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include <algorithm>
 

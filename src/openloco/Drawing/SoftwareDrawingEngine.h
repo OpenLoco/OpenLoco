@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../graphics/gfx.h"
+#include "../Graphics/gfx.h"
 #include "../ui/Rect.h"
 #include <algorithm>
 #include <cstddef>

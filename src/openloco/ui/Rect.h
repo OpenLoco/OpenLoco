@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../graphics/types.h"
+#include "../Graphics/types.h"
 #include <algorithm>
 #include <cstddef>
 
