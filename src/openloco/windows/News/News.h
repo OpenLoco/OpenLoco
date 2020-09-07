@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Company.h"
-#include "../../Graphics/gfx.h"
+#include "../../Graphics/Gfx.h"
 #include "../../interop/interop.hpp"
 #include "../../ui/WindowManager.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "Types.hpp"
 #include "interop/interop.hpp"
 #include <algorithm>

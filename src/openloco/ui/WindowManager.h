@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Company.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../Viewport.hpp"
 #include "../Window.h"
 #include "../localisation/stringmgr.h"

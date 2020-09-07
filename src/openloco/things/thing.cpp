@@ -1,6 +1,6 @@
 #include "thing.h"
 #include "../Config.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../ViewportManager.h"
 #include "../interop/interop.hpp"
 #include <algorithm>

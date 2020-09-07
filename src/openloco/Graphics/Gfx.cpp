@@ -1,4 +1,4 @@
-#include "gfx.h"
+#include "Gfx.h"
 #include "../Console.h"
 #include "../Drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"

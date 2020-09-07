@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "Window.h"
 #include "localisation/stringmgr.h"
 #include <cstdint>

@@ -1,5 +1,5 @@
 #include "../Graphics/Colours.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Ui.h"
 #include "../interop/interop.hpp"

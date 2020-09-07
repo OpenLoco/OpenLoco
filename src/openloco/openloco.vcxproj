@@ -28,7 +28,7 @@
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
-    <ClCompile Include="Graphics\gfx.cpp" />
+    <ClCompile Include="Graphics\Gfx.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Industry.cpp" />
     <ClCompile Include="IndustryManager.cpp" />
@@ -157,7 +157,7 @@
     <ClInclude Include="Environment.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="Graphics\Colours.h" />
-    <ClInclude Include="Graphics\gfx.h" />
+    <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\image_ids.h" />
     <ClInclude Include="Graphics\types.h" />
     <ClInclude Include="Gui.h" />

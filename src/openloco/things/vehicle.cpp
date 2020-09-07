@@ -1,7 +1,7 @@
 #include "vehicle.h"
 #include "../Audio/Audio.h"
 #include "../Config.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../interop/interop.hpp"

@@ -1,6 +1,6 @@
 #include "../GameCommands.h"
 #include "../Graphics/Colours.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../Graphics/image_ids.h"
 #include "../Input.h"
 #include "../Intro.h"

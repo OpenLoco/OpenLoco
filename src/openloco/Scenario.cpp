@@ -1,5 +1,5 @@
 #include "Scenario.h"
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "interop/interop.hpp"
 #include "s5/s5.h"
 #include "ui/WindowManager.h"

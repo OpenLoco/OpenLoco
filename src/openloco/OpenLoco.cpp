@@ -24,7 +24,7 @@
 #include "Date.h"
 #include "Environment.h"
 #include "Graphics/Colours.h"
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Input.h"

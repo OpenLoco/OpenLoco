@@ -2,7 +2,7 @@
 
 #include "Company.h"
 #include "Core/Optional.hpp"
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"

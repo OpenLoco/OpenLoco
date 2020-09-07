@@ -1,5 +1,5 @@
 #include "Viewport.hpp"
-#include "Graphics/gfx.h"
+#include "Graphics/Gfx.h"
 #include "Window.h"
 #include "interop/interop.hpp"
 #include "map/tile.h"

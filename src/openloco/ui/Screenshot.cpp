@@ -1,5 +1,5 @@
 #include "Screenshot.h"
-#include "../Graphics/gfx.h"
+#include "../Graphics/Gfx.h"
 #include "../Ui.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
