@@ -16,7 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio\Audio.cpp" />
-    <ClCompile Include="Audio\channel.cpp" />
+    <ClCompile Include="Audio\Channel.cpp" />
     <ClCompile Include="Audio\music_channel.cpp" />
     <ClCompile Include="Audio\vehicle_channel.cpp" />
     <ClCompile Include="Company.cpp" />
@@ -142,7 +142,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\resources\Resource.h" />
     <ClInclude Include="Audio\Audio.h" />
-    <ClInclude Include="Audio\channel.h" />
+    <ClInclude Include="Audio\Channel.h" />
     <ClInclude Include="Audio\music_channel.h" />
     <ClInclude Include="Audio\vehicle_channel.h" />
     <ClInclude Include="Company.h" />

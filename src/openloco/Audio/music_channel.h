@@ -3,7 +3,7 @@
 #include "../core/FileSystem.hpp"
 #include "../things/thing.h"
 #include "Audio.h"
-#include "channel.h"
+#include "Channel.h"
 
 struct _Mix_Music;
 typedef struct _Mix_Music Mix_Music;

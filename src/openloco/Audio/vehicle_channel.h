@@ -2,7 +2,7 @@
 
 #include "../things/thing.h"
 #include "Audio.h"
-#include "channel.h"
+#include "Channel.h"
 
 namespace openloco::audio
 {

@@ -12,7 +12,7 @@
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
-#include "channel.h"
+#include "Channel.h"
 #include "music_channel.h"
 #include "vehicle_channel.h"
 #include <SDL2/SDL.h>

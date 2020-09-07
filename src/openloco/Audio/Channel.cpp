@@ -1,4 +1,4 @@
-#include "channel.h"
+#include "Channel.h"
 #include "../Console.h"
 #include "Audio.h"
 #include <SDL2/SDL_mixer.h>
