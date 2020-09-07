@@ -1,4 +1,4 @@
-#include "audio.h"
+#include "Audio.h"
 #include "../Config.h"
 #include "../Console.h"
 #include "../Date.h"
@@ -12,9 +12,9 @@
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
-#include "channel.h"
-#include "music_channel.h"
-#include "vehicle_channel.h"
+#include "Channel.h"
+#include "MusicChannel.h"
+#include "VehicleChannel.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <array>

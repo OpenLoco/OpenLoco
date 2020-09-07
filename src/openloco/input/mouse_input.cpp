@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Console.h"
 #include "../Input.h"
@@ -5,7 +6,6 @@
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Window.h"
-#include "../audio/audio.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"

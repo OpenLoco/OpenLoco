@@ -2,8 +2,8 @@
 
 #include "../core/FileSystem.hpp"
 #include "../things/thing.h"
-#include "audio.h"
-#include "channel.h"
+#include "Audio.h"
+#include "Channel.h"
 
 struct _Mix_Music;
 typedef struct _Mix_Music Mix_Music;

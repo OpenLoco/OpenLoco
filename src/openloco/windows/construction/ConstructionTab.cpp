@@ -1,7 +1,7 @@
+#include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../Input.h"
 #include "../../TrackData.h"
-#include "../../audio/audio.h"
 #include "../../graphics/image_ids.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/bridge_object.h"

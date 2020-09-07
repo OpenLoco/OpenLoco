@@ -18,6 +18,7 @@
 #undef small
 #endif
 
+#include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
@@ -36,7 +37,6 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "ViewportManager.h"
-#include "audio/audio.h"
 #include "graphics/colours.h"
 #include "graphics/gfx.h"
 #include "interop/interop.hpp"

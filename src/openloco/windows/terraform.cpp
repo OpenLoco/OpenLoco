@@ -1,7 +1,7 @@
+#include "../Audio/Audio.h"
 #include "../GameCommands.h"
 #include "../Input.h"
 #include "../Widget.h"
-#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"

@@ -1,4 +1,4 @@
-#include "vehicle_channel.h"
+#include "VehicleChannel.h"
 #include "../interop/interop.hpp"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"

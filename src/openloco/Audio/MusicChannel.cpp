@@ -1,4 +1,4 @@
-#include "music_channel.h"
+#include "MusicChannel.h"
 #include <SDL2/SDL_mixer.h>
 
 using namespace openloco::audio;

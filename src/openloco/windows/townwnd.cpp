@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Date.h"
@@ -7,7 +8,6 @@
 #include "../TownManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"

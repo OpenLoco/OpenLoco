@@ -1,7 +1,7 @@
+#include "../../Audio/Audio.h"
 #include "../../Config.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../audio/audio.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
 #include "../../objects/interface_skin_object.h"
