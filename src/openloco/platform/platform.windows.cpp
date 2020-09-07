@@ -10,7 +10,7 @@
 #include <shlobj.h>
 #include <windows.h>
 
-#include "../ui.h"
+#include "../Ui.h"
 #include "../utility/string.hpp"
 #include "platform.h"
 

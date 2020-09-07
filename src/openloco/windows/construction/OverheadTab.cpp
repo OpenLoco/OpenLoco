@@ -1,6 +1,6 @@
-#include "../../companymgr.h"
+#include "../../CompanyManager.h"
+#include "../../Input.h"
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/objectmgr.h"
 #include "../../objects/road_extra_object.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../company.h"
+#include "../../Company.h"
 #include "../../graphics/gfx.h"
 #include "../../interop/interop.hpp"
 #include "../../ui/WindowManager.h"

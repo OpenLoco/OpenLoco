@@ -1,9 +1,9 @@
+#include "../OpenLoco.h"
+#include "../Ui.h"
+#include "../Window.h"
 #include "../graphics/colours.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
-#include "../ui.h"
 #include "../ui/WindowManager.h"
-#include "../window.h"
 
 using namespace openloco::interop;
 

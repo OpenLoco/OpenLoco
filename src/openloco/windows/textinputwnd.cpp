@@ -1,4 +1,5 @@
-#include "../companymgr.h"
+#include "../CompanyManager.h"
+#include "../Win32.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
@@ -6,7 +7,6 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
-#include "../win32.h"
 #include <cassert>
 
 #ifdef _WIN32

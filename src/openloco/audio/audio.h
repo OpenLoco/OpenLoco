@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../environment.h"
-#include "../types.hpp"
+#include "../Environment.h"
+#include "../Types.hpp"
 #include <string>
 #include <tuple>
 #include <vector>

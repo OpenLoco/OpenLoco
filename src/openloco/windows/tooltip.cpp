@@ -1,10 +1,10 @@
+#include "../Input.h"
+#include "../Ui.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../ui.h"
 #include "../ui/WindowManager.h"
 #include <algorithm>
 #include <cstring>

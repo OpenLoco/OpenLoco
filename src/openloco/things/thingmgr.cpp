@@ -1,6 +1,6 @@
 #include "thingmgr.h"
+#include "../OpenLoco.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
 
 using namespace openloco::interop;
 

@@ -1,7 +1,7 @@
-#include "../companymgr.h"
-#include "../input.h"
+#include "../CompanyManager.h"
+#include "../Input.h"
+#include "../OpenLoco.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 

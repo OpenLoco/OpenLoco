@@ -1,6 +1,8 @@
+#include "../Input.h"
+#include "../Scenario.h"
+#include "../Widget.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/cargo_object.h"
@@ -8,10 +10,8 @@
 #include "../objects/objectmgr.h"
 #include "../objects/scenario_text_object.h"
 #include "../s5/s5.h"
-#include "../scenario.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../widget.h"
 
 using namespace openloco::interop;
 

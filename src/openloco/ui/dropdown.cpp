@@ -1,12 +1,12 @@
 #include "dropdown.h"
-#include "../companymgr.h"
-#include "../console.h"
-#include "../input.h"
+#include "../CompanyManager.h"
+#include "../Console.h"
+#include "../Input.h"
+#include "../Window.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"
 #include "../objects/objectmgr.h"
-#include "../window.h"
 
 #include <cassert>
 #include <cstdarg>

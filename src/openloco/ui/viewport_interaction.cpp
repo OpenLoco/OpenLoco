@@ -1,10 +1,10 @@
-#include "../input.h"
+#include "../Input.h"
+#include "../StationManager.h"
+#include "../Ui.h"
+#include "../Window.h"
 #include "../interop/interop.hpp"
 #include "../localisation/stringmgr.h"
-#include "../stationmgr.h"
-#include "../ui.h"
 #include "../ui/scrollview.h"
-#include "../window.h"
 #include "WindowManager.h"
 
 using namespace openloco::interop;

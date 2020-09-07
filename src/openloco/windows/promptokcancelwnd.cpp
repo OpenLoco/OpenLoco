@@ -1,9 +1,9 @@
+#include "../Input.h"
+#include "../OpenLoco.h"
+#include "../Ui.h"
 #include "../audio/audio.h"
 #include "../graphics/colours.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
-#include "../ui.h"
 #include "../ui/WindowManager.h"
 #include <cstring>
 

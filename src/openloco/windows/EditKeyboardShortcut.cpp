@@ -1,4 +1,4 @@
-#include "../config.h"
+#include "../Config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../input/Shortcut.h"

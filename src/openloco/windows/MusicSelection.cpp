@@ -1,5 +1,6 @@
+#include "../Config.h"
+#include "../OpenLoco.h"
 #include "../audio/audio.h"
-#include "../config.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
 #include "../interop/interop.hpp"
@@ -7,7 +8,6 @@
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
-#include "../openloco.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

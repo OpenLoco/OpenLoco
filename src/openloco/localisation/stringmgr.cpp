@@ -1,10 +1,10 @@
 #include "stringmgr.h"
-#include "../config.h"
-#include "../date.h"
+#include "../Config.h"
+#include "../Date.h"
+#include "../TownManager.h"
 #include "../interop/interop.hpp"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
-#include "../townmgr.h"
 #include "argswrapper.hpp"
 #include "string_ids.h"
 

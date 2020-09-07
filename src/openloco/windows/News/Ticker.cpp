@@ -1,8 +1,8 @@
+#include "../../Message.h"
+#include "../../MessageManager.h"
 #include "../../audio/audio.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
-#include "../../message.h"
-#include "../../messagemgr.h"
 #include "News.h"
 
 using namespace openloco::interop;

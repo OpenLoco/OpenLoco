@@ -1,6 +1,7 @@
-#include "../../companymgr.h"
+#include "../../CompanyManager.h"
+#include "../../Input.h"
+#include "../../StationManager.h"
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/airport_object.h"
 #include "../../objects/cargo_object.h"
@@ -10,7 +11,6 @@
 #include "../../objects/road_station_object.h"
 #include "../../objects/track_object.h"
 #include "../../objects/train_station_object.h"
-#include "../../stationmgr.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"
 

@@ -1,7 +1,10 @@
+#include "../Input.h"
+#include "../Scenario.h"
+#include "../TownManager.h"
+#include "../Widget.h"
 #include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
@@ -9,11 +12,8 @@
 #include "../objects/land_object.h"
 #include "../objects/objectmgr.h"
 #include "../s5/s5.h"
-#include "../scenario.h"
-#include "../townmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../widget.h"
 
 using namespace openloco::interop;
 

@@ -1,7 +1,7 @@
-#include "../company.h"
+#include "../Company.h"
+#include "../Window.h"
 #include "../graphics/colours.h"
 #include "../localisation/stringmgr.h"
-#include "../window.h"
 #include <cstdlib>
 #include <vector>
 

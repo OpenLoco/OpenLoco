@@ -1,9 +1,11 @@
+#include "../Config.h"
+#include "../Date.h"
+#include "../Input.h"
+#include "../Ui.h"
+#include "../Widget.h"
 #include "../audio/audio.h"
-#include "../config.h"
-#include "../date.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/languagefiles.h"
@@ -13,10 +15,8 @@
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../s5/s5.h"
-#include "../ui.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
-#include "../widget.h"
 #include <cassert>
 
 using namespace openloco::interop;

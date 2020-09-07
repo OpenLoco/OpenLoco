@@ -1,8 +1,10 @@
-#include "../companymgr.h"
-#include "../game_commands.h"
+#include "../CompanyManager.h"
+#include "../GameCommands.h"
+#include "../Input.h"
+#include "../OpenLoco.h"
+#include "../Widget.h"
 #include "../graphics/colours.h"
 #include "../graphics/image_ids.h"
-#include "../input.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/cargo_object.h"
@@ -13,11 +15,9 @@
 #include "../objects/track_extra_object.h"
 #include "../objects/track_object.h"
 #include "../objects/vehicle_object.h"
-#include "../openloco.h"
 #include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
-#include "../widget.h"
 
 using namespace openloco::interop;
 

@@ -1,8 +1,8 @@
 #ifndef _WIN32
 
-#include "../console.h"
+#include "../Console.h"
+#include "../OpenLoco.h"
 #include "../interop/interop.hpp"
-#include "../openloco.h"
 #include "platform.h"
 #include <iostream>
 #include <pwd.h>

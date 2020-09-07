@@ -1,7 +1,9 @@
-#include "../../companymgr.h"
-#include "../../date.h"
+#include "../../CompanyManager.h"
+#include "../../Date.h"
+#include "../../Input.h"
+#include "../../StationManager.h"
+#include "../../Widget.h"
 #include "../../graphics/image_ids.h"
-#include "../../input.h"
 #include "../../objects/airport_object.h"
 #include "../../objects/bridge_object.h"
 #include "../../objects/dock_object.h"
@@ -14,8 +16,6 @@
 #include "../../objects/track_object.h"
 #include "../../objects/train_signal_object.h"
 #include "../../objects/train_station_object.h"
-#include "../../stationmgr.h"
-#include "../../widget.h"
 #include "Construction.h"
 
 using namespace openloco::interop;
