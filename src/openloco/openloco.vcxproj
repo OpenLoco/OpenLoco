@@ -15,10 +15,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio\audio.cpp" />
-    <ClCompile Include="audio\channel.cpp" />
-    <ClCompile Include="audio\music_channel.cpp" />
-    <ClCompile Include="audio\vehicle_channel.cpp" />
+    <ClCompile Include="Audio\audio.cpp" />
+    <ClCompile Include="Audio\channel.cpp" />
+    <ClCompile Include="Audio\music_channel.cpp" />
+    <ClCompile Include="Audio\vehicle_channel.cpp" />
     <ClCompile Include="Company.cpp" />
     <ClCompile Include="CompanyManager.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -141,10 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\resources\Resource.h" />
-    <ClInclude Include="audio\audio.h" />
-    <ClInclude Include="audio\channel.h" />
-    <ClInclude Include="audio\music_channel.h" />
-    <ClInclude Include="audio\vehicle_channel.h" />
+    <ClInclude Include="Audio\audio.h" />
+    <ClInclude Include="Audio\channel.h" />
+    <ClInclude Include="Audio\music_channel.h" />
+    <ClInclude Include="Audio\vehicle_channel.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="CompanyManager.h" />
     <ClInclude Include="ConfigConvert.hpp" />
