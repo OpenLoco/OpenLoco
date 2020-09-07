@@ -11,6 +11,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
+#include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
@@ -65,13 +66,28 @@ namespace OpenLoco::Ui::Vehicle
         static void renameVehicle(window* const self, const widget_index widgetIndex);
         static void switchTab(window* const self, const widget_index widgetIndex);
         static void repositionTabs(window* const self);
-        static void sub_4B1E94(window* const self);
+        static void setCaptionEnableState(window* const self);
+        static void onPickup(window* self);
+        static void event8(window* const self);
+        static void event9(window* const self);
+        static size_t getNumCars(Ui::window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
+        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
+        static void pickupToolUpdate(window& self, const int16_t x, const int16_t y);
+        static void pickupToolDown(window& self, const int16_t x, const int16_t y);
+        static void pickupToolAbort(window& self);
         static vehicle_bogie* sub_4B5CC1(window* const self, const int16_t y);
     }
 
     namespace VehicleDetails
     {
+        enum widx
+        {
+            buildNew = common::widx::tab_route + 1,
+            pickup,
+            remove,
+            scrollview
+        };
         // 0x00500434
         static window_event_list events;
         constexpr uint64_t enabledWidgets = 0b1111111110100;
@@ -79,6 +95,10 @@ namespace OpenLoco::Ui::Vehicle
 
         static widget_t widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_details),
+            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, -1, StringIds::tooltip_build_new_vehicle_for),
+            makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, -1, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            makeWidget({ 3, 44 }, { 237, 110 }, widget_type::scrollview, 1, vertical),
             widgetEnd()
         };
     }
@@ -141,7 +161,9 @@ namespace OpenLoco::Ui::Vehicle
         constexpr uint64_t holdableWidgets = 0;
     }
 
-    static loco_global<int32_t, 0x0113614E> _113614E;
+    static loco_global<uint8_t, 0x00525FC5> _525FC5;
+    static loco_global<uint8_t, 0x00525FB0> _525FB0;
+    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _113614E;
     static loco_global<int16_t, 0x01136156> _1136156;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
@@ -315,7 +337,7 @@ namespace OpenLoco::Ui::Vehicle
             self->max_height = maxWindowSize.height;
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
-            _113614E = -1;
+            _113614E = reinterpret_cast<OpenLoco::vehicle_bogie*>(-1);
             _1136156 = -1;
 
             const auto* skin = ObjectManager::get<interface_skin_object>();
@@ -354,23 +376,17 @@ namespace OpenLoco::Ui::Vehicle
             return self;
         }
 
-        // 0x004B28E2
-        static void onPickup(window* self)
-        {
-            registers regs{};
-            regs.esi = reinterpret_cast<uint32_t>(self);
-            call(0x004B28E2, regs);
-        }
-
         // 0x004B288F
         static void onChangeDirection(window* self)
         {
-            // very simple
-            registers regs{};
-            regs.esi = reinterpret_cast<uint32_t>(self);
-            // Bug in game command 3 requires to set edi to a vehicle prior to calling
-            regs.edi = reinterpret_cast<uint32_t>(common::getVehicle(self));
-            call(0x004B288F, regs);
+            if (Input::isToolActive(self->type,self->number, widx::pickup))
+            {
+                _525FB0 = _525FB0 ^ 1;
+                return;
+            }
+
+            gGameCommandErrorTitle = StringIds::cant_reverse_train;
+            GameCommands::do_3(self->number);
         }
 
         // 0x004B24D1
@@ -392,7 +408,7 @@ namespace OpenLoco::Ui::Vehicle
                     common::switchTab(self, widgetIndex);
                     break;
                 case widx::pickup:
-                    onPickup(self);
+                    common::onPickup(self);
                     break;
                 case widx::change_direction:
                     onChangeDirection(self);
@@ -447,7 +463,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B3210
         static void onResize(window* const self)
         {
-            common::sub_4B1E94(self);
+            common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
 
             if (self->viewports[0] != nullptr)
@@ -518,9 +534,12 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B2637
         static void onSpeedControl(window* const self)
         {
-            registers regs{};
-            regs.esi = reinterpret_cast<uint32_t>(self);
-            call(0x004B2637, regs);
+            Input::setClickRepeatTicks(31);
+            auto pos = Input::getScrollLastLocation();
+            auto speed = pos.y - (self->y + self->widgets[widx::speed_control].top + 58);
+            speed = -(std::clamp(speed, -40, 40));
+
+            GameCommands::do_74(self->number, speed);
         }
 
         // 0x004B251A
@@ -550,32 +569,31 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B2545
         static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004B2545, regs);
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolUpdate(self, x, y);
         }
 
         // 0x004B2550
         static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004B2550, regs);
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolDown(self, x, y);
         }
 
         // 0x004B255B
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            call(0x004B255B, regs);
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolAbort(self);
         }
 
         // 0x004B31F2
@@ -585,8 +603,6 @@ namespace OpenLoco::Ui::Vehicle
             args.skip(2);
             args.push(StringIds::getVehicleType(vehHead->vehicleType));
         }
-
-        static loco_global<uint8_t, 0x00525FC5> _525FC5;
 
         // 0x004B1EB5
         static void prepareDraw(window* const self)
@@ -950,6 +966,51 @@ namespace OpenLoco::Ui::Vehicle
 
     namespace VehicleDetails
     {
+        // 0x004B3823
+        static void onMouseUp(window* self, widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case common::widx::close_button:
+                    WindowManager::close(self);
+                    break;
+                case common::widx::caption:
+                    common::renameVehicle(self, widgetIndex);
+                    break;
+                case common::widx::tab_main:
+                case common::widx::tab_vehicle_details:
+                case common::widx::tab_cargo:
+                case common::widx::tab_finances:
+                case common::widx::tab_route:
+                    common::switchTab(self, widgetIndex);
+                    break;
+                case widx::pickup:
+                    common::onPickup(self);
+                    break;
+                case widx::buildNew:
+                    BuildVehicle::open(self->number, 0);
+                    break;
+                case widx::remove:
+                {
+                    auto head = common::getVehicle(self);
+                    FormatArguments args{};
+                    args.skip(10);
+                    args.push(head->var_22);
+                    args.push(head->var_44);
+                    gGameCommandErrorTitle = StringIds::cant_sell_string_id;
+                    GameCommands::do_6(head->id);
+                    break;
+                }
+            }
+        }
+
+        // 0x004B3D73
+        static void onResize(window* const self)
+        {
+            common::setCaptionEnableState(self);
+            self->setSize({ 192, 148 }, { 400, 440 });
+        }
+
         // 0x004B3C45
         // "Show <vehicle> design details and options" tab in vehicle window
         static void onUpdate(window* w)
@@ -959,7 +1020,7 @@ namespace OpenLoco::Ui::Vehicle
                 if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
                     _1136156 = -1;
-                    _113614E = -1;
+                    _113614E = reinterpret_cast<OpenLoco::vehicle_bogie*>(-1);
                     w->invalidate();
                 }
             }
@@ -996,26 +1057,424 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
+        // 0x004B385F
+        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolUpdate(self, x, y);
+        }
+
+        // 0x004B386A
+        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        {
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolDown(self, x, y);
+        }
+
+        // 0x004B3875
+        static void onToolAbort(window& self, const widget_index widgetIndex)
+        {
+            if (widgetIndex != widx::pickup)
+            {
+                return;
+            }
+            common::pickupToolAbort(self);
+        }
+
+        // 0x4B38FA
+        static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        {
+            *height = static_cast<uint16_t>(common::getNumCars(self) * self->row_height);
+        }
+
+        // 0x004B3B54
+        static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        {
+            auto head = common::getVehicle(self);
+            if (head->owner != CompanyManager::getControllingId())
+            {
+                return;
+            }
+
+            auto car = common::sub_4B5CC1(self, y);
+            if (car == nullptr)
+            {
+                return;
+            }
+
+            OpenLoco::Things::Vehicle::Vehicle train{ head };
+            for ( auto c : train.cars)
+            {
+                if (c.front == car)
+                {
+                    Windows::DragVehiclePart::open(c);
+                    break;
+                }
+            }
+        }
+
+        // 0x004B399E
+        static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        {
+            Input::setTooltipTimeout(2000);
+            self->flags &= ~WindowFlags::not_scroll_view;
+            auto car = common::sub_4B5CC1(self, y);
+            string_id tooltipFormat = StringIds::null;
+            thing_id_t tooltipContent = ThingId::null;
+            if (car != nullptr)
+            {
+                tooltipFormat = StringIds::buffer_337;
+                tooltipContent = car->id;
+            }
+            if (self->row_hover != tooltipContent)
+            {
+                self->row_hover = tooltipContent;
+                self->invalidate();
+            }
+
+            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+            if (*buffer != '\0')
+            {
+                if (self->widgets[widx::scrollview].tooltip == tooltipFormat && self->var_85C == tooltipContent)
+                {
+                    return;
+                }
+            }
+
+            self->widgets[widx::scrollview].tooltip = tooltipFormat;
+            self->var_85C = tooltipContent;
+            ToolTip::closeAndReset();
+
+            if (tooltipContent == ThingId::null)
+            {
+                return;
+            }
+
+            ToolTip::set_52336E(true);
+
+            auto vehicleObj = ObjectManager::get<vehicle_object>(car->object_id);
+            {
+                FormatArguments args{};
+                args.push(vehicleObj->name);
+                buffer = StringManager::formatString(buffer, StringIds::tooltip_stringid, &args);
+            }
+
+            {
+                FormatArguments args{};
+                args.push(car->creation_day);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_built, &args);
+            }
+
+            if (vehicleObj->power != 0 && (vehicleObj->mode == TransportMode::road || vehicleObj->mode == TransportMode::rail))
+            {
+                FormatArguments args{};
+                args.push(vehicleObj->power);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_power, &args);
+            }
+
+            {
+                FormatArguments args{};
+                args.push(vehicleObj->weight);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_weight, &args);
+            }
+
+            {
+                FormatArguments args{};
+                args.push(vehicleObj->speed);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_max_speed, &args);
+            }
+
+            if (vehicleObj->flags & FlagsE0::rack_rail)
+            {
+                FormatArguments args{};
+                args.push(vehicleObj->rack_speed);
+                auto rackRailObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
+                args.push(rackRailObj->name);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_speed_on_stringid, &args);
+            }
+
+            {
+                FormatArguments args{};
+                args.push(car->refund_cost);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_value, &args);
+            }
+
+            if (car->reliability != 0)
+            {
+                FormatArguments args{};
+                args.push(car->reliability / 256);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_reliability, &args);
+            }
+        }
+
+        // 0x004B3880 TODO: common across 3 tabs
+        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        {
+            args.push(StringIds::tooltip_scroll_vehicle_list);
+
+            auto vehicle = common::getVehicle(self);
+            args.push(StringIds::getVehicleType(vehicle->vehicleType));
+        }
+
+        // 0x004B3B3F
+        static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
+        {
+            if (widgetIdx != widx::scrollview)
+            {
+                return fallback;
+            }
+
+            auto head = common::getVehicle(self);
+            if (head->owner != CompanyManager::getControllingId())
+            {
+                return fallback;
+            }
+
+            auto selectedCar = common::sub_4B5CC1(self, y);
+            if (selectedCar == nullptr)
+            {
+                return fallback;
+            }
+            return cursor_id::unk_25;
+        }
+
+        static const std::map<VehicleType, uint32_t> additionalVehicleButtonByVehicleType{
+            { VehicleType::train, InterfaceSkin::ImageIds::build_additional_train },
+            { VehicleType::bus, InterfaceSkin::ImageIds::build_additional_bus },
+            { VehicleType::truck, InterfaceSkin::ImageIds::build_additional_truck },
+            { VehicleType::tram, InterfaceSkin::ImageIds::build_additional_tram },
+            { VehicleType::aircraft, InterfaceSkin::ImageIds::build_additional_aircraft },
+            { VehicleType::ship, InterfaceSkin::ImageIds::build_additional_ship },
+        };
+
+        // 0x004B3300
+        static void prepareDraw(window* self)
+        {
+            if (self->widgets != widgets)
+            {
+                self->widgets = widgets;
+                self->initScrollWidgets();
+            }
+
+            common::setActiveTabs(self);
+
+            auto head = common::getVehicle(self);
+            auto args = FormatArguments();
+            args.push(head->var_22);
+            args.push(head->var_44);
+
+            self->widgets[common::widx::frame].right = self->width - 1;
+            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[common::widx::panel].right = self->width - 1;
+            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[common::widx::close_button].left = self->width - 15;
+            self->widgets[common::widx::close_button].right = self->width - 3;
+            common::repositionTabs(self);
+
+            self->widgets[widx::scrollview].right = self->width - 26;
+            self->widgets[widx::scrollview].bottom = self->height - 24;
+
+            self->widgets[widx::buildNew].right = self->width - 2;
+            self->widgets[widx::buildNew].left = self->width - 25;
+            self->widgets[widx::pickup].right = self->width - 2;
+            self->widgets[widx::pickup].left = self->width - 25;
+            self->widgets[widx::remove].right = self->width - 2;
+            self->widgets[widx::remove].left = self->width - 25;
+
+            self->widgets[widx::buildNew].type = widget_type::wt_9;
+            self->widgets[widx::pickup].type = widget_type::wt_9;
+            self->widgets[widx::remove].type = widget_type::wt_9;
+            bool pickupDisabled = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::unk_4);
+            // Differs to main tab! Unsure why.
+            if (pickupDisabled)
+            {
+                self->widgets[widx::pickup].type = widget_type::none;
+            }
+            if (head->owner != CompanyManager::getControllingId())
+            {
+                self->widgets[widx::buildNew].type = widget_type::none;
+                self->widgets[widx::pickup].type = widget_type::none;
+                self->widgets[widx::remove].type = widget_type::none;
+                self->widgets[widx::scrollview].right = self->width - 4;
+            }
+
+            auto skin = ObjectManager::get<interface_skin_object>();
+            auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
+            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner));
+
+            Things::Vehicle::Vehicle train{ head };
+            if (train.cars.empty())
+            {
+                self->disabled_widgets |= 1 << widx::pickup;
+            }
+            else
+            {
+                self->disabled_widgets &= ~(1ULL << widx::pickup);
+            }
+
+            // TODO: Use same code in main tab
+            uint32_t pickupImage = 0;
+            string_id pickupTooltip = StringIds::empty;
+
+            switch (head->mode)
+            {
+                case TransportMode::rail:
+                {
+                    auto trackObj = ObjectManager::get<track_object>(head->track_type);
+                    pickupImage = trackObj->image + (pickupDisabled ? 16 : 17);
+                    pickupTooltip = pickupDisabled ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
+                }
+                break;
+                case TransportMode::road:
+                {
+                    auto roadObjId = head->track_type == 0xFF ? _525FC5 : head->track_type;
+                    auto roadObj = ObjectManager::get<road_object>(roadObjId);
+                    pickupImage = roadObj->image + (pickupDisabled ? 32 : 33);
+                    pickupTooltip = pickupDisabled ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
+                }
+                break;
+                case TransportMode::air:
+                {
+                    pickupImage = pickupDisabled ? ImageIds::airport_pickup : ImageIds::airport_place;
+                    pickupTooltip = pickupDisabled ? StringIds::tooltip_remove_from_airport : StringIds::tooltip_place_on_airport;
+                }
+                break;
+                case TransportMode::water:
+                {
+                    auto waterObj = ObjectManager::get<water_object>();
+                    pickupImage = waterObj->image + (pickupDisabled ? 58 : 59);
+                    pickupTooltip = pickupDisabled ? StringIds::tooltip_remove_from_water : StringIds::tooltip_place_on_dock;
+                }
+                break;
+            }
+            self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
+            self->widgets[widx::pickup].tooltip = pickupTooltip;
+        }
+
+        // 0x004B3542
+        static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
+        {
+            self->draw(context);
+            common::drawTabs(self, context);
+
+            // TODO: identical to main tab (doesn't appear to do anything useful)
+            if (self->widgets[widx::pickup].type != widget_type::none)
+            {
+                if ((self->widgets[widx::pickup].image & (1 << 29)) && !(self->disabled_widgets & (1 << widx::pickup)))
+                {
+                    auto image = Gfx::recolour(self->widgets[widx::pickup].image, CompanyManager::getCompanyColour(self->owner));
+                    Gfx::drawImage(context, self->widgets[widx::pickup].left + self->x, self->widgets[widx::pickup].top + self->y, image);
+                }
+            }
+
+            auto head = common::getVehicle(self);
+            Things::Vehicle::Vehicle train{ head };
+            Gfx::point_t pos = { self->x + 3, self->y + self->height - 23 };
+
+            {
+                FormatArguments args{};
+                args.push(train.veh2->totalPower);
+                args.push<uint32_t>(train.veh2->totalWeight);
+                string_id str = StringIds::vehicle_details_weight;
+                if (train.veh2->mode == TransportMode::rail || train.veh2->mode == TransportMode::road)
+                {
+                    str = StringIds::vehicle_details_total_power_and_weight;
+                }
+                Gfx::drawString_494BBF(*context, pos.x, pos.y, self->width - 6, Colour::black, str, &args);
+                pos.y += 10;
+            }
+
+            {
+                FormatArguments args{};
+                args.push<uint16_t>(train.veh2->maxSpeed == -1 ? 0 : train.veh2->maxSpeed);
+                args.push<uint16_t>(train.veh2->rackRailMaxSpeed == -1 ? 0 : train.veh2->rackRailMaxSpeed);
+                args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
+                string_id str = StringIds::vehicle_details_max_speed_and_reliability;
+                if (train.veh1->var_49 != 0)
+                {
+                    str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
+                }
+                Gfx::drawString_494BBF(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
+            }
+        }
+
+        // 0x004B36A3
+        static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const context, const uint32_t i)
+        {
+            Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
+            auto head = common::getVehicle(self);
+            OpenLoco::Things::Vehicle::Vehicle train{ head };
+            Gfx::point_t pos{ 0, 0 };
+            for (auto& car : train.cars)
+            {
+                string_id carStr = StringIds::black_stringid;
+                if (self->row_hover == car.front->id)
+                {
+                    carStr = StringIds::wcolour2_stringid;
+
+                    int16_t top = pos.y;
+                    int16_t bottom = pos.y + self->row_height - 1;
+                    if (_113614E != reinterpret_cast<OpenLoco::vehicle_bogie*>(-1))
+                    {
+                        bottom = pos.y;
+                        top = pos.y - 1;
+                        carStr = StringIds::black_stringid;
+                    }
+                    Gfx::fillRect(context, 0, top, self->width, bottom, 0x2000030);
+                }
+
+                int16_t y = pos.y + (self->row_height - 22) / 2;
+                uint8_t al = 0;
+                uint8_t ah = 0;
+                if (car.front == _113614E)
+                {
+                    al = 12;
+                    ah = self->colours[1];
+                }
+                auto x = common::sub_4B743B(al, ah, 0, y, car.front, context);
+
+                auto vehicleObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+                FormatArguments args{};
+                args.push(vehicleObj->name);
+                x += 2;
+                y = pos.y + (self->row_height / 2) - 6;
+                Gfx::drawString_494B3F(*context, x, y, Colour::black, carStr, &args);
+
+                pos.y += self->row_height;
+            }
+
+            if (self->row_hover == train.tail->id && _113614E != reinterpret_cast<OpenLoco::vehicle_bogie*>(-1))
+            {
+                Gfx::fillRect(context, 0, pos.y - 1, self->width, pos.y, 0x2000030);
+            }
+        }
+
         static void initEvents()
         {
-            events.on_mouse_up = nullptr;
-            events.on_resize = nullptr;
+            events.on_mouse_up = onMouseUp;
+            events.on_resize = onResize;
             events.on_update = onUpdate;
-            events.event_08 = nullptr;
-            events.event_09 = nullptr;
-            events.on_tool_update = nullptr;
-            events.on_tool_down = nullptr;
-            events.on_mouse_down = nullptr;
-            events.on_tool_abort = nullptr;
-            events.get_scroll_size = nullptr;
-            events.scroll_mouse_down = nullptr;
-            events.scroll_mouse_over = nullptr;
+            events.event_08 = common::event8;
+            events.event_09 = common::event9;
+            events.on_tool_update = onToolUpdate;
+            events.on_tool_down = onToolDown;
+            events.on_tool_abort = onToolAbort;
+            events.get_scroll_size = getScrollSize;
+            events.scroll_mouse_down = scrollMouseDown;
+            events.scroll_mouse_over = scrollMouseOver;
             events.text_input = common::textInput;
-            events.tooltip = nullptr;
-            events.cursor = nullptr;
-            events.prepare_draw = nullptr;
-            events.draw = nullptr;
-            events.draw_scroll = nullptr;
+            events.tooltip = tooltip;
+            events.cursor = cursor;
+            events.prepare_draw = prepareDraw;
+            events.draw = draw;
+            events.draw_scroll = drawScroll;
         }
     }
 
@@ -1156,19 +1615,6 @@ namespace OpenLoco::Ui::Vehicle
             Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::str_1282, &args);
         }
 
-        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
-        {
-            registers regs{};
-            regs.al = al;
-            regs.ah = ah;
-            regs.cx = cx;
-            regs.dx = dx;
-            regs.esi = reinterpret_cast<uint32_t>(vehicle);
-            regs.edi = reinterpret_cast<uint32_t>(pDrawpixelinfo);
-            call(0x004B743B, regs);
-            return regs.cx;
-        }
-
         // based on 0x004B40C7
         static void drawCargoText(Gfx::drawpixelinfo_t* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, station_id_t stationId)
         {
@@ -1207,9 +1653,9 @@ namespace OpenLoco::Ui::Vehicle
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
-                auto width = sub_4B743B(1, 0, 0, y, front, pDrawpixelinfo);
+                auto width = common::sub_4B743B(1, 0, 0, y, front, pDrawpixelinfo);
                 // Actually draw it
-                width = sub_4B743B(0, 0, 24 - width, (self->row_height - 22) / 2 + y, car.front, pDrawpixelinfo);
+                width = common::sub_4B743B(0, 0, 24 - width, (self->row_height - 22) / 2 + y, car.front, pDrawpixelinfo);
 
                 if (body->cargo_type != 0xFF)
                 {
@@ -1351,16 +1797,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B4360
         static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
-            Things::Vehicle::Vehicle train(common::getVehicle(self));
-
-            *height = 0;
-            if (train.cars.empty())
-            {
-                return;
-            }
-
-            int rows = train.cars.size();
-            *height = rows * self->row_height;
+            *height = static_cast<uint16_t>(common::getNumCars(self) * self->row_height);
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const string_id cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
@@ -1453,25 +1890,6 @@ namespace OpenLoco::Ui::Vehicle
             buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity_plus, car->cargo_type, car->max_cargo, car->accepted_cargo_types);
         }
 
-        // 0x004B45DD
-        static void event8(window* const self)
-        {
-            self->flags |= WindowFlags::not_scroll_view;
-        }
-
-        // 0x004B45E5
-        static void event9(window* const self)
-        {
-            if (self->flags & WindowFlags::not_scroll_view)
-            {
-                if (self->row_hover != -1)
-                {
-                    self->row_hover = -1;
-                    self->invalidate();
-                }
-            }
-        }
-
         // 0x004B4607
         static void onUpdate(window* const self)
         {
@@ -1483,6 +1901,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B4621
         static void onResize(window* const self)
         {
+            common::setCaptionEnableState(self);
             self->setSize({ 192, 142 }, { 400, 440 });
         }
 
@@ -1499,8 +1918,8 @@ namespace OpenLoco::Ui::Vehicle
             events.tooltip = tooltip;
             events.get_scroll_size = getScrollSize;
             events.scroll_mouse_over = scrollMouseOver;
-            events.event_08 = event8;
-            events.event_09 = event9;
+            events.event_08 = common::event8;
+            events.event_09 = common::event9;
             events.on_update = onUpdate;
             events.on_resize = onResize;
         }
@@ -1674,7 +2093,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B59AF
         static void onResize(window* const self)
         {
-            common::sub_4B1E94(self);
+            common::setCaptionEnableState(self);
             self->setSize({ 400, 202 }, { 400, 202 });
         }
 
@@ -1913,7 +2332,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B564E
         static void onResize(window* const self)
         {
-            common::sub_4B1E94(self);
+            common::setCaptionEnableState(self);
             self->setSize({ 265, 178 }, { 600, 440 });
         }
 
@@ -2053,27 +2472,6 @@ namespace OpenLoco::Ui::Vehicle
             args.push(StringIds::tooltip_scroll_orders_list);
             auto head = common::getVehicle(self);
             args.push(StringIds::getVehicleType(head->vehicleType));
-        }
-
-        // TODO: same as other tabs
-        // 0x004B55A7
-        static void event8(window* const self)
-        {
-            self->flags |= WindowFlags::not_scroll_view;
-        }
-
-        // TODO: same as other tabs
-        // 0x004B55B6
-        static void event9(window* const self)
-        {
-            if (self->flags & WindowFlags::not_scroll_view)
-            {
-                if (self->row_hover != -1)
-                {
-                    self->row_hover = -1;
-                    self->invalidate();
-                }
-            }
         }
 
         // 0x004B5A1A
@@ -2619,8 +3017,8 @@ namespace OpenLoco::Ui::Vehicle
             events.on_mouse_down = onMouseDown;
             events.on_dropdown = onDropdown;
             events.on_update = onUpdate;
-            events.event_08 = event8;
-            events.event_09 = event9;
+            events.event_08 = common::event8;
+            events.event_09 = common::event9;
             events.on_tool_down = onToolDown;
             events.on_tool_abort = toolCancel;
             events.event_15 = event15;
@@ -2674,6 +3072,34 @@ namespace OpenLoco::Ui::Vehicle
             call(0x004B26C0, regs);
         }
 
+        // 0x004B29C0
+        static void pickupToolUpdate(window& self, const int16_t x, const int16_t y)
+        {
+            registers regs;
+            regs.esi = reinterpret_cast<int32_t>(&self);
+            regs.ax = x;
+            regs.bx = y;
+            call(0x004B29C0, regs);
+        }
+
+        // 0x004B2C74
+        static void pickupToolDown(window& self, const int16_t x, const int16_t y)
+        {
+            registers regs;
+            regs.esi = reinterpret_cast<int32_t>(&self);
+            regs.ax = x;
+            regs.bx = y;
+            call(0x004B2C74, regs);
+        }
+
+        // 0x004B3035
+        static void pickupToolAbort(window& self)
+        {
+            registers regs;
+            regs.esi = reinterpret_cast<int32_t>(&self);
+            call(0x004B3035, regs);
+        }
+
         // 0x004B2680
         static void renameVehicle(window* self, widget_index widgetIndex)
         {
@@ -2709,7 +3135,7 @@ namespace OpenLoco::Ui::Vehicle
 
             self->enabled_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = *tabInfo.holdableWidgets;
-            ;
+
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
@@ -2743,11 +3169,66 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B1E94
-        static void sub_4B1E94(window* const self)
+        static void setCaptionEnableState(window* const self)
+        {
+            self->enabled_widgets |= 1 << widx::caption;
+            auto head = getVehicle(self);
+            if (head->owner != CompanyManager::getControllingId())
+            {
+                self->enabled_widgets &= ~static_cast<uint64_t>(1 << widx::caption);
+            }
+        }
+
+        // 0x004B45DD, 0x004B55A7, 0x004B3C1B
+        static void event8(window* const self)
+        {
+            self->flags |= WindowFlags::not_scroll_view;
+        }
+
+        // 0x004B45E5, 0x004B55B6, 0x004B3C23
+        static void event9(window* const self)
+        {
+            if (self->flags & WindowFlags::not_scroll_view)
+            {
+                if (self->row_hover != -1)
+                {
+                    self->row_hover = -1;
+                    self->invalidate();
+                }
+            }
+        }
+
+        // 0x004B28E2
+        static void onPickup(window* self)
         {
             registers regs{};
-            regs.esi = reinterpret_cast<int32_t>(self);
-            call(0x004B1E94, regs);
+            regs.esi = reinterpret_cast<uint32_t>(self);
+            call(0x004B28E2, regs);
+        }
+
+        static size_t getNumCars(Ui::window* const self)
+        {
+            Things::Vehicle::Vehicle train(common::getVehicle(self));
+
+            if (train.cars.empty())
+            {
+                return 0;
+            }
+
+            return train.cars.size();
+        }
+
+        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        {
+            registers regs{};
+            regs.al = al;
+            regs.ah = ah;
+            regs.cx = cx;
+            regs.dx = dx;
+            regs.esi = reinterpret_cast<uint32_t>(vehicle);
+            regs.edi = reinterpret_cast<uint32_t>(pDrawpixelinfo);
+            call(0x004B743B, regs);
+            return regs.cx;
         }
 
         // 0x004B5CC1

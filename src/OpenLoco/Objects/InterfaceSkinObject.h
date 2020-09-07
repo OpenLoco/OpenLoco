@@ -396,7 +396,12 @@ namespace OpenLoco
         constexpr uint32_t build_misc_buildings_frame_13 = 408;
         constexpr uint32_t build_misc_buildings_frame_14 = 409;
         constexpr uint32_t build_misc_buildings_frame_15 = 410;
-
+        constexpr uint32_t build_additional_train = 411;
+        constexpr uint32_t build_additional_bus = 412;
+        constexpr uint32_t build_additional_truck = 413;
+        constexpr uint32_t build_additional_tram = 414;
+        constexpr uint32_t build_additional_aircraft = 415;
+        constexpr uint32_t build_additional_ship = 416;
         constexpr uint32_t build_headquarters = 417;
         constexpr uint32_t vehicle_train_frame_0 = 418;
         constexpr uint32_t vehicle_train_frame_1 = 419;

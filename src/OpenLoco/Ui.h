@@ -42,6 +42,7 @@ namespace OpenLoco::Ui
         hand_pointer,
         busy,
         diagonal_arrows,
+        unk_25,
         arrows_inward = 37
     };
 

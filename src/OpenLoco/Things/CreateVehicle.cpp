@@ -647,7 +647,7 @@ namespace OpenLoco::Things::Vehicle
         newVeh2->var_66 = 0;
         newVeh2->var_6A = 0;
         newVeh2->var_6E = 0;
-        newVeh2->var_72 = 0;
+        newVeh2->reliability = 0;
         newVeh2->var_73 = 0;
         lastVeh->next_car_id = newVeh2->id;
         return newVeh2;

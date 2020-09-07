@@ -55,7 +55,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t rotate_object = 2365;
 
     constexpr uint32_t stop_start = 2369;
-
+    constexpr uint32_t airport_pickup = 2372;
+    constexpr uint32_t airport_place = 2373;
     constexpr uint32_t pass_signal = 2374;
 
     constexpr uint32_t route_delete = 2375;

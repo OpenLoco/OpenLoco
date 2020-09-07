@@ -4,6 +4,7 @@
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
 #include "Things/Thing.h"
+#include "Things/ThingManager.h"
 
 using namespace OpenLoco::Interop;
 
@@ -25,6 +26,7 @@ namespace OpenLoco::GameCommands
         vehicle_rearange = 0,
         vehicle_place = 1,
         vehicle_pickup = 2,
+        vehicle_reverse = 3,
         vehicle_create = 5,
         vehicle_sell = 6,
         build_vehicle = 9,
@@ -49,6 +51,7 @@ namespace OpenLoco::GameCommands
         load_multiplayer_map = 67,
         send_chat_message = 71,
         update_owner_status = 73,
+        vehicle_speed_control = 74,
         vehicle_order_up = 75,
         vehicle_order_down = 76,
         rename_industry = 79,
@@ -59,6 +62,18 @@ namespace OpenLoco::GameCommands
     void registerHooks();
     uint32_t doCommand(int esi, const registers& registers);
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
+
+    // Reverse (vehicle)
+    inline void do_3(thing_id_t vehicleHead)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.dx = vehicleHead;
+        // Bug in game command 3 requires to set edi to a vehicle prior to calling
+        regs.edi = reinterpret_cast<uint32_t>(ThingManager::get<vehicle_head>(vehicleHead));
+
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_reverse), regs);
+    }
 
     // Pass signal (vehicle)
     inline void do_4(thing_id_t vehicleHead)
@@ -79,6 +94,14 @@ namespace OpenLoco::GameCommands
         regs.edx = vehicle_type;
 
         return doCommand(5, regs) != FAILURE;
+    }
+
+    inline void do_6(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.dx = head;
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_sell), regs);
     }
 
     // Change loan
@@ -417,6 +440,15 @@ namespace OpenLoco::GameCommands
         regs.ax = position.x;
         regs.cx = position.y;
         doCommand(73, regs);
+    }
+
+    inline uint32_t do_74(thing_id_t head, int16_t speed)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = head;
+        regs.dx = speed;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_speed_control), regs);
     }
 
     inline uint32_t do_75(thing_id_t head, uint32_t orderOffset)

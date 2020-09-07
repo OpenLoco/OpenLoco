@@ -128,6 +128,7 @@
     <ClCompile Include="Windows\Construction\OverheadTab.cpp" />
     <ClCompile Include="Windows\Construction\SignalTab.cpp" />
     <ClCompile Include="Windows\Construction\StationTab.cpp" />
+    <ClCompile Include="Windows\DragVehiclePart.cpp" />
     <ClCompile Include="Windows\EditKeyboardShortcut.cpp" />
     <ClCompile Include="Windows\Error.cpp" />
     <ClCompile Include="Windows\IndustryWindow.cpp" />

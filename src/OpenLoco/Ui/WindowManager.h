@@ -262,6 +262,16 @@ namespace OpenLoco
     struct vehicle;
 }
 
+namespace OpenLoco::Things::Vehicle
+{
+    struct Car;
+}
+
+namespace OpenLoco::Ui::Windows::DragVehiclePart
+{
+    void open(OpenLoco::Things::Vehicle::Car& car);
+}
+
 namespace OpenLoco::Ui::Vehicle
 {
     void registerHooks();

@@ -262,7 +262,8 @@ namespace OpenLoco
         uint16_t var_44;
         uint16_t var_46;
         uint8_t var_48;
-        uint8_t pad_49[0x4E - 0x49];
+        uint8_t var_49;
+        uint8_t pad_4A[0x4E - 0x4A];
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
@@ -302,18 +303,21 @@ namespace OpenLoco
         uint16_t var_4A;                       // sound-related flag(s) common with tail
         Ui::window_number sound_window_number; // 0x4C common with tail
         Ui::WindowType sound_window_type;      // 0x4E common with tail
-        uint8_t pad_4F[0x56 - 0x4F];
+        uint8_t pad_4F;
+        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
+        uint16_t totalWeight; // 0x52
+        int16_t maxSpeed;     // 0x54
         uint32_t var_56;
         uint8_t var_5A;
         uint8_t var_5B;
-        uint8_t pad_5C[0x5E - 0x5C];
+        int16_t rackRailMaxSpeed; // 0x5C
         uint32_t var_5E;
-        int32_t refund_cost; // 0x62 currency maybe not refund cost
+        int32_t refund_cost; // 0x62 currency maybe not refund cost (probably last 4 months profit 62-6E)
         int32_t var_66;      // currency
         int32_t var_6A;      // currency
         int32_t var_6E;      // currency
-        uint8_t var_72;
-        uint8_t var_73; // 0x73 (bit 0 = broken down)
+        uint8_t reliability; // 0x72
+        uint8_t var_73;      // 0x73 (bit 0 = broken down)
     };
     static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
 

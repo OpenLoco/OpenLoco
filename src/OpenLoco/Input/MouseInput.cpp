@@ -260,6 +260,13 @@ namespace OpenLoco::Input
         return (*_toolWindowType == type && _toolWindowNumber == number);
     }
 
+    bool isToolActive(Ui::WindowType type, Ui::window_number number, int16_t widgetIndex)
+    {
+        if (!isToolActive(type, number))
+            return false;
+        return _toolWidgetIndex == widgetIndex;
+    }
+
     // 0x004CE367
     // tool (al)
     // widgetIndex (dx)
@@ -1974,6 +1981,11 @@ namespace OpenLoco::Input
         return Gfx::point_t(_dragLastX, _dragLastY);
     }
 
+    Gfx::point_t getScrollLastLocation()
+    {
+        return Gfx::point_t(_5233A4, _5233A6);
+    }
+
     void setTooltipMouseLocation(const Gfx::point_t& loc)
     {
         _tooltipCursorX = loc.x;
@@ -1987,5 +1999,10 @@ namespace OpenLoco::Input
     void setTooltipTimeout(uint16_t tooltipTimeout)
     {
         _tooltipTimeout = tooltipTimeout;
+    }
+
+    void setClickRepeatTicks(uint16_t ticks)
+    {
+        _clickRepeatTicks = ticks;
     }
 }

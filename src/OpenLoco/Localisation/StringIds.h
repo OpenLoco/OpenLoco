@@ -215,6 +215,11 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_change_direction = 252;
     constexpr string_id tooltip_pass_signal_at_danger = 253;
     constexpr string_id tooltip_remove_from_track = 254;
+    constexpr string_id tooltip_place_on_track = 255;
+    constexpr string_id tooltip_remove_from_airport = 256;
+    constexpr string_id tooltip_place_on_airport = 257;
+    constexpr string_id tooltip_remove_from_water = 258;
+    constexpr string_id tooltip_place_on_dock = 259;
 
     constexpr string_id stop = 265;
     constexpr string_id start = 266;
@@ -238,10 +243,26 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_bridge_stats = 278;
     constexpr string_id tooltip_select_station_type = 279;
 
+    constexpr string_id vehicle_details_weight = 328;
+    constexpr string_id vehicle_details_total_power_and_weight = 329;
+    constexpr string_id vehicle_details_max_speed_and_reliability = 330;
+    constexpr string_id vehicle_details_max_speed_and_rack_rail_and_reliability = 331;
+
+    constexpr string_id tooltip_sell_or_drag_vehicle = 332;
+    constexpr string_id tooltip_build_new_vehicle_for = 333;
+
     constexpr string_id incompatible_vehicle = 335;
     constexpr string_id too_many_vehicles = 336;
     constexpr string_id buffer_337 = 337;
     constexpr string_id buffer_338 = 338;
+    constexpr string_id tooltip_stringid = 339;
+    constexpr string_id vehicle_details_tooltip_built = 340;
+    constexpr string_id vehicle_details_tooltip_value = 341;
+    constexpr string_id vehicle_details_tooltip_power = 342;
+    constexpr string_id vehicle_details_tooltip_weight = 343;
+    constexpr string_id vehicle_details_tooltip_max_speed = 344;
+    constexpr string_id vehicle_details_tooltip_speed_on_stringid = 345;
+    constexpr string_id vehicle_details_tooltip_reliability = 346;
 
     constexpr string_id stringid_stringid = 347;
     constexpr string_id single_section = 348;
@@ -261,6 +282,10 @@ namespace OpenLoco::StringIds
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
     constexpr string_id error_cant_rename_station = 385;
+
+    constexpr string_id cant_reverse_train = 388;
+
+    constexpr string_id cant_sell_string_id = 390;
 
     constexpr string_id station_catchment = 395;
     constexpr string_id menu_mute = 396;
