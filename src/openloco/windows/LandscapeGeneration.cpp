@@ -1,6 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Graphics/Colour.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Scenario.h"
 #include "../TownManager.h"

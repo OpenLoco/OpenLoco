@@ -3,7 +3,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"

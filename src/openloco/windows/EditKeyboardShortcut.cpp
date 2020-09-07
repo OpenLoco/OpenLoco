@@ -1,6 +1,6 @@
 #include "../Config.h"
 #include "../Graphics/Colour.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../input/Shortcut.h"
 #include "../input/ShortcutManager.h"
 #include "../interop/interop.hpp"

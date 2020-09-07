@@ -9,7 +9,7 @@
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
 #include "Colour.h"
-#include "image_ids.h"
+#include "ImageIds.h"
 #include <algorithm>
 #include <cassert>
 #include <fstream>

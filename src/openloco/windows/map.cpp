@@ -1,7 +1,7 @@
 #include "../CompanyManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../StationManager.h"

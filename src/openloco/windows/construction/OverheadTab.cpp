@@ -1,5 +1,5 @@
 #include "../../CompanyManager.h"
-#include "../../Graphics/image_ids.h"
+#include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/objectmgr.h"

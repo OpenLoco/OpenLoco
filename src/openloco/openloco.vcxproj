@@ -158,7 +158,7 @@
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
-    <ClInclude Include="Graphics\image_ids.h" />
+    <ClInclude Include="Graphics\ImageIds.h" />
     <ClInclude Include="Graphics\types.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Industry.h" />

@@ -5,7 +5,7 @@
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Intro.h"
 #include "../Message.h"

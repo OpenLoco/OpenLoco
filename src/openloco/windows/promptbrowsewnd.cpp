@@ -2,7 +2,7 @@
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Graphics/Colour.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../OpenLoco.h"
 #include "../Scenario.h"

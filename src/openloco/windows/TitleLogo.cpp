@@ -1,5 +1,5 @@
 #include "../Graphics/Colour.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../OpenLoco.h"
 #include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"

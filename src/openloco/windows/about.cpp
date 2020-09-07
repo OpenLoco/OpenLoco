@@ -1,6 +1,6 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "../Graphics/image_ids.h"
+#include "../Graphics/ImageIds.h"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
