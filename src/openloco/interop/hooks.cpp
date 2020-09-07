@@ -8,6 +8,7 @@
 #endif
 #include "../Audio/Audio.h"
 #include "../Console.h"
+#include "../Core/FileSystem.hpp"
 #include "../Environment.h"
 #include "../GameCommands.h"
 #include "../Gui.h"
@@ -17,7 +18,6 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
-#include "../core/FileSystem.hpp"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../map/tile.h"

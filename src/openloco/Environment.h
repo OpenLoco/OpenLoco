@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/FileSystem.hpp"
+#include "Core/FileSystem.hpp"
 
 namespace openloco::environment
 {
