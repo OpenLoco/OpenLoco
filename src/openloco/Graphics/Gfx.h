@@ -3,7 +3,7 @@
 #include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../ui/Rect.h"
-#include "types.h"
+#include "Types.h"
 #include <cstdint>
 
 namespace openloco::gfx

@@ -5,7 +5,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
-#include "../Graphics/types.h"
+#include "../Graphics/Types.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../ViewportManager.h"
