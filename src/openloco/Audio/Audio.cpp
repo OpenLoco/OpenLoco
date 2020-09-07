@@ -14,7 +14,7 @@
 #include "../utility/stream.hpp"
 #include "Channel.h"
 #include "MusicChannel.h"
-#include "vehicle_channel.h"
+#include "VehicleChannel.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <array>
