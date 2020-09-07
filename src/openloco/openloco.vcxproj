@@ -34,7 +34,7 @@
     <ClCompile Include="IndustryManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Input\Keyboard.cpp" />
-    <ClCompile Include="Input\mouse_input.cpp" />
+    <ClCompile Include="Input\MouseInput.cpp" />
     <ClCompile Include="Input\ShortcutManager.cpp" />
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
