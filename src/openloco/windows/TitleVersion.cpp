@@ -1,7 +1,7 @@
+#include "../Graphics/Colour.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Window.h"
-#include "../graphics/colours.h"
 #include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"
 

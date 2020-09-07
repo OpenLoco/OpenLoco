@@ -1,4 +1,4 @@
-#include "gfx.h"
+#include "Gfx.h"
 #include "../Console.h"
 #include "../Drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"
@@ -8,8 +8,8 @@
 #include "../localisation/languagefiles.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
-#include "colours.h"
-#include "image_ids.h"
+#include "Colour.h"
+#include "ImageIds.h"
 #include <algorithm>
 #include <cassert>
 #include <fstream>

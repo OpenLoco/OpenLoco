@@ -1,7 +1,7 @@
 #include "../../CompanyManager.h"
+#include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../StationManager.h"
-#include "../../graphics/image_ids.h"
 #include "../../localisation/FormatArguments.hpp"
 #include "../../objects/airport_object.h"
 #include "../../objects/cargo_object.h"

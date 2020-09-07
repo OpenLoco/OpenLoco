@@ -1,8 +1,8 @@
 #include "Widget.h"
+#include "Graphics/Colour.h"
+#include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Window.h"
-#include "graphics/colours.h"
-#include "graphics/image_ids.h"
 #include "interop/interop.hpp"
 #include "ui/scrollview.h"
 #include <cassert>

@@ -1,8 +1,8 @@
 #include "../Audio/Audio.h"
+#include "../Graphics/Colour.h"
 #include "../Input.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../graphics/colours.h"
 #include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"
 #include <cstring>

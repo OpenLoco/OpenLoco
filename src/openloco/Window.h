@@ -2,10 +2,10 @@
 
 #include "Company.h"
 #include "Core/Optional.hpp"
+#include "Graphics/Gfx.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"
-#include "graphics/gfx.h"
 #include "interop/interop.hpp"
 #include "localisation/string_ids.h"
 #include "localisation/stringmgr.h"

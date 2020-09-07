@@ -1,6 +1,6 @@
+#include "Colour.h"
 #include "../interop/interop.hpp"
-#include "colours.h"
-#include "gfx.h"
+#include "Gfx.h"
 #include <cassert>
 
 using namespace openloco::interop;

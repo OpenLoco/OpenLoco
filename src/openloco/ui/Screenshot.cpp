@@ -1,6 +1,6 @@
 #include "Screenshot.h"
+#include "../Graphics/Gfx.h"
 #include "../Ui.h"
-#include "../graphics/gfx.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../platform/platform.h"
