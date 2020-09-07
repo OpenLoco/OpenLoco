@@ -1,5 +1,5 @@
 #include "../Company.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Window.h"
 #include "../localisation/stringmgr.h"
 #include <cstdlib>

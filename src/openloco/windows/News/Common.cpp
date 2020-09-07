@@ -1,6 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../Config.h"
-#include "../../Graphics/colours.h"
+#include "../../Graphics/Colours.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
 #include "../../interop/interop.hpp"

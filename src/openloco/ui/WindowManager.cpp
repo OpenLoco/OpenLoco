@@ -4,7 +4,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../GameCommands.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Input.h"
 #include "../Intro.h"
 #include "../MultiPlayer.h"

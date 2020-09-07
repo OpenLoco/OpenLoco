@@ -1,4 +1,4 @@
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Window.h"

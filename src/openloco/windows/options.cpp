@@ -1,7 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Date.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Graphics/image_ids.h"
 #include "../Input.h"
 #include "../Ui.h"

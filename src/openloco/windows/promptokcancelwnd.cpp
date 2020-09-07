@@ -1,5 +1,5 @@
 #include "../Audio/Audio.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Input.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"

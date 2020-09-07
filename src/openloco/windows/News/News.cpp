@@ -1,7 +1,7 @@
 #include "News.h"
 #include "../../CompanyManager.h"
 #include "../../Date.h"
-#include "../../Graphics/colours.h"
+#include "../../Graphics/Colours.h"
 #include "../../Graphics/image_ids.h"
 #include "../../IndustryManager.h"
 #include "../../Message.h"

@@ -2,7 +2,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Graphics/gfx.h"
 #include "../Graphics/image_ids.h"
 #include "../Graphics/types.h"

@@ -1,5 +1,5 @@
 #include "../Config.h"
-#include "../Graphics/colours.h"
+#include "../Graphics/Colours.h"
 #include "../Graphics/image_ids.h"
 #include "../input/ShortcutManager.h"
 #include "../interop/interop.hpp"
