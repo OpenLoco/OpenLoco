@@ -13,7 +13,7 @@
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"
 #include "Channel.h"
-#include "music_channel.h"
+#include "MusicChannel.h"
 #include "vehicle_channel.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
