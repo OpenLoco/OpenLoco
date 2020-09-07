@@ -2,7 +2,7 @@
 
 #include "../core/FileSystem.hpp"
 #include "../things/thing.h"
-#include "audio.h"
+#include "Audio.h"
 #include "channel.h"
 
 struct _Mix_Music;

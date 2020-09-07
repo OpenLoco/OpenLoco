@@ -1,8 +1,8 @@
 #include "Title.h"
+#include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Gui.h"
 #include "OpenLoco.h"
-#include "audio/audio.h"
 #include "interop/interop.hpp"
 #include "ui/WindowManager.h"
 

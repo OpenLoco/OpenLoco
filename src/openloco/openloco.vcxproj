@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Audio\audio.cpp" />
+    <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Audio\channel.cpp" />
     <ClCompile Include="Audio\music_channel.cpp" />
     <ClCompile Include="Audio\vehicle_channel.cpp" />
@@ -141,7 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\resources\Resource.h" />
-    <ClInclude Include="Audio\audio.h" />
+    <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Audio\channel.h" />
     <ClInclude Include="Audio\music_channel.h" />
     <ClInclude Include="Audio\vehicle_channel.h" />

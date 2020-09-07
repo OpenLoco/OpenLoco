@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Date.h"
@@ -9,7 +10,6 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Widget.h"
-#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"

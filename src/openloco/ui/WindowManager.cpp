@@ -1,4 +1,5 @@
 #include "WindowManager.h"
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Console.h"
@@ -11,7 +12,6 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
-#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../interop/interop.hpp"
 #include "../map/tile.h"

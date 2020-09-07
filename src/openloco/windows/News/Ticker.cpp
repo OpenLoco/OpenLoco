@@ -1,6 +1,6 @@
+#include "../../Audio/Audio.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../audio/audio.h"
 #include "../../graphics/colours.h"
 #include "../../interop/interop.hpp"
 #include "News.h"

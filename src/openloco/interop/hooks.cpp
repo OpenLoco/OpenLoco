@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+#include "../Audio/Audio.h"
 #include "../Console.h"
 #include "../Environment.h"
 #include "../GameCommands.h"
@@ -16,7 +17,6 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
-#include "../audio/audio.h"
 #include "../core/FileSystem.hpp"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"

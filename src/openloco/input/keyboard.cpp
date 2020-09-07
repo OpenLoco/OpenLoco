@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Console.h"
@@ -8,7 +9,6 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Win32.h"
-#include "../audio/audio.h"
 #include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../things/thingmgr.h"

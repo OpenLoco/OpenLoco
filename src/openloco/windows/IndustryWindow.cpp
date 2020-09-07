@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands.h"
@@ -5,7 +6,6 @@
 #include "../Input.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../audio/audio.h"
 #include "../graphics/colours.h"
 #include "../graphics/gfx.h"
 #include "../graphics/image_ids.h"

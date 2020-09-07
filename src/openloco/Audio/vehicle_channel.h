@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../things/thing.h"
-#include "audio.h"
+#include "Audio.h"
 #include "channel.h"
 
 namespace openloco::audio
