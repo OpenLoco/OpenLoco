@@ -7,7 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/CargoObject.h"
-#include "../Objects/competitor_object.h"
+#include "../Objects/CompetitorObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
