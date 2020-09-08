@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include <cstdint>
 
 namespace openloco::s5

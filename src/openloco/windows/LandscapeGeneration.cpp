@@ -7,7 +7,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
 #include "../TownManager.h"
 #include "../Widget.h"

@@ -5,7 +5,7 @@
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/CargoObject.h"
 #include "../../Objects/DockObject.h"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "../../Objects/road_object.h"
 #include "../../Objects/road_station_object.h"
 #include "../../Objects/track_object.h"

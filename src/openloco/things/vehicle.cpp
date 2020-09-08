@@ -4,7 +4,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Objects/vehicle_object.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"

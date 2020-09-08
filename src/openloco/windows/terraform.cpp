@@ -9,7 +9,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Objects/tree_object.h"
 #include "../Objects/wall_object.h"
 #include "../Objects/water_object.h"

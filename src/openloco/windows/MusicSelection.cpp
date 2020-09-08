@@ -6,7 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 

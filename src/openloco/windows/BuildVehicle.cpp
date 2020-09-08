@@ -7,7 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Objects/road_extra_object.h"
 #include "../Objects/road_object.h"
 #include "../Objects/track_extra_object.h"

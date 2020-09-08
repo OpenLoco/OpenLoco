@@ -4,7 +4,7 @@
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Objects/BridgeObject.h"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "../../Objects/road_object.h"
 #include "../../Objects/track_object.h"
 #include "../../TrackData.h"

@@ -5,7 +5,7 @@
 #include "../../Message.h"
 #include "../../MessageManager.h"
 #include "../../Objects/InterfaceSkinObject.h"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "News.h"
 
 using namespace openloco::interop;

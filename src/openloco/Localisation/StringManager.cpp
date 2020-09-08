@@ -3,7 +3,7 @@
 #include "../Date.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/CurrencyObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../TownManager.h"
 #include "ArgsWrapper.hpp"
 #include "StringIds.h"

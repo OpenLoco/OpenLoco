@@ -1,7 +1,7 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "../../Objects/track_object.h"
 #include "../../Objects/train_signal_object.h"
 #include "../../ui/dropdown.h"

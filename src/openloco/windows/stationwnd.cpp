@@ -12,7 +12,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

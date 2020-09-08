@@ -4,7 +4,7 @@
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
-#include "Objects/objectmgr.h"
+#include "Objects/ObjectManager.h"
 #include "utility/numeric.hpp"
 #include <algorithm>
 

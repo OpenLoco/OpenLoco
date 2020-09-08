@@ -34,7 +34,7 @@
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
-#include "Objects/objectmgr.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "ProgressBar.h"
 #include "ScenarioManager.h"

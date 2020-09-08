@@ -3,7 +3,7 @@
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Objects/InterfaceSkinObject.h"
-#include "Objects/objectmgr.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"

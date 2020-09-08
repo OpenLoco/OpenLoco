@@ -3,7 +3,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include <algorithm>

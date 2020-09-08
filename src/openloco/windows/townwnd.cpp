@@ -11,7 +11,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../TownManager.h"
 #include "../ViewportManager.h"

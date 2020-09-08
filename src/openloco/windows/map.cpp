@@ -8,7 +8,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Objects/road_object.h"
 #include "../Objects/track_object.h"
 #include "../StationManager.h"

@@ -9,7 +9,7 @@
 #include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"

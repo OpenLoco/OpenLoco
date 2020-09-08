@@ -6,7 +6,7 @@
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/DockObject.h"
 #include "../../Objects/InterfaceSkinObject.h"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "../../Objects/road_extra_object.h"
 #include "../../Objects/road_object.h"
 #include "../../Objects/road_station_object.h"

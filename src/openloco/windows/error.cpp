@@ -7,7 +7,7 @@
 #include "../Localisation/StringManager.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 

@@ -2,7 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "CargoObject.h"
-#include "objectmgr.h"
+#include "ObjectManager.h"
 #include <algorithm>
 
 using namespace openloco::interop;

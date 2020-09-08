@@ -11,7 +11,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/CurrencyObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Ui.h"
 #include "../Widget.h"
 #include "../s5/s5.h"

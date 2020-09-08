@@ -4,7 +4,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
 #include "../ui/WindowManager.h"
 

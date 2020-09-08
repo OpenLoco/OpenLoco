@@ -9,7 +9,7 @@
 #include "../../Localisation/StringIds.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../Objects/objectmgr.h"
+#include "../../Objects/ObjectManager.h"
 #include "../../Objects/vehicle_object.h"
 #include "../../StationManager.h"
 #include "../../TownManager.h"

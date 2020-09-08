@@ -14,7 +14,7 @@
 #include "../Message.h"
 #include "../MessageManager.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Widget.h"

@@ -14,7 +14,7 @@
 #include "../Objects/CargoObject.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"

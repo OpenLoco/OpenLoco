@@ -3,7 +3,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Map/Tile.h"
-#include "Objects/objectmgr.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/road_object.h"
 #include "Objects/track_object.h"
 #include "StationManager.h"

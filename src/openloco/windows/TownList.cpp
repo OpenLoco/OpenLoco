@@ -7,7 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/BuildingObject.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Town.h"
 #include "../TownManager.h"
