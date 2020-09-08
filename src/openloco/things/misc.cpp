@@ -1,7 +1,6 @@
 #include "misc.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/steam_object.h"
 #include "thingmgr.h"
 
 using namespace openloco;
