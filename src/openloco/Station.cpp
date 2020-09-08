@@ -8,7 +8,7 @@
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
-#include "Objects/industry_object.h"
+#include "Objects/IndustryObject.h"
 #include "Objects/objectmgr.h"
 #include "Objects/road_station_object.h"
 #include "OpenLoco.h"

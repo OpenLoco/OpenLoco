@@ -12,7 +12,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/CargoObject.h"
-#include "../Objects/industry_object.h"
+#include "../Objects/IndustryObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../ViewportManager.h"

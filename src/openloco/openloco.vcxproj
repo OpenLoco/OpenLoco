@@ -50,7 +50,7 @@
     <ClCompile Include="Map\TileManager.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
-    <ClCompile Include="Objects\industry_object.cpp" />
+    <ClCompile Include="Objects\IndustryObject.cpp" />
     <ClCompile Include="Objects\objectmgr.cpp" />
     <ClCompile Include="OpenLoco.cpp" />
     <ClCompile Include="platform\platform.posix.cpp" />
@@ -189,7 +189,7 @@
     <ClInclude Include="Objects\CompetitorObject.h" />
     <ClInclude Include="Objects\CurrencyObject.h" />
     <ClInclude Include="Objects\DockObject.h" />
-    <ClInclude Include="Objects\industry_object.h" />
+    <ClInclude Include="Objects\IndustryObject.h" />
     <ClInclude Include="Objects\interface_skin_object.h" />
     <ClInclude Include="Objects\land_object.h" />
     <ClInclude Include="Objects\objectmgr.h" />

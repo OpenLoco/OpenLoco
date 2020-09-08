@@ -1,4 +1,4 @@
-#include "industry_object.h"
+#include "IndustryObject.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "CargoObject.h"

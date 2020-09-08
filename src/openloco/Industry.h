@@ -3,7 +3,7 @@
 #include "Localisation/StringManager.h"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
-#include "Objects/industry_object.h"
+#include "Objects/IndustryObject.h"
 #include "Town.h"
 #include "utility/prng.hpp"
 #include <cstdint>
