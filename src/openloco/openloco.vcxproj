@@ -42,7 +42,7 @@
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="Localisation\Conversion.cpp" />
     <ClCompile Include="Localisation\LanguageFiles.cpp" />
-    <ClCompile Include="Localisation\languages.cpp" />
+    <ClCompile Include="Localisation\Languages.cpp" />
     <ClCompile Include="Localisation\stringmgr.cpp" />
     <ClCompile Include="Localisation\unicode.cpp" />
     <ClCompile Include="map\SurfaceTile.cpp" />
@@ -172,7 +172,7 @@
     <ClInclude Include="Localisation\Conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />
     <ClInclude Include="Localisation\LanguageFiles.h" />
-    <ClInclude Include="Localisation\languages.h" />
+    <ClInclude Include="Localisation\Languages.h" />
     <ClInclude Include="Localisation\stringmgr.h" />
     <ClInclude Include="Localisation\string_ids.h" />
     <ClInclude Include="Localisation\unicode.h" />

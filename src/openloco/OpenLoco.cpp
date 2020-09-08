@@ -31,7 +31,7 @@
 #include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Localisation/LanguageFiles.h"
-#include "Localisation/languages.h"
+#include "Localisation/Languages.h"
 #include "Localisation/string_ids.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"

@@ -7,7 +7,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/LanguageFiles.h"
-#include "../Localisation/languages.h"
+#include "../Localisation/Languages.h"
 #include "../Localisation/string_ids.h"
 #include "../Ui.h"
 #include "../Widget.h"

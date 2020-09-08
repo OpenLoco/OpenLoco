@@ -1,4 +1,4 @@
-#include "languages.h"
+#include "Languages.h"
 #include "../Core/FileSystem.hpp"
 #include "../Environment.h"
 #include "../platform/platform.h"
