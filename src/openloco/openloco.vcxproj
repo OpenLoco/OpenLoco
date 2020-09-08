@@ -37,7 +37,7 @@
     <ClCompile Include="Input\MouseInput.cpp" />
     <ClCompile Include="Input\ShortcutManager.cpp" />
     <ClCompile Include="Interop\Hook.cpp" />
-    <ClCompile Include="Interop\hooks.cpp" />
+    <ClCompile Include="Interop\Hooks.cpp" />
     <ClCompile Include="Interop\interop.cpp" />
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="localisation\conversion.cpp" />
