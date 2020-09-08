@@ -4,7 +4,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"

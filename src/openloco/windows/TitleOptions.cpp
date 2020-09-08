@@ -3,7 +3,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../ui/WindowManager.h"

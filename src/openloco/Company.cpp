@@ -1,7 +1,7 @@
 #include "Company.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
-#include "Localisation/string_ids.h"
+#include "Localisation/StringIds.h"
 #include "things/thingmgr.h"
 #include "ui/WindowManager.h"
 #include <algorithm>

@@ -2,7 +2,7 @@
 #include "CompanyManager.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
-#include "Localisation/string_ids.h"
+#include "Localisation/StringIds.h"
 #include "MessageManager.h"
 #include "OpenLoco.h"
 #include "ViewportManager.h"

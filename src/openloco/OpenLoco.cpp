@@ -32,7 +32,7 @@
 #include "Intro.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
-#include "Localisation/string_ids.h"
+#include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"
 #include "ProgressBar.h"

@@ -7,7 +7,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../objects/interface_skin_object.h"

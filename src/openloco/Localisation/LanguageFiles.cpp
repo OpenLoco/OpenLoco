@@ -6,7 +6,7 @@
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "Conversion.h"
-#include "string_ids.h"
+#include "StringIds.h"
 #include "stringmgr.h"
 #include "unicode.h"
 #include <cassert>

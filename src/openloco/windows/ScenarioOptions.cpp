@@ -2,7 +2,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../Scenario.h"
 #include "../Widget.h"
 #include "../objects/cargo_object.h"

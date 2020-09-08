@@ -1,7 +1,7 @@
 #include "Input.h"
 #include "Audio/Audio.h"
 #include "Interop/Interop.hpp"
-#include "Localisation/string_ids.h"
+#include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Window.h"
 #include "ui/WindowManager.h"

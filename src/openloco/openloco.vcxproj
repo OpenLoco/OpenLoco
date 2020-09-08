@@ -174,7 +174,7 @@
     <ClInclude Include="Localisation\LanguageFiles.h" />
     <ClInclude Include="Localisation\Languages.h" />
     <ClInclude Include="Localisation\stringmgr.h" />
-    <ClInclude Include="Localisation\string_ids.h" />
+    <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\unicode.h" />
     <ClInclude Include="management\Expenditures.h" />
     <ClInclude Include="map\tile.h" />

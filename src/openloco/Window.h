@@ -4,7 +4,7 @@
 #include "Core/Optional.hpp"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
-#include "Localisation/string_ids.h"
+#include "Localisation/StringIds.h"
 #include "Localisation/stringmgr.h"
 #include "Types.hpp"
 #include "Ui.h"

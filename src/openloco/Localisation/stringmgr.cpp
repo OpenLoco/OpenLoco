@@ -6,7 +6,7 @@
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
 #include "ArgsWrapper.hpp"
-#include "string_ids.h"
+#include "StringIds.h"
 
 #include <cassert>
 #include <cmath>

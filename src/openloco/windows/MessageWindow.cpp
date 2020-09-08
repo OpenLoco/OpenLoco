@@ -10,7 +10,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../Message.h"
 #include "../MessageManager.h"
 #include "../OpenLoco.h"

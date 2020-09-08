@@ -8,7 +8,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/LanguageFiles.h"
 #include "../Localisation/Languages.h"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../Ui.h"
 #include "../Widget.h"
 #include "../objects/currency_object.h"

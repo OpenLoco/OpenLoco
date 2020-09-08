@@ -2,7 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../Scenario.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"

@@ -4,7 +4,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../Scenario.h"
 #include "../TownManager.h"
 #include "../Widget.h"
