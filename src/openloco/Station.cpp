@@ -5,7 +5,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "MessageManager.h"
-#include "Objects/airport_object.h"
+#include "Objects/AirportObject.h"
 #include "Objects/building_object.h"
 #include "Objects/cargo_object.h"
 #include "Objects/industry_object.h"
