@@ -205,7 +205,7 @@
     <ClInclude Include="Objects\TrainStationObject.h" />
     <ClInclude Include="Objects\TreeObject.h" />
     <ClInclude Include="Objects\VehicleObject.h" />
-    <ClInclude Include="Objects\wall_object.h" />
+    <ClInclude Include="Objects\WallObject.h" />
     <ClInclude Include="Objects\water_object.h" />
     <ClInclude Include="OpenLoco.h" />
     <ClInclude Include="platform\platform.h" />

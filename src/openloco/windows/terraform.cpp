@@ -11,7 +11,7 @@
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TreeObject.h"
-#include "../Objects/wall_object.h"
+#include "../Objects/WallObject.h"
 #include "../Objects/water_object.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"
