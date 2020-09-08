@@ -5,7 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Objects/building_object.h"
+#include "../Objects/BuildingObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"

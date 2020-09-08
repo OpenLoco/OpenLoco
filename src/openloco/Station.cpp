@@ -6,7 +6,7 @@
 #include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
-#include "Objects/building_object.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/cargo_object.h"
 #include "Objects/industry_object.h"
 #include "Objects/objectmgr.h"

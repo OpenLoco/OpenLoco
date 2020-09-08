@@ -184,7 +184,7 @@
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="Objects\AirportObject.h" />
     <ClInclude Include="Objects\BridgeObject.h" />
-    <ClInclude Include="Objects\building_object.h" />
+    <ClInclude Include="Objects\BuildingObject.h" />
     <ClInclude Include="Objects\cargo_object.h" />
     <ClInclude Include="Objects\competitor_object.h" />
     <ClInclude Include="Objects\currency_object.h" />
