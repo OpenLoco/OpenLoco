@@ -4,7 +4,7 @@
 #include "../Core/Optional.hpp"
 #include "../Date.h"
 #include "../GameCommands.h"
-#include "../management/Expenditures.h"
+#include "../Management/Expenditures.h"
 #include "../map/tile.h"
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Localisation/StringManager.h"
+#include "Management/Expenditures.h"
 #include "Types.hpp"
-#include "management/Expenditures.h"
 #include <cstddef>
 #include <cstdint>
 #include <limits>
