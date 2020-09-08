@@ -203,7 +203,7 @@
     <ClInclude Include="Objects\TrackObject.h" />
     <ClInclude Include="Objects\TrainSignalObject.h" />
     <ClInclude Include="Objects\TrainStationObject.h" />
-    <ClInclude Include="Objects\tree_object.h" />
+    <ClInclude Include="Objects\TreeObject.h" />
     <ClInclude Include="Objects\vehicle_object.h" />
     <ClInclude Include="Objects\wall_object.h" />
     <ClInclude Include="Objects\water_object.h" />

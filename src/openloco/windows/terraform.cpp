@@ -10,7 +10,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/tree_object.h"
+#include "../Objects/TreeObject.h"
 #include "../Objects/wall_object.h"
 #include "../Objects/water_object.h"
 #include "../Widget.h"
