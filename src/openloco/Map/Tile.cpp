@@ -1,7 +1,7 @@
 #include "Tile.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
-#include "../objects/objectmgr.h"
+#include "../Objects/ObjectManager.h"
 #include "../ui/WindowManager.h"
 #include <cassert>
 

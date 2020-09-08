@@ -1,9 +1,9 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
-#include "../../objects/objectmgr.h"
-#include "../../objects/track_object.h"
-#include "../../objects/train_signal_object.h"
+#include "../../Objects/ObjectManager.h"
+#include "../../Objects/TrackObject.h"
+#include "../../Objects/TrainSignalObject.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"
 

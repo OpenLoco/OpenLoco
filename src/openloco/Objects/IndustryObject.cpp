@@ -1,8 +1,8 @@
-#include "industry_object.h"
+#include "IndustryObject.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
-#include "cargo_object.h"
-#include "objectmgr.h"
+#include "CargoObject.h"
+#include "ObjectManager.h"
 #include <algorithm>
 
 using namespace openloco::interop;

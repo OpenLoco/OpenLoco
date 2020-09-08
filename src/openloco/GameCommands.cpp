@@ -3,10 +3,10 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Map/Tile.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "StationManager.h"
-#include "objects/objectmgr.h"
-#include "objects/road_object.h"
-#include "objects/track_object.h"
 #include "things/vehicle.h"
 #include "ui/WindowManager.h"
 #include <cassert>

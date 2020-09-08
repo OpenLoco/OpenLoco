@@ -2,13 +2,13 @@
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
+#include "Objects/InterfaceSkinObject.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "ViewportManager.h"
 #include "Window.h"
-#include "objects/interface_skin_object.h"
-#include "objects/objectmgr.h"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;

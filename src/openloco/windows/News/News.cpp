@@ -9,12 +9,12 @@
 #include "../../Localisation/StringIds.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
+#include "../../Objects/ObjectManager.h"
+#include "../../Objects/VehicleObject.h"
 #include "../../StationManager.h"
 #include "../../TownManager.h"
 #include "../../ViewportManager.h"
 #include "../../Window.h"
-#include "../../objects/objectmgr.h"
-#include "../../objects/vehicle_object.h"
 #include "../../things/thingmgr.h"
 
 using namespace openloco::interop;

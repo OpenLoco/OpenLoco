@@ -2,7 +2,7 @@
 
 #include "../../Interop/Interop.hpp"
 #include "../../Map/TileManager.h"
-#include "../../objects/vehicle_object.h"
+#include "../../Objects/VehicleObject.h"
 #include "../../ui/WindowManager.h"
 
 using namespace openloco::interop;

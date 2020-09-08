@@ -5,8 +5,8 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
+#include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

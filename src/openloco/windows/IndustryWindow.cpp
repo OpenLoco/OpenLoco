@@ -11,12 +11,12 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/CargoObject.h"
+#include "../Objects/IndustryObject.h"
+#include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../objects/cargo_object.h"
-#include "../objects/industry_object.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
