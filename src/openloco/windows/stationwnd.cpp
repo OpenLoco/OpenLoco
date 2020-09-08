@@ -9,7 +9,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileLoop.hpp"
-#include "../Map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../StationManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

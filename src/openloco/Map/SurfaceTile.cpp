@@ -3,7 +3,7 @@
 #include "../ViewportManager.h"
 #include "../ui/WindowManager.h"
 #include "Tile.h"
-#include "tilemgr.h"
+#include "TileManager.h"
 
 using namespace openloco;
 using namespace openloco::interop;

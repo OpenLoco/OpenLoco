@@ -3,7 +3,7 @@
 #include "Console.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "Map/tilemgr.h"
+#include "Map/TileManager.h"
 #include "Station.h"
 #include "Ui.h"
 #include "Window.h"

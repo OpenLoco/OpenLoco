@@ -6,7 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/Tile.h"
-#include "../Map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../Widget.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/land_object.h"

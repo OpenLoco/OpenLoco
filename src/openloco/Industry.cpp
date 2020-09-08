@@ -1,7 +1,7 @@
 #include "Industry.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/tilemgr.h"
+#include "Map/TileManager.h"
 #include "objects/cargo_object.h"
 #include "objects/industry_object.h"
 #include "objects/objectmgr.h"

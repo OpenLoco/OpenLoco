@@ -9,7 +9,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../Map/Tile.h"
-#include "../Map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

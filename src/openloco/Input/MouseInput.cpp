@@ -4,7 +4,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
-#include "../Map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"

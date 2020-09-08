@@ -3,7 +3,7 @@
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
-#include "../Map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../objects/objectmgr.h"

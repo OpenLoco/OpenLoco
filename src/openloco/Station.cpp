@@ -3,7 +3,7 @@
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/tilemgr.h"
+#include "Map/TileManager.h"
 #include "MessageManager.h"
 #include "OpenLoco.h"
 #include "ViewportManager.h"
