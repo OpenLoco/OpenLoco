@@ -2,7 +2,7 @@
 
 #include "Company.h"
 #include "Localisation/StringManager.h"
-#include "map/tile.h"
+#include "Map/tile.h"
 #include <cstdint>
 #include <limits>
 

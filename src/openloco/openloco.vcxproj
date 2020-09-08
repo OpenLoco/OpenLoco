@@ -45,9 +45,9 @@
     <ClCompile Include="Localisation\Languages.cpp" />
     <ClCompile Include="Localisation\StringManager.cpp" />
     <ClCompile Include="Localisation\Unicode.cpp" />
-    <ClCompile Include="map\SurfaceTile.cpp" />
-    <ClCompile Include="map\tile.cpp" />
-    <ClCompile Include="map\tilemgr.cpp" />
+    <ClCompile Include="Map\SurfaceTile.cpp" />
+    <ClCompile Include="Map\tile.cpp" />
+    <ClCompile Include="Map\tilemgr.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
     <ClCompile Include="objects\industry_object.cpp" />
@@ -177,9 +177,9 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Management\Expenditures.h" />
-    <ClInclude Include="map\tile.h" />
-    <ClInclude Include="map\tilemgr.h" />
-    <ClInclude Include="map\tile_loop.hpp" />
+    <ClInclude Include="Map\tile.h" />
+    <ClInclude Include="Map\tilemgr.h" />
+    <ClInclude Include="Map\tile_loop.hpp" />
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="objects\airport_object.h" />

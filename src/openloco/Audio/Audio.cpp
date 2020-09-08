@@ -5,7 +5,7 @@
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
-#include "../map/tilemgr.h"
+#include "../Map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/sound_object.h"
 #include "../things/thingmgr.h"
