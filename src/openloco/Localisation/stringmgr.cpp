@@ -5,7 +5,7 @@
 #include "../TownManager.h"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
-#include "argswrapper.hpp"
+#include "ArgsWrapper.hpp"
 #include "string_ids.h"
 
 #include <cassert>

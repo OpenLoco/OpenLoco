@@ -168,7 +168,7 @@
     <ClInclude Include="Input\ShortcutManager.h" />
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
-    <ClInclude Include="Localisation\argswrapper.hpp" />
+    <ClInclude Include="Localisation\ArgsWrapper.hpp" />
     <ClInclude Include="Localisation\conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />
     <ClInclude Include="Localisation\languagefiles.h" />
