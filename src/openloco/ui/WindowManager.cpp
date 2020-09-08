@@ -8,7 +8,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../Map/tilemgr.h"
 #include "../MultiPlayer.h"
 #include "../StationManager.h"

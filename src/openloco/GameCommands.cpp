@@ -2,7 +2,7 @@
 #include "Audio/Audio.h"
 #include "Company.h"
 #include "CompanyManager.h"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "StationManager.h"
 #include "objects/objectmgr.h"
 #include "objects/road_object.h"

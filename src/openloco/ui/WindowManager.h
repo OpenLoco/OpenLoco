@@ -3,7 +3,7 @@
 #include "../Company.h"
 #include "../Graphics/Gfx.h"
 #include "../Localisation/StringManager.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../Viewport.hpp"
 #include "../Window.h"
 #include <cstddef>

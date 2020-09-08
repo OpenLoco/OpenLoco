@@ -1,7 +1,7 @@
 #include "Gui.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"

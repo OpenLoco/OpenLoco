@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Localisation/StringManager.h"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include <limits>
 
 namespace openloco

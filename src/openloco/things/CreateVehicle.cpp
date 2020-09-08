@@ -5,7 +5,7 @@
 #include "../Date.h"
 #include "../GameCommands.h"
 #include "../Management/Expenditures.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../objects/objectmgr.h"
 #include "../objects/road_object.h"
 #include "../objects/sound_object.h"

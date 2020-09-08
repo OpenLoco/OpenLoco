@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interop/Interop.hpp"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "objects/objectmgr.h"
 #include "things/thing.h"
 

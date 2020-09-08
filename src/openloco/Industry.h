@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Localisation/StringManager.h"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "Map/tile_loop.hpp"
 #include "Town.h"
 #include "objects/industry_object.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "Station.h"
 #include "Types.hpp"
 #include "Window.h"

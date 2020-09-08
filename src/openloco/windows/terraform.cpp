@@ -5,7 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../Map/tilemgr.h"
 #include "../Widget.h"
 #include "../objects/interface_skin_object.h"

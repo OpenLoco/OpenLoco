@@ -3,7 +3,7 @@
 #include "GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "OpenLoco.h"
 #include "things/thingmgr.h"
 #include "things/vehicle.h"

@@ -6,7 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../Localisation/StringIds.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../MultiPlayer.h"
 #include "../OpenLoco.h"
 #include "../Tutorial.h"

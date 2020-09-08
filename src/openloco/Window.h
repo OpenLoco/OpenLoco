@@ -6,7 +6,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"

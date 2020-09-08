@@ -9,7 +9,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../OpenLoco.h"
 #include "../TownManager.h"
 #include "../ViewportManager.h"

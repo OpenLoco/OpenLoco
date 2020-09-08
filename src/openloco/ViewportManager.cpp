@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Console.h"
 #include "Interop/Interop.hpp"
-#include "Map/tile.h"
+#include "Map/Tile.h"
 #include "Map/tilemgr.h"
 #include "Station.h"
 #include "Ui.h"

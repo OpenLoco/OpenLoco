@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tile.h"
+#include "Tile.h"
 
 namespace openloco::map
 {

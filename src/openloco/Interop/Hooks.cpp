@@ -15,7 +15,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"
 #include "../Input.h"
-#include "../Map/tile.h"
+#include "../Map/Tile.h"
 #include "../Station.h"
 #include "../Title.h"
 #include "../Tutorial.h"
