@@ -6,7 +6,7 @@
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/scenario_text_object.h"
+#include "../Objects/ScenarioTextObject.h"
 #include "../Scenario.h"
 #include "../Widget.h"
 #include "../s5/s5.h"
