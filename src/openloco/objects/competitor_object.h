@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../localisation/stringmgr.h"
+#include "../Localisation/stringmgr.h"
 
 namespace openloco
 {

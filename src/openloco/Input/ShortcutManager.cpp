@@ -2,9 +2,9 @@
 #include "../CompanyManager.h"
 #include "../GameCommands.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/string_ids.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
-#include "../localisation/string_ids.h"
 #include "../s5/s5.h"
 #include "../ui/WindowManager.h"
 #include <array>

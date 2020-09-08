@@ -2,9 +2,9 @@
 
 #include "../Company.h"
 #include "../Graphics/Gfx.h"
+#include "../Localisation/stringmgr.h"
 #include "../Viewport.hpp"
 #include "../Window.h"
-#include "../localisation/stringmgr.h"
 #include "../map/tile.h"
 #include <cstddef>
 

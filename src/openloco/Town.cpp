@@ -1,6 +1,6 @@
 #include "Town.h"
 #include "Interop/Interop.hpp"
-#include "localisation/string_ids.h"
+#include "Localisation/string_ids.h"
 #include <algorithm>
 
 using namespace openloco::interop;

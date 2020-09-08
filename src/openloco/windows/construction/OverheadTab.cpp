@@ -1,7 +1,7 @@
 #include "../../CompanyManager.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
-#include "../../localisation/FormatArguments.hpp"
+#include "../../Localisation/FormatArguments.hpp"
 #include "../../objects/objectmgr.h"
 #include "../../objects/road_extra_object.h"
 #include "../../objects/road_object.h"

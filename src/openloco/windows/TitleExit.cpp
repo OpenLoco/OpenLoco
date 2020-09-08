@@ -3,9 +3,9 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
+#include "../Localisation/string_ids.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../localisation/string_ids.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

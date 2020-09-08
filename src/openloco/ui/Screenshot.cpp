@@ -1,8 +1,8 @@
 #include "Screenshot.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/string_ids.h"
 #include "../Ui.h"
-#include "../localisation/string_ids.h"
 #include "../platform/platform.h"
 #include "../s5/s5.h"
 #include <cstdint>
