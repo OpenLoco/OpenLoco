@@ -3,7 +3,7 @@
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/TrackObject.h"
-#include "../../Objects/train_signal_object.h"
+#include "../../Objects/TrainSignalObject.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"
 

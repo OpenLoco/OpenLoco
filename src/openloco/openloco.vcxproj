@@ -201,8 +201,8 @@
     <ClInclude Include="Objects\SteamObject.h" />
     <ClInclude Include="Objects\TrackExtraObject.h" />
     <ClInclude Include="Objects\TrackObject.h" />
-    <ClInclude Include="Objects\train_signal_object.h" />
-    <ClInclude Include="Objects\train_station_object.h" />
+    <ClInclude Include="Objects\TrainSignalObject.h" />
+    <ClInclude Include="Objects\TrainStationObject.h" />
     <ClInclude Include="Objects\tree_object.h" />
     <ClInclude Include="Objects\vehicle_object.h" />
     <ClInclude Include="Objects\wall_object.h" />

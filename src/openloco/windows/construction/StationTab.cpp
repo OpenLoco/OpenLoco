@@ -9,7 +9,7 @@
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/RoadStationObject.h"
 #include "../../Objects/TrackObject.h"
-#include "../../Objects/train_station_object.h"
+#include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"
