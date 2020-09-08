@@ -8,7 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../Map/tile_loop.hpp"
+#include "../Map/TileLoop.hpp"
 #include "../Map/tilemgr.h"
 #include "../StationManager.h"
 #include "../ViewportManager.h"

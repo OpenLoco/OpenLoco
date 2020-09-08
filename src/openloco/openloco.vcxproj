@@ -178,8 +178,8 @@
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Management\Expenditures.h" />
     <ClInclude Include="Map\Tile.h" />
+    <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\tilemgr.h" />
-    <ClInclude Include="Map\tile_loop.hpp" />
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="objects\airport_object.h" />
