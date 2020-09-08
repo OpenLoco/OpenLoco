@@ -2,9 +2,9 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Platform/platform.h"
 #include "../S5/S5.h"
 #include "../Ui.h"
-#include "../platform/platform.h"
 #include <cstdint>
 #include <fstream>
 #include <png.h>

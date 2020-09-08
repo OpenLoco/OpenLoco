@@ -53,8 +53,8 @@
     <ClCompile Include="Objects\IndustryObject.cpp" />
     <ClCompile Include="Objects\ObjectManager.cpp" />
     <ClCompile Include="OpenLoco.cpp" />
-    <ClCompile Include="platform\platform.posix.cpp" />
-    <ClCompile Include="platform\platform.windows.cpp" />
+    <ClCompile Include="Platform\platform.posix.cpp" />
+    <ClCompile Include="Platform\platform.windows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="Scenario.cpp" />
@@ -208,7 +208,7 @@
     <ClInclude Include="Objects\WallObject.h" />
     <ClInclude Include="Objects\WaterObject.h" />
     <ClInclude Include="OpenLoco.h" />
-    <ClInclude Include="platform\platform.h" />
+    <ClInclude Include="Platform\platform.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="Scenario.h" />

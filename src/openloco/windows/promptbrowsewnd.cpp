@@ -8,10 +8,10 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
+#include "../Platform/platform.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui.h"
-#include "../platform/platform.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
 #include <algorithm>
