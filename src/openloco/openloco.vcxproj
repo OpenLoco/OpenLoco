@@ -187,7 +187,7 @@
     <ClInclude Include="Objects\BuildingObject.h" />
     <ClInclude Include="Objects\CargoObject.h" />
     <ClInclude Include="Objects\CompetitorObject.h" />
-    <ClInclude Include="Objects\currency_object.h" />
+    <ClInclude Include="Objects\CurrencyObject.h" />
     <ClInclude Include="Objects\dock_object.h" />
     <ClInclude Include="Objects\industry_object.h" />
     <ClInclude Include="Objects\interface_skin_object.h" />

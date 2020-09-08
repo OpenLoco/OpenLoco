@@ -9,7 +9,7 @@
 #include "../Localisation/LanguageFiles.h"
 #include "../Localisation/Languages.h"
 #include "../Localisation/StringIds.h"
-#include "../Objects/currency_object.h"
+#include "../Objects/CurrencyObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../Ui.h"

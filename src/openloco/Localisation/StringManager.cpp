@@ -2,7 +2,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../Interop/Interop.hpp"
-#include "../Objects/currency_object.h"
+#include "../Objects/CurrencyObject.h"
 #include "../Objects/objectmgr.h"
 #include "../TownManager.h"
 #include "ArgsWrapper.hpp"
