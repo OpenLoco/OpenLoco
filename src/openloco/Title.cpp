@@ -2,8 +2,8 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Gui.h"
+#include "Interop/interop.hpp"
 #include "OpenLoco.h"
-#include "interop/interop.hpp"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;

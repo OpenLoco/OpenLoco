@@ -3,7 +3,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../OpenLoco.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"

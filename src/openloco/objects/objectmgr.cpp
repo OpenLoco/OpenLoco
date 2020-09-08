@@ -1,5 +1,5 @@
 #include "objectmgr.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include <vector>
 
 using namespace openloco::interop;

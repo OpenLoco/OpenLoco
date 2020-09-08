@@ -9,7 +9,7 @@
 #include "../Intro.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/competitor_object.h"

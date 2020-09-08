@@ -36,9 +36,9 @@
     <ClCompile Include="Input\Keyboard.cpp" />
     <ClCompile Include="Input\MouseInput.cpp" />
     <ClCompile Include="Input\ShortcutManager.cpp" />
-    <ClCompile Include="interop\hook.cpp" />
-    <ClCompile Include="interop\hooks.cpp" />
-    <ClCompile Include="interop\interop.cpp" />
+    <ClCompile Include="Interop\hook.cpp" />
+    <ClCompile Include="Interop\hooks.cpp" />
+    <ClCompile Include="Interop\interop.cpp" />
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="localisation\conversion.cpp" />
     <ClCompile Include="localisation\languagefiles.cpp" />
@@ -166,7 +166,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Input\Shortcut.h" />
     <ClInclude Include="Input\ShortcutManager.h" />
-    <ClInclude Include="interop\interop.hpp" />
+    <ClInclude Include="Interop\interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="localisation\argswrapper.hpp" />
     <ClInclude Include="localisation\conversion.h" />

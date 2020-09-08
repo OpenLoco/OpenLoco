@@ -39,7 +39,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "ViewportManager.h"
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 #include "localisation/languagefiles.h"
 #include "localisation/languages.h"
 #include "localisation/string_ids.h"

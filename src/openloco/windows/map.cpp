@@ -8,7 +8,7 @@
 #include "../TownManager.h"
 #include "../Types.hpp"
 #include "../Widget.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/industry_object.h"
 #include "../objects/interface_skin_object.h"

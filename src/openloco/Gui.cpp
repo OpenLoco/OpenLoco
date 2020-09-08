@@ -5,7 +5,7 @@
 #include "Ui.h"
 #include "ViewportManager.h"
 #include "Window.h"
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 #include "map/tile.h"
 #include "objects/interface_skin_object.h"
 #include "objects/objectmgr.h"

@@ -2,7 +2,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../Environment.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
 #include "conversion.h"

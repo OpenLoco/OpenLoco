@@ -8,7 +8,7 @@
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../management/Expenditures.h"

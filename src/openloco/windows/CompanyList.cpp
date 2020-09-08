@@ -6,7 +6,7 @@
 #include "../Input.h"
 #include "../OpenLoco.h"
 #include "../Widget.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/cargo_object.h"
 #include "../objects/competitor_object.h"

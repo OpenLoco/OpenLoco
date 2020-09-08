@@ -1,5 +1,5 @@
 #include "ScenarioManager.h"
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 
 using namespace openloco::interop;
 

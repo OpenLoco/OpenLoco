@@ -1,8 +1,8 @@
 #include "../../Audio/Audio.h"
 #include "../../Graphics/Colour.h"
+#include "../../Interop/interop.hpp"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../interop/interop.hpp"
 #include "News.h"
 
 using namespace openloco::interop;

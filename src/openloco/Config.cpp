@@ -10,7 +10,7 @@
 #include "ConfigConvert.hpp"
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 #include "utility/yaml.hpp"
 
 using namespace openloco::interop;

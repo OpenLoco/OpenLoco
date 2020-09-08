@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 #include "map/tile.h"
 #include "objects/objectmgr.h"
 #include "things/thing.h"

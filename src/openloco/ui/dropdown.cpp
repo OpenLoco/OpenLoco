@@ -3,7 +3,7 @@
 #include "../Console.h"
 #include "../Input.h"
 #include "../Window.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"
 #include "../objects/objectmgr.h"

@@ -6,7 +6,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../OpenLoco.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../objects/competitor_object.h"
 #include "../objects/interface_skin_object.h"

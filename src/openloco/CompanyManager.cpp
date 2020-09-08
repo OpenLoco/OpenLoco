@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "GameCommands.h"
 #include "OpenLoco.h"
-#include "interop/interop.hpp"
+#include "Interop/interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "map/tile.h"
 #include "things/thingmgr.h"

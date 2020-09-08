@@ -4,7 +4,7 @@
 #include "../Environment.h"
 #include "../Input.h"
 #include "../Ui.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/languagefiles.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"

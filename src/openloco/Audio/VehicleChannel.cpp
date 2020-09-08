@@ -1,5 +1,5 @@
 #include "VehicleChannel.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 

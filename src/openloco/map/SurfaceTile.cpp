@@ -1,6 +1,6 @@
 #include "../IndustryManager.h"
+#include "../Interop/interop.hpp"
 #include "../ViewportManager.h"
-#include "../interop/interop.hpp"
 #include "../ui/WindowManager.h"
 #include "tile.h"
 #include "tilemgr.h"

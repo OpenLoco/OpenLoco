@@ -9,7 +9,7 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Win32.h"
-#include "../interop/interop.hpp"
+#include "../Interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../things/thingmgr.h"
 #include "../ui/Screenshot.h"

@@ -1,10 +1,10 @@
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/interop.hpp"
 #include "../Intro.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../ui/WindowManager.h"
 
