@@ -33,9 +33,9 @@
     <ClCompile Include="Industry.cpp" />
     <ClCompile Include="IndustryManager.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="input\keyboard.cpp" />
-    <ClCompile Include="input\mouse_input.cpp" />
-    <ClCompile Include="input\ShortcutManager.cpp" />
+    <ClCompile Include="Input\Keyboard.cpp" />
+    <ClCompile Include="Input\MouseInput.cpp" />
+    <ClCompile Include="Input\ShortcutManager.cpp" />
     <ClCompile Include="interop\hook.cpp" />
     <ClCompile Include="interop\hooks.cpp" />
     <ClCompile Include="interop\interop.cpp" />
@@ -164,8 +164,8 @@
     <ClInclude Include="Industry.h" />
     <ClInclude Include="IndustryManager.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="input\Shortcut.h" />
-    <ClInclude Include="input\ShortcutManager.h" />
+    <ClInclude Include="Input\Shortcut.h" />
+    <ClInclude Include="Input\ShortcutManager.h" />
     <ClInclude Include="interop\interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="localisation\argswrapper.hpp" />

@@ -1,7 +1,7 @@
 #include "../Config.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
-#include "../input/ShortcutManager.h"
+#include "../Input/ShortcutManager.h"
 #include "../interop/interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
