@@ -56,7 +56,7 @@
     <ClCompile Include="platform\platform.posix.cpp" />
     <ClCompile Include="platform\platform.windows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
-    <ClCompile Include="s5\s5.cpp" />
+    <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
@@ -210,7 +210,7 @@
     <ClInclude Include="OpenLoco.h" />
     <ClInclude Include="platform\platform.h" />
     <ClInclude Include="ProgressBar.h" />
-    <ClInclude Include="s5\s5.h" />
+    <ClInclude Include="S5\S5.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="Station.h" />

@@ -7,9 +7,9 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/ScenarioTextObject.h"
+#include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Widget.h"
-#include "../s5/s5.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 
