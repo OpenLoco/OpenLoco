@@ -10,7 +10,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
-#include "../Objects/track_object.h"
+#include "../Objects/TrackObject.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"

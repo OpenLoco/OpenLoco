@@ -5,8 +5,8 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadExtraObject.h"
 #include "../../Objects/RoadObject.h"
-#include "../../Objects/track_extra_object.h"
-#include "../../Objects/track_object.h"
+#include "../../Objects/TrackExtraObject.h"
+#include "../../Objects/TrackObject.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"
 

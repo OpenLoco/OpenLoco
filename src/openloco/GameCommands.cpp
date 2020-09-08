@@ -5,7 +5,7 @@
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
-#include "Objects/track_object.h"
+#include "Objects/TrackObject.h"
 #include "StationManager.h"
 #include "things/vehicle.h"
 #include "ui/WindowManager.h"

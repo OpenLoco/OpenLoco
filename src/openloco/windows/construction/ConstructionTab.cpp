@@ -6,7 +6,7 @@
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
-#include "../../Objects/track_object.h"
+#include "../../Objects/TrackObject.h"
 #include "../../TrackData.h"
 #include "../../ui/dropdown.h"
 #include "Construction.h"

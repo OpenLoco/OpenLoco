@@ -199,8 +199,8 @@
     <ClInclude Include="Objects\ScenarioTextObject.h" />
     <ClInclude Include="Objects\SoundObject.h" />
     <ClInclude Include="Objects\SteamObject.h" />
-    <ClInclude Include="Objects\track_extra_object.h" />
-    <ClInclude Include="Objects\track_object.h" />
+    <ClInclude Include="Objects\TrackExtraObject.h" />
+    <ClInclude Include="Objects\TrackObject.h" />
     <ClInclude Include="Objects\train_signal_object.h" />
     <ClInclude Include="Objects\train_station_object.h" />
     <ClInclude Include="Objects\tree_object.h" />
