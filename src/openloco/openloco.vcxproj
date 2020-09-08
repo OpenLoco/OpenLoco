@@ -40,7 +40,7 @@
     <ClCompile Include="Interop\Hooks.cpp" />
     <ClCompile Include="Interop\Interop.cpp" />
     <ClCompile Include="Intro.cpp" />
-    <ClCompile Include="Localisation\conversion.cpp" />
+    <ClCompile Include="Localisation\Conversion.cpp" />
     <ClCompile Include="Localisation\languagefiles.cpp" />
     <ClCompile Include="Localisation\languages.cpp" />
     <ClCompile Include="Localisation\stringmgr.cpp" />
@@ -169,7 +169,7 @@
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="Localisation\ArgsWrapper.hpp" />
-    <ClInclude Include="Localisation\conversion.h" />
+    <ClInclude Include="Localisation\Conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />
     <ClInclude Include="Localisation\languagefiles.h" />
     <ClInclude Include="Localisation\languages.h" />

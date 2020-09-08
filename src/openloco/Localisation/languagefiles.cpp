@@ -5,7 +5,7 @@
 #include "../Interop/Interop.hpp"
 #include "../platform/platform.h"
 #include "../utility/yaml.hpp"
-#include "conversion.h"
+#include "Conversion.h"
 #include "string_ids.h"
 #include "stringmgr.h"
 #include "unicode.h"
