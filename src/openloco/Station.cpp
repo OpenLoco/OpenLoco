@@ -10,7 +10,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "Objects/road_station_object.h"
+#include "Objects/RoadStationObject.h"
 #include "OpenLoco.h"
 #include "ViewportManager.h"
 #include "ui/WindowManager.h"

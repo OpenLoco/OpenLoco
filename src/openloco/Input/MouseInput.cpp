@@ -6,7 +6,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/road_object.h"
+#include "../Objects/RoadObject.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"

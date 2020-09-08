@@ -193,9 +193,9 @@
     <ClInclude Include="Objects\InterfaceSkinObject.h" />
     <ClInclude Include="Objects\LandObject.h" />
     <ClInclude Include="Objects\ObjectManager.h" />
-    <ClInclude Include="Objects\road_extra_object.h" />
-    <ClInclude Include="Objects\road_object.h" />
-    <ClInclude Include="Objects\road_station_object.h" />
+    <ClInclude Include="Objects\RoadExtraObject.h" />
+    <ClInclude Include="Objects\RoadObject.h" />
+    <ClInclude Include="Objects\RoadStationObject.h" />
     <ClInclude Include="Objects\scenario_text_object.h" />
     <ClInclude Include="Objects\sound_object.h" />
     <ClInclude Include="Objects\steam_object.h" />

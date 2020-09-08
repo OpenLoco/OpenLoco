@@ -7,7 +7,7 @@
 #include "../Management/Expenditures.h"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/road_object.h"
+#include "../Objects/RoadObject.h"
 #include "../Objects/sound_object.h"
 #include "../Objects/track_object.h"
 #include "../Objects/vehicle_object.h"

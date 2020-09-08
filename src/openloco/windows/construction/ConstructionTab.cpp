@@ -5,7 +5,7 @@
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/ObjectManager.h"
-#include "../../Objects/road_object.h"
+#include "../../Objects/RoadObject.h"
 #include "../../Objects/track_object.h"
 #include "../../TrackData.h"
 #include "../../ui/dropdown.h"

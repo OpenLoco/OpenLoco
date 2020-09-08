@@ -12,7 +12,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/road_object.h"
+#include "../Objects/RoadObject.h"
 #include "../Objects/track_object.h"
 #include "../Objects/water_object.h"
 #include "../StationManager.h"
