@@ -8,7 +8,7 @@
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
-#include "../Objects/sound_object.h"
+#include "../Objects/SoundObject.h"
 #include "../Objects/track_object.h"
 #include "../Objects/vehicle_object.h"
 #include "../ui/WindowManager.h"

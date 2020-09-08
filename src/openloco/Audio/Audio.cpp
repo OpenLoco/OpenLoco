@@ -7,7 +7,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/sound_object.h"
+#include "../Objects/SoundObject.h"
 #include "../things/thingmgr.h"
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
