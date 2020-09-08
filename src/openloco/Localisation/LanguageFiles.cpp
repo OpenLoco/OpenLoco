@@ -8,7 +8,7 @@
 #include "Conversion.h"
 #include "StringIds.h"
 #include "StringManager.h"
-#include "unicode.h"
+#include "Unicode.h"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>

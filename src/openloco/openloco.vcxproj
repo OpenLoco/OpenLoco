@@ -44,7 +44,7 @@
     <ClCompile Include="Localisation\LanguageFiles.cpp" />
     <ClCompile Include="Localisation\Languages.cpp" />
     <ClCompile Include="Localisation\StringManager.cpp" />
-    <ClCompile Include="Localisation\unicode.cpp" />
+    <ClCompile Include="Localisation\Unicode.cpp" />
     <ClCompile Include="map\SurfaceTile.cpp" />
     <ClCompile Include="map\tile.cpp" />
     <ClCompile Include="map\tilemgr.cpp" />
@@ -175,7 +175,7 @@
     <ClInclude Include="Localisation\Languages.h" />
     <ClInclude Include="Localisation\StringManager.h" />
     <ClInclude Include="Localisation\StringIds.h" />
-    <ClInclude Include="Localisation\unicode.h" />
+    <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="management\Expenditures.h" />
     <ClInclude Include="map\tile.h" />
     <ClInclude Include="map\tilemgr.h" />
