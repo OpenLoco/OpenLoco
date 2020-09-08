@@ -12,7 +12,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TreeObject.h"
 #include "../Objects/WallObject.h"
-#include "../Objects/water_object.h"
+#include "../Objects/WaterObject.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
