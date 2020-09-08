@@ -10,7 +10,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileLoop.hpp"
 #include "../Map/TileManager.h"
-#include "../Objects/cargo_object.h"
+#include "../Objects/CargoObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../StationManager.h"

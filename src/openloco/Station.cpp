@@ -7,7 +7,7 @@
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
-#include "Objects/cargo_object.h"
+#include "Objects/CargoObject.h"
 #include "Objects/industry_object.h"
 #include "Objects/objectmgr.h"
 #include "Objects/road_station_object.h"

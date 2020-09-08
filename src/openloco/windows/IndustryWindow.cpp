@@ -11,7 +11,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../Objects/cargo_object.h"
+#include "../Objects/CargoObject.h"
 #include "../Objects/industry_object.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"

@@ -3,7 +3,7 @@
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Objects/AirportObject.h"
-#include "../../Objects/cargo_object.h"
+#include "../../Objects/CargoObject.h"
 #include "../../Objects/dock_object.h"
 #include "../../Objects/objectmgr.h"
 #include "../../Objects/road_object.h"

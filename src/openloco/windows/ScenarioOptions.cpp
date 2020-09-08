@@ -3,7 +3,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
-#include "../Objects/cargo_object.h"
+#include "../Objects/CargoObject.h"
 #include "../Objects/interface_skin_object.h"
 #include "../Objects/objectmgr.h"
 #include "../Objects/scenario_text_object.h"

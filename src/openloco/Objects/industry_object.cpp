@@ -1,7 +1,7 @@
 #include "industry_object.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
-#include "cargo_object.h"
+#include "CargoObject.h"
 #include "objectmgr.h"
 #include <algorithm>
 

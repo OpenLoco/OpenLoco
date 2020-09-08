@@ -2,7 +2,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
-#include "Objects/cargo_object.h"
+#include "Objects/CargoObject.h"
 #include "Objects/industry_object.h"
 #include "Objects/objectmgr.h"
 #include "utility/numeric.hpp"
