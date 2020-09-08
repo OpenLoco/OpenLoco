@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../objects/steam_object.h"
+#include "../Objects/steam_object.h"
 #include "thing.h"
 
 namespace openloco

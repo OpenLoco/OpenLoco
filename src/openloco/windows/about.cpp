@@ -2,8 +2,8 @@
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Localisation/StringIds.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
+#include "../Objects/interface_skin_object.h"
+#include "../Objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 
 namespace openloco::ui::about

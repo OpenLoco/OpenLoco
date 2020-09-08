@@ -2,9 +2,9 @@
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Objects/interface_skin_object.h"
+#include "../Objects/objectmgr.h"
 #include "../Ui.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 #include <algorithm>
 #include <cstring>

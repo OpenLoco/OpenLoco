@@ -2,9 +2,9 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
-#include "objects/cargo_object.h"
-#include "objects/industry_object.h"
-#include "objects/objectmgr.h"
+#include "Objects/cargo_object.h"
+#include "Objects/industry_object.h"
+#include "Objects/objectmgr.h"
 #include "utility/numeric.hpp"
 #include <algorithm>
 

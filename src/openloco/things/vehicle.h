@@ -2,8 +2,8 @@
 
 #include "../Audio/Audio.h"
 #include "../Company.h"
+#include "../Objects/vehicle_object.h"
 #include "../Window.h"
-#include "../objects/vehicle_object.h"
 #include "../ui/WindowType.h"
 #include "thing.h"
 

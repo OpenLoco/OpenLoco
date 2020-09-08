@@ -2,9 +2,9 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../Interop/Interop.hpp"
+#include "../Objects/currency_object.h"
+#include "../Objects/objectmgr.h"
 #include "../TownManager.h"
-#include "../objects/currency_object.h"
-#include "../objects/objectmgr.h"
 #include "ArgsWrapper.hpp"
 #include "StringIds.h"
 

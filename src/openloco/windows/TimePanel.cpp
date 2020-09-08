@@ -9,10 +9,10 @@
 #include "../Intro.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/interface_skin_object.h"
+#include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 

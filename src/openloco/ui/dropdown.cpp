@@ -4,9 +4,9 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Objects/competitor_object.h"
+#include "../Objects/objectmgr.h"
 #include "../Window.h"
-#include "../objects/competitor_object.h"
-#include "../objects/objectmgr.h"
 
 #include <cassert>
 #include <cstdarg>

@@ -3,9 +3,9 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/interface_skin_object.h"
+#include "../Objects/objectmgr.h"
 #include "../Scenario.h"
-#include "../objects/interface_skin_object.h"
-#include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

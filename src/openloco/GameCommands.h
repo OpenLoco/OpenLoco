@@ -2,7 +2,7 @@
 
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "objects/objectmgr.h"
+#include "Objects/objectmgr.h"
 #include "things/thing.h"
 
 using namespace openloco::interop;
