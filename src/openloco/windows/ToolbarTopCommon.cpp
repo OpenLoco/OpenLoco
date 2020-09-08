@@ -10,7 +10,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/land_object.h"
+#include "../Objects/LandObject.h"
 #include "../Objects/objectmgr.h"
 #include "../Objects/road_object.h"
 #include "../Objects/track_object.h"

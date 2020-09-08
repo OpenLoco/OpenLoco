@@ -8,7 +8,7 @@
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/land_object.h"
+#include "../Objects/LandObject.h"
 #include "../Objects/objectmgr.h"
 #include "../Objects/tree_object.h"
 #include "../Objects/wall_object.h"
