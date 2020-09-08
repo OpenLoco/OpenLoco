@@ -6,7 +6,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Localisation/languagefiles.h"
+#include "../Localisation/LanguageFiles.h"
 #include "../Localisation/languages.h"
 #include "../Localisation/string_ids.h"
 #include "../Ui.h"

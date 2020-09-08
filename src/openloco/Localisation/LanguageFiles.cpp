@@ -1,4 +1,4 @@
-#include "languagefiles.h"
+#include "LanguageFiles.h"
 #include "../Config.h"
 #include "../Console.h"
 #include "../Environment.h"
