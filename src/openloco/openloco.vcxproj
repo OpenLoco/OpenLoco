@@ -53,8 +53,8 @@
     <ClCompile Include="Objects\IndustryObject.cpp" />
     <ClCompile Include="Objects\ObjectManager.cpp" />
     <ClCompile Include="OpenLoco.cpp" />
-    <ClCompile Include="Platform\platform.posix.cpp" />
-    <ClCompile Include="Platform\platform.windows.cpp" />
+    <ClCompile Include="Platform\PlatformPosix.cpp" />
+    <ClCompile Include="Platform\PlatformWindows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="Scenario.cpp" />
