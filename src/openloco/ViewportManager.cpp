@@ -2,11 +2,11 @@
 #include "Config.h"
 #include "Console.h"
 #include "Interop/Interop.hpp"
+#include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Station.h"
 #include "Ui.h"
 #include "Window.h"
-#include "map/tile.h"
-#include "map/tilemgr.h"
 #include "things/thing.h"
 #include "things/thingmgr.h"
 #include <algorithm>

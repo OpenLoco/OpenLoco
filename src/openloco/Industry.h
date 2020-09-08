@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Localisation/StringManager.h"
+#include "Map/Tile.h"
+#include "Map/TileLoop.hpp"
 #include "Town.h"
-#include "map/tile.h"
-#include "map/tile_loop.hpp"
 #include "objects/industry_object.h"
 #include "utility/prng.hpp"
 #include <cstdint>

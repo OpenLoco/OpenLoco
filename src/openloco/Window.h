@@ -6,10 +6,10 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/Tile.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"
-#include "map/tile.h"
 #include "ui/WindowType.h"
 #include <algorithm>
 

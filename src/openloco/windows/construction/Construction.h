@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Interop/Interop.hpp"
-#include "../../map/tilemgr.h"
+#include "../../Map/TileManager.h"
 #include "../../objects/vehicle_object.h"
 #include "../../ui/WindowManager.h"
 

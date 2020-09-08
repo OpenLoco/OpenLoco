@@ -1,5 +1,5 @@
 #include "misc.h"
-#include "../map/tilemgr.h"
+#include "../Map/TileManager.h"
 #include "../objects/objectmgr.h"
 #include "../objects/steam_object.h"
 #include "thingmgr.h"

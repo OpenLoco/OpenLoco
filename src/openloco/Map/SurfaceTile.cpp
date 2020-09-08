@@ -2,8 +2,8 @@
 #include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
 #include "../ui/WindowManager.h"
-#include "tile.h"
-#include "tilemgr.h"
+#include "Tile.h"
+#include "TileManager.h"
 
 using namespace openloco;
 using namespace openloco::interop;

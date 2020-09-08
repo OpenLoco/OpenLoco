@@ -1,4 +1,4 @@
-#include "tilemgr.h"
+#include "TileManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
