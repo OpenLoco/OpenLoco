@@ -7,7 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/land_object.h"
 #include "../Objects/objectmgr.h"
 #include "../Objects/tree_object.h"

@@ -190,7 +190,7 @@
     <ClInclude Include="Objects\CurrencyObject.h" />
     <ClInclude Include="Objects\DockObject.h" />
     <ClInclude Include="Objects\IndustryObject.h" />
-    <ClInclude Include="Objects\interface_skin_object.h" />
+    <ClInclude Include="Objects\InterfaceSkinObject.h" />
     <ClInclude Include="Objects\land_object.h" />
     <ClInclude Include="Objects\objectmgr.h" />
     <ClInclude Include="Objects\road_extra_object.h" />

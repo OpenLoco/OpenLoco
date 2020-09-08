@@ -8,7 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/CompetitorObject.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"

@@ -4,7 +4,7 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../Objects/interface_skin_object.h"
+#include "../../Objects/InterfaceSkinObject.h"
 #include "../../Objects/objectmgr.h"
 #include "News.h"
 

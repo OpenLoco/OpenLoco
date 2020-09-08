@@ -13,7 +13,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/IndustryObject.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

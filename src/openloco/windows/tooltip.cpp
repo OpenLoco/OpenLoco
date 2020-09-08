@@ -2,7 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../Ui.h"
 #include "../ui/WindowManager.h"

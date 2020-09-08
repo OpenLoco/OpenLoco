@@ -8,7 +8,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../MultiPlayer.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../Tutorial.h"

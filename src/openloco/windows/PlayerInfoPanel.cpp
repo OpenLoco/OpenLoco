@@ -11,7 +11,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/CompetitorObject.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"

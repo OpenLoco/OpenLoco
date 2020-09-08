@@ -11,7 +11,7 @@
 #include "../Management/Expenditures.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"

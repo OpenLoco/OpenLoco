@@ -2,7 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "Objects/interface_skin_object.h"
+#include "Objects/InterfaceSkinObject.h"
 #include "Objects/objectmgr.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"

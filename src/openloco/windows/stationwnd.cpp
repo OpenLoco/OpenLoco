@@ -11,7 +11,7 @@
 #include "../Map/TileLoop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../StationManager.h"
 #include "../ViewportManager.h"

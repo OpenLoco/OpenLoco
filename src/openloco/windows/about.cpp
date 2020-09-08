@@ -2,7 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Localisation/StringIds.h"
-#include "../Objects/interface_skin_object.h"
+#include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 
