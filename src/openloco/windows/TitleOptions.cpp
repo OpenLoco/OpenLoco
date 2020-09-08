@@ -1,7 +1,7 @@
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"

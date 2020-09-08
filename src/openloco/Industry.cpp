@@ -1,5 +1,5 @@
 #include "Industry.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "localisation/string_ids.h"
 #include "map/tilemgr.h"
 #include "objects/cargo_object.h"

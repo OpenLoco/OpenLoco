@@ -1,5 +1,5 @@
 #include "SoftwareDrawingEngine.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Ui.h"
 #include "../ui/WindowManager.h"
 #include <algorithm>

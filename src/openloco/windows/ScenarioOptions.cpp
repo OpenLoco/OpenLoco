@@ -1,7 +1,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Scenario.h"
 #include "../Widget.h"
 #include "../localisation/string_ids.h"

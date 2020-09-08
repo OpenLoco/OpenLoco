@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Environment.h"
 #include "Gui.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "Scenario.h"
 #include "Ui.h"
 #include "localisation/string_ids.h"

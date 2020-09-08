@@ -3,7 +3,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Widget.h"
 #include "../localisation/FormatArguments.hpp"
 #include "../map/tile.h"

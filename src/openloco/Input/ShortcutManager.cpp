@@ -1,7 +1,7 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../localisation/string_ids.h"

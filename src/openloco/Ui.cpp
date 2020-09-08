@@ -35,7 +35,7 @@
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"

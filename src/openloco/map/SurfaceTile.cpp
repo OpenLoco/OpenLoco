@@ -1,5 +1,5 @@
 #include "../IndustryManager.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
 #include "../ui/WindowManager.h"
 #include "tile.h"

@@ -1,4 +1,4 @@
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../ui/WindowManager.h"
 #include <stdexcept>

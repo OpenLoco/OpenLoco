@@ -1,7 +1,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
+#include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "../Interop/interop.hpp"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

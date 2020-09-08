@@ -1,5 +1,5 @@
 #include "Colour.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "Gfx.h"
 #include <cassert>
 

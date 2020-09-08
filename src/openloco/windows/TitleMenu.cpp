@@ -3,7 +3,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../MultiPlayer.h"
 #include "../OpenLoco.h"

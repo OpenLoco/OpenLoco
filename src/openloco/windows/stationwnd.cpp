@@ -5,7 +5,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../StationManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

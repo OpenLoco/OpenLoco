@@ -1,7 +1,7 @@
 #include "Station.h"
 #include "CompanyManager.h"
 #include "IndustryManager.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "MessageManager.h"
 #include "OpenLoco.h"
 #include "ViewportManager.h"

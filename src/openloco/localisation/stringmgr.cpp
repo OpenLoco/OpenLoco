@@ -1,7 +1,7 @@
 #include "stringmgr.h"
 #include "../Config.h"
 #include "../Date.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../TownManager.h"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"

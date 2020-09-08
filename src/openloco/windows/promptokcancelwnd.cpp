@@ -1,7 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Graphics/Colour.h"
 #include "../Input.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../ui/WindowManager.h"

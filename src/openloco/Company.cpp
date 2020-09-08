@@ -1,5 +1,5 @@
 #include "Company.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "localisation/FormatArguments.hpp"
 #include "localisation/string_ids.h"
 #include "things/thingmgr.h"

@@ -2,7 +2,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Gui.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "ui/WindowManager.h"
 

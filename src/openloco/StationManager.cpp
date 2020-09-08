@@ -1,6 +1,6 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Window.h"

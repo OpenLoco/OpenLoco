@@ -2,7 +2,7 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../map/tilemgr.h"

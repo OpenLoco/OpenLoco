@@ -1,7 +1,7 @@
 #include "thing.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
-#include "../Interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
 #include <algorithm>
 

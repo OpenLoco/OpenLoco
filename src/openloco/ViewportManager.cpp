@@ -1,7 +1,7 @@
 #include "ViewportManager.h"
 #include "Config.h"
 #include "Console.h"
-#include "Interop/interop.hpp"
+#include "Interop/Interop.hpp"
 #include "Station.h"
 #include "Ui.h"
 #include "Window.h"
