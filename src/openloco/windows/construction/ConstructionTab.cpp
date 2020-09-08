@@ -3,7 +3,7 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
-#include "../../Objects/bridge_object.h"
+#include "../../Objects/BridgeObject.h"
 #include "../../Objects/objectmgr.h"
 #include "../../Objects/road_object.h"
 #include "../../Objects/track_object.h"

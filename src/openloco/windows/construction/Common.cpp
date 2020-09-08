@@ -3,7 +3,7 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Objects/AirportObject.h"
-#include "../../Objects/bridge_object.h"
+#include "../../Objects/BridgeObject.h"
 #include "../../Objects/dock_object.h"
 #include "../../Objects/interface_skin_object.h"
 #include "../../Objects/objectmgr.h"

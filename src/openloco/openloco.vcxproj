@@ -183,7 +183,7 @@
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="Objects\AirportObject.h" />
-    <ClInclude Include="Objects\bridge_object.h" />
+    <ClInclude Include="Objects\BridgeObject.h" />
     <ClInclude Include="Objects\building_object.h" />
     <ClInclude Include="Objects\cargo_object.h" />
     <ClInclude Include="Objects\competitor_object.h" />
