@@ -1,4 +1,4 @@
-#include "stringmgr.h"
+#include "StringManager.h"
 #include "../Config.h"
 #include "../Date.h"
 #include "../Interop/Interop.hpp"

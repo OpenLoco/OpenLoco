@@ -1,6 +1,6 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../Localisation/stringmgr.h"
+#include "../Localisation/StringManager.h"
 #include "../StationManager.h"
 #include "../Ui.h"
 #include "../Window.h"

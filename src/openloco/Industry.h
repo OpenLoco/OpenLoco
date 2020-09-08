@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include "Town.h"
 #include "map/tile.h"
 #include "map/tile_loop.hpp"

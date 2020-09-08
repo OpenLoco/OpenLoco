@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
-#include "Localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include "Window.h"
 #include <cstdint>
 

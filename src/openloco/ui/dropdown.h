@@ -1,6 +1,6 @@
 #include "../Company.h"
 #include "../Graphics/Colour.h"
-#include "../Localisation/stringmgr.h"
+#include "../Localisation/StringManager.h"
 #include "../Window.h"
 #include <cstdlib>
 #include <vector>

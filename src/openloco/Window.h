@@ -5,7 +5,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
-#include "Localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"

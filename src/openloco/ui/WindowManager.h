@@ -2,7 +2,7 @@
 
 #include "../Company.h"
 #include "../Graphics/Gfx.h"
-#include "../Localisation/stringmgr.h"
+#include "../Localisation/StringManager.h"
 #include "../Viewport.hpp"
 #include "../Window.h"
 #include "../map/tile.h"

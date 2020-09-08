@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "management/Expenditures.h"
 #include <cstddef>

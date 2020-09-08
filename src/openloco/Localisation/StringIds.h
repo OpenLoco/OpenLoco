@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stringmgr.h"
+#include "StringManager.h"
 
 #define UNUSED_STR(x) (x)
 

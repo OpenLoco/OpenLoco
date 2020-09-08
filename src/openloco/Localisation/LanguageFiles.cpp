@@ -7,7 +7,7 @@
 #include "../utility/yaml.hpp"
 #include "Conversion.h"
 #include "StringIds.h"
-#include "stringmgr.h"
+#include "StringManager.h"
 #include "unicode.h"
 #include <cassert>
 #include <iostream>
