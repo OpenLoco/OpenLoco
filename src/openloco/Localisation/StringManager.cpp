@@ -1,12 +1,12 @@
-#include "stringmgr.h"
+#include "StringManager.h"
 #include "../Config.h"
 #include "../Date.h"
 #include "../Interop/Interop.hpp"
 #include "../TownManager.h"
 #include "../objects/currency_object.h"
 #include "../objects/objectmgr.h"
-#include "argswrapper.hpp"
-#include "string_ids.h"
+#include "ArgsWrapper.hpp"
+#include "StringIds.h"
 
 #include <cassert>
 #include <cmath>

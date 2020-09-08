@@ -1,6 +1,6 @@
 #pragma once
 
-#include "localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include <cstdint>
 
 namespace openloco::progressbar

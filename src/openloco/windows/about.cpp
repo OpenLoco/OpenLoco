@@ -1,7 +1,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
-#include "../localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../objects/interface_skin_object.h"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"

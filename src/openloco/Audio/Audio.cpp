@@ -4,7 +4,7 @@
 #include "../Date.h"
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
-#include "../localisation/string_ids.h"
+#include "../Localisation/StringIds.h"
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"
 #include "../objects/sound_object.h"

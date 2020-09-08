@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Localisation/StringManager.h"
 #include "Window.h"
-#include "localisation/stringmgr.h"
 #include <cstdint>
 
 namespace openloco::ui::widget

@@ -1,9 +1,9 @@
 #include "Input.h"
 #include "Audio/Audio.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Window.h"
-#include "localisation/string_ids.h"
 #include "ui/WindowManager.h"
 #include "ui/scrollview.h"
 

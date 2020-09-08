@@ -4,11 +4,11 @@
 #include "Core/Optional.hpp"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Viewport.hpp"
-#include "localisation/string_ids.h"
-#include "localisation/stringmgr.h"
 #include "map/tile.h"
 #include "ui/WindowType.h"
 #include <algorithm>

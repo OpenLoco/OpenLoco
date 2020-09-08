@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Localisation/StringManager.h"
 #include "Types.hpp"
-#include "localisation/stringmgr.h"
 #include "management/Expenditures.h"
 #include <cstddef>
 #include <cstdint>

@@ -1,9 +1,9 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringManager.h"
 #include "../StationManager.h"
 #include "../Ui.h"
 #include "../Window.h"
-#include "../localisation/stringmgr.h"
 #include "../ui/scrollview.h"
 #include "WindowManager.h"
 

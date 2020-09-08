@@ -3,9 +3,9 @@
 #include "Environment.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
 #include "Scenario.h"
 #include "Ui.h"
-#include "localisation/string_ids.h"
 
 #include <fstream>
 #include <iterator>

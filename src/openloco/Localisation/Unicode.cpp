@@ -1,4 +1,4 @@
-#include "unicode.h"
+#include "Unicode.h"
 #include <cstdint>
 
 namespace openloco::localisation

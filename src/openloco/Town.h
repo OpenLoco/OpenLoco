@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Company.h"
-#include "localisation/stringmgr.h"
+#include "Localisation/StringManager.h"
 #include "map/tile.h"
 #include <cstdint>
 #include <limits>
