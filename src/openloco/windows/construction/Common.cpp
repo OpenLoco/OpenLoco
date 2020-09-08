@@ -4,7 +4,7 @@
 #include "../../Input.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/BridgeObject.h"
-#include "../../Objects/dock_object.h"
+#include "../../Objects/DockObject.h"
 #include "../../Objects/interface_skin_object.h"
 #include "../../Objects/objectmgr.h"
 #include "../../Objects/road_extra_object.h"

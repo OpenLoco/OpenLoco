@@ -4,7 +4,7 @@
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/CargoObject.h"
-#include "../../Objects/dock_object.h"
+#include "../../Objects/DockObject.h"
 #include "../../Objects/objectmgr.h"
 #include "../../Objects/road_object.h"
 #include "../../Objects/road_station_object.h"
