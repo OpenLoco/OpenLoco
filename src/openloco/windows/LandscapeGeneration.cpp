@@ -8,10 +8,10 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../TownManager.h"
 #include "../Widget.h"
-#include "../s5/s5.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 

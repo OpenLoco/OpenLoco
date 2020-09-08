@@ -1,4 +1,4 @@
-#include "s5.h"
+#include "S5.h"
 #include "../Interop/Interop.hpp"
 
 using namespace openloco::interop;

@@ -3,9 +3,9 @@
 #include "../GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
-#include "../s5/s5.h"
 #include "../ui/WindowManager.h"
 #include <array>
 

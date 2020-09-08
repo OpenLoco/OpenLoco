@@ -12,9 +12,9 @@
 #include "../Objects/CurrencyObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../S5/S5.h"
 #include "../Ui.h"
 #include "../Widget.h"
-#include "../s5/s5.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 #include <cassert>

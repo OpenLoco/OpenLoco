@@ -1,7 +1,7 @@
 #include "Scenario.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
-#include "s5/s5.h"
+#include "S5/S5.h"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;
