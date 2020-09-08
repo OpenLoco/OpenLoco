@@ -10,7 +10,7 @@
 #include "../../Message.h"
 #include "../../MessageManager.h"
 #include "../../Objects/ObjectManager.h"
-#include "../../Objects/vehicle_object.h"
+#include "../../Objects/VehicleObject.h"
 #include "../../StationManager.h"
 #include "../../TownManager.h"
 #include "../../ViewportManager.h"

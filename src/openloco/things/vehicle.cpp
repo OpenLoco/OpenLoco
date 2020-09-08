@@ -5,7 +5,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "../Objects/vehicle_object.h"
+#include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../utility/numeric.hpp"

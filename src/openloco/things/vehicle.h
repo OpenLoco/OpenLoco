@@ -2,7 +2,7 @@
 
 #include "../Audio/Audio.h"
 #include "../Company.h"
-#include "../Objects/vehicle_object.h"
+#include "../Objects/VehicleObject.h"
 #include "../Window.h"
 #include "../ui/WindowType.h"
 #include "thing.h"

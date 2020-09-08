@@ -12,7 +12,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
-#include "../Objects/vehicle_object.h"
+#include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../Widget.h"
 #include "../things/thingmgr.h"

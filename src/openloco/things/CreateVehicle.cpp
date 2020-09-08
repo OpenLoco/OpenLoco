@@ -10,7 +10,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/SoundObject.h"
 #include "../Objects/TrackObject.h"
-#include "../Objects/vehicle_object.h"
+#include "../Objects/VehicleObject.h"
 #include "../ui/WindowManager.h"
 #include "thingmgr.h"
 #include "vehicle.h"
