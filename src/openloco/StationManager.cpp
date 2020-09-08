@@ -1,9 +1,9 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
+#include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Window.h"
-#include "interop/interop.hpp"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;

@@ -25,7 +25,7 @@
 #include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
-#include "interop.hpp"
+#include "Interop.hpp"
 
 using namespace openloco;
 

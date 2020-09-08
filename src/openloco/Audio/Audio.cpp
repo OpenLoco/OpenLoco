@@ -3,7 +3,7 @@
 #include "../Console.h"
 #include "../Date.h"
 #include "../Environment.h"
-#include "../interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../map/tilemgr.h"
 #include "../objects/objectmgr.h"

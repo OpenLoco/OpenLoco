@@ -1,6 +1,6 @@
 #include "tile.h"
 #include "../IndustryManager.h"
-#include "../interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../objects/objectmgr.h"
 #include "../ui/WindowManager.h"
 #include <cassert>

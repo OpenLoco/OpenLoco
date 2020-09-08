@@ -1,5 +1,5 @@
 #include "s5.h"
-#include "../interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 
 using namespace openloco::interop;
 

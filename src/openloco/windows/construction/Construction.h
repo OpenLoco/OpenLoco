@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../interop/interop.hpp"
+#include "../../Interop/Interop.hpp"
 #include "../../map/tilemgr.h"
 #include "../../objects/vehicle_object.h"
 #include "../../ui/WindowManager.h"

@@ -3,7 +3,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input/Shortcut.h"
 #include "../Input/ShortcutManager.h"
-#include "../interop/interop.hpp"
+#include "../Interop/Interop.hpp"
 #include "../localisation/FormatArguments.hpp"
 #include "../localisation/string_ids.h"
 #include "../objects/interface_skin_object.h"

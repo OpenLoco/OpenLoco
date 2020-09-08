@@ -1,7 +1,7 @@
 #include "tilemgr.h"
 #include "../Input.h"
+#include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
-#include "../interop/interop.hpp"
 
 using namespace openloco::interop;
 

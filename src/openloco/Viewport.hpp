@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
 #include "Types.hpp"
-#include "interop/interop.hpp"
 #include <algorithm>
 
 namespace openloco::ui

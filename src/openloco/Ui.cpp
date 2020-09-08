@@ -35,12 +35,12 @@
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
+#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "MultiPlayer.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"
-#include "interop/interop.hpp"
 #include "ui/WindowManager.h"
 #include "utility/string.hpp"
 

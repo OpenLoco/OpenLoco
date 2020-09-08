@@ -1,7 +1,7 @@
 #include "Viewport.hpp"
 #include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
 #include "Window.h"
-#include "interop/interop.hpp"
 #include "map/tile.h"
 
 using namespace openloco::interop;

@@ -1,7 +1,7 @@
 #include "Screenshot.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 #include "../Ui.h"
-#include "../interop/interop.hpp"
 #include "../localisation/string_ids.h"
 #include "../platform/platform.h"
 #include "../s5/s5.h"
