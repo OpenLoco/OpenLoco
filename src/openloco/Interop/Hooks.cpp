@@ -16,7 +16,7 @@
 #include "../Gui.h"
 #include "../Input.h"
 #include "../Map/Tile.h"
-#include "../Platform/platform.h"
+#include "../Platform/Platform.h"
 #include "../Station.h"
 #include "../Title.h"
 #include "../Tutorial.h"

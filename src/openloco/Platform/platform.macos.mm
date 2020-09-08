@@ -1,6 +1,6 @@
 #if defined(__APPLE__) && defined(__MACH__)
 
-#include "platform.h"
+#include "Platform.h"
 #include <limits.h>
 #include <mach-o/dyld.h>
 

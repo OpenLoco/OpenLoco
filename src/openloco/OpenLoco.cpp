@@ -36,7 +36,7 @@
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "Platform/platform.h"
+#include "Platform/Platform.h"
 #include "ProgressBar.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"

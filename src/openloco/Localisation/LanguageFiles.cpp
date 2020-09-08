@@ -3,7 +3,7 @@
 #include "../Console.h"
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
-#include "../Platform/platform.h"
+#include "../Platform/Platform.h"
 #include "../utility/yaml.hpp"
 #include "Conversion.h"
 #include "StringIds.h"
