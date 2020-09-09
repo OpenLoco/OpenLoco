@@ -14,7 +14,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"

@@ -1,6 +1,6 @@
 #include "VehicleChannel.h"
 #include "../Interop/Interop.hpp"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Things/vehicle.h"
 
 using namespace openloco;

@@ -41,7 +41,7 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
-#include "Things/thingmgr.h"
+#include "Things/ThingManager.h"
 #include "Title.h"
 #include "TownManager.h"
 #include "Tutorial.h"

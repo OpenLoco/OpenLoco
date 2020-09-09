@@ -12,7 +12,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../ui/WindowManager.h"
-#include "thingmgr.h"
+#include "ThingManager.h"
 #include "vehicle.h"
 #include <numeric>
 #include <utility>

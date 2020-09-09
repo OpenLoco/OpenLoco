@@ -8,7 +8,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/SoundObject.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../utility/stream.hpp"

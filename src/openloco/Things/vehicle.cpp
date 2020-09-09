@@ -10,7 +10,7 @@
 #include "../ViewportManager.h"
 #include "../utility/numeric.hpp"
 #include "Misc.h"
-#include "thingmgr.h"
+#include "ThingManager.h"
 #include <algorithm>
 #include <cassert>
 

@@ -13,7 +13,7 @@
 #include "../Objects/TrackObject.h"
 #include "../StationManager.h"
 #include "../Things/Thing.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
 #include "../Widget.h"

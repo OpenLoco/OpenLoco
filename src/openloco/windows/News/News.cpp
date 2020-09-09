@@ -12,7 +12,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/VehicleObject.h"
 #include "../../StationManager.h"
-#include "../../Things/thingmgr.h"
+#include "../../Things/ThingManager.h"
 #include "../../TownManager.h"
 #include "../../ViewportManager.h"
 #include "../../Window.h"

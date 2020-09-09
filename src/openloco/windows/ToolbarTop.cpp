@@ -15,7 +15,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
 #include "../StationManager.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Things/vehicle.h"
 #include "../TownManager.h"
 #include "../ui/WindowManager.h"

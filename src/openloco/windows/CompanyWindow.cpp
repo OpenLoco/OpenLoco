@@ -14,7 +14,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Things/vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

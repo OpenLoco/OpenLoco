@@ -12,7 +12,7 @@
 #include "../Map/TileManager.h"
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Things/vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"

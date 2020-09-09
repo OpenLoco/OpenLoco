@@ -1,4 +1,4 @@
-#include "thingmgr.h"
+#include "ThingManager.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 

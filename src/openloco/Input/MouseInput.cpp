@@ -8,7 +8,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../StationManager.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Window.h"

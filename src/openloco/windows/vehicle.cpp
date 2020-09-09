@@ -2,7 +2,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

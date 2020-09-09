@@ -8,7 +8,7 @@
 #include "../Intro.h"
 #include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
-#include "../Things/thingmgr.h"
+#include "../Things/ThingManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Win32.h"

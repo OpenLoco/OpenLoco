@@ -2,7 +2,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Things/thingmgr.h"
+#include "Things/ThingManager.h"
 #include "ui/WindowManager.h"
 #include <algorithm>
 #include <array>
