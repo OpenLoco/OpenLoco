@@ -12,7 +12,7 @@
 
 #include "../Ui.h"
 #include "../utility/string.hpp"
-#include "platform.h"
+#include "Platform.h"
 
 namespace openloco::platform
 {

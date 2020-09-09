@@ -3,7 +3,7 @@
 #include "../Console.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "platform.h"
+#include "Platform.h"
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
