@@ -1,4 +1,4 @@
-#include "misc.h"
+#include "Misc.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "thingmgr.h"

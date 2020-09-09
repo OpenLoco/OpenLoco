@@ -9,7 +9,7 @@
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../utility/numeric.hpp"
-#include "misc.h"
+#include "Misc.h"
 #include "thingmgr.h"
 #include <algorithm>
 #include <cassert>
