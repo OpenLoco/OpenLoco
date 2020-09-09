@@ -7,9 +7,9 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Things/thingmgr.h"
 #include "Ui.h"
 #include "Widget.h"
-#include "things/thingmgr.h"
 #include "ui/Rect.h"
 #include "ui/scrollview.h"
 #include <cassert>

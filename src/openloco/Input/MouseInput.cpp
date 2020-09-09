@@ -8,10 +8,10 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../StationManager.h"
+#include "../Things/thingmgr.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Window.h"
-#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 #include <map>

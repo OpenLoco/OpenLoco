@@ -12,10 +12,10 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/VehicleObject.h"
 #include "../../StationManager.h"
+#include "../../Things/thingmgr.h"
 #include "../../TownManager.h"
 #include "../../ViewportManager.h"
 #include "../../Window.h"
-#include "../../things/thingmgr.h"
 
 using namespace openloco::interop;
 

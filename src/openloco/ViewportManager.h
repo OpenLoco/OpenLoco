@@ -2,9 +2,9 @@
 
 #include "Map/Tile.h"
 #include "Station.h"
+#include "Things/thing.h"
 #include "Types.hpp"
 #include "Window.h"
-#include "things/thing.h"
 #include <array>
 
 namespace openloco::ui::viewportmgr

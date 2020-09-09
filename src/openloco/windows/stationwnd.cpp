@@ -14,9 +14,9 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
+#include "../Things/thingmgr.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

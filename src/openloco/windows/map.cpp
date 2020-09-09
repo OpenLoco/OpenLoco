@@ -12,11 +12,11 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../StationManager.h"
+#include "../Things/thing.h"
+#include "../Things/thingmgr.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
 #include "../Widget.h"
-#include "../things/thing.h"
-#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 #include "../ui/scrollview.h"
 

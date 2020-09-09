@@ -5,10 +5,9 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Station.h"
+#include "Things/thingmgr.h"
 #include "Ui.h"
 #include "Window.h"
-#include "things/thing.h"
-#include "things/thingmgr.h"
 #include <algorithm>
 #include <cassert>
 #include <memory>

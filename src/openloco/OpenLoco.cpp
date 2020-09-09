@@ -41,12 +41,12 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
+#include "Things/thingmgr.h"
 #include "Title.h"
 #include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "ViewportManager.h"
-#include "things/thingmgr.h"
 #include "ui/WindowManager.h"
 #include "utility/numeric.hpp"
 

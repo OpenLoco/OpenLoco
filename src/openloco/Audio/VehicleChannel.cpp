@@ -1,7 +1,7 @@
 #include "VehicleChannel.h"
 #include "../Interop/Interop.hpp"
-#include "../things/thingmgr.h"
-#include "../things/vehicle.h"
+#include "../Things/thingmgr.h"
+#include "../Things/vehicle.h"
 
 using namespace openloco;
 using namespace openloco::audio;

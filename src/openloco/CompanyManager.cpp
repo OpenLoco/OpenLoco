@@ -5,8 +5,8 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "OpenLoco.h"
-#include "things/thingmgr.h"
-#include "things/vehicle.h"
+#include "Things/thingmgr.h"
+#include "Things/vehicle.h"
 #include "ui/WindowManager.h"
 
 using namespace openloco::interop;
