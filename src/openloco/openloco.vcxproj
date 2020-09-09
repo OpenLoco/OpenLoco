@@ -63,7 +63,7 @@
     <ClCompile Include="StationManager.cpp" />
     <ClCompile Include="Things\CreateVehicle.cpp" />
     <ClCompile Include="Things\Misc.cpp" />
-    <ClCompile Include="Things\thing.cpp" />
+    <ClCompile Include="Things\Thing.cpp" />
     <ClCompile Include="Things\thingmgr.cpp" />
     <ClCompile Include="Things\vehicle.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -216,7 +216,7 @@
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />
     <ClInclude Include="Things\Misc.h" />
-    <ClInclude Include="Things\thing.h" />
+    <ClInclude Include="Things\Thing.h" />
     <ClInclude Include="Things\thingmgr.h" />
     <ClInclude Include="Things\vehicle.h" />
     <ClInclude Include="thirdparty\filesystem.hpp" />

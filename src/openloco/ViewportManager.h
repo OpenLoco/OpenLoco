@@ -2,7 +2,7 @@
 
 #include "Map/Tile.h"
 #include "Station.h"
-#include "Things/thing.h"
+#include "Things/Thing.h"
 #include "Types.hpp"
 #include "Window.h"
 #include <array>

@@ -12,7 +12,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../StationManager.h"
-#include "../Things/thing.h"
+#include "../Things/Thing.h"
 #include "../Things/thingmgr.h"
 #include "../TownManager.h"
 #include "../Types.hpp"

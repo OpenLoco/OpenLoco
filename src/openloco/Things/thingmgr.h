@@ -1,6 +1,6 @@
 #pragma once
 
-#include "thing.h"
+#include "Thing.h"
 #include "vehicle.h"
 #include <cstdio>
 
