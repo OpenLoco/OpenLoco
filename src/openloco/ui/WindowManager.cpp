@@ -13,7 +13,7 @@
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
-#include "../Things/vehicle.h"
+#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"

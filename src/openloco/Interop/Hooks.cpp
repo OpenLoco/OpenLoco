@@ -18,7 +18,7 @@
 #include "../Map/Tile.h"
 #include "../Platform/Platform.h"
 #include "../Station.h"
-#include "../Things/vehicle.h"
+#include "../Things/Vehicle.h"
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"

@@ -13,7 +13,7 @@
 #include "../Objects/VehicleObject.h"
 #include "../ui/WindowManager.h"
 #include "ThingManager.h"
-#include "vehicle.h"
+#include "Vehicle.h"
 #include <numeric>
 #include <utility>
 

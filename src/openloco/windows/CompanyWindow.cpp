@@ -15,7 +15,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Things/ThingManager.h"
-#include "../Things/vehicle.h"
+#include "../Things/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 #include "../ui/WindowManager.h"

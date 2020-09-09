@@ -7,7 +7,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "StationManager.h"
-#include "Things/vehicle.h"
+#include "Things/Vehicle.h"
 #include "ui/WindowManager.h"
 #include <cassert>
 

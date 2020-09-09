@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Thing.h"
-#include "vehicle.h"
+#include "Vehicle.h"
 #include <cstdio>
 
 namespace openloco::thingmgr
