@@ -169,7 +169,7 @@ namespace OpenLoco
         uint16_t rack_speed;                          // 0xDC
         uint16_t weight;                              // 0xDE
         uint16_t flags;                               // 0xE0
-        uint8_t max_primary_cargo;                    // 0xE2
+        uint8_t max_primary_cargo;                    // 0xE2 size is relative to the first primary_cargo_types
         uint8_t max_secondary_cargo;                  // 0xE3
         uint32_t primary_cargo_types;                 // 0xE4
         uint32_t secondary_cargo_types;               // 0xE8

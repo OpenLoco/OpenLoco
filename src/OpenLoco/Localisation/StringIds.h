@@ -281,6 +281,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id title_name_vehicle = 375;
     constexpr string_id prompt_enter_new_vehicle_name = 376;
+    constexpr string_id cant_rename_this_vehicle = 377;
 
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
@@ -667,6 +668,7 @@ namespace OpenLoco::StringIds
     constexpr string_id vehicle_has_broken_down = 1159;
     constexpr string_id vehicle_is_stuck = 1160;
 
+    constexpr string_id cant_remove_string_id = 1164;
     constexpr string_id cant_pass_signal_at_danger = 1165;
 
     constexpr string_id cargo_from = 1170;

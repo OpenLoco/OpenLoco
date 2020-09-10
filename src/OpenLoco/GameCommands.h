@@ -30,6 +30,7 @@ namespace OpenLoco::GameCommands
         vehicle_create = 5,
         vehicle_sell = 6,
         build_vehicle = 9,
+        vehicle_rename = 10,
         change_station_name = 11,
         vehicle_local_express = 12,
         change_company_colour_scheme = 19,
@@ -47,6 +48,8 @@ namespace OpenLoco::GameCommands
         change_company_name = 46,
         remove_industry = 54,
         build_company_headquarters = 55,
+        vehicle_abort_pickup_air = 59,
+        vehicle_abort_pickup_water = 63,
         change_company_face = 66,
         load_multiplayer_map = 67,
         send_chat_message = 71,
@@ -62,6 +65,14 @@ namespace OpenLoco::GameCommands
     void registerHooks();
     uint32_t doCommand(int esi, const registers& registers);
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
+
+    inline bool do_2(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.di = head;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_pickup), regs) != FAILURE;
+    }
 
     // Reverse (vehicle)
     inline void do_3(thing_id_t vehicleHead)
@@ -111,6 +122,19 @@ namespace OpenLoco::GameCommands
         regs.bl = GameCommandFlag::apply;
         regs.edx = newLoan;
         doCommand(9, regs);
+    }
+
+    // Change vehicle name
+    inline void do_10(thing_id_t head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = head; // vehicle head id
+        regs.ax = i;    // [ 0, 1, 2]
+        regs.edx = edx; // part of name buffer
+        regs.ebp = ebp; // part of name buffer
+        regs.edi = edi; // part of name buffer
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_rename), regs);
     }
 
     // Change station name
@@ -362,6 +386,22 @@ namespace OpenLoco::GameCommands
         regs.ax = ax; // y?
         regs.di = di; // z?
         doCommand(55, regs);
+    }
+
+    inline bool do_59(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.di = head;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_abort_pickup_air), regs) != FAILURE;
+    }
+
+    inline bool do_63(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.di = head;
+        return doCommand(static_cast<int32_t>(GameCommand::vehicle_abort_pickup_water), regs) != FAILURE;
     }
 
     // Refit vehicle

@@ -278,6 +278,7 @@ namespace OpenLoco::Ui::Vehicle
     namespace Main
     {
         window* open(const OpenLoco::vehicle* vehicle);
+        window* openDetails(const OpenLoco::vehicle* vehicle);
     }
 }
 
