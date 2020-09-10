@@ -12,12 +12,12 @@
 #include "../Map/TileManager.h"
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
+#include "../Things/ThingManager.h"
+#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
-#include "../things/thingmgr.h"
-#include "../things/vehicle.h"
 #include "scrollview.h"
 #include <algorithm>
 #include <cinttypes>

@@ -13,10 +13,10 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../things/thingmgr.h"
 #include "../ui/WindowManager.h"
 
 using namespace openloco::interop;

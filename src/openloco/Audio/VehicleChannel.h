@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../things/thing.h"
+#include "../Things/Thing.h"
 #include "Audio.h"
 #include "Channel.h"
 

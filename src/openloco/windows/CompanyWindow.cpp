@@ -14,10 +14,10 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Things/ThingManager.h"
+#include "../Things/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../things/thingmgr.h"
-#include "../things/vehicle.h"
 #include "../ui/WindowManager.h"
 #include "../ui/dropdown.h"
 

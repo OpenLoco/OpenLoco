@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Objects/SteamObject.h"
-#include "thing.h"
+#include "Thing.h"
 
 namespace openloco
 {

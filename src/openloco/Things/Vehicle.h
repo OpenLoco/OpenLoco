@@ -5,7 +5,7 @@
 #include "../Objects/VehicleObject.h"
 #include "../Window.h"
 #include "../ui/WindowType.h"
-#include "thing.h"
+#include "Thing.h"
 
 namespace openloco
 {

@@ -1,4 +1,4 @@
-#include "vehicle.h"
+#include "Vehicle.h"
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
@@ -9,8 +9,8 @@
 #include "../OpenLoco.h"
 #include "../ViewportManager.h"
 #include "../utility/numeric.hpp"
-#include "misc.h"
-#include "thingmgr.h"
+#include "Misc.h"
+#include "ThingManager.h"
 #include <algorithm>
 #include <cassert>
 

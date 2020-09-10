@@ -12,8 +12,8 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../ui/WindowManager.h"
-#include "thingmgr.h"
-#include "vehicle.h"
+#include "ThingManager.h"
+#include "Vehicle.h"
 #include <numeric>
 #include <utility>
 

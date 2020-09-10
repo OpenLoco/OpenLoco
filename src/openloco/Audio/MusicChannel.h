@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/FileSystem.hpp"
-#include "../things/thing.h"
+#include "../Things/Thing.h"
 #include "Audio.h"
 #include "Channel.h"
 

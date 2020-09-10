@@ -1,7 +1,7 @@
-#include "misc.h"
+#include "Misc.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "thingmgr.h"
+#include "ThingManager.h"
 
 using namespace openloco;
 using namespace openloco::objectmgr;
