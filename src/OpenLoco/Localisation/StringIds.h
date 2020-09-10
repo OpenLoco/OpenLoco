@@ -220,6 +220,9 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_place_on_airport = 257;
     constexpr string_id tooltip_remove_from_water = 258;
     constexpr string_id tooltip_place_on_dock = 259;
+    constexpr string_id cant_start_string_id = 260;
+    constexpr string_id cant_select_manual_mode_string_id = 261;
+    constexpr string_id cant_stop_string_id = 262;
 
     constexpr string_id stop = 265;
     constexpr string_id start = 266;

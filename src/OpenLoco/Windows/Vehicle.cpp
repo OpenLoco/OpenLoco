@@ -43,11 +43,11 @@ namespace OpenLoco::Ui::Vehicle
             tab_route = 8,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                    \
-    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, widget_type::frame, 0),                                                                  \
-        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                                 \
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                  \
+    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, widget_type::frame, 0),                                                                \
+        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                               \
         makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),           \
-        makeWidget({ 0, 41 }, { 265, 136 }, widget_type::panel, 1),                                                                                \
+        makeWidget({ 0, 41 }, { 265, 136 }, widget_type::panel, 1),                                                                              \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Vehicle
         static void switchTab(window* const self, const widget_index widgetIndex);
         static void repositionTabs(window* const self);
         static void setCaptionEnableState(window* const self);
-        static void onPickup(window* self);
+        static void onPickup(window* const self, const widget_index pickupWidx);
         static void event8(window* const self);
         static void event9(window* const self);
         static size_t getNumCars(Ui::window* const self);
@@ -168,16 +168,6 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
-
-    static void sub_4B28E2(window* w, int dx)
-    {
-        registers regs;
-
-        regs.dx = dx;
-        regs.esi = (uintptr_t)w;
-
-        call(0x004B28E2, regs);
-    }
 
     namespace Main
     {
@@ -379,7 +369,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B288F
         static void onChangeDirection(window* self)
         {
-            if (Input::isToolActive(self->type,self->number, widx::pickup))
+            if (Input::isToolActive(self->type, self->number, widx::pickup))
             {
                 _525FB0 = _525FB0 ^ 1;
                 return;
@@ -408,7 +398,7 @@ namespace OpenLoco::Ui::Vehicle
                     common::switchTab(self, widgetIndex);
                     break;
                 case widx::pickup:
-                    common::onPickup(self);
+                    common::onPickup(self, widx::pickup);
                     break;
                 case widx::change_direction:
                     onChangeDirection(self);
@@ -456,7 +446,7 @@ namespace OpenLoco::Ui::Vehicle
 
             if (!Input::isToolActive(WindowType::vehicle, w->number))
             {
-                sub_4B28E2(w, widx::pickup);
+                common::onPickup(w, widx::pickup);
             }
         }
 
@@ -559,11 +549,30 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B253A
         static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
         {
-            registers regs{};
-            regs.esi = reinterpret_cast<int32_t>(self);
-            regs.edx = widgetIndex;
-            regs.eax = itemIndex;
-            call(0x004B253A, regs);
+            if (widgetIndex != widx::stop_start)
+            {
+                return;
+            }
+
+            auto item = itemIndex == -1 ? Dropdown::getHighlightedItem() : itemIndex;
+            if (item == -1 || item > 2)
+            {
+                return;
+            }
+
+            static const std::pair<string_id, uint8_t> itemToGameCommandInfo[3] = {
+                { StringIds::cant_stop_string_id, 0 },
+                { StringIds::cant_start_string_id, 1 },
+                { StringIds::cant_select_manual_mode_string_id, 3 },
+            };
+            auto [errorTitle, mode] = itemToGameCommandInfo[item];
+            gGameCommandErrorTitle = errorTitle;
+            FormatArguments args{};
+            auto head = common::getVehicle(self);
+            args.skip(6);
+            args.push(head->var_22);
+            args.push(head->var_44);
+            GameCommands::do12(head->id, mode);
         }
 
         // 0x004B2545
@@ -985,7 +994,7 @@ namespace OpenLoco::Ui::Vehicle
                     common::switchTab(self, widgetIndex);
                     break;
                 case widx::pickup:
-                    common::onPickup(self);
+                    common::onPickup(self, widx::pickup);
                     break;
                 case widx::buildNew:
                     BuildVehicle::open(self->number, 0);
@@ -1053,7 +1062,7 @@ namespace OpenLoco::Ui::Vehicle
 
             if (!Input::isToolActive(WindowType::vehicle, w->number))
             {
-                sub_4B28E2(w, 10);
+                common::onPickup(w, widx::pickup);
             }
         }
 
@@ -1109,7 +1118,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             OpenLoco::Things::Vehicle::Vehicle train{ head };
-            for ( auto c : train.cars)
+            for (auto c : train.cars)
             {
                 if (c.front == car)
                 {
@@ -1489,7 +1498,7 @@ namespace OpenLoco::Ui::Vehicle
         static widget_t widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
             makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::SPR_2386, StringIds::refit_vehicle_tip), // 9
-            makeWidget({ 3, 44 }, { 259, 120 }, widget_type::scrollview, 1, vertical),                                     // 10
+            makeWidget({ 3, 44 }, { 259, 120 }, widget_type::scrollview, 1, vertical),                                   // 10
             widgetEnd()
         };
 
@@ -3199,10 +3208,11 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B28E2
-        static void onPickup(window* self)
+        static void onPickup(window* const self, const widget_index pickupWidx)
         {
             registers regs{};
             regs.esi = reinterpret_cast<uint32_t>(self);
+            regs.dx = pickupWidx;
             call(0x004B28E2, regs);
         }
 
