@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\resources\Resource.h" />
+    <ClInclude Include="..\thirdparty\filesystem.hpp" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Audio\Channel.h" />
     <ClInclude Include="Audio\MusicChannel.h" />
@@ -219,7 +220,6 @@
     <ClInclude Include="Things\Thing.h" />
     <ClInclude Include="Things\ThingManager.h" />
     <ClInclude Include="Things\Vehicle.h" />
-    <ClInclude Include="Thirdparty\FileSystem.hpp" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />

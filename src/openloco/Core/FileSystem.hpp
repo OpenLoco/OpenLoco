@@ -24,7 +24,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 #else
-#include "../Thirdparty/FileSystem.hpp"
+#include "../../thirdparty/filesystem.hpp"
 namespace fs = ghc::filesystem;
 #endif
 

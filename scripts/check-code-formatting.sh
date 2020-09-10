@@ -5,4 +5,4 @@ set -e
 basedir="$(readlink -f `dirname $0`/..)"
 cd $basedir
 
-scripts/run-clang-format.py -r src --exclude src/openloco/Thirdparty
+scripts/run-clang-format.py -r src --exclude src/thirdparty
