@@ -219,7 +219,7 @@
     <ClInclude Include="Things\Thing.h" />
     <ClInclude Include="Things\ThingManager.h" />
     <ClInclude Include="Things\Vehicle.h" />
-    <ClInclude Include="thirdparty\filesystem.hpp" />
+    <ClInclude Include="Thirdparty\FileSystem.hpp" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
