@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility/prng.hpp"
+#include "Utility/Prng.hpp"
 #include <cstdint>
 #include <functional>
 #include <string>
