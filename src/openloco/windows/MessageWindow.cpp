@@ -18,8 +18,8 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
+#include "../Ui/Scrollview.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/scrollview.h"
 #include "../Widget.h"
 
 using namespace openloco::interop;

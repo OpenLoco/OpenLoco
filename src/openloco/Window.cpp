@@ -10,7 +10,7 @@
 #include "Things/ThingManager.h"
 #include "Ui.h"
 #include "Ui/Rect.h"
-#include "Ui/scrollview.h"
+#include "Ui/Scrollview.h"
 #include "Widget.h"
 #include <cassert>
 #include <cinttypes>

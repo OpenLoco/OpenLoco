@@ -16,8 +16,8 @@
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
+#include "../Ui/Scrollview.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/scrollview.h"
 #include "../Widget.h"
 
 using namespace openloco::interop;

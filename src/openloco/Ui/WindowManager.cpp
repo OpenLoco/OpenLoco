@@ -18,7 +18,7 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
-#include "scrollview.h"
+#include "Scrollview.h"
 #include <algorithm>
 #include <cinttypes>
 #include <memory>

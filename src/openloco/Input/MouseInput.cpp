@@ -11,8 +11,8 @@
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
+#include "../Ui/Scrollview.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/scrollview.h"
 #include "../Window.h"
 #include <map>
 
