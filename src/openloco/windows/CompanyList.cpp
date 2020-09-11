@@ -12,8 +12,8 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/numeric.hpp"
 #include "../Widget.h"
-#include "../utility/numeric.hpp"
 
 using namespace openloco::interop;
 

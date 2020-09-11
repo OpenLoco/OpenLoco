@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utility/string.hpp"
+#include "../Utility/string.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -378,8 +378,8 @@ namespace openloco::interop
     void loadSections();
 }
 
-// these safe string function convenience overloads are located in this header, rather than in utility/string.hpp,
-// so that utility/string.hpp doesn't needlessly have to include this header just for the definition of loco_global
+// these safe string function convenience overloads are located in this header, rather than in Utility/string.hpp,
+// so that Utility/string.hpp doesn't needlessly have to include this header just for the definition of loco_global
 // (and so that we don't have to use type traits SFINAE template wizardry to get around not having the definition available)
 namespace openloco::utility
 {

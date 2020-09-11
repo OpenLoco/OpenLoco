@@ -3,7 +3,7 @@
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
-#include "utility/numeric.hpp"
+#include "Utility/numeric.hpp"
 
 using namespace openloco::interop;
 

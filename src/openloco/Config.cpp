@@ -11,7 +11,7 @@
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
 #include "Interop/Interop.hpp"
-#include "utility/yaml.hpp"
+#include "Utility/yaml.hpp"
 
 using namespace openloco::interop;
 

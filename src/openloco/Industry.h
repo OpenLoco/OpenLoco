@@ -5,7 +5,7 @@
 #include "Map/TileLoop.hpp"
 #include "Objects/IndustryObject.h"
 #include "Town.h"
-#include "utility/prng.hpp"
+#include "Utility/prng.hpp"
 #include <cstdint>
 #include <limits>
 

@@ -11,7 +11,7 @@
 #include <windows.h>
 
 #include "../Ui.h"
-#include "../utility/string.hpp"
+#include "../Utility/string.hpp"
 #include "Platform.h"
 
 namespace openloco::platform

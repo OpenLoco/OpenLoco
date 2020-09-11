@@ -4,7 +4,7 @@
 #include "Map/Tile.h"
 #include "Town.h"
 #include "Types.hpp"
-#include "utility/numeric.hpp"
+#include "Utility/numeric.hpp"
 #include <cstdint>
 #include <limits>
 
