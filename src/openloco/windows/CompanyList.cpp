@@ -12,7 +12,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
-#include "../Utility/numeric.hpp"
+#include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
 using namespace openloco::interop;

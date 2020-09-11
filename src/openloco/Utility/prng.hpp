@@ -1,6 +1,6 @@
 #pragma once
 
-#include "numeric.hpp"
+#include "Numeric.hpp"
 #include <cstdint>
 
 namespace openloco::utility
