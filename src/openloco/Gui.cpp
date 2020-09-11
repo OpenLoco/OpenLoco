@@ -7,9 +7,9 @@
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Window.h"
-#include "ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;

@@ -11,10 +11,10 @@
 #include "../OpenLoco.h"
 #include "../Town.h"
 #include "../TownManager.h"
+#include "../Ui/WindowManager.h"
+#include "../Ui/dropdown.h"
+#include "../Ui/scrollview.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
-#include "../ui/scrollview.h"
 #include "../utility/numeric.hpp"
 
 using namespace openloco::interop;

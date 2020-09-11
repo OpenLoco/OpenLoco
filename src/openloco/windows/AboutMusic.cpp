@@ -6,7 +6,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 
 using namespace openloco::interop;
 

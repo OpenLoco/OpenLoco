@@ -11,7 +11,7 @@
 #include "../Objects/SoundObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include "ThingManager.h"
 #include "Vehicle.h"
 #include <numeric>

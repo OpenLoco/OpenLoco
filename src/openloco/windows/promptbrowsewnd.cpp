@@ -12,7 +12,7 @@
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include "../utility/string.hpp"
 #include <algorithm>
 #include <cstring>

@@ -13,8 +13,8 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
+#include "../Ui/WindowManager.h"
+#include "../Ui/dropdown.h"
 
 using namespace openloco::interop;
 

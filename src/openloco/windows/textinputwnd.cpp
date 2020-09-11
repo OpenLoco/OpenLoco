@@ -5,8 +5,8 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ui/WindowManager.h"
 #include "../Win32.h"
-#include "../ui/WindowManager.h"
 #include <cassert>
 
 #ifdef _WIN32

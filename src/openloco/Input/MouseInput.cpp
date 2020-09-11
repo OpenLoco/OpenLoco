@@ -11,9 +11,9 @@
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
+#include "../Ui/WindowManager.h"
+#include "../Ui/scrollview.h"
 #include "../Window.h"
-#include "../ui/WindowManager.h"
-#include "../ui/scrollview.h"
 #include <map>
 
 using namespace openloco::interop;

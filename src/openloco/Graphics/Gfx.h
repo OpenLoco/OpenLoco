@@ -2,7 +2,7 @@
 
 #include "../OpenLoco.h"
 #include "../Types.hpp"
-#include "../ui/Rect.h"
+#include "../Ui/Rect.h"
 #include "Types.h"
 #include <cstdint>
 

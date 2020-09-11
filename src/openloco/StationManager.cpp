@@ -3,8 +3,8 @@
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "TownManager.h"
+#include "Ui/WindowManager.h"
 #include "Window.h"
-#include "ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::ui;

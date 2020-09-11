@@ -15,9 +15,9 @@
 #include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::map;

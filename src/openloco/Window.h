@@ -9,8 +9,8 @@
 #include "Map/Tile.h"
 #include "Types.hpp"
 #include "Ui.h"
+#include "Ui/WindowType.h"
 #include "Viewport.hpp"
-#include "ui/WindowType.h"
 #include <algorithm>
 
 namespace openloco::ui

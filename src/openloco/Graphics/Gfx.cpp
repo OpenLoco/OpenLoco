@@ -6,7 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/LanguageFiles.h"
 #include "../Ui.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include "../utility/stream.hpp"
 #include "Colour.h"
 #include "ImageIds.h"

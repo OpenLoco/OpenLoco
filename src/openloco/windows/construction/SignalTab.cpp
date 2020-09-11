@@ -4,7 +4,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainSignalObject.h"
-#include "../../ui/dropdown.h"
+#include "../../Ui/dropdown.h"
 #include "Construction.h"
 
 using namespace openloco::interop;

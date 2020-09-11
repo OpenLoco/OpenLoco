@@ -16,10 +16,10 @@
 #include "../OpenLoco.h"
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
+#include "../Ui/WindowManager.h"
+#include "../Ui/dropdown.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 

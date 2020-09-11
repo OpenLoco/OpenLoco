@@ -22,8 +22,8 @@
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
-#include "../ui/WindowManager.h"
 #include "../utility/string.hpp"
 #include "Interop.hpp"
 

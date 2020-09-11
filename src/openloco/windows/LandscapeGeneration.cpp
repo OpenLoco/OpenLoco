@@ -11,9 +11,9 @@
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../TownManager.h"
+#include "../Ui/WindowManager.h"
+#include "../Ui/dropdown.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 
