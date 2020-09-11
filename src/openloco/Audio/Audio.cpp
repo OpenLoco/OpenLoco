@@ -11,7 +11,7 @@
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 #include "../Ui/WindowManager.h"
-#include "../utility/stream.hpp"
+#include "../Utility/Stream.hpp"
 #include "Channel.h"
 #include "MusicChannel.h"
 #include "VehicleChannel.h"

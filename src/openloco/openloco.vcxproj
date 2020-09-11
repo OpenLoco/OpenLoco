@@ -77,8 +77,8 @@
     <ClCompile Include="Ui\ScrollView.cpp" />
     <ClCompile Include="Ui\ViewportInteraction.cpp" />
     <ClCompile Include="Ui\WindowManager.cpp" />
-    <ClCompile Include="utility\numeric.cpp" />
-    <ClCompile Include="utility\string.cpp" />
+    <ClCompile Include="Utility\Numeric.cpp" />
+    <ClCompile Include="Utility\String.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -233,12 +233,12 @@
     <ClInclude Include="Ui\ScrollView.h" />
     <ClInclude Include="Ui\WindowManager.h" />
     <ClInclude Include="Ui\WindowType.h" />
-    <ClInclude Include="utility\collection.hpp" />
-    <ClInclude Include="utility\numeric.hpp" />
-    <ClInclude Include="utility\prng.hpp" />
-    <ClInclude Include="utility\stream.hpp" />
-    <ClInclude Include="utility\string.hpp" />
-    <ClInclude Include="utility\yaml.hpp" />
+    <ClInclude Include="Utility\Collection.hpp" />
+    <ClInclude Include="Utility\Numeric.hpp" />
+    <ClInclude Include="Utility\Prng.hpp" />
+    <ClInclude Include="Utility\Stream.hpp" />
+    <ClInclude Include="Utility\String.hpp" />
+    <ClInclude Include="Utility\Yaml.hpp" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />

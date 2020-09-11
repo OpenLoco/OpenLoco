@@ -23,8 +23,8 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/String.hpp"
 #include "../ViewportManager.h"
-#include "../utility/string.hpp"
 #include "Interop.hpp"
 
 using namespace openloco;

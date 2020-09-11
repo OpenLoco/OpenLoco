@@ -1,4 +1,4 @@
-#include "string.hpp"
+#include "String.hpp"
 
 #ifdef _WIN32
 #include <windows.h>

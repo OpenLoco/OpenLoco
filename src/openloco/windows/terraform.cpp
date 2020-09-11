@@ -16,8 +16,8 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/Numeric.hpp"
 #include "../Widget.h"
-#include "../utility/numeric.hpp"
 
 using namespace openloco::interop;
 using namespace openloco::map;

@@ -5,7 +5,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "utility/numeric.hpp"
+#include "Utility/Numeric.hpp"
 #include <algorithm>
 
 using namespace openloco::interop;
