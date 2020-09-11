@@ -78,7 +78,7 @@
     <ClCompile Include="Ui\ViewportInteraction.cpp" />
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
-    <ClCompile Include="Utility\string.cpp" />
+    <ClCompile Include="Utility\String.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -237,7 +237,7 @@
     <ClInclude Include="Utility\Numeric.hpp" />
     <ClInclude Include="Utility\Prng.hpp" />
     <ClInclude Include="Utility\Stream.hpp" />
-    <ClInclude Include="Utility\string.hpp" />
+    <ClInclude Include="Utility\String.hpp" />
     <ClInclude Include="Utility\yaml.hpp" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />

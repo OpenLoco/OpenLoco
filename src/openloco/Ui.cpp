@@ -42,7 +42,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include "Utility/string.hpp"
+#include "Utility/String.hpp"
 
 using namespace openloco::interop;
 using namespace openloco::game_commands;

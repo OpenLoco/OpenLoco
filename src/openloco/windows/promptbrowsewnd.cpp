@@ -13,7 +13,7 @@
 #include "../Scenario.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
-#include "../Utility/string.hpp"
+#include "../Utility/String.hpp"
 #include <algorithm>
 #include <cstring>
 

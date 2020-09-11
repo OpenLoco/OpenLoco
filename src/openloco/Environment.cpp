@@ -4,7 +4,7 @@
 #include "Platform/Platform.h"
 #include "Ui.h"
 #include "Utility/Collection.hpp"
-#include "Utility/string.hpp"
+#include "Utility/String.hpp"
 #include <cstring>
 #include <fstream>
 #include <iostream>
