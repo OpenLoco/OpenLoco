@@ -141,7 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\resources\Resource.h" />
-    <ClInclude Include="..\thirdparty\filesystem.hpp" />
+    <ClInclude Include="..\Thirdparty\filesystem.hpp" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Audio\Channel.h" />
     <ClInclude Include="Audio\MusicChannel.h" />
