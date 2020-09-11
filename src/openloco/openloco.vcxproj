@@ -236,7 +236,7 @@
     <ClInclude Include="Utility\Collection.hpp" />
     <ClInclude Include="Utility\Numeric.hpp" />
     <ClInclude Include="Utility\Prng.hpp" />
-    <ClInclude Include="Utility\stream.hpp" />
+    <ClInclude Include="Utility\Stream.hpp" />
     <ClInclude Include="Utility\string.hpp" />
     <ClInclude Include="Utility\yaml.hpp" />
     <ClInclude Include="Viewport.hpp" />

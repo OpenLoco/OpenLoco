@@ -7,7 +7,7 @@
 #include "../Localisation/LanguageFiles.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
-#include "../Utility/stream.hpp"
+#include "../Utility/Stream.hpp"
 #include "Colour.h"
 #include "ImageIds.h"
 #include <algorithm>
