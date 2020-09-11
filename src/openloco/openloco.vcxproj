@@ -75,7 +75,7 @@
     <ClCompile Include="Ui\Dropdown.cpp" />
     <ClCompile Include="Ui\Screenshot.cpp" />
     <ClCompile Include="Ui\Scrollview.cpp" />
-    <ClCompile Include="Ui\viewport_interaction.cpp" />
+    <ClCompile Include="Ui\ViewportInteraction.cpp" />
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="utility\numeric.cpp" />
     <ClCompile Include="utility\string.cpp" />
