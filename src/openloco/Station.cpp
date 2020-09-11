@@ -12,8 +12,8 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
 #include "OpenLoco.h"
+#include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "ui/WindowManager.h"
 #include <algorithm>
 #include <cassert>
 

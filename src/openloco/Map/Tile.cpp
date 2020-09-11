@@ -2,7 +2,7 @@
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/ObjectManager.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include <cassert>
 
 using namespace openloco;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Graphics/Gfx.h"
-#include "../ui/Rect.h"
+#include "../Ui/Rect.h"
 #include <algorithm>
 #include <cstddef>
 

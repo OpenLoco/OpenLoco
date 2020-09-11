@@ -46,8 +46,8 @@
 #include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "ui/WindowManager.h"
 #include "utility/numeric.hpp"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable

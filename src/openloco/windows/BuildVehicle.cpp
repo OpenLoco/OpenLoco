@@ -15,9 +15,9 @@
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../Things/ThingManager.h"
+#include "../Ui/ScrollView.h"
+#include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/scrollview.h"
 
 using namespace openloco::interop;
 

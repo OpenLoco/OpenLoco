@@ -3,7 +3,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Things/ThingManager.h"
-#include "ui/WindowManager.h"
+#include "Ui/WindowManager.h"
 #include <algorithm>
 #include <array>
 #include <map>

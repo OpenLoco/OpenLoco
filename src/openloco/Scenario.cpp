@@ -2,7 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "S5/S5.h"
-#include "ui/WindowManager.h"
+#include "Ui/WindowManager.h"
 
 using namespace openloco::interop;
 

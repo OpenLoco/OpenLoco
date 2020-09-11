@@ -15,9 +15,9 @@
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::game_commands;

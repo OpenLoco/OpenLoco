@@ -15,9 +15,9 @@
 #include "../OpenLoco.h"
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
 
 using namespace openloco::interop;
 using namespace openloco::game_commands;

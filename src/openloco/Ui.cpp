@@ -41,7 +41,7 @@
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"
-#include "ui/WindowManager.h"
+#include "Ui/WindowManager.h"
 #include "utility/string.hpp"
 
 using namespace openloco::interop;

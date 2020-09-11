@@ -13,9 +13,9 @@
 #include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
+#include "../Ui/Dropdown.h"
+#include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
 
 using namespace openloco::interop;
 

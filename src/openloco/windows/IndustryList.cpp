@@ -11,9 +11,9 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Ui/ScrollView.h"
+#include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include "../ui/WindowManager.h"
-#include "../ui/scrollview.h"
 
 using namespace openloco::interop;
 

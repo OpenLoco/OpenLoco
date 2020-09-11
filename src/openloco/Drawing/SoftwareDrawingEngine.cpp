@@ -1,7 +1,7 @@
 #include "SoftwareDrawingEngine.h"
 #include "../Interop/Interop.hpp"
 #include "../Ui.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include <algorithm>
 
 using namespace openloco::interop;

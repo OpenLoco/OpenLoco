@@ -3,8 +3,8 @@
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
+#include "Ui/ScrollView.h"
 #include "Window.h"
-#include "ui/scrollview.h"
 #include <cassert>
 
 using namespace openloco::interop;

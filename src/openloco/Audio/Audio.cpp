@@ -10,7 +10,7 @@
 #include "../Objects/SoundObject.h"
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 #include "../utility/stream.hpp"
 #include "Channel.h"
 #include "MusicChannel.h"

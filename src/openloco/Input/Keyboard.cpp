@@ -11,8 +11,8 @@
 #include "../Things/ThingManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
+#include "../Ui/Screenshot.h"
 #include "../Win32.h"
-#include "../ui/Screenshot.h"
 #include "ShortcutManager.h"
 #include <cstdint>
 #include <functional>

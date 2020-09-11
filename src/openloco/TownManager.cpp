@@ -2,7 +2,7 @@
 #include "CompanyManager.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
-#include "ui/WindowManager.h"
+#include "Ui/WindowManager.h"
 #include "utility/numeric.hpp"
 
 using namespace openloco::interop;

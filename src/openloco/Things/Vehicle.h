@@ -3,8 +3,8 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Ui/WindowType.h"
 #include "../Window.h"
-#include "../ui/WindowType.h"
 #include "Thing.h"
 
 namespace openloco

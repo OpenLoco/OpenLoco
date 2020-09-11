@@ -9,9 +9,9 @@
 #include "Map/TileManager.h"
 #include "Things/ThingManager.h"
 #include "Ui.h"
+#include "Ui/Rect.h"
+#include "Ui/ScrollView.h"
 #include "Widget.h"
-#include "ui/Rect.h"
-#include "ui/scrollview.h"
 #include <cassert>
 #include <cinttypes>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ui/WindowManager.h"
+#include "../Ui/WindowManager.h"
 
 using namespace openloco::interop;
 

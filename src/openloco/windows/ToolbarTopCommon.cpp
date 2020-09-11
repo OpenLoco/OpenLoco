@@ -19,8 +19,7 @@
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 #include "../TownManager.h"
-#include "../ui/WindowManager.h"
-#include "../ui/dropdown.h"
+#include "../Ui/Dropdown.h"
 #include <map>
 
 using namespace openloco::interop;
