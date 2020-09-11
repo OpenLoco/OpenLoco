@@ -7,7 +7,7 @@
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/TrackExtraObject.h"
 #include "../../Objects/TrackObject.h"
-#include "../../Ui/dropdown.h"
+#include "../../Ui/Dropdown.h"
 #include "Construction.h"
 
 using namespace openloco::interop;

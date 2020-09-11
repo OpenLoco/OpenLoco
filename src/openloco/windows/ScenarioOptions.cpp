@@ -9,8 +9,8 @@
 #include "../Objects/ScenarioTextObject.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
+#include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/dropdown.h"
 #include "../Widget.h"
 
 using namespace openloco::interop;

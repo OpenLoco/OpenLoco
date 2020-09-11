@@ -17,8 +17,8 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
+#include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/dropdown.h"
 #include "../Ui/scrollview.h"
 #include "../Widget.h"
 

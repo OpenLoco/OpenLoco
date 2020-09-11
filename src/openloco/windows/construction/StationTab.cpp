@@ -11,7 +11,7 @@
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
-#include "../../Ui/dropdown.h"
+#include "../../Ui/Dropdown.h"
 #include "Construction.h"
 
 using namespace openloco::interop;

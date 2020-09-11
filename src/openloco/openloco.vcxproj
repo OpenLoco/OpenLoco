@@ -72,7 +72,7 @@
     <ClCompile Include="TrackData.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Ui.cpp" />
-    <ClCompile Include="Ui\dropdown.cpp" />
+    <ClCompile Include="Ui\Dropdown.cpp" />
     <ClCompile Include="Ui\Screenshot.cpp" />
     <ClCompile Include="Ui\scrollview.cpp" />
     <ClCompile Include="Ui\viewport_interaction.cpp" />
@@ -227,7 +227,7 @@
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Types.hpp" />
     <ClInclude Include="Ui.h" />
-    <ClInclude Include="Ui\dropdown.h" />
+    <ClInclude Include="Ui\Dropdown.h" />
     <ClInclude Include="Ui\Rect.h" />
     <ClInclude Include="Ui\Screenshot.h" />
     <ClInclude Include="Ui\scrollview.h" />

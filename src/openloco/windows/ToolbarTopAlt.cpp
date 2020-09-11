@@ -19,8 +19,8 @@
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 #include "../TownManager.h"
+#include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
-#include "../Ui/dropdown.h"
 #include "ToolbarTopCommon.h"
 
 using namespace openloco::interop;
