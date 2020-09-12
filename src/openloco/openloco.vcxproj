@@ -114,7 +114,7 @@
     <ClCompile Include="Windows\News\News.cpp" />
     <ClCompile Include="Windows\News\Ticker.cpp" />
     <ClCompile Include="Windows\ObjectSelectionWindow.cpp" />
-    <ClCompile Include="Windows\options.cpp" />
+    <ClCompile Include="Windows\Options.cpp" />
     <ClCompile Include="Windows\PlayerInfoPanel.cpp" />
     <ClCompile Include="Windows\promptbrowsewnd.cpp" />
     <ClCompile Include="Windows\promptokcancelwnd.cpp" />
