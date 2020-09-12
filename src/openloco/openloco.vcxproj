@@ -121,7 +121,7 @@
     <ClCompile Include="Windows\ScenarioOptions.cpp" />
     <ClCompile Include="Windows\StationList.cpp" />
     <ClCompile Include="Windows\StationWindow.cpp" />
-    <ClCompile Include="Windows\terraform.cpp" />
+    <ClCompile Include="Windows\TerraForm.cpp" />
     <ClCompile Include="Windows\textinputwnd.cpp" />
     <ClCompile Include="Windows\TimePanel.cpp" />
     <ClCompile Include="Windows\TitleExit.cpp" />
