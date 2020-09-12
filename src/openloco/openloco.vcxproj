@@ -134,8 +134,8 @@
     <ClCompile Include="Windows\ToolbarTopAlt.cpp" />
     <ClCompile Include="Windows\ToolbarTopCommon.cpp" />
     <ClCompile Include="Windows\ToolTip.cpp" />
-    <ClCompile Include="Windows\townwnd.cpp" />
     <ClCompile Include="Windows\TownList.cpp" />
+    <ClCompile Include="Windows\TownWindow.cpp" />
     <ClCompile Include="Windows\vehicle.cpp" />
     <ClCompile Include="Windows\VehicleList.cpp" />
   </ItemGroup>
