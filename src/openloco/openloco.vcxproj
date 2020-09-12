@@ -95,11 +95,11 @@
     <ClCompile Include="Windows\CompanyFaceSelection.cpp" />
     <ClCompile Include="Windows\CompanyList.cpp" />
     <ClCompile Include="Windows\CompanyWindow.cpp" />
-    <ClCompile Include="Windows\construction\Common.cpp" />
-    <ClCompile Include="Windows\construction\ConstructionTab.cpp" />
-    <ClCompile Include="Windows\construction\OverheadTab.cpp" />
-    <ClCompile Include="Windows\construction\SignalTab.cpp" />
-    <ClCompile Include="Windows\construction\StationTab.cpp" />
+    <ClCompile Include="Windows\Construction\Common.cpp" />
+    <ClCompile Include="Windows\Construction\ConstructionTab.cpp" />
+    <ClCompile Include="Windows\Construction\OverheadTab.cpp" />
+    <ClCompile Include="Windows\Construction\SignalTab.cpp" />
+    <ClCompile Include="Windows\Construction\StationTab.cpp" />
     <ClCompile Include="Windows\EditKeyboardShortcut.cpp" />
     <ClCompile Include="Windows\Error.cpp" />
     <ClCompile Include="Windows\IndustryWindow.cpp" />
@@ -244,7 +244,7 @@
     <ClInclude Include="Widget.h" />
     <ClInclude Include="Win32.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="Windows\construction\Construction.h" />
+    <ClInclude Include="Windows\Construction\Construction.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="Windows\News\News.h" />
     <ClInclude Include="Windows\ToolbarTopCommon.h" />
