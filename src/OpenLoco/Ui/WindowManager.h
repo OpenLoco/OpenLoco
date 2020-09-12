@@ -11,6 +11,7 @@
 namespace OpenLoco
 {
     struct vehicle;
+    struct vehicle_base;
 }
 
 namespace OpenLoco::Ui::WindowManager
@@ -279,6 +280,15 @@ namespace OpenLoco::Ui::Vehicle
     {
         window* open(const OpenLoco::vehicle* vehicle);
         window* openDetails(const OpenLoco::vehicle* vehicle);
+    }
+    namespace vehicle_details
+    {
+        void scrollDrag(const gfx::point_t& pos);
+        void scrollDragEnd(const gfx::point_t& pos);
+    }
+    namespace common
+    {
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }
 }
 

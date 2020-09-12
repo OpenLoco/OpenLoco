@@ -43,6 +43,7 @@ namespace OpenLoco::Ui
         busy,
         diagonal_arrows,
         unk_25,
+        unk_26,
         arrows_inward = 37
     };
 

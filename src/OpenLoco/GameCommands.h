@@ -66,6 +66,15 @@ namespace OpenLoco::GameCommands
     uint32_t doCommand(int esi, const registers& registers);
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
 
+    inline void do_0(thing_id_t source, thing_id_t dest)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.dx = source;
+        regs.di = dest;
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_rearange), regs);
+    }
+
     inline bool do_2(thing_id_t head)
     {
         registers regs;
@@ -107,11 +116,11 @@ namespace OpenLoco::GameCommands
         return doCommand(5, regs) != FAILURE;
     }
 
-    inline void do_6(thing_id_t head)
+    inline void do_6(thing_id_t car)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.dx = head;
+        regs.dx = car;
         doCommand(static_cast<int32_t>(GameCommand::vehicle_sell), regs);
     }
 

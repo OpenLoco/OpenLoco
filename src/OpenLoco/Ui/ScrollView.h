@@ -53,4 +53,6 @@ namespace OpenLoco::Ui::ScrollView
     void clearPressedButtons(const WindowType type, const window_number number, const widget_index widgetIndex);
     void horizontalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX);
     void verticalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY);
+    void verticalNudgeUp(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex);
+    void verticalNudgeDown(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex);
 }

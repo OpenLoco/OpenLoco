@@ -1303,11 +1303,18 @@ namespace OpenLoco::Ui
 
     void window::callOnMove(int16_t xPos, int16_t yPos)
     {
-        registers regs;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->on_move, regs);
+        if (event_handlers->on_move == nullptr)
+            return;
+
+        if (isInteropEvent(event_handlers->on_move))
+        {
+            registers regs;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            regs.esi = (int32_t)this;
+            call(reinterpret_cast<int32_t>(this->event_handlers->on_move), regs);
+        }
+        this->event_handlers->on_move(*this, xPos, yPos);
     }
 
     void window::callPrepareDraw()

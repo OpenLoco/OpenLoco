@@ -19,6 +19,7 @@
 #include "../Things/ThingManager.h"
 #include "../TrackData.h"
 #include "../Ui/Dropdown.h"
+#include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
@@ -72,13 +73,11 @@ namespace OpenLoco::Ui::Vehicle
         static void event9(window* const self);
         static size_t getNumCars(Ui::window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
-        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
         static void pickupToolUpdate(window& self, const int16_t x, const int16_t y);
         static void pickupToolDown(window& self, const int16_t x, const int16_t y);
         static void pickupToolAbort(window& self);
         static size_t getNumCars(Ui::window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
-        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
         static std::optional<Things::Vehicle::Car> getCarFromScrollView(window* const self, const int16_t y);
     }
 
@@ -331,7 +330,7 @@ namespace OpenLoco::Ui::Vehicle
             self->max_height = maxWindowSize.height;
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
-            _113614E = reinterpret_cast<OpenLoco::vehicle_bogie*>(-1);
+            _113614E = nullptr;
             _1136156 = -1;
 
             const auto* skin = ObjectManager::get<interface_skin_object>();
@@ -1041,7 +1040,7 @@ namespace OpenLoco::Ui::Vehicle
                 if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
                     _1136156 = -1;
-                    _113614E = reinterpret_cast<OpenLoco::vehicle_bogie*>(-1);
+                    _113614E = nullptr;
                     w->invalidate();
                 }
             }
@@ -1442,7 +1441,7 @@ namespace OpenLoco::Ui::Vehicle
 
                     int16_t top = pos.y;
                     int16_t bottom = pos.y + self->row_height - 1;
-                    if (_113614E != reinterpret_cast<OpenLoco::vehicle_bogie*>(-1))
+                    if (_113614E != nullptr)
                     {
                         bottom = pos.y;
                         top = pos.y - 1;
@@ -1471,7 +1470,7 @@ namespace OpenLoco::Ui::Vehicle
                 pos.y += self->row_height;
             }
 
-            if (self->row_hover == train.tail->id && _113614E != reinterpret_cast<OpenLoco::vehicle_bogie*>(-1))
+            if (self->row_hover == train.tail->id && _113614E != nullptr)
             {
                 Gfx::fillRect(context, 0, pos.y - 1, self->width, pos.y, 0x2000030);
             }
@@ -1496,6 +1495,149 @@ namespace OpenLoco::Ui::Vehicle
             events.prepare_draw = prepareDraw;
             events.draw = draw;
             events.draw_scroll = drawScroll;
+        }
+
+        static Ui::window* getVehicleDetailsWindow(const Gfx::point_t& pos)
+        {
+            auto vehicleWindow = WindowManager::findAt(pos);
+            if (vehicleWindow == nullptr || vehicleWindow->type != WindowType::vehicle || vehicleWindow->current_tab != (common::widx::tab_vehicle_details - common::widx::tab_main))
+            {
+                return nullptr;
+            }
+            return vehicleWindow;
+        }
+
+        static OpenLoco::vehicle_base* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
+        {
+            int16_t scrollX;
+            int16_t scrollY;
+            ScrollView::scroll_part part;
+            size_t scrollIndex;
+            Input::setPressedWidgetIndex(widx::scrollview);
+            Ui::ScrollView::getPart(&self, &self.widgets[widx::scrollview], pos.x, pos.y, &scrollX, &scrollY, &part, &scrollIndex);
+            if (part != ScrollView::scroll_part::view)
+            {
+                return nullptr;
+            }
+
+            auto y = self.row_height / 2 + scrollY;
+            auto car = common::getCarFromScrollView(&self, y);
+            if (!car.has_value())
+            {
+                auto head = common::getVehicle(&self);
+                Things::Vehicle::Vehicle train(head);
+                return train.tail;
+            }
+            return car->front;
+        }
+
+        // 0x004B61C7 based on
+        std::pair<Ui::window*, OpenLoco::vehicle_base*> sub_4B61C7(const Gfx::point_t& pos)
+        {
+            auto vehicleWindow = getVehicleDetailsWindow(pos);
+            if (vehicleWindow == nullptr)
+            {
+                return std::make_pair(nullptr, nullptr);
+            }
+
+            auto targetWidget = vehicleWindow->findWidgetAt(pos.x, pos.y);
+            switch (targetWidget)
+            {
+                case widx::remove:
+                    return std::make_pair(vehicleWindow, nullptr);
+
+                case widx::scrollview:
+                {
+                    auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
+                    if (car == nullptr)
+                    {
+                        return std::make_pair(nullptr, nullptr);
+                    }
+
+                    return std::make_pair(vehicleWindow, car);
+                }
+            }
+            return std::make_pair(nullptr, nullptr);
+        }
+
+        void scrollDrag(const Gfx::point_t& pos)
+        {
+            auto vehicleWindow = getVehicleDetailsWindow(pos);
+            if (vehicleWindow == nullptr)
+            {
+                return;
+            }
+
+            auto targetWidget = vehicleWindow->findWidgetAt(pos.x, pos.y);
+            switch (targetWidget)
+            {
+                case widx::remove:
+                {
+                    if (!(vehicleWindow->activated_widgets & (1 << widx::remove)))
+                    {
+                        vehicleWindow->activated_widgets |= (1 << widx::remove);
+                        WindowManager::invalidateWidget(WindowType::vehicle, vehicleWindow->number, widx::remove);
+                    }
+                    return;
+                }
+                case widx::scrollview:
+                {
+                    auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
+                    if (car != nullptr)
+                    {
+                        vehicleWindow->flags &= ~WindowFlags::not_scroll_view;
+                        if (car->id != vehicleWindow->row_hover)
+                        {
+                            vehicleWindow->row_hover = car->id;
+                        }
+                        vehicleWindow->invalidate();
+                    }
+
+                    // TODO: define constant for hot zone
+                    if (pos.y < vehicleWindow->widgets[widx::scrollview].top + vehicleWindow->y + 5)
+                    {
+                        Ui::ScrollView::verticalNudgeUp(vehicleWindow, vehicleWindow->getScrollDataIndex(widx::scrollview), widx::scrollview);
+                    }
+                    else if (pos.y > vehicleWindow->widgets[widx::scrollview].bottom + vehicleWindow->y - 5)
+                    {
+                        Ui::ScrollView::verticalNudgeDown(vehicleWindow, vehicleWindow->getScrollDataIndex(widx::scrollview), widx::scrollview);
+                    }
+                    break;
+                }
+            }
+            if (vehicleWindow->activated_widgets & (1 << widx::remove))
+            {
+                vehicleWindow->activated_widgets &= ~(1ULL << widx::remove);
+                WindowManager::invalidateWidget(WindowType::vehicle, vehicleWindow->number, widx::remove);
+            }
+        }
+
+        void scrollDragEnd(const Gfx::point_t& pos)
+        {
+            auto vehicleWindow = getVehicleDetailsWindow(pos);
+            if (vehicleWindow == nullptr)
+            {
+                return;
+            }
+
+            auto targetWidget = vehicleWindow->findWidgetAt(pos.x, pos.y);
+            switch (targetWidget)
+            {
+                case widx::remove:
+                    game_commands::do_6((*_113614E)->id);
+                    if (vehicleWindow->activated_widgets & (1 << widx::remove))
+                    {
+                        vehicleWindow->activated_widgets &= ~(1ULL << widx::remove);
+                        WindowManager::invalidateWidget(WindowType::vehicle, vehicleWindow->number, widx::remove);
+                    }
+                    break;
+                case widx::scrollview:
+                {
+                    auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
+                    game_commands::do_0((*_113614E)->id, car->id);
+                    break;
+                }
+            }
         }
     }
 
@@ -3361,7 +3503,8 @@ namespace OpenLoco::Ui::Vehicle
             return train.cars.size();
         }
 
-        static int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        // TODO: Move to a more appropriate file used by many windows
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
         {
             registers regs{};
             regs.al = al;

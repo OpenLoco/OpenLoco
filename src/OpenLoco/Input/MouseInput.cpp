@@ -32,8 +32,6 @@ namespace OpenLoco::Input
     static void stateNormalLeft(int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
     static void stateNormalRight(int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
     static void statePositioningWindow(mouse_button button, int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
-
-    static void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
     static void windowPositionEnd();
 
     static void windowResizeBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
@@ -212,6 +210,11 @@ namespace OpenLoco::Input
     Ui::widget_index getPressedWidgetIndex()
     {
         return _pressedWidgetIndex;
+    }
+
+    void setPressedWidgetIndex(Ui::widget_index index)
+    {
+        _pressedWidgetIndex = index;
     }
 
     // 0x004C6E65
@@ -1741,7 +1744,7 @@ namespace OpenLoco::Input
 #pragma mark - Window positioning
 
     // 0x004C877D
-    static void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index)
+    void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index)
     {
         state(input_state::positioning_window);
         _pressedWidgetIndex = widget_index;

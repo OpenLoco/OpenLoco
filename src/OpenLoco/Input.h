@@ -73,6 +73,7 @@ namespace OpenLoco::Input
     bool isPressed(Ui::WindowType type, Ui::window_number number);
     bool isPressed(Ui::WindowType type, Ui::window_number number, Ui::widget_index index);
     Ui::widget_index getPressedWidgetIndex();
+    void setPressedWidgetIndex(Ui::widget_index index);
 
     void updateCursorPosition();
 
@@ -98,6 +99,8 @@ namespace OpenLoco::Input
     void sub_407231();
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
+
+    void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
 
     Gfx::point_t getScrollLastLocation();
     Gfx::point_t getDragLastLocation();

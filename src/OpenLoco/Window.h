@@ -233,7 +233,7 @@ namespace OpenLoco::Ui
                 uint32_t event_22;
                 void (*tooltip)(FormatArguments& args, window*, widget_index);
                 Ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, Ui::cursor_id);
-                uint32_t on_move;
+                void (*on_move)(window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, Gfx::drawpixelinfo_t*);
                 void (*draw_scroll)(window*, Gfx::drawpixelinfo_t*, uint32_t scrollIndex);
