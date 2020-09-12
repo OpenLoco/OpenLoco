@@ -133,7 +133,7 @@
     <ClCompile Include="Windows\ToolbarTop.cpp" />
     <ClCompile Include="Windows\ToolbarTopAlt.cpp" />
     <ClCompile Include="Windows\ToolbarTopCommon.cpp" />
-    <ClCompile Include="Windows\tooltip.cpp" />
+    <ClCompile Include="Windows\ToolTip.cpp" />
     <ClCompile Include="Windows\townwnd.cpp" />
     <ClCompile Include="Windows\TownList.cpp" />
     <ClCompile Include="Windows\vehicle.cpp" />
