@@ -116,7 +116,7 @@
     <ClCompile Include="Windows\ObjectSelectionWindow.cpp" />
     <ClCompile Include="Windows\Options.cpp" />
     <ClCompile Include="Windows\PlayerInfoPanel.cpp" />
-    <ClCompile Include="Windows\promptbrowsewnd.cpp" />
+    <ClCompile Include="Windows\PromptBrowseWindow.cpp" />
     <ClCompile Include="Windows\promptokcancelwnd.cpp" />
     <ClCompile Include="Windows\ScenarioOptions.cpp" />
     <ClCompile Include="Windows\stationwnd.cpp" />
