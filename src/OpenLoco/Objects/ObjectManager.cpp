@@ -43,7 +43,7 @@ namespace openloco::objectmgr
     loco_global<scenario_text_object* [1], 0x0050D138> _scenarioTextObjects;
 
     // 0x00470F3C
-    void load_index()
+    void loadIndex()
     {
         call(0x00470F3C);
     }
@@ -316,7 +316,7 @@ namespace openloco::objectmgr
         for (uint32_t i = 0; i < _installedObjectCount; i++)
         {
             auto entry = object_index_entry::read(&ptr);
-            if (entry._header->get_type() == type)
+            if (entry._header->getType() == type)
                 list.emplace_back(std::pair<uint32_t, object_index_entry>(i, entry));
         }
 

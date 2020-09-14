@@ -1057,7 +1057,7 @@ namespace openloco::ui::windows::CompanyList
         static void drawGraphKey(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto cargoCount = 0;
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::cargo); i++)
             {
                 auto cargo = objectmgr::get<cargo_object>(i);
                 if (cargo == nullptr)
@@ -1103,7 +1103,7 @@ namespace openloco::ui::windows::CompanyList
             _dword_113DD50 = 0;
 
             auto count = 0;
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::cargo); i++)
             {
                 auto cargo = objectmgr::get<cargo_object>(i);
                 if (cargo == nullptr)
